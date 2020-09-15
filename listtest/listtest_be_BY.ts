@@ -4,8 +4,8 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="main.qml" line="8"/>
-        <source>Scroll</source>
+        <location filename="main.qml" line="9"/>
+        <source>Mastactva Quiz Editor</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

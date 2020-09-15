@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import org.mastactva 1.0
 
 ApplicationWindow {
     width: 640
@@ -11,11 +12,25 @@ ApplicationWindow {
         anchors.fill: parent
 
         ListView {
+            id: galleries
             width: parent.width
-            model: 20
-            delegate: ItemDelegate {
-                text: "Item " + (index + 1)
-                width: parent.width
+            model: GalleryEditViewModel {}
+            delegate: Item {
+                id: gallery
+                SwipeView {
+                    id: gallery_images
+                    width: galleries.width
+                    height: 100
+                    Repeater {
+                        model: gallery.images
+                        Image {
+                            width: gallery_images.width
+                            height: gallery_images.height
+                            source: image
+                            fillMode: Image.Stretch
+                        }
+                    }
+                }
             }
         }
     }
