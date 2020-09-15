@@ -1,11 +1,15 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include "netapi.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+    NetAPI::createSingelton(&app);
+    NetAPI::getSingelton()->getDefaultRequestData().setAuth("demo", "sBnd4nPU28BWvN7");
+    NetAPI::getSingelton()->getDefaultRequestData().setUrlBase("http://localhost:8000/");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

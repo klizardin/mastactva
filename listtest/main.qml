@@ -5,7 +5,7 @@ ApplicationWindow {
     width: 640
     height: 480
     visible: true
-    title: qsTr("Scroll")
+    title: qsTr("Mastactva Quiz Editor")
 
     ScrollView {
         anchors.fill: parent

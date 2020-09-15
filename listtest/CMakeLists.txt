@@ -36,6 +36,8 @@ if(ANDROID)
       main.cpp
       galleryeditviewmodel.h
       galleryeditviewmodel.cpp
+      netapi.h
+      netapi.cpp
       qml.qrc
       ${TS_FILES}
     )
@@ -44,6 +46,8 @@ else()
       main.cpp
       galleryeditviewmodel.h
       galleryeditviewmodel.cpp
+      netapi.h
+      netapi.cpp
       qml.qrc
       ${TS_FILES}
     )

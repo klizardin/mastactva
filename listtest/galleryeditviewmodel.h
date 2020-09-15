@@ -7,7 +7,10 @@
 #include <QString>
 #include <QVector>
 #include <QHash>
+#include <QJsonValue>
 
+
+class RequestData;
 
 class GalleryEditViewImagesModel : public QAbstractListModel
 {
@@ -29,12 +32,19 @@ public:
 public:
     void setGalleryID(long long galleryId);
 
+private slots:
+    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
+protected:
+    void startLoadImages();
+
 protected:
     // return the roles mapping to be used by QML
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
     long long m_galleryId = -1;
+    RequestData* m_request = nullptr;
     QVector<QString> m_images;
     QHash<int, QByteArray> m_roleNames;
 };
@@ -43,13 +53,15 @@ private:
 class GalleryItemData
 {
 protected:
+    int id = -1;
     QString description;
     QDateTime created;
     double pointsToPass = 1.0;
     GalleryEditViewImagesModel *images = nullptr;
 
 public:
-    GalleryItemData(const QString &description_ = QString(),
+    GalleryItemData(int id_ = -1,
+                const QString &description_ = QString(),
                 const QDateTime &created_ = QDateTime(),
                 double pointsToPass_ = 1.0);
     virtual ~GalleryItemData();
@@ -57,7 +69,9 @@ public:
     const QString &getDescription() const;
     const QDateTime &getCreated() const;
     double getPointsToPass() const;
-    GalleryEditViewImagesModel *getImagesModel(QObject *parent);
+    GalleryEditViewImagesModel *getImagesModel(QObject *parent_);
+
+    static GalleryItemData fromJson(const QJsonValue& jsonValue_, bool &anyError);
 };
 
 
@@ -83,11 +97,18 @@ public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
+private slots:
+    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
+protected:
+    void startLoadGalleries();
+
 protected:
     // return the roles mapping to be used by QML
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
+    RequestData* m_request = nullptr;
     QHash<int, QByteArray> m_roleNames;
     QVector<GalleryItemData> m_data;
 };
