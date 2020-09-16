@@ -10,6 +10,7 @@ ApplicationWindow {
 
     ScrollView {
         anchors.fill: parent
+        width: parent.width
 
         ListView {
             id: galleries
@@ -20,9 +21,9 @@ ApplicationWindow {
                 SwipeView {
                     id: gallery_images
                     width: galleries.width
-                    height: 100
+                    height: 200
                     Repeater {
-                        model: gallery.images
+                        model: images
                         Image {
                             width: gallery_images.width
                             height: gallery_images.height

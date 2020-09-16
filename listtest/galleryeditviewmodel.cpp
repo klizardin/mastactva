@@ -17,9 +17,8 @@ GalleryEditViewImagesModel::GalleryEditViewImagesModel(QObject *parent /*= nullp
 {
     m_roleNames[ImageSourceRole] = "image";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(void onJsonRequestFinished(RequestData, const QJsonDocument &)),
-                     this, SLOT(void onJsonRequestFinished(RequestData *, const QJsonDocument &)));
-
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
     // TODO: indicate in view that there is no data
 }
 
@@ -67,7 +66,10 @@ void GalleryEditViewImagesModel::setGalleryID(long long galleryId)
 
 void GalleryEditViewImagesModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
 {
-    Q_ASSERT(m_request == request_);
+    if(!(m_request == request_))
+    {
+        return;
+    }
     m_request = nullptr;
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
@@ -106,7 +108,7 @@ void GalleryEditViewImagesModel::startLoadImages()
     }
 
     m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(QString("images/%1/").arg(m_galleryId), m_request);
+    NetAPI::getSingelton()->get(QString("images/%1/gallery_view/").arg(m_galleryId), m_request);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +174,7 @@ GalleryItemData GalleryItemData::fromJson(const QJsonValue& jsonValue_, bool &an
     QJsonValue idVal = jsonValue_["id"];
     if(QJsonValue::Undefined != idVal.type())
     {
-        idVal = idVal.toInt();
+        id = idVal.toInt();
     }
     else
     {
@@ -192,7 +194,14 @@ GalleryItemData GalleryItemData::fromJson(const QJsonValue& jsonValue_, bool &an
     QJsonValue createdVal = jsonValue_["created"];
     if(QJsonValue::Undefined != createdVal.type() && createdVal.isString())
     {
-        created = QDateTime::fromString(createdVal.toString());
+        QString str = createdVal.toString();
+        QTextStream s(&str);
+        int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0;
+        s.setPadChar('-');
+        char tmp;
+        s >> year >> tmp >> month >> tmp >> day >> tmp;
+        s >> hours >> tmp >> minites >> tmp >> seconds;
+        created = QDateTime(QDate(year, month, day), QTime(hours, minites, seconds));
     }
     else
     {
@@ -230,10 +239,9 @@ GalleryEditViewModel::GalleryEditViewModel(QObject *parent)
     m_roleNames[ImagesRole] = "images";
 
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(void onJsonRequestFinished(RequestData, const QJsonDocument &)),
-                     this, SLOT(void onJsonRequestFinished(RequestData *, const QJsonDocument &)));
-
     // TODO: indicate in view that there is no data
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
     startLoadGalleries();
 }
 
@@ -283,7 +291,10 @@ QHash<int, QByteArray> GalleryEditViewModel::roleNames() const
 
 void GalleryEditViewModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
 {
-    Q_ASSERT(m_request == request_);
+    if(!(m_request == request_))
+    {
+        return;
+    }
     m_request = nullptr;
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
