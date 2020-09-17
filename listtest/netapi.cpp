@@ -26,6 +26,16 @@ void RequestData::setRequestID(int requestID_)
     m_requestID = requestID_;
 }
 
+void RequestData::setSkipRequest(bool skipRequest)
+{
+    m_skip = skipRequest;
+}
+
+bool RequestData::getSkipRequest() const
+{
+    return m_skip;
+}
+
 void RequestData::setUrlBase(const QString& urlBase_)
 {
     m_urlBase = urlBase_;
@@ -361,14 +371,17 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     {
         return;
     }
-    if((*fit)->isJsonReply())
+    if(!(*fit)->getSkipRequest())
     {
-        QJsonDocument jsonReply = QJsonDocument::fromJson(reply_->readAll());
-        emit onJsonRequestFinished(*fit, jsonReply);
-    }
-    else
-    {
-        emit onRequestFinished(*fit, reply_);
+        if((*fit)->isJsonReply())
+        {
+            QJsonDocument jsonReply = QJsonDocument::fromJson(reply_->readAll());
+            emit onJsonRequestFinished(*fit, jsonReply);
+        }
+        else
+        {
+            emit onRequestFinished(*fit, reply_);
+        }
     }
     m_requests.erase(fit);
 }

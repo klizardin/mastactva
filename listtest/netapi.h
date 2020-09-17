@@ -19,6 +19,7 @@ class MultiPartRequestData;
 class RequestData
 {
 protected:
+    bool m_skip = false;
     bool m_jsonReply = true;
     int m_requestID = 0;
     QString m_urlBase;
@@ -27,16 +28,18 @@ protected:
     QNetworkReply *m_reply = nullptr;
 
 public:
-    RequestData(const RequestData *defaultRequestData = nullptr);
+    explicit RequestData(const RequestData *defaultRequestData = nullptr);
     virtual ~RequestData() = default;
 
     int getRequestID() const;
+    void setSkipRequest(bool skipRequest);
     void setUrlBase(const QString& urlBase_);
     void setAuth(const QString &login_, const QString &pass_);
     void setJsonReply(bool jsonReply_);
 
 protected:
     void setRequestID(int requestID_);
+    bool getSkipRequest() const;
     const QString& getUrlBase() const;
     const QString &getLogin() const;
     const QString &getPass() const;
@@ -76,7 +79,7 @@ protected:
     QJsonDocument m_jsondoc;
 
 public:
-    JsonRequestData(const RequestData *defaultRequestData = nullptr);
+    explicit JsonRequestData(const RequestData *defaultRequestData = nullptr);
     virtual ~JsonRequestData() override;
 
     void setDocument(const QJsonDocument &jsondoc_);
@@ -93,7 +96,7 @@ class NetAPI : public QObject
     Q_OBJECT
 
 public:
-    NetAPI(QObject *parent_);
+    explicit NetAPI(QObject *parent_);
     virtual ~NetAPI() override;
 
     RequestData &getDefaultRequestData();
