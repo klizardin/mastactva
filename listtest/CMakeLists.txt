@@ -38,6 +38,8 @@ if(ANDROID)
       galleryeditviewmodel.cpp
       netapi.h
       netapi.cpp
+      mastactvaapi.h
+      mastactvaapi.cpp
       qml.qrc
       ${TS_FILES}
     )
@@ -48,6 +50,8 @@ else()
       galleryeditviewmodel.cpp
       netapi.h
       netapi.cpp
+      mastactvaapi.h
+      mastactvaapi.cpp
       qml.qrc
       ${TS_FILES}
     )
