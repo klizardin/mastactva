@@ -100,7 +100,7 @@ public:
 private slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
 
-protected:
+public:
     void startLoadGalleries();
 
 protected:

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QJsonDocument>
+#include <QQmlExtensionPlugin>
 
 
 class MastactvaAPI : public QObject
@@ -32,6 +33,16 @@ private:
     void setGalleryId(int galleryId_);
     const QJsonDocument &getJsonDoc() const;
     void setJsonDoc(const QJsonDocument &jsonDoc_);
+};
+
+
+class MastactvaAPIPlugin : public QQmlExtensionPlugin
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
+
+public:
+    void registerTypes(const char *uri);
 };
 
 #endif // MASTACTVAAPI_H
