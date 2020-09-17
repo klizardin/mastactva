@@ -33,6 +33,8 @@ set(TS_FILES listtest_be_BY.ts)
 
 if(ANDROID)
     add_library(listtest SHARED
+      qmlmainobjects.h
+      qmlmainobjects.cpp
       main.cpp
       galleryeditviewmodel.h
       galleryeditviewmodel.cpp
@@ -45,6 +47,8 @@ if(ANDROID)
     )
 else()
     add_executable(listtest
+      qmlmainobjects.h
+      qmlmainobjects.cpp
       main.cpp
       galleryeditviewmodel.h
       galleryeditviewmodel.cpp

@@ -15,7 +15,9 @@ ApplicationWindow {
         ListView {
             id: galleries
             width: parent.width
-            model: GalleryEditViewModel {}
+            model: GalleryEditViewModel {
+                objectName: "GalleryModel"
+            }
             delegate: Item {
                 id: gallery
                 SwipeView {
