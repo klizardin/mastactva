@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import org.mastactva 1.0
+import "GalleryFunctions.js" as GalleryFunctions
 
 
 ApplicationWindow {
@@ -51,6 +52,21 @@ ApplicationWindow {
                             fillMode: Image.Stretch
                         }
                     }
+                }
+
+                Text {
+                    id : gallery_description
+                    anchors.top: gallery_images.bottom
+                    anchors.topMargin: verticalMargin
+                    text: GalleryFunctions.description_first_part(description)
+                }
+
+                PageIndicator {
+                   anchors.top: gallery_description.bottom
+                   anchors.topMargin: verticalMargin
+                   x:(gallery_images.width-width)/2
+                   currentIndex: gallery_images.currentIndex
+                   count: gallery_images.count
                 }
             }
         }
