@@ -1,9 +1,9 @@
 #ifndef MASTACTVAAPI_H
 #define MASTACTVAAPI_H
 
+
 #include <QObject>
 #include <QJsonDocument>
-#include <QQmlExtensionPlugin>
 
 
 class MastactvaAPI : public QObject
@@ -35,14 +35,5 @@ private:
     void setJsonDoc(const QJsonDocument &jsonDoc_);
 };
 
-
-class MastactvaAPIPlugin : public QQmlExtensionPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
-
-public:
-    void registerTypes(const char *uri);
-};
 
 #endif // MASTACTVAAPI_H

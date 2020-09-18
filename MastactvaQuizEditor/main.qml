@@ -2,11 +2,29 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import org.mastactva 1.0
 
+
 ApplicationWindow {
     width: 640
     height: 480
     visible: true
     title: qsTr("Mastactva Quiz Editor")
+
+    MastactvaAPI {
+        id: mastactva
+    }
+
+    Action {
+        id: refreshGalleriesModel
+        text: qsTr("&Refresh Galleries")
+        onTriggered: mastactva.reloadGalleriesModel()
+    }
+
+    menuBar: MenuBar {
+        Menu {
+            title: qsTr("Galleries")
+            MenuItem { action: refreshGalleriesModel }
+        }
+    }
 
     ScrollView {
         anchors.fill: parent

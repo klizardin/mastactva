@@ -3,6 +3,7 @@
 #include "netapi.h"
 #include "galleryeditviewmodel.h"
 #include "qmlmainobjects.h"
+#include "mastactvaapi.h"
 
 
 int main(int argc, char *argv[])
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<GalleryEditViewModel>("org.mastactva", 1, 0, "GalleryEditViewModel");
     qmlRegisterType<GalleryEditViewImagesModel>("org.mastactva", 1, 0, "GalleryEditViewImagesModel");
+    qmlRegisterType<MastactvaAPI>("org.mastactva", 1, 0, "MastactvaAPI");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

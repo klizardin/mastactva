@@ -54,9 +54,3 @@ void MastactvaAPI::setJsonDoc(const QJsonDocument &jsonDoc_)
 {
     m_jsonDoc = jsonDoc_;
 }
-
-void MastactvaAPIPlugin::registerTypes(const char *uri)
-{
-    //Q_ASSERT(uri == "org.mastactva.MastactvaAPI");
-    qmlRegisterType<MastactvaAPI>(uri, 1, 0, "MastactvaAPI");
-}
