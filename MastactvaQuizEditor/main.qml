@@ -57,13 +57,13 @@ ApplicationWindow {
                 Text {
                     id : gallery_description
                     anchors.top: gallery_images.bottom
-                    anchors.topMargin: verticalMargin
                     text: GalleryFunctions.description_first_part(description)
+                    width: (gallery_images.width*9)/10
+                    x: gallery_images.width/10/2
                 }
 
                 PageIndicator {
                    anchors.top: gallery_description.bottom
-                   anchors.topMargin: verticalMargin
                    x:(gallery_images.width-width)/2
                    currentIndex: gallery_images.currentIndex
                    count: gallery_images.count
