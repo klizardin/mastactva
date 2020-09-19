@@ -12,7 +12,7 @@
 
 class RequestData;
 
-class GalleryEditViewImagesModel : public QAbstractListModel
+class GalleryImagesModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -22,15 +22,25 @@ public:
     };
 
 public:
-    GalleryEditViewImagesModel(QObject *parent = nullptr);
-    virtual ~GalleryEditViewImagesModel() override;
+    GalleryImagesModel(QObject *parent = nullptr);
+    virtual ~GalleryImagesModel() override;
     // QAbstractItemModel interface
 public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
 public:
-    void setGalleryID(long long galleryId);
+    Q_PROPERTY(bool galleryViewImages READ galleryViewImages WRITE setGalleryViewImages NOTIFY galleryViewImagesChanged)
+    Q_PROPERTY(int galleryId READ galleryId WRITE setGalleryId NOTIFY galleryIdChanged)
+
+    bool galleryViewImages() const;
+    void setGalleryViewImages(bool modeShowGalleryViewImages);
+    int galleryId() const;
+    void setGalleryId(int galleryId);
+
+signals:
+    void galleryIdChanged();
+    void galleryViewImagesChanged();
 
 private slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
@@ -43,11 +53,14 @@ protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
-    long long m_galleryId = -1;
+    bool m_showGalleryViewImages = true;
+    int m_galleryId = -1;
     RequestData* m_request = nullptr;
     QVector<QString> m_images;
     QHash<int, QByteArray> m_roleNames;
 };
+
+
 
 
 class GalleryItemData
@@ -57,7 +70,7 @@ protected:
     QString description;
     QDateTime created;
     double pointsToPass = 1.0;
-    GalleryEditViewImagesModel *images = nullptr;
+    GalleryImagesModel *images = nullptr;
 
 public:
     GalleryItemData(int id_ = -1,
@@ -66,10 +79,11 @@ public:
                 double pointsToPass_ = 1.0);
     virtual ~GalleryItemData();
 
+    int getId() const;
     const QString &getDescription() const;
     const QDateTime &getCreated() const;
     double getPointsToPass() const;
-    GalleryEditViewImagesModel *getImagesModel(QObject *parent_);
+    GalleryImagesModel *getImagesModel(QObject *parent_);
 
     static GalleryItemData fromJson(const QJsonValue& jsonValue_, bool &anyError);
 };
@@ -82,10 +96,11 @@ class GalleryEditViewModel : public QAbstractListModel
 public:
     // Define the role names to be used
     enum RoleNames {
-        DescriptionRole = Qt::UserRole,
-        CreatedRole = Qt::UserRole+1,
-        PointsToPassRole = Qt::UserRole+2,
-        ImagesRole = Qt::UserRole+3,
+        GalleryIDRole = Qt::UserRole,
+        DescriptionRole = Qt::UserRole+1,
+        CreatedRole = Qt::UserRole+2,
+        PointsToPassRole = Qt::UserRole+3,
+        ImagesRole = Qt::UserRole+4,
     };
 
 public:

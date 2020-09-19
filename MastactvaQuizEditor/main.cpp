@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     QMLMainObjects::createSingelton(&app);
 
     qmlRegisterType<GalleryEditViewModel>("org.mastactva", 1, 0, "GalleryEditViewModel");
-    qmlRegisterType<GalleryEditViewImagesModel>("org.mastactva", 1, 0, "GalleryEditViewImagesModel");
+    qmlRegisterType<GalleryImagesModel>("org.mastactva", 1, 0, "GalleryImagesModel");
     qmlRegisterType<MastactvaAPI>("org.mastactva", 1, 0, "MastactvaAPI");
 
     QQmlApplicationEngine engine;

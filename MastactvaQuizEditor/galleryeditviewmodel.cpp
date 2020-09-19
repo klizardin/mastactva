@@ -12,7 +12,7 @@
 /// \brief GalleryEditViewImagesModel::GalleryEditViewImagesModel
 /// \param parent - parent QObject
 ///
-GalleryEditViewImagesModel::GalleryEditViewImagesModel(QObject *parent /*= nullptr*/)
+GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
     :QAbstractListModel(parent)
 {
     m_roleNames[ImageSourceRole] = "image";
@@ -22,17 +22,17 @@ GalleryEditViewImagesModel::GalleryEditViewImagesModel(QObject *parent /*= nullp
     // TODO: indicate in view that there is no data
 }
 
-GalleryEditViewImagesModel::~GalleryEditViewImagesModel()
+GalleryImagesModel::~GalleryImagesModel()
 {
 }
 
-int GalleryEditViewImagesModel::rowCount(const QModelIndex &parent) const
+int GalleryImagesModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return m_images.size();
 }
 
-QVariant GalleryEditViewImagesModel::data(const QModelIndex &index, int role) const
+QVariant GalleryImagesModel::data(const QModelIndex &index, int role) const
 {
     const int row = index.row();
     if(row < 0 || row >= m_images.size())
@@ -48,12 +48,31 @@ QVariant GalleryEditViewImagesModel::data(const QModelIndex &index, int role) co
     return QVariant();
 }
 
-QHash<int, QByteArray> GalleryEditViewImagesModel::roleNames() const
+QHash<int, QByteArray> GalleryImagesModel::roleNames() const
 {
     return m_roleNames;
 }
 
-void GalleryEditViewImagesModel::setGalleryID(long long galleryId)
+bool GalleryImagesModel::galleryViewImages() const
+{
+    return m_showGalleryViewImages;
+}
+
+void GalleryImagesModel::setGalleryViewImages(bool modeShowGalleryViewImages)
+{
+    m_showGalleryViewImages = modeShowGalleryViewImages;
+
+    startLoadImages();
+
+    emit galleryViewImagesChanged();
+}
+
+int GalleryImagesModel::galleryId() const
+{
+    return m_galleryId;
+}
+
+void GalleryImagesModel::setGalleryId(int galleryId)
 {
     beginRemoveRows(QModelIndex(), 0, m_images.size());
     m_images.clear();
@@ -62,9 +81,11 @@ void GalleryEditViewImagesModel::setGalleryID(long long galleryId)
     m_galleryId = galleryId;
     m_request = nullptr;
     startLoadImages();
+
+    emit galleryIdChanged();
 }
 
-void GalleryEditViewImagesModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void GalleryImagesModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
@@ -99,7 +120,7 @@ void GalleryEditViewImagesModel::onJsonRequestFinished(RequestData *request_, co
     endInsertRows();
 }
 
-void GalleryEditViewImagesModel::startLoadImages()
+void GalleryImagesModel::startLoadImages()
 {
     Q_ASSERT(nullptr != NetAPI::getSingelton());
     if(!(nullptr != NetAPI::getSingelton()))
@@ -108,7 +129,9 @@ void GalleryEditViewImagesModel::startLoadImages()
     }
 
     m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(QString("images/%1/gallery_view/").arg(m_galleryId), m_request);
+    NetAPI::getSingelton()->get(
+                QString("images/%1/gallery_view/").arg(m_galleryId),
+                m_request);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +161,11 @@ GalleryItemData::~GalleryItemData()
     //images = nullptr;
 }
 
+int GalleryItemData::getId() const
+{
+    return id;
+}
+
 const QString &GalleryItemData::getDescription() const
 {
     return description;
@@ -153,13 +181,13 @@ double GalleryItemData::getPointsToPass() const
     return pointsToPass;
 }
 
-GalleryEditViewImagesModel *GalleryItemData::getImagesModel(QObject *parent_)
+GalleryImagesModel *GalleryItemData::getImagesModel(QObject *parent_)
 {
     Q_ASSERT(nullptr != parent_);
     if(nullptr == images)
     {
-        images = new GalleryEditViewImagesModel(parent_);
-        images->setGalleryID(id);
+        images = new GalleryImagesModel(parent_);
+        images->setGalleryId(id);
     }
     return images;
 }
@@ -233,6 +261,7 @@ GalleryItemData GalleryItemData::fromJson(const QJsonValue& jsonValue_, bool &an
 GalleryEditViewModel::GalleryEditViewModel(QObject *parent)
     :QAbstractListModel(parent)
 {
+    m_roleNames[GalleryIDRole] = "galleryid";
     m_roleNames[DescriptionRole] = "description";
     m_roleNames[CreatedRole] = "created";
     m_roleNames[PointsToPassRole] = "pointsToPass";
@@ -265,6 +294,8 @@ QVariant GalleryEditViewModel::data(const QModelIndex &index, int role) const
     const GalleryItemData &item = m_data[row];
     switch(role)
     {
+    case GalleryIDRole:
+        return item.getId();
     case DescriptionRole:
         return item.getDescription();
     case CreatedRole:
