@@ -44,6 +44,7 @@ signals:
 
 private slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void ongalleryIdChanged();
 
 protected:
     void startLoadImages();

@@ -120,6 +120,11 @@ void GalleryImagesModel::onJsonRequestFinished(RequestData *request_, const QJso
     endInsertRows();
 }
 
+void GalleryImagesModel::ongalleryIdChanged()
+{
+    startLoadImages();
+}
+
 void GalleryImagesModel::startLoadImages()
 {
     Q_ASSERT(nullptr != NetAPI::getSingelton());
@@ -130,7 +135,10 @@ void GalleryImagesModel::startLoadImages()
 
     m_request = NetAPI::getSingelton()->startRequest();
     NetAPI::getSingelton()->get(
-                QString("images/%1/gallery_view/").arg(m_galleryId),
+                m_showGalleryViewImages
+                    ?QString("images/%1/gallery_view/").arg(m_galleryId)
+                    :QString("images/%1/gallery_all/").arg(m_galleryId)
+                    ,
                 m_request);
 }
 

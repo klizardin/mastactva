@@ -28,88 +28,90 @@ ApplicationWindow {
         }
     }
 
-    Row {
-        width : parent.width
-        height: parent.height
+    //Row {
+    //    width : parent.width
+    //    height: parent.height
 
-        ScrollView {
-            id: scroll_galleries
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            // anchors.left: parent.left
-            width: parent.width/3
+       //ScrollView {
+       //     id: scroll_galleries
+
+       //     anchors.fill: parent
+       //     width: 210
+       //     height: parent.height
 
             ListView {
                 id: galleries
 
-                anchors.top: parent.top
-                width: parent.width
-                height: parent.height
+                anchors.fill: parent
+                //width: 210
+                //height: parent.height
 
                 model: GalleryEditViewModel {
                     objectName: "GalleryModel"
                 }
 
-                delegate: Item {
-                    id: gallery
+                delegate: gallery
+            }
+        //}
+        //ListView {
+        //    id: images_of_gallery
 
-                    width: parent.width
-                    height: parent.height
+        //    width: 640 - 210
+        //    height : parent.height
 
-                    SwipeView {
-                        id: gallery_images
+        //    model: GalleryImagesModel {
+        //        objectName: "AllGalleryImagesModel"
+        //        galleryViewImages: false
+        //        galleryId: galleries.model[galleries.currentIndex].galleryid
+        //    }
 
-                        width: parent.width
-                        height: (parent.width * 4) / 3
+        //    delegate : Image  {
+        //        id: image_of_gallery
+        //        width: (480 * 3) / 4
+        //        height: 480
+        //        source: image
+        //        fillMode: Image.Stretch
+        //    }
+        //}
+    //}
 
-                        Repeater {
-                            model: images
-                            Image {
-                                id: image_of_gallery_view
-                                width: gallery_images.width
-                                height: gallery_images.height
-                                source: image
-                                fillMode: Image.Stretch
-                            }
-                        }
-                    }
+    Component {
+        id: gallery
 
-                    Text {
-                        id : gallery_description
-                        anchors.top: gallery_images.bottom
-                        text: GalleryFunctions.description_first_part(description)
-                        width: (gallery_images.width*9)/10
-                        x: gallery_images.width/10/2
-                    }
+        Column {
+            //width: 210
 
-                    PageIndicator {
-                       anchors.top: gallery_description.bottom
-                       x:(gallery_images.width-width)/2
-                       currentIndex: gallery_images.currentIndex
-                       count: gallery_images.count
+            SwipeView {
+                id: gallery_images
+
+                width: 210
+                height: (210 / 3) * 4
+                clip: true
+
+                Repeater {
+                    id: gallery_image
+                    model: images
+                    Image {
+                        id: image_of_gallery_view
+                        source: image
+                        fillMode: Image.Stretch
                     }
                 }
             }
-        }
-        ListView {
-            id: images_of_gallery
-            width: (parent.width * 2) /3
-            height: parent.height
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-
-            model: GalleryImagesModel {
-                galleryViewImages: false
-                objectName: "AllGalleryImagesModel"
+            PageIndicator {
+               x:(210-width)/2
+               height: 20
+               currentIndex: gallery_images.currentIndex
+               count: gallery_images.count
             }
-
-            delegate : Image  {
-                id: image_of_gallery
-                width: (parent.height * 3) / 4
-                height: parent.height
-                source: image
-                fillMode: Image.Stretch
+            Text {
+                id : gallery_description
+                text: GalleryFunctions.description_first_part(description)
+                x: 5
+                width: 200
+                wrapMode: Text.WordWrap
             }
         }
     }
 }
+
