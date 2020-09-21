@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonValue>
 #include "netapi.h"
+#include "qmlmainobjects.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +59,9 @@ bool GalleryImagesModel::galleryViewImages() const
     return m_showGalleryViewImages;
 }
 
-void GalleryImagesModel::setGalleryViewImages(bool modeShowGalleryViewImages)
+void GalleryImagesModel::setGalleryViewImages(bool modeShowGalleryViewImages_)
 {
-    m_showGalleryViewImages = modeShowGalleryViewImages;
+    m_showGalleryViewImages = modeShowGalleryViewImages_;
 
     startLoadImages();
 
@@ -72,13 +73,41 @@ int GalleryImagesModel::galleryId() const
     return m_galleryId;
 }
 
-void GalleryImagesModel::setGalleryId(int galleryId)
+void GalleryImagesModel::setGalleryId(int galleryId_)
 {
     beginRemoveRows(QModelIndex(), 0, m_images.size());
     m_images.clear();
     endRemoveRows();
 
-    m_galleryId = galleryId;
+    m_galleryId = galleryId_;
+    m_request = nullptr;
+    startLoadImages();
+
+    emit galleryIdChanged();
+}
+
+int GalleryImagesModel::galleryIndex() const
+{
+    return m_galleryIndex;
+}
+
+void GalleryImagesModel::setGalleryIndex(int galleryIndex_)
+{
+    if(m_galleryIndex == galleryIndex_)
+    {
+        return;
+    }
+
+    m_galleryIndex = galleryIndex_;
+    emit galleryIndexChanged();
+
+    GalleryEditViewModel *model = QMLMainObjects::getSingelton()->getGalleryViewModel();
+    if(!(nullptr != model))
+    {
+        return;
+    }
+
+    m_galleryId = model->getIdOfIndex(m_galleryIndex);
     m_request = nullptr;
     startLoadImages();
 
@@ -375,4 +404,13 @@ void GalleryEditViewModel::startLoadGalleries()
 
     m_request = NetAPI::getSingelton()->startRequest();
     NetAPI::getSingelton()->get("galleries/", m_request);
+}
+
+int GalleryEditViewModel::getIdOfIndex(int index_) const
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return -1;
+    }
+    return m_data.at(index_).getId();
 }

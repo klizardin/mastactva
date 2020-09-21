@@ -32,15 +32,19 @@ public:
 public:
     Q_PROPERTY(bool galleryViewImages READ galleryViewImages WRITE setGalleryViewImages NOTIFY galleryViewImagesChanged)
     Q_PROPERTY(int galleryId READ galleryId WRITE setGalleryId NOTIFY galleryIdChanged)
+    Q_PROPERTY(int galleryIndex READ galleryIndex WRITE setGalleryIndex NOTIFY galleryIndexChanged)
 
     bool galleryViewImages() const;
-    void setGalleryViewImages(bool modeShowGalleryViewImages);
+    void setGalleryViewImages(bool modeShowGalleryViewImages_);
     int galleryId() const;
-    void setGalleryId(int galleryId);
+    void setGalleryId(int galleryId_);
+    int galleryIndex() const;
+    void setGalleryIndex(int galleryIndex_);
 
 signals:
     void galleryIdChanged();
     void galleryViewImagesChanged();
+    void galleryIndexChanged();
 
 private slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
@@ -56,6 +60,7 @@ protected:
 private:
     bool m_showGalleryViewImages = true;
     int m_galleryId = -1;
+    int m_galleryIndex = -1;
     RequestData* m_request = nullptr;
     QVector<QString> m_images;
     QHash<int, QByteArray> m_roleNames;
@@ -118,6 +123,7 @@ private slots:
 
 public:
     void startLoadGalleries();
+    int getIdOfIndex(int index_) const;
 
 protected:
     // return the roles mapping to be used by QML

@@ -28,23 +28,19 @@ ApplicationWindow {
         }
     }
 
-    //Row {
-    //    width : parent.width
-    //    height: parent.height
+    Row {
+        width : parent.width
+        height: parent.height
 
-       //ScrollView {
-       //     id: scroll_galleries
+        Rectangle{
 
-       //     anchors.fill: parent
-       //     width: 210
-       //     height: parent.height
+            width: 210
+            height: parent.height
 
             ListView {
                 id: galleries
 
                 anchors.fill: parent
-                //width: 210
-                //height: parent.height
 
                 model: GalleryEditViewModel {
                     objectName: "GalleryModel"
@@ -52,34 +48,36 @@ ApplicationWindow {
 
                 delegate: gallery
             }
-        //}
-        //ListView {
-        //    id: images_of_gallery
+        }
+        Rectangle{
 
-        //    width: 640 - 210
-        //    height : parent.height
+            width: 640 - 210
+            height: parent.height
 
-        //    model: GalleryImagesModel {
-        //        objectName: "AllGalleryImagesModel"
-        //        galleryViewImages: false
-        //        galleryId: galleries.model[galleries.currentIndex].galleryid
-        //    }
+            ListView {
+                id: images_of_gallery
 
-        //    delegate : Image  {
-        //        id: image_of_gallery
-        //        width: (480 * 3) / 4
-        //        height: 480
-        //        source: image
-        //        fillMode: Image.Stretch
-        //    }
-        //}
-    //}
+                anchors.fill: parent
+                orientation: ListView.Horizontal
+                clip: true
+
+                model: GalleryImagesModel {
+                    objectName: "AllGalleryImagesModel"
+                    galleryViewImages: false
+                    // galleryId: galleries.currentIndex
+                    // galleryIndex: galleries.currentIndex
+                }
+
+                delegate : gallery_image
+            }
+        }
+    }
 
     Component {
         id: gallery
 
         Column {
-            //width: 210
+            property int gallery_index: index
 
             SwipeView {
                 id: gallery_images
@@ -95,15 +93,26 @@ ApplicationWindow {
                         id: image_of_gallery_view
                         source: image
                         fillMode: Image.Stretch
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked:
+                            {
+                                images_of_gallery.model.galleryIndex = gallery_index
+                                mouse.accepted = false
+                            }
+                        }
                     }
                 }
             }
+
             PageIndicator {
                x:(210-width)/2
                height: 20
                currentIndex: gallery_images.currentIndex
                count: gallery_images.count
             }
+
             Text {
                 id : gallery_description
                 text: GalleryFunctions.description_first_part(description)
@@ -111,6 +120,18 @@ ApplicationWindow {
                 width: 200
                 wrapMode: Text.WordWrap
             }
+        }
+    }
+
+    Component {
+        id: gallery_image
+
+        Image  {
+            id: image_of_gallery
+            width: (480 * 3) / 4
+            height: 480
+            source: image
+            fillMode: Image.Stretch
         }
     }
 }

@@ -29,7 +29,6 @@ GalleryEditViewModel *QMLMainObjects::getGalleryViewModel()
     {
         searchQMLObjects();
     }
-    Q_ASSERT(nullptr != m_galleryViewModel);
     return m_galleryViewModel;
 }
 
