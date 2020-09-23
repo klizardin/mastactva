@@ -2,13 +2,14 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import org.mastactva 1.0
 import "GalleryFunctions.js" as GalleryFunctions
+import Mastactva 1.0
 
 
 ApplicationWindow {
     id: root
-    width: 640
-    height: 480
     visible: true
+    width: Constants.width
+    height: Constants.height
     title: qsTr("Mastactva Quiz Editor")
 
     MastactvaAPI {
@@ -34,13 +35,14 @@ ApplicationWindow {
 
         Rectangle{
 
-            width: 210
+            width: Constants.leftSideBarWidth
             height: parent.height
 
             ListView {
                 id: galleries
 
                 anchors.fill: parent
+                spacing: Constants.galleriesListViewSpacing
 
                 model: GalleryEditViewModel {
                     objectName: "GalleryModel"
@@ -51,7 +53,7 @@ ApplicationWindow {
         }
         Rectangle{
 
-            width: 640 - 210
+            width: root.width - Constants.leftSideBarWidth
             height: parent.height
 
             ListView {
@@ -64,8 +66,7 @@ ApplicationWindow {
                 model: GalleryImagesModel {
                     objectName: "AllGalleryImagesModel"
                     galleryViewImages: false
-                    // galleryId: galleries.currentIndex
-                    // galleryIndex: galleries.currentIndex
+                    galleryId: -1
                 }
 
                 delegate : gallery_image
@@ -82,8 +83,8 @@ ApplicationWindow {
             SwipeView {
                 id: gallery_images
 
-                width: 210
-                height: (210 / 3) * 4
+                width: Constants.leftSideBarWidth
+                height: (Constants.leftSideBarWidth / 3) * 4
                 clip: true
 
                 Repeater {
@@ -107,8 +108,8 @@ ApplicationWindow {
             }
 
             PageIndicator {
-               x:(210-width)/2
-               height: 20
+               x:(Constants.leftSideBarWidth-width)/2
+               height: Constants.leftSideBarPageIndicatorHeight
                currentIndex: gallery_images.currentIndex
                count: gallery_images.count
             }
@@ -116,8 +117,8 @@ ApplicationWindow {
             Text {
                 id : gallery_description
                 text: GalleryFunctions.description_first_part(description)
-                x: 5
-                width: 200
+                x: (Constants.leftSideBarWidth-width)/2
+                width: Constants.leftSideBarTextWidth
                 wrapMode: Text.WordWrap
             }
         }
@@ -128,8 +129,8 @@ ApplicationWindow {
 
         Image  {
             id: image_of_gallery
-            width: (480 * 3) / 4
-            height: 480
+            width: (Constants.height * 3) / 4
+            height: Constants.height
             source: image
             fillMode: Image.Stretch
         }

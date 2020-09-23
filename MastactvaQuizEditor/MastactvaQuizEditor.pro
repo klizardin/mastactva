@@ -20,7 +20,8 @@ SOURCES += \
         netapi.cpp  \
         qmlmainobjects.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc    \
+    Mastactva
 
 TRANSLATIONS += \
     MastactvaQuizEditor_be_BY.ts
@@ -37,4 +38,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    imports/MastactvaAPI/qmldir
+    imports/MastactvaAPI/qmldir \
+    mastactva/Constants.qml

@@ -4,4 +4,8 @@
         <file>qtquickcontrols2.conf</file>
         <file>GalleryFunctions.js</file>
     </qresource>
+    <qresource prefix="/Mastactva">
+        <file>Mastactva/Constants.qml</file>
+        <file>Mastactva/qmldir</file>
+    </qresource>
 </RCC>
