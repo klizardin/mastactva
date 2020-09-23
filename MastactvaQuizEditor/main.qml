@@ -104,7 +104,7 @@ ApplicationWindow {
                     Image {
                         id: image_of_gallery_view
                         source: image
-                        fillMode: Image.Stretch
+                        fillMode: Image.PreserveAspectFit
 
                         MouseArea {
                             anchors.fill: parent
@@ -143,7 +143,7 @@ ApplicationWindow {
             width: (Constants.height * Constants.aspectX) / Constants.aspectY
             height: Constants.height
             source: image
-            fillMode: Image.Stretch
+            fillMode: Image.PreserveAspectFit
         }
     }
 }
