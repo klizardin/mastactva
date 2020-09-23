@@ -40,6 +40,7 @@ public:
     void setGalleryId(int galleryId_);
     int galleryIndex() const;
     void setGalleryIndex(int galleryIndex_);
+    void startLoadImages();
 
 signals:
     void galleryIdChanged();
@@ -51,8 +52,6 @@ private slots:
     void ongalleryIdChanged();
 
 protected:
-    void startLoadImages();
-
 protected:
     // return the roles mapping to be used by QML
     virtual QHash<int, QByteArray> roleNames() const override;

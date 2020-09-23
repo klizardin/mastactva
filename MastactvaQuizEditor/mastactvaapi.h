@@ -17,6 +17,7 @@ public:
 
 public:
     Q_INVOKABLE void reloadGalleriesModel();
+    Q_INVOKABLE void reloadAllImagesOfGalleryViewModel();
     Q_INVOKABLE void loadGalleryViewImagesOfGallery();
     Q_INVOKABLE void loadAllImagesOfGallery();
 

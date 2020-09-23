@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+
+class GalleryImagesModel;
 class GalleryEditViewModel;
 
 
@@ -14,6 +16,7 @@ public:
 
     void setRootQMLObject(QObject* root_);
     GalleryEditViewModel *getGalleryViewModel();
+    GalleryImagesModel *getGalleryAllImagesModel();
 
     static void createSingelton(QObject *parent_ = nullptr);
     static QMLMainObjects *getSingelton();
@@ -28,6 +31,7 @@ private:
 
     QObject* m_root = nullptr;
     GalleryEditViewModel *m_galleryViewModel = nullptr;
+    GalleryImagesModel *m_galleryAllImagesModel = nullptr;
 };
 
 #endif // QMLMAINOBJECTS_H

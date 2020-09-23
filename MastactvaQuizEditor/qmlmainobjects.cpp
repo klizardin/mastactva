@@ -32,11 +32,24 @@ GalleryEditViewModel *QMLMainObjects::getGalleryViewModel()
     return m_galleryViewModel;
 }
 
+GalleryImagesModel *QMLMainObjects::getGalleryAllImagesModel()
+{
+    if(nullptr == m_galleryAllImagesModel)
+    {
+        searchQMLObjects();
+    }
+    return m_galleryAllImagesModel;
+}
+
 void QMLMainObjects::searchQMLObjects()
 {
     if(nullptr == m_galleryViewModel)
     {
         m_galleryViewModel = m_root->findChild<GalleryEditViewModel *>("GalleryModel");
+    }
+    if(nullptr == m_galleryAllImagesModel)
+    {
+        m_galleryAllImagesModel = m_root->findChild<GalleryImagesModel *>("AllGalleryImagesModel");
     }
 }
 

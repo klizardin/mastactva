@@ -25,6 +25,21 @@ void MastactvaAPI::reloadGalleriesModel()
     }
 }
 
+void MastactvaAPI::reloadAllImagesOfGalleryViewModel()
+{
+    QMLMainObjects* qmlMainObjects = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != qmlMainObjects);
+    if(nullptr != qmlMainObjects)
+    {
+        auto *allImagesModel = qmlMainObjects->getGalleryAllImagesModel();
+        Q_ASSERT(nullptr != allImagesModel);
+        if(nullptr != allImagesModel)
+        {
+            allImagesModel->startLoadImages();
+        }
+    }
+}
+
 void MastactvaAPI::loadGalleryViewImagesOfGallery()
 {
     // TODO: implement method

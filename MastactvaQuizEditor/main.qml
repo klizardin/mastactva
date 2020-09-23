@@ -22,10 +22,20 @@ ApplicationWindow {
         onTriggered: mastactva.reloadGalleriesModel()
     }
 
+    Action {
+        id: refreshAllGalleryImagesModel
+        text: qsTr("Refresh &All Images")
+        onTriggered: mastactva.reloadAllImagesOfGalleryViewModel()
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
             MenuItem { action: refreshGalleriesModel }
+        }
+        Menu {
+            title: qsTr("All Images of Gallery")
+            MenuItem { action: refreshAllGalleryImagesModel }
         }
     }
 
@@ -51,6 +61,7 @@ ApplicationWindow {
                 delegate: gallery
             }
         }
+
         Rectangle{
 
             width: root.width - Constants.leftSideBarWidth
@@ -84,7 +95,7 @@ ApplicationWindow {
                 id: gallery_images
 
                 width: Constants.leftSideBarWidth
-                height: (Constants.leftSideBarWidth / 3) * 4
+                height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
                 clip: true
 
                 Repeater {
@@ -129,7 +140,7 @@ ApplicationWindow {
 
         Image  {
             id: image_of_gallery
-            width: (Constants.height * 3) / 4
+            width: (Constants.height * Constants.aspectX) / Constants.aspectY
             height: Constants.height
             source: image
             fillMode: Image.Stretch
