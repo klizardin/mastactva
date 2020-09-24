@@ -75,7 +75,6 @@ ApplicationWindow {
                     focus: true
                     KeyNavigation.priority: KeyNavigation.BeforeItem
                     KeyNavigation.tab: editGalleryKeywords
-                    KeyNavigation.backtab: editGalleryPointsToPass
                 }
                 Label {
                     text: qsTr("Keywords :")
@@ -85,8 +84,8 @@ ApplicationWindow {
                     placeholderText: qsTr("Enter gallery`s keywords")
                     focus: true
                     KeyNavigation.priority: KeyNavigation.BeforeItem
-                    KeyNavigation.tab: editGalleryPointsToPass
                     KeyNavigation.backtab: editGalleryDescription
+                    KeyNavigation.tab: editGalleryPointsToPass
                 }
                 RowLayout {
                     Label {
