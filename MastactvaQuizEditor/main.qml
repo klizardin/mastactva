@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import QtQuick.Dialogs 1.0
 import org.mastactva 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
@@ -26,6 +27,41 @@ ApplicationWindow {
         id: refreshAllGalleryImagesModel
         text: qsTr("Refresh &All Images")
         onTriggered: mastactva.reloadAllImagesOfGalleryViewModel()
+    }
+
+    FileDialog {
+        id: uploadGalleryImageDialog
+        title: qsTr("Please choose image to upload to the server")
+        folder: shortcuts.pictures
+        nameFilters: [ "Image files (*.jpg *.png)" ]
+        selectExisting: true
+        selectMultiple: false
+
+        onAccepted: {
+            // TODO: start image upload
+        }
+
+        onRejected: {
+            // TODO: add no image upload reaction
+        }
+    }
+
+    Dialog {
+        id : editGallery
+        modal: true
+
+        title: qsTr("Edit Gallery Info")
+
+
+
+        standardButtons: Dialog.Cancel | Dialog.Save
+
+        onAccepted: {
+            // TODO: save gallery action
+        }
+        onRejected: {
+            // TODO: add cancel action
+        }
     }
 
     menuBar: MenuBar {

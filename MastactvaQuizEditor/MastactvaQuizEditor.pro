@@ -20,14 +20,14 @@ SOURCES += \
         netapi.cpp  \
         qmlmainobjects.cpp
 
-RESOURCES += qml.qrc    \
-    Mastactva
+RESOURCES += qml.qrc
+
 
 TRANSLATIONS += \
     MastactvaQuizEditor_be_BY.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH += $$PWD
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -39,4 +39,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     imports/MastactvaAPI/qmldir \
-    mastactva/Constants.qml
+    Mastactva/Constants.qml \
+    Mastactva/qmldir
+
