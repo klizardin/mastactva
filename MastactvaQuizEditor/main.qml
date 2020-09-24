@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.0
+import QtQuick.Layouts 1.1
 import org.mastactva 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
@@ -15,18 +16,6 @@ ApplicationWindow {
 
     MastactvaAPI {
         id: mastactva
-    }
-
-    Action {
-        id: refreshGalleriesModel
-        text: qsTr("&Refresh Galleries")
-        onTriggered: mastactva.reloadGalleriesModel()
-    }
-
-    Action {
-        id: refreshAllGalleryImagesModel
-        text: qsTr("Refresh &All Images")
-        onTriggered: mastactva.reloadAllImagesOfGalleryViewModel()
     }
 
     FileDialog {
@@ -51,8 +40,75 @@ ApplicationWindow {
         modal: true
 
         title: qsTr("Edit Gallery Info")
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
 
+        FontMetrics{
+            id: editGalleryDescriptionFontMetrics
+            font: editGalleryDescription.font
+        }
+        FontMetrics{
+            id: editGalleryKeywordsFontMetrics
+            font: editGalleryKeywords.font
+        }
 
+        ScrollView {
+            anchors.fill: parent
+            clip:true
+
+            ColumnLayout {
+                RowLayout {
+                    Label {
+                        text: qsTr("id :")
+                    }
+                    Text {
+                        id: editGalleryID
+                        text: qsTr("<id>")
+                    }
+                }
+                Label {
+                    text: qsTr("description :")
+                }
+                TextArea {
+                    id: editGalleryDescription
+                    placeholderText: qsTr("Enter the gallery`s description")
+                    focus: true
+                    KeyNavigation.priority: KeyNavigation.BeforeItem
+                    KeyNavigation.tab: editGalleryKeywords
+                    KeyNavigation.backtab: editGalleryPointsToPass
+                }
+                Label {
+                    text: qsTr("Keywords :")
+                }
+                TextArea {
+                    id: editGalleryKeywords
+                    placeholderText: qsTr("Enter gallery`s keywords")
+                    focus: true
+                    KeyNavigation.priority: KeyNavigation.BeforeItem
+                    KeyNavigation.tab: editGalleryPointsToPass
+                    KeyNavigation.backtab: editGalleryDescription
+                }
+                RowLayout {
+                    Label {
+                        text: qsTr("created :")
+                    }
+                    Text {
+                        id: editGalleryCreated
+                        text: qsTr("<now()>")
+                    }
+                }
+                RowLayout {
+                    Label {
+                        text: qsTr("Points to pass")
+                    }
+                    TextField {
+                        id: editGalleryPointsToPass
+                        placeholderText: qsTr("Enter points to pass number")
+                        focus: true
+                    }
+                }
+            }
+        }
 
         standardButtons: Dialog.Cancel | Dialog.Save
 
@@ -64,6 +120,25 @@ ApplicationWindow {
         }
     }
 
+
+    Action {
+        id: refreshGalleriesModel
+        text: qsTr("&Refresh Galleries")
+        onTriggered: mastactva.reloadGalleriesModel()
+    }
+
+    Action {
+        id: refreshAllGalleryImagesModel
+        text: qsTr("Refresh &All Images")
+        onTriggered: mastactva.reloadAllImagesOfGalleryViewModel()
+    }
+
+    Action {
+        id: testEditGalleryDialog
+        text: qsTr("Edit Gallery Dialog Test")
+        onTriggered: editGallery.open()
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
@@ -72,6 +147,10 @@ ApplicationWindow {
         Menu {
             title: qsTr("All Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
+        }
+        Menu {
+            title: qsTr("Test")
+            MenuItem { action: testEditGalleryDialog }
         }
     }
 

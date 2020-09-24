@@ -1,4 +1,5 @@
 QT += quick
+QT += quickcontrols2
 
 CONFIG += c++14
 
@@ -20,7 +21,8 @@ SOURCES += \
         netapi.cpp  \
         qmlmainobjects.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc    \
+    Mastactva/
 
 
 TRANSLATIONS += \
