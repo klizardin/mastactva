@@ -501,6 +501,30 @@ void GalleryEditViewModel::setCurrentIndex(int index_)
     emit currentIndexChanged();
 }
 
+int GalleryEditViewModel::currentId() const
+{
+    return getIdOfIndex(m_currentIndex);
+}
+
+void GalleryEditViewModel::setCurrentId(int id_)
+{
+    auto fit = std::find_if(std::begin(m_data),
+                            std::end(m_data),
+                            [id_] (const GalleryItemData* item) -> bool
+    {
+       return nullptr != item && item->getId() == id_;
+    });
+    if(std::end(m_data) == fit)
+    {
+        return;
+    }
+
+    m_currentIndex = std::distance(std::begin(m_data), fit);
+
+    emit currentIndexChanged();
+    emit currentIdChanged();
+}
+
 QObject* GalleryEditViewModel::getCurrentItem()
 {
     if(m_currentIndex < 0 || m_currentIndex >= m_data.size())

@@ -8,6 +8,7 @@
 
 class RequestData;
 class JsonRequestData;
+class MultiPartRequestData;
 
 
 class MastactvaAPI : public QObject
@@ -26,22 +27,26 @@ public:
     Q_INVOKABLE void loadAllImagesOfGallery();
     Q_INVOKABLE void createNewGallery(const QString &description_, const QString &keywords_, double pointsToPass_);
     Q_INVOKABLE void editGallery(int id, const QString &description_, const QString &keywords_, const QDateTime &created, const QVariant &pointsToPass_);
+    Q_INVOKABLE void addImage(int galleryId, const QString &filename, bool topImage);
 
 signals:
     void galleryIdChanged();
     void jsonDocChanged();
     void onNewGalleryCreated();
     void onGalleryEdited();
+    void onImageAdded();
 
 protected slots:
     void onNewGalleryCreatedSlot(RequestData *request_, const QJsonDocument &document_);
     void onEditGallerySlot(RequestData *request_, const QJsonDocument &document_);
+    void onAddImageSlot(RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
     QJsonDocument m_jsonDoc;
     JsonRequestData *m_createNewGalleryRequest = nullptr;
     JsonRequestData *m_editGalleryRequest = nullptr;
+    MultiPartRequestData *m_addImageRequest = nullptr;
 
 private:
     int getGalleryId() const;

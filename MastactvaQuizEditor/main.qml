@@ -89,8 +89,24 @@ ApplicationWindow {
     }
 
     ImageEditDialog {
-        id: editImageDialog
+        id: addImageDialog
 
+        property int currentGalleryId: -1
+
+        onOpened: {
+            fieldImageFileName = ""
+            fieldTopImage = false
+        }
+
+        onAccepted: {
+            mastactva.addImage(currentGalleryId, fieldImageFileName, fieldTopImage)
+            mastactva.onImageAdded.connect(onImageAdded)
+        }
+
+        function onImageAdded()
+        {
+            mastactva.reloadAllImagesOfGalleryViewModel()
+        }
     }
 
     Action {
@@ -125,7 +141,7 @@ ApplicationWindow {
         id: addGalleryImageTest
         text: qsTr("Add Gallery Image Test")
         onTriggered: {
-            editImageDialog.open()
+            addImageDialog.open()
         }
     }
 
@@ -222,6 +238,7 @@ ApplicationWindow {
                                 images_of_gallery.model.galleryIndex = gallery_index
                                 galleries.model.currentIndex = gallery_index
                                 editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
+                                addImageDialog.currentGalleryId = galleries.model.currentId
                                 images_of_gallery.model.galleryCurrentItem
                                 mouse.accepted = false
                             }

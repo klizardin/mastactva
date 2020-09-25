@@ -2,6 +2,8 @@
 #include <qqml.h>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QFile>
+#include <QFileInfo>
 #include "netapi.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
@@ -19,6 +21,8 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onNewGalleryCreatedSlot(RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onEditGallerySlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAddImageSlot(RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -135,6 +139,40 @@ void MastactvaAPI::onEditGallerySlot(RequestData *request_, const QJsonDocument 
     // TODO: analyse error
 
     emit onGalleryEdited();
+}
+
+void MastactvaAPI::addImage(int galleryId, const QString &filename, bool topImage)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    m_addImageRequest = netAPI->startMultiPartFormData();
+    m_addImageRequest->addPart("form-data; name=\"gallery\"", QString("%1").arg(galleryId).toUtf8());
+    QFile *file = new QFile(filename);
+    QFileInfo fileInfo(file->fileName());
+    m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
+    m_addImageRequest->addPart("form-data; name=\"hash\"", "");
+    m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", topImage?"True":"False");
+
+    netAPI->post("images/", m_addImageRequest);
+}
+
+void MastactvaAPI::onAddImageSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(request_ != static_cast<RequestData *>(m_addImageRequest))
+    {
+        return;
+    }
+    m_addImageRequest = nullptr;
+
+    // TODO: analyse error
+
+    emit onImageAdded();
 }
 
 int MastactvaAPI::getGalleryId() const

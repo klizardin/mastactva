@@ -143,6 +143,7 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
     Q_INVOKABLE QObject* getCurrentItem();
 
 private slots:
@@ -153,12 +154,15 @@ public:
     int getIdOfIndex(int index_) const;
     int currentIndex() const;
     void setCurrentIndex(int index_);
+    int currentId() const;
+    void setCurrentId(int id_);
 
 protected:
     void clearData();
 
 signals:
     void currentIndexChanged();
+    void currentIdChanged();
 
 protected:
     // return the roles mapping to be used by QML
