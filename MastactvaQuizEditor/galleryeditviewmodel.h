@@ -66,10 +66,10 @@ private:
 };
 
 
-
-
-class GalleryItemData
+class GalleryItemData : public QObject
 {
+    Q_OBJECT
+
 protected:
     int id = -1;
     QString description;
@@ -78,19 +78,38 @@ protected:
     GalleryImagesModel *images = nullptr;
 
 public:
-    GalleryItemData(int id_ = -1,
+    GalleryItemData(QObject* parent_,
+                int id_ = -1,
                 const QString &description_ = QString(),
                 const QDateTime &created_ = QDateTime(),
                 double pointsToPass_ = 1.0);
     virtual ~GalleryItemData();
 
+    Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString description READ getDescription WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QDateTime created READ getCreated WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(double pointToPass READ getPointsToPass WRITE setPointToPass NOTIFY pointToPassChanged)
+    Q_INVOKABLE QObject* getImages();
+
     int getId() const;
     const QString &getDescription() const;
     const QDateTime &getCreated() const;
     double getPointsToPass() const;
-    GalleryImagesModel *getImagesModel(QObject *parent_);
+    GalleryImagesModel *getImagesModel();
 
-    static GalleryItemData fromJson(const QJsonValue& jsonValue_, bool &anyError);
+    void setId(int id_);
+    void setDescription(const QString& description_);
+    void setCreated(const QDateTime& created_);
+    void setPointToPass(double pointsToPass_);
+
+signals:
+    void idChanged();
+    void descriptionChanged();
+    void createdChanged();
+    void pointToPassChanged();
+
+public:
+    static GalleryItemData* fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError);
 };
 
 
@@ -125,13 +144,16 @@ public:
     int getIdOfIndex(int index_) const;
 
 protected:
+    void clearData();
+
+protected:
     // return the roles mapping to be used by QML
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
     RequestData* m_request = nullptr;
     QHash<int, QByteArray> m_roleNames;
-    QVector<GalleryItemData> m_data;
+    QVector<GalleryItemData*> m_data;
 };
 
 #endif // GALLERYEDITVIEWMODEL_H

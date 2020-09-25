@@ -35,90 +35,55 @@ ApplicationWindow {
         }
     }
 
-    Dialog {
-        id : editGallery
-        modal: true
+    GalleryEditDialog {
+        id: createNewGalleryDialog
 
-        title: qsTr("Edit Gallery Info")
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-
-        FontMetrics{
-            id: editGalleryDescriptionFontMetrics
-            font: editGalleryDescription.font
+        onOpened: {
+            fieldId = -1
+            fieldDescription = ""
+            fieldKeywords = ""
+            fieldCreated = "now()"
+            fieldPointsToPass = 1.0
         }
-        FontMetrics{
-            id: editGalleryKeywordsFontMetrics
-            font: editGalleryKeywords.font
-        }
-
-        ScrollView {
-            anchors.fill: parent
-            clip:true
-
-            ColumnLayout {
-                RowLayout {
-                    Label {
-                        text: qsTr("id :")
-                    }
-                    Text {
-                        id: editGalleryID
-                        text: qsTr("<id>")
-                    }
-                }
-                Label {
-                    text: qsTr("description :")
-                }
-                TextArea {
-                    id: editGalleryDescription
-                    placeholderText: qsTr("Enter the gallery`s description")
-                    focus: true
-                    KeyNavigation.priority: KeyNavigation.BeforeItem
-                    KeyNavigation.tab: editGalleryKeywords
-                }
-                Label {
-                    text: qsTr("Keywords :")
-                }
-                TextArea {
-                    id: editGalleryKeywords
-                    placeholderText: qsTr("Enter gallery`s keywords")
-                    focus: true
-                    KeyNavigation.priority: KeyNavigation.BeforeItem
-                    KeyNavigation.backtab: editGalleryDescription
-                    KeyNavigation.tab: editGalleryPointsToPass
-                }
-                RowLayout {
-                    Label {
-                        text: qsTr("created :")
-                    }
-                    Text {
-                        id: editGalleryCreated
-                        text: qsTr("<now()>")
-                    }
-                }
-                RowLayout {
-                    Label {
-                        text: qsTr("Points to pass")
-                    }
-                    TextField {
-                        id: editGalleryPointsToPass
-                        placeholderText: qsTr("Enter points to pass number")
-                        focus: true
-                    }
-                }
-            }
-        }
-
-        standardButtons: Dialog.Cancel | Dialog.Save
 
         onAccepted: {
-            // TODO: save gallery action
+            mastactva.createNewGallery(fieldDescription, fieldKeywords, fieldPointsToPass)
+            mastactva.reloadGalleriesModel()
         }
+
         onRejected: {
-            // TODO: add cancel action
         }
     }
 
+    GalleryEditDialog {
+        id: editCurrentGalleryDialog
+
+        property int oldId: -1
+        property string oldDescription: ""
+        property string oldKeywords: ""
+        property string oldCreated: ""
+        property real oldPointsToPass: 1.0
+
+        onOpened: {
+            oldId = fieldId
+            oldDescription = fieldDescription
+            oldKeywords = fieldKeywords
+            oldCreated = fieldCreated
+            oldPointsToPass = fieldPointsToPass
+        }
+
+        onAccepted: {
+            // TODO: edit gallery
+        }
+
+        onRejected: {
+            fieldId = oldId
+            fieldDescription = oldDescription
+            fieldKeywords = oldKeywords
+            fieldCreated = oldCreated
+            fieldPointsToPass = oldPointsToPass
+        }
+    }
 
     Action {
         id: refreshGalleriesModel
@@ -133,15 +98,27 @@ ApplicationWindow {
     }
 
     Action {
-        id: testEditGalleryDialog
-        text: qsTr("Edit Gallery Dialog Test")
-        onTriggered: editGallery.open()
+        id: createNewGallery
+        text: qsTr("&Create New Gallery Dialog")
+        onTriggered: {
+            createNewGalleryDialog.open()
+        }
+    }
+
+    Action {
+        id: editCurrentGallery
+        text: qsTr("&Edit Current Gallery Dialog")
+        onTriggered: {
+            editCurrentGalleryDialog.open()
+        }
     }
 
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
             MenuItem { action: refreshGalleriesModel }
+            MenuItem { action: createNewGallery }
+            MenuItem { action: editCurrentGallery }
         }
         Menu {
             title: qsTr("All Images of Gallery")
@@ -149,7 +126,6 @@ ApplicationWindow {
         }
         Menu {
             title: qsTr("Test")
-            MenuItem { action: testEditGalleryDialog }
         }
     }
 
@@ -225,6 +201,7 @@ ApplicationWindow {
                             onClicked:
                             {
                                 images_of_gallery.model.galleryIndex = gallery_index
+                                images_of_gallery.model.galleryCurrentItem
                                 mouse.accepted = false
                             }
                         }
