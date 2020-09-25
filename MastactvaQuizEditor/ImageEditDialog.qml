@@ -18,7 +18,7 @@ Dialog {
         id: openImageDialog
         title: qsTr("Please choose image to upload to the server")
         folder: shortcuts.pictures
-        nameFilters: [ "Image files (*.jpg *.png)" ]
+        nameFilters: [ "Image files (*.jpg *.jpeg *.png)" ]
         selectExisting: true
         selectMultiple: false
 

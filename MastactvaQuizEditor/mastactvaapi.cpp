@@ -141,7 +141,7 @@ void MastactvaAPI::onEditGallerySlot(RequestData *request_, const QJsonDocument 
     emit onGalleryEdited();
 }
 
-void MastactvaAPI::addImage(int galleryId, const QString &filename, bool topImage)
+void MastactvaAPI::addImage(int galleryId, const QString &fileURL, bool topImage)
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
@@ -151,10 +151,12 @@ void MastactvaAPI::addImage(int galleryId, const QString &filename, bool topImag
     }
     m_addImageRequest = netAPI->startMultiPartFormData();
     m_addImageRequest->addPart("form-data; name=\"gallery\"", QString("%1").arg(galleryId).toUtf8());
+    QUrl url(fileURL);
+    QString filename = url.toLocalFile();
     QFile *file = new QFile(filename);
     QFileInfo fileInfo(file->fileName());
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
-    m_addImageRequest->addPart("form-data; name=\"hash\"", "");
+    m_addImageRequest->addPart("form-data; name=\"hash\"", "123");
     m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", topImage?"True":"False");
 
     netAPI->post("images/", m_addImageRequest);

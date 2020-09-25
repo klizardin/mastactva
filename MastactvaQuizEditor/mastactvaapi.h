@@ -27,7 +27,7 @@ public:
     Q_INVOKABLE void loadAllImagesOfGallery();
     Q_INVOKABLE void createNewGallery(const QString &description_, const QString &keywords_, double pointsToPass_);
     Q_INVOKABLE void editGallery(int id, const QString &description_, const QString &keywords_, const QDateTime &created, const QVariant &pointsToPass_);
-    Q_INVOKABLE void addImage(int galleryId, const QString &filename, bool topImage);
+    Q_INVOKABLE void addImage(int galleryId, const QString &fileURL, bool topImage);
 
 signals:
     void galleryIdChanged();

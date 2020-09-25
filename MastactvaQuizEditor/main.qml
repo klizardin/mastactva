@@ -105,6 +105,7 @@ ApplicationWindow {
 
         function onImageAdded()
         {
+            mastactva.reloadGalleriesModel()
             mastactva.reloadAllImagesOfGalleryViewModel()
         }
     }
@@ -138,8 +139,8 @@ ApplicationWindow {
     }
 
     Action {
-        id: addGalleryImageTest
-        text: qsTr("Add Gallery Image Test")
+        id: addGalleryImage
+        text: qsTr("Add &Image To Current Gallery")
         onTriggered: {
             addImageDialog.open()
         }
@@ -151,6 +152,7 @@ ApplicationWindow {
             MenuItem { action: refreshGalleriesModel }
             MenuItem { action: createNewGallery }
             MenuItem { action: editCurrentGallery }
+            MenuItem { action : addGalleryImage }
         }
         Menu {
             title: qsTr("All Images of Gallery")
@@ -158,7 +160,7 @@ ApplicationWindow {
         }
         Menu {
             title: qsTr("Test")
-            MenuItem { action : addGalleryImageTest }
+            MenuItem {  }
         }
     }
 
