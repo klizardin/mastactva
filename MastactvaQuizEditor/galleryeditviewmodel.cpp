@@ -9,6 +9,8 @@
 /// class GalleryEditViewImagesModel
 ///
 
+static const QString g_noImageDefault = QString("qrc:///resources/no-image.png");
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /// \brief GalleryEditViewImagesModel::GalleryEditViewImagesModel
 /// \param parent - parent QObject
@@ -20,7 +22,8 @@ GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
 
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
-    // TODO: indicate in view that there is no data
+
+    m_images.push_back(g_noImageDefault);
 }
 
 GalleryImagesModel::~GalleryImagesModel()
@@ -78,6 +81,10 @@ void GalleryImagesModel::setGalleryId(int galleryId_)
     beginRemoveRows(QModelIndex(), 0, m_images.size());
     m_images.clear();
     endRemoveRows();
+
+    beginInsertRows(QModelIndex(), m_images.size(), m_images.size() + 1 - 1);
+    m_images.push_back(g_noImageDefault);
+    endInsertRows();
 
     m_galleryId = galleryId_;
     m_request = nullptr;
@@ -143,10 +150,19 @@ void GalleryImagesModel::onJsonRequestFinished(RequestData *request_, const QJso
     beginRemoveRows(QModelIndex(), 0, m_images.size());
     m_images.clear();
     endRemoveRows();
-    beginInsertRows(QModelIndex(), m_images.size(), m_images.size() + images.size() - 1);
-    std::copy(std::begin(images), std::end(images),
-              std::inserter(m_images, std::end(m_images)));
-    endInsertRows();
+    if(images.size() > 0)
+    {
+        beginInsertRows(QModelIndex(), m_images.size(), m_images.size() + images.size() - 1);
+        std::copy(std::begin(images), std::end(images),
+                  std::inserter(m_images, std::end(m_images)));
+        endInsertRows();
+    }
+    else
+    {
+        beginInsertRows(QModelIndex(), m_images.size(), m_images.size() + 1 - 1);
+        m_images.push_back(g_noImageDefault);
+        endInsertRows();
+    }
 }
 
 void GalleryImagesModel::ongalleryIdChanged()
@@ -184,11 +200,13 @@ void GalleryImagesModel::startLoadImages()
 GalleryItemData::GalleryItemData(QObject* parent_,
             int id_ /*= -1*/,
             const QString &description_ /*= QString()*/,
+            const QString &keywords_ /*= QString()*/,
             const QDateTime &created_ /*= QDateTime()*/,
-            double pointsToPass_ /*= 1.0*/)
+            qreal pointsToPass_ /*= 1.0*/)
     : QObject(parent_),
     id(id_),
     description(description_),
+    keywords(keywords_),
     created(created_),
     pointsToPass(pointsToPass_)
 {
@@ -210,14 +228,20 @@ const QString &GalleryItemData::getDescription() const
     return description;
 }
 
+const QString &GalleryItemData::getKeywords() const
+{
+    return keywords;
+}
+
 const QDateTime &GalleryItemData::getCreated() const
 {
     return created;
 }
 
-double GalleryItemData::getPointsToPass() const
+QString GalleryItemData::getPointsToPass() const
 {
-    return pointsToPass;
+    QVariant v(pointsToPass);
+    return v.toString();
 }
 
 GalleryImagesModel *GalleryItemData::getImagesModel()
@@ -245,22 +269,29 @@ void GalleryItemData::setDescription(const QString& description_)
     description = description_;
 }
 
+void GalleryItemData::setKeywords(const QString& keywords_)
+{
+    keywords = keywords_;
+}
+
 void GalleryItemData::setCreated(const QDateTime& created_)
 {
     created = created_;
 }
 
-void GalleryItemData::setPointToPass(double pointsToPass_)
+void GalleryItemData::setPointsToPass(const QString &pointsToPass_)
 {
-    pointsToPass = pointsToPass_;
+    QVariant v(pointsToPass_);
+    pointsToPass = v.toDouble();
 }
 
 GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError)
 {
     int id = -1;
     QString description;
+    QString keywords;
     QDateTime created;
-    double pointsToPass = 1.0;
+    qreal pointsToPass = 1.0;
 
     QJsonValue idVal = jsonValue_["id"];
     if(QJsonValue::Undefined != idVal.type())
@@ -276,6 +307,16 @@ GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& j
     if(QJsonValue::Undefined != descriptionVal.type() && descriptionVal.isString())
     {
         description = descriptionVal.toString();
+    }
+    else
+    {
+        anyError = true;
+    }
+
+    QJsonValue keywordsVal = jsonValue_["description"];
+    if(QJsonValue::Undefined != keywordsVal.type() && keywordsVal.isString())
+    {
+        keywords = keywordsVal.toString();
     }
     else
     {
@@ -309,7 +350,7 @@ GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& j
         anyError = true;
     }
 
-    return new GalleryItemData(parent_, id, description, created, pointsToPass);
+    return new GalleryItemData(parent_, id, description, keywords, created, pointsToPass);
 }
 
 
@@ -446,4 +487,25 @@ int GalleryEditViewModel::getIdOfIndex(int index_) const
         return -1;
     }
     return m_data.at(index_)->getId();
+}
+
+int GalleryEditViewModel::currentIndex() const
+{
+    return m_currentIndex;
+}
+
+void GalleryEditViewModel::setCurrentIndex(int index_)
+{
+    m_currentIndex = index_;
+
+    emit currentIndexChanged();
+}
+
+QObject* GalleryEditViewModel::getCurrentItem()
+{
+    if(m_currentIndex < 0 || m_currentIndex >= m_data.size())
+    {
+        return nullptr;
+    }
+    return m_data.at(m_currentIndex);
 }

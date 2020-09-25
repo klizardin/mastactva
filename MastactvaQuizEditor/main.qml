@@ -48,6 +48,11 @@ ApplicationWindow {
 
         onAccepted: {
             mastactva.createNewGallery(fieldDescription, fieldKeywords, fieldPointsToPass)
+            mastactva.onNewGalleryCreated.connect(onNewGalleryCreated)
+        }
+
+        function onNewGalleryCreated()
+        {
             mastactva.reloadGalleriesModel()
         }
 
@@ -62,7 +67,7 @@ ApplicationWindow {
         property string oldDescription: ""
         property string oldKeywords: ""
         property string oldCreated: ""
-        property real oldPointsToPass: 1.0
+        property string oldPointsToPass: "1.0"
 
         onOpened: {
             oldId = fieldId
@@ -73,7 +78,22 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            // TODO: edit gallery
+            mastactva.editGallery(fieldId, fieldDescription, fieldKeywords, fieldCreated, fieldPointsToPass)
+            mastactva.onGalleryEdited.connect(onNewGalleryCreated)
+        }
+
+        function onNewGalleryCreated()
+        {
+            mastactva.reloadGalleriesModel()
+        }
+
+        function setFields(item)
+        {
+            fieldId = item.id
+            fieldDescription = item.description
+            fieldKeywords = item.keywords
+            fieldCreated = item.created
+            fieldPointsToPass = item.pointsToPass
         }
 
         onRejected: {
@@ -193,6 +213,8 @@ ApplicationWindow {
                     model: images
                     Image {
                         id: image_of_gallery_view
+                        width: Constants.leftSideBarWidth
+                        height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
                         source: image
                         fillMode: Image.PreserveAspectFit
 
@@ -201,6 +223,8 @@ ApplicationWindow {
                             onClicked:
                             {
                                 images_of_gallery.model.galleryIndex = gallery_index
+                                galleries.model.currentIndex = gallery_index
+                                editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
                                 images_of_gallery.model.galleryCurrentItem
                                 mouse.accepted = false
                             }

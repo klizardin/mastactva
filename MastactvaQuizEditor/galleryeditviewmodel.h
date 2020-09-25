@@ -73,40 +73,46 @@ class GalleryItemData : public QObject
 protected:
     int id = -1;
     QString description;
+    QString keywords;
     QDateTime created;
-    double pointsToPass = 1.0;
+    qreal pointsToPass = 1.0;
     GalleryImagesModel *images = nullptr;
 
 public:
     GalleryItemData(QObject* parent_,
                 int id_ = -1,
                 const QString &description_ = QString(),
+                const QString &keywords_ = QString(),
                 const QDateTime &created_ = QDateTime(),
-                double pointsToPass_ = 1.0);
+                qreal pointsToPass_ = 1.0);
     virtual ~GalleryItemData();
 
     Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString description READ getDescription WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QString keywords READ getKeywords WRITE setKeywords NOTIFY keywordsChanged)
     Q_PROPERTY(QDateTime created READ getCreated WRITE setCreated NOTIFY createdChanged)
-    Q_PROPERTY(double pointToPass READ getPointsToPass WRITE setPointToPass NOTIFY pointToPassChanged)
+    Q_PROPERTY(QString pointsToPass READ getPointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_INVOKABLE QObject* getImages();
 
     int getId() const;
     const QString &getDescription() const;
+    const QString &getKeywords() const;
     const QDateTime &getCreated() const;
-    double getPointsToPass() const;
+    QString getPointsToPass() const;
     GalleryImagesModel *getImagesModel();
 
     void setId(int id_);
     void setDescription(const QString& description_);
+    void setKeywords(const QString& keywords_);
     void setCreated(const QDateTime& created_);
-    void setPointToPass(double pointsToPass_);
+    void setPointsToPass(const QString &pointsToPass_);
 
 signals:
     void idChanged();
     void descriptionChanged();
+    void keywordsChanged();
     void createdChanged();
-    void pointToPassChanged();
+    void pointsToPassChanged();
 
 public:
     static GalleryItemData* fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError);
@@ -136,15 +142,23 @@ public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_INVOKABLE QObject* getCurrentItem();
+
 private slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
 
 public:
     void startLoadGalleries();
     int getIdOfIndex(int index_) const;
+    int currentIndex() const;
+    void setCurrentIndex(int index_);
 
 protected:
     void clearData();
+
+signals:
+    void currentIndexChanged();
 
 protected:
     // return the roles mapping to be used by QML
@@ -154,6 +168,7 @@ private:
     RequestData* m_request = nullptr;
     QHash<int, QByteArray> m_roleNames;
     QVector<GalleryItemData*> m_data;
+    int m_currentIndex = -1;
 };
 
 #endif // GALLERYEDITVIEWMODEL_H

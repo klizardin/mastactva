@@ -6,6 +6,10 @@
 #include <QJsonDocument>
 
 
+class RequestData;
+class JsonRequestData;
+
+
 class MastactvaAPI : public QObject
 {
     Q_OBJECT
@@ -20,14 +24,24 @@ public:
     Q_INVOKABLE void reloadAllImagesOfGalleryViewModel();
     Q_INVOKABLE void loadGalleryViewImagesOfGallery();
     Q_INVOKABLE void loadAllImagesOfGallery();
+    Q_INVOKABLE void createNewGallery(const QString &description_, const QString &keywords_, double pointsToPass_);
+    Q_INVOKABLE void editGallery(int id, const QString &description_, const QString &keywords_, const QDateTime &created, const QVariant &pointsToPass_);
 
 signals:
     void galleryIdChanged();
     void jsonDocChanged();
+    void onNewGalleryCreated();
+    void onGalleryEdited();
+
+protected slots:
+    void onNewGalleryCreatedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onEditGallerySlot(RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
     QJsonDocument m_jsonDoc;
+    JsonRequestData *m_createNewGalleryRequest = nullptr;
+    JsonRequestData *m_editGalleryRequest = nullptr;
 
 private:
     int getGalleryId() const;

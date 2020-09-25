@@ -4,6 +4,7 @@
         <file>qtquickcontrols2.conf</file>
         <file>GalleryFunctions.js</file>
         <file>GalleryEditDialog.qml</file>
+        <file>resources/no-image.png</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
