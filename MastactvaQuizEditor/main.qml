@@ -18,23 +18,6 @@ ApplicationWindow {
         id: mastactva
     }
 
-    FileDialog {
-        id: uploadGalleryImageDialog
-        title: qsTr("Please choose image to upload to the server")
-        folder: shortcuts.pictures
-        nameFilters: [ "Image files (*.jpg *.png)" ]
-        selectExisting: true
-        selectMultiple: false
-
-        onAccepted: {
-            // TODO: start image upload
-        }
-
-        onRejected: {
-            // TODO: add no image upload reaction
-        }
-    }
-
     GalleryEditDialog {
         id: createNewGalleryDialog
 
@@ -105,6 +88,11 @@ ApplicationWindow {
         }
     }
 
+    ImageEditDialog {
+        id: editImageDialog
+
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")
@@ -133,6 +121,14 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: addGalleryImageTest
+        text: qsTr("Add Gallery Image Test")
+        onTriggered: {
+            editImageDialog.open()
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
@@ -146,6 +142,7 @@ ApplicationWindow {
         }
         Menu {
             title: qsTr("Test")
+            MenuItem { action : addGalleryImageTest }
         }
     }
 

@@ -33,7 +33,7 @@ Dialog {
         ColumnLayout {
             RowLayout {
                 Label {
-                    text: qsTr("id :")
+                    text: qsTr("Id : ")
                 }
                 Text {
                     id: editGalleryID
@@ -41,7 +41,7 @@ Dialog {
                 }
             }
             Label {
-                text: qsTr("description :")
+                text: qsTr("Description : ")
             }
             TextArea {
                 id: editGalleryDescription
@@ -52,7 +52,7 @@ Dialog {
                 KeyNavigation.tab: editGalleryKeywords
             }
             Label {
-                text: qsTr("Keywords :")
+                text: qsTr("Keywords : ")
             }
             TextArea {
                 id: editGalleryKeywords
@@ -65,7 +65,7 @@ Dialog {
             }
             RowLayout {
                 Label {
-                    text: qsTr("created :")
+                    text: qsTr("Created : ")
                 }
                 Text {
                     id: editGalleryCreated
@@ -74,7 +74,7 @@ Dialog {
             }
             RowLayout {
                 Label {
-                    text: qsTr("Points to pass")
+                    text: qsTr("Points to pass level : ")
                 }
                 TextField {
                     id: editGalleryPointsToPass

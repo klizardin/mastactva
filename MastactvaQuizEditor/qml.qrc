@@ -5,6 +5,7 @@
         <file>GalleryFunctions.js</file>
         <file>GalleryEditDialog.qml</file>
         <file>resources/no-image.png</file>
+        <file>ImageEditDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
