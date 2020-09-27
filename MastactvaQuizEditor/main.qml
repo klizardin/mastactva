@@ -14,6 +14,9 @@ ApplicationWindow {
     height: Constants.height
     title: qsTr("Mastactva Quiz Editor")
 
+    property int galleryCurrentIndex: -1
+    property int galleryImagesCurrentIndex: -1
+
     MastactvaAPI {
         id: mastactva
     }
@@ -214,6 +217,11 @@ ApplicationWindow {
         id: gallery
 
         Column {
+            SystemPalette {
+                id: galleryItemPallete
+                colorGroup: SystemPalette.Active
+            }
+
             property int gallery_index: index
 
             SwipeView {
@@ -222,6 +230,9 @@ ApplicationWindow {
                 width: Constants.leftSideBarWidth
                 height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
                 clip: true
+                background: Rectangle {
+                    color: galleryCurrentIndex == gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
+                }
 
                 Repeater {
                     id: gallery_image
@@ -237,8 +248,9 @@ ApplicationWindow {
                             anchors.fill: parent
                             onClicked:
                             {
-                                images_of_gallery.model.galleryIndex = gallery_index
-                                galleries.model.currentIndex = gallery_index
+                                galleryCurrentIndex = gallery_index
+                                images_of_gallery.model.galleryIndex = galleryCurrentIndex
+                                galleries.model.currentIndex = galleryCurrentIndex
                                 editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
                                 addImageDialog.currentGalleryId = galleries.model.currentId
                                 images_of_gallery.model.galleryCurrentItem
