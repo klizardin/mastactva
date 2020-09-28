@@ -243,6 +243,11 @@ ApplicationWindow {
             }
         }
 
+        Rectangle {
+            width: Constants.leftSideBarWidthSpace
+            height: parent.height
+        }
+
         Rectangle{
 
             width: root.width - Constants.leftSideBarWidth
@@ -281,7 +286,8 @@ ApplicationWindow {
             Rectangle {
                 width: Constants.leftSideBarWidth
                 height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
-                color: galleryCurrentIndex === gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
+                border.width: 2
+                border.color: galleryCurrentIndex === gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
 
                 SwipeView {
                     id: gallery_images
@@ -376,7 +382,8 @@ ApplicationWindow {
 
             width: (Constants.height * Constants.aspectX) / Constants.aspectY
             height: Constants.height
-            color: galleryImagesCurrentIndex === imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
+            border.width: 2
+            border.color: galleryImagesCurrentIndex === imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
 
             Image  {
                 id: image_of_gallery
