@@ -4,12 +4,40 @@
 #include "netapi.h"
 #include "qmlmainobjects.h"
 
+/////////////////////////////////////////////////////////////////////////////////////////
+/// class ImageData
+///
+
+ImageData::ImageData(int id_ /*= -1*/, const QString& source_ /*= QString()*/)
+    :m_id(id_), m_source(source_)
+{
+}
+
+int ImageData::getId() const
+{
+    return m_id;
+}
+
+void ImageData::setId(int id_)
+{
+    m_id = id_;
+}
+
+const QString& ImageData::getSource() const
+{
+    return m_source;
+}
+
+void ImageData::setSource(const QString& source_)
+{
+    m_source = source_;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// class GalleryEditViewImagesModel
 ///
 
-static const QString g_noImageDefault = QString("qrc:///resources/no-image.png");
+static const ImageData g_noImageDefault = ImageData(-1, "qrc:///resources/no-image.png");
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// \brief GalleryEditViewImagesModel::GalleryEditViewImagesModel
@@ -18,7 +46,8 @@ static const QString g_noImageDefault = QString("qrc:///resources/no-image.png")
 GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
     :QAbstractListModel(parent)
 {
-    m_roleNames[ImageSourceRole] = "image";
+    m_roleNames[IdRole] = "image_id";
+    m_roleNames[ImageSourceRole] = "image_source";
 
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
@@ -43,11 +72,13 @@ QVariant GalleryImagesModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
-    QString imageUrl = m_images[row];
+    const auto &image = m_images[row];
     switch(role)
     {
+    case IdRole:
+        return image.getId();
     case ImageSourceRole:
-        return imageUrl;
+        return image.getSource();
     }
     return QVariant();
 }
@@ -133,7 +164,7 @@ void GalleryImagesModel::onJsonRequestFinished(RequestData *request_, const QJso
     {
         return;
     }
-    QList<QString> images;
+    QList<ImageData> images;
     for(int i = 0; ; i++)
     {
         QJsonValue val = reply_[i];
@@ -141,11 +172,19 @@ void GalleryImagesModel::onJsonRequestFinished(RequestData *request_, const QJso
         {
             break;
         }
+        int id = -1;
+        QString filename;
+        QJsonValue idVal = val["id"];
+        if(QJsonValue::Undefined != idVal.type())
+        {
+            id = idVal.toInt(-1);
+        }
         QJsonValue fn = val["filename"];
         if(QJsonValue::Undefined != fn.type() && fn.isString())
         {
-            images.push_back(fn.toString());
+            filename = fn.toString();
         }
+        images.push_back({id, filename});
     }
     beginRemoveRows(QModelIndex(), 0, m_images.size());
     m_images.clear();
@@ -185,6 +224,15 @@ void GalleryImagesModel::startLoadImages()
                     :QString("images/%1/gallery_all/").arg(m_galleryId)
                     ,
                 m_request);
+}
+
+int GalleryImagesModel::getIdOfIndex(int index_)
+{
+    if(index_ < 0 || index_ > m_images.size())
+    {
+        return -1;
+    }
+    return m_images.at(index_).getId();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

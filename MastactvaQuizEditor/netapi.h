@@ -108,6 +108,7 @@ public:
     void get(const QString &urlStr_, RequestData *request_);
     void post(const QString &urlStr_, JsonRequestData *request_);
     void patch(const QString &urlStr_, JsonRequestData *request_);
+    void del(const QString &urlStr_, JsonRequestData *request_);
     void post(const QString &urlStr_, MultiPartRequestData *request_);
 
     static void createSingelton(QObject *parent_);
@@ -116,6 +117,7 @@ public:
 protected:
     bool init();
     int getNextRequestID();
+    void setBasicAuthentification(QNetworkRequest* netRequest_, RequestData *request_);
 
 signals:
     void onRequestFinished(RequestData *request_, QNetworkReply *reply_);

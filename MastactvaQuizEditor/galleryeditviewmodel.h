@@ -12,13 +12,30 @@
 
 class RequestData;
 
+class ImageData
+{
+public:
+    ImageData(int id_ = -1, const QString& source_ = QString());
+    ~ImageData() = default;
+
+    int getId() const;
+    void setId(int id_);
+    const QString& getSource() const;
+    void setSource(const QString& source_);
+
+protected:
+    int m_id = -1;
+    QString m_source;
+};
+
 class GalleryImagesModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
     enum RoleNames {
-        ImageSourceRole = Qt::UserRole,
+        IdRole = Qt::UserRole,
+        ImageSourceRole = Qt::UserRole + 1,
     };
 
 public:
@@ -41,6 +58,7 @@ public:
     int galleryIndex() const;
     void setGalleryIndex(int galleryIndex_);
     void startLoadImages();
+    int getIdOfIndex(int index_);
 
 signals:
     void galleryIdChanged();
@@ -61,7 +79,7 @@ private:
     int m_galleryId = -1;
     int m_galleryIndex = -1;
     RequestData* m_request = nullptr;
-    QVector<QString> m_images;
+    QVector<ImageData> m_images;
     QHash<int, QByteArray> m_roleNames;
 };
 

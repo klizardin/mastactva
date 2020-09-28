@@ -244,6 +244,15 @@ MultiPartRequestData *NetAPI::startMultiPartFormData()
     return rd;
 }
 
+void NetAPI::setBasicAuthentification(QNetworkRequest* netRequest_, RequestData *request_)
+{
+    // https://stackoverflow.com/questions/1512849/basic-authentication-with-qt-qnetworkaccessmanager
+    QString user_password = request_->getLogin() + QString(":") + request_->getPass();
+    QByteArray user_password_data = user_password.toLocal8Bit().toBase64();
+    QString headerData = "Basic " + user_password_data;
+    netRequest_->setRawHeader("Authorization", headerData.toLocal8Bit());
+}
+
 void NetAPI::get(const QString &urlStr_, RequestData *request_)
 {
     Q_ASSERT(nullptr != request_);
@@ -254,11 +263,7 @@ void NetAPI::get(const QString &urlStr_, RequestData *request_)
     QUrl url(request_->getUrlBase() + urlStr_);
     QNetworkRequest request(url);
 
-    // https://stackoverflow.com/questions/1512849/basic-authentication-with-qt-qnetworkaccessmanager
-    QString user_password = request_->getLogin() + QString(":") + request_->getPass();
-    QByteArray user_password_data = user_password.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + user_password_data;
-    request.setRawHeader("Authorization", headerData.toLocal8Bit());
+    setBasicAuthentification(&request, request_);
 
     if(!init())
     {
@@ -277,11 +282,8 @@ void NetAPI::post(const QString &urlStr_, JsonRequestData *request_)
     }
     QUrl url(request_->getUrlBase() + urlStr_);
     QNetworkRequest request(url);
-    // https://stackoverflow.com/questions/1512849/basic-authentication-with-qt-qnetworkaccessmanager
-    QString user_password = request_->getLogin() + QString(":") + request_->getPass();
-    QByteArray user_password_data = user_password.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + user_password_data;
-    request.setRawHeader("Authorization", headerData.toLocal8Bit());
+
+    setBasicAuthentification(&request, request_);
 
     QByteArray jsonString;
     request_->getDocument(jsonString);
@@ -308,11 +310,8 @@ void NetAPI::patch(const QString &urlStr_, JsonRequestData *request_)
     }
     QUrl url(request_->getUrlBase() + urlStr_);
     QNetworkRequest request(url);
-    // https://stackoverflow.com/questions/1512849/basic-authentication-with-qt-qnetworkaccessmanager
-    QString user_password = request_->getLogin() + QString(":") + request_->getPass();
-    QByteArray user_password_data = user_password.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + user_password_data;
-    request.setRawHeader("Authorization", headerData.toLocal8Bit());
+
+    setBasicAuthentification(&request, request_);
 
     QByteArray jsonString;
     request_->getDocument(jsonString);
@@ -330,6 +329,35 @@ void NetAPI::patch(const QString &urlStr_, JsonRequestData *request_)
     request_->setReply(m_networkManager->sendCustomRequest(request, "PATCH", jsonString));
 }
 
+void NetAPI::del(const QString &urlStr_, JsonRequestData *request_)
+{
+    Q_ASSERT(nullptr != request_);
+    if(nullptr == request_)
+    {
+        return;
+    }
+    QUrl url(request_->getUrlBase() + urlStr_);
+    QNetworkRequest request(url);
+
+    setBasicAuthentification(&request, request_);
+
+    QByteArray jsonString;
+    request_->getDocument(jsonString);
+    QByteArray postDataSize;
+    request_->getDocumentLength(postDataSize);
+
+    request.setRawHeader("Content-Type", "application/json");
+    request.setRawHeader("Content-Length", postDataSize);
+
+    if(!init())
+    {
+        return;
+    }
+
+    request_->setReply(m_networkManager->sendCustomRequest(request, "DELETE", jsonString));
+}
+
+
 void NetAPI::post(const QString &urlStr_, MultiPartRequestData *request_)
 {
     Q_ASSERT(nullptr != request_);
@@ -344,11 +372,7 @@ void NetAPI::post(const QString &urlStr_, MultiPartRequestData *request_)
     QUrl url(request_->getUrlBase() + urlStr_);
     QNetworkRequest request(url);
 
-    // https://stackoverflow.com/questions/1512849/basic-authentication-with-qt-qnetworkaccessmanager
-    QString user_password = request_->getLogin() + QString(":") + request_->getPass();
-    QByteArray user_password_data = user_password.toLocal8Bit().toBase64();
-    QString headerData = "Basic " + user_password_data;
-    request.setRawHeader("Authorization", headerData.toLocal8Bit());
+    setBasicAuthentification(&request, request_);
 
     if(!init())
     {

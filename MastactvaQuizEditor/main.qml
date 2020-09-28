@@ -14,8 +14,8 @@ ApplicationWindow {
     height: Constants.height
     title: qsTr("Mastactva Quiz Editor")
 
-    property int galleryCurrentIndex: -1
-    property int galleryImagesCurrentIndex: -1
+    property alias galleryCurrentIndex: mastactva.galleryIndex
+    property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
 
     MastactvaAPI {
         id: mastactva
@@ -123,11 +123,17 @@ ApplicationWindow {
             mastactva.reloadGalleriesModel()
             mastactva.reloadAllImagesOfGalleryViewModel()
             mastactva.galleryReloaded.connect(onGalleryReloaded)
+            mastactva.imagesOfGalleryReloaded.connect(onGalleryImagesReloaded)
         }
 
         function onGalleryReloaded()
         {
             galleries.currentIndex = galleryCurrentIndex;
+        }
+
+        function onGalleryImagesReloaded()
+        {
+            galleries.images_of_gallery = galleryImagesCurrentIndex;
         }
     }
 
@@ -167,6 +173,33 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: removeCurrentImageOfGallery
+        text: qsTr("&Remove Current Image")
+        onTriggered: {
+            mastactva.removeCurrentImage()
+            mastactva.imageOfGalleryRemoved.connect(onImageOfGalleryRemoved)
+        }
+
+        function onImageOfGalleryRemoved()
+        {
+            mastactva.reloadGalleriesModel()
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+            mastactva.reloadAllImagesOfGalleryViewModel()
+            mastactva.imagesOfGalleryReloaded.connect(onGalleryImagesReloaded)
+        }
+
+        function onGalleryReloaded()
+        {
+            galleries.currentIndex = galleryCurrentIndex;
+        }
+
+        function onGalleryImagesReloaded()
+        {
+            galleries.currentIndex = -1;
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
@@ -178,6 +211,7 @@ ApplicationWindow {
         Menu {
             title: qsTr("All Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
+            MenuItem { action: removeCurrentImageOfGallery }
         }
         Menu {
             title: qsTr("Test")
@@ -247,7 +281,7 @@ ApplicationWindow {
             Rectangle {
                 width: Constants.leftSideBarWidth
                 height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
-                color: galleryCurrentIndex == gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
+                color: galleryCurrentIndex === gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
 
                 SwipeView {
                     id: gallery_images
@@ -265,7 +299,7 @@ ApplicationWindow {
                             id: image_of_gallery_view
                             width: (Constants.leftSideBarWidth - Constants.galleryImageSpacing)
                             height: ((Constants.leftSideBarWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
-                            source: image
+                            source: image_source
                             fillMode: Image.PreserveAspectFit
 
                             MouseArea {
@@ -342,7 +376,7 @@ ApplicationWindow {
 
             width: (Constants.height * Constants.aspectX) / Constants.aspectY
             height: Constants.height
-            color: galleryImagesCurrentIndex == imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
+            color: galleryImagesCurrentIndex === imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
 
             Image  {
                 id: image_of_gallery
@@ -350,7 +384,7 @@ ApplicationWindow {
                 y: Constants.imageOfGalleryImageSpacing / 2
                 width: ((Constants.height - Constants.imageOfGalleryImageSpacing) * Constants.aspectX) / Constants.aspectY
                 height: (Constants.height - Constants.imageOfGalleryImageSpacing)
-                source: image
+                source: image_source
                 fillMode: Image.PreserveAspectFit
                 MouseArea {
                     anchors.fill: parent
@@ -377,6 +411,7 @@ ApplicationWindow {
                     Menu {
                         id: imagesOfGalleryContextMenu
                         MenuItem { action: refreshAllGalleryImagesModel }
+                        MenuItem { action: removeCurrentImageOfGallery }
                     }
                 }
             }
