@@ -30,6 +30,8 @@ public:
     Q_INVOKABLE void addImage(int galleryId, const QString &fileURL, bool topImage);
 
 signals:
+    void galleryReloaded();
+    void imagesOfGalleryReloaded();
     void galleryIdChanged();
     void jsonDocChanged();
     void onNewGalleryCreated();
@@ -40,6 +42,7 @@ protected slots:
     void onNewGalleryCreatedSlot(RequestData *request_, const QJsonDocument &document_);
     void onEditGallerySlot(RequestData *request_, const QJsonDocument &document_);
     void onAddImageSlot(RequestData *request_, const QJsonDocument &document_);
+    void galleryReloadedSlot();
 
 private:
     int m_galleryId = -1;

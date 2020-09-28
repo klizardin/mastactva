@@ -456,6 +456,8 @@ void GalleryEditViewModel::onJsonRequestFinished(RequestData *request_, const QJ
     std::copy(std::begin(galleries), std::end(galleries),
               std::inserter(m_data, std::end(m_data)));
     endInsertRows();
+
+    emit galleryRealoded();
 }
 
 void GalleryEditViewModel::clearData()

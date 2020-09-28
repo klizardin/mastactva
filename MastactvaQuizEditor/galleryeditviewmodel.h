@@ -163,6 +163,7 @@ protected:
 signals:
     void currentIndexChanged();
     void currentIdChanged();
+    void galleryRealoded();
 
 protected:
     // return the roles mapping to be used by QML

@@ -40,6 +40,12 @@ ApplicationWindow {
         function onNewGalleryCreated()
         {
             mastactva.reloadGalleriesModel()
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+        }
+
+        function onGalleryReloaded()
+        {
+            galleries.currentIndex = galleryCurrentIndex;
         }
 
         onRejected: {
@@ -71,6 +77,12 @@ ApplicationWindow {
         function onNewGalleryCreated()
         {
             mastactva.reloadGalleriesModel()
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+        }
+
+        function onGalleryReloaded()
+        {
+            galleries.currentIndex = galleryCurrentIndex;
         }
 
         function setFields(item)
@@ -110,6 +122,12 @@ ApplicationWindow {
         {
             mastactva.reloadGalleriesModel()
             mastactva.reloadAllImagesOfGalleryViewModel()
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+        }
+
+        function onGalleryReloaded()
+        {
+            galleries.currentIndex = galleryCurrentIndex;
         }
     }
 
@@ -127,7 +145,7 @@ ApplicationWindow {
 
     Action {
         id: createNewGallery
-        text: qsTr("&Create New Gallery Dialog")
+        text: qsTr("&Create New Gallery")
         onTriggered: {
             createNewGalleryDialog.open()
         }
@@ -135,7 +153,7 @@ ApplicationWindow {
 
     Action {
         id: editCurrentGallery
-        text: qsTr("&Edit Current Gallery Dialog")
+        text: qsTr("&Edit Current Gallery")
         onTriggered: {
             editCurrentGalleryDialog.open()
         }
@@ -181,6 +199,7 @@ ApplicationWindow {
 
                 anchors.fill: parent
                 spacing: Constants.galleriesListViewSpacing
+                clip: true
 
                 model: GalleryEditViewModel {
                     objectName: "GalleryModel"
@@ -201,6 +220,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 orientation: ListView.Horizontal
                 clip: true
+                spacing: Constants. imagesOfGalleryListViewSpacing
 
                 model: GalleryImagesModel {
                     objectName: "AllGalleryImagesModel"
@@ -224,42 +244,72 @@ ApplicationWindow {
 
             property int gallery_index: index
 
-            SwipeView {
-                id: gallery_images
-
+            Rectangle {
                 width: Constants.leftSideBarWidth
                 height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
-                clip: true
-                background: Rectangle {
-                    color: galleryCurrentIndex == gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
-                }
+                color: galleryCurrentIndex == gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
 
-                Repeater {
-                    id: gallery_image
-                    model: images
-                    Image {
-                        id: image_of_gallery_view
-                        width: Constants.leftSideBarWidth
-                        height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
-                        source: image
-                        fillMode: Image.PreserveAspectFit
+                SwipeView {
+                    id: gallery_images
 
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked:
-                            {
-                                galleryCurrentIndex = gallery_index
-                                images_of_gallery.model.galleryIndex = galleryCurrentIndex
-                                galleries.model.currentIndex = galleryCurrentIndex
-                                editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
-                                addImageDialog.currentGalleryId = galleries.model.currentId
-                                images_of_gallery.model.galleryCurrentItem
-                                mouse.accepted = false
+                    x: Constants.galleryImageSpacing / 2
+                    y: Constants.galleryImageSpacing / 2
+                    width: (Constants.leftSideBarWidth - Constants.galleryImageSpacing)
+                    height: ((Constants.leftSideBarWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                    clip: true
+
+                    Repeater {
+                        id: gallery_image
+                        model: images
+                        Image {
+                            id: image_of_gallery_view
+                            width: (Constants.leftSideBarWidth - Constants.galleryImageSpacing)
+                            height: ((Constants.leftSideBarWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                            source: image
+                            fillMode: Image.PreserveAspectFit
+
+                            MouseArea {
+                                anchors.fill: parent
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                                onClicked:
+                                {
+                                    if (mouse.button === Qt.RightButton)
+                                    {
+                                        galleryContextMenu.popup()
+                                    }
+                                    else
+                                    {
+                                        galleryCurrentIndex = gallery_index
+                                        galleryImagesCurrentIndex = -1
+                                        images_of_gallery.model.galleryIndex = galleryCurrentIndex
+                                        galleries.model.currentIndex = galleryCurrentIndex
+                                        editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
+                                        addImageDialog.currentGalleryId = galleries.model.currentId
+                                        images_of_gallery.model.galleryCurrentItem
+                                        mouse.accepted = false
+                                    }
+                                }
+
+                                onPressAndHold: {
+                                    if (mouse.source === Qt.MouseEventNotSynthesized)
+                                        galleryContextMenu.popup()
+                                }
+
+                                Menu {
+                                    id: galleryContextMenu
+                                    MenuItem { action: refreshGalleriesModel }
+                                    MenuItem { action: createNewGallery }
+                                    MenuItem { action: editCurrentGallery }
+                                    MenuItem { action : addGalleryImage }
+                                }
                             }
                         }
                     }
                 }
+
             }
+
 
             PageIndicator {
                x:(Constants.leftSideBarWidth-width)/2
@@ -281,12 +331,55 @@ ApplicationWindow {
     Component {
         id: gallery_image
 
-        Image  {
-            id: image_of_gallery
+        Rectangle {
+
+            property int imageOfGallery_index: index
+
+            SystemPalette {
+                id: imageOfGalleryItemPallete
+                colorGroup: SystemPalette.Active
+            }
+
             width: (Constants.height * Constants.aspectX) / Constants.aspectY
             height: Constants.height
-            source: image
-            fillMode: Image.PreserveAspectFit
+            color: galleryImagesCurrentIndex == imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
+
+            Image  {
+                id: image_of_gallery
+                x: Constants.imageOfGalleryImageSpacing / 2
+                y: Constants.imageOfGalleryImageSpacing / 2
+                width: ((Constants.height - Constants.imageOfGalleryImageSpacing) * Constants.aspectX) / Constants.aspectY
+                height: (Constants.height - Constants.imageOfGalleryImageSpacing)
+                source: image
+                fillMode: Image.PreserveAspectFit
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    onClicked:
+                    {
+                        if (mouse.button === Qt.RightButton)
+                        {
+                            imagesOfGalleryContextMenu.popup()
+                        }
+                        else
+                        {
+                            galleryImagesCurrentIndex = imageOfGallery_index
+                            mouse.accepted = false
+                        }
+                    }
+
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            imagesOfGalleryContextMenu.popup()
+                    }
+
+                    Menu {
+                        id: imagesOfGalleryContextMenu
+                        MenuItem { action: refreshAllGalleryImagesModel }
+                    }
+                }
+            }
         }
     }
 }

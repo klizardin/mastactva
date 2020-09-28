@@ -36,8 +36,14 @@ void MastactvaAPI::reloadGalleriesModel()
         if(nullptr != galleryModel)
         {
             galleryModel->startLoadGalleries();
+            QObject::connect(galleryModel, SIGNAL(galleryRealoded()), this, SLOT(galleryReloadedSlot()));
         }
     }
+}
+
+void MastactvaAPI::galleryReloadedSlot()
+{
+    emit galleryReloaded();
 }
 
 void MastactvaAPI::reloadAllImagesOfGalleryViewModel()

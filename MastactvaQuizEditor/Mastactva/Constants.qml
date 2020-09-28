@@ -8,6 +8,9 @@ QtObject {
     readonly property int leftSideBarTextWidth: 220
     readonly property int leftSideBarPageIndicatorHeight: 30
     readonly property int galleriesListViewSpacing: 20
+    readonly property int imagesOfGalleryListViewSpacing: 20
+    readonly property int galleryImageSpacing: 10
+    readonly property int imageOfGalleryImageSpacing: 10
     readonly property int aspectX: 3
     readonly property int aspectY: 4
 }
