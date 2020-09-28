@@ -371,19 +371,22 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     {
         return;
     }
-    if(!(*fit)->getSkipRequest())
+    RequestData* rd = *fit;
+    m_requests.erase(fit);
+    if(!rd->getSkipRequest())
     {
-        if((*fit)->isJsonReply())
+        if(rd->isJsonReply())
         {
             QJsonDocument jsonReply = QJsonDocument::fromJson(reply_->readAll());
-            emit onJsonRequestFinished(*fit, jsonReply);
+            emit onJsonRequestFinished(rd, jsonReply);
         }
         else
         {
-            emit onRequestFinished(*fit, reply_);
+            emit onRequestFinished(rd, reply_);
         }
     }
-    m_requests.erase(fit);
+    delete rd;
+    rd = nullptr;
 }
 
 NetAPI* NetAPI::apiSingelton = nullptr;
