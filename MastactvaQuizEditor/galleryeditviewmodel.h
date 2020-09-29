@@ -152,6 +152,7 @@ public:
     };
 
 public:
+    // constructions
     explicit GalleryEditViewModel(QObject *parent = nullptr);
     virtual ~GalleryEditViewModel() override;
 
@@ -160,13 +161,16 @@ public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
+    // properies
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
     Q_INVOKABLE QObject* getCurrentItem();
 
+    //slots
 private slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
 
+    // methods
 public:
     void startLoadGalleries();
     int getIdOfIndex(int index_) const;
@@ -175,14 +179,17 @@ public:
     int currentId() const;
     void setCurrentId(int id_);
 
+    // protected methods
 protected:
     void clearData();
 
+    // signals
 signals:
     void currentIndexChanged();
     void currentIdChanged();
     void galleryRealoded();
 
+    // data members
 protected:
     // return the roles mapping to be used by QML
     virtual QHash<int, QByteArray> roleNames() const override;
@@ -193,5 +200,86 @@ private:
     QVector<GalleryItemData*> m_data;
     int m_currentIndex = -1;
 };
+
+class ImagePointData : public QObject
+{
+    Q_OBJECT
+
+public:
+    ImagePointData(QObject *parent_,
+                   int sourceImageId_ = -1,
+                   int pointId_ = -1,
+                   qreal x_ = 0.5,
+                   qreal y_ = 0.5,
+                   qreal weight_ = 1.0);
+    virtual ~ImagePointData() = default;
+
+public:
+    Q_PROPERTY(int pointId READ pointId WRITE setPointId NOTIFY pointIdChanged)
+    Q_PROPERTY(qreal xCoord READ xCoord WRITE setXCoord NOTIFY xCoordChanged)
+    Q_PROPERTY(qreal yCoord READ yCoord WRITE setYCoord NOTIFY yCoordChanged)
+    Q_PROPERTY(qreal weight READ weight WRITE setWeight NOTIFY weightChanged)
+
+public:
+    int getSourceImageId() const;
+    void setSourceImageId(int sourceImageId_);
+    int pointId() const;
+    void setPointId(int id_);
+    qreal xCoord() const;
+    void setXCoord(qreal x_);
+    qreal yCoord() const;
+    void setYCoord(qreal y_);
+    qreal weight() const;
+    void setWeight(qreal weight_);
+
+signals:
+    void pointIdChanged();
+    void xCoordChanged();
+    void yCoordChanged();
+    void weightChanged();
+
+private:
+    int m_sourceImageId = -1;
+    int m_pointId = -1;
+    qreal m_x = 0.5;
+    qreal m_y = 0.5;
+    qreal m_weight = 1.0;
+};
+
+class ImagePointsModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+public:
+    enum RoleNames {
+        IDRole = Qt::UserRole,
+        XRole = Qt::UserRole + 1,
+        YRole = Qt::UserRole + 2,
+        WeightRole = Qt::UserRole + 3,
+    };
+
+public:
+    ImagePointsModel(QObject *parent_);
+    virtual ~ImagePointsModel() override;
+
+    // QAbstractItemModel interface
+public:
+    virtual int rowCount(const QModelIndex &parent) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
+protected:
+    void clearData();
+
+protected:
+    // return the roles mapping to be used by QML
+    virtual QHash<int, QByteArray> roleNames() const override;
+
+private:
+    QHash<int, QByteArray> m_roleNames;
+    int m_sourceImage = -1;
+    QVector<ImagePointData *> m_data;
+};
+
 
 #endif // GALLERYEDITVIEWMODEL_H

@@ -583,3 +583,162 @@ QObject* GalleryEditViewModel::getCurrentItem()
     }
     return m_data.at(m_currentIndex);
 }
+
+ImagePointData::ImagePointData(QObject *parent_,
+               int sourceImageId_ /*= -1*/,
+               int pointId_ /*= -1*/,
+               qreal x_ /*= 0.5*/,
+               qreal y_ /*= 0.5*/,
+               qreal weight_ /*= 1.0*/)
+    : QObject(parent_),
+    m_sourceImageId(sourceImageId_),
+    m_pointId(pointId_),
+    m_x(x_),
+    m_y(y_),
+    m_weight(weight_)
+{
+}
+
+int ImagePointData::getSourceImageId() const
+{
+    return m_sourceImageId;
+}
+
+void ImagePointData::setSourceImageId(int sourceImageId_)
+{
+    m_sourceImageId = sourceImageId_;
+}
+
+int ImagePointData::pointId() const
+{
+    return m_pointId;
+}
+
+void ImagePointData::setPointId(int id_)
+{
+    m_pointId = id_;
+
+    emit pointIdChanged();
+}
+
+qreal ImagePointData::xCoord() const
+{
+    return m_x;
+}
+
+void ImagePointData::setXCoord(qreal x_)
+{
+    m_x = x_;
+
+    emit xCoordChanged();
+}
+
+qreal ImagePointData::yCoord() const
+{
+    return m_y;
+}
+
+void ImagePointData::setYCoord(qreal y_)
+{
+    m_y = y_;
+
+    emit yCoordChanged();
+}
+
+qreal ImagePointData::weight() const
+{
+    return m_weight;
+}
+
+void ImagePointData::setWeight(qreal weight_)
+{
+    m_weight = weight_;
+
+    emit weightChanged();
+}
+
+
+ImagePointsModel::ImagePointsModel(QObject *parent_)
+    :QAbstractListModel(parent_)
+{
+    m_roleNames[IDRole] = "imagePoint_id";
+    m_roleNames[XRole] = "imagePoint_x";
+    m_roleNames[YRole] = "imagePoint_y";
+    m_roleNames[WeightRole] = "imagePoint_weight";
+}
+
+ImagePointsModel::~ImagePointsModel()
+{
+    clearData();
+}
+
+int ImagePointsModel::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent);
+    return m_data.size();
+}
+
+QVariant ImagePointsModel::data(const QModelIndex &index, int role) const
+{
+    const int row = index.row();
+    if(row < 0 || row >= m_data.size())
+    {
+        return QVariant();
+    }
+    const ImagePointData *item = m_data[row];
+    switch(role)
+    {
+    case IDRole:
+        return item->pointId();
+    case XRole:
+        return item->xCoord();
+    case YRole:
+        return item->yCoord();
+    case WeightRole:
+        return item->weight();
+    }
+    return QVariant();
+}
+
+bool ImagePointsModel::setData(const QModelIndex &index, const QVariant &value, int role /*= Qt::EditRole*/)
+{
+    const int row = index.row();
+    if(row < 0 || row >= m_data.size())
+    {
+        return false;
+    }
+    ImagePointData *item = m_data[row];
+    switch(role)
+    {
+    case IDRole:
+        item->setPointId(value.toInt());
+        break;
+    case XRole:
+        item->setXCoord(value.toDouble());
+        break;
+    case YRole:
+        item->setYCoord(value.toDouble());
+        break;
+    case WeightRole:
+        item->setWeight(value.toDouble());
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+
+void ImagePointsModel::clearData()
+{
+    for(auto *&p : m_data)
+    {
+        delete p;
+        p = nullptr;
+    }
+    m_data.clear();
+}
+
+QHash<int, QByteArray> ImagePointsModel::roleNames() const
+{
+    return m_roleNames;
+}
