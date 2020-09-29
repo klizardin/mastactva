@@ -382,6 +382,7 @@ ApplicationWindow {
 
             width: (Constants.height * Constants.aspectX) / Constants.aspectY
             height: Constants.height
+            z: 0
             border.width: 2
             border.color: galleryImagesCurrentIndex === imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
 
@@ -422,7 +423,35 @@ ApplicationWindow {
                     }
                 }
             }
+
+            Item {
+                anchors.fill: parent
+                visible: true
+                opacity: 0.5
+                z: 1
+                Repeater {
+                    model: image_points
+                    Canvas {
+                        id: canvas
+                        anchors.fill: parent
+
+                        onPaint: {
+                            var ctx = canvas.getContext("2d")
+                            var ptx = width - image_of_gallery.paintedWidth + (imagePoint_x * image_of_gallery.paintedWidth)
+                            var pty = height - image_of_gallery.paintedHeight + (imagePoint_y * image_of_gallery.paintedHeight)
+                            ctx.fillStyle = "#000080"
+                            ctx.ellipse(ptx - 5, pty - 5, 10, 10)
+                            //ctx.stroke()
+                            ctx.fill()
+                        }
+                    }
+                }
+            }
         }
     }
+
+    //Component {
+    //    id: image_point
+    //}
 }
 

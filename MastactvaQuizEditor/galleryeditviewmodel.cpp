@@ -33,6 +33,17 @@ void ImageData::setSource(const QString& source_)
     m_source = source_;
 }
 
+ImagePointsModel *ImageData::getImagePoints(QObject *parent_)
+{
+    if(nullptr == imagePointsModel)
+    {
+        imagePointsModel = new ImagePointsModel(parent_);
+        imagePointsModel->setSourceImageId(m_id);
+        imagePointsModel->startLoadImagePoints();
+    }
+    return imagePointsModel;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /// class GalleryEditViewImagesModel
 ///
@@ -48,6 +59,7 @@ GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
 {
     m_roleNames[IdRole] = "image_id";
     m_roleNames[ImageSourceRole] = "image_source";
+    m_roleNames[ImagePointsRole] = "image_points";
 
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
@@ -79,6 +91,16 @@ QVariant GalleryImagesModel::data(const QModelIndex &index, int role) const
         return image.getId();
     case ImageSourceRole:
         return image.getSource();
+    case ImagePointsRole:
+        if(m_showGalleryViewImages)
+            return QVariant();
+        else
+            return QVariant::fromValue<QObject *>(
+                        const_cast<ImageData &>(image).getImagePoints(
+                            static_cast<QObject *>(
+                                const_cast<GalleryImagesModel *>(this))
+                            )
+                        );
     }
     return QVariant();
 }
@@ -657,6 +679,65 @@ void ImagePointData::setWeight(qreal weight_)
     emit weightChanged();
 }
 
+ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_)
+{
+    const bool chk001 = jsonObject_.isObject();
+    Q_ASSERT(chk001);
+    if(!chk001)
+    {
+        error_ = true;
+        return nullptr;
+    }
+
+    error_ = false;
+
+    int id = -1;
+    qreal x = 0.5;
+    qreal y = 0.5;
+    qreal weight = 1.0;
+
+    QJsonValue idVal = jsonObject_["id"];
+    if(idVal.type() != QJsonValue::Undefined)
+    {
+        id = idVal.toInt(-1);
+    }
+    else
+    {
+        error_ = true;
+    }
+
+    QJsonValue xVal = jsonObject_["x"];
+    if(xVal.type() != QJsonValue::Undefined && xVal.isDouble())
+    {
+        x = xVal.toDouble(0.5);
+    }
+    else
+    {
+        error_ = true;
+    }
+
+    QJsonValue yVal = jsonObject_["y"];
+    if(yVal.type() != QJsonValue::Undefined && yVal.isDouble())
+    {
+        y = yVal.toDouble(0.5);
+    }
+    else
+    {
+        error_ = true;
+    }
+
+    QJsonValue weightVal = jsonObject_["weight"];
+    if(weightVal.type() != QJsonValue::Undefined && weightVal.isDouble())
+    {
+        weight = weightVal.toDouble(0.5);
+    }
+    else
+    {
+        error_ = true;
+    }
+    return new ImagePointData(parent_, sourceImageId_, id, x, y, weight);
+}
+
 
 ImagePointsModel::ImagePointsModel(QObject *parent_)
     :QAbstractListModel(parent_)
@@ -665,6 +746,9 @@ ImagePointsModel::ImagePointsModel(QObject *parent_)
     m_roleNames[XRole] = "imagePoint_x";
     m_roleNames[YRole] = "imagePoint_y";
     m_roleNames[WeightRole] = "imagePoint_weight";
+
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
 }
 
 ImagePointsModel::~ImagePointsModel()
@@ -726,6 +810,65 @@ bool ImagePointsModel::setData(const QModelIndex &index, const QVariant &value, 
         return false;
     }
     return true;
+}
+
+void ImagePointsModel::setSourceImageId(int sourceImageId_)
+{
+    m_sourceImageId = sourceImageId_;
+}
+
+void ImagePointsModel::startLoadImagePoints()
+{
+    auto *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(!(nullptr != netAPI))
+    {
+        return;
+    }
+
+    m_request = netAPI->startRequest();
+    NetAPI::getSingelton()->get(QString("image-point/%1/of_image/").arg(m_sourceImageId), m_request);
+}
+
+void ImagePointsModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(reply_);
+    if(nullptr == m_request || m_request != request_)
+    {
+        return;
+    }
+    m_request = nullptr;
+
+    Q_ASSERT(reply_.isArray());
+    if(!(reply_.isArray()))
+    {
+        return;
+    }
+    QVector<ImagePointData*> imagePoints;
+    for(int i = 0; ; i++)
+    {
+        QJsonValue val = reply_[i];
+        if(QJsonValue::Undefined == val.type())
+        {
+            break;
+        }
+        bool anyError = false;
+        ImagePointData *data = ImagePointData::fromJson(this, m_sourceImageId, val, anyError);
+        if(anyError)
+        {
+            continue;
+        }
+        imagePoints.push_back(data);
+    }
+    beginRemoveRows(QModelIndex(), 0, m_data.size());
+    clearData();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + imagePoints.size() - 1);
+    std::copy(std::begin(imagePoints), std::end(imagePoints),
+              std::inserter(m_data, std::end(m_data)));
+    endInsertRows();
+
+    emit imagePointsLoaded();
 }
 
 void ImagePointsModel::clearData()

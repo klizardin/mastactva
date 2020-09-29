@@ -11,6 +11,8 @@
 
 
 class RequestData;
+class ImagePointsModel;
+
 
 class ImageData
 {
@@ -22,10 +24,12 @@ public:
     void setId(int id_);
     const QString& getSource() const;
     void setSource(const QString& source_);
+    ImagePointsModel *getImagePoints(QObject *parent_);
 
 protected:
     int m_id = -1;
     QString m_source;
+    ImagePointsModel *imagePointsModel = nullptr;
 };
 
 class GalleryImagesModel : public QAbstractListModel
@@ -36,6 +40,7 @@ public:
     enum RoleNames {
         IdRole = Qt::UserRole,
         ImageSourceRole = Qt::UserRole + 1,
+        ImagePointsRole = Qt::UserRole + 2,
     };
 
 public:
@@ -232,6 +237,8 @@ public:
     qreal weight() const;
     void setWeight(qreal weight_);
 
+    static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
+
 signals:
     void pointIdChanged();
     void xCoordChanged();
@@ -268,6 +275,17 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
+public:
+    void setSourceImageId(int sourceImageId_);
+    void startLoadImagePoints();
+
+signals:
+    void imagePointsLoaded();
+
+    //slots
+private slots:
+    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
 protected:
     void clearData();
 
@@ -277,8 +295,9 @@ protected:
 
 private:
     QHash<int, QByteArray> m_roleNames;
-    int m_sourceImage = -1;
+    int m_sourceImageId = -1;
     QVector<ImagePointData *> m_data;
+    RequestData* m_request = nullptr;
 };
 
 
