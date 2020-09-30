@@ -1,6 +1,11 @@
 #include "galleryeditviewmodel.h"
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <QSGRendererInterface>
+#include <QQuickWindow>
+#include <QAbstractItemModel>
+#include <QRunnable>
+#include <QDebug>
 #include "netapi.h"
 #include "qmlmainobjects.h"
 
@@ -884,4 +889,231 @@ void ImagePointsModel::clearData()
 QHash<int, QByteArray> ImagePointsModel::roleNames() const
 {
     return m_roleNames;
+}
+
+ImagePointData *ImagePointsModel::getAt(int index_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return nullptr;
+    }
+    return m_data.at(index_);
+}
+
+VoronoyDiagramRender::VoronoyDiagramRender(QObject *parent_)
+    :QObject(parent_)
+{
+}
+
+VoronoyDiagramRender::~VoronoyDiagramRender()
+{
+    delete m_program;
+    m_program = nullptr;
+    m_model = nullptr;
+    m_window = nullptr;
+}
+
+void VoronoyDiagramRender::setModel(ImagePointsModel *model_)
+{
+    m_model = model_;
+    m_imagePointsCnt = nullptr != m_model ? m_model->rowCount(QModelIndex()) : -1;
+    m_points.clear();
+    for(int i = 0; i < m_imagePointsCnt; i++)
+    {
+        const bool chk001 = nullptr != m_model && nullptr != m_model->getAt(i);
+        Q_ASSERT(chk001);
+        if(!chk001)
+        {
+            continue;
+        }
+        qreal x = m_model->getAt(i)->xCoord() * m_viewportSize.width();
+        qreal y = m_model->getAt(i)->yCoord() * m_viewportSize.height();
+        m_points.push_back(QVector2D(x,y));
+    }
+}
+
+void VoronoyDiagramRender::setViewportSize(const QSize &size_)
+{
+    m_viewportSize = size_;
+}
+
+void VoronoyDiagramRender::setWindow(QQuickWindow *window_)
+{
+    m_window = window_;
+}
+
+void VoronoyDiagramRender::init()
+{
+    if (nullptr == m_program && nullptr != m_model && m_imagePointsCnt > 0)
+    {
+        QSGRendererInterface *rif = m_window->rendererInterface();
+        Q_ASSERT(rif->graphicsApi() == QSGRendererInterface::OpenGL || rif->graphicsApi() == QSGRendererInterface::OpenGLRhi);
+
+        initializeOpenGLFunctions();
+
+        m_program = new QOpenGLShaderProgram();
+        m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex,
+                                                    "attribute highp vec2 vertices;\n"
+                                                    "void main() {\n"
+                                                    "    gl_Position = vec4(vertices, 0.0, 1.0);\n"
+                                                    "}\n");
+        m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment,
+                                            QString("uniform vec2 seeds[%1];\n"
+                                                    "void main() {\n"
+                                                    "    highp float dist0 = distance(seeds[0], gl_FragCoord.xy);\n"
+                                                    "    highp float dist1 = dist0;\n"
+                                                    "    for(int i = 1; i < %1; i++) {\n"
+                                                    "        lowp float dist = distance(seeds[i], gl_FragCoord.xy);\n"
+                                                    "        if(dist < dist0) {\n"
+                                                    "            dist1 = dist0;\n"
+                                                    "            dist0 = dist;\n"
+                                                    "        } else if(dist < dist1) {\n"
+                                                    "            dist1 = dist;\n"
+                                                    "        }\n"
+                                                    "    }\n"
+                                                    "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
+                                                    "    gl_FragColor = vec4(c, c, c, 1.0);\n"
+                                                    "}\n").arg(m_imagePointsCnt));
+
+        m_program->bindAttributeLocation("vertices", 0);
+        m_program->link();
+    }
+}
+
+void VoronoyDiagramRender::paint()
+{
+    if(nullptr == m_program || nullptr == m_model)
+    {
+        return;
+    }
+
+    // Play nice with the RHI. Not strictly needed when the scenegraph uses
+    // OpenGL directly.
+    m_window->beginExternalCommands();
+
+    m_program->bind();
+
+    m_program->enableAttributeArray(0);
+
+    float values[] = {
+        0, 0,
+        (float)m_viewportSize.width(), 0,
+        0, (float)m_viewportSize.height(),
+        (float)m_viewportSize.width(), (float)m_viewportSize.height(),
+    };
+
+    // This example relies on (deprecated) client-side pointers for the vertex
+    // input. Therefore, we have to make sure no vertex buffer is bound.
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    m_program->setAttributeArray(0, GL_FLOAT, values, 8);
+    m_program->setUniformValueArray("seeds", &m_points[0], m_imagePointsCnt);
+
+    glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
+
+    glDisable(GL_DEPTH_TEST);
+
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    m_program->disableAttributeArray(0);
+    m_program->release();
+
+    // Not strictly needed for this example, but generally useful for when
+    // mixing with raw OpenGL.
+    m_window->resetOpenGLState();
+
+    m_window->endExternalCommands();
+}
+
+
+class CleanupJob : public QRunnable
+{
+public:
+    CleanupJob(VoronoyDiagramRender *renderer) : m_renderer(renderer) { }
+    void run() override { delete m_renderer; }
+private:
+    VoronoyDiagramRender *m_renderer = nullptr;
+};
+
+
+VoronoyDiagramItem::VoronoyDiagramItem()
+{
+    connect(this, &QQuickItem::windowChanged, this, &VoronoyDiagramItem::handleWindowChanged);
+}
+
+VoronoyDiagramItem::~VoronoyDiagramItem()
+{
+}
+
+QVariant VoronoyDiagramItem::model()
+{
+    return QVariant::fromValue(m_model);
+}
+
+void VoronoyDiagramItem::setModel(QVariant model_)
+{
+    if(nullptr != m_model)
+    {
+        QObject::disconnect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
+    }
+
+    QObject *obj = qvariant_cast<QObject *>(model_);
+    ImagePointsModel *newModel = qobject_cast<ImagePointsModel *>(static_cast<QObject *>(obj));
+    if(newModel == m_model)
+    {
+        return;
+    }
+    m_modelLoaded = false;
+    m_model = newModel;
+    if(nullptr != m_model)
+    {
+        QObject::connect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
+    }
+    emit modelChanged();
+}
+
+void VoronoyDiagramItem::sync()
+{
+    if (nullptr == m_renderer && nullptr != window()) {
+        m_renderer = new VoronoyDiagramRender(this);
+        connect(window(), &QQuickWindow::beforeRendering, m_renderer, &VoronoyDiagramRender::init, Qt::DirectConnection);
+        connect(window(), &QQuickWindow::beforeRenderPassRecording, m_renderer, &VoronoyDiagramRender::paint, Qt::DirectConnection);
+    }
+    if(m_modelLoaded && nullptr != m_renderer)
+    {
+        m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
+        m_renderer->setWindow(window());
+        m_renderer->setModel(m_model);
+        if (window())
+            window()->update();
+    }
+}
+
+void VoronoyDiagramItem::cleanup()
+{
+    delete m_renderer;
+    m_renderer = nullptr;
+}
+
+void VoronoyDiagramItem::handleWindowChanged(QQuickWindow *win_)
+{
+    if (nullptr != win_)
+    {
+        connect(win_, &QQuickWindow::beforeSynchronizing, this, &VoronoyDiagramItem::sync, Qt::DirectConnection);
+        connect(win_, &QQuickWindow::sceneGraphInvalidated, this, &VoronoyDiagramItem::cleanup, Qt::DirectConnection);
+    }
+}
+
+void VoronoyDiagramItem::imagePointsLoadedSlot()
+{
+    m_modelLoaded = true;
+}
+
+void VoronoyDiagramItem::releaseResources()
+{
+    window()->scheduleRenderJob(new CleanupJob(m_renderer), QQuickWindow::BeforeSynchronizingStage);
+    m_renderer = nullptr;
 }

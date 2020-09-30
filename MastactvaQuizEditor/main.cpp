@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
     NetAPI::getSingelton()->getDefaultRequestData().setUrlBase("http://localhost:8000/");
     QMLMainObjects::createSingelton(&app);
 
-    qmlRegisterType<GalleryEditViewModel>("org.mastactva", 1, 0, "GalleryEditViewModel");
-    qmlRegisterType<GalleryImagesModel>("org.mastactva", 1, 0, "GalleryImagesModel");
-    qmlRegisterType<MastactvaAPI>("org.mastactva", 1, 0, "MastactvaAPI");
+    //qmlRegisterType<GalleryEditViewModel>("org.mastactva", 1, 0, "GalleryEditViewModel");
+    //qmlRegisterType<GalleryImagesModel>("org.mastactva", 1, 0, "GalleryImagesModel");
+    //qmlRegisterType<MastactvaAPI>("org.mastactva", 1, 0, "MastactvaAPI");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

@@ -2,7 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.1
-import org.mastactva 1.0
+import MastactvaQuizEditor 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
 
@@ -16,6 +16,7 @@ ApplicationWindow {
 
     property alias galleryCurrentIndex: mastactva.galleryIndex
     property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
+    property bool showImagePoints: false
 
     MastactvaAPI {
         id: mastactva
@@ -200,6 +201,14 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: showImagePointsAction
+        text: qsTr("Show image &points")
+        onTriggered: {
+            showImagePoints = !showImagePoints
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
@@ -212,6 +221,11 @@ ApplicationWindow {
             title: qsTr("All Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
             MenuItem { action: removeCurrentImageOfGallery }
+            MenuItem {
+                action: showImagePointsAction
+                checkable: true
+                checked: showImagePoints
+            }
         }
         Menu {
             title: qsTr("Test")
@@ -420,15 +434,29 @@ ApplicationWindow {
                         id: imagesOfGalleryContextMenu
                         MenuItem { action: refreshAllGalleryImagesModel }
                         MenuItem { action: removeCurrentImageOfGallery }
+                        MenuItem {
+                            action: showImagePointsAction
+                            checkable: true
+                            checked: showImagePoints
+                        }
                     }
                 }
             }
 
+            VoronoyDiagramItem {
+                anchors.fill: parent
+                id: voronoyDiagram
+                visible: showImagePoints
+                opacity: 0.5
+                z: 0.5
+                model: image_points
+            }
+
             Item {
                 anchors.fill: parent
-                visible: true
+                visible: showImagePoints
                 opacity: 0.5
-                z: 1
+                z: 1.0
                 Repeater {
                     model: image_points
                     Canvas {
@@ -441,7 +469,6 @@ ApplicationWindow {
                             var pty = height - image_of_gallery.paintedHeight + (imagePoint_y * image_of_gallery.paintedHeight)
                             ctx.fillStyle = "#000080"
                             ctx.ellipse(ptx - 5, pty - 5, 10, 10)
-                            //ctx.stroke()
                             ctx.fill()
                         }
                     }
@@ -449,9 +476,5 @@ ApplicationWindow {
             }
         }
     }
-
-    //Component {
-    //    id: image_point
-    //}
 }
 

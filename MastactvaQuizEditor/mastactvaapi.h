@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QJsonDocument>
+#include <QtQuick/QQuickItem>
 
 
 class RequestData;
@@ -14,6 +15,8 @@ class MultiPartRequestData;
 class MastactvaAPI : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+
 public:
     explicit MastactvaAPI(QObject *parent = nullptr);
 

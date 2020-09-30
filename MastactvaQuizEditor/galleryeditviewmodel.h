@@ -2,12 +2,16 @@
 #define GALLERYEDITVIEWMODEL_H
 
 #include <QObject>
+#include <QtQuick/QQuickItem>
+#include <QtGui/QOpenGLShaderProgram>
+#include <QtGui/QOpenGLFunctions>
 #include <QAbstractListModel>
 #include <QDateTime>
 #include <QString>
 #include <QVector>
 #include <QHash>
 #include <QJsonValue>
+#include <QVector2D>
 
 
 class RequestData;
@@ -35,6 +39,7 @@ protected:
 class GalleryImagesModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     enum RoleNames {
@@ -145,6 +150,7 @@ public:
 class GalleryEditViewModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     // Define the role names to be used
@@ -256,6 +262,7 @@ private:
 class ImagePointsModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     enum RoleNames {
@@ -278,6 +285,7 @@ public:
 public:
     void setSourceImageId(int sourceImageId_);
     void startLoadImagePoints();
+    ImagePointData *getAt(int index_);
 
 signals:
     void imagePointsLoaded();
@@ -298,6 +306,65 @@ private:
     int m_sourceImageId = -1;
     QVector<ImagePointData *> m_data;
     RequestData* m_request = nullptr;
+};
+
+
+class VoronoyDiagramRender : public QObject, protected QOpenGLFunctions
+{
+    Q_OBJECT
+
+public:
+    VoronoyDiagramRender(QObject *parent_);
+    virtual ~VoronoyDiagramRender();
+
+    void setModel(ImagePointsModel *model_);
+    void setViewportSize(const QSize &size_);
+    void setWindow(QQuickWindow *window_);
+
+public slots:
+    void init();
+    void paint();
+
+private:
+    QSize m_viewportSize = QSize(1,1);
+    QQuickWindow *m_window = nullptr;
+    ImagePointsModel *m_model = nullptr;
+    int m_imagePointsCnt = -1;
+    QVector<QVector2D> m_points;
+    QOpenGLShaderProgram *m_program = nullptr;
+};
+
+class VoronoyDiagramItem : public QQuickItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QVariant model READ model WRITE setModel NOTIFY modelChanged)
+    QML_ELEMENT
+
+public:
+    VoronoyDiagramItem();
+    virtual ~VoronoyDiagramItem() override;
+
+    QVariant model();
+    void setModel(QVariant model_);
+
+signals:
+    void modelChanged();
+
+public slots:
+    void sync();
+    void cleanup();
+
+private slots:
+    void handleWindowChanged(QQuickWindow *win_);
+    void imagePointsLoadedSlot();
+
+private:
+    void releaseResources() override;
+
+private:
+    ImagePointsModel *m_model = nullptr;
+    bool m_modelLoaded = false;
+    VoronoyDiagramRender *m_renderer = nullptr;
 };
 
 

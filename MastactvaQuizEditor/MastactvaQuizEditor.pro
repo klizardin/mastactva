@@ -1,7 +1,12 @@
 QT += quick
 QT += quickcontrols2
 
+CONFIG += qmltypes
+QML_IMPORT_NAME = MastactvaQuizEditor
+QML_IMPORT_MAJOR_VERSION = 1
+
 CONFIG += c++14
+
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -40,6 +45,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     imports/MastactvaAPI/qmldir \
     Mastactva/Constants.qml \
     Mastactva/qmldir
