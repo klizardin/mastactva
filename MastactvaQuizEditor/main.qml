@@ -443,13 +443,21 @@ ApplicationWindow {
                 }
             }
 
-            VoronoyDiagramItem {
+            /*VoronoyDiagramItem {
                 anchors.fill: parent
                 id: voronoyDiagram
                 visible: showImagePoints
                 opacity: 0.5
                 z: 0.5
                 model: image_points
+            }*/
+
+            CustomPaintedItem {
+                anchors.fill: parent
+                id: testFBODraw
+                visible: showImagePoints
+                opacity: 0.5
+                z: 0.5
             }
 
             Item {

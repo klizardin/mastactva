@@ -532,6 +532,23 @@
                         "name": "QQuickItem"
                     }
                 ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "CustomPaintedItem",
+                "object": true,
+                "qualifiedClassName": "CustomPaintedItem",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickPaintedItem"
+                    }
+                ]
             }
         ],
         "inputFile": "galleryeditviewmodel.h",

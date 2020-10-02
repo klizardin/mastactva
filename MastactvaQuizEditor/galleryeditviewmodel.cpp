@@ -5,6 +5,11 @@
 #include <QQuickWindow>
 #include <QAbstractItemModel>
 #include <QRunnable>
+#include <QOpenGLFramebufferObjectFormat>
+#include <QOpenGLPaintDevice>
+#include <QPainter>
+#include <QPen>
+#include <QFont>
 #include <QDebug>
 #include "netapi.h"
 #include "qmlmainobjects.h"
@@ -972,7 +977,7 @@ void VoronoyDiagramRender::init()
                                                     "        }\n"
                                                     "    }\n"
                                                     "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
-                                                    "    gl_FragColor = vec4(c, c, c, 1.0);\n"
+                                                    "    gl_FragColor = vec4(1.0, c, c, 1.0);\n"
                                                     "}\n").arg(m_imagePointsCnt));
 
         m_program->bindAttributeLocation("vertices", 0);
@@ -991,15 +996,17 @@ void VoronoyDiagramRender::paint()
     // OpenGL directly.
     m_window->beginExternalCommands();
 
+    glPushAttrib(GL_VIEWPORT_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+
     m_program->bind();
 
     m_program->enableAttributeArray(0);
 
     float values[] = {
         0, 0,
-        (float)m_viewportSize.width(), 0,
-        0, (float)m_viewportSize.height(),
-        (float)m_viewportSize.width(), (float)m_viewportSize.height(),
+        1, 0,
+        0, 1,
+        1, 1,
     };
 
     // This example relies on (deprecated) client-side pointers for the vertex
@@ -1023,6 +1030,7 @@ void VoronoyDiagramRender::paint()
 
     // Not strictly needed for this example, but generally useful for when
     // mixing with raw OpenGL.
+    glPopAttrib();
     m_window->resetOpenGLState();
 
     m_window->endExternalCommands();
@@ -1084,7 +1092,7 @@ void VoronoyDiagramItem::sync()
     }
     if(m_modelLoaded && nullptr != m_renderer)
     {
-        m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
+        m_renderer->setViewportSize((size() * window()->devicePixelRatio()).toSize());
         m_renderer->setWindow(window());
         m_renderer->setModel(m_model);
         if (window())
@@ -1116,4 +1124,73 @@ void VoronoyDiagramItem::releaseResources()
 {
     window()->scheduleRenderJob(new CleanupJob(m_renderer), QQuickWindow::BeforeSynchronizingStage);
     m_renderer = nullptr;
+}
+
+QImage createImageWithFBO()
+{
+    QSurfaceFormat format;
+    format.setMajorVersion(3);
+    format.setMinorVersion(3);
+
+    QWindow window;
+    window.setSurfaceType(QWindow::OpenGLSurface);
+    window.setFormat(format);
+    window.create();
+
+    QOpenGLContext context;
+    context.setFormat(format);
+    if (!context.create())
+        qFatal("Cannot create the requested OpenGL context!");
+    context.makeCurrent(&window);
+
+    const QRect drawRect(0, 0, 400, 400);
+    const QSize drawRectSize = drawRect.size();
+
+    QOpenGLFramebufferObjectFormat fboFormat;
+    fboFormat.setSamples(16);
+    fboFormat.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+
+    QOpenGLFramebufferObject fbo(drawRectSize, fboFormat);
+    fbo.bind();
+
+    QOpenGLPaintDevice device(drawRectSize);
+    QPainter painter;
+    painter.begin(&device);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+
+    painter.fillRect(drawRect, Qt::blue);
+
+    painter.drawTiledPixmap(drawRect, QPixmap(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
+
+    painter.setPen(QPen(Qt::green, 5));
+    painter.setBrush(Qt::red);
+    painter.drawEllipse(0, 100, 400, 200);
+    painter.drawEllipse(100, 0, 200, 400);
+
+    painter.setPen(QPen(Qt::white, 0));
+    QFont font;
+    font.setPointSize(24);
+    painter.setFont(font);
+    painter.drawText(drawRect, "Hello FBO", QTextOption(Qt::AlignCenter));
+
+    painter.end();
+
+    fbo.release();
+    return fbo.toImage();
+}
+
+CustomPaintedItem::CustomPaintedItem(QQuickItem * parent_ /*= nullptr*/)
+    :QQuickPaintedItem(parent_)
+{
+}
+
+void CustomPaintedItem::paint(QPainter *painter_)
+{
+    if(!m_created)
+    {
+        m_image = createImageWithFBO();
+        m_created = true;
+    }
+    QSizeF itemSize = size();
+    painter_->drawImage(QRect(QPoint(0,0), itemSize.toSize()), m_image, QRect(0, 0, 400, 400));
 }

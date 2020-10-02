@@ -5,7 +5,9 @@
 #include <QtQuick/QQuickItem>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
+#include <QQuickPaintedItem>
 #include <QAbstractListModel>
+#include <QImage>
 #include <QDateTime>
 #include <QString>
 #include <QVector>
@@ -365,6 +367,21 @@ private:
     ImagePointsModel *m_model = nullptr;
     bool m_modelLoaded = false;
     VoronoyDiagramRender *m_renderer = nullptr;
+};
+
+class CustomPaintedItem : public QQuickPaintedItem
+{
+    Q_OBJECT
+    QML_ELEMENT
+
+public:
+    CustomPaintedItem(QQuickItem * parent_ = nullptr);
+
+    virtual void paint(QPainter *painter_) override;
+
+private:
+    QImage m_image;
+    bool m_created = false;
 };
 
 
