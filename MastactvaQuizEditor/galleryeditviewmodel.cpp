@@ -1197,6 +1197,8 @@ void CustomPaintedItem::paint(QPainter *painter_)
 }
 
 LogoRenderer::LogoRenderer()
+    : m_vertexPositionBuffer(QOpenGLBuffer::VertexBuffer),
+      m_vertexColorBuffer(QOpenGLBuffer::VertexBuffer)
 {
 }
 
@@ -1206,18 +1208,29 @@ LogoRenderer::~LogoRenderer()
 
 void LogoRenderer::initialize()
 {
+}
+
+void LogoRenderer::render()
+{
+    if(!m_modelLoaded)
+    {
+        return;
+    }
+    //qDebug() << "LogoRenderer::render()";
+
     initializeOpenGLFunctions();
-
-    glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-
     const char *vsrc1 =
             "attribute highp vec2 vertices;\n"
+            "attribute highp vec3 color;\n"
+            "varying highp vec3 fragColor;\n"
             "void main() {\n"
-            "    gl_Position = vec4(vertices, 0.0, 1.0);\n"
+            "    gl_Position = vec4(vertices.x, vertices.y, 0.0, 1.0);\n"
+            "    fragColor = color;\n"
             "}\n";
 
     QString fsrc1 = m_imagePointsCnt > 0 ? QString(
             "uniform vec2 seeds[%1];\n"
+            "varying highp vec3 fragColor;\n"
             "void main() {\n"
             "    highp float dist0 = distance(seeds[0], gl_FragCoord.xy);\n"
             "    highp float dist1 = dist0;\n"
@@ -1231,61 +1244,79 @@ void LogoRenderer::initialize()
             "        }\n"
             "    }\n"
             "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
-            "    gl_FragColor = vec4(1.0, c, c, 1.0);\n"
+            "    gl_FragColor = vec4(fragColor.x, c, c, 1.0);\n"
             "}\n").arg(m_imagePointsCnt)
             : QString(
+            "varying highp vec3 fragColor;\n"
             "void main(void)\n"
             "{\n"
-            "    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+            "    gl_FragColor = vec4(fragColor.rgb, 1.0);\n"
             "}\n");
 
     m_program.addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vsrc1);
     m_program.addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fsrc1);
-    m_program.link();
-}
 
-void LogoRenderer::render()
-{
-    if(!m_modelLoaded)
+    m_modelLoaded = true;
+    static const float vertexPositions[] = {
+        0, 0,
+        1, 0,
+        1, (float)m_size.height()/(float)m_size.width(),
+        0, (float)m_size.height()/(float)m_size.width(),
+    };
+
+    static const float vertexColors[] = {
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f
+    };
+    m_vertexPositions.resize(sizeof(vertexPositions)/sizeof(vertexPositions[0]));
+    m_vertexColors.resize(sizeof(vertexColors)/sizeof(vertexColors[0]));
+    std::copy(std::begin(vertexPositions), std::end(vertexPositions), std::begin(m_vertexPositions));
+    std::copy(std::begin(vertexColors), std::end(vertexColors), std::begin(m_vertexColors));
+
+    m_vertexPositionBuffer.create();
+    m_vertexPositionBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    m_vertexPositionBuffer.bind();
+    m_vertexPositionBuffer.allocate(&m_vertexPositions[0], 8 * sizeof(float));
+
+    m_vertexColorBuffer.create();
+    m_vertexColorBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    m_vertexColorBuffer.bind();
+    m_vertexColorBuffer.allocate(&m_vertexColors[0], 12 * sizeof(float));
+
+    m_program.link();
+    m_program.bind();
+
+
+    m_vertexPositionBuffer.bind();
+    m_program.enableAttributeArray("vertices");
+    m_program.setAttributeBuffer("vertices", GL_FLOAT, 0, 2);
+
+    m_vertexColorBuffer.bind();
+    m_program.enableAttributeArray("color");
+    m_program.setAttributeBuffer("color", GL_FLOAT, 0, 3);
+
+    if(m_imagePointsCnt > 0)
     {
-        return;
+        m_program.setUniformValueArray("seeds", &m_points[0], m_imagePointsCnt);
     }
 
     glPushAttrib(GL_VIEWPORT_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+    glPushMatrix();
 
-    m_program.bind();
-
-    m_program.enableAttributeArray(0);
-
-    float values[] = {
-        0, 0,
-        1, 0,
-        0, 1,
-        1, 1,
-    };
-
-    // This example relies on (deprecated) client-side pointers for the vertex
-    // input. Therefore, we have to make sure no vertex buffer is bound.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    m_program.setAttributeArray(0, GL_FLOAT, values, 8);
-    m_program.setUniformValueArray("seeds", &m_points[0], m_imagePointsCnt);
-
+    glLoadIdentity();
     glViewport(0, 0, m_size.width(), m_size.height());
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
-
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    m_program.disableAttributeArray(0);
-    m_program.release();
-
-    // Not strictly needed for this example, but generally useful for when
-    // mixing with raw OpenGL.
+    glPopMatrix();
     glPopAttrib();
+
+    m_program.release();
 }
 
 
@@ -1297,6 +1328,7 @@ void LogoRenderer::setModel(ImagePointsModel *model_)
 
 void LogoRenderer::onModelLoadedSlot()
 {
+    qDebug() << "LogoRenderer::onModelLoadedSlot()\n";
     Q_ASSERT(nullptr != m_model);
     m_imagePointsCnt = nullptr != m_model ? m_model->rowCount(QModelIndex()) : -1;
     m_points.clear();

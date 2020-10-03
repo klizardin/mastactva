@@ -11,6 +11,7 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qopenglshaderprogram.h>
 #include <QtGui/qopenglfunctions.h>
+#include <QOpenGLBuffer>
 #include <QQuickPaintedItem>
 #include <QAbstractListModel>
 #include <QImage>
@@ -432,6 +433,11 @@ private:
     bool m_modelLoaded = false;
     int m_imagePointsCnt = -1;
     QVector<QVector2D> m_points;
+
+    QOpenGLBuffer m_vertexPositionBuffer;
+    QOpenGLBuffer m_vertexColorBuffer;
+    QVector<float> m_vertexPositions;
+    QVector<float> m_vertexColors;
 };
 
 class LogoInFboRenderer : public QQuickFramebufferObject::Renderer
