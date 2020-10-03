@@ -3,8 +3,14 @@
 
 #include <QObject>
 #include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickFramebufferObject>
 #include <QtGui/QOpenGLShaderProgram>
+#include <QtGui/QOpenGLFramebufferObjectFormat>
 #include <QtGui/QOpenGLFunctions>
+#include <QtGui/qvector3d.h>
+#include <QtGui/qmatrix4x4.h>
+#include <QtGui/qopenglshaderprogram.h>
+#include <QtGui/qopenglfunctions.h>
 #include <QQuickPaintedItem>
 #include <QAbstractListModel>
 #include <QImage>
@@ -382,6 +388,75 @@ public:
 private:
     QImage m_image;
     bool m_created = false;
+};
+
+class FboInSGRenderer : public QQuickFramebufferObject
+{
+    Q_OBJECT
+    QML_NAMED_ELEMENT(FBORenderer)
+    Q_PROPERTY(QVariant model READ model WRITE setModel NOTIFY modelChanged)
+public:
+    Renderer *createRenderer() const;
+
+    QVariant model();
+    void setModel(QVariant model_);
+
+signals:
+    void modelChanged();
+
+private:
+    ImagePointsModel *m_model = nullptr;
+};
+
+class LogoRenderer : public QObject, protected QOpenGLFunctions
+{
+    Q_OBJECT
+
+public:
+    LogoRenderer();
+    ~LogoRenderer();
+
+    void initialize();
+    void render();
+
+    void setModel(ImagePointsModel *model_);
+    void setSize(const QSize &size_);
+
+protected slots:
+    void onModelLoadedSlot();
+
+private:
+    QOpenGLShaderProgram m_program;
+    ImagePointsModel *m_model = nullptr;
+    QSize m_size;
+    bool m_modelLoaded = false;
+    int m_imagePointsCnt = -1;
+    QVector<QVector2D> m_points;
+};
+
+class LogoInFboRenderer : public QQuickFramebufferObject::Renderer
+{
+public:
+    LogoInFboRenderer(ImagePointsModel *model_)
+    {
+        logo.setModel(model_);
+        logo.initialize();
+    }
+
+    void render() override {
+        logo.render();
+        update();
+    }
+
+    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override {
+        logo.setSize(size);
+        QOpenGLFramebufferObjectFormat format;
+        format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+        format.setSamples(4);
+        return new QOpenGLFramebufferObject(size, format);
+    }
+
+    LogoRenderer logo;
 };
 
 

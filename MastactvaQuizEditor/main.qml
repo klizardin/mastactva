@@ -452,12 +452,21 @@ ApplicationWindow {
                 model: image_points
             }*/
 
-            CustomPaintedItem {
+            /*CustomPaintedItem {
                 anchors.fill: parent
                 id: testFBODraw
                 visible: showImagePoints
                 opacity: 0.5
                 z: 0.5
+            }*/
+
+            FBORenderer {
+                anchors.fill: parent
+                id: testFBODraw
+                visible: showImagePoints
+                opacity: 0.5
+                z: 0.5
+                model: image_points
             }
 
             Item {

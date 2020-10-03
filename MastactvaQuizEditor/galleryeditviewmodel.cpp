@@ -1182,6 +1182,7 @@ QImage createImageWithFBO()
 CustomPaintedItem::CustomPaintedItem(QQuickItem * parent_ /*= nullptr*/)
     :QQuickPaintedItem(parent_)
 {
+
 }
 
 void CustomPaintedItem::paint(QPainter *painter_)
@@ -1193,4 +1194,155 @@ void CustomPaintedItem::paint(QPainter *painter_)
     }
     QSizeF itemSize = size();
     painter_->drawImage(QRect(QPoint(0,0), itemSize.toSize()), m_image, QRect(0, 0, 400, 400));
+}
+
+LogoRenderer::LogoRenderer()
+{
+}
+
+LogoRenderer::~LogoRenderer()
+{
+}
+
+void LogoRenderer::initialize()
+{
+    initializeOpenGLFunctions();
+
+    glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+
+    const char *vsrc1 =
+            "attribute highp vec2 vertices;\n"
+            "void main() {\n"
+            "    gl_Position = vec4(vertices, 0.0, 1.0);\n"
+            "}\n";
+
+    QString fsrc1 = m_imagePointsCnt > 0 ? QString(
+            "uniform vec2 seeds[%1];\n"
+            "void main() {\n"
+            "    highp float dist0 = distance(seeds[0], gl_FragCoord.xy);\n"
+            "    highp float dist1 = dist0;\n"
+            "    for(int i = 1; i < %1; i++) {\n"
+            "        lowp float dist = distance(seeds[i], gl_FragCoord.xy);\n"
+            "        if(dist < dist0) {\n"
+            "            dist1 = dist0;\n"
+            "            dist0 = dist;\n"
+            "        } else if(dist < dist1) {\n"
+            "            dist1 = dist;\n"
+            "        }\n"
+            "    }\n"
+            "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
+            "    gl_FragColor = vec4(1.0, c, c, 1.0);\n"
+            "}\n").arg(m_imagePointsCnt)
+            : QString(
+            "void main(void)\n"
+            "{\n"
+            "    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+            "}\n");
+
+    m_program.addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vsrc1);
+    m_program.addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fsrc1);
+    m_program.link();
+}
+
+void LogoRenderer::render()
+{
+    if(!m_modelLoaded)
+    {
+        return;
+    }
+
+    glPushAttrib(GL_VIEWPORT_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+
+    m_program.bind();
+
+    m_program.enableAttributeArray(0);
+
+    float values[] = {
+        0, 0,
+        1, 0,
+        0, 1,
+        1, 1,
+    };
+
+    // This example relies on (deprecated) client-side pointers for the vertex
+    // input. Therefore, we have to make sure no vertex buffer is bound.
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    m_program.setAttributeArray(0, GL_FLOAT, values, 8);
+    m_program.setUniformValueArray("seeds", &m_points[0], m_imagePointsCnt);
+
+    glViewport(0, 0, m_size.width(), m_size.height());
+
+    glDisable(GL_DEPTH_TEST);
+
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    m_program.disableAttributeArray(0);
+    m_program.release();
+
+    // Not strictly needed for this example, but generally useful for when
+    // mixing with raw OpenGL.
+    glPopAttrib();
+}
+
+
+void LogoRenderer::setModel(ImagePointsModel *model_)
+{
+    m_model = model_;
+    QObject::connect(m_model, &ImagePointsModel::imagePointsLoaded, this, &LogoRenderer::onModelLoadedSlot);
+}
+
+void LogoRenderer::onModelLoadedSlot()
+{
+    Q_ASSERT(nullptr != m_model);
+    m_imagePointsCnt = nullptr != m_model ? m_model->rowCount(QModelIndex()) : -1;
+    m_points.clear();
+    for(int i = 0; i < m_imagePointsCnt; i++)
+    {
+        const bool chk001 = nullptr != m_model && nullptr != m_model->getAt(i);
+        Q_ASSERT(chk001);
+        if(!chk001)
+        {
+            continue;
+        }
+        qreal x = m_model->getAt(i)->xCoord() * m_size.width();
+        qreal y = m_model->getAt(i)->yCoord() * m_size.height();
+        m_points.push_back(QVector2D(x,y));
+    }
+}
+
+void LogoRenderer::setSize(const QSize &size_)
+{
+    m_size = size_;
+}
+
+
+QQuickFramebufferObject::Renderer *FboInSGRenderer::createRenderer() const
+{
+    return new LogoInFboRenderer(m_model);
+}
+
+QVariant FboInSGRenderer::model()
+{
+    return QVariant::fromValue(m_model);
+}
+
+void FboInSGRenderer::setModel(QVariant model_)
+{
+    if(nullptr != m_model)
+    {
+        QObject::disconnect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
+    }
+
+    QObject *obj = qvariant_cast<QObject *>(model_);
+    ImagePointsModel *newModel = qobject_cast<ImagePointsModel *>(static_cast<QObject *>(obj));
+    if(newModel == m_model)
+    {
+        return;
+    }
+    m_model = newModel;
+    emit modelChanged();
 }
