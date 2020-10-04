@@ -405,6 +405,13 @@
                     }
                 ],
                 "className": "ImagePointsModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "isEmpty",
+                        "returnType": "bool"
+                    }
+                ],
                 "object": true,
                 "qualifiedClassName": "ImagePointsModel",
                 "signals": [
@@ -439,40 +446,70 @@
                 ]
             },
             {
-                "className": "VoronoyDiagramRender",
-                "object": true,
-                "qualifiedClassName": "VoronoyDiagramRender",
-                "slots": [
-                    {
-                        "access": "public",
-                        "name": "init",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "paint",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QObject"
-                    },
-                    {
-                        "access": "protected",
-                        "name": "QOpenGLFunctions"
-                    }
-                ]
-            },
-            {
                 "classInfos": [
                     {
                         "name": "QML.Element",
-                        "value": "auto"
+                        "value": "VoronoyDiagram"
                     }
                 ],
-                "className": "VoronoyDiagramItem",
+                "className": "VoronoyGraphItem",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "pointsCount",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "addPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "setPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removePointAt",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "resetPoints",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -488,41 +525,32 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "color",
+                        "notify": "colorChanged",
+                        "read": "color",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setColor"
                     }
                 ],
-                "qualifiedClassName": "VoronoyDiagramItem",
+                "qualifiedClassName": "VoronoyGraphItem",
                 "signals": [
                     {
                         "access": "public",
                         "name": "modelChanged",
                         "returnType": "void"
-                    }
-                ],
-                "slots": [
-                    {
-                        "access": "public",
-                        "name": "sync",
-                        "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "cleanup",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "private",
-                        "arguments": [
-                            {
-                                "name": "win_",
-                                "type": "QQuickWindow*"
-                            }
-                        ],
-                        "name": "handleWindowChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "private",
-                        "name": "imagePointsLoadedSlot",
+                        "name": "colorChanged",
                         "returnType": "void"
                     }
                 ],
@@ -530,85 +558,6 @@
                     {
                         "access": "public",
                         "name": "QQuickItem"
-                    }
-                ]
-            },
-            {
-                "classInfos": [
-                    {
-                        "name": "QML.Element",
-                        "value": "auto"
-                    }
-                ],
-                "className": "CustomPaintedItem",
-                "object": true,
-                "qualifiedClassName": "CustomPaintedItem",
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QQuickPaintedItem"
-                    }
-                ]
-            },
-            {
-                "classInfos": [
-                    {
-                        "name": "QML.Element",
-                        "value": "FBORenderer"
-                    }
-                ],
-                "className": "FboInSGRenderer",
-                "object": true,
-                "properties": [
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "model",
-                        "notify": "modelChanged",
-                        "read": "model",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setModel"
-                    }
-                ],
-                "qualifiedClassName": "FboInSGRenderer",
-                "signals": [
-                    {
-                        "access": "public",
-                        "name": "modelChanged",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QQuickFramebufferObject"
-                    }
-                ]
-            },
-            {
-                "className": "LogoRenderer",
-                "object": true,
-                "qualifiedClassName": "LogoRenderer",
-                "slots": [
-                    {
-                        "access": "protected",
-                        "name": "onModelLoadedSlot",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QObject"
-                    },
-                    {
-                        "access": "protected",
-                        "name": "QOpenGLFunctions"
                     }
                 ]
             }
