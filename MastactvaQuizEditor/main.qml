@@ -458,6 +458,7 @@ ApplicationWindow {
                                             z: 0.5
                                             model: image_points
                                             color: \"#0000FF\"
+                                            clip: true
                                         }",
                                        gallery_image_rect,
                                        "voronoyDiagram")
