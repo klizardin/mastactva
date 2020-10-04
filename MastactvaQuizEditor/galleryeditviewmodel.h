@@ -3,9 +3,19 @@
 
 #include <QObject>
 #include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickFramebufferObject>
 #include <QtGui/QOpenGLShaderProgram>
+#include <QtGui/QOpenGLFramebufferObjectFormat>
 #include <QtGui/QOpenGLFunctions>
+#include <QtGui/qvector3d.h>
+#include <QtGui/qmatrix4x4.h>
+#include <QtGui/qopenglshaderprogram.h>
+#include <QtGui/qopenglfunctions.h>
+#include <QOpenGLBuffer>
+#include <QSGGeometryNode>
+#include <QQuickPaintedItem>
 #include <QAbstractListModel>
+#include <QImage>
 #include <QDateTime>
 #include <QString>
 #include <QVector>
@@ -286,6 +296,7 @@ public:
     void setSourceImageId(int sourceImageId_);
     void startLoadImagePoints();
     ImagePointData *getAt(int index_);
+    Q_INVOKABLE bool isEmpty() const;
 
 signals:
     void imagePointsLoaded();
@@ -309,63 +320,58 @@ private:
 };
 
 
-class VoronoyDiagramRender : public QObject, protected QOpenGLFunctions
+class VoronoyGraphItem : public QQuickItem
 {
     Q_OBJECT
-
-public:
-    VoronoyDiagramRender(QObject *parent_);
-    virtual ~VoronoyDiagramRender();
-
-    void setModel(ImagePointsModel *model_);
-    void setViewportSize(const QSize &size_);
-    void setWindow(QQuickWindow *window_);
-
-public slots:
-    void init();
-    void paint();
-
-private:
-    QSize m_viewportSize = QSize(1,1);
-    QQuickWindow *m_window = nullptr;
-    ImagePointsModel *m_model = nullptr;
-    int m_imagePointsCnt = -1;
-    QVector<QVector2D> m_points;
-    QOpenGLShaderProgram *m_program = nullptr;
-};
-
-class VoronoyDiagramItem : public QQuickItem
-{
-    Q_OBJECT
+    QML_NAMED_ELEMENT(VoronoyDiagram)
     Q_PROPERTY(QVariant model READ model WRITE setModel NOTIFY modelChanged)
-    QML_ELEMENT
+    Q_PROPERTY(QVariant color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
-    VoronoyDiagramItem();
-    virtual ~VoronoyDiagramItem() override;
+    explicit VoronoyGraphItem(QQuickItem *parent_ = nullptr);
+    virtual ~VoronoyGraphItem() override;
 
     QVariant model();
     void setModel(QVariant model_);
+    QVariant color();
+    void setColor(QVariant color_);
+
+    Q_INVOKABLE int pointsCount() const;
+    Q_INVOKABLE void addPoint(qreal x_, qreal y_);
+    Q_INVOKABLE void setPoint(int index_, qreal x_, qreal y_);
+    Q_INVOKABLE void removePointAt(int index_);
+    Q_INVOKABLE void resetPoints();
 
 signals:
     void modelChanged();
+    void colorChanged();
 
-public slots:
-    void sync();
-    void cleanup();
+protected:
+    virtual QSGNode *updatePaintNode(QSGNode *oldNode_, UpdatePaintNodeData *upnd_) override;
+    virtual void geometryChanged(const QRectF &newGeometry_, const QRectF &oldGeometry_) override;
 
-private slots:
-    void handleWindowChanged(QQuickWindow *win_);
-    void imagePointsLoadedSlot();
-
-private:
-    void releaseResources() override;
+    void setPointsFromModel();
 
 private:
     ImagePointsModel *m_model = nullptr;
-    bool m_modelLoaded = false;
-    VoronoyDiagramRender *m_renderer = nullptr;
+    QColor m_color;
+    QVector<QVector2D> m_points;
+    bool m_pointsChanged = false;
+    bool m_geometryChanged = true;
+    int m_oldPointsCount = -1;
 };
+
+class VoronoyNode : public QSGGeometryNode
+{
+public:
+    VoronoyNode(const QVector<QVector2D> &points_, const QRectF &rect_);
+
+    void updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector3D &color_);
+
+private:
+    QSGGeometry m_geometry;
+};
+
 
 
 #endif // GALLERYEDITVIEWMODEL_H

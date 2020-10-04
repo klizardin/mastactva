@@ -386,6 +386,7 @@ ApplicationWindow {
         id: gallery_image
 
         Rectangle {
+            id: gallery_image_rect
 
             property int imageOfGallery_index: index
 
@@ -443,13 +444,25 @@ ApplicationWindow {
                 }
             }
 
-            VoronoyDiagramItem {
-                anchors.fill: parent
-                id: voronoyDiagram
-                visible: showImagePoints
-                opacity: 0.5
-                z: 0.5
-                model: image_points
+            Connections {
+                target: image_points
+                function onImagePointsLoaded() {
+                    if(image_points !== undefined && image_points !== null && !image_points.isEmpty())
+                    {
+                        Qt.createQmlObject(
+                                       "import MastactvaQuizEditor 1.0
+                                        VoronoyDiagram {
+                                            anchors.fill: parent
+                                            visible: showImagePoints
+                                            opacity: 0.5
+                                            z: 0.5
+                                            model: image_points
+                                            color: \"#0000FF\"
+                                        }",
+                                       gallery_image_rect,
+                                       "voronoyDiagram")
+                    }
+                }
             }
 
             Item {
@@ -458,6 +471,7 @@ ApplicationWindow {
                 opacity: 0.5
                 z: 1.0
                 Repeater {
+                    id: imagePointsRepeater
                     model: image_points
                     Canvas {
                         id: canvas

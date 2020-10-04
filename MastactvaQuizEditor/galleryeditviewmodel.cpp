@@ -5,6 +5,13 @@
 #include <QQuickWindow>
 #include <QAbstractItemModel>
 #include <QRunnable>
+#include <QOpenGLFramebufferObjectFormat>
+#include <QOpenGLPaintDevice>
+#include <QtGui/QColor>
+#include <QtQuick/QSGSimpleMaterial>
+#include <QPainter>
+#include <QPen>
+#include <QFont>
 #include <QDebug>
 #include "netapi.h"
 #include "qmlmainobjects.h"
@@ -900,160 +907,222 @@ ImagePointData *ImagePointsModel::getAt(int index_)
     return m_data.at(index_);
 }
 
-VoronoyDiagramRender::VoronoyDiagramRender(QObject *parent_)
-    :QObject(parent_)
+bool ImagePointsModel::isEmpty() const
 {
+    return m_data.empty();
 }
 
-VoronoyDiagramRender::~VoronoyDiagramRender()
+struct VoronoyMaterial
 {
-    delete m_program;
-    m_program = nullptr;
-    m_model = nullptr;
-    m_window = nullptr;
-}
-
-void VoronoyDiagramRender::setModel(ImagePointsModel *model_)
-{
-    m_model = model_;
-    m_imagePointsCnt = nullptr != m_model ? m_model->rowCount(QModelIndex()) : -1;
-    m_points.clear();
-    for(int i = 0; i < m_imagePointsCnt; i++)
-    {
-        const bool chk001 = nullptr != m_model && nullptr != m_model->getAt(i);
-        Q_ASSERT(chk001);
-        if(!chk001)
-        {
-            continue;
-        }
-        qreal x = m_model->getAt(i)->xCoord() * m_viewportSize.width();
-        qreal y = m_model->getAt(i)->yCoord() * m_viewportSize.height();
-        m_points.push_back(QVector2D(x,y));
-    }
-}
-
-void VoronoyDiagramRender::setViewportSize(const QSize &size_)
-{
-    m_viewportSize = size_;
-}
-
-void VoronoyDiagramRender::setWindow(QQuickWindow *window_)
-{
-    m_window = window_;
-}
-
-void VoronoyDiagramRender::init()
-{
-    if (nullptr == m_program && nullptr != m_model && m_imagePointsCnt > 0)
-    {
-        QSGRendererInterface *rif = m_window->rendererInterface();
-        Q_ASSERT(rif->graphicsApi() == QSGRendererInterface::OpenGL || rif->graphicsApi() == QSGRendererInterface::OpenGLRhi);
-
-        initializeOpenGLFunctions();
-
-        m_program = new QOpenGLShaderProgram();
-        m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex,
-                                                    "attribute highp vec2 vertices;\n"
-                                                    "void main() {\n"
-                                                    "    gl_Position = vec4(vertices, 0.0, 1.0);\n"
-                                                    "}\n");
-        m_program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment,
-                                            QString("uniform vec2 seeds[%1];\n"
-                                                    "void main() {\n"
-                                                    "    highp float dist0 = distance(seeds[0], gl_FragCoord.xy);\n"
-                                                    "    highp float dist1 = dist0;\n"
-                                                    "    for(int i = 1; i < %1; i++) {\n"
-                                                    "        lowp float dist = distance(seeds[i], gl_FragCoord.xy);\n"
-                                                    "        if(dist < dist0) {\n"
-                                                    "            dist1 = dist0;\n"
-                                                    "            dist0 = dist;\n"
-                                                    "        } else if(dist < dist1) {\n"
-                                                    "            dist1 = dist;\n"
-                                                    "        }\n"
-                                                    "    }\n"
-                                                    "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
-                                                    "    gl_FragColor = vec4(c, c, c, 1.0);\n"
-                                                    "}\n").arg(m_imagePointsCnt));
-
-        m_program->bindAttributeLocation("vertices", 0);
-        m_program->link();
-    }
-}
-
-void VoronoyDiagramRender::paint()
-{
-    if(nullptr == m_program || nullptr == m_model)
-    {
-        return;
-    }
-
-    // Play nice with the RHI. Not strictly needed when the scenegraph uses
-    // OpenGL directly.
-    m_window->beginExternalCommands();
-
-    m_program->bind();
-
-    m_program->enableAttributeArray(0);
-
-    float values[] = {
-        0, 0,
-        (float)m_viewportSize.width(), 0,
-        0, (float)m_viewportSize.height(),
-        (float)m_viewportSize.width(), (float)m_viewportSize.height(),
-    };
-
-    // This example relies on (deprecated) client-side pointers for the vertex
-    // input. Therefore, we have to make sure no vertex buffer is bound.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    m_program->setAttributeArray(0, GL_FLOAT, values, 8);
-    m_program->setUniformValueArray("seeds", &m_points[0], m_imagePointsCnt);
-
-    glViewport(0, 0, m_viewportSize.width(), m_viewportSize.height());
-
-    glDisable(GL_DEPTH_TEST);
-
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    m_program->disableAttributeArray(0);
-    m_program->release();
-
-    // Not strictly needed for this example, but generally useful for when
-    // mixing with raw OpenGL.
-    m_window->resetOpenGLState();
-
-    m_window->endExternalCommands();
-}
-
-
-class CleanupJob : public QRunnable
-{
-public:
-    CleanupJob(VoronoyDiagramRender *renderer) : m_renderer(renderer) { }
-    void run() override { delete m_renderer; }
-private:
-    VoronoyDiagramRender *m_renderer = nullptr;
+    QVector<QVector2D> points;
 };
 
-
-VoronoyDiagramItem::VoronoyDiagramItem()
+class VoronoyShader : public QSGSimpleMaterialShader<VoronoyMaterial>
 {
-    connect(this, &QQuickItem::windowChanged, this, &VoronoyDiagramItem::handleWindowChanged);
+private:
+    using base = QSGSimpleMaterialShader<VoronoyMaterial>;
+
+protected:
+    template<int pointsCount>
+    static QSGMaterialShader *createShader()
+    {
+        return new VoronoyShader(pointsCount);
+    }
+
+    template<int pointsCount, int index>
+    class FuncInitializer
+    {
+    public:
+        static void initCreateShaderFuncs(QSGMaterialShader* (**createShaderFuncs)(void))
+        {
+            createShaderFuncs[index - 1] = &VoronoyShader::createShader<index - 1>;
+            FuncInitializer<pointsCount, index - 1>::initCreateShaderFuncs(createShaderFuncs);
+        }
+    };
+
+    template<int pointsCount>
+    class FuncInitializer<pointsCount, 0>
+    {
+    public:
+        static void initCreateShaderFuncs(QSGMaterialShader* (**createShaderFuncs)(void))
+        {
+            Q_UNUSED(createShaderFuncs);
+        }
+    };
+
+
+public:
+    static QSGSimpleMaterial<VoronoyMaterial> *createMaterial(int pointsCount)
+    {
+        static QSGMaterialShader* (*createShaderFuncs[128])(void);
+        FuncInitializer<128, 128>::initCreateShaderFuncs(createShaderFuncs);
+        return new QSGSimpleMaterial<VoronoyMaterial>(createShaderFuncs[pointsCount]);
+    }
+
+public:
+    VoronoyShader(int pointsCount)
+    {
+        m_vertexShader =
+            "uniform highp mat4 qt_Matrix;\n"
+            "attribute highp vec2 vertices;\n"
+            "attribute highp vec3 color;\n"
+            "varying highp vec3 fragColor;\n"
+            "varying highp vec2 fragCoord;\n"
+            "void main() {\n"
+            "    fragCoord = vertices;\n"
+            "    gl_Position = qt_Matrix * vec4(vertices, 0.0, 1.0);\n"
+            "    fragColor = color;\n"
+            "}\n";
+        m_fragmentShader = (pointsCount > 0) ? QString(
+            "uniform lowp float qt_Opacity;\n"
+            "uniform highp vec2 seeds[%1];\n"
+            "varying highp vec3 fragColor;\n"
+            "varying highp vec2 fragCoord;\n"
+            "void main() {\n"
+            "    highp float dist0 = distance(seeds[0], fragCoord);\n"
+            "    highp float dist = distance(seeds[1], fragCoord);\n"
+            "    highp float dist1 = dist;\n"
+            "    if(dist < dist0) {"
+            "        dist1 = dist0;\n"
+            "        dist0 = dist;\n"
+            "    }\n"
+            "    for(int i = 2; i < %1; i++) {\n"
+            "        float highp dist = distance(seeds[i], fragCoord);\n"
+            "        if(dist < dist0) {\n"
+            "            dist1 = dist0;\n"
+            "            dist0 = dist;\n"
+            "        } else if(dist < dist1) {\n"
+            "            dist1 = dist;\n"
+            "        }\n"
+            "    }\n"
+            "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
+            "    gl_FragColor = qt_Opacity * vec4(c * fragColor.rgb, clamp(c*1.5, 0.0, 1.0));\n"
+            "}\n").arg(pointsCount)
+            : QString(
+            "uniform lowp float qt_Opacity;\n"
+            "varying highp vec3 fragColor;\n"
+            "void main(void)\n"
+            "{\n"
+            "    gl_FragColor = qt_Opacity * vec4(fragColor.rgb, 1.0);\n"
+            "}\n");
+
+        m_vertexShaderBA = m_vertexShader.toLocal8Bit();
+        m_fragmentShaderBA = m_fragmentShader.toLocal8Bit();
+    }
+
+    QList<QByteArray> attributes() const override {  return QList<QByteArray>() << "vertices" << "color"; }
+
+    virtual const char *vertexShader() const override
+    {
+        return m_vertexShaderBA.data();
+    }
+
+    virtual const char *fragmentShader() const override
+    {
+        return m_fragmentShaderBA.data();
+    }
+
+    /*virtual void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) override
+    {
+        base::updateState(state, newMaterial, oldMaterial);
+    }*/
+
+    void updateState(const VoronoyMaterial *m, const VoronoyMaterial *) override {
+
+        program()->setUniformValueArray(m_id_seeds, &(m->points[0]), m->points.size());
+    }
+
+    void resolveUniforms() override {
+        m_id_seeds = program()->uniformLocation("seeds");
+    }
+
+private:
+    int m_id_seeds = -1;
+    QString m_vertexShader;
+    QByteArray m_vertexShaderBA;
+    QString m_fragmentShader;
+    QByteArray m_fragmentShaderBA;
+};
+
+struct VoronoyVertex {
+    float x;
+    float y;
+    float r;
+    float g;
+    float b;
+    inline void set(float x_, float y_, float r_, float g_, float b_) { x = x_; y = y_; r = r_; g = g_; b = b_; }
+};
+
+static const QSGGeometry::AttributeSet &voronoy_attributes()
+{
+    static QSGGeometry::Attribute attr[] = {
+        QSGGeometry::Attribute::create(0, 2, GL_FLOAT, true),
+        QSGGeometry::Attribute::create(1, 3, GL_FLOAT)
+    };
+    static QSGGeometry::AttributeSet set = { 2, 5 * sizeof(float), attr };
+    return set;
 }
 
-VoronoyDiagramItem::~VoronoyDiagramItem()
+VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QRectF &rect_)
+    : m_geometry(voronoy_attributes(), 0)
+{
+    setGeometry(&m_geometry);
+    m_geometry.setDrawingMode(GL_TRIANGLE_STRIP);
+
+    QSGSimpleMaterial<VoronoyMaterial> *m = VoronoyShader::createMaterial(points_.size());
+    m->state()->points.reserve(points_.size());
+    m->state()->points.clear();
+    for(const auto &pt : points_)
+    {
+        m->state()->points.push_back(QVector2D(rect_.x() + pt.x() * rect_.width(), rect_.y() + pt.y() * rect_.height()));
+    }
+    m->setFlag(QSGMaterial::Blending);
+    setMaterial(m);
+    setFlag(OwnsMaterial);
+}
+
+void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector3D &color_)
+{
+    m_geometry.allocate(4);
+
+    float x = bounds_.x();
+    float y = bounds_.y();
+    float w = bounds_.width();
+    float h = bounds_.height();
+
+    QSGSimpleMaterial<VoronoyMaterial> *m = static_cast<QSGSimpleMaterial<VoronoyMaterial> *>(material());
+    Q_ASSERT(m->state()->points.size() == points_.size());
+    for(int i = 0; i < points_.size(); i++)
+    {
+        m->state()->points[i].setX(x + points_[i].x() * w);
+        m->state()->points[i].setY(y + points_[i].y() * h);
+    }
+    VoronoyVertex *v = reinterpret_cast<VoronoyVertex *>(m_geometry.vertexData());
+    v[0].set(x, y, color_.x(), color_.y(), color_.z());
+    v[1].set(x+w, y, color_.x(), color_.y(), color_.z());
+    v[2].set(x, y+h, color_.x(), color_.y(), color_.z());
+    v[3].set(x+w, y+h, color_.x(), color_.y(), color_.z());
+
+    markDirty(QSGNode::DirtyGeometry);
+}
+
+
+VoronoyGraphItem::VoronoyGraphItem(QQuickItem *parent_ /*= nullptr*/)
+    :QQuickItem(parent_)
+{
+    setFlag(ItemHasContents, true);
+}
+
+VoronoyGraphItem::~VoronoyGraphItem()
 {
 }
 
-QVariant VoronoyDiagramItem::model()
+QVariant VoronoyGraphItem::model()
 {
     return QVariant::fromValue(m_model);
 }
 
-void VoronoyDiagramItem::setModel(QVariant model_)
+void VoronoyGraphItem::setModel(QVariant model_)
 {
     if(nullptr != m_model)
     {
@@ -1066,54 +1135,136 @@ void VoronoyDiagramItem::setModel(QVariant model_)
     {
         return;
     }
-    m_modelLoaded = false;
     m_model = newModel;
-    if(nullptr != m_model)
-    {
-        QObject::connect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
-    }
+    setPointsFromModel();
     emit modelChanged();
 }
 
-void VoronoyDiagramItem::sync()
+QVariant VoronoyGraphItem::color()
 {
-    if (nullptr == m_renderer && nullptr != window()) {
-        m_renderer = new VoronoyDiagramRender(this);
-        connect(window(), &QQuickWindow::beforeRendering, m_renderer, &VoronoyDiagramRender::init, Qt::DirectConnection);
-        connect(window(), &QQuickWindow::beforeRenderPassRecording, m_renderer, &VoronoyDiagramRender::paint, Qt::DirectConnection);
-    }
-    if(m_modelLoaded && nullptr != m_renderer)
+    return QVariant::fromValue(m_color);
+}
+
+void VoronoyGraphItem::setColor(QVariant color_)
+{
+    m_color = QColor(color_.toString());
+    emit colorChanged();
+}
+
+int VoronoyGraphItem::pointsCount() const
+{
+    return m_points.size();
+}
+
+void VoronoyGraphItem::addPoint(qreal x_, qreal y_)
+{
+    m_points.push_back(QVector2D(x_,y_));
+    m_pointsChanged = true;
+    update();
+}
+
+void VoronoyGraphItem::setPoint(int index_, qreal x_, qreal y_)
+{
+    if(index_ < 0 || index_ >= m_points.size())
     {
-        m_renderer->setViewportSize(window()->size() * window()->devicePixelRatio());
-        m_renderer->setWindow(window());
-        m_renderer->setModel(m_model);
-        if (window())
-            window()->update();
+        return;
     }
+    m_points[index_].setX(x_);
+    m_points[index_].setY(y_);
+    m_pointsChanged = true;
+    update();
 }
 
-void VoronoyDiagramItem::cleanup()
+void VoronoyGraphItem::removePointAt(int index_)
 {
-    delete m_renderer;
-    m_renderer = nullptr;
-}
-
-void VoronoyDiagramItem::handleWindowChanged(QQuickWindow *win_)
-{
-    if (nullptr != win_)
+    if(index_ < 0 || index_ >= m_points.size())
     {
-        connect(win_, &QQuickWindow::beforeSynchronizing, this, &VoronoyDiagramItem::sync, Qt::DirectConnection);
-        connect(win_, &QQuickWindow::sceneGraphInvalidated, this, &VoronoyDiagramItem::cleanup, Qt::DirectConnection);
+        return;
     }
+    auto fit = std::begin(m_points);
+    std::advance(fit, index_);
+    m_points.erase(fit);
+    m_pointsChanged = true;
+    update();
 }
 
-void VoronoyDiagramItem::imagePointsLoadedSlot()
+void VoronoyGraphItem::resetPoints()
 {
-    m_modelLoaded = true;
+    setPointsFromModel();
 }
 
-void VoronoyDiagramItem::releaseResources()
+class VoronoyGraphNode : public QSGNode
 {
-    window()->scheduleRenderJob(new CleanupJob(m_renderer), QQuickWindow::BeforeSynchronizingStage);
-    m_renderer = nullptr;
+public:
+    VoronoyNode *item;
+};
+
+
+QSGNode *VoronoyGraphItem::updatePaintNode(QSGNode *oldNode_, UpdatePaintNodeData *upnd_)
+{
+    VoronoyGraphNode *n= static_cast<VoronoyGraphNode *>(oldNode_);
+    QRectF rect = boundingRect();
+
+    if (rect.isEmpty()) {
+        delete n;
+        return nullptr;
+    }
+
+    if (!n || m_oldPointsCount < 0 || m_oldPointsCount != m_points.size()) {
+        delete n;
+        n = nullptr;
+        n = new VoronoyGraphNode();
+
+        n->item = new VoronoyNode(m_points, rect);
+        n->appendChildNode(n->item);
+
+        m_oldPointsCount = m_points.size();
+    }
+
+    if (m_geometryChanged)
+    {
+    }
+
+    if (m_geometryChanged || m_pointsChanged) {
+        n->item->updateGeometry(rect, m_points, QVector3D(m_color.redF(), m_color.greenF(), m_color.blueF()));
+    }
+
+    m_geometryChanged = false;
+    m_pointsChanged = false;
+
+    return n;
+}
+
+void VoronoyGraphItem::geometryChanged(const QRectF &newGeometry_, const QRectF &oldGeometry_)
+{
+    m_geometryChanged = true;
+    update();
+    QQuickItem::geometryChanged(newGeometry_, oldGeometry_);
+}
+
+void VoronoyGraphItem::setPointsFromModel()
+{
+    if(nullptr == m_model)
+    {
+        m_points.clear();
+        update();
+        return;
+    }
+    Q_ASSERT(nullptr != m_model);
+    const int imagePointsCnt = nullptr != m_model ? m_model->rowCount(QModelIndex()) : 0;
+    m_points.clear();
+    for(int i = 0; i < imagePointsCnt; i++)
+    {
+        const bool chk001 = nullptr != m_model && nullptr != m_model->getAt(i);
+        Q_ASSERT(chk001);
+        if(!chk001)
+        {
+            continue;
+        }
+        qreal x = m_model->getAt(i)->xCoord();
+        qreal y = m_model->getAt(i)->yCoord();
+        m_points.push_back(QVector2D(x,y));
+    }
+    m_pointsChanged = true;
+    update();
 }
