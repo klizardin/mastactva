@@ -28,6 +28,9 @@ class RequestData;
 class ImagePointsModel;
 
 
+QDateTime dateTimeFromJsonString(const QString& dateTimeZ);
+
+
 class ImageData
 {
 public:
@@ -372,6 +375,99 @@ private:
     QSGGeometry m_geometry;
 };
 
+
+class DescriptionData : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int imageId READ imageId WRITE setImageId NOTIFY imageIdChanged)
+    Q_PROPERTY(QDateTime fromDateTime READ fromDateTime WRITE setFromDateTime NOTIFY fromDateTimeChanged)
+    Q_PROPERTY(QString descriptionStr READ descriptionStr WRITE setDescriptionStr NOTIFY descriptionStrChanged)
+
+public:
+    DescriptionData(QObject * parent_ = nullptr,
+                    int id_ = -1,
+                    int imageId_ = -1,
+                    const QDateTime &fromDateTime_ = QDateTime(),
+                    const QString &descriptionStr_ = QString()
+            );
+    virtual ~DescriptionData() override = default;
+
+public:
+    static DescriptionData* fromJson(QObject *parent_, int imageId_, const QJsonValue &value_, bool &error_);
+
+    int id() const;
+    void setId(int id_);
+    int imageId() const;
+    void setImageId(int imageId_);
+    const QDateTime &fromDateTime() const;
+    void setFromDateTime(const QDateTime &fromDateTime_);
+    const QString &descriptionStr() const;
+    void setDescriptionStr(const QString &descriptionStr_);
+
+signals:
+    void idChanged();
+    void imageIdChanged();
+    void fromDateTimeChanged();
+    void descriptionStrChanged();
+
+private:
+    int m_id = -1;
+    int m_imageId = -1;
+    QDateTime m_fromDateTime;
+    QString m_descriptionStr;
+};
+
+
+class DescriptionModel : public QAbstractListModel
+{
+    Q_OBJECT
+    QML_ELEMENT
+    Q_PROPERTY(int imageID READ imageID WRITE setImageID NOTIFY imageIDChanged)
+
+public:
+    enum RoleNames {
+        IDRole = Qt::UserRole,
+        ImageIDRole = Qt::UserRole + 1,
+        FromDateTimeRole = Qt::UserRole + 2,
+        DescriptionRole = Qt::UserRole + 3,
+    };
+
+public:
+    DescriptionModel(QObject *parent_ = nullptr);
+    virtual ~DescriptionModel() override;
+
+public:
+    // QAbstractItemModel interface
+    virtual int rowCount(const QModelIndex &parent_) const override;
+    virtual QVariant data(const QModelIndex &index_, int role_) const override;
+    virtual bool setData(const QModelIndex &index_, const QVariant &value_, int role_ = Qt::EditRole) override;
+
+    Q_INVOKABLE QVariant itemAt(int index_);
+    Q_INVOKABLE void setItemAt(int index_, QVariant itemVal_);
+
+protected:
+    int imageID() const;
+    void setImageID(int imageId_);
+    void startLoadDescriptions();
+    void clearData();
+
+protected slots:
+    void loadDescriptionsJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
+signals:
+    void imageIDChanged();
+
+protected:
+    // return the roles mapping to be used by QML
+    virtual QHash<int, QByteArray> roleNames() const override;
+
+private:
+    QHash<int, QByteArray> m_roleNames;
+    int m_imageId = -1;
+    QVector<DescriptionData *> m_data;
+    RequestData* m_request = nullptr;
+};
 
 
 #endif // GALLERYEDITVIEWMODEL_H

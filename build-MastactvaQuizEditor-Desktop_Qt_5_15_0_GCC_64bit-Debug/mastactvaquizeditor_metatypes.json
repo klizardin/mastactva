@@ -560,6 +560,182 @@
                         "name": "QQuickItem"
                     }
                 ]
+            },
+            {
+                "className": "DescriptionData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageId",
+                        "notify": "imageIdChanged",
+                        "read": "imageId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "fromDateTime",
+                        "notify": "fromDateTimeChanged",
+                        "read": "fromDateTime",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setFromDateTime"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "descriptionStr",
+                        "notify": "descriptionStrChanged",
+                        "read": "descriptionStr",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setDescriptionStr"
+                    }
+                ],
+                "qualifiedClassName": "DescriptionData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "fromDateTimeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "descriptionStrChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "DescriptionModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "itemVal_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "setItemAt",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageID",
+                        "notify": "imageIDChanged",
+                        "read": "imageID",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageID"
+                    }
+                ],
+                "qualifiedClassName": "DescriptionModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "imageIDChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "loadDescriptionsJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
             }
         ],
         "inputFile": "galleryeditviewmodel.h",

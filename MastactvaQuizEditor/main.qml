@@ -16,6 +16,8 @@ ApplicationWindow {
 
     property alias galleryCurrentIndex: mastactva.galleryIndex
     property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
+    property alias galleryCurrentId: mastactva.galleryId
+    property alias galleryImagesCurrentId: mastactva.imageOfGalleryId
     property bool showImagePoints: false
 
     MastactvaAPI {
@@ -297,8 +299,8 @@ ApplicationWindow {
                     height: parent.height - Constants.height
 
                     TabBar {
-                        anchors.top: parent.top
                         id: imageOfGalleryInfoBar
+                        anchors.top: parent.top
                         width: parent.width
                         TabButton {
                             text: qsTr("Description")
@@ -313,12 +315,22 @@ ApplicationWindow {
 
                     StackLayout {
                         anchors.top: imageOfGalleryInfoBar.bottom
-                        width: parent.width
+                        width: root.width - Constants.leftSideBarWidth
+                        height: root.height - Constants.height - imageOfGalleryInfoBar.height
                         currentIndex: imageOfGalleryInfoBar.currentIndex
                         Item {
                             id: imageOfGalleryDescriptionTab
-                            Text {
-                                text: qsTr("Image of gallery description")
+                            anchors.fill: parent
+                            ListView {
+                                id: imageOfGalleryDescriptionListView
+                                anchors.fill: parent
+                                clip: true
+                                model: DescriptionModel {
+                                    objectName: "DescriptionModel"
+                                    imageID: -1
+                                }
+                                delegate : imageOfGalleryDescriptionListViewItem
+                                highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
                             }
                         }
                         Item {
@@ -389,6 +401,7 @@ ApplicationWindow {
                                     {
                                         galleryCurrentIndex = gallery_index
                                         galleryImagesCurrentIndex = -1
+                                        imageOfGalleryDescriptionListView.model.imageID = -1
                                         images_of_gallery.model.galleryIndex = galleryCurrentIndex
                                         galleries.model.currentIndex = galleryCurrentIndex
                                         editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
@@ -475,6 +488,7 @@ ApplicationWindow {
                         else
                         {
                             galleryImagesCurrentIndex = imageOfGallery_index
+                            imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
                             mouse.accepted = false
                         }
                     }
@@ -519,7 +533,7 @@ ApplicationWindow {
                                         width: image_of_gallery.paintedWidth
                                         height: image_of_gallery.paintedHeight
                                         visible: showImagePoints
-                                        opacity: 0.5
+                                        opacity: 0.75
                                         z: 0.5
                                         model: image_points
                                         color: \"#000080\"
@@ -533,7 +547,7 @@ ApplicationWindow {
             Item {
                 anchors.fill: parent
                 visible: showImagePoints
-                opacity: 0.5
+                opacity: 0.75
                 z: 1.0
                 Repeater {
                     id: imagePointsRepeater
@@ -544,12 +558,58 @@ ApplicationWindow {
 
                         onPaint: {
                             var ctx = canvas.getContext("2d")
-                            var ptx = (width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth)
-                            var pty = (height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight)
+                            var ptx = (width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth) + image_of_gallery.x
+                            var pty = (height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
                             ctx.fillStyle = "#000080"
                             ctx.ellipse(ptx - 5, pty - 5, 10, 10)
                             ctx.fill()
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: imageOfGalleryDescriptionListViewItem
+        Item {
+            width: root.width - Constants.leftSideBarWidth
+            height: Constants.descriptionRowHeight
+            Column {
+                Text { text: GalleryFunctions.description_first_part(description_description) }
+                Text { text: '<b>From:</b>' + description_fromDateTime }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                onClicked:
+                {
+                    if (mouse.button === Qt.RightButton)
+                    {
+                        imageOfGalleryDescriptionListViewItemMenu.popup()
+                    }
+                    else
+                    {
+                        imageOfGalleryDescriptionListView.currentIndex = index
+                        mouse.accepted = false
+                    }
+                }
+
+                onPressAndHold: {
+                    if (mouse.source === Qt.MouseEventNotSynthesized)
+                        imageOfGalleryDescriptionListViewItemMenu.popup()
+                }
+
+                Menu {
+                    id: imageOfGalleryDescriptionListViewItemMenu
+                    MenuItem { action: refreshAllGalleryImagesModel }
+                    MenuItem { action: removeCurrentImageOfGallery }
+                    MenuItem {
+                        action: showImagePointsAction
+                        checkable: true
+                        checked: showImagePoints
                     }
                 }
             }

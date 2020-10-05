@@ -16,6 +16,22 @@
 #include "netapi.h"
 #include "qmlmainobjects.h"
 
+
+QDateTime dateTimeFromJsonString(const QString& dateTimeZ)
+{
+    QString dateTimeZ1(dateTimeZ);
+    QTextStream s(&dateTimeZ1);
+    int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0;
+    char tmp;
+    s >> year >> tmp >> month >> tmp >> day >> tmp;
+    s >> hours >> tmp >> minites >> tmp >> seconds;
+    if(seconds > 100)
+    {
+        seconds /= 1000;
+    }
+    return QDateTime(QDate(year, month, day), QTime(hours, minites, seconds));
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /// class ImageData
 ///
@@ -408,14 +424,7 @@ GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& j
     QJsonValue createdVal = jsonValue_["created"];
     if(QJsonValue::Undefined != createdVal.type() && createdVal.isString())
     {
-        QString str = createdVal.toString();
-        QTextStream s(&str);
-        int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0;
-        s.setPadChar('-');
-        char tmp;
-        s >> year >> tmp >> month >> tmp >> day >> tmp;
-        s >> hours >> tmp >> minites >> tmp >> seconds;
-        created = QDateTime(QDate(year, month, day), QTime(hours, minites, seconds));
+        created = dateTimeFromJsonString(createdVal.toString());
     }
     else
     {
@@ -1267,4 +1276,279 @@ void VoronoyGraphItem::setPointsFromModel()
     }
     m_pointsChanged = true;
     update();
+}
+
+DescriptionData::DescriptionData(QObject * parent_ /*= nullptr*/,
+                                 int id_ /*= -1*/,
+                                 int imageId_ /*= -1*/,
+                                 const QDateTime &fromDateTime_ /*= QDateTime()*/,
+                                 const QString &descriptionStr_ /*= QString()*/
+        )
+    :QObject(parent_),
+      m_id(id_),
+      m_imageId(imageId_),
+      m_fromDateTime(fromDateTime_),
+      m_descriptionStr(descriptionStr_)
+{
+}
+
+DescriptionData* DescriptionData::fromJson(QObject *parent_, int imageId_, const QJsonValue &value_, bool &error_)
+{
+    int id = -1;
+    int imageId = imageId_;
+    QDateTime fromDateTime;
+    QString descriptionStr;
+
+    Q_ASSERT(value_.isObject());
+
+    // id
+    QJsonValue idJV = value_["id"];
+    if(!idJV.isUndefined()) { id = idJV.toInt(-1); }
+    else { error_ |= true; }
+
+    // imageId
+    QJsonValue imageIdJV = value_["image"];
+    if(!imageIdJV.isUndefined()) { imageId = imageIdJV.toInt(-1); }
+    else { error_ |= true; }
+    Q_ASSERT(imageId_ == -1 || imageId_ == imageId);
+
+    // fromDateTime
+    QJsonValue fromDateTimeJV = value_["from_field"];
+    if(!fromDateTimeJV.isUndefined()) { fromDateTime = dateTimeFromJsonString(fromDateTimeJV.toString()); }
+    else { error_ |= true; }
+
+    // descriptionStr
+    QJsonValue descriptionStrJV = value_["descr"];
+    if(!descriptionStrJV.isUndefined() && descriptionStrJV.isString()) {
+        descriptionStr = descriptionStrJV.toString();
+    } else { error_ |= true; }
+
+    return new DescriptionData(parent_, id, imageId, fromDateTime, descriptionStr);
+}
+
+int DescriptionData::id() const
+{
+    return m_id;
+}
+
+void DescriptionData::setId(int id_)
+{
+    m_id = id_;
+
+    emit idChanged();
+}
+
+int DescriptionData::imageId() const
+{
+    return m_imageId;
+}
+
+void DescriptionData::setImageId(int imageId_)
+{
+    m_imageId = imageId_;
+
+    emit imageIdChanged();
+}
+
+const QDateTime &DescriptionData::fromDateTime() const
+{
+    return m_fromDateTime;
+}
+
+void DescriptionData::setFromDateTime(const QDateTime &fromDateTime_)
+{
+    m_fromDateTime = fromDateTime_;
+
+    emit fromDateTimeChanged();
+}
+
+const QString &DescriptionData::descriptionStr() const
+{
+    return m_descriptionStr;
+}
+
+void DescriptionData::setDescriptionStr(const QString &descriptionStr_)
+{
+    m_descriptionStr = descriptionStr_;
+
+    emit descriptionStrChanged();
+}
+
+DescriptionModel::DescriptionModel(QObject *parent_ /*= nullptr*/)
+    :QAbstractListModel(parent_)
+{
+    m_roleNames[IDRole] = "description_id";
+    m_roleNames[ImageIDRole] = "description_imageId";
+    m_roleNames[FromDateTimeRole] = "description_fromDateTime";
+    m_roleNames[DescriptionRole] = "description_description";
+
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(loadDescriptionsJsonRequestFinished(RequestData *, const QJsonDocument &)));
+}
+
+DescriptionModel::~DescriptionModel()
+{
+    clearData();
+}
+
+int DescriptionModel::rowCount(const QModelIndex &parent_) const
+{
+    Q_UNUSED(parent_);
+    return m_data.size();
+}
+
+QVariant DescriptionModel::data(const QModelIndex &index_, int role_) const
+{
+    const int row = index_.row();
+    if(row < 0 || row >= m_data.size())
+    {
+        return QVariant();
+    }
+    const DescriptionData *item = m_data[row];
+    switch(role_)
+    {
+    case IDRole:
+        return item->id();
+    case ImageIDRole:
+        return item->imageId();
+    case FromDateTimeRole:
+        return item->fromDateTime();
+    case DescriptionRole:
+        return item->descriptionStr();
+    }
+    return QVariant();
+}
+
+bool DescriptionModel::setData(const QModelIndex &index_, const QVariant &value_, int role_ /*= Qt::EditRole*/)
+{
+    const int row = index_.row();
+    if(row < 0 || row >= m_data.size())
+    {
+        return false;
+    }
+    DescriptionData *item = m_data[row];
+    switch(role_)
+    {
+    case IDRole:
+        item->setId(value_.toInt());
+        break;
+    case ImageIDRole:
+        item->setImageId(value_.toInt());
+        break;
+    case FromDateTimeRole:
+        item->setFromDateTime(value_.toDateTime());
+        break;
+    case DescriptionRole:
+        item->setDescriptionStr(value_.toString());
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+
+QVariant DescriptionModel::itemAt(int index_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return QVariant();
+    }
+    return QVariant::fromValue(m_data[index_]);
+}
+
+void DescriptionModel::setItemAt(int index_, QVariant itemVal_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return;
+    }
+    QObject *obj = qvariant_cast<QObject *>(itemVal_);
+    DescriptionData *item = qobject_cast<DescriptionData *>(static_cast<QObject *>(obj));
+    if(nullptr == item
+            || item->id() != m_data[index_]->id()
+            || item->imageId() != m_data[index_]->imageId()
+            )
+    {
+        delete item;
+        return;
+    }
+    delete m_data[index_];
+    m_data[index_] = item;
+}
+
+int DescriptionModel::imageID() const
+{
+    return m_imageId;
+}
+
+void DescriptionModel::setImageID(int imageId_)
+{
+    m_imageId = imageId_;
+
+    startLoadDescriptions();
+
+    emit imageIDChanged();
+}
+
+void DescriptionModel::startLoadDescriptions()
+{
+    Q_ASSERT(nullptr != NetAPI::getSingelton());
+    if(!(nullptr != NetAPI::getSingelton()))
+    {
+        return;
+    }
+
+    m_request = NetAPI::getSingelton()->startRequest();
+    NetAPI::getSingelton()->get(
+                QString("image-descriptions/%1/of_image/").arg(imageID()),
+                m_request);
+}
+
+void DescriptionModel::clearData()
+{
+    for(auto *&p : m_data)
+    {
+        delete p;
+        p = nullptr;
+    }
+    m_data.clear();
+}
+
+void DescriptionModel::loadDescriptionsJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+{
+    if(!(m_request == request_))
+    {
+        return;
+    }
+    m_request = nullptr;
+    Q_ASSERT(reply_.isArray());
+    if(!(reply_.isArray()))
+    {
+        return;
+    }
+    QList<DescriptionData *> data;
+    for(int i = 0; ; i++)
+    {
+        QJsonValue val = reply_[i];
+        if(QJsonValue::Undefined == val.type())
+        {
+            break;
+        }
+        bool error = false;
+        DescriptionData *item = DescriptionData::fromJson(this, imageID(), val, error);
+        if(nullptr != item && !error) { data.push_back(item); }
+        else { delete  item; item = nullptr; }
+    }
+    beginRemoveRows(QModelIndex(), 0, m_data.size());
+    clearData();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + data.size() - 1);
+    std::copy(std::begin(data), std::end(data),
+              std::inserter(m_data, std::end(m_data)));
+    endInsertRows();
+}
+
+QHash<int, QByteArray> DescriptionModel::roleNames() const
+{
+    return m_roleNames;
 }
