@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.0
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.15
 import MastactvaQuizEditor 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
@@ -267,21 +267,74 @@ ApplicationWindow {
             width: root.width - Constants.leftSideBarWidth
             height: parent.height
 
-            ListView {
-                id: images_of_gallery
+            Column {
 
-                anchors.fill: parent
-                orientation: ListView.Horizontal
-                clip: true
-                spacing: Constants. imagesOfGalleryListViewSpacing
+                Rectangle{
 
-                model: GalleryImagesModel {
-                    objectName: "AllGalleryImagesModel"
-                    galleryViewImages: false
-                    galleryId: -1
+                    width: root.width - Constants.leftSideBarWidth
+                    height: Constants.height
+
+                    ListView {
+                        id: images_of_gallery
+
+                        anchors.fill: parent
+                        orientation: ListView.Horizontal
+                        clip: true
+                        spacing: Constants. imagesOfGalleryListViewSpacing
+
+                        model: GalleryImagesModel {
+                            objectName: "AllGalleryImagesModel"
+                            galleryViewImages: false
+                            galleryId: -1
+                        }
+
+                        delegate : gallery_image
+                    }
                 }
 
-                delegate : gallery_image
+                Rectangle {
+                    width: root.width - Constants.leftSideBarWidth
+                    height: parent.height - Constants.height
+
+                    TabBar {
+                        anchors.top: parent.top
+                        id: imageOfGalleryInfoBar
+                        width: parent.width
+                        TabButton {
+                            text: qsTr("Description")
+                        }
+                        TabButton {
+                            text: qsTr("Next image")
+                        }
+                        TabButton {
+                            text: qsTr("Question")
+                        }
+                    }
+
+                    StackLayout {
+                        anchors.top: imageOfGalleryInfoBar.bottom
+                        width: parent.width
+                        currentIndex: imageOfGalleryInfoBar.currentIndex
+                        Item {
+                            id: imageOfGalleryDescriptionTab
+                            Text {
+                                text: qsTr("Image of gallery description")
+                            }
+                        }
+                        Item {
+                            id: imageOfGalleryNextImageTab
+                            Text {
+                                text: qsTr("Image of gallery next image")
+                            }
+                        }
+                        Item {
+                            id: imageOfGalleryQuestionTab
+                            Text {
+                                text: qsTr("Image of gallery question")
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -442,27 +495,38 @@ ApplicationWindow {
                         }
                     }
                 }
+                onStatusChanged: {
+                    loadVoronoyDiagram(image_points, status);
+                }
             }
 
             Connections {
                 target: image_points
                 function onImagePointsLoaded() {
-                    if(image_points !== undefined && image_points !== null && !image_points.isEmpty())
-                    {
-                        Qt.createQmlObject(
-                                       "import MastactvaQuizEditor 1.0
-                                        VoronoyDiagram {
-                                            anchors.fill: parent
-                                            visible: showImagePoints
-                                            opacity: 0.5
-                                            z: 0.5
-                                            model: image_points
-                                            color: \"#0000FF\"
-                                            clip: true
-                                        }",
-                                       gallery_image_rect,
-                                       "voronoyDiagram")
-                    }
+                    loadVoronoyDiagram(image_points, image_of_gallery.status);
+                }
+            }
+
+            function loadVoronoyDiagram(imagePoints, imageStatus)
+            {
+                if(imagePoints !== undefined && imagePoints !== null && !imagePoints.isEmpty() && imageStatus === Image.Ready)
+                {
+                    Qt.createQmlObject(
+                                   "import MastactvaQuizEditor 1.0
+                                    VoronoyDiagram {
+                                        x: (image_of_gallery.width - image_of_gallery.paintedWidth)/2 + image_of_gallery.x
+                                        y: (image_of_gallery.height - image_of_gallery.paintedHeight)/2 + image_of_gallery.y
+                                        width: image_of_gallery.paintedWidth
+                                        height: image_of_gallery.paintedHeight
+                                        visible: showImagePoints
+                                        opacity: 0.5
+                                        z: 0.5
+                                        model: image_points
+                                        color: \"#000080\"
+                                        clip: true
+                                    }",
+                                   gallery_image_rect,
+                                   "voronoyDiagram")
                 }
             }
 
@@ -480,8 +544,8 @@ ApplicationWindow {
 
                         onPaint: {
                             var ctx = canvas.getContext("2d")
-                            var ptx = width - image_of_gallery.paintedWidth + (imagePoint_x * image_of_gallery.paintedWidth)
-                            var pty = height - image_of_gallery.paintedHeight + (imagePoint_y * image_of_gallery.paintedHeight)
+                            var ptx = (width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth)
+                            var pty = (height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight)
                             ctx.fillStyle = "#000080"
                             ctx.ellipse(ptx - 5, pty - 5, 10, 10)
                             ctx.fill()
