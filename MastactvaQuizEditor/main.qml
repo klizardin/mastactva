@@ -18,6 +18,8 @@ ApplicationWindow {
     property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
     property alias galleryCurrentId: mastactva.galleryId
     property alias galleryImagesCurrentId: mastactva.imageOfGalleryId
+    property alias imageOfGalleryDescriptionIndex : mastactva.imageOfGalleryDescriptionIndex
+    property alias imageOfGalleryDescriptionId : mastactva.imageOfGalleryDescriptionId
     property bool showImagePoints: false
 
     MastactvaAPI {
@@ -140,6 +142,63 @@ ApplicationWindow {
         }
     }
 
+    DescriptionEditDialog {
+        id: createNewDescriptionDialog
+
+        onOpened: {
+            fieldDescription = ""
+            fieldFrom = mastactva.nowJsonStr()
+        }
+
+        onAccepted: {
+            mastactva.newDescription(fieldDescription, fieldFrom)
+            mastactva.onNewDescriptionAdded.connect(onNewDescriptionAdded)
+        }
+
+        function onNewDescriptionAdded()
+        {
+            mastactva.refreshDescriptions();
+        }
+    }
+
+    DescriptionEditDialog {
+        id: editDescriptionDialog
+
+        property int oldDescriptionIndex: -1
+
+        onOpened: {
+            var descr = mastactva.getCurrentDescription()
+            if(descr !== undefined) {
+                fieldId = descr.id
+                fieldImageId = descr.imageId
+                fieldDescription = descr.descriptionStr
+                fieldFrom = descr.fromDateTime
+            } else {
+                fieldId = -1
+                fieldImageId = -1
+                fieldDescription = ""
+                fieldFrom = mastactva.nowJsonStr()
+            }
+            oldDescriptionIndex = imageOfGalleryDescriptionIndex
+        }
+
+        onAccepted: {
+            mastactva.editDescription(fieldId, fieldImageId, fieldDescription, fieldFrom)
+            mastactva.onDescriptionEdited.connect(onDescriptionEdited)
+        }
+
+        function onDescriptionEdited()
+        {
+            mastactva.refreshDescriptions();
+            mastactva.onRefreshDescriptions.connect(onRefreshDescriptions)
+        }
+
+        function onRefreshDescriptions()
+        {
+            imageOfGalleryDescriptionIndex = oldDescriptionIndex
+        }
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")
@@ -211,6 +270,37 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: imageOfGalleryCreateDescription
+        text: qsTr("&New Description")
+        onTriggered: {
+            createNewDescriptionDialog.open()
+        }
+    }
+
+    Action {
+        id: imageOfGalleryEditDescription
+        text: qsTr("&Edit Description")
+        onTriggered: {
+            editDescriptionDialog.open()
+        }
+    }
+
+    Action {
+        id: imageOfGalleryDeleteDescription
+        text: qsTr("&Delete Description")
+        onTriggered: {
+            mastactva.removeCurrentDescription()
+            mastactva.onDescriptionDeleted.connect(onDescriptionDeleted)
+        }
+
+        function onDescriptionDeleted()
+        {
+            imageOfGalleryDescriptionIndex = -1;
+            mastactva.refreshDescriptions();
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("Galleries")
@@ -230,8 +320,10 @@ ApplicationWindow {
             }
         }
         Menu {
-            title: qsTr("Test")
-            MenuItem {  }
+            title: qsTr("Description")
+            MenuItem { action: imageOfGalleryCreateDescription }
+            MenuItem { action: imageOfGalleryEditDescription }
+            MenuItem { action: imageOfGalleryDeleteDescription }
         }
     }
 
@@ -320,13 +412,12 @@ ApplicationWindow {
                         currentIndex: imageOfGalleryInfoBar.currentIndex
                         Item {
                             id: imageOfGalleryDescriptionTab
-                            anchors.fill: parent
                             ListView {
                                 id: imageOfGalleryDescriptionListView
                                 anchors.fill: parent
                                 clip: true
                                 model: DescriptionModel {
-                                    objectName: "DescriptionModel"
+                                    objectName: "ImageOfGalleryDescriptionModel"
                                     imageID: -1
                                 }
                                 delegate : imageOfGalleryDescriptionListViewItem
@@ -402,6 +493,7 @@ ApplicationWindow {
                                         galleryCurrentIndex = gallery_index
                                         galleryImagesCurrentIndex = -1
                                         imageOfGalleryDescriptionListView.model.imageID = -1
+                                        imageOfGalleryDescriptionIndex = -1
                                         images_of_gallery.model.galleryIndex = galleryCurrentIndex
                                         galleries.model.currentIndex = galleryCurrentIndex
                                         editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
@@ -489,6 +581,7 @@ ApplicationWindow {
                         {
                             galleryImagesCurrentIndex = imageOfGallery_index
                             imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
+                            imageOfGalleryDescriptionIndex = -1
                             mouse.accepted = false
                         }
                     }
@@ -593,6 +686,7 @@ ApplicationWindow {
                     else
                     {
                         imageOfGalleryDescriptionListView.currentIndex = index
+                        imageOfGalleryDescriptionIndex = index
                         mouse.accepted = false
                     }
                 }
@@ -604,13 +698,9 @@ ApplicationWindow {
 
                 Menu {
                     id: imageOfGalleryDescriptionListViewItemMenu
-                    MenuItem { action: refreshAllGalleryImagesModel }
-                    MenuItem { action: removeCurrentImageOfGallery }
-                    MenuItem {
-                        action: showImagePointsAction
-                        checkable: true
-                        checked: showImagePoints
-                    }
+                    MenuItem { action: imageOfGalleryCreateDescription }
+                    MenuItem { action: imageOfGalleryEditDescription }
+                    MenuItem { action: imageOfGalleryDeleteDescription }
                 }
             }
         }

@@ -686,6 +686,39 @@
                         ],
                         "name": "setItemAt",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getIdOfIndex",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getIndexOfId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removeById",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -710,6 +743,11 @@
                     {
                         "access": "public",
                         "name": "imageIDChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "descriptionLoaded",
                         "returnType": "void"
                     }
                 ],
@@ -863,6 +901,75 @@
                         ],
                         "name": "setCurrentImageOfGalleryIdByIndex",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setCurrentOImageOfGalleryDescriptionIdByIndex",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentDescription",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "nowJsonStr",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshDescriptions",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "description",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "fromDateTime",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "newDescription",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "imageId_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "description",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "fromDateTime",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "editDescription",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentDescription",
+                        "returnType": "QVariant"
                     }
                 ],
                 "object": true,
@@ -936,6 +1043,34 @@
                         "type": "int",
                         "user": false,
                         "write": "setimageOfGalleryIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryDescriptionIndex",
+                        "notify": "imageOfGalleryDescriptionIndexChanged",
+                        "read": "imageOfGalleryDescriptionIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryDescriptionIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryDescriptionId",
+                        "notify": "imageOfGalleryDescriptionIdChanged",
+                        "read": "imageOfGalleryDescriptionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryDescriptionId"
                     }
                 ],
                 "qualifiedClassName": "MastactvaAPI",
@@ -993,6 +1128,36 @@
                     {
                         "access": "public",
                         "name": "imageOfGalleryIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryDescriptionIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryDescriptionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onNewDescriptionAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onDescriptionEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onRefreshDescriptions",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onDescriptionDeleted",
                         "returnType": "void"
                     }
                 ],
@@ -1060,6 +1225,56 @@
                             }
                         ],
                         "name": "delImageOfGallerySlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onNewDescriptionAddedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onDescriptionEditedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "onRefreshDescriptionsSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onDescriptionDeletedSlot",
                         "returnType": "void"
                     }
                 ],

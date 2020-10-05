@@ -25,6 +25,8 @@ public:
     Q_PROPERTY(int imageOfGalleryId READ imageOfGalleryId WRITE setimageOfGalleryId NOTIFY imageOfGalleryIdChanged)
     Q_PROPERTY(int galleryIndex READ galleryIndex WRITE setgalleryIndex NOTIFY galleryIndexChanged)
     Q_PROPERTY(int imageOfGalleryIndex READ imageOfGalleryIndex WRITE setimageOfGalleryIndex NOTIFY imageOfGalleryIndexChanged)
+    Q_PROPERTY(int imageOfGalleryDescriptionIndex READ imageOfGalleryDescriptionIndex WRITE setImageOfGalleryDescriptionIndex NOTIFY imageOfGalleryDescriptionIndexChanged)
+    Q_PROPERTY(int imageOfGalleryDescriptionId READ imageOfGalleryDescriptionId WRITE setImageOfGalleryDescriptionId NOTIFY imageOfGalleryDescriptionIdChanged)
 
 public:
     Q_INVOKABLE void reloadGalleriesModel();
@@ -37,6 +39,13 @@ public:
     Q_INVOKABLE void removeCurrentImage();
     Q_INVOKABLE void setCurrentGalleryIdByIndex(int index_);
     Q_INVOKABLE void setCurrentImageOfGalleryIdByIndex(int index_);
+    Q_INVOKABLE void setCurrentOImageOfGalleryDescriptionIdByIndex(int index_);
+    Q_INVOKABLE void removeCurrentDescription();
+    Q_INVOKABLE QString nowJsonStr();
+    Q_INVOKABLE void refreshDescriptions();
+    Q_INVOKABLE void newDescription(const QString &description, const QString &fromDateTime);
+    Q_INVOKABLE void editDescription(int id_, int imageId_, const QString &description, const QString &fromDateTime);
+    Q_INVOKABLE QVariant getCurrentDescription();
 
 signals:
     void galleryReloaded();
@@ -50,6 +59,12 @@ signals:
     void imageOfGalleryRemoved();
     void galleryIndexChanged();
     void imageOfGalleryIndexChanged();
+    void imageOfGalleryDescriptionIndexChanged();
+    void imageOfGalleryDescriptionIdChanged();
+    void onNewDescriptionAdded();
+    void onDescriptionEdited();
+    void onRefreshDescriptions();
+    void onDescriptionDeleted();
 
 protected:
     int imageOfGalleryId() const;
@@ -58,6 +73,10 @@ protected:
     void setgalleryIndex(int index_);
     int imageOfGalleryIndex() const;
     void setimageOfGalleryIndex(int index_);
+    int imageOfGalleryDescriptionIndex() const;
+    void setImageOfGalleryDescriptionIndex(int index_);
+    int imageOfGalleryDescriptionId() const;
+    void setImageOfGalleryDescriptionId(int id_);
 
 
 protected slots:
@@ -66,17 +85,26 @@ protected slots:
     void onAddImageSlot(RequestData *request_, const QJsonDocument &document_);
     void galleryReloadedSlot();
     void delImageOfGallerySlot(RequestData *request_, const QJsonDocument &document_);
+    void onNewDescriptionAddedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onDescriptionEditedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onRefreshDescriptionsSlot();
+    void onDescriptionDeletedSlot(RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
     int m_imageOfGalleryId = -1;
     int m_galleryIndex = -1;
     int m_imageOfGalleryIndex = -1;
+    int m_imageOfGalleryDescriptionIndex = -1;
+    int m_imageOfGalleryDescriptionId = -1;
     QJsonDocument m_jsonDoc;
     JsonRequestData *m_createNewGalleryRequest = nullptr;
     JsonRequestData *m_editGalleryRequest = nullptr;
     JsonRequestData *m_delImageOfGalleryRequest = nullptr;
     MultiPartRequestData *m_addImageRequest = nullptr;
+    JsonRequestData *m_newDescriptionRequest = nullptr;
+    JsonRequestData *m_editDescriptionRequest = nullptr;
+    JsonRequestData *m_delDescriptionRequest = nullptr;
 
 private:
     int getGalleryId() const;

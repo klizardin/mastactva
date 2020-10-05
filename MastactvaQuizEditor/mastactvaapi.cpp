@@ -25,6 +25,13 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onAddImageSlot(RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(delImageOfGallerySlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onNewDescriptionAddedSlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDescriptionEditedSlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDescriptionDeletedSlot(RequestData *, const QJsonDocument &)));
+
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -318,4 +325,190 @@ void MastactvaAPI::setCurrentImageOfGalleryIdByIndex(int index_)
     }
     const int id = m->getIdOfIndex(index_);
     setimageOfGalleryId(id);
+}
+
+int MastactvaAPI::imageOfGalleryDescriptionIndex() const
+{
+    return m_imageOfGalleryDescriptionIndex;
+}
+
+void MastactvaAPI::setImageOfGalleryDescriptionIndex(int index_)
+{
+    m_imageOfGalleryDescriptionIndex = index_;
+
+    setCurrentOImageOfGalleryDescriptionIdByIndex(index_);
+
+    emit imageOfGalleryDescriptionIndexChanged();
+}
+
+int MastactvaAPI::imageOfGalleryDescriptionId() const
+{
+    return m_imageOfGalleryDescriptionId;
+}
+
+void MastactvaAPI::setImageOfGalleryDescriptionId(int id_)
+{
+    m_imageOfGalleryDescriptionId = id_;
+
+    emit imageOfGalleryDescriptionIdChanged();
+}
+
+void MastactvaAPI::setCurrentOImageOfGalleryDescriptionIdByIndex(int index_)
+{
+    auto *p = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != p);
+    if(!(nullptr != p))
+    {
+        return;
+    }
+    auto *m = p->getImageOfGalleryDescriptionModel();
+    Q_ASSERT(nullptr != m);
+    if(!(nullptr != m))
+    {
+        return;
+    }
+    const int id = m->getIdOfIndex(index_);
+    setImageOfGalleryDescriptionId(id);
+}
+
+void MastactvaAPI::removeCurrentDescription()
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+
+    m_delDescriptionRequest = netAPI->startJsonRequest();
+    netAPI->del(QString("image-descriptions/%1/").arg(m_imageOfGalleryDescriptionId), m_delDescriptionRequest);
+
+    setImageOfGalleryDescriptionIndex(-1);
+}
+
+void MastactvaAPI::onDescriptionDeletedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_delDescriptionRequest) != request_)
+    {
+        return;
+    }
+
+    m_delDescriptionRequest = nullptr;
+
+    emit onDescriptionDeleted();
+}
+
+QString MastactvaAPI::nowJsonStr()
+{
+    QDateTime dt = QDateTime::currentDateTime();
+    return dt.toString(Qt::ISODate);
+}
+
+void MastactvaAPI::refreshDescriptions()
+{
+    auto *p = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != p);
+    if(!(nullptr != p))
+    {
+        return;
+    }
+    auto *m = p->getImageOfGalleryDescriptionModel();
+    Q_ASSERT(nullptr != m);
+    if(!(nullptr != m))
+    {
+        return;
+    }
+    m->startLoadDescriptions();
+    QObject::connect(m, SIGNAL(descriptionLoaded()), this, SLOT(onRefreshDescriptionsSlot()));
+}
+
+void MastactvaAPI::onRefreshDescriptionsSlot()
+{
+    emit onRefreshDescriptions();
+}
+
+void MastactvaAPI::newDescription(const QString &description, const QString &fromDateTime)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    m_newDescriptionRequest = netAPI->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("image", QJsonValue::fromVariant(m_imageOfGalleryId));
+    rec.insert("from_field", QJsonValue::fromVariant(QDateTime::fromString(fromDateTime,Qt::ISODate)));
+    rec.insert("descr", QJsonValue::fromVariant(description));
+    QJsonDocument doc(rec);
+
+    m_newDescriptionRequest->setDocument(doc);
+    netAPI->post(QString("image-descriptions/"), m_newDescriptionRequest);
+}
+
+void MastactvaAPI::onNewDescriptionAddedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_newDescriptionRequest) != request_)
+    {
+        return;
+    }
+    m_newDescriptionRequest = nullptr;
+
+    emit onNewDescriptionAdded();
+}
+
+void MastactvaAPI::editDescription(int id_, int imageId_, const QString &description, const QString &fromDateTime)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    Q_ASSERT(imageId_ == m_imageOfGalleryId);
+
+    m_editDescriptionRequest = netAPI->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("id", QJsonValue::fromVariant(id_));
+    rec.insert("image", QJsonValue::fromVariant(m_imageOfGalleryId));
+    rec.insert("from_field", QJsonValue::fromVariant(QDateTime::fromString(fromDateTime,Qt::ISODate)));
+    rec.insert("descr", QJsonValue::fromVariant(description));
+    QJsonDocument doc(rec);
+
+    m_editDescriptionRequest->setDocument(doc);
+    netAPI->patch(QString("image-descriptions/%1/").arg(id_), m_editDescriptionRequest);
+}
+
+void MastactvaAPI::onDescriptionEditedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_editDescriptionRequest) != request_)
+    {
+        return;
+    }
+    m_editDescriptionRequest = nullptr;
+
+    emit onDescriptionEdited();
+}
+
+QVariant MastactvaAPI::getCurrentDescription()
+{
+    auto *p = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != p);
+    if(!(nullptr != p))
+    {
+        return QVariant();
+    }
+    auto *m = p->getImageOfGalleryDescriptionModel();
+    Q_ASSERT(nullptr != m);
+    if(!(nullptr != m))
+    {
+        return QVariant();
+    }
+    return QVariant::fromValue(m->itemAt(m_imageOfGalleryDescriptionIndex));
 }

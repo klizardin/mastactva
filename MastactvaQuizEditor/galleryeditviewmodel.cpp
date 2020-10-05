@@ -1476,6 +1476,43 @@ void DescriptionModel::setItemAt(int index_, QVariant itemVal_)
     m_data[index_] = item;
 }
 
+int DescriptionModel::getIdOfIndex(int index_) const
+{
+    if(index_ < 0 || index_ >= m_data.size() || nullptr == m_data[index_])
+    {
+        return -1;
+    }
+    return m_data[index_]->id();
+}
+
+int DescriptionModel::getIndexOfId(int id_) const
+{
+    auto fit = std::find_if(std::begin(m_data), std::end(m_data),
+                            [id_](DescriptionData *item_) -> bool
+    {
+        return nullptr != item_ && item_->id() == id_;
+    });
+    if(std::end(m_data) == fit)
+    {
+        return -1;
+    }
+    return std::distance(std::begin(m_data), fit);
+}
+
+void DescriptionModel::removeById(int id_)
+{
+    const int index = getIndexOfId(id_);
+    if(index < 0 || index >= m_data.size())
+    {
+        return;
+    }
+    beginRemoveRows(QModelIndex(), index, index + 1);
+    auto fit = std::begin(m_data);
+    std::advance(fit, index);
+    m_data.erase(fit);
+    endRemoveRows();
+}
+
 int DescriptionModel::imageID() const
 {
     return m_imageId;
@@ -1495,6 +1532,13 @@ void DescriptionModel::startLoadDescriptions()
     Q_ASSERT(nullptr != NetAPI::getSingelton());
     if(!(nullptr != NetAPI::getSingelton()))
     {
+        return;
+    }
+    if(imageID() < 0)
+    {
+        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        clearData();
+        endRemoveRows();
         return;
     }
 
@@ -1546,6 +1590,8 @@ void DescriptionModel::loadDescriptionsJsonRequestFinished(RequestData *request_
     std::copy(std::begin(data), std::end(data),
               std::inserter(m_data, std::end(m_data)));
     endInsertRows();
+
+    emit descriptionLoaded();
 }
 
 QHash<int, QByteArray> DescriptionModel::roleNames() const

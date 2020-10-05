@@ -445,11 +445,15 @@ public:
 
     Q_INVOKABLE QVariant itemAt(int index_);
     Q_INVOKABLE void setItemAt(int index_, QVariant itemVal_);
+    Q_INVOKABLE int getIdOfIndex(int index_) const;
+    Q_INVOKABLE int getIndexOfId(int id_) const;
+    Q_INVOKABLE void removeById(int id_);
+
+    void startLoadDescriptions();
 
 protected:
     int imageID() const;
     void setImageID(int imageId_);
-    void startLoadDescriptions();
     void clearData();
 
 protected slots:
@@ -457,6 +461,7 @@ protected slots:
 
 signals:
     void imageIDChanged();
+    void descriptionLoaded();
 
 protected:
     // return the roles mapping to be used by QML
