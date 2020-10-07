@@ -646,54 +646,27 @@ ApplicationWindow {
                 Repeater {
                     id: imagePointsRepeater
                     model: image_points
-                    Canvas {
-                        id: canvasPoint
-                        anchors.fill: parent
+                    Image {
+                        id: pointImage
 
+                        x: ptX() - 16
+                        y: ptY() - 16
+                        width: 32
+                        height: 32
+
+                        source: imageOfGalleryPointIndex === index ? Constants.activePoint : Constants.inactivePoint
                         function ptX()
                         {
-                            return (width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth) + image_of_gallery.x
+                            return (gallery_image_rect.width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth) + image_of_gallery.x
                         }
 
                         function ptY()
                         {
-                            return (height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
-                        }
-
-                        onPaint: {
-                            var ctx = canvasPoint.getContext("2d");
-                            var ptx = ptX();
-                            var pty = ptY();
-                            ctx.lineWidth = 2;
-                            if(imageOfGalleryPointIndex === index)
-                            {
-                                ctx.strokeStyle = "#808080";
-                                ctx.fillStyle = "#000080";
-                            }
-                            else
-                            {
-                                ctx.strokeStyle = "#000080";
-                                ctx.fillStyle = "#808080";
-                            }
-                            ctx.ellipse(ptx-10, pty-10, 20, 20);
-                            ctx.fill();
-                            ctx.ellipse(ptx-10, pty-10, 20, 20);
-                            ctx.stroke();
-                        }
-
-                        function clear_canvas()
-                        {
-                            var ctx = canvasPoint.getContext("2d");
-                            ctx.reset();
-                            ctx.clearRect(x,y,width,height);
-                            canvasPoint.requestPaint();
+                            return (gallery_image_rect.height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
                         }
 
                         MouseArea {
-                            x: ptX() - 15
-                            y: ptY() - 15
-                            width: ptX() + 15
-                            height: ptY() + 15
+                            anchors.fill: parent
 
                             onClicked:
                             {
@@ -704,13 +677,12 @@ ApplicationWindow {
                                 {
                                     if(imageOfGalleryPointIndex !== -1)
                                     {
-                                        imagePointsRepeater.itemAt(imageOfGalleryPointIndex).requestPaint()
+                                        imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
                                     }
 
                                     imageOfGalleryPointIndex = index;
                                     //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
-                                    //images_of_gallery.itemAtIndex(galleryImagesCurrentIndex).update()
-                                    canvasPoint.requestPaint()
+                                    pointImage.source = Constants.activePoint
                                     mouse.accepted = false;
                                 }
                             }
