@@ -76,7 +76,8 @@ ImagePointsModel *ImageData::getImagePoints(QObject *parent_)
 /// class GalleryEditViewImagesModel
 ///
 
-static const ImageData g_noImageDefault = ImageData(-1, "qrc:///resources/no-image.png");
+static const QString g_noImageSource = "qrc:///resources/no-image.png";
+static const ImageData g_noImageDefault = ImageData(-1, g_noImageSource);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// \brief GalleryEditViewImagesModel::GalleryEditViewImagesModel
@@ -627,6 +628,68 @@ QObject* GalleryEditViewModel::getCurrentItem()
     return m_data.at(m_currentIndex);
 }
 
+ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
+    :QObject(parent_),
+      m_imageSource(g_noImageSource),
+      m_imagePointId(imagePointId_)
+{
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+
+    startLoad();
+}
+
+const QString &ImagePointToNextImage::imageSource()
+{
+    return m_imageSource;
+}
+
+void ImagePointToNextImage::setImageSource(const QString &imageSource_)
+{
+    m_imageSource = imageSource_;
+
+    emit imageSourceChanged();
+}
+
+void ImagePointToNextImage::startLoad()
+{
+    Q_ASSERT(nullptr != NetAPI::getSingelton());
+    if(!(nullptr != NetAPI::getSingelton()))
+    {
+        return;
+    }
+
+    m_request = NetAPI::getSingelton()->startRequest();
+    NetAPI::getSingelton()->get(
+                QString("image-point-to-next-image/%1/of_image_point/").arg(m_imagePointId),
+                m_request);
+}
+
+void ImagePointToNextImage::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+{
+    if(m_request != request_)
+    {
+        return;
+    }
+    m_request = nullptr;
+
+    Q_ASSERT(reply_.isArray());
+
+    QJsonValue item = reply_[0];
+    if(item.isUndefined())
+    {
+        return;
+    }
+    QJsonValue nextImageJV = item["next_image"];
+    if(!nextImageJV.isUndefined() && nextImageJV.isString())
+    {
+        m_imageSource = nextImageJV.toString();
+    }
+
+    emit imagePointToImageLoaded();
+}
+
+
 ImagePointData::ImagePointData(QObject *parent_,
                int sourceImageId_ /*= -1*/,
                int pointId_ /*= -1*/,
@@ -640,6 +703,12 @@ ImagePointData::ImagePointData(QObject *parent_,
     m_y(y_),
     m_weight(weight_)
 {
+}
+
+ImagePointData::~ImagePointData()
+{
+    delete m_imagePointToNextImage;
+    m_imagePointToNextImage = nullptr;
 }
 
 int ImagePointData::getSourceImageId() const
@@ -698,6 +767,28 @@ void ImagePointData::setWeight(qreal weight_)
     m_weight = weight_;
 
     emit weightChanged();
+}
+
+QVariant ImagePointData::toNextImage() const
+{
+    if(nullptr == m_imagePointToNextImage)
+    {
+        const_cast<ImagePointData *>(this)->m_imagePointToNextImage = new ImagePointToNextImage(
+                    const_cast<ImagePointData *>(this), pointId());
+    }
+    return QVariant::fromValue(m_imagePointToNextImage);
+}
+
+void ImagePointData::setToNextImage(QVariant toNextImage_)
+{
+    QObject *obj = qvariant_cast<QObject *>(toNextImage_);
+    ImagePointToNextImage *newNextImage = qobject_cast<ImagePointToNextImage *>(static_cast<QObject *>(obj));
+    if(m_imagePointToNextImage == newNextImage)
+    {
+        return;
+    }
+    m_imagePointToNextImage = newNextImage;
+    emit toNextImageChanged();
 }
 
 ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_)
@@ -767,6 +858,7 @@ ImagePointsModel::ImagePointsModel(QObject *parent_)
     m_roleNames[XRole] = "imagePoint_x";
     m_roleNames[YRole] = "imagePoint_y";
     m_roleNames[WeightRole] = "imagePoint_weight";
+    m_roleNames[ToNextImageRole] = "imagePoint_toNextImage";
 
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
@@ -801,6 +893,8 @@ QVariant ImagePointsModel::data(const QModelIndex &index, int role) const
         return item->yCoord();
     case WeightRole:
         return item->weight();
+    case ToNextImageRole:
+        return item->toNextImage();
     }
     return QVariant();
 }
@@ -919,6 +1013,11 @@ ImagePointData *ImagePointsModel::getAt(int index_)
 bool ImagePointsModel::isEmpty() const
 {
     return m_data.empty();
+}
+
+QVariant ImagePointsModel::itemAt(int index_)
+{
+    return QVariant::fromValue(getAt(index_));
 }
 
 struct VoronoyMaterial

@@ -307,6 +307,62 @@
                 ]
             },
             {
+                "className": "ImagePointToNextImage",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageSource",
+                        "notify": "imageSourceChanged",
+                        "read": "imageSource",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setImageSource"
+                    }
+                ],
+                "qualifiedClassName": "ImagePointToNextImage",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "imageSourceChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToImageLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
                 "className": "ImagePointData",
                 "object": true,
                 "properties": [
@@ -365,6 +421,20 @@
                         "type": "qreal",
                         "user": false,
                         "write": "setWeight"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "toNextImage",
+                        "notify": "toNextImageChanged",
+                        "read": "toNextImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setToNextImage"
                     }
                 ],
                 "qualifiedClassName": "ImagePointData",
@@ -388,6 +458,11 @@
                         "access": "public",
                         "name": "weightChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toNextImageChanged",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
@@ -410,6 +485,17 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
                     }
                 ],
                 "object": true,

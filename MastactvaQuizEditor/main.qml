@@ -428,7 +428,13 @@ ApplicationWindow {
                         Item {
                             id: imageOfGalleryNextImageTab
                             Text {
-                                text: qsTr("Image of gallery next image")
+                                visible: imageOfGalleryPointIndex === -1
+                                text: qsTr("<Select image point>")
+                            }
+                            Image {
+                                id: imageOfGalleryNextImageNextImage
+                                visible: imageOfGalleryPointIndex >= 0
+                                source: Constants.noImage
                             }
                         }
                         Item {
@@ -492,7 +498,9 @@ ApplicationWindow {
                                     else
                                     {
                                         galleryCurrentIndex = gallery_index
+                                        galleries.currentIndex = galleryCurrentIndex
                                         galleryImagesCurrentIndex = -1
+                                        images_of_gallery.currentIndex = galleryImagesCurrentIndex
                                         imageOfGalleryDescriptionListView.model.imageID = -1
                                         imageOfGalleryDescriptionIndex = -1
                                         images_of_gallery.model.galleryIndex = galleryCurrentIndex
@@ -581,6 +589,7 @@ ApplicationWindow {
                         else
                         {
                             galleryImagesCurrentIndex = imageOfGallery_index
+                            images_of_gallery.currentIndex = galleryImagesCurrentIndex
                             imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
                             imageOfGalleryDescriptionIndex = -1
                             mouse.accepted = false
@@ -614,6 +623,20 @@ ApplicationWindow {
                     loadVoronoyDiagram(image_points, image_of_gallery.status);
                 }
             }
+
+/*            Connections{
+                target: images_of_gallery.currentItem.image_points
+                function onImagePointsLoaded()
+                {
+                    images_of_gallery.currentItem.image_points.itemAt(imageOfGalleryPointIndex).toNextImage.onImagePointToImageLoaded.connect(onImagePointToImageLoaded)
+                }
+
+                function onImagePointToImageLoaded()
+                {
+                    source = images_of_gallery.currentItem.image_points.itemAt(imageOfGalleryPointIndex).toNextImage.source
+                }
+            }*/
+
 
             function loadVoronoyDiagram(imagePoints, imageStatus)
             {
@@ -665,6 +688,17 @@ ApplicationWindow {
                             return (gallery_image_rect.height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
                         }
 
+                        property string nextImage: Constants.noImage
+
+                        Connections{
+                            target: imagePoint_toNextImage
+                            function onImagePointToImageLoaded()
+                            {
+                                nextImage = imagePoint_toNextImage.imageSource
+                                //imageOfGalleryNextImageNextImage.source
+                            }
+                        }
+
                         MouseArea {
                             anchors.fill: parent
 
@@ -683,6 +717,7 @@ ApplicationWindow {
                                     imageOfGalleryPointIndex = index;
                                     //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
                                     pointImage.source = Constants.activePoint
+                                    imageOfGalleryNextImageNextImage.source = pointImage.nextImage
                                     mouse.accepted = false;
                                 }
                             }

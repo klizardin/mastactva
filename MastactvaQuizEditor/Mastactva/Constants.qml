@@ -18,4 +18,5 @@ QtObject {
     readonly property string activePoint: "qrc:///resources/selectedPoint.png"
     readonly property string inactivePoint: "qrc:///resources/point.png"
     readonly property int pointImageSize: 32
+    readonly property string noImage: "qrc:///resources/no-image.png"
 }

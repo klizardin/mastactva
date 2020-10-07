@@ -25,6 +25,7 @@
 
 
 class RequestData;
+class JsonRequestData;
 class ImagePointsModel;
 
 
@@ -225,6 +226,35 @@ private:
     int m_currentIndex = -1;
 };
 
+
+class ImagePointToNextImage : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString imageSource READ imageSource WRITE setImageSource NOTIFY imageSourceChanged)
+
+public:
+    ImagePointToNextImage(QObject* parent_ = nullptr, int imagePointId_ = -1);
+    virtual ~ImagePointToNextImage() override = default;
+    const QString &imageSource();
+    void setImageSource(const QString &imageSource_);
+
+protected:
+    void startLoad();
+
+protected slots:
+    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
+signals:
+    void imageSourceChanged();
+    void imagePointToImageLoaded();
+
+private:
+    QString m_imageSource;
+    int m_imagePointId = -1;
+    RequestData *m_request = nullptr;
+};
+
+
 class ImagePointData : public QObject
 {
     Q_OBJECT
@@ -236,13 +266,14 @@ public:
                    qreal x_ = 0.5,
                    qreal y_ = 0.5,
                    qreal weight_ = 1.0);
-    virtual ~ImagePointData() = default;
+    virtual ~ImagePointData() override;
 
 public:
     Q_PROPERTY(int pointId READ pointId WRITE setPointId NOTIFY pointIdChanged)
     Q_PROPERTY(qreal xCoord READ xCoord WRITE setXCoord NOTIFY xCoordChanged)
     Q_PROPERTY(qreal yCoord READ yCoord WRITE setYCoord NOTIFY yCoordChanged)
     Q_PROPERTY(qreal weight READ weight WRITE setWeight NOTIFY weightChanged)
+    Q_PROPERTY(QVariant toNextImage READ toNextImage WRITE setToNextImage NOTIFY toNextImageChanged)
 
 public:
     int getSourceImageId() const;
@@ -255,6 +286,8 @@ public:
     void setYCoord(qreal y_);
     qreal weight() const;
     void setWeight(qreal weight_);
+    QVariant toNextImage() const;
+    void setToNextImage(QVariant toNextImage_);
 
     static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
 
@@ -263,6 +296,7 @@ signals:
     void xCoordChanged();
     void yCoordChanged();
     void weightChanged();
+    void toNextImageChanged();
 
 private:
     int m_sourceImageId = -1;
@@ -270,6 +304,7 @@ private:
     qreal m_x = 0.5;
     qreal m_y = 0.5;
     qreal m_weight = 1.0;
+    ImagePointToNextImage *m_imagePointToNextImage = nullptr;
 };
 
 class ImagePointsModel : public QAbstractListModel
@@ -283,6 +318,7 @@ public:
         XRole = Qt::UserRole + 1,
         YRole = Qt::UserRole + 2,
         WeightRole = Qt::UserRole + 3,
+        ToNextImageRole = Qt::UserRole + 4,
     };
 
 public:
@@ -300,6 +336,7 @@ public:
     void startLoadImagePoints();
     ImagePointData *getAt(int index_);
     Q_INVOKABLE bool isEmpty() const;
+    Q_INVOKABLE QVariant itemAt(int index_);
 
 signals:
     void imagePointsLoaded();
