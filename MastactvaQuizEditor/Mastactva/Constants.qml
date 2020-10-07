@@ -17,4 +17,5 @@ QtObject {
     readonly property int descriptionRowHeight: 100
     readonly property string activePoint: "qrc:///resources/selectedPoint.png"
     readonly property string inactivePoint: "qrc:///resources/point.png"
+    readonly property int pointImageSize: 32
 }

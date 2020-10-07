@@ -649,10 +649,10 @@ ApplicationWindow {
                     Image {
                         id: pointImage
 
-                        x: ptX() - 16
-                        y: ptY() - 16
-                        width: 32
-                        height: 32
+                        x: ptX() - Constants.pointImageSize/2
+                        y: ptY() - Constants.pointImageSize/2
+                        width: Constants.pointImageSize
+                        height: Constants.pointImageSize
 
                         source: imageOfGalleryPointIndex === index ? Constants.activePoint : Constants.inactivePoint
                         function ptX()
