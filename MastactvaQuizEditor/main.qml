@@ -18,8 +18,9 @@ ApplicationWindow {
     property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
     property alias galleryCurrentId: mastactva.galleryId
     property alias galleryImagesCurrentId: mastactva.imageOfGalleryId
-    property alias imageOfGalleryDescriptionIndex : mastactva.imageOfGalleryDescriptionIndex
-    property alias imageOfGalleryDescriptionId : mastactva.imageOfGalleryDescriptionId
+    property alias imageOfGalleryDescriptionIndex: mastactva.imageOfGalleryDescriptionIndex
+    property alias imageOfGalleryDescriptionId: mastactva.imageOfGalleryDescriptionId
+    property alias imageOfGalleryPointIndex: mastactva.imageOfGalleryPointIndex
     property bool showImagePoints: false
 
     MastactvaAPI {
@@ -469,7 +470,7 @@ ApplicationWindow {
                     clip: true
 
                     Repeater {
-                        id: gallery_image
+                        id: gallery_image_repeater
                         model: images
                         Image {
                             id: image_of_gallery_view
@@ -626,7 +627,7 @@ ApplicationWindow {
                                         width: image_of_gallery.paintedWidth
                                         height: image_of_gallery.paintedHeight
                                         visible: showImagePoints
-                                        opacity: 0.75
+                                        opacity: 0.5
                                         z: 0.5
                                         model: image_points
                                         color: \"#000080\"
@@ -640,22 +641,79 @@ ApplicationWindow {
             Item {
                 anchors.fill: parent
                 visible: showImagePoints
-                opacity: 0.75
+                opacity: 0.5
                 z: 1.0
                 Repeater {
                     id: imagePointsRepeater
                     model: image_points
                     Canvas {
-                        id: canvas
+                        id: canvasPoint
                         anchors.fill: parent
 
+                        function ptX()
+                        {
+                            return (width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth) + image_of_gallery.x
+                        }
+
+                        function ptY()
+                        {
+                            return (height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
+                        }
+
                         onPaint: {
-                            var ctx = canvas.getContext("2d")
-                            var ptx = (width - image_of_gallery.paintedWidth)/2 + (imagePoint_x * image_of_gallery.paintedWidth) + image_of_gallery.x
-                            var pty = (height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
-                            ctx.fillStyle = "#000080"
-                            ctx.ellipse(ptx - 5, pty - 5, 10, 10)
-                            ctx.fill()
+                            var ctx = canvasPoint.getContext("2d");
+                            var ptx = ptX();
+                            var pty = ptY();
+                            ctx.lineWidth = 2;
+                            if(imageOfGalleryPointIndex === index)
+                            {
+                                ctx.strokeStyle = "#808080";
+                                ctx.fillStyle = "#000080";
+                            }
+                            else
+                            {
+                                ctx.strokeStyle = "#000080";
+                                ctx.fillStyle = "#808080";
+                            }
+                            ctx.ellipse(ptx-10, pty-10, 20, 20);
+                            ctx.fill();
+                            ctx.ellipse(ptx-10, pty-10, 20, 20);
+                            ctx.stroke();
+                        }
+
+                        function clear_canvas()
+                        {
+                            var ctx = canvasPoint.getContext("2d");
+                            ctx.reset();
+                            ctx.clearRect(x,y,width,height);
+                            canvasPoint.requestPaint();
+                        }
+
+                        MouseArea {
+                            x: ptX() - 15
+                            y: ptY() - 15
+                            width: ptX() + 15
+                            height: ptY() + 15
+
+                            onClicked:
+                            {
+                                if (mouse.button === Qt.RightButton)
+                                {
+                                }
+                                else
+                                {
+                                    if(imageOfGalleryPointIndex !== -1)
+                                    {
+                                        imagePointsRepeater.itemAt(imageOfGalleryPointIndex).requestPaint()
+                                    }
+
+                                    imageOfGalleryPointIndex = index;
+                                    //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
+                                    //images_of_gallery.itemAtIndex(galleryImagesCurrentIndex).update()
+                                    canvasPoint.requestPaint()
+                                    mouse.accepted = false;
+                                }
+                            }
                         }
                     }
                 }

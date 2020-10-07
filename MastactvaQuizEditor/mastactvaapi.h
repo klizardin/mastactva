@@ -27,6 +27,7 @@ public:
     Q_PROPERTY(int imageOfGalleryIndex READ imageOfGalleryIndex WRITE setimageOfGalleryIndex NOTIFY imageOfGalleryIndexChanged)
     Q_PROPERTY(int imageOfGalleryDescriptionIndex READ imageOfGalleryDescriptionIndex WRITE setImageOfGalleryDescriptionIndex NOTIFY imageOfGalleryDescriptionIndexChanged)
     Q_PROPERTY(int imageOfGalleryDescriptionId READ imageOfGalleryDescriptionId WRITE setImageOfGalleryDescriptionId NOTIFY imageOfGalleryDescriptionIdChanged)
+    Q_PROPERTY(int imageOfGalleryPointIndex READ imageOfGalleryPointIndex WRITE setImageOfGalleryPointIndex NOTIFY imageOfGalleryPointIndexChanged)
 
 public:
     Q_INVOKABLE void reloadGalleriesModel();
@@ -65,6 +66,7 @@ signals:
     void onDescriptionEdited();
     void onRefreshDescriptions();
     void onDescriptionDeleted();
+    void imageOfGalleryPointIndexChanged();
 
 protected:
     int imageOfGalleryId() const;
@@ -77,6 +79,8 @@ protected:
     void setImageOfGalleryDescriptionIndex(int index_);
     int imageOfGalleryDescriptionId() const;
     void setImageOfGalleryDescriptionId(int id_);
+    int imageOfGalleryPointIndex() const;
+    void setImageOfGalleryPointIndex(int index_);
 
 
 protected slots:
@@ -97,6 +101,7 @@ private:
     int m_imageOfGalleryIndex = -1;
     int m_imageOfGalleryDescriptionIndex = -1;
     int m_imageOfGalleryDescriptionId = -1;
+    int m_imageOfGalleryPointIndex = -1;
     QJsonDocument m_jsonDoc;
     JsonRequestData *m_createNewGalleryRequest = nullptr;
     JsonRequestData *m_editGalleryRequest = nullptr;

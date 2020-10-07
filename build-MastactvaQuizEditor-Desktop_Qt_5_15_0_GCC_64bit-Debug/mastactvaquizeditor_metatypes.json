@@ -1071,6 +1071,20 @@
                         "type": "int",
                         "user": false,
                         "write": "setImageOfGalleryDescriptionId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryPointIndex",
+                        "notify": "imageOfGalleryPointIndexChanged",
+                        "read": "imageOfGalleryPointIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryPointIndex"
                     }
                 ],
                 "qualifiedClassName": "MastactvaAPI",
@@ -1158,6 +1172,11 @@
                     {
                         "access": "public",
                         "name": "onDescriptionDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryPointIndexChanged",
                         "returnType": "void"
                     }
                 ],

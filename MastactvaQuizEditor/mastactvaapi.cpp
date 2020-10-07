@@ -512,3 +512,15 @@ QVariant MastactvaAPI::getCurrentDescription()
     }
     return QVariant::fromValue(m->itemAt(m_imageOfGalleryDescriptionIndex));
 }
+
+int MastactvaAPI::imageOfGalleryPointIndex() const
+{
+    return m_imageOfGalleryPointIndex;
+}
+
+void MastactvaAPI::setImageOfGalleryPointIndex(int index_)
+{
+    m_imageOfGalleryPointIndex = index_;
+
+    emit imageOfGalleryPointIndexChanged();
+}
