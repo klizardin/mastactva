@@ -302,16 +302,58 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: imageOfGalleryEditQuestion
+        text: qsTr("&Edit question")
+        onTriggered: {
+            editQuestionDialog.open()
+        }
+    }
+
+    Action {
+        id: imageOfGalleryDeleteQuestion
+        text: qsTr("&Delete question")
+        onTriggered: {
+            // TODO: implement
+            //mastactva.removeCurrentQuestion()
+            //mastactva.onQuestionDeleted.connect()
+        }
+    }
+
+    Action {
+        id: imageOfGalleryCreateAnswer
+        text: qsTr("&New answer")
+        onTriggered: {
+            newAnswerDialog.open()
+        }
+    }
+
+    Action {
+        id: imageOfGalleryEditAnswer
+        text: qsTr("&Edit answer")
+        onTriggered: {
+            editAnswerDialog.open()
+        }
+    }
+
+    Action {
+        id: imageOfGalleryDeleteAnswer
+        text: qsTr("&Delete answer")
+        onTriggered: {
+            // TODO: remove answer
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
-            title: qsTr("Galleries")
+            title: qsTr("&Galleries")
             MenuItem { action: refreshGalleriesModel }
             MenuItem { action: createNewGallery }
             MenuItem { action: editCurrentGallery }
             MenuItem { action : addGalleryImage }
         }
         Menu {
-            title: qsTr("All Images of Gallery")
+            title: qsTr("All &Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
             MenuItem { action: removeCurrentImageOfGallery }
             MenuItem {
@@ -321,10 +363,21 @@ ApplicationWindow {
             }
         }
         Menu {
-            title: qsTr("Description")
+            title: qsTr("&Description")
             MenuItem { action: imageOfGalleryCreateDescription }
             MenuItem { action: imageOfGalleryEditDescription }
             MenuItem { action: imageOfGalleryDeleteDescription }
+        }
+        Menu {
+            title: qsTr("&Question")
+            MenuItem { action: imageOfGalleryEditQuestion }
+            MenuItem { action: imageOfGalleryDeleteQuestion }
+        }
+        Menu {
+            title: qsTr("&Answer")
+            MenuItem { action: imageOfGalleryCreateAnswer }
+            MenuItem { action: imageOfGalleryEditAnswer }
+            MenuItem { action: imageOfGalleryDeleteAnswer }
         }
     }
 
@@ -473,15 +526,18 @@ ApplicationWindow {
                             }
                             Item {
                                 anchors.fill: parent
+                                visible: imageOfGalleryPointIndex >= 0
                                 Column{
                                     anchors.left: parent.left
 
                                     Rectangle{
                                         width: imageOfGalleryQuestionTab.width
                                         height: (imageOfGalleryQuestionTab.height * 2) / 5
+                                        visible: imageOfGalleryPointIndex >= 0
 
                                         TextArea {
                                             id: imageOfGalleryQuestionText
+                                            visible: imageOfGalleryPointIndex >= 0
                                             anchors.fill: parent
                                             readOnly: true
                                             text: qsTr("<Question>")
@@ -491,10 +547,12 @@ ApplicationWindow {
                                     Rectangle{
                                         width: imageOfGalleryQuestionTab.width
                                         height: (imageOfGalleryQuestionTab.height * 3) / 5
+                                        visible: imageOfGalleryPointIndex >= 0
 
                                         ListView {
-                                            anchors.fill: parent
                                             id: imageOfGalleryQuestionAnswersListView
+                                            visible: imageOfGalleryPointIndex >= 0
+                                            anchors.fill: parent
                                             clip: true
                                             highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
                                             model: QuestionAnswersModel {
@@ -743,7 +801,7 @@ ApplicationWindow {
 
                         property string nextImage: Constants.noImage
                         property int questionId: -1
-                        property string questionText: "<Question>"
+                        property string questionText: "<Not a point to question>"
 
                         Connections {
                             target: imagePoint_toNextImage
@@ -856,11 +914,22 @@ ApplicationWindow {
     Component {
         id: imageOfGalleryQuestionAnswersListViewItem
         Item {
+            FontMetrics{
+                id: imageOfGalleryQuestionAnswersListViewItemTextFontMetrics
+                font: imageOfGalleryQuestionAnswersListViewItemText.font
+            }
+
             width: imageOfGalleryQuestionAnswersListView.width
-            height: 40 // TODO use text metrics
+            height: imageOfGalleryQuestionAnswersListViewItemTextFontMetrics.height * 2
+
             Row {
-                Text { text: questionAnswer_text }
-                Text { text: qsTr(" ( points = ") +  questionAnswer_pointsToPass + qsTr(")")}
+                Text {
+                    id: imageOfGalleryQuestionAnswersListViewItemText
+                    text: questionAnswer_text
+                }
+                Text {
+                    text: qsTr(" ( points = ") +  questionAnswer_pointsToPass + qsTr(")")
+                }
             }
             MouseArea {
                 anchors.fill: parent
@@ -886,9 +955,9 @@ ApplicationWindow {
 
                 Menu {
                     id: imageOfGalleryQuestionAnswersListViewItemMenu
-                    MenuItem { action: imageOfGalleryCreateDescription }
-                    MenuItem { action: imageOfGalleryEditDescription }
-                    MenuItem { action: imageOfGalleryDeleteDescription }
+                    MenuItem { action: imageOfGalleryCreateAnswer }
+                    MenuItem { action: imageOfGalleryEditAnswer }
+                    MenuItem { action: imageOfGalleryDeleteAnswer }
                 }
             }
         }

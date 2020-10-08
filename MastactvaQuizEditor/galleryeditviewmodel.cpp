@@ -857,6 +857,9 @@ void QuestionAnswersModel::startLoad()
 {
     if(questionId() < 0)
     {
+        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        clearData();
+        endRemoveRows();
         return;
     }
     Q_ASSERT(nullptr != NetAPI::getSingelton());
