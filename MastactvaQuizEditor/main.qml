@@ -474,32 +474,35 @@ ApplicationWindow {
                             Item {
                                 anchors.fill: parent
                                 Column{
-                                    TextArea {
-                                        id: imageOfGalleryQuestionText
-                                        anchors.left: parent.left
-                                        width: parent.width
-                                        height: (parent.height * 2) / 5
-                                        text: qsTr("<Question>")
-                                    }
-                                    ListView {
-                                        id: imageOfGalleryQuestionAnswersListView
-                                        anchors.left: parent.left
-                                        width: parent.width
-                                        height: (parent.height * 3) / 5
-                                        clip: true
-                                        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
-                                        model: QuestionAnswersModel {
-                                            objectName: "ImageOfGalleryQuestionAnswersModel"
-                                            questionId: -1
-                                        }
+                                    anchors.left: parent.left
 
-                                        delegate: Item {
-                                            width: parent.width
-                                            height: 10 // TODO use text metrics
-                                            Row {
-                                                Text { text: questionAnswer_text }
-                                                Text { text: questionAnswer_pointsToPass }
+                                    Rectangle{
+                                        width: imageOfGalleryQuestionTab.width
+                                        height: (imageOfGalleryQuestionTab.height * 2) / 5
+
+                                        TextArea {
+                                            id: imageOfGalleryQuestionText
+                                            anchors.fill: parent
+                                            readOnly: true
+                                            text: qsTr("<Question>")
+                                        }
+                                    }
+
+                                    Rectangle{
+                                        width: imageOfGalleryQuestionTab.width
+                                        height: (imageOfGalleryQuestionTab.height * 3) / 5
+
+                                        ListView {
+                                            anchors.fill: parent
+                                            id: imageOfGalleryQuestionAnswersListView
+                                            clip: true
+                                            highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+                                            model: QuestionAnswersModel {
+                                                objectName: "ImageOfGalleryQuestionAnswersModel"
+                                                questionId: -1
                                             }
+
+                                            delegate: imageOfGalleryQuestionAnswersListViewItem
                                         }
                                     }
                                 }
@@ -740,6 +743,7 @@ ApplicationWindow {
 
                         property string nextImage: Constants.noImage
                         property int questionId: -1
+                        property string questionText: "<Question>"
 
                         Connections {
                             target: imagePoint_toNextImage
@@ -755,6 +759,11 @@ ApplicationWindow {
                             function onImagePointToQuestionLoaded()
                             {
                                 questionId = imagePoint_toQuestion.questionId
+                            }
+
+                            function onImagePointToQuestionTextLoaded()
+                            {
+                                questionText = imagePoint_toQuestion.question
                             }
                         }
 
@@ -780,6 +789,7 @@ ApplicationWindow {
                                         pointImage.source = Constants.activePoint
                                         imageOfGalleryNextImageNextImage.source = pointImage.nextImage
                                         imageOfGalleryQuestionAnswersListView.model.questionId = questionId
+                                        imageOfGalleryQuestionText.text = questionText
                                     }
                                     mouse.accepted = false;
                                 }
@@ -835,6 +845,47 @@ ApplicationWindow {
 
                 Menu {
                     id: imageOfGalleryDescriptionListViewItemMenu
+                    MenuItem { action: imageOfGalleryCreateDescription }
+                    MenuItem { action: imageOfGalleryEditDescription }
+                    MenuItem { action: imageOfGalleryDeleteDescription }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: imageOfGalleryQuestionAnswersListViewItem
+        Item {
+            width: imageOfGalleryQuestionAnswersListView.width
+            height: 40 // TODO use text metrics
+            Row {
+                Text { text: questionAnswer_text }
+                Text { text: qsTr(" ( points = ") +  questionAnswer_pointsToPass + qsTr(")")}
+            }
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                onClicked:
+                {
+                    if (mouse.button === Qt.RightButton)
+                    {
+                        imageOfGalleryQuestionAnswersListViewItemMenu.popup()
+                    }
+                    else
+                    {
+                        imageOfGalleryQuestionAnswersListView.currentIndex = index
+                        mouse.accepted = false
+                    }
+                }
+
+                onPressAndHold: {
+                    if (mouse.source === Qt.MouseEventNotSynthesized)
+                        imageOfGalleryQuestionAnswersListViewItemMenu.popup()
+                }
+
+                Menu {
+                    id: imageOfGalleryQuestionAnswersListViewItemMenu
                     MenuItem { action: imageOfGalleryCreateDescription }
                     MenuItem { action: imageOfGalleryEditDescription }
                     MenuItem { action: imageOfGalleryDeleteDescription }

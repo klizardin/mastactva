@@ -349,29 +349,46 @@ private:
 class ImagePointToQuestion : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QVariant answers READ answers WRITE setAnswers NOTIFY answersChanged)
+    //Q_PROPERTY(QVariant answers READ answers WRITE setAnswers NOTIFY answersChanged)
+    Q_PROPERTY(int questionId READ questionId WRITE setQuestionId NOTIFY questionIdChanged)
+    Q_PROPERTY(QString question READ question WRITE setQuestion NOTIFY questionChanged)
+    Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
 
 public:
     ImagePointToQuestion(QObject *parent_ = nullptr, int imagePointId_ = -1);
     virtual ~ImagePointToQuestion() override;
 
 protected:
-    QVariant answers() const;
-    void setAnswers(QVariant answers_);
+    //QVariant answers() const;
+    //void setAnswers(QVariant answers_);
+    int questionId() const;
+    void setQuestionId(int questionId_);
+    const QString &question() const;
+    void setQuestion(const QString &question_);
+    qreal pointsToPass() const;
+    void setPointsToPass(qreal pointsToPass_);
     void startLoad();
+    void startLoad2();
 
 protected slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
 
 signals:
-    void answersChanged();
+    //void answersChanged();
+    void questionIdChanged();
+    void questionChanged();
+    void pointsToPassChanged();
     void imagePointToQuestionLoaded();
+    void imagePointToQuestionTextLoaded();
 
 private:
     int m_imagePointId = -1;
     int m_questionId = -1;
-    RequestData *m_request = nullptr;
-    QuestionAnswersModel *m_answers = nullptr;
+    QString m_questionText;
+    qreal m_pointsToPass = 1.0;
+    RequestData *m_request1 = nullptr;
+    RequestData *m_request2 = nullptr;
+    //QuestionAnswersModel *m_answers = nullptr;
 };
 
 

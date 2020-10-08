@@ -523,27 +523,70 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "answers",
-                        "notify": "answersChanged",
-                        "read": "answers",
+                        "name": "questionId",
+                        "notify": "questionIdChanged",
+                        "read": "questionId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QVariant",
+                        "type": "int",
                         "user": false,
-                        "write": "setAnswers"
+                        "write": "setQuestionId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "question",
+                        "notify": "questionChanged",
+                        "read": "question",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setQuestion"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "pointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setPointsToPass"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToQuestion",
                 "signals": [
                     {
                         "access": "public",
-                        "name": "answersChanged",
+                        "name": "questionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
                         "name": "imagePointToQuestionLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToQuestionTextLoaded",
                         "returnType": "void"
                     }
                 ],
