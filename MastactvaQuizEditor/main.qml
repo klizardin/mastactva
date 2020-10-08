@@ -427,8 +427,8 @@ ApplicationWindow {
 
                     StackLayout {
                         anchors.top: imageOfGalleryInfoBar.bottom
-                        width: root.width - Constants.leftSideBarWidth
-                        height: root.height - Constants.height - imageOfGalleryInfoBar.height
+                        width: slitViewPaneImageOfGallery.width
+                        height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height
                         currentIndex: imageOfGalleryInfoBar.currentIndex
                         Item {
                             id: imageOfGalleryDescriptionTab
@@ -447,12 +447,16 @@ ApplicationWindow {
                         Item {
                             id: imageOfGalleryNextImageTab
                             Text {
+                                anchors.fill: parent
                                 visible: imageOfGalleryPointIndex === -1
                                 text: qsTr("<Select image point>")
                             }
                             Image {
+                                height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height
+                                width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
                                 id: imageOfGalleryNextImageNextImage
                                 visible: imageOfGalleryPointIndex >= 0
+                                fillMode: Image.PreserveAspectFit
                                 source: Constants.noImage
                             }
                         }
