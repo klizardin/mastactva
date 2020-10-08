@@ -363,9 +363,207 @@
                 ]
             },
             {
+                "className": "AnswerData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionId",
+                        "notify": "questionIdChanged",
+                        "read": "questionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setQuestionId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "answer",
+                        "notify": "answerChanged",
+                        "read": "answer",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setAnswer"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "pointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setPointsToPass"
+                    }
+                ],
+                "qualifiedClassName": "AnswerData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "answerChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "QuestionAnswersModel",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionId",
+                        "notify": "questionIdChanged",
+                        "read": "questionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setQuestionId"
+                    }
+                ],
+                "qualifiedClassName": "QuestionAnswersModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "questionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "answersLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            },
+            {
                 "className": "ImagePointToQuestion",
                 "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "answers",
+                        "notify": "answersChanged",
+                        "read": "answers",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setAnswers"
+                    }
+                ],
                 "qualifiedClassName": "ImagePointToQuestion",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "answersChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToQuestionLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
                 "superClasses": [
                     {
                         "access": "public",
@@ -446,6 +644,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setToNextImage"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "toQuestion",
+                        "notify": "toQuestionChanged",
+                        "read": "toQuestion",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setToQuestion"
                     }
                 ],
                 "qualifiedClassName": "ImagePointData",
@@ -473,6 +685,11 @@
                     {
                         "access": "public",
                         "name": "toNextImageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toQuestionChanged",
                         "returnType": "void"
                     }
                 ],

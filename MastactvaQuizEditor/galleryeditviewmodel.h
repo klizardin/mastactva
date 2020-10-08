@@ -254,9 +254,124 @@ private:
     RequestData *m_request = nullptr;
 };
 
+class AnswerData : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int questionId READ questionId WRITE setQuestionId NOTIFY questionIdChanged)
+    Q_PROPERTY(QString answer READ answer WRITE setAnswer NOTIFY answerChanged)
+    Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
+
+
+public:
+    AnswerData(QObject *parent_ = nullptr,
+               int id_ = -1,
+               int questionId_ = -1,
+               const QString &answer_ = QString(),
+               qreal pointsToPass_ = 1.0);
+    virtual ~AnswerData() override;
+
+    int id() const;
+    void setId(int id_);
+    int questionId() const;
+    void setQuestionId(int questionId_);
+    const QString &answer() const;
+    void setAnswer(const QString &answer_);
+    qreal pointsToPass() const;
+    void setPointsToPass(qreal pointsToPass_);
+
+    static AnswerData *fromJson(QObject *parent_, int questionId_, const QJsonValue &jsonValue_, bool &error_);
+
+signals:
+    void idChanged();
+    void questionIdChanged();
+    void answerChanged();
+    void pointsToPassChanged();
+
+private:
+    int m_id = -1;
+    int m_questionId = -1;
+    QString m_answer;
+    qreal m_pointsToPass = 1.0;
+};
+
+class QuestionAnswersModel : public QAbstractListModel
+{
+    Q_OBJECT
+    QML_ELEMENT
+    Q_PROPERTY(int questionId READ questionId WRITE setQuestionId NOTIFY questionIdChanged)
+
+public:
+    // Define the role names to be used
+    enum RoleNames {
+        IDRole = Qt::UserRole,
+        QuestionIDRole = Qt::UserRole+1,
+        AnswerRole = Qt::UserRole+2,
+        PointsToPassRole = Qt::UserRole+3,
+    };
+
+public:
+    QuestionAnswersModel(QObject *parent_ = nullptr, int questionId_ = -1);
+    virtual ~QuestionAnswersModel() override;
+
+    // QAbstractItemModel interface
+public:
+    virtual int rowCount(const QModelIndex &parent_) const override;
+    virtual QVariant data(const QModelIndex &index_, int role_) const override;
+
+protected:
+    int questionId() const;
+    void setQuestionId(int questionId_);
+    void startLoad();
+    void clearData();
+
+protected:
+    // return the roles mapping to be used by QML
+    virtual QHash<int, QByteArray> roleNames() const override;
+
+
+    //slots
+private slots:
+    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
+signals:
+    void questionIdChanged();
+    void answersLoaded();
+
+    // data members
+private:
+    QHash<int, QByteArray> m_roleNames;
+    int m_questionId = -1;
+    RequestData *m_request = nullptr;
+    QVector<AnswerData *> m_data;
+};
+
 class ImagePointToQuestion : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QVariant answers READ answers WRITE setAnswers NOTIFY answersChanged)
+
+public:
+    ImagePointToQuestion(QObject *parent_ = nullptr, int imagePointId_ = -1);
+    virtual ~ImagePointToQuestion() override;
+
+protected:
+    QVariant answers() const;
+    void setAnswers(QVariant answers_);
+    void startLoad();
+
+protected slots:
+    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+
+signals:
+    void answersChanged();
+    void imagePointToQuestionLoaded();
+
+private:
+    int m_imagePointId = -1;
+    int m_questionId = -1;
+    RequestData *m_request = nullptr;
+    QuestionAnswersModel *m_answers = nullptr;
 };
 
 
@@ -279,6 +394,7 @@ public:
     Q_PROPERTY(qreal yCoord READ yCoord WRITE setYCoord NOTIFY yCoordChanged)
     Q_PROPERTY(qreal weight READ weight WRITE setWeight NOTIFY weightChanged)
     Q_PROPERTY(QVariant toNextImage READ toNextImage WRITE setToNextImage NOTIFY toNextImageChanged)
+    Q_PROPERTY(QVariant toQuestion READ toQuestion WRITE setToQuestion NOTIFY toQuestionChanged)
 
 public:
     int getSourceImageId() const;
@@ -293,6 +409,8 @@ public:
     void setWeight(qreal weight_);
     QVariant toNextImage() const;
     void setToNextImage(QVariant toNextImage_);
+    QVariant toQuestion() const;
+    void setToQuestion(QVariant toQuestion_);
 
     static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
 
@@ -302,6 +420,7 @@ signals:
     void yCoordChanged();
     void weightChanged();
     void toNextImageChanged();
+    void toQuestionChanged();
 
 private:
     int m_sourceImageId = -1;
@@ -310,6 +429,7 @@ private:
     qreal m_y = 0.5;
     qreal m_weight = 1.0;
     ImagePointToNextImage *m_imagePointToNextImage = nullptr;
+    ImagePointToQuestion *m_imagePointToQuestion = nullptr;
 };
 
 class ImagePointsModel : public QAbstractListModel
@@ -324,6 +444,7 @@ public:
         YRole = Qt::UserRole + 2,
         WeightRole = Qt::UserRole + 3,
         ToNextImageRole = Qt::UserRole + 4,
+        ToQuestionRole = Qt::UserRole + 5,
     };
 
 public:

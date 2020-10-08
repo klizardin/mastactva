@@ -690,6 +690,316 @@ void ImagePointToNextImage::onJsonRequestFinished(RequestData *request_, const Q
 }
 
 
+AnswerData::AnswerData(QObject *parent_ /*= nullptr*/,
+                       int id_ /*= -1*/,
+                       int questionId_ /*= -1*/,
+                       const QString &answer_ /*= QString()*/,
+                       qreal pointsToPass_ /*= 1.0*/)
+    :QObject(parent_),
+    m_id(id_),
+    m_questionId(questionId_),
+    m_answer(answer_),
+    m_pointsToPass(pointsToPass_)
+{
+}
+
+AnswerData::~AnswerData()
+{
+}
+
+int AnswerData::id() const
+{
+    return m_id;
+}
+
+void AnswerData::setId(int id_)
+{
+    m_id = id_;
+
+    emit idChanged();
+}
+
+int AnswerData::questionId() const
+{
+    return m_questionId;
+}
+
+void AnswerData::setQuestionId(int questionId_)
+{
+    m_questionId = questionId_;
+
+    emit questionIdChanged();
+}
+
+const QString &AnswerData::answer() const
+{
+    return m_answer;
+}
+
+void AnswerData::setAnswer(const QString &answer_)
+{
+    m_answer = answer_;
+
+    emit answerChanged();
+}
+
+qreal AnswerData::pointsToPass() const
+{
+    return m_pointsToPass;
+}
+
+void AnswerData::setPointsToPass(qreal pointsToPass_)
+{
+    m_pointsToPass = pointsToPass_;
+
+    emit pointsToPassChanged();
+}
+
+AnswerData *AnswerData::fromJson(QObject *parent_, int questionId_, const QJsonValue &jsonValue_, bool &error_)
+{
+    error_ = false;
+    if(jsonValue_.isUndefined())
+    {
+        error_ = true;
+        return nullptr;
+    }
+    Q_ASSERT(jsonValue_.isObject());
+
+    int id = -1;
+    int questionId = -1;
+    QString answer;
+    qreal pointsToPass = 1.0;
+
+    QJsonValue idJV = jsonValue_["id"];
+    if(!idJV.isUndefined()) { id = idJV.toInt(-1); }
+    else { error_ = true; }
+
+    QJsonValue questionIdJV = jsonValue_["question"];
+    if(!questionIdJV.isUndefined()) {questionId = questionIdJV.toInt(-1); }
+    else { error_ = true; }
+    Q_ASSERT(questionId_ != -1 && questionId == questionId_);
+
+    QJsonValue answerJV = jsonValue_["answer"];
+    if(!answerJV.isUndefined() && answerJV.isString()) { answer = answerJV.toString(); }
+    else { error_ = true; }
+
+    QJsonValue pointsToPassJV = jsonValue_["points"];
+    if(!pointsToPassJV.isUndefined()) { pointsToPass = pointsToPassJV.toDouble(1.0); }
+    else { error_ = true; }
+
+    return new AnswerData(parent_, id, questionId, answer, pointsToPass);
+}
+
+QuestionAnswersModel::QuestionAnswersModel(QObject *parent_ /*= nullptr*/, int questionId_ /*= -1*/)
+    :QAbstractListModel(parent_)
+    ,m_questionId(questionId_)
+{
+    m_roleNames[IDRole] = "questionAnswer_id";
+    m_roleNames[QuestionIDRole] = "questionAnswer_questionId";
+    m_roleNames[AnswerRole] = "questionAnswer_text";
+    m_roleNames[PointsToPassRole] = "questionAnswer_pointsToPass";
+
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+
+    startLoad();
+}
+
+QuestionAnswersModel::~QuestionAnswersModel()
+{
+    clearData();
+}
+
+int QuestionAnswersModel::rowCount(const QModelIndex &parent_) const
+{
+    Q_UNUSED(parent_);
+
+    return m_data.size();
+}
+
+QVariant QuestionAnswersModel::data(const QModelIndex &index_, int role_) const
+{
+    const int row = index_.row();
+    if(row < 0 || row >= m_data.size())
+    {
+        return QVariant();
+    }
+    const AnswerData *item = m_data[row];
+    switch(role_)
+    {
+    case IDRole:
+        return item->id();
+    case QuestionIDRole:
+        return item->questionId();
+    case AnswerRole:
+        return item->answer();
+    case PointsToPassRole:
+        return item->pointsToPass();
+    }
+    return QVariant();
+}
+
+int QuestionAnswersModel::questionId() const
+{
+    return m_questionId;
+}
+
+void QuestionAnswersModel::setQuestionId(int questionId_)
+{
+    m_questionId = questionId_;
+
+    startLoad();
+
+    emit questionIdChanged();
+}
+
+void QuestionAnswersModel::startLoad()
+{
+    Q_ASSERT(nullptr != NetAPI::getSingelton());
+    if(!(nullptr != NetAPI::getSingelton()))
+    {
+        return;
+    }
+
+    m_request = NetAPI::getSingelton()->startRequest();
+    NetAPI::getSingelton()->get(
+                QString("image-question-answers/%1/of_question/").arg(questionId()),
+                m_request);
+}
+
+void QuestionAnswersModel::clearData()
+{
+    for(auto *&p : m_data)
+    {
+        delete p;
+        p = nullptr;
+    }
+    m_data.clear();
+}
+
+QHash<int, QByteArray> QuestionAnswersModel::roleNames() const
+{
+    return m_roleNames;
+}
+
+void QuestionAnswersModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+{
+    if(!(m_request == request_))
+    {
+        return;
+    }
+    m_request = nullptr;
+    Q_ASSERT(reply_.isArray());
+    if(!(reply_.isArray()))
+    {
+        return;
+    }
+    QVector<AnswerData *> answers;
+    for(int i = 0; ; i++)
+    {
+        QJsonValue val = reply_[i];
+        if(QJsonValue::Undefined == val.type())
+        {
+            break;
+        }
+        bool anyError = false;
+        AnswerData *data = AnswerData::fromJson(this, questionId(), val, anyError);
+        if(anyError)
+        {
+            delete data;
+            data = nullptr;
+            continue;
+        }
+        answers.push_back(data);
+    }
+    beginRemoveRows(QModelIndex(), 0, m_data.size());
+    clearData();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + answers.size() - 1);
+    std::copy(std::begin(answers), std::end(answers),
+              std::inserter(m_data, std::end(m_data)));
+    endInsertRows();
+
+    emit answersLoaded();
+}
+
+ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
+    :QObject(parent_),
+    m_imagePointId(imagePointId_)
+{
+}
+
+ImagePointToQuestion::~ImagePointToQuestion()
+{
+    delete m_answers;
+    m_answers = nullptr;
+}
+
+QVariant ImagePointToQuestion::answers() const
+{
+    return QVariant::fromValue(m_answers);
+}
+
+void ImagePointToQuestion::setAnswers(QVariant answers_)
+{
+    QObject *obj = qvariant_cast<QObject *>(answers_);
+    QuestionAnswersModel *answerModel = qobject_cast<QuestionAnswersModel *>(static_cast<QObject *>(obj));
+    if(m_answers == answerModel)
+    {
+        return;
+    }
+    m_answers = answerModel;
+
+    emit answersChanged();
+}
+
+void ImagePointToQuestion::startLoad()
+{
+    Q_ASSERT(nullptr != NetAPI::getSingelton());
+    if(!(nullptr != NetAPI::getSingelton()))
+    {
+        return;
+    }
+
+    m_request = NetAPI::getSingelton()->startRequest();
+    NetAPI::getSingelton()->get(
+                QString("image-point-to-question/%1/of_image_point/").arg(m_imagePointId),
+                m_request);
+}
+
+void ImagePointToQuestion::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+{
+    if(m_request != request_)
+    {
+        return;
+    }
+    m_request = nullptr;
+
+    Q_ASSERT(reply_.isArray());
+
+    QJsonValue item = reply_[0];
+    if(item.isUndefined())
+    {
+        return;
+    }
+    QJsonValue questionJV = item["question"];
+    if(!questionJV.isUndefined())
+    {
+        m_questionId = questionJV.toInt(-1);
+    }
+
+    if(nullptr != m_answers)
+    {
+        delete m_answers;
+        m_answers = nullptr;
+    }
+    m_answers = new QuestionAnswersModel(this, m_questionId);
+
+    emit imagePointToQuestionLoaded();
+    emit answersChanged();
+}
+
+
 ImagePointData::ImagePointData(QObject *parent_,
                int sourceImageId_ /*= -1*/,
                int pointId_ /*= -1*/,
@@ -709,6 +1019,8 @@ ImagePointData::~ImagePointData()
 {
     delete m_imagePointToNextImage;
     m_imagePointToNextImage = nullptr;
+    delete m_imagePointToQuestion;
+    m_imagePointToQuestion = nullptr;
 }
 
 int ImagePointData::getSourceImageId() const
@@ -791,6 +1103,28 @@ void ImagePointData::setToNextImage(QVariant toNextImage_)
     emit toNextImageChanged();
 }
 
+QVariant ImagePointData::toQuestion() const
+{
+    if(nullptr == m_imagePointToQuestion)
+    {
+        const_cast<ImagePointData *>(this)->m_imagePointToQuestion = new ImagePointToQuestion(
+                    const_cast<ImagePointData *>(this), pointId());
+    }
+    return QVariant::fromValue(m_imagePointToQuestion);
+}
+
+void ImagePointData::setToQuestion(QVariant toQuestion_)
+{
+    QObject *obj = qvariant_cast<QObject *>(toQuestion_);
+    ImagePointToQuestion *newQuestion = qobject_cast<ImagePointToQuestion *>(static_cast<QObject *>(obj));
+    if(m_imagePointToQuestion == newQuestion)
+    {
+        return;
+    }
+    m_imagePointToQuestion = newQuestion;
+    emit toQuestionChanged();
+}
+
 ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_)
 {
     const bool chk001 = jsonObject_.isObject();
@@ -859,6 +1193,7 @@ ImagePointsModel::ImagePointsModel(QObject *parent_)
     m_roleNames[YRole] = "imagePoint_y";
     m_roleNames[WeightRole] = "imagePoint_weight";
     m_roleNames[ToNextImageRole] = "imagePoint_toNextImage";
+    m_roleNames[ToQuestionRole] = "imagePoint_toQuestion";
 
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
@@ -895,6 +1230,8 @@ QVariant ImagePointsModel::data(const QModelIndex &index, int role) const
         return item->weight();
     case ToNextImageRole:
         return item->toNextImage();
+    case ToQuestionRole:
+        return item->toQuestion();
     }
     return QVariant();
 }
@@ -920,6 +1257,12 @@ bool ImagePointsModel::setData(const QModelIndex &index, const QVariant &value, 
         break;
     case WeightRole:
         item->setWeight(value.toDouble());
+        break;
+    case ToNextImageRole:
+        item->setToNextImage(value);
+        break;
+    case ToQuestionRole:
+        item->setToQuestion(value);
         break;
     default:
         return false;

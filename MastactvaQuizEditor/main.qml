@@ -447,6 +447,8 @@ ApplicationWindow {
                         Item {
                             id: imageOfGalleryNextImageTab
                             Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
                                 anchors.fill: parent
                                 visible: imageOfGalleryPointIndex === -1
                                 text: qsTr("<Select image point>")
@@ -463,7 +465,44 @@ ApplicationWindow {
                         Item {
                             id: imageOfGalleryQuestionTab
                             Text {
-                                text: qsTr("Image of gallery question")
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.fill: parent
+                                visible: imageOfGalleryPointIndex === -1
+                                text: qsTr("<Select image point>")
+                            }
+                            Item {
+                                anchors.fill: parent
+                                Column{
+                                    TextArea {
+                                        id: imageOfGalleryQuestionText
+                                        anchors.left: parent.left
+                                        width: parent.width
+                                        height: (parent.height * 2) / 5
+                                        text: qsTr("<Question>")
+                                    }
+                                    ListView {
+                                        id: imageOfGalleryQuestionAnswersListView
+                                        anchors.left: parent.left
+                                        width: parent.width
+                                        height: (parent.height * 3) / 5
+                                        clip: true
+                                        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+                                        model: QuestionAnswersModel {
+                                            objectName: "ImageOfGalleryQuestionAnswersModel"
+                                            questionId: -1
+                                        }
+
+                                        delegate: Item {
+                                            width: parent.width
+                                            height: 10 // TODO use text metrics
+                                            Row {
+                                                Text { text: questionAnswer_text }
+                                                Text { text: questionAnswer_pointsToPass }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -700,13 +739,22 @@ ApplicationWindow {
                         }
 
                         property string nextImage: Constants.noImage
+                        property int questionId: -1
 
-                        Connections{
+                        Connections {
                             target: imagePoint_toNextImage
                             function onImagePointToImageLoaded()
                             {
                                 nextImage = imagePoint_toNextImage.imageSource
                                 //imageOfGalleryNextImageNextImage.source
+                            }
+                        }
+
+                        Connections {
+                            target: imagePoint_toQuestion
+                            function onImagePointToQuestionLoaded()
+                            {
+                                questionId = imagePoint_toQuestion.questionId
                             }
                         }
 
@@ -731,6 +779,7 @@ ApplicationWindow {
                                         //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
                                         pointImage.source = Constants.activePoint
                                         imageOfGalleryNextImageNextImage.source = pointImage.nextImage
+                                        imageOfGalleryQuestionAnswersListView.model.questionId = questionId
                                     }
                                     mouse.accepted = false;
                                 }
