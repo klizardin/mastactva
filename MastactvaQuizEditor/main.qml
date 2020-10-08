@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick.Controls 2.14
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.15
 import MastactvaQuizEditor 1.0
@@ -328,13 +328,18 @@ ApplicationWindow {
         }
     }
 
-    Row {
-        width : parent.width
-        height: parent.height
+    SplitView {
+        id: slitGalleriesAndImagesOfGallery
+        anchors.fill: parent
+        orientation: Qt.Horizontal
 
         Rectangle{
 
-            width: Constants.leftSideBarWidth
+            id: splitViewPaneGallery
+
+            SplitView.preferredWidth: Constants.leftSideBarWidth
+            SplitView.minimumWidth: Constants.leftSideBarWidth/2
+            SplitView.maximumWidth: Constants.leftSideBarWidth*2
             height: parent.height
 
             ListView {
@@ -352,22 +357,23 @@ ApplicationWindow {
             }
         }
 
-        Rectangle {
-            width: Constants.leftSideBarWidthSpace
-            height: parent.height
-        }
-
         Rectangle{
 
-            width: root.width - Constants.leftSideBarWidth
+            id: slitViewPaneImageOfGallery
+            SplitView.preferredWidth: root.width - Constants.leftSideBarWidth
             height: parent.height
 
-            Column {
+            SplitView {
+                id: slitImagesOfGalleryAndImageInfo
+                anchors.fill: parent
+                orientation: Qt.Vertical
 
                 Rectangle{
 
-                    width: root.width - Constants.leftSideBarWidth
-                    height: Constants.height
+                    id: slitViewPaneImagesOfGallery
+
+                    SplitView.preferredHeight: Constants.height
+                    SplitView.minimumHeight: Constants.height/2
 
                     ListView {
                         id: images_of_gallery
@@ -384,12 +390,25 @@ ApplicationWindow {
                         }
 
                         delegate : gallery_image
+
+                        Connections{
+                            target: images_of_gallery
+                            function onCurrentIndexChanged()
+                            {
+                                if(imageOfGalleryDescriptionIndex == -1)
+                                {
+                                    imageOfGalleryNextImageNextImage.source = Constants.noImage;
+                                }
+                            }
+                        }
+
                     }
                 }
 
                 Rectangle {
-                    width: root.width - Constants.leftSideBarWidth
-                    height: parent.height - Constants.height
+
+                    id: slitViewPaneImageInfo
+                    SplitView.preferredHeight: parent.height - Constants.height
 
                     TabBar {
                         id: imageOfGalleryInfoBar
@@ -459,10 +478,11 @@ ApplicationWindow {
             }
 
             property int gallery_index: index
+            property int galleryPaneWidth: splitViewPaneGallery.width
 
             Rectangle {
-                width: Constants.leftSideBarWidth
-                height: (Constants.leftSideBarWidth / Constants.aspectX) * Constants.aspectY
+                width: galleryPaneWidth
+                height: (galleryPaneWidth / Constants.aspectX) * Constants.aspectY
                 border.width: 2
                 border.color: galleryCurrentIndex === gallery_index ? galleryItemPallete.highlight : galleryItemPallete.window
 
@@ -471,8 +491,8 @@ ApplicationWindow {
 
                     x: Constants.galleryImageSpacing / 2
                     y: Constants.galleryImageSpacing / 2
-                    width: (Constants.leftSideBarWidth - Constants.galleryImageSpacing)
-                    height: ((Constants.leftSideBarWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                    width: (galleryPaneWidth - Constants.galleryImageSpacing)
+                    height: ((galleryPaneWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
                     clip: true
 
                     Repeater {
@@ -480,8 +500,8 @@ ApplicationWindow {
                         model: images
                         Image {
                             id: image_of_gallery_view
-                            width: (Constants.leftSideBarWidth - Constants.galleryImageSpacing)
-                            height: ((Constants.leftSideBarWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                            width: (galleryPaneWidth - Constants.galleryImageSpacing)
+                            height: ((galleryPaneWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
                             source: image_source
                             fillMode: Image.PreserveAspectFit
 
@@ -533,7 +553,7 @@ ApplicationWindow {
 
 
             PageIndicator {
-               x:(Constants.leftSideBarWidth-width)/2
+               x:(galleryPaneWidth-width)/2
                height: Constants.leftSideBarPageIndicatorHeight
                currentIndex: gallery_images.currentIndex
                count: gallery_images.count
@@ -542,8 +562,8 @@ ApplicationWindow {
             Text {
                 id : gallery_description
                 text: GalleryFunctions.description_first_part(description)
-                x: (Constants.leftSideBarWidth-width)/2
-                width: Constants.leftSideBarTextWidth
+                x: (galleryPaneWidth-width)/2
+                width: galleryPaneWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
                 wrapMode: Text.WordWrap
             }
         }
@@ -556,14 +576,15 @@ ApplicationWindow {
             id: gallery_image_rect
 
             property int imageOfGallery_index: index
+            property int imageOfGalleryHeight: slitViewPaneImagesOfGallery.height
 
             SystemPalette {
                 id: imageOfGalleryItemPallete
                 colorGroup: SystemPalette.Active
             }
 
-            width: (Constants.height * Constants.aspectX) / Constants.aspectY
-            height: Constants.height
+            width: (imageOfGalleryHeight * Constants.aspectX) / Constants.aspectY
+            height: imageOfGalleryHeight
             z: 0
             border.width: 2
             border.color: galleryImagesCurrentIndex === imageOfGallery_index ? imageOfGalleryItemPallete.highlight : imageOfGalleryItemPallete.window
@@ -572,8 +593,8 @@ ApplicationWindow {
                 id: image_of_gallery
                 x: Constants.imageOfGalleryImageSpacing / 2
                 y: Constants.imageOfGalleryImageSpacing / 2
-                width: ((Constants.height - Constants.imageOfGalleryImageSpacing) * Constants.aspectX) / Constants.aspectY
-                height: (Constants.height - Constants.imageOfGalleryImageSpacing)
+                width: ((imageOfGalleryHeight - Constants.imageOfGalleryImageSpacing) * Constants.aspectX) / Constants.aspectY
+                height: (imageOfGalleryHeight - Constants.imageOfGalleryImageSpacing)
                 source: image_source
                 fillMode: Image.PreserveAspectFit
                 MouseArea {
@@ -623,20 +644,6 @@ ApplicationWindow {
                     loadVoronoyDiagram(image_points, image_of_gallery.status);
                 }
             }
-
-/*            Connections{
-                target: images_of_gallery.currentItem.image_points
-                function onImagePointsLoaded()
-                {
-                    images_of_gallery.currentItem.image_points.itemAt(imageOfGalleryPointIndex).toNextImage.onImagePointToImageLoaded.connect(onImagePointToImageLoaded)
-                }
-
-                function onImagePointToImageLoaded()
-                {
-                    source = images_of_gallery.currentItem.image_points.itemAt(imageOfGalleryPointIndex).toNextImage.source
-                }
-            }*/
-
 
             function loadVoronoyDiagram(imagePoints, imageStatus)
             {
@@ -709,15 +716,18 @@ ApplicationWindow {
                                 }
                                 else
                                 {
-                                    if(imageOfGalleryPointIndex !== -1)
+                                    if(imageOfGallery_index == galleryImagesCurrentIndex)
                                     {
-                                        imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
-                                    }
+                                        if(imageOfGalleryPointIndex !== -1)
+                                        {
+                                            imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
+                                        }
 
-                                    imageOfGalleryPointIndex = index;
-                                    //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
-                                    pointImage.source = Constants.activePoint
-                                    imageOfGalleryNextImageNextImage.source = pointImage.nextImage
+                                        imageOfGalleryPointIndex = index;
+                                        //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
+                                        pointImage.source = Constants.activePoint
+                                        imageOfGalleryNextImageNextImage.source = pointImage.nextImage
+                                    }
                                     mouse.accepted = false;
                                 }
                             }
@@ -731,11 +741,20 @@ ApplicationWindow {
     Component {
         id: imageOfGalleryDescriptionListViewItem
         Item {
-            width: root.width - Constants.leftSideBarWidth
+
+            property int imageOfGalleryDescriptionWidth: slitViewPaneImageOfGallery.width
+
+            width: imageOfGalleryDescriptionWidth
             height: Constants.descriptionRowHeight
             Column {
-                Text { text: GalleryFunctions.description_first_part(description_description) }
-                Text { text: '<b>From:</b>' + description_fromDateTime }
+                TextArea {
+                    focus: true
+                    readOnly: true
+                    width: imageOfGalleryDescriptionWidth
+                    height: Constants.descriptionRowHeight*4/5
+                    text: GalleryFunctions.description_first_part(description_description)
+                }
+                Text { text: qsTr("<b>From : </b>") + description_fromDateTime }
             }
 
             MouseArea {

@@ -363,6 +363,17 @@
                 ]
             },
             {
+                "className": "ImagePointToQuestion",
+                "object": true,
+                "qualifiedClassName": "ImagePointToQuestion",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
                 "className": "ImagePointData",
                 "object": true,
                 "properties": [

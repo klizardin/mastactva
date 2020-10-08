@@ -254,6 +254,11 @@ private:
     RequestData *m_request = nullptr;
 };
 
+class ImagePointToQuestion : public QObject
+{
+    Q_OBJECT
+};
+
 
 class ImagePointData : public QObject
 {
