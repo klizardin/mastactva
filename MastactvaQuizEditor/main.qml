@@ -808,7 +808,6 @@ ApplicationWindow {
                             function onImagePointToImageLoaded()
                             {
                                 nextImage = imagePoint_toNextImage.imageSource
-                                //imageOfGalleryNextImageNextImage.source
                             }
                         }
 
@@ -843,7 +842,6 @@ ApplicationWindow {
                                         }
 
                                         imageOfGalleryPointIndex = index;
-                                        //console.log("imageOfGalleryPointIndex = ", imageOfGalleryPointIndex);
                                         pointImage.source = Constants.activePoint
                                         imageOfGalleryNextImageNextImage.source = pointImage.nextImage
                                         imageOfGalleryQuestionAnswersListView.model.questionId = questionId
