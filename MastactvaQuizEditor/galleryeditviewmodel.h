@@ -42,7 +42,10 @@ public:
     void setId(int id_);
     const QString& getSource() const;
     void setSource(const QString& source_);
-    ImagePointsModel *getImagePoints(QObject *parent_);
+    ImagePointsModel *getImagePoints(QObject *parent_) const;
+
+protected:
+    void initImagePointModel(QObject *parent_);
 
 protected:
     int m_id = -1;
@@ -83,6 +86,7 @@ public:
     void setGalleryIndex(int galleryIndex_);
     void startLoadImages();
     int getIdOfIndex(int index_);
+    const ImageData *dataItemAt(int index_);
 
 signals:
     void galleryIdChanged();
@@ -351,6 +355,42 @@ private:
     QVector<AnswerData *> m_data;
 };
 
+class QuestionData : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString questionText READ questionText WRITE setQuestionText NOTIFY questionTextChanged)
+    Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
+
+public:
+    QuestionData(QObject *parent_ = nullptr,
+                 int id_ = -1,
+                 const QString &questionText_ = QString(),
+                 qreal pointsToPass_ = 1.0);
+    virtual ~QuestionData() override = default;
+
+public:
+    int id() const;
+    void setId(int id_);
+    const QString &questionText() const;
+    void setQuestionText(const QString &questionText_);
+    qreal pointsToPass() const;
+    void setPointsToPass(qreal pointsToPass_);
+
+    static QuestionData *fromJson(QObject *parent_, const QJsonValue &jsonValue_, bool &error_);
+    static QuestionData *fromJson(QObject *parent_, const QJsonDocument &jsonValue_, bool &error_);
+
+signals:
+    void idChanged();
+    void questionTextChanged();
+    void pointsToPassChanged();
+
+private:
+    int m_id = -1;
+    QString m_questionText;
+    qreal m_pointsToPass = 1.0;
+};
+
 class ImagePointToQuestion : public QObject
 {
     Q_OBJECT
@@ -358,22 +398,23 @@ class ImagePointToQuestion : public QObject
     Q_PROPERTY(int questionId READ questionId WRITE setQuestionId NOTIFY questionIdChanged)
     Q_PROPERTY(QString question READ question WRITE setQuestion NOTIFY questionChanged)
     Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
+    Q_PROPERTY(QVariant questionObj READ questionObj WRITE setQuestionObj NOTIFY questionObjChanged)
 
 public:
     ImagePointToQuestion(QObject *parent_ = nullptr, int imagePointId_ = -1);
     virtual ~ImagePointToQuestion() override;
 
-protected:
-    //QVariant answers() const;
-    //void setAnswers(QVariant answers_);
     int questionId() const;
     void setQuestionId(int questionId_);
-    const QString &question() const;
+    QString question() const;
     void setQuestion(const QString &question_);
     qreal pointsToPass() const;
     void setPointsToPass(qreal pointsToPass_);
     void startLoad();
     void startLoad2();
+    QVariant questionObj() const;
+    void setQuestionObj(const QVariant &questionObj_);
+    void refresh();
 
 protected slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
@@ -385,15 +426,15 @@ signals:
     void pointsToPassChanged();
     void imagePointToQuestionLoaded();
     void imagePointToQuestionTextLoaded();
+    void questionObjChanged();
 
 private:
     int m_imagePointId = -1;
     int m_questionId = -1;
-    QString m_questionText;
-    qreal m_pointsToPass = 1.0;
+    QuestionData *m_question = nullptr;
     RequestData *m_request1 = nullptr;
     RequestData *m_request2 = nullptr;
-    //QuestionAnswersModel *m_answers = nullptr;
+    bool m_forceRefresh = false;
 };
 
 
@@ -433,6 +474,7 @@ public:
     void setToNextImage(QVariant toNextImage_);
     QVariant toQuestion() const;
     void setToQuestion(QVariant toQuestion_);
+    ImagePointToQuestion *getQuestion();
 
     static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
 

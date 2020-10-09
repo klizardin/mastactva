@@ -7,6 +7,7 @@
 #include "netapi.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
+#include <type_traits>
 
 
 MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
@@ -31,6 +32,8 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onDescriptionEditedSlot(RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onDescriptionDeletedSlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onQuestionEditedSlot(RequestData *, const QJsonDocument &)));
 
 }
 
@@ -523,4 +526,129 @@ void MastactvaAPI::setImageOfGalleryPointIndex(int index_)
     m_imageOfGalleryPointIndex = index_;
 
     emit imageOfGalleryPointIndexChanged();
+}
+
+int MastactvaAPI::imageOfGalleryAnswerIndex() const
+{
+    return m_imageOfGalleryAnswerIndex;
+}
+
+void MastactvaAPI::setImageOfGalleryAnswerIndex(int index_)
+{
+    m_imageOfGalleryAnswerIndex = index_;
+
+    emit imageOfGalleryAnswerIndexChanged();
+}
+
+QVariant MastactvaAPI::getCurrentQuestion()
+{
+    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0)
+    {
+        return QVariant();
+    }
+
+    auto *p = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != p);
+    if(!(nullptr != p))
+    {
+        return QVariant();
+    }
+    auto *m = p->getGalleryAllImagesModel();
+    Q_ASSERT(nullptr != m);
+    if(!(nullptr != m))
+    {
+        return QVariant();
+    }
+    auto *pImageData = m->dataItemAt(m_imageOfGalleryIndex);
+    if(nullptr == pImageData)
+    {
+        return QVariant();
+    }
+    using PModelType = std::remove_const<decltype(m)>::type;
+    auto *pImagePointsModel = pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
+    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty())
+    {
+        return QVariant();
+    }
+    auto *pImagePoint = pImagePointsModel->getAt(m_imageOfGalleryPointIndex);
+    if(nullptr == pImagePoint)
+    {
+        return QVariant();
+    }
+    auto *pQuestion = pImagePoint->getQuestion();
+    if(nullptr == pQuestion)
+    {
+        return QVariant();
+    }
+    return pQuestion->questionObj();
+}
+
+void MastactvaAPI::editQuestion(int id_, const QString &questionText_, qreal pointsToPass_)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    if(id_ < 0)
+    {
+        return;
+    }
+
+    m_editQuestionRequest = netAPI->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("id", QJsonValue::fromVariant(id_));
+    rec.insert("question", QJsonValue::fromVariant(questionText_));
+    rec.insert("points_to_pass", QJsonValue::fromVariant(pointsToPass_));
+    QJsonDocument doc(rec);
+
+    m_editQuestionRequest->setDocument(doc);
+    netAPI->patch(QString("image-questions/%1/").arg(id_), m_editQuestionRequest);
+}
+
+void MastactvaAPI::onQuestionEditedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_editQuestionRequest) != request_)
+    {
+        return;
+    }
+    m_editQuestionRequest = nullptr;
+
+    emit onQuestionEdited();
+}
+
+void MastactvaAPI::refreshCurrentImagePointToQuestion()
+{
+    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0) { return; }
+
+    auto *p = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != p);
+    if(!(nullptr != p)) { return; }
+    auto *m = p->getGalleryAllImagesModel();
+    Q_ASSERT(nullptr != m);
+    if(!(nullptr != m)) { return; }
+    auto *pImageData = m->dataItemAt(m_imageOfGalleryIndex);
+    if(nullptr == pImageData) { return; }
+    using PModelType = std::remove_const<decltype(m)>::type;
+    auto *pImagePointsModel = pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
+    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty()) { return; }
+    auto *pImagePoint = pImagePointsModel->getAt(m_imageOfGalleryPointIndex);
+    if(nullptr == pImagePoint) { return; }
+    m_imagePointToQuestion = pImagePoint->getQuestion();
+    if(nullptr == m_imagePointToQuestion) { return; }
+    QObject::connect(m_imagePointToQuestion, SIGNAL(imagePointToQuestionTextLoaded()), this , SLOT(imagePointToQuestionTextLoadedSlot()));
+    m_imagePointToQuestion->refresh();
+}
+
+void MastactvaAPI::imagePointToQuestionTextLoadedSlot()
+{
+    if(nullptr != m_imagePointToQuestion)
+    {
+        QObject::disconnect(m_imagePointToQuestion, SIGNAL(imagePointToQuestionTextLoaded()), this , SLOT(imagePointToQuestionTextLoadedSlot()));
+    }
+    m_imagePointToQuestion = nullptr;
+    emit imagePointToQuestionRefreshed();
 }

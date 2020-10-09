@@ -10,6 +10,7 @@
 class RequestData;
 class JsonRequestData;
 class MultiPartRequestData;
+class ImagePointToQuestion;
 
 
 class MastactvaAPI : public QObject
@@ -28,6 +29,7 @@ public:
     Q_PROPERTY(int imageOfGalleryDescriptionIndex READ imageOfGalleryDescriptionIndex WRITE setImageOfGalleryDescriptionIndex NOTIFY imageOfGalleryDescriptionIndexChanged)
     Q_PROPERTY(int imageOfGalleryDescriptionId READ imageOfGalleryDescriptionId WRITE setImageOfGalleryDescriptionId NOTIFY imageOfGalleryDescriptionIdChanged)
     Q_PROPERTY(int imageOfGalleryPointIndex READ imageOfGalleryPointIndex WRITE setImageOfGalleryPointIndex NOTIFY imageOfGalleryPointIndexChanged)
+    Q_PROPERTY(int imageOfGalleryAnswerIndex READ imageOfGalleryAnswerIndex WRITE setImageOfGalleryAnswerIndex NOTIFY imageOfGalleryAnswerIndexChanged)
 
 public:
     Q_INVOKABLE void reloadGalleriesModel();
@@ -47,6 +49,9 @@ public:
     Q_INVOKABLE void newDescription(const QString &description, const QString &fromDateTime);
     Q_INVOKABLE void editDescription(int id_, int imageId_, const QString &description, const QString &fromDateTime);
     Q_INVOKABLE QVariant getCurrentDescription();
+    Q_INVOKABLE QVariant getCurrentQuestion();
+    Q_INVOKABLE void editQuestion(int id_, const QString &questionText_, qreal pointsToPass_);
+    Q_INVOKABLE void refreshCurrentImagePointToQuestion();
 
 signals:
     void galleryReloaded();
@@ -67,6 +72,9 @@ signals:
     void onRefreshDescriptions();
     void onDescriptionDeleted();
     void imageOfGalleryPointIndexChanged();
+    void onQuestionEdited();
+    void imagePointToQuestionRefreshed();
+    void imageOfGalleryAnswerIndexChanged();
 
 protected:
     int imageOfGalleryId() const;
@@ -81,6 +89,8 @@ protected:
     void setImageOfGalleryDescriptionId(int id_);
     int imageOfGalleryPointIndex() const;
     void setImageOfGalleryPointIndex(int index_);
+    int imageOfGalleryAnswerIndex() const;
+    void setImageOfGalleryAnswerIndex(int index_);
 
 
 protected slots:
@@ -93,6 +103,8 @@ protected slots:
     void onDescriptionEditedSlot(RequestData *request_, const QJsonDocument &document_);
     void onRefreshDescriptionsSlot();
     void onDescriptionDeletedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onQuestionEditedSlot(RequestData *request_, const QJsonDocument &document_);
+    void imagePointToQuestionTextLoadedSlot();
 
 private:
     int m_galleryId = -1;
@@ -102,6 +114,7 @@ private:
     int m_imageOfGalleryDescriptionIndex = -1;
     int m_imageOfGalleryDescriptionId = -1;
     int m_imageOfGalleryPointIndex = -1;
+    int m_imageOfGalleryAnswerIndex = -1;
     QJsonDocument m_jsonDoc;
     JsonRequestData *m_createNewGalleryRequest = nullptr;
     JsonRequestData *m_editGalleryRequest = nullptr;
@@ -110,6 +123,8 @@ private:
     JsonRequestData *m_newDescriptionRequest = nullptr;
     JsonRequestData *m_editDescriptionRequest = nullptr;
     JsonRequestData *m_delDescriptionRequest = nullptr;
+    JsonRequestData *m_editQuestionRequest = nullptr;
+    ImagePointToQuestion *m_imagePointToQuestion = nullptr;
 
 private:
     int getGalleryId() const;

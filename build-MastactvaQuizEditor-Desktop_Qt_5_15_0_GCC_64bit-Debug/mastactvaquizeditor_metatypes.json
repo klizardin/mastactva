@@ -535,6 +535,78 @@
                 ]
             },
             {
+                "className": "QuestionData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionText",
+                        "notify": "questionTextChanged",
+                        "read": "questionText",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setQuestionText"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "pointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setPointsToPass"
+                    }
+                ],
+                "qualifiedClassName": "QuestionData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionTextChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
                 "className": "ImagePointToQuestion",
                 "object": true,
                 "properties": [
@@ -579,6 +651,20 @@
                         "type": "qreal",
                         "user": false,
                         "write": "setPointsToPass"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionObj",
+                        "notify": "questionObjChanged",
+                        "read": "questionObj",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setQuestionObj"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToQuestion",
@@ -606,6 +692,11 @@
                     {
                         "access": "public",
                         "name": "imagePointToQuestionTextLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionObjChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1346,6 +1437,35 @@
                         "access": "public",
                         "name": "getCurrentDescription",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentQuestion",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "questionText_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointsToPass_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "editQuestion",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshCurrentImagePointToQuestion",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1461,6 +1581,20 @@
                         "type": "int",
                         "user": false,
                         "write": "setImageOfGalleryPointIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryAnswerIndex",
+                        "notify": "imageOfGalleryAnswerIndexChanged",
+                        "read": "imageOfGalleryAnswerIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryAnswerIndex"
                     }
                 ],
                 "qualifiedClassName": "MastactvaAPI",
@@ -1553,6 +1687,21 @@
                     {
                         "access": "public",
                         "name": "imageOfGalleryPointIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onQuestionEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToQuestionRefreshed",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryAnswerIndexChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1670,6 +1819,26 @@
                             }
                         ],
                         "name": "onDescriptionDeletedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onQuestionEditedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "imagePointToQuestionTextLoadedSlot",
                         "returnType": "void"
                     }
                 ],

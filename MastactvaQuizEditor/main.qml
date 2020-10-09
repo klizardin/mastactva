@@ -21,6 +21,7 @@ ApplicationWindow {
     property alias imageOfGalleryDescriptionIndex: mastactva.imageOfGalleryDescriptionIndex
     property alias imageOfGalleryDescriptionId: mastactva.imageOfGalleryDescriptionId
     property alias imageOfGalleryPointIndex: mastactva.imageOfGalleryPointIndex
+    property alias imageOfGalleryAnswerIndex: mastactva.imageOfGalleryAnswerIndex
     property bool showImagePoints: false
 
     Connections {
@@ -39,8 +40,9 @@ ApplicationWindow {
         {
             images_of_gallery.currentIndex = galleryImagesCurrentIndex >= 0 ? galleryImagesCurrentIndex : 0
             imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
-            imageOfGalleryDescriptionIndex = -1
             imageOfGalleryPointIndex = -1
+            imageOfGalleryDescriptionIndex = -1
+            imageOfGalleryAnswerIndex = -1
         }
 
         function onImageOfGalleryPointIndexChanged()
@@ -51,7 +53,14 @@ ApplicationWindow {
                 imageOfGalleryNextImageText.text = Constants.selectImagePoint
                 imageOfGalleryQuestionAnswersListView.model.questionId = -1
                 imageOfGalleryQuestionText.text = Constants.selectImagePoint
+                imageOfGalleryQuestionPointsToPassRect.visible = false
+                imageOfGalleryAnswerIndex = -1
             }
+        }
+
+        function onImageOfGalleryAnswerIndexChanged()
+        {
+            imageOfGalleryQuestionAnswersListView.currentIndex = imageOfGalleryAnswerIndex
         }
     }
 
@@ -232,6 +241,36 @@ ApplicationWindow {
         }
     }
 
+    QuestionEditDialog {
+        id: editQuestionDialog
+
+        onOpened: {
+            var question = mastactva.getCurrentQuestion()
+            if(question !== undefined)
+            {
+                fieldId = question.id
+                fieldQuestion = question.questionText
+                fieldPointsToPass = question.pointsToPass
+            }
+            else
+            {
+                fieldId = -1
+                fieldQuestion = ""
+                fieldPointsToPass = "1.0"
+            }
+        }
+
+        onAccepted: {
+            mastactva.editQuestion(fieldId, fieldQuestion, fieldPointsToPass);
+            mastactva.onQuestionEdited.connect(onQuestionEdited);
+        }
+
+        function onQuestionEdited()
+        {
+            mastactva.refreshCurrentImagePointToQuestion();
+        }
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")
@@ -343,16 +382,6 @@ ApplicationWindow {
     }
 
     Action {
-        id: imageOfGalleryDeleteQuestion
-        text: qsTr("&Delete question")
-        onTriggered: {
-            // TODO: implement
-            //mastactva.removeCurrentQuestion()
-            //mastactva.onQuestionDeleted.connect()
-        }
-    }
-
-    Action {
         id: imageOfGalleryCreateAnswer
         text: qsTr("&New answer")
         onTriggered: {
@@ -403,7 +432,6 @@ ApplicationWindow {
         Menu {
             title: qsTr("&Question")
             MenuItem { action: imageOfGalleryEditQuestion }
-            MenuItem { action: imageOfGalleryDeleteQuestion }
         }
         Menu {
             title: qsTr("&Answer")
@@ -574,6 +602,7 @@ ApplicationWindow {
                             Item {
                                 anchors.fill: parent
                                 visible: imageOfGalleryPointIndex >= 0
+
                                 Column{
                                     anchors.left: parent.left
 
@@ -582,12 +611,39 @@ ApplicationWindow {
                                         height: (imageOfGalleryQuestionTab.height * 2) / 5
                                         visible: imageOfGalleryPointIndex >= 0
 
-                                        TextArea {
-                                            id: imageOfGalleryQuestionText
-                                            visible: imageOfGalleryPointIndex >= 0
+                                        FontMetrics{
+                                            id: imageOfGalleryQuestionPointsToPassFontMetrics
+                                            font: imageOfGalleryQuestionPointsToPass.font
+                                        }
+
+                                        Column{
                                             anchors.fill: parent
-                                            readOnly: true
-                                            text: qsTr("<Question>")
+
+                                            TextArea {
+                                                id: imageOfGalleryQuestionText
+                                                visible: imageOfGalleryPointIndex >= 0
+                                                width: imageOfGalleryQuestionTab.width
+                                                height: (imageOfGalleryQuestionTab.height * 2) / 5 - imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
+                                                readOnly: true
+                                                text: qsTr("<Question>")
+                                            }
+
+                                            Rectangle {
+                                                id: imageOfGalleryQuestionPointsToPassRect
+                                                width: imageOfGalleryQuestionTab.width
+                                                height: imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
+                                                Row {
+                                                    Label {
+                                                        visible: imageOfGalleryPointIndex >= 0
+                                                        text: qsTr("Points to pass : ")
+                                                    }
+                                                    Text {
+                                                        id: imageOfGalleryQuestionPointsToPass
+                                                        visible: imageOfGalleryPointIndex >= 0
+                                                        text: qsTr("<PointsToPass>")
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
 
@@ -847,6 +903,7 @@ ApplicationWindow {
                         property string nextImageDescription: Constants.notANextImagePoint
                         property int questionId: -1
                         property string questionText: Constants.notAQuestionPoint
+                        property var questionPointsToPass: 1.0
 
                         Connections {
                             target: imagePoint_toNextImage
@@ -869,6 +926,19 @@ ApplicationWindow {
                             function onImagePointToQuestionTextLoaded()
                             {
                                 questionText = imagePoint_toQuestion.question
+                                questionPointsToPass = imagePoint_toQuestion.pointsToPass
+                            }
+                        }
+
+                        Connections {
+                            target: mastactva
+                            function onImagePointToQuestionRefreshed()
+                            {
+                                imageOfGalleryQuestionAnswersListView.model.questionId = questionId
+                                imageOfGalleryAnswerIndex = 0
+                                imageOfGalleryQuestionText.text = questionText
+                                imageOfGalleryQuestionPointsToPassRect.visible = true
+                                imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
                             }
                         }
 
@@ -905,7 +975,19 @@ ApplicationWindow {
                                         imageOfGalleryNextImageNextImage.source = pointImage.nextImage
                                         imageOfGalleryNextImageText.text = nextImageDescription
                                         imageOfGalleryQuestionAnswersListView.model.questionId = questionId
-                                        imageOfGalleryQuestionText.text = questionText
+                                        imageOfGalleryAnswerIndex = 0
+                                        if(questionId >= 0)
+                                        {
+                                            imageOfGalleryQuestionText.text = questionText
+                                            imageOfGalleryQuestionPointsToPassRect.visible = true
+                                            imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                                        }
+                                        else
+                                        {
+                                            imageOfGalleryQuestionText.text = Constants.selectImagePoint
+                                            imageOfGalleryQuestionPointsToPassRect.visible = false
+                                            imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                                        }
                                     }
                                     mouse.accepted = false;
                                 }
@@ -1001,6 +1083,7 @@ ApplicationWindow {
                     }
                     else
                     {
+                        imageOfGalleryAnswerIndex = index
                         imageOfGalleryQuestionAnswersListView.currentIndex = index
                         mouse.accepted = false
                     }

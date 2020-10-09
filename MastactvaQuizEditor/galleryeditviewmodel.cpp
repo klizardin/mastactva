@@ -61,7 +61,7 @@ void ImageData::setSource(const QString& source_)
     m_source = source_;
 }
 
-ImagePointsModel *ImageData::getImagePoints(QObject *parent_)
+void ImageData::initImagePointModel(QObject *parent_)
 {
     if(nullptr == imagePointsModel)
     {
@@ -69,6 +69,11 @@ ImagePointsModel *ImageData::getImagePoints(QObject *parent_)
         imagePointsModel->setSourceImageId(m_id);
         imagePointsModel->startLoadImagePoints();
     }
+}
+
+ImagePointsModel *ImageData::getImagePoints(QObject *parent_) const
+{
+    const_cast<ImageData *>(this)->initImagePointModel(parent_);
     return imagePointsModel;
 }
 
@@ -125,7 +130,7 @@ QVariant GalleryImagesModel::data(const QModelIndex &index, int role) const
             return QVariant();
         else
             return QVariant::fromValue<QObject *>(
-                        const_cast<ImageData &>(image).getImagePoints(
+                        image.getImagePoints(
                             static_cast<QObject *>(
                                 const_cast<GalleryImagesModel *>(this))
                             )
@@ -284,6 +289,15 @@ int GalleryImagesModel::getIdOfIndex(int index_)
         return -1;
     }
     return m_images.at(index_).getId();
+}
+
+const ImageData *GalleryImagesModel::dataItemAt(int index_)
+{
+    if(index_ < 0 || index_ > m_images.size())
+    {
+        return nullptr;
+    }
+    return &(m_images.at(index_));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -943,6 +957,98 @@ void QuestionAnswersModel::onJsonRequestFinished(RequestData *request_, const QJ
     emit answersLoaded();
 }
 
+QuestionData::QuestionData(QObject *parent_ /*= nullptr*/,
+             int id_ /*= -1*/,
+             const QString &questionText_ /*= QString()*/,
+             qreal pointsToPass_ /*= 1.0*/)
+    :QObject(parent_),
+      m_id (id_),
+      m_questionText(questionText_),
+      m_pointsToPass(pointsToPass_)
+{
+}
+
+int QuestionData::id() const
+{
+    return m_id;
+}
+
+void QuestionData::setId(int id_)
+{
+    m_id = id_;
+
+    emit idChanged();
+}
+
+const QString &QuestionData::questionText() const
+{
+    return m_questionText;
+}
+
+void QuestionData::setQuestionText(const QString &questionText_)
+{
+    m_questionText = questionText_;
+
+    emit questionTextChanged();
+}
+
+qreal QuestionData::pointsToPass() const
+{
+    return m_pointsToPass;
+}
+
+void QuestionData::setPointsToPass(qreal pointsToPass_)
+{
+    m_pointsToPass = pointsToPass_;
+
+    emit pointsToPassChanged();
+}
+
+template<typename JsonObject>
+QuestionData *QuestionData_fromJsonT(QObject *parent_, const JsonObject &jsonValue_, bool &error_)
+{
+    Q_ASSERT(jsonValue_.isObject());
+
+    int id = -1;
+    QJsonValue idJS = jsonValue_["id"];
+    if(!idJS.isUndefined()) { id = idJS.toInt(-1); }
+    else { error_ = true; }
+
+    QString questionText;
+    QJsonValue questionTextJV = jsonValue_["question"];
+    if(!questionTextJV.isUndefined() && questionTextJV.isString()) { questionText = questionTextJV.toString(); }
+    else { error_ = true; }
+
+    qreal pointsToPass = 1.0;
+    QJsonValue pointsToPassJV = jsonValue_["points_to_pass"];
+    if(!pointsToPassJV.isUndefined()) { pointsToPass = pointsToPassJV.toDouble(1.0); }
+    else { error_ = true; }
+
+    return new QuestionData(parent_, id, questionText, pointsToPass);
+}
+
+QuestionData *QuestionData::fromJson(QObject *parent_, const QJsonDocument &jsonValue_, bool &error_)
+{
+    error_ = false;
+    if(jsonValue_.isNull())
+    {
+        error_ = true;
+        return nullptr;
+    }
+    return QuestionData_fromJsonT(parent_, jsonValue_, error_);
+}
+
+QuestionData *QuestionData::fromJson(QObject *parent_, const QJsonValue &jsonValue_, bool &error_)
+{
+    error_ = false;
+    if(jsonValue_.isUndefined())
+    {
+        error_ = true;
+        return nullptr;
+    }
+    return QuestionData_fromJsonT(parent_, jsonValue_, error_);
+}
+
 ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
     :QObject(parent_),
     m_imagePointId(imagePointId_)
@@ -955,27 +1061,9 @@ ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int i
 
 ImagePointToQuestion::~ImagePointToQuestion()
 {
-//    delete m_answers;
-//    m_answers = nullptr;
+    delete m_question;
+    m_question = nullptr;
 }
-
-//QVariant ImagePointToQuestion::answers() const
-//{
-//    return QVariant::fromValue(m_answers);
-//}
-
-//void ImagePointToQuestion::setAnswers(QVariant answers_)
-//{
-//    QObject *obj = qvariant_cast<QObject *>(answers_);
-//    QuestionAnswersModel *answerModel = qobject_cast<QuestionAnswersModel *>(static_cast<QObject *>(obj));
-//    if(m_answers == answerModel)
-//    {
-//        return;
-//    }
-//    m_answers = answerModel;
-//
-//    emit answersChanged();
-//}
 
 int ImagePointToQuestion::questionId() const
 {
@@ -989,28 +1077,65 @@ void ImagePointToQuestion::setQuestionId(int questionId_)
     emit questionIdChanged();
 }
 
-const QString &ImagePointToQuestion::question() const
+QString ImagePointToQuestion::question() const
 {
-    return m_questionText;
+    return nullptr != m_question? m_question->questionText() : QString();
 }
 
 void ImagePointToQuestion::setQuestion(const QString &question_)
 {
-    m_questionText = question_;
+    if(nullptr == m_question)
+    {
+        return;
+    }
+    m_question->setQuestionText(question_);
 
     emit questionChanged();
 }
 
 qreal ImagePointToQuestion::pointsToPass() const
 {
-    return m_pointsToPass;
+    return nullptr != m_question ? m_question->pointsToPass() : 1.0;
 }
 
 void ImagePointToQuestion::setPointsToPass(qreal pointsToPass_)
 {
-    m_pointsToPass = pointsToPass_;
+    if(nullptr == m_question)
+    {
+        return;
+    }
+    m_question->setPointsToPass(pointsToPass_);
 
     emit pointsToPassChanged();
+}
+
+QVariant ImagePointToQuestion::questionObj() const
+{
+    return QVariant::fromValue(m_question);
+}
+
+void ImagePointToQuestion::setQuestionObj(const QVariant &questionObj_)
+{
+    QObject *obj = qvariant_cast<QObject *>(questionObj_);
+    QuestionData *newQuestion = qobject_cast<QuestionData *>(static_cast<QObject *>(obj));
+    if(m_question == newQuestion)
+    {
+        return;
+    }
+    m_question = newQuestion;
+    emit questionObjChanged();
+}
+
+void ImagePointToQuestion::refresh()
+{
+    if(nullptr != m_request1 || nullptr != m_request2)
+    {
+        m_forceRefresh = true;
+        return;
+    }
+
+    m_forceRefresh = false;
+    startLoad();
 }
 
 void ImagePointToQuestion::startLoad()
@@ -1077,23 +1202,24 @@ void ImagePointToQuestion::onJsonRequestFinished(RequestData *request_, const QJ
     {
         m_request2 = nullptr;
 
-        Q_ASSERT(reply_.isObject());
-
-        QJsonValue questionJV = reply_["question"];
-        if(!questionJV.isUndefined() && questionJV.isString())
+        bool anyError = false;
+        m_question = QuestionData::fromJson(this, reply_, anyError);
+        if(anyError || nullptr == m_question)
         {
-            m_questionText = questionJV.toString();
-            emit questionChanged();
-        }
-
-        QJsonValue pointsToPassJV = reply_["points_to_pass"];
-        if(!pointsToPassJV.isUndefined())
-        {
-            m_pointsToPass = pointsToPassJV.toDouble(1.0);
-            emit pointsToPassChanged();
+            delete m_question;
+            m_question = nullptr;
+            return;
         }
 
         emit imagePointToQuestionTextLoaded();
+        emit questionChanged();
+        emit pointsToPassChanged();
+        emit questionObjChanged();
+
+        if(m_forceRefresh)
+        {
+            refresh();
+        }
     }
 }
 
@@ -1221,6 +1347,11 @@ void ImagePointData::setToQuestion(QVariant toQuestion_)
     }
     m_imagePointToQuestion = newQuestion;
     emit toQuestionChanged();
+}
+
+ImagePointToQuestion *ImagePointData::getQuestion()
+{
+    return m_imagePointToQuestion;
 }
 
 ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_)
