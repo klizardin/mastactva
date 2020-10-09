@@ -15,8 +15,8 @@ ApplicationWindow {
     title: qsTr("Mastactva Quiz Editor")
 
     property alias galleryCurrentIndex: mastactva.galleryIndex
-    property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
     property alias galleryCurrentId: mastactva.galleryId
+    property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
     property alias galleryImagesCurrentId: mastactva.imageOfGalleryId
     property alias imageOfGalleryDescriptionIndex: mastactva.imageOfGalleryDescriptionIndex
     property alias imageOfGalleryDescriptionId: mastactva.imageOfGalleryDescriptionId
@@ -25,6 +25,24 @@ ApplicationWindow {
 
     Connections {
         target: root
+        function onGalleryCurrentIndexChanged()
+        {
+            galleries.currentIndex = galleryCurrentIndex
+            galleries.model.currentIndex = galleryCurrentIndex
+            images_of_gallery.model.galleryIndex = galleryCurrentIndex
+            editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
+            addImageDialog.currentGalleryId = galleries.model.currentId
+            galleryImagesCurrentIndex = -1
+        }
+
+        function onGalleryImagesCurrentIndexChanged()
+        {
+            images_of_gallery.currentIndex = galleryImagesCurrentIndex >= 0 ? galleryImagesCurrentIndex : 0
+            imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
+            imageOfGalleryDescriptionIndex = -1
+            imageOfGalleryPointIndex = -1
+        }
+
         function onImageOfGalleryPointIndexChanged()
         {
             if(imageOfGalleryPointIndex == -1)
@@ -651,16 +669,7 @@ ApplicationWindow {
                                     else
                                     {
                                         galleryCurrentIndex = gallery_index
-                                        galleries.currentIndex = galleryCurrentIndex
-                                        galleryImagesCurrentIndex = -1
-                                        images_of_gallery.currentIndex = galleryImagesCurrentIndex
-                                        imageOfGalleryDescriptionListView.model.imageID = -1
-                                        imageOfGalleryDescriptionIndex = -1
-                                        images_of_gallery.model.galleryIndex = galleryCurrentIndex
-                                        galleries.model.currentIndex = galleryCurrentIndex
-                                        editCurrentGalleryDialog.setFields(galleries.model.getCurrentItem())
-                                        addImageDialog.currentGalleryId = galleries.model.currentId
-                                        images_of_gallery.model.galleryCurrentItem
+                                        //images_of_gallery.model.galleryCurrentItem
                                         mouse.accepted = false
                                     }
                                 }
@@ -750,10 +759,6 @@ ApplicationWindow {
                                     //images_of_gallery.currentItem.imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
                                 }
                                 galleryImagesCurrentIndex = imageOfGallery_index
-                                images_of_gallery.currentIndex = galleryImagesCurrentIndex
-                                imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
-                                imageOfGalleryDescriptionIndex = -1
-                                imageOfGalleryPointIndex = -1
                             }
                             mouse.accepted = false
                         }
