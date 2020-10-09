@@ -630,8 +630,9 @@ QObject* GalleryEditViewModel::getCurrentItem()
 
 ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
     :QObject(parent_),
+      m_imagePointId(imagePointId_),
       m_imageSource(g_noImageSource),
-      m_imagePointId(imagePointId_)
+      m_noImageSource(true)
 {
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
@@ -649,6 +650,18 @@ void ImagePointToNextImage::setImageSource(const QString &imageSource_)
     m_imageSource = imageSource_;
 
     emit imageSourceChanged();
+}
+
+bool ImagePointToNextImage::noImageSource() const
+{
+    return m_noImageSource;
+}
+
+void ImagePointToNextImage::setNoImageSource(bool noImageSource_)
+{
+    m_noImageSource = noImageSource_;
+
+    emit noImageSourceChanged();
 }
 
 void ImagePointToNextImage::startLoad()
@@ -684,6 +697,7 @@ void ImagePointToNextImage::onJsonRequestFinished(RequestData *request_, const Q
     if(!nextImageJV.isUndefined() && nextImageJV.isString())
     {
         m_imageSource = nextImageJV.toString();
+        m_noImageSource = false;
     }
 
     emit imagePointToImageLoaded();

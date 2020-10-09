@@ -23,6 +23,20 @@ ApplicationWindow {
     property alias imageOfGalleryPointIndex: mastactva.imageOfGalleryPointIndex
     property bool showImagePoints: false
 
+    Connections {
+        target: root
+        function onImageOfGalleryPointIndexChanged()
+        {
+            if(imageOfGalleryPointIndex == -1)
+            {
+                imageOfGalleryNextImageNextImage.source = Constants.noImage
+                imageOfGalleryNextImageText.text = Constants.selectImagePoint
+                imageOfGalleryQuestionAnswersListView.model.questionId = -1
+                imageOfGalleryQuestionText.text = Constants.selectImagePoint
+            }
+        }
+    }
+
     MastactvaAPI {
         id: mastactva
     }
@@ -504,15 +518,30 @@ ApplicationWindow {
                                 anchors.left: parent.left
                                 anchors.fill: parent
                                 visible: imageOfGalleryPointIndex === -1
-                                text: qsTr("<Select image point>")
+                                text: Constants.selectImagePoint
                             }
-                            Image {
-                                height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height
-                                width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
-                                id: imageOfGalleryNextImageNextImage
+                            Item {
+                                anchors.fill: parent
                                 visible: imageOfGalleryPointIndex >= 0
-                                fillMode: Image.PreserveAspectFit
-                                source: Constants.noImage
+
+                                Column{
+
+                                    Text {
+                                        id: imageOfGalleryNextImageText
+                                        visible: imageOfGalleryPointIndex >= 0
+                                        width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                        text: Constants.notANextImagePoint
+                                    }
+
+                                    Image {
+                                        height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height - imageOfGalleryNextImageText.height
+                                        width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                        id: imageOfGalleryNextImageNextImage
+                                        visible: imageOfGalleryPointIndex >= 0
+                                        fillMode: Image.PreserveAspectFit
+                                        source: Constants.noImage
+                                    }
+                                }
                             }
                         }
                         Item {
@@ -522,7 +551,7 @@ ApplicationWindow {
                                 anchors.left: parent.left
                                 anchors.fill: parent
                                 visible: imageOfGalleryPointIndex === -1
-                                text: qsTr("<Select image point>")
+                                text: Constants.selectImagePoint
                             }
                             Item {
                                 anchors.fill: parent
@@ -713,10 +742,19 @@ ApplicationWindow {
                         }
                         else
                         {
-                            galleryImagesCurrentIndex = imageOfGallery_index
-                            images_of_gallery.currentIndex = galleryImagesCurrentIndex
-                            imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
-                            imageOfGalleryDescriptionIndex = -1
+                            if(galleryImagesCurrentIndex !== imageOfGallery_index)
+                            {
+                                if(imageOfGalleryPointIndex >= 0)
+                                {
+                                    //imageOfGalleryNextImageText.text = Constants.selectImagePoint
+                                    //images_of_gallery.currentItem.imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
+                                }
+                                galleryImagesCurrentIndex = imageOfGallery_index
+                                images_of_gallery.currentIndex = galleryImagesCurrentIndex
+                                imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
+                                imageOfGalleryDescriptionIndex = -1
+                                imageOfGalleryPointIndex = -1
+                            }
                             mouse.accepted = false
                         }
                     }
@@ -773,6 +811,7 @@ ApplicationWindow {
             }
 
             Item {
+                id: imagePoints
                 anchors.fill: parent
                 visible: showImagePoints
                 opacity: 0.5
@@ -800,13 +839,17 @@ ApplicationWindow {
                         }
 
                         property string nextImage: Constants.noImage
+                        property string nextImageDescription: Constants.notANextImagePoint
                         property int questionId: -1
-                        property string questionText: "<Not a point to question>"
+                        property string questionText: Constants.notAQuestionPoint
 
                         Connections {
                             target: imagePoint_toNextImage
                             function onImagePointToImageLoaded()
                             {
+                                nextImageDescription = imagePoint_toNextImage.noImageSource
+                                        ? Constants.notANextImagePoint
+                                        : Constants.aNextImagePoint
                                 nextImage = imagePoint_toNextImage.imageSource
                             }
                         }
@@ -821,6 +864,17 @@ ApplicationWindow {
                             function onImagePointToQuestionTextLoaded()
                             {
                                 questionText = imagePoint_toQuestion.question
+                            }
+                        }
+
+                        Connections {
+                            target: root
+                            function onImageOfGalleryPointIndexChanged()
+                            {
+                                if(imageOfGalleryPointIndex == -1)
+                                {
+                                    pointImage.source = Constants.inactivePoint
+                                }
                             }
                         }
 
@@ -844,6 +898,7 @@ ApplicationWindow {
                                         imageOfGalleryPointIndex = index;
                                         pointImage.source = Constants.activePoint
                                         imageOfGalleryNextImageNextImage.source = pointImage.nextImage
+                                        imageOfGalleryNextImageText.text = nextImageDescription
                                         imageOfGalleryQuestionAnswersListView.model.questionId = questionId
                                         imageOfGalleryQuestionText.text = questionText
                                     }

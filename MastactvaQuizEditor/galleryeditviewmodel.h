@@ -231,12 +231,15 @@ class ImagePointToNextImage : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString imageSource READ imageSource WRITE setImageSource NOTIFY imageSourceChanged)
+    Q_PROPERTY(bool noImageSource READ noImageSource WRITE setNoImageSource NOTIFY noImageSourceChanged)
 
 public:
     ImagePointToNextImage(QObject* parent_ = nullptr, int imagePointId_ = -1);
     virtual ~ImagePointToNextImage() override = default;
     const QString &imageSource();
     void setImageSource(const QString &imageSource_);
+    bool noImageSource() const;
+    void setNoImageSource(bool noImageSource_);
 
 protected:
     void startLoad();
@@ -247,10 +250,12 @@ protected slots:
 signals:
     void imageSourceChanged();
     void imagePointToImageLoaded();
+    void noImageSourceChanged();
 
 private:
-    QString m_imageSource;
     int m_imagePointId = -1;
+    QString m_imageSource;
+    bool m_noImageSource = true;
     RequestData *m_request = nullptr;
 };
 

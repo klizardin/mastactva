@@ -323,6 +323,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setImageSource"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "noImageSource",
+                        "notify": "noImageSourceChanged",
+                        "read": "noImageSource",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setNoImageSource"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToNextImage",
@@ -335,6 +349,11 @@
                     {
                         "access": "public",
                         "name": "imagePointToImageLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "noImageSourceChanged",
                         "returnType": "void"
                     }
                 ],
