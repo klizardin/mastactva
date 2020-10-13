@@ -867,6 +867,25 @@ QVariant QuestionAnswersModel::data(const QModelIndex &index_, int role_) const
     return QVariant();
 }
 
+AnswerData *QuestionAnswersModel::dataItemAt(int index_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return nullptr;
+    }
+    return m_data[index_];
+}
+
+const AnswerData *QuestionAnswersModel::dataItemAt(int index_) const
+{
+    return const_cast<QuestionAnswersModel *>(this)->dataItemAt(index_);
+}
+
+QVariant QuestionAnswersModel::itemAt(int index_)
+{
+    return QVariant::fromValue(dataItemAt(index_));
+}
+
 int QuestionAnswersModel::questionId() const
 {
     return m_questionId;
@@ -1111,7 +1130,12 @@ void ImagePointToQuestion::setPointsToPass(qreal pointsToPass_)
 
 QVariant ImagePointToQuestion::questionObj() const
 {
-    return QVariant::fromValue(m_question);
+    return QVariant::fromValue(const_cast<ImagePointToQuestion *>(this)->questionData());
+}
+
+QuestionData *ImagePointToQuestion::questionData()
+{
+    return m_question;
 }
 
 void ImagePointToQuestion::setQuestionObj(const QVariant &questionObj_)

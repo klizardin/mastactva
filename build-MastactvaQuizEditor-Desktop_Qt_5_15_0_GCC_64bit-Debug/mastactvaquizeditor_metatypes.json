@@ -1485,6 +1485,34 @@
                         ],
                         "name": "addNewAnswer",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentAnswer",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "questionId_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "answerText_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointsForAnswer_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "editAnswer",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1727,6 +1755,11 @@
                         "access": "public",
                         "name": "onNewAnswerAdded",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onAnswerEdited",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1878,6 +1911,21 @@
                             }
                         ],
                         "name": "onAnswerAddedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onAnswerEditedSlot",
                         "returnType": "void"
                     }
                 ],

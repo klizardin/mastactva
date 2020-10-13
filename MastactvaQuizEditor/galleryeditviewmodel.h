@@ -328,6 +328,10 @@ public:
     virtual int rowCount(const QModelIndex &parent_) const override;
     virtual QVariant data(const QModelIndex &index_, int role_) const override;
 
+    const AnswerData *dataItemAt(int index_) const;
+    AnswerData *dataItemAt(int index_);
+    QVariant itemAt(int index_);
+
 protected:
     int questionId() const;
     void setQuestionId(int questionId_);
@@ -415,6 +419,8 @@ public:
     QVariant questionObj() const;
     void setQuestionObj(const QVariant &questionObj_);
     void refresh();
+
+    QuestionData *questionData();
 
 protected slots:
     void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);

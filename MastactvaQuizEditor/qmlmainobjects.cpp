@@ -50,6 +50,15 @@ DescriptionModel *QMLMainObjects::getImageOfGalleryDescriptionModel()
     return m_imageOfGalleryDescriptionModel;
 }
 
+QuestionAnswersModel *QMLMainObjects::getQuestionAnswersModel()
+{
+    if(nullptr == m_questionAnswersModel)
+    {
+        searchQMLObjects();
+    }
+    return m_questionAnswersModel;
+}
+
 void QMLMainObjects::searchQMLObjects()
 {
     if(nullptr == m_galleryViewModel)
@@ -63,6 +72,10 @@ void QMLMainObjects::searchQMLObjects()
     if(nullptr == m_imageOfGalleryDescriptionModel)
     {
         m_imageOfGalleryDescriptionModel = m_root->findChild<DescriptionModel *>("ImageOfGalleryDescriptionModel");
+    }
+    if(nullptr == m_questionAnswersModel)
+    {
+        m_questionAnswersModel = m_root->findChild<QuestionAnswersModel *>("ImageOfGalleryQuestionAnswersModel");
     }
 }
 

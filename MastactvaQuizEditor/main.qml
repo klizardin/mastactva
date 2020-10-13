@@ -307,6 +307,58 @@ ApplicationWindow {
         }
     }
 
+    AnswerEditDialog {
+        id: editAnswerDialog
+
+        property int questionId: -1
+
+        onOpened: {
+            var question = mastactva.getCurrentQuestion()
+            var answer = mastactva.getCurrentAnswer()
+            if(question !== undefined)
+            {
+                questionId = question.id
+                fieldQuestion = question.questionText
+                fieldQuestionPointsToPass = question.pointsToPass
+            }
+            else
+            {
+                questionId = -1
+                fieldQuestion = ""
+                fieldQuestionPointsToPass = "1.0"
+            }
+            if(answer !== undefined)
+            {
+                fieldId = answer.id
+                fieldAnswer = answer.answer
+                fieldPointsToPass = answer.pointsToPass
+            }
+            else
+            {
+                fieldId = -1
+                fieldAnswer = ""
+                if(question !== undefined)
+                {
+                    fieldPointsToPass = question.pointsToPass
+                }
+                else
+                {
+                    fieldPointsToPass = "1.0"
+                }
+            }
+        }
+
+        onAccepted: {
+            mastactva.editAnswer(fieldId, questionId, fieldAnswer, fieldPointsToPass)
+            mastactva.onAnswerEdited.connect(onAnswerEdited)
+        }
+
+        function onAnswerEdited()
+        {
+            mastactva.refreshCurrentImagePointToQuestion();
+        }
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")

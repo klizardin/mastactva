@@ -36,6 +36,8 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onQuestionEditedSlot(RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onAnswerAddedSlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAnswerEditedSlot(RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -684,4 +686,51 @@ void MastactvaAPI::onAnswerAddedSlot(RequestData *request_, const QJsonDocument 
     m_addAnswerRequest = nullptr;
 
     emit onNewAnswerAdded();
+}
+
+QVariant MastactvaAPI::getCurrentAnswer()
+{
+    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0 || m_imageOfGalleryAnswerIndex < 0) { return QVariant(); }
+
+    QMLMainObjects* qmlMainObjects = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != qmlMainObjects);
+    if(nullptr == qmlMainObjects) { return QVariant(); }
+   auto *answersModel = qmlMainObjects->getQuestionAnswersModel();
+    Q_ASSERT(nullptr != answersModel);
+    if(nullptr == answersModel) { return QVariant(); }
+
+    return answersModel->itemAt(m_imageOfGalleryAnswerIndex);
+}
+
+void MastactvaAPI::editAnswer(int id_, int questionId_, const QString &answerText_, qreal pointsForAnswer_)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    m_editAnswerRequest = netAPI->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("id", QJsonValue::fromVariant(id_));
+    rec.insert("question", QJsonValue::fromVariant(questionId_));
+    rec.insert("answer", QJsonValue::fromVariant(answerText_));
+    rec.insert("points", QJsonValue::fromVariant(pointsForAnswer_));
+    QJsonDocument doc(rec);
+
+    m_editAnswerRequest->setDocument(doc);
+    netAPI->patch(QString("image-question-answers/%1/").arg(id_), m_editAnswerRequest);
+}
+
+void MastactvaAPI::onAnswerEditedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(nullptr == m_editAnswerRequest || static_cast<RequestData *>(m_editAnswerRequest) != request_)
+    {
+        return;
+    }
+    m_editAnswerRequest = nullptr;
+
+    emit onAnswerEdited();
 }
