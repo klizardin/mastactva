@@ -489,7 +489,13 @@ ApplicationWindow {
         id: imageOfGalleryDeleteAnswer
         text: qsTr("&Delete answer")
         onTriggered: {
-            // TODO: remove answer
+            mastactva.removeCurrentAnswer()
+            mastactva.onCurrentAnswerRemoved.connect(onCurrentAnswerRemoved)
+        }
+
+        function onCurrentAnswerRemoved()
+        {
+            mastactva.refreshCurrentImagePointToQuestion();
         }
     }
 

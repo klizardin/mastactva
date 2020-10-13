@@ -55,6 +55,7 @@ public:
     Q_INVOKABLE void addNewAnswer(int questionID_, const QString &answerText_, qreal pointFoAnswer_);
     Q_INVOKABLE QVariant getCurrentAnswer();
     Q_INVOKABLE void editAnswer(int id_, int questionId_, const QString &answerText_, qreal pointsForAnswer_);
+    Q_INVOKABLE void removeCurrentAnswer();
 
 signals:
     void galleryReloaded();
@@ -80,6 +81,7 @@ signals:
     void imageOfGalleryAnswerIndexChanged();
     void onNewAnswerAdded();
     void onAnswerEdited();
+    void onCurrentAnswerRemoved();
 
 protected:
     int imageOfGalleryId() const;
@@ -112,6 +114,7 @@ protected slots:
     void imagePointToQuestionTextLoadedSlot();
     void onAnswerAddedSlot(RequestData *request_, const QJsonDocument &document_);
     void onAnswerEditedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onCurrentAnswerRemovedSlot(RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
@@ -133,6 +136,7 @@ private:
     JsonRequestData *m_editQuestionRequest = nullptr;
     JsonRequestData *m_addAnswerRequest = nullptr;
     JsonRequestData *m_editAnswerRequest = nullptr;
+    JsonRequestData *m_removeAnswerRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
 
 private:

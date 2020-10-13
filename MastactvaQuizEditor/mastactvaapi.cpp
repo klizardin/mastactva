@@ -38,6 +38,8 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onAnswerAddedSlot(RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onAnswerEditedSlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onCurrentAnswerRemovedSlot(RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -733,4 +735,34 @@ void MastactvaAPI::onAnswerEditedSlot(RequestData *request_, const QJsonDocument
     m_editAnswerRequest = nullptr;
 
     emit onAnswerEdited();
+}
+
+void MastactvaAPI::removeCurrentAnswer()
+{
+    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0 || m_imageOfGalleryAnswerIndex < 0) { return; }
+
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+
+    m_removeAnswerRequest = netAPI->startJsonRequest();
+    netAPI->del(QString("image-question-answers/%1/").arg(m_imageOfGalleryAnswerIndex), m_removeAnswerRequest);
+
+    setImageOfGalleryAnswerIndex(-1);
+}
+
+void MastactvaAPI::onCurrentAnswerRemovedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(nullptr == m_removeAnswerRequest || static_cast<RequestData *>(m_removeAnswerRequest) != request_)
+    {
+        return;
+    }
+    m_removeAnswerRequest = nullptr;
+
+    emit onCurrentAnswerRemoved();
 }

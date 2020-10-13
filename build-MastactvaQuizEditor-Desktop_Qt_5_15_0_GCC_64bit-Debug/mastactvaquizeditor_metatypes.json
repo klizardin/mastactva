@@ -1513,6 +1513,11 @@
                         ],
                         "name": "editAnswer",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentAnswer",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1760,6 +1765,11 @@
                         "access": "public",
                         "name": "onAnswerEdited",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onCurrentAnswerRemoved",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1926,6 +1936,21 @@
                             }
                         ],
                         "name": "onAnswerEditedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onCurrentAnswerRemovedSlot",
                         "returnType": "void"
                     }
                 ],
