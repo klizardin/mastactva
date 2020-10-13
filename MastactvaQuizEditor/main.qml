@@ -271,6 +271,42 @@ ApplicationWindow {
         }
     }
 
+    AnswerEditDialog {
+        id: newAnswerDialog
+
+        property int questionId: -1
+
+        onOpened: {
+            fieldId = -1
+            var question = mastactva.getCurrentQuestion()
+            if(question !== undefined)
+            {
+                questionId = question.id
+                fieldQuestion = question.questionText
+                fieldQuestionPointsToPass = question.pointsToPass
+                fieldPointsToPass = question.pointsToPass
+            }
+            else
+            {
+                questionId = -1
+                fieldQuestion = ""
+                fieldQuestionPointsToPass = "1.0"
+                fieldPointsToPass = "1.0"
+            }
+            fieldAnswer = ""
+        }
+
+        onAccepted: {
+            mastactva.addNewAnswer(questionId, fieldAnswer, fieldPointsToPass)
+            mastactva.onNewAnswerAdded.connect(onNewAnswerAdded)
+        }
+
+        function onNewAnswerAdded()
+        {
+            mastactva.refreshCurrentImagePointToQuestion();
+        }
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")

@@ -34,7 +34,8 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onDescriptionDeletedSlot(RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
                      this, SLOT(onQuestionEditedSlot(RequestData *, const QJsonDocument &)));
-
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAnswerAddedSlot(RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -651,4 +652,36 @@ void MastactvaAPI::imagePointToQuestionTextLoadedSlot()
     }
     m_imagePointToQuestion = nullptr;
     emit imagePointToQuestionRefreshed();
+}
+
+void MastactvaAPI::addNewAnswer(int questionID_, const QString &answerText_, qreal pointFoAnswer_)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    m_addAnswerRequest = netAPI->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("question", QJsonValue::fromVariant(questionID_));
+    rec.insert("answer", QJsonValue::fromVariant(answerText_));
+    rec.insert("points", QJsonValue::fromVariant(pointFoAnswer_));
+    QJsonDocument doc(rec);
+
+    m_addAnswerRequest->setDocument(doc);
+    netAPI->post(QString("image-question-answers/"), m_addAnswerRequest);
+}
+
+void MastactvaAPI::onAnswerAddedSlot(RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(nullptr == m_addAnswerRequest || static_cast<RequestData *>(m_addAnswerRequest) != request_)
+    {
+        return;
+    }
+    m_addAnswerRequest = nullptr;
+
+    emit onNewAnswerAdded();
 }

@@ -1466,6 +1466,25 @@
                         "access": "public",
                         "name": "refreshCurrentImagePointToQuestion",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "questionID_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "answerText_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointFoAnswer_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "addNewAnswer",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1703,6 +1722,11 @@
                         "access": "public",
                         "name": "imageOfGalleryAnswerIndexChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onNewAnswerAdded",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1839,6 +1863,21 @@
                     {
                         "access": "protected",
                         "name": "imagePointToQuestionTextLoadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onAnswerAddedSlot",
                         "returnType": "void"
                     }
                 ],

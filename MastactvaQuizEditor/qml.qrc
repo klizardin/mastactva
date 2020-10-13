@@ -10,6 +10,7 @@
         <file>resources/point.png</file>
         <file>resources/selectedPoint.png</file>
         <file>QuestionEditDialog.qml</file>
+        <file>AnswerEditDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
