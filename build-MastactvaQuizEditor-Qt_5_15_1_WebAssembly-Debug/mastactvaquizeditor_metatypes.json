@@ -1,0 +1,2047 @@
+[
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "GalleryImagesModel",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "galleryViewImages",
+                        "notify": "galleryViewImagesChanged",
+                        "read": "galleryViewImages",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setGalleryViewImages"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "galleryId",
+                        "notify": "galleryIdChanged",
+                        "read": "galleryId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setGalleryId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "galleryIndex",
+                        "notify": "galleryIndexChanged",
+                        "read": "galleryIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setGalleryIndex"
+                    }
+                ],
+                "qualifiedClassName": "GalleryImagesModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "galleryIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "galleryViewImagesChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "galleryIndexChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "ongalleryIdChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            },
+            {
+                "className": "GalleryItemData",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "getImages",
+                        "returnType": "QObject*"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "getId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "description",
+                        "notify": "descriptionChanged",
+                        "read": "getDescription",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setDescription"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "keywords",
+                        "notify": "keywordsChanged",
+                        "read": "getKeywords",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setKeywords"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "created",
+                        "notify": "createdChanged",
+                        "read": "getCreated",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "getPointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setPointsToPass"
+                    }
+                ],
+                "qualifiedClassName": "GalleryItemData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "keywordsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "GalleryEditViewModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "getCurrentItem",
+                        "returnType": "QObject*"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentIndex",
+                        "notify": "currentIndexChanged",
+                        "read": "currentIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setCurrentIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentId",
+                        "notify": "currentIdChanged",
+                        "read": "currentId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setCurrentId"
+                    }
+                ],
+                "qualifiedClassName": "GalleryEditViewModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "galleryRealoded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            },
+            {
+                "className": "ImagePointToNextImage",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageSource",
+                        "notify": "imageSourceChanged",
+                        "read": "imageSource",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setImageSource"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "noImageSource",
+                        "notify": "noImageSourceChanged",
+                        "read": "noImageSource",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setNoImageSource"
+                    }
+                ],
+                "qualifiedClassName": "ImagePointToNextImage",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "imageSourceChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToImageLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "noImageSourceChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "className": "AnswerData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionId",
+                        "notify": "questionIdChanged",
+                        "read": "questionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setQuestionId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "answer",
+                        "notify": "answerChanged",
+                        "read": "answer",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setAnswer"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "pointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setPointsToPass"
+                    }
+                ],
+                "qualifiedClassName": "AnswerData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "answerChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "QuestionAnswersModel",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionId",
+                        "notify": "questionIdChanged",
+                        "read": "questionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setQuestionId"
+                    }
+                ],
+                "qualifiedClassName": "QuestionAnswersModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "questionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "answersLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            },
+            {
+                "className": "QuestionData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionText",
+                        "notify": "questionTextChanged",
+                        "read": "questionText",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setQuestionText"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "pointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setPointsToPass"
+                    }
+                ],
+                "qualifiedClassName": "QuestionData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionTextChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "className": "ImagePointToQuestion",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionId",
+                        "notify": "questionIdChanged",
+                        "read": "questionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setQuestionId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "question",
+                        "notify": "questionChanged",
+                        "read": "question",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setQuestion"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointsToPass",
+                        "notify": "pointsToPassChanged",
+                        "read": "pointsToPass",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setPointsToPass"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "questionObj",
+                        "notify": "questionObjChanged",
+                        "read": "questionObj",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setQuestionObj"
+                    }
+                ],
+                "qualifiedClassName": "ImagePointToQuestion",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "questionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToQuestionLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToQuestionTextLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionObjChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "className": "ImagePointData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "pointId",
+                        "notify": "pointIdChanged",
+                        "read": "pointId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setPointId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "xCoord",
+                        "notify": "xCoordChanged",
+                        "read": "xCoord",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setXCoord"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "yCoord",
+                        "notify": "yCoordChanged",
+                        "read": "yCoord",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setYCoord"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "weight",
+                        "notify": "weightChanged",
+                        "read": "weight",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setWeight"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "toNextImage",
+                        "notify": "toNextImageChanged",
+                        "read": "toNextImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setToNextImage"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "toQuestion",
+                        "notify": "toQuestionChanged",
+                        "read": "toQuestion",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setToQuestion"
+                    }
+                ],
+                "qualifiedClassName": "ImagePointData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "pointIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "xCoordChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "yCoordChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "weightChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toNextImageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toQuestionChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "ImagePointsModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "isEmpty",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "ImagePointsModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "imagePointsLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "VoronoyDiagram"
+                    }
+                ],
+                "className": "VoronoyGraphItem",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "pointsCount",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "addPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "setPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removePointAt",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "resetPoints",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "model",
+                        "notify": "modelChanged",
+                        "read": "model",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "color",
+                        "notify": "colorChanged",
+                        "read": "color",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setColor"
+                    }
+                ],
+                "qualifiedClassName": "VoronoyGraphItem",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "modelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "colorChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickItem"
+                    }
+                ]
+            },
+            {
+                "className": "DescriptionData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageId",
+                        "notify": "imageIdChanged",
+                        "read": "imageId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "fromDateTime",
+                        "notify": "fromDateTimeChanged",
+                        "read": "fromDateTime",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setFromDateTime"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "descriptionStr",
+                        "notify": "descriptionStrChanged",
+                        "read": "descriptionStr",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setDescriptionStr"
+                    }
+                ],
+                "qualifiedClassName": "DescriptionData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "fromDateTimeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "descriptionStrChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "DescriptionModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "itemVal_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "setItemAt",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getIdOfIndex",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getIndexOfId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removeById",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageID",
+                        "notify": "imageIDChanged",
+                        "read": "imageID",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageID"
+                    }
+                ],
+                "qualifiedClassName": "DescriptionModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "imageIDChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "descriptionLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "loadDescriptionsJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "galleryeditviewmodel.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "MastactvaAPI",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "reloadGalleriesModel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "reloadAllImagesOfGalleryViewModel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loadGalleryViewImagesOfGallery",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loadAllImagesOfGallery",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "description_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "keywords_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointsToPass_",
+                                "type": "double"
+                            }
+                        ],
+                        "name": "createNewGallery",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id",
+                                "type": "int"
+                            },
+                            {
+                                "name": "description_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "keywords_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "created",
+                                "type": "QDateTime"
+                            },
+                            {
+                                "name": "pointsToPass_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "editGallery",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "galleryId",
+                                "type": "int"
+                            },
+                            {
+                                "name": "fileURL",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "topImage",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "addImage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentImage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setCurrentGalleryIdByIndex",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setCurrentImageOfGalleryIdByIndex",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setCurrentOImageOfGalleryDescriptionIdByIndex",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentDescription",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "nowJsonStr",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshDescriptions",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "description",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "fromDateTime",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "newDescription",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "imageId_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "description",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "fromDateTime",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "editDescription",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentDescription",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentQuestion",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "questionText_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointsToPass_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "editQuestion",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshCurrentImagePointToQuestion",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "questionID_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "answerText_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointFoAnswer_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "addNewAnswer",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentAnswer",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "questionId_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "answerText_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "pointsForAnswer_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "editAnswer",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentAnswer",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "jsonDoc",
+                        "notify": "jsonDocChanged",
+                        "read": "getJsonDoc",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QJsonDocument",
+                        "user": false,
+                        "write": "setJsonDoc"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "galleryId",
+                        "notify": "galleryIdChanged",
+                        "read": "getGalleryId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setGalleryId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryId",
+                        "notify": "imageOfGalleryIdChanged",
+                        "read": "imageOfGalleryId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setimageOfGalleryId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "galleryIndex",
+                        "notify": "galleryIndexChanged",
+                        "read": "galleryIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setgalleryIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryIndex",
+                        "notify": "imageOfGalleryIndexChanged",
+                        "read": "imageOfGalleryIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setimageOfGalleryIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryDescriptionIndex",
+                        "notify": "imageOfGalleryDescriptionIndexChanged",
+                        "read": "imageOfGalleryDescriptionIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryDescriptionIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryDescriptionId",
+                        "notify": "imageOfGalleryDescriptionIdChanged",
+                        "read": "imageOfGalleryDescriptionId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryDescriptionId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryPointIndex",
+                        "notify": "imageOfGalleryPointIndexChanged",
+                        "read": "imageOfGalleryPointIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryPointIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "imageOfGalleryAnswerIndex",
+                        "notify": "imageOfGalleryAnswerIndexChanged",
+                        "read": "imageOfGalleryAnswerIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageOfGalleryAnswerIndex"
+                    }
+                ],
+                "qualifiedClassName": "MastactvaAPI",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "galleryReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagesOfGalleryReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "galleryIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "jsonDocChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onNewGalleryCreated",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onGalleryEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onImageAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryRemoved",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "galleryIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryDescriptionIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryDescriptionIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onNewDescriptionAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onDescriptionEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onRefreshDescriptions",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onDescriptionDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryPointIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onQuestionEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointToQuestionRefreshed",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryAnswerIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onNewAnswerAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onAnswerEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onCurrentAnswerRemoved",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onNewGalleryCreatedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onEditGallerySlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onAddImageSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "galleryReloadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "delImageOfGallerySlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onNewDescriptionAddedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onDescriptionEditedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "onRefreshDescriptionsSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onDescriptionDeletedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onQuestionEditedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "imagePointToQuestionTextLoadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onAnswerAddedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onAnswerEditedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onCurrentAnswerRemovedSlot",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "mastactvaapi.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "NetAPI",
+                "object": true,
+                "qualifiedClassName": "NetAPI",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "onRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "reply_",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "replayFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "netapi.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "QMLMainObjects",
+                "object": true,
+                "qualifiedClassName": "QMLMainObjects",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "qmlmainobjects.h",
+        "outputRevision": 67
+    }
+]
