@@ -18,28 +18,28 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
     {
         return;
     }
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onNewGalleryCreatedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onEditGallerySlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onAddImageSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(delImageOfGallerySlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onNewDescriptionAddedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDescriptionEditedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDescriptionDeletedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onQuestionEditedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onAnswerAddedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onAnswerEditedSlot(RequestData *, const QJsonDocument &)));
-    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onCurrentAnswerRemovedSlot(RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onNewGalleryCreatedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onEditGallerySlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAddImageSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(delImageOfGallerySlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onNewDescriptionAddedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDescriptionEditedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDescriptionDeletedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onQuestionEditedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAnswerAddedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAnswerEditedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onCurrentAnswerRemovedSlot(int, RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -114,13 +114,14 @@ void MastactvaAPI::createNewGallery(const QString &description_, const QString &
     rec.insert("keywords", QJsonValue::fromVariant(keywords_));
     rec.insert("created", QJsonValue::fromVariant(QDateTime::currentDateTime()));
     rec.insert("points_to_pass", QJsonValue::fromVariant(pointsToPass_));
+    rec.insert("owner", QJsonValue::fromVariant(0));
     QJsonDocument doc(rec);
 
     m_createNewGalleryRequest->setDocument(doc);
     netAPI->post("galleries/", m_createNewGalleryRequest);
 }
 
-void MastactvaAPI::onNewGalleryCreatedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onNewGalleryCreatedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -129,6 +130,7 @@ void MastactvaAPI::onNewGalleryCreatedSlot(RequestData *request_, const QJsonDoc
         return;
     }
     m_createNewGalleryRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     // TODO: analyse error
 
@@ -161,7 +163,7 @@ void MastactvaAPI::editGallery(
     netAPI->patch(QString("galleries/%1/").arg(id_), m_editGalleryRequest);
 }
 
-void MastactvaAPI::onEditGallerySlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onEditGallerySlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -170,6 +172,7 @@ void MastactvaAPI::onEditGallerySlot(RequestData *request_, const QJsonDocument 
         return;
     }
     m_editGalleryRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     // TODO: analyse error
 
@@ -219,7 +222,7 @@ void MastactvaAPI::removeCurrentImage()
     netAPI->del(QString("images/%1/").arg(currentImageId), m_delImageOfGalleryRequest);
 }
 
-void MastactvaAPI::delImageOfGallerySlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::delImageOfGallerySlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -228,13 +231,14 @@ void MastactvaAPI::delImageOfGallerySlot(RequestData *request_, const QJsonDocum
         return;
     }
     m_delImageOfGalleryRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     // TODO: analyse error
 
     emit imageOfGalleryRemoved();
 }
 
-void MastactvaAPI::onAddImageSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onAddImageSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -243,6 +247,7 @@ void MastactvaAPI::onAddImageSlot(RequestData *request_, const QJsonDocument &do
         return;
     }
     m_addImageRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     // TODO: analyse error
 
@@ -394,7 +399,7 @@ void MastactvaAPI::removeCurrentDescription()
     setImageOfGalleryDescriptionIndex(-1);
 }
 
-void MastactvaAPI::onDescriptionDeletedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onDescriptionDeletedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -404,6 +409,7 @@ void MastactvaAPI::onDescriptionDeletedSlot(RequestData *request_, const QJsonDo
     }
 
     m_delDescriptionRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onDescriptionDeleted();
 }
@@ -456,7 +462,7 @@ void MastactvaAPI::newDescription(const QString &description, const QString &fro
     netAPI->post(QString("image-descriptions/"), m_newDescriptionRequest);
 }
 
-void MastactvaAPI::onNewDescriptionAddedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onNewDescriptionAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -465,6 +471,7 @@ void MastactvaAPI::onNewDescriptionAddedSlot(RequestData *request_, const QJsonD
         return;
     }
     m_newDescriptionRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onNewDescriptionAdded();
 }
@@ -491,7 +498,7 @@ void MastactvaAPI::editDescription(int id_, int imageId_, const QString &descrip
     netAPI->patch(QString("image-descriptions/%1/").arg(id_), m_editDescriptionRequest);
 }
 
-void MastactvaAPI::onDescriptionEditedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onDescriptionEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -500,6 +507,7 @@ void MastactvaAPI::onDescriptionEditedSlot(RequestData *request_, const QJsonDoc
         return;
     }
     m_editDescriptionRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onDescriptionEdited();
 }
@@ -612,7 +620,7 @@ void MastactvaAPI::editQuestion(int id_, const QString &questionText_, qreal poi
     netAPI->patch(QString("image-questions/%1/").arg(id_), m_editQuestionRequest);
 }
 
-void MastactvaAPI::onQuestionEditedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onQuestionEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -621,6 +629,7 @@ void MastactvaAPI::onQuestionEditedSlot(RequestData *request_, const QJsonDocume
         return;
     }
     m_editQuestionRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onQuestionEdited();
 }
@@ -677,7 +686,7 @@ void MastactvaAPI::addNewAnswer(int questionID_, const QString &answerText_, qre
     netAPI->post(QString("image-question-answers/"), m_addAnswerRequest);
 }
 
-void MastactvaAPI::onAnswerAddedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onAnswerAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -686,6 +695,7 @@ void MastactvaAPI::onAnswerAddedSlot(RequestData *request_, const QJsonDocument 
         return;
     }
     m_addAnswerRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onNewAnswerAdded();
 }
@@ -724,7 +734,7 @@ void MastactvaAPI::editAnswer(int id_, int questionId_, const QString &answerTex
     netAPI->patch(QString("image-question-answers/%1/").arg(id_), m_editAnswerRequest);
 }
 
-void MastactvaAPI::onAnswerEditedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onAnswerEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -733,6 +743,7 @@ void MastactvaAPI::onAnswerEditedSlot(RequestData *request_, const QJsonDocument
         return;
     }
     m_editAnswerRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onAnswerEdited();
 }
@@ -754,7 +765,7 @@ void MastactvaAPI::removeCurrentAnswer()
     setImageOfGalleryAnswerIndex(-1);
 }
 
-void MastactvaAPI::onCurrentAnswerRemovedSlot(RequestData *request_, const QJsonDocument &document_)
+void MastactvaAPI::onCurrentAnswerRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
 {
     Q_UNUSED(document_);
 
@@ -763,6 +774,7 @@ void MastactvaAPI::onCurrentAnswerRemovedSlot(RequestData *request_, const QJson
         return;
     }
     m_removeAnswerRequest = nullptr;
+    if(errorCode_ != 0) { return; }
 
     emit onCurrentAnswerRemoved();
 }

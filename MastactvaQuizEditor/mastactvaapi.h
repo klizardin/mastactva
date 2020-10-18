@@ -101,20 +101,20 @@ protected:
 
 
 protected slots:
-    void onNewGalleryCreatedSlot(RequestData *request_, const QJsonDocument &document_);
-    void onEditGallerySlot(RequestData *request_, const QJsonDocument &document_);
-    void onAddImageSlot(RequestData *request_, const QJsonDocument &document_);
+    void onNewGalleryCreatedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onEditGallerySlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onAddImageSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void galleryReloadedSlot();
-    void delImageOfGallerySlot(RequestData *request_, const QJsonDocument &document_);
-    void onNewDescriptionAddedSlot(RequestData *request_, const QJsonDocument &document_);
-    void onDescriptionEditedSlot(RequestData *request_, const QJsonDocument &document_);
+    void delImageOfGallerySlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onNewDescriptionAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onDescriptionEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void onRefreshDescriptionsSlot();
-    void onDescriptionDeletedSlot(RequestData *request_, const QJsonDocument &document_);
-    void onQuestionEditedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onDescriptionDeletedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onQuestionEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void imagePointToQuestionTextLoadedSlot();
-    void onAnswerAddedSlot(RequestData *request_, const QJsonDocument &document_);
-    void onAnswerEditedSlot(RequestData *request_, const QJsonDocument &document_);
-    void onCurrentAnswerRemovedSlot(RequestData *request_, const QJsonDocument &document_);
+    void onAnswerAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onAnswerEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onCurrentAnswerRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;

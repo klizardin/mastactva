@@ -402,7 +402,12 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
         if(rd->isJsonReply())
         {
             QJsonDocument jsonReply = QJsonDocument::fromJson(reply_->readAll());
-            emit onJsonRequestFinished(rd, jsonReply);
+            if(reply_->error() != QNetworkReply::NoError)
+            {
+                qDebug() << "HTTP Error : " << reply_->error();
+                qDebug() << jsonReply.toJson();
+            }
+            emit onJsonRequestFinished(int(reply_->error()), rd, jsonReply);
         }
         else
         {

@@ -94,7 +94,7 @@ signals:
     void galleryIndexChanged();
 
 private slots:
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void ongalleryIdChanged();
 
 protected:
@@ -197,7 +197,7 @@ public:
 
     //slots
 private slots:
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
     // methods
 public:
@@ -249,7 +249,7 @@ protected:
     void startLoad();
 
 protected slots:
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
 signals:
     void imageSourceChanged();
@@ -345,7 +345,7 @@ protected:
 
     //slots
 private slots:
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
 signals:
     void questionIdChanged();
@@ -423,7 +423,7 @@ public:
     QuestionData *questionData();
 
 protected slots:
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
 signals:
     //void answersChanged();
@@ -539,7 +539,7 @@ signals:
 
     //slots
 private slots:
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
 protected:
     void clearData();
@@ -690,7 +690,7 @@ protected:
     void clearData();
 
 protected slots:
-    void loadDescriptionsJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void loadDescriptionsJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
 signals:
     void imageIDChanged();

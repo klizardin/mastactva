@@ -77,6 +77,10 @@
                         "access": "private",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -287,6 +291,10 @@
                         "access": "private",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -361,6 +369,10 @@
                     {
                         "access": "protected",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -514,6 +526,10 @@
                     {
                         "access": "private",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -705,6 +721,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -892,6 +912,10 @@
                     {
                         "access": "private",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -1222,6 +1246,10 @@
                     {
                         "access": "protected",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -1777,6 +1805,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1792,6 +1824,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1806,6 +1842,10 @@
                     {
                         "access": "protected",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -1827,6 +1867,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1842,6 +1886,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1856,6 +1904,10 @@
                     {
                         "access": "protected",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -1877,6 +1929,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1891,6 +1947,10 @@
                     {
                         "access": "protected",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -1912,6 +1972,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1927,6 +1991,10 @@
                         "access": "protected",
                         "arguments": [
                             {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -1941,6 +2009,10 @@
                     {
                         "access": "protected",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"
@@ -1990,6 +2062,10 @@
                     {
                         "access": "public",
                         "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
                             {
                                 "name": "request_",
                                 "type": "RequestData*"

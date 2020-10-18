@@ -95,8 +95,8 @@ GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
     m_roleNames[ImageSourceRole] = "image_source";
     m_roleNames[ImagePointsRole] = "image_points";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     m_images.push_back(g_noImageDefault);
 }
@@ -208,13 +208,14 @@ void GalleryImagesModel::setGalleryIndex(int galleryIndex_)
     emit galleryIdChanged();
 }
 
-void GalleryImagesModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
         return;
     }
     m_request = nullptr;
+    if(errorCode_ != 0) { return; }
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
     {
@@ -479,8 +480,8 @@ GalleryEditViewModel::GalleryEditViewModel(QObject *parent)
 
 
     // TODO: indicate in view that there is no data
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
     startLoadGalleries();
 }
 
@@ -527,13 +528,14 @@ QHash<int, QByteArray> GalleryEditViewModel::roleNames() const
     return m_roleNames;
 }
 
-void GalleryEditViewModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void GalleryEditViewModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
         return;
     }
     m_request = nullptr;
+    if(errorCode_ != 0) { return; }
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
     {
@@ -648,8 +650,8 @@ ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int
       m_imageSource(g_noImageSource),
       m_noImageSource(true)
 {
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -692,13 +694,14 @@ void ImagePointToNextImage::startLoad()
                 m_request);
 }
 
-void ImagePointToNextImage::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(m_request != request_)
     {
         return;
     }
     m_request = nullptr;
+    if(errorCode_ != 0) { return; }
 
     Q_ASSERT(reply_.isArray());
 
@@ -827,8 +830,8 @@ QuestionAnswersModel::QuestionAnswersModel(QObject *parent_ /*= nullptr*/, int q
     m_roleNames[AnswerRole] = "questionAnswer_text";
     m_roleNames[PointsToPassRole] = "questionAnswer_pointsToPass";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -935,13 +938,14 @@ QHash<int, QByteArray> QuestionAnswersModel::roleNames() const
     return m_roleNames;
 }
 
-void QuestionAnswersModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void QuestionAnswersModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
         return;
     }
     m_request = nullptr;
+    if(errorCode_ != 0) { return; }
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
     {
@@ -1072,8 +1076,8 @@ ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int i
     :QObject(parent_),
     m_imagePointId(imagePointId_)
 {
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -1194,7 +1198,7 @@ void ImagePointToQuestion::startLoad2()
                 m_request2);
 }
 
-void ImagePointToQuestion::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(request_ == nullptr || (m_request1 != request_ && m_request2 != request_))
     {
@@ -1203,6 +1207,7 @@ void ImagePointToQuestion::onJsonRequestFinished(RequestData *request_, const QJ
     if(m_request1 == request_)
     {
         m_request1 = nullptr;
+        if(errorCode_ != 0) { return; }
 
         Q_ASSERT(reply_.isArray());
 
@@ -1225,6 +1230,7 @@ void ImagePointToQuestion::onJsonRequestFinished(RequestData *request_, const QJ
     else if(m_request2 == request_)
     {
         m_request2 = nullptr;
+        if(errorCode_ != 0) { return; }
 
         bool anyError = false;
         m_question = QuestionData::fromJson(this, reply_, anyError);
@@ -1448,8 +1454,8 @@ ImagePointsModel::ImagePointsModel(QObject *parent_)
     m_roleNames[ToNextImageRole] = "imagePoint_toNextImage";
     m_roleNames[ToQuestionRole] = "imagePoint_toQuestion";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 }
 
 ImagePointsModel::~ImagePointsModel()
@@ -1541,7 +1547,7 @@ void ImagePointsModel::startLoadImagePoints()
     NetAPI::getSingelton()->get(QString("image-point/%1/of_image/").arg(m_sourceImageId), m_request);
 }
 
-void ImagePointsModel::onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void ImagePointsModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
     if(nullptr == m_request || m_request != request_)
@@ -1549,6 +1555,7 @@ void ImagePointsModel::onJsonRequestFinished(RequestData *request_, const QJsonD
         return;
     }
     m_request = nullptr;
+    if(errorCode_ != 0) { return; }
 
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
@@ -2077,8 +2084,8 @@ DescriptionModel::DescriptionModel(QObject *parent_ /*= nullptr*/)
     m_roleNames[FromDateTimeRole] = "description_fromDateTime";
     m_roleNames[DescriptionRole] = "description_description";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(RequestData *, const QJsonDocument &)),
-                     this, SLOT(loadDescriptionsJsonRequestFinished(RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(loadDescriptionsJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 }
 
 DescriptionModel::~DescriptionModel()
@@ -2253,13 +2260,14 @@ void DescriptionModel::clearData()
     m_data.clear();
 }
 
-void DescriptionModel::loadDescriptionsJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_)
+void DescriptionModel::loadDescriptionsJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
         return;
     }
     m_request = nullptr;
+    if(errorCode_ != 0) { return; }
     Q_ASSERT(reply_.isArray());
     if(!(reply_.isArray()))
     {

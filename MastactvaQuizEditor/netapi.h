@@ -121,7 +121,7 @@ protected:
 
 signals:
     void onRequestFinished(RequestData *request_, QNetworkReply *reply_);
-    void onJsonRequestFinished(RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
 private slots:
     void replayFinished(QNetworkReply *reply_);
