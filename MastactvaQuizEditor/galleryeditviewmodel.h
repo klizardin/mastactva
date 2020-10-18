@@ -123,6 +123,7 @@ protected:
     QDateTime created;
     qreal pointsToPass = 1.0;
     GalleryImagesModel *images = nullptr;
+    bool m_ownGallery = false;
 
 public:
     GalleryItemData(QObject* parent_,
@@ -130,7 +131,8 @@ public:
                 const QString &description_ = QString(),
                 const QString &keywords_ = QString(),
                 const QDateTime &created_ = QDateTime(),
-                qreal pointsToPass_ = 1.0);
+                qreal pointsToPass_ = 1.0,
+                bool ownGallery_ = false);
     virtual ~GalleryItemData();
 
     Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged)
@@ -138,6 +140,7 @@ public:
     Q_PROPERTY(QString keywords READ getKeywords WRITE setKeywords NOTIFY keywordsChanged)
     Q_PROPERTY(QDateTime created READ getCreated WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QString pointsToPass READ getPointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
+    Q_PROPERTY(bool ownGallery READ ownGallery WRITE setOwnGallery NOTIFY ownGalleryChanged)
     Q_INVOKABLE QObject* getImages();
 
     int getId() const;
@@ -146,12 +149,14 @@ public:
     const QDateTime &getCreated() const;
     QString getPointsToPass() const;
     GalleryImagesModel *getImagesModel();
+    bool ownGallery() const;
 
     void setId(int id_);
     void setDescription(const QString& description_);
     void setKeywords(const QString& keywords_);
     void setCreated(const QDateTime& created_);
     void setPointsToPass(const QString &pointsToPass_);
+    void setOwnGallery(bool ownGallery_);
 
 signals:
     void idChanged();
@@ -159,6 +164,7 @@ signals:
     void keywordsChanged();
     void createdChanged();
     void pointsToPassChanged();
+    void ownGalleryChanged();
 
 public:
     static GalleryItemData* fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError);
@@ -178,6 +184,7 @@ public:
         CreatedRole = Qt::UserRole+2,
         PointsToPassRole = Qt::UserRole+3,
         ImagesRole = Qt::UserRole+4,
+        OwnRole = Qt::UserRole+5,
     };
 
 public:

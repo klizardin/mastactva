@@ -781,6 +781,14 @@ ApplicationWindow {
             property int gallery_index: index
             property int galleryPaneWidth: splitViewPaneGallery.width
 
+            Text {
+                id: gallery_own
+                text: own_gallery ? qsTr("You own gallery") : qsTr("You do not own gallery")
+                x: (galleryPaneWidth-width)/2
+                width: galleryPaneWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
+                wrapMode: Text.WordWrap
+            }
+
             Rectangle {
                 width: galleryPaneWidth
                 height: (galleryPaneWidth / Constants.aspectX) * Constants.aspectY
@@ -842,7 +850,6 @@ ApplicationWindow {
                 }
 
             }
-
 
             PageIndicator {
                x:(galleryPaneWidth-width)/2

@@ -316,20 +316,22 @@ GalleryItemData::GalleryItemData(QObject* parent_,
             const QString &description_ /*= QString()*/,
             const QString &keywords_ /*= QString()*/,
             const QDateTime &created_ /*= QDateTime()*/,
-            qreal pointsToPass_ /*= 1.0*/)
+            qreal pointsToPass_ /*= 1.0*/,
+            bool ownGallery_ /*= false*/)
     : QObject(parent_),
     id(id_),
     description(description_),
     keywords(keywords_),
     created(created_),
-    pointsToPass(pointsToPass_)
+    pointsToPass(pointsToPass_),
+    m_ownGallery(ownGallery_)
 {
 }
 
 GalleryItemData::~GalleryItemData()
 {
-    //delete images;
-    //images = nullptr;
+    delete images;
+    images = nullptr;
 }
 
 int GalleryItemData::getId() const
@@ -373,30 +375,52 @@ QObject* GalleryItemData::getImages()
     return getImagesModel();
 }
 
+bool GalleryItemData::ownGallery() const
+{
+    return m_ownGallery;
+}
+
 void GalleryItemData::setId(int id_)
 {
     id = id_;
+
+    emit idChanged();
 }
 
 void GalleryItemData::setDescription(const QString& description_)
 {
     description = description_;
+
+    emit descriptionChanged();
 }
 
 void GalleryItemData::setKeywords(const QString& keywords_)
 {
     keywords = keywords_;
+
+    emit keywordsChanged();
 }
 
 void GalleryItemData::setCreated(const QDateTime& created_)
 {
     created = created_;
+
+    emit createdChanged();
 }
 
 void GalleryItemData::setPointsToPass(const QString &pointsToPass_)
 {
     QVariant v(pointsToPass_);
     pointsToPass = v.toDouble();
+
+    emit pointsToPassChanged();
+}
+
+void GalleryItemData::setOwnGallery(bool ownGallery_)
+{
+    m_ownGallery = ownGallery_;
+
+    emit ownGalleryChanged();
 }
 
 GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError)
@@ -406,6 +430,7 @@ GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& j
     QString keywords;
     QDateTime created;
     qreal pointsToPass = 1.0;
+    bool ownGallery = false;
 
     QJsonValue idVal = jsonValue_["id"];
     if(QJsonValue::Undefined != idVal.type())
@@ -456,8 +481,10 @@ GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& j
     {
         anyError = true;
     }
+    QJsonValue ownGalleryJV = jsonValue_["owner"];
+    if(!ownGalleryJV.isUndefined()) { ownGallery = ownGalleryJV.toInt(0) != 0; } else { anyError = true; }
 
-    return new GalleryItemData(parent_, id, description, keywords, created, pointsToPass);
+    return new GalleryItemData(parent_, id, description, keywords, created, pointsToPass, ownGallery);
 }
 
 
@@ -477,6 +504,7 @@ GalleryEditViewModel::GalleryEditViewModel(QObject *parent)
     m_roleNames[CreatedRole] = "created";
     m_roleNames[PointsToPassRole] = "pointsToPass";
     m_roleNames[ImagesRole] = "images";
+    m_roleNames[OwnRole] = "own_gallery";
 
 
     // TODO: indicate in view that there is no data
@@ -519,6 +547,8 @@ QVariant GalleryEditViewModel::data(const QModelIndex &index, int role) const
                 const_cast<GalleryItemData *>(item)
                     ->getImagesModel()
                     );
+    case OwnRole:
+        return item->ownGallery();
     }
     return QVariant();
 }

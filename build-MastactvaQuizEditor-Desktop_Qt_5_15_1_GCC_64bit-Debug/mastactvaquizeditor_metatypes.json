@@ -185,6 +185,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setPointsToPass"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ownGallery",
+                        "notify": "ownGalleryChanged",
+                        "read": "ownGallery",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setOwnGallery"
                     }
                 ],
                 "qualifiedClassName": "GalleryItemData",
@@ -212,6 +226,11 @@
                     {
                         "access": "public",
                         "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "ownGalleryChanged",
                         "returnType": "void"
                     }
                 ],
