@@ -56,6 +56,9 @@ public:
     Q_INVOKABLE QVariant getCurrentAnswer();
     Q_INVOKABLE void editAnswer(int id_, int questionId_, const QString &answerText_, qreal pointsForAnswer_);
     Q_INVOKABLE void removeCurrentAnswer();
+    Q_INVOKABLE void takeCurrentGalleryOwnship();
+    Q_INVOKABLE void freeCurrentGalleryOwnship();
+    Q_INVOKABLE void refreshCurrentGallery();
 
 signals:
     void galleryReloaded();
@@ -82,6 +85,8 @@ signals:
     void onNewAnswerAdded();
     void onAnswerEdited();
     void onCurrentAnswerRemoved();
+    void currentGalleryOwnshipTaken();
+    void currentGalleryOwnshipFreed();
 
 protected:
     int imageOfGalleryId() const;
@@ -115,6 +120,8 @@ protected slots:
     void onAnswerAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void onAnswerEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void onCurrentAnswerRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void currentGalleryOwnshipTakenSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void currentGalleryOwnshipFreedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
@@ -137,6 +144,8 @@ private:
     JsonRequestData *m_addAnswerRequest = nullptr;
     JsonRequestData *m_editAnswerRequest = nullptr;
     JsonRequestData *m_removeAnswerRequest = nullptr;
+    JsonRequestData *m_takeGalleryOwnshipRequest = nullptr;
+    JsonRequestData *m_freeGalleryOwnshipRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
 
 private:

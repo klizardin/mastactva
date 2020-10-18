@@ -396,6 +396,34 @@ ApplicationWindow {
     }
 
     Action {
+        id: takeOwnshipOfGallery
+        text: qsTr("Take &Ownship of Current Gallery")
+        onTriggered: {
+            mastactva.takeCurrentGalleryOwnship()
+            mastactva.currentGalleryOwnshipTaken.connect(currentGalleryOwnshipTaken)
+        }
+
+        function currentGalleryOwnshipTaken()
+        {
+            mastactva.refreshCurrentGallery()
+        }
+    }
+
+    Action {
+        id: freeOwnshipOfGallery
+        text: qsTr("&Free Ownship of Current Gallery")
+        onTriggered: {
+            mastactva.freeCurrentGalleryOwnship()
+            mastactva.currentGalleryOwnshipFreed.connect(currentGalleryOwnshipFreed)
+        }
+
+        function currentGalleryOwnshipFreed()
+        {
+            mastactva.refreshCurrentGallery()
+        }
+    }
+
+    Action {
         id: removeCurrentImageOfGallery
         text: qsTr("&Remove Current Image")
         onTriggered: {
@@ -505,7 +533,9 @@ ApplicationWindow {
             MenuItem { action: refreshGalleriesModel }
             MenuItem { action: createNewGallery }
             MenuItem { action: editCurrentGallery }
-            MenuItem { action : addGalleryImage }
+            MenuItem { action: addGalleryImage }
+            MenuItem { action: takeOwnshipOfGallery }
+            MenuItem { action: freeOwnshipOfGallery }
         }
         Menu {
             title: qsTr("All &Images of Gallery")
@@ -781,12 +811,13 @@ ApplicationWindow {
             property int gallery_index: index
             property int galleryPaneWidth: splitViewPaneGallery.width
 
-            Text {
+            CheckBox {
                 id: gallery_own
-                text: own_gallery ? qsTr("You own gallery") : qsTr("You do not own gallery")
+                text: qsTr("You own gallery")
+                checked: own_gallery
+                enabled: false
                 x: (galleryPaneWidth-width)/2
                 width: galleryPaneWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
-                wrapMode: Text.WordWrap
             }
 
             Rectangle {
@@ -842,7 +873,9 @@ ApplicationWindow {
                                     MenuItem { action: refreshGalleriesModel }
                                     MenuItem { action: createNewGallery }
                                     MenuItem { action: editCurrentGallery }
-                                    MenuItem { action : addGalleryImage }
+                                    MenuItem { action: addGalleryImage }
+                                    MenuItem { action: takeOwnshipOfGallery }
+                                    MenuItem { action: freeOwnshipOfGallery }
                                 }
                             }
                         }

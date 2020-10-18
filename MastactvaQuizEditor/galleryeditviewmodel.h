@@ -167,7 +167,8 @@ signals:
     void ownGalleryChanged();
 
 public:
-    static GalleryItemData* fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError);
+    static GalleryItemData* fromJson(QObject *parent_, const QJsonValue &jsonValue_, bool &anyError_);
+    static GalleryItemData* fromJson(QObject *parent_, const QJsonDocument &jsonValue_, bool &anyError_);
 };
 
 
@@ -196,6 +197,7 @@ public:
 public:
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     // properies
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
@@ -214,6 +216,8 @@ public:
     void setCurrentIndex(int index_);
     int currentId() const;
     void setCurrentId(int id_);
+    void refreshItemAtIndex(int index_);
+    int getIndexOfId(int id_) const;
 
     // protected methods
 protected:
@@ -232,6 +236,7 @@ protected:
 
 private:
     RequestData* m_request = nullptr;
+    JsonRequestData* m_refreshRequest = nullptr;
     QHash<int, QByteArray> m_roleNames;
     QVector<GalleryItemData*> m_data;
     int m_currentIndex = -1;

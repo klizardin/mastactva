@@ -423,7 +423,8 @@ void GalleryItemData::setOwnGallery(bool ownGallery_)
     emit ownGalleryChanged();
 }
 
-GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& jsonValue_, bool &anyError)
+template<typename JsonType>
+GalleryItemData* GalleryItemData_fromJsonT(QObject *parent_, const JsonType &jsonValue_, bool &anyError)
 {
     int id = -1;
     QString description;
@@ -485,6 +486,17 @@ GalleryItemData* GalleryItemData::fromJson(QObject* parent_, const QJsonValue& j
     if(!ownGalleryJV.isUndefined()) { ownGallery = ownGalleryJV.toInt(0) != 0; } else { anyError = true; }
 
     return new GalleryItemData(parent_, id, description, keywords, created, pointsToPass, ownGallery);
+}
+
+
+GalleryItemData* GalleryItemData::fromJson(QObject *parent_, const QJsonDocument &jsonValue_, bool &anyError_)
+{
+    return GalleryItemData_fromJsonT(parent_, jsonValue_, anyError_);
+}
+
+GalleryItemData* GalleryItemData::fromJson(QObject *parent_, const QJsonValue &jsonValue_, bool &anyError_)
+{
+    return GalleryItemData_fromJsonT(parent_, jsonValue_, anyError_);
 }
 
 
@@ -553,6 +565,39 @@ QVariant GalleryEditViewModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+bool GalleryEditViewModel::setData(const QModelIndex &index, const QVariant &value, int role /*= Qt::EditRole*/)
+{
+    const int row = index.row();
+    if(row < 0 || row >= m_data.size())
+    {
+        return false;
+    }
+    GalleryItemData *item = m_data[row];
+    switch(role)
+    {
+    case GalleryIDRole:
+        item->setId(value.toInt());
+        break;
+    case DescriptionRole:
+        item->setDescription(value.toString());
+        break;
+    case CreatedRole:
+        item->setCreated(value.toDateTime());
+        break;
+    case PointsToPassRole:
+        item->setPointsToPass(value.toString());
+        break;
+    //case ImagesRole:
+    //    item->setImagesModel(value);
+    //    break;
+    case OwnRole:
+        return item->ownGallery();
+    default:
+        return false;
+    }
+    return true;
+}
+
 QHash<int, QByteArray> GalleryEditViewModel::roleNames() const
 {
     return m_roleNames;
@@ -560,42 +605,76 @@ QHash<int, QByteArray> GalleryEditViewModel::roleNames() const
 
 void GalleryEditViewModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
-    if(!(m_request == request_))
+    if(!(m_request == request_) && !(static_cast<RequestData *>(m_refreshRequest) == request_))
     {
         return;
     }
-    m_request = nullptr;
-    if(errorCode_ != 0) { return; }
-    Q_ASSERT(reply_.isArray());
-    if(!(reply_.isArray()))
+    if(m_request == request_)
     {
-        return;
-    }
-    QVector<GalleryItemData*> galleries;
-    for(int i = 0; ; i++)
-    {
-        QJsonValue val = reply_[i];
-        if(QJsonValue::Undefined == val.type())
+        m_request = nullptr;
+        if(errorCode_ != 0) { return; }
+        Q_ASSERT(reply_.isArray());
+        if(!(reply_.isArray()))
         {
-            break;
+            return;
+        }
+        QVector<GalleryItemData*> galleries;
+        for(int i = 0; ; i++)
+        {
+            QJsonValue val = reply_[i];
+            if(QJsonValue::Undefined == val.type())
+            {
+                break;
+            }
+            bool anyError = false;
+            GalleryItemData *data = GalleryItemData::fromJson(this, val, anyError);
+            if(anyError)
+            {
+                delete data;
+                data = nullptr;
+                continue;
+            }
+            galleries.push_back(data);
+        }
+        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        clearData();
+        endRemoveRows();
+        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + galleries.size() - 1);
+        std::copy(std::begin(galleries), std::end(galleries),
+                  std::inserter(m_data, std::end(m_data)));
+        endInsertRows();
+
+        emit galleryRealoded();
+    }
+    else if(static_cast<RequestData *>(m_refreshRequest) == request_)
+    {
+        m_refreshRequest = nullptr;
+        if(errorCode_ != 0) { return; }
+        Q_ASSERT(reply_.isObject());
+        if(!(reply_.isObject()))
+        {
+            return;
         }
         bool anyError = false;
-        GalleryItemData *data = GalleryItemData::fromJson(this, val, anyError);
+        GalleryItemData *data = GalleryItemData::fromJson(this, reply_, anyError);
         if(anyError)
         {
-            continue;
+            delete data;
+            data = nullptr;
+            return;
         }
-        galleries.push_back(data);
+        int i0 = getIndexOfId(data->getId());
+        auto fit = std::begin(m_data);
+        std::advance(fit, i0);
+        beginRemoveRows(QModelIndex(), i0, i0);
+        delete m_data[i0];
+        m_data[i0] = nullptr;
+        m_data.erase(fit);
+        endRemoveRows();
+        beginInsertRows(QModelIndex(), i0, i0);
+        m_data.insert(i0, data);
+        endInsertRows();
     }
-    beginRemoveRows(QModelIndex(), 0, m_data.size());
-    clearData();
-    endRemoveRows();
-    beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + galleries.size() - 1);
-    std::copy(std::begin(galleries), std::end(galleries),
-              std::inserter(m_data, std::end(m_data)));
-    endInsertRows();
-
-    emit galleryRealoded();
 }
 
 void GalleryEditViewModel::clearData()
@@ -648,6 +727,15 @@ int GalleryEditViewModel::currentId() const
 
 void GalleryEditViewModel::setCurrentId(int id_)
 {
+
+    m_currentIndex = getIndexOfId(id_);
+
+    emit currentIndexChanged();
+    emit currentIdChanged();
+}
+
+int GalleryEditViewModel::getIndexOfId(int id_) const
+{
     auto fit = std::find_if(std::begin(m_data),
                             std::end(m_data),
                             [id_] (const GalleryItemData* item) -> bool
@@ -656,13 +744,27 @@ void GalleryEditViewModel::setCurrentId(int id_)
     });
     if(std::end(m_data) == fit)
     {
+        return -1;
+    }
+    return std::distance(std::begin(m_data), fit);
+}
+
+void GalleryEditViewModel::refreshItemAtIndex(int index_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
         return;
     }
 
-    m_currentIndex = std::distance(std::begin(m_data), fit);
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
 
-    emit currentIndexChanged();
-    emit currentIdChanged();
+    m_refreshRequest = netAPI->startJsonRequest();
+    netAPI->get(QString("galleries/%1/").arg(m_data.at(index_)->getId()), m_refreshRequest);
 }
 
 QObject* GalleryEditViewModel::getCurrentItem()

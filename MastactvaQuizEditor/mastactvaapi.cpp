@@ -40,6 +40,10 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(onAnswerEditedSlot(int, RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(onCurrentAnswerRemovedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(currentGalleryOwnshipTakenSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(currentGalleryOwnshipFreedSlot(int, RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -778,3 +782,74 @@ void MastactvaAPI::onCurrentAnswerRemovedSlot(int errorCode_, RequestData *reque
 
     emit onCurrentAnswerRemoved();
 }
+
+void MastactvaAPI::takeCurrentGalleryOwnship()
+{
+    if(m_galleryId < 0) { return; }
+
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+
+    m_takeGalleryOwnshipRequest = netAPI->startJsonRequest();
+    netAPI->get(QString("galleries/%1/take_ownship/").arg(m_galleryId), m_takeGalleryOwnshipRequest);
+}
+
+void MastactvaAPI::freeCurrentGalleryOwnship()
+{
+    if(m_galleryId < 0) { return; }
+
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+
+    m_freeGalleryOwnshipRequest = netAPI->startJsonRequest();
+    netAPI->get(QString("galleries/%1/free_ownship/").arg(m_galleryId), m_freeGalleryOwnshipRequest);
+}
+
+void MastactvaAPI::currentGalleryOwnshipTakenSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_takeGalleryOwnshipRequest) != request_) { return; }
+    m_takeGalleryOwnshipRequest = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    emit currentGalleryOwnshipTaken();
+}
+
+void MastactvaAPI::currentGalleryOwnshipFreedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_freeGalleryOwnshipRequest) != request_) { return; }
+    m_freeGalleryOwnshipRequest = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    emit currentGalleryOwnshipFreed();
+}
+
+void MastactvaAPI::refreshCurrentGallery()
+{
+    if(m_galleryIndex < 0) { return; }
+    auto *p = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != p);
+    if(!(nullptr != p))
+    {
+        return;
+    }
+    auto *m = p->getGalleryViewModel();
+    Q_ASSERT(nullptr != m);
+    if(!(nullptr != m))
+    {
+        return;
+    }
+    m->refreshItemAtIndex(m_galleryIndex);
+}
+

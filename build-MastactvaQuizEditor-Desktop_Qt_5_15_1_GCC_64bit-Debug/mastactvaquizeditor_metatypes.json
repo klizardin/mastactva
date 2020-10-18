@@ -1565,6 +1565,21 @@
                         "access": "public",
                         "name": "removeCurrentAnswer",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "takeCurrentGalleryOwnship",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "freeCurrentGalleryOwnship",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshCurrentGallery",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1817,6 +1832,16 @@
                         "access": "public",
                         "name": "onCurrentAnswerRemoved",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentGalleryOwnshipTaken",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentGalleryOwnshipFreed",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -2042,6 +2067,44 @@
                             }
                         ],
                         "name": "onCurrentAnswerRemovedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "currentGalleryOwnshipTakenSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "currentGalleryOwnshipFreedSlot",
                         "returnType": "void"
                     }
                 ],
