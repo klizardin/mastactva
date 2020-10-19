@@ -1580,6 +1580,16 @@
                         "access": "public",
                         "name": "refreshCurrentGallery",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "setImageOfGalleryAsTop",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "resetImageOfGalleryAsTop",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1841,6 +1851,16 @@
                     {
                         "access": "public",
                         "name": "currentGalleryOwnshipFreed",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryAsTopSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageOfGalleryAsTopReset",
                         "returnType": "void"
                     }
                 ],
@@ -2105,6 +2125,44 @@
                             }
                         ],
                         "name": "currentGalleryOwnshipFreedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "imageOfGalleryAsTopSetSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "imageOfGalleryAsTopResetSlot",
                         "returnType": "void"
                     }
                 ],

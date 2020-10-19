@@ -59,6 +59,8 @@ public:
     Q_INVOKABLE void takeCurrentGalleryOwnship();
     Q_INVOKABLE void freeCurrentGalleryOwnship();
     Q_INVOKABLE void refreshCurrentGallery();
+    Q_INVOKABLE void setImageOfGalleryAsTop();
+    Q_INVOKABLE void resetImageOfGalleryAsTop();
 
 signals:
     void galleryReloaded();
@@ -87,6 +89,8 @@ signals:
     void onCurrentAnswerRemoved();
     void currentGalleryOwnshipTaken();
     void currentGalleryOwnshipFreed();
+    void imageOfGalleryAsTopSet();
+    void imageOfGalleryAsTopReset();
 
 protected:
     int imageOfGalleryId() const;
@@ -122,6 +126,8 @@ protected slots:
     void onCurrentAnswerRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void currentGalleryOwnshipTakenSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void currentGalleryOwnshipFreedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void imageOfGalleryAsTopSetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
@@ -146,6 +152,8 @@ private:
     JsonRequestData *m_removeAnswerRequest = nullptr;
     JsonRequestData *m_takeGalleryOwnshipRequest = nullptr;
     JsonRequestData *m_freeGalleryOwnshipRequest = nullptr;
+    JsonRequestData *m_setImageOfGalleryAsTopRequest = nullptr;
+    JsonRequestData *m_resetImageOfGalleryAsTopRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
 
 private:

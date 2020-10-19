@@ -44,6 +44,10 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(currentGalleryOwnshipTakenSlot(int, RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(currentGalleryOwnshipFreedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(imageOfGalleryAsTopSetSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(imageOfGalleryAsTopResetSlot(int, RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -853,3 +857,54 @@ void MastactvaAPI::refreshCurrentGallery()
     m->refreshItemAtIndex(m_galleryIndex);
 }
 
+void MastactvaAPI::setImageOfGalleryAsTop()
+{
+    if(m_imageOfGalleryId < 0 || m_imageOfGalleryIndex < 0) { return; }
+
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    m_setImageOfGalleryAsTopRequest = netAPI->startJsonRequest();
+    // TODO: make none get method
+    netAPI->get(QString("images/%1/set_top/").arg(m_imageOfGalleryId), m_setImageOfGalleryAsTopRequest);
+}
+
+void MastactvaAPI::resetImageOfGalleryAsTop()
+{
+    if(m_imageOfGalleryId < 0 || m_imageOfGalleryIndex < 0) { return; }
+
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    m_resetImageOfGalleryAsTopRequest = netAPI->startJsonRequest();
+    // TODO: make none get method
+    netAPI->get(QString("images/%1/reset_top/").arg(m_imageOfGalleryId), m_resetImageOfGalleryAsTopRequest);
+}
+
+void MastactvaAPI::imageOfGalleryAsTopSetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_setImageOfGalleryAsTopRequest) != request_) { return; }
+    m_setImageOfGalleryAsTopRequest = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    emit imageOfGalleryAsTopSet();
+}
+
+void MastactvaAPI::imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(static_cast<RequestData *>(m_resetImageOfGalleryAsTopRequest) != request_) { return; }
+    m_resetImageOfGalleryAsTopRequest = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    emit imageOfGalleryAsTopReset();
+}

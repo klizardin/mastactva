@@ -451,6 +451,46 @@ ApplicationWindow {
     }
 
     Action {
+        id: setImageOfGalleryAsTop
+        text: qsTr("Make Image &Top")
+        onTriggered: {
+            mastactva.setImageOfGalleryAsTop()
+            mastactva.imageOfGalleryAsTopSet.connect(imageOfGalleryAsTopSet)
+        }
+
+        function imageOfGalleryAsTopSet()
+        {
+            mastactva.reloadGalleriesModel()
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+        }
+
+        function onGalleryReloaded()
+        {
+            galleries.currentIndex = galleryCurrentIndex;
+        }
+    }
+
+    Action {
+        id: resetImageOfGalleryAsTop
+        text: qsTr("Make Image &Non Top")
+        onTriggered: {
+            mastactva.resetImageOfGalleryAsTop()
+            mastactva.imageOfGalleryAsTopReset.connect(imageOfGalleryAsTopReset)
+        }
+
+        function imageOfGalleryAsTopReset()
+        {
+            mastactva.reloadGalleriesModel()
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+        }
+
+        function onGalleryReloaded()
+        {
+            galleries.currentIndex = galleryCurrentIndex;
+        }
+    }
+
+    Action {
         id: showImagePointsAction
         text: qsTr("Show image &points")
         onTriggered: {
@@ -541,6 +581,8 @@ ApplicationWindow {
             title: qsTr("All &Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
             MenuItem { action: removeCurrentImageOfGallery }
+            MenuItem { action: setImageOfGalleryAsTop }
+            MenuItem { action: resetImageOfGalleryAsTop }
             MenuItem {
                 action: showImagePointsAction
                 checkable: true
@@ -963,6 +1005,8 @@ ApplicationWindow {
                         id: imagesOfGalleryContextMenu
                         MenuItem { action: refreshAllGalleryImagesModel }
                         MenuItem { action: removeCurrentImageOfGallery }
+                        MenuItem { action: setImageOfGalleryAsTop }
+                        MenuItem { action: resetImageOfGalleryAsTop }
                         MenuItem {
                             action: showImagePointsAction
                             checkable: true
