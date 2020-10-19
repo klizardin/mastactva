@@ -1590,6 +1590,30 @@
                         "access": "public",
                         "name": "resetImageOfGalleryAsTop",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "hostURL_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "login_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "password_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "testLogin",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getHostURL",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,
@@ -1861,6 +1885,22 @@
                     {
                         "access": "public",
                         "name": "imageOfGalleryAsTopReset",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onLogingIn",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "msg_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "onFailedLogingIn",
                         "returnType": "void"
                     }
                 ],
@@ -2163,6 +2203,25 @@
                             }
                         ],
                         "name": "imageOfGalleryAsTopResetSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "testLogingInSlot",
                         "returnType": "void"
                     }
                 ],

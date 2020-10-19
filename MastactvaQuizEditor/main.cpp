@@ -17,16 +17,11 @@ int main(int argc, char *argv[])
     app.setApplicationName("Mastactva Quiz Editor Application");
 
     NetAPI::createSingelton(&app);
-    NetAPI::getSingelton()->getDefaultRequestData().setAuth("demo", "5jNicLc36GzUAV3");
     NetAPI::getSingelton()->getDefaultRequestData().setUrlBase("http://localhost:8000/");
     QMLMainObjects::createSingelton(&app);
 
-    //qmlRegisterType<GalleryEditViewModel>("org.mastactva", 1, 0, "GalleryEditViewModel");
-    //qmlRegisterType<GalleryImagesModel>("org.mastactva", 1, 0, "GalleryImagesModel");
-    //qmlRegisterType<MastactvaAPI>("org.mastactva", 1, 0, "MastactvaAPI");
-
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    const QUrl url(QStringLiteral("qrc:/Login.qml"));
     engine.addImportPath("qrc:/Mastactva");
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

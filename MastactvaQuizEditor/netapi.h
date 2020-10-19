@@ -36,11 +36,11 @@ public:
     void setUrlBase(const QString& urlBase_);
     void setAuth(const QString &login_, const QString &pass_);
     void setJsonReply(bool jsonReply_);
+    const QString& getUrlBase() const;
 
 protected:
     void setRequestID(int requestID_);
     bool getSkipRequest() const;
-    const QString& getUrlBase() const;
     const QString &getLogin() const;
     const QString &getPass() const;
     void setReply(QNetworkReply *reply_);

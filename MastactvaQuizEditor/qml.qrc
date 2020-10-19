@@ -11,6 +11,7 @@
         <file>resources/selectedPoint.png</file>
         <file>QuestionEditDialog.qml</file>
         <file>AnswerEditDialog.qml</file>
+        <file>Login.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

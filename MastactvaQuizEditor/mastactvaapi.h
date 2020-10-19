@@ -61,6 +61,8 @@ public:
     Q_INVOKABLE void refreshCurrentGallery();
     Q_INVOKABLE void setImageOfGalleryAsTop();
     Q_INVOKABLE void resetImageOfGalleryAsTop();
+    Q_INVOKABLE void testLogin(const QString &hostURL_, const QString &login_, const QString &password_);
+    Q_INVOKABLE QString getHostURL();
 
 signals:
     void galleryReloaded();
@@ -91,6 +93,8 @@ signals:
     void currentGalleryOwnshipFreed();
     void imageOfGalleryAsTopSet();
     void imageOfGalleryAsTopReset();
+    void onLogingIn();
+    void onFailedLogingIn(const QString &msg_);
 
 protected:
     int imageOfGalleryId() const;
@@ -128,6 +132,7 @@ protected slots:
     void currentGalleryOwnshipFreedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void imageOfGalleryAsTopSetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void testLogingInSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
@@ -154,6 +159,7 @@ private:
     JsonRequestData *m_freeGalleryOwnshipRequest = nullptr;
     JsonRequestData *m_setImageOfGalleryAsTopRequest = nullptr;
     JsonRequestData *m_resetImageOfGalleryAsTopRequest = nullptr;
+    JsonRequestData *m_testLoginRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
 
 private:

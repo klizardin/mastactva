@@ -48,6 +48,8 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(imageOfGalleryAsTopSetSlot(int, RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(imageOfGalleryAsTopResetSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(testLogingInSlot(int, RequestData *, const QJsonDocument &)));
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -907,4 +909,43 @@ void MastactvaAPI::imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *req
     if(errorCode_ != 0) { return; }
 
     emit imageOfGalleryAsTopReset();
+}
+
+void MastactvaAPI::testLogin(const QString &hostURL_, const QString &login_, const QString &password_)
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return;
+    }
+    NetAPI::getSingelton()->getDefaultRequestData().setUrlBase(hostURL_);
+    NetAPI::getSingelton()->getDefaultRequestData().setAuth(login_, password_);
+    m_testLoginRequest = netAPI->startJsonRequest();
+    netAPI->get(QString("galleries/"), m_testLoginRequest);
+}
+
+void MastactvaAPI::testLogingInSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
+{
+    if(static_cast<RequestData *>(m_testLoginRequest) != request_) { return; }
+    m_testLoginRequest = nullptr;
+    if(errorCode_ != 0)
+    {
+        emit onFailedLogingIn(document_.toJson());
+    }
+    else
+    {
+        emit onLogingIn();
+    }
+}
+
+QString MastactvaAPI::getHostURL()
+{
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI)
+    {
+        return QString();
+    }
+    return netAPI->getDefaultRequestData().getUrlBase();
 }
