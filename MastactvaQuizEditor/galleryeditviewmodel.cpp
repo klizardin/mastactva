@@ -1840,7 +1840,7 @@ public:
             "    gl_Position = qt_Matrix * vec4(vertices, 0.0, 1.0);\n"
             "    fragColor = color;\n"
             "}\n";
-        m_fragmentShader = (pointsCount > 0) ? QString(
+        m_fragmentShader = (pointsCount >= 2) ? QString(
             "uniform lowp float qt_Opacity;\n"
             "uniform highp vec2 seeds[%1];\n"
             "varying highp vec3 fragColor;\n"
