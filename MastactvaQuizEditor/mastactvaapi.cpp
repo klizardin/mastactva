@@ -453,8 +453,9 @@ void MastactvaAPI::onRefreshDescriptionsSlot()
     emit onRefreshDescriptions();
 }
 
-void MastactvaAPI::newDescription(const QString &description, const QString &fromDateTime)
+void MastactvaAPI::newDescription(int imageId_, const QString &description, const QString &fromDateTime)
 {
+    if(imageId_ < 0) { return; }
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(nullptr == netAPI)
@@ -463,7 +464,7 @@ void MastactvaAPI::newDescription(const QString &description, const QString &fro
     }
     m_newDescriptionRequest = netAPI->startJsonRequest();
     QJsonObject rec;
-    rec.insert("image", QJsonValue::fromVariant(m_imageOfGalleryId));
+    rec.insert("image", QJsonValue::fromVariant(imageId_));
     rec.insert("from_field", QJsonValue::fromVariant(QDateTime::fromString(fromDateTime,Qt::ISODate)));
     rec.insert("descr", QJsonValue::fromVariant(description));
     QJsonDocument doc(rec);
@@ -948,4 +949,23 @@ QString MastactvaAPI::getHostURL()
         return QString();
     }
     return netAPI->getDefaultRequestData().getUrlBase();
+}
+
+QString MastactvaAPI::dateTimeToUserStr(const QString &dateTimeStr_)
+{
+    QString res = dateTimeStr_;
+    res.replace("T", ",");
+    return res;
+}
+
+QString MastactvaAPI::dateTimeToUserStr(const QDateTime &dateTime_)
+{
+    return dateTimeToUserStr(dateTime_.toString(Qt::ISODate));
+}
+
+QString MastactvaAPI::dateTimeFromUserStr(const QString &dateTimeUserStr_)
+{
+    QString res = dateTimeUserStr_;
+    res.replace(",", "T");
+    return res;
 }

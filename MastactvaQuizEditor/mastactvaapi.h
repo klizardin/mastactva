@@ -46,7 +46,7 @@ public:
     Q_INVOKABLE void removeCurrentDescription();
     Q_INVOKABLE QString nowJsonStr();
     Q_INVOKABLE void refreshDescriptions();
-    Q_INVOKABLE void newDescription(const QString &description, const QString &fromDateTime);
+    Q_INVOKABLE void newDescription(int imageId_, const QString &description, const QString &fromDateTime);
     Q_INVOKABLE void editDescription(int id_, int imageId_, const QString &description, const QString &fromDateTime);
     Q_INVOKABLE QVariant getCurrentDescription();
     Q_INVOKABLE QVariant getCurrentQuestion();
@@ -63,6 +63,9 @@ public:
     Q_INVOKABLE void resetImageOfGalleryAsTop();
     Q_INVOKABLE void testLogin(const QString &hostURL_, const QString &login_, const QString &password_);
     Q_INVOKABLE QString getHostURL();
+    Q_INVOKABLE QString dateTimeToUserStr(const QString &dateTimeStr_);
+    Q_INVOKABLE QString dateTimeToUserStr(const QDateTime &dateTime_);
+    Q_INVOKABLE QString dateTimeFromUserStr(const QString &dateTimeUserStr_);
 
 signals:
     void galleryReloaded();

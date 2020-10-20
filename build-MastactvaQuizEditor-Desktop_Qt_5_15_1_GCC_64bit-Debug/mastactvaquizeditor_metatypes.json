@@ -9,6 +9,13 @@
                     }
                 ],
                 "className": "GalleryImagesModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "currentImageSource",
+                        "returnType": "QString"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -52,6 +59,20 @@
                         "type": "int",
                         "user": false,
                         "write": "setGalleryIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentIndex",
+                        "notify": "currentIndexChanged",
+                        "read": "currentIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setCurrentIndex"
                     }
                 ],
                 "qualifiedClassName": "GalleryImagesModel",
@@ -69,6 +90,11 @@
                     {
                         "access": "public",
                         "name": "galleryIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentIndexChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1446,6 +1472,10 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "imageId_",
+                                "type": "int"
+                            },
+                            {
                                 "name": "description",
                                 "type": "QString"
                             },
@@ -1613,6 +1643,39 @@
                     {
                         "access": "public",
                         "name": "getHostURL",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "dateTimeStr_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "dateTimeToUserStr",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "dateTime_",
+                                "type": "QDateTime"
+                            }
+                        ],
+                        "name": "dateTimeToUserStr",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "dateTimeUserStr_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "dateTimeFromUserStr",
                         "returnType": "QString"
                     }
                 ],

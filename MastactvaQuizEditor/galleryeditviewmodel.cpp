@@ -292,7 +292,7 @@ int GalleryImagesModel::getIdOfIndex(int index_)
     return m_images.at(index_).getId();
 }
 
-const ImageData *GalleryImagesModel::dataItemAt(int index_)
+const ImageData *GalleryImagesModel::dataItemAt(int index_) const
 {
     if(index_ < 0 || index_ > m_images.size())
     {
@@ -300,6 +300,30 @@ const ImageData *GalleryImagesModel::dataItemAt(int index_)
     }
     return &(m_images.at(index_));
 }
+
+QString GalleryImagesModel::currentImageSource() const
+{
+    auto imgd = dataItemAt(currentIndex());
+    if(nullptr == imgd)
+    {
+        return g_noImageSource;
+    }
+    return imgd->getSource();
+}
+
+int GalleryImagesModel::currentIndex() const
+{
+    return m_currentIndex;
+}
+
+void GalleryImagesModel::setCurrentIndex(int index_)
+{
+    m_currentIndex = index_;
+
+    emit currentIndexChanged();
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// class GalleryItemData

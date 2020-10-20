@@ -39,10 +39,15 @@ ApplicationWindow {
         function onGalleryImagesCurrentIndexChanged()
         {
             images_of_gallery.currentIndex = galleryImagesCurrentIndex >= 0 ? galleryImagesCurrentIndex : 0
-            imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
+            images_of_gallery.model.currentIndex = galleryImagesCurrentIndex >= 0 ? galleryImagesCurrentIndex : 0
             imageOfGalleryPointIndex = -1
             imageOfGalleryDescriptionIndex = -1
             imageOfGalleryAnswerIndex = -1
+        }
+
+        function onGalleryImagesCurrentIdChanged()
+        {
+            imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
         }
 
         function onImageOfGalleryPointIndexChanged()
@@ -66,6 +71,20 @@ ApplicationWindow {
 
     MastactvaAPI {
         id: mastactva
+    }
+
+    ConfirmDialog {
+        id: confirmDialog
+
+        signal confirm
+        signal skip
+
+        onAccepted: {
+            confirm()
+        }
+        onRejected: {
+            skip()
+        }
     }
 
     GalleryEditDialog {
@@ -187,13 +206,16 @@ ApplicationWindow {
     DescriptionEditDialog {
         id: createNewDescriptionDialog
 
+        property int imageID: -1
+
         onOpened: {
+            imageID = galleryImagesCurrentId
             fieldDescription = ""
-            fieldFrom = mastactva.nowJsonStr()
+            fieldFrom = mastactva.dateTimeToUserStr(mastactva.nowJsonStr())
         }
 
         onAccepted: {
-            mastactva.newDescription(fieldDescription, fieldFrom)
+            mastactva.newDescription(imageID, fieldDescription, mastactva.dateTimeFromUserStr(fieldFrom))
             mastactva.onNewDescriptionAdded.connect(onNewDescriptionAdded)
         }
 
@@ -214,7 +236,7 @@ ApplicationWindow {
                 fieldId = descr.id
                 fieldImageId = descr.imageId
                 fieldDescription = descr.descriptionStr
-                fieldFrom = descr.fromDateTime
+                fieldFrom = mastactva.dateTimeToUserStr(descr.fromDateTime)
             } else {
                 fieldId = -1
                 fieldImageId = -1
@@ -225,7 +247,7 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            mastactva.editDescription(fieldId, fieldImageId, fieldDescription, fieldFrom)
+            mastactva.editDescription(fieldId, fieldImageId, fieldDescription, mastactva.dateTimeFromUserStr(fieldFrom))
             mastactva.onDescriptionEdited.connect(onDescriptionEdited)
         }
 
@@ -427,6 +449,33 @@ ApplicationWindow {
         id: removeCurrentImageOfGallery
         text: qsTr("&Remove Current Image")
         onTriggered: {
+            connectConfirmDialog()
+            confirmDialog.confirmText = qsTr("<b>Do you really want to remove image from gallery</b>")
+            confirmDialog.imageSource = images_of_gallery.model.currentImageSource()
+            confirmDialog.showImage = true
+            confirmDialog.open()
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
             mastactva.removeCurrentImage()
             mastactva.imageOfGalleryRemoved.connect(onImageOfGalleryRemoved)
         }
@@ -518,6 +567,35 @@ ApplicationWindow {
         id: imageOfGalleryDeleteDescription
         text: qsTr("&Delete Description")
         onTriggered: {
+            var descr = mastactva.getCurrentDescription()
+            if(descr !== undefined) {
+                confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(descr.descriptionStr)) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
+                confirmDialog.showImage = false
+                connectConfirmDialog()
+                confirmDialog.open()
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
             mastactva.removeCurrentDescription()
             mastactva.onDescriptionDeleted.connect(onDescriptionDeleted)
         }
@@ -1193,7 +1271,7 @@ ApplicationWindow {
                     height: Constants.descriptionRowHeight*4/5
                     text: GalleryFunctions.description_first_part(description_description)
                 }
-                Text { text: qsTr("<b>From : </b>") + description_fromDateTime }
+                Text { text: qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(description_fromDateTime) }
             }
 
             MouseArea {

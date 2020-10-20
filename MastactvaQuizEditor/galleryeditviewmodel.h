@@ -77,6 +77,9 @@ public:
     Q_PROPERTY(bool galleryViewImages READ galleryViewImages WRITE setGalleryViewImages NOTIFY galleryViewImagesChanged)
     Q_PROPERTY(int galleryId READ galleryId WRITE setGalleryId NOTIFY galleryIdChanged)
     Q_PROPERTY(int galleryIndex READ galleryIndex WRITE setGalleryIndex NOTIFY galleryIndexChanged)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+
+    Q_INVOKABLE QString currentImageSource() const;
 
     bool galleryViewImages() const;
     void setGalleryViewImages(bool modeShowGalleryViewImages_);
@@ -86,12 +89,15 @@ public:
     void setGalleryIndex(int galleryIndex_);
     void startLoadImages();
     int getIdOfIndex(int index_);
-    const ImageData *dataItemAt(int index_);
+    const ImageData *dataItemAt(int index_) const;
+    int currentIndex() const;
+    void setCurrentIndex(int index_);
 
 signals:
     void galleryIdChanged();
     void galleryViewImagesChanged();
     void galleryIndexChanged();
+    void currentIndexChanged();
 
 private slots:
     void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
@@ -106,6 +112,7 @@ private:
     bool m_showGalleryViewImages = true;
     int m_galleryId = -1;
     int m_galleryIndex = -1;
+    int m_currentIndex = -1;
     RequestData* m_request = nullptr;
     QVector<ImageData> m_images;
     QHash<int, QByteArray> m_roleNames;

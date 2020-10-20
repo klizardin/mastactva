@@ -12,6 +12,7 @@
         <file>QuestionEditDialog.qml</file>
         <file>AnswerEditDialog.qml</file>
         <file>Login.qml</file>
+        <file>ConfirmDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
