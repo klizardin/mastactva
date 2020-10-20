@@ -2,6 +2,8 @@ pragma Singleton
 import QtQuick 2.6
 
 QtObject {
+    readonly property int loginWidth: 480
+    readonly property int loginHeight: 360
     readonly property int width: 640
     readonly property int height: 480
     readonly property int leftSideBarWidth: 250
@@ -15,6 +17,7 @@ QtObject {
     readonly property int aspectX: 3
     readonly property int aspectY: 4
     readonly property int descriptionRowHeight: 100
+    readonly property int logingItemsSpacing: 10
     readonly property string activePoint: "qrc:///resources/selectedPoint.png"
     readonly property string inactivePoint: "qrc:///resources/point.png"
     readonly property int pointImageSize: 32

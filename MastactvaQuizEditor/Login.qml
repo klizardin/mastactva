@@ -9,8 +9,8 @@ import Mastactva 1.0
 ApplicationWindow {
     id: logginWindow
     visible: true
-    width: Constants.width
-    height: Constants.height
+    width: Constants.loginWidth
+    height: Constants.loginHeight
     title: qsTr("Mastactva Quiz Editor (Login)")
 
 
@@ -28,44 +28,46 @@ ApplicationWindow {
 
     Column {
         anchors.fill: parent
+        spacing: Constants.logingItemsSpacing
 
         TextArea {
-            anchors.horizontalCenter: parent.horizontalCenter
             id: message
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width - Constants.logingItemsSpacing * 2
             text: qsTr("")
         }
 
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            Text {
-                text: qsTr("Server URL : ")
-            }
-            TextField {
-                id: serverURL
-                placeholderText: qsTr("<Enter server URL>")
-                text: mastactva.getHostURL()
-            }
+        Text {
+            x: Constants.logingItemsSpacing
+            text: qsTr("Server URL : ")
         }
-        Row {
+        TextField {
+            id: serverURL
             anchors.horizontalCenter: parent.horizontalCenter
-            Text {
-                text: qsTr("Login : ")
-            }
-            TextField {
-                id: login
-                placeholderText: qsTr("<Enter login>")
-            }
+            width: parent.width - Constants.logingItemsSpacing * 2
+            placeholderText: qsTr("<Enter server URL>")
+            text: mastactva.getHostURL()
         }
-        Row {
+        Text {
+            x: Constants.logingItemsSpacing
+            text: qsTr("Login : ")
+        }
+        TextField {
+            id: login
             anchors.horizontalCenter: parent.horizontalCenter
-            Text {
-                text: qsTr("Password : ")
-            }
-            TextField {
-                id: password
-                placeholderText: qsTr("<Enter pasword>")
-                echoMode: TextInput.Password
-            }
+            width: parent.width - Constants.logingItemsSpacing * 2
+            placeholderText: qsTr("<Enter login>")
+        }
+        Text {
+            x: Constants.logingItemsSpacing
+            text: qsTr("Password : ")
+        }
+        TextField {
+            id: password
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width - Constants.logingItemsSpacing * 2
+            placeholderText: qsTr("<Enter pasword>")
+            echoMode: TextInput.Password
         }
         Button {
             anchors.horizontalCenter: parent.horizontalCenter
