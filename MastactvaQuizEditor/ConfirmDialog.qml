@@ -26,7 +26,7 @@ Dialog {
             }
             Rectangle
             {
-                Layout.alignment: horizontalCenter
+                Layout.alignment: Qt.AlignHCenter
                 visible: showImage
                 width: 320
                 height: 240

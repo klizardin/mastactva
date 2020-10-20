@@ -635,6 +635,36 @@ ApplicationWindow {
         id: imageOfGalleryDeleteAnswer
         text: qsTr("&Delete answer")
         onTriggered: {
+            var answer = mastactva.getCurrentAnswer()
+            if(answer !== undefined)
+            {
+                confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(answer.answer)) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
+                confirmDialog.showImage = false
+                connectConfirmDialog()
+                confirmDialog.open()
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
             mastactva.removeCurrentAnswer()
             mastactva.onCurrentAnswerRemoved.connect(onCurrentAnswerRemoved)
         }
