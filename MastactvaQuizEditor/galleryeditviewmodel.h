@@ -80,6 +80,7 @@ public:
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
 
     Q_INVOKABLE QString currentImageSource() const;
+    Q_INVOKABLE QVariant currentImagePoints() const;
 
     bool galleryViewImages() const;
     void setGalleryViewImages(bool modeShowGalleryViewImages_);
@@ -503,6 +504,19 @@ public:
 
     static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
 
+    void saveData();
+    void createData(bool pointToNextImage_);
+    void createTemplateData();
+
+protected slots:
+    void onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onDataCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onQuestionCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onAnswerCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onPointToQuestionRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onPointToImageRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+
+
 signals:
     void pointIdChanged();
     void xCoordChanged();
@@ -510,6 +524,9 @@ signals:
     void weightChanged();
     void toNextImageChanged();
     void toQuestionChanged();
+    void onDataSaved(int pointId_);
+    void onDataCreated(int pointId_);
+    void onTemplateDataCreated(int pointId_);
 
 private:
     int m_sourceImageId = -1;
@@ -519,6 +536,14 @@ private:
     qreal m_weight = 1.0;
     ImagePointToNextImage *m_imagePointToNextImage = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
+    bool m_pointToNextImage = true;
+
+    JsonRequestData* m_saveDataRequest = nullptr;
+    JsonRequestData* m_createDataRequest = nullptr;
+    JsonRequestData* m_createQuestionRequest = nullptr;
+    JsonRequestData* m_createAnswerRequest = nullptr;
+    JsonRequestData* m_createImagePointToQuestionRequest = nullptr;
+    JsonRequestData* m_createImagePointToImageRequest = nullptr;
 };
 
 class ImagePointsModel : public QAbstractListModel
@@ -546,19 +571,30 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
+    Q_INVOKABLE int addTempPoint(qreal x_, qreal y_, qreal weight_);
+    Q_INVOKABLE void removeTempPoint(int index_);
+    Q_INVOKABLE void resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal weight_);
+    Q_INVOKABLE void savePointTemplate(int index_,bool pointToNextImage_);
+    Q_INVOKABLE void savePoint(int index_);
+
 public:
     void setSourceImageId(int sourceImageId_);
     void startLoadImagePoints();
     ImagePointData *getAt(int index_);
+    ImagePointData *getById(int pointId_);
     Q_INVOKABLE bool isEmpty() const;
     Q_INVOKABLE QVariant itemAt(int index_);
 
 signals:
     void imagePointsLoaded();
+    void onDataSaved();
 
     //slots
 private slots:
     void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onImagePointDataSavedSlot(int pointId_);
+    void onImagePointDataCreated1Slot(int pointId_);
+    void onImagePointDataCreated2Slot(int pointId_);
 
 protected:
     void clearData();

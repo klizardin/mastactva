@@ -381,6 +381,63 @@ ApplicationWindow {
         }
     }
 
+    ImagePointDialog {
+        id: imagePointDialog
+
+        property bool addNewPoint: true
+        property int oldPointIndex: -1
+        property real oldX: 0.5
+        property real oldY: 0.5
+        property real oldWeight: 0.5
+
+        onOpened: {
+            oldPointIndex = imageOfGalleryPointIndex
+            if(pointIndex < 0)
+            {
+                addNewPoint = true
+                pointIndex = pointsModel.addTempPoint(point_x, point_y, point_weight)
+            }
+            else
+            {
+                addNewPoint = false
+                oldX = point_x
+                oldY = point_y
+                oldWeight = point_weight
+            }
+        }
+
+        onAccepted: {
+            pointsModel.onDataSaved.connect(onDataSaved)
+            if(addNewPoint)
+            {
+                oldPointIndex = pointIndex
+                pointsModel.savePointTemplate(pointIndex, pointToNextImage)
+            }
+            else
+            {
+                pointsModel.savePoint(pointIndex)
+            }
+        }
+
+        onRejected: {
+            oldPointIndex = -1
+            pointsModel.onDataSaved.connect(onDataSaved)
+            if(addNewPoint)
+            {
+                pointsModel.removeTempPoint(pointIndex)
+            }
+            else
+            {
+                pointsModel.resetValuesAtIndex(pointIndex, oldX, oldY, oldWeight)
+            }
+        }
+
+        function onDataSaved()
+        {
+            imageOfGalleryPointIndex = oldPointIndex
+        }
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")
@@ -675,6 +732,39 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: addPointOfImage
+        text: qsTr("Add point template")
+        onTriggered: {
+            imagePointDialog.titleText = qsTr("Create image point template")
+            imagePointDialog.pointsModel = images_of_gallery.model.currentImagePoints()
+            imagePointDialog.imageSource = images_of_gallery.model.currentImageSource()
+            imagePointDialog.imageId = galleryImagesCurrentId
+            imagePointDialog.pointIndex = -1
+            imagePointDialog.choosePointType = true
+            imagePointDialog.open()
+        }
+    }
+
+    Action {
+        id: editPointOfImage
+        text: qsTr("Edit point of image")
+        onTriggered: {
+            startEdit()
+        }
+
+        function startEdit()
+        {
+            imagePointDialog.titleText = qsTr("Edit image point")
+            imagePointDialog.pointsModel = images_of_gallery.model.currentImagePoints()
+            imagePointDialog.imageSource = images_of_gallery.model.currentImageSource()
+            imagePointDialog.imageId = galleryImagesCurrentId
+            imagePointDialog.pointIndex = imageOfGalleryPointIndex
+            imagePointDialog.choosePointType = false
+            imagePointDialog.open()
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&Galleries")
@@ -688,14 +778,16 @@ ApplicationWindow {
         Menu {
             title: qsTr("All &Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
-            MenuItem { action: removeCurrentImageOfGallery }
             MenuItem { action: setImageOfGalleryAsTop }
             MenuItem { action: resetImageOfGalleryAsTop }
+            MenuItem { action: addPointOfImage }
+            MenuItem { action: editPointOfImage }
             MenuItem {
                 action: showImagePointsAction
                 checkable: true
                 checked: showImagePoints
             }
+            MenuItem { action: removeCurrentImageOfGallery }
         }
         Menu {
             title: qsTr("&Description")
@@ -1112,14 +1204,16 @@ ApplicationWindow {
                     Menu {
                         id: imagesOfGalleryContextMenu
                         MenuItem { action: refreshAllGalleryImagesModel }
-                        MenuItem { action: removeCurrentImageOfGallery }
                         MenuItem { action: setImageOfGalleryAsTop }
                         MenuItem { action: resetImageOfGalleryAsTop }
+                        MenuItem { action: addPointOfImage }
+                        MenuItem { action: editPointOfImage }
                         MenuItem {
                             action: showImagePointsAction
                             checkable: true
                             checked: showImagePoints
                         }
+                        MenuItem { action: removeCurrentImageOfGallery }
                     }
                 }
                 onStatusChanged: {
@@ -1249,33 +1343,43 @@ ApplicationWindow {
                                 }
                                 else
                                 {
-                                    if(imageOfGallery_index == galleryImagesCurrentIndex)
-                                    {
-                                        if(imageOfGalleryPointIndex !== -1)
-                                        {
-                                            imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
-                                        }
-
-                                        imageOfGalleryPointIndex = index;
-                                        pointImage.source = Constants.activePoint
-                                        imageOfGalleryNextImageNextImage.source = pointImage.nextImage
-                                        imageOfGalleryNextImageText.text = nextImageDescription
-                                        imageOfGalleryQuestionAnswersListView.model.questionId = questionId
-                                        imageOfGalleryAnswerIndex = 0
-                                        if(questionId >= 0)
-                                        {
-                                            imageOfGalleryQuestionText.text = questionText
-                                            imageOfGalleryQuestionPointsToPassRect.visible = true
-                                            imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                                        }
-                                        else
-                                        {
-                                            imageOfGalleryQuestionText.text = Constants.selectImagePoint
-                                            imageOfGalleryQuestionPointsToPassRect.visible = false
-                                            imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                                        }
-                                    }
+                                    selectCurrentImagePoint()
                                     mouse.accepted = false;
+                                }
+                            }
+                            onDoubleClicked: {
+                                selectCurrentImagePoint()
+                                editPointOfImage.startEdit()
+                                mouse.accepted = false;
+                            }
+
+                            function selectCurrentImagePoint()
+                            {
+                                if(imageOfGallery_index == galleryImagesCurrentIndex)
+                                {
+                                    if(imageOfGalleryPointIndex !== -1)
+                                    {
+                                        imagePointsRepeater.itemAt(imageOfGalleryPointIndex).source = Constants.inactivePoint
+                                    }
+
+                                    imageOfGalleryPointIndex = index;
+                                    pointImage.source = Constants.activePoint
+                                    imageOfGalleryNextImageNextImage.source = pointImage.nextImage
+                                    imageOfGalleryNextImageText.text = nextImageDescription
+                                    imageOfGalleryQuestionAnswersListView.model.questionId = questionId
+                                    imageOfGalleryAnswerIndex = 0
+                                    if(questionId >= 0)
+                                    {
+                                        imageOfGalleryQuestionText.text = questionText
+                                        imageOfGalleryQuestionPointsToPassRect.visible = true
+                                        imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                                    }
+                                    else
+                                    {
+                                        imageOfGalleryQuestionText.text = Constants.selectImagePoint
+                                        imageOfGalleryQuestionPointsToPassRect.visible = false
+                                        imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                                    }
                                 }
                             }
                         }

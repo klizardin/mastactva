@@ -6,6 +6,8 @@ QtObject {
     readonly property int loginHeight: 360
     readonly property int width: 640
     readonly property int height: 480
+    readonly property int smallImageWidth: 400
+    readonly property int smallImageHeight: 300
     readonly property int leftSideBarWidth: 250
     readonly property int leftSideBarWidthSpace: 5
     readonly property int leftSideBarTextWidth: 220

@@ -1,6 +1,7 @@
 #include "galleryeditviewmodel.h"
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <QJsonObject>
 #include <QSGRendererInterface>
 #include <QQuickWindow>
 #include <QAbstractItemModel>
@@ -309,6 +310,16 @@ QString GalleryImagesModel::currentImageSource() const
         return g_noImageSource;
     }
     return imgd->getSource();
+}
+
+QVariant GalleryImagesModel::currentImagePoints() const
+{
+    auto imgd = dataItemAt(currentIndex());
+    if(nullptr == imgd)
+    {
+        return QVariant();
+    }
+    return QVariant::fromValue(imgd->getImagePoints(static_cast<QObject *>(const_cast<GalleryImagesModel *>(this))));
 }
 
 int GalleryImagesModel::currentIndex() const
@@ -1599,6 +1610,71 @@ ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, c
     return new ImagePointData(parent_, sourceImageId_, id, x, y, weight);
 }
 
+void ImagePointData::saveData()
+{
+    auto *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(!(nullptr != netAPI))
+    {
+        return;
+    }
+
+    m_saveDataRequest = netAPI->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("id", QJsonValue::fromVariant(pointId()));
+    rec.insert("image", QJsonValue::fromVariant(getSourceImageId()));
+    rec.insert("x", QJsonValue::fromVariant(xCoord()));
+    rec.insert("y", QJsonValue::fromVariant(yCoord()));
+    rec.insert("weight", QJsonValue::fromVariant(weight()));
+    QJsonDocument doc(rec);
+
+    m_saveDataRequest->setDocument(doc);
+    NetAPI::getSingelton()->patch(QString("image-point/%1/").arg(pointId()), m_saveDataRequest);
+
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDataSavedRequestFinished(int, RequestData *, const QJsonDocument &)));
+}
+
+void ImagePointData::onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(reply_);
+
+    if(nullptr == m_saveDataRequest || static_cast<RequestData *>(m_saveDataRequest) != request_) { return; }
+    m_saveDataRequest = nullptr;
+    if(0 != errorCode_) { return; }
+
+    emit onDataSaved(pointId());
+}
+
+void ImagePointData::createData(bool pointToNextImage_)
+{
+    Q_ASSERT(pointId() < 0);
+    m_pointToNextImage = pointToNextImage_;
+}
+
+void ImagePointData::createTemplateData()
+{
+}
+
+void ImagePointData::onDataCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+}
+
+void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+}
+
+void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+}
+
+void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+}
+
+void ImagePointData::onPointToImageRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+}
 
 ImagePointsModel::ImagePointsModel(QObject *parent_)
     :QAbstractListModel(parent_)
@@ -1685,6 +1761,107 @@ bool ImagePointsModel::setData(const QModelIndex &index, const QVariant &value, 
     return true;
 }
 
+int ImagePointsModel::addTempPoint(qreal x_, qreal y_, qreal weight_)
+{
+    m_data.push_back(new ImagePointData(this, m_sourceImageId, -1, x_, y_, weight_));
+    return m_data.size() - 1;
+}
+
+void ImagePointsModel::removeTempPoint(int index_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return;
+    }
+    auto fit = std::begin(m_data);
+    std::advance(fit, index_);
+    Q_ASSERT(nullptr != *fit && (*fit)->pointId() < 0);
+    delete *fit;
+    *fit = nullptr;
+    m_data.erase(fit);
+
+    emit onDataSaved();
+}
+
+void ImagePointsModel::resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal weight_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return;
+    }
+    auto fit = std::begin(m_data);
+    std::advance(fit, index_);
+    Q_ASSERT(nullptr != *fit && (*fit)->pointId() >= 0);
+    (*fit)->setXCoord(x_);
+    (*fit)->setYCoord(y_);
+    (*fit)->setWeight(weight_);
+
+    emit onDataSaved();
+}
+
+void ImagePointsModel::savePointTemplate(int index_,bool pointToNextImage_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return;
+    }
+    auto fit = std::begin(m_data);
+    std::advance(fit, index_);
+    Q_ASSERT(nullptr != *fit && (*fit)->pointId() >= 0);
+    QObject::connect(*fit, SIGNAL(onDataCreated(int)), this, SLOT(onImagePointDataCreated1Slot(int)));
+    (*fit)->createData(pointToNextImage_);
+}
+
+void ImagePointsModel::onImagePointDataCreated1Slot(int pointId_)
+{
+    auto *item = getById(pointId_);
+    if(nullptr == item)
+    {
+        return;
+    }
+    QObject::disconnect(item, SIGNAL(onDataCreated(int)), this, SLOT(onImagePointDataCreated1Slot(int)));
+
+    QObject::connect(item, SIGNAL(onTemplateDataCreated(int)), this, SLOT(onImagePointDataCreated2Slot(int)));
+    item->createTemplateData();
+}
+
+void ImagePointsModel::onImagePointDataCreated2Slot(int pointId_)
+{
+    auto *item = getById(pointId_);
+    if(nullptr == item)
+    {
+        return;
+    }
+    QObject::disconnect(item, SIGNAL(onTemplateDataCreated(int)), this, SLOT(onImagePointDataCreated2Slot(int)));
+
+    emit onDataSaved();
+}
+
+void ImagePointsModel::savePoint(int index_)
+{
+    if(index_ < 0 || index_ >= m_data.size())
+    {
+        return;
+    }
+    auto fit = std::begin(m_data);
+    std::advance(fit, index_);
+    Q_ASSERT(nullptr != *fit && (*fit)->pointId() >= 0);
+    QObject::connect(*fit, SIGNAL(onDataSaved(int)), this, SLOT(onImagePointDataSavedSlot(int)));
+    (*fit)->saveData();
+}
+
+void ImagePointsModel::onImagePointDataSavedSlot(int pointId_)
+{
+    auto *item = getById(pointId_);
+    if(nullptr == item)
+    {
+        return;
+    }
+    QObject::disconnect(item, SIGNAL(onDataSaved(int)), this, SLOT(onImagePointDataSavedSlot(int)));
+
+    emit onDataSaved();
+}
+
 void ImagePointsModel::setSourceImageId(int sourceImageId_)
 {
     m_sourceImageId = sourceImageId_;
@@ -1767,6 +1944,20 @@ ImagePointData *ImagePointsModel::getAt(int index_)
         return nullptr;
     }
     return m_data.at(index_);
+}
+
+ImagePointData *ImagePointsModel::getById(int pointId_)
+{
+    auto fit = std::find_if(std::begin(m_data), std::end(m_data),
+                            [pointId_](ImagePointData *item_)->bool
+    {
+        return nullptr != item_ && item_->pointId() == pointId_;
+    });
+    if(std::end(m_data) == fit)
+    {
+        return nullptr;
+    }
+    return *fit;
 }
 
 bool ImagePointsModel::isEmpty() const

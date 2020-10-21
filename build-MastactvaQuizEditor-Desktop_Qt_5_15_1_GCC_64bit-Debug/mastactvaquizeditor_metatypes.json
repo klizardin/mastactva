@@ -14,6 +14,11 @@
                         "access": "public",
                         "name": "currentImageSource",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentImagePoints",
+                        "returnType": "QVariant"
                     }
                 ],
                 "object": true,
@@ -909,6 +914,155 @@
                         "access": "public",
                         "name": "toQuestionChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "pointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "onDataSaved",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "pointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "onDataCreated",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "pointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "onTemplateDataCreated",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onDataSavedRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onDataCreatedRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onQuestionCreatedRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onAnswerCreatedRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onPointToQuestionRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onPointToImageRequestFinished",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
@@ -927,6 +1081,85 @@
                 ],
                 "className": "ImagePointsModel",
                 "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "weight_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "addTempPoint",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removeTempPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "weight_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "resetValuesAtIndex",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "pointToNextImage_",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "savePointTemplate",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "savePoint",
+                        "returnType": "void"
+                    },
                     {
                         "access": "public",
                         "name": "isEmpty",
@@ -951,6 +1184,11 @@
                         "access": "public",
                         "name": "imagePointsLoaded",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onDataSaved",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -971,6 +1209,39 @@
                             }
                         ],
                         "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "pointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "onImagePointDataSavedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "pointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "onImagePointDataCreated1Slot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "pointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "onImagePointDataCreated2Slot",
                         "returnType": "void"
                     }
                 ],
