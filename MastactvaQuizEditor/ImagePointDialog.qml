@@ -25,6 +25,11 @@ Dialog {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
 
+    function updatePointParams()
+    {
+        pointsModel.setCurrentPointParams(point_x, point_y, point_weight)
+    }
+
     ScrollView {
         anchors.fill: parent
         clip:true
@@ -42,11 +47,28 @@ Dialog {
                 width: Constants.smallImageWidth
                 height: Constants.smallImageHeight
 
+                property bool dragPoint: false
+
                 Image {
                     id: imageOfGallery
                     source: imageSource
                     anchors.fill: parent
                     fillMode: Image.PreserveAspectFit
+
+                    MouseArea {
+                        x: (imageRect.width - imageOfGallery.paintedWidth)/2
+                        y: (imageRect.height - imageOfGallery.paintedHeight)/2
+                        width: imageOfGallery.paintedWidth
+                        height: imageOfGallery.paintedHeight
+
+                        onPositionChanged: {
+                            if(dragPoint) {
+                                point_x = (mouseX - x) / width
+                                point_y = (mouseY - y) / height
+                                imagePointDialog.updatePointParams()
+                            }
+                        }
+                    }
                 }
 
                 Item {
@@ -75,6 +97,25 @@ Dialog {
                             function ptY()
                             {
                                 return (imageRect.height - imageOfGallery.paintedHeight)/2 + (imagePoint_y * imageOfGallery.paintedHeight) + imageOfGallery.y
+                            }
+
+                            MouseArea {
+                                anchors.fill: pointImage.anchors.fill
+
+                                onClicked: {
+                                    if(index === pointIndex)
+                                    {
+                                        dragPoint = true
+                                    }
+                                    mouse.accepted = false
+                                }
+                                onReleased: {
+                                    if(index === pointIndex)
+                                    {
+                                        dragPoint = false
+                                    }
+                                    mouse.accepted = false
+                                }
                             }
                         }
                     }
@@ -135,12 +176,13 @@ Dialog {
                     text: qsTr("Point to question")
                 }
             }
-            /*Button {
+            Button {
                 Layout.alignment: Qt.AlignHCenter
                 text: qsTr("Update")
                 onClicked: {
+                    imagePointDialog.updatePointParams()
                 }
-            }*/
+            }
         }
     }
 

@@ -264,8 +264,6 @@ public:
     void setImageSource(const QString &imageSource_);
     bool noImageSource() const;
     void setNoImageSource(bool noImageSource_);
-
-protected:
     void startLoad();
 
 protected slots:
@@ -508,6 +506,10 @@ public:
     void createData(bool pointToNextImage_);
     void createTemplateData();
 
+private:
+    void createTemplImageData();
+    void cretateTemplQuestionData();
+
 protected slots:
     void onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void onDataCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
@@ -537,6 +539,7 @@ private:
     ImagePointToNextImage *m_imagePointToNextImage = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
     bool m_pointToNextImage = true;
+    int m_questionID = -1;
 
     JsonRequestData* m_saveDataRequest = nullptr;
     JsonRequestData* m_createDataRequest = nullptr;
@@ -571,6 +574,7 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
+    Q_INVOKABLE void setCurrentPointParams(int index_, qreal x_, qreal y_, qreal weight_);
     Q_INVOKABLE int addTempPoint(qreal x_, qreal y_, qreal weight_);
     Q_INVOKABLE void removeTempPoint(int index_);
     Q_INVOKABLE void resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal weight_);

@@ -1085,6 +1085,29 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "weight_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "setCurrentPointParams",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "x_",
                                 "type": "qreal"
                             },
