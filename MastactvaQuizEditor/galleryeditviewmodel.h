@@ -636,6 +636,7 @@ public:
     Q_INVOKABLE void setPoint(int index_, qreal x_, qreal y_);
     Q_INVOKABLE void removePointAt(int index_);
     Q_INVOKABLE void resetPoints();
+    Q_INVOKABLE void modelUpdated();
 
 signals:
     void modelChanged();

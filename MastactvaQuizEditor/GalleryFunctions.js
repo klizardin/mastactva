@@ -12,3 +12,8 @@ function textLFtoBr(str) {
     }
     return str;
 }
+
+function clamp(v, min_, max_)
+{
+    return Math.min(max_, Math.max(min_, v));
+}

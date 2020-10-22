@@ -1338,6 +1338,11 @@
                         "access": "public",
                         "name": "resetPoints",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "modelUpdated",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

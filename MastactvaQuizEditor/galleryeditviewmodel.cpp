@@ -2229,8 +2229,8 @@ public:
         base::updateState(state, newMaterial, oldMaterial);
     }*/
 
-    void updateState(const VoronoyMaterial *m, const VoronoyMaterial *) override {
-
+    void updateState(const VoronoyMaterial *m, const VoronoyMaterial *) override
+    {
         program()->setUniformValueArray(m_id_seeds, &(m->points[0]), m->points.size());
     }
 
@@ -2305,7 +2305,7 @@ void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D>
     v[2].set(x, y+h, color_.x(), color_.y(), color_.z());
     v[3].set(x+w, y+h, color_.x(), color_.y(), color_.z());
 
-    markDirty(QSGNode::DirtyGeometry);
+    markDirty(QSGNode::DirtyForceUpdate);
 }
 
 
@@ -2393,6 +2393,13 @@ void VoronoyGraphItem::removePointAt(int index_)
 void VoronoyGraphItem::resetPoints()
 {
     setPointsFromModel();
+}
+
+void VoronoyGraphItem::modelUpdated()
+{
+    setPointsFromModel();
+    m_pointsChanged = true;
+    update();
 }
 
 class VoronoyGraphNode : public QSGNode

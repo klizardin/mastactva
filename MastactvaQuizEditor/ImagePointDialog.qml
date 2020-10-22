@@ -3,6 +3,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.15
 import MastactvaQuizEditor 1.0
+import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
 
 
@@ -27,7 +28,8 @@ Dialog {
 
     function updatePointParams()
     {
-        pointsModel.setCurrentPointParams(point_x, point_y, point_weight)
+        pointsModel.setCurrentPointParams(pointIndex, point_x, point_y, point_weight)
+        voronoyDiagram.modelUpdated()
     }
 
     ScrollView {
@@ -62,11 +64,17 @@ Dialog {
                         height: imageOfGallery.paintedHeight
 
                         onPositionChanged: {
-                            if(dragPoint) {
-                                point_x = (mouseX - x) / width
-                                point_y = (mouseY - y) / height
+                            if(imageRect.dragPoint) {
+                                point_x = GalleryFunctions.clamp(mouseX / width, 0, 1)
+                                point_y = GalleryFunctions.clamp(mouseY / height, 0, 1)
+                                pointXTF.text = point_x
+                                pointYTF.text = point_y
                                 imagePointDialog.updatePointParams()
                             }
+                        }
+                        onReleased: {
+                            imageRect.dragPoint = false
+                            mouse.accepted = false
                         }
                     }
                 }
@@ -100,21 +108,28 @@ Dialog {
                             }
 
                             MouseArea {
-                                anchors.fill: pointImage.anchors.fill
+                                anchors.fill: parent
 
-                                onClicked: {
+                                onPressed: {
                                     if(index === pointIndex)
                                     {
-                                        dragPoint = true
+                                        imageRect.dragPoint = true
                                     }
                                     mouse.accepted = false
                                 }
                                 onReleased: {
                                     if(index === pointIndex)
                                     {
-                                        dragPoint = false
+                                        imageRect.dragPoint = false
                                     }
                                     mouse.accepted = false
+                                }
+
+                                onCanceled: {
+                                    if(index === pointIndex)
+                                    {
+                                        imageRect.dragPoint = false
+                                    }
                                 }
                             }
                         }
