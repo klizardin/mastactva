@@ -391,7 +391,6 @@ ApplicationWindow {
         property real oldWeight: 0.5
 
         onOpened: {
-            console.log("pointIndex = ", pointIndex)
             if(pointIndex >= 0)
             {
                 oldPointIndex = imageOfGalleryPointIndex
@@ -402,7 +401,6 @@ ApplicationWindow {
                     oldX = point_x = pt.xCoord
                     oldY = point_y = pt.yCoord
                     oldWeight = point_weight = pt.weight
-                    console.log("from existing point, oldX = ", oldX, " oldY = ", oldY, " oldWeight = ", oldWeight)
                 }
                 else
                 {
@@ -420,7 +418,6 @@ ApplicationWindow {
                 oldX = point_x
                 oldY = point_y
                 oldWeight = point_weight
-                console.log("new point, oldX = ", oldX, " oldY = ", oldY, " oldWeight = ", oldWeight)
             }
         }
 
@@ -435,6 +432,7 @@ ApplicationWindow {
             {
                 pointsModel.savePoint(pointIndex)
             }
+            pointsModel = undefined
         }
 
         onRejected: {
@@ -448,6 +446,7 @@ ApplicationWindow {
             {
                 pointsModel.resetValuesAtIndex(pointIndex, oldX, oldY, oldWeight)
             }
+            pointsModel = undefined
         }
 
         function onDataSaved()

@@ -1947,8 +1947,6 @@ void ImagePointsModel::resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal 
     (*fit)->setYCoord(y_);
     (*fit)->setWeight(weight_);
 
-    qDebug() << "resetValuesAtIndex( index = " << index_ << " x = " << x_ << " y = " << y_ << " weight = " << weight_ << ")";
-
     emit onDataSaved();
     refreshItems(index_);
 }
@@ -2368,9 +2366,12 @@ void VoronoyGraphItem::setModel(QVariant model_)
         return;
     }
     m_model = newModel;
-    QObject::connect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
-    QObject::connect(m_model, SIGNAL(onImagePointsRefreshed()), this, SLOT(onImagePointsRefreshedSlot()));
-    setPointsFromModel();
+    if(nullptr != m_model)
+    {
+        QObject::connect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
+        QObject::connect(m_model, SIGNAL(onImagePointsRefreshed()), this, SLOT(onImagePointsRefreshedSlot()));
+        setPointsFromModel();
+    }
     emit modelChanged();
 }
 

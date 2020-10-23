@@ -16,11 +16,11 @@ Dialog {
     property int imageId: -1
     property var pointsModel: undefined
     property int pointIndex: -1
-    property real point_x: 0.5
-    property real point_y: 0.5
-    property real point_weight: 1.0
-    property bool pointToNextImage: true
     property bool choosePointType: true
+    property alias point_x: pointXTF.text
+    property alias point_y: pointYTF.text
+    property alias point_weight: pointWeightTF.text
+    property alias pointToNextImage: pointToNextImageCB.checked
 
     title: titleText
     x: (parent.width - width) / 2
@@ -30,7 +30,10 @@ Dialog {
         target: imagePointDialog
         function onPointsModelChanged()
         {
-            imageRect.loadVoronoyDiagram(pointsModel, imageOfGallery.status);
+            if(pointsModel !== undefined)
+            {
+                imageRect.loadVoronoyDiagram(pointsModel, imageOfGallery.status);
+            }
         }
     }
 
@@ -57,14 +60,15 @@ Dialog {
                 height: Constants.smallImageHeight
 
                 property bool dragPoint: false
+                property var voronoyDiagramDlg: undefined
 
                 function loadVoronoyDiagram(imagePoints, imageStatus)
                 {
-                    if(imageRect.voronoyDiagramDlg === undefined)
+                    if(imagePoints !== undefined && imagePoints !== null && !imagePoints.isEmpty() && imageStatus === Image.Ready)
                     {
-                        if(imagePoints !== undefined && imagePoints !== null && !imagePoints.isEmpty() && imageStatus === Image.Ready)
+                        if(voronoyDiagramDlg === undefined)
                         {
-                            Qt.createQmlObject(
+                            voronoyDiagramDlg = Qt.createQmlObject(
                                            "import MastactvaQuizEditor 1.0
                                             VoronoyDiagram {
                                                 x: (imageOfGallery.width - imageOfGallery.paintedWidth)/2 + imageOfGallery.x
@@ -80,6 +84,14 @@ Dialog {
                                             }",
                                            imageRect,
                                            "voronoyDiagramDlg")
+                        }
+                        else
+                        {
+                            voronoyDiagramDlg.x = (imageOfGallery.width - imageOfGallery.paintedWidth)/2 + imageOfGallery.x
+                            voronoyDiagramDlg.y = (imageOfGallery.height - imageOfGallery.paintedHeight)/2 + imageOfGallery.y
+                            voronoyDiagramDlg.width = imageOfGallery.paintedWidth
+                            voronoyDiagramDlg.height = imageOfGallery.paintedHeight
+                            voronoyDiagramDlg.modelUpdated()
                         }
                     }
                 }
@@ -207,7 +219,7 @@ Dialog {
                 x: Constants.logingItemsSpacing
                 visible: choosePointType
                 RadioButton {
-                    checked: pointToNextImage
+                    id: pointToNextImageCB
                     text: qsTr("Point to next image")
                 }
                 RadioButton {
