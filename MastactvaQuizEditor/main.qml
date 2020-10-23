@@ -395,29 +395,28 @@ ApplicationWindow {
             {
                 oldPointIndex = imageOfGalleryPointIndex
                 var pt = pointsModel.itemAt(pointIndex)
-                if(pt !== undefined)
+                if(pt === undefined)
+                {
+                    pointIndex = -1
+                }
+                else
                 {
                     addNewPoint = false
                     oldX = point_x = pt.xCoord
                     oldY = point_y = pt.yCoord
                     oldWeight = point_weight = pt.weight
                 }
-                else
-                {
-                    pointIndex = -1
-                }
             }
             if(pointIndex < 0)
             {
                 addNewPoint = true
 
-                point_x = 0.5
-                point_y = 0.5
-                point_weight = 1.0
+                oldX = point_x = 0.5
+                oldY = point_y = 0.5
+                oldWeight = point_weight = 1.0
                 pointIndex = pointsModel.addTempPoint(point_x, point_y, point_weight)
-                oldX = point_x
-                oldY = point_y
-                oldWeight = point_weight
+
+                console.log("new point, pointIndex = ", pointIndex< " point_x = ", point_x, " point_y = ", point_y, " point_weight = ", point_weight)
             }
         }
 
@@ -432,25 +431,25 @@ ApplicationWindow {
             {
                 pointsModel.savePoint(pointIndex)
             }
-            pointsModel = undefined
         }
 
         onRejected: {
-            oldPointIndex = -1
             pointsModel.onDataSaved.connect(onDataSaved)
             if(addNewPoint)
             {
+                oldPointIndex = -1
                 pointsModel.removeTempPoint(pointIndex)
             }
             else
             {
                 pointsModel.resetValuesAtIndex(pointIndex, oldX, oldY, oldWeight)
             }
-            pointsModel = undefined
         }
 
         function onDataSaved()
         {
+            pointsModel.onDataSaved.disconnect(onDataSaved)
+            pointsModel = undefined
             imageOfGalleryPointIndex = oldPointIndex
         }
     }

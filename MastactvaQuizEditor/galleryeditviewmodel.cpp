@@ -1912,8 +1912,10 @@ void ImagePointsModel::setCurrentPointParams(int index_, qreal x_, qreal y_, qre
 
 int ImagePointsModel::addTempPoint(qreal x_, qreal y_, qreal weight_)
 {
+    beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
     m_data.push_back(new ImagePointData(this, m_sourceImageId, -1, x_, y_, weight_));
-    refreshItems(m_data.size() - 1);
+    endInsertRows();
+    refreshItems(-1);
     return m_data.size() - 1;
 }
 
@@ -1926,12 +1928,14 @@ void ImagePointsModel::removeTempPoint(int index_)
     auto fit = std::begin(m_data);
     std::advance(fit, index_);
     Q_ASSERT(nullptr != *fit && (*fit)->pointId() < 0);
+    beginRemoveRows(QModelIndex(), index_, index_);
     delete *fit;
     *fit = nullptr;
     m_data.erase(fit);
+    endRemoveRows();
+    refreshItems(-1);
 
     emit onDataSaved();
-    refreshItems(index_);
 }
 
 void ImagePointsModel::resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal weight_)
@@ -2023,12 +2027,16 @@ int ImagePointsModel::getSize() const
 
 void ImagePointsModel::refreshItems(int index_)
 {
-    if(index_ > 0)
+    if(index_ >= 0)
     {
         auto i = index(index_);
         emit dataChanged(i, i, { XRole, YRole, WeightRole } );
+        emit onImagePointsRefreshed();
     }
-    emit onImagePointsRefreshed();
+    else
+    {
+        emit imagePointsLoaded();
+    }
 }
 
 void ImagePointsModel::setSourceImageId(int sourceImageId_)
@@ -2332,7 +2340,7 @@ void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D>
     v[2].set(x, y+h, color_.x(), color_.y(), color_.z());
     v[3].set(x+w, y+h, color_.x(), color_.y(), color_.z());
 
-    markDirty(QSGNode::DirtyForceUpdate);
+    markDirty(QSGNode::DirtyForceUpdate | QSGNode::DirtyMaterial | QSGNode::DirtyGeometry);
 }
 
 
@@ -2448,6 +2456,12 @@ void VoronoyGraphItem::onImagePointsRefreshedSlot()
 class VoronoyGraphNode : public QSGNode
 {
 public:
+    virtual ~VoronoyGraphNode() override
+    {
+        delete item;
+        item = nullptr;
+    }
+
     VoronoyNode *item;
 };
 
