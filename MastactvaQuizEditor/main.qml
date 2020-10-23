@@ -391,18 +391,36 @@ ApplicationWindow {
         property real oldWeight: 0.5
 
         onOpened: {
-            oldPointIndex = imageOfGalleryPointIndex
+            console.log("pointIndex = ", pointIndex)
+            if(pointIndex >= 0)
+            {
+                oldPointIndex = imageOfGalleryPointIndex
+                var pt = pointsModel.itemAt(pointIndex)
+                if(pt !== undefined)
+                {
+                    addNewPoint = false
+                    oldX = point_x = pt.xCoord
+                    oldY = point_y = pt.yCoord
+                    oldWeight = point_weight = pt.weight
+                    console.log("from existing point, oldX = ", oldX, " oldY = ", oldY, " oldWeight = ", oldWeight)
+                }
+                else
+                {
+                    pointIndex = -1
+                }
+            }
             if(pointIndex < 0)
             {
                 addNewPoint = true
+
+                point_x = 0.5
+                point_y = 0.5
+                point_weight = 1.0
                 pointIndex = pointsModel.addTempPoint(point_x, point_y, point_weight)
-            }
-            else
-            {
-                addNewPoint = false
                 oldX = point_x
                 oldY = point_y
                 oldWeight = point_weight
+                console.log("new point, oldX = ", oldX, " oldY = ", oldY, " oldWeight = ", oldWeight)
             }
         }
 
@@ -736,6 +754,11 @@ ApplicationWindow {
         id: addPointOfImage
         text: qsTr("Add point template")
         onTriggered: {
+            create()
+        }
+
+        function create()
+        {
             imagePointDialog.titleText = qsTr("Create image point template")
             imagePointDialog.pointsModel = images_of_gallery.model.currentImagePoints()
             imagePointDialog.imageSource = images_of_gallery.model.currentImageSource()
@@ -755,13 +778,35 @@ ApplicationWindow {
 
         function startEdit()
         {
-            imagePointDialog.titleText = qsTr("Edit image point")
-            imagePointDialog.pointsModel = images_of_gallery.model.currentImagePoints()
-            imagePointDialog.imageSource = images_of_gallery.model.currentImageSource()
-            imagePointDialog.imageId = galleryImagesCurrentId
-            imagePointDialog.pointIndex = imageOfGalleryPointIndex
-            imagePointDialog.choosePointType = false
-            imagePointDialog.open()
+            if(imageOfGalleryPointIndex >= 0 || images_of_gallery.model.currentImagePoints().getSize() > 0)
+            {
+                imagePointDialog.titleText = qsTr("Edit image point")
+                imagePointDialog.pointsModel = images_of_gallery.model.currentImagePoints()
+                imagePointDialog.imageSource = images_of_gallery.model.currentImageSource()
+                imagePointDialog.imageId = galleryImagesCurrentId
+                imagePointDialog.pointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
+                imagePointDialog.choosePointType = false
+                imagePointDialog.open()
+            }
+        }
+    }
+
+    Action {
+        id: removePointOfImage
+        text: qsTr("Remove point of image")
+        onTriggered: {
+            remove()
+        }
+
+        function remove()
+        {
+            mastactva.removeCurrentImagePoint()
+            mastactva.currentImagePointRemoved.connect(currentImagePointRemoved)
+        }
+
+        function currentImagePointRemoved()
+        {
+            images_of_gallery.model.refreshItems(-1)
         }
     }
 

@@ -1906,11 +1906,14 @@ void ImagePointsModel::setCurrentPointParams(int index_, qreal x_, qreal y_, qre
     setData(i, QVariant::fromValue(clamp(x_, g_coordMin, g_coordMax)), XRole);
     setData(i, QVariant::fromValue(clamp(y_, g_coordMin, g_coordMax)), YRole);
     setData(i, QVariant::fromValue(clamp(weight_, g_weightMin, g_weightMax)), WeightRole);
+
+    refreshItems(index_);
 }
 
 int ImagePointsModel::addTempPoint(qreal x_, qreal y_, qreal weight_)
 {
     m_data.push_back(new ImagePointData(this, m_sourceImageId, -1, x_, y_, weight_));
+    refreshItems(m_data.size() - 1);
     return m_data.size() - 1;
 }
 
@@ -1928,6 +1931,7 @@ void ImagePointsModel::removeTempPoint(int index_)
     m_data.erase(fit);
 
     emit onDataSaved();
+    refreshItems(index_);
 }
 
 void ImagePointsModel::resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal weight_)
@@ -1943,7 +1947,10 @@ void ImagePointsModel::resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal 
     (*fit)->setYCoord(y_);
     (*fit)->setWeight(weight_);
 
+    qDebug() << "resetValuesAtIndex( index = " << index_ << " x = " << x_ << " y = " << y_ << " weight = " << weight_ << ")";
+
     emit onDataSaved();
+    refreshItems(index_);
 }
 
 void ImagePointsModel::savePointTemplate(int index_,bool pointToNextImage_)
@@ -1982,6 +1989,7 @@ void ImagePointsModel::onImagePointDataCreated2Slot(int pointId_)
     QObject::disconnect(item, SIGNAL(onTemplateDataCreated(int)), this, SLOT(onImagePointDataCreated2Slot(int)));
 
     emit onDataSaved();
+    refreshItems(getIndexById(pointId_));
 }
 
 void ImagePointsModel::savePoint(int index_)
@@ -2007,6 +2015,22 @@ void ImagePointsModel::onImagePointDataSavedSlot(int pointId_)
     QObject::disconnect(item, SIGNAL(onDataSaved(int)), this, SLOT(onImagePointDataSavedSlot(int)));
 
     emit onDataSaved();
+    refreshItems(getIndexById(pointId_));
+}
+
+int ImagePointsModel::getSize() const
+{
+    return m_data.size();
+}
+
+void ImagePointsModel::refreshItems(int index_)
+{
+    if(index_ > 0)
+    {
+        auto i = index(index_);
+        emit dataChanged(i, i, { XRole, YRole, WeightRole } );
+    }
+    emit onImagePointsRefreshed();
 }
 
 void ImagePointsModel::setSourceImageId(int sourceImageId_)
@@ -2090,7 +2114,7 @@ ImagePointData *ImagePointsModel::getAt(int index_)
     return m_data.at(index_);
 }
 
-ImagePointData *ImagePointsModel::getById(int pointId_)
+int ImagePointsModel::getIndexById(int pointId_) const
 {
     auto fit = std::find_if(std::begin(m_data), std::end(m_data),
                             [pointId_](ImagePointData *item_)->bool
@@ -2099,9 +2123,14 @@ ImagePointData *ImagePointsModel::getById(int pointId_)
     });
     if(std::end(m_data) == fit)
     {
-        return nullptr;
+        return -1;
     }
-    return *fit;
+    return std::distance(std::begin(m_data), fit);
+}
+
+ImagePointData *ImagePointsModel::getById(int pointId_)
+{
+    return getAt(getIndexById(pointId_));
 }
 
 bool ImagePointsModel::isEmpty() const
@@ -2329,6 +2358,7 @@ void VoronoyGraphItem::setModel(QVariant model_)
     if(nullptr != m_model)
     {
         QObject::disconnect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
+        QObject::disconnect(m_model, SIGNAL(onImagePointsRefreshed()), this, SLOT(onImagePointsRefreshedSlot()));
     }
 
     QObject *obj = qvariant_cast<QObject *>(model_);
@@ -2338,6 +2368,8 @@ void VoronoyGraphItem::setModel(QVariant model_)
         return;
     }
     m_model = newModel;
+    QObject::connect(m_model, SIGNAL(imagePointsLoaded()), this, SLOT(imagePointsLoadedSlot()));
+    QObject::connect(m_model, SIGNAL(onImagePointsRefreshed()), this, SLOT(onImagePointsRefreshedSlot()));
     setPointsFromModel();
     emit modelChanged();
 }
@@ -2400,6 +2432,16 @@ void VoronoyGraphItem::modelUpdated()
     setPointsFromModel();
     m_pointsChanged = true;
     update();
+}
+
+void VoronoyGraphItem::imagePointsLoadedSlot()
+{
+    modelUpdated();
+}
+
+void VoronoyGraphItem::onImagePointsRefreshedSlot()
+{
+    modelUpdated();
 }
 
 class VoronoyGraphNode : public QSGNode

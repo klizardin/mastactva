@@ -580,18 +580,22 @@ public:
     Q_INVOKABLE void resetValuesAtIndex(int index_, qreal x_, qreal y_, qreal weight_);
     Q_INVOKABLE void savePointTemplate(int index_,bool pointToNextImage_);
     Q_INVOKABLE void savePoint(int index_);
+    Q_INVOKABLE int getSize() const;
+    Q_INVOKABLE void refreshItems(int index_);
+    Q_INVOKABLE bool isEmpty() const;
+    Q_INVOKABLE QVariant itemAt(int index_);
 
 public:
     void setSourceImageId(int sourceImageId_);
     void startLoadImagePoints();
     ImagePointData *getAt(int index_);
     ImagePointData *getById(int pointId_);
-    Q_INVOKABLE bool isEmpty() const;
-    Q_INVOKABLE QVariant itemAt(int index_);
+    int getIndexById(int pointId_) const;
 
 signals:
     void imagePointsLoaded();
     void onDataSaved();
+    void onImagePointsRefreshed();
 
     //slots
 private slots:
@@ -647,6 +651,10 @@ protected:
     virtual void geometryChanged(const QRectF &newGeometry_, const QRectF &oldGeometry_) override;
 
     void setPointsFromModel();
+
+protected slots:
+    void imagePointsLoadedSlot();
+    void onImagePointsRefreshedSlot();
 
 private:
     ImagePointsModel *m_model = nullptr;

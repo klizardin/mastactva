@@ -1185,6 +1185,22 @@
                     },
                     {
                         "access": "public",
+                        "name": "getSize",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "refreshItems",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
                     },
@@ -1211,6 +1227,11 @@
                     {
                         "access": "public",
                         "name": "onDataSaved",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onImagePointsRefreshed",
                         "returnType": "void"
                     }
                 ],
@@ -1386,6 +1407,18 @@
                     {
                         "access": "public",
                         "name": "colorChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "name": "imagePointsLoadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "onImagePointsRefreshedSlot",
                         "returnType": "void"
                     }
                 ],

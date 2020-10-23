@@ -26,10 +26,17 @@ Dialog {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
 
+    Connections {
+        target: imagePointDialog
+        function onPointsModelChanged()
+        {
+            imageRect.loadVoronoyDiagram(pointsModel, imageOfGallery.status);
+        }
+    }
+
     function updatePointParams()
     {
         pointsModel.setCurrentPointParams(pointIndex, point_x, point_y, point_weight)
-        voronoyDiagram.modelUpdated()
     }
 
     ScrollView {
@@ -50,6 +57,32 @@ Dialog {
                 height: Constants.smallImageHeight
 
                 property bool dragPoint: false
+
+                function loadVoronoyDiagram(imagePoints, imageStatus)
+                {
+                    if(imageRect.voronoyDiagramDlg === undefined)
+                    {
+                        if(imagePoints !== undefined && imagePoints !== null && !imagePoints.isEmpty() && imageStatus === Image.Ready)
+                        {
+                            Qt.createQmlObject(
+                                           "import MastactvaQuizEditor 1.0
+                                            VoronoyDiagram {
+                                                x: (imageOfGallery.width - imageOfGallery.paintedWidth)/2 + imageOfGallery.x
+                                                y: (imageOfGallery.height - imageOfGallery.paintedHeight)/2 + imageOfGallery.y
+                                                width: imageOfGallery.paintedWidth
+                                                height: imageOfGallery.paintedHeight
+                                                visible: true
+                                                opacity: 0.5
+                                                z: 0.5
+                                                model: pointsModel
+                                                color: \"#000080\"
+                                                clip: true
+                                            }",
+                                           imageRect,
+                                           "voronoyDiagramDlg")
+                        }
+                    }
+                }
 
                 Image {
                     id: imageOfGallery
@@ -76,6 +109,9 @@ Dialog {
                             imageRect.dragPoint = false
                             mouse.accepted = false
                         }
+                    }
+                    onStatusChanged: {
+                        imageRect.loadVoronoyDiagram(pointsModel, status);
                     }
                 }
 
@@ -135,20 +171,8 @@ Dialog {
                         }
                     }
                 }
-                VoronoyDiagram {
-                    id: voronoyDiagram
-                    x: (imageOfGallery.width - imageOfGallery.paintedWidth)/2 + imageOfGallery.x
-                    y: (imageOfGallery.height - imageOfGallery.paintedHeight)/2 + imageOfGallery.y
-                    width: imageOfGallery.paintedWidth
-                    height: imageOfGallery.paintedHeight
-                    opacity: 0.5
-                    visible: true
-                    z: 0.5
-                    model: pointsModel
-                    color: "#000080"
-                    clip: true
-                }
             }
+
             Label {
                 x: Constants.logingItemsSpacing
                 text: qsTr("x :")
