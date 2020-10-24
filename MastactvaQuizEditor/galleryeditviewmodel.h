@@ -596,6 +596,7 @@ signals:
     void imagePointsLoaded();
     void onDataSaved();
     void onImagePointsRefreshed();
+    void imagePointsCountChanged();
 
     //slots
 private slots:
@@ -636,8 +637,8 @@ public:
     void setColor(QVariant color_);
 
     Q_INVOKABLE int pointsCount() const;
-    Q_INVOKABLE void addPoint(qreal x_, qreal y_);
-    Q_INVOKABLE void setPoint(int index_, qreal x_, qreal y_);
+    Q_INVOKABLE void addPoint(qreal x_, qreal y_, qreal weight_);
+    Q_INVOKABLE void setPoint(int index_, qreal x_, qreal y_, qreal weight_);
     Q_INVOKABLE void removePointAt(int index_);
     Q_INVOKABLE void resetPoints();
     Q_INVOKABLE void modelUpdated();
@@ -660,6 +661,7 @@ private:
     ImagePointsModel *m_model = nullptr;
     QColor m_color;
     QVector<QVector2D> m_points;
+    QVector<qreal> m_weights;
     bool m_pointsChanged = false;
     bool m_geometryChanged = true;
     int m_oldPointsCount = -1;
@@ -668,9 +670,9 @@ private:
 class VoronoyNode : public QSGGeometryNode
 {
 public:
-    VoronoyNode(const QVector<QVector2D> &points_, const QRectF &rect_);
+    VoronoyNode(const QVector<QVector2D> &points_, const QVector<qreal> &weights_, const QRectF &rect_);
 
-    void updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector3D &color_);
+    void updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector<qreal> &weights_, const QVector3D &color_);
 
 private:
     QSGGeometry m_geometry;

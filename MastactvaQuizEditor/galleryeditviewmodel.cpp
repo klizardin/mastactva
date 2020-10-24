@@ -1407,6 +1407,19 @@ ImagePointData::ImagePointData(QObject *parent_,
     m_y(y_),
     m_weight(weight_)
 {
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDataSavedRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onDataCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onQuestionCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onAnswerCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onPointToQuestionRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onPointToImageRequestFinished(int, RequestData *, const QJsonDocument &)));
+
 }
 
 ImagePointData::~ImagePointData()
@@ -1589,9 +1602,6 @@ void ImagePointData::saveData()
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDataSavedRequestFinished(int, RequestData *, const QJsonDocument &)));
-
     m_saveDataRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("id", QJsonValue::fromVariant(pointId()));
@@ -1610,8 +1620,6 @@ void ImagePointData::onDataSavedRequestFinished(int errorCode_, RequestData *req
     Q_UNUSED(reply_);
 
     if(nullptr == m_saveDataRequest || static_cast<RequestData *>(m_saveDataRequest) != request_) { return; }
-    QObject::disconnect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDataSavedRequestFinished(int, RequestData *, const QJsonDocument &)));
     m_saveDataRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -1626,9 +1634,6 @@ void ImagePointData::createData(bool pointToNextImage_)
     auto *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
-
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDataCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     m_createDataRequest = netAPI->startJsonRequest();
     QJsonObject rec;
@@ -1646,8 +1651,6 @@ void ImagePointData::onDataCreatedRequestFinished(int errorCode_, RequestData *r
 {
     if(nullptr == m_createDataRequest || static_cast<RequestData *>(m_createDataRequest) != request_) { return; }
     m_createDataRequest = nullptr;
-    QObject::disconnect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDataCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
     if(0 != errorCode_) { return; }
 
     Q_ASSERT(reply_.isObject());
@@ -1676,11 +1679,6 @@ void ImagePointData::createTemplImageData()
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
-    Q_ASSERT(nullptr == m_imagePointToNextImage);
-
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointToImageRequestFinished(int, RequestData *, const QJsonDocument &)));
-
     m_createImagePointToImageRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("image_point", QJsonValue::fromVariant(pointId()));
@@ -1696,10 +1694,13 @@ void ImagePointData::onPointToImageRequestFinished(int errorCode_, RequestData *
     Q_UNUSED(reply_);
 
     if(nullptr == m_createImagePointToImageRequest || static_cast<RequestData *>(m_createImagePointToImageRequest) != request_) { return; }
-    QObject::disconnect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointToImageRequestFinished(int, RequestData *, const QJsonDocument &)));
     m_createImagePointToImageRequest = nullptr;
     if(0 != errorCode_) { return; }
+
+    if(nullptr != m_imagePointToNextImage)
+    {
+        m_imagePointToNextImage->startLoad();
+    }
 
     emit onTemplateDataCreated(pointId());
 }
@@ -1710,12 +1711,7 @@ void ImagePointData::cretateTemplQuestionData()
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
-    Q_ASSERT(nullptr == m_imagePointToQuestion);
-
     m_questionID = -1;
-
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onQuestionCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     m_createQuestionRequest = netAPI->startJsonRequest();
     QJsonObject rec;
@@ -1729,10 +1725,8 @@ void ImagePointData::cretateTemplQuestionData()
 
 void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
-    if(nullptr == m_createDataRequest || static_cast<RequestData *>(m_createDataRequest) != request_) { return; }
-    m_createDataRequest = nullptr;
-    QObject::disconnect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onQuestionCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
+    if(nullptr == m_createQuestionRequest || static_cast<RequestData *>(m_createQuestionRequest) != request_) { return; }
+    m_createQuestionRequest = nullptr;
     if(0 != errorCode_) { return; }
 
     Q_ASSERT(reply_.isObject());
@@ -1747,9 +1741,6 @@ void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestDat
     auto *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
-
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onAnswerCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     m_createAnswerRequest = netAPI->startJsonRequest();
     QJsonObject rec;
@@ -1768,8 +1759,6 @@ void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestData 
 
     if(nullptr == m_createAnswerRequest || static_cast<RequestData *>(m_createAnswerRequest) != request_) { return; }
     m_createAnswerRequest = nullptr;
-    QObject::disconnect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onAnswerCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
     if(0 != errorCode_) { return; }
 
     Q_ASSERT(m_questionID > 0);
@@ -1777,9 +1766,6 @@ void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestData 
     auto *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
-
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointToQuestionRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     m_createImagePointToQuestionRequest = netAPI->startJsonRequest();
     QJsonObject rec;
@@ -1797,9 +1783,13 @@ void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestDat
 
     if(nullptr == m_createImagePointToQuestionRequest || static_cast<RequestData *>(m_createImagePointToQuestionRequest) != request_) { return; }
     m_createImagePointToQuestionRequest = nullptr;
-    QObject::disconnect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointToQuestionRequestFinished(int, RequestData *, const QJsonDocument &)));
     if(0 != errorCode_) { return; }
+
+    if(nullptr != m_imagePointToQuestion)
+    {
+        m_imagePointToQuestion->setQuestionId(m_questionID);
+        m_imagePointToQuestion->refresh();
+    }
 
     emit onTemplateDataCreated(pointId());
 }
@@ -1915,6 +1905,7 @@ int ImagePointsModel::addTempPoint(qreal x_, qreal y_, qreal weight_)
     beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
     m_data.push_back(new ImagePointData(this, m_sourceImageId, -1, x_, y_, weight_));
     endInsertRows();
+    emit imagePointsCountChanged();
     refreshItems(-1);
     return m_data.size() - 1;
 }
@@ -1933,6 +1924,7 @@ void ImagePointsModel::removeTempPoint(int index_)
     *fit = nullptr;
     m_data.erase(fit);
     endRemoveRows();
+    emit imagePointsCountChanged();
     refreshItems(-1);
 
     emit onDataSaved();
@@ -2152,6 +2144,7 @@ QVariant ImagePointsModel::itemAt(int index_)
 struct VoronoyMaterial
 {
     QVector<QVector2D> points;
+    QVector<GLfloat> weights;
 };
 
 class VoronoyShader : public QSGSimpleMaterialShader<VoronoyMaterial>
@@ -2213,18 +2206,19 @@ public:
         m_fragmentShader = (pointsCount >= 2) ? QString(
             "uniform lowp float qt_Opacity;\n"
             "uniform highp vec2 seeds[%1];\n"
+            "uniform highp float weights[%1];\n"
             "varying highp vec3 fragColor;\n"
             "varying highp vec2 fragCoord;\n"
             "void main() {\n"
-            "    highp float dist0 = distance(seeds[0], fragCoord);\n"
-            "    highp float dist = distance(seeds[1], fragCoord);\n"
+            "    highp float dist0 = distance(seeds[0], fragCoord) * weights[0];\n"
+            "    highp float dist = distance(seeds[1], fragCoord) * weights[1];\n"
             "    highp float dist1 = dist;\n"
             "    if(dist < dist0) {"
             "        dist1 = dist0;\n"
             "        dist0 = dist;\n"
             "    }\n"
             "    for(int i = 2; i < %1; i++) {\n"
-            "        float highp dist = distance(seeds[i], fragCoord);\n"
+            "        float highp dist = distance(seeds[i], fragCoord) * weights[i];\n"
             "        if(dist < dist0) {\n"
             "            dist1 = dist0;\n"
             "            dist0 = dist;\n"
@@ -2267,14 +2261,17 @@ public:
     void updateState(const VoronoyMaterial *m, const VoronoyMaterial *) override
     {
         program()->setUniformValueArray(m_id_seeds, &(m->points[0]), m->points.size());
+        program()->setUniformValueArray(m_id_weights, &(m->weights[0]), m->weights.size(), 1);
     }
 
     void resolveUniforms() override {
         m_id_seeds = program()->uniformLocation("seeds");
+        m_id_weights = program()->uniformLocation("weights");
     }
 
 private:
     int m_id_seeds = -1;
+    int m_id_weights = -1;
     QString m_vertexShader;
     QByteArray m_vertexShaderBA;
     QString m_fragmentShader;
@@ -2300,12 +2297,13 @@ static const QSGGeometry::AttributeSet &voronoy_attributes()
     return set;
 }
 
-VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QRectF &rect_)
+VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QVector<qreal> &weights_, const QRectF &rect_)
     : m_geometry(voronoy_attributes(), 0)
 {
     setGeometry(&m_geometry);
     m_geometry.setDrawingMode(GL_TRIANGLE_STRIP);
 
+    Q_ASSERT(points_.size() == weights_.size());
     QSGSimpleMaterial<VoronoyMaterial> *m = VoronoyShader::createMaterial(points_.size());
     m->state()->points.reserve(points_.size());
     m->state()->points.clear();
@@ -2313,12 +2311,18 @@ VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QRectF &rect_)
     {
         m->state()->points.push_back(QVector2D(rect_.x() + pt.x() * rect_.width(), rect_.y() + pt.y() * rect_.height()));
     }
+    m->state()->weights.reserve(weights_.size());
+    m->state()->weights.clear();
+    for(const auto &w : weights_)
+    {
+        m->state()->weights.push_back(w);
+    }
     m->setFlag(QSGMaterial::Blending);
     setMaterial(m);
-    setFlag(OwnsMaterial);
+    //setFlag(OwnsMaterial);
 }
 
-void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector3D &color_)
+void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector<qreal> &weights_, const QVector3D &color_)
 {
     m_geometry.allocate(4);
 
@@ -2328,11 +2332,12 @@ void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D>
     float h = bounds_.height();
 
     QSGSimpleMaterial<VoronoyMaterial> *m = static_cast<QSGSimpleMaterial<VoronoyMaterial> *>(material());
-    Q_ASSERT(m->state()->points.size() == points_.size());
+    Q_ASSERT(m->state()->points.size() == points_.size() && m->state()->weights.size() == weights_.size() && points_.size() == weights_.size());
     for(int i = 0; i < points_.size(); i++)
     {
         m->state()->points[i].setX(x + points_[i].x() * w);
         m->state()->points[i].setY(y + points_[i].y() * h);
+        m->state()->weights[i] = weights_[i];
     }
     VoronoyVertex *v = reinterpret_cast<VoronoyVertex *>(m_geometry.vertexData());
     v[0].set(x, y, color_.x(), color_.y(), color_.z());
@@ -2399,34 +2404,41 @@ int VoronoyGraphItem::pointsCount() const
     return m_points.size();
 }
 
-void VoronoyGraphItem::addPoint(qreal x_, qreal y_)
+void VoronoyGraphItem::addPoint(qreal x_, qreal y_, qreal weight_)
 {
     m_points.push_back(QVector2D(x_,y_));
+    m_weights.push_back(weight_);
     m_pointsChanged = true;
     update();
 }
 
-void VoronoyGraphItem::setPoint(int index_, qreal x_, qreal y_)
+void VoronoyGraphItem::setPoint(int index_, qreal x_, qreal y_, qreal weight_)
 {
-    if(index_ < 0 || index_ >= m_points.size())
+    if(index_ < 0 || index_ >= m_points.size() || index_ >= m_weights.size())
     {
         return;
     }
+    Q_ASSERT(m_points.size() == m_weights.size());
     m_points[index_].setX(x_);
     m_points[index_].setY(y_);
+    m_weights[index_] = weight_;
     m_pointsChanged = true;
     update();
 }
 
 void VoronoyGraphItem::removePointAt(int index_)
 {
-    if(index_ < 0 || index_ >= m_points.size())
+    if(index_ < 0 || index_ >= m_points.size() || index_ >= m_weights.size())
     {
         return;
     }
+    Q_ASSERT(m_points.size() == m_weights.size());
     auto fit = std::begin(m_points);
+    auto fit1 = std::begin(m_weights);
     std::advance(fit, index_);
+    std::advance(fit1, index_);
     m_points.erase(fit);
+    m_weights.erase(fit1);
     m_pointsChanged = true;
     update();
 }
@@ -2483,7 +2495,7 @@ QSGNode *VoronoyGraphItem::updatePaintNode(QSGNode *oldNode_, UpdatePaintNodeDat
         n = nullptr;
         n = new VoronoyGraphNode();
 
-        n->item = new VoronoyNode(m_points, rect);
+        n->item = new VoronoyNode(m_points,  m_weights,  rect);
         n->appendChildNode(n->item);
 
         m_oldPointsCount = m_points.size();
@@ -2494,7 +2506,7 @@ QSGNode *VoronoyGraphItem::updatePaintNode(QSGNode *oldNode_, UpdatePaintNodeDat
     }
 
     if (m_geometryChanged || m_pointsChanged) {
-        n->item->updateGeometry(rect, m_points, QVector3D(m_color.redF(), m_color.greenF(), m_color.blueF()));
+        n->item->updateGeometry(rect, m_points, m_weights, QVector3D(m_color.redF(), m_color.greenF(), m_color.blueF()));
     }
 
     m_geometryChanged = false;
@@ -2515,12 +2527,14 @@ void VoronoyGraphItem::setPointsFromModel()
     if(nullptr == m_model)
     {
         m_points.clear();
+        m_weights.clear();
         update();
         return;
     }
     Q_ASSERT(nullptr != m_model);
     const int imagePointsCnt = nullptr != m_model ? m_model->rowCount(QModelIndex()) : 0;
     m_points.clear();
+    m_weights.clear();
     for(int i = 0; i < imagePointsCnt; i++)
     {
         const bool chk001 = nullptr != m_model && nullptr != m_model->getAt(i);
@@ -2532,6 +2546,7 @@ void VoronoyGraphItem::setPointsFromModel()
         qreal x = m_model->getAt(i)->xCoord();
         qreal y = m_model->getAt(i)->yCoord();
         m_points.push_back(QVector2D(x,y));
+        m_weights.push_back(m_model->getAt(i)->weight());
     }
     m_pointsChanged = true;
     update();

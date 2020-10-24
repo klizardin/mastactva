@@ -1264,10 +1264,22 @@ ApplicationWindow {
                 }
             }
 
+            property var voronoyDiagramDlg: undefined
+
             Connections {
                 target: image_points
                 function onImagePointsLoaded() {
                     loadVoronoyDiagram(image_points, image_of_gallery.status);
+                }
+
+                function onImagePointsCountChanged()
+                {
+                    if(voronoyDiagramDlg !== undefined)
+                    {
+                        voronoyDiagramDlg.destroy()
+                        voronoyDiagramDlg = undefined
+                        loadVoronoyDiagram(image_points, image_of_gallery.status);
+                    }
                 }
             }
 
@@ -1275,7 +1287,9 @@ ApplicationWindow {
             {
                 if(imagePoints !== undefined && imagePoints !== null && !imagePoints.isEmpty() && imageStatus === Image.Ready)
                 {
-                    Qt.createQmlObject(
+                    if(voronoyDiagramDlg === undefined)
+                    {
+                        voronoyDiagramDlg = Qt.createQmlObject(
                                    "import MastactvaQuizEditor 1.0
                                     VoronoyDiagram {
                                         x: (image_of_gallery.width - image_of_gallery.paintedWidth)/2 + image_of_gallery.x
@@ -1291,6 +1305,15 @@ ApplicationWindow {
                                     }",
                                    gallery_image_rect,
                                    "voronoyDiagram")
+                    }
+                    else
+                    {
+                        voronoyDiagramDlg.x = (image_of_gallery.width - image_of_gallery.paintedWidth)/2 + image_of_gallery.x
+                        voronoyDiagramDlg.y = (image_of_gallery.height - image_of_gallery.paintedHeight)/2 + image_of_gallery.y
+                        voronoyDiagramDlg.width = image_of_gallery.paintedWidth
+                        voronoyDiagramDlg.height = image_of_gallery.paintedHeight
+                        voronoyDiagramDlg.modelUpdated()
+                    }
                 }
             }
 
@@ -1306,10 +1329,10 @@ ApplicationWindow {
                     Image {
                         id: pointImage
 
-                        x: ptX() - Constants.pointImageSize/2
-                        y: ptY() - Constants.pointImageSize/2
-                        width: Constants.pointImageSize
-                        height: Constants.pointImageSize
+                        x: ptX() - Constants.pointImageSize/4
+                        y: ptY() - Constants.pointImageSize/4
+                        width: Constants.pointImageSize/2
+                        height: Constants.pointImageSize/2
 
                         source: imageOfGalleryPointIndex === index ? Constants.activePoint : Constants.inactivePoint
                         function ptX()

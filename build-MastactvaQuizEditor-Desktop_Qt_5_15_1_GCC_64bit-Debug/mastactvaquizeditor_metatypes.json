@@ -1233,6 +1233,11 @@
                         "access": "public",
                         "name": "onImagePointsRefreshed",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imagePointsCountChanged",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1320,6 +1325,10 @@
                             {
                                 "name": "y_",
                                 "type": "qreal"
+                            },
+                            {
+                                "name": "weight_",
+                                "type": "qreal"
                             }
                         ],
                         "name": "addPoint",
@@ -1338,6 +1347,10 @@
                             },
                             {
                                 "name": "y_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "weight_",
                                 "type": "qreal"
                             }
                         ],
