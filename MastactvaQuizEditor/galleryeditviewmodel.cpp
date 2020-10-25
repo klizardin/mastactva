@@ -1338,6 +1338,11 @@ void ImagePointToQuestion::startLoad2()
                 m_request2);
 }
 
+bool ImagePointToQuestion::questionIdLoaded() const
+{
+    return nullptr == m_request1;
+}
+
 void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(request_ == nullptr || (m_request1 != request_ && m_request2 != request_))
@@ -1419,6 +1424,10 @@ ImagePointData::ImagePointData(QObject *parent_,
                      this, SLOT(onPointToQuestionRequestFinished(int, RequestData *, const QJsonDocument &)));
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(onPointToImageRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onPointRemovedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onQuestionRemovedSlot(int, RequestData *, const QJsonDocument &)));
 
 }
 
@@ -1792,6 +1801,89 @@ void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestDat
     }
 
     emit onTemplateDataCreated(pointId());
+}
+
+void ImagePointData::removePoint()
+{
+    (void)toQuestion();
+    removePoint(true);
+}
+
+void ImagePointData::removePoint(bool tryToLoad_)
+{
+    if(nullptr != m_imagePointToQuestion)
+    {
+        if(m_imagePointToQuestion->questionIdLoaded())
+        {
+            m_questionID = m_imagePointToQuestion->questionId();
+            if(m_questionID >= 0)
+            {
+                removeQuestion();
+            }
+            else
+            {
+                removeImagePoint();
+            }
+        }
+        else if(tryToLoad_)
+        {
+            QObject::connect(m_imagePointToQuestion, SIGNAL(imagePointToQuestionLoaded()), this, SLOT(imagePointToQuestionLoadedSlot()));
+        }
+    }
+    else
+    {
+        removeImagePoint();
+    }
+}
+
+void ImagePointData::imagePointToQuestionLoadedSlot()
+{
+    QObject::disconnect(m_imagePointToQuestion, SIGNAL(imagePointToQuestionLoaded()), this, SLOT(imagePointToQuestionLoadedSlot()));
+    Q_ASSERT(nullptr != m_imagePointToQuestion && m_imagePointToQuestion->questionIdLoaded());
+    removePoint(false);
+}
+
+void ImagePointData::removeQuestion()
+{
+    Q_ASSERT(m_questionID >= 0);
+    auto *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(!(nullptr != netAPI)) { return; }
+
+    m_removeQuestionRequest = netAPI->startJsonRequest();
+    NetAPI::getSingelton()->del(QString("image-questions/%1/").arg(m_questionID), m_removeQuestionRequest);
+}
+
+void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(reply_);
+
+    if(nullptr == m_removeQuestionRequest || static_cast<RequestData *>(m_removeQuestionRequest) != request_) { return; }
+    m_removeQuestionRequest = nullptr;
+    if(0 != errorCode_) { return; }
+
+    removeImagePoint();
+}
+
+void ImagePointData::removeImagePoint()
+{
+    auto *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(!(nullptr != netAPI)) { return; }
+
+    m_removeImagePointRequest = netAPI->startJsonRequest();
+    NetAPI::getSingelton()->del(QString("image-point/%1/").arg(pointId()), m_removeImagePointRequest);
+}
+
+void ImagePointData::onPointRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(reply_);
+
+    if(nullptr == m_removeImagePointRequest || static_cast<RequestData *>(m_removeImagePointRequest) != request_) { return; }
+    m_removeImagePointRequest = nullptr;
+    if(0 != errorCode_) { return; }
+
+    emit onPointRemoved();
 }
 
 ImagePointsModel::ImagePointsModel(QObject *parent_)

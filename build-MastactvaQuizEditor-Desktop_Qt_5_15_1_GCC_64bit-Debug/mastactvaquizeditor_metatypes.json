@@ -947,6 +947,11 @@
                         ],
                         "name": "onTemplateDataCreated",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "onPointRemoved",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1062,6 +1067,49 @@
                             }
                         ],
                         "name": "onPointToImageRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onPointRemovedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onQuestionRemovedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "imagePointToQuestionLoadedSlot",
                         "returnType": "void"
                     }
                 ],
@@ -2022,6 +2070,16 @@
                         ],
                         "name": "dateTimeFromUserStr",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentImagePoint",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentImagePoint",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2309,6 +2367,11 @@
                             }
                         ],
                         "name": "onFailedLogingIn",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentImagePointRemoved",
                         "returnType": "void"
                     }
                 ],
@@ -2630,6 +2693,11 @@
                             }
                         ],
                         "name": "testLogingInSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "onImagePointRemovedSlot",
                         "returnType": "void"
                     }
                 ],

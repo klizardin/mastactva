@@ -437,6 +437,7 @@ public:
     QVariant questionObj() const;
     void setQuestionObj(const QVariant &questionObj_);
     void refresh();
+    bool questionIdLoaded() const;
 
     QuestionData *questionData();
 
@@ -506,9 +507,14 @@ public:
     void createData(bool pointToNextImage_);
     void createTemplateData();
 
+    void removePoint();
+
 private:
     void createTemplImageData();
     void cretateTemplQuestionData();
+    void removePoint(bool tryToLoad_);
+    void removeImagePoint();
+    void removeQuestion();
 
 protected slots:
     void onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
@@ -517,6 +523,9 @@ protected slots:
     void onAnswerCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void onPointToQuestionRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void onPointToImageRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onPointRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onQuestionRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void imagePointToQuestionLoadedSlot();
 
 
 signals:
@@ -529,6 +538,7 @@ signals:
     void onDataSaved(int pointId_);
     void onDataCreated(int pointId_);
     void onTemplateDataCreated(int pointId_);
+    void onPointRemoved();
 
 private:
     int m_sourceImageId = -1;
@@ -540,6 +550,7 @@ private:
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
     bool m_pointToNextImage = true;
     int m_questionID = -1;
+    int m_nextImageId = -1;
 
     JsonRequestData* m_saveDataRequest = nullptr;
     JsonRequestData* m_createDataRequest = nullptr;
@@ -547,6 +558,8 @@ private:
     JsonRequestData* m_createAnswerRequest = nullptr;
     JsonRequestData* m_createImagePointToQuestionRequest = nullptr;
     JsonRequestData* m_createImagePointToImageRequest = nullptr;
+    JsonRequestData* m_removeImagePointRequest = nullptr;
+    JsonRequestData* m_removeQuestionRequest = nullptr;
 };
 
 class ImagePointsModel : public QAbstractListModel

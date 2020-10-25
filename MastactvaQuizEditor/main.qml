@@ -793,6 +793,36 @@ ApplicationWindow {
         id: removePointOfImage
         text: qsTr("Remove point of image")
         onTriggered: {
+            var imagePoint = mastactva.getCurrentImagePoint()
+            if(imagePoint !== undefined)
+            {
+                confirmDialog.confirmText = qsTr("<b>Do you really want to remove image point?</b><br/><br/><b>x :</b>") + imagePoint.xCoord + qsTr("<br/>y :") + imagePoint.xCoord + qsTr("<br/>weight :") + imagePoint.weight + qsTr("<br/>");
+                confirmDialog.showImage = false
+                connectConfirmDialog()
+                confirmDialog.open()
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
             remove()
         }
 
@@ -804,7 +834,8 @@ ApplicationWindow {
 
         function currentImagePointRemoved()
         {
-            images_of_gallery.model.refreshItems(-1)
+            mastactva.currentImagePointRemoved.disconnect(currentImagePointRemoved)
+            imageOfGalleryPointIndex = -1
         }
     }
 
@@ -823,14 +854,18 @@ ApplicationWindow {
             MenuItem { action: refreshAllGalleryImagesModel }
             MenuItem { action: setImageOfGalleryAsTop }
             MenuItem { action: resetImageOfGalleryAsTop }
-            MenuItem { action: addPointOfImage }
-            MenuItem { action: editPointOfImage }
             MenuItem {
                 action: showImagePointsAction
                 checkable: true
                 checked: showImagePoints
             }
             MenuItem { action: removeCurrentImageOfGallery }
+        }
+        Menu {
+            title: qsTr("Image &point")
+            MenuItem { action: addPointOfImage }
+            MenuItem { action: editPointOfImage }
+            MenuItem { action: removePointOfImage }
         }
         Menu {
             title: qsTr("&Description")
@@ -1249,14 +1284,25 @@ ApplicationWindow {
                         MenuItem { action: refreshAllGalleryImagesModel }
                         MenuItem { action: setImageOfGalleryAsTop }
                         MenuItem { action: resetImageOfGalleryAsTop }
-                        MenuItem { action: addPointOfImage }
-                        MenuItem { action: editPointOfImage }
+                        MenuItem { action: removeCurrentImageOfGallery }
+                        MenuSeparator {
+                            padding: 0
+                            topPadding: 6
+                            bottomPadding: 6
+                            contentItem: Rectangle {
+                                implicitWidth: 100
+                                implicitHeight: 3
+                                color: "#1E1E1E"
+                            }
+                        }
                         MenuItem {
                             action: showImagePointsAction
                             checkable: true
                             checked: showImagePoints
                         }
-                        MenuItem { action: removeCurrentImageOfGallery }
+                        MenuItem { action: addPointOfImage }
+                        MenuItem { action: editPointOfImage }
+                        MenuItem { action: removePointOfImage }
                     }
                 }
                 onStatusChanged: {

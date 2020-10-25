@@ -66,6 +66,8 @@ public:
     Q_INVOKABLE QString dateTimeToUserStr(const QString &dateTimeStr_);
     Q_INVOKABLE QString dateTimeToUserStr(const QDateTime &dateTime_);
     Q_INVOKABLE QString dateTimeFromUserStr(const QString &dateTimeUserStr_);
+    Q_INVOKABLE QVariant getCurrentImagePoint();
+    Q_INVOKABLE void removeCurrentImagePoint();
 
 signals:
     void galleryReloaded();
@@ -98,6 +100,7 @@ signals:
     void imageOfGalleryAsTopReset();
     void onLogingIn();
     void onFailedLogingIn(const QString &msg_);
+    void currentImagePointRemoved();
 
 protected:
     int imageOfGalleryId() const;
@@ -136,6 +139,7 @@ protected slots:
     void imageOfGalleryAsTopSetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void testLogingInSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onImagePointRemovedSlot();
 
 private:
     int m_galleryId = -1;
