@@ -854,15 +854,15 @@ ApplicationWindow {
             MenuItem { action: refreshAllGalleryImagesModel }
             MenuItem { action: setImageOfGalleryAsTop }
             MenuItem { action: resetImageOfGalleryAsTop }
+            MenuItem { action: removeCurrentImageOfGallery }
+        }
+        Menu {
+            title: qsTr("Image &point")
             MenuItem {
                 action: showImagePointsAction
                 checkable: true
                 checked: showImagePoints
             }
-            MenuItem { action: removeCurrentImageOfGallery }
-        }
-        Menu {
-            title: qsTr("Image &point")
             MenuItem { action: addPointOfImage }
             MenuItem { action: editPointOfImage }
             MenuItem { action: removePointOfImage }

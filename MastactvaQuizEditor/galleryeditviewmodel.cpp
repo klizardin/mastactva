@@ -2233,10 +2233,13 @@ QVariant ImagePointsModel::itemAt(int index_)
     return QVariant::fromValue(getAt(index_));
 }
 
+static const int g_maxImagePointCount = 64;
+
 struct VoronoyMaterial
 {
     QVector<QVector2D> points;
     QVector<GLfloat> weights;
+    int count = 0;
 };
 
 class VoronoyShader : public QSGSimpleMaterialShader<VoronoyMaterial>
@@ -2244,47 +2247,13 @@ class VoronoyShader : public QSGSimpleMaterialShader<VoronoyMaterial>
 private:
     using base = QSGSimpleMaterialShader<VoronoyMaterial>;
 
-protected:
-    template<int pointsCount>
-    static QSGMaterialShader *createShader()
-    {
-        return new VoronoyShader(pointsCount);
-    }
-
-    template<int pointsCount, int index>
-    class FuncInitializer
-    {
-    public:
-        static void initCreateShaderFuncs(QSGMaterialShader* (**createShaderFuncs)(void))
-        {
-            createShaderFuncs[index - 1] = &VoronoyShader::createShader<index - 1>;
-            FuncInitializer<pointsCount, index - 1>::initCreateShaderFuncs(createShaderFuncs);
-        }
-    };
-
-    template<int pointsCount>
-    class FuncInitializer<pointsCount, 0>
-    {
-    public:
-        static void initCreateShaderFuncs(QSGMaterialShader* (**createShaderFuncs)(void))
-        {
-            Q_UNUSED(createShaderFuncs);
-        }
-    };
-
+public:
+    QSG_DECLARE_SIMPLE_SHADER(VoronoyShader, VoronoyMaterial);
 
 public:
-    static QSGSimpleMaterial<VoronoyMaterial> *createMaterial(int pointsCount)
+    VoronoyShader()
     {
-        static QSGMaterialShader* (*createShaderFuncs[128])(void);
-        FuncInitializer<128, 128>::initCreateShaderFuncs(createShaderFuncs);
-        return new QSGSimpleMaterial<VoronoyMaterial>(createShaderFuncs[pointsCount]);
-    }
-
-public:
-    VoronoyShader(int pointsCount)
-    {
-        m_vertexShader =
+        m_vertexShader = QString(
             "uniform highp mat4 qt_Matrix;\n"
             "attribute highp vec2 vertices;\n"
             "attribute highp vec3 color;\n"
@@ -2294,40 +2263,38 @@ public:
             "    fragCoord = vertices;\n"
             "    gl_Position = qt_Matrix * vec4(vertices, 0.0, 1.0);\n"
             "    fragColor = color;\n"
-            "}\n";
-        m_fragmentShader = (pointsCount >= 2) ? QString(
+            "}\n");
+        m_fragmentShader = QString(
             "uniform lowp float qt_Opacity;\n"
+            "uniform int count;\n"
             "uniform highp vec2 seeds[%1];\n"
             "uniform highp float weights[%1];\n"
             "varying highp vec3 fragColor;\n"
             "varying highp vec2 fragCoord;\n"
             "void main() {\n"
-            "    highp float dist0 = distance(seeds[0], fragCoord) * weights[0];\n"
-            "    highp float dist = distance(seeds[1], fragCoord) * weights[1];\n"
-            "    highp float dist1 = dist;\n"
-            "    if(dist < dist0) {"
-            "        dist1 = dist0;\n"
-            "        dist0 = dist;\n"
-            "    }\n"
-            "    for(int i = 2; i < %1; i++) {\n"
-            "        float highp dist = distance(seeds[i], fragCoord) * weights[i];\n"
-            "        if(dist < dist0) {\n"
+            "    if(count > 1) {\n"
+            "        highp float dist0 = distance(seeds[0], fragCoord) * weights[0];\n"
+            "        highp float dist = distance(seeds[1], fragCoord) * weights[1];\n"
+            "        highp float dist1 = dist;\n"
+            "        if(dist < dist0) {"
             "            dist1 = dist0;\n"
             "            dist0 = dist;\n"
-            "        } else if(dist < dist1) {\n"
-            "            dist1 = dist;\n"
             "        }\n"
-            "    }\n"
-            "    highp float c = 2.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
-            "    gl_FragColor = qt_Opacity * vec4(c * fragColor.rgb, clamp(c*1.5, 0.0, 1.0));\n"
-            "}\n").arg(pointsCount)
-            : QString(
-            "uniform lowp float qt_Opacity;\n"
-            "varying highp vec3 fragColor;\n"
-            "void main(void)\n"
-            "{\n"
-            "    gl_FragColor = qt_Opacity * vec4(fragColor.rgb, 1.0);\n"
-            "}\n");
+            "        for(int i = 2; i < count; i++) {\n"
+            "            float highp dist = distance(seeds[i], fragCoord) * weights[i];\n"
+            "            if(dist < dist0) {\n"
+            "                dist1 = dist0;\n"
+            "                dist0 = dist;\n"
+            "            } else if(dist < dist1) {\n"
+            "                dist1 = dist;\n"
+            "            }\n"
+            "        }\n"
+            "        highp float c = 5.0/(1.0 + exp(0.5*abs(dist0 - dist1)));\n"
+            "        gl_FragColor = qt_Opacity * vec4(c * fragColor.rgb, clamp(c, 0.0, 1.0));\n"
+            "    } else {\n"
+            "        gl_FragColor = qt_Opacity * vec4(fragColor.rgb, 0.0);\n"
+            "    }"
+            "}\n").arg(g_maxImagePointCount);
 
         m_vertexShaderBA = m_vertexShader.toLocal8Bit();
         m_fragmentShaderBA = m_fragmentShader.toLocal8Bit();
@@ -2345,25 +2312,23 @@ public:
         return m_fragmentShaderBA.data();
     }
 
-    /*virtual void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) override
-    {
-        base::updateState(state, newMaterial, oldMaterial);
-    }*/
-
     void updateState(const VoronoyMaterial *m, const VoronoyMaterial *) override
     {
         program()->setUniformValueArray(m_id_seeds, &(m->points[0]), m->points.size());
         program()->setUniformValueArray(m_id_weights, &(m->weights[0]), m->weights.size(), 1);
+        program()->setUniformValue(m_id_count, m->count);
     }
 
     void resolveUniforms() override {
         m_id_seeds = program()->uniformLocation("seeds");
         m_id_weights = program()->uniformLocation("weights");
+        m_id_count = program()->uniformLocation("count");
     }
 
 private:
     int m_id_seeds = -1;
     int m_id_weights = -1;
+    int m_id_count = -1;
     QString m_vertexShader;
     QByteArray m_vertexShaderBA;
     QString m_fragmentShader;
@@ -2396,22 +2361,28 @@ VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QVector<qreal>
     m_geometry.setDrawingMode(GL_TRIANGLE_STRIP);
 
     Q_ASSERT(points_.size() == weights_.size());
-    QSGSimpleMaterial<VoronoyMaterial> *m = VoronoyShader::createMaterial(points_.size());
-    m->state()->points.reserve(points_.size());
+    QSGSimpleMaterial<VoronoyMaterial> *m = VoronoyShader::createMaterial();
+    m->state()->count = points_.size();
+    m->state()->points.reserve(g_maxImagePointCount);
     m->state()->points.clear();
     for(const auto &pt : points_)
     {
         m->state()->points.push_back(QVector2D(rect_.x() + pt.x() * rect_.width(), rect_.y() + pt.y() * rect_.height()));
     }
-    m->state()->weights.reserve(weights_.size());
+    m->state()->weights.reserve(g_maxImagePointCount);
     m->state()->weights.clear();
     for(const auto &w : weights_)
     {
         m->state()->weights.push_back(w);
     }
+    for(int i = m->state()->points.size(); i < g_maxImagePointCount; i++)
+    {
+        m->state()->points.push_back(QVector2D(0.0, 0.0));
+        m->state()->weights.push_back(1.0);
+    }
     m->setFlag(QSGMaterial::Blending);
     setMaterial(m);
-    //setFlag(OwnsMaterial);
+    setFlag(OwnsMaterial);
 }
 
 void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D> &points_, const QVector<qreal> &weights_, const QVector3D &color_)
@@ -2424,7 +2395,7 @@ void VoronoyNode::updateGeometry(const QRectF &bounds_, const QVector<QVector2D>
     float h = bounds_.height();
 
     QSGSimpleMaterial<VoronoyMaterial> *m = static_cast<QSGSimpleMaterial<VoronoyMaterial> *>(material());
-    Q_ASSERT(m->state()->points.size() == points_.size() && m->state()->weights.size() == weights_.size() && points_.size() == weights_.size());
+    Q_ASSERT(m->state()->count == points_.size() && m->state()->count == weights_.size() && points_.size() == weights_.size());
     for(int i = 0; i < points_.size(); i++)
     {
         m->state()->points[i].setX(x + points_[i].x() * w);
