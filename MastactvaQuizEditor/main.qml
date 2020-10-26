@@ -416,8 +416,6 @@ ApplicationWindow {
                 oldY = point_y = 0.5
                 oldWeight = point_weight = 1.0
                 pointIndex = pointsModel.addTempPoint(point_x, point_y, point_weight)
-
-                console.log("new point, pointIndex = ", pointIndex< " point_x = ", point_x, " point_y = ", point_y, " point_weight = ", point_weight)
             }
         }
 
@@ -452,6 +450,24 @@ ApplicationWindow {
             pointsModel.onDataSaved.disconnect(onDataSaved)
             pointsModel = undefined
             imageOfGalleryPointIndex = oldPointIndex
+        }
+    }
+
+    OptionsEditDialog {
+        id: optionsEditDialog
+
+        onOpened: {
+            fieldRegenerateColors = false;
+            fieldUseColorsVoronoyDiagram = mastactva.useColorsVoronoyDiagram()
+        }
+
+        onAccepted: {
+            if(fieldRegenerateColors)
+            {
+                mastactva.regenerateVoronoyDiagramColors()
+            }
+            mastactva.setUseColorsVoronoyDiagram(fieldUseColorsVoronoyDiagram)
+            mastactva.saveAppConsts()
         }
     }
 
@@ -848,6 +864,14 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: editOptionsAction
+        text: qsTr("&Edit options")
+        onTriggered: {
+            optionsEditDialog.open()
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&Galleries")
@@ -896,6 +920,10 @@ ApplicationWindow {
             MenuItem { action: imageOfGalleryCreateAnswer }
             MenuItem { action: imageOfGalleryEditAnswer }
             MenuItem { action: imageOfGalleryDeleteAnswer }
+        }
+        Menu {
+            title: qsTr("&Options")
+            MenuItem { action: editOptionsAction }
         }
     }
 

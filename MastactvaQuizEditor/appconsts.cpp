@@ -163,6 +163,10 @@ bool AppConsts::useColorsVoronoyDiagram() const
     return m_useColorsVoronoyDiagram;
 }
 
+void AppConsts::setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_)
+{
+    m_useColorsVoronoyDiagram = useColorsVoronoyDiagram_;
+}
 
 static const QString g_settingFileName = "consts";
 

@@ -14,6 +14,7 @@
         <file>Login.qml</file>
         <file>ConfirmDialog.qml</file>
         <file>ImagePointDialog.qml</file>
+        <file>OptionsEditDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

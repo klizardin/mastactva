@@ -2108,6 +2108,32 @@
                         "access": "public",
                         "name": "getHostURLs",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "useColorsVoronoyDiagram",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "regenerateVoronoyDiagramColors",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "useColorsVoronoyDiagram_",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "setUseColorsVoronoyDiagram",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "saveAppConsts",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

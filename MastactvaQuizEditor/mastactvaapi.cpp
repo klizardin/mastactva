@@ -960,6 +960,26 @@ QVariant MastactvaAPI::getHostURLs()
     return QVariant::fromValue(AppConsts::getInstance()->getServerURLsModel());
 }
 
+bool MastactvaAPI::useColorsVoronoyDiagram()
+{
+    return AppConsts::getInstance()->useColorsVoronoyDiagram();
+}
+
+void MastactvaAPI::regenerateVoronoyDiagramColors()
+{
+    AppConsts::getInstance()->initColors();
+}
+
+void MastactvaAPI::setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_)
+{
+    AppConsts::getInstance()->setUseColorsVoronoyDiagram(useColorsVoronoyDiagram_);
+}
+
+void MastactvaAPI::saveAppConsts()
+{
+    AppConsts::getInstance()->save();
+}
+
 QString MastactvaAPI::dateTimeToUserStr(const QString &dateTimeStr_)
 {
     QString res = dateTimeStr_;

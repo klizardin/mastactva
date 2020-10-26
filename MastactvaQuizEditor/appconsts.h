@@ -44,7 +44,6 @@ protected:
     bool m_useColorsVoronoyDiagram = false;
 
 protected:
-    void initColors();
     void set(const QString &line_);
     void load();
 
@@ -57,6 +56,8 @@ public:
     int getMaxImagePoints() const;
     const QVector<QVector3D> &getColors() const;
     bool useColorsVoronoyDiagram() const;
+    void setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_);
+    void initColors();
 
     static AppConsts *getInstance();
     static void freeInstance();
