@@ -8,6 +8,29 @@
                         "value": "auto"
                     }
                 ],
+                "className": "ServerURLsModel",
+                "object": true,
+                "qualifiedClassName": "ServerURLsModel",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "appconsts.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
                 "className": "GalleryImagesModel",
                 "methods": [
                     {
@@ -2080,6 +2103,11 @@
                         "access": "public",
                         "name": "removeCurrentImagePoint",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getHostURLs",
+                        "returnType": "QVariant"
                     }
                 ],
                 "object": true,

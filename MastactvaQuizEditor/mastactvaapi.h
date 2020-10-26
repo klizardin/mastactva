@@ -68,6 +68,7 @@ public:
     Q_INVOKABLE QString dateTimeFromUserStr(const QString &dateTimeUserStr_);
     Q_INVOKABLE QVariant getCurrentImagePoint();
     Q_INVOKABLE void removeCurrentImagePoint();
+    Q_INVOKABLE QVariant getHostURLs();
 
 signals:
     void galleryReloaded();
@@ -168,6 +169,7 @@ private:
     JsonRequestData *m_resetImageOfGalleryAsTopRequest = nullptr;
     JsonRequestData *m_testLoginRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
+    QString m_lastHostURL;
 
 private:
     int getGalleryId() const;

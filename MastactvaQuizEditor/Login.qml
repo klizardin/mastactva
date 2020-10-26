@@ -41,12 +41,12 @@ ApplicationWindow {
             x: Constants.logingItemsSpacing
             text: qsTr("Server URL : ")
         }
-        TextField {
+        ComboBox {
             id: serverURL
+            editable: true
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width - Constants.logingItemsSpacing * 2
-            placeholderText: qsTr("<Enter server URL>")
-            text: mastactva.getHostURL()
+            model: mastactva.getHostURLs()
         }
         Text {
             x: Constants.logingItemsSpacing
@@ -73,7 +73,7 @@ ApplicationWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Login")
             onClicked: {
-                mastactva.testLogin(serverURL.text, login.text, password.text)
+                mastactva.testLogin(serverURL.editText, login.text, password.text)
                 mastactva.onLogingIn.connect(onLogingIn)
                 mastactva.onFailedLogingIn.connect(onFailedLogingIn)
             }

@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
     app.setApplicationName("Mastactva Quiz Editor Application");
 
     NetAPI::createSingelton(&app);
-    NetAPI::getSingelton()->getDefaultRequestData().setUrlBase("http://localhost:8000/");
     QMLMainObjects::createSingelton(&app);
 
     QQmlApplicationEngine engine;

@@ -7,6 +7,7 @@
 #include "netapi.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
+#include "appconsts.h"
 #include <type_traits>
 
 
@@ -920,6 +921,7 @@ void MastactvaAPI::testLogin(const QString &hostURL_, const QString &login_, con
     {
         return;
     }
+    m_lastHostURL = hostURL_;
     NetAPI::getSingelton()->getDefaultRequestData().setUrlBase(hostURL_);
     NetAPI::getSingelton()->getDefaultRequestData().setAuth(login_, password_);
     m_testLoginRequest = netAPI->startJsonRequest();
@@ -936,6 +938,8 @@ void MastactvaAPI::testLogingInSlot(int errorCode_, RequestData *request_, const
     }
     else
     {
+        AppConsts::getInstance()->addServerURL(m_lastHostURL);
+        AppConsts::getInstance()->save();
         emit onLogingIn();
     }
 }
@@ -949,6 +953,11 @@ QString MastactvaAPI::getHostURL()
         return QString();
     }
     return netAPI->getDefaultRequestData().getUrlBase();
+}
+
+QVariant MastactvaAPI::getHostURLs()
+{
+    return QVariant::fromValue(AppConsts::getInstance()->getServerURLsModel());
 }
 
 QString MastactvaAPI::dateTimeToUserStr(const QString &dateTimeStr_)
