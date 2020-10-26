@@ -23,6 +23,7 @@ ApplicationWindow {
     property alias imageOfGalleryPointIndex: mastactva.imageOfGalleryPointIndex
     property alias imageOfGalleryAnswerIndex: mastactva.imageOfGalleryAnswerIndex
     property bool showImagePoints: false
+    property bool showImagePointsVoronoyDiagram: false
 
     Connections {
         target: root
@@ -621,6 +622,14 @@ ApplicationWindow {
     }
 
     Action {
+        id: showImagePointsVoronoyDiagramAction
+        text: qsTr("Show &voronoy diagram")
+        onTriggered: {
+            showImagePointsVoronoyDiagram = !showImagePointsVoronoyDiagram
+        }
+    }
+
+    Action {
         id: imageOfGalleryCreateDescription
         text: qsTr("&New Description")
         onTriggered: {
@@ -862,6 +871,11 @@ ApplicationWindow {
                 action: showImagePointsAction
                 checkable: true
                 checked: showImagePoints
+            }
+            MenuItem {
+                action: showImagePointsVoronoyDiagramAction
+                checkable: true
+                checked: showImagePointsVoronoyDiagram
             }
             MenuItem { action: addPointOfImage }
             MenuItem { action: editPointOfImage }
@@ -1300,6 +1314,11 @@ ApplicationWindow {
                             checkable: true
                             checked: showImagePoints
                         }
+                        MenuItem {
+                            action: showImagePointsVoronoyDiagramAction
+                            checkable: true
+                            checked: showImagePointsVoronoyDiagram
+                        }
                         MenuItem { action: addPointOfImage }
                         MenuItem { action: editPointOfImage }
                         MenuItem { action: removePointOfImage }
@@ -1342,7 +1361,7 @@ ApplicationWindow {
                                         y: (image_of_gallery.height - image_of_gallery.paintedHeight)/2 + image_of_gallery.y
                                         width: image_of_gallery.paintedWidth
                                         height: image_of_gallery.paintedHeight
-                                        visible: showImagePoints
+                                        visible: showImagePointsVoronoyDiagram
                                         opacity: 0.5
                                         z: 0.5
                                         model: image_points
