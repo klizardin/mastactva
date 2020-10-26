@@ -41,6 +41,7 @@ protected:
     ServerURLsModel *m_serverURLsModel = nullptr;
     int m_maxImagePoints = 64;
     QVector<QVector3D> m_colors;
+    bool m_useColorsVoronoyDiagram = false;
 
 protected:
     void initColors();
@@ -54,6 +55,8 @@ public:
     void addServerURL(const QString &serverURL_);
     ServerURLsModel *getServerURLsModel();
     int getMaxImagePoints() const;
+    const QVector<QVector3D> &getColors() const;
+    bool useColorsVoronoyDiagram() const;
 
     static AppConsts *getInstance();
     static void freeInstance();

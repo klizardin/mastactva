@@ -2264,7 +2264,36 @@ public:
             "    gl_Position = qt_Matrix * vec4(vertices, 0.0, 1.0);\n"
             "    fragColor = color;\n"
             "}\n");
-        m_fragmentShader = QString(
+        if(AppConsts::getInstance()->useColorsVoronoyDiagram())
+        {
+            m_fragmentShader = QString(
+            "uniform lowp float qt_Opacity;\n"
+            "uniform int count;\n"
+            "uniform highp vec2 seeds[%1];\n"
+            "uniform highp float weights[%1];\n"
+            "uniform highp vec3 colors[%1];\n"
+            "varying highp vec3 fragColor;\n"
+            "varying highp vec2 fragCoord;\n"
+            "void main() {\n"
+            "    if(count > 1) {\n"
+            "        highp float dist0 = distance(seeds[0], fragCoord) * weights[0];\n"
+            "        highp vec3 clr = colors[0];\n"
+            "        for(int i = 1; i < count; i++) {\n"
+            "            float highp dist = distance(seeds[i], fragCoord) * weights[i];\n"
+            "            if(dist < dist0) {\n"
+            "                dist0 = dist;\n"
+            "                clr = colors[i];\n"
+            "            }\n"
+            "        }\n"
+            "        gl_FragColor = qt_Opacity * vec4(clr, 1.0);\n"
+            "    } else {\n"
+            "        gl_FragColor = qt_Opacity * vec4(fragColor.rgb, 0.0);\n"
+            "    }"
+            "}\n").arg(AppConsts::getInstance()->getMaxImagePoints());
+        }
+        else
+        {
+            m_fragmentShader = QString(
             "uniform lowp float qt_Opacity;\n"
             "uniform int count;\n"
             "uniform highp vec2 seeds[%1];\n"
@@ -2295,6 +2324,7 @@ public:
             "        gl_FragColor = qt_Opacity * vec4(fragColor.rgb, 0.0);\n"
             "    }"
             "}\n").arg(AppConsts::getInstance()->getMaxImagePoints());
+        }
 
         m_vertexShaderBA = m_vertexShader.toLocal8Bit();
         m_fragmentShaderBA = m_fragmentShader.toLocal8Bit();
@@ -2317,18 +2347,25 @@ public:
         program()->setUniformValueArray(m_id_seeds, &(m->points[0]), m->points.size());
         program()->setUniformValueArray(m_id_weights, &(m->weights[0]), m->weights.size(), 1);
         program()->setUniformValue(m_id_count, m->count);
+        if(m_id_colors >=0 )
+        {
+            const auto &clrs = AppConsts::getInstance()->getColors();
+            program()->setUniformValueArray(m_id_colors, &(clrs[0]), clrs.size());
+        }
     }
 
     void resolveUniforms() override {
         m_id_seeds = program()->uniformLocation("seeds");
         m_id_weights = program()->uniformLocation("weights");
         m_id_count = program()->uniformLocation("count");
+        m_id_colors = program()->uniformLocation("colors");
     }
 
 private:
     int m_id_seeds = -1;
     int m_id_weights = -1;
     int m_id_count = -1;
+    int m_id_colors = -1;
     QString m_vertexShader;
     QByteArray m_vertexShaderBA;
     QString m_fragmentShader;

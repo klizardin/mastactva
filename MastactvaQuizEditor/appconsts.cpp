@@ -63,6 +63,7 @@ void AppConsts::initColors()
     {
         return c1_.x() < c2_.x();
     });
+    m_colors[0].setX(0);
     for(int i = 0; i < m_colors.size() - 1; i++)
     {
         if(m_colors[i+1].x() < m_colors[i].x() + m)
@@ -70,11 +71,20 @@ void AppConsts::initColors()
             m_colors[i+1].setX(m_colors[i].x() + m);
         }
     }
+    m_colors[m_colors.size() - 1].setX(1.0);
+    for(int i = m_colors.size() - 1; i > 0 ; i--)
+    {
+        if(m_colors[i-1].x() + m > m_colors[i].x())
+        {
+            m_colors[i-1].setX(m_colors[i].x() - m);
+        }
+    }
     std::sort(std::begin(m_colors), std::end(m_colors),
               [](const QVector3D &c1_,const QVector3D &c2_) -> bool
     {
         return c1_.y() < c2_.y();
     });
+    m_colors[0].setY(0);
     for(int i = 0; i < m_colors.size() - 1; i++)
     {
         if(m_colors[i+1].y() < m_colors[i].y() + m)
@@ -82,16 +92,33 @@ void AppConsts::initColors()
             m_colors[i+1].setY(m_colors[i].y() + m);
         }
     }
+    m_colors[m_colors.size() - 1].setY(1.0);
+    for(int i = m_colors.size() - 1; i > 0 ; i--)
+    {
+        if(m_colors[i-1].y() + m > m_colors[i].y())
+        {
+            m_colors[i-1].setY(m_colors[i].y() - m);
+        }
+    }
     std::sort(std::begin(m_colors), std::end(m_colors),
               [](const QVector3D &c1_,const QVector3D &c2_) -> bool
     {
         return c1_.z() < c2_.z();
     });
+    m_colors[0].setZ(0);
     for(int i = 0; i < m_colors.size() - 1; i++)
     {
         if(m_colors[i+1].z() < m_colors[i].z() + m)
         {
             m_colors[i+1].setZ(m_colors[i].z() + m);
+        }
+    }
+    m_colors[m_colors.size() - 1].setZ(1.0);
+    for(int i = m_colors.size() - 1; i > 0 ; i--)
+    {
+        if(m_colors[i-1].z() + m > m_colors[i].z())
+        {
+            m_colors[i-1].setZ(m_colors[i].z() - m);
         }
     }
     std::random_shuffle(std::begin(m_colors), std::end(m_colors));
@@ -126,6 +153,17 @@ int AppConsts::getMaxImagePoints() const
     return m_maxImagePoints;
 }
 
+const QVector<QVector3D> &AppConsts::getColors() const
+{
+    return m_colors;
+}
+
+bool AppConsts::useColorsVoronoyDiagram() const
+{
+    return m_useColorsVoronoyDiagram;
+}
+
+
 static const QString g_settingFileName = "consts";
 
 void AppConsts::load()
@@ -159,6 +197,7 @@ void AppConsts::load()
 static const QString g_hostURLPrefix = "HostURL:";
 static const QString g_maxImagePointsPrefix = "MaxImagePoints:";
 static const QString g_colorsPrefix = "Colors:";
+static const QString g_useColorsVoronoyDiagramPrefix = "UseColorsVoronoyDiagram:";
 
 void AppConsts::set(const QString &line_)
 {
@@ -184,6 +223,15 @@ void AppConsts::set(const QString &line_)
         ts >> x >> c >> y >> c >> z;
         m_colors.push_back(QVector3D(x,y,z));
     }
+    else if(line_.startsWith(g_useColorsVoronoyDiagramPrefix))
+    {
+        bool ok = false;
+        auto tmp = QVariant(line_.mid(g_useColorsVoronoyDiagramPrefix.length()).trimmed()).toInt(&ok);
+        if(ok)
+        {
+            m_useColorsVoronoyDiagram = tmp != 0;
+        }
+    }
 }
 
 void AppConsts::save() const
@@ -200,6 +248,7 @@ void AppConsts::save() const
     {
         textStream << g_colorsPrefix << c.x() << "," << c.y() << "," << c.z() << "\n";
     }
+    textStream << g_useColorsVoronoyDiagramPrefix << (m_useColorsVoronoyDiagram ? 1 : 0) << "\n";
 }
 
 static AppConsts *g_instance = nullptr;
