@@ -16,6 +16,7 @@
 #include <QDebug>
 #include "netapi.h"
 #include "qmlmainobjects.h"
+#include "appconsts.h"
 
 
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ)
@@ -1994,6 +1995,7 @@ void ImagePointsModel::setCurrentPointParams(int index_, qreal x_, qreal y_, qre
 
 int ImagePointsModel::addTempPoint(qreal x_, qreal y_, qreal weight_)
 {
+    if(m_data.size() >= AppConsts::getInstance()->getMaxImagePoints()) { return -1; }
     beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
     m_data.push_back(new ImagePointData(this, m_sourceImageId, -1, x_, y_, weight_));
     endInsertRows();
@@ -2233,8 +2235,6 @@ QVariant ImagePointsModel::itemAt(int index_)
     return QVariant::fromValue(getAt(index_));
 }
 
-static const int g_maxImagePointCount = 64;
-
 struct VoronoyMaterial
 {
     QVector<QVector2D> points;
@@ -2294,7 +2294,7 @@ public:
             "    } else {\n"
             "        gl_FragColor = qt_Opacity * vec4(fragColor.rgb, 0.0);\n"
             "    }"
-            "}\n").arg(g_maxImagePointCount);
+            "}\n").arg(AppConsts::getInstance()->getMaxImagePoints());
 
         m_vertexShaderBA = m_vertexShader.toLocal8Bit();
         m_fragmentShaderBA = m_fragmentShader.toLocal8Bit();
@@ -2363,19 +2363,19 @@ VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QVector<qreal>
     Q_ASSERT(points_.size() == weights_.size());
     QSGSimpleMaterial<VoronoyMaterial> *m = VoronoyShader::createMaterial();
     m->state()->count = points_.size();
-    m->state()->points.reserve(g_maxImagePointCount);
+    m->state()->points.reserve(AppConsts::getInstance()->getMaxImagePoints());
     m->state()->points.clear();
     for(const auto &pt : points_)
     {
         m->state()->points.push_back(QVector2D(rect_.x() + pt.x() * rect_.width(), rect_.y() + pt.y() * rect_.height()));
     }
-    m->state()->weights.reserve(g_maxImagePointCount);
+    m->state()->weights.reserve(AppConsts::getInstance()->getMaxImagePoints());
     m->state()->weights.clear();
     for(const auto &w : weights_)
     {
         m->state()->weights.push_back(w);
     }
-    for(int i = m->state()->points.size(); i < g_maxImagePointCount; i++)
+    for(int i = m->state()->points.size(); i < AppConsts::getInstance()->getMaxImagePoints(); i++)
     {
         m->state()->points.push_back(QVector2D(0.0, 0.0));
         m->state()->weights.push_back(1.0);

@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QVector3D>
 #include <QAbstractListModel>
 #include <QtQuick/QQuickItem>
 
@@ -38,8 +39,12 @@ class AppConsts
 protected:
     QVector<QString> m_serverUrls;
     ServerURLsModel *m_serverURLsModel = nullptr;
+    int m_maxImagePoints = 64;
+    QVector<QVector3D> m_colors;
 
 protected:
+    void initColors();
+    void set(const QString &line_);
     void load();
 
 public:
@@ -48,6 +53,7 @@ public:
 
     void addServerURL(const QString &serverURL_);
     ServerURLsModel *getServerURLsModel();
+    int getMaxImagePoints() const;
 
     static AppConsts *getInstance();
     static void freeInstance();
