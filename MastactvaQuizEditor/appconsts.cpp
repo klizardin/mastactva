@@ -131,8 +131,10 @@ void AppConsts::addServerURL(const QString &serverURL_)
     {
        return url_ == serverURL_;
     });
-    if(std::end(m_serverUrls) != fit) { return; }
-    m_serverUrls.push_back(serverURL_);
+    if(std::end(m_serverUrls) != fit) {
+        m_serverUrls.erase(fit);
+    }
+    m_serverUrls.insert(std::begin(m_serverUrls), serverURL_);
 }
 
 ServerURLsModel *AppConsts::getServerURLsModel()
