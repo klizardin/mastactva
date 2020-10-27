@@ -1556,6 +1556,8 @@ int ImagePointData::getSourceImageId() const
 void ImagePointData::setSourceImageId(int sourceImageId_)
 {
     m_sourceImageId = sourceImageId_;
+
+    emit imageSourceIdChanged();
 }
 
 int ImagePointData::pointId() const

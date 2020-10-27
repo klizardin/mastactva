@@ -62,6 +62,11 @@ ApplicationWindow {
                 imageOfGalleryQuestionPointsToPassRect.visible = false
                 imageOfGalleryAnswerIndex = -1
             }
+            else
+            {
+                var imgPoint = mastactva.getCurrentImagePoint()
+
+            }
         }
 
         function onImageOfGalleryAnswerIndexChanged()

@@ -612,14 +612,8 @@ void MastactvaAPI::editQuestion(int id_, const QString &questionText_, qreal poi
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
-    if(id_ < 0)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
+    if(id_ < 0) { return; }
 
     m_editQuestionRequest = netAPI->startJsonRequest();
     QJsonObject rec;

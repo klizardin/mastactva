@@ -502,6 +502,7 @@ public:
     virtual ~ImagePointData() override;
 
 public:
+    Q_PROPERTY(int imageSourceId READ getSourceImageId WRITE setSourceImageId NOTIFY imageSourceIdChanged)
     Q_PROPERTY(int pointId READ pointId WRITE setPointId NOTIFY pointIdChanged)
     Q_PROPERTY(qreal xCoord READ xCoord WRITE setXCoord NOTIFY xCoordChanged)
     Q_PROPERTY(qreal yCoord READ yCoord WRITE setYCoord NOTIFY yCoordChanged)
@@ -555,6 +556,7 @@ protected slots:
 
 
 signals:
+    void imageSourceIdChanged();
     void pointIdChanged();
     void xCoordChanged();
     void yCoordChanged();
