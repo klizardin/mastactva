@@ -32,17 +32,26 @@ class ImagePointsModel;
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ);
 
 
-class ImageData
+class ImageData : public QObject
 {
+    Q_OBJECT
+
 public:
-    ImageData(int id_ = -1, const QString& source_ = QString());
+    ImageData(QObject *parent_ = nullptr, int id_ = -1, const QString& source_ = QString());
     ~ImageData() = default;
+
+    Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString source READ getSource WRITE setSource NOTIFY sourceChanged)
 
     int getId() const;
     void setId(int id_);
     const QString& getSource() const;
     void setSource(const QString& source_);
     ImagePointsModel *getImagePoints(QObject *parent_) const;
+
+signals:
+    void idChanged();
+    void sourceChanged();
 
 protected:
     void initImagePointModel(QObject *parent_);
@@ -81,6 +90,7 @@ public:
 
     Q_INVOKABLE QString currentImageSource() const;
     Q_INVOKABLE QVariant currentImagePoints() const;
+    Q_INVOKABLE QVariant currentItem();
 
     bool galleryViewImages() const;
     void setGalleryViewImages(bool modeShowGalleryViewImages_);
@@ -91,6 +101,7 @@ public:
     void startLoadImages();
     int getIdOfIndex(int index_);
     const ImageData *dataItemAt(int index_) const;
+    ImageData *dataItemAt(int index_);
     int currentIndex() const;
     void setCurrentIndex(int index_);
 
@@ -105,6 +116,8 @@ private slots:
     void ongalleryIdChanged();
 
 protected:
+    void clearData();
+
 protected:
     // return the roles mapping to be used by QML
     virtual QHash<int, QByteArray> roleNames() const override;
@@ -115,7 +128,7 @@ private:
     int m_galleryIndex = -1;
     int m_currentIndex = -1;
     RequestData* m_request = nullptr;
-    QVector<ImageData> m_images;
+    QVector<ImageData *> m_images;
     QHash<int, QByteArray> m_roleNames;
 };
 
@@ -254,6 +267,7 @@ private:
 class ImagePointToNextImage : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString imageSource READ imageSource WRITE setImageSource NOTIFY imageSourceChanged)
     Q_PROPERTY(bool noImageSource READ noImageSource WRITE setNoImageSource NOTIFY noImageSourceChanged)
 
@@ -261,24 +275,35 @@ public:
     ImagePointToNextImage(QObject* parent_ = nullptr, int imagePointId_ = -1);
     virtual ~ImagePointToNextImage() override = default;
     const QString &imageSource();
-    void setImageSource(const QString &imageSource_);
+    void setImageSource(const QString &imageSource_, bool emitFlag_ = true);
     bool noImageSource() const;
-    void setNoImageSource(bool noImageSource_);
+    void setNoImageSource(bool noImageSource_, bool emitFlag_ = true);
     void startLoad();
+    bool loaded() const;
+    void setNextImage(int nextImageId_);
+    int id() const;
+    void setId(int id_, bool emitFlag_ = true);
 
 protected slots:
     void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onSetNextImageJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+
+    void loadData(const QJsonDocument &reply_);
 
 signals:
-    void imageSourceChanged();
     void imagePointToImageLoaded();
+    void idChanged();
+    void imageSourceChanged();
     void noImageSourceChanged();
+    void nextImageSet();
 
 private:
+    int m_id = -1;
     int m_imagePointId = -1;
     QString m_imageSource;
     bool m_noImageSource = true;
     RequestData *m_request = nullptr;
+    JsonRequestData *m_setNextImageRequest = nullptr;
 };
 
 class AnswerData : public QObject
@@ -500,6 +525,7 @@ public:
     QVariant toQuestion() const;
     void setToQuestion(QVariant toQuestion_);
     ImagePointToQuestion *getQuestion();
+    ImagePointToNextImage *getNextImageData();
 
     static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
 

@@ -471,6 +471,44 @@ ApplicationWindow {
         }
     }
 
+    NextImageEditDialog {
+        id: nextImageEditDialog
+
+        onOpened: {
+            fieldGalleryId = galleryCurrentId
+            var img = images_of_gallery.model.currentItem()
+            if(img === undefined)
+            {
+                fieldImageSource = Constants.noImage
+                fieldImageId = -1
+            }
+            else
+            {
+                fieldImageSource = img.source
+                fieldImageId = img.id
+            }
+            fieldPointsModel = images_of_gallery.model.currentImagePoints()
+            fieldPointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
+
+            var nextImg = mastactva.getNextImage
+
+            fieldNextImageCurrentIndex = -1
+            fieldNextImageId = -1
+            fieldNextImageSource = Constants.noImage
+        }
+
+        onAccepted: {
+            mastactva.editNextImageOfCurrentImagePoint(fieldNextImageId)
+            mastactva.nextImageEdited.connect(nextImageEdited)
+        }
+
+        function nextImageEdited()
+        {
+            mastactva.nextImageEdited.disconnect(nextImageEdited)
+            //mastactva.refreshNextImage()
+        }
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")
@@ -872,6 +910,14 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: nextImageEditAction
+        text: qsTr("Edit next image")
+        onTriggered: {
+            nextImageEditDialog.open()
+        }
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&Galleries")
@@ -910,6 +956,10 @@ ApplicationWindow {
             MenuItem { action: imageOfGalleryCreateDescription }
             MenuItem { action: imageOfGalleryEditDescription }
             MenuItem { action: imageOfGalleryDeleteDescription }
+        }
+        Menu {
+            title: qsTr("&Next Image")
+            MenuItem { action: nextImageEditAction }
         }
         Menu {
             title: qsTr("&Question")

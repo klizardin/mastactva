@@ -38,8 +38,10 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ)
 /// class ImageData
 ///
 
-ImageData::ImageData(int id_ /*= -1*/, const QString& source_ /*= QString()*/)
-    :m_id(id_), m_source(source_)
+ImageData::ImageData(QObject *parent_ /*= nullptr*/, int id_ /*= -1*/, const QString& source_ /*= QString()*/)
+    :QObject(parent_),
+      m_id(id_),
+      m_source(source_)
 {
 }
 
@@ -51,6 +53,8 @@ int ImageData::getId() const
 void ImageData::setId(int id_)
 {
     m_id = id_;
+
+    emit idChanged();
 }
 
 const QString& ImageData::getSource() const
@@ -61,6 +65,8 @@ const QString& ImageData::getSource() const
 void ImageData::setSource(const QString& source_)
 {
     m_source = source_;
+
+    emit sourceChanged();
 }
 
 void ImageData::initImagePointModel(QObject *parent_)
@@ -84,7 +90,7 @@ ImagePointsModel *ImageData::getImagePoints(QObject *parent_) const
 ///
 
 static const QString g_noImageSource = "qrc:///resources/no-image.png";
-static const ImageData g_noImageDefault = ImageData(-1, g_noImageSource);
+#define NOIMAGEDEFAULT(arg) (new ImageData(arg, -1, g_noImageSource))
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// \brief GalleryEditViewImagesModel::GalleryEditViewImagesModel
@@ -100,11 +106,12 @@ GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 
-    m_images.push_back(g_noImageDefault);
+    m_images.push_back(NOIMAGEDEFAULT(this));
 }
 
 GalleryImagesModel::~GalleryImagesModel()
 {
+    clearData();
 }
 
 int GalleryImagesModel::rowCount(const QModelIndex &parent) const
@@ -120,19 +127,19 @@ QVariant GalleryImagesModel::data(const QModelIndex &index, int role) const
     {
         return QVariant();
     }
-    const auto &image = m_images[row];
+    const auto *image = m_images[row];
     switch(role)
     {
     case IdRole:
-        return image.getId();
+        return image->getId();
     case ImageSourceRole:
-        return image.getSource();
+        return image->getSource();
     case ImagePointsRole:
         if(m_showGalleryViewImages)
             return QVariant();
         else
             return QVariant::fromValue<QObject *>(
-                        image.getImagePoints(
+                        image->getImagePoints(
                             static_cast<QObject *>(
                                 const_cast<GalleryImagesModel *>(this))
                             )
@@ -168,11 +175,11 @@ int GalleryImagesModel::galleryId() const
 void GalleryImagesModel::setGalleryId(int galleryId_)
 {
     beginRemoveRows(QModelIndex(), 0, m_images.size());
-    m_images.clear();
+    clearData();
     endRemoveRows();
 
     beginInsertRows(QModelIndex(), m_images.size(), m_images.size() + 1 - 1);
-    m_images.push_back(g_noImageDefault);
+    m_images.push_back(NOIMAGEDEFAULT(this));
     endInsertRows();
 
     m_galleryId = galleryId_;
@@ -210,6 +217,16 @@ void GalleryImagesModel::setGalleryIndex(int galleryIndex_)
     emit galleryIdChanged();
 }
 
+void GalleryImagesModel::clearData()
+{
+    for(auto *&p : m_images)
+    {
+        delete p;
+        p = nullptr;
+    }
+    m_images.clear();
+}
+
 void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
@@ -223,7 +240,7 @@ void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestData *requ
     {
         return;
     }
-    QList<ImageData> images;
+    QList<ImageData*> images;
     for(int i = 0; ; i++)
     {
         QJsonValue val = reply_[i];
@@ -243,10 +260,10 @@ void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestData *requ
         {
             filename = fn.toString();
         }
-        images.push_back({id, filename});
+        images.push_back(new ImageData(this, id, filename));
     }
     beginRemoveRows(QModelIndex(), 0, m_images.size());
-    m_images.clear();
+    clearData();
     endRemoveRows();
     if(images.size() > 0)
     {
@@ -258,7 +275,7 @@ void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestData *requ
     else
     {
         beginInsertRows(QModelIndex(), m_images.size(), m_images.size() + 1 - 1);
-        m_images.push_back(g_noImageDefault);
+        m_images.push_back(NOIMAGEDEFAULT(this));
         endInsertRows();
     }
 }
@@ -288,7 +305,7 @@ int GalleryImagesModel::getIdOfIndex(int index_)
     {
         return -1;
     }
-    return m_images.at(index_).getId();
+    return m_images.at(index_)->getId();
 }
 
 const ImageData *GalleryImagesModel::dataItemAt(int index_) const
@@ -297,12 +314,17 @@ const ImageData *GalleryImagesModel::dataItemAt(int index_) const
     {
         return nullptr;
     }
-    return &(m_images.at(index_));
+    return m_images.at(index_);
+}
+
+ImageData *GalleryImagesModel::dataItemAt(int index_)
+{
+    return const_cast<ImageData *>(const_cast<const GalleryImagesModel *>(this)->dataItemAt(index_));
 }
 
 QString GalleryImagesModel::currentImageSource() const
 {
-    auto imgd = dataItemAt(currentIndex());
+    auto *imgd = dataItemAt(currentIndex());
     if(nullptr == imgd)
     {
         return g_noImageSource;
@@ -312,12 +334,18 @@ QString GalleryImagesModel::currentImageSource() const
 
 QVariant GalleryImagesModel::currentImagePoints() const
 {
-    auto imgd = dataItemAt(currentIndex());
+    auto *imgd = dataItemAt(currentIndex());
     if(nullptr == imgd)
     {
         return QVariant();
     }
     return QVariant::fromValue(imgd->getImagePoints(static_cast<QObject *>(const_cast<GalleryImagesModel *>(this))));
+}
+
+QVariant GalleryImagesModel::currentItem()
+{
+    ImageData *imgd = dataItemAt(currentIndex());
+    return QVariant::fromValue(imgd);
 }
 
 int GalleryImagesModel::currentIndex() const
@@ -817,11 +845,14 @@ const QString &ImagePointToNextImage::imageSource()
     return m_imageSource;
 }
 
-void ImagePointToNextImage::setImageSource(const QString &imageSource_)
+void ImagePointToNextImage::setImageSource(const QString &imageSource_, bool emitFlag_ /*= true*/)
 {
     m_imageSource = imageSource_;
 
-    emit imageSourceChanged();
+    if(emitFlag_)
+    {
+        emit imageSourceChanged();
+    }
 }
 
 bool ImagePointToNextImage::noImageSource() const
@@ -829,11 +860,14 @@ bool ImagePointToNextImage::noImageSource() const
     return m_noImageSource;
 }
 
-void ImagePointToNextImage::setNoImageSource(bool noImageSource_)
+void ImagePointToNextImage::setNoImageSource(bool noImageSource_, bool emitFlag_ /*= true*/)
 {
     m_noImageSource = noImageSource_;
 
-    emit noImageSourceChanged();
+    if(emitFlag_)
+    {
+        emit noImageSourceChanged();
+    }
 }
 
 void ImagePointToNextImage::startLoad()
@@ -847,15 +881,8 @@ void ImagePointToNextImage::startLoad()
                 m_request);
 }
 
-void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointToNextImage::loadData(const QJsonDocument &reply_)
 {
-    if(m_request != request_)
-    {
-        return;
-    }
-    m_request = nullptr;
-    if(errorCode_ != 0) { return; }
-
     Q_ASSERT(reply_.isArray());
 
     QJsonValue item = reply_[0];
@@ -863,14 +890,95 @@ void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestData *r
     {
         return;
     }
+    QJsonValue idJV = item["id"];
+    if(!idJV.isUndefined())
+    {
+        setId(idJV.toInt(-1), false);
+    }
+    else
+    {
+        setId(-1, false);
+    }
     QJsonValue nextImageJV = item["next_image"];
     if(!nextImageJV.isUndefined() && nextImageJV.isString())
     {
-        m_imageSource = nextImageJV.toString();
-        m_noImageSource = false;
+        setImageSource(nextImageJV.toString(), false);
+        setNoImageSource(false, false);
+    }
+    else
+    {
+        setImageSource(g_noImageSource, false);
+        setNoImageSource(true, false);
     }
 
+    emit idChanged();
+    emit imageSourceChanged();
+    emit noImageSourceChanged();
+}
+
+void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+    if(loaded() || m_request != request_)
+    {
+        return;
+    }
+    m_request = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    loadData(reply_);
+
     emit imagePointToImageLoaded();
+}
+
+bool ImagePointToNextImage::loaded() const
+{
+    return nullptr == m_request;
+}
+
+int ImagePointToNextImage::id() const
+{
+    return m_id;
+}
+
+void ImagePointToNextImage::setId(int id_, bool emitFlag_ /*= true*/)
+{
+    m_id = id_;
+
+    if(emitFlag_)
+    {
+        emit idChanged();
+    }
+}
+
+void ImagePointToNextImage::setNextImage(int nextImageId_)
+{
+    Q_ASSERT(nullptr != NetAPI::getSingelton());
+    if(!(nullptr != NetAPI::getSingelton())) { return; }
+
+    m_setNextImageRequest = NetAPI::getSingelton()->startJsonRequest();
+    QJsonObject rec;
+    rec.insert("id", QJsonValue::fromVariant(m_id));
+    rec.insert("image_point", QJsonValue::fromVariant(m_imagePointId));
+    rec.insert("next_image", QJsonValue::fromVariant(nextImageId_));
+    QJsonDocument doc(rec);
+    m_setNextImageRequest->setDocument(doc);
+    NetAPI::getSingelton()->patch(
+                QString("image-point-to-next-image/%1/").arg(m_id),
+                m_setNextImageRequest);
+}
+
+void ImagePointToNextImage::onSetNextImageJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+{
+    if(nullptr == m_setNextImageRequest || static_cast<RequestData *>(m_setNextImageRequest) != request_)
+    {
+        return;
+    }
+    m_setNextImageRequest = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    loadData(reply_);
+
+    emit nextImageSet();
 }
 
 
@@ -1545,6 +1653,11 @@ void ImagePointData::setToQuestion(QVariant toQuestion_)
 ImagePointToQuestion *ImagePointData::getQuestion()
 {
     return m_imagePointToQuestion;
+}
+
+ImagePointToNextImage *ImagePointData::getNextImageData()
+{
+    return m_imagePointToNextImage;
 }
 
 ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_)

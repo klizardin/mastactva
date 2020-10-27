@@ -11,6 +11,9 @@ class RequestData;
 class JsonRequestData;
 class MultiPartRequestData;
 class ImagePointToQuestion;
+class ImagePointData;
+class ImagePointsModel;
+class ImagePointToNextImage;
 
 
 class MastactvaAPI : public QObject
@@ -73,6 +76,7 @@ public:
     Q_INVOKABLE void regenerateVoronoyDiagramColors();
     Q_INVOKABLE void setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_);
     Q_INVOKABLE void saveAppConsts();
+    Q_INVOKABLE void editNextImageOfCurrentImagePoint(int nextImageID_);
 
 signals:
     void galleryReloaded();
@@ -106,6 +110,7 @@ signals:
     void onLogingIn();
     void onFailedLogingIn(const QString &msg_);
     void currentImagePointRemoved();
+    void nextImageEdited();
 
 protected:
     int imageOfGalleryId() const;
@@ -122,6 +127,8 @@ protected:
     void setImageOfGalleryPointIndex(int index_);
     int imageOfGalleryAnswerIndex() const;
     void setImageOfGalleryAnswerIndex(int index_);
+    ImagePointsModel* getCurrentImagePointsModel();
+    ImagePointData* getCurrentImagePointData();
 
 
 protected slots:
@@ -145,6 +152,8 @@ protected slots:
     void imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void testLogingInSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
     void onImagePointRemovedSlot();
+    void nextImageSetSlot();
+    void imagePointToImageLoadedSlot();
 
 private:
     int m_galleryId = -1;
@@ -174,6 +183,8 @@ private:
     JsonRequestData *m_testLoginRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
     QString m_lastHostURL;
+    ImagePointToNextImage *m_imagePointToNextImage = nullptr;
+    int m_lastNextImageID = -1;
 
 private:
     int getGalleryId() const;

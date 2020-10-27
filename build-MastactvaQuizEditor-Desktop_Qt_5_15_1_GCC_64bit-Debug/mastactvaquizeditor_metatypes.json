@@ -25,6 +25,59 @@
     {
         "classes": [
             {
+                "className": "ImageData",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "getId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "source",
+                        "notify": "sourceChanged",
+                        "read": "getSource",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setSource"
+                    }
+                ],
+                "qualifiedClassName": "ImageData",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sourceChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
                 "classInfos": [
                     {
                         "name": "QML.Element",
@@ -41,6 +94,11 @@
                     {
                         "access": "public",
                         "name": "currentImagePoints",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItem",
                         "returnType": "QVariant"
                     }
                 ],
@@ -395,6 +453,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "id",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "imageSource",
                         "notify": "imageSourceChanged",
                         "read": "imageSource",
@@ -424,17 +496,27 @@
                 "signals": [
                     {
                         "access": "public",
-                        "name": "imageSourceChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
                         "name": "imagePointToImageLoaded",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageSourceChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "noImageSourceChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "nextImageSet",
                         "returnType": "void"
                     }
                 ],
@@ -456,6 +538,36 @@
                             }
                         ],
                         "name": "onJsonRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onSetNextImageJsonRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "loadData",
                         "returnType": "void"
                     }
                 ],
@@ -2134,6 +2246,17 @@
                         "access": "public",
                         "name": "saveAppConsts",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "nextImageID_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "editNextImageOfCurrentImagePoint",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2426,6 +2549,11 @@
                     {
                         "access": "public",
                         "name": "currentImagePointRemoved",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "nextImageEdited",
                         "returnType": "void"
                     }
                 ],
@@ -2752,6 +2880,16 @@
                     {
                         "access": "protected",
                         "name": "onImagePointRemovedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "nextImageSetSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "imagePointToImageLoadedSlot",
                         "returnType": "void"
                     }
                 ],

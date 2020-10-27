@@ -6,8 +6,8 @@ QtObject {
     readonly property int loginHeight: 360
     readonly property int width: 640
     readonly property int height: 480
-    readonly property int smallImageWidth: 400
-    readonly property int smallImageHeight: 300
+    readonly property int smallImageWidth: 320
+    readonly property int smallImageHeight: 240
     readonly property int leftSideBarWidth: 250
     readonly property int leftSideBarWidthSpace: 5
     readonly property int leftSideBarTextWidth: 220
@@ -16,6 +16,7 @@ QtObject {
     readonly property int imagesOfGalleryListViewSpacing: 10
     readonly property int galleryImageSpacing: 10
     readonly property int imageOfGalleryImageSpacing: 10
+    readonly property int imageOfGalleryImageSpacing2: 4
     readonly property int aspectX: 3
     readonly property int aspectY: 4
     readonly property int descriptionRowHeight: 100

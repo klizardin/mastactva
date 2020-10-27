@@ -999,22 +999,34 @@ QString MastactvaAPI::dateTimeFromUserStr(const QString &dateTimeUserStr_)
     return res;
 }
 
-void MastactvaAPI::removeCurrentImagePoint()
+ImagePointsModel* MastactvaAPI::getCurrentImagePointsModel()
 {
-    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0) { return; }
+    if(m_imageOfGalleryIndex < 0) { return nullptr; }
 
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p)) { return; }
+    if(!(nullptr != p)) { return nullptr; }
     auto *m = p->getGalleryAllImagesModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m)) { return; }
+    if(!(nullptr != m)) { return nullptr; }
     auto *pImageData = m->dataItemAt(m_imageOfGalleryIndex);
-    if(nullptr == pImageData) { return; }
+    if(nullptr == pImageData) { return nullptr; }
     using PModelType = std::remove_const<decltype(m)>::type;
-    auto *pImagePointsModel = pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
-    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty()) { return; }
-    auto *pImagePoint = pImagePointsModel->getAt(m_imageOfGalleryPointIndex);
+    return pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
+}
+
+ImagePointData* MastactvaAPI::getCurrentImagePointData()
+{
+    if(m_imageOfGalleryPointIndex < 0) { return nullptr; }
+    auto *pImagePointsModel = getCurrentImagePointsModel();
+    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty()) { return nullptr; }
+    return pImagePointsModel->getAt(m_imageOfGalleryPointIndex);
+}
+
+
+void MastactvaAPI::removeCurrentImagePoint()
+{
+    auto *pImagePoint = getCurrentImagePointData();
     if(nullptr == pImagePoint) { return; }
 
     QObject::connect(pImagePoint, SIGNAL(onPointRemoved()), this, SLOT(onImagePointRemovedSlot()));
@@ -1023,18 +1035,7 @@ void MastactvaAPI::removeCurrentImagePoint()
 
 void MastactvaAPI::onImagePointRemovedSlot()
 {
-    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0) { return; }
-
-    auto *p = QMLMainObjects::getSingelton();
-    Q_ASSERT(nullptr != p);
-    if(!(nullptr != p)) { return; }
-    auto *m = p->getGalleryAllImagesModel();
-    Q_ASSERT(nullptr != m);
-    if(!(nullptr != m)) { return; }
-    auto *pImageData = m->dataItemAt(m_imageOfGalleryIndex);
-    if(nullptr == pImageData) { return; }
-    using PModelType = std::remove_const<decltype(m)>::type;
-    auto *pImagePointsModel = pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
+    auto *pImagePointsModel = getCurrentImagePointsModel();
     if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty()) { return; }
     pImagePointsModel->startLoadImagePoints();
     setImageOfGalleryPointIndex(-1);
@@ -1044,20 +1045,42 @@ void MastactvaAPI::onImagePointRemovedSlot()
 
 QVariant MastactvaAPI::getCurrentImagePoint()
 {
-    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0 ) { return QVariant(); }
-
-    auto *p = QMLMainObjects::getSingelton();
-    Q_ASSERT(nullptr != p);
-    if(!(nullptr != p)) { return QVariant(); }
-    auto *m = p->getGalleryAllImagesModel();
-    Q_ASSERT(nullptr != m);
-    if(!(nullptr != m)) { return QVariant(); }
-    auto *pImageData = m->dataItemAt(m_imageOfGalleryIndex);
-    if(nullptr == pImageData) { return QVariant(); }
-    using PModelType = std::remove_const<decltype(m)>::type;
-    auto *pImagePointsModel = pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
-    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty()) { return QVariant(); }
-    auto *pImagePoint = pImagePointsModel->getAt(m_imageOfGalleryPointIndex);
+    auto *pImagePoint = getCurrentImagePointData();
     if(nullptr == pImagePoint) { return QVariant(); }
     return QVariant::fromValue(pImagePoint);
 }
+
+void MastactvaAPI::editNextImageOfCurrentImagePoint(int nextImageID_)
+{
+    auto *pImagePoint = getCurrentImagePointData();
+    if(nullptr == pImagePoint) { return; }
+    (void)pImagePoint->toNextImage();
+    m_imagePointToNextImage = pImagePoint->getNextImageData();
+    if(nullptr == m_imagePointToNextImage) { return; }
+    m_lastNextImageID = nextImageID_;
+    if(m_imagePointToNextImage->loaded())
+    {
+        QObject::connect(m_imagePointToNextImage, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
+        m_imagePointToNextImage->setNextImage(m_lastNextImageID);
+    }
+    else
+    {
+        QObject::connect(m_imagePointToNextImage, SIGNAL(imagePointToImageLoaded()), this, SLOT(imagePointToImageLoadedSlot()));
+    }
+}
+
+void MastactvaAPI::imagePointToImageLoadedSlot()
+{
+    QObject::disconnect(m_imagePointToNextImage, SIGNAL(imagePointToImageLoaded()), this, SLOT(imagePointToImageLoadedSlot()));
+    Q_ASSERT(m_imagePointToNextImage->loaded());
+    QObject::connect(m_imagePointToNextImage, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
+    m_imagePointToNextImage->setNextImage(m_lastNextImageID);
+}
+
+void MastactvaAPI::nextImageSetSlot()
+{
+    QObject::disconnect(m_imagePointToNextImage, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
+
+    emit nextImageEdited();
+}
+
