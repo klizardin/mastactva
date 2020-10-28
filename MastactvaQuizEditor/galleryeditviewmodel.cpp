@@ -1921,11 +1921,13 @@ void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestDat
 
 void ImagePointData::removePoint()
 {
-    (void)toQuestion();
-    removePoint(true);
+    /*(void)toQuestion();
+    removePoint(true);*/
+
+    removeImagePoint();
 }
 
-void ImagePointData::removePoint(bool tryToLoad_)
+/*void ImagePointData::removePoint(bool tryToLoad_)
 {
     if(nullptr != m_imagePointToQuestion)
     {
@@ -1979,7 +1981,7 @@ void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestData *request_
     if(0 != errorCode_) { return; }
 
     removeImagePoint();
-}
+}*/
 
 void ImagePointData::removeImagePoint()
 {

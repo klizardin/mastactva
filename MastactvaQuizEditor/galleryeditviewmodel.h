@@ -539,9 +539,9 @@ public:
 private:
     void createTemplImageData();
     void cretateTemplQuestionData();
-    void removePoint(bool tryToLoad_);
+    //void removePoint(bool tryToLoad_);
     void removeImagePoint();
-    void removeQuestion();
+    //void removeQuestion();
 
 protected slots:
     void onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
@@ -551,8 +551,8 @@ protected slots:
     void onPointToQuestionRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void onPointToImageRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void onPointRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onQuestionRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void imagePointToQuestionLoadedSlot();
+    //void onQuestionRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    //void imagePointToQuestionLoadedSlot();
 
 
 signals:
