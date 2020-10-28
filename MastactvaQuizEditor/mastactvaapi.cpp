@@ -115,10 +115,7 @@ void MastactvaAPI::createNewGallery(const QString &description_, const QString &
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_createNewGalleryRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("description", QJsonValue::fromVariant(description_));
@@ -136,10 +133,7 @@ void MastactvaAPI::onNewGalleryCreatedSlot(int errorCode_, RequestData *request_
 {
     Q_UNUSED(document_);
 
-    if(request_ != static_cast<RequestData *>(m_createNewGalleryRequest))
-    {
-        return;
-    }
+    if(nullptr == m_createNewGalleryRequest || request_ != static_cast<RequestData *>(m_createNewGalleryRequest)) { return; }
     m_createNewGalleryRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -157,10 +151,7 @@ void MastactvaAPI::editGallery(
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_editGalleryRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("id", QJsonValue::fromVariant(id_));
@@ -178,10 +169,7 @@ void MastactvaAPI::onEditGallerySlot(int errorCode_, RequestData *request_, cons
 {
     Q_UNUSED(document_);
 
-    if(request_ != static_cast<RequestData *>(m_editGalleryRequest))
-    {
-        return;
-    }
+    if(request_ != static_cast<RequestData *>(m_editGalleryRequest)) { return; }
     m_editGalleryRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -194,10 +182,7 @@ void MastactvaAPI::addImage(int galleryId, const QString &fileURL, bool topImage
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_addImageRequest = netAPI->startMultiPartFormData();
     m_addImageRequest->addPart("form-data; name=\"gallery\"", QString("%1").arg(galleryId).toUtf8());
     QUrl url(fileURL);
@@ -215,15 +200,9 @@ void MastactvaAPI::removeCurrentImage()
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     const int currentImageId = imageOfGalleryId();
-    if(currentImageId < 0)
-    {
-        return;
-    }
+    if(currentImageId < 0) { return; }
     m_delImageOfGalleryRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("id", QJsonValue::fromVariant(currentImageId));
@@ -237,10 +216,7 @@ void MastactvaAPI::delImageOfGallerySlot(int errorCode_, RequestData *request_, 
 {
     Q_UNUSED(document_);
 
-    if(request_ != static_cast<RequestData *>(m_delImageOfGalleryRequest))
-    {
-        return;
-    }
+    if(nullptr == m_delImageOfGalleryRequest || request_ != static_cast<RequestData *>(m_delImageOfGalleryRequest)) { return; }
     m_delImageOfGalleryRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -253,10 +229,7 @@ void MastactvaAPI::onAddImageSlot(int errorCode_, RequestData *request_, const Q
 {
     Q_UNUSED(document_);
 
-    if(request_ != static_cast<RequestData *>(m_addImageRequest))
-    {
-        return;
-    }
+    if(nullptr == m_addImageRequest || request_ != static_cast<RequestData *>(m_addImageRequest)) { return; }
     m_addImageRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -319,16 +292,10 @@ void MastactvaAPI::setCurrentGalleryIdByIndex(int index_)
 {
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return;
-    }
+    if(!(nullptr != p)) { return; }
     auto *m = p->getGalleryViewModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return;
-    }
+    if(!(nullptr != m)) { return; }
     const int id = m->getIdOfIndex(index_);
     setGalleryId(id);
 }
@@ -337,16 +304,10 @@ void MastactvaAPI::setCurrentImageOfGalleryIdByIndex(int index_)
 {
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return;
-    }
+    if(!(nullptr != p)) { return; }
     auto *m = p->getGalleryAllImagesModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return;
-    }
+    if(!(nullptr != m)) { return; }
     const int id = m->getIdOfIndex(index_);
     setimageOfGalleryId(id);
 }
@@ -381,16 +342,10 @@ void MastactvaAPI::setCurrentOImageOfGalleryDescriptionIdByIndex(int index_)
 {
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return;
-    }
+    if(!(nullptr != p)) { return; }
     auto *m = p->getImageOfGalleryDescriptionModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return;
-    }
+    if(!(nullptr != m)) { return; }
     const int id = m->getIdOfIndex(index_);
     setImageOfGalleryDescriptionId(id);
 }
@@ -399,10 +354,7 @@ void MastactvaAPI::removeCurrentDescription()
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
 
     m_delDescriptionRequest = netAPI->startJsonRequest();
     netAPI->del(QString("image-descriptions/%1/").arg(m_imageOfGalleryDescriptionId), m_delDescriptionRequest);
@@ -414,10 +366,7 @@ void MastactvaAPI::onDescriptionDeletedSlot(int errorCode_, RequestData *request
 {
     Q_UNUSED(document_);
 
-    if(static_cast<RequestData *>(m_delDescriptionRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr == m_delDescriptionRequest || static_cast<RequestData *>(m_delDescriptionRequest) != request_) { return; }
 
     m_delDescriptionRequest = nullptr;
     if(errorCode_ != 0) { return; }
@@ -435,16 +384,10 @@ void MastactvaAPI::refreshDescriptions()
 {
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return;
-    }
+    if(!(nullptr != p)) { return; }
     auto *m = p->getImageOfGalleryDescriptionModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return;
-    }
+    if(!(nullptr != m)) { return; }
     m->startLoadDescriptions();
     QObject::connect(m, SIGNAL(descriptionLoaded()), this, SLOT(onRefreshDescriptionsSlot()));
 }
@@ -459,10 +402,7 @@ void MastactvaAPI::newDescription(int imageId_, const QString &description, cons
     if(imageId_ < 0) { return; }
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_newDescriptionRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("image", QJsonValue::fromVariant(imageId_));
@@ -478,10 +418,7 @@ void MastactvaAPI::onNewDescriptionAddedSlot(int errorCode_, RequestData *reques
 {
     Q_UNUSED(document_);
 
-    if(static_cast<RequestData *>(m_newDescriptionRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr == m_newDescriptionRequest || static_cast<RequestData *>(m_newDescriptionRequest) != request_) { return; }
     m_newDescriptionRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -492,10 +429,7 @@ void MastactvaAPI::editDescription(int id_, int imageId_, const QString &descrip
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     Q_ASSERT(imageId_ == m_imageOfGalleryId);
 
     m_editDescriptionRequest = netAPI->startJsonRequest();
@@ -514,10 +448,7 @@ void MastactvaAPI::onDescriptionEditedSlot(int errorCode_, RequestData *request_
 {
     Q_UNUSED(document_);
 
-    if(static_cast<RequestData *>(m_editDescriptionRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr != m_editDescriptionRequest || static_cast<RequestData *>(m_editDescriptionRequest) != request_) { return; }
     m_editDescriptionRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -528,16 +459,10 @@ QVariant MastactvaAPI::getCurrentDescription()
 {
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return QVariant();
-    }
+    if(!(nullptr != p)) { return QVariant(); }
     auto *m = p->getImageOfGalleryDescriptionModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return QVariant();
-    }
+    if(!(nullptr != m)) { return QVariant(); }
     return QVariant::fromValue(m->itemAt(m_imageOfGalleryDescriptionIndex));
 }
 
@@ -567,44 +492,23 @@ void MastactvaAPI::setImageOfGalleryAnswerIndex(int index_)
 
 QVariant MastactvaAPI::getCurrentQuestion()
 {
-    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0)
-    {
-        return QVariant();
-    }
+    if(m_imageOfGalleryIndex < 0 || m_imageOfGalleryPointIndex < 0) { return QVariant(); }
 
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return QVariant();
-    }
+    if(!(nullptr != p)) { return QVariant(); }
     auto *m = p->getGalleryAllImagesModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return QVariant();
-    }
+    if(!(nullptr != m)) { return QVariant(); }
     auto *pImageData = m->dataItemAt(m_imageOfGalleryIndex);
-    if(nullptr == pImageData)
-    {
-        return QVariant();
-    }
+    if(nullptr == pImageData) { return QVariant(); }
     using PModelType = std::remove_const<decltype(m)>::type;
     auto *pImagePointsModel = pImageData->getImagePoints(static_cast<QObject *>(const_cast<PModelType>(m)));
-    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty())
-    {
-        return QVariant();
-    }
+    if(nullptr == pImagePointsModel || pImagePointsModel->isEmpty()) { return QVariant(); }
     auto *pImagePoint = pImagePointsModel->getAt(m_imageOfGalleryPointIndex);
-    if(nullptr == pImagePoint)
-    {
-        return QVariant();
-    }
+    if(nullptr == pImagePoint) { return QVariant(); }
     auto *pQuestion = pImagePoint->getQuestion();
-    if(nullptr == pQuestion)
-    {
-        return QVariant();
-    }
+    if(nullptr == pQuestion) { return QVariant(); }
     return pQuestion->questionObj();
 }
 
@@ -630,10 +534,7 @@ void MastactvaAPI::onQuestionEditedSlot(int errorCode_, RequestData *request_, c
 {
     Q_UNUSED(document_);
 
-    if(static_cast<RequestData *>(m_editQuestionRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr == m_editQuestionRequest || static_cast<RequestData *>(m_editQuestionRequest) != request_) { return; }
     m_editQuestionRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -677,10 +578,7 @@ void MastactvaAPI::addNewAnswer(int questionID_, const QString &answerText_, qre
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_addAnswerRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("question", QJsonValue::fromVariant(questionID_));
@@ -696,10 +594,7 @@ void MastactvaAPI::onAnswerAddedSlot(int errorCode_, RequestData *request_, cons
 {
     Q_UNUSED(document_);
 
-    if(nullptr == m_addAnswerRequest || static_cast<RequestData *>(m_addAnswerRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr == m_addAnswerRequest || static_cast<RequestData *>(m_addAnswerRequest) != request_) { return; }
     m_addAnswerRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -724,10 +619,7 @@ void MastactvaAPI::editAnswer(int id_, int questionId_, const QString &answerTex
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_editAnswerRequest = netAPI->startJsonRequest();
     QJsonObject rec;
     rec.insert("id", QJsonValue::fromVariant(id_));
@@ -744,10 +636,7 @@ void MastactvaAPI::onAnswerEditedSlot(int errorCode_, RequestData *request_, con
 {
     Q_UNUSED(document_);
 
-    if(nullptr == m_editAnswerRequest || static_cast<RequestData *>(m_editAnswerRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr == m_editAnswerRequest || static_cast<RequestData *>(m_editAnswerRequest) != request_) { return; }
     m_editAnswerRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -760,10 +649,7 @@ void MastactvaAPI::removeCurrentAnswer()
 
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
 
     m_removeAnswerRequest = netAPI->startJsonRequest();
     netAPI->del(QString("image-question-answers/%1/").arg(m_imageOfGalleryAnswerIndex), m_removeAnswerRequest);
@@ -775,10 +661,7 @@ void MastactvaAPI::onCurrentAnswerRemovedSlot(int errorCode_, RequestData *reque
 {
     Q_UNUSED(document_);
 
-    if(nullptr == m_removeAnswerRequest || static_cast<RequestData *>(m_removeAnswerRequest) != request_)
-    {
-        return;
-    }
+    if(nullptr == m_removeAnswerRequest || static_cast<RequestData *>(m_removeAnswerRequest) != request_) { return; }
     m_removeAnswerRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -791,10 +674,7 @@ void MastactvaAPI::takeCurrentGalleryOwnship()
 
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
 
     m_takeGalleryOwnshipRequest = netAPI->startJsonRequest();
     netAPI->get(QString("galleries/%1/take_ownship/").arg(m_galleryId), m_takeGalleryOwnshipRequest);
@@ -806,10 +686,7 @@ void MastactvaAPI::freeCurrentGalleryOwnship()
 
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
 
     m_freeGalleryOwnshipRequest = netAPI->startJsonRequest();
     netAPI->get(QString("galleries/%1/free_ownship/").arg(m_galleryId), m_freeGalleryOwnshipRequest);
@@ -842,16 +719,10 @@ void MastactvaAPI::refreshCurrentGallery()
     if(m_galleryIndex < 0) { return; }
     auto *p = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != p);
-    if(!(nullptr != p))
-    {
-        return;
-    }
+    if(!(nullptr != p)) { return; }
     auto *m = p->getGalleryViewModel();
     Q_ASSERT(nullptr != m);
-    if(!(nullptr != m))
-    {
-        return;
-    }
+    if(!(nullptr != m)) { return; }
     m->refreshItemAtIndex(m_galleryIndex);
 }
 
@@ -861,10 +732,7 @@ void MastactvaAPI::setImageOfGalleryAsTop()
 
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_setImageOfGalleryAsTopRequest = netAPI->startJsonRequest();
     // TODO: make none get method
     netAPI->get(QString("images/%1/set_top/").arg(m_imageOfGalleryId), m_setImageOfGalleryAsTopRequest);
@@ -876,10 +744,7 @@ void MastactvaAPI::resetImageOfGalleryAsTop()
 
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_resetImageOfGalleryAsTopRequest = netAPI->startJsonRequest();
     // TODO: make none get method
     netAPI->get(QString("images/%1/reset_top/").arg(m_imageOfGalleryId), m_resetImageOfGalleryAsTopRequest);
@@ -889,7 +754,7 @@ void MastactvaAPI::imageOfGalleryAsTopSetSlot(int errorCode_, RequestData *reque
 {
     Q_UNUSED(document_);
 
-    if(static_cast<RequestData *>(m_setImageOfGalleryAsTopRequest) != request_) { return; }
+    if(nullptr == m_setImageOfGalleryAsTopRequest || static_cast<RequestData *>(m_setImageOfGalleryAsTopRequest) != request_) { return; }
     m_setImageOfGalleryAsTopRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -900,7 +765,7 @@ void MastactvaAPI::imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *req
 {
     Q_UNUSED(document_);
 
-    if(static_cast<RequestData *>(m_resetImageOfGalleryAsTopRequest) != request_) { return; }
+    if(nullptr == m_resetImageOfGalleryAsTopRequest || static_cast<RequestData *>(m_resetImageOfGalleryAsTopRequest) != request_) { return; }
     m_resetImageOfGalleryAsTopRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
@@ -911,10 +776,7 @@ void MastactvaAPI::testLogin(const QString &hostURL_, const QString &login_, con
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return;
-    }
+    if(nullptr == netAPI) { return; }
     m_lastHostURL = hostURL_;
     NetAPI::getSingelton()->getDefaultRequestData().setUrlBase(hostURL_);
     NetAPI::getSingelton()->getDefaultRequestData().setAuth(login_, password_);
@@ -942,10 +804,7 @@ QString MastactvaAPI::getHostURL()
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
-    if(nullptr == netAPI)
-    {
-        return QString();
-    }
+    if(nullptr == netAPI) { return QString(); }
     return netAPI->getDefaultRequestData().getUrlBase();
 }
 

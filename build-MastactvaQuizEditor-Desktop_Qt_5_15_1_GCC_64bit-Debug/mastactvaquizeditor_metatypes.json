@@ -937,6 +937,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "imageSourceId",
+                        "notify": "imageSourceIdChanged",
+                        "read": "getSourceImageId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setSourceImageId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "pointId",
                         "notify": "pointIdChanged",
                         "read": "pointId",
@@ -1020,6 +1034,11 @@
                 ],
                 "qualifiedClassName": "ImagePointData",
                 "signals": [
+                    {
+                        "access": "public",
+                        "name": "imageSourceIdChanged",
+                        "returnType": "void"
+                    },
                     {
                         "access": "public",
                         "name": "pointIdChanged",
