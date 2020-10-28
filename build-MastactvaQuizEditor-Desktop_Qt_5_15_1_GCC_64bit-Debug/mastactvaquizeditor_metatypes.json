@@ -780,6 +780,20 @@
                         "type": "qreal",
                         "user": false,
                         "write": "setPointsToPass"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "created",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "QuestionData",
@@ -797,6 +811,11 @@
                     {
                         "access": "public",
                         "name": "pointsToPassChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1030,6 +1049,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setToQuestion"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "created",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "ImagePointData",
@@ -1105,6 +1138,11 @@
                     {
                         "access": "public",
                         "name": "onPointRemoved",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -2057,6 +2095,10 @@
                             {
                                 "name": "pointsToPass_",
                                 "type": "qreal"
+                            },
+                            {
+                                "name": "created_",
+                                "type": "QDateTime"
                             }
                         ],
                         "name": "editQuestion",

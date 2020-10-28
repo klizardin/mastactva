@@ -193,6 +193,7 @@ void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topIma
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
     m_addImageRequest->addPart("form-data; name=\"hash\"", "123");
     m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", (topImage_ || galleryEmpty)?"True":"False");
+    m_addImageRequest->addPart("form-data; name=\"created\"", dateTimeToJsonString(QDateTime::currentDateTime()).toUtf8());
 
     netAPI->post("images/", m_addImageRequest);
 }
@@ -513,7 +514,7 @@ QVariant MastactvaAPI::getCurrentQuestion()
     return pQuestion->questionObj();
 }
 
-void MastactvaAPI::editQuestion(int id_, const QString &questionText_, qreal pointsToPass_)
+void MastactvaAPI::editQuestion(int id_, const QString &questionText_, qreal pointsToPass_, const QDateTime &created_)
 {
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
@@ -525,6 +526,7 @@ void MastactvaAPI::editQuestion(int id_, const QString &questionText_, qreal poi
     rec.insert("id", QJsonValue::fromVariant(id_));
     rec.insert("question", QJsonValue::fromVariant(questionText_));
     rec.insert("points_to_pass", QJsonValue::fromVariant(pointsToPass_));
+    rec.insert("created", QJsonValue::fromVariant(created_));
     QJsonDocument doc(rec);
 
     m_editQuestionRequest->setDocument(doc);

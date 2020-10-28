@@ -53,7 +53,7 @@ public:
     Q_INVOKABLE void editDescription(int id_, int imageId_, const QString &description, const QString &fromDateTime);
     Q_INVOKABLE QVariant getCurrentDescription();
     Q_INVOKABLE QVariant getCurrentQuestion();
-    Q_INVOKABLE void editQuestion(int id_, const QString &questionText_, qreal pointsToPass_);
+    Q_INVOKABLE void editQuestion(int id_, const QString &questionText_, qreal pointsToPass_, const QDateTime &created_);
     Q_INVOKABLE void refreshCurrentImagePointToQuestion();
     Q_INVOKABLE void addNewAnswer(int questionID_, const QString &answerText_, qreal pointFoAnswer_);
     Q_INVOKABLE QVariant getCurrentAnswer();

@@ -281,6 +281,8 @@ ApplicationWindow {
     QuestionEditDialog {
         id: editQuestionDialog
 
+        property var fieldCreated: mastactva.nowJsonStr()
+
         onOpened: {
             var question = mastactva.getCurrentQuestion()
             if(question !== undefined)
@@ -288,17 +290,19 @@ ApplicationWindow {
                 fieldId = question.id
                 fieldQuestion = question.questionText
                 fieldPointsToPass = question.pointsToPass
+                fieldCreated = question.created
             }
             else
             {
                 fieldId = -1
                 fieldQuestion = ""
                 fieldPointsToPass = "1.0"
+                fieldCreated = mastactva.nowJsonStr()
             }
         }
 
         onAccepted: {
-            mastactva.editQuestion(fieldId, fieldQuestion, fieldPointsToPass);
+            mastactva.editQuestion(fieldId, fieldQuestion, fieldPointsToPass, fieldCreated);
             mastactva.onQuestionEdited.connect(onQuestionEdited);
         }
 

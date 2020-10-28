@@ -34,6 +34,11 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ)
     return QDateTime(QDate(year, month, day), QTime(hours, minites, seconds));
 }
 
+QString dateTimeToJsonString(const QDateTime &dt_)
+{
+    return dt_.toString(Qt::DateFormat::ISODateWithMs);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /// class ImageData
 ///
@@ -1260,11 +1265,13 @@ void QuestionAnswersModel::onJsonRequestFinished(int errorCode_, RequestData *re
 QuestionData::QuestionData(QObject *parent_ /*= nullptr*/,
              int id_ /*= -1*/,
              const QString &questionText_ /*= QString()*/,
-             qreal pointsToPass_ /*= 1.0*/)
+             qreal pointsToPass_ /*= 1.0*/,
+             const QDateTime &created_ /*= QDateTime()*/)
     :QObject(parent_),
       m_id (id_),
       m_questionText(questionText_),
-      m_pointsToPass(pointsToPass_)
+      m_pointsToPass(pointsToPass_),
+      m_created(created_)
 {
 }
 
@@ -1304,6 +1311,18 @@ void QuestionData::setPointsToPass(qreal pointsToPass_)
     emit pointsToPassChanged();
 }
 
+const QDateTime &QuestionData::created() const
+{
+    return m_created;
+}
+
+void QuestionData::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 template<typename JsonObject>
 QuestionData *QuestionData_fromJsonT(QObject *parent_, const JsonObject &jsonValue_, bool &error_)
 {
@@ -1322,6 +1341,11 @@ QuestionData *QuestionData_fromJsonT(QObject *parent_, const JsonObject &jsonVal
     qreal pointsToPass = 1.0;
     QJsonValue pointsToPassJV = jsonValue_["points_to_pass"];
     if(!pointsToPassJV.isUndefined()) { pointsToPass = pointsToPassJV.toDouble(1.0); }
+    else { error_ = true; }
+
+    QDateTime created;
+    QJsonValue createdJV = jsonValue_["created"];
+    if(!createdJV.isUndefined() && createdJV.isString()) { created = dateTimeFromJsonString(createdJV.toString()); }
     else { error_ = true; }
 
     return new QuestionData(parent_, id, questionText, pointsToPass);
@@ -1532,13 +1556,15 @@ ImagePointData::ImagePointData(QObject *parent_,
                int pointId_ /*= -1*/,
                qreal x_ /*= 0.5*/,
                qreal y_ /*= 0.5*/,
-               qreal weight_ /*= 1.0*/)
+               qreal weight_ /*= 1.0*/,
+               const QDateTime &created_ /*= QDateTime()*/)
     : QObject(parent_),
     m_sourceImageId(sourceImageId_),
     m_pointId(pointId_),
     m_x(x_),
     m_y(y_),
-    m_weight(weight_)
+    m_weight(weight_),
+    m_created(created_)
 {
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(onDataSavedRequestFinished(int, RequestData *, const QJsonDocument &)));
@@ -1678,6 +1704,18 @@ ImagePointToNextImage *ImagePointData::getNextImageData()
     return m_imagePointToNextImage;
 }
 
+const QDateTime &ImagePointData::created() const
+{
+    return m_created;
+}
+
+void ImagePointData::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_)
 {
     const bool chk001 = jsonObject_.isObject();
@@ -1694,6 +1732,7 @@ ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, c
     qreal x = 0.5;
     qreal y = 0.5;
     qreal weight = 1.0;
+    QDateTime created;
 
     QJsonValue idVal = jsonObject_["id"];
     if(idVal.type() != QJsonValue::Undefined)
@@ -1734,7 +1773,16 @@ ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, c
     {
         error_ = true;
     }
-    return new ImagePointData(parent_, sourceImageId_, id, x, y, weight);
+    QJsonValue createdJV = jsonObject_["created"];
+    if(!createdJV.isUndefined() && createdJV.isString())
+    {
+        created = dateTimeFromJsonString(createdJV.toString());
+    }
+    else
+    {
+        error_ = true;
+    }
+    return new ImagePointData(parent_, sourceImageId_, id, x, y, weight, created);
 }
 
 void ImagePointData::saveData()
@@ -1750,6 +1798,7 @@ void ImagePointData::saveData()
     rec.insert("x", QJsonValue::fromVariant(xCoord()));
     rec.insert("y", QJsonValue::fromVariant(yCoord()));
     rec.insert("weight", QJsonValue::fromVariant(weight()));
+    rec.insert("created", QJsonValue::fromVariant(created()));
     QJsonDocument doc(rec);
 
     m_saveDataRequest->setDocument(doc);
@@ -1782,6 +1831,7 @@ void ImagePointData::createData(bool pointToNextImage_)
     rec.insert("x", QJsonValue::fromVariant(xCoord()));
     rec.insert("y", QJsonValue::fromVariant(yCoord()));
     rec.insert("weight", QJsonValue::fromVariant(weight()));
+    rec.insert("created", QJsonValue::fromVariant(dateTimeToJsonString(QDateTime::currentDateTime())));
     QJsonDocument doc(rec);
 
     m_createDataRequest->setDocument(doc);
@@ -1858,6 +1908,7 @@ void ImagePointData::cretateTemplQuestionData()
     QJsonObject rec;
     rec.insert("question", QJsonValue::fromVariant("?"));           // template data
     rec.insert("points_to_pass", QJsonValue::fromVariant(1.0));     // template data
+    rec.insert("created", QJsonValue::fromVariant(dateTimeToJsonString(QDateTime::currentDateTime())));     // template data
     QJsonDocument doc(rec);
 
     m_createQuestionRequest->setDocument(doc);

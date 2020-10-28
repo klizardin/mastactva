@@ -30,6 +30,7 @@ class ImagePointsModel;
 
 
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ);
+QString dateTimeToJsonString(const QDateTime &dt_);
 
 
 class ImageData : public QObject
@@ -412,12 +413,14 @@ class QuestionData : public QObject
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString questionText READ questionText WRITE setQuestionText NOTIFY questionTextChanged)
     Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
+    Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
 
 public:
     QuestionData(QObject *parent_ = nullptr,
                  int id_ = -1,
                  const QString &questionText_ = QString(),
-                 qreal pointsToPass_ = 1.0);
+                 qreal pointsToPass_ = 1.0,
+                 const QDateTime &created_ = QDateTime());
     virtual ~QuestionData() override = default;
 
 public:
@@ -427,6 +430,8 @@ public:
     void setQuestionText(const QString &questionText_);
     qreal pointsToPass() const;
     void setPointsToPass(qreal pointsToPass_);
+    const QDateTime &created() const;
+    void setCreated(const QDateTime &created_);
 
     static QuestionData *fromJson(QObject *parent_, const QJsonValue &jsonValue_, bool &error_);
     static QuestionData *fromJson(QObject *parent_, const QJsonDocument &jsonValue_, bool &error_);
@@ -435,11 +440,13 @@ signals:
     void idChanged();
     void questionTextChanged();
     void pointsToPassChanged();
+    void createdChanged();
 
 private:
     int m_id = -1;
     QString m_questionText;
     qreal m_pointsToPass = 1.0;
+    QDateTime m_created;
 };
 
 class ImagePointToQuestion : public QObject
@@ -502,7 +509,8 @@ public:
                    int pointId_ = -1,
                    qreal x_ = 0.5,
                    qreal y_ = 0.5,
-                   qreal weight_ = 1.0);
+                   qreal weight_ = 1.0,
+                   const QDateTime &created_ = QDateTime());
     virtual ~ImagePointData() override;
 
 public:
@@ -513,6 +521,7 @@ public:
     Q_PROPERTY(qreal weight READ weight WRITE setWeight NOTIFY weightChanged)
     Q_PROPERTY(QVariant toNextImage READ toNextImage WRITE setToNextImage NOTIFY toNextImageChanged)
     Q_PROPERTY(QVariant toQuestion READ toQuestion WRITE setToQuestion NOTIFY toQuestionChanged)
+    Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
 
 public:
     int getSourceImageId() const;
@@ -531,6 +540,8 @@ public:
     void setToQuestion(QVariant toQuestion_);
     ImagePointToQuestion *getQuestion();
     ImagePointToNextImage *getNextImageData();
+    const QDateTime &created() const;
+    void setCreated(const QDateTime &created_);
 
     static ImagePointData *fromJson(QObject *parent_, int sourceImageId_, const QJsonValue& jsonObject_, bool& error_);
 
@@ -571,6 +582,7 @@ signals:
     void onDataCreated(int pointId_);
     void onTemplateDataCreated(int pointId_);
     void onPointRemoved();
+    void createdChanged();
 
 private:
     int m_sourceImageId = -1;
@@ -580,6 +592,7 @@ private:
     qreal m_weight = 1.0;
     ImagePointToNextImage *m_imagePointToNextImage = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
+    QDateTime m_created;
     bool m_pointToNextImage = true;
     int m_questionID = -1;
     int m_nextImageId = -1;
