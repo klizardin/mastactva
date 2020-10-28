@@ -734,7 +734,6 @@ void MastactvaAPI::setImageOfGalleryAsTop()
     Q_ASSERT(nullptr != netAPI);
     if(nullptr == netAPI) { return; }
     m_setImageOfGalleryAsTopRequest = netAPI->startJsonRequest();
-    // TODO: make none get method
     netAPI->post(QString("images/%1/set_top/").arg(m_imageOfGalleryId), m_setImageOfGalleryAsTopRequest);
 }
 
@@ -746,7 +745,6 @@ void MastactvaAPI::resetImageOfGalleryAsTop()
     Q_ASSERT(nullptr != netAPI);
     if(nullptr == netAPI) { return; }
     m_resetImageOfGalleryAsTopRequest = netAPI->startJsonRequest();
-    // TODO: make none get method
     netAPI->post(QString("images/%1/reset_top/").arg(m_imageOfGalleryId), m_resetImageOfGalleryAsTopRequest);
 }
 
