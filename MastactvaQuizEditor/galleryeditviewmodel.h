@@ -104,6 +104,7 @@ public:
     ImageData *dataItemAt(int index_);
     int currentIndex() const;
     void setCurrentIndex(int index_);
+    bool isEmpty() const;
 
 signals:
     void galleryIdChanged();
@@ -179,6 +180,8 @@ public:
     void setPointsToPass(const QString &pointsToPass_);
     void setOwnGallery(bool ownGallery_);
 
+    bool isEmpty() const;
+
 signals:
     void idChanged();
     void descriptionChanged();
@@ -239,6 +242,7 @@ public:
     void setCurrentId(int id_);
     void refreshItemAtIndex(int index_);
     int getIndexOfId(int id_) const;
+    bool isCurrentGalleryEmpty() const;
 
     // protected methods
 protected:

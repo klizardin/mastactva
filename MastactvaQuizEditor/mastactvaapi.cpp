@@ -178,20 +178,21 @@ void MastactvaAPI::onEditGallerySlot(int errorCode_, RequestData *request_, cons
     emit onGalleryEdited();
 }
 
-void MastactvaAPI::addImage(int galleryId, const QString &fileURL, bool topImage)
+void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topImage_)
 {
+    const bool galleryEmpty = isCurrentGalleryEmpty();
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(nullptr == netAPI) { return; }
     m_addImageRequest = netAPI->startMultiPartFormData();
-    m_addImageRequest->addPart("form-data; name=\"gallery\"", QString("%1").arg(galleryId).toUtf8());
-    QUrl url(fileURL);
+    m_addImageRequest->addPart("form-data; name=\"gallery\"", QString("%1").arg(galleryId_).toUtf8());
+    QUrl url(fileURL_);
     QString filename = url.toLocalFile();
     QFile *file = new QFile(filename);
     QFileInfo fileInfo(file->fileName());
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
     m_addImageRequest->addPart("form-data; name=\"hash\"", "123");
-    m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", topImage?"True":"False");
+    m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", (topImage_ || galleryEmpty)?"True":"False");
 
     netAPI->post("images/", m_addImageRequest);
 }
@@ -935,3 +936,18 @@ void MastactvaAPI::nextImageSetSlot()
     emit nextImageEdited();
 }
 
+bool MastactvaAPI::isCurrentGalleryEmpty() const
+{
+    QMLMainObjects* qmlMainObjects = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != qmlMainObjects);
+    if(nullptr != qmlMainObjects)
+    {
+        GalleryEditViewModel *galleryModel = qmlMainObjects->getGalleryViewModel();
+        Q_ASSERT(nullptr != galleryModel);
+        if(nullptr != galleryModel)
+        {
+            return galleryModel->isCurrentGalleryEmpty();
+        }
+    }
+    return true;
+}

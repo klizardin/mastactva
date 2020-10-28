@@ -360,6 +360,14 @@ void GalleryImagesModel::setCurrentIndex(int index_)
     emit currentIndexChanged();
 }
 
+bool GalleryImagesModel::isEmpty() const
+{
+    return 0 == std::count_if(std::begin(m_images), std::end(m_images),
+                             [](const ImageData *item_)->int
+    {
+        return nullptr != item_ && item_->getId() > 0;
+    });
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -482,6 +490,11 @@ void GalleryItemData::setOwnGallery(bool ownGallery_)
     m_ownGallery = ownGallery_;
 
     emit ownGalleryChanged();
+}
+
+bool GalleryItemData::isEmpty() const
+{
+    return nullptr == images || images->isEmpty();
 }
 
 template<typename JsonType>
@@ -805,6 +818,12 @@ int GalleryEditViewModel::getIndexOfId(int id_) const
         return -1;
     }
     return std::distance(std::begin(m_data), fit);
+}
+
+bool GalleryEditViewModel::isCurrentGalleryEmpty() const
+{
+    if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return true; }
+    return m_data[m_currentIndex]->isEmpty();
 }
 
 void GalleryEditViewModel::refreshItemAtIndex(int index_)
@@ -1535,9 +1554,6 @@ ImagePointData::ImagePointData(QObject *parent_,
                      this, SLOT(onPointToImageRequestFinished(int, RequestData *, const QJsonDocument &)));
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(onPointRemovedSlot(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onQuestionRemovedSlot(int, RequestData *, const QJsonDocument &)));
-
 }
 
 ImagePointData::~ImagePointData()

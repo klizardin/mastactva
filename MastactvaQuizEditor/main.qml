@@ -186,7 +186,7 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            mastactva.addImage(currentGalleryId, fieldImageFileName, fieldTopImage)
+            mastactva.addImage(currentGalleryId, fieldImageFileName,fieldTopImage)
             mastactva.onImageAdded.connect(onImageAdded)
         }
 

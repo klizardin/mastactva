@@ -41,7 +41,7 @@ public:
     Q_INVOKABLE void loadAllImagesOfGallery();
     Q_INVOKABLE void createNewGallery(const QString &description_, const QString &keywords_, double pointsToPass_);
     Q_INVOKABLE void editGallery(int id, const QString &description_, const QString &keywords_, const QDateTime &created, const QVariant &pointsToPass_);
-    Q_INVOKABLE void addImage(int galleryId, const QString &fileURL, bool topImage);
+    Q_INVOKABLE void addImage(int galleryId_, const QString &fileURL_, bool topImage_);
     Q_INVOKABLE void removeCurrentImage();
     Q_INVOKABLE void setCurrentGalleryIdByIndex(int index_);
     Q_INVOKABLE void setCurrentImageOfGalleryIdByIndex(int index_);
@@ -77,6 +77,7 @@ public:
     Q_INVOKABLE void setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_);
     Q_INVOKABLE void saveAppConsts();
     Q_INVOKABLE void editNextImageOfCurrentImagePoint(int nextImageID_);
+    Q_INVOKABLE bool isCurrentGalleryEmpty() const;
 
 signals:
     void galleryReloaded();

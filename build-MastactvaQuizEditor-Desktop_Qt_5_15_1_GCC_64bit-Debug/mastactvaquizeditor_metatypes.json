@@ -1241,30 +1241,6 @@
                         ],
                         "name": "onPointRemovedSlot",
                         "returnType": "void"
-                    },
-                    {
-                        "access": "protected",
-                        "arguments": [
-                            {
-                                "name": "errorCode_",
-                                "type": "int"
-                            },
-                            {
-                                "name": "request_",
-                                "type": "RequestData*"
-                            },
-                            {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
-                            }
-                        ],
-                        "name": "onQuestionRemovedSlot",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "protected",
-                        "name": "imagePointToQuestionLoadedSlot",
-                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
@@ -1947,15 +1923,15 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "galleryId",
+                                "name": "galleryId_",
                                 "type": "int"
                             },
                             {
-                                "name": "fileURL",
+                                "name": "fileURL_",
                                 "type": "QString"
                             },
                             {
-                                "name": "topImage",
+                                "name": "topImage_",
                                 "type": "bool"
                             }
                         ],
@@ -2276,6 +2252,11 @@
                         ],
                         "name": "editNextImageOfCurrentImagePoint",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isGalleryEmpty",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
