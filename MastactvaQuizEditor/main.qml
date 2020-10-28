@@ -181,12 +181,21 @@ ApplicationWindow {
         property int currentGalleryId: -1
 
         onOpened: {
+            if(mastactva.isCurrentGalleryEmpty())
+            {
+                fieldTopImage = true
+                fieldCanChooseTopImage = false
+            }
+            else
+            {
+                fieldTopImage = false
+                fieldCanChooseTopImage = true
+            }
             fieldImageFileName = ""
-            fieldTopImage = false
         }
 
         onAccepted: {
-            mastactva.addImage(currentGalleryId, fieldImageFileName,fieldTopImage)
+            mastactva.addImage(currentGalleryId, fieldImageFileName, fieldTopImage)
             mastactva.onImageAdded.connect(onImageAdded)
         }
 

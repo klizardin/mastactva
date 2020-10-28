@@ -13,6 +13,7 @@ Dialog {
 
     property alias fieldImageFileName: imageFileName.text
     property alias fieldTopImage: topGalleryImage.checked
+    property bool fieldCanChooseTopImage: true
 
     FileDialog {
         id: openImageDialog
@@ -52,6 +53,7 @@ Dialog {
         CheckBox {
             id: topGalleryImage
             text: qsTr("Top Gallery Image")
+            enabled: fieldCanChooseTopImage
         }
     }
 

@@ -77,7 +77,7 @@ public:
     Q_INVOKABLE void setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_);
     Q_INVOKABLE void saveAppConsts();
     Q_INVOKABLE void editNextImageOfCurrentImagePoint(int nextImageID_);
-    Q_INVOKABLE bool isCurrentGalleryEmpty() const;
+    Q_INVOKABLE bool isCurrentGalleryEmpty();
 
 signals:
     void galleryReloaded();

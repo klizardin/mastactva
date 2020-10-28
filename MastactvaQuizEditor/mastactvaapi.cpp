@@ -936,7 +936,7 @@ void MastactvaAPI::nextImageSetSlot()
     emit nextImageEdited();
 }
 
-bool MastactvaAPI::isCurrentGalleryEmpty() const
+bool MastactvaAPI::isCurrentGalleryEmpty()
 {
     QMLMainObjects* qmlMainObjects = QMLMainObjects::getSingelton();
     Q_ASSERT(nullptr != qmlMainObjects);

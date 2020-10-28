@@ -2255,7 +2255,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "isGalleryEmpty",
+                        "name": "isCurrentGalleryEmpty",
                         "returnType": "bool"
                     }
                 ],
