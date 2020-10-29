@@ -534,49 +534,8 @@ ApplicationWindow {
         }
     }
 
-    Popup {
+    WarningDialog {
         id: popupMessage
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        width: 240
-        height: 320
-        modal: true
-        focus: true
-        padding: 10
-
-        property alias fieldPopupMessageShortText: popupMessageShortText.text
-        property alias fieldPopupMessageDescriptionText: popupMessageDescriptionText.text
-
-        Column {
-            height: parent.height - closeButton.height
-            width: parent.width
-            TextArea {
-                id: popupMessageShortText
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width
-                padding: 10
-                wrapMode: Text.Wrap
-                readOnly: true
-            }
-            TextArea {
-                id: popupMessageDescriptionText
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width
-                padding: 10
-                wrapMode: Text.Wrap
-                readOnly: true
-            }
-        }
-        Button {
-            id: closeButton
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: qsTr("Close")
-            onClicked: {
-                popupMessage.close()
-            }
-        }
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
     }
 
     Action {

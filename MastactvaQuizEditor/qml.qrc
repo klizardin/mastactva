@@ -16,6 +16,7 @@
         <file>ImagePointDialog.qml</file>
         <file>OptionsEditDialog.qml</file>
         <file>NextImageEditDialog.qml</file>
+        <file>WarningDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
