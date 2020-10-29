@@ -71,6 +71,18 @@ void MastactvaAPI::reloadGalleriesModel()
 
 void MastactvaAPI::galleryReloadedSlot()
 {
+    QMLMainObjects* qmlMainObjects = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != qmlMainObjects);
+    if(nullptr != qmlMainObjects)
+    {
+        GalleryEditViewModel *galleryModel = qmlMainObjects->getGalleryViewModel();
+        Q_ASSERT(nullptr != galleryModel);
+        if(nullptr != galleryModel)
+        {
+            QObject::disconnect(galleryModel, SIGNAL(galleryRealoded()), this, SLOT(galleryReloadedSlot()));
+        }
+    }
+
     emit galleryReloaded();
 }
 
@@ -180,6 +192,13 @@ void MastactvaAPI::onEditGallerySlot(int errorCode_, RequestData *request_, cons
 
 void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topImage_)
 {
+    if(galleryId_ < 0)
+    {
+        if(m_galleryId < 0 || m_galleryIndex < 0) { setgalleryIndex(0); }
+        if(m_galleryId < 0 || m_galleryIndex < 0) { return; }
+        galleryId_ = m_galleryId;
+    }
+
     const bool galleryEmpty = isCurrentGalleryEmpty();
     NetAPI *netAPI = NetAPI::getSingelton();
     Q_ASSERT(nullptr != netAPI);

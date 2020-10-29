@@ -105,18 +105,20 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            mastactva.createNewGallery(fieldDescription, fieldKeywords, fieldPointsToPass)
             mastactva.onNewGalleryCreated.connect(onNewGalleryCreated)
+            mastactva.createNewGallery(fieldDescription, fieldKeywords, fieldPointsToPass)
         }
 
         function onNewGalleryCreated()
         {
-            mastactva.reloadGalleriesModel()
+            mastactva.onNewGalleryCreated.disconnect(onNewGalleryCreated)
             mastactva.galleryReloaded.connect(onGalleryReloaded)
+            mastactva.reloadGalleriesModel()
         }
 
         function onGalleryReloaded()
         {
+            mastactva.galleryReloaded.disconnect(onGalleryReloaded)
             galleries.currentIndex = galleryCurrentIndex;
         }
 
@@ -142,18 +144,20 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            mastactva.editGallery(fieldId, fieldDescription, fieldKeywords, fieldCreated, fieldPointsToPass)
             mastactva.onGalleryEdited.connect(onNewGalleryCreated)
+            mastactva.editGallery(fieldId, fieldDescription, fieldKeywords, fieldCreated, fieldPointsToPass)
         }
 
         function onNewGalleryCreated()
         {
-            mastactva.reloadGalleriesModel()
+            mastactva.onGalleryEdited.disconnect(onNewGalleryCreated)
             mastactva.galleryReloaded.connect(onGalleryReloaded)
+            mastactva.reloadGalleriesModel()
         }
 
         function onGalleryReloaded()
         {
+            mastactva.galleryReloaded.disconnect(onGalleryReloaded)
             galleries.currentIndex = galleryCurrentIndex;
         }
 
@@ -195,25 +199,28 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            mastactva.addImage(currentGalleryId, fieldImageFileName, fieldTopImage)
             mastactva.onImageAdded.connect(onImageAdded)
+            mastactva.addImage(currentGalleryId, fieldImageFileName, fieldTopImage)
         }
 
         function onImageAdded()
         {
-            mastactva.reloadGalleriesModel()
-            mastactva.reloadAllImagesOfGalleryViewModel()
+            mastactva.onImageAdded.disconnect(onImageAdded)
             mastactva.galleryReloaded.connect(onGalleryReloaded)
             mastactva.imagesOfGalleryReloaded.connect(onGalleryImagesReloaded)
+            mastactva.reloadGalleriesModel()
+            mastactva.reloadAllImagesOfGalleryViewModel()
         }
 
         function onGalleryReloaded()
         {
+            mastactva.galleryReloaded.disconnect(onGalleryReloaded)
             galleries.currentIndex = galleryCurrentIndex;
         }
 
         function onGalleryImagesReloaded()
         {
+            mastactva.imagesOfGalleryReloaded.disconnect(onGalleryImagesReloaded)
             galleries.images_of_gallery = galleryImagesCurrentIndex;
         }
     }
@@ -527,6 +534,51 @@ ApplicationWindow {
         }
     }
 
+    Popup {
+        id: popupMessage
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        width: 240
+        height: 320
+        modal: true
+        focus: true
+        padding: 10
+
+        property alias fieldPopupMessageShortText: popupMessageShortText.text
+        property alias fieldPopupMessageDescriptionText: popupMessageDescriptionText.text
+
+        Column {
+            height: parent.height - closeButton.height
+            width: parent.width
+            TextArea {
+                id: popupMessageShortText
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width
+                padding: 10
+                wrapMode: Text.Wrap
+                readOnly: true
+            }
+            TextArea {
+                id: popupMessageDescriptionText
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width
+                padding: 10
+                wrapMode: Text.Wrap
+                readOnly: true
+            }
+        }
+        Button {
+            id: closeButton
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: qsTr("Close")
+            onClicked: {
+                popupMessage.close()
+            }
+        }
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+    }
+
     Action {
         id: refreshGalleriesModel
         text: qsTr("&Refresh Galleries")
@@ -551,7 +603,16 @@ ApplicationWindow {
         id: editCurrentGallery
         text: qsTr("&Edit Current Gallery")
         onTriggered: {
-            editCurrentGalleryDialog.open()
+            if(galleryCurrentIndex < 0 || galleryCurrentId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit the gallery you should first select a gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                editCurrentGalleryDialog.open()
+            }
         }
     }
 
@@ -559,7 +620,16 @@ ApplicationWindow {
         id: addGalleryImage
         text: qsTr("Add &Image To Current Gallery")
         onTriggered: {
-            addImageDialog.open()
+            if(galleryCurrentIndex < 0 || galleryCurrentId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add image <b>to</b> the gallery you should first select a gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                addImageDialog.open()
+            }
         }
     }
 
@@ -567,8 +637,17 @@ ApplicationWindow {
         id: takeOwnshipOfGallery
         text: qsTr("Take &Ownship of Current Gallery")
         onTriggered: {
-            mastactva.takeCurrentGalleryOwnship()
-            mastactva.currentGalleryOwnshipTaken.connect(currentGalleryOwnshipTaken)
+            if(galleryCurrentIndex < 0 || galleryCurrentId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To take ownship of the gallery you should first select a gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                mastactva.takeCurrentGalleryOwnship()
+                mastactva.currentGalleryOwnshipTaken.connect(currentGalleryOwnshipTaken)
+            }
         }
 
         function currentGalleryOwnshipTaken()
@@ -581,8 +660,17 @@ ApplicationWindow {
         id: freeOwnshipOfGallery
         text: qsTr("&Free Ownship of Current Gallery")
         onTriggered: {
-            mastactva.freeCurrentGalleryOwnship()
-            mastactva.currentGalleryOwnshipFreed.connect(currentGalleryOwnshipFreed)
+            if(galleryCurrentIndex < 0 || galleryCurrentId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To free ownship of the gallery you should first select a gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                mastactva.freeCurrentGalleryOwnship()
+                mastactva.currentGalleryOwnshipFreed.connect(currentGalleryOwnshipFreed)
+            }
         }
 
         function currentGalleryOwnshipFreed()
@@ -595,11 +683,20 @@ ApplicationWindow {
         id: removeCurrentImageOfGallery
         text: qsTr("&Remove Current Image")
         onTriggered: {
-            connectConfirmDialog()
-            confirmDialog.confirmText = qsTr("<b>Do you really want to remove image from gallery</b>")
-            confirmDialog.imageSource = images_of_gallery.model.currentImageSource()
-            confirmDialog.showImage = true
-            confirmDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove image of the gallery you should first select a image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                connectConfirmDialog()
+                confirmDialog.confirmText = qsTr("<b>Do you really want to remove image from gallery</b>")
+                confirmDialog.imageSource = images_of_gallery.model.currentImageSource()
+                confirmDialog.showImage = true
+                confirmDialog.open()
+            }
         }
 
         function connectConfirmDialog()
@@ -649,8 +746,17 @@ ApplicationWindow {
         id: setImageOfGalleryAsTop
         text: qsTr("Make Image &Top")
         onTriggered: {
-            mastactva.setImageOfGalleryAsTop()
-            mastactva.imageOfGalleryAsTopSet.connect(imageOfGalleryAsTopSet)
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To make image of the gallery top you should first select a image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                mastactva.setImageOfGalleryAsTop()
+                mastactva.imageOfGalleryAsTopSet.connect(imageOfGalleryAsTopSet)
+            }
         }
 
         function imageOfGalleryAsTopSet()
@@ -669,8 +775,17 @@ ApplicationWindow {
         id: resetImageOfGalleryAsTop
         text: qsTr("Make Image &Non Top")
         onTriggered: {
-            mastactva.resetImageOfGalleryAsTop()
-            mastactva.imageOfGalleryAsTopReset.connect(imageOfGalleryAsTopReset)
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To make image of the gallery non top you should first select a image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                mastactva.resetImageOfGalleryAsTop()
+                mastactva.imageOfGalleryAsTopReset.connect(imageOfGalleryAsTopReset)
+            }
         }
 
         function imageOfGalleryAsTopReset()
@@ -705,7 +820,16 @@ ApplicationWindow {
         id: imageOfGalleryCreateDescription
         text: qsTr("&New Description")
         onTriggered: {
-            createNewDescriptionDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                createNewDescriptionDialog.open()
+            }
         }
     }
 
@@ -713,7 +837,22 @@ ApplicationWindow {
         id: imageOfGalleryEditDescription
         text: qsTr("&Edit Description")
         onTriggered: {
-            editDescriptionDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryDescriptionIndex < 0 || imageOfGalleryDescriptionId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select description of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a description of an image of the gallery you should first select a description of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                editDescriptionDialog.open()
+            }
         }
     }
 
@@ -721,12 +860,27 @@ ApplicationWindow {
         id: imageOfGalleryDeleteDescription
         text: qsTr("&Delete Description")
         onTriggered: {
-            var descr = mastactva.getCurrentDescription()
-            if(descr !== undefined) {
-                confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(descr.descriptionStr)) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
-                confirmDialog.showImage = false
-                connectConfirmDialog()
-                confirmDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryDescriptionIndex < 0 || imageOfGalleryDescriptionId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select description of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a description of an image of the gallery you should first select a description of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                var descr = mastactva.getCurrentDescription()
+                if(descr !== undefined) {
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(descr.descriptionStr)) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
             }
         }
 
@@ -765,7 +919,22 @@ ApplicationWindow {
         id: imageOfGalleryEditQuestion
         text: qsTr("&Edit question")
         onTriggered: {
-            editQuestionDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                editQuestionDialog.open()
+            }
         }
     }
 
@@ -773,7 +942,22 @@ ApplicationWindow {
         id: imageOfGalleryCreateAnswer
         text: qsTr("&New answer")
         onTriggered: {
-            newAnswerDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add new answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                newAnswerDialog.open()
+            }
         }
     }
 
@@ -781,7 +965,28 @@ ApplicationWindow {
         id: imageOfGalleryEditAnswer
         text: qsTr("&Edit answer")
         onTriggered: {
-            editAnswerDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit an answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryAnswerIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an answer of the switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit an answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                editAnswerDialog.open()
+            }
         }
     }
 
@@ -789,14 +994,35 @@ ApplicationWindow {
         id: imageOfGalleryDeleteAnswer
         text: qsTr("&Delete answer")
         onTriggered: {
-            var answer = mastactva.getCurrentAnswer()
-            if(answer !== undefined)
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(answer.answer)) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
-                confirmDialog.showImage = false
-                connectConfirmDialog()
-                confirmDialog.open()
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
             }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove the answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryAnswerIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an answer of the switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove the answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                var answer = mastactva.getCurrentAnswer()
+                if(answer !== undefined)
+                {
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(answer.answer)) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
+             }
         }
 
         function connectConfirmDialog()
@@ -833,7 +1059,16 @@ ApplicationWindow {
         id: addPointOfImage
         text: qsTr("Add point template")
         onTriggered: {
-            create()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add switch point of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                create()
+            }
         }
 
         function create()
@@ -852,7 +1087,22 @@ ApplicationWindow {
         id: editPointOfImage
         text: qsTr("Edit point of image")
         onTriggered: {
-            startEdit()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit properties of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                startEdit()
+            }
         }
 
         function startEdit()
@@ -874,13 +1124,28 @@ ApplicationWindow {
         id: removePointOfImage
         text: qsTr("Remove point of image")
         onTriggered: {
-            var imagePoint = mastactva.getCurrentImagePoint()
-            if(imagePoint !== undefined)
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                confirmDialog.confirmText = qsTr("<b>Do you really want to remove image point?</b><br/><br/><b>x :</b>") + imagePoint.xCoord + qsTr("<br/>y :") + imagePoint.xCoord + qsTr("<br/>weight :") + imagePoint.weight + qsTr("<br/>");
-                confirmDialog.showImage = false
-                connectConfirmDialog()
-                confirmDialog.open()
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                var imagePoint = mastactva.getCurrentImagePoint()
+                if(imagePoint !== undefined)
+                {
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove image point?</b><br/><br/><b>x :</b>") + imagePoint.xCoord + qsTr("<br/>y :") + imagePoint.xCoord + qsTr("<br/>weight :") + imagePoint.weight + qsTr("<br/>");
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
             }
         }
 
@@ -932,7 +1197,22 @@ ApplicationWindow {
         id: nextImageEditAction
         text: qsTr("Edit next image")
         onTriggered: {
-            nextImageEditDialog.open()
+            if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.open()
+            }
+            else if(imageOfGalleryPointIndex < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit next image of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                nextImageEditDialog.open()
+            }
         }
     }
 

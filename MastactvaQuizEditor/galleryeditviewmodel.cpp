@@ -693,21 +693,15 @@ void GalleryEditViewModel::onJsonRequestFinished(int errorCode_, RequestData *re
         m_request = nullptr;
         if(errorCode_ != 0) { return; }
         Q_ASSERT(reply_.isArray());
-        if(!(reply_.isArray()))
-        {
-            return;
-        }
+        if(!(reply_.isArray())) { return; }
         QVector<GalleryItemData*> galleries;
         for(int i = 0; ; i++)
         {
             QJsonValue val = reply_[i];
-            if(QJsonValue::Undefined == val.type())
-            {
-                break;
-            }
+            if(QJsonValue::Undefined == val.type()) { break; }
             bool anyError = false;
             GalleryItemData *data = GalleryItemData::fromJson(this, val, anyError);
-            if(anyError)
+            if(anyError || nullptr == data)
             {
                 delete data;
                 data = nullptr;
