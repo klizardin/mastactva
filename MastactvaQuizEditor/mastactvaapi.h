@@ -78,6 +78,7 @@ public:
     Q_INVOKABLE void saveAppConsts();
     Q_INVOKABLE void editNextImageOfCurrentImagePoint(int nextImageID_);
     Q_INVOKABLE bool isCurrentGalleryEmpty();
+    Q_INVOKABLE void removeCurrentGallery();
 
 signals:
     void galleryReloaded();
@@ -112,6 +113,7 @@ signals:
     void onFailedLogingIn(const QString &msg_);
     void currentImagePointRemoved();
     void nextImageEdited();
+    void currentGalleryRemoved();
 
 protected:
     int imageOfGalleryId() const;
@@ -155,6 +157,7 @@ protected slots:
     void onImagePointRemovedSlot();
     void nextImageSetSlot();
     void imagePointToImageLoadedSlot();
+    void currentGalleryRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
@@ -182,6 +185,7 @@ private:
     JsonRequestData *m_setImageOfGalleryAsTopRequest = nullptr;
     JsonRequestData *m_resetImageOfGalleryAsTopRequest = nullptr;
     JsonRequestData *m_testLoginRequest = nullptr;
+    JsonRequestData *m_removeCurrentGalleryRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
     QString m_lastHostURL;
     ImagePointToNextImage *m_imagePointToNextImage = nullptr;

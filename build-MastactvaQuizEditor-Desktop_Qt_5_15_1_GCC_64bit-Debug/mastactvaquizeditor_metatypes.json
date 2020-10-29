@@ -223,7 +223,7 @@
                     {
                         "access": "public",
                         "name": "getImages",
-                        "returnType": "QObject*"
+                        "returnType": "QVariant"
                     }
                 ],
                 "object": true,
@@ -365,7 +365,7 @@
                     {
                         "access": "public",
                         "name": "getCurrentItem",
-                        "returnType": "QObject*"
+                        "returnType": "QVariant"
                     }
                 ],
                 "object": true,
@@ -2299,6 +2299,11 @@
                         "access": "public",
                         "name": "isCurrentGalleryEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "removeCurrentGallery",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2596,6 +2601,11 @@
                     {
                         "access": "public",
                         "name": "nextImageEdited",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentGalleryRemoved",
                         "returnType": "void"
                     }
                 ],
@@ -2932,6 +2942,25 @@
                     {
                         "access": "protected",
                         "name": "imagePointToImageLoadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "document_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "currentGalleryRemovedSlot",
                         "returnType": "void"
                     }
                 ],

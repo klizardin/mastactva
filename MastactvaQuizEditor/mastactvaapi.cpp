@@ -51,6 +51,9 @@ MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
                      this, SLOT(imageOfGalleryAsTopResetSlot(int, RequestData *, const QJsonDocument &)));
     QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(testLogingInSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(netAPI, SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(currentGalleryRemovedSlot(int, RequestData *, const QJsonDocument &)));
+
 }
 
 void MastactvaAPI::reloadGalleriesModel()
@@ -971,4 +974,26 @@ bool MastactvaAPI::isCurrentGalleryEmpty()
         }
     }
     return true;
+}
+
+void MastactvaAPI::removeCurrentGallery()
+{
+    if(m_galleryId < 0 || m_galleryIndex < 0) { return; }
+
+    NetAPI *netAPI = NetAPI::getSingelton();
+    Q_ASSERT(nullptr != netAPI);
+    if(nullptr == netAPI) { return; }
+    m_removeCurrentGalleryRequest = netAPI->startJsonRequest();
+    netAPI->del(QString("galleries/%1/").arg(m_galleryId), m_removeCurrentGalleryRequest);
+}
+
+void MastactvaAPI::currentGalleryRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_)
+{
+    Q_UNUSED(document_);
+
+    if(nullptr == m_removeCurrentGalleryRequest || static_cast<RequestData *>(m_removeCurrentGalleryRequest)!=request_) { return; }
+    m_removeCurrentGalleryRequest = nullptr;
+    if(errorCode_ != 0) { return; }
+
+    emit currentGalleryRemoved();
 }

@@ -164,7 +164,7 @@ public:
     Q_PROPERTY(QDateTime created READ getCreated WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QString pointsToPass READ getPointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_PROPERTY(bool ownGallery READ ownGallery WRITE setOwnGallery NOTIFY ownGalleryChanged)
-    Q_INVOKABLE QObject* getImages();
+    Q_INVOKABLE QVariant getImages();
 
     int getId() const;
     const QString &getDescription() const;
@@ -227,7 +227,7 @@ public:
     // properies
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(int currentId READ currentId WRITE setCurrentId NOTIFY currentIdChanged)
-    Q_INVOKABLE QObject* getCurrentItem();
+    Q_INVOKABLE QVariant getCurrentItem();
 
     //slots
 private slots:

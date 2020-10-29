@@ -576,6 +576,68 @@ ApplicationWindow {
     }
 
     Action {
+        id: removeCurrentGallery
+        text: qsTr("&Remove Current Gallery")
+        onTriggered: {
+            if(galleryCurrentIndex < 0 || galleryCurrentId < 0)
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Select gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit the gallery you should first select a gallery")
+                popupMessage.open()
+            }
+            else
+            {
+                connectConfirmDialog()
+                confirmDialog.confirmText = qsTr("<b>Do you really want to remove the current gallery</b>")
+                confirmDialog.imageSource = galleries.model.getCurrentItem().getImages().currentImageSource()
+                confirmDialog.showImage = true
+                confirmDialog.open()
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
+            remove()
+        }
+
+        function remove()
+        {
+            mastactva.currentGalleryRemoved.connect(currentGalleryRemoved)
+            mastactva.removeCurrentGallery()
+        }
+
+        function currentGalleryRemoved()
+        {
+            mastactva.galleryReloaded.connect(onGalleryReloaded)
+            mastactva.reloadGalleriesModel()
+        }
+
+        function onGalleryReloaded()
+        {
+            mastactva.galleryReloaded.disconnect(onGalleryReloaded)
+            galleryCurrentIndex = -1
+        }
+    }
+
+    Action {
         id: addGalleryImage
         text: qsTr("Add &Image To Current Gallery")
         onTriggered: {
@@ -1184,6 +1246,7 @@ ApplicationWindow {
             MenuItem { action: addGalleryImage }
             MenuItem { action: takeOwnshipOfGallery }
             MenuItem { action: freeOwnshipOfGallery }
+            MenuItem { action: removeCurrentGallery }
         }
         Menu {
             title: qsTr("All &Images of Gallery")
@@ -1545,6 +1608,7 @@ ApplicationWindow {
                                     MenuItem { action: addGalleryImage }
                                     MenuItem { action: takeOwnshipOfGallery }
                                     MenuItem { action: freeOwnshipOfGallery }
+                                    MenuItem { action: removeCurrentGallery }
                                 }
                             }
                         }

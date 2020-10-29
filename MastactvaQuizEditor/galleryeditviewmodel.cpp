@@ -444,9 +444,9 @@ GalleryImagesModel *GalleryItemData::getImagesModel()
     return images;
 }
 
-QObject* GalleryItemData::getImages()
+QVariant GalleryItemData::getImages()
 {
-    return getImagesModel();
+    return QVariant::fromValue(getImagesModel());
 }
 
 bool GalleryItemData::ownGallery() const
@@ -837,13 +837,13 @@ void GalleryEditViewModel::refreshItemAtIndex(int index_)
     netAPI->get(QString("galleries/%1/").arg(m_data.at(index_)->getId()), m_refreshRequest);
 }
 
-QObject* GalleryEditViewModel::getCurrentItem()
+QVariant GalleryEditViewModel::getCurrentItem()
 {
     if(m_currentIndex < 0 || m_currentIndex >= m_data.size())
     {
-        return nullptr;
+        return QVariant();
     }
-    return m_data.at(m_currentIndex);
+    return QVariant::fromValue(m_data.at(m_currentIndex));
 }
 
 ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
