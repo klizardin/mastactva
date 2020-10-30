@@ -51,7 +51,8 @@ DISTFILES += \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
     imports/MastactvaAPI/qmldir \
     Mastactva/Constants.qml \
-    Mastactva/qmldir
+    Mastactva/qmldir \
+    todo.txt
 
 ANDROID_ABIS = armeabi-v7a
 
