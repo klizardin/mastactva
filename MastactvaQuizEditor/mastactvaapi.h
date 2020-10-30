@@ -79,6 +79,7 @@ public:
     Q_INVOKABLE void editNextImageOfCurrentImagePoint(int nextImageID_);
     Q_INVOKABLE bool isCurrentGalleryEmpty();
     Q_INVOKABLE void removeCurrentGallery();
+    Q_INVOKABLE void showErrorMessage(const QString &header_, const QString &description_);
 
 signals:
     void galleryReloaded();
@@ -114,6 +115,7 @@ signals:
     void currentImagePointRemoved();
     void nextImageEdited();
     void currentGalleryRemoved();
+    void errorMessage(const QString &header_, const QString &description_);
 
 protected:
     int imageOfGalleryId() const;

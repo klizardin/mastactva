@@ -21,6 +21,7 @@ class RequestData
 protected:
     bool m_skip = false;
     bool m_jsonReply = true;
+    bool m_processErrorInResposeHandle = false;
     int m_requestID = 0;
     QString m_urlBase;
     QString m_login;
@@ -37,6 +38,8 @@ public:
     void setAuth(const QString &login_, const QString &pass_);
     void setJsonReply(bool jsonReply_);
     const QString& getUrlBase() const;
+    bool processErrorInResponseHandle() const;
+    void setProcessErrorInResponseHandle(bool processErrorInResponseHandle_);
 
 protected:
     void setRequestID(int requestID_);

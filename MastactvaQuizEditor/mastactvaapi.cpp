@@ -997,3 +997,8 @@ void MastactvaAPI::currentGalleryRemovedSlot(int errorCode_, RequestData *reques
 
     emit currentGalleryRemoved();
 }
+
+void MastactvaAPI::showErrorMessage(const QString &header_, const QString &description_)
+{
+    emit errorMessage(header_, description_);
+}

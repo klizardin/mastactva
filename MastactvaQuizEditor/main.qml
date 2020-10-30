@@ -77,6 +77,25 @@ ApplicationWindow {
 
     MastactvaAPI {
         id: mastactva
+        objectName: "MastactvaAPI"
+
+    }
+
+    Connections {
+        target: mastactva
+
+        function onErrorMessage(header, description) {
+            if(header !== "")
+            {
+                popupMessage.fieldPopupMessageShortText = header
+            }
+            else
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Application Error");
+            }
+            popupMessage.fieldPopupMessageDescriptionText = description
+            popupMessage.open()
+        }
     }
 
     ConfirmDialog {

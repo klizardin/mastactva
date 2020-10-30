@@ -1,5 +1,6 @@
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
+#include "mastactvaapi.h"
 
 
 QMLMainObjects::QMLMainObjects(QObject *parent_) : QObject(parent_)
@@ -59,6 +60,15 @@ QuestionAnswersModel *QMLMainObjects::getQuestionAnswersModel()
     return m_questionAnswersModel;
 }
 
+MastactvaAPI *QMLMainObjects::getMastactvaAPI()
+{
+    if(nullptr == m_mastactavaAPI)
+    {
+        searchQMLObjects();
+    }
+    return m_mastactavaAPI;
+}
+
 void QMLMainObjects::searchQMLObjects()
 {
     if(nullptr == m_galleryViewModel)
@@ -76,6 +86,10 @@ void QMLMainObjects::searchQMLObjects()
     if(nullptr == m_questionAnswersModel)
     {
         m_questionAnswersModel = m_root->findChild<QuestionAnswersModel *>("ImageOfGalleryQuestionAnswersModel");
+    }
+    if(nullptr == m_mastactavaAPI)
+    {
+        m_mastactavaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
     }
 }
 

@@ -4,6 +4,8 @@
 #include <QByteArray>
 #include <QFile>
 #include <QNetworkAccessManager>
+#include "qmlmainobjects.h"
+#include "mastactvaapi.h"
 
 
 RequestData::RequestData(const RequestData *defaultRequestData /*= nullptr*/)
@@ -44,6 +46,16 @@ void RequestData::setUrlBase(const QString& urlBase_)
 const QString &RequestData::getUrlBase() const
 {
     return m_urlBase;
+}
+
+bool RequestData::processErrorInResponseHandle() const
+{
+    return m_processErrorInResposeHandle;
+}
+
+void RequestData::setProcessErrorInResponseHandle(bool processErrorInResponseHandle_)
+{
+    m_processErrorInResposeHandle = processErrorInResponseHandle_;
 }
 
 void RequestData::setJsonReply(bool jsonReply_)
@@ -406,6 +418,18 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
             {
                 qDebug() << "HTTP Error : " << reply_->error();
                 qDebug() << jsonReply.toJson();
+
+                if(!rd->processErrorInResponseHandle()) {
+                    MastactvaAPI *mastactvaAPI = QMLMainObjects::getSingelton()->getMastactvaAPI();
+                    if(nullptr != mastactvaAPI)
+                    {
+                        mastactvaAPI->showErrorMessage("",
+                                                       QString("Error code: %1\nServer Answer:\n%2")
+                                                       .arg(reply_->error())
+                                                       .arg((QString)jsonReply.toJson())
+                                                       );
+                    }
+                }
             }
             emit onJsonRequestFinished(int(reply_->error()), rd, jsonReply);
         }
