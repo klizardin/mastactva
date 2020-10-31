@@ -1,3 +1,4 @@
 1. Fix refresh after add new point 
 2. Add checkbox "Only my galleries"
 3. Check groups rights for editor group
+4. For delete operations in db shoul be transaction
