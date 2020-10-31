@@ -28,4 +28,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 ANDROID_ABIS = armeabi-v7a
 
 HEADERS += \
-    Layout.h
+    Layout.h \
+    Model.h

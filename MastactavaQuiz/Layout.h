@@ -44,6 +44,12 @@ namespace layout
         return QVariant::fromValue(val_);
     }
 
+    inline QVariant getValue(const bool &val_, bool toQML_ = true)
+    {
+        Q_UNUSED(toQML_);
+        return QVariant::fromValue((val_?1:0));
+    }
+
     inline QVariant getValue(const QDateTime &val_, bool toQML_ = true)
     {
         Q_UNUSED(toQML_);
@@ -61,19 +67,24 @@ namespace layout
         dta_ = var_.toInt(dta_);
     }
 
+    inline void setValue(const QJsonValue &var_, bool &dta_)
+    {
+        dta_ = var_.toInt(dta_) != 0;
+    }
+
     inline void setValue(const QJsonValue &var_, qreal &dta_)
     {
         dta_ = var_.toDouble(dta_);
     }
 
-    inline void setValue(const QJsonValue &var_, QDateTime &dta_)
-    {
-        dta_ = dateTimeFromJsonString(var_.toString());
-    }
-
     inline void setValue(const QJsonValue &var_, QString &dta_)
     {
         dta_ = var_.toString();
+    }
+
+    inline void setValue(const QJsonValue &var_, QDateTime &dta_)
+    {
+        dta_ = dateTimeFromJsonString(var_.toString());
     }
 
     namespace Private
@@ -114,7 +125,7 @@ namespace layout
                 return m_qmlName;
             }
 
-            virtual QVariant getValue(DataType_ *obj_m, bool toQML_) = 0;
+            virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) = 0;
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
 
@@ -144,7 +155,7 @@ namespace layout
             {
             }
 
-            virtual QVariant getValue(DataType_ *obj_, bool toQML_) const override
+            virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
                 return layout::getValue(obj_->*m_getFunc(), toQML_);
             }
@@ -188,7 +199,7 @@ namespace layout
             {
             }
 
-            virtual QVariant getValue(DataType_ *obj_, bool toQML_) const override
+            virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
                 if(nullptr == obj_->*m_modelPtr)
                 {
@@ -229,6 +240,16 @@ public:
         clearData();
     }
 
+    const QString &getLayoutName() const
+    {
+        return m_layoutName;
+    }
+
+    void setLayoutName(const QString &layoutName_)
+    {
+        m_layoutName = layoutName_;
+    }
+
     template<typename ItemType_>
     void addField(const QString &jsonName_,
                   const QString &qmlName_,
@@ -257,7 +278,7 @@ public:
         }
     }
 
-    QVariant getModelValue(DataType_ *obj_, int role_) const
+    QVariant getModelValue(const DataType_ *obj_, int role_) const
     {
         const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
                                 [role_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
@@ -269,16 +290,17 @@ public:
         return layoutItem->getValue(obj_, true);
     }
 
-    void setModelValue(DataType_ *obj_, int role_, const QVariant &val_) const
+    bool setModelValue(DataType_ *obj_, int role_, const QVariant &val_) const
     {
         const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
                                 [role_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
         {
             return nullptr != item_ && item_->isQMLItem() && item_->getModelIndex() + Qt::UserRole == role_;
         });
-        if(std::end(m_fields) == fit) { return; }
+        if(std::end(m_fields) == fit) { return false; }
         const layout::Private::ILayoutItem<DataType_> *layoutItem = *fit;
         layoutItem->setValue(obj_, val_);
+        return true;
     }
 
     void getJsonValues(DataType_ *obj_, QHash<QString, QVariant> &values_)
@@ -325,12 +347,13 @@ protected:
     }
 
 private:
+    QString m_layoutName;
     int m_lastQMLIndex = 0;
     QVector<layout::Private::ILayoutItem<DataType_> *> m_fields;
 };
 
 template<class DataType_> inline
-const typename DataType_::Layout &getDataLayout()
+const LayoutBase<DataType_> &getDataLayout()
 {
     static typename DataType_::Layout staticItem;
     return staticItem;
