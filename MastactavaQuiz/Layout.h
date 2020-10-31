@@ -236,10 +236,7 @@ public:
                   typename layout::Private::LayoutField<DataType_,ItemType_>::setFuncPtr setFunc_)
     {
         m_fields.push_back(new layout::Private::LayoutField<DataType_,ItemType_>(m_lastQMLIndex, jsonName_, qmlName_, getFunc_, setFunc_));
-        if(m_fields.back()->isQMLItem())
-        {
-            m_lastQMLIndex++;
-        }
+        if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
     }
 
     template<typename ModelType_>
