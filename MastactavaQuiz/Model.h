@@ -50,6 +50,21 @@ protected:
     {
     }
 
+    void setLayoutJsonNameImpl(const QString &layoutJsonName_)
+    {
+        setDataLayout<DataType_>().setLayoutJsonName(layoutJsonName_);
+    }
+
+    void setLayoutIdImpl(const QString &fieldJsonName_)
+    {
+        setDataLayout<DataType_>().setIdField(fieldJsonName_);
+    }
+
+    void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
+    {
+        setDataLayout<DataType_>().setRef(fieldJsonName_, parentModel_, parentModelRefJsonName_);
+    }
+
     virtual QHash<int, QByteArray> roleNames() const override
     {
         return m_roleNames;

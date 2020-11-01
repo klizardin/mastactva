@@ -129,10 +129,49 @@ namespace layout
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
 
+            bool isIdField() const
+            {
+                return m_idField;
+            }
+
+            void setFieldId(bool idField_)
+            {
+                m_idField = idField_;
+            }
+
+            bool isRef() const
+            {
+                return !m_parentModel.isEmpty();
+            }
+
+            const QString &getParentModel() const
+            {
+                return m_parentModel;
+            }
+
+            bool isParentModelRerToIdField() const
+            {
+                return m_parentModelRefJsonName.isEmpty();
+            }
+
+            const QString &getParentModelRefJsonName() const
+            {
+                return m_parentModelRefJsonName;
+            }
+
+            void setRef(const QString &parentModel_, const QString &parentModelRefJsonName_ = QString())
+            {
+                m_parentModel = parentModel_;
+                m_parentModelRefJsonName = parentModelRefJsonName_;
+            }
+
         protected:
             int m_index = 0;
             QString m_jsonName;
             QString m_qmlName;
+            bool m_idField = false;
+            QString m_parentModel;
+            QString m_parentModelRefJsonName;
         };
 
 
@@ -240,16 +279,6 @@ public:
         clearData();
     }
 
-    const QString &getLayoutName() const
-    {
-        return m_layoutName;
-    }
-
-    void setLayoutName(const QString &layoutName_)
-    {
-        m_layoutName = layoutName_;
-    }
-
     template<typename ItemType_>
     void addField(const QString &jsonName_,
                   const QString &qmlName_,
@@ -280,25 +309,15 @@ public:
 
     QVariant getModelValue(const DataType_ *obj_, int role_) const
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                                [role_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
-        {
-            return nullptr != item_ && item_->isQMLItem() && item_->getModelIndex() + Qt::UserRole == role_;
-        });
-        if(std::end(m_fields) == fit) { return QVariant(); }
-        const layout::Private::ILayoutItem<DataType_> *layoutItem = *fit;
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByModelRole(role_);
+        if(nullptr == layoutItem) { return QVariant(); }
         return layoutItem->getValue(obj_, true);
     }
 
     bool setModelValue(DataType_ *obj_, int role_, const QVariant &val_) const
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                                [role_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
-        {
-            return nullptr != item_ && item_->isQMLItem() && item_->getModelIndex() + Qt::UserRole == role_;
-        });
-        if(std::end(m_fields) == fit) { return false; }
-        const layout::Private::ILayoutItem<DataType_> *layoutItem = *fit;
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByModelRole(role_);
+        if(nullptr == layoutItem) { return false; }
         layoutItem->setValue(obj_, val_);
         return true;
     }
@@ -322,7 +341,81 @@ public:
         setJsonValue(obj_, jsonObj_);
     }
 
+    const QString &getLayoutJsonName() const
+    {
+        return m_layoutJsonName;
+    }
+
+    void setLayoutJsonName(const QString &layoutJsonName_)
+    {
+        m_layoutJsonName = layoutJsonName_;
+    }
+
+    bool storeAfterSave() const
+    {
+        return m_storeAfterSave;
+    }
+
+    void setStoreAfterSave(bool storeAfterSave_)
+    {
+        m_storeAfterSave = storeAfterSave_;
+    }
+
+    void setIdField(const QString &fieldJsonName_)
+    {
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+        Q_ASSERT(nullptr != layoutItem); // field not founded
+        if(nullptr == layoutItem) { return; }
+        layoutItem->setFieldId(true);
+    }
+
+    void setRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
+    {
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+        Q_ASSERT(nullptr != layoutItem); // field not founded
+        if(nullptr == layoutItem) { return; }
+        layoutItem->setRef(parentModel_, parentModelRefJsonName_);
+    }
+
 protected:
+    const layout::Private::ILayoutItem<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
+    {
+        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
+                     [&fieldJsonName_](layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return nullptr != item_ && item_->getJsonName() == fieldJsonName_;
+        });
+        if(std::end(m_fields) == fit) { return nullptr; }
+        return *fit;
+    }
+
+    layout::Private::ILayoutItem<DataType_> *findItemByJsonName(const QString &fieldJsonName_)
+    {
+        return const_cast<layout::Private::ILayoutItem<DataType_> *>
+                (const_cast<const LayoutBase<DataType_> *>
+                   (this)->findItemByJsonName(fieldJsonName_)
+                );
+    }
+
+    const layout::Private::ILayoutItem<DataType_> *findItemByModelRole(int role_) const
+    {
+        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
+                     [&role_](layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return nullptr != item_ && item_->isQMLItem() && item_->getModelIndex() + Qt::UserRole == role_;
+        });
+        if(std::end(m_fields) == fit) { return nullptr; }
+        return *fit;
+    }
+
+    layout::Private::ILayoutItem<DataType_> *findItemByModelRole(int role_)
+    {
+        return const_cast<layout::Private::ILayoutItem<DataType_> *>
+                (const_cast<const LayoutBase<DataType_> *>
+                   (this)->findItemByModelRole(role_)
+                );
+    }
+
     template<typename JsonType_>
     void setJsonValues(DataType_ *obj_, const JsonType_ &jsonObj_)
     {
@@ -347,9 +440,10 @@ protected:
     }
 
 private:
-    QString m_layoutName;
+    QString m_layoutJsonName;
     int m_lastQMLIndex = 0;
     QVector<layout::Private::ILayoutItem<DataType_> *> m_fields;
+    bool m_storeAfterSave = true;
 };
 
 template<class DataType_> inline
@@ -358,5 +452,12 @@ const LayoutBase<DataType_> &getDataLayout()
     static typename DataType_::Layout staticItem;
     return staticItem;
 }
+
+template<class DataType_> inline
+LayoutBase<DataType_> &setDataLayout()
+{
+    return const_cast<LayoutBase<DataType_> &>(getDataLayout<DataType_>());
+}
+
 
 #endif // LAYOUT_H
