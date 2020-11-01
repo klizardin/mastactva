@@ -322,21 +322,31 @@ public:
         return true;
     }
 
-    void getJsonValues(DataType_ *obj_, QHash<QString, QVariant> &values_)
+    QVariant getJsonValue(const DataType_ *obj_, const QString &jsonFieldName_) const
     {
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
+        if(nullptr == layoutItem) { return QVariant(); }
+        return layoutItem->getValue(obj_, false);
+    }
+
+    bool getJsonValues(DataType_ *obj_, QHash<QString, QVariant> &values_) const
+    {
+        bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
         {
             if(!item->isJsonItem()) { continue; }
             values_[item->getJsonName()] = item->getValue(obj_, false);
+            ret = true;
         }
+        return ret;
     }
 
-    void setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_)
+    void setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_) const
     {
         setJsonValue(obj_, jsonObj_);
     }
 
-    void setJsonValues(DataType_ *obj_, const QJsonObject &jsonObj_)
+    void setJsonValues(DataType_ *obj_, const QJsonObject &jsonObj_) const
     {
         setJsonValue(obj_, jsonObj_);
     }
@@ -344,6 +354,30 @@ public:
     const QString &getLayoutJsonName() const
     {
         return m_layoutJsonName;
+    }
+
+    QString getIdFieldJsonName() const
+    {
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(item->isIdField() && item->isJsonItem())
+            {
+                return item->getJsonName();
+            }
+        }
+        return QString();
+    }
+
+    QVariant getIdJsonValue(const DataType_ *obj_) const
+    {
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(item->isIdField() && item->isJsonItem())
+            {
+                return item->getValue(obj_, false);
+            }
+        }
+        return QVariant();
     }
 
     void setLayoutJsonName(const QString &layoutJsonName_)

@@ -2,11 +2,29 @@
 #define MODEL_H
 
 #include <QAbstractListModel>
+#include <QString>
+#include <QVector>
+#include <QList>
+#include <QHash>
+#include <QVariant>
 #include "Layout.h"
 
 
+class IListModel
+{
+public:
+    virtual ~IListModel() = default;
+    virtual const QString &getLayoutName() const = 0;
+    virtual QString getLayoutIdFiledName() const = 0;
+    virtual int getCurrentIndex() const;
+    virtual bool getCurrentIndexValues(QHash<QString, QVariant> &values_) const = 0;
+    virtual QVariant getCurrentIndexIdFieldValue() const = 0;
+    virtual QVariant getCurrentIndexFieldValue(const QString &jsonFieldName) const = 0;
+};
+
+
 template<class DataType_>
-class ListModelBaseOfData : public QAbstractListModel
+class ListModelBaseOfData : public QAbstractListModel, public IListModel
 {
 public:
     ListModelBaseOfData(QObject *parent_)
@@ -37,17 +55,63 @@ public:
         return getDataLayout<DataType_>().setModelValue(item, role_, value_);
     }
 
+    virtual const QString &getLayoutName() const override
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName();
+    }
+
+    virtual QString getLayoutIdFiledName() const override
+    {
+        return getDataLayout<DataType_>().getIdFieldJsonName();
+    }
+
+    virtual int getCurrentIndex() const override
+    {
+        return m_currentIndex;
+    }
+
+    virtual bool getCurrentIndexValues(QHash<QString, QVariant> &values_) const override
+    {
+        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
+        return getDataLayout<DataType_>().getJsonValues(m_data[m_currentIndex], values_);
+    }
+
+    virtual QVariant getCurrentIndexIdFieldValue() const override
+    {
+        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return QVariant(); }
+        return getDataLayout<DataType_>().getIdJsonValue(m_data[m_currentIndex]);
+    }
+
+    virtual QVariant getCurrentIndexFieldValue(const QString &jsonFieldName) const override
+    {
+        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return QVariant(); }
+        return getDataLayout<DataType_>().getJsonValue(m_data[m_currentIndex], jsonFieldName);
+    }
+
 protected:
     void loadListImpl()
     {
     }
 
-    DataType_ *createItemImpl()
+    DataType_ *createDataItemImpl()
     {
     }
 
-    void setItemImpl(int index_, DataType_ *item_)
+    QVariant createItemImpl()
     {
+        return QVariant::fromValue(createDataItemImpl());
+    }
+
+    bool setDataItemImpl(int index_, DataType_ *item_)
+    {
+    }
+
+    bool setItemImpl(int index_, const QVariant &item_)
+    {
+        QObject *obj = qvariant_cast<QObject *>(item_);
+        DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
+        if(nullptr == dataItem) { return false; }
+        return setDataItemImpl(index_, dataItem);
     }
 
     void setLayoutJsonNameImpl(const QString &layoutJsonName_)
@@ -60,7 +124,7 @@ protected:
         setDataLayout<DataType_>().setIdField(fieldJsonName_);
     }
 
-    void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
+    void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
     {
         setDataLayout<DataType_>().setRef(fieldJsonName_, parentModel_, parentModelRefJsonName_);
     }
@@ -73,6 +137,7 @@ protected:
 private:
     QVector<DataType_ *> m_data;
     QHash<int, QByteArray> m_roleNames;
+    int m_currentIndex = -1;
 };
 
 
