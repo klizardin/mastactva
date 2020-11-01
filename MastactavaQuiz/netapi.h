@@ -7,6 +7,8 @@
 #include <QList>
 #include <QJsonDocument>
 #include <Layout.h>
+#include "qmlobjects.h"
+#include "IModel.h"
 
 
 class NetAPI;
@@ -16,12 +18,18 @@ class RequestData
 {
 public:
     const QString &getRequestName() const;
+    int getItemId() const;
+    int getItemIndex() const;
 
 protected:
     void setRequestName(const QString &requestName_);
+    void setItenId(int itemId_);
+    void setItenIndex(int itemIndex_);
 
 private:
     QString m_requestName;
+    int m_itemId = -1;          // TODO: may be better to use QVariant
+    int m_itemIndex = -1;
 
     friend class NetAPI;
 };
@@ -52,8 +60,24 @@ public:
     }
 
     template<class DataType_>
-    RequestData *getList()
+    RequestData *getList(const QString &currentRef_)
     {
+        QString parentModel;
+        QString parentModelJsonFieldName;
+        getDataLayout<DataType_>().getRef(currentRef_, parentModel, parentModelJsonFieldName);
+        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel);
+        if(nullptr != parentModelPtr)
+        {
+            const QVariant idField = parentModelJsonFieldName.isEmpty()
+                    ? parentModelPtr->getCurrentIndexIdFieldValue()
+                    : parentModelPtr->getCurrentIndexFieldValue(parentModelJsonFieldName)
+                    ;
+            return getListByRefImpl(getDataLayout<DataType_>().getLayoutJsonName(), currentRef_, idField);
+        }
+        else
+        {
+            return getListImpl(getDataLayout<DataType_>().getLayoutJsonName());
+        }
     }
 
     template<class DataType_>
@@ -68,6 +92,10 @@ public:
 
 signals:
     void onResponse(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+
+protected:
+    RequestData *getListByRefImpl(const QString &jsonLayoutName, const QString &ref_, const QVariant &id_);
+    RequestData *getListImpl(const QString &jsonLayoutName);
 
 
 private:

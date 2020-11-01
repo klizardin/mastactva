@@ -341,14 +341,19 @@ public:
         return ret;
     }
 
-    void setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_) const
+    bool setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_) const
     {
-        setJsonValue(obj_, jsonObj_);
+        return setJsonValue(obj_, jsonObj_);
     }
 
-    void setJsonValues(DataType_ *obj_, const QJsonObject &jsonObj_) const
+    bool setJsonValues(DataType_ *obj_, const QJsonObject &jsonObj_) const
     {
-        setJsonValue(obj_, jsonObj_);
+        return setJsonValue(obj_, jsonObj_);
+    }
+
+    bool setJsonValues(DataType_ *obj_, const QJsonValue &jsonObj_) const
+    {
+        return setJsonValue(obj_, jsonObj_);
     }
 
     const QString &getLayoutJsonName() const
@@ -409,6 +414,20 @@ public:
         Q_ASSERT(nullptr != layoutItem); // field not founded
         if(nullptr == layoutItem) { return; }
         layoutItem->setRef(parentModel_, parentModelRefJsonName_);
+    }
+
+    void getRef(const QString &fieldJsonName_, QString &parentModel_, QString &parentModelRefJsonName_)
+    {
+        parentModel_.clear();
+        parentModelRefJsonName_.clear();
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+        Q_ASSERT(nullptr != layoutItem); // field not founded
+        if(nullptr == layoutItem) { return; }
+        parentModel_ = layoutItem->getParentModel();
+        if(!layoutItem->isParentModelRerToIdField())
+        {
+            parentModelRefJsonName_ = layoutItem->getParentModelRefJsonName();
+        }
     }
 
 protected:

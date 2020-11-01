@@ -10,19 +10,7 @@
 #include "Layout.h"
 #include "netapi.h"
 #include "qmlobjects.h"
-
-
-class IListModel
-{
-public:
-    virtual ~IListModel() = default;
-    virtual const QString &getLayoutName() const = 0;
-    virtual QString getLayoutIdFiledName() const = 0;
-    virtual int getCurrentIndex() const;
-    virtual bool getCurrentIndexValues(QHash<QString, QVariant> &values_) const = 0;
-    virtual QVariant getCurrentIndexIdFieldValue() const = 0;
-    virtual QVariant getCurrentIndexFieldValue(const QString &jsonFieldName) const = 0;
-};
+#include "IModel.h"
 
 
 template<class DataType_>
@@ -90,6 +78,34 @@ public:
         return getDataLayout<DataType_>().getJsonValue(m_data[m_currentIndex], jsonFieldName);
     }
 
+    const QString &currentRefImpl() const
+    {
+        return m_currentRef;
+    }
+
+    void setCurrentRefImpl(const QString &ref_)
+    {
+        m_currentRef = ref_;
+    }
+
+    const DataType_ *findDataItemByIdImpl(int id_) const
+    {
+        const auto fit = std::find_if(std::begin(m_data),
+                                      std::end(m_data),
+                                      [id_](const DataType_ *item)->bool
+        {
+            if(nullptr == item) { return false; }
+            QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
+            return id.toInt() == id_;
+        });
+        return std::end(m_data) == fit ? nullptr : *fit;
+    }
+
+    DataType_ *findDataItemByIdImpl(int id_)
+    {
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByIdImpl(id_));
+    }
+
 protected:
     void loadListImpl()
     {
@@ -101,7 +117,7 @@ protected:
             reloadList = true;
             return;
         }
-        request = netAPI->getList<DataType_>();
+        request = netAPI->getList<DataType_>(currentRefImpl());
         if(nullptr != request) { m_requests.push_back(request); }
     }
 
@@ -168,8 +184,7 @@ protected:
         {
             return nullptr != request_ && request_->getRequestName() == requestName_;
         });
-        if(std::end(m_requests) == fit) { return nullptr; }
-        return *fit;
+        return std::end(m_requests) == fit ? nullptr : *fit;
     }
 
     bool findRequest(RequestData *request_) const
@@ -186,6 +201,17 @@ protected:
 
     void removeRequest(RequestData *request_)
     {
+        if(nullptr == request_) { return; }
+        const auto fit = std::find_if(std::begin(m_requests),
+                                      std::end(m_requests),
+                                      [request_](RequestData *requestItem_)->bool
+        {
+            return nullptr != requestItem_ && requestItem_ == request_;
+        });
+        if(std::end(m_requests) != fit)
+        {
+            m_requests.erase(fit);
+        }
     }
 
     void onJsonResponse(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
@@ -204,6 +230,11 @@ protected:
         else if(request_->getRequestName() == netAPI->getListRequestName<DataType_>())
         {
             listLoaded(reply_);
+            if(reloadList)
+            {
+                reloadList = false;
+                loadListImpl();
+            }
         }
         else if(request_->getRequestName() == netAPI->addItemRequestName<DataType_>())
         {
@@ -218,18 +249,63 @@ protected:
 
     virtual void handleError(int errorCode_, const QJsonDocument &reply_)
     {
+        Q_UNUSED(errorCode_);
+        Q_UNUSED(reply_);
     }
 
     virtual void listLoaded(const QJsonDocument &reply_)
     {
+        Q_ASSERT(reply_.isArray());
+        clearData();
+        QList<DataType_ *> loaded;
+        for(int i = 0; ; i++)
+        {
+            QJsonValue itemJV = reply_[i];
+            if(itemJV.isUndefined())
+            {
+                break;
+            }
+            DataType_ *item = new DataType_(this);
+            const bool ok = getDataLayout<DataType_>.setJsonValues(item, itemJV);
+            if(!ok)
+            {
+                delete item;
+                continue;
+            }
+            loaded.push_back(item);
+        }
+        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + loaded.size() - 1);
+        std::copy(std::begin(loaded), std::end(loaded),
+                  std::inserter(m_data, std::end(m_data)));
+        endInsertRows();
+        loaded.clear();
     }
 
     virtual void itemAdded(RequestData *request_, const QJsonDocument &reply_)
     {
+        const int row = request_->getItemIndex();
+        if(row < 0 || row >= m_data.size()) { return; }
+        getDataLayout<DataType_>.setJsonValues(m_data[row], reply_);
     }
 
     virtual void itemSet(RequestData *request_, const QJsonDocument &reply_)
     {
+        const int id = request_->getItemId();
+        DataType_ *item = findDataItemByIdImpl(id);
+        if(nullptr == item) { return; }
+        getDataLayout<DataType_>.setJsonValues(item, reply_);
+    }
+
+    void clearData()
+    {
+        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        for(auto *&p: m_data)
+        {
+            delete p;
+            p = nullptr;
+        }
+        m_data.clear();
+        endRemoveRows();
     }
 
 private:
@@ -238,6 +314,7 @@ private:
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;
     bool reloadList = false;
+    QString m_currentRef;
 };
 
 
