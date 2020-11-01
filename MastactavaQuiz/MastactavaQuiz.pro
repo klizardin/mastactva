@@ -8,7 +8,8 @@ CONFIG += c++17
 
 SOURCES += \
         main.cpp \
-        netapi.cpp
+        netapi.cpp \
+        qmlobjects.cpp
 
 RESOURCES += qml.qrc
 
@@ -31,4 +32,5 @@ ANDROID_ABIS = armeabi-v7a
 HEADERS += \
     Layout.h \
     Model.h \
-    netapi.h
+    netapi.h \
+    qmlobjects.h

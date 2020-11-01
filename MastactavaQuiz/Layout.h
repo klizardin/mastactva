@@ -356,6 +356,11 @@ public:
         return m_layoutJsonName;
     }
 
+    void setLayoutJsonName(const QString &layoutJsonName_)
+    {
+        m_layoutJsonName = layoutJsonName_;
+    }
+
     QString getIdFieldJsonName() const
     {
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
@@ -378,11 +383,6 @@ public:
             }
         }
         return QVariant();
-    }
-
-    void setLayoutJsonName(const QString &layoutJsonName_)
-    {
-        m_layoutJsonName = layoutJsonName_;
     }
 
     bool storeAfterSave() const
