@@ -165,6 +165,10 @@ public:
 
     DataType_ *createDataItemImpl()
     {
+        DataType_ *dta = new DataType_(static_cast<QObject *>(this));
+        getDataLayout<DataType_>.setSpecialFieldValue(layout::SpecialFieldEn::appId, QVariant::fromValue(m_lastAppId), dta);
+        m_lastAppId++;
+        return dta;
     }
 
     QVariant createItemImpl()
@@ -412,6 +416,7 @@ private:
     QVector<RequestData *> m_requests;
     bool reloadList = false;
     QString m_currentRef;
+    int m_lastAppId = 1;
 };
 
 
