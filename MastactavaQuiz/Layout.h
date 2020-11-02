@@ -37,6 +37,12 @@ QString dateTimeToJsonString(const QDateTime &dt_)
 
 namespace layout
 {
+    enum class SpecialFieldEn : int
+    {
+        none,
+        appId
+    };
+
     template<typename T_>
     inline QVariant getValue(const T_ &val_, bool toQML_ = true)
     {
@@ -93,10 +99,15 @@ namespace layout
         class ILayoutItem
         {
         public:
-            ILayoutItem(int index_, const QString &jsonName_, const QString &qmlName_)
+            ILayoutItem(int index_,
+                        const QString &jsonName_,
+                        const QString &qmlName_,
+                        SpecialFieldEn type_ = SpecialFieldEn::none
+                        )
                 : m_index(index_),
                   m_jsonName(jsonName_),
-                  m_qmlName(qmlName_)
+                  m_qmlName(qmlName_),
+                  m_type(type_)
             {
             }
 
@@ -107,22 +118,22 @@ namespace layout
 
             virtual bool isJsonItem() const
             {
-                return !m_jsonName.isEmpty();
+                return getType()==SpecialFieldEn::none && !m_jsonName.isEmpty();
             }
 
             virtual bool isQMLItem() const
             {
-                return !m_qmlName.isEmpty();
+                return getType()==SpecialFieldEn::none && !m_qmlName.isEmpty();
             }
 
-            virtual const QString &getJsonName() const
+            virtual QString getJsonName() const
             {
-                return m_jsonName;
+                return getType()==SpecialFieldEn::none ? m_jsonName : QString();
             }
 
-            virtual const QString &getQMLName() const
+            virtual QString getQMLName() const
             {
-                return m_qmlName;
+                return getType()==SpecialFieldEn::none ? m_qmlName : QString();
             }
 
             virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) = 0;
@@ -165,6 +176,11 @@ namespace layout
                 m_parentModelRefJsonName = parentModelRefJsonName_;
             }
 
+            SpecialFieldEn getType() const
+            {
+                return m_type;
+            }
+
         protected:
             int m_index = 0;
             QString m_jsonName;
@@ -172,6 +188,7 @@ namespace layout
             bool m_idField = false;
             QString m_parentModel;
             QString m_parentModelRefJsonName;
+            SpecialFieldEn m_type = SpecialFieldEn::none;
         };
 
 
@@ -265,6 +282,42 @@ namespace layout
             ModelTypePtr DataType_::*m_modelPtr = nullptr;
             createModelFuncPtr m_createFuncPtr;
         };
+
+        template<typename DataType_, typename ItemType_>
+        class LayoutSpecialField : public ILayoutItem<DataType_>
+        {
+        public:
+            using itemMemberPtr = ItemType_ DataType_::*;
+
+            LayoutSpecialField(int index_,
+                             const QString &jsonName_,
+                             itemMemberPtr itemPtr,
+                             SpecialFieldEn type_
+                             )
+                : ILayoutItem<DataType_>(index_, jsonName_, QString(), type_),
+                  m_itemPtr(itemPtr)
+            {
+            }
+
+            virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
+            {
+                return layout::getValue(obj_->*m_itemPtr, toQML_);
+            }
+
+            virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
+            {
+                layout::setValue(value_, obj_->*m_itemPtr);
+            }
+
+            virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
+            {
+                layout::setValue(value_, obj_->*m_itemPtr);
+            }
+
+        protected:
+            itemMemberPtr m_itemPtr = nullptr;
+        };
+
     }; // namesapce private
 };//namespace layout
 
@@ -341,19 +394,28 @@ public:
         return ret;
     }
 
-    bool setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_) const
+    bool setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_, int index_ = 0) const
     {
-        return setJsonValue(obj_, jsonObj_);
+        if(jsonObj_.isArray())
+        {
+            QJsonValue jv = jsonObj_[index_];
+            if(jv.isUndefined()) { return false; }
+            setJsonValuesTempl(obj_, jv);
+        }
+        else if(jsonObj_.isObject())
+        {
+            setJsonValuesTempl(obj_, jsonObj_);
+        }
     }
 
     bool setJsonValues(DataType_ *obj_, const QJsonObject &jsonObj_) const
     {
-        return setJsonValue(obj_, jsonObj_);
+        return setJsonValuesTempl(obj_, jsonObj_);
     }
 
     bool setJsonValues(DataType_ *obj_, const QJsonValue &jsonObj_) const
     {
-        return setJsonValue(obj_, jsonObj_);
+        return setJsonValuesTempl(obj_, jsonObj_);
     }
 
     const QString &getLayoutJsonName() const
@@ -388,6 +450,33 @@ public:
             }
         }
         return QVariant();
+    }
+
+    QVariant getSpecialFieldValue(layout::SpecialFieldEn type_, const DataType_ *obj_) const
+    {
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(nullptr == item) { continue; }
+            if(item->getType() == type_)
+            {
+                return item->getValue(obj_, false);
+            }
+        }
+        return QVariant();
+    }
+
+    bool setSpecialFieldValue(layout::SpecialFieldEn type_, const QVariant &value_, const DataType_ *obj_) const
+    {
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(nullptr == item) { continue; }
+            if(item->getType() == type_)
+            {
+                item->setValue(obj_, value_);
+                return true;
+            }
+        }
+        return false;
     }
 
     bool storeAfterSave() const
@@ -431,6 +520,22 @@ public:
     }
 
 protected:
+    template<typename JsonType_>
+    bool setJsonValuesTempl(DataType_ *obj_, const JsonType_ &jsonObj_)
+    {
+        bool ret = false;
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(nullptr == item) { continue; }
+            if(!item->isJsonItem()) { continue; }
+            QJsonValue jv = jsonObj_[item->getJsonName()];
+            if(jv.isUndefined()) { continue ; }
+            item->setValue(obj_, jv);
+            ret = true;
+        }
+        return ret;
+    }
+
     const layout::Private::ILayoutItem<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
     {
         const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),

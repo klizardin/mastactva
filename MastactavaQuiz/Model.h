@@ -88,22 +88,40 @@ public:
         m_currentRef = ref_;
     }
 
-    const DataType_ *findDataItemByIdImpl(int id_) const
+    const DataType_ *findDataItemByIdImpl(const QVariant &id_) const
     {
         const auto fit = std::find_if(std::begin(m_data),
                                       std::end(m_data),
-                                      [id_](const DataType_ *item)->bool
+                                      [&id_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
-            QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
-            return id.toInt() == id_;
+            const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
+            return id == id_;
         });
         return std::end(m_data) == fit ? nullptr : *fit;
     }
 
-    DataType_ *findDataItemByIdImpl(int id_)
+    DataType_ *findDataItemByIdImpl(const QVariant &id_)
     {
         return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByIdImpl(id_));
+    }
+
+    const DataType_ *findDataItemByAppIdImpl(const QVariant &appId_) const
+    {
+        const auto fit = std::find_if(std::begin(m_data),
+                                      std::end(m_data),
+                                      [&appId_](const DataType_ *item)->bool
+        {
+            if(nullptr == item) { return false; }
+            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+            return appId.isValid() && appId == appId_;
+        });
+        return std::end(m_data) == fit ? nullptr : *fit;
+    }
+
+    DataType_ *findDataItemAppByIdImpl(const QVariant &appId_)
+    {
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByAppIdImpl(appId_));
     }
 
 protected:
@@ -283,14 +301,15 @@ protected:
 
     virtual void itemAdded(RequestData *request_, const QJsonDocument &reply_)
     {
-        const int row = request_->getItemIndex();
-        if(row < 0 || row >= m_data.size()) { return; }
-        getDataLayout<DataType_>.setJsonValues(m_data[row], reply_);
+        const QVariant appId = request_->getItemAppId();
+        DataType_ *item = findDataItemByAppIdImpl(appId);
+        if(nullptr == item) { return; }
+        getDataLayout<DataType_>.setJsonValues(item, reply_);
     }
 
     virtual void itemSet(RequestData *request_, const QJsonDocument &reply_)
     {
-        const int id = request_->getItemId();
+        const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>.setJsonValues(item, reply_);

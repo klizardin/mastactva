@@ -18,18 +18,18 @@ class RequestData
 {
 public:
     const QString &getRequestName() const;
-    int getItemId() const;
-    int getItemIndex() const;
+    QVariant getItemId() const;
+    QVariant getItemAppId() const;
 
 protected:
     void setRequestName(const QString &requestName_);
-    void setItenId(int itemId_);
-    void setItenIndex(int itemIndex_);
+    void setItenId(const QVariant &itemId_);
+    void setItenIndex(const QVariant &itemAppId_);
 
 private:
     QString m_requestName;
-    int m_itemId = -1;          // TODO: may be better to use QVariant
-    int m_itemIndex = -1;
+    QVariant m_itemId = QVariant::fromValue(-1);
+    QVariant m_itemAppId = QVariant::fromValue(-1);
 
     friend class NetAPI;
 };

@@ -6,14 +6,14 @@ const QString &RequestData::getRequestName() const
     return m_requestName;
 }
 
-int RequestData::getItemId() const
+QVariant RequestData::getItemId() const
 {
     return m_itemId;
 }
 
-int RequestData::getItemIndex() const
+QVariant RequestData::getItemAppId() const
 {
-    return m_itemIndex;
+    return m_itemAppId;
 }
 
 void RequestData::setRequestName(const QString &requestName_)
@@ -21,14 +21,14 @@ void RequestData::setRequestName(const QString &requestName_)
     m_requestName = requestName_;
 }
 
-void RequestData::setItenId(int itemId_)
+void RequestData::setItenId(const QVariant &itemId_)
 {
     m_itemId = itemId_;
 }
 
-void RequestData::setItenIndex(int itemIndex_)
+void RequestData::setItenIndex(const QVariant &itemAppId_)
 {
-    m_itemIndex = itemIndex_;
+    m_itemAppId = itemAppId_;
 }
 
 
