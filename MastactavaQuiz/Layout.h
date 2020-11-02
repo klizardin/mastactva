@@ -290,11 +290,10 @@ namespace layout
             using itemMemberPtr = ItemType_ DataType_::*;
 
             LayoutSpecialField(int index_,
-                             const QString &jsonName_,
                              itemMemberPtr itemPtr,
                              SpecialFieldEn type_
                              )
-                : ILayoutItem<DataType_>(index_, jsonName_, QString(), type_),
+                : ILayoutItem<DataType_>(index_, QString(), QString(), type_),
                   m_itemPtr(itemPtr)
             {
             }
@@ -352,11 +351,11 @@ public:
     }
 
     template<typename ItemType_>
-    void addSpecial(const QString &jsonName_,
-                  typename layout::Private::LayoutSpecialField<DataType_,ItemType_>::LayoutSpecialField varPtr_,
-                  layout::SpecialFieldEn type_)
+    void addSpecial(layout::SpecialFieldEn type_,
+                  typename layout::Private::LayoutSpecialField<DataType_,ItemType_>::LayoutSpecialField varPtr_
+                  )
     {
-        m_fields.push_back(new layout::Private::LayoutSpecialField<DataType_,ItemType_>(m_lastQMLIndex, jsonName_, varPtr_, type_));
+        m_fields.push_back(new layout::Private::LayoutSpecialField<DataType_,ItemType_>(m_lastQMLIndex, varPtr_, type_));
     }
 
     void initQMLModelRoleNames(QHash<int, QByteArray> &roleNames_)
