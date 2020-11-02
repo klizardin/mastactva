@@ -23,6 +23,11 @@ public:
         getDataLayout<DataType_>().initQMLModelRoleNames(m_roleNames);
     }
 
+    virtual ~ListModelBaseOfData() override
+    {
+        clearData();
+    }
+
     virtual int rowCount(const QModelIndex &parent_) const override
     {
         Q_UNUSED(parent_);
@@ -78,6 +83,7 @@ public:
         return getDataLayout<DataType_>().getJsonValue(m_data[m_currentIndex], jsonFieldName);
     }
 
+protected:
     void setCurrentIndexImpl(int index_)
     {
         m_currentIndex = index_;
@@ -244,51 +250,7 @@ public:
         setDataLayout<DataType_>().setRef(fieldJsonName_, parentModel_, parentModelRefJsonName_);
     }
 
-protected:
-    virtual QHash<int, QByteArray> roleNames() const override
-    {
-        return m_roleNames;
-    }
-
-    RequestData * findRequest(const QString &requestName_)
-    {
-        const auto fit = std::find_if(std::begin(m_requests),
-                                      std::end(m_requests),
-                                      [&requestName_](RequestData *request_)->bool
-        {
-            return nullptr != request_ && request_->getRequestName() == requestName_;
-        });
-        return std::end(m_requests) == fit ? nullptr : *fit;
-    }
-
-    bool findRequest(RequestData *request_) const
-    {
-        if(nullptr == request_) { return false; }
-        const auto fit = std::find_if(std::begin(m_requests),
-                                      std::end(m_requests),
-                                      [request_](RequestData *requestItem_)->bool
-        {
-            return nullptr != requestItem_ && requestItem_ == request_;
-        });
-        return std::end(m_requests) != fit;
-    }
-
-    void removeRequest(RequestData *request_)
-    {
-        if(nullptr == request_) { return; }
-        const auto fit = std::find_if(std::begin(m_requests),
-                                      std::end(m_requests),
-                                      [request_](RequestData *requestItem_)->bool
-        {
-            return nullptr != requestItem_ && requestItem_ == request_;
-        });
-        if(std::end(m_requests) != fit)
-        {
-            m_requests.erase(fit);
-        }
-    }
-
-    void onJsonResponse(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlotImpl(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
     {
         if(!findRequest(request_)) { return; }
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
@@ -322,6 +284,7 @@ protected:
         clearTempData();
     }
 
+protected:
     virtual void handleError(int errorCode_, const QJsonDocument &reply_)
     {
         Q_UNUSED(errorCode_);
@@ -370,6 +333,50 @@ protected:
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>.setJsonValues(item, reply_);
+    }
+
+protected:
+    virtual QHash<int, QByteArray> roleNames() const override
+    {
+        return m_roleNames;
+    }
+
+    RequestData * findRequest(const QString &requestName_)
+    {
+        const auto fit = std::find_if(std::begin(m_requests),
+                                      std::end(m_requests),
+                                      [&requestName_](RequestData *request_)->bool
+        {
+            return nullptr != request_ && request_->getRequestName() == requestName_;
+        });
+        return std::end(m_requests) == fit ? nullptr : *fit;
+    }
+
+    bool findRequest(RequestData *request_) const
+    {
+        if(nullptr == request_) { return false; }
+        const auto fit = std::find_if(std::begin(m_requests),
+                                      std::end(m_requests),
+                                      [request_](RequestData *requestItem_)->bool
+        {
+            return nullptr != requestItem_ && requestItem_ == request_;
+        });
+        return std::end(m_requests) != fit;
+    }
+
+    void removeRequest(RequestData *request_)
+    {
+        if(nullptr == request_) { return; }
+        const auto fit = std::find_if(std::begin(m_requests),
+                                      std::end(m_requests),
+                                      [request_](RequestData *requestItem_)->bool
+        {
+            return nullptr != requestItem_ && requestItem_ == request_;
+        });
+        if(std::end(m_requests) != fit)
+        {
+            m_requests.erase(fit);
+        }
     }
 
     void clearData()

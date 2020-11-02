@@ -13,6 +13,8 @@
 
 class NetAPI;
 class QNetworkReply;
+class QNetworkRequest;
+class QNetworkAccessManager;
 
 
 class RequestData
@@ -27,8 +29,9 @@ protected:
     void setRequestName(const QString &requestName_);
     void setItenId(const QVariant &itemId_);
     void setItemAppId(const QVariant &itemAppId_);
-    void setReplay(QNetworkReply *reply_);
+    void setReply(QNetworkReply *reply_);
     bool compare(QNetworkReply *reply_) const;
+    bool processErrorInNetAPI() const;
 
 private:
     bool m_processErrorInNetAPI = true;
@@ -46,6 +49,7 @@ class NetAPI : public QObject
     Q_OBJECT
 public:
     NetAPI(QObject *parent_ = nullptr);
+    virtual ~NetAPI() override;
 
     template<class DataType_>
     QString getListRequestName() const
@@ -109,10 +113,11 @@ public:
     }
 
 signals:
-    void onResponse(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void response(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void error(int errorCode_, const QJsonDocument &reply_);
 
 protected slots:
-    void onRequestFinished(RequestData *request_, QNetworkReply *reply_);
+    void replayFinished(QNetworkReply *reply_);
 
 protected:
     RequestData *getListByRefImpl(const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_);
@@ -120,12 +125,18 @@ protected:
     RequestData *addItemImpl(const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
     RequestData *setItemImpl(const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
 
+    void setBasicAuthentification(QNetworkRequest* netRequest_);
+    void clearData();
+    bool init();
+
 private:
     QString m_hostName;
     QString m_loggin;
     QString m_pass;
     QString m_hostUrlBase;
 
+    QNetworkAccessManager *m_networkManager = nullptr;
+    QList<RequestData*> m_requests;
 };
 
 #endif // NETAPI_H
