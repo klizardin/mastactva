@@ -101,12 +101,12 @@ protected:
 
     bool storeAfterSaveImpl() const
     {
-        return getDataLayout<DataType_>.storeAfterSave();
+        return getDataLayout<DataType_>().storeAfterSave();
     }
 
     void setStoreAfterSaveImpl(bool storeAfterSave_)
     {
-        setDataLayout<DataType_>.setStoreAfterSave(storeAfterSave_);
+        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
     }
 
     const DataType_ *findDataItemByIdImpl(const QVariant &id_) const
@@ -124,7 +124,7 @@ protected:
 
     DataType_ *findDataItemByIdImpl(const QVariant &id_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByIdImpl(id_));
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>*>(this)->findDataItemByIdImpl(id_));
     }
 
     QVariant findItemByIdImpl(const QVariant &id_)
@@ -145,9 +145,9 @@ protected:
         return std::end(m_data) == fit ? nullptr : *fit;
     }
 
-    DataType_ *findDataItemAppByIdImpl(const QVariant &appId_)
+    DataType_ *findDataItemByAppIdImpl(const QVariant &appId_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByAppIdImpl(appId_));
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_> *>(this)->findDataItemByAppIdImpl(appId_));
     }
 
     QVariant findItemByAppIdImpl(const QVariant &appId_)
@@ -172,7 +172,7 @@ protected:
     DataType_ *createDataItemImpl()
     {
         DataType_ *dta = new DataType_(static_cast<QObject *>(this));
-        getDataLayout<DataType_>.setSpecialFieldValue(layout::SpecialFieldEn::appId, QVariant::fromValue(m_lastAppId), dta);
+        getDataLayout<DataType_>().setSpecialFieldValue(layout::SpecialFieldEn::appId, QVariant::fromValue(m_lastAppId), dta);
         m_lastAppId++;
         return dta;
     }
@@ -189,7 +189,7 @@ protected:
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false;; }
 
-        bool ret = getDataLayout<DataType_>.copyQMLFields(item_, m_data[index_]);
+        bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
         if(!ret) { return ret; }
 
         RequestData *request = netAPI->setItem(m_data[index_]);
@@ -304,7 +304,7 @@ protected:
                 break;
             }
             DataType_ *item = new DataType_(this);
-            const bool ok = getDataLayout<DataType_>.setJsonValues(item, itemJV);
+            const bool ok = getDataLayout<DataType_>().setJsonValues(item, itemJV);
             if(!ok)
             {
                 delete item;
@@ -324,7 +324,7 @@ protected:
         const QVariant appId = request_->getItemAppId();
         DataType_ *item = findDataItemByAppIdImpl(appId);
         if(nullptr == item) { return; }
-        getDataLayout<DataType_>.setJsonValues(item, reply_);
+        getDataLayout<DataType_>().setJsonValues(item, reply_);
     }
 
     virtual void itemSet(RequestData *request_, const QJsonDocument &reply_)
@@ -332,7 +332,7 @@ protected:
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
-        getDataLayout<DataType_>.setJsonValues(item, reply_);
+        getDataLayout<DataType_>().setJsonValues(item, reply_);
     }
 
 protected:
@@ -445,7 +445,7 @@ private:
 
 #define LAYOUTMODEL()                                                                                           \
 public:                                                                                                         \
-    Q_PROPERTY(int currentIndex READ getCurrentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)          \
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)             \
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
     Q_INVOKABLE QVariant findItemById(const QVariant &id_)                                                      \
@@ -492,16 +492,15 @@ public:                                                                         
     {                                                                                                           \
         setLayoutRefImpl(fieldJsonName_, parentModel_, parentModelRefJsonName_);                                \
     }                                                                                                           \
-protected slots:                                                                                                \
-    void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)                   \
-    {                                                                                                           \
-        jsonResponseSlotImpl(errorCode_, request_, reply_);                                                     \
-    }                                                                                                           \
 protected:                                                                                                      \
     void setCurrentIndex(int index_)                                                                            \
     {                                                                                                           \
         setCurrentIndexImpl(index_);                                                                            \
         emit currentIndexChanged();                                                                             \
+    }                                                                                                           \
+    int currentIndex() const                                                                                    \
+    {                                                                                                           \
+        return getCurrentIndex();                                                                               \
     }                                                                                                           \
     QString currentRef() const                                                                                  \
     {                                                                                                           \
@@ -520,10 +519,6 @@ protected:                                                                      
         setStoreAfterSaveImpl(storeAfterSave_);                                                                 \
         emit storeAfterSaveChanged();                                                                           \
     }                                                                                                           \
-signals:                                                                                                        \
-    void currentIndexChanged();                                                                                 \
-    void currentRefChanged();                                                                                   \
-    void storeAfterSaveChanged();                                                                               \
 /* end macro LAYOUTMODEL() */
 
 

@@ -2,9 +2,12 @@
 #include "netapi.h"
 #include "Model.h"
 #include <QObject>
+#include "quizuser.h"
 
 
 static QString g_netAPIQMLName = "NetAPI";
+static QString g_quizUserLayoutName = "quiz-user";
+static QString g_quizUserModel = "QuizUserModel";
 
 
 void QMLObjects::setRoot(QObject *root_)
@@ -16,7 +19,7 @@ IListModel *QMLObjects::getListModel(const QString &layoutName_)
 {
     IListModel *model = findListModel(layoutName_);
     if(nullptr != model) { return model; }
-    searchObjects(layoutName_);
+    searchObjects();
     return findListModel(layoutName_);
 }
 
@@ -37,13 +40,15 @@ NetAPI *QMLObjects::getNetAPI()
     return m_netAPI;
 }
 
-void QMLObjects::searchObjects(const QString &layoutName_ /*= QString()*/)
+void QMLObjects::searchObjects()
 {
     if(nullptr == m_netAPI) { m_netAPI = m_root->findChild<NetAPI *>(g_netAPIQMLName); }
-    if(!layoutName_.isEmpty())
+    IListModel *m = nullptr;
+    m = findListModel(g_quizUserLayoutName);
+    if(nullptr == m)
     {
-        IListModel *model = m_root->findChild<IListModel *>(layoutName_);
-        if(nullptr != model) { m_models.push_back(model); }
+        QuizUserModel *m1 = m_root->findChild<QuizUserModel *>(g_quizUserModel);
+        if(nullptr != m1) m_models.push_back(static_cast<IListModel *>(m1));
     }
 }
 

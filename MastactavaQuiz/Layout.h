@@ -111,6 +111,8 @@ namespace layout
             {
             }
 
+            virtual ~ILayoutItem() = default;
+
             virtual int getModelIndex() const
             {
                 return m_index;
@@ -224,21 +226,21 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                return layout::getValue(obj_->*m_getFunc(), toQML_);
+                return layout::getValue((obj_->*m_getFunc)(), toQML_);
             }
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
                 ItemType_ val;
                 layout::setValue(value_, val);
-                obj_->*setFunc(val);
+                (obj_->*m_setFunc)(val);
             }
 
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
             {
                 ItemType_ val;
                 layout::setValue(value_, val);
-                obj_->*setFunc(val);
+                (obj_->*m_setFunc)(val);
             }
 
         protected:
@@ -376,12 +378,13 @@ public:
         m_fields.push_back(new layout::Private::LayoutSpecialField<DataType_,ItemType_>(m_lastQMLIndex, varPtr_, type_));
     }
 
-    void initQMLModelRoleNames(QHash<int, QByteArray> &roleNames_)
+    void initQMLModelRoleNames(QHash<int, QByteArray> &roleNames_) const
     {
         for(const layout::Private::ILayoutItem<DataType_> *layoutItem: m_fields)
         {
             if(nullptr == layoutItem || !layoutItem->isQMLItem()) { continue; }
-            roleNames_[Qt::UserRole + layoutItem->getModelIndex()] = layoutItem->getQMLName();
+            QString name = layoutItem->getQMLName();
+            roleNames_[Qt::UserRole + layoutItem->getModelIndex()] = name.toLocal8Bit();
         }
     }
 
@@ -407,7 +410,7 @@ public:
         return layoutItem->getValue(obj_, false);
     }
 
-    bool getJsonValues(DataType_ *obj_, QHash<QString, QVariant> &values_) const
+    bool getJsonValues(const DataType_ *obj_, QHash<QString, QVariant> &values_) const
     {
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
@@ -421,16 +424,18 @@ public:
 
     bool setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_, int index_ = 0) const
     {
+        bool ret = false;
         if(jsonObj_.isArray())
         {
             QJsonValue jv = jsonObj_[index_];
             if(jv.isUndefined()) { return false; }
-            setJsonValuesTempl(obj_, jv);
+            ret |= setJsonValuesTempl(obj_, jv);
         }
         else if(jsonObj_.isObject())
         {
-            setJsonValuesTempl(obj_, jsonObj_);
+            ret |= setJsonValuesTempl(obj_, jsonObj_);
         }
+        return ret;
     }
 
     bool setJsonValues(DataType_ *obj_, const QJsonObject &jsonObj_) const
@@ -490,7 +495,7 @@ public:
         return QVariant();
     }
 
-    bool setSpecialFieldValue(layout::SpecialFieldEn type_, const QVariant &value_, const DataType_ *obj_) const
+    bool setSpecialFieldValue(layout::SpecialFieldEn type_, const QVariant &value_, DataType_ *obj_) const
     {
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
         {
@@ -516,7 +521,7 @@ public:
 
     void setIdField(const QString &fieldJsonName_)
     {
-        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+        layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
         Q_ASSERT(nullptr != layoutItem); // field not founded
         if(nullptr == layoutItem) { return; }
         layoutItem->setFieldId(true);
@@ -524,13 +529,13 @@ public:
 
     void setRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
     {
-        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+        layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
         Q_ASSERT(nullptr != layoutItem); // field not founded
         if(nullptr == layoutItem) { return; }
         layoutItem->setRef(parentModel_, parentModelRefJsonName_);
     }
 
-    void getRef(const QString &fieldJsonName_, QString &parentModel_, QString &parentModelRefJsonName_)
+    void getRef(const QString &fieldJsonName_, QString &parentModel_, QString &parentModelRefJsonName_) const
     {
         parentModel_.clear();
         parentModelRefJsonName_.clear();
@@ -544,7 +549,7 @@ public:
         }
     }
 
-    bool copyQMLFields(const DataType_ *from_, DataType_ *to_)
+    bool copyQMLFields(const DataType_ *from_, DataType_ *to_) const
     {
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
@@ -566,7 +571,7 @@ public:
 
 protected:
     template<typename JsonType_>
-    bool setJsonValuesTempl(DataType_ *obj_, const JsonType_ &jsonObj_)
+    bool setJsonValuesTempl(DataType_ *obj_, const JsonType_ &jsonObj_) const
     {
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)

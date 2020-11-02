@@ -10,7 +10,7 @@
 class IListModel
 {
 public:
-    virtual ~IListModel() = default;
+    virtual ~IListModel();
     virtual const QString &getLayoutName() const = 0;
     virtual QString getLayoutIdFiledName() const = 0;
     virtual int getCurrentIndex() const;

@@ -22,7 +22,7 @@ public:
     IListModel *getListModel(const QString &layoutName_);
 
 protected:
-    void searchObjects(const QString &layoutName_ = QString());
+    void searchObjects();
     IListModel *findListModel(const QString &layoutName_) const;
 
 private:

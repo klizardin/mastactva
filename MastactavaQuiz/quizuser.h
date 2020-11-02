@@ -42,15 +42,26 @@ private:
 };
 
 
-class QuezUserModel : public ListModelBaseOfData<QuizUser>
+class QuizUserModel : public ListModelBaseOfData<QuizUser>
 {
     Q_OBJECT
     QML_ELEMENT
 
 public:
-    explicit QuezUserModel(QObject *parent_ = nullptr);
+    explicit QuizUserModel(QObject *parent_ = nullptr);
 
     LAYOUTMODEL()
+
+protected slots:
+    void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+    {
+        jsonResponseSlotImpl(errorCode_, request_, reply_);
+    }
+
+signals:
+    void currentIndexChanged();
+    void currentRefChanged();
+    void storeAfterSaveChanged();
 };
 
 
