@@ -6,7 +6,8 @@
 #include <QVector>
 #include <QList>
 #include <QJsonDocument>
-#include <Layout.h>
+#include <QtQuick/QQuickItem>
+#include "Layout.h"
 #include "qmlobjects.h"
 #include "IModel.h"
 
@@ -51,6 +52,8 @@ private:
 class NetAPI : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+
 public:
     NetAPI(QObject *parent_ = nullptr);
     virtual ~NetAPI() override;

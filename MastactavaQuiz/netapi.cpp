@@ -188,6 +188,7 @@ class MultipartRequestData : public RequestData
 public:
     MultipartRequestData(const QHash<QString, QVariant> &values_);
     virtual ~MultipartRequestData() override;
+
     QHttpMultiPart *getHttpMultiPart(bool releaseOwnship_ = false);
 
 protected:
@@ -277,6 +278,8 @@ class JsonRequestData : public RequestData
 {
 public:
     JsonRequestData(const QHash<QString, QVariant> &values_);
+    virtual ~JsonRequestData() override = default;
+
     void getDocument(QByteArray &data_);
     void getDocumentLength(QByteArray &dataLength_);
 
