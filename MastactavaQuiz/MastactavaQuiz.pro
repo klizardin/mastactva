@@ -9,7 +9,8 @@ CONFIG += c++17
 SOURCES += \
         main.cpp \
         netapi.cpp \
-        qmlobjects.cpp
+        qmlobjects.cpp \
+        quizuser.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,4 +35,5 @@ HEADERS += \
     Layout.h \
     Model.h \
     netapi.h \
-    qmlobjects.h
+    qmlobjects.h \
+    quizuser.h

@@ -217,7 +217,7 @@ protected:
         return setDataItemImpl(index_, dataItem);
     }
 
-    bool addItemImpl(QVariant &item_)
+    bool addItemImpl(const QVariant &item_)
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
@@ -442,6 +442,89 @@ private:
     QString m_currentRef;
     int m_lastAppId = 1;
 };
+
+#define LAYOUTMODEL()                                                                                           \
+public:                                                                                                         \
+    Q_PROPERTY(int currentIndex READ getCurrentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)          \
+    Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
+    Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
+    Q_INVOKABLE QVariant findItemById(const QVariant &id_)                                                      \
+    {                                                                                                           \
+        return findItemByIdImpl(id_);                                                                           \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant findItemByAppId(const QVariant &appId_)                                                \
+    {                                                                                                           \
+        return findItemByAppIdImpl(appId_);                                                                     \
+    }                                                                                                           \
+    Q_INVOKABLE void loadList()                                                                                 \
+    {                                                                                                           \
+        loadListImpl();                                                                                         \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant createItem()                                                                           \
+    {                                                                                                           \
+        return createItemImpl();                                                                                \
+    }                                                                                                           \
+    Q_INVOKABLE bool setItem(int index_, const QVariant &item_)                                                 \
+    {                                                                                                           \
+        return setItemImpl(index_, item_);                                                                      \
+    }                                                                                                           \
+    Q_INVOKABLE bool addItem(const QVariant &item_)                                                             \
+    {                                                                                                           \
+        return addItemImpl(item_);                                                                              \
+    }                                                                                                           \
+    Q_INVOKABLE void setLayoutJsonName(const QString &layoutJsonName_)                                          \
+    {                                                                                                           \
+        setLayoutJsonNameImpl(layoutJsonName_);                                                                 \
+    }                                                                                                           \
+    Q_INVOKABLE const QString &getLayoutJsonName()                                                              \
+    {                                                                                                           \
+        return getLayoutJsonNameImpl();                                                                         \
+    }                                                                                                           \
+    Q_INVOKABLE void setLayoutIdField(const QString &fieldJsonName_)                                            \
+    {                                                                                                           \
+        setLayoutIdFieldImpl(fieldJsonName_);                                                                   \
+    }                                                                                                           \
+    Q_INVOKABLE QString getLayoutIdField()                                                                      \
+    {                                                                                                           \
+        return getLayoutIdFieldImpl();                                                                          \
+    }                                                                                                           \
+    Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
+    {                                                                                                           \
+        setLayoutRefImpl(fieldJsonName_, parentModel_, parentModelRefJsonName_);                                \
+    }                                                                                                           \
+protected slots:                                                                                                \
+    void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)                   \
+    {                                                                                                           \
+        jsonResponseSlotImpl(errorCode_, request_, reply_);                                                     \
+    }                                                                                                           \
+protected:                                                                                                      \
+    void setCurrentIndex(int index_)                                                                            \
+    {                                                                                                           \
+        setCurrentIndexImpl(index_);                                                                            \
+        emit currentIndexChanged();                                                                             \
+    }                                                                                                           \
+    QString currentRef() const                                                                                  \
+    {                                                                                                           \
+        return currentRefImpl();                                                                                \
+    }                                                                                                           \
+    void setCurrentRef(const QString &ref_)                                                                     \
+    {                                                                                                           \
+        setCurrentRefImpl(ref_);                                                                                \
+    }                                                                                                           \
+    bool storeAfterSave() const                                                                                 \
+    {                                                                                                           \
+        return storeAfterSaveImpl();                                                                            \
+    }                                                                                                           \
+    void setStoreAfterSave(bool storeAfterSave_)                                                                \
+    {                                                                                                           \
+        setStoreAfterSaveImpl(storeAfterSave_);                                                                 \
+        emit storeAfterSaveChanged();                                                                           \
+    }                                                                                                           \
+signals:                                                                                                        \
+    void currentIndexChanged();                                                                                 \
+    void currentRefChanged();                                                                                   \
+    void storeAfterSaveChanged();                                                                               \
+/* end macro LAYOUTMODEL() */
 
 
 #endif // MODEL_H

@@ -136,7 +136,7 @@ namespace layout
                 return getType()==SpecialFieldEn::none ? m_qmlName : QString();
             }
 
-            virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) = 0;
+            virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) const = 0;
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
 
@@ -370,7 +370,7 @@ public:
 
     template<typename ItemType_>
     void addSpecial(layout::SpecialFieldEn type_,
-                  typename layout::Private::LayoutSpecialField<DataType_,ItemType_>::LayoutSpecialField varPtr_
+                  typename layout::Private::LayoutSpecialField<DataType_,ItemType_>::itemMemberPtr varPtr_
                   )
     {
         m_fields.push_back(new layout::Private::LayoutSpecialField<DataType_,ItemType_>(m_lastQMLIndex, varPtr_, type_));
@@ -652,7 +652,7 @@ private:
 template<class DataType_> inline
 const LayoutBase<DataType_> &getDataLayout()
 {
-    static typename DataType_::Layout staticItem;
+    static typename DataType_::DefaultLayout staticItem;
     return staticItem;
 }
 
