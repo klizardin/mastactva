@@ -20,6 +20,9 @@ class QNetworkAccessManager;
 class RequestData
 {
 public:
+    RequestData() = default;
+    virtual ~RequestData() = default;
+
     const QString &getRequestName() const;
     QVariant getItemId() const;
     QVariant getItemAppId() const;
@@ -27,8 +30,9 @@ public:
 
 protected:
     void setRequestName(const QString &requestName_);
-    void setItenId(const QVariant &itemId_);
+    void setItemId(const QVariant &itemId_);
     void setItemAppId(const QVariant &itemAppId_);
+    QNetworkReply *getReply() const;
     void setReply(QNetworkReply *reply_);
     bool compare(QNetworkReply *reply_) const;
     bool processErrorInNetAPI() const;
