@@ -78,6 +78,11 @@ public:
         return getDataLayout<DataType_>().getJsonValue(m_data[m_currentIndex], jsonFieldName);
     }
 
+    void setCurrentIndexImpl(int index_)
+    {
+        m_currentIndex = index_;
+    }
+
     const QString &currentRefImpl() const
     {
         return m_currentRef;
@@ -86,6 +91,16 @@ public:
     void setCurrentRefImpl(const QString &ref_)
     {
         m_currentRef = ref_;
+    }
+
+    bool storeAfterSaveImpl() const
+    {
+        return getDataLayout<DataType_>.storeAfterSave();
+    }
+
+    void setStoreAfterSaveImpl(bool storeAfterSave_)
+    {
+        setDataLayout<DataType_>.setStoreAfterSave(storeAfterSave_);
     }
 
     const DataType_ *findDataItemByIdImpl(const QVariant &id_) const
@@ -106,6 +121,11 @@ public:
         return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByIdImpl(id_));
     }
 
+    QVariant findItemByIdImpl(const QVariant &id_)
+    {
+        return QVariant::fromValue(static_cast<QObject *>(findDataItemByIdImpl(id_)));
+    }
+
     const DataType_ *findDataItemByAppIdImpl(const QVariant &appId_) const
     {
         const auto fit = std::find_if(std::begin(m_data),
@@ -124,7 +144,11 @@ public:
         return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>>(this).findDataItemByAppIdImpl(appId_));
     }
 
-protected:
+    QVariant findItemByAppIdImpl(const QVariant &appId_)
+    {
+        return QVariant::fromValue(static_cast<QObject *>(findDataItemByAppIdImpl(appId_)));
+    }
+
     void loadListImpl()
     {
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
@@ -179,9 +203,19 @@ protected:
         setDataLayout<DataType_>().setLayoutJsonName(layoutJsonName_);
     }
 
-    void setLayoutIdImpl(const QString &fieldJsonName_)
+    const QString &getLayoutJsonNameImpl()
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName();
+    }
+
+    void setLayoutIdFieldImpl(const QString &fieldJsonName_)
     {
         setDataLayout<DataType_>().setIdField(fieldJsonName_);
+    }
+
+    QString getLayoutIdFieldImpl()
+    {
+        return getDataLayout<DataType_>().getIdFieldJsonName();
     }
 
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
@@ -189,6 +223,7 @@ protected:
         setDataLayout<DataType_>().setRef(fieldJsonName_, parentModel_, parentModelRefJsonName_);
     }
 
+protected:
     virtual QHash<int, QByteArray> roleNames() const override
     {
         return m_roleNames;
@@ -263,6 +298,7 @@ protected:
             itemSet(request_, reply_);
         }
         removeRequest(request_);
+        clearTempData();
     }
 
     virtual void handleError(int errorCode_, const QJsonDocument &reply_)
@@ -325,6 +361,48 @@ protected:
         }
         m_data.clear();
         endRemoveRows();
+    }
+
+    void clearTempData()
+    {
+        if(getDataLayout<DataType_>().storeAfterSave()) { return; }
+
+        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        if(nullptr == netAPI) { return; }
+
+        QVector<DataType_ *> waitingToUpdate;
+        for(const RequestData *r : m_requests)
+        {
+            DataType_ *item = nullptr;
+            if(r->getRequestName() == netAPI->addItemRequestName<DataType_>())
+            {
+                const QVariant appId = r->getItemAppId();
+                item = findDataItemByAppIdImpl(appId);
+            }
+            else if(r->getRequestName() == netAPI->setItemRequestName<DataType_>())
+            {
+                const QVariant id = r->getItemId();
+                item = findDataItemByIdImpl(id);
+            }
+            if(nullptr != item) { waitingToUpdate.push_back(item); }
+        }
+        if(waitingToUpdate.size() == m_data.size()) { return; }
+        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        for(auto *&p: m_data)
+        {
+            const auto fit = std::find(std::begin(waitingToUpdate), std::end(waitingToUpdate), p);
+            if(std::end(waitingToUpdate) == fit)
+            {
+                delete p;
+                p = nullptr;
+            }
+        }
+        m_data.clear();
+        endRemoveRows();
+        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + waitingToUpdate.size() - 1);
+        std::copy(std::begin(waitingToUpdate), std::end(waitingToUpdate),
+                  std::inserter(m_data, std::end(m_data)));
+        endInsertRows();
     }
 
 private:

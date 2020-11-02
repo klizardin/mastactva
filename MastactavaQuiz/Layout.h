@@ -351,6 +351,14 @@ public:
         if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
     }
 
+    template<typename ItemType_>
+    void addSpecial(const QString &jsonName_,
+                  typename layout::Private::LayoutSpecialField<DataType_,ItemType_>::LayoutSpecialField varPtr_,
+                  layout::SpecialFieldEn type_)
+    {
+        m_fields.push_back(new layout::Private::LayoutSpecialField<DataType_,ItemType_>(m_lastQMLIndex, jsonName_, varPtr_, type_));
+    }
+
     void initQMLModelRoleNames(QHash<int, QByteArray> &roleNames_)
     {
         for(const layout::Private::ILayoutItem<DataType_> *layoutItem: m_fields)
