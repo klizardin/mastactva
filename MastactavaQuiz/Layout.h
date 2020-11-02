@@ -181,6 +181,16 @@ namespace layout
                 return m_type;
             }
 
+            bool autoCreated() const
+            {
+                return m_autoCreated;
+            }
+
+            void setAutoCreated(bool autoCreated_)
+            {
+                m_autoCreated = autoCreated_;
+            }
+
         protected:
             int m_index = 0;
             QString m_jsonName;
@@ -189,6 +199,7 @@ namespace layout
             QString m_parentModel;
             QString m_parentModelRefJsonName;
             SpecialFieldEn m_type = SpecialFieldEn::none;
+            bool m_autoCreated = false;
         };
 
 
@@ -253,6 +264,7 @@ namespace layout
                   m_modelPtr(modelPtr_),
                   m_createFuncPtr(createFuncPtr_)
             {
+                ILayoutItem<DataType_>::setAutoCreated(true);
             }
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
@@ -266,6 +278,12 @@ namespace layout
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
+                if(value_.isNull())
+                {
+                    delete obj_->*m_modelPtr;
+                    obj_->*m_modelPtr = nullptr;
+                    return;
+                }
                 Q_UNUSED(obj_);
                 Q_UNUSED(value_);
                 Q_ASSERT(false); // illegal use
@@ -466,7 +484,7 @@ public:
             if(nullptr == item) { continue; }
             if(item->getType() == type_)
             {
-                return item->getValue(obj_, false);
+                return item->getValue(obj_, true);
             }
         }
         return QVariant();
@@ -524,6 +542,26 @@ public:
         {
             parentModelRefJsonName_ = layoutItem->getParentModelRefJsonName();
         }
+    }
+
+    bool copyQMLFields(const DataType_ *from_, DataType_ *to_)
+    {
+        bool ret = false;
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(nullptr == item) { continue; }
+            if(item->autoCreated())
+            {
+                item->setValue(to_, QVariant::fromValue(static_cast<QObject *>(nullptr)));
+                continue;
+            }
+            if(item->isQMLItem() || item->getType() != layout::SpecialFieldEn::none)
+            {
+                item->setValue(to_, item->getValue(from_, true));
+                ret = true;
+            }
+        }
+        return ret;
     }
 
 protected:

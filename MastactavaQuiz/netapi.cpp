@@ -16,6 +16,11 @@ QVariant RequestData::getItemAppId() const
     return m_itemAppId;
 }
 
+void RequestData::allowModelProccessError()
+{
+    m_processErrorInNetAPI = false;
+}
+
 void RequestData::setRequestName(const QString &requestName_)
 {
     m_requestName = requestName_;
@@ -26,9 +31,19 @@ void RequestData::setItenId(const QVariant &itemId_)
     m_itemId = itemId_;
 }
 
-void RequestData::setItenIndex(const QVariant &itemAppId_)
+void RequestData::setItemAppId(const QVariant &itemAppId_)
 {
     m_itemAppId = itemAppId_;
+}
+
+void RequestData::setReplay(QNetworkReply *reply_)
+{
+    m_reply = reply_;
+}
+
+bool RequestData::compare(QNetworkReply *reply_) const
+{
+    return nullptr != m_reply && m_reply == reply_;
 }
 
 

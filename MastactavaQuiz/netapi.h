@@ -12,6 +12,7 @@
 
 
 class NetAPI;
+class QNetworkReply;
 
 
 class RequestData
@@ -20,16 +21,21 @@ public:
     const QString &getRequestName() const;
     QVariant getItemId() const;
     QVariant getItemAppId() const;
+    void allowModelProccessError();
 
 protected:
     void setRequestName(const QString &requestName_);
     void setItenId(const QVariant &itemId_);
-    void setItenIndex(const QVariant &itemAppId_);
+    void setItemAppId(const QVariant &itemAppId_);
+    void setReplay(QNetworkReply *reply_);
+    bool compare(QNetworkReply *reply_) const;
 
 private:
+    bool m_processErrorInNetAPI = true;
     QString m_requestName;
     QVariant m_itemId = QVariant::fromValue(-1);
     QVariant m_itemAppId = QVariant::fromValue(-1);
+    QNetworkReply *m_reply = nullptr;
 
     friend class NetAPI;
 };
@@ -83,22 +89,43 @@ public:
     template<class DataType_>
     RequestData *addItem(const DataType_ *item_)
     {
+        QHash<QString, QVariant> values;
+        bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
+        if(!ok) { return nullptr; }
+        QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+        if(!appId.isValid()) { return nullptr; }
+        return addItemImpl(getDataLayout<DataType_>().getLayoutJsonName(), appId, values);
     }
 
     template<class DataType_>
     RequestData *setItem(const DataType_ *item_)
     {
+        QHash<QString, QVariant> values;
+        bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
+        if(!ok) { return nullptr; }
+        QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
+        if(!id.isValid()) { return nullptr; }
+        return setItemImpl(getDataLayout<DataType_>().getLayoutJsonName(), id, values);
     }
 
 signals:
     void onResponse(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
 
-protected:
-    RequestData *getListByRefImpl(const QString &jsonLayoutName, const QString &ref_, const QVariant &id_);
-    RequestData *getListImpl(const QString &jsonLayoutName);
+protected slots:
+    void onRequestFinished(RequestData *request_, QNetworkReply *reply_);
 
+protected:
+    RequestData *getListByRefImpl(const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_);
+    RequestData *getListImpl(const QString &jsonLayoutName_);
+    RequestData *addItemImpl(const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
+    RequestData *setItemImpl(const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
 
 private:
+    QString m_hostName;
+    QString m_loggin;
+    QString m_pass;
+    QString m_hostUrlBase;
+
 };
 
 #endif // NETAPI_H

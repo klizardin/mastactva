@@ -178,12 +178,29 @@ public:
 
     bool setDataItemImpl(int index_, DataType_ *item_)
     {
+        if(index_ < 0 || index_ >= m_data.size()) { return false; }
+
+        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        if(nullptr == netAPI) { return false;; }
+
+        bool ret = getDataLayout<DataType_>.copyQMLFields(item_, m_data[index_]);
+        if(!ret) { return ret; }
+
+        RequestData *request = netAPI->setItem(m_data[index_]);
+        if(nullptr != request) { m_requests.push_back(request); }
+        return nullptr != request;
     }
 
     bool addDataItemImpl(DataType_ *item_)
     {
+        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        if(nullptr == netAPI) { return false;; }
+
         m_data.push_back(item_);
-        //TODO: add save item call
+
+        RequestData *request = netAPI->addItem(m_data.back());
+        if(nullptr != request) { m_requests.push_back(request); }
+        return nullptr != request;
     }
 
     bool setItemImpl(int index_, const QVariant &item_)
