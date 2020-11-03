@@ -2,10 +2,10 @@
 #define QMLOBJECTS_H
 
 #include <QVector>
+#include "IModel.h"
 
 
 class QObject;
-class IListModel;
 class NetAPI;
 
 

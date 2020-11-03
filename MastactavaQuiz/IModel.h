@@ -10,10 +10,9 @@
 class IListModel
 {
 public:
-    virtual ~IListModel();
     virtual const QString &getLayoutName() const = 0;
     virtual QString getLayoutIdFiledName() const = 0;
-    virtual int getCurrentIndex() const;
+    virtual int getCurrentIndex() const = 0;
     virtual bool getCurrentIndexValues(QHash<QString, QVariant> &values_) const = 0;
     virtual QVariant getCurrentIndexIdFieldValue() const = 0;
     virtual QVariant getCurrentIndexFieldValue(const QString &jsonFieldName) const = 0;

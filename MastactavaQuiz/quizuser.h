@@ -47,10 +47,13 @@ class QuizUserModel : public ListModelBaseOfData<QuizUser>
     Q_OBJECT
     QML_ELEMENT
 
+protected:
+    using base = ListModelBaseOfData<QuizUser>;
+
 public:
     explicit QuizUserModel(QObject *parent_ = nullptr);
 
-    LAYOUTMODEL()
+    LAYOUT_MODEL_IMPL();
 
 protected slots:
     void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
@@ -62,6 +65,9 @@ signals:
     void currentIndexChanged();
     void currentRefChanged();
     void storeAfterSaveChanged();
+
+protected:
+    virtual void listLoaded(const QJsonDocument &reply_) override;
 };
 
 

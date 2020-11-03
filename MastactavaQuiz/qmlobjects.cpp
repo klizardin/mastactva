@@ -3,6 +3,7 @@
 #include "Model.h"
 #include <QObject>
 #include "quizuser.h"
+#include "IModel.h"
 
 
 static QString g_netAPIQMLName = "NetAPI";

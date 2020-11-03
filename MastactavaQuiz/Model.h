@@ -433,8 +433,10 @@ protected:
         endInsertRows();
     }
 
-private:
+protected:
     QVector<DataType_ *> m_data;
+
+private:
     QHash<int, QByteArray> m_roleNames;
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;
@@ -443,7 +445,7 @@ private:
     int m_lastAppId = 1;
 };
 
-#define LAYOUTMODEL()                                                                                           \
+#define LAYOUT_MODEL_IMPL()                                                                                     \
 public:                                                                                                         \
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)             \
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
