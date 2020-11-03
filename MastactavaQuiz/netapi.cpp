@@ -7,6 +7,7 @@
 #include <QList>
 #include <QString>
 #include <QFile>
+#include <QFileInfo>
 #include <QByteArray>
 
 
@@ -211,11 +212,16 @@ MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &value
         QFile *f = qobject_cast<QFile*>(obj);
         if(nullptr != f)
         {
-            addPart(it.key(), f, true);
+            QFileInfo fileInfo(f->fileName());
+            addPart(QString("form-data; name=\"%1\"; filename=\"%2\"")
+                        .arg(it.key())
+                        .arg(fileInfo.fileName().replace("\"", "")),
+                    f, true
+                    );
         }
         else
         {
-            addPart(it.key(), it.value().toString().toUtf8());
+            addPart(QString("form-data; name=\"%1\"").arg(it.key()), it.value().toString().toUtf8());
         }
     }
     appendParts();
