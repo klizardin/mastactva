@@ -80,7 +80,7 @@ void Gallery::setOwnGallery(const int &ownGallery_)
 ImageModel *Gallery::createImages()
 {
     ImageModel *m = new ImageModel(this);
-    m->setRefAppId(m_appId);
+    m->setRefAppId(QVariant::fromValue(m_appId));
     return m;
 }
 
