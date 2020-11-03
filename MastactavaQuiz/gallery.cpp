@@ -77,6 +77,23 @@ void Gallery::setOwnGallery(const int &ownGallery_)
     emit ownGalleryChanged();
 }
 
+ImageModel *Gallery::createImages()
+{
+    ImageModel *m = new ImageModel(this);
+    m->setRefAppId(m_appId);
+    return m;
+}
+
+QVariant Gallery::images()
+{
+    if(nullptr == m_images)
+    {
+        m_images = createImages();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(m_images));
+}
+
+
 GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Gallery>(parent_)
 {

@@ -60,30 +60,61 @@ public:
         return getDataLayout<DataType_>().getIdFieldJsonName();
     }
 
-    virtual int getCurrentIndex() const override
+    virtual QVariant getCurrentIndexAppId() const override
+    {
+        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return QVariant::fromValue(-1); }
+        return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, m_data[m_currentIndex]);
+    }
+
+    virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const override
+    {
+        const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
+        if(nullptr == item)
+        {
+            if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
+            item = m_data[m_currentIndex];
+        }
+        return getDataLayout<DataType_>().getJsonValues(item, values_);
+    }
+
+    virtual QVariant getIdFieldValueForAppId(const QVariant &appId_) const override
+    {
+        const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
+        if(nullptr == item)
+        {
+            if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
+            item = m_data[m_currentIndex];
+        }
+        return getDataLayout<DataType_>().getIdJsonValue(item);
+    }
+
+    virtual QVariant getFieldValueForAppId(const QVariant &appId_, const QString &jsonFieldName) const override
+    {
+        const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
+        if(nullptr == item)
+        {
+            if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
+            item = m_data[m_currentIndex];
+        }
+        return getDataLayout<DataType_>().getJsonValue(item, jsonFieldName);
+    }
+
+protected:
+    void setRefAppIdImpl(const QVariant &appId_)
+    {
+        m_refAppId = appId_;
+    }
+
+    QVariant getRefAppIdImpl() const
+    {
+        return m_refAppId;
+    }
+
+    int getCurrentIndexImpl() const
     {
         return m_currentIndex;
     }
 
-    virtual bool getCurrentIndexValues(QHash<QString, QVariant> &values_) const override
-    {
-        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
-        return getDataLayout<DataType_>().getJsonValues(m_data[m_currentIndex], values_);
-    }
-
-    virtual QVariant getCurrentIndexIdFieldValue() const override
-    {
-        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return QVariant(); }
-        return getDataLayout<DataType_>().getIdJsonValue(m_data[m_currentIndex]);
-    }
-
-    virtual QVariant getCurrentIndexFieldValue(const QString &jsonFieldName) const override
-    {
-        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return QVariant(); }
-        return getDataLayout<DataType_>().getJsonValue(m_data[m_currentIndex], jsonFieldName);
-    }
-
-protected:
     void setCurrentIndexImpl(int index_)
     {
         m_currentIndex = index_;
@@ -165,7 +196,7 @@ protected:
             reloadList = true;
             return;
         }
-        request = netAPI->getList<DataType_>(currentRefImpl());
+        request = netAPI->getList<DataType_>(currentRefImpl(), getRefAppIdImpl());
         if(nullptr != request) { m_requests.push_back(request); }
     }
 
@@ -437,18 +468,20 @@ protected:
     QVector<DataType_ *> m_data;
 
 private:
+    int m_lastAppId = 1;
     QHash<int, QByteArray> m_roleNames;
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;
     bool reloadList = false;
     QString m_currentRef;
-    int m_lastAppId = 1;
+    QVariant m_refAppId;
 };
 
 #define LAYOUT_MODEL_IMPL()                                                                                     \
 public:                                                                                                         \
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)             \
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
+    Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
     Q_INVOKABLE QVariant findItemById(const QVariant &id_)                                                      \
     {                                                                                                           \
@@ -494,7 +527,6 @@ public:                                                                         
     {                                                                                                           \
         setLayoutRefImpl(fieldJsonName_, parentModel_, parentModelRefJsonName_);                                \
     }                                                                                                           \
-protected:                                                                                                      \
     void setCurrentIndex(int index_)                                                                            \
     {                                                                                                           \
         setCurrentIndexImpl(index_);                                                                            \
@@ -502,7 +534,7 @@ protected:                                                                      
     }                                                                                                           \
     int currentIndex() const                                                                                    \
     {                                                                                                           \
-        return getCurrentIndex();                                                                               \
+        return getCurrentIndexImpl();                                                                           \
     }                                                                                                           \
     QString currentRef() const                                                                                  \
     {                                                                                                           \
@@ -511,6 +543,14 @@ protected:                                                                      
     void setCurrentRef(const QString &ref_)                                                                     \
     {                                                                                                           \
         setCurrentRefImpl(ref_);                                                                                \
+    }                                                                                                           \
+    QVariant getRefAppId() const                                                                                \
+    {                                                                                                           \
+        return getRefAppIdImpl();                                                                               \
+    }                                                                                                           \
+    void setRefAppId(const QVariant &appId_)                                                                    \
+    {                                                                                                           \
+        setRefAppIdImpl(appId_);                                                                                \
     }                                                                                                           \
     bool storeAfterSave() const                                                                                 \
     {                                                                                                           \

@@ -255,11 +255,12 @@ namespace layout
         {
         public:
             using ModelTypePtr = ModelType_ *;
+            using ModelTypeFieldPtr = ModelTypePtr DataType_::*;
             using createModelFuncPtr = ModelTypePtr (DataType_::*)();
 
             LayoutModelField(int index_,
                              const QString &qmlName_,
-                             ModelTypePtr DataType_::*modelPtr_,
+                             ModelTypeFieldPtr modelPtr_,
                              createModelFuncPtr createFuncPtr_
                              )
                 : ILayoutItem<DataType_>(index_, QString(), qmlName_),
@@ -273,7 +274,7 @@ namespace layout
             {
                 if(nullptr == obj_->*m_modelPtr)
                 {
-                    obj_->*m_modelPtr = obj_->*m_createFuncPtr();
+                    const_cast<DataType_ *>(obj_)->*m_modelPtr = (const_cast<DataType_ *>(obj_)->*m_createFuncPtr)();
                 }
                 return layout::getValue(static_cast<QObject *>(obj_->*m_modelPtr), toQML_);
             }
@@ -282,7 +283,7 @@ namespace layout
             {
                 if(value_.isNull())
                 {
-                    delete obj_->*m_modelPtr;
+                    delete (obj_->*m_modelPtr);
                     obj_->*m_modelPtr = nullptr;
                     return;
                 }
@@ -299,7 +300,7 @@ namespace layout
             }
 
         protected:
-            ModelTypePtr DataType_::*m_modelPtr = nullptr;
+            ModelTypeFieldPtr m_modelPtr = nullptr;
             createModelFuncPtr m_createFuncPtr;
         };
 
@@ -363,7 +364,7 @@ public:
 
     template<typename ModelType_>
     void addModel(const QString &qmlName_,
-                  typename layout::Private::LayoutModelField<DataType_,ModelType_>::ModelTypePtr varPtr_,
+                  typename layout::Private::LayoutModelField<DataType_,ModelType_>::ModelTypeFieldPtr varPtr_,
                   typename layout::Private::LayoutModelField<DataType_,ModelType_>::createModelFuncPtr createFunc_)
     {
         m_fields.push_back(new layout::Private::LayoutModelField<DataType_,ModelType_>(m_lastQMLIndex, qmlName_, varPtr_, createFunc_));

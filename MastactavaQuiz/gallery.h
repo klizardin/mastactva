@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QString>
 #include <QtQuick/QQuickItem>
+#include "image.h"
 #include "Layout.h"
 #include "Model.h"
 
@@ -23,6 +24,7 @@ public:
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_PROPERTY(bool ownGallery READ ownGallery WRITE setOwnGallery NOTIFY ownGalleryChanged)
+    Q_PROPERTY(QVariant images READ images NOTIFY imagesChanged)
 
 public:
     class DefaultLayout : public LayoutBase<Gallery>
@@ -30,12 +32,14 @@ public:
     public:
         DefaultLayout()
         {
+            addSpecial<int>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
             addField<int>("id", "id", &Gallery::id, &Gallery::setId);
             addField<QString>("description", "description", &Gallery::description, &Gallery::setDescription);
             addField<QString>("keywords", "keywords", &Gallery::keyword, &Gallery::setKeyword);
             addField<QDateTime>("created", "created", &Gallery::created, &Gallery::setCreated);
             addField<qreal>("points_to_pass", "pointsToPass", &Gallery::pointsToPass, &Gallery::setPointsToPass);
             addField<int>("owner", "owner", &Gallery::ownGallery, &Gallery::setOwnGallery);
+            addModel<ImageModel>("images", &Gallery::m_images, &Gallery::createImages);
         }
     };
 
@@ -51,6 +55,7 @@ public:
     void setPointsToPass(const qreal &pointToPass_);
     int ownGallery() const;
     void setOwnGallery(const int &ownGallery_);
+    QVariant images();
 
 signals:
     void idChanged();
@@ -59,14 +64,20 @@ signals:
     void createdChanged();
     void pointsToPassChanged();
     void ownGalleryChanged();
+    void imagesChanged();
+
+protected:
+    ImageModel *createImages();
 
 private:
+    int m_appId = -1;
     int m_id = -1;
     QString m_description;
     QString m_keywords;
     QDateTime m_created;
     qreal m_pointsToPass = 1.0;
     int m_ownGallery = false;
+    ImageModel *m_images = nullptr;
 };
 
 
@@ -93,6 +104,7 @@ signals:
     void currentIndexChanged();
     void currentRefChanged();
     void storeAfterSaveChanged();
+    void refAppIdChanged();
 };
 
 

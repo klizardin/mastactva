@@ -65,6 +65,7 @@ signals:
     void currentIndexChanged();
     void currentRefChanged();
     void storeAfterSaveChanged();
+    void refAppIdChanged();
 
 protected:
     virtual void listLoaded(const QJsonDocument &reply_) override;

@@ -9,6 +9,8 @@ CONFIG += c++17
 SOURCES += \
         IModel.cpp \
         gallery.cpp \
+        image.cpp \
+        imagesource.cpp \
         main.cpp \
         netapi.cpp \
         qmlobjects.cpp \
@@ -37,6 +39,8 @@ HEADERS += \
     Layout.h \
     Model.h \
     gallery.h \
+    image.h \
+    imagesource.h \
     netapi.h \
     qmlobjects.h \
     quizuser.h

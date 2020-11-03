@@ -77,7 +77,7 @@ public:
     }
 
     template<class DataType_>
-    RequestData *getList(const QString &currentRef_)
+    RequestData *getList(const QString &currentRef_, const QVariant &refAppId_)
     {
         QString parentModel;
         QString parentModelJsonFieldName;
@@ -86,8 +86,8 @@ public:
         if(nullptr != parentModelPtr)
         {
             const QVariant idField = parentModelJsonFieldName.isEmpty()
-                    ? parentModelPtr->getCurrentIndexIdFieldValue()
-                    : parentModelPtr->getCurrentIndexFieldValue(parentModelJsonFieldName)
+                    ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
+                    : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName)
                     ;
             return getListByRefImpl(getDataLayout<DataType_>().getLayoutJsonName(), currentRef_, idField);
         }
