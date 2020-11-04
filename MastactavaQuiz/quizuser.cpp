@@ -3,6 +3,7 @@
 #include <QCryptographicHash>
 //#include <QAndroidJniObject>
 
+// TODO : investigate android defines for code and implement android code in defines
 
 QString getSha1Hash(const QString &str_)
 {

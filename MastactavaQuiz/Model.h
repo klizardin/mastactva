@@ -13,6 +13,9 @@
 #include "IModel.h"
 
 
+// TODO : add notification on data changes
+// TODO : event on data loaded check if data was changed, notify child nodes
+
 template<class DataType_>
 class ListModelBaseOfData : public QAbstractListModel, public IListModel
 {
@@ -278,6 +281,7 @@ protected:
 
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
     {
+        // TODO: move setRef method to model object from layout object (as layout object is one for all models)
         setDataLayout<DataType_>().setRef(fieldJsonName_, parentModel_, parentModelRefJsonName_);
     }
 

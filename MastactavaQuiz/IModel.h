@@ -6,6 +6,7 @@
 #include <QVariant>
 #include <QHash>
 
+// TODO: review methods use, remove extra methods
 
 class IListModel
 {

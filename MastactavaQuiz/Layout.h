@@ -13,6 +13,8 @@
 template<typename DataType_>
 class Layout;
 
+// TODO: better function implementation
+
 inline
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ_)
 {
@@ -68,6 +70,7 @@ namespace layout
         dta_ = qvariant_cast<T_>(var_);
     }
 
+    // TODO: add more types
     inline void setValue(const QJsonValue &var_, int &dta_)
     {
         dta_ = var_.toInt(dta_);
@@ -341,6 +344,8 @@ namespace layout
     }; // namesapce private
 };//namespace layout
 
+
+// TODO: review methods use, remove extra ones
 
 template<typename DataType_>
 class LayoutBase

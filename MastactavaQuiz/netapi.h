@@ -18,6 +18,8 @@ class QNetworkRequest;
 class QNetworkAccessManager;
 
 
+// TODO: add sqllite holder for caching requests
+
 class RequestData
 {
 public:
