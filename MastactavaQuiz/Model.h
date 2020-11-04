@@ -477,6 +477,8 @@ private:
     QVariant m_refAppId;
 };
 
+// TODO: may be refactor define
+
 #define LAYOUT_MODEL_IMPL()                                                                                     \
 public:                                                                                                         \
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)             \
