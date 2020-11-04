@@ -4,6 +4,7 @@
 #include <QJsonValue>
 #include <QFile>
 #include <QFileInfo>
+#include <QCryptographicHash>
 #include "netapi.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
@@ -211,9 +212,12 @@ void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topIma
     QUrl url(fileURL_);
     QString filename = url.toLocalFile();
     QFile *file = new QFile(filename);
+    QFile *f1 = new QFile(filename);
+    QByteArray fd = f1->readAll();
+    QString hash = QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
     QFileInfo fileInfo(file->fileName());
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
-    m_addImageRequest->addPart("form-data; name=\"hash\"", "123");
+    m_addImageRequest->addPart("form-data; name=\"hash\"", hash.toUtf8());
     m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", (topImage_ || galleryEmpty)?"True":"False");
     m_addImageRequest->addPart("form-data; name=\"created\"", dateTimeToJsonString(QDateTime::currentDateTime()).toUtf8());
 

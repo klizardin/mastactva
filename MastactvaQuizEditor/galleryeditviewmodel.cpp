@@ -14,6 +14,7 @@
 #include <QPen>
 #include <QFont>
 #include <QDebug>
+#include <QCryptographicHash>
 #include "netapi.h"
 #include "qmlmainobjects.h"
 #include "appconsts.h"
