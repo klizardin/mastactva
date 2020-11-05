@@ -9,5 +9,7 @@ Page {
     title: qsTr("Gallery")
 
     property var netAPI: undefined
+    property var galleryModel: undefined
+
 
 }

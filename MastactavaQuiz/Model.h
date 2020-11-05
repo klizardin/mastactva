@@ -347,10 +347,7 @@ protected:
         for(int i = 0; ; i++)
         {
             QJsonValue itemJV = reply_[i];
-            if(itemJV.isUndefined())
-            {
-                break;
-            }
+            if(itemJV.isUndefined()) { break; }
             DataType_ *item = new DataType_(this);
             const bool ok = getDataLayout<DataType_>().setJsonValues(item, itemJV);
             if(!ok)

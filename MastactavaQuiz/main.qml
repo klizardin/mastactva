@@ -13,15 +13,67 @@ ApplicationWindow {
     NetAPI {
         id: netAPI
         objectName: "NetAPI"
-        Component.onCompleted: {
+
+        property bool initialized: false
+
+        Component.onCompleted:
+        {
             galleryPage.netAPI = netAPI
             quizPage.netAPI = netAPI
             descriptionPage.netAPI = netAPI
+            initialized = true
+            initQuizUserModel()
+        }
+    }
+
+    QuizUserModel
+    {
+        id: quizUserModel
+        objectName: "QuizUserModel"
+
+        property bool initialized: false
+
+        Component.onCompleted: {
+            initialized = true
+            initQuizUserModel()
+        }
+    }
+
+    function initQuizUserModel()
+    {
+        if(netAPI.initialized && quizUserModel.initialized)
+        {
+            quizUserModel.setLayoutJsonName("user-name")
+            quizUserModel.setLayoutIdField("deviceid")
+        }
+    }
+
+    GalleryModel
+    {
+        id: galleryModel
+        objectName: "GalleryModel"
+
+        property bool initialized: false
+
+        Component.onCompleted: {
+            initialized = true
+            initGalleryModel()
+        }
+    }
+
+    function initGalleryModel()
+    {
+        if(netAPI.initialized && galleryModel.initialized)
+        {
+            galleryModel.setLayoutJsonName("galleries")
+            galleryModel.setLayoutIdField("id")
+            galleryModel.setLayoutRef("", "QuizUserModel", "deviceid")
         }
     }
 
     GalleryForm {
         id: galleryPage
+        galleryModel: galleryModel
     }
 
     QuizForm {
