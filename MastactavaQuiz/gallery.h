@@ -32,7 +32,7 @@ public:
     public:
         DefaultLayout()
         {
-            addSpecial<int>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
+            addSpecial<QObject *>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
             addField<int>("id", "id", &Gallery::id, &Gallery::setId);
             addField<QString>("description", "description", &Gallery::description, &Gallery::setDescription);
             addField<QString>("keywords", "keywords", &Gallery::keyword, &Gallery::setKeyword);
@@ -70,7 +70,7 @@ protected:
     ImageModel *createImages();
 
 private:
-    int m_appId = -1;
+    QObject *m_appId = nullptr;
     int m_id = -1;
     QString m_description;
     QString m_keywords;
@@ -94,7 +94,7 @@ public:
 
     LAYOUT_MODEL_IMPL();
 
-protected slots:
+public slots:
     void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, request_, reply_);

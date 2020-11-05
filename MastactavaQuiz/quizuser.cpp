@@ -83,6 +83,7 @@ void QuizUser::setDeviceId(const QString &deviceId_)
 QuizUserModel::QuizUserModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<QuizUser>(parent_)
 {
+    init(this);
 }
 
 void QuizUserModel::listLoaded(const QJsonDocument &reply_)

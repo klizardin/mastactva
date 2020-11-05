@@ -7,8 +7,7 @@ Page {
 
     title: qsTr("Description")
 
-    Label {
-        text: qsTr("You are on description page.")
-        anchors.centerIn: parent
-    }
+    property var netAPI: undefined
+
+
 }

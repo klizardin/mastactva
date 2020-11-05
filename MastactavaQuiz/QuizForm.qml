@@ -7,8 +7,6 @@ Page {
 
     title: qsTr("Quiz")
 
-    Label {
-        text: qsTr("You are on quiz page.")
-        anchors.centerIn: parent
-    }
+    property var netAPI: undefined
+
 }

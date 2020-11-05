@@ -79,7 +79,7 @@ public:
     }
 
     template<class DataType_>
-    RequestData *getList(const QString &currentRef_, const QVariant &refAppId_)
+    RequestData *getList(const QString &layoutName_, const QString &currentRef_, const QVariant &refAppId_)
     {
         QString parentModel;
         QString parentModelJsonFieldName;
@@ -91,34 +91,34 @@ public:
                     ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
                     : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName)
                     ;
-            return getListByRefImpl(getDataLayout<DataType_>().getLayoutJsonName(), currentRef_, idField);
+            return getListByRefImpl(layoutName_, currentRef_, idField);
         }
         else
         {
-            return getListImpl(getDataLayout<DataType_>().getLayoutJsonName());
+            return getListImpl(layoutName_);
         }
     }
 
     template<class DataType_>
-    RequestData *addItem(const DataType_ *item_)
+    RequestData *addItem(const QString &layoutName_, const DataType_ *item_)
     {
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        return addItemImpl(getDataLayout<DataType_>().getLayoutJsonName(), appId, values);
+        return addItemImpl(layoutName_, appId, values);
     }
 
     template<class DataType_>
-    RequestData *setItem(const DataType_ *item_)
+    RequestData *setItem(const QString &layoutName_, const DataType_ *item_)
     {
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        return setItemImpl(getDataLayout<DataType_>().getLayoutJsonName(), id, values);
+        return setItemImpl(layoutName_, id, values);
     }
 
 signals:

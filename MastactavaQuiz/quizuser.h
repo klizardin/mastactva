@@ -8,6 +8,9 @@
 #include "Model.h"
 
 
+QString getAndroidUuid();
+
+
 class QuizUser : public QObject
 {
     Q_OBJECT
@@ -18,7 +21,7 @@ public:
     public:
         DefaultLayout()
         {
-            addSpecial<int>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
+            addSpecial<QObject *>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
             addField<QString>("deviceid", "deviceId", &QuizUser::deviceId, &QuizUser::setDeviceId);
         }
     };
@@ -38,7 +41,7 @@ signals:
 
 private:
     QString m_deviceId;
-    int m_appId = -1;
+    QObject * m_appId = nullptr;
 };
 
 
@@ -55,7 +58,7 @@ public:
 
     LAYOUT_MODEL_IMPL();
 
-protected slots:
+public slots:
     void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, request_, reply_);

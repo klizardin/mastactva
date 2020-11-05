@@ -29,7 +29,7 @@ public:
     public:
         DefaultLayout()
         {
-            addSpecial<int>(layout::SpecialFieldEn::appId, &Image::m_appId);
+            addSpecial<QObject *>(layout::SpecialFieldEn::appId, &Image::m_appId);
             addField<int>("id", "id", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
             addField<QString>("hash", "hash", &Image::hash, &Image::setHash);
@@ -60,7 +60,7 @@ signals:
     void createdChanged();
 
 private:
-    int m_appId = -1;
+    QObject *m_appId = nullptr;
     int m_id = -1;
     ImageSource m_filename;
     QString m_hash;
@@ -82,7 +82,7 @@ public:
 
     LAYOUT_MODEL_IMPL();
 
-protected slots:
+public slots:
     void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, request_, reply_);

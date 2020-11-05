@@ -1,5 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import MastactvaQuiz 1.0
+
 
 ApplicationWindow {
     id: window
@@ -7,6 +9,29 @@ ApplicationWindow {
     height: 480
     visible: true
     title: qsTr("Mastactva Quiz")
+
+    NetAPI {
+        id: netAPI
+        objectName: "NetAPI"
+        Component.onCompleted: {
+            galleryPage.netAPI = netAPI
+            quizPage.netAPI = netAPI
+            descriptionPage.netAPI = netAPI
+        }
+    }
+
+    GalleryForm {
+        id: galleryPage
+    }
+
+    QuizForm {
+        id: quizPage
+    }
+
+    DescriptionForm {
+        id: descriptionPage
+    }
+
 
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
@@ -42,7 +67,7 @@ ApplicationWindow {
                 text: qsTr("Quiz")
                 width: parent.width
                 onClicked: {
-                    stackView.push("QuizForm.qml")
+                    stackView.push(quizPage)
                     drawer.close()
                 }
             }
@@ -50,7 +75,7 @@ ApplicationWindow {
                 text: qsTr("Description")
                 width: parent.width
                 onClicked: {
-                    stackView.push("DescriptionForm.qml")
+                    stackView.push(descriptionPage)
                     drawer.close()
                 }
             }
@@ -59,7 +84,7 @@ ApplicationWindow {
 
     StackView {
         id: stackView
-        initialItem: "GalleryForm.qml"
+        initialItem: galleryPage
         anchors.fill: parent
     }
 }

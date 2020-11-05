@@ -174,7 +174,9 @@ protected:
         {
             if(nullptr == item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
-            return appId.isValid() && appId == appId_;
+            QObject *obj1 = qvariant_cast<QObject *>(appId);
+            QObject *obj2 = qvariant_cast<QObject *>(appId_);
+            return nullptr != obj1 && obj1 == obj2;
         });
         return std::end(m_data) == fit ? nullptr : *fit;
     }
@@ -199,15 +201,17 @@ protected:
             reloadList = true;
             return;
         }
-        request = netAPI->getList<DataType_>(currentRefImpl(), getRefAppIdImpl());
+        request = netAPI->getList<DataType_>(getLayoutName(), currentRefImpl(), getRefAppIdImpl());
         if(nullptr != request) { m_requests.push_back(request); }
     }
 
     DataType_ *createDataItemImpl()
     {
         DataType_ *dta = new DataType_(static_cast<QObject *>(this));
-        getDataLayout<DataType_>().setSpecialFieldValue(layout::SpecialFieldEn::appId, QVariant::fromValue(m_lastAppId), dta);
-        m_lastAppId++;
+        getDataLayout<DataType_>().setSpecialFieldValue(
+                    layout::SpecialFieldEn::appId,
+                    QVariant::fromValue(static_cast<QObject *>(dta)),
+                    dta);
         return dta;
     }
 
@@ -226,7 +230,7 @@ protected:
         bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
         if(!ret) { return ret; }
 
-        RequestData *request = netAPI->setItem(m_data[index_]);
+        RequestData *request = netAPI->setItem(getLayoutName(), m_data[index_]);
         if(nullptr != request) { m_requests.push_back(request); }
         return nullptr != request;
     }
@@ -238,7 +242,7 @@ protected:
 
         m_data.push_back(item_);
 
-        RequestData *request = netAPI->addItem(m_data.back());
+        RequestData *request = netAPI->addItem(getLayoutName(), m_data.back());
         if(nullptr != request) { m_requests.push_back(request); }
         return nullptr != request;
     }
@@ -317,6 +321,15 @@ protected:
         }
         removeRequest(request_);
         clearTempData();
+    }
+
+    template<typename ModelType_>
+    bool init(ModelType_ *model_)
+    {
+        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        if(nullptr == netAPI) { return false; }
+        QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), model_, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
+        return true;
     }
 
 protected:
@@ -472,7 +485,6 @@ protected:
     QVector<DataType_ *> m_data;
 
 private:
-    int m_lastAppId = 1;
     QHash<int, QByteArray> m_roleNames;
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;

@@ -1,4 +1,9 @@
 QT += quick
+QT += quickcontrols2
+
+CONFIG += qmltypes
+QML_IMPORT_NAME = MastactvaQuiz
+QML_IMPORT_MAJOR_VERSION = 1
 
 CONFIG += c++17
 
@@ -44,3 +49,7 @@ HEADERS += \
     netapi.h \
     qmlobjects.h \
     quizuser.h
+
+DISTFILES += \
+    ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json
+
