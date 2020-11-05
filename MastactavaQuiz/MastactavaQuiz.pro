@@ -21,13 +21,14 @@ SOURCES += \
         qmlobjects.cpp \
         quizuser.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    Mastactva/
 
 TRANSLATIONS += \
     MastactavaQuiz_be_BY.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH += $$PWD
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -51,5 +52,8 @@ HEADERS += \
     quizuser.h
 
 DISTFILES += \
-    ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json
+    ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json \
+    GalleryFunctions.js \
+    Mastactva/Constants.qml \
+    Mastactva/qmldir \
 

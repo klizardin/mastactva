@@ -1,12 +1,14 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import MastactvaQuiz 1.0
+import "GalleryFunctions.js" as GalleryFunctions
+import Mastactva 1.0
 
 
 ApplicationWindow {
     id: window
-    width: 640
-    height: 480
+    width: Constants.width
+    height: Constants.height
     visible: true
     title: qsTr("Mastactva Quiz")
 
