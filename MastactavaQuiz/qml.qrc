@@ -1,9 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>HomeForm.ui.qml</file>
-        <file>Page1Form.ui.qml</file>
-        <file>Page2Form.ui.qml</file>
+        <file>GalleryForm.qml</file>
+        <file>QuizForm.qml</file>
+        <file>DescriptionForm.qml</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

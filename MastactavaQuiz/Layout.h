@@ -20,15 +20,16 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ_)
 {
     QString dateTimeZ(dateTimeZ_);
     QTextStream s(&dateTimeZ);
-    int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0;
+    int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0, ms = 0;
     char tmp;
     s >> year >> tmp >> month >> tmp >> day >> tmp;
     s >> hours >> tmp >> minites >> tmp >> seconds;
     if(seconds > 100)
     {
         seconds /= 1000;
+        ms = seconds % 1000;
     }
-    return QDateTime(QDate(year, month, day), QTime(hours, minites, seconds));
+    return QDateTime(QDate(year, month, day), QTime(hours, minites, seconds, ms));
 }
 
 inline
