@@ -15,63 +15,39 @@ ApplicationWindow {
     NetAPI {
         id: netAPI
         objectName: "NetAPI"
-
-        property bool initialized: false
-
-        Component.onCompleted:
-        {
-            galleryPage.netAPI = netAPI
-            quizPage.netAPI = netAPI
-            descriptionPage.netAPI = netAPI
-            initialized = true
-            initQuizUserModel()
-        }
     }
 
-    QuizUserModel
-    {
+    QuizUserModel {
         id: quizUserModel
         objectName: "QuizUserModel"
-
-        property bool initialized: false
-
-        Component.onCompleted: {
-            initialized = true
-            initQuizUserModel()
-        }
+        layoutQMLName: "QuizUserModel"
+        layoutIdField: "deviceid"
     }
 
-    function initQuizUserModel()
-    {
-        if(netAPI.initialized && quizUserModel.initialized)
-        {
-            quizUserModel.setLayoutJsonName("user-name")
-            quizUserModel.setLayoutIdField("deviceid")
-        }
-    }
-
-    GalleryModel
-    {
+    GalleryModel {
         id: galleryModel
         objectName: "GalleryModel"
-
-        property bool initialized: false
-
-        Component.onCompleted: {
-            initialized = true
-            initGalleryModel()
-        }
+        layoutQMLName: "GalleryModel"
+        layoutIdField: "id"
+        currentRef: "deviceid"
     }
 
     function initGalleryModel()
     {
-        if(netAPI.initialized && galleryModel.initialized)
+        galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")
+    }
+
+    Connections {
+        target: netAPI
+
+        function onInitialized()
         {
-            galleryModel.setLayoutJsonName("galleries")
-            galleryModel.setLayoutIdField("id")
-            galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")
-            galleryModel.setCurrentRef("deviceid")
-            galleryModel.loadList()
+            galleryPage.netAPI = netAPI
+            quizPage.netAPI = netAPI
+            descriptionPage.netAPI = netAPI
+
+            initGalleryModel()
+            quizUserModel.loadList()
         }
     }
 

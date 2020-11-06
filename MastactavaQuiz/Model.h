@@ -62,7 +62,12 @@ public:
         return getDataLayout<DataType_>().setModelValue(item, role_, value_);
     }
 
-    virtual const QString &getLayoutName() const override
+    virtual const QString &getQMLLayoutName() const override
+    {
+        return m_QMLLayoutName;
+    }
+
+    virtual const QString &getJsonLayoutName() const override
     {
         return getDataLayout<DataType_>().getLayoutJsonName();
     }
@@ -217,7 +222,7 @@ protected:
             parentModel = m_refs.value(currentRefImpl()).m_parentModel;
             parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
         }
-        request = netAPI->getList<DataType_>(getLayoutName(), currentRefImpl(), parentModel, parentModelJsonFieldName, getRefAppIdImpl());
+        request = netAPI->getList<DataType_>(getJsonLayoutName(), currentRefImpl(), parentModel, parentModelJsonFieldName, getRefAppIdImpl());
         if(nullptr != request) { m_requests.push_back(request); }
     }
 
@@ -246,7 +251,7 @@ protected:
         bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
         if(!ret) { return ret; }
 
-        RequestData *request = netAPI->setItem(getLayoutName(), m_data[index_]);
+        RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_]);
         if(nullptr != request) { m_requests.push_back(request); }
         return nullptr != request;
     }
@@ -258,7 +263,7 @@ protected:
 
         m_data.push_back(item_);
 
-        RequestData *request = netAPI->addItem(getLayoutName(), m_data.back());
+        RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back());
         if(nullptr != request) { m_requests.push_back(request); }
         return nullptr != request;
     }
@@ -287,6 +292,16 @@ protected:
     const QString &getLayoutJsonNameImpl()
     {
         return getDataLayout<DataType_>().getLayoutJsonName();
+    }
+
+    void setLayoutQMLNameImpl(const QString &layoutQMLName_)
+    {
+        m_QMLLayoutName = layoutQMLName_;
+    }
+
+    const QString &getLayoutQMLNameImpl() const
+    {
+        return m_QMLLayoutName;
     }
 
     void setLayoutIdFieldImpl(const QString &fieldJsonName_)
@@ -504,6 +519,7 @@ private:
     bool reloadList = false;
     QString m_currentRef;
     QVariant m_refAppId;
+    QString m_QMLLayoutName;
 };
 
 // TODO: may be refactor define
@@ -514,6 +530,8 @@ public:                                                                         
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
     Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
+    Q_PROPERTY(QString layoutQMLName READ getLayoutQMLName WRITE setLayoutQMLName NOTIFY layoutQMLNameChanged)  \
+    Q_PROPERTY(QString layoutIdField READ getLayoutIdField WRITE setLayoutIdField NOTIFY layoutIdFieldChanged)  \
     Q_INVOKABLE QVariant findItemById(const QVariant &id_)                                                      \
     {                                                                                                           \
         return findItemByIdImpl(id_);                                                                           \
@@ -538,34 +556,36 @@ public:                                                                         
     {                                                                                                           \
         return addItemImpl(item_);                                                                              \
     }                                                                                                           \
-    Q_INVOKABLE void setLayoutJsonName(const QString &layoutJsonName_)                                          \
-    {                                                                                                           \
-        setLayoutJsonNameImpl(layoutJsonName_);                                                                 \
-    }                                                                                                           \
-    Q_INVOKABLE const QString &getLayoutJsonName()                                                              \
-    {                                                                                                           \
-        return getLayoutJsonNameImpl();                                                                         \
-    }                                                                                                           \
-    Q_INVOKABLE void setLayoutIdField(const QString &fieldJsonName_)                                            \
-    {                                                                                                           \
-        setLayoutIdFieldImpl(fieldJsonName_);                                                                   \
-    }                                                                                                           \
-    Q_INVOKABLE QString getLayoutIdField()                                                                      \
-    {                                                                                                           \
-        return getLayoutIdFieldImpl();                                                                          \
-    }                                                                                                           \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
         setLayoutRefImpl(fieldJsonName_, parentModel_, parentModelRefJsonName_);                                \
+    }                                                                                                           \
+    const QString &getLayoutQMLName()                                                                           \
+    {                                                                                                           \
+        return getLayoutQMLNameImpl();                                                                          \
+    }                                                                                                           \
+    void setLayoutQMLName(const QString &layoutQMLName_)                                                        \
+    {                                                                                                           \
+        setLayoutQMLNameImpl(layoutQMLName_);                                                                   \
+        emit layoutQMLNameChanged();                                                                            \
+    }                                                                                                           \
+    QString getLayoutIdField()                                                                                  \
+    {                                                                                                           \
+        return getLayoutIdFieldImpl();                                                                          \
+    }                                                                                                           \
+    void setLayoutIdField(const QString &fieldJsonName_)                                                        \
+    {                                                                                                           \
+        setLayoutIdFieldImpl(fieldJsonName_);                                                                   \
+        emit layoutIdFieldChanged();                                                                            \
+    }                                                                                                           \
+    int currentIndex() const                                                                                    \
+    {                                                                                                           \
+        return getCurrentIndexImpl();                                                                           \
     }                                                                                                           \
     void setCurrentIndex(int index_)                                                                            \
     {                                                                                                           \
         setCurrentIndexImpl(index_);                                                                            \
         emit currentIndexChanged();                                                                             \
-    }                                                                                                           \
-    int currentIndex() const                                                                                    \
-    {                                                                                                           \
-        return getCurrentIndexImpl();                                                                           \
     }                                                                                                           \
     QString currentRef() const                                                                                  \
     {                                                                                                           \
@@ -574,6 +594,7 @@ public:                                                                         
     void setCurrentRef(const QString &ref_)                                                                     \
     {                                                                                                           \
         setCurrentRefImpl(ref_);                                                                                \
+        emit currentRefChanged();                                                                               \
     }                                                                                                           \
     QVariant getRefAppId() const                                                                                \
     {                                                                                                           \
@@ -582,6 +603,7 @@ public:                                                                         
     void setRefAppId(const QVariant &appId_)                                                                    \
     {                                                                                                           \
         setRefAppIdImpl(appId_);                                                                                \
+        emit refAppIdChanged();                                                                                 \
     }                                                                                                           \
     bool storeAfterSave() const                                                                                 \
     {                                                                                                           \

@@ -11,7 +11,8 @@
 class IListModel
 {
 public:
-    virtual const QString &getLayoutName() const = 0;
+    virtual const QString &getQMLLayoutName() const = 0;
+    virtual const QString &getJsonLayoutName() const = 0;
     virtual QString getLayoutIdFiledName() const = 0;
     virtual QVariant getCurrentIndexAppId() const = 0;
     virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const = 0;

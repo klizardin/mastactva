@@ -32,6 +32,7 @@ public:
     public:
         DefaultLayout()
         {
+            setLayoutJsonName("galleries");
             addSpecial<QObject *>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
             addField<int>("id", "id", &Gallery::id, &Gallery::setId);
             addField<QString>("description", "description", &Gallery::description, &Gallery::setDescription);
@@ -105,6 +106,8 @@ signals:
     void currentRefChanged();
     void storeAfterSaveChanged();
     void refAppIdChanged();
+    void layoutQMLNameChanged();
+    void layoutIdFieldChanged();
 };
 
 

@@ -123,9 +123,12 @@ public:
         return setItemImpl(layoutName_, id, values);
     }
 
+    void setInitialized();
+
 signals:
     void response(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void error(int errorCode_, const QJsonDocument &reply_);
+    void initialized();
 
 protected slots:
     void replayFinished(QNetworkReply *reply_);

@@ -29,6 +29,7 @@ public:
     public:
         DefaultLayout()
         {
+            setLayoutJsonName("images");
             addSpecial<QObject *>(layout::SpecialFieldEn::appId, &Image::m_appId);
             addField<int>("id", "id", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
@@ -93,6 +94,8 @@ signals:
     void currentRefChanged();
     void storeAfterSaveChanged();
     void refAppIdChanged();
+    void layoutQMLNameChanged();
+    void layoutIdFieldChanged();
 };
 
 

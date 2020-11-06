@@ -109,6 +109,11 @@ bool NetAPI::init()
     return nullptr != m_networkManager;
 }
 
+void NetAPI::setInitialized()
+{
+    emit initialized();
+}
+
 void NetAPI::replayFinished(QNetworkReply *reply_)
 {
     const auto fit = std::find_if(

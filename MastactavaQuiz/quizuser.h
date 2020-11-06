@@ -21,6 +21,7 @@ public:
     public:
         DefaultLayout()
         {
+            setLayoutJsonName("quiz-users");
             addSpecial<QObject *>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
             addField<QString>("deviceid", "deviceId", &QuizUser::deviceId, &QuizUser::setDeviceId);
         }
@@ -69,6 +70,8 @@ signals:
     void currentRefChanged();
     void storeAfterSaveChanged();
     void refAppIdChanged();
+    void layoutQMLNameChanged();
+    void layoutIdFieldChanged();
 
 protected:
     virtual void listLoaded(const QJsonDocument &reply_) override;

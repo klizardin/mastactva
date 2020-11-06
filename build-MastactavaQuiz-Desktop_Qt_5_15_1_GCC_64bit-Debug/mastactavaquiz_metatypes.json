@@ -219,16 +219,16 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "layoutJsonName_",
+                                "name": "layoutQMLName_",
                                 "type": "QString"
                             }
                         ],
-                        "name": "setLayoutJsonName",
+                        "name": "setLayoutQMLName",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "getLayoutJsonName",
+                        "name": "getLayoutQMLName",
                         "returnType": "void"
                     },
                     {
@@ -324,6 +324,34 @@
                         "type": "bool",
                         "user": false,
                         "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutQMLName",
+                        "notify": "layoutQMLNameChanged",
+                        "read": "getLayoutQMLName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutQMLName"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutIdField",
+                        "notify": "layoutIdFieldChanged",
+                        "read": "getLayoutIdField",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutIdField"
                     }
                 ],
                 "qualifiedClassName": "GalleryModel",
@@ -346,6 +374,16 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutQMLNameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutIdFieldChanged",
                         "returnType": "void"
                     }
                 ],
@@ -583,16 +621,16 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "layoutJsonName_",
+                                "name": "layoutQMLName_",
                                 "type": "QString"
                             }
                         ],
-                        "name": "setLayoutJsonName",
+                        "name": "setLayoutQMLName",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "getLayoutJsonName",
+                        "name": "getLayoutQMLName",
                         "returnType": "void"
                     },
                     {
@@ -688,6 +726,34 @@
                         "type": "bool",
                         "user": false,
                         "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutQMLName",
+                        "notify": "layoutQMLNameChanged",
+                        "read": "getLayoutQMLName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutQMLName"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutIdField",
+                        "notify": "layoutIdFieldChanged",
+                        "read": "getLayoutIdField",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutIdField"
                     }
                 ],
                 "qualifiedClassName": "ImageModel",
@@ -710,6 +776,16 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutQMLNameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutIdFieldChanged",
                         "returnType": "void"
                     }
                 ],
@@ -790,6 +866,11 @@
                             }
                         ],
                         "name": "error",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "initialized",
                         "returnType": "void"
                     }
                 ],
@@ -924,16 +1005,16 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "layoutJsonName_",
+                                "name": "layoutQMLName_",
                                 "type": "QString"
                             }
                         ],
-                        "name": "setLayoutJsonName",
+                        "name": "setLayoutQMLName",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "getLayoutJsonName",
+                        "name": "getLayoutQMLName",
                         "returnType": "void"
                     },
                     {
@@ -1029,6 +1110,34 @@
                         "type": "bool",
                         "user": false,
                         "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutQMLName",
+                        "notify": "layoutQMLNameChanged",
+                        "read": "getLayoutQMLName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutQMLName"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutIdField",
+                        "notify": "layoutIdFieldChanged",
+                        "read": "getLayoutIdField",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutIdField"
                     }
                 ],
                 "qualifiedClassName": "QuizUserModel",
@@ -1051,6 +1160,16 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutQMLNameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutIdFieldChanged",
                         "returnType": "void"
                     }
                 ],
