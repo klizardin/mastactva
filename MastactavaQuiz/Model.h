@@ -526,12 +526,22 @@ private:
 
 #define LAYOUT_MODEL_IMPL()                                                                                     \
 public:                                                                                                         \
+    /*properties*/                                                                                              \
     Q_PROPERTY(QString layoutQMLName READ getLayoutQMLName WRITE setLayoutQMLName NOTIFY layoutQMLNameChanged)  \
     Q_PROPERTY(QString layoutIdField READ getLayoutIdField WRITE setLayoutIdField NOTIFY layoutIdFieldChanged)  \
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)             \
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
     Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
+    /*Q_INVOKABLEs*/                                                                                            \
+    Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
+    {                                                                                                           \
+        setLayoutRefImpl(fieldJsonName_, parentModel_, parentModelRefJsonName_);                                \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant createItem()                                                                           \
+    {                                                                                                           \
+        return createItemImpl();                                                                                \
+    }                                                                                                           \
     Q_INVOKABLE QVariant findItemById(const QVariant &id_)                                                      \
     {                                                                                                           \
         return findItemByIdImpl(id_);                                                                           \
@@ -544,10 +554,6 @@ public:                                                                         
     {                                                                                                           \
         loadListImpl();                                                                                         \
     }                                                                                                           \
-    Q_INVOKABLE QVariant createItem()                                                                           \
-    {                                                                                                           \
-        return createItemImpl();                                                                                \
-    }                                                                                                           \
     Q_INVOKABLE bool setItem(int index_, const QVariant &item_)                                                 \
     {                                                                                                           \
         return setItemImpl(index_, item_);                                                                      \
@@ -556,10 +562,7 @@ public:                                                                         
     {                                                                                                           \
         return addItemImpl(item_);                                                                              \
     }                                                                                                           \
-    Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
-    {                                                                                                           \
-        setLayoutRefImpl(fieldJsonName_, parentModel_, parentModelRefJsonName_);                                \
-    }                                                                                                           \
+    /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
     {                                                                                                           \
         return getLayoutQMLNameImpl();                                                                          \
