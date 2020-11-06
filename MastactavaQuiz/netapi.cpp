@@ -143,6 +143,17 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     rd = nullptr;
 }
 
+RequestData *NetAPI::emptyRequest()
+{
+    return new RequestData();
+}
+
+void NetAPI::freeRequest(RequestData *&r_)
+{
+    delete r_;
+    r_ = nullptr;
+}
+
 RequestData *NetAPI::getListByRefImpl(const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/%2/by_%3/")

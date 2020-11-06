@@ -238,15 +238,28 @@ protected:
             reloadList = true;
             return;
         }
-        QString parentModel;
-        QString parentModelJsonFieldName;
-        if(m_refs.contains(currentRefImpl()))
+        if(getJsonLayoutName().isEmpty())
         {
-            parentModel = m_refs.value(currentRefImpl()).m_parentModel;
-            parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
+            request = netAPI->emptyRequest();
+            if(nullptr != request)
+            {
+                m_requests.push_back(request);
+                jsonResponseSlotImpl(0, request, QJsonDocument());
+            }
+            netAPI->freeRequest(request);
         }
-        request = netAPI->getList<DataType_>(getJsonLayoutName(), currentRefImpl(), parentModel, parentModelJsonFieldName, getRefAppIdImpl());
-        if(nullptr != request) { m_requests.push_back(request); }
+        else
+        {
+            QString parentModel;
+            QString parentModelJsonFieldName;
+            if(m_refs.contains(currentRefImpl()))
+            {
+                parentModel = m_refs.value(currentRefImpl()).m_parentModel;
+                parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
+            }
+            request = netAPI->getList<DataType_>(getJsonLayoutName(), currentRefImpl(), parentModel, parentModelJsonFieldName, getRefAppIdImpl());
+            if(nullptr != request) { m_requests.push_back(request); }
+        }
     }
 
     DataType_ *createDataItemImpl()
@@ -271,12 +284,26 @@ protected:
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false;; }
 
-        bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
-        if(!ret) { return ret; }
+        if(getJsonLayoutName().isEmpty())
+        {
+            RequestData *request = netAPI->emptyRequest();
+            if(nullptr != request)
+            {
+                m_requests.push_back(request);
+                jsonResponseSlotImpl(0, request, QJsonDocument());
+            }
+            netAPI->freeRequest(request);
+            return true;
+        }
+        else
+        {
+            bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
+            if(!ret) { return ret; }
 
-        RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_]);
-        if(nullptr != request) { m_requests.push_back(request); }
-        return nullptr != request;
+            RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_]);
+            if(nullptr != request) { m_requests.push_back(request); }
+            return nullptr != request;
+        }
     }
 
     bool addDataItemImpl(DataType_ *item_)
@@ -286,9 +313,23 @@ protected:
 
         m_data.push_back(item_);
 
-        RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back());
-        if(nullptr != request) { m_requests.push_back(request); }
-        return nullptr != request;
+        if(getJsonLayoutName().isEmpty())
+        {
+            RequestData *request = netAPI->emptyRequest();
+            if(nullptr != request)
+            {
+                m_requests.push_back(request);
+                jsonResponseSlotImpl(0, request, QJsonDocument());
+            }
+            netAPI->freeRequest(request);
+            return true;
+        }
+        else
+        {
+            RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back());
+            if(nullptr != request) { m_requests.push_back(request); }
+            return nullptr != request;
+        }
     }
 
     bool setItemImpl(int index_, const QVariant &item_)

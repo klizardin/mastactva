@@ -21,7 +21,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("quiz-users");
+            setLayoutJsonName("");
             addSpecial<QObject *>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
             addField<QString>("deviceid", "deviceId", &QuizUser::deviceId, &QuizUser::setDeviceId);
         }
