@@ -240,7 +240,7 @@ protected:
         }
         if(getJsonLayoutName().isEmpty())
         {
-            request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>());
+            request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
             if(nullptr != request)
             {
                 m_requests.push_back(request);
@@ -286,7 +286,9 @@ protected:
 
         if(getJsonLayoutName().isEmpty())
         {
-            RequestData *request = netAPI->emptyRequest(netAPI->setItemRequestName<DataType_>());
+            QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+            QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
+            RequestData *request = netAPI->emptyRequest(netAPI->setItemRequestName<DataType_>(), itemAppId, itemId);
             if(nullptr != request)
             {
                 m_requests.push_back(request);
@@ -315,7 +317,9 @@ protected:
 
         if(getJsonLayoutName().isEmpty())
         {
-            RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>());
+            QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+            QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
+            RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>(), itemAppId, itemId);
             if(nullptr != request)
             {
                 m_requests.push_back(request);
@@ -434,6 +438,7 @@ protected:
 
     virtual void listLoaded(const QJsonDocument &reply_)
     {
+        if(reply_.isEmpty()) { return; }
         Q_ASSERT(reply_.isArray());
         QList<DataType_ *> loaded;
         for(int i = 0; ; i++)

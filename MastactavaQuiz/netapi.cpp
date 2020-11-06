@@ -143,10 +143,12 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     rd = nullptr;
 }
 
-RequestData *NetAPI::emptyRequest(const QString &requestName_)
+RequestData *NetAPI::emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
 {
     RequestData *rd = new RequestData();
     rd->setRequestName(requestName_);
+    rd->setItemAppId(itemAppId_);
+    rd->setItemId(itemId_);
     return rd;
 }
 

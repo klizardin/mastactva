@@ -78,7 +78,7 @@ public:
         return getDataLayout<DataType_>().getLayoutJsonName() + "/PATCH";
     }
 
-    RequestData *emptyRequest(const QString &requestName_);
+    RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_);
     void freeRequest(RequestData *&r_);
 
     template<class DataType_>
