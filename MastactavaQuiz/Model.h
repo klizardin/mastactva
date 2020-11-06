@@ -373,7 +373,6 @@ protected:
     virtual void listLoaded(const QJsonDocument &reply_)
     {
         Q_ASSERT(reply_.isArray());
-        clearData();
         QList<DataType_ *> loaded;
         for(int i = 0; ; i++)
         {
@@ -386,8 +385,17 @@ protected:
                 delete item;
                 continue;
             }
+            const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
+            DataType_ *oldItem = findDataItemByIdImpl(id);
+            if(nullptr != oldItem)
+            {
+                const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+                Q_ASSERT(appId.isValid());
+                getDataLayout<DataType_>().setSpecialFieldValue(layout::SpecialFieldEn::appId, appId, item);
+            }
             loaded.push_back(item);
         }
+        clearData();
         beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + loaded.size() - 1);
         std::copy(std::begin(loaded), std::end(loaded),
                   std::inserter(m_data, std::end(m_data)));
