@@ -219,38 +219,6 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "layoutQMLName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutQMLName",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getLayoutQMLName",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "fieldJsonName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutIdField",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getLayoutIdField",
-                        "returnType": "QString"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
                                 "name": "fieldJsonName_",
                                 "type": "QString"
                             },
@@ -621,38 +589,6 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "layoutQMLName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutQMLName",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getLayoutQMLName",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "fieldJsonName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutIdField",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getLayoutIdField",
-                        "returnType": "QString"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
                                 "name": "fieldJsonName_",
                                 "type": "QString"
                             },
@@ -1000,38 +936,6 @@
                         ],
                         "name": "addItem",
                         "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "layoutQMLName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutQMLName",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getLayoutQMLName",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "fieldJsonName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutIdField",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getLayoutIdField",
-                        "returnType": "QString"
                     },
                     {
                         "access": "public",
