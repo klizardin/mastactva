@@ -81,7 +81,7 @@ void QuizUser::setDeviceId(const QString &deviceId_)
 
 
 QuizUserModel::QuizUserModel(QObject *parent_ /*= nullptr*/)
-    : ListModelBaseOfData<QuizUser>(parent_)
+    : ListModelBaseOfData<QuizUser, QuizUserModel>(parent_)
 {
     init(this);
 }
@@ -91,6 +91,7 @@ void QuizUserModel::listLoaded(const QJsonDocument &reply_)
     base::listLoaded(reply_);
     if(m_data.isEmpty())
     {
-        addDataItemImpl(createDataItemImpl());
+        QuizUser* qu = createDataItemImpl();
+        addDataItemImpl(qu);
     }
 }

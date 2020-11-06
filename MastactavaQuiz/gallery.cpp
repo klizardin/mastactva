@@ -95,7 +95,7 @@ QVariant Gallery::images()
 
 
 GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
-    : ListModelBaseOfData<Gallery>(parent_)
+    : ListModelBaseOfData<Gallery, GalleryModel>(parent_)
 {
     init(this);
 }

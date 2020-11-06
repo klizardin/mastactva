@@ -16,7 +16,7 @@
 // TODO : add notification on data changes
 // TODO : event on data loaded check if data was changed, notify child nodes
 
-template<class DataType_>
+template<class DataType_, class ModelType_>
 class ListModelBaseOfData : public QAbstractListModel, public IListModel
 {
 private:
@@ -62,6 +62,11 @@ public:
         return getDataLayout<DataType_>().setModelValue(item, role_, value_);
     }
 
+    virtual QObject* getModel() const override
+    {
+        return m_model;
+    }
+
     virtual const QString &getQMLLayoutName() const override
     {
         return m_QMLLayoutName;
@@ -75,6 +80,11 @@ public:
     virtual QString getLayoutIdFiledName() const override
     {
         return getDataLayout<DataType_>().getIdFieldJsonName();
+    }
+
+    virtual bool containsAppId(const QVariant &appId_) const override
+    {
+        return nullptr != findDataItemByAppIdImpl(appId_);
     }
 
     virtual QVariant getCurrentIndexAppId() const override
@@ -172,7 +182,7 @@ protected:
 
     DataType_ *findDataItemByIdImpl(const QVariant &id_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_>*>(this)->findDataItemByIdImpl(id_));
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_>*>(this)->findDataItemByIdImpl(id_));
     }
 
     QVariant findItemByIdImpl(const QVariant &id_)
@@ -198,7 +208,7 @@ protected:
 
     DataType_ *findDataItemByAppIdImpl(const QVariant &appId_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_> *>(this)->findDataItemByAppIdImpl(appId_));
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->findDataItemByAppIdImpl(appId_));
     }
 
     QVariant findItemByAppIdImpl(const QVariant &appId_)
@@ -318,6 +328,12 @@ protected:
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
     {
         m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
+        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
+        Q_ASSERT(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel());
+        if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
+        {
+            QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)), m_model, SLOT(refreshChildrenSlot(QString)));
+        }
     }
 
     void jsonResponseSlotImpl(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
@@ -352,14 +368,18 @@ protected:
         }
         removeRequest(request_);
         clearTempData();
+        if(nullptr != m_model)
+        {
+            m_model->startRefreshChildren(getQMLLayoutName());
+        }
     }
 
-    template<typename ModelType_>
     bool init(ModelType_ *model_)
     {
+        m_model = model_;
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false; }
-        QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), model_, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
+        QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
         return true;
     }
 
@@ -417,6 +437,45 @@ protected:
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+    }
+
+    void refreshChildrenSlotImpl(const QString &modelName_)
+    {
+        Q_ASSERT(m_refs.contains(currentRefImpl()));
+        if(!m_refs.contains(currentRefImpl())) { return; }
+        const RefDescription &ref = m_refs.value(currentRefImpl());
+        if(modelName_ != ref.m_parentModel) { return; }
+        IListModel* parentModel = QMLObjects::getInstance().getListModel(ref.m_parentModel);
+        if(!m_refAppId.isValid())
+        {
+            if(parentModel->containsAppId(m_refAppId))
+            {
+                parentItemChanged();
+            }
+            else
+            {
+                parentItemRemoved();
+            }
+        }
+        else
+        {
+            parentCurrentIndexChanged();
+        }
+    }
+
+    void parentCurrentIndexChanged()
+    {
+        loadListImpl();
+    }
+
+    void parentItemChanged()
+    {
+        loadListImpl();
+    }
+
+    void parentItemRemoved()
+    {
+        m_refAppId = QVariant::fromValue(getOutOfRangeAppId());
     }
 
 protected:
@@ -520,7 +579,16 @@ protected:
     int getNextAppId(DataType_ *dta_)
     {
         Q_UNUSED(dta_);
-        return ++m_nextAppId;
+        if(++m_nextAppId < 0)
+        {
+            m_nextAppId = 0;
+        }
+        return m_nextAppId;
+    }
+
+    int getOutOfRangeAppId() const
+    {
+        return -1;
     }
 
     void setNextAppId(int appId_)
@@ -541,6 +609,7 @@ private:
     QString m_currentRef;
     QVariant m_refAppId;
     QString m_QMLLayoutName;
+    ModelType_ *m_model = nullptr;
 };
 
 // TODO: may be refactor define
@@ -637,6 +706,10 @@ public:                                                                         
     {                                                                                                           \
         setStoreAfterSaveImpl(storeAfterSave_);                                                                 \
         emit storeAfterSaveChanged();                                                                           \
+    }                                                                                                           \
+    void startRefreshChildren(QString modelName_)                                                               \
+    {                                                                                                           \
+        emit refreshChildren(modelName_);                                                                       \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

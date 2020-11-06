@@ -46,13 +46,13 @@ private:
 };
 
 
-class QuizUserModel : public ListModelBaseOfData<QuizUser>
+class QuizUserModel : public ListModelBaseOfData<QuizUser, QuizUserModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<QuizUser>;
+    using base = ListModelBaseOfData<QuizUser, QuizUserModel>;
 
 public:
     explicit QuizUserModel(QObject *parent_ = nullptr);
@@ -65,6 +65,11 @@ public slots:
         jsonResponseSlotImpl(errorCode_, request_, reply_);
     }
 
+    void refreshChildrenSlot(QString modelName_)
+    {
+        refreshChildrenSlotImpl(modelName_);
+    }
+
 signals:
     void currentIndexChanged();
     void currentRefChanged();
@@ -72,6 +77,7 @@ signals:
     void refAppIdChanged();
     void layoutQMLNameChanged();
     void layoutIdFieldChanged();
+    void refreshChildren(QString);
 
 protected:
     virtual void listLoaded(const QJsonDocument &reply_) override;

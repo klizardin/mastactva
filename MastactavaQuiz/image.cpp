@@ -79,7 +79,7 @@ void Image::setCreated(const QDateTime &created_)
 }
 
 ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
-    : ListModelBaseOfData<Image>(parent_)
+    : ListModelBaseOfData<Image, ImageModel>(parent_)
 {
     init(this);
 }

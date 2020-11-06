@@ -353,6 +353,16 @@
                         "access": "public",
                         "name": "layoutIdFieldChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildren",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -374,12 +384,23 @@
                         ],
                         "name": "jsonResponseSlot",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildrenSlot",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<Gallery>"
+                        "name": "ListModelBaseOfData<Gallery,GalleryModel>"
                     }
                 ]
             }
@@ -723,6 +744,16 @@
                         "access": "public",
                         "name": "layoutIdFieldChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildren",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -744,12 +775,23 @@
                         ],
                         "name": "jsonResponseSlot",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildrenSlot",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<Image>"
+                        "name": "ListModelBaseOfData<Image,ImageModel>"
                     }
                 ]
             }
@@ -1075,6 +1117,16 @@
                         "access": "public",
                         "name": "layoutIdFieldChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildren",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1096,12 +1148,23 @@
                         ],
                         "name": "jsonResponseSlot",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildrenSlot",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<QuizUser>"
+                        "name": "ListModelBaseOfData<QuizUser,QuizUserModel>"
                     }
                 ]
             }

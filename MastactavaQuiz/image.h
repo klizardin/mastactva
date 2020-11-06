@@ -70,13 +70,13 @@ private:
     QDateTime m_created;
 };
 
-class ImageModel : public ListModelBaseOfData<Image>
+class ImageModel : public ListModelBaseOfData<Image, ImageModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<Image>;
+    using base = ListModelBaseOfData<Image, ImageModel>;
 
 public:
     explicit ImageModel(QObject *parent_ = nullptr);
@@ -89,6 +89,11 @@ public slots:
         jsonResponseSlotImpl(errorCode_, request_, reply_);
     }
 
+    void refreshChildrenSlot(QString modelName_)
+    {
+        refreshChildrenSlotImpl(modelName_);
+    }
+
 signals:
     void currentIndexChanged();
     void currentRefChanged();
@@ -96,6 +101,7 @@ signals:
     void refAppIdChanged();
     void layoutQMLNameChanged();
     void layoutIdFieldChanged();
+    void refreshChildren(QString);
 };
 
 
