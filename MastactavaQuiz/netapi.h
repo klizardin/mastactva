@@ -78,7 +78,7 @@ public:
         return getDataLayout<DataType_>().getLayoutJsonName() + "/PATCH";
     }
 
-    RequestData *emptyRequest();
+    RequestData *emptyRequest(const QString &requestName_);
     void freeRequest(RequestData *&r_);
 
     template<class DataType_>
@@ -96,11 +96,11 @@ public:
                     ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
                     : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
-            return getListByRefImpl(layoutName_, currentRef_, idField);
+            return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField);
         }
         else
         {
-            return getListImpl(layoutName_);
+            return getListImpl(getListRequestName<DataType_>(), layoutName_);
         }
     }
 
@@ -112,7 +112,7 @@ public:
         if(!ok) { return nullptr; }
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        return addItemImpl(layoutName_, appId, values);
+        return addItemImpl(addItemRequestName<DataType_>(), layoutName_, appId, values);
     }
 
     template<class DataType_>
@@ -123,7 +123,7 @@ public:
         if(!ok) { return nullptr; }
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        return setItemImpl(layoutName_, id, values);
+        return setItemImpl(setItemRequestName<DataType_>(), layoutName_, id, values);
     }
 
     void setInitialized();
@@ -137,10 +137,10 @@ protected slots:
     void replayFinished(QNetworkReply *reply_);
 
 protected:
-    RequestData *getListByRefImpl(const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_);
-    RequestData *getListImpl(const QString &jsonLayoutName_);
-    RequestData *addItemImpl(const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
-    RequestData *setItemImpl(const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
+    RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_);
+    RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_);
+    RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
+    RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
 
     void setBasicAuthentification(QNetworkRequest* netRequest_);
     void clearData();

@@ -240,7 +240,7 @@ protected:
         }
         if(getJsonLayoutName().isEmpty())
         {
-            request = netAPI->emptyRequest();
+            request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>());
             if(nullptr != request)
             {
                 m_requests.push_back(request);
@@ -282,11 +282,11 @@ protected:
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return false;; }
+        if(nullptr == netAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
-            RequestData *request = netAPI->emptyRequest();
+            RequestData *request = netAPI->emptyRequest(netAPI->setItemRequestName<DataType_>());
             if(nullptr != request)
             {
                 m_requests.push_back(request);
@@ -309,13 +309,13 @@ protected:
     bool addDataItemImpl(DataType_ *item_)
     {
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return false;; }
+        if(nullptr == netAPI) { return false; }
 
         m_data.push_back(item_);
 
         if(getJsonLayoutName().isEmpty())
         {
-            RequestData *request = netAPI->emptyRequest();
+            RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>());
             if(nullptr != request)
             {
                 m_requests.push_back(request);

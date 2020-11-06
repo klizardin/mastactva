@@ -143,9 +143,11 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     rd = nullptr;
 }
 
-RequestData *NetAPI::emptyRequest()
+RequestData *NetAPI::emptyRequest(const QString &requestName_)
 {
-    return new RequestData();
+    RequestData *rd = new RequestData();
+    rd->setRequestName(requestName_);
+    return rd;
 }
 
 void NetAPI::freeRequest(RequestData *&r_)
@@ -154,7 +156,7 @@ void NetAPI::freeRequest(RequestData *&r_)
     r_ = nullptr;
 }
 
-RequestData *NetAPI::getListByRefImpl(const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_)
+RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/%2/by_%3/")
             .arg(jsonLayoutName_)
@@ -168,11 +170,12 @@ RequestData *NetAPI::getListByRefImpl(const QString &jsonLayoutName_, const QStr
     if(!init()) { return nullptr; }
 
     RequestData *rd = new RequestData();
+    rd->setRequestName(requestName_);
     rd->setReply(m_networkManager->get(request));
     return rd;
 }
 
-RequestData *NetAPI::getListImpl(const QString &jsonLayoutName_)
+RequestData *NetAPI::getListImpl(const QString& requestName_, const QString &jsonLayoutName_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/")
             .arg(jsonLayoutName_)
@@ -184,6 +187,7 @@ RequestData *NetAPI::getListImpl(const QString &jsonLayoutName_)
     if(!init()) { return nullptr; }
 
     RequestData *rd = new RequestData();
+    rd->setRequestName(requestName_);
     rd->setReply(m_networkManager->get(request));
     return rd;
 }
@@ -332,7 +336,7 @@ void JsonRequestData::getDocumentLength(QByteArray &dataLength_)
 }
 
 
-RequestData *NetAPI::addItemImpl(const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_)
+RequestData *NetAPI::addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/")
             .arg(jsonLayoutName_)
@@ -365,10 +369,11 @@ RequestData *NetAPI::addItemImpl(const QString &jsonLayoutName_, const QVariant 
         jrd->setReply(m_networkManager->post(request, jsonString));
         rd = jrd;
     }
+    rd->setRequestName(requestName_);
     return rd;
 }
 
-RequestData *NetAPI::setItemImpl(const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_)
+RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/%2/")
             .arg(jsonLayoutName_)
@@ -402,6 +407,7 @@ RequestData *NetAPI::setItemImpl(const QString &jsonLayoutName_, const QVariant 
         jrd->setReply(m_networkManager->sendCustomRequest(request, "PATCH", jsonString));
         rd = jrd;
     }
+    rd->setRequestName(requestName_);
     return rd;
 }
 
