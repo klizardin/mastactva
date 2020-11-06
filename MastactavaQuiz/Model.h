@@ -126,6 +126,18 @@ public:
         return getDataLayout<DataType_>().getJsonValue(item, jsonFieldName);
     }
 
+    void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true)
+    {
+        m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
+        if(!notify_) { return; }
+        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
+        Q_ASSERT(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel());
+        if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
+        {
+            QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)), m_model, SLOT(refreshChildrenSlot(QString)));
+        }
+    }
+
 protected:
     void setRefAppIdImpl(const QVariant &appId_)
     {
@@ -239,7 +251,7 @@ protected:
 
     DataType_ *createDataItemImpl()
     {
-        DataType_ *dta = new DataType_(static_cast<QObject *>(this));
+        DataType_ *dta = new DataType_(m_model);
         getDataLayout<DataType_>().setSpecialFieldValue(
                     layout::SpecialFieldEn::appId,
                     QVariant::fromValue(getNextAppId(dta)),
@@ -323,17 +335,6 @@ protected:
     QString getLayoutIdFieldImpl()
     {
         return getDataLayout<DataType_>().getIdFieldJsonName();
-    }
-
-    void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
-    {
-        m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
-        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
-        Q_ASSERT(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel());
-        if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
-        {
-            QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)), m_model, SLOT(refreshChildrenSlot(QString)));
-        }
     }
 
     void jsonResponseSlotImpl(int errorCode_, RequestData *request_, const QJsonDocument &reply_)

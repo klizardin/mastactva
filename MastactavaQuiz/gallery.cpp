@@ -1,8 +1,9 @@
 #include "gallery.h"
 
-Gallery::Gallery(QObject *parent_)
+Gallery::Gallery(GalleryModel *parent_)
     : QObject(parent_)
 {
+    m_galleryModel =  parent_;
 }
 
 int Gallery::id() const
@@ -80,6 +81,7 @@ void Gallery::setOwnGallery(const int &ownGallery_)
 ImageModel *Gallery::createImages()
 {
     ImageModel *m = new ImageModel(this);
+    m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setRefAppId(QVariant::fromValue(m_appId));
     return m;
 }

@@ -11,12 +11,15 @@
 #include "Model.h"
 
 
+class GalleryModel;
+
+
 class Gallery : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Gallery(QObject *parent = nullptr);
+    explicit Gallery(GalleryModel *parent = nullptr);
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
@@ -79,6 +82,7 @@ private:
     qreal m_pointsToPass = 1.0;
     int m_ownGallery = false;
     ImageModel *m_images = nullptr;
+    GalleryModel *m_galleryModel = nullptr;
 };
 
 
