@@ -69,7 +69,9 @@ ApplicationWindow {
         {
             galleryModel.setLayoutJsonName("galleries")
             galleryModel.setLayoutIdField("id")
-            galleryModel.setLayoutRef("", "QuizUserModel", "deviceid")
+            galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")
+            galleryModel.setCurrentRef("deviceid")
+            galleryModel.loadList()
         }
     }
 

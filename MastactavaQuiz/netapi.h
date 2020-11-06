@@ -79,17 +79,19 @@ public:
     }
 
     template<class DataType_>
-    RequestData *getList(const QString &layoutName_, const QString &currentRef_, const QVariant &refAppId_)
+    RequestData *getList(const QString &layoutName_,
+                         const QString &currentRef_,
+                         const QString &parentModel_,
+                         const QString &parentModelJsonFieldName_,
+                         const QVariant &refAppId_
+                         )
     {
-        QString parentModel;
-        QString parentModelJsonFieldName;
-        getDataLayout<DataType_>().getRef(currentRef_, parentModel, parentModelJsonFieldName);
-        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel);
+        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
         if(nullptr != parentModelPtr)
         {
-            const QVariant idField = parentModelJsonFieldName.isEmpty()
+            const QVariant idField = parentModelJsonFieldName_.isEmpty()
                     ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
-                    : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName)
+                    : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
             return getListByRefImpl(layoutName_, currentRef_, idField);
         }

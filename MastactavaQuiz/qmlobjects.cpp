@@ -1,14 +1,19 @@
 #include "qmlobjects.h"
-#include "netapi.h"
-#include "Model.h"
 #include <QObject>
+#include "imagesource.h"
+#include "image.h"
 #include "quizuser.h"
 #include "IModel.h"
+#include "gallery.h"
+#include "netapi.h"
+#include "Model.h"
 
 
 static QString g_netAPIQMLName = "NetAPI";
 static QString g_quizUserLayoutName = "quiz-user";
 static QString g_quizUserModel = "QuizUserModel";
+static QString g_galleryLayoutName = "galleries";
+static QString g_galleryModel = "GalleryModel";
 
 
 void QMLObjects::setRoot(QObject *root_)
@@ -49,6 +54,12 @@ void QMLObjects::searchObjects()
     if(nullptr == m)
     {
         QuizUserModel *m1 = m_root->findChild<QuizUserModel *>(g_quizUserModel);
+        if(nullptr != m1) m_models.push_back(static_cast<IListModel *>(m1));
+    }
+    m = findListModel(g_galleryLayoutName);
+    if(nullptr == m)
+    {
+        GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
         if(nullptr != m1) m_models.push_back(static_cast<IListModel *>(m1));
     }
 }

@@ -156,31 +156,31 @@ namespace layout
                 m_idField = idField_;
             }
 
-            bool isRef() const
-            {
-                return !m_parentModel.isEmpty();
-            }
+            //bool isRef() const
+            //{
+            //    return !m_parentModel.isEmpty();
+            //}
 
-            const QString &getParentModel() const
-            {
-                return m_parentModel;
-            }
+            //const QString &getParentModel() const
+            //{
+            //    return m_parentModel;
+            //}
 
-            bool isParentModelRerToIdField() const
-            {
-                return m_parentModelRefJsonName.isEmpty();
-            }
+            //bool isParentModelRerToIdField() const
+            //{
+            //    return m_parentModelRefJsonName.isEmpty();
+            //}
 
-            const QString &getParentModelRefJsonName() const
-            {
-                return m_parentModelRefJsonName;
-            }
+            //const QString &getParentModelRefJsonName() const
+            //{
+            //    return m_parentModelRefJsonName;
+            //}
 
-            void setRef(const QString &parentModel_, const QString &parentModelRefJsonName_ = QString())
-            {
-                m_parentModel = parentModel_;
-                m_parentModelRefJsonName = parentModelRefJsonName_;
-            }
+            //void setRef(const QString &parentModel_, const QString &parentModelRefJsonName_ = QString())
+            //{
+            //    m_parentModel = parentModel_;
+            //    m_parentModelRefJsonName = parentModelRefJsonName_;
+            //}
 
             SpecialFieldEn getType() const
             {
@@ -202,8 +202,8 @@ namespace layout
             QString m_jsonName;
             QString m_qmlName;
             bool m_idField = false;
-            QString m_parentModel;
-            QString m_parentModelRefJsonName;
+            //QString m_parentModel;
+            //QString m_parentModelRefJsonName;
             SpecialFieldEn m_type = SpecialFieldEn::none;
             bool m_autoCreated = false;
         };
@@ -534,27 +534,27 @@ public:
         layoutItem->setFieldId(true);
     }
 
-    void setRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
-    {
-        layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
-        Q_ASSERT(nullptr != layoutItem); // field not founded
-        if(nullptr == layoutItem) { return; }
-        layoutItem->setRef(parentModel_, parentModelRefJsonName_);
-    }
+    //void setRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
+    //{
+    //    layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+    //    Q_ASSERT(nullptr != layoutItem); // field not founded
+    //    if(nullptr == layoutItem) { return; }
+    //    layoutItem->setRef(parentModel_, parentModelRefJsonName_);
+    //}
 
-    void getRef(const QString &fieldJsonName_, QString &parentModel_, QString &parentModelRefJsonName_) const
-    {
-        parentModel_.clear();
-        parentModelRefJsonName_.clear();
-        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
-        Q_ASSERT(nullptr != layoutItem); // field not founded
-        if(nullptr == layoutItem) { return; }
-        parentModel_ = layoutItem->getParentModel();
-        if(!layoutItem->isParentModelRerToIdField())
-        {
-            parentModelRefJsonName_ = layoutItem->getParentModelRefJsonName();
-        }
-    }
+    //void getRef(const QString &fieldJsonName_, QString &parentModel_, QString &parentModelRefJsonName_) const
+    //{
+    //    parentModel_.clear();
+    //    parentModelRefJsonName_.clear();
+    //    const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+    //    Q_ASSERT(nullptr != layoutItem); // field not founded
+    //    if(nullptr == layoutItem) { return; }
+    //    parentModel_ = layoutItem->getParentModel();
+    //    if(!layoutItem->isParentModelRerToIdField())
+    //    {
+    //        parentModelRefJsonName_ = layoutItem->getParentModelRefJsonName();
+    //    }
+    //}
 
     bool copyQMLFields(const DataType_ *from_, DataType_ *to_) const
     {

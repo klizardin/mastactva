@@ -19,6 +19,15 @@
 template<class DataType_>
 class ListModelBaseOfData : public QAbstractListModel, public IListModel
 {
+private:
+    class RefDescription
+    {
+    public:
+        QString m_ref;
+        QString m_parentModel;
+        QString m_parentModelJsonFieldName;
+    };
+
 public:
     explicit ListModelBaseOfData(QObject *parent_)
         :QAbstractListModel(parent_)
@@ -201,7 +210,14 @@ protected:
             reloadList = true;
             return;
         }
-        request = netAPI->getList<DataType_>(getLayoutName(), currentRefImpl(), getRefAppIdImpl());
+        QString parentModel;
+        QString parentModelJsonFieldName;
+        if(m_refs.contains(currentRefImpl()))
+        {
+            parentModel = m_refs.value(currentRefImpl()).m_parentModel;
+            parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
+        }
+        request = netAPI->getList<DataType_>(getLayoutName(), currentRefImpl(), parentModel, parentModelJsonFieldName, getRefAppIdImpl());
         if(nullptr != request) { m_requests.push_back(request); }
     }
 
@@ -285,8 +301,7 @@ protected:
 
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
     {
-        // TODO: move setRef method to model object from layout object (as layout object is one for all models)
-        setDataLayout<DataType_>().setRef(fieldJsonName_, parentModel_, parentModelRefJsonName_);
+        m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
     }
 
     void jsonResponseSlotImpl(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
@@ -483,6 +498,7 @@ protected:
 
 private:
     QHash<int, QByteArray> m_roleNames;
+    QHash<QString, RefDescription> m_refs;
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;
     bool reloadList = false;
