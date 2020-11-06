@@ -188,9 +188,10 @@ protected:
         {
             if(nullptr == item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
-            QObject *obj1 = qvariant_cast<QObject *>(appId);
-            QObject *obj2 = qvariant_cast<QObject *>(appId_);
-            return nullptr != obj1 && obj1 == obj2;
+            //QObject *obj1 = qvariant_cast<QObject *>(appId);
+            //QObject *obj2 = qvariant_cast<QObject *>(appId_);
+            //return nullptr != obj1 && obj1 == obj2;
+            return appId_.isValid() && appId_ == appId;
         });
         return std::end(m_data) == fit ? nullptr : *fit;
     }
@@ -231,7 +232,7 @@ protected:
         DataType_ *dta = new DataType_(static_cast<QObject *>(this));
         getDataLayout<DataType_>().setSpecialFieldValue(
                     layout::SpecialFieldEn::appId,
-                    QVariant::fromValue(static_cast<QObject *>(dta)),
+                    QVariant::fromValue(getNextAppId(dta)),
                     dta);
         return dta;
     }
@@ -378,7 +379,7 @@ protected:
         {
             QJsonValue itemJV = reply_[i];
             if(itemJV.isUndefined()) { break; }
-            DataType_ *item = new DataType_(this);
+            DataType_ *item = createDataItemImpl();
             const bool ok = getDataLayout<DataType_>().setJsonValues(item, itemJV);
             if(!ok)
             {
@@ -508,12 +509,24 @@ protected:
         endInsertRows();
     }
 
+    int getNextAppId(DataType_ *dta_)
+    {
+        Q_UNUSED(dta_);
+        return ++m_nextAppId;
+    }
+
+    void setNextAppId(int appId_)
+    {
+        m_nextAppId = appId_;
+    }
+
 protected:
     QVector<DataType_ *> m_data;
 
 private:
     QHash<int, QByteArray> m_roleNames;
     QHash<QString, RefDescription> m_refs;
+    int m_nextAppId = 0;
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;
     bool reloadList = false;
