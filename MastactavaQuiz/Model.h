@@ -257,7 +257,14 @@ protected:
                 parentModel = m_refs.value(currentRefImpl()).m_parentModel;
                 parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
             }
-            request = netAPI->getList<DataType_>(getJsonLayoutName(), currentRefImpl(), parentModel, parentModelJsonFieldName, getRefAppIdImpl());
+            request = netAPI->getList<DataType_>(
+                        getJsonLayoutName(),
+                        currentRefImpl(),
+                        parentModel,
+                        parentModelJsonFieldName,
+                        getRefAppIdImpl(),
+                        getJsonParamsGetImpl()
+                        );
             if(nullptr != request) { m_requests.push_back(request); }
         }
     }
@@ -308,12 +315,16 @@ protected:
         }
     }
 
-    bool addDataItemImpl(DataType_ *item_)
+    bool addDataItemImpl(DataType_ *item_, bool setCurrentIndex_ = false)
     {
         NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false; }
 
         m_data.push_back(item_);
+        if(setCurrentIndex_)
+        {
+            setCurrentIndexImpl(m_data.size() - 1);
+        }
 
         if(getJsonLayoutName().isEmpty())
         {
@@ -427,6 +438,16 @@ protected:
         if(nullptr == netAPI) { return false; }
         QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
         return true;
+    }
+
+    bool getJsonParamsGetImpl() const
+    {
+        return m_jsonParamsGet;
+    }
+
+    void setJsonParamsGetImpl(bool jsonParamsGet_)
+    {
+        m_jsonParamsGet = jsonParamsGet_;
     }
 
 protected:
@@ -657,6 +678,7 @@ private:
     QVariant m_refAppId;
     QString m_QMLLayoutName;
     ModelType_ *m_model = nullptr;
+    bool m_jsonParamsGet = false;
 };
 
 // TODO: may be refactor define
@@ -670,6 +692,7 @@ public:                                                                         
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
     Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
+    Q_PROPERTY(bool jsonParamsGet READ jsonParamsGet WRITE setJsonParamsGet NOTIFY jsonParamsGetChanged)        \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
@@ -753,6 +776,15 @@ public:                                                                         
     {                                                                                                           \
         setStoreAfterSaveImpl(storeAfterSave_);                                                                 \
         emit storeAfterSaveChanged();                                                                           \
+    }                                                                                                           \
+    bool jsonParamsGet() const                                                                                  \
+    {                                                                                                           \
+        return getJsonParamsGetImpl();                                                                          \
+    }                                                                                                           \
+    void setJsonParamsGet(bool jsonParamsGet_)                                                                  \
+    {                                                                                                           \
+        setJsonParamsGetImpl(jsonParamsGet_);                                                                   \
+        emit jsonParamsGetChanged();                                                                            \
     }                                                                                                           \
     void startRefreshChildren(QString modelName_)                                                               \
     {                                                                                                           \

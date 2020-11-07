@@ -78,6 +78,7 @@ signals:
     void layoutQMLNameChanged();
     void layoutIdFieldChanged();
     void refreshChildren(QString);
+    void jsonParamsGetChanged();
 
 protected:
     virtual void listLoaded(const QJsonDocument &reply_) override;

@@ -320,6 +320,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "jsonParamsGet",
+                        "notify": "jsonParamsGetChanged",
+                        "read": "jsonParamsGet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setJsonParamsGet"
                     }
                 ],
                 "qualifiedClassName": "GalleryModel",
@@ -362,6 +376,11 @@
                             }
                         ],
                         "name": "refreshChildren",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "jsonParamsGetChanged",
                         "returnType": "void"
                     }
                 ],
@@ -711,6 +730,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "jsonParamsGet",
+                        "notify": "jsonParamsGetChanged",
+                        "read": "jsonParamsGet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setJsonParamsGet"
                     }
                 ],
                 "qualifiedClassName": "ImageModel",
@@ -753,6 +786,11 @@
                             }
                         ],
                         "name": "refreshChildren",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "jsonParamsGetChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1084,6 +1122,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "jsonParamsGet",
+                        "notify": "jsonParamsGetChanged",
+                        "read": "jsonParamsGet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setJsonParamsGet"
                     }
                 ],
                 "qualifiedClassName": "QuizUserModel",
@@ -1126,6 +1178,11 @@
                             }
                         ],
                         "name": "refreshChildren",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "jsonParamsGetChanged",
                         "returnType": "void"
                     }
                 ],

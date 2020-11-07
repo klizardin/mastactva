@@ -92,6 +92,6 @@ void QuizUserModel::listLoaded(const QJsonDocument &reply_)
     if(m_data.isEmpty())
     {
         QuizUser* qu = createDataItemImpl();
-        addDataItemImpl(qu);
+        addDataItemImpl(qu, true);
     }
 }

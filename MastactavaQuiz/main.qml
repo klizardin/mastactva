@@ -30,6 +30,7 @@ ApplicationWindow {
         layoutQMLName: "GalleryModel"
         layoutIdField: "id"
         currentRef: "deviceid"
+        jsonParamsGet: true
     }
 
     function initGalleryModel()

@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QByteArray>
+#include "appconsts.h"
 
 
 const QString &RequestData::getRequestName() const
@@ -67,9 +68,46 @@ bool RequestData::processErrorInNetAPI() const
 }
 
 
+class JsonRequestData : public RequestData
+{
+public:
+    JsonRequestData(const QHash<QString, QVariant> &values_);
+    virtual ~JsonRequestData() override = default;
+
+    void getDocument(QByteArray &data_);
+    void getDocumentLength(QByteArray &dataLength_);
+
+private:
+    QByteArray jsonData;
+};
+
+
+class MultipartRequestData : public RequestData
+{
+public:
+    MultipartRequestData(const QHash<QString, QVariant> &values_);
+    virtual ~MultipartRequestData() override;
+
+    QHttpMultiPart *getHttpMultiPart(bool releaseOwnship_ = false);
+
+protected:
+    void addPart(const QString &header_, const QByteArray &data_);
+    void addPart(const QString &header_, QFile *data_, bool takeOwnship_ = true);
+    void appendParts();
+
+private:
+    QHttpMultiPart *m_multiPart = nullptr;
+    QList<QHttpPart> m_httpParts;
+};
+
+
 NetAPI::NetAPI(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+    m_hostName = AppConsts::getInstance().m_serverURL;
+    m_loggin = AppConsts::getInstance().m_playLogin;
+    m_pass = AppConsts::getInstance().m_playPassword;
+    m_hostUrlBase = m_hostName;
 }
 
 NetAPI::~NetAPI()
@@ -158,11 +196,11 @@ void NetAPI::freeRequest(RequestData *&r_)
     r_ = nullptr;
 }
 
-RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_)
+RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/%2/by_%3/")
             .arg(jsonLayoutName_)
-            .arg(id_.toString())
+            .arg(jsonParams_ ? "0" : id_.toString())
             .arg(ref_)
             ;
     QUrl url(urlString);
@@ -171,9 +209,27 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData *rd = new RequestData();
+    RequestData *rd = nullptr;
+    if(jsonParams_)
+    {
+        QHash<QString, QVariant> values;
+        values.insert("id", id_.toString());
+        JsonRequestData *jrd = new JsonRequestData(values);
+        QByteArray jsonString;
+        jrd->getDocument(jsonString);
+        QByteArray postDataSize;
+        jrd->getDocumentLength(postDataSize);
+        request.setRawHeader("Content-Type", "application/json");
+        request.setRawHeader("Content-Length", postDataSize);
+        jrd->setReply(m_networkManager->sendCustomRequest(request, "PUT", jsonString));
+        rd = jrd;
+    }
+    else
+    {
+        rd = new RequestData();
+        rd->setReply(m_networkManager->get(request));
+    }
     rd->setRequestName(requestName_);
-    rd->setReply(m_networkManager->get(request));
     return rd;
 }
 
@@ -204,25 +260,6 @@ static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
     }
     return false;
 }
-
-
-class MultipartRequestData : public RequestData
-{
-public:
-    MultipartRequestData(const QHash<QString, QVariant> &values_);
-    virtual ~MultipartRequestData() override;
-
-    QHttpMultiPart *getHttpMultiPart(bool releaseOwnship_ = false);
-
-protected:
-    void addPart(const QString &header_, const QByteArray &data_);
-    void addPart(const QString &header_, QFile *data_, bool takeOwnship_ = true);
-    void appendParts();
-
-private:
-    QHttpMultiPart *m_multiPart = nullptr;
-    QList<QHttpPart> m_httpParts;
-};
 
 
 MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &values_)
@@ -300,20 +337,6 @@ QHttpMultiPart *MultipartRequestData::getHttpMultiPart(bool releaseOwnship_ /*= 
     }
     return ret;
 }
-
-
-class JsonRequestData : public RequestData
-{
-public:
-    JsonRequestData(const QHash<QString, QVariant> &values_);
-    virtual ~JsonRequestData() override = default;
-
-    void getDocument(QByteArray &data_);
-    void getDocumentLength(QByteArray &dataLength_);
-
-private:
-    QByteArray jsonData;
-};
 
 
 JsonRequestData::JsonRequestData(const QHash<QString, QVariant> &values_)

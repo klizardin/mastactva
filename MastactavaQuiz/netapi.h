@@ -86,7 +86,8 @@ public:
                          const QString &currentRef_,
                          const QString &parentModel_,
                          const QString &parentModelJsonFieldName_,
-                         const QVariant &refAppId_
+                         const QVariant &refAppId_,
+                         bool jsonParams_
                          )
     {
         IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
@@ -96,7 +97,7 @@ public:
                     ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
                     : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
-            return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField);
+            return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_);
         }
         else
         {
@@ -137,7 +138,7 @@ protected slots:
     void replayFinished(QNetworkReply *reply_);
 
 protected:
-    RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_);
+    RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_);
     RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_);
     RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
     RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);

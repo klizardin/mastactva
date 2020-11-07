@@ -13,6 +13,7 @@ CONFIG += c++17
 
 SOURCES += \
         IModel.cpp \
+        appconsts.cpp \
         gallery.cpp \
         image.cpp \
         imagesource.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     IModel.h \
     Layout.h \
     Model.h \
+    appconsts.h \
     gallery.h \
     image.h \
     imagesource.h \

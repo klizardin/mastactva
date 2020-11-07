@@ -102,6 +102,7 @@ signals:
     void layoutQMLNameChanged();
     void layoutIdFieldChanged();
     void refreshChildren(QString);
+    void jsonParamsGetChanged();
 };
 
 
