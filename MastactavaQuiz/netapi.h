@@ -87,7 +87,8 @@ public:
                          const QString &parentModel_,
                          const QString &parentModelJsonFieldName_,
                          const QVariant &refAppId_,
-                         bool jsonParams_
+                         bool jsonParams_,
+                         const QHash<QString, QVariant> &extraFields_
                          )
     {
         IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
@@ -97,11 +98,11 @@ public:
                     ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
                     : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
-            return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_);
+            return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_, extraFields_);
         }
         else
         {
-            return getListImpl(getListRequestName<DataType_>(), layoutName_);
+            return getListImpl(getListRequestName<DataType_>(), layoutName_, extraFields_);
         }
     }
 
@@ -138,8 +139,8 @@ protected slots:
     void replayFinished(QNetworkReply *reply_);
 
 protected:
-    RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_);
-    RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_);
+    RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_, const QHash<QString, QVariant> &extraFields_);
+    RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_, const QHash<QString, QVariant> &extraFields_);
     RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
     RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
 

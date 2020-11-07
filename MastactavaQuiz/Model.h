@@ -28,6 +28,13 @@ private:
         QString m_parentModelJsonFieldName;
     };
 
+    class ExtraFields
+    {
+    public:
+        QString m_modelName;
+        QVariant m_appId;
+    };
+
 public:
     explicit ListModelBaseOfData(QObject *parent_)
         :QAbstractListModel(parent_)
@@ -136,6 +143,11 @@ public:
         {
             QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)), m_model, SLOT(refreshChildrenSlot(QString)));
         }
+    }
+
+    void addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_)
+    {
+        m_extraFields.push_back({modelName_, appId_});
     }
 
 protected:
@@ -257,13 +269,23 @@ protected:
                 parentModel = m_refs.value(currentRefImpl()).m_parentModel;
                 parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
             }
+            QHash<QString, QVariant> extraFields;
+            for(const ExtraFields &f: m_extraFields)
+            {
+                IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
+                if(nullptr != m)
+                {
+                    m->getValuesForAppId(f.m_appId, extraFields);
+                }
+            }
             request = netAPI->getList<DataType_>(
                         getJsonLayoutName(),
                         currentRefImpl(),
                         parentModel,
                         parentModelJsonFieldName,
                         getRefAppIdImpl(),
-                        getJsonParamsGetImpl()
+                        getJsonParamsGetImpl(),
+                        extraFields
                         );
             if(nullptr != request) { m_requests.push_back(request); }
         }
@@ -670,6 +692,7 @@ protected:
 private:
     QHash<int, QByteArray> m_roleNames;
     QHash<QString, RefDescription> m_refs;
+    QList<ExtraFields> m_extraFields;
     int m_nextAppId = 0;
     int m_currentIndex = -1;
     QVector<RequestData *> m_requests;

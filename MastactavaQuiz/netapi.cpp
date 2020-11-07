@@ -196,7 +196,12 @@ void NetAPI::freeRequest(RequestData *&r_)
     r_ = nullptr;
 }
 
-RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_)
+RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
+                                      const QString &jsonLayoutName_,
+                                      const QString &ref_,
+                                      const QVariant &id_,
+                                      bool jsonParams_,
+                                      const QHash<QString, QVariant> &extraFields_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/%2/by_%3/")
             .arg(jsonLayoutName_)
@@ -210,9 +215,9 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString
     if(!init()) { return nullptr; }
 
     RequestData *rd = nullptr;
-    if(jsonParams_)
+    if(jsonParams_ || !extraFields_.isEmpty())
     {
-        QHash<QString, QVariant> values;
+        QHash<QString, QVariant> values(extraFields_);
         values.insert("id", id_.toString());
         JsonRequestData *jrd = new JsonRequestData(values);
         QByteArray jsonString;
@@ -233,7 +238,10 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_, const QString
     return rd;
 }
 
-RequestData *NetAPI::getListImpl(const QString& requestName_, const QString &jsonLayoutName_)
+RequestData *NetAPI::getListImpl(const QString& requestName_,
+                                 const QString &jsonLayoutName_,
+                                 const QHash<QString, QVariant> &extraFields_
+                                 )
 {
     const QString urlString = m_hostUrlBase + QString("%1/")
             .arg(jsonLayoutName_)
@@ -244,9 +252,25 @@ RequestData *NetAPI::getListImpl(const QString& requestName_, const QString &jso
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData *rd = new RequestData();
+    RequestData *rd = nullptr;
+    if(!extraFields_.isEmpty())
+    {
+        JsonRequestData *jrd = new JsonRequestData(extraFields_);
+        QByteArray jsonString;
+        jrd->getDocument(jsonString);
+        QByteArray postDataSize;
+        jrd->getDocumentLength(postDataSize);
+        request.setRawHeader("Content-Type", "application/json");
+        request.setRawHeader("Content-Length", postDataSize);
+        jrd->setReply(m_networkManager->sendCustomRequest(request, "PUT", jsonString));
+        rd = jrd;
+    }
+    else
+    {
+        rd = new RequestData();
+        rd->setReply(m_networkManager->get(request));
+    }
     rd->setRequestName(requestName_);
-    rd->setReply(m_networkManager->get(request));
     return rd;
 }
 
