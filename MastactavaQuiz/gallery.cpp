@@ -84,6 +84,7 @@ ImageModel *Gallery::createImages()
     m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setRefAppId(QVariant::fromValue(m_appId));
+    m->loadList();
     return m;
 }
 
