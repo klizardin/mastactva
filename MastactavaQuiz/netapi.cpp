@@ -226,7 +226,7 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
         jrd->getDocumentLength(postDataSize);
         request.setRawHeader("Content-Type", "application/json");
         request.setRawHeader("Content-Length", postDataSize);
-        jrd->setReply(m_networkManager->sendCustomRequest(request, "PUT", jsonString));
+        jrd->setReply(m_networkManager->sendCustomRequest(request, "GET", jsonString));
         rd = jrd;
     }
     else
@@ -262,7 +262,7 @@ RequestData *NetAPI::getListImpl(const QString& requestName_,
         jrd->getDocumentLength(postDataSize);
         request.setRawHeader("Content-Type", "application/json");
         request.setRawHeader("Content-Length", postDataSize);
-        jrd->setReply(m_networkManager->sendCustomRequest(request, "PUT", jsonString));
+        jrd->setReply(m_networkManager->sendCustomRequest(request, "GET", jsonString));
         rd = jrd;
     }
     else
