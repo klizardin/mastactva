@@ -904,9 +904,7 @@ void ImagePointToNextImage::startLoad()
 
 void ImagePointToNextImage::loadData(const QJsonDocument &reply_)
 {
-    Q_ASSERT(reply_.isArray());
-
-    QJsonValue item = reply_[0];
+    QJsonValue item = reply_.isArray() ? reply_[0] : reply_.isObject() ? reply_.object() : QJsonValue();
     if(item.isUndefined())
     {
         emit noImageSourceChanged();
@@ -998,7 +996,7 @@ void ImagePointToNextImage::onSetNextImageJsonRequestFinished(int errorCode_, Re
     m_setNextImageRequest = nullptr;
     if(errorCode_ != 0) { return; }
 
-    loadData(reply_);
+    //loadData(reply_);
 
     emit nextImageSet();
 }

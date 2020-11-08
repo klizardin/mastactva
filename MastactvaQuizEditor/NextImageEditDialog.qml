@@ -170,7 +170,7 @@ Dialog {
 
                     Image {
                         id: nextImage
-                        source: Constants.noImage
+                        source: fieldNextImageSource
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
                     }

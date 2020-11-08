@@ -142,7 +142,7 @@ ApplicationWindow {
             {
                 imageOfGalleryQuestionText.text = questionText
                 imageOfGalleryQuestionPointsToPassRect.visible = true
-                imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                imageOfGalleryQuestionPointsToPass.text = "1.0"
                 if(question.questionDataLoaded())
                 {
                     setQuestionInfo(question)
@@ -156,7 +156,7 @@ ApplicationWindow {
             {
                 imageOfGalleryQuestionText.text = Constants.selectImagePoint
                 imageOfGalleryQuestionPointsToPassRect.visible = false
-                imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                imageOfGalleryQuestionPointsToPass.text = "1.0"
                 imageOfGalleryAnswerIndex = -1
             }
         }
@@ -641,11 +641,11 @@ ApplicationWindow {
             fieldPointsModel = images_of_gallery.model.currentImagePoints()
             fieldPointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
 
-            var nextImg = mastactva.getNextImage
+            var nextImg = fieldPointsModel.currentItem.toNextImage
 
             fieldNextImageCurrentIndex = -1
-            fieldNextImageId = -1
-            fieldNextImageSource = Constants.noImage
+            fieldNextImageId = nextImg === undefined ? -1 : nextImg.id
+            fieldNextImageSource = nextImg === undefined ? Constants.noImage : nextImg.imageSource
         }
 
         onAccepted: {
@@ -1716,7 +1716,6 @@ ApplicationWindow {
                                     else
                                     {
                                         galleryCurrentIndex = gallery_index
-                                        //images_of_gallery.model.galleryCurrentItem
                                         mouse.accepted = false
                                     }
                                 }
@@ -1935,37 +1934,6 @@ ApplicationWindow {
                             return (gallery_image_rect.height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
                         }
 
-                        property string nextImage: Constants.noImage
-                        property string nextImageDescription: Constants.notANextImagePoint
-                        property int questionId: -1
-                        property string questionText: Constants.notAQuestionPoint
-                        property var questionPointsToPass: 1.0
-
-                        Connections {
-                            target: imagePoint_toNextImage
-                            function onImagePointToImageLoaded()
-                            {
-                                nextImageDescription = imagePoint_toNextImage.noImageSource
-                                        ? Constants.notANextImagePoint
-                                        : Constants.aNextImagePoint
-                                nextImage = imagePoint_toNextImage.imageSource
-                            }
-                        }
-
-                        Connections {
-                            target: imagePoint_toQuestion
-                            function onImagePointToQuestionLoaded()
-                            {
-                                questionId = imagePoint_toQuestion.questionId
-                            }
-
-                            function onImagePointToQuestionTextLoaded()
-                            {
-                                questionText = imagePoint_toQuestion.question
-                                questionPointsToPass = imagePoint_toQuestion.pointsToPass
-                            }
-                        }
-
                         Connections {
                             target: mastactva
                             function onImagePointToQuestionRefreshed()
@@ -2020,22 +1988,6 @@ ApplicationWindow {
 
                                     imageOfGalleryPointIndex = index;
                                     pointImage.source = Constants.activePoint
-                                    //imageOfGalleryNextImageNextImage.source = pointImage.nextImage
-                                    //imageOfGalleryNextImageText.text = nextImageDescription
-                                    //imageOfGalleryQuestionAnswersListView.model.questionId = questionId
-                                    imageOfGalleryAnswerIndex = 0
-                                    //if(questionId >= 0)
-                                    //{
-                                    //    imageOfGalleryQuestionText.text = questionText
-                                    //    imageOfGalleryQuestionPointsToPassRect.visible = true
-                                    //    imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                                    //}
-                                    //else
-                                    //{
-                                    //    imageOfGalleryQuestionText.text = Constants.selectImagePoint
-                                    //    imageOfGalleryQuestionPointsToPassRect.visible = false
-                                    //    imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                                    //}
                                 }
                             }
                         }
