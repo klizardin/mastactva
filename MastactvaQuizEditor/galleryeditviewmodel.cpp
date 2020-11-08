@@ -855,6 +855,8 @@ ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int
 {
     QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
                      this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
+                     this, SLOT(onSetNextImageJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -907,6 +909,7 @@ void ImagePointToNextImage::loadData(const QJsonDocument &reply_)
     QJsonValue item = reply_[0];
     if(item.isUndefined())
     {
+        emit noImageSourceChanged();
         return;
     }
     QJsonValue idJV = item["id"];
@@ -1490,6 +1493,11 @@ bool ImagePointToQuestion::questionIdLoaded() const
     return nullptr == m_request1;
 }
 
+bool ImagePointToQuestion::questionDataLoaded() const
+{
+    return nullptr == m_request1 && nullptr == m_request2;
+}
+
 void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
 {
     if(request_ == nullptr || (m_request1 != request_ && m_request2 != request_))
@@ -1506,6 +1514,7 @@ void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestData *re
         QJsonValue item = reply_[0];
         if(item.isUndefined())
         {
+            emit questionIdChanged();
             return;
         }
         QJsonValue questionJV = item["question"];
@@ -2374,6 +2383,24 @@ void ImagePointsModel::clearData()
 QHash<int, QByteArray> ImagePointsModel::roleNames() const
 {
     return m_roleNames;
+}
+
+int ImagePointsModel::currentIndex() const
+{
+    return m_currentIndex;
+}
+
+void ImagePointsModel::setCurrentIndex(int index_)
+{
+    m_currentIndex = index_;
+
+    emit currentIndexChanged();
+    emit currentItemChanged();
+}
+
+QVariant ImagePointsModel::currentItem()
+{
+    return itemAt(m_currentIndex);
 }
 
 ImagePointData *ImagePointsModel::getAt(int index_)

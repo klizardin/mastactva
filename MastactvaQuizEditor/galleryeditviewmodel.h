@@ -279,12 +279,15 @@ class ImagePointToNextImage : public QObject
 public:
     ImagePointToNextImage(QObject* parent_ = nullptr, int imagePointId_ = -1);
     virtual ~ImagePointToNextImage() override = default;
+
+    Q_INVOKABLE bool loaded() const;
+
+public:
     const QString &imageSource();
     void setImageSource(const QString &imageSource_, bool emitFlag_ = true);
     bool noImageSource() const;
     void setNoImageSource(bool noImageSource_, bool emitFlag_ = true);
     void startLoad();
-    bool loaded() const;
     void setNextImage(int nextImageId_);
     int id() const;
     void setId(int id_, bool emitFlag_ = true);
@@ -462,6 +465,10 @@ public:
     ImagePointToQuestion(QObject *parent_ = nullptr, int imagePointId_ = -1);
     virtual ~ImagePointToQuestion() override;
 
+    Q_INVOKABLE bool questionIdLoaded() const;
+    Q_INVOKABLE bool questionDataLoaded() const;
+
+public:
     int questionId() const;
     void setQuestionId(int questionId_);
     QString question() const;
@@ -473,7 +480,6 @@ public:
     QVariant questionObj() const;
     void setQuestionObj(const QVariant &questionObj_);
     void refresh();
-    bool questionIdLoaded() const;
 
     QuestionData *questionData();
 
@@ -524,6 +530,7 @@ public:
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
 
 public:
+
     int getSourceImageId() const;
     void setSourceImageId(int sourceImageId_);
     int pointId() const;
@@ -533,10 +540,10 @@ public:
     qreal yCoord() const;
     void setYCoord(qreal y_);
     qreal weight() const;
-    void setWeight(qreal weight_);
     QVariant toNextImage() const;
-    void setToNextImage(QVariant toNextImage_);
     QVariant toQuestion() const;
+    void setWeight(qreal weight_);
+    void setToNextImage(QVariant toNextImage_);
     void setToQuestion(QVariant toQuestion_);
     ImagePointToQuestion *getQuestion();
     ImagePointToNextImage *getNextImageData();
@@ -626,6 +633,9 @@ public:
     ImagePointsModel(QObject *parent_);
     virtual ~ImagePointsModel() override;
 
+    Q_PROPERTY(int  currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(QVariant currentItem READ currentItem NOTIFY currentItemChanged)
+
     // QAbstractItemModel interface
 public:
     virtual int rowCount(const QModelIndex &parent) const override;
@@ -642,10 +652,13 @@ public:
     Q_INVOKABLE void refreshItems(int index_);
     Q_INVOKABLE bool isEmpty() const;
     Q_INVOKABLE QVariant itemAt(int index_);
+    Q_INVOKABLE void setSourceImageId(int sourceImageId_);
+    Q_INVOKABLE void startLoadImagePoints();
 
 public:
-    void setSourceImageId(int sourceImageId_);
-    void startLoadImagePoints();
+    int currentIndex() const;
+    void setCurrentIndex(int index_);
+    QVariant currentItem();
     ImagePointData *getAt(int index_);
     ImagePointData *getById(int pointId_);
     int getIndexById(int pointId_) const;
@@ -655,6 +668,8 @@ signals:
     void onDataSaved();
     void onImagePointsRefreshed();
     void imagePointsCountChanged();
+    void currentIndexChanged();
+    void currentItemChanged();
 
     //slots
 private slots:
@@ -675,6 +690,7 @@ private:
     int m_sourceImageId = -1;
     QVector<ImagePointData *> m_data;
     RequestData* m_request = nullptr;
+    int m_currentIndex = -1;
 };
 
 

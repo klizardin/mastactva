@@ -24,6 +24,7 @@ ApplicationWindow {
     property alias imageOfGalleryAnswerIndex: mastactva.imageOfGalleryAnswerIndex
     property bool showImagePoints: false
     property bool showImagePointsVoronoyDiagram: false
+    property var currentImagePointsModel: undefined
 
     Connections {
         target: root
@@ -41,6 +42,7 @@ ApplicationWindow {
         {
             images_of_gallery.currentIndex = galleryImagesCurrentIndex >= 0 ? galleryImagesCurrentIndex : 0
             images_of_gallery.model.currentIndex = galleryImagesCurrentIndex >= 0 ? galleryImagesCurrentIndex : 0
+            currentImagePointsModel = images_of_gallery.model.currentImagePoints()
             imageOfGalleryPointIndex = -1
             imageOfGalleryDescriptionIndex = -1
             imageOfGalleryAnswerIndex = -1
@@ -49,10 +51,17 @@ ApplicationWindow {
         function onGalleryImagesCurrentIdChanged()
         {
             imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
+            currentImagePointsModel.setSourceImageId(galleryImagesCurrentId)
+            currentImagePointsModel.startLoadImagePoints()
         }
 
         function onImageOfGalleryPointIndexChanged()
         {
+            if(currentImagePointsModel === undefined)
+            {
+                return;
+            }
+            currentImagePointsModel.currentIndex = imageOfGalleryPointIndex
             if(imageOfGalleryPointIndex == -1)
             {
                 imageOfGalleryNextImageNextImage.source = Constants.noImage
@@ -64,9 +73,102 @@ ApplicationWindow {
             }
             else
             {
-                var imgPoint = mastactva.getCurrentImagePoint()
-
+                var imgPoint = currentImagePointsModel.currentItem
+                var nextImage = imgPoint.toNextImage
+                var question = imgPoint.toQuestion
+                if(nextImage.loaded())
+                {
+                    imageOfGalleryNextImageText.text = nextImage.noImageSource
+                            ? Constants.notANextImagePoint
+                            : Constants.aNextImagePoint
+                    imageOfGalleryNextImageNextImage.source = nextImage.imageSource
+                }
+                else
+                {
+                    imageOfGalleryNextImageNextImage.source = Constants.noImage
+                    imageOfGalleryNextImageText.text = Constants.selectImagePoint
+                    nextImage.noImageSourceChanged.connect(noImageSourceChanged)
+                }
+                if(question.questionIdLoaded())
+                {
+                    imageOfGalleryQuestionAnswersListView.model.questionId = question.questionId
+                    if(question.questionDataLoaded())
+                    {
+                        setQuestionInfo(question)
+                    }
+                }
+                else
+                {
+                    imageOfGalleryQuestionText.text = Constants.selectImagePoint
+                    imageOfGalleryQuestionPointsToPassRect.visible = false
+                    imageOfGalleryAnswerIndex = -1
+                    question.questionIdChanged.connect(questionIdLoaded)
+                }
             }
+        }
+
+        function noImageSourceChanged()
+        {
+            var imgPoint = currentImagePointsModel.currentItem
+            var nextImage = imgPoint.toNextImage
+            nextImage.noImageSourceChanged.disconnect(noImageSourceChanged)
+            if(nextImage.loaded())
+            {
+                imageOfGalleryNextImageText.text = nextImage.noImageSource
+                        ? Constants.notANextImagePoint
+                        : Constants.aNextImagePoint
+                imageOfGalleryNextImageNextImage.source = nextImage.imageSource
+            }
+            else
+            {
+                imageOfGalleryNextImageNextImage.source = Constants.noImage
+                imageOfGalleryNextImageText.text = Constants.selectImagePoint
+            }
+        }
+
+        function questionIdLoaded()
+        {
+            var imgPoint = currentImagePointsModel.currentItem
+            var question = imgPoint.toQuestion
+            question.questionIdChanged.disconnect(questionIdLoaded)
+            imageOfGalleryQuestionAnswersListView.model.questionId = question.questionId
+            if(question.questionId >= 0)
+            {
+                imageOfGalleryQuestionText.text = questionText
+                imageOfGalleryQuestionPointsToPassRect.visible = true
+                imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                if(question.questionDataLoaded())
+                {
+                    setQuestionInfo(question)
+                }
+                else
+                {
+                    question.questionObjChanged.connect(questionObjLoaded)
+                }
+            }
+            else
+            {
+                imageOfGalleryQuestionText.text = Constants.selectImagePoint
+                imageOfGalleryQuestionPointsToPassRect.visible = false
+                imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                imageOfGalleryAnswerIndex = -1
+            }
+        }
+
+        function questionObjLoaded()
+        {
+            var imgPoint = currentImagePointsModel.currentItem
+            var question = imgPoint.toQuestion
+            question.questionObjChanged.disconnect(questionObjLoaded)
+            setQuestionInfo(question)
+        }
+
+        function setQuestionInfo(question)
+        {
+            imageOfGalleryQuestionText.text = question.question
+            imageOfGalleryQuestionPointsToPassRect.visible = true
+            imageOfGalleryQuestionPointsToPass.text = question.pointsToPass
+            imageOfGalleryAnswerIndex = 0
         }
 
         function onImageOfGalleryAnswerIndexChanged()
@@ -78,7 +180,6 @@ ApplicationWindow {
     MastactvaAPI {
         id: mastactva
         objectName: "MastactvaAPI"
-
     }
 
     Connections {
@@ -97,6 +198,21 @@ ApplicationWindow {
             popupMessage.open()
         }
     }
+
+//    ImagePointsModel {
+//        id: currentImagePointsModel
+//        objectName: "CurrentImagePointsModel"
+//        currentIndex: -1
+//    }
+//
+//    Connections {
+//        target: currentImagePointsModel
+//
+//        function onImagePointsLoaded()
+//        {
+//            //currentImagePointsModel.startLoadSubData()
+//        }
+//    }
 
     ConfirmDialog {
         id: confirmDialog
@@ -1913,22 +2029,22 @@ ApplicationWindow {
 
                                     imageOfGalleryPointIndex = index;
                                     pointImage.source = Constants.activePoint
-                                    imageOfGalleryNextImageNextImage.source = pointImage.nextImage
-                                    imageOfGalleryNextImageText.text = nextImageDescription
-                                    imageOfGalleryQuestionAnswersListView.model.questionId = questionId
+                                    //imageOfGalleryNextImageNextImage.source = pointImage.nextImage
+                                    //imageOfGalleryNextImageText.text = nextImageDescription
+                                    //imageOfGalleryQuestionAnswersListView.model.questionId = questionId
                                     imageOfGalleryAnswerIndex = 0
-                                    if(questionId >= 0)
-                                    {
-                                        imageOfGalleryQuestionText.text = questionText
-                                        imageOfGalleryQuestionPointsToPassRect.visible = true
-                                        imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                                    }
-                                    else
-                                    {
-                                        imageOfGalleryQuestionText.text = Constants.selectImagePoint
-                                        imageOfGalleryQuestionPointsToPassRect.visible = false
-                                        imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                                    }
+                                    //if(questionId >= 0)
+                                    //{
+                                    //    imageOfGalleryQuestionText.text = questionText
+                                    //    imageOfGalleryQuestionPointsToPassRect.visible = true
+                                    //    imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                                    //}
+                                    //else
+                                    //{
+                                    //    imageOfGalleryQuestionText.text = Constants.selectImagePoint
+                                    //    imageOfGalleryQuestionPointsToPassRect.visible = false
+                                    //    imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
+                                    //}
                                 }
                             }
                         }
