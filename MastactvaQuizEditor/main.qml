@@ -1023,7 +1023,7 @@ ApplicationWindow {
             {
                 var descr = mastactva.getCurrentDescription()
                 if(descr !== undefined) {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(descr.descriptionStr)) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(descr.descriptionStr, qsTr("..."))) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1164,7 +1164,7 @@ ApplicationWindow {
                 var answer = mastactva.getCurrentAnswer()
                 if(answer !== undefined)
                 {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(answer.answer)) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(answer.answer, qsTr("..."))) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1749,12 +1749,21 @@ ApplicationWindow {
                count: gallery_images.count
             }
 
+            property bool showFullDescription: false
+
             Text {
                 id : gallery_description
-                text: GalleryFunctions.description_first_part(description)
+                text: showFullDescription ? description : GalleryFunctions.description_first_part(description, qsTr("..."))
                 x: (galleryPaneWidth-width)/2
                 width: galleryPaneWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
                 wrapMode: Text.WordWrap
+                MouseArea {
+                    anchors.fill: gallery_description
+
+                    onClicked: {
+                        showFullDescription = !showFullDescription;
+                    }
+                }
             }
         }
     }
@@ -2011,7 +2020,7 @@ ApplicationWindow {
                     readOnly: true
                     width: imageOfGalleryDescriptionWidth
                     height: Constants.descriptionRowHeight*4/5
-                    text: GalleryFunctions.description_first_part(description_description)
+                    text: GalleryFunctions.description_first_part(description_description, qsTr("..."))
                 }
                 Text { text: qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(description_fromDateTime) }
             }
