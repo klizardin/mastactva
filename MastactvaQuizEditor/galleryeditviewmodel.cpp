@@ -533,7 +533,7 @@ GalleryItemData* GalleryItemData_fromJsonT(QObject *parent_, const JsonType &jso
         anyError = true;
     }
 
-    QJsonValue keywordsVal = jsonValue_["description"];
+    QJsonValue keywordsVal = jsonValue_["keywords"];
     if(QJsonValue::Undefined != keywordsVal.type() && keywordsVal.isString())
     {
         keywords = keywordsVal.toString();
