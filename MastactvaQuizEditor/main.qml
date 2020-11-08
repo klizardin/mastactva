@@ -51,17 +51,19 @@ ApplicationWindow {
         function onGalleryImagesCurrentIdChanged()
         {
             imageOfGalleryDescriptionListView.model.imageID = galleryImagesCurrentId
-            currentImagePointsModel.setSourceImageId(galleryImagesCurrentId)
-            currentImagePointsModel.startLoadImagePoints()
+            if(currentImagePointsModel !== undefined)
+            {
+                currentImagePointsModel.setSourceImageId(galleryImagesCurrentId)
+                currentImagePointsModel.startLoadImagePoints()
+            }
         }
 
         function onImageOfGalleryPointIndexChanged()
         {
-            if(currentImagePointsModel === undefined)
+            if(currentImagePointsModel !== undefined)
             {
-                return;
+                currentImagePointsModel.currentIndex = imageOfGalleryPointIndex
             }
-            currentImagePointsModel.currentIndex = imageOfGalleryPointIndex
             if(imageOfGalleryPointIndex == -1)
             {
                 imageOfGalleryNextImageNextImage.source = Constants.noImage
@@ -73,6 +75,10 @@ ApplicationWindow {
             }
             else
             {
+                if(currentImagePointsModel === undefined)
+                {
+                    return;
+                }
                 var imgPoint = currentImagePointsModel.currentItem
                 var nextImage = imgPoint.toNextImage
                 var question = imgPoint.toQuestion
@@ -198,21 +204,6 @@ ApplicationWindow {
             popupMessage.open()
         }
     }
-
-//    ImagePointsModel {
-//        id: currentImagePointsModel
-//        objectName: "CurrentImagePointsModel"
-//        currentIndex: -1
-//    }
-//
-//    Connections {
-//        target: currentImagePointsModel
-//
-//        function onImagePointsLoaded()
-//        {
-//            //currentImagePointsModel.startLoadSubData()
-//        }
-//    }
 
     ConfirmDialog {
         id: confirmDialog
