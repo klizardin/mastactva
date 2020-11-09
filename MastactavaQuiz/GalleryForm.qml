@@ -12,7 +12,7 @@ Page {
     title: qsTr("Gallery")
 
     property var netAPI: undefined
-    property var galleryModel: undefined
+    property alias galleryModel: galleries.model
 
     ListView {
         id: galleries
@@ -21,7 +21,6 @@ Page {
         spacing: Constants.galleriesListViewSpacing
         clip: true
 
-        model: galleryModel
         delegate: galleryItem
     }
 
@@ -80,7 +79,7 @@ Page {
 
             Text {
                 id : gallery_description
-                text: GalleryFunctions.description_first_part(description)
+                text: description
                 x: (Constants.pageWidth - width)/2
                 width: Constants.pageWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
                 wrapMode: Text.WordWrap

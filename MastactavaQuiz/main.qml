@@ -46,6 +46,7 @@ ApplicationWindow {
             galleryPage.netAPI = netAPI
             quizPage.netAPI = netAPI
             descriptionPage.netAPI = netAPI
+            galleryPage.galleryModel = galleryModel
 
             initGalleryModel()
             quizUserModel.loadList()

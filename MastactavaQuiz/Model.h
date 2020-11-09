@@ -74,6 +74,13 @@ public:
         return m_model;
     }
 
+    virtual void initResponse() override
+    {
+        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        Q_ASSERT(nullptr != netAPI);
+        QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
+    }
+
     virtual const QString &getQMLLayoutName() const override
     {
         return m_QMLLayoutName;
@@ -456,9 +463,6 @@ protected:
     bool init(ModelType_ *model_)
     {
         m_model = model_;
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return false; }
-        QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
         return true;
     }
 

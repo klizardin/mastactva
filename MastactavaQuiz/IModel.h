@@ -12,6 +12,7 @@ class IListModel
 {
 public:
     virtual QObject* getModel() const = 0;
+    virtual void initResponse() = 0;
     virtual const QString &getQMLLayoutName() const = 0;
     virtual const QString &getJsonLayoutName() const = 0;
     virtual QString getLayoutIdFiledName() const = 0;

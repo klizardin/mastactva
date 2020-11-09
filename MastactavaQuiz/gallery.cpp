@@ -83,6 +83,7 @@ ImageModel *Gallery::createImages()
     ImageModel *m = new ImageModel(this);
     m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->loadList();
     return m;

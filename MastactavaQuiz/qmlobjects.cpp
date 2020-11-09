@@ -66,6 +66,11 @@ void QMLObjects::searchObjects()
         GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
         if(nullptr != m1) m_models.push_back(static_cast<IListModel *>(m1));
     }
+    for(IListModel *m : m_models)
+    {
+        if(nullptr == m) { continue; }
+        m->initResponse();
+    }
 }
 
 QMLObjects &QMLObjects::getInstance()

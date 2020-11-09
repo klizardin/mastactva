@@ -235,6 +235,7 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
         rd->setReply(m_networkManager->get(request));
     }
     rd->setRequestName(requestName_);
+    m_requests.push_back(rd);
     return rd;
 }
 
@@ -271,6 +272,7 @@ RequestData *NetAPI::getListImpl(const QString& requestName_,
         rd->setReply(m_networkManager->get(request));
     }
     rd->setRequestName(requestName_);
+    m_requests.push_back(rd);
     return rd;
 }
 
@@ -419,6 +421,7 @@ RequestData *NetAPI::addItemImpl(const QString& requestName_, const QString &jso
         rd = jrd;
     }
     rd->setRequestName(requestName_);
+    m_requests.push_back(rd);
     return rd;
 }
 
@@ -457,6 +460,7 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
         rd = jrd;
     }
     rd->setRequestName(requestName_);
+    m_requests.push_back(rd);
     return rd;
 }
 
