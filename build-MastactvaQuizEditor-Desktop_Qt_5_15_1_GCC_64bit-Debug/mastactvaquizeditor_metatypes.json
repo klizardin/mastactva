@@ -2393,6 +2393,25 @@
                         ],
                         "name": "showErrorMessage",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "str_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "maxSymbols_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "rms_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "readMore",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,

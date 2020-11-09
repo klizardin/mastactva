@@ -1023,7 +1023,7 @@ ApplicationWindow {
             {
                 var descr = mastactva.getCurrentDescription()
                 if(descr !== undefined) {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(descr.descriptionStr, qsTr("..."))) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(mastactva.readMore(descr.descriptionStr, 128, qsTr(" ..."))) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1164,7 +1164,7 @@ ApplicationWindow {
                 var answer = mastactva.getCurrentAnswer()
                 if(answer !== undefined)
                 {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(GalleryFunctions.description_first_part(answer.answer, qsTr("..."))) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
+                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(mastactva.readMore(answer.answer, 128, qsTr(" ..."))) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1527,16 +1527,20 @@ ApplicationWindow {
                         currentIndex: imageOfGalleryInfoBar.currentIndex
                         Item {
                             id: imageOfGalleryDescriptionTab
-                            ListView {
-                                id: imageOfGalleryDescriptionListView
+                            ScrollView {
                                 anchors.fill: parent
-                                clip: true
-                                model: DescriptionModel {
-                                    objectName: "ImageOfGalleryDescriptionModel"
-                                    imageID: -1
+                                clip:true
+                                ListView {
+                                    id: imageOfGalleryDescriptionListView
+                                    anchors.fill: parent
+                                    clip: true
+                                    model: DescriptionModel {
+                                        objectName: "ImageOfGalleryDescriptionModel"
+                                        imageID: -1
+                                    }
+                                    delegate : imageOfGalleryDescriptionListViewItem
+                                    //highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
                                 }
-                                delegate : imageOfGalleryDescriptionListViewItem
-                                highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
                             }
                         }
                         Item {
@@ -1753,14 +1757,14 @@ ApplicationWindow {
 
             Text {
                 id : gallery_description
-                text: showFullDescription ? description : GalleryFunctions.description_first_part(description, qsTr("..."))
+                text: showFullDescription ? description : mastactva.readMore(description, 128, qsTr(" ..."))
                 x: (galleryPaneWidth-width)/2
                 width: galleryPaneWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
                 wrapMode: Text.WordWrap
                 MouseArea {
                     anchors.fill: gallery_description
 
-                    onClicked: {
+                    onDoubleClicked: {
                         showFullDescription = !showFullDescription;
                     }
                 }
@@ -2009,25 +2013,44 @@ ApplicationWindow {
     Component {
         id: imageOfGalleryDescriptionListViewItem
         Item {
-
+            id: imageOfGalleryDescriptionListViewItemRect
             property int imageOfGalleryDescriptionWidth: slitViewPaneImageOfGallery.width
+            property bool showFullDescription: false
 
             width: imageOfGalleryDescriptionWidth
-            height: Constants.descriptionRowHeight
+            //height: Constants.descriptionRowHeight
+
             Column {
+                z : 1
+                id: imageOfGalleryDescriptionListViewItemRectColumn
                 TextArea {
                     focus: true
                     readOnly: true
                     width: imageOfGalleryDescriptionWidth
-                    height: Constants.descriptionRowHeight*4/5
-                    text: GalleryFunctions.description_first_part(description_description, qsTr("..."))
+                    //height: Constants.descriptionRowHeight*4/5
+                    text: imageOfGalleryDescriptionListViewItemRect.showFullDescription ? description_description : mastactva.readMore(description_description, 128, qsTr(" ..."))
                 }
                 Text { text: qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(description_fromDateTime) }
             }
 
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: imageOfGalleryDescriptionListViewItemRectColumn.height
+                color: "lightsteelblue"
+                radius: 5
+                visible: imageOfGalleryDescriptionListView.currentIndex === index
+                z: 0
+            }
+
             MouseArea {
-                anchors.fill: parent
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: imageOfGalleryDescriptionListViewItemRectColumn.height
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+                z:1
 
                 onClicked:
                 {
@@ -2041,6 +2064,10 @@ ApplicationWindow {
                         imageOfGalleryDescriptionIndex = index
                         mouse.accepted = false
                     }
+                }
+
+                onDoubleClicked: {
+                    imageOfGalleryDescriptionListViewItemRect.showFullDescription = !imageOfGalleryDescriptionListViewItemRect.showFullDescription;
                 }
 
                 onPressAndHold: {
