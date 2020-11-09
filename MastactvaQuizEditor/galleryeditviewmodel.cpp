@@ -1688,6 +1688,7 @@ void ImagePointData::setToNextImage(QVariant toNextImage_)
     {
         return;
     }
+    delete m_imagePointToNextImage;
     m_imagePointToNextImage = newNextImage;
     emit toNextImageChanged();
 }

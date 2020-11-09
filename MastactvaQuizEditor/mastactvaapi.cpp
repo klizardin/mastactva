@@ -1025,3 +1025,12 @@ QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QStri
     for(;i < str_.length() && isSymbol(str_.at(i)); i++) {}
     return str_.mid(0, i) + rms_;
 }
+
+void MastactvaAPI::refreshNextImage()
+{
+    ImagePointData *pImagePoint = getCurrentImagePointData();
+    if(nullptr == pImagePoint) { return; }
+    pImagePoint->setToNextImage(QVariant::fromValue(static_cast<QObject *>(nullptr)));
+    (void)pImagePoint->toNextImage();
+    emit imageOfGalleryPointIndexChanged();
+}

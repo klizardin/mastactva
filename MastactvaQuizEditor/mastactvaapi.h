@@ -81,6 +81,7 @@ public:
     Q_INVOKABLE void removeCurrentGallery();
     Q_INVOKABLE void showErrorMessage(const QString &header_, const QString &description_);
     Q_INVOKABLE QString readMore(const QString &str_, int maxSymbols_, const QString &rms_);
+    Q_INVOKABLE void refreshNextImage();
 
 signals:
     void galleryReloaded();

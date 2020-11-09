@@ -60,6 +60,7 @@ ApplicationWindow {
 
         function onImageOfGalleryPointIndexChanged()
         {
+            console.log("onImageOfGalleryPointIndexChanged()")
             if(currentImagePointsModel !== undefined)
             {
                 currentImagePointsModel.currentIndex = imageOfGalleryPointIndex
@@ -639,7 +640,8 @@ ApplicationWindow {
                 fieldImageId = img.id
             }
             fieldPointsModel = images_of_gallery.model.currentImagePoints()
-            fieldPointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
+            fieldPointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : fieldPointsModel.getSize() - 1
+            fieldPointsModel.currentIndex = fieldPointIndex
 
             var nextImg = fieldPointsModel.currentItem.toNextImage
 
@@ -656,7 +658,7 @@ ApplicationWindow {
         function nextImageEdited()
         {
             mastactva.nextImageEdited.disconnect(nextImageEdited)
-            //mastactva.refreshNextImage()
+            mastactva.refreshNextImage()
         }
     }
 
