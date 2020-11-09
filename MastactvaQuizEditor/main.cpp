@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    switchTranslator(app, m_translator, QString("MastactvaQuizEditor_%1.qm").arg(lang));
-    switchTranslator(app, m_translatorQt, QString("qt_%1.qm").arg(lang));
+    //switchTranslator(app, m_translator, QString("MastactvaQuizEditor_%1.qm").arg(lang));
+    //switchTranslator(app, m_translatorQt, QString("qt_%1.qm").arg(lang));
 
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");
