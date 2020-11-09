@@ -1539,7 +1539,6 @@ ApplicationWindow {
                                         imageID: -1
                                     }
                                     delegate : imageOfGalleryDescriptionListViewItem
-                                    //highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
                                 }
                             }
                         }
@@ -2018,7 +2017,6 @@ ApplicationWindow {
             property bool showFullDescription: false
 
             width: imageOfGalleryDescriptionWidth
-            //height: Constants.descriptionRowHeight
 
             Column {
                 z : 1
@@ -2027,7 +2025,6 @@ ApplicationWindow {
                     focus: true
                     readOnly: true
                     width: imageOfGalleryDescriptionWidth
-                    //height: Constants.descriptionRowHeight*4/5
                     text: imageOfGalleryDescriptionListViewItemRect.showFullDescription ? description_description : mastactva.readMore(description_description, 128, qsTr(" ..."))
                 }
                 Text { text: qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(description_fromDateTime) }
