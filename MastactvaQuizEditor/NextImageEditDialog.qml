@@ -31,7 +31,7 @@ Dialog {
         {
             nextImagesList.model.currentIndex = fieldNextImageCurrentIndex
             var img = nextImagesList.model.currentItem()
-            if(img !== undefined)
+            if(img !== undefined && img !== null)
             {
                 fieldNextImageId = img.id
                 fieldNextImageSource = img.source

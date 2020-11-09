@@ -60,7 +60,6 @@ ApplicationWindow {
 
         function onImageOfGalleryPointIndexChanged()
         {
-            console.log("onImageOfGalleryPointIndexChanged()")
             if(currentImagePointsModel !== undefined)
             {
                 currentImagePointsModel.currentIndex = imageOfGalleryPointIndex
@@ -92,9 +91,9 @@ ApplicationWindow {
                 }
                 else
                 {
+                    nextImage.noImageSourceChanged.connect(noImageSourceChanged)
                     imageOfGalleryNextImageNextImage.source = Constants.noImage
                     imageOfGalleryNextImageText.text = Constants.selectImagePoint
-                    nextImage.noImageSourceChanged.connect(noImageSourceChanged)
                 }
                 if(question.questionIdLoaded())
                 {
@@ -106,10 +105,10 @@ ApplicationWindow {
                 }
                 else
                 {
+                    question.questionIdChanged.connect(questionIdLoaded)
                     imageOfGalleryQuestionText.text = Constants.selectImagePoint
                     imageOfGalleryQuestionPointsToPassRect.visible = false
                     imageOfGalleryAnswerIndex = -1
-                    question.questionIdChanged.connect(questionIdLoaded)
                 }
             }
         }
