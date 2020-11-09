@@ -7,7 +7,9 @@
 #include "qmlmainobjects.h"
 #include "mastactvaapi.h"
 
+//#define USE_BE_BY
 
+#if defined(USE_BE_BY)
 void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)
 {
     app.removeTranslator(&translator);
@@ -16,23 +18,24 @@ void switchTranslator(QGuiApplication &app, QTranslator& translator, const QStri
         app.installTranslator(&translator);
     }
 }
+#endif
 
 int main(int argc, char *argv[])
 {
-    QTranslator m_translator; // contains the translations for this application
-    QTranslator m_translatorQt; // contains the translations for qt
-
-    QString lang("be_BY");
-    QLocale locale = QLocale(lang);
-    QLocale::setDefault(locale);
-    QString languageName = QLocale::languageToString(locale.language());
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
 
-    //switchTranslator(app, m_translator, QString("MastactvaQuizEditor_%1.qm").arg(lang));
-    //switchTranslator(app, m_translatorQt, QString("qt_%1.qm").arg(lang));
+#if defined(USE_BE_BY)
+    // switch to be_BY
+    QTranslator m_translator; // contains the translations for this application
+    QTranslator m_translatorQt; // contains the translations for qt
+    QString lang("be_BY");
+    QLocale locale = QLocale(lang);
+    QLocale::setDefault(locale);
+    switchTranslator(app, m_translator, QString("MastactvaQuizEditor_%1.qm").arg(lang));
+    switchTranslator(app, m_translatorQt, QString("qt_%1.qm").arg(lang));
+#endif
 
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");
