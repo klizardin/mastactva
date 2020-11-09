@@ -311,6 +311,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOwnGallery"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "createrGallery",
+                        "notify": "createrGalleryChanged",
+                        "read": "createrGallery",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setCreaterGallery"
                     }
                 ],
                 "qualifiedClassName": "GalleryItemData",
@@ -343,6 +357,11 @@
                     {
                         "access": "public",
                         "name": "ownGalleryChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createrGalleryChanged",
                         "returnType": "void"
                     }
                 ],

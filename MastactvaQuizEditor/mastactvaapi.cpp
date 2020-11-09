@@ -139,6 +139,7 @@ void MastactvaAPI::createNewGallery(const QString &description_, const QString &
     rec.insert("created", QJsonValue::fromVariant(QDateTime::currentDateTime()));
     rec.insert("points_to_pass", QJsonValue::fromVariant(pointsToPass_));
     rec.insert("owner", QJsonValue::fromVariant(0));
+    rec.insert("creater", QJsonValue::fromVariant(0));
     QJsonDocument doc(rec);
 
     m_createNewGalleryRequest->setDocument(doc);
@@ -175,6 +176,8 @@ void MastactvaAPI::editGallery(
     rec.insert("keywords", QJsonValue::fromVariant(keywords_));
     rec.insert("created", QJsonValue::fromVariant(created_));
     rec.insert("points_to_pass", QJsonValue::fromVariant(pointsToPass_));
+    rec.insert("owner", QJsonValue::fromVariant(0));
+    rec.insert("creater", QJsonValue::fromVariant(0));
     QJsonDocument doc(rec);
 
     m_editGalleryRequest->setDocument(doc);
@@ -212,10 +215,12 @@ void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topIma
     QUrl url(fileURL_);
     QString filename = url.toLocalFile();
     QFile *file = new QFile(filename);
-    QFile *f1 = new QFile(filename);
-    QByteArray fd = f1->readAll();
-    QString hash = QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
     QFileInfo fileInfo(file->fileName());
+    QFile *f1 = new QFile(filename);
+    QByteArray fd = f1->open(QIODevice::ReadOnly) ? f1->readAll() : fileInfo.fileName().toUtf8();
+    QString hash = QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+    delete f1;
+    f1 = nullptr;
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
     m_addImageRequest->addPart("form-data; name=\"hash\"", hash.toUtf8());
     m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", (topImage_ || galleryEmpty)?"True":"False");

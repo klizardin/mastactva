@@ -392,14 +392,17 @@ GalleryItemData::GalleryItemData(QObject* parent_,
             const QString &keywords_ /*= QString()*/,
             const QDateTime &created_ /*= QDateTime()*/,
             qreal pointsToPass_ /*= 1.0*/,
-            bool ownGallery_ /*= false*/)
+            bool ownGallery_ /*= false*/,
+            bool createrGallery_ /*= false*/
+            )
     : QObject(parent_),
     id(id_),
     description(description_),
     keywords(keywords_),
     created(created_),
     pointsToPass(pointsToPass_),
-    m_ownGallery(ownGallery_)
+    m_ownGallery(ownGallery_),
+    m_createrGallery(createrGallery_)
 {
 }
 
@@ -455,6 +458,11 @@ bool GalleryItemData::ownGallery() const
     return m_ownGallery;
 }
 
+bool GalleryItemData::createrGallery() const
+{
+    return m_createrGallery;
+}
+
 void GalleryItemData::setId(int id_)
 {
     id = id_;
@@ -498,6 +506,13 @@ void GalleryItemData::setOwnGallery(bool ownGallery_)
     emit ownGalleryChanged();
 }
 
+void GalleryItemData::setCreaterGallery(bool createrGallery_)
+{
+    m_createrGallery = createrGallery_;
+
+    emit createrGalleryChanged();
+}
+
 bool GalleryItemData::isEmpty() const
 {
     return nullptr == images || images->isEmpty();
@@ -512,6 +527,7 @@ GalleryItemData* GalleryItemData_fromJsonT(QObject *parent_, const JsonType &jso
     QDateTime created;
     qreal pointsToPass = 1.0;
     bool ownGallery = false;
+    bool createrGallery = false;
 
     QJsonValue idVal = jsonValue_["id"];
     if(QJsonValue::Undefined != idVal.type())
@@ -564,8 +580,10 @@ GalleryItemData* GalleryItemData_fromJsonT(QObject *parent_, const JsonType &jso
     }
     QJsonValue ownGalleryJV = jsonValue_["owner"];
     if(!ownGalleryJV.isUndefined()) { ownGallery = ownGalleryJV.toInt(0) != 0; } else { anyError = true; }
+    QJsonValue createrGalleryJV = jsonValue_["creater"];
+    if(!createrGalleryJV.isUndefined()) { createrGallery = createrGalleryJV.toInt(0) != 0; } else { anyError = true; }
 
-    return new GalleryItemData(parent_, id, description, keywords, created, pointsToPass, ownGallery);
+    return new GalleryItemData(parent_, id, description, keywords, created, pointsToPass, ownGallery, createrGallery);
 }
 
 

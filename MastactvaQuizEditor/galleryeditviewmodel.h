@@ -147,15 +147,18 @@ protected:
     qreal pointsToPass = 1.0;
     GalleryImagesModel *images = nullptr;
     bool m_ownGallery = false;
+    bool m_createrGallery = false;
 
 public:
     GalleryItemData(QObject* parent_,
-                int id_ = -1,
-                const QString &description_ = QString(),
-                const QString &keywords_ = QString(),
-                const QDateTime &created_ = QDateTime(),
-                qreal pointsToPass_ = 1.0,
-                bool ownGallery_ = false);
+            int id_ = -1,
+            const QString &description_ = QString(),
+            const QString &keywords_ = QString(),
+            const QDateTime &created_ = QDateTime(),
+            qreal pointsToPass_ = 1.0,
+            bool ownGallery_ = false,
+            bool createrGallery_ = false
+            );
     virtual ~GalleryItemData();
 
     Q_PROPERTY(int id READ getId WRITE setId NOTIFY idChanged)
@@ -164,6 +167,7 @@ public:
     Q_PROPERTY(QDateTime created READ getCreated WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QString pointsToPass READ getPointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_PROPERTY(bool ownGallery READ ownGallery WRITE setOwnGallery NOTIFY ownGalleryChanged)
+    Q_PROPERTY(bool createrGallery READ createrGallery WRITE setCreaterGallery NOTIFY createrGalleryChanged)
     Q_INVOKABLE QVariant getImages();
 
     int getId() const;
@@ -173,6 +177,7 @@ public:
     QString getPointsToPass() const;
     GalleryImagesModel *getImagesModel();
     bool ownGallery() const;
+    bool createrGallery() const;
 
     void setId(int id_);
     void setDescription(const QString& description_);
@@ -180,6 +185,7 @@ public:
     void setCreated(const QDateTime& created_);
     void setPointsToPass(const QString &pointsToPass_);
     void setOwnGallery(bool ownGallery_);
+    void setCreaterGallery(bool createrGallery_);
 
     bool isEmpty() const;
 
@@ -190,6 +196,7 @@ signals:
     void createdChanged();
     void pointsToPassChanged();
     void ownGalleryChanged();
+    void createrGalleryChanged();
 
 public:
     static GalleryItemData* fromJson(QObject *parent_, const QJsonValue &jsonValue_, bool &anyError_);
