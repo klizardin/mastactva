@@ -8,7 +8,7 @@ Page {
     id: galleryPage
     anchors.fill: parent
 
-    title: qsTr("Gallery")
+    title: qsTr("Galleries")
 
     property var mastactvaAPI: undefined
     property var netAPI: undefined
