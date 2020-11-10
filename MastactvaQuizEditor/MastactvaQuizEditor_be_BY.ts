@@ -57,13 +57,11 @@
     <message>
         <location filename="Mastactva/Constants.qml" line="28"/>
         <source>Not a point to question</source>
-        <oldsource>&lt;Not a point to question&gt;</oldsource>
         <translation>Не кропка да пытання</translation>
     </message>
     <message>
         <location filename="Mastactva/Constants.qml" line="29"/>
         <source>Not a point to next image</source>
-        <oldsource>&lt;Not a point to next image&gt;</oldsource>
         <translation>Не кропка для пераходу на выяву</translation>
     </message>
     <message>
@@ -74,7 +72,6 @@
     <message>
         <location filename="Mastactva/Constants.qml" line="31"/>
         <source>Select image point</source>
-        <oldsource>&lt;Select image point&gt;</oldsource>
         <translation>Абярыце кропку на выяву</translation>
     </message>
 </context>
@@ -184,7 +181,6 @@
     <message>
         <location filename="ImageEditDialog.qml" line="42"/>
         <source>Enter image file name</source>
-        <oldsource>&lt;Enter image file name&gt;</oldsource>
         <translation>Ввядзіце імя файла</translation>
     </message>
     <message>
@@ -218,7 +214,6 @@
     <message>
         <location filename="ImagePointDialog.qml" line="195"/>
         <source>Input x coordinate of point [0..1]</source>
-        <oldsource>&lt;Input x coordinate of point [0..1]&gt;</oldsource>
         <translation>Ввядзіце x каардынату кропкі (ад 0 да 1)</translation>
     </message>
     <message>
@@ -278,7 +273,6 @@
     <message>
         <location filename="Login.qml" line="59"/>
         <source>Enter login</source>
-        <oldsource>&lt;Enter login&gt;</oldsource>
         <translation>Ввядзіце лагін</translation>
     </message>
     <message>
@@ -289,7 +283,6 @@
     <message>
         <location filename="Login.qml" line="69"/>
         <source>Enter pasword</source>
-        <oldsource>&lt;Enter pasword&gt;</oldsource>
         <translation>Ввядзіце пароль</translation>
     </message>
     <message>
@@ -440,7 +433,6 @@
     <message>
         <location filename="main.qml" line="720"/>
         <source>Do you really want to remove the current gallery</source>
-        <oldsource>&lt;b&gt;Do you really want to remove the current gallery&lt;/b&gt;</oldsource>
         <translation>Вы сапраўды жадаеце выдаліць абраную галерэю</translation>
     </message>
     <message>
@@ -451,7 +443,6 @@
     <message>
         <location filename="main.qml" line="776"/>
         <source>To add an image to the gallery you should first select a gallery</source>
-        <oldsource>To add image &lt;b&gt;to&lt;/b&gt; the gallery you should first select a gallery</oldsource>
         <translation>Для дадання выявы да галерэі вы павіны па-першае абраць галерэю</translation>
     </message>
     <message>
@@ -487,13 +478,11 @@
     <message>
         <location filename="main.qml" line="839"/>
         <source>To remove an image of the gallery you should first select a image</source>
-        <oldsource>To remove image of the gallery you should first select a image of the current gallery</oldsource>
         <translation>Для выдалення выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
         <location filename="main.qml" line="845"/>
         <source>Do you really want to remove the image from the gallery</source>
-        <oldsource>&lt;b&gt;Do you really want to remove image from gallery&lt;/b&gt;</oldsource>
         <translation>Вы сапраўды жадаеце выдаліць выяву з галерэі</translation>
     </message>
     <message>
@@ -521,7 +510,6 @@
     <message>
         <location filename="main.qml" line="902"/>
         <source>To make an image of the gallery top you should first select a image</source>
-        <oldsource>To make image of the gallery top you should first select a image of the current gallery</oldsource>
         <translation>Для таго каб зрабіць выяву уваходнай вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
@@ -532,7 +520,6 @@
     <message>
         <location filename="main.qml" line="931"/>
         <source>To make an image of the gallery non top you should first select a image</source>
-        <oldsource>To make image of the gallery non top you should first select a image of the current gallery</oldsource>
         <translation>Для таго каб скасаваць уваходнасць выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
@@ -562,7 +549,6 @@
         <location filename="main.qml" line="1280"/>
         <location filename="main.qml" line="1353"/>
         <source>To create a description of the image of the gallery you should first select an image</source>
-        <oldsource>To create a description of an image of the gallery you should first select an image of the current gallery</oldsource>
         <translation>Для стварэння новага апісання выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
@@ -574,14 +560,12 @@
         <location filename="main.qml" line="998"/>
         <location filename="main.qml" line="1021"/>
         <source>Select a description of the image first</source>
-        <oldsource>Select description of the image first</oldsource>
         <translation>Абярыце апісанне выявы з пачатку</translation>
     </message>
     <message>
         <location filename="main.qml" line="999"/>
         <location filename="main.qml" line="1022"/>
         <source>To edit a description of the image of the gallery you should first select a description</source>
-        <oldsource>To edit a description of an image of the gallery you should first select a description of an image of the current gallery</oldsource>
         <translation>Для рэдагавання апісання выявы вы па-першае павіны абраць апісанне выявы</translation>
     </message>
     <message>
@@ -592,7 +576,6 @@
     <message>
         <location filename="main.qml" line="1029"/>
         <source>Do you really want to delete description?</source>
-        <oldsource>&lt;b&gt;Do you really want to delete description?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Description text:&lt;br/&gt;</oldsource>
         <translation>Вы сапраўды жадаеце выдаліць апісанне?</translation>
     </message>
     <message>
@@ -624,13 +607,11 @@
         <location filename="main.qml" line="1285"/>
         <location filename="main.qml" line="1358"/>
         <source>Select an image point of the image first</source>
-        <oldsource>Select switch point of the image first</oldsource>
         <translation>Абярыце кропку выявы з пачатку</translation>
     </message>
     <message>
         <location filename="main.qml" line="1081"/>
         <source>To edit a question of an image point of an image of the gallery you should first select an image point</source>
-        <oldsource>To edit a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для рэдагавання пытання для кропкі выявы  вы павіны па-першае абраць кропку выяву</translation>
     </message>
     <message>
@@ -641,7 +622,6 @@
     <message>
         <location filename="main.qml" line="1104"/>
         <source>To add new answer of the question of the image point of the image of the gallery you should first select an image point</source>
-        <oldsource>To add new answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для дадання новага адказу на пытанне кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
@@ -652,20 +632,17 @@
     <message>
         <location filename="main.qml" line="1127"/>
         <source>To edit an answer of the question of the image point of the image of the gallery you should first select an image point</source>
-        <oldsource>To edit an answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для рэдагавання адказу на пытанне на кропке выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
         <location filename="main.qml" line="1132"/>
         <location filename="main.qml" line="1161"/>
         <source>Select an answer of the image point of the image first</source>
-        <oldsource>Select an answer of the switch point of the image first</oldsource>
         <translation>Абярыце адказ на пытанне</translation>
     </message>
     <message>
         <location filename="main.qml" line="1133"/>
         <source>To edit an answer of the question of the image point of the image of the gallery you should first select an answer</source>
-        <oldsource>To edit an answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery</oldsource>
         <translation>Для рэдагаваня адказу на пытанне па кропцы выявы вы павіны па-першае абраць адказ</translation>
     </message>
     <message>
@@ -676,13 +653,11 @@
     <message>
         <location filename="main.qml" line="1156"/>
         <source>To remove the answer of the question of the image point of the image of the gallery you should first select an image point</source>
-        <oldsource>To remove the answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для выдалення адказу на патанне па кропцы выявы вы па-першае павіны адраць кропку выяву з пытаннем</translation>
     </message>
     <message>
         <location filename="main.qml" line="1162"/>
         <source>To remove an answer of the question of the image point of the image of the gallery you should first select an answer</source>
-        <oldsource>To remove the answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery</oldsource>
         <translation>Для выдалення адказу на пытанне па кропцы выявы вы па-першае павіны абраць адказ</translation>
     </message>
     <message>
@@ -693,7 +668,6 @@
     <message>
         <location filename="main.qml" line="1215"/>
         <source>To add an image point of the image of the gallery you should first select an image</source>
-        <oldsource>To add switch point of an image of the gallery you should first select an image of the current gallery</oldsource>
         <translation>Для дадання шаблону кропкі выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
@@ -709,7 +683,6 @@
     <message>
         <location filename="main.qml" line="1249"/>
         <source>To edit properties of the image point of the image of the gallery you should first select an image point</source>
-        <oldsource>To edit properties of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для рэдагавання кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
@@ -725,7 +698,6 @@
     <message>
         <location filename="main.qml" line="1286"/>
         <source>To remove an image point of the image of the gallery you should first select an image point</source>
-        <oldsource>To remove a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для выдалення кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
@@ -787,7 +759,6 @@
     <message>
         <location filename="main.qml" line="1359"/>
         <source>To edit next image of the image point of the image of the gallery you should first select an image point</source>
-        <oldsource>To edit next image of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
         <translation>Для рэдагавання наступнай выявы кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
@@ -854,7 +825,6 @@
     <message>
         <location filename="main.qml" line="1631"/>
         <source>PointsToPass</source>
-        <oldsource>&lt;PointsToPass&gt;</oldsource>
         <translation>Балы за пытанне</translation>
     </message>
     <message>
