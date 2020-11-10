@@ -19,6 +19,7 @@ SOURCES += \
         image.cpp \
         imagesource.cpp \
         main.cpp \
+        mastactvaapi.cpp \
         netapi.cpp \
         qmlobjects.cpp \
         quizuser.cpp
@@ -50,6 +51,7 @@ HEADERS += \
     gallery.h \
     image.h \
     imagesource.h \
+    mastactvaapi.h \
     netapi.h \
     qmlobjects.h \
     quizuser.h

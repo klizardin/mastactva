@@ -6,44 +6,49 @@ import Mastactva 1.0
 
 Page {
     id: galleryPage
-    width: Constants.pageWidth
-    height: Constants.pageHeight
+    anchors.fill: parent
 
     title: qsTr("Gallery")
 
+    property var mastactvaAPI: undefined
     property var netAPI: undefined
     property alias galleryModel: galleries.model
 
-    ListView {
-        id: galleries
-
+    Rectangle {
         anchors.fill: parent
-        spacing: Constants.galleriesListViewSpacing
-        clip: true
 
-        delegate: galleryItem
+        ListView {
+            id: galleries
+
+            anchors.fill: parent
+            spacing: Constants.galleriesListViewSpacing
+            clip: true
+
+            delegate: galleryItem
+        }
     }
 
     Component {
         id: galleryItem
 
         Column {
+
             SystemPalette {
                 id: galleryItemPallete
                 colorGroup: SystemPalette.Active
             }
 
             Rectangle {
-                width: Constants.pageWidth
-                height: (Constants.pageWidth / Constants.aspectX) * Constants.aspectY
+                width: galleryPage.width
+                height: (galleryPage.width / Constants.aspectX) * Constants.aspectY
 
                 SwipeView {
                     id: galleryImagesSwipeView
 
                     x: Constants.galleryImageSpacing / 2
                     y: Constants.galleryImageSpacing / 2
-                    width: (Constants.pageWidth - Constants.galleryImageSpacing)
-                    height: ((Constants.pageWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                    width: (galleryPage.width - Constants.galleryImageSpacing)
+                    height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
                     clip: true
 
                     Repeater {
@@ -51,9 +56,9 @@ Page {
                         model: images
                         Image {
                             id: imageOfGallery
-                            width: (Constants.pageWidth - Constants.galleryImageSpacing)
-                            height: ((Constants.pageWidth - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
-                            source: filename
+                            width: (galleryPage.width - Constants.galleryImageSpacing)
+                            height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                            source: imageSource
                             fillMode: Image.PreserveAspectFit
 
                             MouseArea {
@@ -71,18 +76,28 @@ Page {
             }
 
             PageIndicator {
-               x:(Constants.pageWidth-width)/2
+               x:(galleryPage.width-width)/2
                height: Constants.leftSideBarPageIndicatorHeight
                currentIndex: galleryImagesSwipeView.currentIndex
                count: galleryImagesSwipeView.count
             }
 
+            property bool showFullDescription: false
+
             Text {
                 id : gallery_description
-                text: description
-                x: (Constants.pageWidth - width)/2
-                width: Constants.pageWidth - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
+                text: showFullDescription ? description : mastactvaAPI.readMore(description, 128, qsTr(" ..."))
+                x: (galleryPage.width - width)/2
+                width: galleryPage.width - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
                 wrapMode: Text.WordWrap
+
+                MouseArea {
+                    anchors.fill: gallery_description
+
+                    onDoubleClicked: {
+                        showFullDescription = !showFullDescription;
+                    }
+                }
             }
         }
     }

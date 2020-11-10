@@ -17,7 +17,7 @@ public:
     explicit Image(QObject *parent_ = nullptr);
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(ImageSource filename READ filename WRITE setFilename NOTIFY filenameChanged)
+    Q_PROPERTY(QString imageSource READ getFilename WRITE setFilenameStr NOTIFY filenameChanged)
     Q_PROPERTY(QString hash READ hash WRITE setHash NOTIFY hashChanged)
     Q_PROPERTY(int gallery READ gallery WRITE setGallery NOTIFY galleryChanged)
     Q_PROPERTY(bool top READ top WRITE setTop NOTIFY topChanged)
@@ -43,6 +43,8 @@ public:
     void setId(const int &id_);
     ImageSource filename() const;
     void setFilename(const ImageSource &filename_);
+    QString getFilename() const;
+    void setFilenameStr(const QString &filename_);
     QString hash() const;
     void setHash(const QString &hash_);
     int gallery() const;

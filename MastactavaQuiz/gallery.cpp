@@ -81,6 +81,7 @@ void Gallery::setOwnGallery(const int &ownGallery_)
 ImageModel *Gallery::createImages()
 {
     ImageModel *m = new ImageModel(this);
+    m->initResponse();
     m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");

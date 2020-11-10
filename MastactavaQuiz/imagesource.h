@@ -12,6 +12,10 @@ class ImageSource : public QString
 {
 public:
     using QString::QString;
+    ImageSource(const QString &str_)
+    {
+        operator=(str_);
+    }
     ImageSource &operator = (const QString& str_)
     {
         *static_cast<QString *>(this) = str_;

@@ -23,7 +23,7 @@ public:
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
-    Q_PROPERTY(QString keyword READ keyword WRITE setKeyword NOTIFY keywordChanged)
+    Q_PROPERTY(QString keywords READ keyword WRITE setKeyword NOTIFY keywordChanged)
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_PROPERTY(bool ownGallery READ ownGallery WRITE setOwnGallery NOTIFY ownGalleryChanged)

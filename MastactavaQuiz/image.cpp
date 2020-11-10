@@ -30,6 +30,16 @@ void Image::setFilename(const ImageSource &filename_)
     emit filenameChanged();
 }
 
+QString Image::getFilename() const
+{
+    return filename();
+}
+
+void Image::setFilenameStr(const QString &filename_)
+{
+    setFilename(filename_);
+}
+
 QString Image::hash() const
 {
     return m_hash;

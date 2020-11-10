@@ -17,6 +17,11 @@ ApplicationWindow {
         objectName: "NetAPI"
     }
 
+    MastactvaAPI {
+        id: mastactvaAPI
+        objectName: "MastactvaAPI"
+    }
+
     QuizUserModel {
         id: quizUserModel
         objectName: "QuizUserModel"
@@ -47,6 +52,7 @@ ApplicationWindow {
             quizPage.netAPI = netAPI
             descriptionPage.netAPI = netAPI
             galleryPage.galleryModel = galleryModel
+            galleryPage.mastactvaAPI = mastactvaAPI
 
             initGalleryModel()
             quizUserModel.loadList()

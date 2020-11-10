@@ -6,6 +6,7 @@
 #include <QVector>
 #include <QList>
 #include <QHash>
+#include <QDebug>
 #include <QVariant>
 #include "Layout.h"
 #include "netapi.h"
@@ -489,6 +490,12 @@ protected:
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
         loaded.clear();
+        //for(const DataType_ *i: m_data)
+        //{
+        //    QHash<QString, QVariant> values;
+        //    getDataLayout<DataType_>().getJsonValues(i, values);
+        //    qDebug() << values;
+        //}
     }
 
     virtual void itemAdded(RequestData *request_, const QJsonDocument &reply_)

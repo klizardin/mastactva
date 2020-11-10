@@ -156,32 +156,6 @@ namespace layout
                 m_idField = idField_;
             }
 
-            //bool isRef() const
-            //{
-            //    return !m_parentModel.isEmpty();
-            //}
-
-            //const QString &getParentModel() const
-            //{
-            //    return m_parentModel;
-            //}
-
-            //bool isParentModelRerToIdField() const
-            //{
-            //    return m_parentModelRefJsonName.isEmpty();
-            //}
-
-            //const QString &getParentModelRefJsonName() const
-            //{
-            //    return m_parentModelRefJsonName;
-            //}
-
-            //void setRef(const QString &parentModel_, const QString &parentModelRefJsonName_ = QString())
-            //{
-            //    m_parentModel = parentModel_;
-            //    m_parentModelRefJsonName = parentModelRefJsonName_;
-            //}
-
             SpecialFieldEn getType() const
             {
                 return m_type;
@@ -202,8 +176,6 @@ namespace layout
             QString m_jsonName;
             QString m_qmlName;
             bool m_idField = false;
-            //QString m_parentModel;
-            //QString m_parentModelRefJsonName;
             SpecialFieldEn m_type = SpecialFieldEn::none;
             bool m_autoCreated = false;
         };
