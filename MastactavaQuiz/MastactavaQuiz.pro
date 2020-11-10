@@ -13,6 +13,7 @@ CONFIG += c++17
 
 SOURCES += \
         IModel.cpp \
+        Model.cpp \
         appconsts.cpp \
         gallery.cpp \
         image.cpp \

@@ -13,13 +13,9 @@
 #include "IModel.h"
 
 
-// TODO : add notification on data changes
-// TODO : event on data loaded check if data was changed, notify child nodes
-
-template<class DataType_, class ModelType_>
-class ListModelBaseOfData : public QAbstractListModel, public IListModel
+class ListModelBaseData
 {
-private:
+protected:
     class RefDescription
     {
     public:
@@ -35,6 +31,55 @@ private:
         QVariant m_appId;
     };
 
+public:
+    void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true);
+    void addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_);
+
+protected:
+    void setRefAppIdImpl(const QVariant &appId_);
+    QVariant getRefAppIdImpl() const;
+    int getCurrentIndexImpl() const;
+    void setCurrentIndexImpl(int index_);
+    bool isCurrentIndexValid(int size_) const;
+    const QString &currentRefImpl() const;
+    void setCurrentRefImpl(const QString &ref_);
+    void setLayoutQMLNameImpl(const QString &layoutQMLName_);
+    const QString &getLayoutQMLNameImpl() const;
+    bool getJsonParamsGetImpl() const;
+    void setJsonParamsGetImpl(bool jsonParamsGet_);
+    bool addRequest(RequestData *rd_);
+    RequestData * findRequest(const QString &requestName_);
+    bool findRequest(RequestData *request_) const;
+    void removeRequest(RequestData *request_);
+    int getNextAppId(void *dta_);
+    int getOutOfRangeAppId() const;
+    void setNextAppId(int appId_);
+    void parentItemRemoved();
+    void init(QObject *modelObj_);
+
+protected:
+    QHash<QString, RefDescription> m_refs;
+    QList<ExtraFields> m_extraFields;
+    QVector<RequestData *> m_requests;
+
+private:
+    QVariant m_refAppId;
+    int m_currentIndex = -1;
+    QString m_currentRef;
+    QString m_QMLLayoutName;
+    bool m_jsonParamsGet = false;
+    int m_nextAppId = 0;
+    QObject *m_modelObj = nullptr;
+};
+
+
+
+// TODO : add notification on data changes
+// TODO : event on data loaded check if data was changed, notify child nodes
+
+template<class DataType_, class ModelType_>
+class ListModelBaseOfData : public QAbstractListModel, public IListModel, public ListModelBaseData
+{
 public:
     explicit ListModelBaseOfData(QObject *parent_)
         :QAbstractListModel(parent_)
@@ -83,7 +128,7 @@ public:
 
     virtual const QString &getQMLLayoutName() const override
     {
-        return m_QMLLayoutName;
+        return getLayoutQMLNameImpl();
     }
 
     virtual const QString &getJsonLayoutName() const override
@@ -103,8 +148,8 @@ public:
 
     virtual QVariant getCurrentIndexAppId() const override
     {
-        if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return QVariant::fromValue(-1); }
-        return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, m_data[m_currentIndex]);
+        if(!isCurrentIndexValid(m_data.size())) { return QVariant::fromValue(-1); }
+        return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, m_data[getCurrentIndexImpl()]);
     }
 
     virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const override
@@ -112,8 +157,8 @@ public:
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
         if(nullptr == item)
         {
-            if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
-            item = m_data[m_currentIndex];
+            if(!isCurrentIndexValid(m_data.size())) { return false; }
+            item = m_data[getCurrentIndexImpl()];
         }
         return getDataLayout<DataType_>().getJsonValues(item, values_);
     }
@@ -123,8 +168,8 @@ public:
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
         if(nullptr == item)
         {
-            if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
-            item = m_data[m_currentIndex];
+            if(!isCurrentIndexValid(m_data.size())) { return false; }
+            item = m_data[getCurrentIndexImpl()];
         }
         return getDataLayout<DataType_>().getIdJsonValue(item);
     }
@@ -134,60 +179,13 @@ public:
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
         if(nullptr == item)
         {
-            if(m_currentIndex < 0 || m_currentIndex >= m_data.size()) { return false; }
-            item = m_data[m_currentIndex];
+            if(!isCurrentIndexValid(m_data.size())) { return false; }
+            item = m_data[getCurrentIndexImpl()];
         }
         return getDataLayout<DataType_>().getJsonValue(item, jsonFieldName);
     }
 
-    void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true)
-    {
-        m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
-        if(!notify_) { return; }
-        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
-        Q_ASSERT(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel());
-        if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
-        {
-            QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)), m_model, SLOT(refreshChildrenSlot(QString)));
-        }
-    }
-
-    void addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_)
-    {
-        m_extraFields.push_back({modelName_, appId_});
-    }
-
 protected:
-    void setRefAppIdImpl(const QVariant &appId_)
-    {
-        m_refAppId = appId_;
-    }
-
-    QVariant getRefAppIdImpl() const
-    {
-        return m_refAppId;
-    }
-
-    int getCurrentIndexImpl() const
-    {
-        return m_currentIndex;
-    }
-
-    void setCurrentIndexImpl(int index_)
-    {
-        m_currentIndex = index_;
-    }
-
-    const QString &currentRefImpl() const
-    {
-        return m_currentRef;
-    }
-
-    void setCurrentRefImpl(const QString &ref_)
-    {
-        m_currentRef = ref_;
-    }
-
     bool storeAfterSaveImpl() const
     {
         return getDataLayout<DataType_>().storeAfterSave();
@@ -260,9 +258,8 @@ protected:
         if(getJsonLayoutName().isEmpty())
         {
             request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
-            if(nullptr != request)
+            if(addRequest(request))
             {
-                m_requests.push_back(request);
                 jsonResponseSlotImpl(0, request, QJsonDocument());
             }
             netAPI->freeRequest(request);
@@ -294,7 +291,7 @@ protected:
                         getJsonParamsGetImpl(),
                         extraFields
                         );
-            if(nullptr != request) { m_requests.push_back(request); }
+            addRequest(request);
         }
     }
 
@@ -325,9 +322,8 @@ protected:
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
             RequestData *request = netAPI->emptyRequest(netAPI->setItemRequestName<DataType_>(), itemAppId, itemId);
-            if(nullptr != request)
+            if(addRequest(request))
             {
-                m_requests.push_back(request);
                 jsonResponseSlotImpl(0, request, QJsonDocument());
             }
             netAPI->freeRequest(request);
@@ -339,8 +335,7 @@ protected:
             if(!ret) { return ret; }
 
             RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_]);
-            if(nullptr != request) { m_requests.push_back(request); }
-            return nullptr != request;
+            return addRequest(request);
         }
     }
 
@@ -360,9 +355,8 @@ protected:
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
             RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>(), itemAppId, itemId);
-            if(nullptr != request)
+            if(addRequest(request))
             {
-                m_requests.push_back(request);
                 jsonResponseSlotImpl(0, request, QJsonDocument());
             }
             netAPI->freeRequest(request);
@@ -371,8 +365,7 @@ protected:
         else
         {
             RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back());
-            if(nullptr != request) { m_requests.push_back(request); }
-            return nullptr != request;
+            return addRequest(request);
         }
     }
 
@@ -400,16 +393,6 @@ protected:
     const QString &getLayoutJsonNameImpl()
     {
         return getDataLayout<DataType_>().getLayoutJsonName();
-    }
-
-    void setLayoutQMLNameImpl(const QString &layoutQMLName_)
-    {
-        m_QMLLayoutName = layoutQMLName_;
-    }
-
-    const QString &getLayoutQMLNameImpl() const
-    {
-        return m_QMLLayoutName;
     }
 
     void setLayoutIdFieldImpl(const QString &fieldJsonName_)
@@ -463,17 +446,8 @@ protected:
     bool init(ModelType_ *model_)
     {
         m_model = model_;
+        ListModelBaseData::init(model_);
         return true;
-    }
-
-    bool getJsonParamsGetImpl() const
-    {
-        return m_jsonParamsGet;
-    }
-
-    void setJsonParamsGetImpl(bool jsonParamsGet_)
-    {
-        m_jsonParamsGet = jsonParamsGet_;
     }
 
 protected:
@@ -540,9 +514,9 @@ protected:
         const RefDescription &ref = m_refs.value(currentRefImpl());
         if(modelName_ != ref.m_parentModel) { return; }
         IListModel* parentModel = QMLObjects::getInstance().getListModel(ref.m_parentModel);
-        if(!m_refAppId.isValid())
+        if(!getRefAppIdImpl().isValid())
         {
-            if(parentModel->containsAppId(m_refAppId))
+            if(parentModel->containsAppId(getRefAppIdImpl()))
             {
                 parentItemChanged();
             }
@@ -567,53 +541,10 @@ protected:
         loadListImpl();
     }
 
-    void parentItemRemoved()
-    {
-        m_refAppId = QVariant::fromValue(getOutOfRangeAppId());
-    }
-
 protected:
     virtual QHash<int, QByteArray> roleNames() const override
     {
         return m_roleNames;
-    }
-
-    RequestData * findRequest(const QString &requestName_)
-    {
-        const auto fit = std::find_if(std::begin(m_requests),
-                                      std::end(m_requests),
-                                      [&requestName_](RequestData *request_)->bool
-        {
-            return nullptr != request_ && request_->getRequestName() == requestName_;
-        });
-        return std::end(m_requests) == fit ? nullptr : *fit;
-    }
-
-    bool findRequest(RequestData *request_) const
-    {
-        if(nullptr == request_) { return false; }
-        const auto fit = std::find_if(std::begin(m_requests),
-                                      std::end(m_requests),
-                                      [request_](RequestData *requestItem_)->bool
-        {
-            return nullptr != requestItem_ && requestItem_ == request_;
-        });
-        return std::end(m_requests) != fit;
-    }
-
-    void removeRequest(RequestData *request_)
-    {
-        if(nullptr == request_) { return; }
-        const auto fit = std::find_if(std::begin(m_requests),
-                                      std::end(m_requests),
-                                      [request_](RequestData *requestItem_)->bool
-        {
-            return nullptr != requestItem_ && requestItem_ == request_;
-        });
-        if(std::end(m_requests) != fit)
-        {
-            m_requests.erase(fit);
-        }
     }
 
     void clearData()
@@ -670,42 +601,13 @@ protected:
         endInsertRows();
     }
 
-    int getNextAppId(DataType_ *dta_)
-    {
-        Q_UNUSED(dta_);
-        if(++m_nextAppId < 0)
-        {
-            m_nextAppId = 0;
-        }
-        return m_nextAppId;
-    }
-
-    int getOutOfRangeAppId() const
-    {
-        return -1;
-    }
-
-    void setNextAppId(int appId_)
-    {
-        m_nextAppId = appId_;
-    }
-
 protected:
     QVector<DataType_ *> m_data;
 
 private:
     QHash<int, QByteArray> m_roleNames;
-    QHash<QString, RefDescription> m_refs;
-    QList<ExtraFields> m_extraFields;
-    int m_nextAppId = 0;
-    int m_currentIndex = -1;
-    QVector<RequestData *> m_requests;
     bool reloadList = false;
-    QString m_currentRef;
-    QVariant m_refAppId;
-    QString m_QMLLayoutName;
     ModelType_ *m_model = nullptr;
-    bool m_jsonParamsGet = false;
 };
 
 // TODO: may be refactor define
