@@ -1,4 +1,6 @@
 #include "gallery.h"
+#include "utils.h"
+
 
 Gallery::Gallery(GalleryModel *parent_)
     : QObject(parent_)
@@ -25,7 +27,7 @@ QString Gallery::description() const
 
 void Gallery::setDescription(const QString &description_)
 {
-    m_description = description_;
+    m_description = leftDoubleCR(description_);
 
     emit descriptionChanged();
 }

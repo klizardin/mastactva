@@ -22,7 +22,8 @@ SOURCES += \
         mastactvaapi.cpp \
         netapi.cpp \
         qmlobjects.cpp \
-        quizuser.cpp
+        quizuser.cpp \
+        utils.cpp
 
 RESOURCES += qml.qrc \
     Mastactva/
@@ -54,7 +55,8 @@ HEADERS += \
     mastactvaapi.h \
     netapi.h \
     qmlobjects.h \
-    quizuser.h
+    quizuser.h \
+    utils.h
 
 DISTFILES += \
     ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json \
