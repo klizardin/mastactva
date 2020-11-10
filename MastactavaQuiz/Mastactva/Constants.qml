@@ -2,10 +2,10 @@ pragma Singleton
 import QtQuick 2.6
 
 QtObject {
-    readonly property int width: 640
-    readonly property int height: 480
-    readonly property int pageWidth: 600
-    readonly property int pageHeight: 400
+    readonly property int width: 480
+    readonly property int height: 640
+    readonly property int pageWidth: 480
+    readonly property int pageHeight: 620
     readonly property int smallImageWidth: 320
     readonly property int smallImageHeight: 240
     readonly property int leftSideBarWidth: 250

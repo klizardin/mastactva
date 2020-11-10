@@ -6,7 +6,8 @@ import Mastactva 1.0
 
 Page {
     id: galleryPage
-    anchors.fill: parent
+    width: Constants.pageWidth
+    height: Constants.pageHeight
 
     title: qsTr("Galleries")
 

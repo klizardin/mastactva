@@ -1,9 +1,12 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import "GalleryFunctions.js" as GalleryFunctions
+import Mastactva 1.0
+
 
 Page {
-    width: 600
-    height: 400
+    width: Constants.pageWidth
+    height: Constants.pageHeight
 
     title: qsTr("Quiz")
 
