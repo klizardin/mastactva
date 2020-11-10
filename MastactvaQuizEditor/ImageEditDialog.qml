@@ -39,7 +39,7 @@ Dialog {
             }
             TextField {
                 id: imageFileName
-                placeholderText: qsTr("<Enter image file name>")
+                placeholderText: qsTr("Enter image file name")
                 readOnly: true
             }
 

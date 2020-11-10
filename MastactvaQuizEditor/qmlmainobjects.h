@@ -9,6 +9,7 @@ class GalleryEditViewModel;
 class DescriptionModel;
 class QuestionAnswersModel;
 class MastactvaAPI;
+class QGuiApplication;
 
 
 class QMLMainObjects : public QObject
@@ -23,6 +24,8 @@ public:
     DescriptionModel *getImageOfGalleryDescriptionModel();
     QuestionAnswersModel *getQuestionAnswersModel();
     MastactvaAPI *getMastactvaAPI();
+    QGuiApplication *getApp();
+    void setApp(QGuiApplication *app_);
 
     static void createSingelton(QObject *parent_ = nullptr);
     static QMLMainObjects *getSingelton();
@@ -41,6 +44,7 @@ private:
     DescriptionModel *m_imageOfGalleryDescriptionModel = nullptr;
     QuestionAnswersModel *m_questionAnswersModel = nullptr;
     MastactvaAPI *m_mastactavaAPI = nullptr;
+    QGuiApplication *m_app = nullptr;
 };
 
 #endif // QMLMAINOBJECTS_H

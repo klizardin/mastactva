@@ -10,6 +10,8 @@ Dialog {
 
     property alias fieldUseColorsVoronoyDiagram : useColorsVoronoyDiagram.checked
     property alias fieldRegenerateColors: regenerateColors.checked
+    property alias fieldLanguage : language.currentText
+    property alias fieldLanguageIndex : language.currentIndex
 
     title: qsTr("Edit Options")
     x: (parent.width - width) / 2
@@ -27,6 +29,11 @@ Dialog {
             CheckBox {
                 id: regenerateColors
                 text: qsTr("Regenerate colors")
+            }
+            ComboBox {
+                id: language
+                editable: false
+                model: [ qsTr("English"), qsTr("Belarus") ]
             }
         }
     }

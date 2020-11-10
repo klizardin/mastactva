@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QJsonDocument>
 #include <QtQuick/QQuickItem>
+#include <QTranslator>
 
 
 class RequestData;
@@ -82,6 +83,8 @@ public:
     Q_INVOKABLE void showErrorMessage(const QString &header_, const QString &description_);
     Q_INVOKABLE QString readMore(const QString &str_, int maxSymbols_, const QString &rms_);
     Q_INVOKABLE void refreshNextImage();
+    Q_INVOKABLE void switchLanguage(const QString & lang_);
+    Q_INVOKABLE int getLanguageIndex();
 
 signals:
     void galleryReloaded();

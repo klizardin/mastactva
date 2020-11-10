@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QCryptographicHash>
+#include <QGuiApplication>
 #include "netapi.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
@@ -1033,4 +1034,14 @@ void MastactvaAPI::refreshNextImage()
     pImagePoint->setToNextImage(QVariant::fromValue(static_cast<QObject *>(nullptr)));
     (void)pImagePoint->toNextImage();
     emit imageOfGalleryPointIndexChanged();
+}
+
+void MastactvaAPI::switchLanguage(const QString & lang_)
+{
+    AppConsts::getInstance()->switchLanguage(lang_);
+}
+
+int MastactvaAPI::getLanguageIndex()
+{
+    return AppConsts::getInstance()->getLanguageIndex();
 }

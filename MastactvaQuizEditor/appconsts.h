@@ -8,6 +8,10 @@
 #include <QtQuick/QQuickItem>
 
 
+static const QString g_englishLanguage = "English";
+static const QString g_belarusLanguage = "Belarus";
+
+
 class ServerURLsModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -42,6 +46,7 @@ protected:
     int m_maxImagePoints = 64;
     QVector<QVector3D> m_colors;
     bool m_useColorsVoronoyDiagram = false;
+    QString m_language;
 
 protected:
     void set(const QString &line_);
@@ -58,6 +63,9 @@ public:
     bool useColorsVoronoyDiagram() const;
     void setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_);
     void initColors();
+    void switchLanguage(const QString &lang_);
+    const QString &getLanguage() const;
+    int getLanguageIndex() const;
 
     static AppConsts *getInstance();
     static void freeInstance();

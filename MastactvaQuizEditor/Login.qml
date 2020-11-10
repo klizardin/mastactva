@@ -56,7 +56,7 @@ ApplicationWindow {
             id: login
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width - Constants.logingItemsSpacing * 2
-            placeholderText: qsTr("<Enter login>")
+            placeholderText: qsTr("Enter login")
         }
         Text {
             x: Constants.logingItemsSpacing
@@ -66,7 +66,7 @@ ApplicationWindow {
             id: password
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width - Constants.logingItemsSpacing * 2
-            placeholderText: qsTr("<Enter pasword>")
+            placeholderText: qsTr("Enter pasword")
             echoMode: TextInput.Password
         }
         Button {

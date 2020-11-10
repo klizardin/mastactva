@@ -6,10 +6,9 @@
 #include "galleryeditviewmodel.h"
 #include "qmlmainobjects.h"
 #include "mastactvaapi.h"
+#include "appconsts.h"
 
-//#define USE_BE_BY
 
-#if defined(USE_BE_BY)
 void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)
 {
     app.removeTranslator(&translator);
@@ -18,24 +17,39 @@ void switchTranslator(QGuiApplication &app, QTranslator& translator, const QStri
         app.installTranslator(&translator);
     }
 }
-#endif
+
+void switchLanguage(const QString & lang_, QTranslator& translator_, QTranslator& translatorQt_, QGuiApplication &app_)
+{
+    QString lang;
+    if(g_belarusLanguage == lang_)
+    {
+        lang = "be_BY";
+    }
+    else if(g_englishLanguage == lang_)
+    {
+        lang = "en_US";
+    }
+    else
+    {
+        return;
+    }
+
+    QLocale locale = QLocale(lang);
+    QLocale::setDefault(locale);
+
+    switchTranslator(app_, translator_, QString("MastactvaQuizEditor_%1.qm").arg(lang));
+    switchTranslator(app_, translatorQt_, QString("qt_%1.qm").arg(lang));
+}
+
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
-
-#if defined(USE_BE_BY)
-    // switch to be_BY
-    QTranslator m_translator; // contains the translations for this application
-    QTranslator m_translatorQt; // contains the translations for qt
-    QString lang("be_BY");
-    QLocale locale = QLocale(lang);
-    QLocale::setDefault(locale);
-    switchTranslator(app, m_translator, QString("MastactvaQuizEditor_%1.qm").arg(lang));
-    switchTranslator(app, m_translatorQt, QString("qt_%1.qm").arg(lang));
-#endif
+    QTranslator translator(&app);
+    QTranslator translatorQt(&app);
+    switchLanguage(AppConsts::getInstance()->getLanguage(), translator, translatorQt, app);
 
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");
@@ -66,6 +80,14 @@ int main(int argc, char *argv[])
             }
         }
     }, Qt::QueuedConnection);
+
+    QMLMainObjects *mainObjects = QMLMainObjects::getSingelton();
+    Q_ASSERT(nullptr != mainObjects);
+    if(nullptr != mainObjects)
+    {
+        mainObjects->setApp(&app);
+    }
+
     engine.load(url);
 
     return app.exec();

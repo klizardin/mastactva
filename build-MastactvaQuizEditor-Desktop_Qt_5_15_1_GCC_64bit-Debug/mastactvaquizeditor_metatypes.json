@@ -2436,6 +2436,22 @@
                         "access": "public",
                         "name": "refreshNextImage",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "lang_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "switchLanguage",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getLanguageIndex",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,

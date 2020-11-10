@@ -6,42 +6,42 @@
     <message>
         <location filename="AnswerEditDialog.qml" line="17"/>
         <source>Edit Answer</source>
-        <translation type="unfinished">Рэдагаваць адказ</translation>
+        <translation>Рэдагаваць адказ</translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="33"/>
         <source>Id : </source>
-        <translation type="unfinished">Id : </translation>
+        <translation>Id : </translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="40"/>
         <source>Question : </source>
-        <translation type="unfinished">Пытанне : </translation>
+        <translation>Пытанне : </translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="48"/>
         <source>Points to Pass Question : </source>
-        <translation type="unfinished">Балаў за адказ на пытанне : </translation>
+        <translation>Балаў за адказ на пытанне : </translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="55"/>
         <source>Answer : </source>
-        <translation type="unfinished">Адказ : </translation>
+        <translation>Адказ : </translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="59"/>
         <source>Enter answer for the question</source>
-        <translation type="unfinished">Ввядзіце адказ на пытанне</translation>
+        <translation>Ввядзіце адказ на пытанне</translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="66"/>
         <source>Points for Answer : </source>
-        <translation type="unfinished">Балаў за адказ : </translation>
+        <translation>Балаў за адказ : </translation>
     </message>
     <message>
         <location filename="AnswerEditDialog.qml" line="70"/>
         <source>Enter points for answer</source>
-        <translation type="unfinished">Ввядзіце колькасць балаў за адказ</translation>
+        <translation>Ввядзіце колькасць балаў за адказ</translation>
     </message>
 </context>
 <context>
@@ -49,30 +49,33 @@
     <message>
         <location filename="ConfirmDialog.qml" line="16"/>
         <source>Confirm operation</source>
-        <translation type="unfinished">Падцвярдзіце дзеянне</translation>
+        <translation>Падцвярдзіце дзеянне</translation>
     </message>
 </context>
 <context>
     <name>Constants</name>
     <message>
         <location filename="Mastactva/Constants.qml" line="28"/>
-        <source>&lt;Not a point to question&gt;</source>
-        <translation type="unfinished">&lt;Не кропка да пытання&gt;</translation>
+        <source>Not a point to question</source>
+        <oldsource>&lt;Not a point to question&gt;</oldsource>
+        <translation>Не кропка да пытання</translation>
     </message>
     <message>
         <location filename="Mastactva/Constants.qml" line="29"/>
-        <source>&lt;Not a point to next image&gt;</source>
-        <translation type="unfinished">&lt;Не кропка для пераходу на выяву&gt;</translation>
+        <source>Not a point to next image</source>
+        <oldsource>&lt;Not a point to next image&gt;</oldsource>
+        <translation>Не кропка для пераходу на выяву</translation>
     </message>
     <message>
         <location filename="Mastactva/Constants.qml" line="30"/>
         <source>Point to next image</source>
-        <translation type="unfinished">Кропка переход на выяву</translation>
+        <translation>Кропка переход на выяву</translation>
     </message>
     <message>
         <location filename="Mastactva/Constants.qml" line="31"/>
-        <source>&lt;Select image point&gt;</source>
-        <translation type="unfinished">&lt;Абярыце кропку на выяву&gt;</translation>
+        <source>Select image point</source>
+        <oldsource>&lt;Select image point&gt;</oldsource>
+        <translation>Абярыце кропку на выяву</translation>
     </message>
 </context>
 <context>
@@ -80,37 +83,37 @@
     <message>
         <location filename="DescriptionEditDialog.qml" line="16"/>
         <source>Edit Image Description</source>
-        <translation type="unfinished">Рэдагаваць опіс выявы</translation>
+        <translation>Рэдагаваць апісанне выявы</translation>
     </message>
     <message>
         <location filename="DescriptionEditDialog.qml" line="32"/>
         <source>Id : </source>
-        <translation type="unfinished">Id : </translation>
+        <translation>Id : </translation>
     </message>
     <message>
         <location filename="DescriptionEditDialog.qml" line="40"/>
         <source>Image id : </source>
-        <translation type="unfinished">Id выявы : </translation>
+        <translation>Id выявы : </translation>
     </message>
     <message>
         <location filename="DescriptionEditDialog.qml" line="47"/>
         <source>Description : </source>
-        <translation type="unfinished">Опіс : </translation>
+        <translation>Апісанне : </translation>
     </message>
     <message>
         <location filename="DescriptionEditDialog.qml" line="51"/>
         <source>Enter the description of image</source>
-        <translation type="unfinished">Ввядзіце опіс выявы</translation>
+        <translation>Ввядзіце апісанне выявы</translation>
     </message>
     <message>
         <location filename="DescriptionEditDialog.qml" line="58"/>
         <source>From : </source>
-        <translation type="unfinished">Ад : </translation>
+        <translation>Ад : </translation>
     </message>
     <message>
         <location filename="DescriptionEditDialog.qml" line="62"/>
         <source>Enter description activation date</source>
-        <translation type="unfinished">Ввядзіце дату пачатку паказа опісу выявы</translation>
+        <translation>Ввядзіце дату пачатку паказа апісання выявы</translation>
     </message>
 </context>
 <context>
@@ -118,47 +121,47 @@
     <message>
         <location filename="GalleryEditDialog.qml" line="10"/>
         <source>Edit Gallery Info</source>
-        <translation type="unfinished">Рэдагаваць опіс галерэі</translation>
+        <translation>Рэдагаваць апісанне галерэі</translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="36"/>
         <source>Id : </source>
-        <translation type="unfinished">Id : </translation>
+        <translation>Id : </translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="44"/>
         <source>Description : </source>
-        <translation type="unfinished">Опіс : </translation>
+        <translation>Апісанне : </translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="48"/>
         <source>Enter the gallery`s description</source>
-        <translation type="unfinished">Ввядзіце опіс галэрэі</translation>
+        <translation>Ввядзіце апісанне галэрэі</translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="55"/>
         <source>Keywords : </source>
-        <translation type="unfinished">Ключавыя словы : </translation>
+        <translation>Ключавыя словы : </translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="59"/>
         <source>Enter gallery`s keywords</source>
-        <translation type="unfinished">Ввядзіце ключавыя словы галерэі</translation>
+        <translation>Ввядзіце ключавыя словы галерэі</translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="68"/>
         <source>Created : </source>
-        <translation type="unfinished">Створана : </translation>
+        <translation>Створана : </translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="77"/>
         <source>Points to pass level : </source>
-        <translation type="unfinished">Колькасць балаў галерэі : </translation>
+        <translation>Колькасць балаў галерэі : </translation>
     </message>
     <message>
         <location filename="GalleryEditDialog.qml" line="81"/>
         <source>Enter points to pass number</source>
-        <translation type="unfinished">Ввядзіце колькасць балаў каб прайсці галерэю</translation>
+        <translation>Ввядзіце колькасць балаў каб прайсці галерэю</translation>
     </message>
 </context>
 <context>
@@ -166,32 +169,33 @@
     <message>
         <location filename="ImageEditDialog.qml" line="10"/>
         <source>Edit Image</source>
-        <translation type="unfinished">Рэдагаваць выяву</translation>
+        <translation>Рэдагаваць выяву</translation>
     </message>
     <message>
         <location filename="ImageEditDialog.qml" line="20"/>
         <source>Please choose image to upload to the server</source>
-        <translation type="unfinished">Абярыце выяву для загрузкі на сэрвер</translation>
+        <translation>Абярыце выяву для загрузкі на сэрвер</translation>
     </message>
     <message>
         <location filename="ImageEditDialog.qml" line="38"/>
         <source>Image file name : </source>
-        <translation type="unfinished">Імя файлы : </translation>
+        <translation>Імя файла : </translation>
     </message>
     <message>
         <location filename="ImageEditDialog.qml" line="42"/>
-        <source>&lt;Enter image file name&gt;</source>
-        <translation type="unfinished">&lt;Ввядзіце імя файла&gt;</translation>
+        <source>Enter image file name</source>
+        <oldsource>&lt;Enter image file name&gt;</oldsource>
+        <translation>Ввядзіце імя файла</translation>
     </message>
     <message>
         <location filename="ImageEditDialog.qml" line="47"/>
         <source>Browse</source>
-        <translation type="unfinished">Адкрыць</translation>
+        <translation>Адкрыць</translation>
     </message>
     <message>
         <location filename="ImageEditDialog.qml" line="55"/>
         <source>Top Gallery Image</source>
-        <translation type="unfinished">Выява будзе уваходнай</translation>
+        <translation>Выява будзе уваходнай</translation>
     </message>
 </context>
 <context>
@@ -199,53 +203,54 @@
     <message>
         <location filename="ImagePointDialog.qml" line="14"/>
         <source>Edit image point</source>
-        <translation type="unfinished">Рэдагаваць кропку выявы</translation>
+        <translation>Рэдагаваць кропку выявы</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="52"/>
         <source>Image :</source>
-        <translation type="unfinished">Выява :</translation>
+        <translation>Выява :</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="190"/>
         <source>x :</source>
-        <translation type="unfinished">x :</translation>
+        <translation>x :</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="195"/>
-        <source>&lt;Input x coordinate of point [0..1]&gt;</source>
-        <translation type="unfinished">&lt;Ввядзіце x каардынату кропкі (ад 0 да 1)&gt;</translation>
+        <source>Input x coordinate of point [0..1]</source>
+        <oldsource>&lt;Input x coordinate of point [0..1]&gt;</oldsource>
+        <translation>Ввядзіце x каардынату кропкі (ад 0 да 1)</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="200"/>
         <source>y :</source>
-        <translation type="unfinished">y :</translation>
+        <translation>y :</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="205"/>
         <location filename="ImagePointDialog.qml" line="215"/>
-        <source>&lt;Input y coordinate of point [0..1]&gt;</source>
-        <translation type="unfinished">&lt;Ввядзіце y каардынату кропкі (ад 0 да 1)&gt;</translation>
+        <source>Input y coordinate of point [0..1]</source>
+        <translation>Ввядзіце y каардынату кропкі (ад 0 да 1)</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="210"/>
         <source>weight :</source>
-        <translation type="unfinished">вага :</translation>
+        <translation>вага :</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="223"/>
         <source>Point to next image</source>
-        <translation type="unfinished">Кропка на наступную выяву</translation>
+        <translation>Кропка на наступную выяву</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="227"/>
         <source>Point to question</source>
-        <translation type="unfinished">Кропка да пытання</translation>
+        <translation>Кропка да пытання</translation>
     </message>
     <message>
         <location filename="ImagePointDialog.qml" line="232"/>
         <source>Update</source>
-        <translation type="unfinished">Абнавіць</translation>
+        <translation>Абнавіць</translation>
     </message>
 </context>
 <context>
@@ -253,7 +258,7 @@
     <message>
         <location filename="Login.qml" line="14"/>
         <source>Mastactva Quiz Editor (Login)</source>
-        <translation type="unfinished">Рэдактар віктарын Мастацтва (Уваход)</translation>
+        <translation>Рэдактар віктарын Мастацтва (Уваход)</translation>
     </message>
     <message>
         <location filename="Login.qml" line="37"/>
@@ -263,32 +268,34 @@
     <message>
         <location filename="Login.qml" line="42"/>
         <source>Server URL : </source>
-        <translation type="unfinished">URL сервера : </translation>
+        <translation>URL сервера : </translation>
     </message>
     <message>
         <location filename="Login.qml" line="53"/>
         <source>Login : </source>
-        <translation type="unfinished">Лагін : </translation>
+        <translation>Лагін : </translation>
     </message>
     <message>
         <location filename="Login.qml" line="59"/>
-        <source>&lt;Enter login&gt;</source>
-        <translation type="unfinished">&lt;Ввядзіце лагін&gt;</translation>
+        <source>Enter login</source>
+        <oldsource>&lt;Enter login&gt;</oldsource>
+        <translation>Ввядзіце лагін</translation>
     </message>
     <message>
         <location filename="Login.qml" line="63"/>
         <source>Password : </source>
-        <translation type="unfinished">Пароль : </translation>
+        <translation>Пароль : </translation>
     </message>
     <message>
         <location filename="Login.qml" line="69"/>
-        <source>&lt;Enter pasword&gt;</source>
-        <translation type="unfinished">&lt;Ввядзіце пароль&gt;</translation>
+        <source>Enter pasword</source>
+        <oldsource>&lt;Enter pasword&gt;</oldsource>
+        <translation>Ввядзіце пароль</translation>
     </message>
     <message>
         <location filename="Login.qml" line="74"/>
         <source>Login</source>
-        <translation type="unfinished">Увайсці</translation>
+        <translation>Увайсці</translation>
     </message>
 </context>
 <context>
@@ -296,35 +303,45 @@
     <message>
         <location filename="NextImageEditDialog.qml" line="23"/>
         <source>Edit Next Image</source>
-        <translation type="unfinished">Абраць наступную выяву</translation>
+        <translation>Абраць наступную выяву</translation>
     </message>
     <message>
         <location filename="NextImageEditDialog.qml" line="65"/>
         <source>Show Image Points</source>
-        <translation type="unfinished">Паказаць кропкі выявы</translation>
+        <translation>Паказаць кропкі выявы</translation>
     </message>
     <message>
         <location filename="NextImageEditDialog.qml" line="71"/>
         <source>Show Voronoy Diagram</source>
-        <translation type="unfinished">Паказаць дыяграму Варанога</translation>
+        <translation>Паказаць дыяграму Варанога</translation>
     </message>
 </context>
 <context>
     <name>OptionsEditDialog</name>
     <message>
-        <location filename="OptionsEditDialog.qml" line="14"/>
+        <location filename="OptionsEditDialog.qml" line="16"/>
         <source>Edit Options</source>
-        <translation type="unfinished">Рэдагаваць налады</translation>
+        <translation>Рэдагаваць налады</translation>
     </message>
     <message>
-        <location filename="OptionsEditDialog.qml" line="25"/>
+        <location filename="OptionsEditDialog.qml" line="27"/>
         <source>Use colors voronoy diagram</source>
-        <translation type="unfinished">Выкарыстоўваць каларовую дыяграму Варанога</translation>
+        <translation>Выкарыстоўваць каларовую дыяграму Варанога</translation>
     </message>
     <message>
-        <location filename="OptionsEditDialog.qml" line="29"/>
+        <location filename="OptionsEditDialog.qml" line="31"/>
         <source>Regenerate colors</source>
-        <translation type="unfinished">Перебудаваць калоры дыяграмы Варанога</translation>
+        <translation>Перебудаваць калоры дыяграмы Варанога</translation>
+    </message>
+    <message>
+        <location filename="OptionsEditDialog.qml" line="36"/>
+        <source>Belarus</source>
+        <translation>Belarus</translation>
+    </message>
+    <message>
+        <location filename="OptionsEditDialog.qml" line="36"/>
+        <source>English</source>
+        <translation>English</translation>
     </message>
 </context>
 <context>
@@ -332,32 +349,32 @@
     <message>
         <location filename="QuestionEditDialog.qml" line="15"/>
         <source>Edit Question</source>
-        <translation type="unfinished">Рэдагаваць пытанне</translation>
+        <translation>Рэдагаваць пытанне</translation>
     </message>
     <message>
         <location filename="QuestionEditDialog.qml" line="31"/>
         <source>Id : </source>
-        <translation type="unfinished">Id : </translation>
+        <translation>Id : </translation>
     </message>
     <message>
         <location filename="QuestionEditDialog.qml" line="38"/>
         <source>Question : </source>
-        <translation type="unfinished">Пытанне : </translation>
+        <translation>Пытанне : </translation>
     </message>
     <message>
         <location filename="QuestionEditDialog.qml" line="42"/>
         <source>Enter question text</source>
-        <translation type="unfinished">Ввядзіце тэкст пытання</translation>
+        <translation>Ввядзіце тэкст пытання</translation>
     </message>
     <message>
         <location filename="QuestionEditDialog.qml" line="49"/>
         <source>Points To Pass Question : </source>
-        <translation type="unfinished">Балаў за пытанне : </translation>
+        <translation>Балаў за пытанне : </translation>
     </message>
     <message>
         <location filename="QuestionEditDialog.qml" line="53"/>
         <source>Enter points to pass</source>
-        <translation type="unfinished">Ввядзіце колькасць балаў за пытанне</translation>
+        <translation>Ввядзіце колькасць балаў за пытанне</translation>
     </message>
 </context>
 <context>
@@ -365,7 +382,7 @@
     <message>
         <location filename="WarningDialog.qml" line="46"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыць</translation>
+        <translation>Закрыць</translation>
     </message>
 </context>
 <context>
@@ -373,448 +390,487 @@
     <message>
         <location filename="main.qml" line="15"/>
         <source>Mastactva Quiz Editor</source>
-        <translation type="unfinished">Рэдактар віктарын Мастацтва</translation>
+        <translation>Рэдактар віктарын Мастацтва</translation>
     </message>
     <message>
         <location filename="main.qml" line="201"/>
         <source>Application Error</source>
-        <translation type="unfinished">Памылка аплікацыі</translation>
+        <translation>Памылка аплікацыі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="669"/>
+        <location filename="main.qml" line="672"/>
         <source>&amp;Refresh Galleries</source>
-        <translation type="unfinished">Абнавіць галэрэі</translation>
+        <translation>&amp;Абнавіць галэрэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="675"/>
+        <location filename="main.qml" line="678"/>
         <source>Refresh &amp;All Images</source>
-        <translation type="unfinished">Абнавіць выявы галерэі</translation>
+        <translation>Абнавіць &amp;выявы галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="681"/>
+        <location filename="main.qml" line="684"/>
         <source>&amp;Create New Gallery</source>
-        <translation type="unfinished">Стварыць галерэю</translation>
+        <translation>&amp;Стварыць новую галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="689"/>
+        <location filename="main.qml" line="692"/>
         <source>&amp;Edit Current Gallery</source>
-        <translation type="unfinished">Рэдагаваць абраную галерэю</translation>
+        <translation>&amp;Рэдагаваць абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="693"/>
-        <location filename="main.qml" line="710"/>
-        <location filename="main.qml" line="772"/>
-        <location filename="main.qml" line="789"/>
-        <location filename="main.qml" line="812"/>
+        <location filename="main.qml" line="696"/>
+        <location filename="main.qml" line="713"/>
+        <location filename="main.qml" line="775"/>
+        <location filename="main.qml" line="792"/>
+        <location filename="main.qml" line="815"/>
         <source>Select gallery first</source>
-        <translation type="unfinished">Абярыце галерэю з пачатку</translation>
+        <translation>Абярыце галерэю з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="694"/>
-        <location filename="main.qml" line="711"/>
+        <location filename="main.qml" line="697"/>
+        <location filename="main.qml" line="714"/>
         <source>To edit the gallery you should first select a gallery</source>
-        <translation type="unfinished">Для рэдагавання галерэі вы павінны абраць галерэю</translation>
+        <translation>Для рэдагавання галерэі вы павінны з пачатку абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="706"/>
+        <location filename="main.qml" line="709"/>
         <source>&amp;Remove Current Gallery</source>
-        <translation type="unfinished">Выдаліць абраную галерэю</translation>
+        <translation>&amp;Выдаліць абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="717"/>
-        <source>&lt;b&gt;Do you really want to remove the current gallery&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Вы сапраўды жадаеце выдаліць абраную галерэю&lt;/b&gt;</translation>
+        <location filename="main.qml" line="720"/>
+        <source>Do you really want to remove the current gallery</source>
+        <oldsource>&lt;b&gt;Do you really want to remove the current gallery&lt;/b&gt;</oldsource>
+        <translation>Вы сапраўды жадаеце выдаліць абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="768"/>
+        <location filename="main.qml" line="771"/>
         <source>Add &amp;Image To Current Gallery</source>
-        <translation type="unfinished">Дадаць выяву ў абраную галерэю</translation>
+        <translation>&amp;Дадаць выяву ў абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="773"/>
-        <source>To add image &lt;b&gt;to&lt;/b&gt; the gallery you should first select a gallery</source>
-        <translation type="unfinished">Для дадання выявы да галерэі вы павіны паперш абраць галерэю</translation>
+        <location filename="main.qml" line="776"/>
+        <source>To add an image to the gallery you should first select a gallery</source>
+        <oldsource>To add image &lt;b&gt;to&lt;/b&gt; the gallery you should first select a gallery</oldsource>
+        <translation>Для дадання выявы да галерэі вы павіны па-першае абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="785"/>
+        <location filename="main.qml" line="788"/>
         <source>Take &amp;Ownship of Current Gallery</source>
-        <translation type="unfinished">Пачаць рэдагаванне абранай галерэі</translation>
+        <translation>&amp;Пачаць рэдагаванне абранай галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="790"/>
+        <location filename="main.qml" line="793"/>
         <source>To take ownship of the gallery you should first select a gallery</source>
-        <translation type="unfinished">Для пачатку рэдагавання галеруі вы паперш павіны абраць галерэю</translation>
+        <translation>Для пачатку рэдагавання галеруі вы па-першае павіны абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="808"/>
+        <location filename="main.qml" line="811"/>
         <source>&amp;Free Ownship of Current Gallery</source>
-        <translation type="unfinished">Скончыць рэдагаванне абранай галерэі</translation>
+        <translation>&amp;Скончыць рэдагаванне абранай галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="813"/>
+        <location filename="main.qml" line="816"/>
         <source>To free ownship of the gallery you should first select a gallery</source>
-        <translation type="unfinished">Для сканчэння рэдагавання галерэі вы паперш павіны абраць галерэю</translation>
+        <translation>Для сканчэння рэдагавання галерэі вы па-першае павіны абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="831"/>
+        <location filename="main.qml" line="834"/>
         <source>&amp;Remove Current Image</source>
-        <translation type="unfinished">Выдаліць абраную выяву</translation>
+        <translation>&amp;Выдаліць абраную выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="835"/>
-        <location filename="main.qml" line="898"/>
-        <location filename="main.qml" line="927"/>
-        <location filename="main.qml" line="972"/>
-        <location filename="main.qml" line="989"/>
-        <location filename="main.qml" line="1012"/>
-        <location filename="main.qml" line="1071"/>
-        <location filename="main.qml" line="1094"/>
-        <location filename="main.qml" line="1117"/>
-        <location filename="main.qml" line="1146"/>
-        <location filename="main.qml" line="1211"/>
-        <location filename="main.qml" line="1239"/>
-        <location filename="main.qml" line="1276"/>
-        <location filename="main.qml" line="1349"/>
+        <location filename="main.qml" line="838"/>
         <source>Select image of gallery first</source>
-        <translation type="unfinished">Абярыце паперш выяву</translation>
+        <translation>Абярыце з пачатку выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="836"/>
-        <source>To remove image of the gallery you should first select a image of the current gallery</source>
-        <translation type="unfinished">Для выдалення выявы вы паперш павіны абраць выяву</translation>
+        <location filename="main.qml" line="839"/>
+        <source>To remove an image of the gallery you should first select a image</source>
+        <oldsource>To remove image of the gallery you should first select a image of the current gallery</oldsource>
+        <translation>Для выдалення выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="842"/>
-        <source>&lt;b&gt;Do you really want to remove image from gallery&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Вы сапраўды жадаеце выдаліць выяву з галерэі&lt;/b&gt;</translation>
+        <location filename="main.qml" line="845"/>
+        <source>Do you really want to remove the image from the gallery</source>
+        <oldsource>&lt;b&gt;Do you really want to remove image from gallery&lt;/b&gt;</oldsource>
+        <translation>Вы сапраўды жадаеце выдаліць выяву з галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="894"/>
+        <location filename="main.qml" line="897"/>
         <source>Make Image &amp;Top</source>
-        <translation type="unfinished">Зрабіць выяву уваходнай</translation>
+        <translation>Зрабіць выяву &amp;ўваходнай</translation>
     </message>
     <message>
-        <location filename="main.qml" line="899"/>
-        <source>To make image of the gallery top you should first select a image of the current gallery</source>
-        <translation type="unfinished">Для таго каб зрабіць выяву уваходнай вы паперш павіны абраць выяву</translation>
+        <location filename="main.qml" line="901"/>
+        <location filename="main.qml" line="930"/>
+        <location filename="main.qml" line="975"/>
+        <location filename="main.qml" line="992"/>
+        <location filename="main.qml" line="1015"/>
+        <location filename="main.qml" line="1074"/>
+        <location filename="main.qml" line="1097"/>
+        <location filename="main.qml" line="1120"/>
+        <location filename="main.qml" line="1149"/>
+        <location filename="main.qml" line="1214"/>
+        <location filename="main.qml" line="1242"/>
+        <location filename="main.qml" line="1279"/>
+        <location filename="main.qml" line="1352"/>
+        <source>Select an image of the gallery first</source>
+        <translation>Абярыце выяву галерэі з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="923"/>
+        <location filename="main.qml" line="902"/>
+        <source>To make an image of the gallery top you should first select a image</source>
+        <oldsource>To make image of the gallery top you should first select a image of the current gallery</oldsource>
+        <translation>Для таго каб зрабіць выяву уваходнай вы па-першае павіны абраць выяву</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="926"/>
         <source>Make Image &amp;Non Top</source>
-        <translation type="unfinished">Скасаваць уваходнасць выявы</translation>
+        <translation>&amp;Скасаваць уваходнасць выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="928"/>
-        <source>To make image of the gallery non top you should first select a image of the current gallery</source>
-        <translation type="unfinished">Для таго каб скасаваць уваходнасць выявы вы паперш павіны абраць выяву</translation>
+        <location filename="main.qml" line="931"/>
+        <source>To make an image of the gallery non top you should first select a image</source>
+        <oldsource>To make image of the gallery non top you should first select a image of the current gallery</oldsource>
+        <translation>Для таго каб скасаваць уваходнасць выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="952"/>
+        <location filename="main.qml" line="955"/>
         <source>Show image &amp;points</source>
-        <translation type="unfinished">Паказаць кропкі выявы</translation>
+        <translation>Паказаць &amp;кропкі выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="960"/>
+        <location filename="main.qml" line="963"/>
         <source>Show &amp;voronoy diagram</source>
-        <translation type="unfinished">Паказаць дыяграму Варанога</translation>
+        <translation>Паказаць дыяграму &amp;Варанога</translation>
     </message>
     <message>
-        <location filename="main.qml" line="968"/>
+        <location filename="main.qml" line="971"/>
         <source>&amp;New Description</source>
-        <translation type="unfinished">Новы опіс</translation>
+        <translation>Новае &amp;апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="973"/>
-        <location filename="main.qml" line="990"/>
-        <location filename="main.qml" line="1013"/>
-        <location filename="main.qml" line="1072"/>
-        <location filename="main.qml" line="1095"/>
-        <location filename="main.qml" line="1118"/>
-        <location filename="main.qml" line="1147"/>
-        <location filename="main.qml" line="1240"/>
-        <location filename="main.qml" line="1277"/>
-        <location filename="main.qml" line="1350"/>
-        <source>To create a description of an image of the gallery you should first select an image of the current gallery</source>
-        <translation type="unfinished">Для стварэння новага опісы выявы вы паперш павіны абраць выяву</translation>
+        <location filename="main.qml" line="976"/>
+        <location filename="main.qml" line="993"/>
+        <location filename="main.qml" line="1016"/>
+        <location filename="main.qml" line="1075"/>
+        <location filename="main.qml" line="1098"/>
+        <location filename="main.qml" line="1121"/>
+        <location filename="main.qml" line="1150"/>
+        <location filename="main.qml" line="1243"/>
+        <location filename="main.qml" line="1280"/>
+        <location filename="main.qml" line="1353"/>
+        <source>To create a description of the image of the gallery you should first select an image</source>
+        <oldsource>To create a description of an image of the gallery you should first select an image of the current gallery</oldsource>
+        <translation>Для стварэння новага апісання выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="985"/>
+        <location filename="main.qml" line="988"/>
         <source>&amp;Edit Description</source>
-        <translation type="unfinished">Рэдагаваць опіс</translation>
+        <translation>&amp;Рэдагаваць апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="995"/>
-        <location filename="main.qml" line="1018"/>
-        <source>Select description of the image first</source>
-        <translation type="unfinished">Абярыце опіс выявы паперш</translation>
+        <location filename="main.qml" line="998"/>
+        <location filename="main.qml" line="1021"/>
+        <source>Select a description of the image first</source>
+        <oldsource>Select description of the image first</oldsource>
+        <translation>Абярыце апісанне выявы з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="996"/>
-        <location filename="main.qml" line="1019"/>
-        <source>To edit a description of an image of the gallery you should first select a description of an image of the current gallery</source>
-        <translation type="unfinished">Для рэдагавання опісу выявы вы паперш павіны абраць опіс выявы</translation>
+        <location filename="main.qml" line="999"/>
+        <location filename="main.qml" line="1022"/>
+        <source>To edit a description of the image of the gallery you should first select a description</source>
+        <oldsource>To edit a description of an image of the gallery you should first select a description of an image of the current gallery</oldsource>
+        <translation>Для рэдагавання апісання выявы вы па-першае павіны абраць апісанне выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1008"/>
+        <location filename="main.qml" line="1011"/>
         <source>&amp;Delete Description</source>
-        <translation type="unfinished">Выдаліць опіс</translation>
+        <translation>&amp;Выдаліць апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1026"/>
-        <source>&lt;b&gt;Do you really want to delete description?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Description text:&lt;br/&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Вы сапраўды жадаеце выдаліць опіс?&lt;/b&gt;&lt;br/&gt;&lt;br&gt;Опіс:&lt;br/&gt;</translation>
+        <location filename="main.qml" line="1029"/>
+        <source>Do you really want to delete description?</source>
+        <oldsource>&lt;b&gt;Do you really want to delete description?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Description text:&lt;br/&gt;</oldsource>
+        <translation>Вы сапраўды жадаеце выдаліць апісанне?</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1026"/>
-        <location filename="main.qml" line="1167"/>
-        <location filename="main.qml" line="1759"/>
-        <location filename="main.qml" line="2028"/>
+        <location filename="main.qml" line="1029"/>
+        <location filename="main.qml" line="1170"/>
+        <location filename="main.qml" line="1762"/>
+        <location filename="main.qml" line="2031"/>
         <source> ...</source>
-        <translation type="unfinished"> ...</translation>
+        <translation> ...</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1026"/>
-        <location filename="main.qml" line="1291"/>
+        <location filename="main.qml" line="1029"/>
+        <location filename="main.qml" line="1170"/>
+        <location filename="main.qml" line="1294"/>
         <source>&lt;br/&gt;</source>
-        <translation type="unfinished">&lt;br/&gt;</translation>
+        <translation>&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1026"/>
-        <location filename="main.qml" line="2030"/>
-        <source>&lt;b&gt;From : &lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Ад : &lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="main.qml" line="1067"/>
+        <location filename="main.qml" line="1070"/>
         <source>&amp;Edit question</source>
-        <translation type="unfinished">Рэдагаваць пытанне</translation>
+        <translation>&amp;Рэдагаваць пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1077"/>
-        <location filename="main.qml" line="1100"/>
-        <location filename="main.qml" line="1123"/>
-        <location filename="main.qml" line="1152"/>
-        <location filename="main.qml" line="1245"/>
-        <location filename="main.qml" line="1282"/>
-        <location filename="main.qml" line="1355"/>
-        <source>Select switch point of the image first</source>
-        <translation type="unfinished">Абярыце кропку выявы паперш</translation>
+        <location filename="main.qml" line="1080"/>
+        <location filename="main.qml" line="1103"/>
+        <location filename="main.qml" line="1126"/>
+        <location filename="main.qml" line="1155"/>
+        <location filename="main.qml" line="1248"/>
+        <location filename="main.qml" line="1285"/>
+        <location filename="main.qml" line="1358"/>
+        <source>Select an image point of the image first</source>
+        <oldsource>Select switch point of the image first</oldsource>
+        <translation>Абярыце кропку выявы з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1078"/>
-        <source>To edit a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для рэдагавання пытання для кропкі выявы  вы павіны паперш абраць кропку выяву</translation>
+        <location filename="main.qml" line="1081"/>
+        <source>To edit a question of an image point of an image of the gallery you should first select an image point</source>
+        <oldsource>To edit a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для рэдагавання пытання для кропкі выявы  вы павіны па-першае абраць кропку выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1090"/>
+        <location filename="main.qml" line="1093"/>
         <source>&amp;New answer</source>
-        <translation type="unfinished">Новы адказ</translation>
+        <translation>&amp;Новы адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1101"/>
-        <source>To add new answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для дадання новага адказу на пытанне кропкі выявы вы паперш павіны абраць кропку выявы</translation>
+        <location filename="main.qml" line="1104"/>
+        <source>To add new answer of the question of the image point of the image of the gallery you should first select an image point</source>
+        <oldsource>To add new answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для дадання новага адказу на пытанне кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1113"/>
+        <location filename="main.qml" line="1116"/>
         <source>&amp;Edit answer</source>
-        <translation type="unfinished">Рэдагаваць адказ</translation>
+        <translation>&amp;Рэдагаваць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1124"/>
-        <source>To edit an answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для рэдагавання адказу на пытанне на кропке выявы вы паперш павіны абраць кропку выявы</translation>
+        <location filename="main.qml" line="1127"/>
+        <source>To edit an answer of the question of the image point of the image of the gallery you should first select an image point</source>
+        <oldsource>To edit an answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для рэдагавання адказу на пытанне на кропке выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1129"/>
-        <location filename="main.qml" line="1158"/>
-        <source>Select an answer of the switch point of the image first</source>
-        <translation type="unfinished">Абярыце адказ на пытанне</translation>
+        <location filename="main.qml" line="1132"/>
+        <location filename="main.qml" line="1161"/>
+        <source>Select an answer of the image point of the image first</source>
+        <oldsource>Select an answer of the switch point of the image first</oldsource>
+        <translation>Абярыце адказ на пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1130"/>
-        <source>To edit an answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery</source>
-        <translation type="unfinished">Для рэдагаваня адказу на пытанне па кропцы выявы вы павіны паперш абраць адказ</translation>
+        <location filename="main.qml" line="1133"/>
+        <source>To edit an answer of the question of the image point of the image of the gallery you should first select an answer</source>
+        <oldsource>To edit an answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery</oldsource>
+        <translation>Для рэдагаваня адказу на пытанне па кропцы выявы вы павіны па-першае абраць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1142"/>
+        <location filename="main.qml" line="1145"/>
         <source>&amp;Delete answer</source>
-        <translation type="unfinished">Выдаліць адказ</translation>
+        <translation>&amp;Выдаліць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1153"/>
-        <source>To remove the answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для выдалення адказу на патанне па кропцы выявы вы паперш павіны адраць кропку выяву з пытаннем</translation>
+        <location filename="main.qml" line="1156"/>
+        <source>To remove the answer of the question of the image point of the image of the gallery you should first select an image point</source>
+        <oldsource>To remove the answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для выдалення адказу на патанне па кропцы выявы вы па-першае павіны адраць кропку выяву з пытаннем</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1159"/>
-        <source>To remove the answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery</source>
-        <translation type="unfinished">Для выдалення адказу на пытанне па кропцы выявы вы паперш павіны абраць адказ</translation>
+        <location filename="main.qml" line="1162"/>
+        <source>To remove an answer of the question of the image point of the image of the gallery you should first select an answer</source>
+        <oldsource>To remove the answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery</oldsource>
+        <translation>Для выдалення адказу на пытанне па кропцы выявы вы па-першае павіны абраць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1167"/>
-        <source>&lt;b&gt;Do you really want to remove answer?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Answer :&lt;/b&gt;&lt;br/&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Вы сапраўды жадаеце выдаліць адказ?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Адказ :&lt;/b&gt;&lt;br/&gt;</translation>
-    </message>
-    <message>
-        <location filename="main.qml" line="1167"/>
-        <source>&lt;br/&gt;&lt;b&gt;Points for answer :&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;br/&gt;&lt;b&gt;Балаў за адказ :&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="main.qml" line="1207"/>
+        <location filename="main.qml" line="1210"/>
         <source>Add point template</source>
-        <translation type="unfinished">Дадаць шаблон кропкі выявы</translation>
+        <translation>Дадаць шаблон кропкі выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1212"/>
-        <source>To add switch point of an image of the gallery you should first select an image of the current gallery</source>
-        <translation type="unfinished">Для дадання шаблону кропкі выявы вы паперш павіны абраць выяву</translation>
+        <location filename="main.qml" line="1215"/>
+        <source>To add an image point of the image of the gallery you should first select an image</source>
+        <oldsource>To add switch point of an image of the gallery you should first select an image of the current gallery</oldsource>
+        <translation>Для дадання шаблону кропкі выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1223"/>
+        <location filename="main.qml" line="1226"/>
         <source>Create image point template</source>
-        <translation type="unfinished">Стварыць шаблон кропкі выявы</translation>
+        <translation>Стварыць шаблон кропкі выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1235"/>
+        <location filename="main.qml" line="1238"/>
         <source>Edit point of image</source>
-        <translation type="unfinished">Рэдагаваць кропку выявы</translation>
+        <translation>Рэдагаваць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1246"/>
-        <source>To edit properties of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для рэдагавання кропкі выявы вы папрш павіны абраць кропку выявы</translation>
+        <location filename="main.qml" line="1249"/>
+        <source>To edit properties of the image point of the image of the gallery you should first select an image point</source>
+        <oldsource>To edit properties of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для рэдагавання кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1259"/>
+        <location filename="main.qml" line="1262"/>
         <source>Edit image point</source>
-        <translation type="unfinished">Рэдагаваць кропку выявы</translation>
+        <translation>Рэдагаваць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1272"/>
+        <location filename="main.qml" line="1275"/>
         <source>Remove point of image</source>
-        <translation type="unfinished">Выдаліць кропку выявы</translation>
+        <translation>Выдаліць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1283"/>
-        <source>To remove a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для выдалення кропкі выявы вы паперш павіны абраць кропку выявы</translation>
+        <location filename="main.qml" line="1286"/>
+        <source>To remove an image point of the image of the gallery you should first select an image point</source>
+        <oldsource>To remove a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для выдалення кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1291"/>
-        <source>&lt;b&gt;Do you really want to remove image point?&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;x :&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Вы сапраўды жадаеце выдаліць кропку выявы&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;b&gt;x :&lt;/b&gt;</translation>
+        <location filename="main.qml" line="1029"/>
+        <source>Description text : </source>
+        <translation>Апісанне : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1291"/>
-        <source>&lt;br/&gt;y :</source>
-        <translation type="unfinished">&lt;br/&gt;y :</translation>
+        <location filename="main.qml" line="1029"/>
+        <location filename="main.qml" line="2033"/>
+        <source>From : </source>
+        <translation>Ад : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1291"/>
-        <source>&lt;br/&gt;weight :</source>
-        <translation type="unfinished">&lt;br/&gt;выга :</translation>
+        <location filename="main.qml" line="1170"/>
+        <source>Do you really want to remove answer?</source>
+        <translation>Вы сапраўды жадаеце выдаліць адказ?</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1337"/>
+        <location filename="main.qml" line="1170"/>
+        <source>Answer : </source>
+        <translation>Адказ : </translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1170"/>
+        <source>Points for answer : </source>
+        <translation>Балаў за адказ : </translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1294"/>
+        <source>Do you really want to remove image point?</source>
+        <translation>Вы сапраўды жадаеце выдаліць кропку выявы?</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1294"/>
+        <source>x : </source>
+        <translation>x : </translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1294"/>
+        <source>y : </source>
+        <translation>y : </translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1294"/>
+        <source>weight : </source>
+        <translation>вага : </translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1340"/>
         <source>&amp;Edit options</source>
-        <translation type="unfinished">Рэдагаваць налады</translation>
+        <translation>Рэдагаваць &amp;налады</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1345"/>
+        <location filename="main.qml" line="1348"/>
         <source>Edit next image</source>
-        <translation type="unfinished">Рэдагаваць настыпную выяву</translation>
+        <translation>Рэдагаваць настыпную выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1356"/>
-        <source>To edit next image of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</source>
-        <translation type="unfinished">Для рэдагавання наступнай выявы кропкі выявы вы паперш павіны абраць кропку выявы</translation>
+        <location filename="main.qml" line="1359"/>
+        <source>To edit next image of the image point of the image of the gallery you should first select an image point</source>
+        <oldsource>To edit next image of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery</oldsource>
+        <translation>Для рэдагавання наступнай выявы кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1368"/>
+        <location filename="main.qml" line="1371"/>
         <source>&amp;Galleries</source>
-        <translation type="unfinished">Галерэі</translation>
+        <translation>&amp;Галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1378"/>
+        <location filename="main.qml" line="1381"/>
         <source>All &amp;Images of Gallery</source>
-        <translation type="unfinished">Ўсе выявы галерэі</translation>
+        <translation>&amp;Усе выявы галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1385"/>
+        <location filename="main.qml" line="1388"/>
         <source>Image &amp;point</source>
-        <translation type="unfinished">Кропка выявы</translation>
+        <translation>&amp;Кропка выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1401"/>
+        <location filename="main.qml" line="1404"/>
         <source>&amp;Description</source>
-        <translation type="unfinished">Опіс</translation>
+        <translation>&amp;Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1407"/>
+        <location filename="main.qml" line="1410"/>
         <source>&amp;Next Image</source>
-        <translation type="unfinished">Наступная выява</translation>
+        <translation>Наступная &amp;выява</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1411"/>
+        <location filename="main.qml" line="1414"/>
         <source>&amp;Question</source>
-        <translation type="unfinished">Пытанне</translation>
+        <translation>&amp;Пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1415"/>
+        <location filename="main.qml" line="1418"/>
         <source>&amp;Answer</source>
-        <translation type="unfinished">Адказ</translation>
+        <translation>А&amp;дказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1421"/>
+        <location filename="main.qml" line="1424"/>
         <source>&amp;Options</source>
-        <translation type="unfinished">Налады</translation>
-    </message>
-    <message>
-        <location filename="main.qml" line="1513"/>
-        <source>Description</source>
-        <translation type="unfinished">Опіс</translation>
+        <translation>&amp;Налады</translation>
     </message>
     <message>
         <location filename="main.qml" line="1516"/>
-        <source>Next image</source>
-        <translation type="unfinished">Наступная выява</translation>
+        <source>Description</source>
+        <translation>Апісанне</translation>
     </message>
     <message>
         <location filename="main.qml" line="1519"/>
+        <source>Next image</source>
+        <translation>Наступная выява</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1522"/>
+        <location filename="main.qml" line="1616"/>
         <source>Question</source>
-        <translation type="unfinished">Пытанне</translation>
+        <translation>Пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1613"/>
-        <source>&lt;Question&gt;</source>
-        <translation type="unfinished">&lt;Пытанне&gt;</translation>
-    </message>
-    <message>
-        <location filename="main.qml" line="1623"/>
+        <location filename="main.qml" line="1626"/>
         <source>Points to pass : </source>
-        <translation type="unfinished">Балы за пытанне:</translation>
+        <translation>Балы за пытанне : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1628"/>
-        <source>&lt;PointsToPass&gt;</source>
-        <translation type="unfinished">&lt;Балы за пытанне&gt;</translation>
+        <location filename="main.qml" line="1631"/>
+        <source>PointsToPass</source>
+        <oldsource>&lt;PointsToPass&gt;</oldsource>
+        <translation>Балы за пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1677"/>
+        <location filename="main.qml" line="1680"/>
         <source>You own gallery</source>
-        <translation type="unfinished">Ваша галерэя</translation>
+        <translation>Ваша галерэя</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2102"/>
+        <location filename="main.qml" line="2105"/>
         <source> ( points = </source>
-        <translation type="unfinished"> ( балаў = </translation>
+        <translation> ( балаў = </translation>
     </message>
     <message>
-        <location filename="main.qml" line="2102"/>
+        <location filename="main.qml" line="2105"/>
         <source>)</source>
-        <translation type="unfinished">)</translation>
+        <translation>)</translation>
     </message>
 </context>
 </TS>

@@ -69,6 +69,16 @@ MastactvaAPI *QMLMainObjects::getMastactvaAPI()
     return m_mastactavaAPI;
 }
 
+QGuiApplication *QMLMainObjects::getApp()
+{
+    return m_app;
+}
+
+void QMLMainObjects::setApp(QGuiApplication *app_)
+{
+    m_app = app_;
+}
+
 void QMLMainObjects::searchQMLObjects()
 {
     if(nullptr == m_galleryViewModel)

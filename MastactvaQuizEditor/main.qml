@@ -610,6 +610,7 @@ ApplicationWindow {
         onOpened: {
             fieldRegenerateColors = false;
             fieldUseColorsVoronoyDiagram = mastactva.useColorsVoronoyDiagram()
+            fieldLanguageIndex = mastactva.getLanguageIndex()
         }
 
         onAccepted: {
@@ -617,6 +618,7 @@ ApplicationWindow {
             {
                 mastactva.regenerateVoronoyDiagramColors()
             }
+            mastactva.switchLanguage(fieldLanguage)
             mastactva.setUseColorsVoronoyDiagram(fieldUseColorsVoronoyDiagram)
             mastactva.saveAppConsts()
         }
@@ -715,7 +717,7 @@ ApplicationWindow {
             else
             {
                 connectConfirmDialog()
-                confirmDialog.confirmText = qsTr("<b>Do you really want to remove the current gallery</b>")
+                confirmDialog.confirmText = qsTr("Do you really want to remove the current gallery")
                 confirmDialog.imageSource = galleries.model.getCurrentItem().getImages().currentImageSource()
                 confirmDialog.showImage = true
                 confirmDialog.open()
@@ -771,7 +773,7 @@ ApplicationWindow {
             if(galleryCurrentIndex < 0 || galleryCurrentId < 0)
             {
                 popupMessage.fieldPopupMessageShortText = qsTr("Select gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add image <b>to</b> the gallery you should first select a gallery")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add an image to the gallery you should first select a gallery")
                 popupMessage.open()
             }
             else
@@ -834,13 +836,13 @@ ApplicationWindow {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
                 popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove image of the gallery you should first select a image of the current gallery")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove an image of the gallery you should first select a image")
                 popupMessage.open()
             }
             else
             {
                 connectConfirmDialog()
-                confirmDialog.confirmText = qsTr("<b>Do you really want to remove image from gallery</b>")
+                confirmDialog.confirmText = qsTr("Do you really want to remove the image from the gallery")
                 confirmDialog.imageSource = images_of_gallery.model.currentImageSource()
                 confirmDialog.showImage = true
                 confirmDialog.open()
@@ -896,8 +898,8 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To make image of the gallery top you should first select a image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To make an image of the gallery top you should first select a image")
                 popupMessage.open()
             }
             else
@@ -925,8 +927,8 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To make image of the gallery non top you should first select a image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To make an image of the gallery non top you should first select a image")
                 popupMessage.open()
             }
             else
@@ -970,8 +972,8 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else
@@ -987,14 +989,14 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryDescriptionIndex < 0 || imageOfGalleryDescriptionId < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select description of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a description of an image of the gallery you should first select a description of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select a description of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a description of the image of the gallery you should first select a description")
                 popupMessage.open()
             }
             else
@@ -1010,21 +1012,21 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryDescriptionIndex < 0 || imageOfGalleryDescriptionId < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select description of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a description of an image of the gallery you should first select a description of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select a description of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a description of the image of the gallery you should first select a description")
                 popupMessage.open()
             }
             else
             {
                 var descr = mastactva.getCurrentDescription()
                 if(descr !== undefined) {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to delete description?</b><br/><br/>Description text:<br/>") + GalleryFunctions.textLFtoBr(mastactva.readMore(descr.descriptionStr, 128, qsTr(" ..."))) + qsTr("<br/>") + qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(descr.fromDateTime);
+                    confirmDialog.confirmText = qsTr("Do you really want to delete description?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Description text : ") + GalleryFunctions.textLFtoBr(mastactva.readMore(descr.descriptionStr, 128, qsTr(" ..."))) + qsTr("<br/>") + qsTr("From : ") + mastactva.dateTimeToUserStr(descr.fromDateTime);
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1069,14 +1071,14 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit a question of an image point of an image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else
@@ -1092,14 +1094,14 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add new answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add new answer of the question of the image point of the image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else
@@ -1115,20 +1117,20 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit an answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit an answer of the question of the image point of the image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else if(imageOfGalleryAnswerIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select an answer of the switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit an answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an answer of the image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit an answer of the question of the image point of the image of the gallery you should first select an answer")
                 popupMessage.open()
             }
             else
@@ -1144,20 +1146,20 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove the answer to a question of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove the answer of the question of the image point of the image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else if(imageOfGalleryAnswerIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select an answer of the switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove the answer to a question of a switch point of an image of the gallery you should first select an answer of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an answer of the image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove an answer of the question of the image point of the image of the gallery you should first select an answer")
                 popupMessage.open()
             }
             else
@@ -1165,7 +1167,7 @@ ApplicationWindow {
                 var answer = mastactva.getCurrentAnswer()
                 if(answer !== undefined)
                 {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove answer?</b><br/><br/><b>Answer :</b><br/>") + GalleryFunctions.textLFtoBr(mastactva.readMore(answer.answer, 128, qsTr(" ..."))) + qsTr("<br/><b>Points for answer :</b>") + answer.pointsToPass;
+                    confirmDialog.confirmText = qsTr("Do you really want to remove answer?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Answer : ") + qsTr("<br/>") + GalleryFunctions.textLFtoBr(mastactva.readMore(answer.answer, 128, qsTr(" ..."))) + qsTr("<br/>") + qsTr("Points for answer : ") + answer.pointsToPass;
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1209,8 +1211,8 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add switch point of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To add an image point of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else
@@ -1237,14 +1239,14 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit properties of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit properties of the image point of the image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else
@@ -1274,14 +1276,14 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To remove an image point of the image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else
@@ -1289,7 +1291,7 @@ ApplicationWindow {
                 var imagePoint = mastactva.getCurrentImagePoint()
                 if(imagePoint !== undefined)
                 {
-                    confirmDialog.confirmText = qsTr("<b>Do you really want to remove image point?</b><br/><br/><b>x :</b>") + imagePoint.xCoord + qsTr("<br/>y :") + imagePoint.xCoord + qsTr("<br/>weight :") + imagePoint.weight + qsTr("<br/>");
+                    confirmDialog.confirmText = qsTr("Do you really want to remove image point?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("x : ") + imagePoint.xCoord + qsTr("<br/>") + qsTr("y : ") + imagePoint.xCoord + qsTr("<br/>") + qsTr("weight : ") + imagePoint.weight + qsTr("<br/>");
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -1347,14 +1349,14 @@ ApplicationWindow {
         onTriggered: {
             if(galleryImagesCurrentId < 0 || galleryImagesCurrentIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select image of gallery first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of an image of the gallery you should first select an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image of the gallery first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To create a description of the image of the gallery you should first select an image")
                 popupMessage.open()
             }
             else if(imageOfGalleryPointIndex < 0)
             {
-                popupMessage.fieldPopupMessageShortText = qsTr("Select switch point of the image first")
-                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit next image of a switch point of an image of the gallery you should first select a switch point of an image of the current gallery")
+                popupMessage.fieldPopupMessageShortText = qsTr("Select an image point of the image first")
+                popupMessage.fieldPopupMessageDescriptionText = qsTr("To edit next image of the image point of the image of the gallery you should first select an image point")
                 popupMessage.open()
             }
             else
@@ -1611,7 +1613,7 @@ ApplicationWindow {
                                                 width: imageOfGalleryQuestionTab.width
                                                 height: (imageOfGalleryQuestionTab.height * 2) / 5 - imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
                                                 readOnly: true
-                                                text: qsTr("<Question>")
+                                                text: qsTr("Question")
                                             }
 
                                             Rectangle {
@@ -1626,7 +1628,7 @@ ApplicationWindow {
                                                     Text {
                                                         id: imageOfGalleryQuestionPointsToPass
                                                         visible: imageOfGalleryPointIndex >= 0
-                                                        text: qsTr("<PointsToPass>")
+                                                        text: qsTr("PointsToPass")
                                                     }
                                                 }
                                             }
@@ -2028,7 +2030,7 @@ ApplicationWindow {
                     width: imageOfGalleryDescriptionWidth
                     text: imageOfGalleryDescriptionListViewItemRect.showFullDescription ? description_description : mastactva.readMore(description_description, 128, qsTr(" ..."))
                 }
-                Text { text: qsTr("<b>From : </b>") + mastactva.dateTimeToUserStr(description_fromDateTime) }
+                Text { text: qsTr("From : ") + mastactva.dateTimeToUserStr(description_fromDateTime) }
             }
 
             Rectangle {

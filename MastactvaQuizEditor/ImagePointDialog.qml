@@ -192,7 +192,7 @@ Dialog {
             TextField {
                 id: pointXTF
                 x: Constants.logingItemsSpacing
-                placeholderText: qsTr("<Input x coordinate of point [0..1]>")
+                placeholderText: qsTr("Input x coordinate of point [0..1]")
                 text: point_x
             }
             Label {
@@ -202,7 +202,7 @@ Dialog {
             TextField {
                 id: pointYTF
                 x: Constants.logingItemsSpacing
-                placeholderText: qsTr("<Input y coordinate of point [0..1]>")
+                placeholderText: qsTr("Input y coordinate of point [0..1]")
                 text: point_y
             }
             Label {
@@ -212,7 +212,7 @@ Dialog {
             TextField {
                 id: pointWeightTF
                 x: Constants.logingItemsSpacing
-                placeholderText: qsTr("<Input y coordinate of point [0..1]>")
+                placeholderText: qsTr("Input y coordinate of point [0..1]")
                 text: point_weight
             }
             ColumnLayout {

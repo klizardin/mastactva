@@ -39,6 +39,7 @@ QHash<int, QByteArray> ServerURLsModel::roleNames() const
 AppConsts::AppConsts()
 {
     m_maxImagePoints = 64;
+    m_language = g_englishLanguage;
     initColors();
 }
 
@@ -170,6 +171,24 @@ void AppConsts::setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_)
     m_useColorsVoronoyDiagram = useColorsVoronoyDiagram_;
 }
 
+void AppConsts::switchLanguage(const QString &lang_)
+{
+    if(g_englishLanguage != lang_ && g_belarusLanguage != lang_) { return; }
+    m_language = lang_;
+}
+
+const QString &AppConsts::getLanguage() const
+{
+    return m_language;
+}
+
+int AppConsts::getLanguageIndex() const
+{
+    if(g_englishLanguage == m_language) { return 0; }
+    else if(g_belarusLanguage == m_language) { return 1; }
+    else { return 0; }
+}
+
 static const QString g_settingFileName = "consts";
 
 void AppConsts::load()
@@ -204,6 +223,7 @@ static const QString g_hostURLPrefix = "HostURL:";
 static const QString g_maxImagePointsPrefix = "MaxImagePoints:";
 static const QString g_colorsPrefix = "Colors:";
 static const QString g_useColorsVoronoyDiagramPrefix = "UseColorsVoronoyDiagram:";
+static const QString g_languagePrefix = "Language:";
 
 void AppConsts::set(const QString &line_)
 {
@@ -238,6 +258,10 @@ void AppConsts::set(const QString &line_)
             m_useColorsVoronoyDiagram = tmp != 0;
         }
     }
+    else if(line_.startsWith(g_languagePrefix))
+    {
+        switchLanguage(line_.mid(g_languagePrefix.length()).trimmed());
+    }
 }
 
 void AppConsts::save() const
@@ -255,6 +279,7 @@ void AppConsts::save() const
         textStream << g_colorsPrefix << c.x() << "," << c.y() << "," << c.z() << "\n";
     }
     textStream << g_useColorsVoronoyDiagramPrefix << (m_useColorsVoronoyDiagram ? 1 : 0) << "\n";
+    textStream << g_languagePrefix << m_language << "\n";
 }
 
 static AppConsts *g_instance = nullptr;
