@@ -115,6 +115,8 @@ ImagePointModel *Image::createImagePoints()
     m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(QString("ImagePointModel") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
     m->loadList();
     return m;
 }

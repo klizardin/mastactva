@@ -33,8 +33,12 @@ protected:
     };
 
 public:
+    ListModelBaseData(IListModel *model_);
+    ~ListModelBaseData();
+
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true);
     void addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_);
+    void registerListModel();
 
 protected:
     void setRefAppIdImpl(const QVariant &appId_);
@@ -58,6 +62,9 @@ protected:
     void parentItemRemoved();
     void init(QObject *modelObj_);
 
+private:
+    void unregisterListModel();
+
 protected:
     QHash<QString, RefDescription> m_refs;
     QList<ExtraFields> m_extraFields;
@@ -71,6 +78,8 @@ private:
     bool m_jsonParamsGet = false;
     int m_nextAppId = 0;
     QObject *m_modelObj = nullptr;
+    bool m_autoRegister = false;
+    IListModel *m_model = nullptr;
 };
 
 
@@ -83,7 +92,8 @@ class ListModelBaseOfData : public QAbstractListModel, public IListModel, public
 {
 public:
     explicit ListModelBaseOfData(QObject *parent_)
-        :QAbstractListModel(parent_)
+        : QAbstractListModel(parent_),
+          ListModelBaseData(this)
     {
         getDataLayout<DataType_>().initQMLModelRoleNames(m_roleNames);
     }

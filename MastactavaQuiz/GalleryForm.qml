@@ -78,6 +78,7 @@ Page {
                                 {
                                     gallerySwipeViewImageRepeater.model.currentIndex = index
                                     currentImage = gallerySwipeViewImageRepeater.model.getCurrentItem()
+                                    var ip = currentImage.imagePoints
                                     galleryPage.startQuiz(currentImage)
                                     mouse.accepted = false
                                 }

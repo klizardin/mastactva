@@ -869,14 +869,14 @@
     {
         "classes": [
             {
-                "className": "ImagePoint",
+                "className": "ImagePointToNextImage",
                 "object": true,
                 "properties": [
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "ipId",
+                        "name": "iptniId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -890,74 +890,32 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "ipImageId",
-                        "notify": "imageIdChanged",
-                        "read": "imageId",
+                        "name": "iptniImagePointId",
+                        "notify": "imagePointIdChanged",
+                        "read": "imagePointId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setImageId"
+                        "write": "setImagePointId"
                     },
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "ipXCoord",
-                        "notify": "xCoordChanged",
-                        "read": "xCoord",
+                        "name": "iptniNextImage",
+                        "notify": "nextImageChanged",
+                        "read": "nextImage",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "qreal",
+                        "type": "QString",
                         "user": false,
-                        "write": "setXCoord"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "ipYCoord",
-                        "notify": "yCoordChanged",
-                        "read": "yCoord",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "qreal",
-                        "user": false,
-                        "write": "setYCoord"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "ipWeight",
-                        "notify": "weightChanged",
-                        "read": "weight",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "qreal",
-                        "user": false,
-                        "write": "setWeight"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "ipCreated",
-                        "notify": "createdChanged",
-                        "read": "created",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QDateTime",
-                        "user": false,
-                        "write": "setCreated"
+                        "write": "setNextImage"
                     }
                 ],
-                "qualifiedClassName": "ImagePoint",
+                "qualifiedClassName": "ImagePointToNextImage",
                 "signals": [
                     {
                         "access": "public",
@@ -966,27 +924,12 @@
                     },
                     {
                         "access": "public",
-                        "name": "imageIdChanged",
+                        "name": "imagePointIdChanged",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "xCoordChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "yCoordChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "weightChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "createdChanged",
+                        "name": "nextImageChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1004,7 +947,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "ImagePointModel",
+                "className": "ImagePointToNextImageModel",
                 "methods": [
                     {
                         "access": "public",
@@ -1190,6 +1133,470 @@
                         "write": "setJsonParamsGet"
                     }
                 ],
+                "qualifiedClassName": "ImagePointToNextImageModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentRefChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "storeAfterSaveChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutQMLNameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutIdFieldChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildren",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "jsonParamsGetChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "jsonResponseSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildrenSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "listLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "clearLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loaded",
+                        "returnType": "bool"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "ListModelBaseOfData<ImagePointToNextImage,ImagePointToNextImageModel>"
+                    }
+                ]
+            },
+            {
+                "className": "ImagePoint",
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ipId",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ipImageId",
+                        "notify": "imageIdChanged",
+                        "read": "imageId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setImageId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ipXCoord",
+                        "notify": "xCoordChanged",
+                        "read": "xCoord",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setXCoord"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ipYCoord",
+                        "notify": "yCoordChanged",
+                        "read": "yCoord",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setYCoord"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ipWeight",
+                        "notify": "weightChanged",
+                        "read": "weight",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setWeight"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "ipCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "nextImage",
+                        "notify": "nextImageChanged",
+                        "read": "nextImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setNextImage"
+                    }
+                ],
+                "qualifiedClassName": "ImagePoint",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "xCoordChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "yCoordChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "weightChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "nextImageChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "ImagePointModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fieldJsonName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "parentModel_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "parentModelRefJsonName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "setLayoutRef",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createItem",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemById",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentItem",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loadList",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "setItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "x_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "y_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "nextImageByCoords",
+                        "returnType": "QVariant"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutQMLName",
+                        "notify": "layoutQMLNameChanged",
+                        "read": "getLayoutQMLName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutQMLName"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutIdField",
+                        "notify": "layoutIdFieldChanged",
+                        "read": "getLayoutIdField",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutIdField"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentIndex",
+                        "notify": "currentIndexChanged",
+                        "read": "currentIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setCurrentIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentRef",
+                        "notify": "currentRefChanged",
+                        "read": "currentRef",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setCurrentRef"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "refAppId",
+                        "notify": "refAppIdChanged",
+                        "read": "getRefAppId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefAppId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "storeAfterSave",
+                        "notify": "storeAfterSaveChanged",
+                        "read": "storeAfterSave",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "jsonParamsGet",
+                        "notify": "jsonParamsGetChanged",
+                        "read": "jsonParamsGet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setJsonParamsGet"
+                    }
+                ],
                 "qualifiedClassName": "ImagePointModel",
                 "signals": [
                     {
@@ -1267,6 +1674,17 @@
                             }
                         ],
                         "name": "refreshChildrenSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "listLoaded",
                         "returnType": "void"
                     }
                 ],

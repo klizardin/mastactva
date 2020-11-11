@@ -1,4 +1,19 @@
 #include "Model.h"
+#include "qmlobjects.h"
+
+
+ListModelBaseData::ListModelBaseData(IListModel *model_)
+    :m_model(model_)
+{
+}
+
+ListModelBaseData::~ListModelBaseData()
+{
+    if(m_autoRegister)
+    {
+        unregisterListModel();
+    }
+}
 
 void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ /*= true*/)
 {
@@ -15,6 +30,18 @@ void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_, const QS
 void ListModelBaseData::addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_)
 {
     m_extraFields.push_back({modelName_, appId_});
+}
+
+void ListModelBaseData::registerListModel()
+{
+    QMLObjects::getInstance().registerModel(m_model->getQMLLayoutName(), m_model);
+    m_autoRegister = true;
+}
+
+void ListModelBaseData::unregisterListModel()
+{
+    QMLObjects::getInstance().unregisterModel(m_model->getQMLLayoutName());
+    m_autoRegister = false;
 }
 
 void ListModelBaseData::setRefAppIdImpl(const QVariant &appId_)

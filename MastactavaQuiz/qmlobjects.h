@@ -20,6 +20,8 @@ public:
     void setRoot(QObject *root_);
     NetAPI *getNetAPI();
     IListModel *getListModel(const QString &layoutName_);
+    void registerModel(const QString &layoutName_, IListModel *m_);
+    void unregisterModel(const QString &layoutName_);
 
 protected:
     void searchObjects();

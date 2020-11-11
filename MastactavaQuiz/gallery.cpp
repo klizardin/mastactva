@@ -88,6 +88,8 @@ ImageModel *Gallery::createImages()
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(QString("GalleryImageModel") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
     m->loadList();
     return m;
 }

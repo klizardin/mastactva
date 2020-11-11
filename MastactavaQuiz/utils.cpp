@@ -12,3 +12,7 @@ QString leftDoubleCR(const QString &str_)
     return frags.join("\n\n");
 }
 
+qreal sqr(qreal val_)
+{
+    return val_*val_;
+}

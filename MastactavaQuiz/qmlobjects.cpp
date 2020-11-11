@@ -50,6 +50,24 @@ NetAPI *QMLObjects::getNetAPI()
     return m_netAPI;
 }
 
+void QMLObjects::registerModel(const QString &layoutName_, IListModel *m_)
+{
+    IListModel *m1 = findListModel(layoutName_);
+    Q_ASSERT(nullptr == m1);
+    m_models.push_back(static_cast<IListModel *>(m_));
+}
+
+void QMLObjects::unregisterModel(const QString &layoutName_)
+{
+    const auto fit = std::find_if(std::begin(m_models), std::end(m_models),
+                                  [&layoutName_](IListModel *model_)->bool
+    {
+        return nullptr != model_ && model_->getQMLLayoutName() == layoutName_;
+    });
+    if(std::end(m_models) == fit) { return; }
+    m_models.erase(fit);
+}
+
 void QMLObjects::searchObjects()
 {
     if(nullptr == m_netAPI) { m_netAPI = m_root->findChild<NetAPI *>(g_netAPIQMLName); }
@@ -58,13 +76,13 @@ void QMLObjects::searchObjects()
     if(nullptr == m)
     {
         QuizUserModel *m1 = m_root->findChild<QuizUserModel *>(g_quizUserModel);
-        if(nullptr != m1) m_models.push_back(static_cast<IListModel *>(m1));
+        registerModel(g_quizUserModel, m1);
     }
     m = findListModel(g_galleryModel);
     if(nullptr == m)
     {
         GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
-        if(nullptr != m1) m_models.push_back(static_cast<IListModel *>(m1));
+        registerModel(g_galleryModel, m1);
     }
     for(IListModel *m : m_models)
     {

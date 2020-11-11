@@ -29,7 +29,10 @@ Page {
                 var x = mouseX / width
                 var y = mouseY / height
                 currentImage = currentImage.imagePoints.nextImageByCoords(x, y)
-                currentImageSource = currentImage.imageSource
+                if(currentImage !== undefined && currentImage !== null)
+                {
+                    currentImageSource = currentImage.imageSource
+                }
             }
         }
     }
