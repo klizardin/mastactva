@@ -68,25 +68,34 @@ ApplicationWindow {
             width: parent.width - Constants.logingItemsSpacing * 2
             placeholderText: qsTr("Enter pasword")
             echoMode: TextInput.Password
+
+            Keys.onReturnPressed: {
+                tryLogin()
+            }
         }
         Button {
             anchors.horizontalCenter: parent.horizontalCenter
             text: qsTr("Login")
             onClicked: {
-                mastactva.testLogin(serverURL.editText, login.text, password.text)
-                mastactva.onLogingIn.connect(onLogingIn)
-                mastactva.onFailedLogingIn.connect(onFailedLogingIn)
-            }
-
-            function onLogingIn()
-            {
-                pageLoader.source = "main.qml"
-            }
-
-            function onFailedLogingIn(msg)
-            {
-                message.text = msg
+                tryLogin()
             }
         }
+    }
+
+    function tryLogin()
+    {
+        mastactva.testLogin(serverURL.editText, login.text, password.text)
+        mastactva.onLogingIn.connect(onLogingIn)
+        mastactva.onFailedLogingIn.connect(onFailedLogingIn)
+    }
+
+    function onLogingIn()
+    {
+        pageLoader.source = "main.qml"
+    }
+
+    function onFailedLogingIn(msg)
+    {
+        message.text = msg
     }
 }
