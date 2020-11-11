@@ -7,7 +7,8 @@
 7. edit next image
 8. scroll of listview of decriptions of image
 9. uncomment in nextImageEditDialog //mastactva.refreshNextImage()
-10. translate interface into belarus
-11. Prepare program-ish strings to translation
-12. Add internalization to the options dialog
+** 10. translate interface into belarus
+** 11. Prepare program-ish strings to translation
+** 12. Add internalization to the options dialog
+13. Edit image point errors
 
