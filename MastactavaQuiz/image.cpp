@@ -1,9 +1,9 @@
 #include "image.h"
 
-Image::Image(QObject *parent_ /*= nullptr*/)
+Image::Image(ImageModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
-
+    m_imageModel = parent_;
 }
 
 int Image::id() const
@@ -87,6 +87,38 @@ void Image::setCreated(const QDateTime &created_)
 
     emit createdChanged();
 }
+
+QVariant Image::imagePoints() const
+{
+    if(nullptr == m_imagePoints)
+    {
+        const_cast<Image *>(this)->m_imagePoints = const_cast<Image *>(this)->createImagePoints();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<ImagePointModel *>(m_imagePoints)));
+}
+
+void Image::setImagePoints(const QVariant &obj_)
+{
+    if(obj_.isNull())
+    {
+        delete m_imagePoints;
+        m_imagePoints = nullptr;
+        emit imagePointsChanged();
+    }
+}
+
+ImagePointModel *Image::createImagePoints()
+{
+    ImagePointModel *m = new ImagePointModel(this);
+    m->initResponse();
+    m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
+    m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("image");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->loadList();
+    return m;
+}
+
 
 ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Image, ImageModel>(parent_)

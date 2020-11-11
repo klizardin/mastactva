@@ -8,13 +8,17 @@
 #include "imagesource.h"
 #include "Layout.h"
 #include "Model.h"
+#include "imagepoint.h"
+
+
+class ImageModel;
 
 
 class Image : public QObject
 {
     Q_OBJECT
 public:
-    explicit Image(QObject *parent_ = nullptr);
+    explicit Image(ImageModel *parent_ = nullptr);
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString imageSource READ getFilename WRITE setFilenameStr NOTIFY filenameChanged)
@@ -22,7 +26,7 @@ public:
     Q_PROPERTY(int gallery READ gallery WRITE setGallery NOTIFY galleryChanged)
     Q_PROPERTY(bool top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
-    //Q_PROPERTY(QVariang imagePoints READ imagePoints WRITE setImagePoints NOTIFY imagePointsChanged)
+    Q_PROPERTY(QVariant imagePoints READ imagePoints WRITE setImagePoints NOTIFY imagePointsChanged)
 
 public:
     class DefaultLayout : public LayoutBase<Image>
@@ -37,6 +41,7 @@ public:
             addField<QString>("hash", "hash", &Image::hash, &Image::setHash);
             addField<int>("gallery", "galleryId", &Image::gallery, &Image::setGallery);
             addField<bool>("use_in_gallery_view", "top", &Image::top, &Image::setTop);
+            addModel<ImagePointModel>("imagePoints", &Image::m_imagePoints, &Image::createImagePoints);
         }
     };
 
@@ -54,6 +59,11 @@ public:
     void setTop(const bool &top_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+    QVariant imagePoints() const;
+    void setImagePoints(const QVariant &obj_);
+
+protected:
+    ImagePointModel *createImagePoints();
 
 signals:
     void idChanged();
@@ -62,8 +72,10 @@ signals:
     void galleryChanged();
     void topChanged();
     void createdChanged();
+    void imagePointsChanged();
 
 private:
+    ImageModel *m_imageModel = nullptr;
     int m_appId = 0;
     int m_id = -1;
     ImageSource m_filename;
@@ -71,6 +83,7 @@ private:
     int m_gallery = -1;
     bool m_top = false;
     QDateTime m_created;
+    ImagePointModel *m_imagePoints = nullptr;
 };
 
 class ImageModel : public ListModelBaseOfData<Image, ImageModel>

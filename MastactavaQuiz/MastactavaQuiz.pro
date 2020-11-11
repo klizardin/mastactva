@@ -17,6 +17,7 @@ SOURCES += \
         appconsts.cpp \
         gallery.cpp \
         image.cpp \
+        imagepoint.cpp \
         imagesource.cpp \
         main.cpp \
         mastactvaapi.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     appconsts.h \
     gallery.h \
     image.h \
+    imagepoint.h \
     imagesource.h \
     mastactvaapi.h \
     netapi.h \
