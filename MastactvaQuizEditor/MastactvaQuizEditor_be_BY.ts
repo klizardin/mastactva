@@ -458,7 +458,7 @@
     <message>
         <location filename="main.qml" line="811"/>
         <source>&amp;Free Ownship of Current Gallery</source>
-        <translation>&amp;Скончыць рэдагаванне абранай галерэі</translation>
+        <translation>С&amp;кончыць рэдагаванне абранай галерэі</translation>
     </message>
     <message>
         <location filename="main.qml" line="816"/>
@@ -468,7 +468,7 @@
     <message>
         <location filename="main.qml" line="834"/>
         <source>&amp;Remove Current Image</source>
-        <translation>&amp;Выдаліць абраную выяву</translation>
+        <translation>В&amp;ыдаліць абраную выяву</translation>
     </message>
     <message>
         <location filename="main.qml" line="838"/>

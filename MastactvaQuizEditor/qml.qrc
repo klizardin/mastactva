@@ -17,6 +17,7 @@
         <file>OptionsEditDialog.qml</file>
         <file>NextImageEditDialog.qml</file>
         <file>WarningDialog.qml</file>
+        <file>AutoSizeMenu.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

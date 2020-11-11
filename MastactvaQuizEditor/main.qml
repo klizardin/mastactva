@@ -1367,7 +1367,7 @@ ApplicationWindow {
     }
 
     menuBar: MenuBar {
-        Menu {
+        AutoSizeMenu {
             title: qsTr("&Galleries")
             MenuItem { action: refreshGalleriesModel }
             MenuItem { action: createNewGallery }
@@ -1377,14 +1377,14 @@ ApplicationWindow {
             MenuItem { action: freeOwnshipOfGallery }
             MenuItem { action: removeCurrentGallery }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("All &Images of Gallery")
             MenuItem { action: refreshAllGalleryImagesModel }
             MenuItem { action: setImageOfGalleryAsTop }
             MenuItem { action: resetImageOfGalleryAsTop }
             MenuItem { action: removeCurrentImageOfGallery }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("Image &point")
             MenuItem {
                 action: showImagePointsAction
@@ -1400,27 +1400,27 @@ ApplicationWindow {
             MenuItem { action: editPointOfImage }
             MenuItem { action: removePointOfImage }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("&Description")
             MenuItem { action: imageOfGalleryCreateDescription }
             MenuItem { action: imageOfGalleryEditDescription }
             MenuItem { action: imageOfGalleryDeleteDescription }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("&Next Image")
             MenuItem { action: nextImageEditAction }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("&Question")
             MenuItem { action: imageOfGalleryEditQuestion }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("&Answer")
             MenuItem { action: imageOfGalleryCreateAnswer }
             MenuItem { action: imageOfGalleryEditAnswer }
             MenuItem { action: imageOfGalleryDeleteAnswer }
         }
-        Menu {
+        AutoSizeMenu {
             title: qsTr("&Options")
             MenuItem { action: editOptionsAction }
         }
@@ -1731,7 +1731,7 @@ ApplicationWindow {
                                         galleryContextMenu.popup()
                                 }
 
-                                Menu {
+                                AutoSizeMenu {
                                     id: galleryContextMenu
                                     MenuItem { action: refreshGalleriesModel }
                                     MenuItem { action: createNewGallery }
@@ -1832,7 +1832,7 @@ ApplicationWindow {
                             imagesOfGalleryContextMenu.popup()
                     }
 
-                    Menu {
+                    AutoSizeMenu {
                         id: imagesOfGalleryContextMenu
                         MenuItem { action: refreshAllGalleryImagesModel }
                         MenuItem { action: setImageOfGalleryAsTop }
@@ -2075,7 +2075,7 @@ ApplicationWindow {
                         imageOfGalleryDescriptionListViewItemMenu.popup()
                 }
 
-                Menu {
+                AutoSizeMenu {
                     id: imageOfGalleryDescriptionListViewItemMenu
                     MenuItem { action: imageOfGalleryCreateDescription }
                     MenuItem { action: imageOfGalleryEditDescription }
@@ -2128,7 +2128,7 @@ ApplicationWindow {
                         imageOfGalleryQuestionAnswersListViewItemMenu.popup()
                 }
 
-                Menu {
+                AutoSizeMenu {
                     id: imageOfGalleryQuestionAnswersListViewItemMenu
                     MenuItem { action: imageOfGalleryCreateAnswer }
                     MenuItem { action: imageOfGalleryEditAnswer }

@@ -5,7 +5,7 @@ QtObject {
     readonly property int width: 480
     readonly property int height: 640
     readonly property int pageWidth: 480
-    readonly property int pageHeight: 620
+    readonly property int pageHeight: 580
     readonly property int smallImageWidth: 320
     readonly property int smallImageHeight: 240
     readonly property int leftSideBarWidth: 250
