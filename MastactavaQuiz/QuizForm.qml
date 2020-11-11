@@ -11,6 +11,26 @@ Page {
     title: qsTr("Quiz")
 
     property var netAPI: undefined
+    property var currentImage: undefined
+    property alias currentImageSource: quizImage.source
 
+    Image {
+        id: quizImage
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectFit
 
+        MouseArea {
+            x: (quizImage.width - quizImage.paintedWidth) / 2
+            y: (quizImage.height - quizImage.paintedHeight) / 2
+            width: quizImage.paintedWidth
+            height: quizImage.paintedHeight
+
+            onClicked: {
+                var x = mouseX / width
+                var y = mouseY / height
+                currentImage = currentImage.imagePoints.nextImageByCoords(x, y)
+                currentImageSource = currentImage.imageSource
+            }
+        }
+    }
 }

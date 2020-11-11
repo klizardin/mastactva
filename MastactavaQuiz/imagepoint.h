@@ -21,6 +21,7 @@ public:
     Q_PROPERTY(qreal ipYCoord READ yCoord WRITE setYCoord NOTIFY yCoordChanged)
     Q_PROPERTY(qreal ipWeight READ weight WRITE setWeight NOTIFY weightChanged)
     Q_PROPERTY(QDateTime ipCreated READ created WRITE setCreated NOTIFY createdChanged)
+    //Q_PROPERTY(QVariant nextImage READ nextImage WRITE setNextImage NOTIFY nextImageChanged)
 
     class DefaultLayout : public LayoutBase<ImagePoint>
     {
@@ -81,6 +82,8 @@ public:
     explicit ImagePointModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
+
+    Q_INVOKABLE QVariant nextImageByCoords(qreal x_, qreal y_);
 
 public slots:
     void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)

@@ -14,6 +14,9 @@ Page {
     property var mastactvaAPI: undefined
     property var netAPI: undefined
     property alias galleryModel: galleries.model
+    property var currentImage: undefined
+
+    signal startQuiz(var image)
 
     Rectangle {
         anchors.fill: parent
@@ -68,6 +71,14 @@ Page {
 
                                 onClicked:
                                 {
+                                    mouse.accepted = false
+                                }
+
+                                onDoubleClicked:
+                                {
+                                    gallerySwipeViewImageRepeater.model.currentIndex = index
+                                    currentImage = gallerySwipeViewImageRepeater.model.getCurrentItem()
+                                    galleryPage.startQuiz(currentImage)
                                     mouse.accepted = false
                                 }
                             }

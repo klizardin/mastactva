@@ -222,16 +222,21 @@ protected:
 
     const DataType_ *findDataItemByAppIdImpl(const QVariant &appId_) const
     {
+        QVariant appId1 = appId_;
+        if(!appId1.isValid())
+        {
+            appId1 = getCurrentIndexAppId();
+        }
         const auto fit = std::find_if(std::begin(m_data),
                                       std::end(m_data),
-                                      [&appId_](const DataType_ *item)->bool
+                                      [&appId1](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
             //QObject *obj1 = qvariant_cast<QObject *>(appId);
             //QObject *obj2 = qvariant_cast<QObject *>(appId_);
             //return nullptr != obj1 && obj1 == obj2;
-            return appId_.isValid() && appId_ == appId;
+            return appId1.isValid() && appId1 == appId;
         });
         return std::end(m_data) == fit ? nullptr : *fit;
     }
@@ -645,6 +650,10 @@ public:                                                                         
     Q_INVOKABLE QVariant findItemByAppId(const QVariant &appId_)                                                \
     {                                                                                                           \
         return findItemByAppIdImpl(appId_);                                                                     \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant getCurrentItem()                                                                       \
+    {                                                                                                           \
+        return findItemByAppIdImpl(QVariant());                                                                 \
     }                                                                                                           \
     Q_INVOKABLE void loadList()                                                                                 \
     {                                                                                                           \

@@ -66,6 +66,17 @@ ApplicationWindow {
         galleryModel: galleryModel
     }
 
+    Connections {
+        target: galleryPage
+
+        function onStartQuiz(startImage)
+        {
+            quizPage.currentImage = startImage
+            quizPage.currentImageSource = startImage.imageSource
+            stackView.push(quizPage)
+        }
+    }
+
     QuizForm {
         id: quizPage
     }

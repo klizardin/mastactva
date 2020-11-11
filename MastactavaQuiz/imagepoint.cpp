@@ -83,3 +83,7 @@ ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
     init(this);
 }
 
+QVariant ImagePointModel::nextImageByCoords(qreal x_, qreal y_)
+{
+    return QVariant();
+}

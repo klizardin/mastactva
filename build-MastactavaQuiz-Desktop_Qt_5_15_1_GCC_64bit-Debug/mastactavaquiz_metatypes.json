@@ -205,6 +205,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "getCurrentItem",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -634,6 +639,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "getCurrentItem",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -1040,6 +1050,11 @@
                             }
                         ],
                         "name": "findItemByAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentItem",
                         "returnType": "QVariant"
                     },
                     {
@@ -1476,6 +1491,11 @@
                             }
                         ],
                         "name": "findItemByAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentItem",
                         "returnType": "QVariant"
                     },
                     {
