@@ -22,6 +22,7 @@ public:
     Q_PROPERTY(int gallery READ gallery WRITE setGallery NOTIFY galleryChanged)
     Q_PROPERTY(bool top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
+    //Q_PROPERTY(QVariang imagePoints READ imagePoints WRITE setImagePoints NOTIFY imagePointsChanged)
 
 public:
     class DefaultLayout : public LayoutBase<Image>
@@ -30,7 +31,7 @@ public:
         DefaultLayout()
         {
             setLayoutJsonName("images");
-            addSpecial<QObject *>(layout::SpecialFieldEn::appId, &Image::m_appId);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &Image::m_appId);
             addField<int>("id", "id", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
             addField<QString>("hash", "hash", &Image::hash, &Image::setHash);
@@ -63,7 +64,7 @@ signals:
     void createdChanged();
 
 private:
-    QObject *m_appId = nullptr;
+    int m_appId = 0;
     int m_id = -1;
     ImageSource m_filename;
     QString m_hash;

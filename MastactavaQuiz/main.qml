@@ -38,6 +38,8 @@ ApplicationWindow {
         jsonParamsGet: true
     }
 
+
+
     function initGalleryModel()
     {
         galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")

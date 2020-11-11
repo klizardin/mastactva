@@ -36,7 +36,7 @@ public:
         DefaultLayout()
         {
             setLayoutJsonName("galleries");
-            addSpecial<QObject *>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
             addField<int>("id", "id", &Gallery::id, &Gallery::setId);
             addField<QString>("description", "description", &Gallery::description, &Gallery::setDescription);
             addField<QString>("keywords", "keywords", &Gallery::keyword, &Gallery::setKeyword);
@@ -74,7 +74,7 @@ protected:
     ImageModel *createImages();
 
 private:
-    QObject *m_appId = nullptr;
+    int m_appId = 0;
     int m_id = -1;
     QString m_description;
     QString m_keywords;

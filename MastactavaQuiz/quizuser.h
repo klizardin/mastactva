@@ -22,7 +22,7 @@ public:
         DefaultLayout()
         {
             setLayoutJsonName("");
-            addSpecial<QObject *>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
             addField<QString>("deviceid", "deviceId", &QuizUser::deviceId, &QuizUser::setDeviceId);
         }
     };
@@ -42,7 +42,7 @@ signals:
 
 private:
     QString m_deviceId;
-    QObject * m_appId = nullptr;
+    int m_appId = 0;
 };
 
 
