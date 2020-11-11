@@ -234,6 +234,7 @@ QVariant ImagePointModel::nextImageByCoords(qreal x_, qreal y_)
         loaded &= m->loaded();
     }
     if(!loaded || nullptr == minIp) { return QVariant(); }
-    return QVariant::fromValue(static_cast<QObject *>(minIp));
+    minIp->getNextImage()->setCurrentIndex(0);
+    return minIp->getNextImage()->getCurrentItem();
 }
 
