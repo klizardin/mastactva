@@ -2452,6 +2452,11 @@
                         "access": "public",
                         "name": "getLanguageIndex",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "name": "questionRefreshed",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

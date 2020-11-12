@@ -17,6 +17,7 @@
 #include <QCryptographicHash>
 #include "netapi.h"
 #include "qmlmainobjects.h"
+#include "mastactvaapi.h"
 #include "appconsts.h"
 
 
@@ -1362,7 +1363,7 @@ QuestionData *QuestionData_fromJsonT(QObject *parent_, const JsonObject &jsonVal
     if(!createdJV.isUndefined() && createdJV.isString()) { created = dateTimeFromJsonString(createdJV.toString()); }
     else { error_ = true; }
 
-    return new QuestionData(parent_, id, questionText, pointsToPass);
+    return new QuestionData(parent_, id, questionText, pointsToPass, created);
 }
 
 QuestionData *QuestionData::fromJson(QObject *parent_, const QJsonDocument &jsonValue_, bool &error_)
@@ -1562,6 +1563,7 @@ void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestData *re
         emit questionChanged();
         emit pointsToPassChanged();
         emit questionObjChanged();
+        QMLMainObjects::getSingelton()->getMastactvaAPI()->questionRefreshed();
 
         if(m_forceRefresh)
         {

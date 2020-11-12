@@ -1045,3 +1045,8 @@ int MastactvaAPI::getLanguageIndex()
 {
     return AppConsts::getInstance()->getLanguageIndex();
 }
+
+void MastactvaAPI::questionRefreshed()
+{
+    emit imageOfGalleryPointIndexChanged();
+}

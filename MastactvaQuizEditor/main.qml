@@ -66,12 +66,8 @@ ApplicationWindow {
             }
             if(imageOfGalleryPointIndex == -1)
             {
-                imageOfGalleryNextImageNextImage.source = Constants.noImage
-                imageOfGalleryNextImageText.text = Constants.selectImagePoint
-                imageOfGalleryQuestionAnswersListView.model.questionId = -1
-                imageOfGalleryQuestionText.text = Constants.selectImagePoint
-                imageOfGalleryQuestionPointsToPassRect.visible = false
-                imageOfGalleryAnswerIndex = -1
+                clearImageSource()
+                clearQuestionInfo()
             }
             else
             {
@@ -92,8 +88,7 @@ ApplicationWindow {
                 else
                 {
                     nextImage.noImageSourceChanged.connect(noImageSourceChanged)
-                    imageOfGalleryNextImageNextImage.source = Constants.noImage
-                    imageOfGalleryNextImageText.text = Constants.selectImagePoint
+                    clearImageSource()
                 }
                 if(question.questionIdLoaded())
                 {
@@ -102,13 +97,15 @@ ApplicationWindow {
                     {
                         setQuestionInfo(question)
                     }
+                    else
+                    {
+                        clearQuestionInfo()
+                    }
                 }
                 else
                 {
                     question.questionIdChanged.connect(questionIdLoaded)
-                    imageOfGalleryQuestionText.text = Constants.selectImagePoint
-                    imageOfGalleryQuestionPointsToPassRect.visible = false
-                    imageOfGalleryAnswerIndex = -1
+                    clearQuestionInfo()
                 }
             }
         }
@@ -127,9 +124,14 @@ ApplicationWindow {
             }
             else
             {
-                imageOfGalleryNextImageNextImage.source = Constants.noImage
-                imageOfGalleryNextImageText.text = Constants.selectImagePoint
+                clearImageSource()
             }
+        }
+
+        function clearImageSource()
+        {
+            imageOfGalleryNextImageNextImage.source = Constants.noImage
+            imageOfGalleryNextImageText.text = Constants.selectImagePoint
         }
 
         function questionIdLoaded()
@@ -140,24 +142,19 @@ ApplicationWindow {
             imageOfGalleryQuestionAnswersListView.model.questionId = question.questionId
             if(question.questionId >= 0)
             {
-                imageOfGalleryQuestionText.text = questionText
-                imageOfGalleryQuestionPointsToPassRect.visible = true
-                imageOfGalleryQuestionPointsToPass.text = "1.0"
                 if(question.questionDataLoaded())
                 {
                     setQuestionInfo(question)
                 }
                 else
                 {
+                    clearQuestionInfo()
                     question.questionObjChanged.connect(questionObjLoaded)
                 }
             }
             else
             {
-                imageOfGalleryQuestionText.text = Constants.selectImagePoint
-                imageOfGalleryQuestionPointsToPassRect.visible = false
-                imageOfGalleryQuestionPointsToPass.text = "1.0"
-                imageOfGalleryAnswerIndex = -1
+                clearQuestionInfo()
             }
         }
 
@@ -175,6 +172,14 @@ ApplicationWindow {
             imageOfGalleryQuestionPointsToPassRect.visible = true
             imageOfGalleryQuestionPointsToPass.text = question.pointsToPass
             imageOfGalleryAnswerIndex = 0
+        }
+
+        function clearQuestionInfo()
+        {
+            imageOfGalleryQuestionText.text = Constants.selectImagePoint
+            imageOfGalleryQuestionPointsToPass.text = ""
+            imageOfGalleryAnswerIndex = 0
+            imageOfGalleryQuestionPointsToPassRect.visible = false
         }
 
         function onImageOfGalleryAnswerIndexChanged()
@@ -1947,18 +1952,6 @@ ApplicationWindow {
                         function ptY()
                         {
                             return (gallery_image_rect.height - image_of_gallery.paintedHeight)/2 + (imagePoint_y * image_of_gallery.paintedHeight) + image_of_gallery.y
-                        }
-
-                        Connections {
-                            target: mastactva
-                            function onImagePointToQuestionRefreshed()
-                            {
-                                imageOfGalleryQuestionAnswersListView.model.questionId = questionId
-                                imageOfGalleryAnswerIndex = 0
-                                imageOfGalleryQuestionText.text = questionText
-                                imageOfGalleryQuestionPointsToPassRect.visible = true
-                                imageOfGalleryQuestionPointsToPass.text = questionPointsToPass
-                            }
                         }
 
                         Connections {
