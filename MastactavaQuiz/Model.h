@@ -83,10 +83,6 @@ private:
 };
 
 
-
-// TODO : add notification on data changes
-// TODO : event on data loaded check if data was changed, notify child nodes
-
 template<class DataType_, class ModelType_>
 class ListModelBaseOfData : public QAbstractListModel, public IListModel, public ListModelBaseData
 {
@@ -243,9 +239,6 @@ protected:
         {
             if(nullptr == item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
-            //QObject *obj1 = qvariant_cast<QObject *>(appId);
-            //QObject *obj2 = qvariant_cast<QObject *>(appId_);
-            //return nullptr != obj1 && obj1 == obj2;
             return appId1.isValid() && appId1 == appId;
         });
         return std::end(m_data) == fit ? nullptr : *fit;
