@@ -238,6 +238,21 @@
                         ],
                         "name": "addItem",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addModelParam",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -672,6 +687,21 @@
                         ],
                         "name": "addItem",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addModelParam",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1030,6 +1060,21 @@
                         ],
                         "name": "addItem",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addModelParam",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1479,6 +1524,26 @@
                         ],
                         "name": "addItem",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addModelParam",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "startLoadAll",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -1946,6 +2011,21 @@
                         ],
                         "name": "addItem",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addModelParam",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

@@ -185,7 +185,7 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
     m->setLayoutRefImpl("image_point", m_imagePointModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image_point");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(QString("ImagePointToNextImageModel") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("::ImagePointToNextImageModel::") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
     m->clearLoaded();
     m->loadList();
@@ -205,6 +205,15 @@ void ImagePointModel::listLoaded(const QJsonDocument &reply_)
     {
         if(nullptr == ip) { continue; }
         ip->nextImage();
+    }
+}
+
+void ImagePointModel::startLoadAll()
+{
+    for(ImagePoint *ip: m_data)
+    {
+        if(nullptr == ip) { continue; }
+        (void)ip->getNextImage();
     }
 }
 

@@ -11,6 +11,7 @@ Page {
     title: qsTr("Quiz")
 
     property var netAPI: undefined
+    property var allImagesOfGalleryModel: undefined
     property var currentImage: undefined
     property alias currentImageSource: quizImage.source
 
@@ -29,10 +30,15 @@ Page {
                 var x = mouseX / width
                 var y = mouseY / height
                 var nextImage = currentImage.imagePoints.nextImageByCoords(x, y)
-                console.log("next image = ", nextImage)
                 if(nextImage !== undefined && nextImage !== null)
                 {
-                    console.log("next image id = ", nextImage.iptniNextImage)
+                    var nextImgObj = allImagesOfGalleryModel.findItemById(nextImage.iptniNextImage)
+                    if(nextImgObj !== undefined && nextImgObj !== null)
+                    {
+                        nextImgObj.imagePoints.startLoadAll()
+                        currentImage = nextImgObj
+                        currentImageSource = currentImage.imageSource
+                    }
                 }
             }
         }

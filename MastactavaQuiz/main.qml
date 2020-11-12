@@ -38,11 +38,25 @@ ApplicationWindow {
         jsonParamsGet: true
     }
 
+    ImageModel {
+        id: allImagesOfGallery
+        objectName: "AllImagesOfGallery"
+        layoutQMLName: "AllImagesOfGallery"
+        layoutIdField: "id"
+        currentRef: "gallery"
+        jsonParamsGet: false
+    }
 
 
     function initGalleryModel()
     {
         galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")
+    }
+
+    function initAllImagesOfGalleryModel()
+    {
+        allImagesOfGallery.setLayoutRef("gallery", "GalleryModel", "id")
+        allImagesOfGallery.addModelParam("use_in_gallery_view", "0")
     }
 
     Connections {
@@ -52,11 +66,13 @@ ApplicationWindow {
         {
             galleryPage.netAPI = netAPI
             quizPage.netAPI = netAPI
+            quizPage.allImagesOfGalleryModel = allImagesOfGallery
             descriptionPage.netAPI = netAPI
             galleryPage.galleryModel = galleryModel
             galleryPage.mastactvaAPI = mastactvaAPI
 
             initGalleryModel()
+            initAllImagesOfGalleryModel()
             quizUserModel.loadList()
         }
     }

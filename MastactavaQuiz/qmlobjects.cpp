@@ -12,6 +12,7 @@
 static QString g_netAPIQMLName = "NetAPI";
 static QString g_quizUserModel = "QuizUserModel";
 static QString g_galleryModel = "GalleryModel";
+static QString g_allImagesOfGalleryModel = "AllImagesOfGallery";
 
 
 void QMLObjects::setRoot(QObject *root_)
@@ -83,6 +84,12 @@ void QMLObjects::searchObjects()
     {
         GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
         registerModel(g_galleryModel, m1);
+    }
+    m = findListModel(g_allImagesOfGalleryModel);
+    if(nullptr == m)
+    {
+        ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
+        registerModel(g_allImagesOfGalleryModel, m1);
     }
     for(IListModel *m : m_models)
     {

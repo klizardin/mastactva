@@ -61,6 +61,7 @@ protected:
     void setNextAppId(int appId_);
     void parentItemRemoved();
     void init(QObject *modelObj_);
+    void addModelParamImpl(const QString &name_, const QVariant &value_);
 
 private:
     void unregisterListModel();
@@ -69,6 +70,7 @@ protected:
     QHash<QString, RefDescription> m_refs;
     QList<ExtraFields> m_extraFields;
     QVector<RequestData *> m_requests;
+    QHash<QString, QVariant> m_modelParams;
 
 private:
     QVariant m_refAppId;
@@ -282,7 +284,7 @@ protected:
                 parentModel = m_refs.value(currentRefImpl()).m_parentModel;
                 parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
             }
-            QHash<QString, QVariant> extraFields;
+            QHash<QString, QVariant> extraFields(m_modelParams);
             for(const ExtraFields &f: m_extraFields)
             {
                 IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
@@ -459,6 +461,26 @@ protected:
         return true;
     }
 
+    void setCurrentIndexByAppIdImpl(const QVariant &appId_)
+    {
+        const auto fit = std::find_if(std::begin(m_data),
+                                      std::end(m_data),
+                                      [&appId_](const DataType_ *item)->bool
+        {
+            if(nullptr == item) { return false; }
+            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+            return appId_.isValid() && appId_ == appId;
+        });
+        if(std::end(m_data) == fit)
+        {
+            setCurrentIndexImpl(m_data.isEmpty()? -1: 0);
+        }
+        else
+        {
+            setCurrentIndexImpl(std::distance(std::begin(m_data), fit));
+        }
+    }
+
 protected:
     virtual void handleError(int errorCode_, const QJsonDocument &reply_)
     {
@@ -470,6 +492,9 @@ protected:
     {
         if(reply_.isEmpty()) { return; }
         Q_ASSERT(reply_.isArray());
+        const QVariant oldCurrentAppId = getCurrentIndexAppId();
+        const QVariant oldCurrentId = getIdFieldValueForAppId(oldCurrentAppId);
+
         QList<DataType_ *> loaded;
         for(int i = 0; ; i++)
         {
@@ -497,6 +522,15 @@ protected:
         std::copy(std::begin(loaded), std::end(loaded),
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
+        DataType_ *oldIdItem = findDataItemByIdImpl(oldCurrentId);
+        if(nullptr == oldIdItem)
+        {
+            setCurrentIndexImpl(0);
+        }
+        else
+        {
+            setCurrentIndexByAppIdImpl(oldCurrentAppId);
+        }
         loaded.clear();
         //for(const DataType_ *i: m_data)
         //{
@@ -529,9 +563,10 @@ protected:
         const RefDescription &ref = m_refs.value(currentRefImpl());
         if(modelName_ != ref.m_parentModel) { return; }
         IListModel* parentModel = QMLObjects::getInstance().getListModel(ref.m_parentModel);
-        if(!getRefAppIdImpl().isValid())
+        const QVariant &refAppId = getRefAppIdImpl();
+        if(refAppId.isValid())
         {
-            if(parentModel->containsAppId(getRefAppIdImpl()))
+            if(parentModel->containsAppId(refAppId))
             {
                 parentItemChanged();
             }
@@ -669,6 +704,10 @@ public:                                                                         
     Q_INVOKABLE bool addItem(const QVariant &item_)                                                             \
     {                                                                                                           \
         return addItemImpl(item_);                                                                              \
+    }                                                                                                           \
+    Q_INVOKABLE void addModelParam(const QString &name_, const QVariant &value_)                                \
+    {                                                                                                           \
+        addModelParamImpl(name_, value_);                                                                       \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \

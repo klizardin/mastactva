@@ -173,3 +173,8 @@ void ListModelBaseData::init(QObject *modelObj_)
 {
     m_modelObj = modelObj_;
 }
+
+void ListModelBaseData::addModelParamImpl(const QString &name_, const QVariant &value_)
+{
+    m_modelParams.insert(name_, value_);
+}

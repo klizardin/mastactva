@@ -185,6 +185,7 @@ public:
 
     LAYOUT_MODEL_IMPL();
 
+    Q_INVOKABLE void startLoadAll();
     Q_INVOKABLE QVariant nextImageByCoords(qreal x_, qreal y_);
 
 public slots:
