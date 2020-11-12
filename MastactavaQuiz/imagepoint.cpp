@@ -185,7 +185,7 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
     m->setLayoutRefImpl("image_point", m_imagePointModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image_point");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("::ImagePointToNextImageModel::") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePointToNextImageModel_") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
     m->clearLoaded();
     m->loadList();

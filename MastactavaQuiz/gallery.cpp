@@ -89,7 +89,7 @@ ImageModel *Gallery::createImages()
     m->setCurrentRef("gallery");
     m->addModelParam("use_in_gallery_view", "1");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("::GalleryImageModel::") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_GalleryImageModel_") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
     m->loadList();
     return m;
