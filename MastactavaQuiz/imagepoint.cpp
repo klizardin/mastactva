@@ -32,25 +32,18 @@ void ImagePointToNextImage::setImagePointId(const int &imagePointId_)
     emit imagePointIdChanged();
 }
 
-QString ImagePointToNextImage::nextImage() const
-{
-    return getNextImage();
-}
-
-void ImagePointToNextImage::setNextImage(const QString &nextImage_)
-{
-    setNextImage(ImageSource(nextImage_));
-}
-
-ImageSource ImagePointToNextImage::getNextImage() const
+int ImagePointToNextImage::nextImage() const
 {
     return m_nextImage;
 }
 
-void ImagePointToNextImage::setNextImage(const ImageSource &nextImage_)
+void ImagePointToNextImage::setNextImage(const int &nextImage_)
 {
     m_nextImage = nextImage_;
+
+    emit nextImageChanged();
 }
+
 
 ImagePointToNextImageModel::ImagePointToNextImageModel(QObject *parent_ /*= nullptr*/)
     :ListModelBaseOfData<ImagePointToNextImage, ImagePointToNextImageModel>(parent_)

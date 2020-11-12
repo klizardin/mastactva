@@ -28,10 +28,11 @@ Page {
             onClicked: {
                 var x = mouseX / width
                 var y = mouseY / height
-                currentImage = currentImage.imagePoints.nextImageByCoords(x, y)
-                if(currentImage !== undefined && currentImage !== null)
+                var nextImage = currentImage.imagePoints.nextImageByCoords(x, y)
+                console.log("next image = ", nextImage)
+                if(nextImage !== undefined && nextImage !== null)
                 {
-                    currentImageSource = currentImage.imageSource
+                    console.log("next image id = ", nextImage.iptniNextImage)
                 }
             }
         }

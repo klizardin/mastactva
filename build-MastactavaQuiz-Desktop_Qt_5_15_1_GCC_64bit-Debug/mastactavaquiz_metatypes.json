@@ -910,7 +910,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "int",
                         "user": false,
                         "write": "setNextImage"
                     }

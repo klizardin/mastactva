@@ -19,7 +19,7 @@ public:
 
     Q_PROPERTY(int iptniId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int iptniImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)
-    Q_PROPERTY(QString iptniNextImage READ nextImage WRITE setNextImage NOTIFY nextImageChanged)
+    Q_PROPERTY(int iptniNextImage READ nextImage WRITE setNextImage NOTIFY nextImageChanged)
 
 
     class DefaultLayout : public LayoutBase<ImagePointToNextImage>
@@ -31,7 +31,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &ImagePointToNextImage::m_appId);
             addField<int>("id", "iptniId", &ImagePointToNextImage::id, &ImagePointToNextImage::setId);
             addField<int>("image_point", "iptniImagePointId", &ImagePointToNextImage::imagePointId, &ImagePointToNextImage::setImagePointId);
-            addField<ImageSource>("next_image", "iptniNextImage", &ImagePointToNextImage::getNextImage, &ImagePointToNextImage::setNextImage);
+            addField<int>("next_image", "iptniNextImage", &ImagePointToNextImage::nextImage, &ImagePointToNextImage::setNextImage);
         }
     };
 
@@ -39,10 +39,8 @@ public:
     void setId(const int &id_);
     int imagePointId() const;
     void setImagePointId(const int &imagePointId_);
-    QString nextImage() const;
-    void setNextImage(const QString &nextImage_);
-    ImageSource getNextImage() const;
-    void setNextImage(const ImageSource &nextImage_);
+    int nextImage() const;
+    void setNextImage(const int &nextImage_);
 
 signals:
     void idChanged();
@@ -53,7 +51,7 @@ private:
     int m_appId = -1;
     int m_id = -1;
     int m_imagePointId = -1;
-    ImageSource m_nextImage;
+    int m_nextImage = -1;
 };
 
 class ImagePointToNextImageModel : public ListModelBaseOfData<ImagePointToNextImage, ImagePointToNextImageModel>
