@@ -8,13 +8,13 @@
 #include <QHash>
 #include <QDebug>
 #include <QVariant>
+#include "IModel.h"
 #include "Layout.h"
 #include "netapi.h"
 #include "qmlobjects.h"
-#include "IModel.h"
 
 
-class ListModelBaseData
+class ListModelBaseData : public IListModelInfo
 {
 protected:
     class RefDescription
@@ -39,6 +39,13 @@ public:
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true);
     void addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_);
     void registerListModel();
+    void setParentListModelInfo(IListModelInfo *parentListModelInfo_);
+    bool autoCreateChildrenModelsImpl() const;
+
+public:
+    virtual void startLoadChildModel() override;
+    virtual void endLoadChildModel() override;
+    virtual bool isListLoadedImpl() const override;
 
 protected:
     void setRefAppIdImpl(const QVariant &appId_);
@@ -62,9 +69,14 @@ protected:
     void parentItemRemoved();
     void init(QObject *modelObj_);
     void addModelParamImpl(const QString &name_, const QVariant &value_);
+    void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
+    void startListLoad();
+    void setListLoaded();
+    bool listLoading() const;
 
 private:
     void unregisterListModel();
+    bool childrenLoaded() const;
 
 protected:
     QHash<QString, RefDescription> m_refs;
@@ -82,6 +94,11 @@ private:
     QObject *m_modelObj = nullptr;
     bool m_autoRegister = false;
     IListModel *m_model = nullptr;
+    bool m_autoCreateChildrenModels = false;
+    bool m_listLoaded = false;
+    bool m_listLoading = false;
+    int m_loadingChildenModels = 0;
+    IListModelInfo *m_parentListModelInfo = nullptr;
 };
 
 
@@ -313,6 +330,10 @@ protected:
                     layout::SpecialFieldEn::appId,
                     QVariant::fromValue(getNextAppId(dta)),
                     dta);
+        getDataLayout<DataType_>().setSpecialFieldValue(
+                    layout::SpecialFieldEn::modelInfo,
+                    QVariant::fromValue(static_cast<IListModelInfo *>(this)),
+                    dta);
         return dta;
     }
 
@@ -532,6 +553,13 @@ protected:
             setCurrentIndexByAppIdImpl(oldCurrentAppId);
         }
         loaded.clear();
+        if(autoCreateChildrenModelsImpl())
+        {
+            for(DataType_ *item : m_data)
+            {
+                getDataLayout<DataType_>().createQMLValues(item);
+            }
+        }
         //for(const DataType_ *i: m_data)
         //{
         //    QHash<QString, QVariant> values;
@@ -672,6 +700,7 @@ public:                                                                         
     Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
     Q_PROPERTY(bool jsonParamsGet READ jsonParamsGet WRITE setJsonParamsGet NOTIFY jsonParamsGetChanged)        \
+    Q_PROPERTY(bool autoCreateChildrenModels READ autoCreateChildrenModels WRITE setAutoCreateChildrenModels NOTIFY autoCreateChildrenModelsChanged)    \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
@@ -708,6 +737,10 @@ public:                                                                         
     Q_INVOKABLE void addModelParam(const QString &name_, const QVariant &value_)                                \
     {                                                                                                           \
         addModelParamImpl(name_, value_);                                                                       \
+    }                                                                                                           \
+    Q_INVOKABLE bool isListLoaded() const                                                                       \
+    {                                                                                                           \
+        return isListLoadedImpl();                                                                              \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
@@ -776,6 +809,15 @@ public:                                                                         
     void startRefreshChildren(QString modelName_)                                                               \
     {                                                                                                           \
         emit refreshChildren(modelName_);                                                                       \
+    }                                                                                                           \
+    bool autoCreateChildrenModels() const                                                                       \
+    {                                                                                                           \
+        return autoCreateChildrenModelsImpl();                                                                  \
+    }                                                                                                           \
+    void setAutoCreateChildrenModels(bool autoCreateChildrenModels_)                                            \
+    {                                                                                                           \
+        setAutoCreateChildrenModelsImpl(autoCreateChildrenModels_);                                             \
+        emit autoCreateChildrenModelsChanged();                                                                 \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

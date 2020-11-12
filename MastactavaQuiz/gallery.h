@@ -119,6 +119,7 @@ signals:
     void layoutIdFieldChanged();
     void refreshChildren(QString);
     void jsonParamsGetChanged();
+    void autoCreateChildrenModelsChanged();
 };
 
 

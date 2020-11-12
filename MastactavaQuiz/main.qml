@@ -27,6 +27,7 @@ ApplicationWindow {
         objectName: "QuizUserModel"
         layoutQMLName: "QuizUserModel"
         layoutIdField: "deviceid"
+        autoCreateChildrenModels: false
     }
 
     GalleryModel {
@@ -36,6 +37,7 @@ ApplicationWindow {
         layoutIdField: "id"
         currentRef: "deviceid"
         jsonParamsGet: true
+        autoCreateChildrenModels: false
     }
 
     ImageModel {
@@ -45,6 +47,7 @@ ApplicationWindow {
         layoutIdField: "id"
         currentRef: "gallery"
         jsonParamsGet: false
+        autoCreateChildrenModels: true
     }
 
 

@@ -4,6 +4,13 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
     m_imageModel = parent_;
+    m_thisListModelInfo = this;
+}
+
+bool Image::isImageLoaded() const
+{
+    Q_ASSERT(m_imageModel->autoCreateChildrenModels());
+    return isListLoadedImpl();
 }
 
 int Image::id() const
@@ -117,6 +124,7 @@ ImagePointModel *Image::createImagePoints()
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImagePointModel_") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
 }

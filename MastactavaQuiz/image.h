@@ -14,7 +14,7 @@
 class ImageModel;
 
 
-class Image : public QObject
+class Image : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 public:
@@ -28,6 +28,8 @@ public:
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant imagePoints READ imagePoints WRITE setImagePoints NOTIFY imagePointsChanged)
 
+    Q_INVOKABLE bool isImageLoaded() const;
+
 public:
     class DefaultLayout : public LayoutBase<Image>
     {
@@ -36,6 +38,7 @@ public:
         {
             setLayoutJsonName("images");
             addSpecial<int>(layout::SpecialFieldEn::appId, &Image::m_appId);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Image::m_thisListModelInfo);
             addField<int>("id", "id", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
             addField<QString>("hash", "hash", &Image::hash, &Image::setHash);
@@ -84,6 +87,7 @@ private:
     bool m_top = false;
     QDateTime m_created;
     ImagePointModel *m_imagePoints = nullptr;
+    IListModelInfo *m_thisListModelInfo = 0;
 };
 
 class ImageModel : public ListModelBaseOfData<Image, ImageModel>
@@ -119,6 +123,7 @@ signals:
     void layoutIdFieldChanged();
     void refreshChildren(QString);
     void jsonParamsGetChanged();
+    void autoCreateChildrenModelsChanged();
 };
 
 

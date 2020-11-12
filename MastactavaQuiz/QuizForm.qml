@@ -27,17 +27,19 @@ Page {
             height: quizImage.paintedHeight
 
             onClicked: {
-                var x = mouseX / width
-                var y = mouseY / height
-                var nextImage = currentImage.imagePoints.nextImageByCoords(x, y)
-                if(nextImage !== undefined && nextImage !== null)
+                if(currentImage.isImageLoaded())
                 {
-                    var nextImgObj = allImagesOfGalleryModel.findItemById(nextImage.iptniNextImage)
-                    if(nextImgObj !== undefined && nextImgObj !== null)
+                    var x = mouseX / width
+                    var y = mouseY / height
+                    var nextImage = currentImage.imagePoints.nextImageByCoords(x, y)
+                    if(nextImage !== undefined && nextImage !== null)
                     {
-                        nextImgObj.imagePoints.startLoadAll()
-                        currentImage = nextImgObj
-                        currentImageSource = currentImage.imageSource
+                        var nextImgObj = allImagesOfGalleryModel.findItemById(nextImage.iptniNextImage)
+                        if(nextImgObj !== undefined && nextImgObj !== null)
+                        {
+                            currentImage = nextImgObj
+                            currentImageSource = currentImage.imageSource
+                        }
                     }
                 }
             }

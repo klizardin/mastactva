@@ -9,6 +9,7 @@
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include "IModel.h"
 
 template<typename DataType_>
 class Layout;
@@ -43,7 +44,8 @@ namespace layout
     enum class SpecialFieldEn : int
     {
         none,
-        appId
+        appId,
+        modelInfo
     };
 
     template<typename T_>
@@ -248,6 +250,7 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
+                if(!toQML_) { return QVariant(); }
                 if(nullptr == obj_->*m_modelPtr)
                 {
                     const_cast<DataType_ *>(obj_)->*m_modelPtr = (const_cast<DataType_ *>(obj_)->*m_createFuncPtr)();
@@ -382,6 +385,17 @@ public:
         return true;
     }
 
+    void createQMLValues(const DataType_ *obj_) const
+    {
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(item->isQMLItem())
+            {
+                (void)item->getValue(obj_, true);
+            }
+        }
+    }
+
     QVariant getJsonValue(const DataType_ *obj_, const QString &jsonFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
@@ -505,28 +519,6 @@ public:
         if(nullptr == layoutItem) { return; }
         layoutItem->setFieldId(true);
     }
-
-    //void setRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)
-    //{
-    //    layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
-    //    Q_ASSERT(nullptr != layoutItem); // field not founded
-    //    if(nullptr == layoutItem) { return; }
-    //    layoutItem->setRef(parentModel_, parentModelRefJsonName_);
-    //}
-
-    //void getRef(const QString &fieldJsonName_, QString &parentModel_, QString &parentModelRefJsonName_) const
-    //{
-    //    parentModel_.clear();
-    //    parentModelRefJsonName_.clear();
-    //    const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
-    //    Q_ASSERT(nullptr != layoutItem); // field not founded
-    //    if(nullptr == layoutItem) { return; }
-    //    parentModel_ = layoutItem->getParentModel();
-    //    if(!layoutItem->isParentModelRerToIdField())
-    //    {
-    //        parentModelRefJsonName_ = layoutItem->getParentModelRefJsonName();
-    //    }
-    //}
 
     bool copyQMLFields(const DataType_ *from_, DataType_ *to_) const
     {

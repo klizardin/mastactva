@@ -23,5 +23,26 @@ public:
     virtual QVariant getFieldValueForAppId(const QVariant &appId_, const QString &jsonFieldName) const = 0;
 };
 
+class IListModelInfo
+{
+public:
+    virtual void startLoadChildModel() = 0;
+    virtual void endLoadChildModel() = 0;
+    virtual bool isListLoadedImpl() const = 0;
+};
+
+Q_DECLARE_METATYPE(IListModelInfo*)
+
+class IListModelInfoObjectImpl : public IListModelInfo
+{
+public:
+    virtual void startLoadChildModel() override;
+    virtual void endLoadChildModel() override;
+    virtual bool isListLoadedImpl() const override;
+
+private:
+    int m_loadingChildenModels = 0;
+};
+
 
 #endif // IMODEL_H

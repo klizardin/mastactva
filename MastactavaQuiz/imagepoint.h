@@ -78,10 +78,6 @@ public slots:
         refreshChildrenSlotImpl(modelName_);
     }
 
-    virtual void listLoaded(const QJsonDocument &reply_) override;
-    void clearLoaded();
-    bool loaded() const;
-
 signals:
     void currentIndexChanged();
     void currentRefChanged();
@@ -91,9 +87,7 @@ signals:
     void layoutIdFieldChanged();
     void refreshChildren(QString);
     void jsonParamsGetChanged();
-
-private:
-    bool m_loaded = false;
+    void autoCreateChildrenModelsChanged();
 };
 
 
@@ -121,12 +115,14 @@ public:
         {
             setLayoutJsonName("image-point");
             addSpecial<int>(layout::SpecialFieldEn::appId, &ImagePoint::m_appId);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ImagePoint::m_parentModelInfo);
             addField<int>("id", "ipId", &ImagePoint::id, &ImagePoint::setId);
             addField<int>("image", "ipImageId", &ImagePoint::imageId, &ImagePoint::setImageId);
             addField<qreal>("x", "ipXCoord", &ImagePoint::xCoord, &ImagePoint::setXCoord);
             addField<qreal>("y", "ipYCoord", &ImagePoint::yCoord, &ImagePoint::setYCoord);
             addField<qreal>("weight", "ipWeight", &ImagePoint::weight, &ImagePoint::setWeight);
             addField<QDateTime>("created", "ipCreated", &ImagePoint::created, &ImagePoint::setCreated);
+            addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImage, &ImagePoint::createImagePointToNextImage);
         }
     };
 
@@ -170,6 +166,7 @@ private:
     QDateTime m_created;
     ImagePointToNextImageModel *m_imagePointToNextImage = nullptr;
     ImagePointModel *m_imagePointModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
 };
 
 class ImagePointModel : public ListModelBaseOfData<ImagePoint, ImagePointModel>
@@ -185,7 +182,6 @@ public:
 
     LAYOUT_MODEL_IMPL();
 
-    Q_INVOKABLE void startLoadAll();
     Q_INVOKABLE QVariant nextImageByCoords(qreal x_, qreal y_);
 
 public slots:
@@ -210,6 +206,7 @@ signals:
     void layoutIdFieldChanged();
     void refreshChildren(QString);
     void jsonParamsGetChanged();
+    void autoCreateChildrenModelsChanged();
 };
 
 

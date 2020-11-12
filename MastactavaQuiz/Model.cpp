@@ -178,3 +178,71 @@ void ListModelBaseData::addModelParamImpl(const QString &name_, const QVariant &
 {
     m_modelParams.insert(name_, value_);
 }
+
+bool ListModelBaseData::autoCreateChildrenModelsImpl() const
+{
+    return m_autoCreateChildrenModels;
+}
+
+void ListModelBaseData::setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_)
+{
+    m_autoCreateChildrenModels = autoCreateChildrenModels_;
+}
+
+bool ListModelBaseData::isListLoadedImpl() const
+{
+    return m_listLoaded && !listLoading() && childrenLoaded();
+}
+
+void ListModelBaseData::startListLoad()
+{
+    m_listLoading = true;
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->startLoadChildModel();
+    }
+}
+
+void ListModelBaseData::setListLoaded()
+{
+    m_listLoading = false;
+    m_listLoaded = true;
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->endLoadChildModel();
+    }
+}
+
+bool ListModelBaseData::listLoading() const
+{
+    return m_listLoading;
+}
+
+bool ListModelBaseData::childrenLoaded() const
+{
+    return 0 == m_loadingChildenModels;
+}
+
+void ListModelBaseData::startLoadChildModel()
+{
+    ++m_loadingChildenModels;
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->startLoadChildModel();
+    }
+}
+
+void ListModelBaseData::endLoadChildModel()
+{
+    --m_loadingChildenModels;
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->endLoadChildModel();
+    }
+    Q_ASSERT(m_loadingChildenModels >= 0);
+}
+
+void ListModelBaseData::setParentListModelInfo(IListModelInfo *parentListModelInfo_)
+{
+    m_parentListModelInfo = parentListModelInfo_;
+}

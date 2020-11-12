@@ -51,23 +51,6 @@ ImagePointToNextImageModel::ImagePointToNextImageModel(QObject *parent_ /*= null
     init(this);
 }
 
-void ImagePointToNextImageModel::listLoaded(const QJsonDocument &reply_)
-{
-    base::listLoaded(reply_);
-    m_loaded = true;
-}
-
-void ImagePointToNextImageModel::clearLoaded()
-{
-    m_loaded = false;
-}
-
-bool ImagePointToNextImageModel::loaded() const
-{
-    return m_loaded;
-}
-
-
 ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
@@ -181,13 +164,12 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
 {
     ImagePointToNextImageModel *m = new ImagePointToNextImageModel(this);
     m->initResponse();
-    //m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("image_point", m_imagePointModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image_point");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePointToNextImageModel_") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
-    m->clearLoaded();
+    m->setParentListModelInfo(m_parentModelInfo);
     m->loadList();
     return m;
 }
@@ -208,18 +190,10 @@ void ImagePointModel::listLoaded(const QJsonDocument &reply_)
     }
 }
 
-void ImagePointModel::startLoadAll()
-{
-    for(ImagePoint *ip: m_data)
-    {
-        if(nullptr == ip) { continue; }
-        (void)ip->getNextImage();
-    }
-}
-
 QVariant ImagePointModel::nextImageByCoords(qreal x_, qreal y_)
 {
-    bool loaded = true;
+    if(isListLoadedImpl()) { return QVariant(); }
+
     ImagePoint *minIp = nullptr;
     qreal mind = 0.0;
     for(ImagePoint *ip: m_data)
@@ -233,9 +207,9 @@ QVariant ImagePointModel::nextImageByCoords(qreal x_, qreal y_)
             mind = d;
             minIp = ip;
         }
-        loaded &= m->loaded();
     }
-    if(!loaded || nullptr == minIp) { return QVariant(); }
+    if(nullptr == minIp) { return QVariant(); }
+    //return QVariant::fromValue(static_cast<QObject *>(minIp));
     minIp->getNextImage()->setCurrentIndex(0);
     return minIp->getNextImage()->getCurrentItem();
 }

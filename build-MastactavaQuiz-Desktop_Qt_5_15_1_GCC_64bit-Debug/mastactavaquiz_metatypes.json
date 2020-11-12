@@ -253,6 +253,11 @@
                         ],
                         "name": "addModelParam",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isListLoaded",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -354,6 +359,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setJsonParamsGet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModels",
+                        "notify": "autoCreateChildrenModelsChanged",
+                        "read": "autoCreateChildrenModels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModels"
                     }
                 ],
                 "qualifiedClassName": "GalleryModel",
@@ -401,6 +420,11 @@
                     {
                         "access": "public",
                         "name": "jsonParamsGetChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsChanged",
                         "returnType": "void"
                     }
                 ],
@@ -451,6 +475,13 @@
         "classes": [
             {
                 "className": "Image",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "isImageLoaded",
+                        "returnType": "bool"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -594,6 +625,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "IListModelInfoObjectImpl"
                     }
                 ]
             },
@@ -702,6 +737,11 @@
                         ],
                         "name": "addModelParam",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isListLoaded",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -803,6 +843,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setJsonParamsGet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModels",
+                        "notify": "autoCreateChildrenModelsChanged",
+                        "read": "autoCreateChildrenModels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModels"
                     }
                 ],
                 "qualifiedClassName": "ImageModel",
@@ -850,6 +904,11 @@
                     {
                         "access": "public",
                         "name": "jsonParamsGetChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsChanged",
                         "returnType": "void"
                     }
                 ],
@@ -1075,6 +1134,11 @@
                         ],
                         "name": "addModelParam",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isListLoaded",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -1176,6 +1240,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setJsonParamsGet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModels",
+                        "notify": "autoCreateChildrenModelsChanged",
+                        "read": "autoCreateChildrenModels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModels"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToNextImageModel",
@@ -1224,6 +1302,11 @@
                         "access": "public",
                         "name": "jsonParamsGetChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1256,27 +1339,6 @@
                         ],
                         "name": "refreshChildrenSlot",
                         "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
-                            }
-                        ],
-                        "name": "listLoaded",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "clearLoaded",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "loaded",
-                        "returnType": "bool"
                     }
                 ],
                 "superClasses": [
@@ -1542,8 +1604,8 @@
                     },
                     {
                         "access": "public",
-                        "name": "startLoadAll",
-                        "returnType": "void"
+                        "name": "isListLoaded",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -1660,6 +1722,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setJsonParamsGet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModels",
+                        "notify": "autoCreateChildrenModelsChanged",
+                        "read": "autoCreateChildrenModels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModels"
                     }
                 ],
                 "qualifiedClassName": "ImagePointModel",
@@ -1707,6 +1783,11 @@
                     {
                         "access": "public",
                         "name": "jsonParamsGetChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsChanged",
                         "returnType": "void"
                     }
                 ],
@@ -2026,6 +2107,11 @@
                         ],
                         "name": "addModelParam",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isListLoaded",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -2127,6 +2213,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setJsonParamsGet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModels",
+                        "notify": "autoCreateChildrenModelsChanged",
+                        "read": "autoCreateChildrenModels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModels"
                     }
                 ],
                 "qualifiedClassName": "QuizUserModel",
@@ -2174,6 +2274,11 @@
                     {
                         "access": "public",
                         "name": "jsonParamsGetChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsChanged",
                         "returnType": "void"
                     }
                 ],
