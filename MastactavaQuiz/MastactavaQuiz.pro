@@ -23,6 +23,7 @@ SOURCES += \
         mastactvaapi.cpp \
         netapi.cpp \
         qmlobjects.cpp \
+        question.cpp \
         quizuser.cpp \
         utils.cpp
 
@@ -57,6 +58,7 @@ HEADERS += \
     mastactvaapi.h \
     netapi.h \
     qmlobjects.h \
+    question.h \
     quizuser.h \
     utils.h
 
