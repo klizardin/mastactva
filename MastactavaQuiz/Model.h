@@ -211,15 +211,9 @@ public:
         return getDataLayout<DataType_>().getJsonValue(item, jsonFieldName);
     }
 
-protected:
-    bool storeAfterSaveImpl() const
+    bool isEmpty() const
     {
-        return getDataLayout<DataType_>().storeAfterSave();
-    }
-
-    void setStoreAfterSaveImpl(bool storeAfterSave_)
-    {
-        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
+        return m_data.isEmpty();
     }
 
     const DataType_ *findDataItemByIdImpl(const QVariant &id_) const
@@ -271,6 +265,27 @@ protected:
     QVariant findItemByAppIdImpl(const QVariant &appId_)
     {
         return QVariant::fromValue(static_cast<QObject *>(findDataItemByAppIdImpl(appId_)));
+    }
+
+    const DataType_ *getCurrentDataItem() const
+    {
+        return findDataItemByAppIdImpl(QVariant());
+    }
+
+    DataType_ *getCurrentDataItem()
+    {
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->getCurrentDataItem());
+    }
+
+protected:
+    bool storeAfterSaveImpl() const
+    {
+        return getDataLayout<DataType_>().storeAfterSave();
+    }
+
+    void setStoreAfterSaveImpl(bool storeAfterSave_)
+    {
+        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
     }
 
     void loadListImpl()

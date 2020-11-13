@@ -5,6 +5,7 @@ import Mastactva 1.0
 
 
 Page {
+    id: quizPage
     width: Constants.pageWidth
     height: Constants.pageHeight
 
@@ -14,6 +15,8 @@ Page {
     property var allImagesOfGalleryModel: undefined
     property var currentImage: undefined
     property alias currentImageSource: quizImage.source
+
+    signal showQuestion(var question)
 
     Image {
         id: quizImage
@@ -31,14 +34,23 @@ Page {
                 {
                     var x = mouseX / width
                     var y = mouseY / height
-                    var nextImage = currentImage.imagePoints.nextImageByCoords(x, y)
-                    if(nextImage !== undefined && nextImage !== null)
+                    if(currentImage.imagePoints.isNextObjImageByCoords(x, y))
                     {
-                        var nextImgObj = allImagesOfGalleryModel.findItemById(nextImage.iptniNextImage)
+                        var ip = currentImage.imagePoints.nextObjByCoords(x, y)
+                        var nextImgObj = allImagesOfGalleryModel.findItemById(ip.nextImage.getCurrentItem().iptniNextImage)
                         if(nextImgObj !== undefined && nextImgObj !== null)
                         {
                             currentImage = nextImgObj
                             currentImageSource = currentImage.imageSource
+                        }
+                    }
+                    else if(currentImage.imagePoints.isNextObjQuestionByCoords(x, y))
+                    {
+                        var ip = currentImage.imagePoints.nextObjByCoords(x, y)
+                        var question = ip.nextQuestion.getCurrentItem().iptqQuestionObj.getCurrentItem()
+                        if(question !== undefined && question !== null)
+                        {
+                            quizPage.showQuestion(question)
                         }
                     }
                 }

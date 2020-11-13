@@ -3,6 +3,97 @@
 #include "utils.h"
 
 
+ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*= nullptr*/)
+    : QObject(parent_)
+{
+    m_imagePointToQuestionModel = parent_;
+}
+
+int ImagePointToQuestion::id() const
+{
+    return m_id;
+}
+
+void ImagePointToQuestion::setId(const int &id_)
+{
+    m_id = id_;
+
+    emit idChanged();
+}
+
+int ImagePointToQuestion::imagePointId() const
+{
+    return m_imagePointId;
+}
+
+void ImagePointToQuestion::setImagePointId(const int &imagePointId_)
+{
+    m_imagePointId = imagePointId_;
+
+    emit imagePointIdChanged();
+}
+
+int ImagePointToQuestion::questionId() const
+{
+    return m_questionId;
+}
+
+void ImagePointToQuestion::setQuestionId(const int &questionId_)
+{
+    m_questionId = questionId_;
+
+    emit questionObjChanged();
+}
+
+QVariant ImagePointToQuestion::questionObj() const
+{
+    if(nullptr == m_questionModel)
+    {
+        const_cast<ImagePointToQuestion *>(this)->m_questionModel = const_cast<ImagePointToQuestion *>(this)->createQuestionModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<QuestionModel *>(m_questionModel)));
+}
+
+void ImagePointToQuestion::setQuestionObj(const QVariant &obj_)
+{
+    if(obj_.isNull())
+    {
+        delete m_questionModel;
+        m_questionModel = nullptr;
+
+        emit questionObjChanged();
+    }
+}
+
+QuestionModel *ImagePointToQuestion::getQuestions()
+{
+    (void)questionObj();
+    return m_questionModel;
+}
+
+QuestionModel *ImagePointToQuestion::createQuestionModel()
+{
+    QuestionModel *m = new QuestionModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("id", m_imagePointToQuestionModel->getQMLLayoutName(), "question", false);
+    m->setCurrentRef("id");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_imagePointToQuestionModel->getQMLLayoutName() + QString("_QuestionModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->loadList();
+    return m;
+}
+
+
+ImagePointToQuestionModel::ImagePointToQuestionModel(QObject *parent_ /*= nullptr*/)
+    : base(parent_)
+{
+    init(this);
+}
+
+
 ImagePointToNextImage::ImagePointToNextImage(QObject *parent_ /*= nullptr*/)
     :QObject(parent_)
 {
@@ -149,10 +240,37 @@ void ImagePoint::setNextImage(const QVariant &obj_)
     }
 }
 
+QVariant ImagePoint::nextQuestion() const
+{
+    if(nullptr == m_imagePointToQuestionModel)
+    {
+        const_cast<ImagePoint *>(this)->m_imagePointToQuestionModel = const_cast<ImagePoint *>(this)->createImagePointToQuestionModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<ImagePointToQuestionModel *>(m_imagePointToQuestionModel)));
+}
+
+void ImagePoint::setNextQuestion(const QVariant &obj_)
+{
+    if(obj_.isNull())
+    {
+        delete m_imagePointToQuestionModel;
+        m_imagePointToQuestionModel = nullptr;
+
+        emit nextQuestionChanged();
+    }
+}
+
+
 ImagePointToNextImageModel *ImagePoint::getNextImage() const
 {
     nextImage();
     return m_imagePointToNextImage;
+}
+
+ImagePointToQuestionModel *ImagePoint::getNextQuestion() const
+{
+    nextQuestion();
+    return m_imagePointToQuestionModel;
 }
 
 qreal ImagePoint::distanceCoef(qreal x_, qreal y_) const
@@ -174,6 +292,21 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
     return m;
 }
 
+ImagePointToQuestionModel *ImagePoint::createImagePointToQuestionModel()
+{
+    ImagePointToQuestionModel *m = new ImagePointToQuestionModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("image_point", m_imagePointModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("image_point");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePointToQuestionModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->loadList();
+    return m;
+}
+
 ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
     :ListModelBaseOfData<ImagePoint, ImagePointModel>(parent_)
 {
@@ -190,9 +323,9 @@ void ImagePointModel::listLoaded(const QJsonDocument &reply_)
     }
 }
 
-QVariant ImagePointModel::nextImageByCoords(qreal x_, qreal y_)
+ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_)
 {
-    if(isListLoadedImpl()) { return QVariant(); }
+    if(isListLoadedImpl()) { return nullptr; }
 
     ImagePoint *minIp = nullptr;
     qreal mind = 0.0;
@@ -208,9 +341,32 @@ QVariant ImagePointModel::nextImageByCoords(qreal x_, qreal y_)
             minIp = ip;
         }
     }
-    if(nullptr == minIp) { return QVariant(); }
-    //return QVariant::fromValue(static_cast<QObject *>(minIp));
-    minIp->getNextImage()->setCurrentIndex(0);
-    return minIp->getNextImage()->getCurrentItem();
+    return minIp;
+}
+
+QVariant ImagePointModel::nextObjByCoords(qreal x_, qreal y_)
+{
+    if(isListLoadedImpl()) { return QVariant(); }
+
+    ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
+    return QVariant::fromValue(static_cast<QObject *>(nearIp));
+}
+
+bool ImagePointModel::isNextObjImageByCoords(qreal x_, qreal y_)
+{
+    if(isListLoadedImpl()) { return false; }
+
+    ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
+    if(nullptr == nearIp) { return false; }
+    return !nearIp->getNextImage()->isEmpty();
+}
+
+bool ImagePointModel::isNextObjQuestionByCoords(qreal x_, qreal y_)
+{
+    if(isListLoadedImpl()) { return false; }
+    ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
+    if(nullptr == nearIp) { return false; }
+    ImagePointToQuestion* iptq = nearIp->getNextQuestion()->getCurrentDataItem();
+    return nullptr != iptq && !iptq->getQuestions()->isEmpty();
 }
 

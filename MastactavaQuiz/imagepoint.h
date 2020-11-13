@@ -8,6 +8,105 @@
 #include "imagesource.h"
 #include "Layout.h"
 #include "Model.h"
+#include "question.h"
+
+
+class ImagePointToQuestionModel;
+
+
+class ImagePointToQuestion : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ImagePointToQuestion(ImagePointToQuestionModel *parent_ = nullptr);
+
+    Q_PROPERTY(int iptqId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int iptqImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)
+    Q_PROPERTY(int iptqQuestionId READ questionId WRITE setQuestionId NOTIFY questionIdChanged)
+    Q_PROPERTY(QVariant iptqQuestionObj READ questionObj WRITE setQuestionObj NOTIFY questionObjChanged)
+
+
+    class DefaultLayout : public LayoutBase<ImagePointToQuestion>
+    {
+    public:
+        DefaultLayout()
+        {
+            setLayoutJsonName("image-point-to-question");
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ImagePointToQuestion::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &ImagePointToQuestion::m_appId);
+            addField<int>("id", "iptqId", &ImagePointToQuestion::id, &ImagePointToQuestion::setId);
+            addField<int>("image_point", "iptqImagePointId", &ImagePointToQuestion::imagePointId, &ImagePointToQuestion::setImagePointId);
+            addField<int>("question", "iptqQuestionId", &ImagePointToQuestion::questionId, &ImagePointToQuestion::setQuestionId);
+            addModel<QuestionModel>("iptqQuestionObj", &ImagePointToQuestion::m_questionModel, &ImagePointToQuestion::createQuestionModel);
+        }
+    };
+
+
+    int id() const;
+    void setId(const int &id_);
+    int imagePointId() const;
+    void setImagePointId(const int &imagePointId_);
+    int questionId() const;
+    void setQuestionId(const int &questionId_);
+    QVariant questionObj() const;
+    void setQuestionObj(const QVariant &obj_);
+    QuestionModel *getQuestions();
+
+protected:
+    QuestionModel *createQuestionModel();
+
+signals:
+    void idChanged();
+    void imagePointIdChanged();
+    void questionIdChanged();
+    void questionObjChanged();
+
+private:
+    IListModelInfo *m_parentModelInfo = nullptr;
+    int m_appId = -1;
+    int m_id = -1;
+    int m_imagePointId = -1;
+    int m_questionId = -1;
+    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
+    QuestionModel *m_questionModel = nullptr;
+};
+
+
+class ImagePointToQuestionModel : public ListModelBaseOfData<ImagePointToQuestion, ImagePointToQuestionModel>
+{
+    Q_OBJECT
+    QML_ELEMENT
+
+protected:
+    using base = ListModelBaseOfData<ImagePointToQuestion, ImagePointToQuestionModel>;
+
+public:
+    explicit ImagePointToQuestionModel(QObject *parent_ = nullptr);
+
+    LAYOUT_MODEL_IMPL();
+
+public slots:
+    void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+    {
+        jsonResponseSlotImpl(errorCode_, request_, reply_);
+    }
+
+    void refreshChildrenSlot(QString modelName_)
+    {
+        refreshChildrenSlotImpl(modelName_);
+    }
+
+signals:
+    void currentIndexChanged();
+    void currentRefChanged();
+    void storeAfterSaveChanged();
+    void refAppIdChanged();
+    void layoutQMLNameChanged();
+    void layoutIdFieldChanged();
+    void refreshChildren(QString);
+    void jsonParamsGetChanged();
+    void autoCreateChildrenModelsChanged();
+};
 
 
 class ImagePointToNextImage : public QObject
@@ -107,6 +206,7 @@ public:
     Q_PROPERTY(qreal ipWeight READ weight WRITE setWeight NOTIFY weightChanged)
     Q_PROPERTY(QDateTime ipCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant nextImage READ nextImage WRITE setNextImage NOTIFY nextImageChanged)
+    Q_PROPERTY(QVariant nextQuestion READ nextQuestion WRITE setNextQuestion NOTIFY nextQuestionChanged)
 
     class DefaultLayout : public LayoutBase<ImagePoint>
     {
@@ -123,6 +223,7 @@ public:
             addField<qreal>("weight", "ipWeight", &ImagePoint::weight, &ImagePoint::setWeight);
             addField<QDateTime>("created", "ipCreated", &ImagePoint::created, &ImagePoint::setCreated);
             addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImage, &ImagePoint::createImagePointToNextImage);
+            addModel<ImagePointToQuestionModel>("nextQuestion", &ImagePoint::m_imagePointToQuestionModel, &ImagePoint::createImagePointToQuestionModel);
         }
     };
 
@@ -140,7 +241,10 @@ public:
     void setCreated(const QDateTime &created_);
     QVariant nextImage() const;
     void setNextImage(const QVariant &obj_);
+    QVariant nextQuestion() const;
+    void setNextQuestion(const QVariant &obj_);
     ImagePointToNextImageModel *getNextImage() const;
+    ImagePointToQuestionModel *getNextQuestion() const;
 
     qreal distanceCoef(qreal x_, qreal y_) const;
 
@@ -152,9 +256,11 @@ signals:
     void weightChanged();
     void createdChanged();
     void nextImageChanged();
+    void nextQuestionChanged();
 
 protected:
     ImagePointToNextImageModel *createImagePointToNextImage();
+    ImagePointToQuestionModel *createImagePointToQuestionModel();
 
 private:
     int m_appId = -1;
@@ -165,6 +271,7 @@ private:
     qreal m_weight = 1.0;
     QDateTime m_created;
     ImagePointToNextImageModel *m_imagePointToNextImage = nullptr;
+    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     ImagePointModel *m_imagePointModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
 };
@@ -182,7 +289,12 @@ public:
 
     LAYOUT_MODEL_IMPL();
 
-    Q_INVOKABLE QVariant nextImageByCoords(qreal x_, qreal y_);
+    Q_INVOKABLE QVariant nextObjByCoords(qreal x_, qreal y_);
+    Q_INVOKABLE bool isNextObjImageByCoords(qreal x_, qreal y_);
+    Q_INVOKABLE bool isNextObjQuestionByCoords(qreal x_, qreal y_);
+
+protected:
+    ImagePoint *nextImagePointByCoords(qreal x_, qreal y_);
 
 public slots:
     void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)

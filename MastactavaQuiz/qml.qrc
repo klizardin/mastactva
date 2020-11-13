@@ -6,6 +6,7 @@
         <file>DescriptionForm.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>GalleryFunctions.js</file>
+        <file>QuestionForm.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

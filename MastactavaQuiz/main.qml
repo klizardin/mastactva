@@ -71,6 +71,7 @@ ApplicationWindow {
             quizPage.netAPI = netAPI
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
             descriptionPage.netAPI = netAPI
+            questionPage.netAPI = netAPI
             galleryPage.galleryModel = galleryModel
             galleryPage.mastactvaAPI = mastactvaAPI
 
@@ -98,6 +99,32 @@ ApplicationWindow {
 
     QuizForm {
         id: quizPage
+    }
+
+    Connections {
+        target: quizPage
+
+        function onShowQuestion(question)
+        {
+            questionPage.question = question
+            questionPage.init()
+            stackView.push(questionPage)
+        }
+    }
+
+    QuestionForm {
+        id: questionPage
+    }
+
+    Connections {
+        target: questionPage
+
+        function onAnswer(answerIndex)
+        {
+            if (stackView.depth > 1) {
+                stackView.pop()
+            }
+        }
     }
 
     DescriptionForm {
