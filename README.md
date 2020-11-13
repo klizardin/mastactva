@@ -5,3 +5,5 @@
 [2020.10.08 some feature demo](https://youtu.be/j_qogdTHk7U)
 
 [2020.10.26 login dialog, options dialog, voronoy diagram v2](https://youtu.be/JlVwnTkHYj8)
+
+[2020.11.13 Quiz: galleries view, images view, questions view](https://youtu.be/apXL30X4q1Y)
