@@ -5,20 +5,26 @@
 #include <QObject>
 #include <QDateTime>
 #include "IModel.h"
+#include "imagesource.h"
 #include "Layout.h"
 #include "Model.h"
+#include "answer.h"
+
+
+class QuestionModel;
 
 
 class Question : public QObject
 {
     Q_OBJECT
 public:
-    explicit Question(QObject *parent_ = nullptr);
+    explicit Question(QuestionModel *parent_ = nullptr);
 
-    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(QString question READ question WRITE setQuestion NOTIFY questionChanged)
-    Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
-    Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(int questionId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString questionText READ question WRITE setQuestion NOTIFY questionChanged)
+    Q_PROPERTY(qreal questionPointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
+    Q_PROPERTY(QDateTime questionCreated READ created WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(QVariant questionAnswers READ answers WRITE setAnswers NOTIFY answersChanged)
 
     class DefaultLayout : public LayoutBase<Question>
     {
@@ -31,6 +37,7 @@ public:
             addField<QString>("question", "questionText", &Question::question, &Question::setQuestion);
             addField<qreal>("points_to_pass", "questionPointsToPass", &Question::pointsToPass, &Question::setPointsToPass);
             addField<QDateTime>("created", "questionCreated", &Question::created, &Question::setCreated);
+            addModel<AnswerModel>("questionAnswers", &Question::m_answerModel, &Question::createAnswerModel);
         }
     };
 
@@ -42,12 +49,18 @@ public:
     void setPointsToPass(const qreal &pointsToPass_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+    QVariant answers() const;
+    void setAnswers(const QVariant &answers_);
+
+protected:
+    AnswerModel *createAnswerModel();
 
 signals:
     void idChanged();
     void questionChanged();
     void pointsToPassChanged();
     void createdChanged();
+    void answersChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
@@ -56,6 +69,8 @@ private:
     QString m_question;
     qreal m_pointsToPass = 1.0;
     QDateTime m_created;
+    AnswerModel *m_answerModel = nullptr;
+    QuestionModel *m_questionModel = nullptr;
 };
 
 
