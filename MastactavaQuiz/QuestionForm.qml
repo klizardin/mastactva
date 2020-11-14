@@ -15,6 +15,7 @@ Page {
     property var netAPI: undefined
     property var question: undefined
     property int currentAnswerIndex: -1
+    property bool hasDescription: false
 
     signal answer(int answerIndex)
 

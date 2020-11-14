@@ -114,6 +114,25 @@ void Image::setImagePoints(const QVariant &obj_)
     }
 }
 
+QVariant Image::imageDescription() const
+{
+    if(nullptr == m_imageDescriptionModel)
+    {
+        const_cast<Image *>(this)->m_imageDescriptionModel = const_cast<Image *>(this)->createImageDescriptionModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<ImageDescriptionModel *>(m_imageDescriptionModel)));
+}
+
+void Image::setImageDescription(const QVariant &obj_)
+{
+    if(obj_.isNull())
+    {
+        delete m_imageDescriptionModel;
+        m_imageDescriptionModel = nullptr;
+        emit imageDescriptionChanged();
+    }
+}
+
 ImagePointModel *Image::createImagePoints()
 {
     ImagePointModel *m = new ImagePointModel(this);
@@ -123,6 +142,20 @@ ImagePointModel *Image::createImagePoints()
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImagePointModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->loadList();
+    return m;
+}
+
+ImageDescriptionModel *Image::createImageDescriptionModel()
+{
+    ImageDescriptionModel *m = new ImageDescriptionModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("image");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImageDescriptionModel_") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();

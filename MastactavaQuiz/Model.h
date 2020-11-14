@@ -211,11 +211,6 @@ public:
         return getDataLayout<DataType_>().getJsonValue(item, jsonFieldName);
     }
 
-    bool isEmpty() const
-    {
-        return m_data.isEmpty();
-    }
-
     const DataType_ *findDataItemByIdImpl(const QVariant &id_) const
     {
         const auto fit = std::find_if(std::begin(m_data),
@@ -756,6 +751,10 @@ public:                                                                         
     Q_INVOKABLE bool isListLoaded() const                                                                       \
     {                                                                                                           \
         return isListLoadedImpl();                                                                              \
+    }                                                                                                           \
+    Q_INVOKABLE bool isEmpty() const                                                                            \
+    {                                                                                                           \
+        return m_data.isEmpty();                                                                                \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \

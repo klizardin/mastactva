@@ -15,6 +15,7 @@ Page {
     property var netAPI: undefined
     property alias galleryModel: galleries.model
     property var currentImage: undefined
+    property bool hasDescription: false
 
     signal startQuiz(var image)
 

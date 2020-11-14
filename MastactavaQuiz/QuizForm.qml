@@ -15,8 +15,10 @@ Page {
     property var allImagesOfGalleryModel: undefined
     property var currentImage: undefined
     property alias currentImageSource: quizImage.source
+    property bool hasDescription: false
 
     signal showQuestion(var question)
+    signal setDescription(var descriptionModel)
 
     Image {
         id: quizImage
@@ -42,6 +44,7 @@ Page {
                         {
                             currentImage = nextImgObj
                             currentImageSource = currentImage.imageSource
+                            quizPage.setDescription(currentImage.imageDescription)
                         }
                     }
                     else if(currentImage.imagePoints.isNextObjQuestionByCoords(x, y))

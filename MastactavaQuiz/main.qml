@@ -93,6 +93,7 @@ ApplicationWindow {
         {
             quizPage.currentImage = startImage
             quizPage.currentImageSource = startImage.imageSource
+            setDescription(startImage.imageDescription)
             stackView.push(quizPage)
         }
     }
@@ -109,6 +110,28 @@ ApplicationWindow {
             questionPage.question = question
             questionPage.init()
             stackView.push(questionPage)
+        }
+
+        function onSetDescription(descriptionModel)
+        {
+            setDescription(descriptionModel)
+        }
+    }
+
+    function setDescription(imageDescription)
+    {
+        //console.log("imageDescription = ", imageDescription)
+        //console.log("imageDescription.isEmpty() = ", imageDescription.isEmpty())
+        //console.log("imageDescription.getCurrentItem() = ", imageDescription.getCurrentItem())
+        //console.log("imageDescription.getCurrentItem().idDescriptionText = ", imageDescription.getCurrentItem().idDescriptionText)
+        quizPage.hasDescription = !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
+        if(quizPage.hasDescription)
+        {
+            descriptionPage.descriptionTextArg = imageDescription.getCurrentItem().idDescriptionText
+        }
+        else
+        {
+            descriptionPage.descriptionTextArg = ""
         }
     }
 
@@ -131,6 +154,17 @@ ApplicationWindow {
         id: descriptionPage
     }
 
+    Connections {
+        target: descriptionPage
+
+        function onCloseDescriptionPage()
+        {
+            if (stackView.depth > 1) {
+                stackView.pop()
+            }
+        }
+    }
+
 
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
@@ -151,6 +185,17 @@ ApplicationWindow {
         Label {
             text: stackView.currentItem.title
             anchors.centerIn: parent
+        }
+
+        ToolButton {
+            id: infoButton
+            anchors.right: parent.right
+            text: qsTr("Description")
+            visible: stackView.currentItem.hasDescription
+            onClicked: {
+                stackView.push(descriptionPage)
+                descriptionPage.init()
+            }
         }
     }
 

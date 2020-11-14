@@ -9,6 +9,7 @@
 #include "Layout.h"
 #include "Model.h"
 #include "imagepoint.h"
+#include "imagedescription.h"
 
 
 class ImageModel;
@@ -27,6 +28,7 @@ public:
     Q_PROPERTY(bool top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant imagePoints READ imagePoints WRITE setImagePoints NOTIFY imagePointsChanged)
+    Q_PROPERTY(QVariant imageDescription READ imageDescription WRITE setImageDescription NOTIFY imageDescriptionChanged)
 
     Q_INVOKABLE bool isImageLoaded() const;
 
@@ -45,6 +47,7 @@ public:
             addField<int>("gallery", "galleryId", &Image::gallery, &Image::setGallery);
             addField<bool>("use_in_gallery_view", "top", &Image::top, &Image::setTop);
             addModel<ImagePointModel>("imagePoints", &Image::m_imagePoints, &Image::createImagePoints);
+            addModel<ImageDescriptionModel>("imageDescription", &Image::m_imageDescriptionModel, &Image::createImageDescriptionModel);
         }
     };
 
@@ -64,9 +67,12 @@ public:
     void setCreated(const QDateTime &created_);
     QVariant imagePoints() const;
     void setImagePoints(const QVariant &obj_);
+    QVariant imageDescription() const;
+    void setImageDescription(const QVariant &obj_);
 
 protected:
     ImagePointModel *createImagePoints();
+    ImageDescriptionModel *createImageDescriptionModel();
 
 signals:
     void idChanged();
@@ -76,6 +82,7 @@ signals:
     void topChanged();
     void createdChanged();
     void imagePointsChanged();
+    void imageDescriptionChanged();
 
 private:
     ImageModel *m_imageModel = nullptr;
@@ -87,6 +94,7 @@ private:
     bool m_top = false;
     QDateTime m_created;
     ImagePointModel *m_imagePoints = nullptr;
+    ImageDescriptionModel *m_imageDescriptionModel = nullptr;
     IListModelInfo *m_thisListModelInfo = 0;
 };
 
