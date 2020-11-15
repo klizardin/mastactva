@@ -1,4 +1,4 @@
-QT += quick
+_QT += quick
 QT += quickcontrols2
 
 CONFIG += qmltypes
@@ -27,6 +27,7 @@ SOURCES += \
         netapi.cpp \
         qmlobjects.cpp \
         question.cpp \
+        questionanswer.cpp \
         quizuser.cpp \
         utils.cpp
 
@@ -65,6 +66,7 @@ HEADERS += \
     netapi.h \
     qmlobjects.h \
     question.h \
+    questionanswer.h \
     quizuser.h \
     utils.h
 
