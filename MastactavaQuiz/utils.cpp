@@ -7,7 +7,7 @@ QString leftDoubleCR(const QString &str_)
     QStringList frags = res.split("\n\n", Qt::SkipEmptyParts);
     for(QString &s: frags)
     {
-        s.replace("\n", "");
+        s.replace("\n", " ");
     }
     return frags.join("\n\n");
 }
