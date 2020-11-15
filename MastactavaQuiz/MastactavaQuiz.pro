@@ -73,4 +73,5 @@ DISTFILES += \
     GalleryFunctions.js \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
+    todo.txt
 

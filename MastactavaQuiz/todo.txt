@@ -1,0 +1,1 @@
+1) do not send answer points from server to client
