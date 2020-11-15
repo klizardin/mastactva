@@ -2,6 +2,9 @@
 #include "qmlobjects.h"
 
 
+//#define TRACE_MODEL_LOADING
+
+
 ListModelBaseData::ListModelBaseData(IListModel *model_)
     :m_model(model_)
 {
@@ -194,8 +197,16 @@ bool ListModelBaseData::isListLoadedImpl() const
     return m_listLoaded && !listLoading() && childrenLoaded();
 }
 
+void ListModelBaseData::listLoadedVF()
+{
+}
+
 void ListModelBaseData::startListLoad()
 {
+#if defined(TRACE_MODEL_LOADING)
+    qDebug() << m_QMLLayoutName << "startListLoad()";
+#endif
+
     m_listLoading = true;
     if(nullptr != m_parentListModelInfo)
     {
@@ -205,6 +216,10 @@ void ListModelBaseData::startListLoad()
 
 void ListModelBaseData::setListLoaded()
 {
+#if defined(TRACE_MODEL_LOADING)
+    qDebug() << m_QMLLayoutName << "setListLoaded()";
+#endif
+
     m_listLoading = false;
     m_listLoaded = true;
     if(nullptr != m_parentListModelInfo)
@@ -226,6 +241,9 @@ bool ListModelBaseData::childrenLoaded() const
 void ListModelBaseData::startLoadChildModel()
 {
     ++m_loadingChildenModels;
+#if defined(TRACE_MODEL_LOADING)
+    qDebug() << m_QMLLayoutName << "startLoadChildModel() " << m_loadingChildenModels;
+#endif
     if(nullptr != m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
@@ -235,11 +253,18 @@ void ListModelBaseData::startLoadChildModel()
 void ListModelBaseData::endLoadChildModel()
 {
     --m_loadingChildenModels;
+#if defined(TRACE_MODEL_LOADING)
+    qDebug() << m_QMLLayoutName << "endLoadChildModel() " << m_loadingChildenModels;
+#endif
     if(nullptr != m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
     }
     Q_ASSERT(m_loadingChildenModels >= 0);
+    if(isListLoadedImpl())
+    {
+        listLoadedVF();
+    }
 }
 
 void ListModelBaseData::setParentListModelInfo(IListModelInfo *parentListModelInfo_)

@@ -80,6 +80,7 @@ signals:
     void refreshChildren(QString);
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
+    void listReloaded();
 
 protected:
     virtual void listLoaded(const QJsonDocument &reply_) override;

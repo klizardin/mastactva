@@ -17,6 +17,7 @@ SOURCES += \
         answer.cpp \
         appconsts.cpp \
         gallery.cpp \
+        gallerystatistics.cpp \
         image.cpp \
         imagedescription.cpp \
         imagepoint.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     answer.h \
     appconsts.h \
     gallery.h \
+    gallerystatistics.h \
     image.h \
     imagedescription.h \
     imagepoint.h \

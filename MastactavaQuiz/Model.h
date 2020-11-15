@@ -46,6 +46,7 @@ public:
     virtual void startLoadChildModel() override;
     virtual void endLoadChildModel() override;
     virtual bool isListLoadedImpl() const override;
+    virtual void listLoadedVF() override;
 
 protected:
     void setRefAppIdImpl(const QVariant &appId_);
@@ -293,6 +294,7 @@ protected:
             reloadList = true;
             return;
         }
+        startListLoad();
         if(getJsonLayoutName().isEmpty())
         {
             request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
@@ -456,7 +458,7 @@ protected:
             removeRequest(request_);
             return;
         }
-        if(errorCode_ != 0)
+        if(errorCode_ != 0 && errorCode_ >= 300)
         {
             handleError(errorCode_, reply_);
         }
@@ -521,32 +523,32 @@ protected:
 
     virtual void listLoaded(const QJsonDocument &reply_)
     {
-        if(reply_.isEmpty()) { return; }
-        Q_ASSERT(reply_.isArray());
         const QVariant oldCurrentAppId = getCurrentIndexAppId();
         const QVariant oldCurrentId = getIdFieldValueForAppId(oldCurrentAppId);
-
         QList<DataType_ *> loaded;
-        for(int i = 0; ; i++)
+        if(!reply_.isEmpty())
         {
-            QJsonValue itemJV = reply_[i];
-            if(itemJV.isUndefined()) { break; }
-            DataType_ *item = createDataItemImpl();
-            const bool ok = getDataLayout<DataType_>().setJsonValues(item, itemJV);
-            if(!ok)
+            for(int i = 0; ; i++)
             {
-                delete item;
-                continue;
+                QJsonValue itemJV = reply_[i];
+                if(itemJV.isUndefined()) { break; }
+                DataType_ *item = createDataItemImpl();
+                const bool ok = getDataLayout<DataType_>().setJsonValues(item, itemJV);
+                if(!ok)
+                {
+                    delete item;
+                    continue;
+                }
+                const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
+                DataType_ *oldItem = findDataItemByIdImpl(id);
+                if(nullptr != oldItem)
+                {
+                    const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+                    Q_ASSERT(appId.isValid());
+                    getDataLayout<DataType_>().setSpecialFieldValue(layout::SpecialFieldEn::appId, appId, item);
+                }
+                loaded.push_back(item);
             }
-            const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
-            DataType_ *oldItem = findDataItemByIdImpl(id);
-            if(nullptr != oldItem)
-            {
-                const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
-                Q_ASSERT(appId.isValid());
-                getDataLayout<DataType_>().setSpecialFieldValue(layout::SpecialFieldEn::appId, appId, item);
-            }
-            loaded.push_back(item);
         }
         clearData();
         beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + loaded.size() - 1);
@@ -570,6 +572,7 @@ protected:
                 getDataLayout<DataType_>().createQMLValues(item);
             }
         }
+        setListLoaded();
         //for(const DataType_ *i: m_data)
         //{
         //    QHash<QString, QVariant> values;
@@ -832,6 +835,11 @@ public:                                                                         
     {                                                                                                           \
         setAutoCreateChildrenModelsImpl(autoCreateChildrenModels_);                                             \
         emit autoCreateChildrenModelsChanged();                                                                 \
+    }                                                                                                           \
+    virtual void listLoadedVF() override                                                                        \
+    {                                                                                                           \
+        ListModelBaseData::listLoadedVF();                                                                      \
+        emit listReloaded();                                                                                    \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

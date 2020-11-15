@@ -105,6 +105,40 @@ QVariant Gallery::images()
     return QVariant::fromValue(static_cast<QObject *>(m_images));
 }
 
+QVariant Gallery::statistics() const
+{
+    if(nullptr == m_galleryStatisticsModel)
+    {
+        const_cast<Gallery *>(this)->m_galleryStatisticsModel = const_cast<Gallery *>(this)->createGalleryStatistics();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<GalleryStatisticsModel *>(m_galleryStatisticsModel)));
+}
+
+void Gallery::setStatistics(const QVariant &obj_)
+{
+    if(obj_.isNull())
+    {
+        delete m_galleryStatisticsModel;
+        m_galleryStatisticsModel = nullptr;
+
+        emit statisticsChanged();
+    }
+}
+
+GalleryStatisticsModel *Gallery::createGalleryStatistics()
+{
+    GalleryStatisticsModel *m = new GalleryStatisticsModel(this);
+    m->initResponse();
+    m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
+    m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("gallery");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_GalleryStatisticsModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->loadList();
+    return m;
+}
 
 GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Gallery, GalleryModel>(parent_)

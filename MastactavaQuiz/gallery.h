@@ -9,6 +9,7 @@
 #include "image.h"
 #include "Layout.h"
 #include "Model.h"
+#include "gallerystatistics.h"
 
 
 class GalleryModel;
@@ -28,6 +29,7 @@ public:
     Q_PROPERTY(qreal pointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_PROPERTY(bool ownGallery READ ownGallery WRITE setOwnGallery NOTIFY ownGalleryChanged)
     Q_PROPERTY(QVariant images READ images NOTIFY imagesChanged)
+    Q_PROPERTY(QVariant galleryStatistics READ statistics WRITE setStatistics NOTIFY statisticsChanged)
 
 public:
     class DefaultLayout : public LayoutBase<Gallery>
@@ -44,6 +46,7 @@ public:
             addField<qreal>("points_to_pass", "pointsToPass", &Gallery::pointsToPass, &Gallery::setPointsToPass);
             addField<int>("owner", "owner", &Gallery::ownGallery, &Gallery::setOwnGallery);
             addModel<ImageModel>("images", &Gallery::m_images, &Gallery::createImages);
+            addModel<GalleryStatisticsModel>("galleryStatistics", &Gallery::m_galleryStatisticsModel, &Gallery::createGalleryStatistics);
         }
     };
 
@@ -60,6 +63,8 @@ public:
     int ownGallery() const;
     void setOwnGallery(const int &ownGallery_);
     QVariant images();
+    QVariant statistics() const;
+    void setStatistics(const QVariant &obj_);
 
 signals:
     void idChanged();
@@ -69,9 +74,11 @@ signals:
     void pointsToPassChanged();
     void ownGalleryChanged();
     void imagesChanged();
+    void statisticsChanged();
 
 protected:
     ImageModel *createImages();
+    GalleryStatisticsModel *createGalleryStatistics();
 
 private:
     int m_appId = 0;
@@ -83,6 +90,7 @@ private:
     int m_ownGallery = false;
     ImageModel *m_images = nullptr;
     GalleryModel *m_galleryModel = nullptr;
+    GalleryStatisticsModel *m_galleryStatisticsModel = nullptr;
 };
 
 
@@ -120,6 +128,7 @@ signals:
     void refreshChildren(QString);
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
+    void listReloaded();
 };
 
 

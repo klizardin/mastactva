@@ -109,6 +109,7 @@ signals:
     void refreshChildren(QString);
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
+    void listReloaded();
 };
 
 

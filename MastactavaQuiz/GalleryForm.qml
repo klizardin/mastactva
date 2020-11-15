@@ -96,6 +96,36 @@ Page {
                count: galleryImagesSwipeView.count
             }
 
+            Text {
+                id: galleryPoints
+                x: (galleryPage.width - width)/2
+                width: galleryPage.width - (Constants.leftSideBarWidth - Constants.leftSideBarTextWidth)
+                wrapMode: Text.WordWrap
+                text: getPointsText()
+            }
+
+            Connections {
+                target: galleryStatistics
+
+                function onListReloaded()
+                {
+                    galleryPoints.text = getPointsText()
+                }
+            }
+
+            function getPointsText()
+            {
+                var gs = galleryStatistics
+                if(gs.isListLoaded() && !galleryStatistics.isEmpty())
+                {
+                    return pointsToPass + qsTr("/") + galleryStatistics.getCurrentItem().ugsPoints
+                }
+                else
+                {
+                    return pointsToPass + qsTr("/") + qsTr("...")
+                }
+            }
+
             property bool showFullDescription: false
 
             Text {
