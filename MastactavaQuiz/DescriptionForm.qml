@@ -18,19 +18,24 @@ Page {
 
     signal closeDescriptionPage()
 
-    ColumnLayout {
-        Text {
-            id: descriptionText
-            padding: Constants.questionPadding
-            width: Constants.pageWidth
-            text: qsTr("")
-        }
-        Button {
-            text: qsTr("Close")
-            width: Constants.pageWidth
-            Layout.alignment: Qt.AlignVCenter
-            onClicked: {
-                closePage()
+    Rectangle {
+        anchors.fill: parent
+
+        Column {
+            Text {
+                id: descriptionText
+                text: qsTr("")
+                x: Constants.questionPadding
+                width: Constants.pageWidth - Constants.questionPadding * 2
+                wrapMode: Text.WordWrap
+            }
+            Button {
+                text: qsTr("Close")
+                width: Constants.pageWidth
+                Layout.alignment: Qt.AlignVCenter
+                onClicked: {
+                    closePage()
+                }
             }
         }
     }

@@ -19,48 +19,55 @@ Page {
 
     signal answer(int answerIndex)
 
-    ColumnLayout {
+    Rectangle
+    {
+        anchors.fill: parent
 
-        Text {
-            padding: Constants.questionPadding
-            text: qsTr("Question : ")
-        }
+        Column {
 
-        Text {
-            id: questionText
-            padding: Constants.questionPadding
-            width: questionPage.width
-        }
-
-        Row {
-            padding: Constants.questionPadding
-            Label {
-                text: qsTr("Points for question : ")
-            }
             Text {
-                id: questionPoints
+                padding: Constants.questionPadding
+                text: qsTr("Question : ")
             }
-        }
 
-        Rectangle {
-            width: Constants.pageWidth
-            height: Constants.answersHeight
+            Text {
+                id: questionText
+                //padding: Constants.questionPadding
+                x: Constants.questionPadding
+                width: questionPage.width - Constants.questionPadding * 2
+                wrapMode: Text.WordWrap
+            }
 
-            ListView {
-                id: answers
-                anchors.fill: parent
+            Row {
+                padding: Constants.questionPadding
+                Label {
+                    text: qsTr("Points for question : ")
+                }
+                Text {
+                    id: questionPoints
+                }
+            }
+
+            Rectangle {
                 width: Constants.pageWidth
-                model: undefined
-                delegate: answerItem
-            }
-        }
+                height: Constants.answersHeight
 
-        Button {
-            width: Constants.pageWidth
-            text: qsTr("Choose")
-            Layout.alignment: Qt.AlignVCenter
-            onClicked: {
-                chooseAnswer()
+                ListView {
+                    id: answers
+                    anchors.fill: parent
+                    width: Constants.pageWidth - Constants.questionPadding * 2
+                    model: undefined
+                    delegate: answerItem
+                }
+            }
+
+            Button {
+                width: Constants.pageWidth
+                text: qsTr("Choose")
+                Layout.alignment: Qt.AlignVCenter
+                onClicked: {
+                    chooseAnswer()
+                }
             }
         }
     }
@@ -68,31 +75,32 @@ Page {
     Component {
         id: answerItem
 
-        ColumnLayout {
-            Rectangle {
-                width: Constants.pageWidth
-                height: Constants.answersHeight / 3
+        Rectangle {
+            x: Constants.questionPadding
+            width: Constants.pageWidth - Constants.questionPadding * 2
+            height: Constants.answersHeight / 3
 
-                SystemPalette {
-                    id: answerItemPallete
-                    colorGroup: SystemPalette.Active
-                }
+            SystemPalette {
+                id: answerItemPallete
+                colorGroup: SystemPalette.Active
+            }
 
-                border.width: 2
-                border.color: currentAnswerIndex === index ? answerItemPallete.highlight : answerItemPallete.window
+            border.width: 2
+            border.color: currentAnswerIndex === index ? answerItemPallete.highlight : answerItemPallete.window
 
+            Column {
                 Text {
-                    padding: Constants.questionPadding
-                    width: Constants.pageWidth
+                    x: Constants.questionPadding
+                    width: Constants.pageWidth - Constants.questionPadding * 4
                     text : answerText
+                    wrapMode: Text.WordWrap
                 }
+            }
+            MouseArea {
+                anchors.fill: parent
 
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        currentAnswerIndex = index
-                    }
+                onClicked: {
+                    currentAnswerIndex = index
                 }
             }
         }

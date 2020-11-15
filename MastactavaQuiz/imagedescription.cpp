@@ -1,4 +1,6 @@
 #include "imagedescription.h"
+#include "utils.h"
+
 
 ImageDescription::ImageDescription(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
@@ -48,7 +50,7 @@ QString ImageDescription::description() const
 
 void ImageDescription::setDescription(const QString &descriptionText_)
 {
-    m_descriptionText = descriptionText_;
+    m_descriptionText = leftDoubleCR(descriptionText_);
 
     emit descriptionChanged();
 }

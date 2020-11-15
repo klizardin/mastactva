@@ -1,4 +1,6 @@
 #include "question.h"
+#include "utils.h"
+
 
 Question::Question(QuestionModel *parent_)
     : QObject(parent_)
@@ -25,7 +27,7 @@ QString Question::question() const
 
 void Question::setQuestion(const QString &question_)
 {
-    m_question = question_;
+    m_question = leftDoubleCR(question_);
 
     emit questionChanged();
 }

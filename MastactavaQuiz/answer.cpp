@@ -1,4 +1,6 @@
 #include "answer.h"
+#include "utils.h"
+
 
 Answer::Answer(QObject *parent_)
     : QObject(parent_)
@@ -36,7 +38,7 @@ QString Answer::answer() const
 
 void Answer::setAnswer(const QString &answer_)
 {
-    m_answer = answer_;
+    m_answer = leftDoubleCR(answer_);
 
     emit answerChanged();
 }
