@@ -107,22 +107,24 @@ public:
     }
 
     template<class DataType_>
-    RequestData *addItem(const QString &layoutName_, const DataType_ *item_)
+    RequestData *addItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
+        values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
         return addItemImpl(addItemRequestName<DataType_>(), layoutName_, appId, values);
     }
 
     template<class DataType_>
-    RequestData *setItem(const QString &layoutName_, const DataType_ *item_)
+    RequestData *setItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
+        values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
         return setItemImpl(setItemRequestName<DataType_>(), layoutName_, id, values);
@@ -147,6 +149,8 @@ protected:
     void setBasicAuthentification(QNetworkRequest* netRequest_);
     void clearData();
     bool init();
+
+    QHash<QString, QVariant> &&merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
 
 private:
     QString m_hostName;

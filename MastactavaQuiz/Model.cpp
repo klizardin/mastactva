@@ -201,6 +201,29 @@ void ListModelBaseData::listLoadedVF()
 {
 }
 
+void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_)
+{
+    m_renames.insert(oldName_, newName_);
+}
+
+QHash<QString, QVariant> &&ListModelBaseData::renameFields(const QHash<QString, QVariant> &src_)
+{
+    QHash<QString, QVariant> res;
+    for(QHash<QString, QVariant>::const_iterator it = src_.begin(); it != src_.end(); ++it)
+    {
+        if(m_renames.contains(it.key()))
+        {
+            res.insert(m_renames.value(it.key()), it.value());
+        }
+        else
+        {
+            res.insert(it.key(), it.value());
+        }
+    }
+    return std::move(res);
+}
+
+
 void ListModelBaseData::startListLoad()
 {
 #if defined(TRACE_MODEL_LOADING)

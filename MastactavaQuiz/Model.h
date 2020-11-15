@@ -14,6 +14,9 @@
 #include "qmlobjects.h"
 
 
+//#define TRACE_LIST_LOAD_DATA
+
+
 class ListModelBaseData : public IListModelInfo
 {
 protected:
@@ -41,6 +44,7 @@ public:
     void registerListModel();
     void setParentListModelInfo(IListModelInfo *parentListModelInfo_);
     bool autoCreateChildrenModelsImpl() const;
+    void addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_);
 
 public:
     virtual void startLoadChildModel() override;
@@ -74,6 +78,7 @@ protected:
     void startListLoad();
     void setListLoaded();
     bool listLoading() const;
+    QHash<QString, QVariant> &&renameFields(const QHash<QString, QVariant> &src_);
 
 private:
     void unregisterListModel();
@@ -82,6 +87,7 @@ private:
 protected:
     QHash<QString, RefDescription> m_refs;
     QList<ExtraFields> m_extraFields;
+    QHash<QString, QString> m_renames;
     QVector<RequestData *> m_requests;
     QHash<QString, QVariant> m_modelParams;
 
@@ -322,6 +328,7 @@ protected:
                     m->getValuesForAppId(f.m_appId, extraFields);
                 }
             }
+            extraFields = renameFields(extraFields);
             request = netAPI->getList<DataType_>(
                         getJsonLayoutName(),
                         currentRefImpl(),
@@ -331,7 +338,10 @@ protected:
                         getJsonParamsGetImpl(),
                         extraFields
                         );
-            addRequest(request);
+            if(!addRequest(request))
+            {
+                setListLoaded();
+            }
         }
     }
 
@@ -378,7 +388,17 @@ protected:
             bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
             if(!ret) { return ret; }
 
-            RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_]);
+            QHash<QString, QVariant> extraFields(m_modelParams);
+            for(const ExtraFields &f: m_extraFields)
+            {
+                IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
+                if(nullptr != m)
+                {
+                    m->getValuesForAppId(f.m_appId, extraFields);
+                }
+            }
+            extraFields = renameFields(extraFields);
+            RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_], extraFields);
             return addRequest(request);
         }
     }
@@ -408,7 +428,17 @@ protected:
         }
         else
         {
-            RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back());
+            QHash<QString, QVariant> extraFields(m_modelParams);
+            for(const ExtraFields &f: m_extraFields)
+            {
+                IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
+                if(nullptr != m)
+                {
+                    m->getValuesForAppId(f.m_appId, extraFields);
+                }
+            }
+            extraFields = renameFields(extraFields);
+            RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back(), extraFields);
             return addRequest(request);
         }
     }
@@ -573,12 +603,14 @@ protected:
             }
         }
         setListLoaded();
-        //for(const DataType_ *i: m_data)
-        //{
-        //    QHash<QString, QVariant> values;
-        //    getDataLayout<DataType_>().getJsonValues(i, values);
-        //    qDebug() << values;
-        //}
+#if defined(TRACE_LIST_LOAD_DATA)
+        for(const DataType_ *i: m_data)
+        {
+            QHash<QString, QVariant> values;
+            getDataLayout<DataType_>().getJsonValues(i, values);
+            qDebug() << values;
+        }
+#endif
     }
 
     virtual void itemAdded(RequestData *request_, const QJsonDocument &reply_)
@@ -758,6 +790,10 @@ public:                                                                         
     Q_INVOKABLE bool isEmpty() const                                                                            \
     {                                                                                                           \
         return m_data.isEmpty();                                                                                \
+    }                                                                                                           \
+    Q_INVOKABLE void addExtraFieldRename(const QString &oldName_, const QString &newName_)                      \
+    {                                                                                                           \
+        addExtraFieldRenameImpl(oldName_, newName_);                                                            \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \

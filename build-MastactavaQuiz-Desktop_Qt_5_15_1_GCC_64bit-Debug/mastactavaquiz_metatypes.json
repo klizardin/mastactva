@@ -207,6 +207,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -708,6 +723,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1134,6 +1164,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1647,6 +1692,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2073,6 +2133,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2499,6 +2574,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2900,6 +2990,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -3396,6 +3501,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -4018,6 +4138,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -4387,6 +4522,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

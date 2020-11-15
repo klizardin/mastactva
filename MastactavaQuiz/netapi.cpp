@@ -139,6 +139,30 @@ void NetAPI::clearData()
     }
 }
 
+QHash<QString, QVariant> &&NetAPI::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)
+{
+    QHash<QString, QVariant> res;
+    for(QHash<QString, QVariant>::const_iterator it = v2_.begin(); it != v2_.end(); ++it)
+    {
+        if(v1_.contains(it.key()))
+        {
+            res.insert(it.key(), v1_.value(it.key())); // for common prefere v1_
+        }
+        else
+        {
+            res.insert(it.key(), it.value());
+        }
+    }
+    for(QHash<QString, QVariant>::const_iterator it = v1_.begin(); it != v1_.end(); ++it)
+    {
+        if(!v2_.contains(it.key()))
+        {
+            res.insert(it.key(), it.value());
+        }
+    }
+    return std::move(res);
+}
+
 bool NetAPI::init()
 {
     if(nullptr != m_networkManager) { return true; }
