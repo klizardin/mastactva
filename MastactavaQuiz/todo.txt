@@ -1,1 +1,2 @@
 1) do not send answer points from server to client
+2) add server checks for UserStep posts

@@ -29,6 +29,7 @@ SOURCES += \
         question.cpp \
         questionanswer.cpp \
         quizuser.cpp \
+        userstep.cpp \
         utils.cpp
 
 RESOURCES += qml.qrc \
@@ -68,6 +69,7 @@ HEADERS += \
     question.h \
     questionanswer.h \
     quizuser.h \
+    userstep.h \
     utils.h
 
 DISTFILES += \
