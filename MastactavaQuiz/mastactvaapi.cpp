@@ -1,5 +1,6 @@
 #include "mastactvaapi.h"
 
+
 MastactvaAPI::MastactvaAPI(QObject *parent_ /*= nullptr*/)
     :QObject(parent_)
 {
@@ -18,4 +19,9 @@ QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QStri
     int i = maxSymbols_;
     for(;i < str_.length() && isSymbol(str_.at(i)); i++) {}
     return str_.mid(0, i) + rmt_;
+}
+
+QDateTime MastactvaAPI::now() const
+{
+    return QDateTime::currentDateTime();
 }

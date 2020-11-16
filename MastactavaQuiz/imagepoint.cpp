@@ -325,7 +325,7 @@ void ImagePointModel::listLoaded(const QJsonDocument &reply_)
 
 ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_)
 {
-    if(isListLoadedImpl()) { return nullptr; }
+    if(!isListLoadedImpl()) { return nullptr; }
 
     ImagePoint *minIp = nullptr;
     qreal mind = 0.0;
@@ -346,7 +346,7 @@ ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_)
 
 QVariant ImagePointModel::nextObjByCoords(qreal x_, qreal y_)
 {
-    if(isListLoadedImpl()) { return QVariant(); }
+    if(!isListLoadedImpl()) { return QVariant(); }
 
     ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
     return QVariant::fromValue(static_cast<QObject *>(nearIp));
@@ -354,7 +354,7 @@ QVariant ImagePointModel::nextObjByCoords(qreal x_, qreal y_)
 
 bool ImagePointModel::isNextObjImageByCoords(qreal x_, qreal y_)
 {
-    if(isListLoadedImpl()) { return false; }
+    if(!isListLoadedImpl()) { return false; }
 
     ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
     if(nullptr == nearIp) { return false; }
@@ -363,7 +363,8 @@ bool ImagePointModel::isNextObjImageByCoords(qreal x_, qreal y_)
 
 bool ImagePointModel::isNextObjQuestionByCoords(qreal x_, qreal y_)
 {
-    if(isListLoadedImpl()) { return false; }
+    if(!isListLoadedImpl()) { return false; }
+
     ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
     if(nullptr == nearIp) { return false; }
     ImagePointToQuestion* iptq = nearIp->getNextQuestion()->getCurrentDataItem();

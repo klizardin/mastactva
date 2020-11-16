@@ -9,6 +9,7 @@
 #include "Layout.h"
 #include "Model.h"
 #include "answer.h"
+#include "questionanswer.h"
 
 
 class QuestionModel;
@@ -25,6 +26,7 @@ public:
     Q_PROPERTY(qreal questionPointsToPass READ pointsToPass WRITE setPointsToPass NOTIFY pointsToPassChanged)
     Q_PROPERTY(QDateTime questionCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant questionAnswers READ answers WRITE setAnswers NOTIFY answersChanged)
+    Q_PROPERTY(QVariant userQuestionAnswer READ userQuestionAnswer NOTIFY userQuestionAnswerChanged)
 
     class DefaultLayout : public LayoutBase<Question>
     {
@@ -39,6 +41,7 @@ public:
             addField<qreal>("points_to_pass", "questionPointsToPass", &Question::pointsToPass, &Question::setPointsToPass);
             addField<QDateTime>("created", "questionCreated", &Question::created, &Question::setCreated);
             addModel<AnswerModel>("questionAnswers", &Question::m_answerModel, &Question::createAnswerModel);
+            addModel<UserQuestionAnswerModel>("userQuestionAnswer", &Question::m_userQuestionAnswerModel, &Question::createUserQuestionAnswerModel);
         }
     };
 
@@ -52,9 +55,11 @@ public:
     void setCreated(const QDateTime &created_);
     QVariant answers() const;
     void setAnswers(const QVariant &answers_);
+    QVariant userQuestionAnswer() const;
 
 protected:
     AnswerModel *createAnswerModel();
+    UserQuestionAnswerModel *createUserQuestionAnswerModel();
 
 signals:
     void idChanged();
@@ -62,6 +67,7 @@ signals:
     void pointsToPassChanged();
     void createdChanged();
     void answersChanged();
+    void userQuestionAnswerChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
@@ -72,6 +78,7 @@ private:
     QDateTime m_created;
     AnswerModel *m_answerModel = nullptr;
     QuestionModel *m_questionModel = nullptr;
+    UserQuestionAnswerModel *m_userQuestionAnswerModel = nullptr;
 };
 
 
@@ -110,6 +117,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 };
 
 

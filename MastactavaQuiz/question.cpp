@@ -76,6 +76,15 @@ void Question::setAnswers(const QVariant &answers_)
     }
 }
 
+QVariant Question::userQuestionAnswer() const
+{
+    if(nullptr == m_userQuestionAnswerModel)
+    {
+        const_cast<Question *>(this)->m_userQuestionAnswerModel = const_cast<Question *>(this)->createUserQuestionAnswerModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<UserQuestionAnswerModel *>(m_userQuestionAnswerModel)));
+}
+
 AnswerModel *Question::createAnswerModel()
 {
     AnswerModel *m = new AnswerModel(this);
@@ -87,6 +96,23 @@ AnswerModel *Question::createAnswerModel()
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
+    return m;
+}
+
+UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
+{
+    UserQuestionAnswerModel *m = new UserQuestionAnswerModel(this);
+    m->initResponse();
+    m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
+    m->addExtraFieldRename("deviceid", "user");
+    m->setLayoutRefImpl("question", m_questionModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("question");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_UserQuestionAnswerModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->setOutputModel(true);
+    //m->loadList(); -- should not be called
     return m;
 }
 

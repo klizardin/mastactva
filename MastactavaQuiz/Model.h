@@ -40,7 +40,7 @@ public:
     ~ListModelBaseData();
 
     void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true);
-    void addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_);
+    void addLayoutExtraFieldsImpl(const QString &modelName_, const QVariant &appId_);
     void registerListModel();
     void setParentListModelInfo(IListModelInfo *parentListModelInfo_);
     bool autoCreateChildrenModelsImpl() const;
@@ -78,7 +78,9 @@ protected:
     void startListLoad();
     void setListLoaded();
     bool listLoading() const;
-    QHash<QString, QVariant> &&renameFields(const QHash<QString, QVariant> &src_);
+    QHash<QString, QVariant> renameFields(const QHash<QString, QVariant> &src_);
+    bool getOutputModelImpl() const;
+    void setOutputModelImpl(bool outputModel_);
 
 private:
     void unregisterListModel();
@@ -106,6 +108,7 @@ private:
     bool m_listLoading = false;
     int m_loadingChildenModels = 0;
     IListModelInfo *m_parentListModelInfo = nullptr;
+    bool m_outputModel = false;
 };
 
 
@@ -746,6 +749,7 @@ public:                                                                         
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
     Q_PROPERTY(bool jsonParamsGet READ jsonParamsGet WRITE setJsonParamsGet NOTIFY jsonParamsGetChanged)        \
     Q_PROPERTY(bool autoCreateChildrenModels READ autoCreateChildrenModels WRITE setAutoCreateChildrenModels NOTIFY autoCreateChildrenModelsChanged)    \
+    Q_PROPERTY(bool outputModel READ outputModel WRITE setOutputModel NOTIFY outputModelChanged)                \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
@@ -871,6 +875,15 @@ public:                                                                         
     {                                                                                                           \
         setAutoCreateChildrenModelsImpl(autoCreateChildrenModels_);                                             \
         emit autoCreateChildrenModelsChanged();                                                                 \
+    }                                                                                                           \
+    bool outputModel() const                                                                                    \
+    {                                                                                                           \
+        return getOutputModelImpl();                                                                            \
+    }                                                                                                           \
+    void setOutputModel(bool outputModel_)                                                                      \
+    {                                                                                                           \
+        setOutputModelImpl(outputModel_);                                                                       \
+        emit outputModelChanged();                                                                              \
     }                                                                                                           \
     virtual void listLoadedVF() override                                                                        \
     {                                                                                                           \

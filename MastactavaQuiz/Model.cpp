@@ -30,7 +30,7 @@ void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_, const QS
     }
 }
 
-void ListModelBaseData::addLayoutExtraGetFieldsImpl(const QString &modelName_, const QVariant &appId_)
+void ListModelBaseData::addLayoutExtraFieldsImpl(const QString &modelName_, const QVariant &appId_)
 {
     m_extraFields.push_back({modelName_, appId_});
 }
@@ -194,6 +194,7 @@ void ListModelBaseData::setAutoCreateChildrenModelsImpl(bool autoCreateChildrenM
 
 bool ListModelBaseData::isListLoadedImpl() const
 {
+    if(getOutputModelImpl()) { return true; }
     return m_listLoaded && !listLoading() && childrenLoaded();
 }
 
@@ -206,7 +207,7 @@ void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const Q
     m_renames.insert(oldName_, newName_);
 }
 
-QHash<QString, QVariant> &&ListModelBaseData::renameFields(const QHash<QString, QVariant> &src_)
+QHash<QString, QVariant> ListModelBaseData::renameFields(const QHash<QString, QVariant> &src_)
 {
     QHash<QString, QVariant> res;
     for(QHash<QString, QVariant>::const_iterator it = src_.begin(); it != src_.end(); ++it)
@@ -220,9 +221,18 @@ QHash<QString, QVariant> &&ListModelBaseData::renameFields(const QHash<QString, 
             res.insert(it.key(), it.value());
         }
     }
-    return std::move(res);
+    return res;
 }
 
+bool ListModelBaseData::getOutputModelImpl() const
+{
+    return m_outputModel;
+}
+
+void ListModelBaseData::setOutputModelImpl(bool outputModel_)
+{
+    m_outputModel = outputModel_;
+}
 
 void ListModelBaseData::startListLoad()
 {
@@ -286,6 +296,9 @@ void ListModelBaseData::endLoadChildModel()
     Q_ASSERT(m_loadingChildenModels >= 0);
     if(isListLoadedImpl())
     {
+#if defined(TRACE_MODEL_LOADING)
+    qDebug() << m_QMLLayoutName << "listLoadedVF() ";
+#endif
         listLoadedVF();
     }
 }

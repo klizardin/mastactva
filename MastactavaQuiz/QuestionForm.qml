@@ -13,11 +13,12 @@ Page {
     title: qsTr("Question")
 
     property var netAPI: undefined
+    property var mastactavaAPI: undefined
     property var question: undefined
     property int currentAnswerIndex: -1
     property bool hasDescription: false
 
-    signal answer(int answerIndex)
+    signal answered()
 
     Rectangle
     {
@@ -100,6 +101,7 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
+                    answers.model.currentIndex = index
                     currentAnswerIndex = index
                 }
             }
@@ -118,10 +120,17 @@ Page {
     {
         if(currentAnswerIndex >= 0)
         {
-            questionPage.answer(currentAnswerIndex)
+            var userQuestionAnswerModel = question.userQuestionAnswer
+            var newAnswer = userQuestionAnswerModel.createItem()
+            newAnswer.qaQuestionId = question.questionId
+            newAnswer.qaT = mastactvaAPI.now()
+            newAnswer.qaAnswerId = answers.model.getCurrentItem().answerId
+            userQuestionAnswerModel.addItem(newAnswer)
+            questionPage.answered()
         }
         else
         {
+            // TODO: show popup "Please choose answer"
         }
     }
 }

@@ -150,7 +150,7 @@ protected:
     void clearData();
     bool init();
 
-    QHash<QString, QVariant> &&merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
+    QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
 
 private:
     QString m_hostName;

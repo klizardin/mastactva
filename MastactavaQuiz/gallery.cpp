@@ -84,7 +84,7 @@ ImageModel *Gallery::createImages()
 {
     ImageModel *m = new ImageModel(this);
     m->initResponse();
-    m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
+    m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->addModelParam("use_in_gallery_view", "1");
@@ -129,7 +129,7 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
 {
     GalleryStatisticsModel *m = new GalleryStatisticsModel(this);
     m->initResponse();
-    m->addLayoutExtraGetFieldsImpl("QuizUserModel", QVariant());
+    m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));

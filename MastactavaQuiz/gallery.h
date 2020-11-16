@@ -129,6 +129,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 };
 
 

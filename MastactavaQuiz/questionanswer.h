@@ -9,11 +9,11 @@
 #include "Model.h"
 
 
-class QuestionAnswer : public QObject
+class UserQuestionAnswer : public QObject
 {
     Q_OBJECT
 public:
-    explicit QuestionAnswer(QObject *parent_ = nullptr);
+    explicit UserQuestionAnswer(QObject *parent_ = nullptr);
 
 
     Q_PROPERTY(int qaId READ id WRITE setId NOTIFY idChanged)
@@ -24,20 +24,20 @@ public:
     Q_PROPERTY(qreal qaPoints READ points WRITE setPoints NOTIFY pointsChanged)
 
 
-    class DefaultLayout : public LayoutBase<QuestionAnswer>
+    class DefaultLayout : public LayoutBase<UserQuestionAnswer>
     {
     public:
         DefaultLayout()
         {
             setLayoutJsonName("user-question-answers");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &QuestionAnswer::m_parentModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &QuestionAnswer::m_appId);
-            addField<int>("id", "qaId", &QuestionAnswer::id, &QuestionAnswer::setId);
-            addField<int>("user", "qaUserId", &QuestionAnswer::userId, &QuestionAnswer::setUserId);
-            addField<int>("question", "qaQuestionId", &QuestionAnswer::questionId, &QuestionAnswer::setQuestionId);
-            addField<QDateTime>("t", "qaT", &QuestionAnswer::t, &QuestionAnswer::setT);
-            addField<int>("answer", "qaAnswerId", &QuestionAnswer::answerId, &QuestionAnswer::setAnswerId);
-            addField<qreal>("points", "qaPoints", &QuestionAnswer::points, &QuestionAnswer::setPoints);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &UserQuestionAnswer::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &UserQuestionAnswer::m_appId);
+            addField<int>("id", "qaId", &UserQuestionAnswer::id, &UserQuestionAnswer::setId);
+            addField<int>("user", "qaUserId", &UserQuestionAnswer::userId, &UserQuestionAnswer::setUserId);
+            addField<int>("question", "qaQuestionId", &UserQuestionAnswer::questionId, &UserQuestionAnswer::setQuestionId);
+            addField<QDateTime>("t", "qaT", &UserQuestionAnswer::t, &UserQuestionAnswer::setT);
+            addField<int>("answer", "qaAnswerId", &UserQuestionAnswer::answerId, &UserQuestionAnswer::setAnswerId);
+            addField<qreal>("points", "qaPoints", &UserQuestionAnswer::points, &UserQuestionAnswer::setPoints);
         }
     };
 
@@ -73,16 +73,16 @@ private:
     qreal m_points = 0.0;
 };
 
-class QuestionAnswerModel : public ListModelBaseOfData<QuestionAnswer, QuestionAnswerModel>
+class UserQuestionAnswerModel : public ListModelBaseOfData<UserQuestionAnswer, UserQuestionAnswerModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<QuestionAnswer, QuestionAnswerModel>;
+    using base = ListModelBaseOfData<UserQuestionAnswer, UserQuestionAnswerModel>;
 
 public:
-    explicit QuestionAnswerModel(QObject *parent_ = nullptr);
+    explicit UserQuestionAnswerModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 
@@ -108,6 +108,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 };
 
 

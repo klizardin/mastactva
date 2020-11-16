@@ -107,6 +107,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 };
 
 
@@ -189,6 +190,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 };
 
 
@@ -322,6 +324,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 };
 
 

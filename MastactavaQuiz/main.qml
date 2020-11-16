@@ -50,7 +50,6 @@ ApplicationWindow {
         autoCreateChildrenModels: true
     }
 
-
     function initGalleryModel()
     {
         galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")
@@ -72,6 +71,7 @@ ApplicationWindow {
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
             descriptionPage.netAPI = netAPI
             questionPage.netAPI = netAPI
+            questionPage.mastactavaAPI = mastactvaAPI
             galleryPage.galleryModel = galleryModel
             galleryPage.mastactvaAPI = mastactvaAPI
 
@@ -142,7 +142,7 @@ ApplicationWindow {
     Connections {
         target: questionPage
 
-        function onAnswer(answerIndex)
+        function onAnswered()
         {
             if (stackView.depth > 1) {
                 stackView.pop()

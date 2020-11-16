@@ -139,7 +139,7 @@ void NetAPI::clearData()
     }
 }
 
-QHash<QString, QVariant> &&NetAPI::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)
+QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
     for(QHash<QString, QVariant>::const_iterator it = v2_.begin(); it != v2_.end(); ++it)
@@ -160,7 +160,7 @@ QHash<QString, QVariant> &&NetAPI::merge(const QHash<QString, QVariant> &v1_, co
             res.insert(it.key(), it.value());
         }
     }
-    return std::move(res);
+    return res;
 }
 
 bool NetAPI::init()

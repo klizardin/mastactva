@@ -81,6 +81,7 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void outputModelChanged();
 
 protected:
     virtual void listLoaded(const QJsonDocument &reply_) override;
