@@ -43,6 +43,14 @@ Page {
                         var nextImgObj = allImagesOfGalleryModel.findItemById(ip.nextImage.getCurrentItem().iptniNextImage)
                         if(nextImgObj !== undefined && nextImgObj !== null)
                         {
+                            // log jump to next image
+                            var userStep = userStepModel.createItem()
+                            userStep.usGalleryId = galleryModel.getCurrentItem().id
+                            userStep.usImageId = currentImage.id
+                            userStep.usNextImageId = nextImgObj.id
+                            userStep.usT = mastactvaAPI.now()
+                            userStepModel.addItem(userStep)
+
                             currentImage = nextImgObj
                             currentImageSource = currentImage.imageSource
                             quizPage.setDescription(currentImage.imageDescription)
@@ -54,6 +62,14 @@ Page {
                         var question = ip.nextQuestion.getCurrentItem().iptqQuestionObj.getCurrentItem()
                         if(question !== undefined && question !== null)
                         {
+                            // log jump to question
+                            var userStep = userStepModel.createItem()
+                            userStep.usGalleryId = galleryModel.getCurrentItem().id
+                            userStep.usImageId = currentImage.id
+                            userStep.usQuestionId = question.questionId
+                            userStep.usT = mastactvaAPI.now()
+                            userStepModel.addItem(userStep)
+
                             quizPage.showQuestion(question)
                         }
                     }
