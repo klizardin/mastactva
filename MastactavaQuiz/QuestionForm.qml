@@ -16,6 +16,7 @@ Page {
     property var mastactavaAPI: undefined
     property var userStepModel: undefined
     property var question: undefined
+    property int imageId: -1
     property int currentAnswerIndex: -1
     property bool hasDescription: false
 
@@ -124,7 +125,7 @@ Page {
             // log answer the question
             var userStep = userStepModel.createItem()
             userStep.usGalleryId = galleryModel.getCurrentItem().id
-            userStep.usImageId = currentImage.id
+            userStep.usImageId = imageId
             userStep.usQuestionId = question.questionId
             userStep.usT = mastactvaAPI.now()
             userStep.usAnswerId = answers.model.getCurrentItem().answerId

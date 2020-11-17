@@ -141,9 +141,10 @@ ApplicationWindow {
     Connections {
         target: quizPage
 
-        function onShowQuestion(question)
+        function onShowQuestion(question, imageId)
         {
             questionPage.question = question
+            questionPage.imageId = imageId
             questionPage.init()
             stackView.push(questionPage)
         }
@@ -209,7 +210,7 @@ ApplicationWindow {
 
         ToolButton {
             id: toolButton
-            text: stackView.depth > 1 ? "\u25C0" : "\u2630"
+            text: stackView.depth > 1 ? "<" : "\u2630"
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
                 if (stackView.depth > 1) {

@@ -19,7 +19,7 @@ Page {
     property alias currentImageSource: quizImage.source
     property bool hasDescription: false
 
-    signal showQuestion(var question)
+    signal showQuestion(var question, int imageId)
     signal setDescription(var descriptionModel, int galleryId, int imageId)
 
     Image {
@@ -71,7 +71,7 @@ Page {
                             userStep.usT = mastactvaAPI.now()
                             userStepModel.addItem(userStep)
 
-                            quizPage.showQuestion(question)
+                            quizPage.showQuestion(question, currentImage.id)
                         }
                     }
                 }
