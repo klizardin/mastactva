@@ -9,3 +9,5 @@
 [2020.11.13 Quiz: galleries view, images view, questions view](https://youtu.be/apXL30X4q1Y)
 
 [2020.11.17 Quiz: galleries view, quiz view, questions view, description view](https://youtu.be/y7p6vMtQGmY)
+
+[2020.11.17 Quiz: galleries view, quiz view, questions view, description view, belarus interface](https://youtu.be/X1jtVyCOC_Y)
