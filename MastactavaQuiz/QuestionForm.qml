@@ -121,12 +121,22 @@ Page {
     {
         if(currentAnswerIndex >= 0)
         {
+            // log answer the question
+            var userStep = userStepModel.createItem()
+            userStep.usGalleryId = galleryModel.getCurrentItem().id
+            userStep.usImageId = currentImage.id
+            userStep.usQuestionId = question.questionId
+            userStep.usT = mastactvaAPI.now()
+            userStep.usAnswerId = answers.model.getCurrentItem().answerId
+            userStepModel.addItem(userStep)
+
             var userQuestionAnswerModel = question.userQuestionAnswer
             var newAnswer = userQuestionAnswerModel.createItem()
             newAnswer.qaQuestionId = question.questionId
             newAnswer.qaT = mastactvaAPI.now()
             newAnswer.qaAnswerId = answers.model.getCurrentItem().answerId
             userQuestionAnswerModel.addItem(newAnswer)
+
             questionPage.answered()
         }
         else

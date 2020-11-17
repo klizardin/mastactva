@@ -15,6 +15,9 @@ Page {
     property var netAPI: undefined
     property string descriptionTextArg: qsTr("")
     property bool hasDescription: false
+    property int galleryId: -1
+    property int imageId: -1
+    property int descriptionId: -1
 
     signal closeDescriptionPage()
 
@@ -42,6 +45,14 @@ Page {
 
     function init()
     {
+        // log view description
+        var userStep = userStepModel.createItem()
+        userStep.usGalleryId = galleryId
+        userStep.usImageId = imageId
+        userStep.usDescriptionId = descriptionId
+        userStep.usT = mastactvaAPI.now()
+        userStepModel.addItem(userStep)
+
         descriptionText.text = descriptionTextArg
     }
 

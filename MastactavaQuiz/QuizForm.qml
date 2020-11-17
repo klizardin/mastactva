@@ -14,12 +14,13 @@ Page {
     property var netAPI: undefined
     property var userStepModel: undefined
     property var allImagesOfGalleryModel: undefined
+    property int galleryId: -1
     property var currentImage: undefined
     property alias currentImageSource: quizImage.source
     property bool hasDescription: false
 
     signal showQuestion(var question)
-    signal setDescription(var descriptionModel)
+    signal setDescription(var descriptionModel, int galleryId, int imageId)
 
     Image {
         id: quizImage
@@ -53,7 +54,7 @@ Page {
 
                             currentImage = nextImgObj
                             currentImageSource = currentImage.imageSource
-                            quizPage.setDescription(currentImage.imageDescription)
+                            quizPage.setDescription(currentImage.imageDescription, galleryId, nextImgObj.id)
                         }
                     }
                     else if(currentImage.imagePoints.isNextObjQuestionByCoords(x, y))

@@ -122,9 +122,10 @@ ApplicationWindow {
             userStepModel.addItem(userStep)
 
             // jump to quiz image
+            quizPage.galleryId = galleryModel.getCurrentItem().id
             quizPage.currentImage = startImage
             quizPage.currentImageSource = startImage.imageSource
-            setDescription(startImage.imageDescription)
+            setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.id)
             stackView.push(quizPage)
         }
     }
@@ -143,21 +144,27 @@ ApplicationWindow {
             stackView.push(questionPage)
         }
 
-        function onSetDescription(descriptionModel)
+        function onSetDescription(descriptionModel, galleryId, imageId)
         {
-            setDescription(descriptionModel)
+            setDescription(descriptionModel, galleryId, imageId)
         }
     }
 
-    function setDescription(imageDescription)
+    function setDescription(imageDescription, galleryId, imageId)
     {
         quizPage.hasDescription = !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
         if(quizPage.hasDescription)
         {
+            descriptionPage.galleryId = galleryId
+            descriptionPage.imageId = imageId
+            descriptionPage.descriptionId = imageDescription.getCurrentItem().idId
             descriptionPage.descriptionTextArg = imageDescription.getCurrentItem().idDescriptionText
         }
         else
         {
+            descriptionPage.galleryId = -1
+            descriptionPage.imageId = -1
+            descriptionPage.descriptionId = -1
             descriptionPage.descriptionTextArg = ""
         }
     }
