@@ -87,13 +87,17 @@ ApplicationWindow {
             galleryPage.galleryModel = galleryModel
             galleryPage.mastactvaAPI = mastactvaAPI
             galleryPage.userStepModel = userStepModel
+
             quizPage.netAPI = netAPI
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
             quizPage.userStepModel = userStepModel
+
             descriptionPage.netAPI = netAPI
+
             questionPage.netAPI = netAPI
             questionPage.mastactavaAPI = mastactvaAPI
             questionPage.userStepModel = userStepModel
+
 
             initGalleryModel()
             initAllImagesOfGalleryModel()
