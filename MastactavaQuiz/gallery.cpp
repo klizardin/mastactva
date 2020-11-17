@@ -130,6 +130,7 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     GalleryStatisticsModel *m = new GalleryStatisticsModel(this);
     m->initResponse();
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
+    m->addExtraFieldRenameImpl("deviceid", "user");
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));
