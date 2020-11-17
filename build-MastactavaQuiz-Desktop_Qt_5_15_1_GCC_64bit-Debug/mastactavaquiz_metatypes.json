@@ -212,6 +212,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "oldName_",
                                 "type": "QString"
                             },
@@ -747,6 +762,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "oldName_",
                                 "type": "QString"
                             },
@@ -1202,6 +1232,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -1754,6 +1799,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "oldName_",
                                 "type": "QString"
                             },
@@ -2209,6 +2269,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -2674,6 +2749,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "oldName_",
                                 "type": "QString"
                             },
@@ -3104,6 +3194,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -3634,6 +3739,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -4318,6 +4438,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "oldName_",
                                 "type": "QString"
                             },
@@ -4816,6 +4951,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "oldName_",
                                 "type": "QString"
                             },
@@ -5214,6 +5364,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",
@@ -5769,6 +5934,21 @@
                         "access": "public",
                         "name": "isEmpty",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
                     },
                     {
                         "access": "public",

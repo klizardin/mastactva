@@ -12,6 +12,7 @@ Page {
     title: qsTr("Quiz")
 
     property var netAPI: undefined
+    property var userStepModel: undefined
     property var allImagesOfGalleryModel: undefined
     property var currentImage: undefined
     property alias currentImageSource: quizImage.source

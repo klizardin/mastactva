@@ -50,6 +50,17 @@ ApplicationWindow {
         autoCreateChildrenModels: true
     }
 
+    UserStepModel {
+        id: userStepModel
+        objectName: "UserStepModel"
+        layoutQMLName: "UserStepModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+        outputModel: true
+        storeAfterSave: false
+    }
+
     function initGalleryModel()
     {
         galleryModel.setLayoutRef("deviceid", "QuizUserModel", "deviceid")
@@ -61,22 +72,33 @@ ApplicationWindow {
         allImagesOfGallery.addModelParam("use_in_gallery_view", "0")
     }
 
+    function initUserStepModel()
+    {
+        userStepModel.addLayoutExtraFields("QuizUserModel", undefined)
+        userStepModel.addExtraFieldRename("deviceid", "user")
+    }
+
     Connections {
         target: netAPI
 
         function onInitialized()
         {
             galleryPage.netAPI = netAPI
+            galleryPage.galleryModel = galleryModel
+            galleryPage.mastactvaAPI = mastactvaAPI
+            galleryPage.userStepModel = userStepModel
             quizPage.netAPI = netAPI
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
+            quizPage.userStepModel = userStepModel
             descriptionPage.netAPI = netAPI
             questionPage.netAPI = netAPI
             questionPage.mastactavaAPI = mastactvaAPI
-            galleryPage.galleryModel = galleryModel
-            galleryPage.mastactvaAPI = mastactvaAPI
+            questionPage.userStepModel = userStepModel
 
             initGalleryModel()
             initAllImagesOfGalleryModel()
+            initUserStepModel()
+
             quizUserModel.loadList()
         }
     }
@@ -91,6 +113,15 @@ ApplicationWindow {
 
         function onStartQuiz(startImage)
         {
+            // log quiz start
+            var userStep = userStepModel.createItem()
+            userStep.usGalleryId = galleryModel.getCurrentItem().id
+            userStep.usImageId = startImage.id
+            userStep.usNextImageId = startImage.id
+            userStep.usT = mastactvaAPI.now()
+            userStepModel.addItem(userStep)
+
+            // jump to quiz image
             quizPage.currentImage = startImage
             quizPage.currentImageSource = startImage.imageSource
             setDescription(startImage.imageDescription)
@@ -120,10 +151,6 @@ ApplicationWindow {
 
     function setDescription(imageDescription)
     {
-        //console.log("imageDescription = ", imageDescription)
-        //console.log("imageDescription.isEmpty() = ", imageDescription.isEmpty())
-        //console.log("imageDescription.getCurrentItem() = ", imageDescription.getCurrentItem())
-        //console.log("imageDescription.getCurrentItem().idDescriptionText = ", imageDescription.getCurrentItem().idDescriptionText)
         quizPage.hasDescription = !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
         if(quizPage.hasDescription)
         {

@@ -13,6 +13,7 @@ Page {
 
     property var mastactvaAPI: undefined
     property var netAPI: undefined
+    property var userStepModel: undefined
     property alias galleryModel: galleries.model
     property var currentImage: undefined
     property bool hasDescription: false

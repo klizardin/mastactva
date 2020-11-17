@@ -795,6 +795,10 @@ public:                                                                         
     {                                                                                                           \
         return m_data.isEmpty();                                                                                \
     }                                                                                                           \
+    Q_INVOKABLE void addLayoutExtraFields(const QString &modelName_, const QVariant &appId_)                    \
+    {                                                                                                           \
+        addLayoutExtraFieldsImpl(modelName_, appId_);                                                           \
+    }                                                                                                           \
     Q_INVOKABLE void addExtraFieldRename(const QString &oldName_, const QString &newName_)                      \
     {                                                                                                           \
         addExtraFieldRenameImpl(oldName_, newName_);                                                            \
