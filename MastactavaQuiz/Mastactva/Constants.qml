@@ -23,12 +23,6 @@ QtObject {
     readonly property int aspectY: 4
     readonly property int descriptionRowHeight: 100
     readonly property int logingItemsSpacing: 10
-    readonly property string activePoint: "qrc:///resources/selectedPoint.png"
-    readonly property string inactivePoint: "qrc:///resources/point.png"
     readonly property int pointImageSize: 32
     readonly property string noImage: "qrc:///resources/no-image.png"
-    readonly property string notAQuestionPoint: qsTr("<Not a point to question>")
-    readonly property string notANextImagePoint: qsTr("<Not a point to next image>")
-    readonly property string aNextImagePoint: qsTr("Point to next image")
-    readonly property string selectImagePoint : qsTr("<Select image point>")
 }
