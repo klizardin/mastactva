@@ -7,6 +7,9 @@
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
 #include <QtCore/QDebug>
+#include <QQuickWindow>
+#include <QSGRendererInterface>
+#include "openglquizimage.h"
 
 
 QuizImageFB::QuizImageFB()
@@ -228,3 +231,52 @@ void QuizImageFB::updateState()
 {
     update();
 }
+
+QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
+    : QQuickItem(parent_)
+{
+    setFlag(ItemHasContents);
+}
+
+QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
+{
+    QSGRenderNode *n = static_cast<QSGRenderNode *>(node);
+
+    QSGRendererInterface *ri = window()->rendererInterface();
+    if (!ri)
+        return nullptr;
+
+    switch (ri->graphicsApi()) {
+    case QSGRendererInterface::OpenGL:
+        Q_FALLTHROUGH();
+    case QSGRendererInterface::OpenGLRhi:
+#if QT_CONFIG(opengl)
+        if (!n)
+            n = new OpenGLQuizImage(this);
+        static_cast<OpenGLQuizImage *>(n)->sync(this);
+#endif
+        break;
+
+    case QSGRendererInterface::MetalRhi:
+// Restore when QTBUG-78580 is done and the .pro is updated accordingly
+//#ifdef Q_OS_DARWIN
+        break;
+
+    case QSGRendererInterface::Direct3D12: // ### Qt 6: remove
+        break;
+
+    case QSGRendererInterface::Software:
+        break;
+
+    default:
+        break;
+    }
+
+    if (!n)
+        qWarning("QSGRendererInterface reports unknown graphics API %d", ri->graphicsApi());
+
+    return n;
+}
+
+// This item does not support being moved between windows. If that is desired,
+// itemChange() should be reimplemented as well.

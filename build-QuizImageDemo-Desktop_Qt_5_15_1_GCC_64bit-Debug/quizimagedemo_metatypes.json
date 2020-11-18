@@ -8,7 +8,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "QuizImage",
+                "className": "QuizImageFB",
                 "methods": [
                     {
                         "access": "public",
@@ -17,11 +17,28 @@
                     }
                 ],
                 "object": true,
-                "qualifiedClassName": "QuizImage",
+                "qualifiedClassName": "QuizImageFB",
                 "superClasses": [
                     {
                         "access": "public",
                         "name": "QQuickFramebufferObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "QuizImage",
+                "object": true,
+                "qualifiedClassName": "QuizImage",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickItem"
                     }
                 ]
             }

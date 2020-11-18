@@ -1,5 +1,6 @@
 _QT += quick
-QT += quickcontrols2
+QT += quickcontrols2 \
+    quick
 
 CONFIG += c++17 qmltypes
 QML_IMPORT_NAME = QuizImageDemo
@@ -11,6 +12,7 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 SOURCES += \
         main.cpp \
+        openglquizimage.cpp \
         quizimage.cpp
 
 RESOURCES += qml.qrc
@@ -30,6 +32,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    openglquizimage.h \
     quizimage.h
 
 DISTFILES += \

@@ -3,6 +3,7 @@
 
 
 #include <QtQuick/QQuickFramebufferObject>
+#include <QQuickItem>
 
 
 class QuizImageFB : public QQuickFramebufferObject
@@ -17,5 +18,17 @@ public:
 
     virtual Renderer *createRenderer() const override;
 };
+
+
+class QuizImage : public QQuickItem
+{
+    Q_OBJECT
+    QML_ELEMENT
+
+public:
+    QuizImage(QQuickItem *parent_ = nullptr);
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
+};
+
 
 #endif // QUIZIMAGE_H
