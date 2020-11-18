@@ -9,6 +9,13 @@
                     }
                 ],
                 "className": "QuizImage",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "updateState",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "qualifiedClassName": "QuizImage",
                 "superClasses": [

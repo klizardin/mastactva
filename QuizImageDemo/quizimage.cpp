@@ -37,11 +37,11 @@ private:
     QOpenGLTexture *m_textures[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
     QOpenGLShaderProgram *m_program = nullptr;
     QOpenGLBuffer m_vbo;
-    QColor clearColor = Qt::black;
-    QPoint lastPos;
-    int xRot = 0;
-    int yRot = 0;
-    int zRot = 0;
+    QColor m_clearColor = Qt::black;
+    QPoint m_lastPos;
+    int m_xRot = 0;
+    int m_yRot = 0;
+    int m_zRot = 0;
     int m_vertexAttrId = -1;
     int m_texCoordAttrId = -1;
     int m_textureId = -1;
@@ -157,15 +157,15 @@ void QuizImageRenderer::makeObject()
 
 void QuizImageRenderer::paintGL(QOpenGLFunctions *f_)
 {
-    f_->glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
+    f_->glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
     f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QMatrix4x4 m;
     m.ortho(-0.5f, +0.5f, +0.5f, -0.5f, 4.0f, 15.0f);
     m.translate(0.0f, 0.0f, -10.0f);
-    m.rotate(xRot / 16.0f, 1.0f, 0.0f, 0.0f);
-    m.rotate(yRot / 16.0f, 0.0f, 1.0f, 0.0f);
-    m.rotate(zRot / 16.0f, 0.0f, 0.0f, 1.0f);
+    m.rotate(m_xRot / 16.0f, 1.0f, 0.0f, 0.0f);
+    m.rotate(m_yRot / 16.0f, 0.0f, 1.0f, 0.0f);
+    m.rotate(m_zRot / 16.0f, 0.0f, 0.0f, 1.0f);
 
     m_program->setUniformValue(m_matrixId, m);
     m_program->enableAttributeArray(m_vertexAttrId);
@@ -201,8 +201,11 @@ QOpenGLFramebufferObject *QuizImageRenderer::createFramebufferObject(const QSize
 
 void QuizImageRenderer::synchronize(QQuickFramebufferObject *item_)
 {
+    clearData();
     QuizImage *item = static_cast<QuizImage *>(item_);
     Q_UNUSED(item);
+    qDebug() << "Sync";
+    m_xRot += 10.0;
 }
 
 #endif
@@ -215,4 +218,9 @@ QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
 #else
     return nullptr;
 #endif
+}
+
+void QuizImage::updateState()
+{
+    update();
 }
