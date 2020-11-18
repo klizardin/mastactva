@@ -1,0 +1,25 @@
+[
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "QuizImage",
+                "object": true,
+                "qualifiedClassName": "QuizImage",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickFramebufferObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "quizimage.h",
+        "outputRevision": 67
+    }
+]
