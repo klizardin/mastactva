@@ -32,10 +32,12 @@ protected:
 
 private:
     QObject *m_parent = nullptr;
-    //QOpenGLTexture *m_fromImageTexture = nullptr;
-    //QOpenGLTexture *m_toImageTexture = nullptr;
+    bool m_objectCreated = false;
+    QVector<GLfloat> m_vertData;
     QOpenGLTexture *m_textures[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
     QOpenGLShaderProgram *m_program = nullptr;
+    QOpenGLShader *m_vshader = nullptr;
+    QOpenGLShader *m_fshader = nullptr;
     QOpenGLBuffer m_vbo;
     QColor m_clearColor = Qt::black;
     QPoint m_lastPos;
@@ -55,21 +57,20 @@ QuizImageRenderer::QuizImageRenderer(QObject * parent_)
 
 QuizImageRenderer::~QuizImageRenderer()
 {
-    qDebug("QuizImageRenderer destroyed");
-    //delete m_fromImageTexture;
-    //m_fromImageTexture = nullptr;
-    //delete m_toImageTexture;
-    //m_toImageTexture = nullptr;
-    clearData();
-}
-
-void QuizImageRenderer::clearData()
-{
+    delete m_vshader;
+    m_vshader = nullptr;
+    delete m_fshader;
+    m_fshader = nullptr;
     for(auto it = std::begin(m_textures); it != std::end(m_textures); ++it)
     {
         delete *it;
         *it = nullptr;
     }
+    clearData();
+}
+
+void QuizImageRenderer::clearData()
+{
     delete m_program;
     m_program = nullptr;
 }
@@ -83,80 +84,91 @@ void QuizImageRenderer::initializeGL(QOpenGLFunctions *f_)
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
 
-    QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, m_parent);
-    const char *vsrc =
-        "attribute highp vec4 vertex;\n"
-        "attribute mediump vec4 texCoord;\n"
-        "varying mediump vec4 texc;\n"
-        "uniform mediump mat4 matrix;\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_Position = matrix * vertex;\n"
-        "    texc = texCoord;\n"
-        "}\n";
-    vshader->compileSourceCode(vsrc);
+    if(nullptr == m_vshader)
+    {
+        m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, m_parent);
+        const char *vsrc =
+            "attribute highp vec4 vertex;\n"
+            "attribute mediump vec4 texCoord;\n"
+            "varying mediump vec4 texc;\n"
+            "uniform mediump mat4 matrix;\n"
+            "void main(void)\n"
+            "{\n"
+            "    gl_Position = matrix * vertex;\n"
+            "    texc = texCoord;\n"
+            "}\n";
+        m_vshader->compileSourceCode(vsrc);
+    }
 
-    QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, m_parent);
-    const char *fsrc =
-        "uniform sampler2D texture;\n"
-        "varying mediump vec4 texc;\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_FragColor = texture2D(texture, texc.st);\n"
-        "}\n";
-    fshader->compileSourceCode(fsrc);
+    if(nullptr == m_fshader)
+    {
+        m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, m_parent);
+        const char *fsrc =
+            "uniform sampler2D texture;\n"
+            "varying mediump vec4 texc;\n"
+            "void main(void)\n"
+            "{\n"
+            "    gl_FragColor = texture2D(texture, texc.st);\n"
+            "}\n";
+        m_fshader->compileSourceCode(fsrc);
+    }
 
     m_program = new QOpenGLShaderProgram();
-    m_program->addShader(vshader);
-    m_program->addShader(fshader);
+    m_program->addShader(m_vshader);
+    m_program->addShader(m_fshader);
     m_program->link();
-    m_program->bind();
 
-    m_vertexAttrId = m_program->attributeLocation("vertex");
-    m_texCoordAttrId = m_program->attributeLocation("texCoord");
-    m_textureId = m_program->uniformLocation("texture");
-    m_matrixId = m_program->uniformLocation("matrix");
+    if(0 > m_vertexAttrId) { m_vertexAttrId = m_program->attributeLocation("vertex"); }
+    if(0 > m_texCoordAttrId) { m_texCoordAttrId = m_program->attributeLocation("texCoord"); }
+
+    if(0 > m_textureId) { m_textureId = m_program->uniformLocation("texture"); }
+    if(0 > m_matrixId) { m_matrixId = m_program->uniformLocation("matrix"); }
 
     m_program->bindAttributeLocation("vertex", m_vertexAttrId);
     m_program->bindAttributeLocation("texCoord", m_texCoordAttrId);
-
-    m_program->setUniformValue(m_textureId, 0);
 }
 
 void QuizImageRenderer::makeObject()
 {
-    static const int coords[6][4][3] = {
-        { { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
-        { { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
-        { { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
-        { { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
-        { { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
-        { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
-    };
+    if(!m_objectCreated)
+    {
+        static const int coords[6][4][3] = {
+            { { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
+            { { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
+            { { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
+            { { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
+            { { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
+            { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
+        };
 
-    for (int j = 0; j < 6; ++j)
-        m_textures[j] = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(j + 1)).mirrored());
+        for (int j = 0; j < 6; ++j)
+            m_textures[j] = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(j + 1)).mirrored());
 
-    QVector<GLfloat> vertData;
-    for (int i = 0; i < 6; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            // vertex position
-            vertData.append(0.2 * coords[i][j][0]);
-            vertData.append(0.2 * coords[i][j][1]);
-            vertData.append(0.2 * coords[i][j][2]);
-            // texture coordinate
-            vertData.append(j == 0 || j == 3);
-            vertData.append(j == 0 || j == 1);
+        m_vertData.clear();
+        for (int i = 0; i < 6; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                // vertex position
+                m_vertData.append(0.2 * coords[i][j][0]);
+                m_vertData.append(0.2 * coords[i][j][1]);
+                m_vertData.append(0.2 * coords[i][j][2]);
+                // texture coordinate
+                m_vertData.append(j == 0 || j == 3);
+                m_vertData.append(j == 0 || j == 1);
+            }
         }
-    }
 
-    m_vbo.create();
+        m_vbo.create();
+    }
     m_vbo.bind();
-    m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+    m_vbo.allocate(m_vertData.constData(), m_vertData.count() * sizeof(GLfloat));
+    m_objectCreated = true;
 }
 
 void QuizImageRenderer::paintGL(QOpenGLFunctions *f_)
 {
+    m_program->bind();
+    m_program->setUniformValue(m_textureId, 0);
+
     f_->glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
     f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -188,11 +200,13 @@ void QuizImageRenderer::render()
         initializeGL(f);
     }
     paintGL(f);
+
+    clearData();
+    update();
 }
 
 QOpenGLFramebufferObject *QuizImageRenderer::createFramebufferObject(const QSize &size_)
 {
-    qDebug() << "Creating FBO" << size_;
     clearData();
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
@@ -204,7 +218,6 @@ void QuizImageRenderer::synchronize(QQuickFramebufferObject *item_)
     clearData();
     QuizImage *item = static_cast<QuizImage *>(item_);
     Q_UNUSED(item);
-    qDebug() << "Sync";
     m_xRot += 10.0;
 }
 
