@@ -41,8 +41,8 @@ void OpenGLQuizImage::makeObject()
     m_vertData.clear();
     for (int j = 0; j < 4; ++j) {
         // vertex position
-        m_vertData.append(0.2 * coords[j][0]); //  * (m_width - 1)
-        m_vertData.append(0.2 * coords[j][1]); //  * (m_height - 1)
+        m_vertData.append(0.2 * coords[j][0]);
+        m_vertData.append(0.2 * coords[j][1]);
         m_vertData.append(0.2 * coords[j][2]);
         // texture coordinate
         m_vertData.append(j == 0 || j == 3);
