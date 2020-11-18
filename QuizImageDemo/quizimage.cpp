@@ -9,17 +9,17 @@
 #include <QtCore/QDebug>
 
 
-QuizImage::QuizImage()
+QuizImageFB::QuizImageFB()
 {
 }
 
 #if QT_CONFIG(opengl)
 
-class QuizImageRenderer : public QQuickFramebufferObject::Renderer
+class QuizImageRendererFB : public QQuickFramebufferObject::Renderer
 {
 public:
-    QuizImageRenderer(QObject * parent_);
-    virtual ~QuizImageRenderer() override;
+    QuizImageRendererFB(QObject * parent_);
+    virtual ~QuizImageRendererFB() override;
     virtual void render() override;
     virtual QOpenGLFramebufferObject *createFramebufferObject(const QSize &size_) override;
     virtual void synchronize(QQuickFramebufferObject *item_) override;
@@ -34,7 +34,8 @@ private:
     QObject *m_parent = nullptr;
     bool m_objectCreated = false;
     QVector<GLfloat> m_vertData;
-    QOpenGLTexture *m_textures[6] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+    QOpenGLTexture *m_fromTexture = nullptr;
+    QOpenGLTexture *m_toTexture = nullptr;
     QOpenGLShaderProgram *m_program = nullptr;
     QOpenGLShader *m_vshader = nullptr;
     QOpenGLShader *m_fshader = nullptr;
@@ -50,32 +51,31 @@ private:
     int m_matrixId = -1;
 };
 
-QuizImageRenderer::QuizImageRenderer(QObject * parent_)
+QuizImageRendererFB::QuizImageRendererFB(QObject * parent_)
     : m_parent(parent_)
 {
 }
 
-QuizImageRenderer::~QuizImageRenderer()
+QuizImageRendererFB::~QuizImageRendererFB()
 {
     delete m_vshader;
     m_vshader = nullptr;
     delete m_fshader;
     m_fshader = nullptr;
-    for(auto it = std::begin(m_textures); it != std::end(m_textures); ++it)
-    {
-        delete *it;
-        *it = nullptr;
-    }
+    delete m_fromTexture;
+    m_fromTexture = nullptr;
+    delete m_toTexture;
+    m_toTexture = nullptr;
     clearData();
 }
 
-void QuizImageRenderer::clearData()
+void QuizImageRendererFB::clearData()
 {
     delete m_program;
     m_program = nullptr;
 }
 
-void QuizImageRenderer::initializeGL(QOpenGLFunctions *f_)
+void QuizImageRendererFB::initializeGL(QOpenGLFunctions *f_)
 {
     if(nullptr != m_program) { return; }
 
@@ -128,33 +128,26 @@ void QuizImageRenderer::initializeGL(QOpenGLFunctions *f_)
     m_program->bindAttributeLocation("texCoord", m_texCoordAttrId);
 }
 
-void QuizImageRenderer::makeObject()
+void QuizImageRendererFB::makeObject()
 {
     if(!m_objectCreated)
     {
-        static const int coords[6][4][3] = {
-            { { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
-            { { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
-            { { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
-            { { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
-            { { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
-            { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
+        static const int coords[4][3] = {
+            { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 }
         };
 
-        for (int j = 0; j < 6; ++j)
-            m_textures[j] = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(j + 1)).mirrored());
+        m_fromTexture = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(1)).mirrored());
+        m_toTexture = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(2)).mirrored());
 
         m_vertData.clear();
-        for (int i = 0; i < 6; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                // vertex position
-                m_vertData.append(0.2 * coords[i][j][0]);
-                m_vertData.append(0.2 * coords[i][j][1]);
-                m_vertData.append(0.2 * coords[i][j][2]);
-                // texture coordinate
-                m_vertData.append(j == 0 || j == 3);
-                m_vertData.append(j == 0 || j == 1);
-            }
+        for (int j = 0; j < 4; ++j) {
+            // vertex position
+            m_vertData.append(0.2 * coords[j][0]);
+            m_vertData.append(0.2 * coords[j][1]);
+            m_vertData.append(0.2 * coords[j][2]);
+            // texture coordinate
+            m_vertData.append(j == 0 || j == 3);
+            m_vertData.append(j == 0 || j == 1);
         }
 
         m_vbo.create();
@@ -164,7 +157,7 @@ void QuizImageRenderer::makeObject()
     m_objectCreated = true;
 }
 
-void QuizImageRenderer::paintGL(QOpenGLFunctions *f_)
+void QuizImageRendererFB::paintGL(QOpenGLFunctions *f_)
 {
     m_program->bind();
     m_program->setUniformValue(m_textureId, 0);
@@ -185,13 +178,11 @@ void QuizImageRenderer::paintGL(QOpenGLFunctions *f_)
     m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
     m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
 
-    for (int i = 0; i < 6; ++i) {
-        m_textures[i]->bind();
-        f_->glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
-    }
+    m_fromTexture->bind();
+    f_->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
-void QuizImageRenderer::render()
+void QuizImageRendererFB::render()
 {
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->initializeOpenGLFunctions();
@@ -205,7 +196,7 @@ void QuizImageRenderer::render()
     update();
 }
 
-QOpenGLFramebufferObject *QuizImageRenderer::createFramebufferObject(const QSize &size_)
+QOpenGLFramebufferObject *QuizImageRendererFB::createFramebufferObject(const QSize &size_)
 {
     clearData();
     QOpenGLFramebufferObjectFormat format;
@@ -213,10 +204,10 @@ QOpenGLFramebufferObject *QuizImageRenderer::createFramebufferObject(const QSize
     return new QOpenGLFramebufferObject(size_, format);
 }
 
-void QuizImageRenderer::synchronize(QQuickFramebufferObject *item_)
+void QuizImageRendererFB::synchronize(QQuickFramebufferObject *item_)
 {
     clearData();
-    QuizImage *item = static_cast<QuizImage *>(item_);
+    QuizImageFB *item = static_cast<QuizImageFB *>(item_);
     Q_UNUSED(item);
     m_xRot += 10.0;
 }
@@ -224,16 +215,16 @@ void QuizImageRenderer::synchronize(QQuickFramebufferObject *item_)
 #endif
 
 
-QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
+QQuickFramebufferObject::Renderer *QuizImageFB::createRenderer() const
 {
 #if QT_CONFIG(opengl)
-    return new QuizImageRenderer(const_cast<QuizImage *>(this));
+    return new QuizImageRendererFB(const_cast<QuizImageFB *>(this));
 #else
     return nullptr;
 #endif
 }
 
-void QuizImage::updateState()
+void QuizImageFB::updateState()
 {
     update();
 }

@@ -5,13 +5,13 @@
 #include <QtQuick/QQuickFramebufferObject>
 
 
-class QuizImage : public QQuickFramebufferObject
+class QuizImageFB : public QQuickFramebufferObject
 {
     Q_OBJECT
     QML_ELEMENT
 
 public:
-    QuizImage();
+    QuizImageFB();
 
     Q_INVOKABLE void updateState();
 
