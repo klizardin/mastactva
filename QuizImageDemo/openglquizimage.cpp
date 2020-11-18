@@ -143,7 +143,7 @@ void OpenGLQuizImage::paintGL(QOpenGLFunctions *f_)
 
 void OpenGLQuizImage::render(const RenderState *state)
 {
-    Q_UNUSED(state);
+    Q_UNUSED(state); // TODO: add render state in drawing
 
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->initializeOpenGLFunctions();
