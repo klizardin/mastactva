@@ -53,8 +53,10 @@ private:
     int m_toTextureId = -1;
     int m_matrixId = -1;
     int m_tId = -1;
+    int m_colorId = -1;
 
     qreal m_t = 0.0;
+    QVector3D m_color;
 };
 
 

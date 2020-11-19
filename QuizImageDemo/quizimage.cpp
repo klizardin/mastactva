@@ -78,3 +78,17 @@ void QuizImage::setT(const qreal &t_)
     updateState();
     emit tChanged();
 }
+
+QColor QuizImage::color() const
+{
+    return m_color;
+}
+
+void QuizImage::setColor(const QColor &clr_)
+{
+    m_color = clr_;
+
+    updateState();
+    emit colorChanged();
+}
+

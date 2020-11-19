@@ -52,6 +52,9 @@ void OpenGLQuizImage::sync(QQuickItem *item_)
     m_height = item_->height();
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
     m_t = quizImage->t();
+    m_color.setX(quizImage->color().redF());
+    m_color.setY(quizImage->color().greenF());
+    m_color.setZ(quizImage->color().blueF());
 }
 
 void OpenGLQuizImage::makeObject()
@@ -103,12 +106,13 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
             "uniform sampler2D texture1Arg;\n"
             "uniform sampler2D texture2Arg;\n"
             "uniform mediump float t;\n"
+            "uniform mediump vec3 color;\n"
             "varying mediump vec4 texCoord;\n"
             "void main(void)\n"
             "{\n"
             "    vec4 s1 = texture2D( texture1Arg, texCoord.st );\n"
             "    vec4 s2 = texture2D( texture2Arg, texCoord.st );\n"
-            "    gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, 1.0 ), \n"
+            "    gl_FragColor = mix( vec4( s1.r*color.r, s1.g*color.g, s1.b*color.b, 1.0 ), \n"
             "                        vec4( s2.r, s2.g, s2.b, 1.0 ),\n"
             "                        t );\n"
             "}\n";
@@ -127,6 +131,7 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
     if(0 > m_toTextureId) { m_toTextureId = m_program->uniformLocation("texture2Arg"); }
     if(0 > m_matrixId) { m_matrixId = m_program->uniformLocation("matrixArg"); }
     if(0 > m_tId) { m_tId = m_program->uniformLocation("t"); }
+    if(0 > m_colorId) { m_colorId = m_program->uniformLocation("color"); }
 
     m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
     m_program->bindAttributeLocation("texCoordArg", m_texCoordAttrId);
@@ -154,6 +159,7 @@ void OpenGLQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
     m_program->setUniformValue(m_matrixId, m);
     m_program->setUniformValue(m_tId, (GLfloat)m_t);
+    m_program->setUniformValue(m_colorId, m_color);
 
     m_vbo->bind();
     m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());

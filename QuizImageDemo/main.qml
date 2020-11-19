@@ -17,6 +17,25 @@ ApplicationWindow {
         SequentialAnimation {
             id: switchImages
 
+            PropertyAction { target: quizImage; property: "color"; value: "yellow" }
+            NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+            NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+
+            PropertyAction { target: quizImage; property: "color"; value: "blue" }
+            NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+            NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+
+            PropertyAction { target: quizImage; property: "color"; value: "green" }
+            NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+            NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+
+            PropertyAction { target: quizImage; property: "color"; value: "white" }
             NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
             PauseAnimation { duration: 500 }
             NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
