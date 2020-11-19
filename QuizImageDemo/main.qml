@@ -18,7 +18,7 @@ ApplicationWindow {
             anchors.fill: parent
 
             onClicked: {
-                //quizImage.updateState()
+                quizImage.updateState()
             }
         }
     }

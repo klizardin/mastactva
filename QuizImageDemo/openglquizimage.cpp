@@ -8,17 +8,17 @@
 #include <QOpenGLFunctions>
 
 
-OpenGLQuizImage::OpenGLQuizImage(QObject * parent_)
+OpenGLQuizImageV1::OpenGLQuizImageV1(QObject * parent_)
     : m_parent(parent_)
 {
 }
 
-OpenGLQuizImage::~OpenGLQuizImage()
+OpenGLQuizImageV1::~OpenGLQuizImageV1()
 {
     releaseResources();
 }
 
-void OpenGLQuizImage::releaseResources()
+void OpenGLQuizImageV1::releaseResources()
 {
     delete m_vshader;
     m_vshader = nullptr;
@@ -32,7 +32,7 @@ void OpenGLQuizImage::releaseResources()
     m_program = nullptr;
 }
 
-void OpenGLQuizImage::makeObject()
+void OpenGLQuizImageV1::makeObject()
 {
     static const int coords[4][3] = {
         { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 }
@@ -50,7 +50,7 @@ void OpenGLQuizImage::makeObject()
     }
 }
 
-void OpenGLQuizImage::init(QOpenGLFunctions *f_)
+void OpenGLQuizImageV1::init(QOpenGLFunctions *f_)
 {
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
@@ -111,7 +111,7 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
     m_vbo->release();
 }
 
-void OpenGLQuizImage::paintGL(QOpenGLFunctions *f_)
+void OpenGLQuizImageV1::paintGL(QOpenGLFunctions *f_)
 {
     m_program->bind();
     m_program->setUniformValue(m_textureId, 0);
@@ -141,7 +141,7 @@ void OpenGLQuizImage::paintGL(QOpenGLFunctions *f_)
 }
 
 
-void OpenGLQuizImage::render(const RenderState *state)
+void OpenGLQuizImageV1::render(const RenderState *state)
 {
     Q_UNUSED(state); // TODO: add render state in drawing
 
@@ -151,23 +151,24 @@ void OpenGLQuizImage::render(const RenderState *state)
     paintGL(f);
 }
 
-QSGRenderNode::StateFlags OpenGLQuizImage::changedStates() const
+QSGRenderNode::StateFlags OpenGLQuizImageV1::changedStates() const
 {
     return BlendState | ScissorState | StencilState;
 }
 
-QSGRenderNode::RenderingFlags OpenGLQuizImage::flags() const
+QSGRenderNode::RenderingFlags OpenGLQuizImageV1::flags() const
 {
     return BoundedRectRendering | DepthAwareRendering;
 }
 
-QRectF OpenGLQuizImage::rect() const
+QRectF OpenGLQuizImageV1::rect() const
 {
     return QRect(0, 0, m_width, m_height);
 }
 
-void OpenGLQuizImage::sync(QQuickItem *item)
+void OpenGLQuizImageV1::sync(QQuickItem *item)
 {
+    //qDebug() << "sync()";
     m_width = item->width();
     m_height = item->height();
 }

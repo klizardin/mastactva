@@ -28,6 +28,8 @@ class QuizImage : public QQuickItem
 public:
     QuizImage(QQuickItem *parent_ = nullptr);
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
+
+    Q_INVOKABLE void updateState();
 };
 
 
