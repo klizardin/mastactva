@@ -10,7 +10,8 @@ ApplicationWindow {
     visible: true
     title: qsTr("Quiz Image Demo")
 
-    property var images : [":/images/side2.png", ":/images/side3.png", ":/images/side4.png", ":/images/side5.png", ":/images/side6.png"]
+    readonly property var images : [":/images/side2.png", ":/images/side3.png", ":/images/side4.png", ":/images/side5.png", ":/images/side6.png"]
+    readonly property int imagesCount: 5
     property int currentImage: 0
 
     QuizImage {
@@ -54,7 +55,7 @@ ApplicationWindow {
             anchors.fill: parent
 
             onClicked: {
-                if(currentImage + 1 >= 5) { currentImage = 0 }
+                if(currentImage + 1 >= imagesCount) { currentImage = 0 }
                 else { ++currentImage }
             }
         }
