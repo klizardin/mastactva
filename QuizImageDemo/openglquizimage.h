@@ -18,18 +18,18 @@ public:
     OpenGLQuizImageV1(QObject * parent_);
     virtual ~OpenGLQuizImageV1() override;
 
-    virtual void render(const RenderState *state) override;
+    virtual void render(const RenderState *state_) override;
     virtual void releaseResources() override;
     virtual StateFlags changedStates() const override;
     virtual RenderingFlags flags() const override;
     virtual QRectF rect() const override;
 
-    void sync(QQuickItem *item);
+    void sync(QQuickItem *item_);
 
 private:
     void makeObject();
     void init(QOpenGLFunctions *f_);
-    void paintGL(QOpenGLFunctions *f_);
+    void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
 
     int m_width = 0;
     int m_height = 0;
@@ -59,15 +59,14 @@ public:
     OpenGLQuizImage(QObject * parent_);
     virtual ~OpenGLQuizImage() override;
 
-    virtual void render(const RenderState *state) override;
+    virtual void releaseResources() override;
+    virtual void render(const RenderState *state_) override;
     virtual StateFlags changedStates() const override;
     virtual RenderingFlags flags() const override;
     virtual QRectF rect() const override;
 
     void sync(QQuickItem *item);
 
-protected:
-    virtual void releaseResources() override;
 
 private:
     void makeObject();
