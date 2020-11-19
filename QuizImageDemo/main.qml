@@ -14,24 +14,24 @@ ApplicationWindow {
         id: quizImage
         anchors.fill: parent
 
+        SequentialAnimation {
+            id: switchImages
+
+            NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+            NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+
+            running: true
+            loops: Animation.Infinite
+        }
+
         MouseArea {
             anchors.fill: parent
 
             onClicked: {
-                quizImage.updateState()
+                switchImages.running = !switchImages.running
             }
-        }
-
-        SequentialAnimation {
-            id: switchImages
-
-            PauseAnimation { duration: 500 }
-            NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
-            PauseAnimation { duration: 500 }
-            NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
-
-            running: true
-            loops: Animation.Infinite
         }
     }
 }
