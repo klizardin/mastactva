@@ -31,6 +31,7 @@ private:
     void makeObject();
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
+    void createTextures();
 
 private:
     QObject *m_parent = nullptr;
@@ -57,6 +58,10 @@ private:
 
     qreal m_t = 0.0;
     QVector3D m_color;
+    QString m_fromImage;
+    QString m_toImage;
+    QString m_fromImageNew;
+    QString m_toImageNew;
 };
 
 

@@ -92,3 +92,28 @@ void QuizImage::setColor(const QColor &clr_)
     emit colorChanged();
 }
 
+QString QuizImage::fromImage() const
+{
+    return m_fromImage;
+}
+
+void QuizImage::setFromImage(const QString &fromImage_)
+{
+    m_fromImage = fromImage_;
+
+    updateState();
+    emit fromImageChanged();
+}
+
+QString QuizImage::toImage() const
+{
+    return m_toImage;
+}
+
+void QuizImage::setToImage(const QString &toImage_)
+{
+    m_toImage = toImage_;
+
+    updateState();
+    emit toImageChanged();
+}

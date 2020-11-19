@@ -27,6 +27,7 @@ void OpenGLQuizImage::render(const RenderState *state_)
 {
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->initializeOpenGLFunctions();
+    createTextures();
     if (nullptr == m_program) { init(f); }
     paintGL(f, state_);
 }
@@ -55,6 +56,9 @@ void OpenGLQuizImage::sync(QQuickItem *item_)
     m_color.setX(quizImage->color().redF());
     m_color.setY(quizImage->color().greenF());
     m_color.setZ(quizImage->color().blueF());
+
+    m_fromImageNew = quizImage->fromImage();
+    m_toImageNew = quizImage->toImage();
 }
 
 void OpenGLQuizImage::makeObject()
@@ -75,13 +79,24 @@ void OpenGLQuizImage::makeObject()
     }
 }
 
+void OpenGLQuizImage::createTextures()
+{
+    if(m_fromImageNew != m_fromImage)
+    {
+        m_fromImage = m_fromImageNew;
+        m_fromTexture = new QOpenGLTexture(QImage(m_fromImage).mirrored()); // QString(":/images/side%1.png").arg(1)
+    }
+    if(m_toImageNew != m_toImage)
+    {
+        m_toImage = m_toImageNew;
+        m_toTexture = new QOpenGLTexture(QImage(m_toImage).mirrored()); // QString(":/images/side%1.png").arg(2)
+    }
+}
+
 void OpenGLQuizImage::init(QOpenGLFunctions *f_)
 {
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
-
-    m_fromTexture = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(1)).mirrored());
-    m_toTexture = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(2)).mirrored());
 
     if(nullptr == m_vshader)
     {

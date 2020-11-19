@@ -45,6 +45,34 @@
                         "type": "QColor",
                         "user": false,
                         "write": "setColor"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "fromImage",
+                        "notify": "fromImageChanged",
+                        "read": "fromImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setFromImage"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "toImage",
+                        "notify": "toImageChanged",
+                        "read": "toImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setToImage"
                     }
                 ],
                 "qualifiedClassName": "QuizImage",
@@ -57,6 +85,16 @@
                     {
                         "access": "public",
                         "name": "colorChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "fromImageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toImageChanged",
                         "returnType": "void"
                     }
                 ],

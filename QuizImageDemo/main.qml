@@ -10,9 +10,14 @@ ApplicationWindow {
     visible: true
     title: qsTr("Quiz Image Demo")
 
+    property var images : [":/images/side2.png", ":/images/side3.png", ":/images/side4.png", ":/images/side5.png", ":/images/side6.png"]
+    property int currentImage: 0
+
     QuizImage {
         id: quizImage
         anchors.fill: parent
+        fromImage: ":/images/side1.png"
+        toImage: images[currentImage]
 
         SequentialAnimation {
             id: switchImages
@@ -49,7 +54,8 @@ ApplicationWindow {
             anchors.fill: parent
 
             onClicked: {
-                switchImages.running = !switchImages.running
+                if(currentImage + 1 >= 5) { currentImage = 0 }
+                else { ++currentImage }
             }
         }
     }
