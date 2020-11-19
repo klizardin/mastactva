@@ -252,8 +252,8 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     case QSGRendererInterface::OpenGLRhi:
 #if QT_CONFIG(opengl)
         if (!n)
-            n = new OpenGLQuizImageV1(this);
-        static_cast<OpenGLQuizImageV1 *>(n)->sync(this);
+            n = new OpenGLQuizImage(this);
+        static_cast<OpenGLQuizImage *>(n)->sync(this);
 #endif
         break;
 

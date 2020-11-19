@@ -53,7 +53,7 @@ private:
 };
 
 
-/*class OpenGLQuizImage : public QSGRenderNode
+class OpenGLQuizImage : public QSGRenderNode
 {
 public:
     OpenGLQuizImage(QObject * parent_);
@@ -71,27 +71,32 @@ public:
 private:
     void makeObject();
     void init(QOpenGLFunctions *f_);
-    void paintGL(QOpenGLFunctions *f_);
+    void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
 
+private:
+    QObject *m_parent = nullptr;
     int m_width = 0;
     int m_height = 0;
-    QObject *m_parent = nullptr;
     QVector<GLfloat> m_vertData;
+
     QOpenGLTexture *m_fromTexture = nullptr;
     QOpenGLTexture *m_toTexture = nullptr;
+
     QOpenGLShaderProgram *m_program = nullptr;
     QOpenGLShader *m_vshader = nullptr;
     QOpenGLShader *m_fshader = nullptr;
     QOpenGLBuffer *m_vbo = nullptr;
+
     QColor m_clearColor = Qt::blue;
     int m_xRot = 0;
     int m_yRot = 0;
     int m_zRot = 0;
     int m_vertexAttrId = -1;
     int m_texCoordAttrId = -1;
-    int m_textureId = -1;
+    int m_fromTextureId = -1;
+    int m_toTextureId = -1;
     int m_matrixId = -1;
-};*/
+};
 
 
 #endif // QT_CONFIG(opengl)
