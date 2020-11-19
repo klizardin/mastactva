@@ -21,5 +21,17 @@ ApplicationWindow {
                 quizImage.updateState()
             }
         }
+
+        SequentialAnimation {
+            id: switchImages
+
+            PauseAnimation { duration: 500 }
+            NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: 2000 }
+            PauseAnimation { duration: 500 }
+            NumberAnimation { target: quizImage; property: "t"; from: 1.0; to: 0.0; duration: 2000 }
+
+            running: true
+            loops: Animation.Infinite
+        }
     }
 }

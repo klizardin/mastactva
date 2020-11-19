@@ -8,30 +8,6 @@
                         "value": "auto"
                     }
                 ],
-                "className": "QuizImageFB",
-                "methods": [
-                    {
-                        "access": "public",
-                        "name": "updateState",
-                        "returnType": "void"
-                    }
-                ],
-                "object": true,
-                "qualifiedClassName": "QuizImageFB",
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QQuickFramebufferObject"
-                    }
-                ]
-            },
-            {
-                "classInfos": [
-                    {
-                        "name": "QML.Element",
-                        "value": "auto"
-                    }
-                ],
                 "className": "QuizImage",
                 "methods": [
                     {
@@ -41,7 +17,30 @@
                     }
                 ],
                 "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "t",
+                        "notify": "tChanged",
+                        "read": "t",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setT"
+                    }
+                ],
                 "qualifiedClassName": "QuizImage",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "tChanged",
+                        "returnType": "void"
+                    }
+                ],
                 "superClasses": [
                     {
                         "access": "public",

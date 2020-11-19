@@ -51,7 +51,7 @@ void OpenGLQuizImage::sync(QQuickItem *item_)
     m_width = item_->width();
     m_height = item_->height();
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
-    Q_UNUSED(quizImage);
+    m_t = quizImage->t();
 }
 
 void OpenGLQuizImage::makeObject()
@@ -102,14 +102,15 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
         const char *fsrc =
             "uniform sampler2D texture1Arg;\n"
             "uniform sampler2D texture2Arg;\n"
+            "uniform mediump float t;\n"
             "varying mediump vec4 texCoord;\n"
             "void main(void)\n"
             "{\n"
             "    vec4 s1 = texture2D( texture1Arg, texCoord.st );\n"
             "    vec4 s2 = texture2D( texture2Arg, texCoord.st );\n"
             "    gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, 1.0 ), \n"
-            "                                  vec4( s2.r * 0.6, s2.g * 0.6, s2.b * 0.6, 0.4 ),\n"
-            "                                  0.35 );\n"
+            "                        vec4( s2.r, s2.g, s2.b, 1.0 ),\n"
+            "                        t );\n"
             "}\n";
         m_fshader->compileSourceCode(fsrc);
     }
@@ -125,6 +126,7 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
     if(0 > m_fromTextureId) { m_fromTextureId = m_program->uniformLocation("texture1Arg"); }
     if(0 > m_toTextureId) { m_toTextureId = m_program->uniformLocation("texture2Arg"); }
     if(0 > m_matrixId) { m_matrixId = m_program->uniformLocation("matrixArg"); }
+    if(0 > m_tId) { m_tId = m_program->uniformLocation("t"); }
 
     m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
     m_program->bindAttributeLocation("texCoordArg", m_texCoordAttrId);
@@ -151,6 +153,7 @@ void OpenGLQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m.translate(0.0f, 0.0f, -10.0f);
 
     m_program->setUniformValue(m_matrixId, m);
+    m_program->setUniformValue(m_tId, (GLfloat)m_t);
 
     m_vbo->bind();
     m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());

@@ -27,7 +27,6 @@ public:
 
     void sync(QQuickItem *item);
 
-
 private:
     void makeObject();
     void init(QOpenGLFunctions *f_);
@@ -53,6 +52,9 @@ private:
     int m_fromTextureId = -1;
     int m_toTextureId = -1;
     int m_matrixId = -1;
+    int m_tId = -1;
+
+    qreal m_t = 0.0;
 };
 
 
