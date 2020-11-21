@@ -36,5 +36,6 @@ HEADERS += \
     quizimage.h
 
 DISTFILES += \
-    ../build-QuizImageDemo-Desktop_Qt_5_15_1_GCC_64bit-Debug/quizimagedemo_metatypes.json
+    ../build-QuizImageDemo-Desktop_Qt_5_15_1_GCC_64bit-Debug/quizimagedemo_metatypes.json \
+    todo.txt
 
