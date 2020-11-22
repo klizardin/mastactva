@@ -127,7 +127,7 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
             "{\n"
             "    vec4 s1 = texture2D( texture1Arg, texCoord.st );\n"
             "    vec4 s2 = texture2D( texture2Arg, texCoord.st );\n"
-            "    gl_FragColor = mix( vec4( s1.r*color.r, s1.g*color.g, s1.b*color.b, 1.0 ), \n"
+            "    gl_FragColor = mix( vec4( s1.r*color.r, s1.g*color.g, s1.b*color.b, 1.0 ),\n"
             "                        vec4( s2.r, s2.g, s2.b, 1.0 ),\n"
             "                        t );\n"
             "}\n";
