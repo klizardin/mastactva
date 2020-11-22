@@ -1,3 +1,11 @@
 1. extract model for shaders code, shaders arguments
 2. review db tables
 3. implement version in main app
+
+1) extract shader code to model
+model -- list of shaders by shader type
+in shader there are templates for shader arguments
+add comments to the shader to mark shader's arguments
+
+uniform mediump vec3 color; //: argument
+

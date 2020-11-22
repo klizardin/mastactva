@@ -121,7 +121,7 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
             "uniform sampler2D texture1Arg;\n"
             "uniform sampler2D texture2Arg;\n"
             "uniform mediump float t;\n"
-            "uniform mediump vec3 color;\n"
+            "uniform mediump vec3 color; //: argument\n"
             "varying mediump vec4 texCoord;\n"
             "void main(void)\n"
             "{\n"
