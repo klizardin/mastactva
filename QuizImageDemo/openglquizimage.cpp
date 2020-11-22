@@ -104,8 +104,8 @@ void OpenGLQuizImage::init(QOpenGLFunctions *f_)
         const char *vsrc =
             "attribute highp vec4 vertexArg;\n"
             "attribute mediump vec4 texCoordArg;\n"
-            "varying mediump vec4 texCoord;\n"
             "uniform mediump mat4 matrixArg;\n"
+            "varying mediump vec4 texCoord;\n"
             "void main(void)\n"
             "{\n"
             "    gl_Position = matrixArg * vertexArg;\n"
