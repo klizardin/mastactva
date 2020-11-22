@@ -9,3 +9,12 @@ add comments to the shader to mark shader's arguments
 
 uniform mediump vec3 color; //: argument
 
+model -> list of shaders {shaderType, shaderText }
+model -> list of arguments { argType, argName, argDescription, argValue }
+
+supported types float, vec2, vec3, vec4, mat3, mat4
+how to specify values -- vector of values with formating (multiline editor)
+
+can be several steps of shaders
+
+
