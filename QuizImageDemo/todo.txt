@@ -1,20 +1,24 @@
 1. extract model for shaders code, shaders arguments
-2. review db tables
+* 2. review db tables
 3. implement version in main app
 
-1) extract shader code to model
-model -- list of shaders by shader type
-in shader there are templates for shader arguments
-add comments to the shader to mark shader's arguments
+4. extract shader code to model
+    model -- list of shaders by shader type
+    in shader there are templates for shader arguments
+    add comments to the shader to mark shader's arguments
 
-uniform mediump vec3 color; //: argument
+    uniform mediump vec3 color; //: argument
 
-model -> list of shaders {shaderType, shaderText }
-model -> list of arguments { argType, argName, argDescription, argValue }
+    model -> list of shaders {shaderType, shaderText }
+    model -> list of arguments { argType, argName, argDescription, argValue }
 
-supported types float, vec2, vec3, vec4, mat3, mat4
-how to specify values -- vector of values with formating (multiline editor)
+    supported types float, vec2, vec3, vec4, mat3, mat4
+    how to specify values -- vector of values with formating (multiline editor)
 
-can be several steps of shaders
+    can be several steps of shaders
+
+
+
+
 
 
