@@ -24,7 +24,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("image-question-answers");
+            setLayoutJsonName("image-question-answer");
             addSpecial<int>(layout::SpecialFieldEn::appId, &Answer::m_appId);
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Answer::m_parentModelInfo);
             addField<int>("id", "answerId", &Answer::id, &Answer::setId);

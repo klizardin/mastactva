@@ -38,7 +38,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("images");
+            setLayoutJsonName("image");
             addSpecial<int>(layout::SpecialFieldEn::appId, &Image::m_appId);
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Image::m_thisListModelInfo);
             addField<int>("id", "id", &Image::id, &Image::setId);

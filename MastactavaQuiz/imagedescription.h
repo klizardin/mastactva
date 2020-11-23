@@ -26,7 +26,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("image-descriptions");
+            setLayoutJsonName("image-description");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ImageDescription::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &ImageDescription::m_appId);
             addField<int>("id", "idId", &ImageDescription::id, &ImageDescription::setId);

@@ -300,8 +300,8 @@ void GalleryImagesModel::startLoadImages()
     m_request = NetAPIV0::getSingelton()->startRequest();
     NetAPIV0::getSingelton()->get(
                 m_showGalleryViewImages
-                    ?QString("images/%1/gallery_view/").arg(m_galleryId)
-                    :QString("images/%1/gallery_all/").arg(m_galleryId)
+                    ?QString("image/%1/gallery_view/").arg(m_galleryId)
+                    :QString("image/%1/gallery_all/").arg(m_galleryId)
                     ,
                 m_request);
 }
@@ -786,7 +786,7 @@ void GalleryEditViewModel::startLoadGalleries()
     if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
     m_request = NetAPIV0::getSingelton()->startRequest();
-    NetAPIV0::getSingelton()->get("galleries/", m_request);
+    NetAPIV0::getSingelton()->get("gallery/", m_request);
 }
 
 int GalleryEditViewModel::getIdOfIndex(int index_) const
@@ -854,7 +854,7 @@ void GalleryEditViewModel::refreshItemAtIndex(int index_)
     if(nullptr == netAPI) { return; }
 
     m_refreshRequest = netAPI->startJsonRequest();
-    netAPI->get(QString("galleries/%1/").arg(m_data.at(index_)->getId()), m_refreshRequest);
+    netAPI->get(QString("gallery/%1/").arg(m_data.at(index_)->getId()), m_refreshRequest);
 }
 
 QVariant GalleryEditViewModel::getCurrentItem()
@@ -1216,7 +1216,7 @@ void QuestionAnswersModel::startLoad()
     if(!(nullptr != NetAPIV0::getSingelton())) { return; }
     m_request = NetAPIV0::getSingelton()->startRequest();
     NetAPIV0::getSingelton()->get(
-                QString("image-question-answers/%1/of_question/").arg(questionId()),
+                QString("image-question-answer/%1/of_question/").arg(questionId()),
                 m_request);
 }
 
@@ -1501,7 +1501,7 @@ void ImagePointToQuestion::startLoad2()
 
     m_request2 = NetAPIV0::getSingelton()->startRequest();
     NetAPIV0::getSingelton()->get(
-                QString("image-questions/%1/").arg(questionId()),
+                QString("image-question/%1/").arg(questionId()),
                 m_request2);
 }
 
@@ -1935,7 +1935,7 @@ void ImagePointData::cretateTemplQuestionData()
     QJsonDocument doc(rec);
 
     m_createQuestionRequest->setDocument(doc);
-    NetAPIV0::getSingelton()->post(QString("image-questions/"), m_createQuestionRequest);
+    NetAPIV0::getSingelton()->post(QString("image-question/"), m_createQuestionRequest);
 }
 
 void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
@@ -1965,7 +1965,7 @@ void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestDat
     QJsonDocument doc(rec);
 
     m_createAnswerRequest->setDocument(doc);
-    NetAPIV0::getSingelton()->post(QString("image-question-answers/"), m_createAnswerRequest);
+    NetAPIV0::getSingelton()->post(QString("image-question-answer/"), m_createAnswerRequest);
 }
 
 void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
@@ -2059,7 +2059,7 @@ void ImagePointData::removeQuestion()
     if(!(nullptr != netAPI)) { return; }
 
     m_removeQuestionRequest = netAPI->startJsonRequest();
-    NetAPIV0::getSingelton()->del(QString("image-questions/%1/").arg(m_questionID), m_removeQuestionRequest);
+    NetAPIV0::getSingelton()->del(QString("image-question/%1/").arg(m_questionID), m_removeQuestionRequest);
 }
 
 void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
@@ -3140,7 +3140,7 @@ void DescriptionModel::startLoadDescriptions()
 
     m_request = NetAPIV0::getSingelton()->startRequest();
     NetAPIV0::getSingelton()->get(
-                QString("image-descriptions/%1/of_image/").arg(imageID()),
+                QString("image-description/%1/of_image/").arg(imageID()),
                 m_request);
 }
 

@@ -31,7 +31,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("user-steps");
+            setLayoutJsonName("quiz-user-step");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &UserStep::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &UserStep::m_appId);
             addField<int>("id", "usId", &UserStep::id, &UserStep::setId);

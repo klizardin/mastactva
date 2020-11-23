@@ -29,7 +29,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("user-question-answers");
+            setLayoutJsonName("quiz-user-question-answer");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &UserQuestionAnswer::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &UserQuestionAnswer::m_appId);
             addField<int>("id", "qaId", &UserQuestionAnswer::id, &UserQuestionAnswer::setId);

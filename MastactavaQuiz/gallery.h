@@ -37,7 +37,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("galleries");
+            setLayoutJsonName("gallery");
             addSpecial<int>(layout::SpecialFieldEn::appId, &Gallery::m_appId);
             addField<int>("id", "id", &Gallery::id, &Gallery::setId);
             addField<QString>("description", "description", &Gallery::description, &Gallery::setDescription);

@@ -26,7 +26,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("user-galleries-stat");
+            setLayoutJsonName("quiz-user-galleries-stat");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &GalleryStatistics::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &GalleryStatistics::m_appId);
             addField<int>("id", "ugsId", &GalleryStatistics::id, &GalleryStatistics::setId);
