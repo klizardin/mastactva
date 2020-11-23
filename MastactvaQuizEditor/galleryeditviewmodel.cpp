@@ -110,8 +110,8 @@ GalleryImagesModel::GalleryImagesModel(QObject *parent /*= nullptr*/)
     m_roleNames[ImageSourceRole] = "image_source";
     m_roleNames[ImagePointsRole] = "image_points";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
 
     m_images.push_back(NOIMAGEDEFAULT(this));
 }
@@ -234,7 +234,7 @@ void GalleryImagesModel::clearData()
     m_images.clear();
 }
 
-void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void GalleryImagesModel::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
@@ -294,11 +294,11 @@ void GalleryImagesModel::ongalleryIdChanged()
 
 void GalleryImagesModel::startLoadImages()
 {
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
-    m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(
+    m_request = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get(
                 m_showGalleryViewImages
                     ?QString("images/%1/gallery_view/").arg(m_galleryId)
                     :QString("images/%1/gallery_all/").arg(m_galleryId)
@@ -619,8 +619,8 @@ GalleryEditViewModel::GalleryEditViewModel(QObject *parent)
 
 
     // TODO: indicate in view that there is no data
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
     startLoadGalleries();
 }
 
@@ -702,9 +702,9 @@ QHash<int, QByteArray> GalleryEditViewModel::roleNames() const
     return m_roleNames;
 }
 
-void GalleryEditViewModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void GalleryEditViewModel::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
-    if(!(m_request == request_) && !(static_cast<RequestData *>(m_refreshRequest) == request_))
+    if(!(m_request == request_) && !(static_cast<RequestDataV0 *>(m_refreshRequest) == request_))
     {
         return;
     }
@@ -739,7 +739,7 @@ void GalleryEditViewModel::onJsonRequestFinished(int errorCode_, RequestData *re
 
         emit galleryRealoded();
     }
-    else if(static_cast<RequestData *>(m_refreshRequest) == request_)
+    else if(static_cast<RequestDataV0 *>(m_refreshRequest) == request_)
     {
         m_refreshRequest = nullptr;
         if(errorCode_ != 0) { return; }
@@ -782,11 +782,11 @@ void GalleryEditViewModel::clearData()
 
 void GalleryEditViewModel::startLoadGalleries()
 {
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
-    m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get("galleries/", m_request);
+    m_request = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get("galleries/", m_request);
 }
 
 int GalleryEditViewModel::getIdOfIndex(int index_) const
@@ -849,7 +849,7 @@ void GalleryEditViewModel::refreshItemAtIndex(int index_)
 {
     if(index_ < 0 || index_ >= m_data.size()) { return; }
 
-    NetAPI *netAPI = NetAPI::getSingelton();
+    NetAPIV0 *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(nullptr == netAPI) { return; }
 
@@ -872,10 +872,10 @@ ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int
       m_imageSource(g_noImageSource),
       m_noImageSource(true)
 {
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onSetNextImageJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onSetNextImageJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -912,11 +912,11 @@ void ImagePointToNextImage::setNoImageSource(bool noImageSource_, bool emitFlag_
 
 void ImagePointToNextImage::startLoad()
 {
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
-    m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(
+    m_request = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get(
                 QString("image-point-to-next-image/%1/of_image_point/").arg(m_imagePointId),
                 m_request);
 }
@@ -955,7 +955,7 @@ void ImagePointToNextImage::loadData(const QJsonDocument &reply_)
     emit noImageSourceChanged();
 }
 
-void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(loaded() || m_request != request_)
     {
@@ -991,24 +991,24 @@ void ImagePointToNextImage::setId(int id_, bool emitFlag_ /*= true*/)
 
 void ImagePointToNextImage::setNextImage(int nextImageId_)
 {
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
-    m_setNextImageRequest = NetAPI::getSingelton()->startJsonRequest();
+    m_setNextImageRequest = NetAPIV0::getSingelton()->startJsonRequest();
     QJsonObject rec;
     rec.insert("id", QJsonValue::fromVariant(m_id));
     rec.insert("image_point", QJsonValue::fromVariant(m_imagePointId));
     rec.insert("next_image", QJsonValue::fromVariant(nextImageId_));
     QJsonDocument doc(rec);
     m_setNextImageRequest->setDocument(doc);
-    NetAPI::getSingelton()->patch(
+    NetAPIV0::getSingelton()->patch(
                 QString("image-point-to-next-image/%1/").arg(m_id),
                 m_setNextImageRequest);
 }
 
-void ImagePointToNextImage::onSetNextImageJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointToNextImage::onSetNextImageJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
-    if(nullptr == m_setNextImageRequest || static_cast<RequestData *>(m_setNextImageRequest) != request_)
+    if(nullptr == m_setNextImageRequest || static_cast<RequestDataV0 *>(m_setNextImageRequest) != request_)
     {
         return;
     }
@@ -1130,8 +1130,8 @@ QuestionAnswersModel::QuestionAnswersModel(QObject *parent_ /*= nullptr*/, int q
     m_roleNames[AnswerRole] = "questionAnswer_text";
     m_roleNames[PointsToPassRole] = "questionAnswer_pointsToPass";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -1212,10 +1212,10 @@ void QuestionAnswersModel::startLoad()
         endRemoveRows();
         return;
     }
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
-    m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
+    m_request = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get(
                 QString("image-question-answers/%1/of_question/").arg(questionId()),
                 m_request);
 }
@@ -1235,7 +1235,7 @@ QHash<int, QByteArray> QuestionAnswersModel::roleNames() const
     return m_roleNames;
 }
 
-void QuestionAnswersModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void QuestionAnswersModel::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {
@@ -1392,8 +1392,8 @@ ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int i
     :QObject(parent_),
     m_imagePointId(imagePointId_)
 {
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
 
     startLoad();
 }
@@ -1484,11 +1484,11 @@ void ImagePointToQuestion::refresh()
 
 void ImagePointToQuestion::startLoad()
 {
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
-    m_request1 = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(
+    m_request1 = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get(
                 QString("image-point-to-question/%1/of_image_point/").arg(m_imagePointId),
                 m_request1);
 }
@@ -1496,11 +1496,11 @@ void ImagePointToQuestion::startLoad()
 void ImagePointToQuestion::startLoad2()
 {
     if(questionId() < 0) { return; }
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
 
-    m_request2 = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(
+    m_request2 = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get(
                 QString("image-questions/%1/").arg(questionId()),
                 m_request2);
 }
@@ -1515,7 +1515,7 @@ bool ImagePointToQuestion::questionDataLoaded() const
     return nullptr == m_request1 && nullptr == m_request2;
 }
 
-void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(request_ == nullptr || (m_request1 != request_ && m_request2 != request_))
     {
@@ -1588,20 +1588,20 @@ ImagePointData::ImagePointData(QObject *parent_,
     m_weight(weight_),
     m_created(created_)
 {
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDataSavedRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onDataCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onQuestionCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onAnswerCreatedRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointToQuestionRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointToImageRequestFinished(int, RequestData *, const QJsonDocument &)));
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onPointRemovedSlot(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onDataSavedRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onDataCreatedRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onQuestionCreatedRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onAnswerCreatedRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onPointToQuestionRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onPointToImageRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onPointRemovedSlot(int, RequestDataV0 *, const QJsonDocument &)));
 }
 
 ImagePointData::~ImagePointData()
@@ -1810,7 +1810,7 @@ ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, c
 
 void ImagePointData::saveData()
 {
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
@@ -1825,14 +1825,14 @@ void ImagePointData::saveData()
     QJsonDocument doc(rec);
 
     m_saveDataRequest->setDocument(doc);
-    NetAPI::getSingelton()->patch(QString("image-point/%1/").arg(pointId()), m_saveDataRequest);
+    NetAPIV0::getSingelton()->patch(QString("image-point/%1/").arg(pointId()), m_saveDataRequest);
 }
 
-void ImagePointData::onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onDataSavedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
 
-    if(nullptr == m_saveDataRequest || static_cast<RequestData *>(m_saveDataRequest) != request_) { return; }
+    if(nullptr == m_saveDataRequest || static_cast<RequestDataV0 *>(m_saveDataRequest) != request_) { return; }
     m_saveDataRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -1844,7 +1844,7 @@ void ImagePointData::createData(bool pointToNextImage_)
     Q_ASSERT(pointId() < 0);
     m_pointToNextImage = pointToNextImage_;
 
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
@@ -1858,12 +1858,12 @@ void ImagePointData::createData(bool pointToNextImage_)
     QJsonDocument doc(rec);
 
     m_createDataRequest->setDocument(doc);
-    NetAPI::getSingelton()->post(QString("image-point/"), m_createDataRequest);
+    NetAPIV0::getSingelton()->post(QString("image-point/"), m_createDataRequest);
 }
 
-void ImagePointData::onDataCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onDataCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
-    if(nullptr == m_createDataRequest || static_cast<RequestData *>(m_createDataRequest) != request_) { return; }
+    if(nullptr == m_createDataRequest || static_cast<RequestDataV0 *>(m_createDataRequest) != request_) { return; }
     m_createDataRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -1889,7 +1889,7 @@ void ImagePointData::createTemplateData()
 
 void ImagePointData::createTemplImageData()
 {
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
@@ -1900,14 +1900,14 @@ void ImagePointData::createTemplImageData()
     QJsonDocument doc(rec);
 
     m_createImagePointToImageRequest->setDocument(doc);
-    NetAPI::getSingelton()->post(QString("image-point-to-next-image/"), m_createImagePointToImageRequest);
+    NetAPIV0::getSingelton()->post(QString("image-point-to-next-image/"), m_createImagePointToImageRequest);
 }
 
-void ImagePointData::onPointToImageRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onPointToImageRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
 
-    if(nullptr == m_createImagePointToImageRequest || static_cast<RequestData *>(m_createImagePointToImageRequest) != request_) { return; }
+    if(nullptr == m_createImagePointToImageRequest || static_cast<RequestDataV0 *>(m_createImagePointToImageRequest) != request_) { return; }
     m_createImagePointToImageRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -1921,7 +1921,7 @@ void ImagePointData::onPointToImageRequestFinished(int errorCode_, RequestData *
 
 void ImagePointData::cretateTemplQuestionData()
 {
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
@@ -1935,12 +1935,12 @@ void ImagePointData::cretateTemplQuestionData()
     QJsonDocument doc(rec);
 
     m_createQuestionRequest->setDocument(doc);
-    NetAPI::getSingelton()->post(QString("image-questions/"), m_createQuestionRequest);
+    NetAPIV0::getSingelton()->post(QString("image-questions/"), m_createQuestionRequest);
 }
 
-void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
-    if(nullptr == m_createQuestionRequest || static_cast<RequestData *>(m_createQuestionRequest) != request_) { return; }
+    if(nullptr == m_createQuestionRequest || static_cast<RequestDataV0 *>(m_createQuestionRequest) != request_) { return; }
     m_createQuestionRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -1953,7 +1953,7 @@ void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestDat
 
     Q_ASSERT(m_questionID > 0);
 
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
@@ -1965,20 +1965,20 @@ void ImagePointData::onQuestionCreatedRequestFinished(int errorCode_, RequestDat
     QJsonDocument doc(rec);
 
     m_createAnswerRequest->setDocument(doc);
-    NetAPI::getSingelton()->post(QString("image-question-answers/"), m_createAnswerRequest);
+    NetAPIV0::getSingelton()->post(QString("image-question-answers/"), m_createAnswerRequest);
 }
 
-void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
 
-    if(nullptr == m_createAnswerRequest || static_cast<RequestData *>(m_createAnswerRequest) != request_) { return; }
+    if(nullptr == m_createAnswerRequest || static_cast<RequestDataV0 *>(m_createAnswerRequest) != request_) { return; }
     m_createAnswerRequest = nullptr;
     if(0 != errorCode_) { return; }
 
     Q_ASSERT(m_questionID > 0);
 
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
@@ -1989,14 +1989,14 @@ void ImagePointData::onAnswerCreatedRequestFinished(int errorCode_, RequestData 
     QJsonDocument doc(rec);
 
     m_createImagePointToQuestionRequest->setDocument(doc);
-    NetAPI::getSingelton()->post(QString("image-point-to-question/"), m_createImagePointToQuestionRequest);
+    NetAPIV0::getSingelton()->post(QString("image-point-to-question/"), m_createImagePointToQuestionRequest);
 }
 
-void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
 
-    if(nullptr == m_createImagePointToQuestionRequest || static_cast<RequestData *>(m_createImagePointToQuestionRequest) != request_) { return; }
+    if(nullptr == m_createImagePointToQuestionRequest || static_cast<RequestDataV0 *>(m_createImagePointToQuestionRequest) != request_) { return; }
     m_createImagePointToQuestionRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -2054,19 +2054,19 @@ void ImagePointData::imagePointToQuestionLoadedSlot()
 void ImagePointData::removeQuestion()
 {
     Q_ASSERT(m_questionID >= 0);
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
     m_removeQuestionRequest = netAPI->startJsonRequest();
-    NetAPI::getSingelton()->del(QString("image-questions/%1/").arg(m_questionID), m_removeQuestionRequest);
+    NetAPIV0::getSingelton()->del(QString("image-questions/%1/").arg(m_questionID), m_removeQuestionRequest);
 }
 
-void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
 
-    if(nullptr == m_removeQuestionRequest || static_cast<RequestData *>(m_removeQuestionRequest) != request_) { return; }
+    if(nullptr == m_removeQuestionRequest || static_cast<RequestDataV0 *>(m_removeQuestionRequest) != request_) { return; }
     m_removeQuestionRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -2075,19 +2075,19 @@ void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestData *request_
 
 void ImagePointData::removeImagePoint()
 {
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
     m_removeImagePointRequest = netAPI->startJsonRequest();
-    NetAPI::getSingelton()->del(QString("image-point/%1/").arg(pointId()), m_removeImagePointRequest);
+    NetAPIV0::getSingelton()->del(QString("image-point/%1/").arg(pointId()), m_removeImagePointRequest);
 }
 
-void ImagePointData::onPointRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointData::onPointRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
 
-    if(nullptr == m_removeImagePointRequest || static_cast<RequestData *>(m_removeImagePointRequest) != request_) { return; }
+    if(nullptr == m_removeImagePointRequest || static_cast<RequestDataV0 *>(m_removeImagePointRequest) != request_) { return; }
     m_removeImagePointRequest = nullptr;
     if(0 != errorCode_) { return; }
 
@@ -2104,8 +2104,8 @@ ImagePointsModel::ImagePointsModel(QObject *parent_)
     m_roleNames[ToNextImageRole] = "imagePoint_toNextImage";
     m_roleNames[ToQuestionRole] = "imagePoint_toQuestion";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
 }
 
 ImagePointsModel::~ImagePointsModel()
@@ -2339,15 +2339,15 @@ void ImagePointsModel::setSourceImageId(int sourceImageId_)
 
 void ImagePointsModel::startLoadImagePoints()
 {
-    auto *netAPI = NetAPI::getSingelton();
+    auto *netAPI = NetAPIV0::getSingelton();
     Q_ASSERT(nullptr != netAPI);
     if(!(nullptr != netAPI)) { return; }
 
     m_request = netAPI->startRequest();
-    NetAPI::getSingelton()->get(QString("image-point/%1/of_image/").arg(m_sourceImageId), m_request);
+    NetAPIV0::getSingelton()->get(QString("image-point/%1/of_image/").arg(m_sourceImageId), m_request);
 }
 
-void ImagePointsModel::onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void ImagePointsModel::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     Q_UNUSED(reply_);
     if(nullptr == m_request || m_request != request_)
@@ -2981,8 +2981,8 @@ DescriptionModel::DescriptionModel(QObject *parent_ /*= nullptr*/)
     m_roleNames[FromDateTimeRole] = "description_fromDateTime";
     m_roleNames[DescriptionRole] = "description_description";
 
-    QObject::connect(NetAPI::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestData *, const QJsonDocument &)),
-                     this, SLOT(loadDescriptionsJsonRequestFinished(int, RequestData *, const QJsonDocument &)));
+    QObject::connect(NetAPIV0::getSingelton(), SIGNAL(onJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)),
+                     this, SLOT(loadDescriptionsJsonRequestFinished(int, RequestDataV0 *, const QJsonDocument &)));
 }
 
 DescriptionModel::~DescriptionModel()
@@ -3128,8 +3128,8 @@ void DescriptionModel::setImageID(int imageId_)
 
 void DescriptionModel::startLoadDescriptions()
 {
-    Q_ASSERT(nullptr != NetAPI::getSingelton());
-    if(!(nullptr != NetAPI::getSingelton())) { return; }
+    Q_ASSERT(nullptr != NetAPIV0::getSingelton());
+    if(!(nullptr != NetAPIV0::getSingelton())) { return; }
     if(imageID() < 0)
     {
         beginRemoveRows(QModelIndex(), 0, m_data.size());
@@ -3138,8 +3138,8 @@ void DescriptionModel::startLoadDescriptions()
         return;
     }
 
-    m_request = NetAPI::getSingelton()->startRequest();
-    NetAPI::getSingelton()->get(
+    m_request = NetAPIV0::getSingelton()->startRequest();
+    NetAPIV0::getSingelton()->get(
                 QString("image-descriptions/%1/of_image/").arg(imageID()),
                 m_request);
 }
@@ -3154,7 +3154,7 @@ void DescriptionModel::clearData()
     m_data.clear();
 }
 
-void DescriptionModel::loadDescriptionsJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+void DescriptionModel::loadDescriptionsJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(!(m_request == request_))
     {

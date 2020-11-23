@@ -8,9 +8,9 @@
 #include <QTranslator>
 
 
-class RequestData;
-class JsonRequestData;
-class MultiPartRequestData;
+class RequestDataV0;
+class JsonRequestDataV0;
+class MultiPartRequestDataV0;
 class ImagePointToQuestion;
 class ImagePointData;
 class ImagePointsModel;
@@ -143,29 +143,29 @@ protected:
 
 
 protected slots:
-    void onNewGalleryCreatedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onEditGallerySlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onAddImageSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onNewGalleryCreatedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onEditGallerySlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onAddImageSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
     void galleryReloadedSlot();
-    void delImageOfGallerySlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onNewDescriptionAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onDescriptionEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void delImageOfGallerySlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onNewDescriptionAddedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onDescriptionEditedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
     void onRefreshDescriptionsSlot();
-    void onDescriptionDeletedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onQuestionEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onDescriptionDeletedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onQuestionEditedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
     void imagePointToQuestionTextLoadedSlot();
-    void onAnswerAddedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onAnswerEditedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void onCurrentAnswerRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void currentGalleryOwnshipTakenSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void currentGalleryOwnshipFreedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void imageOfGalleryAsTopSetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void imageOfGalleryAsTopResetSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
-    void testLogingInSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void onAnswerAddedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onAnswerEditedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void onCurrentAnswerRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void currentGalleryOwnshipTakenSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void currentGalleryOwnshipFreedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void imageOfGalleryAsTopSetSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void imageOfGalleryAsTopResetSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
+    void testLogingInSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
     void onImagePointRemovedSlot();
     void nextImageSetSlot();
     void imagePointToImageLoadedSlot();
-    void currentGalleryRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &document_);
+    void currentGalleryRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &document_);
 
 private:
     int m_galleryId = -1;
@@ -177,23 +177,23 @@ private:
     int m_imageOfGalleryPointIndex = -1;
     int m_imageOfGalleryAnswerIndex = -1;
     QJsonDocument m_jsonDoc;
-    JsonRequestData *m_createNewGalleryRequest = nullptr;
-    JsonRequestData *m_editGalleryRequest = nullptr;
-    JsonRequestData *m_delImageOfGalleryRequest = nullptr;
-    MultiPartRequestData *m_addImageRequest = nullptr;
-    JsonRequestData *m_newDescriptionRequest = nullptr;
-    JsonRequestData *m_editDescriptionRequest = nullptr;
-    JsonRequestData *m_delDescriptionRequest = nullptr;
-    JsonRequestData *m_editQuestionRequest = nullptr;
-    JsonRequestData *m_addAnswerRequest = nullptr;
-    JsonRequestData *m_editAnswerRequest = nullptr;
-    JsonRequestData *m_removeAnswerRequest = nullptr;
-    JsonRequestData *m_takeGalleryOwnshipRequest = nullptr;
-    JsonRequestData *m_freeGalleryOwnshipRequest = nullptr;
-    JsonRequestData *m_setImageOfGalleryAsTopRequest = nullptr;
-    JsonRequestData *m_resetImageOfGalleryAsTopRequest = nullptr;
-    JsonRequestData *m_testLoginRequest = nullptr;
-    JsonRequestData *m_removeCurrentGalleryRequest = nullptr;
+    JsonRequestDataV0 *m_createNewGalleryRequest = nullptr;
+    JsonRequestDataV0 *m_editGalleryRequest = nullptr;
+    JsonRequestDataV0 *m_delImageOfGalleryRequest = nullptr;
+    MultiPartRequestDataV0 *m_addImageRequest = nullptr;
+    JsonRequestDataV0 *m_newDescriptionRequest = nullptr;
+    JsonRequestDataV0 *m_editDescriptionRequest = nullptr;
+    JsonRequestDataV0 *m_delDescriptionRequest = nullptr;
+    JsonRequestDataV0 *m_editQuestionRequest = nullptr;
+    JsonRequestDataV0 *m_addAnswerRequest = nullptr;
+    JsonRequestDataV0 *m_editAnswerRequest = nullptr;
+    JsonRequestDataV0 *m_removeAnswerRequest = nullptr;
+    JsonRequestDataV0 *m_takeGalleryOwnshipRequest = nullptr;
+    JsonRequestDataV0 *m_freeGalleryOwnshipRequest = nullptr;
+    JsonRequestDataV0 *m_setImageOfGalleryAsTopRequest = nullptr;
+    JsonRequestDataV0 *m_resetImageOfGalleryAsTopRequest = nullptr;
+    JsonRequestDataV0 *m_testLoginRequest = nullptr;
+    JsonRequestDataV0 *m_removeCurrentGalleryRequest = nullptr;
     ImagePointToQuestion *m_imagePointToQuestion = nullptr;
     QString m_lastHostURL;
     ImagePointToNextImage *m_imagePointToNextImage = nullptr;

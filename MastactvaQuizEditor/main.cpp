@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("mastactva.by");
     app.setApplicationName("Mastactva Quiz Editor Application");
 
-    NetAPI::createSingelton(&app);
+    NetAPIV0::createSingelton(&app);
     QMLMainObjects::createSingelton(&app);
 
     QQmlApplicationEngine engine;

@@ -24,8 +24,8 @@
 #include <QVector2D>
 
 
-class RequestData;
-class JsonRequestData;
+class RequestDataV0;
+class JsonRequestDataV0;
 class ImagePointsModel;
 
 
@@ -114,7 +114,7 @@ signals:
     void currentIndexChanged();
 
 private slots:
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
     void ongalleryIdChanged();
 
 protected:
@@ -129,7 +129,7 @@ private:
     int m_galleryId = -1;
     int m_galleryIndex = -1;
     int m_currentIndex = -1;
-    RequestData* m_request = nullptr;
+    RequestDataV0* m_request = nullptr;
     QVector<ImageData *> m_images;
     QHash<int, QByteArray> m_roleNames;
 };
@@ -238,7 +238,7 @@ public:
 
     //slots
 private slots:
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
 
     // methods
 public:
@@ -268,8 +268,8 @@ protected:
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
-    RequestData* m_request = nullptr;
-    JsonRequestData* m_refreshRequest = nullptr;
+    RequestDataV0* m_request = nullptr;
+    JsonRequestDataV0* m_refreshRequest = nullptr;
     QHash<int, QByteArray> m_roleNames;
     QVector<GalleryItemData*> m_data;
     int m_currentIndex = -1;
@@ -300,8 +300,8 @@ public:
     void setId(int id_, bool emitFlag_ = true);
 
 protected slots:
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onSetNextImageJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onSetNextImageJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
 
     void loadData(const QJsonDocument &reply_);
 
@@ -317,8 +317,8 @@ private:
     int m_imagePointId = -1;
     QString m_imageSource;
     bool m_noImageSource = true;
-    RequestData *m_request = nullptr;
-    JsonRequestData *m_setNextImageRequest = nullptr;
+    RequestDataV0 *m_request = nullptr;
+    JsonRequestDataV0 *m_setNextImageRequest = nullptr;
 };
 
 class AnswerData : public QObject
@@ -403,7 +403,7 @@ protected:
 
     //slots
 private slots:
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
 
 signals:
     void questionIdChanged();
@@ -413,7 +413,7 @@ signals:
 private:
     QHash<int, QByteArray> m_roleNames;
     int m_questionId = -1;
-    RequestData *m_request = nullptr;
+    RequestDataV0 *m_request = nullptr;
     QVector<AnswerData *> m_data;
 };
 
@@ -491,7 +491,7 @@ public:
     QuestionData *questionData();
 
 protected slots:
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
 
 signals:
     //void answersChanged();
@@ -506,8 +506,8 @@ private:
     int m_imagePointId = -1;
     int m_questionId = -1;
     QuestionData *m_question = nullptr;
-    RequestData *m_request1 = nullptr;
-    RequestData *m_request2 = nullptr;
+    RequestDataV0 *m_request1 = nullptr;
+    RequestDataV0 *m_request2 = nullptr;
     bool m_forceRefresh = false;
 };
 
@@ -573,14 +573,14 @@ private:
     //void removeQuestion();
 
 protected slots:
-    void onDataSavedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onDataCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onQuestionCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onAnswerCreatedRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onPointToQuestionRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onPointToImageRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void onPointRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    //void onQuestionRemovedSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onDataSavedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onDataCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onQuestionCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onAnswerCreatedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onPointToQuestionRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onPointToImageRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    void onPointRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
+    //void onQuestionRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
     //void imagePointToQuestionLoadedSlot();
 
 
@@ -611,14 +611,14 @@ private:
     int m_questionID = -1;
     int m_nextImageId = -1;
 
-    JsonRequestData* m_saveDataRequest = nullptr;
-    JsonRequestData* m_createDataRequest = nullptr;
-    JsonRequestData* m_createQuestionRequest = nullptr;
-    JsonRequestData* m_createAnswerRequest = nullptr;
-    JsonRequestData* m_createImagePointToQuestionRequest = nullptr;
-    JsonRequestData* m_createImagePointToImageRequest = nullptr;
-    JsonRequestData* m_removeImagePointRequest = nullptr;
-    JsonRequestData* m_removeQuestionRequest = nullptr;
+    JsonRequestDataV0* m_saveDataRequest = nullptr;
+    JsonRequestDataV0* m_createDataRequest = nullptr;
+    JsonRequestDataV0* m_createQuestionRequest = nullptr;
+    JsonRequestDataV0* m_createAnswerRequest = nullptr;
+    JsonRequestDataV0* m_createImagePointToQuestionRequest = nullptr;
+    JsonRequestDataV0* m_createImagePointToImageRequest = nullptr;
+    JsonRequestDataV0* m_removeImagePointRequest = nullptr;
+    JsonRequestDataV0* m_removeQuestionRequest = nullptr;
 };
 
 class ImagePointsModel : public QAbstractListModel
@@ -680,7 +680,7 @@ signals:
 
     //slots
 private slots:
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
     void onImagePointDataSavedSlot(int pointId_);
     void onImagePointDataCreated1Slot(int pointId_);
     void onImagePointDataCreated2Slot(int pointId_);
@@ -696,7 +696,7 @@ private:
     QHash<int, QByteArray> m_roleNames;
     int m_sourceImageId = -1;
     QVector<ImagePointData *> m_data;
-    RequestData* m_request = nullptr;
+    RequestDataV0* m_request = nullptr;
     int m_currentIndex = -1;
 };
 
@@ -841,7 +841,7 @@ protected:
     void clearData();
 
 protected slots:
-    void loadDescriptionsJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void loadDescriptionsJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
 
 signals:
     void imageIDChanged();
@@ -855,7 +855,7 @@ private:
     QHash<int, QByteArray> m_roleNames;
     int m_imageId = -1;
     QVector<DescriptionData *> m_data;
-    RequestData* m_request = nullptr;
+    RequestDataV0* m_request = nullptr;
 };
 
 

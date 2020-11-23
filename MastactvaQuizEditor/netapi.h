@@ -13,10 +13,10 @@ class QHttpMultiPart;
 class QByteArray;
 class QFile;
 class QNetworkAccessManager;
-class NetAPI;
-class MultiPartRequestData;
+class NetAPIV0;
+class MultiPartRequestDataV0;
 
-class RequestData
+class RequestDataV0
 {
 protected:
     bool m_skip = false;
@@ -29,8 +29,8 @@ protected:
     QNetworkReply *m_reply = nullptr;
 
 public:
-    explicit RequestData(const RequestData *defaultRequestData = nullptr);
-    virtual ~RequestData() = default;
+    explicit RequestDataV0(const RequestDataV0 *defaultRequestData = nullptr);
+    virtual ~RequestDataV0() = default;
 
     int getRequestID() const;
     void setSkipRequest(bool skipRequest);
@@ -50,10 +50,10 @@ protected:
     QNetworkReply *getReply();
     bool isJsonReply() const;
 
-    friend class NetAPI;
+    friend class NetAPIV0;
 };
 
-class MultiPartRequestData : public RequestData
+class MultiPartRequestDataV0 : public RequestDataV0
 {
 protected:
     QHttpMultiPart* m_multiPart = nullptr;
@@ -61,9 +61,9 @@ protected:
     QList<QHttpPart> m_httpParts;
 
 public:
-    MultiPartRequestData(const RequestData *defaultRequestData = nullptr,
-                         const MultiPartRequestData* defaultMultiPartRequestData = nullptr);
-    virtual ~MultiPartRequestData() override;
+    MultiPartRequestDataV0(const RequestDataV0 *defaultRequestData = nullptr,
+                         const MultiPartRequestDataV0* defaultMultiPartRequestData = nullptr);
+    virtual ~MultiPartRequestDataV0() override;
 
     void addPart(const QString &header_, const QByteArray &data_);
     void addPart(const QString &header_, QFile *data_, bool takeOwnship_=true);
@@ -73,17 +73,17 @@ protected:
     void setHttpMultiPart(QHttpMultiPart *multiPart_);
     void appendParts();
 
-    friend class NetAPI;
+    friend class NetAPIV0;
 };
 
-class JsonRequestData : public RequestData
+class JsonRequestDataV0 : public RequestDataV0
 {
 protected:
     QJsonDocument m_jsondoc;
 
 public:
-    explicit JsonRequestData(const RequestData *defaultRequestData = nullptr);
-    virtual ~JsonRequestData() override;
+    explicit JsonRequestDataV0(const RequestDataV0 *defaultRequestData = nullptr);
+    virtual ~JsonRequestDataV0() override;
 
     void setDocument(const QJsonDocument &jsondoc_);
 
@@ -91,52 +91,52 @@ protected:
     void getDocument(QByteArray& byteArray_);
     void getDocumentLength(QByteArray& byteArray_);
 
-    friend class NetAPI;
+    friend class NetAPIV0;
 };
 
-class NetAPI : public QObject
+class NetAPIV0 : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit NetAPI(QObject *parent_);
-    virtual ~NetAPI() override;
+    explicit NetAPIV0(QObject *parent_);
+    virtual ~NetAPIV0() override;
 
-    RequestData &getDefaultRequestData();
-    MultiPartRequestData &getDefaultMultiPartRequestData();
+    RequestDataV0 &getDefaultRequestData();
+    MultiPartRequestDataV0 &getDefaultMultiPartRequestData();
 
-    RequestData *startRequest();
-    JsonRequestData *startJsonRequest();
-    MultiPartRequestData *startMultiPartFormData();
-    void get(const QString &urlStr_, RequestData *request_);
-    void post(const QString &urlStr_, JsonRequestData *request_);
-    void patch(const QString &urlStr_, JsonRequestData *request_);
-    void del(const QString &urlStr_, JsonRequestData *request_);
-    void post(const QString &urlStr_, MultiPartRequestData *request_);
+    RequestDataV0 *startRequest();
+    JsonRequestDataV0 *startJsonRequest();
+    MultiPartRequestDataV0 *startMultiPartFormData();
+    void get(const QString &urlStr_, RequestDataV0 *request_);
+    void post(const QString &urlStr_, JsonRequestDataV0 *request_);
+    void patch(const QString &urlStr_, JsonRequestDataV0 *request_);
+    void del(const QString &urlStr_, JsonRequestDataV0 *request_);
+    void post(const QString &urlStr_, MultiPartRequestDataV0 *request_);
 
     static void createSingelton(QObject *parent_);
-    static NetAPI *getSingelton();
+    static NetAPIV0 *getSingelton();
 
 protected:
     bool init();
     int getNextRequestID();
-    void setBasicAuthentification(QNetworkRequest* netRequest_, RequestData *request_);
+    void setBasicAuthentification(QNetworkRequest* netRequest_, RequestDataV0 *request_);
 
 signals:
-    void onRequestFinished(RequestData *request_, QNetworkReply *reply_);
-    void onJsonRequestFinished(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
+    void onRequestFinished(RequestDataV0 *request_, QNetworkReply *reply_);
+    void onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
 
 private slots:
     void replayFinished(QNetworkReply *reply_);
 
 protected:
-    RequestData m_defaultRequestData;
-    MultiPartRequestData m_defaultMultiPartRequestData;
+    RequestDataV0 m_defaultRequestData;
+    MultiPartRequestDataV0 m_defaultMultiPartRequestData;
     QNetworkAccessManager *m_networkManager = nullptr;
     int m_nextRequestID = 0;
-    QList<RequestData*> m_requests;
+    QList<RequestDataV0*> m_requests;
 
-    static NetAPI* apiSingelton;
+    static NetAPIV0* apiSingelton;
 };
 
 

@@ -8,7 +8,7 @@
 #include "mastactvaapi.h"
 
 
-RequestData::RequestData(const RequestData *defaultRequestData /*= nullptr*/)
+RequestDataV0::RequestDataV0(const RequestDataV0 *defaultRequestData /*= nullptr*/)
 {
     if(nullptr != defaultRequestData)
     {
@@ -18,85 +18,85 @@ RequestData::RequestData(const RequestData *defaultRequestData /*= nullptr*/)
     }
 }
 
-int RequestData::getRequestID() const
+int RequestDataV0::getRequestID() const
 {
     return m_requestID;
 }
 
-void RequestData::setRequestID(int requestID_)
+void RequestDataV0::setRequestID(int requestID_)
 {
     m_requestID = requestID_;
 }
 
-void RequestData::setSkipRequest(bool skipRequest)
+void RequestDataV0::setSkipRequest(bool skipRequest)
 {
     m_skip = skipRequest;
 }
 
-bool RequestData::getSkipRequest() const
+bool RequestDataV0::getSkipRequest() const
 {
     return m_skip;
 }
 
-void RequestData::setUrlBase(const QString& urlBase_)
+void RequestDataV0::setUrlBase(const QString& urlBase_)
 {
     m_urlBase = urlBase_;
 }
 
-const QString &RequestData::getUrlBase() const
+const QString &RequestDataV0::getUrlBase() const
 {
     return m_urlBase;
 }
 
-bool RequestData::processErrorInResponseHandle() const
+bool RequestDataV0::processErrorInResponseHandle() const
 {
     return m_processErrorInResposeHandle;
 }
 
-void RequestData::setProcessErrorInResponseHandle(bool processErrorInResponseHandle_)
+void RequestDataV0::setProcessErrorInResponseHandle(bool processErrorInResponseHandle_)
 {
     m_processErrorInResposeHandle = processErrorInResponseHandle_;
 }
 
-void RequestData::setJsonReply(bool jsonReply_)
+void RequestDataV0::setJsonReply(bool jsonReply_)
 {
     m_jsonReply = jsonReply_;
 }
 
-bool RequestData::isJsonReply() const
+bool RequestDataV0::isJsonReply() const
 {
     return m_jsonReply;
 }
 
-void RequestData::setAuth(const QString &login_, const QString &pass_)
+void RequestDataV0::setAuth(const QString &login_, const QString &pass_)
 {
     m_login = login_;
     m_pass = pass_;
 }
 
-const QString &RequestData::getLogin() const
+const QString &RequestDataV0::getLogin() const
 {
     return m_login;
 }
 
-const QString &RequestData::getPass() const
+const QString &RequestDataV0::getPass() const
 {
     return m_pass;
 }
 
-void RequestData::setReply(QNetworkReply *reply_)
+void RequestDataV0::setReply(QNetworkReply *reply_)
 {
     m_reply = reply_;
 }
 
-QNetworkReply *RequestData::getReply()
+QNetworkReply *RequestDataV0::getReply()
 {
     return m_reply;
 }
 
-MultiPartRequestData::MultiPartRequestData(const RequestData *defaultRequestData /*= nullptr*/,
-                     const MultiPartRequestData* defaultMultiPartRequestData /*= nullptr*/)
-    :RequestData(defaultRequestData)
+MultiPartRequestDataV0::MultiPartRequestDataV0(const RequestDataV0 *defaultRequestData /*= nullptr*/,
+                     const MultiPartRequestDataV0* defaultMultiPartRequestData /*= nullptr*/)
+    :RequestDataV0(defaultRequestData)
 {
     if(nullptr != defaultMultiPartRequestData)
     {
@@ -107,7 +107,7 @@ MultiPartRequestData::MultiPartRequestData(const RequestData *defaultRequestData
 }
 
 
-MultiPartRequestData::~MultiPartRequestData()
+MultiPartRequestDataV0::~MultiPartRequestDataV0()
 {
     if(m_multiPartOwn)
     {
@@ -116,7 +116,7 @@ MultiPartRequestData::~MultiPartRequestData()
     m_multiPart = nullptr;
 }
 
-QHttpMultiPart *MultiPartRequestData::getHttpMultiPart(bool releaseOwnship /*= false*/)
+QHttpMultiPart *MultiPartRequestDataV0::getHttpMultiPart(bool releaseOwnship /*= false*/)
 {
     if(releaseOwnship)
     {
@@ -125,20 +125,20 @@ QHttpMultiPart *MultiPartRequestData::getHttpMultiPart(bool releaseOwnship /*= f
     return m_multiPart;
 }
 
-void MultiPartRequestData::setHttpMultiPart(QHttpMultiPart *multiPart_)
+void MultiPartRequestDataV0::setHttpMultiPart(QHttpMultiPart *multiPart_)
 {
     m_multiPart = multiPart_;
     m_multiPartOwn = true;
 }
 
-void MultiPartRequestData::addPart(const QString &header_, const QByteArray &data_)
+void MultiPartRequestDataV0::addPart(const QString &header_, const QByteArray &data_)
 {
     m_httpParts.append(QHttpPart());
     m_httpParts.back().setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(header_));
     m_httpParts.back().setBody(data_);
 }
 
-void MultiPartRequestData::addPart(const QString &header_, QFile *data_, bool takeOwnship_ /*=true*/)
+void MultiPartRequestDataV0::addPart(const QString &header_, QFile *data_, bool takeOwnship_ /*=true*/)
 {
     m_httpParts.append(QHttpPart());
     m_httpParts.back().setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(header_));
@@ -155,7 +155,7 @@ void MultiPartRequestData::addPart(const QString &header_, QFile *data_, bool ta
     }
 }
 
-void MultiPartRequestData::appendParts()
+void MultiPartRequestDataV0::appendParts()
 {
     Q_ASSERT(nullptr != m_multiPart);
     if(nullptr == m_multiPart)
@@ -169,52 +169,52 @@ void MultiPartRequestData::appendParts()
     m_httpParts.clear();
 }
 
-JsonRequestData::JsonRequestData(const RequestData *defaultRequestData /*= nullptr*/)
-    :RequestData(defaultRequestData)
+JsonRequestDataV0::JsonRequestDataV0(const RequestDataV0 *defaultRequestData /*= nullptr*/)
+    :RequestDataV0(defaultRequestData)
 {
 }
 
-JsonRequestData::~JsonRequestData()
+JsonRequestDataV0::~JsonRequestDataV0()
 {
 }
 
-void JsonRequestData::setDocument(const QJsonDocument &jsondoc_)
+void JsonRequestDataV0::setDocument(const QJsonDocument &jsondoc_)
 {
     m_jsondoc = jsondoc_;
 }
 
-void JsonRequestData::getDocument(QByteArray& byteArray_)
+void JsonRequestDataV0::getDocument(QByteArray& byteArray_)
 {
     byteArray_ = m_jsondoc.toJson(QJsonDocument::Compact);
 }
 
-void JsonRequestData::getDocumentLength(QByteArray& byteArray_)
+void JsonRequestDataV0::getDocumentLength(QByteArray& byteArray_)
 {
     byteArray_ = QByteArray::number(m_jsondoc.toJson(QJsonDocument::Compact).size());
 }
 
-NetAPI::NetAPI(QObject *parent_)
+NetAPIV0::NetAPIV0(QObject *parent_)
     :QObject(parent_)
 {
 }
 
-NetAPI::~NetAPI()
+NetAPIV0::~NetAPIV0()
 {
     delete m_networkManager;
     m_networkManager = nullptr;
 }
 
-RequestData &NetAPI::getDefaultRequestData()
+RequestDataV0 &NetAPIV0::getDefaultRequestData()
 {
     return m_defaultRequestData;
 }
 
-MultiPartRequestData &NetAPI::getDefaultMultiPartRequestData()
+MultiPartRequestDataV0 &NetAPIV0::getDefaultMultiPartRequestData()
 {
     return m_defaultMultiPartRequestData;
 }
 
-bool NetAPI::init()
+bool NetAPIV0::init()
 {
     if(nullptr != m_networkManager)
     {
@@ -225,38 +225,38 @@ bool NetAPI::init()
     return nullptr != m_networkManager;
 }
 
-int NetAPI::getNextRequestID()
+int NetAPIV0::getNextRequestID()
 {
     return m_nextRequestID++;
 }
 
-RequestData *NetAPI::startRequest()
+RequestDataV0 *NetAPIV0::startRequest()
 {
-    RequestData *rd = new RequestData(&getDefaultRequestData());
+    RequestDataV0 *rd = new RequestDataV0(&getDefaultRequestData());
     rd->setRequestID(getNextRequestID());
     m_requests.push_back(rd);
     return rd;
 }
 
-JsonRequestData *NetAPI::startJsonRequest()
+JsonRequestDataV0 *NetAPIV0::startJsonRequest()
 {
-    JsonRequestData *rd = new JsonRequestData(&getDefaultRequestData());
+    JsonRequestDataV0 *rd = new JsonRequestDataV0(&getDefaultRequestData());
     rd->setRequestID(getNextRequestID());
     m_requests.push_back(rd);
     return rd;
 }
 
-MultiPartRequestData *NetAPI::startMultiPartFormData()
+MultiPartRequestDataV0 *NetAPIV0::startMultiPartFormData()
 {
     QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-    MultiPartRequestData* rd = new MultiPartRequestData(&getDefaultRequestData(), &getDefaultMultiPartRequestData());
+    MultiPartRequestDataV0* rd = new MultiPartRequestDataV0(&getDefaultRequestData(), &getDefaultMultiPartRequestData());
     rd->setRequestID(getNextRequestID());
     rd->setHttpMultiPart(multiPart);
     m_requests.push_back(rd);
     return rd;
 }
 
-void NetAPI::setBasicAuthentification(QNetworkRequest* netRequest_, RequestData *request_)
+void NetAPIV0::setBasicAuthentification(QNetworkRequest* netRequest_, RequestDataV0 *request_)
 {
     // https://stackoverflow.com/questions/1512849/basic-authentication-with-qt-qnetworkaccessmanager
     QString user_password = request_->getLogin() + QString(":") + request_->getPass();
@@ -265,7 +265,7 @@ void NetAPI::setBasicAuthentification(QNetworkRequest* netRequest_, RequestData 
     netRequest_->setRawHeader("Authorization", headerData.toLocal8Bit());
 }
 
-void NetAPI::get(const QString &urlStr_, RequestData *request_)
+void NetAPIV0::get(const QString &urlStr_, RequestDataV0 *request_)
 {
     Q_ASSERT(nullptr != request_);
     if(nullptr == request_)
@@ -285,7 +285,7 @@ void NetAPI::get(const QString &urlStr_, RequestData *request_)
     request_->setReply(m_networkManager->get(request));
 }
 
-void NetAPI::post(const QString &urlStr_, JsonRequestData *request_)
+void NetAPIV0::post(const QString &urlStr_, JsonRequestDataV0 *request_)
 {
     Q_ASSERT(nullptr != request_);
     if(nullptr == request_)
@@ -313,7 +313,7 @@ void NetAPI::post(const QString &urlStr_, JsonRequestData *request_)
     request_->setReply(m_networkManager->post(request, jsonString));
 }
 
-void NetAPI::patch(const QString &urlStr_, JsonRequestData *request_)
+void NetAPIV0::patch(const QString &urlStr_, JsonRequestDataV0 *request_)
 {
     Q_ASSERT(nullptr != request_);
     if(nullptr == request_)
@@ -341,7 +341,7 @@ void NetAPI::patch(const QString &urlStr_, JsonRequestData *request_)
     request_->setReply(m_networkManager->sendCustomRequest(request, "PATCH", jsonString));
 }
 
-void NetAPI::del(const QString &urlStr_, JsonRequestData *request_)
+void NetAPIV0::del(const QString &urlStr_, JsonRequestDataV0 *request_)
 {
     Q_ASSERT(nullptr != request_);
     if(nullptr == request_)
@@ -370,7 +370,7 @@ void NetAPI::del(const QString &urlStr_, JsonRequestData *request_)
 }
 
 
-void NetAPI::post(const QString &urlStr_, MultiPartRequestData *request_)
+void NetAPIV0::post(const QString &urlStr_, MultiPartRequestDataV0 *request_)
 {
     Q_ASSERT(nullptr != request_);
     Q_ASSERT(nullptr != request_->getHttpMultiPart());
@@ -395,11 +395,11 @@ void NetAPI::post(const QString &urlStr_, MultiPartRequestData *request_)
     request_->getHttpMultiPart(true)->setParent(request_->getReply());
 }
 
-void NetAPI::replayFinished(QNetworkReply *reply_)
+void NetAPIV0::replayFinished(QNetworkReply *reply_)
 {
     const auto fit = std::find_if(
                 m_requests.begin(),
-                m_requests.end(), [reply_](RequestData* r)->bool
+                m_requests.end(), [reply_](RequestDataV0* r)->bool
     {
             return r->getReply()==reply_;
     });
@@ -407,7 +407,7 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     {
         return;
     }
-    RequestData* rd = *fit;
+    RequestDataV0* rd = *fit;
     m_requests.erase(fit);
     if(!rd->getSkipRequest())
     {
@@ -442,19 +442,19 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     rd = nullptr;
 }
 
-NetAPI* NetAPI::apiSingelton = nullptr;
+NetAPIV0* NetAPIV0::apiSingelton = nullptr;
 
-void NetAPI::createSingelton(QObject *parent_)
+void NetAPIV0::createSingelton(QObject *parent_)
 {
     Q_ASSERT(nullptr == apiSingelton);
     if(nullptr != apiSingelton)
     {
         return;
     }
-    apiSingelton = new NetAPI(parent_);
+    apiSingelton = new NetAPIV0(parent_);
 }
 
-NetAPI *NetAPI::getSingelton()
+NetAPIV0 *NetAPIV0::getSingelton()
 {
     return apiSingelton;
 }
