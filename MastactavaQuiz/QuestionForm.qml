@@ -12,7 +12,6 @@ Page {
 
     title: qsTr("Question")
 
-    property var netAPI: undefined
     property var mastactavaAPI: undefined
     property var userStepModel: undefined
     property var question: undefined

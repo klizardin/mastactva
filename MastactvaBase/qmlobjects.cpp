@@ -10,11 +10,6 @@ void QMLObjectsBase::setRoot(QObject *root_)
 {
     m_root = root_;
     searchObjects();
-    NetAPI *netAPI = getNetAPI();
-    if(nullptr != netAPI)
-    {
-        netAPI->setInitialized();
-    }
 }
 
 IListModel *QMLObjectsBase::getListModel(const QString &layoutName_)

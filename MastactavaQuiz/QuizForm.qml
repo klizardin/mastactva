@@ -11,7 +11,6 @@ Page {
 
     title: qsTr("Quiz")
 
-    property var netAPI: undefined
     property var userStepModel: undefined
     property var allImagesOfGalleryModel: undefined
     property int galleryId: -1

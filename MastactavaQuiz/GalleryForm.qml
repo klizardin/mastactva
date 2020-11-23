@@ -12,7 +12,6 @@ Page {
     title: qsTr("Galleries")
 
     property var mastactvaAPI: undefined
-    property var netAPI: undefined
     property var userStepModel: undefined
     property alias galleryModel: galleries.model
     property var currentImage: undefined

@@ -14,24 +14,24 @@ CONFIG += c++17
 SOURCES += \
         ../MastactvaBase/IModel.cpp \
         ../MastactvaBase/Model.cpp \
+        ../MastactvaBase/appconsts.cpp \
+        ../MastactvaBase/imagesource.cpp \
+        ../MastactvaBase/netapi.cpp \
+        ../MastactvaBase/qmlobjects.cpp \
+        ../MastactvaBase/utils.cpp  \
         answer.cpp \
-        appconsts.cpp \
         gallery.cpp \
         gallerystatistics.cpp \
         image.cpp \
         imagedescription.cpp \
         imagepoint.cpp \
-        ../MastactvaBase/imagesource.cpp \
         main.cpp \
         mastactvaapi.cpp \
-        ../MastactvaBase/netapi.cpp \
-        ../MastactvaBase/qmlobjects.cpp \
         question.cpp \
         questionanswer.cpp \
         quizqmlobjects.cpp \
         quizuser.cpp \
-        userstep.cpp \
-        ../MastactvaBase/utils.cpp
+        userstep.cpp
 
 RESOURCES += qml.qrc \
     Mastactva/
@@ -40,7 +40,8 @@ TRANSLATIONS += \
     MastactavaQuiz_be_BY.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH += $$PWD
+QML_IMPORT_PATH += $${PWD}    \
+    $${PWD}/../MastactvaBase/
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -57,23 +58,23 @@ HEADERS += \
     ../MastactvaBase/IModel.h \
     ../MastactvaBase/Layout.h \
     ../MastactvaBase/Model.h \
+    ../MastactvaBase/appconsts.h \
+    ../MastactvaBase/imagesource.h \
+    ../MastactvaBase/netapi.h \
+    ../MastactvaBase/qmlobjects.h \
+    ../MastactvaBase/utils.h    \
     answer.h \
-    appconsts.h \
     gallery.h \
     gallerystatistics.h \
     image.h \
     imagedescription.h \
     imagepoint.h \
-    ../MastactvaBase/imagesource.h \
     mastactvaapi.h \
-    ../MastactvaBase/netapi.h \
-    ../MastactvaBase/qmlobjects.h \
     question.h \
     questionanswer.h \
     quizqmlobjects.h \
     quizuser.h \
-    userstep.h \
-    ../MastactvaBase/utils.h
+    userstep.h
 
 DISTFILES += \
     ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json \

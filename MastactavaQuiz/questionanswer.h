@@ -3,10 +3,10 @@
 
 #include <QObject>
 #include <QString>
-#include "IModel.h"
-#include "imagesource.h"
-#include "Layout.h"
-#include "Model.h"
+#include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/Model.h"
 
 
 class UserQuestionAnswer : public QObject

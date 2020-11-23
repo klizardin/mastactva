@@ -23,6 +23,8 @@ public:
     void registerModel(const QString &layoutName_, IListModel *m_);
     void unregisterModel(const QString &layoutName_);
 
+    virtual void setInitialized() = 0;
+
 protected:
     virtual void searchObjects() = 0;
     IListModel *findListModel(const QString &layoutName_) const;

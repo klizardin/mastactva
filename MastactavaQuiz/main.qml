@@ -12,11 +12,6 @@ ApplicationWindow {
     visible: true
     title: qsTr("Mastactva Quiz")
 
-    NetAPI {
-        id: netAPI
-        objectName: "NetAPI"
-    }
-
     MastactvaAPI {
         id: mastactvaAPI
         objectName: "MastactvaAPI"
@@ -79,22 +74,17 @@ ApplicationWindow {
     }
 
     Connections {
-        target: netAPI
+        target: mastactvaAPI
 
         function onInitialized()
         {
-            galleryPage.netAPI = netAPI
             galleryPage.galleryModel = galleryModel
             galleryPage.mastactvaAPI = mastactvaAPI
             galleryPage.userStepModel = userStepModel
 
-            quizPage.netAPI = netAPI
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
             quizPage.userStepModel = userStepModel
 
-            descriptionPage.netAPI = netAPI
-
-            questionPage.netAPI = netAPI
             questionPage.mastactavaAPI = mastactvaAPI
             questionPage.userStepModel = userStepModel
 

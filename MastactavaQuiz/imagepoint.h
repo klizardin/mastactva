@@ -5,9 +5,9 @@
 #include <QObject>
 #include <QDateTime>
 #include <QVariant>
-#include "imagesource.h"
-#include "Layout.h"
-#include "Model.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/Model.h"
 #include "question.h"
 
 

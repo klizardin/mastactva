@@ -18,7 +18,10 @@ public:
     Q_INVOKABLE QString readMore(const QString &str_, int maxSymbols_, const QString &rmt_);
     Q_INVOKABLE QDateTime now() const;
 
+    void setInitialized();
+
 signals:
+    void initialized();
 
 };
 

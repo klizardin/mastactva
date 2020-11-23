@@ -6,7 +6,7 @@
 #include <QVector>
 
 
-class AppConsts
+class NetAppConsts
 {
 public:
     QString m_serverURL;
@@ -15,11 +15,11 @@ public:
 
 
 protected:
-    AppConsts();
+    NetAppConsts();
 
 public:
-    static const AppConsts &getInstance();
-
+    static const NetAppConsts &getInstance();
+    static void set(const QString &serverURL_, const QString &playLogin_, const QString &playPassword_);
 };
 
 #endif // APPCONSTS_H

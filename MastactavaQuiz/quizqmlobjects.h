@@ -2,7 +2,10 @@
 #define QUIZQMLOBJECTS_H
 
 
-#include "qmlobjects.h"
+#include "../MastactvaBase/qmlobjects.h"
+
+
+class MastactvaAPI;
 
 
 class QMLObjects : public QMLObjectsBase
@@ -10,8 +13,13 @@ class QMLObjects : public QMLObjectsBase
 public:
     QMLObjects() = default;
 
+    virtual void setInitialized() override;
+
 protected:
     virtual void searchObjects() override;
+
+private:
+    MastactvaAPI *m_mastactvaAPI = nullptr;
 };
 
 

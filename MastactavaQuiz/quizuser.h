@@ -4,8 +4,8 @@
 
 #include <QObject>
 #include <QtQuick/QQuickItem>
-#include "Layout.h"
-#include "Model.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/Model.h"
 
 
 QString getAndroidUuid();

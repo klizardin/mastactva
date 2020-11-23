@@ -1,5 +1,5 @@
 #include "gallery.h"
-#include "utils.h"
+#include "../MastactvaBase/utils.h"
 
 
 Gallery::Gallery(GalleryModel *parent_)

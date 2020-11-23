@@ -5,9 +5,9 @@
 #include <QDateTime>
 #include <QString>
 #include <QtQuick/QQuickItem>
-#include "imagesource.h"
-#include "Layout.h"
-#include "Model.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/Model.h"
 #include "imagepoint.h"
 #include "imagedescription.h"
 

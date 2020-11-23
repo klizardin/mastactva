@@ -17,7 +17,15 @@ HEADERS += \
         galleryeditviewmodel.h    \
         mastactvaapi.h    \
         netapi.h  \
-        qmlmainobjects.h
+        qmlmainobjects.h    \
+        ../MastactvaBase/IModel.h \
+        ../MastactvaBase/Layout.h \
+        ../MastactvaBase/Model.h \
+        ../MastactvaBase/imagesource.h \
+        ../MastactvaBase/netapi.h \
+        ../MastactvaBase/qmlobjects.h \
+        ../MastactvaBase/utils.h
+        ../MastactvaBase/appconsts.h \
 
 
 SOURCES += \
@@ -26,7 +34,15 @@ SOURCES += \
         galleryeditviewmodel.cpp    \
         mastactvaapi.cpp    \
         netapi.cpp  \
-        qmlmainobjects.cpp
+        qmlmainobjects.cpp  \
+        ../MastactvaBase/IModel.cpp \
+        ../MastactvaBase/Model.cpp \
+        ../MastactvaBase/imagesource.cpp \
+        ../MastactvaBase/netapi.cpp \
+        ../MastactvaBase/qmlobjects.cpp \
+        ../MastactvaBase/utils.cpp
+        ../MastactvaBase/appconsts.cpp \
+
 
 RESOURCES += qml.qrc    \
     Mastactva/

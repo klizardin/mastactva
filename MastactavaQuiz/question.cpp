@@ -1,5 +1,5 @@
 #include "question.h"
-#include "utils.h"
+#include "../MastactvaBase/utils.h"
 
 
 Question::Question(QuestionModel *parent_)

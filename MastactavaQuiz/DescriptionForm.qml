@@ -12,7 +12,6 @@ Page {
 
     title: qsTr("Description")
 
-    property var netAPI: undefined
     property string descriptionTextArg: qsTr("")
     property bool hasDescription: false
     property int galleryId: -1

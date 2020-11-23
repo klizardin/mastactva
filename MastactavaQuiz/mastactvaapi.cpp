@@ -25,3 +25,8 @@ QDateTime MastactvaAPI::now() const
 {
     return QDateTime::currentDateTime();
 }
+
+void MastactvaAPI::setInitialized()
+{
+    emit initialized();
+}

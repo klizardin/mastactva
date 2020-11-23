@@ -1,5 +1,5 @@
 #include "imagedescription.h"
-#include "utils.h"
+#include "../MastactvaBase/utils.h"
 
 
 ImageDescription::ImageDescription(QObject *parent_ /* = nullptr*/)

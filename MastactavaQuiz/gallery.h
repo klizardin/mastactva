@@ -7,8 +7,8 @@
 #include <QString>
 #include <QtQuick/QQuickItem>
 #include "image.h"
-#include "Layout.h"
-#include "Model.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/Model.h"
 #include "gallerystatistics.h"
 
 

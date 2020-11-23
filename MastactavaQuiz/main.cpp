@@ -1,8 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QTranslator>
-#include "qmlobjects.h"
-#include "utils.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/utils.h"
 
 
 void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)
@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
             {
                 QMLObjectsBase &mainObjects = QMLObjectsBase::getInstance();
                 mainObjects.setRoot(obj);
+                mainObjects.setInitialized();
             }
         }
 

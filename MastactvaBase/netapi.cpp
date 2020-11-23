@@ -104,9 +104,9 @@ private:
 NetAPI::NetAPI(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
-    m_hostName = AppConsts::getInstance().m_serverURL;
-    m_loggin = AppConsts::getInstance().m_playLogin;
-    m_pass = AppConsts::getInstance().m_playPassword;
+    m_hostName = NetAppConsts::getInstance().m_serverURL;
+    m_loggin = NetAppConsts::getInstance().m_playLogin;
+    m_pass = NetAppConsts::getInstance().m_playPassword;
     m_hostUrlBase = m_hostName;
 }
 
@@ -169,11 +169,6 @@ bool NetAPI::init()
     m_networkManager = new QNetworkAccessManager();
     QObject::connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replayFinished(QNetworkReply *)));
     return nullptr != m_networkManager;
-}
-
-void NetAPI::setInitialized()
-{
-    emit initialized();
 }
 
 void NetAPI::replayFinished(QNetworkReply *reply_)
@@ -490,3 +485,17 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
     return rd;
 }
 
+static NetAPI *s_netAPI = nullptr;
+
+void NetAPI::createInstance(QObject *parent_)
+{
+    if(nullptr == s_netAPI)
+    {
+        s_netAPI = new NetAPI(parent_);
+    }
+}
+
+NetAPI *NetAPI::getInstance()
+{
+    return s_netAPI;
+}
