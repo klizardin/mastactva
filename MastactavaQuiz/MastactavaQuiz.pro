@@ -14,9 +14,9 @@ CONFIG += c++17
 SOURCES += \
         ../MastactvaBase/IModel.cpp \
         ../MastactvaBase/Model.cpp \
-        ../MastactvaBase/appconsts.cpp \
         ../MastactvaBase/imagesource.cpp \
         ../MastactvaBase/netapi.cpp \
+        ../MastactvaBase/netappconsts.cpp \
         ../MastactvaBase/qmlobjects.cpp \
         ../MastactvaBase/utils.cpp  \
         answer.cpp \
@@ -58,9 +58,9 @@ HEADERS += \
     ../MastactvaBase/IModel.h \
     ../MastactvaBase/Layout.h \
     ../MastactvaBase/Model.h \
-    ../MastactvaBase/appconsts.h \
     ../MastactvaBase/imagesource.h \
     ../MastactvaBase/netapi.h \
+    ../MastactvaBase/netappconsts.h \
     ../MastactvaBase/qmlobjects.h \
     ../MastactvaBase/utils.h    \
     answer.h \
