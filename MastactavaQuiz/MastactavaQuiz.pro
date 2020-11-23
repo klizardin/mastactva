@@ -12,8 +12,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        IModel.cpp \
-        Model.cpp \
+        ../MastactvaBase/IModel.cpp \
+        ../MastactvaBase/Model.cpp \
         answer.cpp \
         appconsts.cpp \
         gallery.cpp \
@@ -21,17 +21,17 @@ SOURCES += \
         image.cpp \
         imagedescription.cpp \
         imagepoint.cpp \
-        imagesource.cpp \
+        ../MastactvaBase/imagesource.cpp \
         main.cpp \
         mastactvaapi.cpp \
-        netapi.cpp \
-        qmlobjects.cpp \
+        ../MastactvaBase/netapi.cpp \
+        ../MastactvaBase/qmlobjects.cpp \
         question.cpp \
         questionanswer.cpp \
         quizqmlobjects.cpp \
         quizuser.cpp \
         userstep.cpp \
-        utils.cpp
+        ../MastactvaBase/utils.cpp
 
 RESOURCES += qml.qrc \
     Mastactva/
@@ -52,10 +52,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 ANDROID_ABIS = armeabi-v7a
 
+
 HEADERS += \
-    IModel.h \
-    Layout.h \
-    Model.h \
+    ../MastactvaBase/IModel.h \
+    ../MastactvaBase/Layout.h \
+    ../MastactvaBase/Model.h \
     answer.h \
     appconsts.h \
     gallery.h \
@@ -63,16 +64,16 @@ HEADERS += \
     image.h \
     imagedescription.h \
     imagepoint.h \
-    imagesource.h \
+    ../MastactvaBase/imagesource.h \
     mastactvaapi.h \
-    netapi.h \
-    qmlobjects.h \
+    ../MastactvaBase/netapi.h \
+    ../MastactvaBase/qmlobjects.h \
     question.h \
     questionanswer.h \
     quizqmlobjects.h \
     quizuser.h \
     userstep.h \
-    utils.h
+    ../MastactvaBase/utils.h
 
 DISTFILES += \
     ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json \
