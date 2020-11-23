@@ -9,7 +9,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QByteArray>
-#include "appconsts.h"
+#include "netappconsts.h"
 
 
 const QString &RequestData::getRequestName() const
