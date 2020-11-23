@@ -28,6 +28,7 @@ SOURCES += \
         qmlobjects.cpp \
         question.cpp \
         questionanswer.cpp \
+        quizqmlobjects.cpp \
         quizuser.cpp \
         userstep.cpp \
         utils.cpp
@@ -68,6 +69,7 @@ HEADERS += \
     qmlobjects.h \
     question.h \
     questionanswer.h \
+    quizqmlobjects.h \
     quizuser.h \
     userstep.h \
     utils.h

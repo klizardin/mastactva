@@ -23,7 +23,7 @@ void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_, const QS
 {
     m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
     if(!notify_) { return; }
-    IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
+    IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
     Q_ASSERT(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel());
     if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
     {
@@ -38,13 +38,13 @@ void ListModelBaseData::addLayoutExtraFieldsImpl(const QString &modelName_, cons
 
 void ListModelBaseData::registerListModel()
 {
-    QMLObjects::getInstance().registerModel(m_model->getQMLLayoutName(), m_model);
+    QMLObjectsBase::getInstance().registerModel(m_model->getQMLLayoutName(), m_model);
     m_autoRegister = true;
 }
 
 void ListModelBaseData::unregisterListModel()
 {
-    QMLObjects::getInstance().unregisterModel(m_model->getQMLLayoutName());
+    QMLObjectsBase::getInstance().unregisterModel(m_model->getQMLLayoutName());
     m_autoRegister = false;
 }
 

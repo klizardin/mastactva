@@ -91,7 +91,7 @@ public:
                          const QHash<QString, QVariant> &extraFields_
                          )
     {
-        IListModel *parentModelPtr = QMLObjects::getInstance().getListModel(parentModel_);
+        IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
         if(nullptr != parentModelPtr)
         {
             const QVariant idField = parentModelJsonFieldName_.isEmpty()

@@ -441,7 +441,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -991,7 +991,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -1466,7 +1466,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -2028,7 +2028,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -2503,7 +2503,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -2978,7 +2978,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -3428,7 +3428,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -4018,7 +4018,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -4133,7 +4133,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -4667,7 +4667,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -5180,7 +5180,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -5598,7 +5598,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",
@@ -6168,7 +6168,7 @@
                             },
                             {
                                 "name": "request_",
-                                "type": "RequestDataV0*"
+                                "type": "RequestData*"
                             },
                             {
                                 "name": "reply_",

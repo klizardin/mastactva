@@ -9,13 +9,13 @@ class QObject;
 class NetAPI;
 
 
-class QMLObjects
+class QMLObjectsBase
 {
 protected:
-    QMLObjects() = default;
+    QMLObjectsBase() = default;
 
 public:
-    static QMLObjects &getInstance();
+    static QMLObjectsBase &getInstance();
 
     void setRoot(QObject *root_);
     NetAPI *getNetAPI();
@@ -24,13 +24,14 @@ public:
     void unregisterModel(const QString &layoutName_);
 
 protected:
-    void searchObjects();
+    virtual void searchObjects() = 0;
     IListModel *findListModel(const QString &layoutName_) const;
 
-private:
+protected:
     QObject *m_root = nullptr;
     QVector<IListModel *> m_models;
     NetAPI *m_netAPI = nullptr;
 };
+
 
 #endif // QMLOBJECTS_H

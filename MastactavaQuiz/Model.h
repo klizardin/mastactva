@@ -157,7 +157,7 @@ public:
 
     virtual void initResponse() override
     {
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         Q_ASSERT(nullptr != netAPI);
         QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
     }
@@ -295,7 +295,7 @@ protected:
 
     void loadListImpl()
     {
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return; }
         RequestData *request = findRequest(netAPI->getListRequestName<DataType_>());
         if(nullptr != request)
@@ -325,7 +325,7 @@ protected:
             QHash<QString, QVariant> extraFields(m_modelParams);
             for(const ExtraFields &f: m_extraFields)
             {
-                IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
+                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
                 if(nullptr != m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
@@ -371,7 +371,7 @@ protected:
     {
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
@@ -394,7 +394,7 @@ protected:
             QHash<QString, QVariant> extraFields(m_modelParams);
             for(const ExtraFields &f: m_extraFields)
             {
-                IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
+                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
                 if(nullptr != m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
@@ -408,7 +408,7 @@ protected:
 
     bool addDataItemImpl(DataType_ *item_, bool setCurrentIndex_ = false)
     {
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false; }
 
         m_data.push_back(item_);
@@ -434,7 +434,7 @@ protected:
             QHash<QString, QVariant> extraFields(m_modelParams);
             for(const ExtraFields &f: m_extraFields)
             {
-                IListModel *m = QMLObjects::getInstance().getListModel(f.m_modelName);
+                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
                 if(nullptr != m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
@@ -485,7 +485,7 @@ protected:
     void jsonResponseSlotImpl(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
     {
         if(!findRequest(request_)) { return; }
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI)
         {
             removeRequest(request_);
@@ -638,7 +638,7 @@ protected:
         if(!m_refs.contains(currentRefImpl())) { return; }
         const RefDescription &ref = m_refs.value(currentRefImpl());
         if(modelName_ != ref.m_parentModel) { return; }
-        IListModel* parentModel = QMLObjects::getInstance().getListModel(ref.m_parentModel);
+        IListModel* parentModel = QMLObjectsBase::getInstance().getListModel(ref.m_parentModel);
         const QVariant &refAppId = getRefAppIdImpl();
         if(refAppId.isValid())
         {
@@ -689,7 +689,7 @@ protected:
     {
         if(getDataLayout<DataType_>().storeAfterSave()) { return; }
 
-        NetAPI *netAPI = QMLObjects::getInstance().getNetAPI();
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return; }
 
         QVector<DataType_ *> waitingToUpdate;

@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                QMLObjects &mainObjects = QMLObjects::getInstance();
+                QMLObjectsBase &mainObjects = QMLObjectsBase::getInstance();
                 mainObjects.setRoot(obj);
             }
         }
