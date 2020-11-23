@@ -1,6 +1,7 @@
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
 #include "mastactvaapi.h"
+#include "../MastactvaBase/netapi.h"
 
 
 QMLMainObjects::QMLMainObjects(QObject *parent_) : QObject(parent_)
@@ -110,12 +111,21 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 
 void QMLObjects::setInitialized()
 {
-    // TODO: implement
+    if(nullptr == m_mastactavaAPI) { return; }
+    m_mastactavaAPI->setInitialized();
 }
 
 void QMLObjects::searchObjects()
 {
-    // TODO: implement
+    if(nullptr == m_netAPI)
+    {
+        NetAPI::createInstance(m_root);
+        m_netAPI = NetAPI::getInstance();
+    }
+    if(nullptr == m_mastactavaAPI)
+    {
+        m_mastactavaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
+    }
 }
 
 QMLObjectsBase &QMLObjectsBase::getInstance()

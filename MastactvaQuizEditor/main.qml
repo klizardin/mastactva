@@ -1431,238 +1431,272 @@ ApplicationWindow {
         }
     }
 
-    SplitView {
-        id: slitGalleriesAndImagesOfGallery
+    Rectangle
+    {
         anchors.fill: parent
-        orientation: Qt.Horizontal
 
-        Rectangle{
-
-            id: splitViewPaneGallery
-
-            SplitView.preferredWidth: Constants.leftSideBarWidth
-            SplitView.minimumWidth: Constants.leftSideBarWidth/2
-            SplitView.maximumWidth: Constants.leftSideBarWidth*2
-            height: parent.height
-
-            ListView {
-                id: galleries
-
-                anchors.fill: parent
-                spacing: Constants.galleriesListViewSpacing
-                clip: true
-
-                model: GalleryEditViewModel {
-                    objectName: "GalleryModel"
-                }
-
-                delegate: gallery
+        TabBar {
+            id: topicTabBar
+            anchors.top: parent.top
+            width: parent.width
+            TabButton {
+                text: qsTr("Galleries")
+            }
+            TabButton {
+                text: qsTr("Effects")
             }
         }
 
-        Rectangle{
+        StackLayout {
+            anchors.top: topicTabBar.bottom
+            anchors.left: parent.left
+            width: parent.width
+            height: parent.height - topicTabBar.height
+            currentIndex: topicTabBar.currentIndex
 
-            id: slitViewPaneImageOfGallery
-            SplitView.preferredWidth: root.width - Constants.leftSideBarWidth
-            height: parent.height
+            Item {
+                id: topicGalleries
+                SplitView {
+                    id: slitGalleriesAndImagesOfGallery
+                    anchors.fill: parent
+                    orientation: Qt.Horizontal
 
-            SplitView {
-                id: slitImagesOfGalleryAndImageInfo
-                anchors.fill: parent
-                orientation: Qt.Vertical
+                    Rectangle{
 
-                Rectangle{
+                        id: splitViewPaneGallery
 
-                    id: slitViewPaneImagesOfGallery
+                        SplitView.preferredWidth: Constants.leftSideBarWidth
+                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
+                        SplitView.maximumWidth: Constants.leftSideBarWidth*2
+                        height: parent.height
 
-                    SplitView.preferredHeight: Constants.height
-                    SplitView.minimumHeight: Constants.height/2
+                        ListView {
+                            id: galleries
 
-                    ListView {
-                        id: images_of_gallery
+                            anchors.fill: parent
+                            spacing: Constants.galleriesListViewSpacing
+                            clip: true
 
-                        anchors.fill: parent
-                        orientation: ListView.Horizontal
-                        clip: true
-                        spacing: Constants. imagesOfGalleryListViewSpacing
-
-                        model: GalleryImagesModel {
-                            objectName: "AllGalleryImagesModel"
-                            galleryViewImages: false
-                            galleryId: -1
-                        }
-
-                        delegate : gallery_image
-
-                        Connections{
-                            target: images_of_gallery
-                            function onCurrentIndexChanged()
-                            {
-                                if(imageOfGalleryDescriptionIndex == -1)
-                                {
-                                    imageOfGalleryNextImageNextImage.source = Constants.noImage;
-                                }
+                            model: GalleryEditViewModel {
+                                objectName: "GalleryModel"
                             }
-                        }
 
-                    }
-                }
-
-                Rectangle {
-
-                    id: slitViewPaneImageInfo
-                    SplitView.preferredHeight: parent.height - Constants.height
-
-                    TabBar {
-                        id: imageOfGalleryInfoBar
-                        anchors.top: parent.top
-                        width: parent.width
-                        TabButton {
-                            text: qsTr("Description")
-                        }
-                        TabButton {
-                            text: qsTr("Next image")
-                        }
-                        TabButton {
-                            text: qsTr("Question")
+                            delegate: gallery
                         }
                     }
 
-                    StackLayout {
-                        anchors.top: imageOfGalleryInfoBar.bottom
-                        width: slitViewPaneImageOfGallery.width
-                        height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height
-                        currentIndex: imageOfGalleryInfoBar.currentIndex
-                        Item {
-                            id: imageOfGalleryDescriptionTab
-                            ScrollView {
-                                anchors.fill: parent
-                                clip:true
+                    Rectangle{
+
+                        id: slitViewPaneImageOfGallery
+                        SplitView.preferredWidth: root.width - Constants.leftSideBarWidth
+                        height: parent.height
+
+                        SplitView {
+                            id: slitImagesOfGalleryAndImageInfo
+                            anchors.fill: parent
+                            orientation: Qt.Vertical
+
+                            Rectangle{
+
+                                id: slitViewPaneImagesOfGallery
+
+                                SplitView.preferredHeight: Constants.height
+                                SplitView.minimumHeight: Constants.height/2
+
                                 ListView {
-                                    id: imageOfGalleryDescriptionListView
+                                    id: images_of_gallery
+
                                     anchors.fill: parent
+                                    orientation: ListView.Horizontal
                                     clip: true
-                                    model: DescriptionModel {
-                                        objectName: "ImageOfGalleryDescriptionModel"
-                                        imageID: -1
-                                    }
-                                    delegate : imageOfGalleryDescriptionListViewItem
-                                }
-                            }
-                        }
-                        Item {
-                            id: imageOfGalleryNextImageTab
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left
-                                anchors.fill: parent
-                                visible: imageOfGalleryPointIndex === -1
-                                text: Constants.selectImagePoint
-                            }
-                            Item {
-                                anchors.fill: parent
-                                visible: imageOfGalleryPointIndex >= 0
+                                    spacing: Constants. imagesOfGalleryListViewSpacing
 
-                                Column{
-
-                                    Text {
-                                        id: imageOfGalleryNextImageText
-                                        visible: imageOfGalleryPointIndex >= 0
-                                        width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
-                                        text: Constants.notANextImagePoint
+                                    model: GalleryImagesModel {
+                                        objectName: "AllGalleryImagesModel"
+                                        galleryViewImages: false
+                                        galleryId: -1
                                     }
 
-                                    Image {
-                                        height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height - imageOfGalleryNextImageText.height
-                                        width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
-                                        id: imageOfGalleryNextImageNextImage
-                                        visible: imageOfGalleryPointIndex >= 0
-                                        fillMode: Image.PreserveAspectFit
-                                        source: Constants.noImage
-                                    }
-                                }
-                            }
-                        }
-                        Item {
-                            id: imageOfGalleryQuestionTab
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left
-                                anchors.fill: parent
-                                visible: imageOfGalleryPointIndex === -1
-                                text: Constants.selectImagePoint
-                            }
-                            Item {
-                                anchors.fill: parent
-                                visible: imageOfGalleryPointIndex >= 0
+                                    delegate : gallery_image
 
-                                Column{
-                                    anchors.left: parent.left
-
-                                    Rectangle{
-                                        width: imageOfGalleryQuestionTab.width
-                                        height: (imageOfGalleryQuestionTab.height * 2) / 5
-                                        visible: imageOfGalleryPointIndex >= 0
-
-                                        FontMetrics{
-                                            id: imageOfGalleryQuestionPointsToPassFontMetrics
-                                            font: imageOfGalleryQuestionPointsToPass.font
-                                        }
-
-                                        Column{
-                                            anchors.fill: parent
-
-                                            TextArea {
-                                                id: imageOfGalleryQuestionText
-                                                visible: imageOfGalleryPointIndex >= 0
-                                                width: imageOfGalleryQuestionTab.width
-                                                height: (imageOfGalleryQuestionTab.height * 2) / 5 - imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
-                                                readOnly: true
-                                                text: qsTr("Question")
+                                    Connections{
+                                        target: images_of_gallery
+                                        function onCurrentIndexChanged()
+                                        {
+                                            if(imageOfGalleryDescriptionIndex == -1)
+                                            {
+                                                imageOfGalleryNextImageNextImage.source = Constants.noImage;
                                             }
+                                        }
+                                    }
 
-                                            Rectangle {
-                                                id: imageOfGalleryQuestionPointsToPassRect
-                                                width: imageOfGalleryQuestionTab.width
-                                                height: imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
-                                                Row {
-                                                    Label {
-                                                        visible: imageOfGalleryPointIndex >= 0
-                                                        text: qsTr("Points to pass : ")
+                                }
+                            }
+
+                            Rectangle {
+
+                                id: slitViewPaneImageInfo
+                                SplitView.preferredHeight: parent.height - Constants.height
+
+                                TabBar {
+                                    id: imageOfGalleryInfoBar
+                                    anchors.top: parent.top
+                                    width: parent.width
+                                    TabButton {
+                                        text: qsTr("Description")
+                                    }
+                                    TabButton {
+                                        text: qsTr("Next image")
+                                    }
+                                    TabButton {
+                                        text: qsTr("Question")
+                                    }
+                                }
+
+                                StackLayout {
+                                    anchors.top: imageOfGalleryInfoBar.bottom
+                                    width: slitViewPaneImageOfGallery.width
+                                    height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height
+                                    currentIndex: imageOfGalleryInfoBar.currentIndex
+                                    Item {
+                                        id: imageOfGalleryDescriptionTab
+                                        ScrollView {
+                                            anchors.fill: parent
+                                            clip:true
+                                            ListView {
+                                                id: imageOfGalleryDescriptionListView
+                                                anchors.fill: parent
+                                                clip: true
+                                                model: DescriptionModel {
+                                                    objectName: "ImageOfGalleryDescriptionModel"
+                                                    imageID: -1
+                                                }
+                                                delegate : imageOfGalleryDescriptionListViewItem
+                                            }
+                                        }
+                                    }
+                                    Item {
+                                        id: imageOfGalleryNextImageTab
+                                        Text {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            anchors.left: parent.left
+                                            anchors.fill: parent
+                                            visible: imageOfGalleryPointIndex === -1
+                                            text: Constants.selectImagePoint
+                                        }
+                                        Item {
+                                            anchors.fill: parent
+                                            visible: imageOfGalleryPointIndex >= 0
+
+                                            Column{
+
+                                                Text {
+                                                    id: imageOfGalleryNextImageText
+                                                    visible: imageOfGalleryPointIndex >= 0
+                                                    width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                                    text: Constants.notANextImagePoint
+                                                }
+
+                                                Image {
+                                                    height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height - imageOfGalleryNextImageText.height
+                                                    width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                                    id: imageOfGalleryNextImageNextImage
+                                                    visible: imageOfGalleryPointIndex >= 0
+                                                    fillMode: Image.PreserveAspectFit
+                                                    source: Constants.noImage
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Item {
+                                        id: imageOfGalleryQuestionTab
+                                        Text {
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            anchors.left: parent.left
+                                            anchors.fill: parent
+                                            visible: imageOfGalleryPointIndex === -1
+                                            text: Constants.selectImagePoint
+                                        }
+                                        Item {
+                                            anchors.fill: parent
+                                            visible: imageOfGalleryPointIndex >= 0
+
+                                            Column{
+                                                anchors.left: parent.left
+
+                                                Rectangle{
+                                                    width: imageOfGalleryQuestionTab.width
+                                                    height: (imageOfGalleryQuestionTab.height * 2) / 5
+                                                    visible: imageOfGalleryPointIndex >= 0
+
+                                                    FontMetrics{
+                                                        id: imageOfGalleryQuestionPointsToPassFontMetrics
+                                                        font: imageOfGalleryQuestionPointsToPass.font
                                                     }
-                                                    Text {
-                                                        id: imageOfGalleryQuestionPointsToPass
+
+                                                    Column{
+                                                        anchors.fill: parent
+
+                                                        TextArea {
+                                                            id: imageOfGalleryQuestionText
+                                                            visible: imageOfGalleryPointIndex >= 0
+                                                            width: imageOfGalleryQuestionTab.width
+                                                            height: (imageOfGalleryQuestionTab.height * 2) / 5 - imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
+                                                            readOnly: true
+                                                            text: qsTr("Question")
+                                                        }
+
+                                                        Rectangle {
+                                                            id: imageOfGalleryQuestionPointsToPassRect
+                                                            width: imageOfGalleryQuestionTab.width
+                                                            height: imageOfGalleryQuestionPointsToPassFontMetrics.height * 1.5
+                                                            Row {
+                                                                Label {
+                                                                    visible: imageOfGalleryPointIndex >= 0
+                                                                    text: qsTr("Points to pass : ")
+                                                                }
+                                                                Text {
+                                                                    id: imageOfGalleryQuestionPointsToPass
+                                                                    visible: imageOfGalleryPointIndex >= 0
+                                                                    text: qsTr("PointsToPass")
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                Rectangle{
+                                                    width: imageOfGalleryQuestionTab.width
+                                                    height: (imageOfGalleryQuestionTab.height * 3) / 5
+                                                    visible: imageOfGalleryPointIndex >= 0
+
+                                                    ListView {
+                                                        id: imageOfGalleryQuestionAnswersListView
                                                         visible: imageOfGalleryPointIndex >= 0
-                                                        text: qsTr("PointsToPass")
+                                                        anchors.fill: parent
+                                                        clip: true
+                                                        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+                                                        model: QuestionAnswersModel {
+                                                            objectName: "ImageOfGalleryQuestionAnswersModel"
+                                                            questionId: -1
+                                                        }
+
+                                                        delegate: imageOfGalleryQuestionAnswersListViewItem
                                                     }
                                                 }
                                             }
                                         }
                                     }
-
-                                    Rectangle{
-                                        width: imageOfGalleryQuestionTab.width
-                                        height: (imageOfGalleryQuestionTab.height * 3) / 5
-                                        visible: imageOfGalleryPointIndex >= 0
-
-                                        ListView {
-                                            id: imageOfGalleryQuestionAnswersListView
-                                            visible: imageOfGalleryPointIndex >= 0
-                                            anchors.fill: parent
-                                            clip: true
-                                            highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
-                                            model: QuestionAnswersModel {
-                                                objectName: "ImageOfGalleryQuestionAnswersModel"
-                                                questionId: -1
-                                            }
-
-                                            delegate: imageOfGalleryQuestionAnswersListViewItem
-                                        }
-                                    }
                                 }
                             }
                         }
                     }
+                }
+            }
+            Item {
+                id: topicEffects
+                Text {
+                    text: qsTr("Effects")
                 }
             }
         }

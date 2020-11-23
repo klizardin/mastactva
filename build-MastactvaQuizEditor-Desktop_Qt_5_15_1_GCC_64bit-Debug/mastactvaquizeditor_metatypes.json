@@ -2775,6 +2775,11 @@
                         ],
                         "name": "errorMessage",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "initialized",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [

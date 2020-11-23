@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
                 {
                     mainObjects->setRootQMLObject(obj);
                 }
+                QMLObjects::getInstance().setRoot(obj);
+                QMLObjects::getInstance().setInitialized();
             }
         }
     }, Qt::QueuedConnection);

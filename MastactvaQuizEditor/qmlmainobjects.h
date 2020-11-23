@@ -49,6 +49,9 @@ private:
 };
 
 
+class NetAPI;
+
+
 class QMLObjects : public QMLObjectsBase
 {
 public:
@@ -58,6 +61,9 @@ public:
 
 protected:
     virtual void searchObjects() override;
+
+private:
+    MastactvaAPI *m_mastactavaAPI = nullptr;
 };
 
 

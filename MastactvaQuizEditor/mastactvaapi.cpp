@@ -1050,3 +1050,8 @@ void MastactvaAPI::questionRefreshed()
 {
     emit imageOfGalleryPointIndexChanged();
 }
+
+void MastactvaAPI::setInitialized()
+{
+    emit initialized();
+}

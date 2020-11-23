@@ -87,6 +87,9 @@ public:
     Q_INVOKABLE int getLanguageIndex();
     Q_INVOKABLE void questionRefreshed();
 
+public:
+    void setInitialized();
+
 signals:
     void galleryReloaded();
     void imagesOfGalleryReloaded();
@@ -122,6 +125,7 @@ signals:
     void nextImageEdited();
     void currentGalleryRemoved();
     void errorMessage(const QString &header_, const QString &description_);
+    void initialized();
 
 protected:
     int imageOfGalleryId() const;
