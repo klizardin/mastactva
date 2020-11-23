@@ -14,6 +14,7 @@ CONFIG += c++14
 
 HEADERS += \
         appconsts.h \
+        effect.h \
         galleryeditviewmodel.h    \
         mastactvaapi.h    \
         netapiv0.h \
@@ -30,6 +31,7 @@ HEADERS += \
 
 SOURCES += \
         appconsts.cpp \
+        effect.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \
         mastactvaapi.cpp    \

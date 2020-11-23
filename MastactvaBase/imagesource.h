@@ -23,6 +23,7 @@ public:
     }
 };
 
+
 namespace layout
 {
     inline QVariant getValue(const ImageSource &val_, bool toQML_ = true)
