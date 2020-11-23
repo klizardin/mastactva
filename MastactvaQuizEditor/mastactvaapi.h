@@ -86,6 +86,7 @@ public:
     Q_INVOKABLE void switchLanguage(const QString & lang_);
     Q_INVOKABLE int getLanguageIndex();
     Q_INVOKABLE void questionRefreshed();
+    Q_INVOKABLE void informInitialized();
 
 public:
     void setInitialized();

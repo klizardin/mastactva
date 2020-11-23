@@ -109,11 +109,20 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
     m_root = root_;
 }
 
+
+#include "effect.h"
+
+
 void QMLObjects::setInitialized()
 {
+    searchObjects();
     if(nullptr == m_mastactavaAPI) { return; }
     m_mastactavaAPI->setInitialized();
 }
+
+
+static const QString g_effectModel = "EffectModel";
+
 
 void QMLObjects::searchObjects()
 {
@@ -125,6 +134,18 @@ void QMLObjects::searchObjects()
     if(nullptr == m_mastactavaAPI)
     {
         m_mastactavaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
+    }
+    IListModel *m = nullptr;
+    m = findListModel(g_effectModel);
+    if(nullptr == m)
+    {
+        EffectModel *m1 = m_root->findChild<EffectModel *>(g_effectModel);
+        registerModel(g_effectModel, m1);
+    }
+    for(IListModel *m : m_models)
+    {
+        if(nullptr == m) { continue; }
+        m->initResponse();
     }
 }
 

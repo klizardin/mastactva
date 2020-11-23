@@ -193,6 +193,15 @@ ApplicationWindow {
         objectName: "MastactvaAPI"
     }
 
+    EffectModel {
+        id: effectModel
+        objectName: "EffectModel"
+        layoutQMLName: "EffectModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     Connections {
         target: mastactva
 
@@ -207,6 +216,11 @@ ApplicationWindow {
             }
             popupMessage.fieldPopupMessageDescriptionText = description
             popupMessage.open()
+        }
+
+        function onInitialized()
+        {
+            console.log("MastactvaAPI::onInitialized() at main.qml")
         }
     }
 

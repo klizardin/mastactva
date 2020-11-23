@@ -1057,6 +1057,11 @@ void MastactvaAPI::questionRefreshed()
     emit imageOfGalleryPointIndexChanged();
 }
 
+void MastactvaAPI::informInitialized()
+{
+    QMLObjects::getInstance().setInitialized();
+}
+
 void MastactvaAPI::setInitialized()
 {
     emit initialized();

@@ -25,11 +25,12 @@ public:
     public:
         DefaultLayout()
         {
-           addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Effect::m_parentModelInfo);
-           addSpecial<int>(layout::SpecialFieldEn::appId, &Effect::m_appId);
-           addField<int>("id", "effectId", &Effect::id, &Effect::setId);
-           addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
-           addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
+            setLayoutJsonName("effect");
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Effect::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &Effect::m_appId);
+            addField<int>("id", "effectId", &Effect::id, &Effect::setId);
+            addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
+            addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
         }
     };
 

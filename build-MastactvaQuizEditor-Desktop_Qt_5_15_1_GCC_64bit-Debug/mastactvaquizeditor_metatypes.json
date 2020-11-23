@@ -2913,6 +2913,11 @@
                         "access": "public",
                         "name": "questionRefreshed",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "informInitialized",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

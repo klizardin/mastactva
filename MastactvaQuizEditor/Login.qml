@@ -19,12 +19,23 @@ ApplicationWindow {
         onLoaded:
         {
             logginWindow.visible = false
+            mastactva.informInitialized()
         }
     }
 
     MastactvaAPI {
         id: mastactva
     }
+
+    Connections {
+        target: mastactva
+
+        function onInitialized()
+        {
+            console.log("MastactvaAPI::onInitialized() at Login.qml")
+        }
+    }
+
 
     Column {
         anchors.fill: parent
