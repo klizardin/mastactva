@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QTranslator>
-#include "netapi.h"
+#include "netapiv0.h"
 #include "galleryeditviewmodel.h"
 #include "qmlmainobjects.h"
 #include "mastactvaapi.h"

@@ -6,7 +6,7 @@
 #include <QFileInfo>
 #include <QCryptographicHash>
 #include <QGuiApplication>
-#include "netapi.h"
+#include "netapiv0.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
 #include "appconsts.h"

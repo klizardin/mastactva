@@ -16,16 +16,16 @@ HEADERS += \
         appconsts.h \
         galleryeditviewmodel.h    \
         mastactvaapi.h    \
-        netapi.h  \
-        qmlmainobjects.h    \
-        ../MastactvaBase/IModel.h \
-        ../MastactvaBase/Layout.h \
-        ../MastactvaBase/Model.h \
-        ../MastactvaBase/imagesource.h \
-        ../MastactvaBase/netapi.h \
-        ../MastactvaBase/qmlobjects.h \
-        ../MastactvaBase/utils.h
-        ../MastactvaBase/appconsts.h \
+        netapiv0.h \
+        qmlmainobjects.h \
+        ../MastactvaBase/utils.h \
+        ../MastactvaBase/netappconsts.h \
+        ../MastactvaBase/IModel.h   \
+        ../MastactvaBase/qmlobjects.h   \
+        ../MastactvaBase/imagesource.h  \
+        ../MastactvaBase/Layout.h   \
+        ../MastactvaBase/netapi.h   \
+        ../MastactvaBase/Model.h
 
 
 SOURCES += \
@@ -33,15 +33,15 @@ SOURCES += \
         main.cpp    \
         galleryeditviewmodel.cpp    \
         mastactvaapi.cpp    \
-        netapi.cpp  \
+        netapiv0.cpp \
         qmlmainobjects.cpp  \
+        ../MastactvaBase/utils.cpp  \
+        ../MastactvaBase/netappconsts.cpp  \
         ../MastactvaBase/IModel.cpp \
-        ../MastactvaBase/Model.cpp \
-        ../MastactvaBase/imagesource.cpp \
-        ../MastactvaBase/netapi.cpp \
         ../MastactvaBase/qmlobjects.cpp \
-        ../MastactvaBase/utils.cpp
-        ../MastactvaBase/appconsts.cpp \
+        ../MastactvaBase/imagesource.cpp    \
+        ../MastactvaBase/netapi.cpp \
+        ../MastactvaBase/Model.cpp
 
 
 RESOURCES += qml.qrc    \

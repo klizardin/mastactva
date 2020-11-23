@@ -2,6 +2,7 @@
 #define QMLMAINOBJECTS_H
 
 #include <QObject>
+#include "../MastactvaBase/qmlobjects.h"
 
 
 class GalleryImagesModel;
@@ -46,5 +47,18 @@ private:
     MastactvaAPI *m_mastactavaAPI = nullptr;
     QGuiApplication *m_app = nullptr;
 };
+
+
+class QMLObjects : public QMLObjectsBase
+{
+public:
+    QMLObjects() = default;
+
+    virtual void setInitialized() override;
+
+protected:
+    virtual void searchObjects() override;
+};
+
 
 #endif // QMLMAINOBJECTS_H

@@ -107,3 +107,19 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 {
     m_root = root_;
 }
+
+void QMLObjects::setInitialized()
+{
+    // TODO: implement
+}
+
+void QMLObjects::searchObjects()
+{
+    // TODO: implement
+}
+
+QMLObjectsBase &QMLObjectsBase::getInstance()
+{
+    static QMLObjects instance;
+    return instance;
+}

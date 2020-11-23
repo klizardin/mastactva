@@ -3146,12 +3146,89 @@
     {
         "classes": [
             {
-                "classInfos": [
+                "className": "NetAPIV0",
+                "object": true,
+                "qualifiedClassName": "NetAPIV0",
+                "signals": [
                     {
-                        "name": "QML.Element",
-                        "value": "auto"
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "request_",
+                                "type": "RequestDataV0*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "onRequestFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestDataV0*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "onJsonRequestFinished",
+                        "returnType": "void"
                     }
                 ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "reply_",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "replayFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "netapiv0.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "QMLMainObjects",
+                "object": true,
+                "qualifiedClassName": "QMLMainObjects",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "qmlmainobjects.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
                 "className": "NetAPI",
                 "object": true,
                 "qualifiedClassName": "NetAPI",
@@ -3189,11 +3266,6 @@
                         ],
                         "name": "error",
                         "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "initialized",
-                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -3218,23 +3290,6 @@
             }
         ],
         "inputFile": "netapi.h",
-        "outputRevision": 67
-    },
-    {
-        "classes": [
-            {
-                "className": "QMLMainObjects",
-                "object": true,
-                "qualifiedClassName": "QMLMainObjects",
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QObject"
-                    }
-                ]
-            }
-        ],
-        "inputFile": "qmlmainobjects.h",
         "outputRevision": 67
     }
 ]
