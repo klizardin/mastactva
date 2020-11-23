@@ -6,11 +6,12 @@
 #include <QFileInfo>
 #include <QCryptographicHash>
 #include <QGuiApplication>
+#include <type_traits>
 #include "netapiv0.h"
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
 #include "appconsts.h"
-#include <type_traits>
+#include "../MastactvaBase/netappconsts.h"
 
 
 MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
@@ -829,6 +830,11 @@ void MastactvaAPI::testLogingInSlot(int errorCode_, RequestDataV0 *request_, con
     {
         AppConsts::getInstance()->addServerURL(m_lastHostURL);
         AppConsts::getInstance()->save();
+        NetAppConsts::set(
+                    m_lastHostURL,
+                    NetAPIV0::getSingelton()->getDefaultRequestData().getLogin(),
+                    NetAPIV0::getSingelton()->getDefaultRequestData().getPass()
+                    );
         emit onLogingIn();
     }
 }

@@ -1,5 +1,5 @@
-#ifndef NETAPI_H
-#define NETAPI_H
+#ifndef NETAPIV0_H
+#define NETAPIV0_H
 
 #include <QObject>
 #include <QString>
@@ -40,12 +40,12 @@ public:
     const QString& getUrlBase() const;
     bool processErrorInResponseHandle() const;
     void setProcessErrorInResponseHandle(bool processErrorInResponseHandle_);
+    const QString &getLogin() const;
+    const QString &getPass() const;
 
 protected:
     void setRequestID(int requestID_);
     bool getSkipRequest() const;
-    const QString &getLogin() const;
-    const QString &getPass() const;
     void setReply(QNetworkReply *reply_);
     QNetworkReply *getReply();
     bool isJsonReply() const;
@@ -140,4 +140,4 @@ protected:
 };
 
 
-#endif // NETAPI_H
+#endif // NETAPIV0_H

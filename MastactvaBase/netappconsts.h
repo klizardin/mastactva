@@ -1,5 +1,5 @@
-#ifndef APPCONSTS_H
-#define APPCONSTS_H
+#ifndef NETAPPCONSTS_H
+#define NETAPPCONSTS_H
 
 
 #include <QString>
@@ -22,4 +22,4 @@ public:
     static void set(const QString &serverURL_, const QString &playLogin_, const QString &playPassword_);
 };
 
-#endif // APPCONSTS_H
+#endif // NETAPPCONSTS_H
