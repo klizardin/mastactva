@@ -17,6 +17,8 @@
 
     can be several steps of shaders
 
+5. add sets of params to the db model
+
 
 
 
