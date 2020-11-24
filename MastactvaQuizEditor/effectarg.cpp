@@ -44,6 +44,7 @@ void EffectArg::setArgTypeId(const int &argTypeId_)
     {
         m_shaderArgTypeModel->parentItemChanged();
     }
+
     emit argTypeChanged();
 }
 
