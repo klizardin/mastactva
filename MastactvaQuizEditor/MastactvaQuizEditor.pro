@@ -26,7 +26,8 @@ HEADERS += \
         ../MastactvaBase/imagesource.h  \
         ../MastactvaBase/Layout.h   \
         ../MastactvaBase/netapi.h   \
-        ../MastactvaBase/Model.h
+        ../MastactvaBase/Model.h \
+        shadertype.h
 
 
 SOURCES += \
@@ -43,7 +44,8 @@ SOURCES += \
         ../MastactvaBase/qmlobjects.cpp \
         ../MastactvaBase/imagesource.cpp    \
         ../MastactvaBase/netapi.cpp \
-        ../MastactvaBase/Model.cpp
+        ../MastactvaBase/Model.cpp \
+        shadertype.cpp
 
 
 RESOURCES += qml.qrc    \
