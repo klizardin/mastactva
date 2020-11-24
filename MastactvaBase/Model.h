@@ -52,6 +52,8 @@ public:
     virtual bool isListLoadedImpl() const override;
     virtual void listLoadedVF() override;
 
+    void parentItemRemoved();
+
 protected:
     void setRefAppIdImpl(const QVariant &appId_);
     QVariant getRefAppIdImpl() const;
@@ -71,7 +73,6 @@ protected:
     int getNextAppId(void *dta_);
     int getOutOfRangeAppId() const;
     void setNextAppId(int appId_);
-    void parentItemRemoved();
     void init(QObject *modelObj_);
     void addModelParamImpl(const QString &name_, const QVariant &value_);
     void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
@@ -280,6 +281,16 @@ public:
     DataType_ *getCurrentDataItem()
     {
         return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->getCurrentDataItem());
+    }
+
+    void parentCurrentIndexChanged()
+    {
+        loadListImpl();
+    }
+
+    void parentItemChanged()
+    {
+        loadListImpl();
     }
 
 protected:
@@ -655,16 +666,6 @@ protected:
         {
             parentCurrentIndexChanged();
         }
-    }
-
-    void parentCurrentIndexChanged()
-    {
-        loadListImpl();
-    }
-
-    void parentItemChanged()
-    {
-        loadListImpl();
     }
 
 protected:

@@ -27,6 +27,7 @@ HEADERS += \
         ../MastactvaBase/Layout.h   \
         ../MastactvaBase/netapi.h   \
         ../MastactvaBase/Model.h \
+        shader.h \
         shadertype.h
 
 
@@ -45,6 +46,7 @@ SOURCES += \
         ../MastactvaBase/imagesource.cpp    \
         ../MastactvaBase/netapi.cpp \
         ../MastactvaBase/Model.cpp \
+        shader.cpp \
         shadertype.cpp
 
 
