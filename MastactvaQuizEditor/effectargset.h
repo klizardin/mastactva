@@ -7,6 +7,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "effectargvalue.h"
 
 
 class EffectArgSetModel;
@@ -21,6 +22,7 @@ public:
     Q_PROPERTY(int effectArgSetId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArgSetEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QString effectArgSetDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QVariant effectArgSetValues READ values WRITE setValues NOTIFY valuesChanged)
 
     class DefaultLayout : public LayoutBase<EffectArgSet>
     {
@@ -33,6 +35,7 @@ public:
             addField<int>("id", "effectArgSetId", &EffectArgSet::id, &EffectArgSet::setId);
             addField<int>("effect", "effectArgSetEffectId", &EffectArgSet::effectId, &EffectArgSet::setEffectId);
             addField<QString>("description", "effectArgSetDescription", &EffectArgSet::description, &EffectArgSet::setDescription);
+            addModel<EffectArgValueModel>("effectArgSetValues", &EffectArgSet::m_affectArgValueModel, &EffectArgSet::createAffectArgValueModel);
         }
     };
 
@@ -43,11 +46,17 @@ public:
     void setEffectId(const int &effectId_);
     QString description() const;
     void setDescription(const QString &description_);
+    QVariant values() const;
+    void setValues(const QVariant &obj_);
+
+protected:
+    EffectArgValueModel *createAffectArgValueModel();
 
 signals:
     void idChanged();
     void effectIdChanged();
     void descriptionChanged();
+    void valuesChanged();
 
 private:
     EffectArgSetModel *m_effectArgSetModel = nullptr;
@@ -56,6 +65,7 @@ private:
     int m_id = -1;
     int m_effectId = -1;
     QString m_description;
+    EffectArgValueModel *m_affectArgValueModel = nullptr;
 };
 
 

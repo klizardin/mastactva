@@ -1,5 +1,6 @@
 #include "effectargset.h"
 
+
 EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
@@ -40,6 +41,40 @@ void EffectArgSet::setDescription(const QString &description_)
     m_description = description_;
 
     emit descriptionChanged();
+}
+
+QVariant EffectArgSet::values() const
+{
+    if(nullptr == m_affectArgValueModel)
+    {
+        const_cast<EffectArgSet *>(this)->m_affectArgValueModel = const_cast<EffectArgSet *>(this)->createAffectArgValueModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArgValueModel *>(m_affectArgValueModel)));
+}
+
+void EffectArgSet::setValues(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_affectArgValueModel)
+    {
+        delete m_affectArgValueModel;
+        m_affectArgValueModel = nullptr;
+
+        emit valuesChanged();
+    }
+}
+
+EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
+{
+    EffectArgValueModel *m = new EffectArgValueModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("arg_set", m_effectArgSetModel->getQMLLayoutName(), "id");
+    m->setCurrentRef("arg_set");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgValueModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->loadList();
+    return m;
 }
 
 
