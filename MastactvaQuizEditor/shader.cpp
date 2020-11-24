@@ -81,7 +81,7 @@ QVariant Shader::type() const
 
 void Shader::setType(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_shaderTypeModel)
     {
         delete m_shaderTypeModel;
         m_shaderTypeModel = nullptr;

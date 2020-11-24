@@ -7,6 +7,10 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "effectshader.h"
+
+
+class EffectModel;
 
 
 class Effect : public QObject
@@ -14,11 +18,12 @@ class Effect : public QObject
     Q_OBJECT
 
 public:
-    explicit Effect(QObject *parent_ = nullptr);
+    explicit Effect(EffectModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QVariant effectShaders READ effectShaders WRITE setEffectShaders NOTIFY effectShadersChanged)
 
     class DefaultLayout : public LayoutBase<Effect>
     {
@@ -31,6 +36,7 @@ public:
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
+            addModel<EffectShaderModel>("effectShaders", &Effect::m_effectShadersModel, &Effect::createEffectShadersModel);
         }
     };
 
@@ -41,18 +47,26 @@ public:
     void setName(const QString &name_);
     QString description() const;
     void setDescription(const QString &description_);
+    QVariant effectShaders() const;
+    void setEffectShaders(const QVariant &obj_);
+
+protected:
+    EffectShaderModel *createEffectShadersModel();
 
 signals:
     void idChanged();
     void nameChanged();
     void descriptionChanged();
+    void effectShadersChanged();
 
 private:
+    EffectModel *m_effectModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     QString m_name;
     QString m_description;
+    EffectShaderModel *m_effectShadersModel = nullptr;
 };
 
 

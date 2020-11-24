@@ -67,7 +67,7 @@ QVariant Question::answers() const
 
 void Question::setAnswers(const QVariant &answers_)
 {
-    if(answers_.isNull())
+    if(answers_.isNull() && nullptr != m_answerModel)
     {
         delete m_answerModel;
         m_answerModel = nullptr;

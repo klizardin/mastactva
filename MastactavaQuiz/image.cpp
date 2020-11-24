@@ -106,7 +106,7 @@ QVariant Image::imagePoints() const
 
 void Image::setImagePoints(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_imagePoints)
     {
         delete m_imagePoints;
         m_imagePoints = nullptr;
@@ -125,7 +125,7 @@ QVariant Image::imageDescription() const
 
 void Image::setImageDescription(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_imageDescriptionModel)
     {
         delete m_imageDescriptionModel;
         m_imageDescriptionModel = nullptr;

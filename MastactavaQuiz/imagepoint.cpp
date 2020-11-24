@@ -56,7 +56,7 @@ QVariant ImagePointToQuestion::questionObj() const
 
 void ImagePointToQuestion::setQuestionObj(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_questionModel)
     {
         delete m_questionModel;
         m_questionModel = nullptr;
@@ -231,7 +231,7 @@ QVariant ImagePoint::nextImage() const
 
 void ImagePoint::setNextImage(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_imagePointToNextImage)
     {
         delete m_imagePointToNextImage;
         m_imagePointToNextImage = nullptr;
@@ -251,7 +251,7 @@ QVariant ImagePoint::nextQuestion() const
 
 void ImagePoint::setNextQuestion(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_imagePointToQuestionModel)
     {
         delete m_imagePointToQuestionModel;
         m_imagePointToQuestionModel = nullptr;

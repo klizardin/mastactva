@@ -116,7 +116,7 @@ QVariant Gallery::statistics() const
 
 void Gallery::setStatistics(const QVariant &obj_)
 {
-    if(obj_.isNull())
+    if(obj_.isNull() && nullptr != m_galleryStatisticsModel)
     {
         delete m_galleryStatisticsModel;
         m_galleryStatisticsModel = nullptr;
