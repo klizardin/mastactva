@@ -15,6 +15,7 @@ CONFIG += c++14
 HEADERS += \
         appconsts.h \
         effect.h \
+        effectarg.h \
         effectshader.h \
         galleryeditviewmodel.h    \
         mastactvaapi.h    \
@@ -36,6 +37,7 @@ HEADERS += \
 SOURCES += \
         appconsts.cpp \
         effect.cpp \
+        effectarg.cpp \
         effectshader.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \
