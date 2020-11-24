@@ -16,6 +16,7 @@ HEADERS += \
         appconsts.h \
         effect.h \
         effectarg.h \
+        effectargset.h \
         effectshader.h \
         galleryeditviewmodel.h    \
         mastactvaapi.h    \
@@ -38,6 +39,7 @@ SOURCES += \
         appconsts.cpp \
         effect.cpp \
         effectarg.cpp \
+        effectargset.cpp \
         effectshader.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \
