@@ -62,6 +62,26 @@ void Effect::setEffectShaders(const QVariant &obj_)
     }
 }
 
+QVariant Effect::args() const
+{
+    if(nullptr == m_effectArgModel)
+    {
+        const_cast<Effect *>(this)->m_effectArgModel = const_cast<Effect *>(this)->createEffectArgModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArgModel *>(m_effectArgModel)));
+}
+
+void Effect::setArgs(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_effectArgModel)
+    {
+        delete m_effectArgModel;
+        m_effectArgModel = nullptr;
+
+        emit effectShadersChanged();
+    }
+}
+
 EffectShaderModel *Effect::createEffectShadersModel()
 {
     EffectShaderModel *m = new EffectShaderModel(this);
@@ -75,6 +95,21 @@ EffectShaderModel *Effect::createEffectShadersModel()
     m->loadList();
     return m;
 }
+
+EffectArgModel *Effect::createEffectArgModel()
+{
+    EffectArgModel *m = new EffectArgModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
+    m->setCurrentRef("effect");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgModel_") + QVariant::fromValue(m_appId).toString());
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->loadList();
+    return m;
+}
+
 
 EffectModel::EffectModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)

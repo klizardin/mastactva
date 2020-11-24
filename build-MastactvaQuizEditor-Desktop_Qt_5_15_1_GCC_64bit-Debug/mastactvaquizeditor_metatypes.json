@@ -83,6 +83,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setEffectShaders"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgs",
+                        "notify": "argsChanged",
+                        "read": "args",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArgs"
                     }
                 ],
                 "qualifiedClassName": "Effect",
@@ -105,6 +119,11 @@
                     {
                         "access": "public",
                         "name": "effectShadersChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argsChanged",
                         "returnType": "void"
                     }
                 ],

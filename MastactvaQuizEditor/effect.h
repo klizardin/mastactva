@@ -8,6 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "effectshader.h"
+#include "effectarg.h"
 
 
 class EffectModel;
@@ -24,6 +25,7 @@ public:
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QVariant effectShaders READ effectShaders WRITE setEffectShaders NOTIFY effectShadersChanged)
+    Q_PROPERTY(QVariant effectArgs READ args WRITE setArgs NOTIFY argsChanged)
 
     class DefaultLayout : public LayoutBase<Effect>
     {
@@ -37,6 +39,7 @@ public:
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
             addModel<EffectShaderModel>("effectShaders", &Effect::m_effectShadersModel, &Effect::createEffectShadersModel);
+            addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
         }
     };
 
@@ -49,15 +52,19 @@ public:
     void setDescription(const QString &description_);
     QVariant effectShaders() const;
     void setEffectShaders(const QVariant &obj_);
+    QVariant args() const;
+    void setArgs(const QVariant &obj_);
 
 protected:
     EffectShaderModel *createEffectShadersModel();
+    EffectArgModel *createEffectArgModel();
 
 signals:
     void idChanged();
     void nameChanged();
     void descriptionChanged();
     void effectShadersChanged();
+    void argsChanged();
 
 private:
     EffectModel *m_effectModel = nullptr;
@@ -67,6 +74,7 @@ private:
     QString m_name;
     QString m_description;
     EffectShaderModel *m_effectShadersModel = nullptr;
+    EffectArgModel *m_effectArgModel = nullptr;
 };
 
 
