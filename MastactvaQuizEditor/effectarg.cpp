@@ -108,7 +108,7 @@ ShaderArgTypeModel *EffectArg::createShaderArgTypeModel()
 {
     ShaderArgTypeModel *m = new ShaderArgTypeModel(this);
     m->initResponse();
-    m->setLayoutRefImpl("id", m_effectArgModel->getQMLLayoutName(), "arg_type", false);
+    m->setLayoutRefImpl("id", m_effectArgModel->getQMLLayoutName(), "arg_type");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectArgModel->getQMLLayoutName() + QString("_ShaderArgTypeModel_") + QVariant::fromValue(m_appId).toString());

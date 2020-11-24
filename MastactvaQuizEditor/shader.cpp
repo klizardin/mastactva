@@ -106,7 +106,7 @@ ShaderTypeModel *Shader::createShaderTypeModel()
 {
     ShaderTypeModel *m = new ShaderTypeModel(this);
     m->initResponse();
-    m->setLayoutRefImpl("id", m_shaderModel->getQMLLayoutName(), "type", false);
+    m->setLayoutRefImpl("id", m_shaderModel->getQMLLayoutName(), "type");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_shaderModel->getQMLLayoutName() + QString("_ShaderTypeModel_") + QVariant::fromValue(m_appId).toString());

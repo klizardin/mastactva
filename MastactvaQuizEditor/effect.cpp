@@ -66,7 +66,7 @@ EffectShaderModel *Effect::createEffectShadersModel()
 {
     EffectShaderModel *m = new EffectShaderModel(this);
     m->initResponse();
-    m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id", false);
+    m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectShaderModel_") + QVariant::fromValue(m_appId).toString());
