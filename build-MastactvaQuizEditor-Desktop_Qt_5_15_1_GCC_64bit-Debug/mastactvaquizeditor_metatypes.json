@@ -97,6 +97,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setArgs"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgSets",
+                        "notify": "argSetsChanged",
+                        "read": "argSets",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArgSets"
                     }
                 ],
                 "qualifiedClassName": "Effect",
@@ -124,6 +138,11 @@
                     {
                         "access": "public",
                         "name": "argsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argSetsChanged",
                         "returnType": "void"
                     }
                 ],
