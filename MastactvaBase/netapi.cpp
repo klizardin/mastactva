@@ -104,15 +104,20 @@ private:
 NetAPI::NetAPI(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
-    m_hostName = NetAppConsts::getInstance().m_serverURL;
-    m_loggin = NetAppConsts::getInstance().m_playLogin;
-    m_pass = NetAppConsts::getInstance().m_playPassword;
-    m_hostUrlBase = m_hostName;
+    updateAuthConsts();
 }
 
 NetAPI::~NetAPI()
 {
     clearData();
+}
+
+void NetAPI::updateAuthConsts()
+{
+    m_hostName = NetAppConsts::getInstance().m_serverURL;
+    m_loggin = NetAppConsts::getInstance().m_playLogin;
+    m_pass = NetAppConsts::getInstance().m_playPassword;
+    m_hostUrlBase = m_hostName;
 }
 
 void NetAPI::setBasicAuthentification(QNetworkRequest* netRequest_)

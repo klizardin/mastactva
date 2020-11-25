@@ -193,6 +193,7 @@ ApplicationWindow {
         function onEffectCurrentIndexChanged()
         {
             effectsList.currentIndex = effectCurrentIndex
+            effectModel.currentIndex = effectCurrentIndex
         }
     }
 
@@ -229,6 +230,7 @@ ApplicationWindow {
         function onInitialized()
         {
             console.log("MastactvaAPI::onInitialized() at main.qml")
+            effectModel.loadList()
         }
     }
 
@@ -1946,12 +1948,16 @@ ApplicationWindow {
                             clip: true
                             model: effectModel
                             delegate: effectItem
+                            highlight: effectItemHighlight
+                            highlightFollowsCurrentItem: false
                         }
                     }
                     Rectangle{
                         id: splitEffectsInfo
 
-                        width: parent.width - (splitEffects.width + splitEffectsDemo.width)
+                        SplitView.preferredWidth: parent.width - (splitEffects.width + splitEffectsDemo.width)
+                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
+                        SplitView.maximumWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth/2)
                         height: parent.height
 
                         TabBar {
@@ -2000,9 +2006,9 @@ ApplicationWindow {
                     Rectangle{
                         id: splitEffectsDemo
 
-                        SplitView.preferredWidth: Constants.leftSideBarWidth
-                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
-                        SplitView.maximumWidth: Constants.leftSideBarWidth*2
+                        //SplitView.preferredWidth: Constants.leftSideBarWidth
+                        //SplitView.minimumWidth: Constants.leftSideBarWidth/2
+                        //SplitView.maximumWidth: Constants.leftSideBarWidth*2
                         height: parent.height
 
                         Text {
@@ -2478,7 +2484,7 @@ ApplicationWindow {
     }
     Component {
         id: effectItem
-        Rectangle {
+        Column {
             id: effectItemRect
 
             FontMetrics{
@@ -2488,56 +2494,98 @@ ApplicationWindow {
 
             width: effectsList.width
 
-            property bool fullDescriptionText: false
+            SystemPalette {
+                id: effectItemPallete
+                colorGroup: SystemPalette.Active
+            }
 
-            Column {
-                Text {
-                    id: effectItemHeaderText
-                    width: effectsList.width
-                    wrapMode: Text.WordWrap
-                    text: effectName
-                    padding: Constants.effectsListHeaderPadding
-                }
-                Text {
-                    id: effectItemDescriptionText
-                    width: effectsList.width
-                    wrapMode: Text.WordWrap
-                    text: fullDescriptionText ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+            property bool showFullDescription: false
+
+            Text {
+                id: effectItemHeaderText
+                width: effectsList.width
+                wrapMode: Text.WordWrap
+                text: effectName
+                padding: Constants.effectsListHeaderPadding
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    onClicked:
+                    {
+                        if (mouse.button === Qt.RightButton)
+                        {
+                            effectItemMenu.popup()
+                        }
+                        else
+                        {
+                            effectCurrentIndex = index
+                            mouse.accepted = false
+                        }
+                    }
+
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            effectItemMenu.popup()
+                    }
+
+                    onDoubleClicked: {
+                        showFullDescription = !showFullDescription
+                    }
+
+                    AutoSizeMenu {
+                        id: effectItemMenu
+                        MenuItem { action: addEffect }
+                        MenuItem { action: editEffect }
+                        MenuItem { action: removeEffect }
+                    }
                 }
             }
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                onClicked:
-                {
-                    if (mouse.button === Qt.RightButton)
+            Text {
+                id: effectItemDescriptionText
+                width: effectsList.width
+                wrapMode: Text.WordWrap
+                text: showFullDescription ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    onClicked:
                     {
-                        effectItemMenu.popup()
+                        if (mouse.button === Qt.RightButton)
+                        {
+                            effectItemMenu.popup()
+                        }
+                        else
+                        {
+                            effectCurrentIndex = index
+                            mouse.accepted = false
+                        }
                     }
-                    else
-                    {
-                        effectCurrentIndex = index
-                        mouse.accepted = false
+
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            effectItemMenu.popup()
                     }
-                }
 
-                onPressAndHold: {
-                    if (mouse.source === Qt.MouseEventNotSynthesized)
-                        effectItemMenu.popup()
-                }
-
-                onDoubleClicked: {
-                    fullDescriptionText = !fullDescriptionText
-                }
-
-                AutoSizeMenu {
-                    id: effectItemMenu
-                    MenuItem { action: addEffect }
-                    MenuItem { action: editEffect }
-                    MenuItem { action: removeEffect }
+                    onDoubleClicked: {
+                        showFullDescription = !showFullDescription
+                    }
                 }
             }
+        }
+    }
+    Component {
+        id: effectItemHighlight
+        Rectangle {
+            color: "lightsteelblue"; radius: 5
+            y: effectsList.currentItem.y
+            x: effectsList.currentItem.x
+            width: effectsList.currentItem.width
+            height: effectsList.currentItem.height
         }
     }
 }

@@ -13,6 +13,7 @@
 #include "appconsts.h"
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/netappconsts.h"
+#include "../MastactvaBase/netapi.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -837,6 +838,7 @@ void MastactvaAPI::testLogingInSlot(int errorCode_, RequestDataV0 *request_, con
                     NetAPIV0::getSingelton()->getDefaultRequestData().getLogin(),
                     NetAPIV0::getSingelton()->getDefaultRequestData().getPass()
                     );
+        QMLObjects::getInstance().getNetAPI()->updateAuthConsts();
         emit onLogingIn();
     }
 }

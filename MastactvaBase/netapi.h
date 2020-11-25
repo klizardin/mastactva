@@ -64,6 +64,8 @@ public:
     NetAPI(QObject *parent_ = nullptr);
     virtual ~NetAPI() override;
 
+    void updateAuthConsts();
+
     template<class DataType_>
     QString getListRequestName() const
     {
