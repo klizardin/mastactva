@@ -8,10 +8,6 @@
 #include <QtQuick/QQuickItem>
 
 
-static const QString g_englishLanguage = "English";
-static const QString g_belarusLanguage = "Belarus";
-
-
 class ServerURLsModel : public QAbstractListModel
 {
     Q_OBJECT

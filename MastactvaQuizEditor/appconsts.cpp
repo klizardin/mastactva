@@ -1,4 +1,7 @@
 #include "appconsts.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/utils.h"
+
 
 ServerURLsModel::ServerURLsModel(const QVector<QString> &data_)
 {

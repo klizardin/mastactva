@@ -14,6 +14,7 @@ ApplicationWindow {
     height: Constants.height
     title: qsTr("Mastactva Quiz Editor")
 
+    property alias appMode: topicTabBar.currentIndex
     property alias galleryCurrentIndex: mastactva.galleryIndex
     property alias galleryCurrentId: mastactva.galleryId
     property alias galleryImagesCurrentIndex: mastactva.imageOfGalleryIndex
@@ -22,10 +23,11 @@ ApplicationWindow {
     property alias imageOfGalleryDescriptionId: mastactva.imageOfGalleryDescriptionId
     property alias imageOfGalleryPointIndex: mastactva.imageOfGalleryPointIndex
     property alias imageOfGalleryAnswerIndex: mastactva.imageOfGalleryAnswerIndex
-    property alias appMode: topicTabBar.currentIndex
     property bool showImagePoints: false
     property bool showImagePointsVoronoyDiagram: false
     property var currentImagePointsModel: undefined
+
+    property int effectCurrentIndex: -1
 
     Connections {
         target: root
@@ -186,6 +188,11 @@ ApplicationWindow {
         function onImageOfGalleryAnswerIndexChanged()
         {
             imageOfGalleryQuestionAnswersListView.currentIndex = imageOfGalleryAnswerIndex
+        }
+
+        function onEffectCurrentIndexChanged()
+        {
+            effectsList.currentIndex = effectCurrentIndex
         }
     }
 
@@ -1907,8 +1914,14 @@ ApplicationWindow {
                         SplitView.maximumWidth: Constants.leftSideBarWidth*2
                         height: parent.height
 
-                        Text {
-                            text: qsTr("Effects list")
+                        ListView {
+                            id: effectsList
+
+                            anchors.fill: parent
+                            spacing: Constants.effectsListViewSpacing
+                            clip: true
+                            model: effectModel
+                            delegate: effectItem
                         }
                     }
                     Rectangle{
@@ -2435,6 +2448,67 @@ ApplicationWindow {
                     MenuItem { action: imageOfGalleryCreateAnswer }
                     MenuItem { action: imageOfGalleryEditAnswer }
                     MenuItem { action: imageOfGalleryDeleteAnswer }
+                }
+            }
+        }
+    }
+    Component {
+        id: effectItem
+        Rectangle {
+            id: effectItemRect
+
+            FontMetrics{
+                id: effectItemFontMetrics
+                font: effectItemHeaderText.font
+            }
+
+            width: effectsList.width
+
+            property bool fullDescriptionText: false
+
+            Column {
+                Text {
+                    id: effectItemHeaderText
+                    width: effectsList.width
+                    wrapMode: Text.WordWrap
+                    text: effectName
+                    padding: Constants.effectsListHeaderPadding
+                }
+                Text {
+                    id: effectItemDescriptionText
+                    width: effectsList.width
+                    wrapMode: Text.WordWrap
+                    text: fullDescriptionText ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                onClicked:
+                {
+                    if (mouse.button === Qt.RightButton)
+                    {
+                        effectItemMenu.popup()
+                    }
+                    else
+                    {
+                        effectCurrentIndex = index
+                        mouse.accepted = false
+                    }
+                }
+
+                onPressAndHold: {
+                    if (mouse.source === Qt.MouseEventNotSynthesized)
+                        effectItemMenu.popup()
+                }
+
+                onDoubleClicked: {
+                    fullDescriptionText = !fullDescriptionText
+                }
+
+                AutoSizeMenu {
+                    id: effectItemMenu
                 }
             }
         }

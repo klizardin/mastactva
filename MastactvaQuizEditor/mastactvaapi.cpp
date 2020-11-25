@@ -11,7 +11,9 @@
 #include "qmlmainobjects.h"
 #include "galleryeditviewmodel.h"
 #include "appconsts.h"
+#include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/netappconsts.h"
+#include "../MastactvaBase/utils.h"
 
 
 MastactvaAPI::MastactvaAPI(QObject *parent) : QObject(parent)
@@ -1027,10 +1029,11 @@ bool isSymbol(const QChar &ch_)
 
 QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QString &rms_)
 {
-    if(str_.length() <= maxSymbols_) { return str_; }
+    QString str = ::leftDoubleCR(str_);
+    if(str.length() <= maxSymbols_) { return str; }
     int i = maxSymbols_;
-    for(;i < str_.length() && isSymbol(str_.at(i)); i++) {}
-    return str_.mid(0, i) + rms_;
+    for(;i < str.length() && isSymbol(str.at(i)); i++) {}
+    return str.mid(0, i) + rms_;
 }
 
 void MastactvaAPI::refreshNextImage()
@@ -1065,4 +1068,9 @@ void MastactvaAPI::informInitialized()
 void MastactvaAPI::setInitialized()
 {
     emit initialized();
+}
+
+QString MastactvaAPI::leftDoubleCR(const QString &str_)
+{
+    return ::leftDoubleCR(str_);
 }

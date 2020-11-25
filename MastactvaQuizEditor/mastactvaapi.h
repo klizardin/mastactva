@@ -87,6 +87,7 @@ public:
     Q_INVOKABLE int getLanguageIndex();
     Q_INVOKABLE void questionRefreshed();
     Q_INVOKABLE void informInitialized();
+    Q_INVOKABLE QString leftDoubleCR(const QString &str_);
 
 public:
     void setInitialized();

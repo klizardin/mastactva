@@ -7,6 +7,8 @@
 #include "qmlmainobjects.h"
 #include "mastactvaapi.h"
 #include "appconsts.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/utils.h"
 
 
 void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)

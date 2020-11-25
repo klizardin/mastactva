@@ -5369,6 +5369,17 @@
                         "access": "public",
                         "name": "informInitialized",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "str_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "leftDoubleCR",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,
