@@ -194,6 +194,17 @@ ApplicationWindow {
         {
             effectsList.currentIndex = effectCurrentIndex
             effectModel.currentIndex = effectCurrentIndex
+            if(effectCurrentIndex >= 0)
+            {
+                var effect = effectModel.getCurrentItem()
+                effectInfoCommonName.text = effect.effectName
+                effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
+            }
+            else
+            {
+                effectInfoCommonName.text = qsTr("Please, select effect item")
+                effectInfoCommonDescription.text = qsTr("")
+            }
         }
     }
 
@@ -1987,7 +1998,32 @@ ApplicationWindow {
 
                             Item {
                                 id: effectInfoCommon
-                                Text { text: qsTr("Effect info") }
+                                Column {
+                                    Label {
+                                        text: qsTr("Effect name : ")
+                                        padding: Constants.effectInfoPadding
+                                    }
+                                    Text
+                                    {
+                                        id: effectInfoCommonName
+                                        width: splitEffectsInfo.width
+                                        text: qsTr("")
+                                        wrapMode: Text.WordWrap
+                                        padding: Constants.effectInfoPadding
+                                    }
+                                    Label {
+                                        text: qsTr("Effect description : ")
+                                        padding: Constants.effectInfoPadding
+                                    }
+                                    Text
+                                    {
+                                        id: effectInfoCommonDescription
+                                        width: splitEffectsInfo.width
+                                        text: qsTr("")
+                                        wrapMode: Text.WordWrap
+                                        padding: Constants.effectInfoPadding
+                                    }
+                                }
                             }
                             Item {
                                 id: effectInfoShaders
