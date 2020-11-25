@@ -77,7 +77,7 @@ HEADERS += \
     userstep.h
 
 DISTFILES += \
-    ../build-MastactavaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactavaquiz_metatypes.json \
+    ../build-MastactvaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactvaquiz_metatypes.json \
     GalleryFunctions.js \
     Mastactva/Constants.qml \
     Mastactva/qmldir \

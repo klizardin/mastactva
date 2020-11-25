@@ -12,7 +12,7 @@ Page {
 
     title: qsTr("Question")
 
-    property var mastactavaAPI: undefined
+    property var mastactvaAPI: undefined
     property var userStepModel: undefined
     property var question: undefined
     property int imageId: -1

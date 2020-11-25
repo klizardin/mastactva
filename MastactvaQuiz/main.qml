@@ -85,7 +85,7 @@ ApplicationWindow {
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
             quizPage.userStepModel = userStepModel
 
-            questionPage.mastactavaAPI = mastactvaAPI
+            questionPage.mastactvaAPI = mastactvaAPI
             questionPage.userStepModel = userStepModel
 
 

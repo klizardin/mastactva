@@ -64,11 +64,11 @@ QuestionAnswersModel *QMLMainObjects::getQuestionAnswersModel()
 
 MastactvaAPI *QMLMainObjects::getMastactvaAPI()
 {
-    if(nullptr == m_mastactavaAPI)
+    if(nullptr == m_mastactvaAPI)
     {
         searchQMLObjects();
     }
-    return m_mastactavaAPI;
+    return m_mastactvaAPI;
 }
 
 QGuiApplication *QMLMainObjects::getApp()
@@ -99,9 +99,9 @@ void QMLMainObjects::searchQMLObjects()
     {
         m_questionAnswersModel = m_root->findChild<QuestionAnswersModel *>("ImageOfGalleryQuestionAnswersModel");
     }
-    if(nullptr == m_mastactavaAPI)
+    if(nullptr == m_mastactvaAPI)
     {
-        m_mastactavaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
+        m_mastactvaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
     }
 }
 
@@ -117,8 +117,8 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 void QMLObjects::setInitialized()
 {
     searchObjects();
-    if(nullptr == m_mastactavaAPI) { return; }
-    m_mastactavaAPI->setInitialized();
+    if(nullptr == m_mastactvaAPI) { return; }
+    m_mastactvaAPI->setInitialized();
 }
 
 
@@ -132,9 +132,9 @@ void QMLObjects::searchObjects()
         NetAPI::createInstance(m_root);
         m_netAPI = NetAPI::getInstance();
     }
-    if(nullptr == m_mastactavaAPI)
+    if(nullptr == m_mastactvaAPI)
     {
-        m_mastactavaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
+        m_mastactvaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
     }
     IListModel *m = nullptr;
     m = findListModel(g_effectModel);

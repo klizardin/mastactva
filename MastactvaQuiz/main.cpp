@@ -33,7 +33,7 @@ void switchLanguage(const QString & lang_, QTranslator& translator_, QTranslator
     QLocale locale = QLocale(lang);
     QLocale::setDefault(locale);
 
-    switchTranslator(app_, translator_, QString("MastactavaQuiz_%1.qm").arg(lang));
+    switchTranslator(app_, translator_, QString("MastactvaQuiz_%1.qm").arg(lang));
     switchTranslator(app_, translatorQt_, QString("qt_%1.qm").arg(lang));
 }
 

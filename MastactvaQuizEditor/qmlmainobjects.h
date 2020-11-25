@@ -44,7 +44,7 @@ private:
     GalleryImagesModel *m_galleryAllImagesModel = nullptr;
     DescriptionModel *m_imageOfGalleryDescriptionModel = nullptr;
     QuestionAnswersModel *m_questionAnswersModel = nullptr;
-    MastactvaAPI *m_mastactavaAPI = nullptr;
+    MastactvaAPI *m_mastactvaAPI = nullptr;
     QGuiApplication *m_app = nullptr;
 };
 
@@ -63,7 +63,7 @@ protected:
     virtual void searchObjects() override;
 
 private:
-    MastactvaAPI *m_mastactavaAPI = nullptr;
+    MastactvaAPI *m_mastactvaAPI = nullptr;
 };
 
 
