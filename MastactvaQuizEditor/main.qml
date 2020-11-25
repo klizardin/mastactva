@@ -1895,8 +1895,83 @@ ApplicationWindow {
             }
             Item {
                 id: topicEffects
-                Text {
-                    text: qsTr("Effects")
+                SplitView {
+                    id: slitEffectsInfoDemo
+                    anchors.fill: parent
+                    orientation: Qt.Horizontal
+                    Rectangle{
+                        id: splitEffects
+
+                        SplitView.preferredWidth: Constants.leftSideBarWidth
+                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
+                        SplitView.maximumWidth: Constants.leftSideBarWidth*2
+                        height: parent.height
+
+                        Text {
+                            text: qsTr("Effects list")
+                        }
+                    }
+                    Rectangle{
+                        id: splitEffectsInfo
+
+                        width: parent.width - (splitEffects.width + splitEffectsDemo.width)
+                        height: parent.height
+
+                        TabBar {
+                            id: effectInfoTabBar
+                            anchors.top: parent.top
+                            width: parent.width
+                            TabButton {
+                                text: qsTr("Info")
+                            }
+                            TabButton {
+                                text: qsTr("Shaders")
+                            }
+                            TabButton {
+                                text: qsTr("Arguments")
+                            }
+                            TabButton {
+                                text: qsTr("Argument Sets")
+                            }
+                        }
+
+                        StackLayout {
+                            anchors.top: effectInfoTabBar.bottom
+                            anchors.left: parent.left
+                            width: parent.width
+                            height: parent.height - effectInfoTabBar.height
+                            currentIndex: effectInfoTabBar.currentIndex
+
+                            Item {
+                                id: effectInfoCommon
+                                Text { text: qsTr("Effect info") }
+                            }
+                            Item {
+                                id: effectInfoShaders
+                                Text { text: qsTr("Shaders list") }
+                            }
+                            Item {
+                                id: effectInfoArguments
+                                Text { text: qsTr("Arguments list") }
+                            }
+                            Item {
+                                id: effectInfoArgumentSets
+                                Text { text: qsTr("Argument Sets list") }
+                            }
+                        }
+                    }
+                    Rectangle{
+                        id: splitEffectsDemo
+
+                        SplitView.preferredWidth: Constants.leftSideBarWidth
+                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
+                        SplitView.maximumWidth: Constants.leftSideBarWidth*2
+                        height: parent.height
+
+                        Text {
+                            text: qsTr("Effects Demo")
+                        }
+                    }
                 }
             }
         }
