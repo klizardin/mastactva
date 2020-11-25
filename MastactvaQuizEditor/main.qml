@@ -22,6 +22,7 @@ ApplicationWindow {
     property alias imageOfGalleryDescriptionId: mastactva.imageOfGalleryDescriptionId
     property alias imageOfGalleryPointIndex: mastactva.imageOfGalleryPointIndex
     property alias imageOfGalleryAnswerIndex: mastactva.imageOfGalleryAnswerIndex
+    property alias appMode: topicTabBar.currentIndex
     property bool showImagePoints: false
     property bool showImagePointsVoronoyDiagram: false
     property var currentImagePointsModel: undefined
@@ -1385,7 +1386,9 @@ ApplicationWindow {
         }
     }
 
-    menuBar: MenuBar {
+    MenuBar
+    {
+        id: galleriesMenuBar
         AutoSizeMenu {
             title: qsTr("&Galleries")
             MenuItem { action: refreshGalleriesModel }
@@ -1444,6 +1447,42 @@ ApplicationWindow {
             MenuItem { action: editOptionsAction }
         }
     }
+
+    Action {
+        id: addEffect
+        text: qsTr("&Add Effect")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: editEffect
+        text: qsTr("&Edit Effect")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: removeEffect
+        text: qsTr("&Remove Effect")
+        onTriggered: {
+
+        }
+    }
+
+    MenuBar {
+        id: effectsMenuBar
+        AutoSizeMenu {
+            title: qsTr("&Effects")
+            MenuItem { action: addEffect }
+            MenuItem { action: editEffect }
+            MenuItem { action: removeEffect }
+        }
+    }
+
+    menuBar: appMode == 0 ? galleriesMenuBar : effectsMenuBar
 
     Rectangle
     {
