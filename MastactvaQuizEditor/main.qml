@@ -2041,10 +2041,6 @@ ApplicationWindow {
                     }
                     Rectangle{
                         id: splitEffectsDemo
-
-                        //SplitView.preferredWidth: Constants.leftSideBarWidth
-                        //SplitView.minimumWidth: Constants.leftSideBarWidth/2
-                        //SplitView.maximumWidth: Constants.leftSideBarWidth*2
                         height: parent.height
 
                         Text {
@@ -2518,6 +2514,7 @@ ApplicationWindow {
             }
         }
     }
+
     Component {
         id: effectItem
         Column {
@@ -2609,6 +2606,7 @@ ApplicationWindow {
             }
         }
     }
+
     Component {
         id: effectItemHighlight
 
