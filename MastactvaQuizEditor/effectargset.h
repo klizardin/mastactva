@@ -8,6 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "effectargvalue.h"
+#include "easingtype.h"
 
 
 class EffectArgSetModel;
@@ -23,6 +24,7 @@ public:
     Q_PROPERTY(int effectArgSetEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QString effectArgSetDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QVariant effectArgSetValues READ values WRITE setValues NOTIFY valuesChanged)
+    Q_PROPERTY(QVariant effectArgSetEasing READ easing WRITE setEasing NOTIFY easingChanged)
 
     class DefaultLayout : public LayoutBase<EffectArgSet>
     {
@@ -34,8 +36,10 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArgSet::m_appId);
             addField<int>("id", "effectArgSetId", &EffectArgSet::id, &EffectArgSet::setId);
             addField<int>("effect", "effectArgSetEffectId", &EffectArgSet::effectId, &EffectArgSet::setEffectId);
+            addField<int>("easing", "", &EffectArgSet::easingId, &EffectArgSet::setEasingId);
             addField<QString>("description", "effectArgSetDescription", &EffectArgSet::description, &EffectArgSet::setDescription);
             addModel<EffectArgValueModel>("effectArgSetValues", &EffectArgSet::m_affectArgValueModel, &EffectArgSet::createAffectArgValueModel);
+            addModel<EasingTypeModel>("effectArgSetEasing", &EffectArgSet::m_easingTypeModel, &EffectArgSet::createEasingTypeModel);
         }
     };
 
@@ -48,15 +52,21 @@ public:
     void setDescription(const QString &description_);
     QVariant values() const;
     void setValues(const QVariant &obj_);
+    int easingId() const;
+    void setEasingId(const int &easingId_);
+    QVariant easing() const;
+    void setEasing(const QVariant &obj_);
 
 protected:
     EffectArgValueModel *createAffectArgValueModel();
+    EasingTypeModel *createEasingTypeModel();
 
 signals:
     void idChanged();
     void effectIdChanged();
     void descriptionChanged();
     void valuesChanged();
+    void easingChanged();
 
 private:
     EffectArgSetModel *m_effectArgSetModel = nullptr;
@@ -64,8 +74,10 @@ private:
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
+    int m_easingTypeId = -1;
     QString m_description;
     EffectArgValueModel *m_affectArgValueModel = nullptr;
+    EasingTypeModel *m_easingTypeModel = nullptr;
 };
 
 

@@ -14,6 +14,7 @@ CONFIG += c++14
 
 HEADERS += \
         appconsts.h \
+        easingtype.h \
         effect.h \
         effectarg.h \
         effectargset.h \
@@ -38,6 +39,7 @@ HEADERS += \
 
 SOURCES += \
         appconsts.cpp \
+        easingtype.cpp \
         effect.cpp \
         effectarg.cpp \
         effectargset.cpp \
