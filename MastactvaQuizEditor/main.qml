@@ -690,6 +690,26 @@ ApplicationWindow {
         }
     }
 
+    EffectEditDialog {
+        id: effectEditDialog
+
+        onOpened: {
+            init()
+        }
+
+        onAccepted: {
+            update()
+            if(fieldNewItem)
+            {
+                effectModel.addItem(fieldEffect)
+            }
+            else
+            {
+                effectModel.setItem(effectCurrentIndex, fieldEffect)
+            }
+        }
+    }
+
     WarningDialog {
         id: popupMessage
     }
@@ -1459,7 +1479,9 @@ ApplicationWindow {
         id: addEffect
         text: qsTr("&Add effect")
         onTriggered: {
-
+            effectEditDialog.fieldEffect = effectModel.createItem()
+            effectEditDialog.fieldNewItem = true
+            effectEditDialog.open()
         }
     }
 
@@ -1467,7 +1489,9 @@ ApplicationWindow {
         id: editEffect
         text: qsTr("&Edit effect")
         onTriggered: {
-
+            effectEditDialog.fieldEffect = effectModel.getCurrentItem()
+            effectEditDialog.fieldNewItem = false
+            effectEditDialog.open()
         }
     }
 
@@ -2509,6 +2533,9 @@ ApplicationWindow {
 
                 AutoSizeMenu {
                     id: effectItemMenu
+                    MenuItem { action: addEffect }
+                    MenuItem { action: editEffect }
+                    MenuItem { action: removeEffect }
                 }
             }
         }
