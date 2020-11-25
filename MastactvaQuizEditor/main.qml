@@ -2494,11 +2494,6 @@ ApplicationWindow {
 
             width: effectsList.width
 
-            SystemPalette {
-                id: effectItemPallete
-                colorGroup: SystemPalette.Active
-            }
-
             property bool showFullDescription: false
 
             Text {
@@ -2580,8 +2575,16 @@ ApplicationWindow {
     }
     Component {
         id: effectItemHighlight
+
         Rectangle {
-            color: "lightsteelblue"; radius: 5
+            SystemPalette {
+                id: effectItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
             y: effectsList.currentItem.y
             x: effectsList.currentItem.x
             width: effectsList.currentItem.width
