@@ -1450,7 +1450,7 @@ ApplicationWindow {
 
     Action {
         id: addEffect
-        text: qsTr("&Add Effect")
+        text: qsTr("&Add effect")
         onTriggered: {
 
         }
@@ -1458,7 +1458,7 @@ ApplicationWindow {
 
     Action {
         id: editEffect
-        text: qsTr("&Edit Effect")
+        text: qsTr("&Edit effect")
         onTriggered: {
 
         }
@@ -1466,7 +1466,127 @@ ApplicationWindow {
 
     Action {
         id: removeEffect
-        text: qsTr("&Remove Effect")
+        text: qsTr("&Remove effect")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: addNewShader
+        text: qsTr("&Add new shader")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: addExistingShader
+        text: qsTr("Add &existing shader")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: editShaderInfo
+        text: qsTr("Edit shader &info")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: removeShader
+        text: qsTr("&Remove shader")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: addEffectArgument
+        text: qsTr("&Add effect argument")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: editEffectArgument
+        text: qsTr("&Edit effect argument")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: removeEffectArgument
+        text: qsTr("&Remove effect argument")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: addArgumentSet
+        text: qsTr("&Add argument set")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: addArgumentOfArgumentSet
+        text: qsTr("Add a&rgument of argument set")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: editArgumentOfArgumentSet
+        text: qsTr("&Edit argument of argument set")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: removeArgumentOfArgumentSet
+        text: qsTr("Remove argument of argument set")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: removeArgumentSet
+        text: qsTr("Remove argument set")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: playEffectDemo
+        text: qsTr("&Play effect demo")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: pauseEffectDemo
+        text: qsTr("P&ause effect demo")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
+        id: stopEffectDemo
+        text: qsTr("&Stop effect demo")
         onTriggered: {
 
         }
@@ -1479,6 +1599,33 @@ ApplicationWindow {
             MenuItem { action: addEffect }
             MenuItem { action: editEffect }
             MenuItem { action: removeEffect }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Shaders")
+            MenuItem { action: addNewShader }
+            MenuItem { action: addExistingShader }
+            MenuItem { action: editShaderInfo }
+            MenuItem { action: removeShader }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Arguments")
+            MenuItem { action: addEffectArgument }
+            MenuItem { action: editEffectArgument }
+            MenuItem { action: removeEffectArgument }
+        }
+        AutoSizeMenu {
+            title: qsTr("Argument Se&ts")
+            MenuItem { action: addArgumentSet }
+            MenuItem { action: addArgumentOfArgumentSet }
+            MenuItem { action: editArgumentOfArgumentSet }
+            MenuItem { action: removeArgumentOfArgumentSet }
+            MenuItem { action: removeArgumentSet }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Demo")
+            MenuItem { action: playEffectDemo }
+            MenuItem { action: pauseEffectDemo }
+            MenuItem { action: stopEffectDemo }
         }
     }
 
