@@ -1545,6 +1545,14 @@ ApplicationWindow {
     }
 
     Action {
+        id: refreshShaders
+        text: qsTr("Re&fresh shaders")
+        onTriggered: {
+
+        }
+    }
+
+    Action {
         id: addNewShader
         text: qsTr("&Add new shader")
         onTriggered: {
@@ -1675,6 +1683,7 @@ ApplicationWindow {
         }
         AutoSizeMenu {
             title: qsTr("&Shaders")
+            MenuItem { action: refreshShaders }
             MenuItem { action: addNewShader }
             MenuItem { action: addExistingShader }
             MenuItem { action: editShaderInfo }
