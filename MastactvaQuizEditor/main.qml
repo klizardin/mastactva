@@ -252,6 +252,13 @@ ApplicationWindow {
         {
             effectCurrentIndex = -1
         }
+
+        function onError(errorCode, description)
+        {
+            popupMessage.fieldPopupMessageShortText = qsTr("Application Error");
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("Error code : ") + errorCode + qsTr("\n") + qsTr("Description : ") + qsTr("\n") + description
+            popupMessage.open()
+        }
     }
 
     ConfirmDialog {

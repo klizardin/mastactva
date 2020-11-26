@@ -556,7 +556,7 @@ protected:
             removeRequest(request_);
             return;
         }
-        if(errorCode_ != 0 && errorCode_ >= 300)
+        if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
         {
             modelError(errorCode_, reply_);
         }
@@ -1017,7 +1017,7 @@ public:                                                                         
     virtual void errorVF(int errorCode_, const QJsonDocument &reply_) override                                  \
     {                                                                                                           \
         ListModelBaseData::errorVF(errorCode_, reply_);                                                         \
-        emit error(errorCode_, reply_);                                                                         \
+        emit error(errorCode_, reply_.toJson(QJsonDocument::Indented));                                         \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

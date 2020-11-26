@@ -482,8 +482,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -1069,8 +1069,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -1656,8 +1656,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -2224,8 +2224,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -2792,8 +2792,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -3322,8 +3322,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -7181,8 +7181,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -7692,8 +7692,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
@@ -8203,8 +8203,8 @@
                                 "type": "int"
                             },
                             {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
+                                "name": "description_",
+                                "type": "QString"
                             }
                         ],
                         "name": "error",
