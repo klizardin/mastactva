@@ -22,7 +22,7 @@ public:
     Q_PROPERTY(int shaderId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString shaderFilename READ filename WRITE setFilename NOTIFY filenameChanged)
     Q_PROPERTY(QString shaderHash READ hash WRITE setHash NOTIFY hashChanged)
-    Q_PROPERTY(QVariant shaderType READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(int shaderTypeId READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(QString shaderDescription READ description WRITE setDescription NOTIFY descriptionChanged)
 
 
@@ -37,8 +37,7 @@ public:
             addField<int>("id", "shaderId", &Shader::id, &Shader::setId);
             addField<ImageSource>("filename", "shaderFilename", &Shader::getFilename, &Shader::setFilename);
             addField<QString>("hash", "shaderHash", &Shader::hash, &Shader::setHash);
-            addField<int>("type", "", &Shader::getType, &Shader::setType);
-            addModel<ShaderTypeModel>("shaderType", &Shader::m_shaderTypeModel, &Shader::createShaderTypeModel);
+            addField<int>("type", "shaderTypeId", &Shader::type, &Shader::setType);
             addField<QString>("description", "shaderDescription", &Shader::description, &Shader::setDescription);
         }
     };
@@ -52,15 +51,10 @@ public:
     void setFilename(const ImageSource &filename_);
     QString hash() const;
     void setHash(const QString &hash_);
-    int getType() const;
+    int type() const;
     void setType(const int &type_);
-    QVariant type() const;
-    void setType(const QVariant &obj_);
     QString description() const;
     void setDescription(const QString &description_);
-
-protected:
-    ShaderTypeModel *createShaderTypeModel();
 
 signals:
     void idChanged();
@@ -76,7 +70,6 @@ private:
     ImageSource m_filename;
     QString m_hash;
     int m_typeId = -1;
-    ShaderTypeModel *m_shaderTypeModel = nullptr;
     QString m_description;
     ShaderModel *m_shaderModel = nullptr;
 };

@@ -88,6 +88,7 @@ public:
     Q_INVOKABLE void questionRefreshed();
     Q_INVOKABLE void informInitialized();
     Q_INVOKABLE QString leftDoubleCR(const QString &str_);
+    Q_INVOKABLE QString calculateHash(const QString &fileUrl_);
 
 public:
     void setInitialized();

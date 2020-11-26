@@ -221,11 +221,7 @@ void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topIma
     QString filename = url.toLocalFile();
     QFile *file = new QFile(filename);
     QFileInfo fileInfo(file->fileName());
-    QFile *f1 = new QFile(filename);
-    QByteArray fd = f1->open(QIODevice::ReadOnly) ? f1->readAll() : fileInfo.fileName().toUtf8();
-    QString hash = QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
-    delete f1;
-    f1 = nullptr;
+    QString hash = calculateHash(fileURL_);
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
     m_addImageRequest->addPart("form-data; name=\"hash\"", hash.toUtf8());
     m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", (topImage_ || galleryEmpty)?"True":"False");
@@ -1075,4 +1071,14 @@ void MastactvaAPI::setInitialized()
 QString MastactvaAPI::leftDoubleCR(const QString &str_)
 {
     return ::leftDoubleCR(str_);
+}
+
+QString MastactvaAPI::calculateHash(const QString &fileUrl_)
+{
+    QUrl url(fileUrl_);
+    QString filename = url.toLocalFile();
+    QFile *f1 = new QFile(filename);
+    QFileInfo fileInfo(f1->fileName());
+    QByteArray fd = f1->open(QIODevice::ReadOnly) ? f1->readAll() : fileInfo.fileName().toUtf8();
+    return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
 }

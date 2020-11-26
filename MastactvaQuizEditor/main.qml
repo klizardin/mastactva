@@ -28,6 +28,7 @@ ApplicationWindow {
     property var currentImagePointsModel: undefined
 
     property int effectCurrentIndex: -1
+    property int effectShaderCurrentIndex: -1
 
     Connections {
         target: root
@@ -229,6 +230,15 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    ShaderTypeModel {
+        id: shaderTypeModel
+        objectName: "ShaderTypeModel"
+        layoutQMLName: "ShaderTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     Connections {
         target: mastactva
 
@@ -249,7 +259,17 @@ ApplicationWindow {
         {
             console.log("MastactvaAPI::onInitialized() at main.qml")
             effectModel.loadList()
+            shaderTypeModel.loadList()
+            shaderEditDialog.mastactva = mastactva
+            shaderEditDialog.shaderTypeModel = shaderTypeModel
         }
+    }
+
+    function showModelError(errorCode, description)
+    {
+        popupMessage.fieldPopupMessageShortText = qsTr("Application Error");
+        popupMessage.fieldPopupMessageDescriptionText = qsTr("Error code : ") + errorCode + qsTr("\n") + qsTr("\n") + qsTr("Description : ") + qsTr("\n") + description
+        popupMessage.open()
     }
 
     Connections {
@@ -262,9 +282,7 @@ ApplicationWindow {
 
         function onError(errorCode, description)
         {
-            popupMessage.fieldPopupMessageShortText = qsTr("Application Error");
-            popupMessage.fieldPopupMessageDescriptionText = qsTr("Error code : ") + errorCode + qsTr("\n") + qsTr("Description : ") + qsTr("\n") + description
-            popupMessage.open()
+            showModelError(errorCode, description)
         }
     }
 
@@ -742,6 +760,29 @@ ApplicationWindow {
             else
             {
                 effectModel.setItem(effectCurrentIndex, fieldEffect)
+            }
+        }
+    }
+
+    ShaderEditDialog {
+        id: shaderEditDialog
+
+        onOpened: {
+            init()
+        }
+
+        onAccepted: {
+            update()
+            if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null)
+            {
+                if(fieldNewItem)
+                {
+                    effectModel.getCurrentItem().effectShaders.addItem(fieldShader)
+                }
+                else
+                {
+                    effectModel.getCurrentItem().effectShaders.setItem(effectShaderCurrentIndex, fieldShader)
+                }
             }
         }
     }
@@ -1555,7 +1596,12 @@ ApplicationWindow {
         id: refreshShaders
         text: qsTr("Re&fresh shaders")
         onTriggered: {
-
+            //shaderEditDialog
+            if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null)
+            {
+                effectShaderCurrentIndex = -1
+                effectModel.getCurrentItem().effectShaders.loadList()
+            }
         }
     }
 
@@ -1563,7 +1609,21 @@ ApplicationWindow {
         id: addNewShader
         text: qsTr("&Add new shader")
         onTriggered: {
-
+            if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null)
+            {
+                var newEffectShader = effectModel.getCurrentItem().effectShaders.createItem()
+                shaderEditDialog.fieldEffectShader = newEffectShader
+                var newShader = newEffectShader.effectShaderShader.createItem()
+                console.log("newShader = ", newShader)
+                console.log("newShader.shaderId = ", newShader.shaderId)
+                console.log("newShader.shaderFilename = ", newShader.shaderFilename)
+                console.log("newShader.shaderHash = ", newShader.shaderHash)
+                console.log("newShader.shaderTypeId = ", newShader.shaderTypeId)
+                console.log("newShader.shaderDescription = ", newShader.shaderDescription)
+                shaderEditDialog.fieldShader = newShader
+                shaderEditDialog.fieldNewItem = true
+                shaderEditDialog.open()
+            }
         }
     }
 
@@ -1571,7 +1631,15 @@ ApplicationWindow {
         id: addExistingShader
         text: qsTr("Add &existing shader")
         onTriggered: {
-
+            if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null)
+            {
+                var effectShader = effectModel.getCurrentItem().effectShaders.createItem()
+                shaderEditDialog.fieldEffectShader = effectShader
+                var shader = newEffectShader.effectShaderShader.getCurrentItem()
+                shaderEditDialog.fieldShader = shader
+                shaderEditDialog.fieldNewItem = false
+                shaderEditDialog.open()
+            }
         }
     }
 
@@ -1579,7 +1647,10 @@ ApplicationWindow {
         id: editShaderInfo
         text: qsTr("Edit shader &info")
         onTriggered: {
-
+            if(effectShaderCurrentIndex >= 0 && effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null)
+            {
+                effectModel.getCurrentItem().effectShaders.delItem(effectShaderCurrentIndex)
+            }
         }
     }
 
@@ -2708,19 +2779,7 @@ ApplicationWindow {
 
                 Text {
                     id: effectShaderItemType
-                    text: shaderType.getCurrentItem() !== undefined ? shaderType.getCurrentItem().shaderTypeType : qsTr("...")
-                }
-
-                Connections {
-                    target: shaderType
-
-                    function onListRealoded()
-                    {
-                        if(shaderType.getCurrentItem() !== undefined)
-                        {
-                            effectShaderItemType = shaderType.getCurrentItem().shaderTypeType
-                        }
-                    }
+                    text: shaderTypeModel.findItemById(shaderTypeId).shaderTypeType
                 }
 
                 Label {
@@ -2750,18 +2809,18 @@ ApplicationWindow {
                     {
                         if (mouse.button === Qt.RightButton)
                         {
-                            effectItemMenu.popup()
+                            effectShaderItemMenu.popup()
                         }
                         else
                         {
-                            effectCurrentIndex = index
+                            effectShaderCurrentIndex = index
                             mouse.accepted = false
                         }
                     }
 
                     onPressAndHold: {
                         if (mouse.source === Qt.MouseEventNotSynthesized)
-                            effectItemMenu.popup()
+                            effectShaderItemMenu.popup()
                     }
 
                     onDoubleClicked: {
@@ -2769,11 +2828,12 @@ ApplicationWindow {
                     }
 
                     AutoSizeMenu {
-                        id: effectItemMenu
-                        MenuItem { action: refreshEffect }
-                        MenuItem { action: addEffect }
-                        MenuItem { action: editEffect }
-                        MenuItem { action: removeEffect }
+                        id: effectShaderItemMenu
+                        MenuItem { action: refreshShaders }
+                        MenuItem { action: addNewShader }
+                        MenuItem { action: addExistingShader }
+                        MenuItem { action: editShaderInfo }
+                        MenuItem { action: removeShader }
                     }
                 }
             }
@@ -2792,18 +2852,18 @@ ApplicationWindow {
                     {
                         if (mouse.button === Qt.RightButton)
                         {
-                            effectItemMenu.popup()
+                            effectShaderItemMenu.popup()
                         }
                         else
                         {
-                            effectCurrentIndex = index
+                            effectShaderCurrentIndex = index
                             mouse.accepted = false
                         }
                     }
 
                     onPressAndHold: {
                         if (mouse.source === Qt.MouseEventNotSynthesized)
-                            effectItemMenu.popup()
+                            effectShaderItemMenu.popup()
                     }
 
                     onDoubleClicked: {

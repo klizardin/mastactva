@@ -168,6 +168,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -266,6 +288,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -759,6 +786,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -857,6 +906,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -1350,6 +1404,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -1448,6 +1524,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -1922,6 +2003,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -2020,6 +2123,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -2494,6 +2602,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -2592,6 +2722,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -3028,6 +3163,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -3126,6 +3283,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -5848,6 +6010,17 @@
                         ],
                         "name": "leftDoubleCR",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileUrl_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "calculateHash",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,
@@ -6748,13 +6921,13 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderType",
+                        "name": "shaderTypeId",
                         "notify": "typeChanged",
                         "read": "type",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QVariant",
+                        "type": "int",
                         "user": false,
                         "write": "setType"
                     },
@@ -6899,6 +7072,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -6997,6 +7192,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -7414,6 +7614,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -7512,6 +7734,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -7929,6 +8156,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -8027,6 +8276,11 @@
                         ],
                         "name": "addExtraFieldRename",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,

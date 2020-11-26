@@ -52,7 +52,7 @@ void Shader::setHash(const QString &hash_)
     emit hashChanged();
 }
 
-int Shader::getType() const
+int Shader::type() const
 {
     return m_typeId;
 }
@@ -60,34 +60,9 @@ int Shader::getType() const
 void Shader::setType(const int &type_)
 {
     if(m_typeId == type_) { return; }
-
     m_typeId = type_;
-    if(nullptr == m_shaderTypeModel)
-    {
-        m_shaderTypeModel->parentItemChanged();
-    }
 
     emit typeChanged();
-}
-
-QVariant Shader::type() const
-{
-    if(nullptr == m_shaderTypeModel)
-    {
-        const_cast<Shader *>(this)->m_shaderTypeModel = const_cast<Shader *>(this)->createShaderTypeModel();
-    }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<ShaderTypeModel *>(m_shaderTypeModel)));
-}
-
-void Shader::setType(const QVariant &obj_)
-{
-    if(obj_.isNull() && nullptr != m_shaderTypeModel)
-    {
-        delete m_shaderTypeModel;
-        m_shaderTypeModel = nullptr;
-
-        emit typeChanged();
-    }
 }
 
 QString Shader::description() const
@@ -100,20 +75,6 @@ void Shader::setDescription(const QString &description_)
     m_description = description_;
 
     emit descriptionChanged();
-}
-
-ShaderTypeModel *Shader::createShaderTypeModel()
-{
-    ShaderTypeModel *m = new ShaderTypeModel(this);
-    m->initResponse();
-    m->setLayoutRefImpl("id", m_shaderModel->getQMLLayoutName(), "type");
-    m->setCurrentRef("id");
-    m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_shaderModel->getQMLLayoutName() + QString("_ShaderTypeModel_") + QVariant::fromValue(m_appId).toString());
-    m->registerListModel();
-    m->setAutoCreateChildrenModels(true);
-    m->loadList();
-    return m;
 }
 
 

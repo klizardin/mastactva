@@ -257,6 +257,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -885,6 +907,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -1433,6 +1477,28 @@
                         ],
                         "name": "getItemAppId",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -2078,6 +2144,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -2626,6 +2714,28 @@
                         ],
                         "name": "getItemAppId",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -3184,6 +3294,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -3707,6 +3839,28 @@
                         ],
                         "name": "getItemAppId",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -4330,6 +4484,28 @@
                         ],
                         "name": "getItemAppId",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -5037,6 +5213,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -5628,6 +5826,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "index_",
                                 "type": "int"
                             },
@@ -6119,6 +6339,28 @@
                         ],
                         "name": "getItemAppId",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -6767,6 +7009,28 @@
                         ],
                         "name": "getItemAppId",
                         "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
