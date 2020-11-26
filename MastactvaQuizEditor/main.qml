@@ -245,6 +245,15 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: effectModel
+
+        function onItemDeleted()
+        {
+            effectCurrentIndex = -1
+        }
+    }
+
     ConfirmDialog {
         id: confirmDialog
 
@@ -1489,6 +1498,15 @@ ApplicationWindow {
     }
 
     Action {
+        id: refreshEffect
+        text: qsTr("Re&fresh effect")
+        onTriggered: {
+            effectCurrentIndex = -1
+            effectModel.loadList()
+        }
+    }
+
+    Action {
         id: addEffect
         text: qsTr("&Add effect")
         onTriggered: {
@@ -1643,6 +1661,7 @@ ApplicationWindow {
         id: effectsMenuBar
         AutoSizeMenu {
             title: qsTr("&Effects")
+            MenuItem { action: refreshEffect }
             MenuItem { action: addEffect }
             MenuItem { action: editEffect }
             MenuItem { action: removeEffect }
@@ -2567,6 +2586,7 @@ ApplicationWindow {
 
                     AutoSizeMenu {
                         id: effectItemMenu
+                        MenuItem { action: refreshEffect }
                         MenuItem { action: addEffect }
                         MenuItem { action: editEffect }
                         MenuItem { action: removeEffect }
@@ -2622,10 +2642,10 @@ ApplicationWindow {
             border.color: effectItemHighlightPallete.highlight
             border.width: 2
             radius: 5
-            y: effectsList.currentItem.y
-            x: effectsList.currentItem.x
-            width: effectsList.currentItem.width
-            height: effectsList.currentItem.height
+            y: (effectsList.currentItem !== undefined && effectsList.currentItem !== null) ? effectsList.currentItem.y : 0
+            x: (effectsList.currentItem !== undefined && effectsList.currentItem !== null) ? effectsList.currentItem.x : 0
+            width: (effectsList.currentItem !== undefined && effectsList.currentItem !== null) ? effectsList.currentItem.width : 0
+            height: (effectsList.currentItem !== undefined && effectsList.currentItem !== null) ? effectsList.currentItem.height : 0
         }
     }
 }
