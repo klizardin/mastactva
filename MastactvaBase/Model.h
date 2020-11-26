@@ -54,7 +54,7 @@ public:
     virtual void itemAddedVF() override;
     virtual void itemSetVF() override;
     virtual void itemDeletedVF() override;
-    virtual void errorVF(int errorCode_, const QJsonDocument &reply_) override;
+    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
 
     void parentItemRemoved();
 
@@ -165,7 +165,7 @@ public:
     {
         NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         Q_ASSERT(nullptr != netAPI);
-        QObject::connect(netAPI, SIGNAL(response(int, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, RequestData *, const QJsonDocument &)));
+        QObject::connect(netAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
     }
 
     virtual const QString &getQMLLayoutName() const override
@@ -339,7 +339,7 @@ protected:
             request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
             if(addRequest(request))
             {
-                jsonResponseSlotImpl(0, request, QJsonDocument());
+                jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
             netAPI->freeRequest(request);
         }
@@ -411,7 +411,7 @@ protected:
             RequestData *request = netAPI->emptyRequest(netAPI->setItemRequestName<DataType_>(), itemAppId, itemId);
             if(addRequest(request))
             {
-                jsonResponseSlotImpl(0, request, QJsonDocument());
+                jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
             netAPI->freeRequest(request);
             return true;
@@ -457,7 +457,7 @@ protected:
             RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>(), itemAppId, itemId);
             if(addRequest(request))
             {
-                jsonResponseSlotImpl(0, request, QJsonDocument());
+                jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
             netAPI->freeRequest(request);
             return true;
@@ -547,7 +547,7 @@ protected:
         return getDataLayout<DataType_>().getIdFieldJsonName();
     }
 
-    void jsonResponseSlotImpl(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlotImpl(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
     {
         if(!findRequest(request_)) { return; }
         NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
@@ -558,7 +558,7 @@ protected:
         }
         if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
         {
-            modelError(errorCode_, reply_);
+            modelError(errorCode_, errorCodeStr_, reply_);
         }
         else if(request_->getRequestName() == netAPI->getListRequestName<DataType_>())
         {
@@ -617,9 +617,9 @@ protected:
     }
 
 protected:
-    virtual void modelError(int errorCode_, const QJsonDocument &reply_)
+    virtual void modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
     {
-        errorVF(errorCode_, reply_);
+        errorVF(errorCode_, errorCodeStr_, reply_);
     }
 
     virtual void modelListLoaded(const QJsonDocument &reply_)
@@ -1014,10 +1014,10 @@ public:                                                                         
         ListModelBaseData::itemDeletedVF();                                                                     \
         emit itemDeleted();                                                                                     \
     }                                                                                                           \
-    virtual void errorVF(int errorCode_, const QJsonDocument &reply_) override                                  \
+    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override    \
     {                                                                                                           \
-        ListModelBaseData::errorVF(errorCode_, reply_);                                                         \
-        emit error(errorCode_, reply_.toJson(QJsonDocument::Indented));                                         \
+        ListModelBaseData::errorVF(errorCode_, errorCodeStr_, reply_);                                          \
+        emit error(errorCodeStr_, reply_.toJson(QJsonDocument::Indented));                                      \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

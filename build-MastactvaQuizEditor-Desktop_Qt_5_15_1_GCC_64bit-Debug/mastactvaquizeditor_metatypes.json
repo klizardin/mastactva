@@ -479,7 +479,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -497,6 +497,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -1066,7 +1070,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -1084,6 +1088,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -1653,7 +1661,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -1671,6 +1679,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -2221,7 +2233,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -2239,6 +2251,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -2789,7 +2805,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -2807,6 +2823,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -3319,7 +3339,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -3337,6 +3357,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -6613,6 +6637,10 @@
                                 "type": "int"
                             },
                             {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
                                 "name": "request_",
                                 "type": "RequestData*"
                             },
@@ -6630,6 +6658,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "reply_",
@@ -7178,7 +7210,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -7196,6 +7228,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -7689,7 +7725,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -7707,6 +7743,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",
@@ -8200,7 +8240,7 @@
                         "arguments": [
                             {
                                 "name": "errorCode_",
-                                "type": "int"
+                                "type": "QString"
                             },
                             {
                                 "name": "description_",
@@ -8218,6 +8258,10 @@
                             {
                                 "name": "errorCode_",
                                 "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
                             },
                             {
                                 "name": "request_",

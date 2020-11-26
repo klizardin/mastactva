@@ -33,7 +33,7 @@ public:
     virtual void itemAddedVF() = 0;
     virtual void itemSetVF() = 0;
     virtual void itemDeletedVF() = 0;
-    virtual void errorVF(int errorCode_, const QJsonDocument &reply_) = 0;
+    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) = 0;
 };
 
 Q_DECLARE_METATYPE(IListModelInfo*)
@@ -48,7 +48,7 @@ public:
     virtual void itemAddedVF() override;
     virtual void itemSetVF() override;
     virtual void itemDeletedVF() override;
-    virtual void errorVF(int errorCode_, const QJsonDocument &reply_) override;
+    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
 
 private:
     int m_loadingChildenModels = 0;

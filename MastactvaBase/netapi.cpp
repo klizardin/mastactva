@@ -189,6 +189,7 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     m_requests.erase(fit);
 
     QJsonDocument jsonReply = QJsonDocument::fromJson(reply_->readAll());
+    const QString errorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(reply_->error());
     if(reply_->error() != QNetworkReply::NoError)
     {
         qDebug() << "HTTP Error : " << reply_->error();
@@ -196,10 +197,10 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
 
         if(rd->processErrorInNetAPI())
         {
-            emit error(int(reply_->error()), jsonReply);
+            emit error(int(reply_->error()), errorCodeStr, jsonReply);
         }
     }
-    emit response(int(reply_->error()), rd, jsonReply);
+    emit response(int(reply_->error()), errorCodeStr, rd, jsonReply);
 
     delete rd;
     rd = nullptr;

@@ -87,9 +87,9 @@ public:
     LAYOUT_MODEL_IMPL();
 
 public slots:
-    void jsonResponseSlot(int errorCode_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlot(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
     {
-        jsonResponseSlotImpl(errorCode_, request_, reply_);
+        jsonResponseSlotImpl(errorCode_, errorCodeStr_, request_, reply_);
     }
 
     void refreshChildrenSlot(QString modelName_)
@@ -112,7 +112,7 @@ signals:
     void itemSet();
     void itemDeleted();
     void outputModelChanged();
-    void error(int errorCode_, const QString &description_);
+    void error(const QString &errorCode_, const QString &description_);
 };
 
 

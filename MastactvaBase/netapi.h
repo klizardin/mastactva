@@ -151,8 +151,8 @@ public:
     }
 
 signals:
-    void response(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
-    void error(int errorCode_, const QJsonDocument &reply_);
+    void response(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_);
+    void error(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_);
 
 protected slots:
     void replayFinished(QNetworkReply *reply_);
