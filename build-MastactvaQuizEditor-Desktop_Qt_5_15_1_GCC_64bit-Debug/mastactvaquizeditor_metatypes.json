@@ -148,6 +148,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -166,6 +188,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -661,6 +705,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -679,6 +745,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -1174,6 +1262,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -1192,6 +1302,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -1668,6 +1800,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -1686,6 +1840,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -2162,6 +2338,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -2180,6 +2378,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -2618,6 +2838,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -2636,6 +2878,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -6403,6 +6667,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -6421,6 +6707,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -6840,6 +7148,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -6858,6 +7188,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -7277,6 +7629,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -7295,6 +7669,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {

@@ -84,6 +84,12 @@ public:
         return getDataLayout<DataType_>().getLayoutJsonName() + "/PATCH";
     }
 
+    template<class DataType_>
+    QString delItemRequestName() const
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName() + "/DELETE";
+    }
+
     RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_);
     void freeRequest(RequestData *&r_);
 
@@ -136,6 +142,14 @@ public:
         return setItemImpl(setItemRequestName<DataType_>(), layoutName_, id, values);
     }
 
+    template<class DataType_>
+    RequestData *delItem(const QString &layoutName_, const DataType_ *item_)
+    {
+        const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
+        if(!id.isValid() || id.isNull()) { return nullptr; }
+        return delItemImpl(delItemRequestName<DataType_>(), layoutName_, id);
+    }
+
 signals:
     void response(int errorCode_, RequestData *request_, const QJsonDocument &reply_);
     void error(int errorCode_, const QJsonDocument &reply_);
@@ -148,6 +162,7 @@ protected:
     RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_, const QHash<QString, QVariant> &extraFields_);
     RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
     RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
+    RequestData *delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_);
 
     void setBasicAuthentification(QNetworkRequest* netRequest_);
     void clearData();

@@ -60,6 +60,7 @@ protected:
     int getCurrentIndexImpl() const;
     void setCurrentIndexImpl(int index_);
     bool isCurrentIndexValid(int size_) const;
+    bool isIndexValid(int index_, int size_) const;
     const QString &currentRefImpl() const;
     void setCurrentRefImpl(const QString &ref_);
     void setLayoutQMLNameImpl(const QString &layoutQMLName_);
@@ -293,6 +294,20 @@ public:
         loadListImpl();
     }
 
+    QVariant getItemIdImpl(int index_) const
+    {
+        if(!isIndexValid(index_, m_data.size())) { return QVariant(); }
+        const DataType_* item = m_data.at(index_);
+        return getDataLayout<DataType_>().getIdJsonValue(item);
+    }
+
+    QVariant getItemAppIdImpl(int index_) const
+    {
+        if(!isIndexValid(index_, m_data.size())) { return QVariant(); }
+        const DataType_* item = m_data.at(index_);
+        return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+    }
+
 protected:
     bool storeAfterSaveImpl() const
     {
@@ -422,7 +437,10 @@ protected:
         NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false; }
 
+        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + 1 - 1);
         m_data.push_back(item_);
+        endInsertRows();
+
         if(setCurrentIndex_)
         {
             setCurrentIndexImpl(m_data.size() - 1);
@@ -457,6 +475,25 @@ protected:
         }
     }
 
+    bool delDataItemImpl(int index_)
+    {
+        if(!isIndexValid(index_, m_data.size())) { return false; }
+        return delDataItemImpl(m_data.at(index_));
+
+    }
+
+    bool delDataItemImpl(DataType_ *item_)
+    {
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
+        if(nullptr == netAPI) { return false; }
+
+        QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
+        if(!itemId.isValid() || itemId.isNull()) { return false; }
+
+        RequestData *request = netAPI->delItem(getJsonLayoutName(), item_);
+        return addRequest(request);
+    }
+
     bool setItemImpl(int index_, const QVariant &item_)
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
@@ -471,6 +508,19 @@ protected:
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
         if(nullptr == dataItem) { return false; }
         return addDataItemImpl(dataItem);
+    }
+
+    bool delItemImpl(int index_)
+    {
+        return delDataItemImpl(index_);
+    }
+
+    bool delItemImpl(const QVariant &item_)
+    {
+        QObject *obj = qvariant_cast<QObject *>(item_);
+        DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
+        if(nullptr == dataItem) { return false; }
+        return delDataItemImpl(dataItem);
     }
 
     void setLayoutJsonNameImpl(const QString &layoutJsonName_)
@@ -522,6 +572,10 @@ protected:
         else if(request_->getRequestName() == netAPI->setItemRequestName<DataType_>())
         {
             itemSet(request_, reply_);
+        }
+        else if(request_->getRequestName() == netAPI->delItemRequestName<DataType_>())
+        {
+            itemDeleted(request_, reply_);
         }
         removeRequest(request_);
         clearTempData();
@@ -643,6 +697,15 @@ protected:
         getDataLayout<DataType_>().setJsonValues(item, reply_);
     }
 
+    virtual void itemDeleted(RequestData *request_, const QJsonDocument &reply_)
+    {
+        Q_UNUSED(reply_);
+        const QVariant id = request_->getItemId();
+        DataType_ *item = findDataItemByIdImpl(id);
+        if(nullptr == item) { return; }
+        removeItem(item);
+    }
+
     void refreshChildrenSlotImpl(const QString &modelName_)
     {
         Q_ASSERT(m_refs.contains(currentRefImpl()));
@@ -683,6 +746,25 @@ protected:
             p = nullptr;
         }
         m_data.clear();
+        endRemoveRows();
+    }
+
+    void removeItem(DataType_ *item_)
+    {
+        QVariant appId0 = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+        if(!appId0.isValid() || appId0.isNull()) { return; }
+        const auto fit = std::find_if(std::begin(m_data), std::end(m_data),
+                                      [&appId0](const DataType_ *i_) -> bool
+        {
+            QVariant appId1 = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, i_);
+            return appId0 == appId1;
+        });
+        if(std::end(m_data) == fit) { return; }
+        const int index = std::distance(std::begin(m_data), fit);
+        beginRemoveRows(QModelIndex(), index, index);
+        delete *fit;
+        *fit = nullptr;
+        m_data.erase(fit);
         endRemoveRows();
     }
 
@@ -776,6 +858,14 @@ public:                                                                         
     {                                                                                                           \
         loadListImpl();                                                                                         \
     }                                                                                                           \
+    Q_INVOKABLE QVariant getItemId(int index_)                                                                  \
+    {                                                                                                           \
+        return getItemIdImpl(index_);                                                                           \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant getItemAppId(int index_)                                                               \
+    {                                                                                                           \
+        return getItemAppIdImpl(index_);                                                                        \
+    }                                                                                                           \
     Q_INVOKABLE bool setItem(int index_, const QVariant &item_)                                                 \
     {                                                                                                           \
         return setItemImpl(index_, item_);                                                                      \
@@ -783,6 +873,14 @@ public:                                                                         
     Q_INVOKABLE bool addItem(const QVariant &item_)                                                             \
     {                                                                                                           \
         return addItemImpl(item_);                                                                              \
+    }                                                                                                           \
+    Q_INVOKABLE bool delItem(const QVariant &item_)                                                             \
+    {                                                                                                           \
+        return delItemImpl(item_);                                                                              \
+    }                                                                                                           \
+    Q_INVOKABLE bool delItem(const int &index_)                                                                 \
+    {                                                                                                           \
+        return delItemImpl(index_);                                                                             \
     }                                                                                                           \
     Q_INVOKABLE void addModelParam(const QString &name_, const QVariant &value_)                                \
     {                                                                                                           \

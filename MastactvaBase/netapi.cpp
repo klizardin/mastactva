@@ -453,6 +453,9 @@ RequestData *NetAPI::addItemImpl(const QString& requestName_, const QString &jso
 
 RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_)
 {
+    Q_ASSERT(id_.isValid());
+    Q_ASSERT(id_.toString() != "false");
+
     const QString urlString = m_hostUrlBase + QString("%1/%2/")
             .arg(jsonLayoutName_)
             .arg(id_.toString())
@@ -485,6 +488,30 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
         jrd->setReply(m_networkManager->sendCustomRequest(request, "PATCH", jsonString));
         rd = jrd;
     }
+    rd->setRequestName(requestName_);
+    m_requests.push_back(rd);
+    return rd;
+}
+
+RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_)
+{
+    Q_ASSERT(id_.isValid());
+    Q_ASSERT(id_.toString() != "false");
+
+    const QString urlString = m_hostUrlBase + QString("%1/%2/")
+            .arg(jsonLayoutName_)
+            .arg(id_.toString())
+            ;
+    QUrl url(urlString);
+    QNetworkRequest request(url);
+
+    setBasicAuthentification(&request);
+    if(!init()) { return nullptr; }
+
+    RequestData *rd = new RequestData();
+    rd->setReply(m_networkManager->get(request));
+
+    rd->setItemId(id_);
     rd->setRequestName(requestName_);
     m_requests.push_back(rd);
     return rd;

@@ -70,7 +70,12 @@ void ListModelBaseData::setCurrentIndexImpl(int index_)
 
 bool ListModelBaseData::isCurrentIndexValid(int size_) const
 {
-    return m_currentIndex >= 0 && m_currentIndex < size_;
+    return isIndexValid(m_currentIndex, size_);
+}
+
+bool ListModelBaseData::isIndexValid(int index_, int size_) const
+{
+    return index_ >= 0 && index_ < size_;
 }
 
 const QString &ListModelBaseData::currentRefImpl() const
