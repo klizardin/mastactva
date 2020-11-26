@@ -85,6 +85,7 @@ signals:
     void itemSet();
     void itemDeleted();
     void outputModelChanged();
+    void error(int errorCode_, const QJsonDocument &reply_);
 
 protected:
     virtual void modelListLoaded(const QJsonDocument &reply_) override;

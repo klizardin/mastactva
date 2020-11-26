@@ -54,6 +54,7 @@ public:
     virtual void itemAddedVF() override;
     virtual void itemSetVF() override;
     virtual void itemDeletedVF() override;
+    virtual void errorVF(int errorCode_, const QJsonDocument &reply_) override;
 
     void parentItemRemoved();
 
@@ -557,7 +558,7 @@ protected:
         }
         if(errorCode_ != 0 && errorCode_ >= 300)
         {
-            handleError(errorCode_, reply_);
+            modelError(errorCode_, reply_);
         }
         else if(request_->getRequestName() == netAPI->getListRequestName<DataType_>())
         {
@@ -616,10 +617,9 @@ protected:
     }
 
 protected:
-    virtual void handleError(int errorCode_, const QJsonDocument &reply_)
+    virtual void modelError(int errorCode_, const QJsonDocument &reply_)
     {
-        Q_UNUSED(errorCode_);
-        Q_UNUSED(reply_);
+        errorVF(errorCode_, reply_);
     }
 
     virtual void modelListLoaded(const QJsonDocument &reply_)
@@ -1013,6 +1013,11 @@ public:                                                                         
     {                                                                                                           \
         ListModelBaseData::itemDeletedVF();                                                                     \
         emit itemDeleted();                                                                                     \
+    }                                                                                                           \
+    virtual void errorVF(int errorCode_, const QJsonDocument &reply_) override                                  \
+    {                                                                                                           \
+        ListModelBaseData::errorVF(errorCode_, reply_);                                                         \
+        emit error(errorCode_, reply_);                                                                         \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

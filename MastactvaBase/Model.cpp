@@ -220,6 +220,12 @@ void ListModelBaseData::itemDeletedVF()
 {
 }
 
+void ListModelBaseData::errorVF(int errorCode_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(errorCode_);
+    Q_UNUSED(reply_);
+}
+
 void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_)
 {
     m_renames.insert(oldName_, newName_);

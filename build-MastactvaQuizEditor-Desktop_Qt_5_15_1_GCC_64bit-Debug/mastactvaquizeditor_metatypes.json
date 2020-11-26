@@ -473,6 +473,21 @@
                         "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -1044,6 +1059,21 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
                         "returnType": "void"
                     }
                 ],
@@ -1617,6 +1647,21 @@
                         "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -2169,6 +2214,21 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
                         "returnType": "void"
                     }
                 ],
@@ -2723,6 +2783,21 @@
                         "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -3237,6 +3312,21 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
                         "returnType": "void"
                     }
                 ],
@@ -7082,6 +7172,21 @@
                         "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -7578,6 +7683,21 @@
                         "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -8073,6 +8193,21 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
                         "returnType": "void"
                     }
                 ],

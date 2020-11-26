@@ -35,3 +35,9 @@ void IListModelInfoObjectImpl::itemSetVF()
 void IListModelInfoObjectImpl::itemDeletedVF()
 {
 }
+
+void IListModelInfoObjectImpl::errorVF(int errorCode_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(errorCode_);
+    Q_UNUSED(reply_);
+}

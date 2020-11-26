@@ -131,6 +131,7 @@ signals:
     void itemSet();
     void itemDeleted();
     void outputModelChanged();
+    void error(int errorCode_, const QJsonDocument &reply_);
 };
 
 
