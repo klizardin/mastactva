@@ -112,6 +112,7 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 
 
 #include "effect.h"
+#include "shadertype.h"
 
 
 void QMLObjects::setInitialized()
@@ -123,6 +124,7 @@ void QMLObjects::setInitialized()
 
 
 static const QString g_effectModel = "EffectModel";
+static const QString g_shaderTypeModel = "ShaderTypeModel";
 
 
 void QMLObjects::searchObjects()
@@ -142,6 +144,12 @@ void QMLObjects::searchObjects()
     {
         EffectModel *m1 = m_root->findChild<EffectModel *>(g_effectModel);
         registerModel(g_effectModel, m1);
+    }
+    m = findListModel(g_shaderTypeModel);
+    if(nullptr == m)
+    {
+        ShaderTypeModel *m1 = m_root->findChild<ShaderTypeModel *>(g_shaderTypeModel);
+        registerModel(g_shaderTypeModel, m1);
     }
     for(IListModel *m : m_models)
     {
