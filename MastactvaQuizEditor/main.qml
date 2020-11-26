@@ -1947,8 +1947,8 @@ ApplicationWindow {
                         id: splitEffects
 
                         SplitView.preferredWidth: Constants.leftSideBarWidth
-                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
-                        SplitView.maximumWidth: Constants.leftSideBarWidth*2
+                        SplitView.minimumWidth: Constants.leftSideBarWidth / 2
+                        SplitView.maximumWidth: Constants.leftSideBarWidth * 2
                         height: parent.height
 
                         ListView {
@@ -1966,9 +1966,9 @@ ApplicationWindow {
                     Rectangle{
                         id: splitEffectsInfo
 
-                        SplitView.preferredWidth: parent.width - (splitEffects.width + splitEffectsDemo.width)
-                        SplitView.minimumWidth: Constants.leftSideBarWidth/2
-                        SplitView.maximumWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth/2)
+                        SplitView.preferredWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth)
+                        SplitView.minimumWidth: Constants.leftSideBarWidth / 2
+                        SplitView.maximumWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth / 2)
                         height: parent.height
 
                         TabBar {
