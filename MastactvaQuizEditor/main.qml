@@ -199,11 +199,18 @@ ApplicationWindow {
                 var effect = effectModel.getCurrentItem()
                 effectInfoCommonName.text = effect.effectName
                 effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
+                var shadersModel = effectModel.getCurrentItem().effectShaders
+                effectShadersList.model = shadersModel
+                if(shadersModel !== undefined && shadersModel !== null)
+                {
+                    shadersModel.loadList()
+                }
             }
             else
             {
                 effectInfoCommonName.text = qsTr("Please, select effect item")
                 effectInfoCommonDescription.text = qsTr("")
+                effectShadersList.model = undefined
             }
         }
     }
@@ -2065,7 +2072,17 @@ ApplicationWindow {
                             }
                             Item {
                                 id: effectInfoShaders
-                                Text { text: qsTr("Shaders list") }
+                                ListView {
+                                    id: effectShadersList
+
+                                    anchors.fill: parent
+                                    spacing: Constants.effectsListViewSpacing
+                                    clip: true
+                                    model: undefined
+                                    delegate: effectShaderItem
+                                    highlight: effectShaderItemHighlight
+                                    highlightFollowsCurrentItem: false
+                                }
                             }
                             Item {
                                 id: effectInfoArguments
@@ -2664,5 +2681,155 @@ ApplicationWindow {
             height: (effectsList.currentItem !== undefined && effectsList.currentItem !== null) ? effectsList.currentItem.height : 0
         }
     }
+
+    Component {
+        id: effectShaderItem
+
+        Column {
+            id: effectShaderItemRect
+
+            FontMetrics{
+                id: effectShaderItemFontMetrics
+                font: effectShaderItemHeaderText.font
+            }
+
+            width: effectShaderList.width
+
+            property bool showFullDescription: false
+
+            Row {
+                padding: Constants.effectShaderListHeaderPadding
+
+                Label {
+                    text: qsTr("Type : ")
+                }
+
+                Text {
+                    id: effectShaderItemType
+                    text: shaderType.getCurrentItem() !== undefined ? shaderType.getCurrentItem().shaderTypeType : qsTr("...")
+                }
+
+                Connections {
+                    target: shaderType
+
+                    function onListRealoded()
+                    {
+                        if(shaderType.getCurrentItem() !== undefined)
+                        {
+                            effectShaderItemType = shaderType.getCurrentItem().shaderTypeType
+                        }
+                    }
+                }
+
+                Label {
+                    text: qsTr("; Filename : ")
+                }
+
+                Text {
+                    id: effectShaderItemFilename
+                    text: shaderFilename
+                }
+
+                Label {
+                    text: qsTr("; Hash : ")
+                }
+
+                Text {
+                    id: effectShaderItemHash
+                    text: shaderHash
+                }
+
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    onClicked:
+                    {
+                        if (mouse.button === Qt.RightButton)
+                        {
+                            effectItemMenu.popup()
+                        }
+                        else
+                        {
+                            effectCurrentIndex = index
+                            mouse.accepted = false
+                        }
+                    }
+
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            effectItemMenu.popup()
+                    }
+
+                    onDoubleClicked: {
+                        showFullDescription = !showFullDescription
+                    }
+
+                    AutoSizeMenu {
+                        id: effectItemMenu
+                        MenuItem { action: refreshEffect }
+                        MenuItem { action: addEffect }
+                        MenuItem { action: editEffect }
+                        MenuItem { action: removeEffect }
+                    }
+                }
+            }
+
+            Text {
+                id: effectShaderItemDescriptionText
+                width: effectShaderList.width
+                wrapMode: Text.WordWrap
+                text: showFullDescription ? mastactva.leftDoubleCR(shaderDescription) : mastactva.readMore(shaderDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    onClicked:
+                    {
+                        if (mouse.button === Qt.RightButton)
+                        {
+                            effectItemMenu.popup()
+                        }
+                        else
+                        {
+                            effectCurrentIndex = index
+                            mouse.accepted = false
+                        }
+                    }
+
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            effectItemMenu.popup()
+                    }
+
+                    onDoubleClicked: {
+                        showFullDescription = !showFullDescription
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectShaderItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectShaderItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectShaderItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.y : 0
+            x: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.x : 0
+            width: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.width : 0
+            height: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.height : 0
+        }
+    }
+
 }
 
