@@ -228,7 +228,7 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
                                       bool jsonParams_,
                                       const QHash<QString, QVariant> &extraFields_)
 {
-    Q_ASSERT(id_.isValid());
+    if(!id_.isValid()) { return nullptr; }
     Q_ASSERT(id_.toString() != "false");
     const QString urlString = m_hostUrlBase + QString("%1/%2/by_%3/")
             .arg(jsonLayoutName_)

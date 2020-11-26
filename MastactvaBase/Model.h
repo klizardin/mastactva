@@ -210,7 +210,7 @@ public:
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
         if(nullptr == item)
         {
-            if(!isCurrentIndexValid(m_data.size())) { return false; }
+            if(!isCurrentIndexValid(m_data.size())) { return QVariant(); }
             item = m_data[getCurrentIndexImpl()];
         }
         return getDataLayout<DataType_>().getIdJsonValue(item);
@@ -221,7 +221,7 @@ public:
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
         if(nullptr == item)
         {
-            if(!isCurrentIndexValid(m_data.size())) { return false; }
+            if(!isCurrentIndexValid(m_data.size())) { return QVariant(); }
             item = m_data[getCurrentIndexImpl()];
         }
         return getDataLayout<DataType_>().getJsonValue(item, jsonFieldName);
@@ -356,6 +356,11 @@ public:
         if(!isIndexValid(index_, m_data.size())) { return QVariant(); }
         const DataType_* item = m_data.at(index_);
         return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+    }
+
+    int sizeImpl() const
+    {
+        return m_data.size();
     }
 
 protected:
@@ -965,6 +970,10 @@ public:                                                                         
     Q_INVOKABLE void addExtraFieldRename(const QString &oldName_, const QString &newName_)                      \
     {                                                                                                           \
         addExtraFieldRenameImpl(oldName_, newName_);                                                            \
+    }                                                                                                           \
+    Q_INVOKABLE int size()                                                                                      \
+    {                                                                                                           \
+        return sizeImpl();                                                                                      \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
