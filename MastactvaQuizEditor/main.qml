@@ -2698,6 +2698,8 @@ ApplicationWindow {
             property bool showFullDescription: false
 
             Row {
+
+                width: effectShaderList.width
                 padding: Constants.effectShaderListHeaderPadding
 
                 Label {
