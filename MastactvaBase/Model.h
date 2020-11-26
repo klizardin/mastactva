@@ -268,6 +268,42 @@ public:
         return std::end(m_data) == fit ? nullptr : *fit;
     }
 
+    bool selectDataItemByAppIdImpl(const QVariant &appId_)
+    {
+        if(!appId_.isValid() || appId_.isNull()) { return false; }
+        const auto fit = std::find_if(std::begin(m_data),
+                                      std::end(m_data),
+                                      [&appId_](const DataType_ *item)->bool
+        {
+            if(nullptr == item) { return false; }
+            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+            return appId_.isValid() && appId_ == appId;
+        });
+        if(std::end(m_data) == fit) { return false; }
+        const int ni = std::distance(std::begin(m_data), fit);
+        if(ni == getCurrentIndexImpl()) { return false; }
+        setCurrentIndexImpl(ni);
+        return true;
+    }
+
+    bool selectDataItemByIdImpl(const QVariant &id_)
+    {
+        if(!id_.isValid() || id_.isNull()) { return false; }
+        const auto fit = std::find_if(std::begin(m_data),
+                                      std::end(m_data),
+                                      [&id_](const DataType_ *item)->bool
+        {
+            if(nullptr == item) { return false; }
+            const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
+            return id_.isValid() && id_ == id;
+        });
+        if(std::end(m_data) == fit) { return false; }
+        const int ni = std::distance(std::begin(m_data), fit);
+        if(ni == getCurrentIndexImpl()) { return false; }
+        setCurrentIndexImpl(ni);
+        return true;
+    }
+
     DataType_ *findDataItemByAppIdImpl(const QVariant &appId_)
     {
         return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->findDataItemByAppIdImpl(appId_));
@@ -276,6 +312,16 @@ public:
     QVariant findItemByAppIdImpl(const QVariant &appId_)
     {
         return QVariant::fromValue(static_cast<QObject *>(findDataItemByAppIdImpl(appId_)));
+    }
+
+    bool selectItemByAppIdImpl(const QVariant &appId_)
+    {
+        return selectDataItemByAppIdImpl(appId_);
+    }
+
+    bool selectItemByIdImpl(const QVariant &id_)
+    {
+        return selectDataItemByIdImpl(id_);
     }
 
     const DataType_ *getCurrentDataItem() const
@@ -871,6 +917,18 @@ public:                                                                         
     Q_INVOKABLE QVariant getItemAppId(int index_)                                                               \
     {                                                                                                           \
         return getItemAppIdImpl(index_);                                                                        \
+    }                                                                                                           \
+    Q_INVOKABLE bool selectItemByAppId(const QVariant &appId_)                                                  \
+    {                                                                                                           \
+        const bool ret = selectItemByAppIdImpl(appId_);                                                         \
+        if(ret) { emit currentIndexChanged(); }                                                                 \
+        return ret;                                                                                             \
+    }                                                                                                           \
+    Q_INVOKABLE bool selectItemById(const QVariant &id_)                                                        \
+    {                                                                                                           \
+        const bool ret = selectItemByIdImpl(id_);                                                               \
+        if(ret) { emit currentIndexChanged(); }                                                                 \
+        return ret;                                                                                             \
     }                                                                                                           \
     Q_INVOKABLE bool setItem(int index_, const QVariant &item_)                                                 \
     {                                                                                                           \
