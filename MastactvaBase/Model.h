@@ -51,6 +51,9 @@ public:
     virtual void endLoadChildModel() override;
     virtual bool isListLoadedImpl() const override;
     virtual void listLoadedVF() override;
+    virtual void itemAddedVF() override;
+    virtual void itemSetVF() override;
+    virtual void itemDeletedVF() override;
 
     void parentItemRemoved();
 
@@ -558,7 +561,7 @@ protected:
         }
         else if(request_->getRequestName() == netAPI->getListRequestName<DataType_>())
         {
-            listLoaded(reply_);
+            modelListLoaded(reply_);
             if(reloadList)
             {
                 reloadList = false;
@@ -567,15 +570,15 @@ protected:
         }
         else if(request_->getRequestName() == netAPI->addItemRequestName<DataType_>())
         {
-            itemAdded(request_, reply_);
+            modelItemAdded(request_, reply_);
         }
         else if(request_->getRequestName() == netAPI->setItemRequestName<DataType_>())
         {
-            itemSet(request_, reply_);
+            modelItemSet(request_, reply_);
         }
         else if(request_->getRequestName() == netAPI->delItemRequestName<DataType_>())
         {
-            itemDeleted(request_, reply_);
+            modelItemDeleted(request_, reply_);
         }
         removeRequest(request_);
         clearTempData();
@@ -619,7 +622,7 @@ protected:
         Q_UNUSED(reply_);
     }
 
-    virtual void listLoaded(const QJsonDocument &reply_)
+    virtual void modelListLoaded(const QJsonDocument &reply_)
     {
         const QVariant oldCurrentAppId = getCurrentIndexAppId();
         const QVariant oldCurrentId = getIdFieldValueForAppId(oldCurrentAppId);
@@ -681,29 +684,32 @@ protected:
 #endif
     }
 
-    virtual void itemAdded(RequestData *request_, const QJsonDocument &reply_)
+    virtual void modelItemAdded(RequestData *request_, const QJsonDocument &reply_)
     {
         const QVariant appId = request_->getItemAppId();
         DataType_ *item = findDataItemByAppIdImpl(appId);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+        itemAddedVF();
     }
 
-    virtual void itemSet(RequestData *request_, const QJsonDocument &reply_)
+    virtual void modelItemSet(RequestData *request_, const QJsonDocument &reply_)
     {
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+        itemSetVF();
     }
 
-    virtual void itemDeleted(RequestData *request_, const QJsonDocument &reply_)
+    virtual void modelItemDeleted(RequestData *request_, const QJsonDocument &reply_)
     {
         Q_UNUSED(reply_);
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         removeItem(item);
+        itemDeletedVF();
     }
 
     void refreshChildrenSlotImpl(const QString &modelName_)
@@ -992,6 +998,21 @@ public:                                                                         
     {                                                                                                           \
         ListModelBaseData::listLoadedVF();                                                                      \
         emit listReloaded();                                                                                    \
+    }                                                                                                           \
+    virtual void itemAddedVF() override                                                                         \
+    {                                                                                                           \
+        ListModelBaseData::itemAddedVF();                                                                       \
+        emit itemAdded();                                                                                       \
+    }                                                                                                           \
+    virtual void itemSetVF() override                                                                           \
+    {                                                                                                           \
+        ListModelBaseData::itemSetVF();                                                                         \
+        emit itemSet();                                                                                         \
+    }                                                                                                           \
+    virtual void itemDeletedVF() override                                                                       \
+    {                                                                                                           \
+        ListModelBaseData::itemDeletedVF();                                                                     \
+        emit itemDeleted();                                                                                     \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
 

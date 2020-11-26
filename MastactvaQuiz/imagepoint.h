@@ -107,6 +107,9 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void itemAdded();
+    void itemSet();
+    void itemDeleted();
     void outputModelChanged();
 };
 
@@ -190,6 +193,9 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void itemAdded();
+    void itemSet();
+    void itemDeleted();
     void outputModelChanged();
 };
 
@@ -311,7 +317,7 @@ public slots:
         refreshChildrenSlotImpl(modelName_);
     }
 
-    virtual void listLoaded(const QJsonDocument &reply_) override;
+    virtual void modelListLoaded(const QJsonDocument &reply_) override;
 
 signals:
     void currentIndexChanged();
@@ -324,6 +330,9 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void itemAdded();
+    void itemSet();
+    void itemDeleted();
     void outputModelChanged();
 };
 

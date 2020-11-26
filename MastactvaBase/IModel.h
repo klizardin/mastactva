@@ -30,6 +30,9 @@ public:
     virtual void endLoadChildModel() = 0;
     virtual bool isListLoadedImpl() const = 0;
     virtual void listLoadedVF() = 0;
+    virtual void itemAddedVF() = 0;
+    virtual void itemSetVF() = 0;
+    virtual void itemDeletedVF() = 0;
 };
 
 Q_DECLARE_METATYPE(IListModelInfo*)
@@ -41,6 +44,9 @@ public:
     virtual void endLoadChildModel() override;
     virtual bool isListLoadedImpl() const override;
     virtual void listLoadedVF() override;
+    virtual void itemAddedVF() override;
+    virtual void itemSetVF() override;
+    virtual void itemDeletedVF() override;
 
 private:
     int m_loadingChildenModels = 0;

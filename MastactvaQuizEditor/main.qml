@@ -1512,7 +1512,10 @@ ApplicationWindow {
         id: removeEffect
         text: qsTr("&Remove effect")
         onTriggered: {
-
+            if(effectCurrentIndex >= 0)
+            {
+                effectModel.delItem(effectCurrentIndex)
+            }
         }
     }
 

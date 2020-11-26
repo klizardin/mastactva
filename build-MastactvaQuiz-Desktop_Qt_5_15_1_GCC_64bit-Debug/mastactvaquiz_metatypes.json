@@ -229,6 +229,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -247,6 +269,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -489,6 +533,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -779,6 +838,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -797,6 +878,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -1043,6 +1146,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -1254,6 +1372,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -1272,6 +1412,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -1514,6 +1676,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -1816,6 +1993,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -1834,6 +2033,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -2080,6 +2301,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -2291,6 +2527,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -2309,6 +2567,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -2555,6 +2835,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -2766,6 +3061,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -2784,6 +3101,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -3030,6 +3369,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -3216,6 +3570,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -3234,6 +3610,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -3476,6 +3874,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -3761,6 +4174,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -3779,6 +4214,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -4070,6 +4527,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -4113,7 +4585,7 @@
                                 "type": "QJsonDocument"
                             }
                         ],
-                        "name": "listLoaded",
+                        "name": "modelListLoaded",
                         "returnType": "void"
                     }
                 ],
@@ -4385,6 +4857,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -4403,6 +4897,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -4645,6 +5161,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -4898,6 +5429,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -4916,6 +5469,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -5162,6 +5737,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -5316,6 +5906,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -5334,6 +5946,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -5576,6 +6210,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -5886,6 +6535,28 @@
                             {
                                 "name": "index_",
                                 "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
                             },
                             {
                                 "name": "item_",
@@ -5904,6 +6575,28 @@
                             }
                         ],
                         "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
                         "returnType": "bool"
                     },
                     {
@@ -6146,6 +6839,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {

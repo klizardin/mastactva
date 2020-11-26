@@ -86,9 +86,9 @@ QuizUserModel::QuizUserModel(QObject *parent_ /*= nullptr*/)
     init(this);
 }
 
-void QuizUserModel::listLoaded(const QJsonDocument &reply_)
+void QuizUserModel::modelListLoaded(const QJsonDocument &reply_)
 {
-    base::listLoaded(reply_);
+    base::modelListLoaded(reply_);
     if(m_data.isEmpty())
     {
         QuizUser* qu = createDataItemImpl();

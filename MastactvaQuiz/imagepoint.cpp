@@ -313,9 +313,9 @@ ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
     init(this);
 }
 
-void ImagePointModel::listLoaded(const QJsonDocument &reply_)
+void ImagePointModel::modelListLoaded(const QJsonDocument &reply_)
 {
-    base::listLoaded(reply_);
+    base::modelListLoaded(reply_);
     for(ImagePoint *ip: m_data)
     {
         if(nullptr == ip) { continue; }

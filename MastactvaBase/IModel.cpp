@@ -23,3 +23,15 @@ bool IListModelInfoObjectImpl::isListLoadedImpl() const
 void IListModelInfoObjectImpl::listLoadedVF()
 {
 }
+
+void IListModelInfoObjectImpl::itemAddedVF()
+{
+}
+
+void IListModelInfoObjectImpl::itemSetVF()
+{
+}
+
+void IListModelInfoObjectImpl::itemDeletedVF()
+{
+}

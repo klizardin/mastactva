@@ -456,6 +456,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -1009,6 +1024,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -1570,6 +1600,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -2104,6 +2149,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -2646,6 +2706,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -3142,6 +3217,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {
@@ -6975,6 +7065,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -7456,6 +7561,21 @@
                     },
                     {
                         "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "outputModelChanged",
                         "returnType": "void"
                     }
@@ -7933,6 +8053,21 @@
                     {
                         "access": "public",
                         "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
                         "returnType": "void"
                     },
                     {

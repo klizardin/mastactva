@@ -208,6 +208,18 @@ void ListModelBaseData::listLoadedVF()
 {
 }
 
+void ListModelBaseData::itemAddedVF()
+{
+}
+
+void ListModelBaseData::itemSetVF()
+{
+}
+
+void ListModelBaseData::itemDeletedVF()
+{
+}
+
 void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_)
 {
     m_renames.insert(oldName_, newName_);

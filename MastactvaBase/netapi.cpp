@@ -509,7 +509,7 @@ RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jso
     if(!init()) { return nullptr; }
 
     RequestData *rd = new RequestData();
-    rd->setReply(m_networkManager->get(request));
+    rd->setReply(m_networkManager->sendCustomRequest(request, "DELETE"));
 
     rd->setItemId(id_);
     rd->setRequestName(requestName_);

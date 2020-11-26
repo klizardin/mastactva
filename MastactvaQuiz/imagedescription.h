@@ -97,6 +97,9 @@ signals:
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
     void listReloaded();
+    void itemAdded();
+    void itemSet();
+    void itemDeleted();
     void outputModelChanged();
 };
 
