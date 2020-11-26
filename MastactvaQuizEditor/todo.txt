@@ -11,3 +11,5 @@
 ** 11. Prepare program-ish strings to translation
 ** 12. Add internalization to the options dialog
 13. Edit image point errors
+14. Add warning messages for effect actions
+
