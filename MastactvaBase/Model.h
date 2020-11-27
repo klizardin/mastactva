@@ -304,6 +304,17 @@ public:
         return true;
     }
 
+    const DataType_ *dataItemAtImpl(int index_) const
+    {
+        if(!isIndexValid(index_, m_data.size())) { return nullptr; }
+        return m_data[index_];
+    }
+
+    DataType_ *dataItemAtImpl(int index_)
+    {
+        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->dataItemAtImpl(index_));
+    }
+
     DataType_ *findDataItemByAppIdImpl(const QVariant &appId_)
     {
         return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->findDataItemByAppIdImpl(appId_));
@@ -356,6 +367,11 @@ public:
         if(!isIndexValid(index_, m_data.size())) { return QVariant(); }
         const DataType_* item = m_data.at(index_);
         return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+    }
+
+    QVariant itemAtImpl(int index_) const
+    {
+        return QVariant::fromValue(static_cast<QObject *>(const_cast<ListModelBaseOfData<DataType_, ModelType_> *>(this)->dataItemAtImpl(index_)));;
     }
 
     int sizeImpl() const
@@ -922,6 +938,10 @@ public:                                                                         
     Q_INVOKABLE QVariant getItemAppId(int index_)                                                               \
     {                                                                                                           \
         return getItemAppIdImpl(index_);                                                                        \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant itemAt(int index_)                                                                     \
+    {                                                                                                           \
+        return itemAtImpl(index_);                                                                              \
     }                                                                                                           \
     Q_INVOKABLE bool selectItemByAppId(const QVariant &appId_)                                                  \
     {                                                                                                           \
