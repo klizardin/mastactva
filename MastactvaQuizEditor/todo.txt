@@ -14,3 +14,35 @@
 14. Add warning messages for effect actions
 15. document that is always used json representation of object id
 
+16. NetAPI function loadFile(const QString &fileURL_, const QString &fileHash_, const QString &cashPath_)
+
+17. Add ShaderAnalyze class
+
+    * build vector of content type trim(line) == "" before a "\n" and a position of a "\n"
+    * build Comments classes by comments positions just /* and */
+    * extract lines coresponding to a comment /*< to prev none empty line just /* to next none empty line
+    * analyze comments lines
+    * extract comment type
+        * @shader
+        * @argument
+    * extract comments params
+        @shader
+            * @description  // if none then all comment is a description
+        @argument
+            * @type         // from lines corresponding to a comment
+            * @name         // from lines corresponding to a comment
+            * @defaultvalue // from comment
+            * @description  // from comment
+
+    * let`s extract all @... fields and extract extra fields by comment type from corresponding lines
+        @(/s+)w+([^@])* name->value
+    * and for comment type will be subclasses that analyse corresponding line and extract extra params
+
+18. While add new shader opeartion MastactvaAPI should return @shader.@description
+
+    QByteArray shaderData;
+    ShaderAnalyze sa;
+    sa.analyze(shaderData);
+    const auto &comment = sa.findComment("shader")
+    comment.find("description")
+
