@@ -3002,6 +3002,24 @@
         "classes": [
             {
                 "className": "EffectShader",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "shaderId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "shaderId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setShaderId",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {

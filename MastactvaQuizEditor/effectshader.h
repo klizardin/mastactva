@@ -38,13 +38,14 @@ public:
         }
     };
 
+    Q_INVOKABLE int shaderId() const;
+    Q_INVOKABLE void setShaderId(const int &shaderId_);
+
 public:
     int id() const;
     void setId(const int &id_);
     int effectId() const;
     void setEffectId(const int &effectId_);
-    int shaderId() const;
-    void setShaderId(const int &shaderId_);
     QVariant shader() const;
     void setShader(const QVariant &obj_);
 
