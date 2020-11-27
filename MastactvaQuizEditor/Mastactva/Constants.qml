@@ -19,6 +19,8 @@ QtObject {
     readonly property int effectShaderListHeaderPadding: 10
     readonly property int effectInfoPadding: 10
     readonly property int minConstValueWidth: 150
+    readonly property int minConstValueHeight: 75
+    readonly property int effectShaderTypeListSpacing: 5
     readonly property int imagesOfGalleryListViewSpacing: 10
     readonly property int galleryImageSpacing: 10
     readonly property int imageOfGalleryImageSpacing: 10

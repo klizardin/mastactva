@@ -168,6 +168,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "appId_",
                                 "type": "QVariant"
                             }
@@ -780,6 +791,17 @@
                             }
                         ],
                         "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
                         "returnType": "QVariant"
                     },
                     {
@@ -1404,6 +1426,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "appId_",
                                 "type": "QVariant"
                             }
@@ -1997,6 +2030,17 @@
                             }
                         ],
                         "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
                         "returnType": "QVariant"
                     },
                     {
@@ -2602,6 +2646,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "appId_",
                                 "type": "QVariant"
                             }
@@ -3175,6 +3230,17 @@
                             }
                         ],
                         "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
                         "returnType": "QVariant"
                     },
                     {
@@ -7090,6 +7156,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "appId_",
                                 "type": "QVariant"
                             }
@@ -7632,6 +7709,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "appId_",
                                 "type": "QVariant"
                             }
@@ -8168,6 +8256,17 @@
                             }
                         ],
                         "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
                         "returnType": "QVariant"
                     },
                     {

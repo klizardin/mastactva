@@ -287,6 +287,11 @@ ApplicationWindow {
     Connections {
         target: effectModel
 
+        function onListReloaded()
+        {
+            effectCurrentIndex = effectModel.size() > 0 ? effectModel.currentIndex : -1
+        }
+
         function onItemDeleted()
         {
             effectCurrentIndex = -1
@@ -1676,15 +1681,6 @@ ApplicationWindow {
         id: addExistingShader
         text: qsTr("Add &existing shader")
         onTriggered: {
-            //if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
-            //{
-            //    var effectShader = effectModel.getCurrentItem().effectShaders.createItem()
-            //    shaderEditDialog.fieldEffectShader = effectShader
-            //    var shader = newEffectShader.effectShaderShader.getCurrentItem()
-            //    shaderEditDialog.fieldShader = shader
-            //    shaderEditDialog.fieldNewItem = false
-            //    shaderEditDialog.open()
-            //}
         }
     }
 
@@ -1692,14 +1688,17 @@ ApplicationWindow {
         id: editShaderInfo
         text: qsTr("Edit shader &info")
         onTriggered: {
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null && effectShadersCurrentModel.effectShaders.size() > 0 && effectShaderCurrentIndex >= 0)
+            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
-                var effectShader = effectShadersCurrentModel
-                var shader = effectShadersCurrentModel.effectShaders.getCurrentItem()
-                shaderEditDialog.fieldEffectShader = effectShader
-                shaderEditDialog.fieldShader = shader
-                shaderEditDialog.fieldNewItem = false
-                shaderEditDialog.open()
+                if(effectShadersCurrentModel.effectShaders.size() > 0 && effectShaderCurrentIndex >= 0)
+                {
+                    var effectShader = effectShadersCurrentModel
+                    var shader = effectShadersCurrentModel.effectShaders.getCurrentItem()
+                    shaderEditDialog.fieldEffectShader = effectShader
+                    shaderEditDialog.fieldShader = shader
+                    shaderEditDialog.fieldNewItem = false
+                    shaderEditDialog.open()
+                }
             }
         }
     }

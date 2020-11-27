@@ -48,10 +48,13 @@ Dialog {
 
     ScrollView {
         anchors.fill: parent
+        contentWidth: column.width
+        contentHeight: column.height
         clip:true
 
-        ColumnLayout {
-            RowLayout {
+        Column {
+            id: column
+            Row {
                 Label {
                     text: qsTr("Id : ")
                 }
@@ -62,19 +65,26 @@ Dialog {
             Label {
                 text: qsTr("Type  : ")
             }
-            ListView {
-                id: editShaderTypeList
-                height: editShaderFilenameFontMetrics.height * shaderTypeModel.size() * 1.5
+            Rectangle{
+                id: editShaderTypeListRect
                 width: Constants.minConstValueWidth
-                clip: true
-                model: shaderTypeModel
-                delegate: shaderTypeItem
-            }
+                height: Constants.minConstValueHeight
 
+                ListView {
+                    id: editShaderTypeList
+                    anchors.fill: parent
+                    clip: true
+                    spacing: Constants.effectShaderTypeListSpacing
+                    model: shaderTypeModel
+                    delegate: shaderTypeItem
+                    highlight: shaderTypeItemHighlight
+                    highlightFollowsCurrentItem: false
+                }
+            }
             Label {
                 text: qsTr("Filename  : ")
             }
-            RowLayout {
+            Row {
                 TextField {
                     id: editShaderFilename
                     placeholderText: qsTr("Enter shader filename")
@@ -96,7 +106,7 @@ Dialog {
             }
             TextField {
                 id: editShaderHash
-                placeholderText: qsTr("Enter effect name")
+                placeholderText: qsTr("Shader hash value")
                 readOnly: true
                 focus: true
                 KeyNavigation.priority: KeyNavigation.BeforeItem
@@ -117,7 +127,13 @@ Dialog {
 
     function init()
     {
-        console.log("shaderTypeModel.size() = ", shaderTypeModel.size())
+        var w = 0
+        for(var i = 0; i < shaderTypeModel.size(); i++)
+        {
+            w = Math.max(w, editShaderFilenameFontMetrics.tightBoundingRect(shaderTypeModel.itemAt(i).shaderTypeType).width)
+        }
+        editShaderTypeListRect.width = w
+        editShaderTypeListRect.height = (editShaderFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * shaderTypeModel.size() * 1.1
         editShaderID.text = fieldShader.shaderId
         if(!editShaderTypeList.model.selectItemById(fieldShader.shaderTypeId))
         {
@@ -140,9 +156,43 @@ Dialog {
 
     Component {
         id: shaderTypeItem
+
         Text {
             id: shaderTypeItemType
+            width: editShaderTypeListRect.width
             text: shaderTypeType
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                onClicked:
+                {
+                    editShaderTypeList.currentIndex = index
+                    mouse.accepted = false
+                }
+            }
+        }
+    }
+
+    Component {
+        id: shaderTypeItemHighlight
+
+        Rectangle {
+
+            SystemPalette {
+                id: shaderTypeItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: shaderTypeItemHighlightPallete.highlight
+            border.width: 1
+            radius: 2
+
+            y: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.y : 0
+            x: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.x : 0
+            width: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.width : 0
+            height: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.height : 0
         }
     }
 }
