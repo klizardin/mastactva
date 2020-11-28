@@ -16,3 +16,8 @@ qreal sqr(qreal val_)
 {
     return val_*val_;
 }
+
+bool isSymbol(const QChar &ch_)
+{
+    return ch_.category() >= QChar::Letter_Uppercase;
+}

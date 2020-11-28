@@ -1019,12 +1019,6 @@ void MastactvaAPI::showErrorMessage(const QString &header_, const QString &descr
     emit errorMessage(header_, description_);
 }
 
-inline
-bool isSymbol(const QChar &ch_)
-{
-    return ch_.category() >= QChar::Letter_Uppercase;
-}
-
 QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QString &rms_)
 {
     QString str = ::leftDoubleCR(str_);

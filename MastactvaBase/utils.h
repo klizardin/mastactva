@@ -6,6 +6,7 @@
 
 QString leftDoubleCR(const QString &str_);
 qreal sqr(qreal val_);
+bool isSymbol(const QChar &ch_);
 
 
 static const QString g_englishLanguage = "English";
