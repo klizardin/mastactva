@@ -37,5 +37,7 @@ HEADERS += \
 
 DISTFILES += \
     ../build-QuizImageDemo-Desktop_Qt_5_15_1_GCC_64bit-Debug/quizimagedemo_metatypes.json \
+    test001.frag \
+    test001.vert \
     todo.txt
 
