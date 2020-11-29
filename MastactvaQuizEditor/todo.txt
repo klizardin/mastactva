@@ -16,7 +16,7 @@
 
 16. NetAPI function loadFile(const QString &fileURL_, const QString &fileHash_, const QString &cashPath_)
 
-17. Add ShaderAnalyze class
+* 17. Add ShaderAnalyze class
 
     * build vector of content type trim(line) == "" before a "\n" and a position of a "\n"
     * build Comments classes by comments positions just /* and */
@@ -38,11 +38,15 @@
         @(/s+)w+([^@])* name->value
     * and for comment type will be subclasses that analyse corresponding line and extract extra params
 
-18. While add new shader opeartion MastactvaAPI should return @shader.@description
+* 18. While add new shader opeartion MastactvaAPI should return @shader.@description
 
     QByteArray shaderData;
     ShaderAnalyze sa;
     sa.analyze(shaderData);
     const auto &comment = sa.findComment("shader")
     comment.find("description")
+
+19. add action: refresh arguments
+20. add verify for shader effect post to not add shader of existing type
+
 
