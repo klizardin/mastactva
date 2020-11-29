@@ -2810,19 +2810,21 @@ ApplicationWindow {
 
         Column {
             id: effectShaderItemRect
+            property var shaderItem: effectShaderShader.currentItem
 
             FontMetrics{
                 id: effectShaderItemFontMetrics
-                font: effectShaderItemHeaderText.font
+                font: effectShaderItemType.font
             }
 
-            width: effectShaderList.width
+            width: effectShadersList.width
 
             property bool showFullDescription: false
 
             Row {
 
-                width: effectShaderList.width
+                id: effectShaderItemFirtsRow
+                width: effectShadersList.width
                 padding: Constants.effectShaderListHeaderPadding
 
                 Label {
@@ -2831,7 +2833,7 @@ ApplicationWindow {
 
                 Text {
                     id: effectShaderItemType
-                    text: shaderTypeModel.findItemById(shaderTypeId).shaderTypeType
+                    text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.shaderTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.shaderTypeId).shaderTypeType : ""
                 }
 
                 Label {
@@ -2840,7 +2842,7 @@ ApplicationWindow {
 
                 Text {
                     id: effectShaderItemFilename
-                    text: shaderFilename
+                    text: shaderItem !== undefined && shaderItem !== null ? shaderItem.shaderFilename : ""
                 }
 
                 Label {
@@ -2849,9 +2851,54 @@ ApplicationWindow {
 
                 Text {
                     id: effectShaderItemHash
-                    text: shaderHash
+                    text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderHash : ""
                 }
 
+                /*Connections {
+                    target: effectShaderShader
+
+                    function onListRealoaded()
+                    {
+                        shaderItem = effectShaderShader.getCurrentItem()
+                    }
+                }*/
+
+
+                MouseArea {
+                    width: effectShadersList.width
+                    height: effectShaderItemFontMetrics.height
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    onClicked:
+                    {
+                        if (mouse.button === Qt.RightButton)
+                        {
+                            effectShaderItemMenu.popup()
+                        }
+                        else
+                        {
+                            effectShaderCurrentIndex = index
+                            mouse.accepted = false
+                        }
+                    }
+
+                    onPressAndHold: {
+                        if (mouse.source === Qt.MouseEventNotSynthesized)
+                            effectShaderItemMenu.popup()
+                    }
+
+                    onDoubleClicked: {
+                        showFullDescription = !showFullDescription
+                    }
+
+                }
+            }
+
+            Text {
+                id: effectShaderItemDescriptionText
+                width: effectShadersList.width
+                wrapMode: Text.WordWrap
+                text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.effectsListReadMoreLength, qsTr(" ..."))
 
                 MouseArea {
                     anchors.fill: parent
@@ -2886,40 +2933,6 @@ ApplicationWindow {
                         MenuItem { action: addExistingShader }
                         MenuItem { action: editShaderInfo }
                         MenuItem { action: removeShader }
-                    }
-                }
-            }
-
-            Text {
-                id: effectShaderItemDescriptionText
-                width: effectShaderList.width
-                wrapMode: Text.WordWrap
-                text: showFullDescription ? mastactva.leftDoubleCR(shaderDescription) : mastactva.readMore(shaderDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
-
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                    onClicked:
-                    {
-                        if (mouse.button === Qt.RightButton)
-                        {
-                            effectShaderItemMenu.popup()
-                        }
-                        else
-                        {
-                            effectShaderCurrentIndex = index
-                            mouse.accepted = false
-                        }
-                    }
-
-                    onPressAndHold: {
-                        if (mouse.source === Qt.MouseEventNotSynthesized)
-                            effectShaderItemMenu.popup()
-                    }
-
-                    onDoubleClicked: {
-                        showFullDescription = !showFullDescription
                     }
                 }
             }

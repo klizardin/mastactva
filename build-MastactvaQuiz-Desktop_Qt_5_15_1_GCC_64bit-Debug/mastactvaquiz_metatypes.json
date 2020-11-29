@@ -443,6 +443,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -529,6 +542,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -1109,6 +1127,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -1195,6 +1226,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -1700,6 +1736,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -1786,6 +1835,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -2378,6 +2432,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -2464,6 +2531,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -2969,6 +3041,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -3055,6 +3140,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -3560,6 +3650,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -3646,6 +3749,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -4126,6 +4234,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -4212,6 +4333,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -4832,6 +4958,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -4918,6 +5057,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -5527,6 +5671,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -5613,6 +5770,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -6156,6 +6318,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -6242,6 +6417,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -6690,6 +6870,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -6776,6 +6969,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {
@@ -7376,6 +7574,19 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "currentRef",
                         "notify": "currentRefChanged",
                         "read": "currentRef",
@@ -7462,6 +7673,11 @@
                     {
                         "access": "public",
                         "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
                         "returnType": "void"
                     },
                     {

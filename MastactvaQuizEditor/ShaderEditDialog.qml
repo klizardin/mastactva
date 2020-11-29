@@ -33,6 +33,7 @@ Dialog {
         onAccepted: {
             editShaderFilename.text = fileUrl
             editShaderHash.text = mastactva.calculateHash(fileUrl)
+            editShaderDescription.text = mastactva.getShaderDescription(fileUrl)
         }
 
         onRejected: {
@@ -138,6 +139,8 @@ Dialog {
         if(!editShaderTypeList.model.selectItemById(fieldShader.shaderTypeId))
         {
             editShaderTypeList.currentIndex = 0
+            editShaderTypeList.model.currentIndex = 0
+            fieldShader.shaderTypeId = editShaderTypeList.model.getCurrentItem().shaderTypeId
         }
         editShaderFilename.text = fieldShader.shaderFilename
         editShaderHash.text = fieldShader.shaderHash
@@ -146,7 +149,7 @@ Dialog {
 
     function update()
     {
-        fieldShader.shaderTypeId = editShaderTypeList.currentItem.shaderTypeId
+        //fieldShader.shaderTypeId = editShaderTypeList.currentItem.shaderTypeId
         fieldShader.shaderFilename = editShaderFilename.text
         fieldShader.shaderHash = editShaderHash.text
         fieldShader.shaderDescription = editShaderDescription.text
@@ -169,6 +172,7 @@ Dialog {
                 onClicked:
                 {
                     editShaderTypeList.currentIndex = index
+                    fieldShader.shaderTypeId = shaderTypeId
                     mouse.accepted = false
                 }
             }

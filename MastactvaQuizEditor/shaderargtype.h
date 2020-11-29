@@ -75,6 +75,7 @@ public slots:
 
 signals:
     void currentIndexChanged();
+    void currentItemChanged();
     void currentRefChanged();
     void storeAfterSaveChanged();
     void refAppIdChanged();

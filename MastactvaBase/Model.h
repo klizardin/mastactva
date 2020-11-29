@@ -900,6 +900,7 @@ public:                                                                         
     Q_PROPERTY(QString layoutQMLName READ getLayoutQMLName WRITE setLayoutQMLName NOTIFY layoutQMLNameChanged)  \
     Q_PROPERTY(QString layoutIdField READ getLayoutIdField WRITE setLayoutIdField NOTIFY layoutIdFieldChanged)  \
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)             \
+    Q_PROPERTY(QVariant currentItem READ getCurrentItem NOTIFY currentItemChanged)                              \
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
     Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
@@ -946,13 +947,13 @@ public:                                                                         
     Q_INVOKABLE bool selectItemByAppId(const QVariant &appId_)                                                  \
     {                                                                                                           \
         const bool ret = selectItemByAppIdImpl(appId_);                                                         \
-        if(ret) { emit currentIndexChanged(); }                                                                 \
+        if(ret) { emit currentIndexChanged(); emit currentItemChanged(); }                                      \
         return ret;                                                                                             \
     }                                                                                                           \
     Q_INVOKABLE bool selectItemById(const QVariant &id_)                                                        \
     {                                                                                                           \
         const bool ret = selectItemByIdImpl(id_);                                                               \
-        if(ret) { emit currentIndexChanged(); }                                                                 \
+        if(ret) { emit currentIndexChanged(); emit currentItemChanged(); }                                      \
         return ret;                                                                                             \
     }                                                                                                           \
     Q_INVOKABLE bool setItem(int index_, const QVariant &item_)                                                 \
@@ -1022,6 +1023,7 @@ public:                                                                         
     {                                                                                                           \
         setCurrentIndexImpl(index_);                                                                            \
         emit currentIndexChanged();                                                                             \
+        emit currentItemChanged();                                                                              \
     }                                                                                                           \
     QString currentRef() const                                                                                  \
     {                                                                                                           \

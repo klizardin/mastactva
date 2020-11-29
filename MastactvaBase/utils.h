@@ -34,6 +34,11 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
 
 static const QString g_englishLanguage = "English";
 static const QString g_belarusLanguage = "Belarus";
+static const QString g_shaderName = "shader";
+static const QString g_argumentName = "argument";
+static const QString g_typeName = "type";
+static const QString g_nameName = "name";
+static const QString g_descriptionName = "description";
 
 
 #endif // UTILS_H
