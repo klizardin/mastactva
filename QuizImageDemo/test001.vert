@@ -1,4 +1,4 @@
-/*  @hader
+/*  @shader
     @description
     vertext test shader
 */
