@@ -221,6 +221,7 @@ ApplicationWindow {
 
         function onEffectShaderCurrentIndexChanged()
         {
+            effectShadersList.currentIndex = effectShaderCurrentIndex
             if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
                 effectShadersCurrentModel.currentIndex = effectShaderCurrentIndex
@@ -2808,132 +2809,106 @@ ApplicationWindow {
     Component {
         id: effectShaderItem
 
-        Column {
-            id: effectShaderItemRect
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
             property var shaderItem: effectShaderShader.currentItem
-
-            FontMetrics{
-                id: effectShaderItemFontMetrics
-                font: effectShaderItemType.font
-            }
-
-            width: effectShadersList.width
-
             property bool showFullDescription: false
 
-            Row {
+            Connections {
+                target: effectShaderShader
 
-                id: effectShaderItemFirtsRow
-                width: effectShadersList.width
-                padding: Constants.effectShaderListHeaderPadding
-
-                Label {
-                    text: qsTr("Type : ")
-                }
-
-                Text {
-                    id: effectShaderItemType
-                    text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.shaderTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.shaderTypeId).shaderTypeType : ""
-                }
-
-                Label {
-                    text: qsTr("; Filename : ")
-                }
-
-                Text {
-                    id: effectShaderItemFilename
-                    text: shaderItem !== undefined && shaderItem !== null ? shaderItem.shaderFilename : ""
-                }
-
-                Label {
-                    text: qsTr("; Hash : ")
-                }
-
-                Text {
-                    id: effectShaderItemHash
-                    text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderHash : ""
-                }
-
-                /*Connections {
-                    target: effectShaderShader
-
-                    function onListRealoaded()
-                    {
-                        shaderItem = effectShaderShader.getCurrentItem()
-                    }
-                }*/
-
-
-                MouseArea {
-                    width: effectShadersList.width
-                    height: effectShaderItemFontMetrics.height
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                    onClicked:
-                    {
-                        if (mouse.button === Qt.RightButton)
-                        {
-                            effectShaderItemMenu.popup()
-                        }
-                        else
-                        {
-                            effectShaderCurrentIndex = index
-                            mouse.accepted = false
-                        }
-                    }
-
-                    onPressAndHold: {
-                        if (mouse.source === Qt.MouseEventNotSynthesized)
-                            effectShaderItemMenu.popup()
-                    }
-
-                    onDoubleClicked: {
-                        showFullDescription = !showFullDescription
-                    }
-
+                function onListReloaded()
+                {
+                    shaderItem = effectShaderShader.getCurrentItem()
                 }
             }
 
-            Text {
-                id: effectShaderItemDescriptionText
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectShaderItemMenu.popup()
+                }
+                else
+                {
+                    effectShaderCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                    effectShaderItemMenu.popup()
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectShaderItemMenu
+                MenuItem { action: refreshShaders }
+                MenuItem { action: addNewShader }
+                MenuItem { action: addExistingShader }
+                MenuItem { action: editShaderInfo }
+                MenuItem { action: removeShader }
+            }
+
+            Column {
+                id: effectShaderItemRect
                 width: effectShadersList.width
-                wrapMode: Text.WordWrap
-                text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.effectsListReadMoreLength, qsTr(" ..."))
 
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                FontMetrics{
+                    id: effectShaderItemFontMetrics
+                    font: effectShaderItemType.font
+                }
 
-                    onClicked:
-                    {
-                        if (mouse.button === Qt.RightButton)
-                        {
-                            effectShaderItemMenu.popup()
-                        }
-                        else
-                        {
-                            effectShaderCurrentIndex = index
-                            mouse.accepted = false
-                        }
+                Row {
+
+                    id: effectShaderItemFirtsRow
+                    width: effectShadersList.width
+                    padding: Constants.effectShaderListHeaderPadding
+
+                    Label {
+                        id: effectShaderItemTypeLabel
+                        text: qsTr("Type : ")
                     }
 
-                    onPressAndHold: {
-                        if (mouse.source === Qt.MouseEventNotSynthesized)
-                            effectShaderItemMenu.popup()
+                    Text {
+                        id: effectShaderItemType
+                        text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.shaderTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.shaderTypeId).shaderTypeType : ""
                     }
 
-                    onDoubleClicked: {
-                        showFullDescription = !showFullDescription
+                    Label {
+                        id: effectShaderItemFilenameLabel
+                        text: qsTr("; Filename : ")
                     }
 
-                    AutoSizeMenu {
-                        id: effectShaderItemMenu
-                        MenuItem { action: refreshShaders }
-                        MenuItem { action: addNewShader }
-                        MenuItem { action: addExistingShader }
-                        MenuItem { action: editShaderInfo }
-                        MenuItem { action: removeShader }
+                    Text {
+                        id: effectShaderItemFilename
+                        text: shaderItem !== undefined && shaderItem !== null ? shaderItem.shaderFilename : ""
                     }
+
+                    Label {
+                        id: effectShaderItemHashLabel
+                        text: qsTr("; Hash : ")
+                    }
+
+                    Text {
+                        id: effectShaderItemHash
+                        text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderHash : ""
+                    }
+
+                }
+
+                Text {
+                    id: effectShaderItemDescriptionText
+                    width: effectShadersList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.effectsListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
