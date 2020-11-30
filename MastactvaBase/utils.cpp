@@ -148,7 +148,7 @@ void Comment::extractValues(const QString &shaderText_)
         i = shaderText_.indexOf(g_nameStart, i);
         if(!name.isEmpty())
         {
-            QString value = (i < 0)
+            QString value = (i < 0 || i > ce)
                     ? shaderText_.mid(ne, ce - ne)
                     : shaderText_.mid(ne, i - ne);
             m_values.insert(name, value);

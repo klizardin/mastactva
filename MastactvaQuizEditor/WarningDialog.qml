@@ -10,11 +10,11 @@ Popup {
     id: popupMessage
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
-    width: 240
-    height: 320
+    width: Constants.warningDialogWidth
+    height: Constants.warningDialogHeight
     modal: true
     focus: true
-    padding: 10
+    padding: Constants.warningDialogPadding
 
     property alias fieldPopupMessageShortText: popupMessageShortText.text
     property alias fieldPopupMessageDescriptionText: popupMessageDescriptionText.text

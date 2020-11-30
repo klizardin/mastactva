@@ -18,6 +18,9 @@ QtObject {
     readonly property int effectsListHeaderPadding: 10
     readonly property int effectShaderListHeaderPadding: 10
     readonly property int effectInfoPadding: 10
+    readonly property int warningDialogWidth: 360
+    readonly property int warningDialogHeight: 480
+    readonly property int warningDialogPadding: 10
     readonly property int minConstValueWidth: 150
     readonly property int minConstValueHeight: 75
     readonly property int effectShaderTypeListSpacing: 5
