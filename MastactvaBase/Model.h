@@ -485,9 +485,6 @@ protected:
         }
         else
         {
-            bool ret = getDataLayout<DataType_>().copyQMLFields(item_, m_data[index_]);
-            if(!ret) { return ret; }
-
             QHash<QString, QVariant> extraFields(m_modelParams);
             for(const ExtraFields &f: m_extraFields)
             {
@@ -498,7 +495,7 @@ protected:
                 }
             }
             extraFields = renameFields(extraFields);
-            RequestData *request = netAPI->setItem(getJsonLayoutName(), m_data[index_], extraFields);
+            RequestData *request = netAPI->setItem(getJsonLayoutName(), item_, extraFields);
             return addRequest(request);
         }
     }
@@ -537,7 +534,7 @@ protected:
                 }
             }
             extraFields = renameFields(extraFields);
-            RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back(), extraFields);
+            RequestData *request = netAPI->addItem(getJsonLayoutName(), item_, extraFields);
             if(nullptr != request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
