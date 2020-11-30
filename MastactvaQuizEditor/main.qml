@@ -201,22 +201,42 @@ ApplicationWindow {
                 var effect = effectModel.getCurrentItem()
                 effectInfoCommonName.text = effect.effectName
                 effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
-                var shadersModel = effectModel.getCurrentItem().effectShaders
-                effectShadersList.model = shadersModel
-                effectShadersCurrentModel = shadersModel
-                if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+                var shadersModel = effect.effectShaders
+                if(shadersModel.isListLoaded())
                 {
-                    effectShadersCurrentModel.loadList()
+                    effectShadersCurrentModel = shadersModel
+                    effectShadersList.model = shadersModel
+                }
+                else
+                {
+                    shadersModel.listReloaded.connect(shadersListReloaded)
                 }
             }
             else
             {
                 effectInfoCommonName.text = qsTr("Please, select effect item")
                 effectInfoCommonDescription.text = qsTr("")
-                effectShadersList.model = undefined
+                effectShadersList.model = 0
                 effectShadersCurrentModel = undefined
             }
             effectShaderCurrentIndex = -1
+        }
+
+        function shadersListReloaded()
+        {
+            var effect = effectModel.getCurrentItem()
+            var shadersModel = effect.effectShaders
+            shadersModel.listReloaded.disconnect(shadersListReloaded)
+            if(shadersModel.isListLoaded())
+            {
+                effectShadersCurrentModel = shadersModel
+                effectShadersList.model = shadersModel
+            }
+            else
+            {
+                effectShadersList.model = 0
+                effectShadersCurrentModel = undefined
+            }
         }
 
         function onEffectShaderCurrentIndexChanged()
@@ -2202,7 +2222,7 @@ ApplicationWindow {
                                     anchors.fill: parent
                                     spacing: Constants.effectsListViewSpacing
                                     clip: true
-                                    model: undefined
+                                    model: 0
                                     delegate: effectShaderItem
                                     highlight: effectShaderItemHighlight
                                     highlightFollowsCurrentItem: false
@@ -2822,7 +2842,7 @@ ApplicationWindow {
 
                 function onListReloaded()
                 {
-                    shaderItem = effectShaderShader.getCurrentItem()
+                    shaderItem = effectShaderShader.currentItem
                 }
             }
 
