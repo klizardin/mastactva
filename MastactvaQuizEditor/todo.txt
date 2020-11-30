@@ -14,8 +14,6 @@
 14. Add warning messages for effect actions
 15. document that is always used json representation of object id
 
-16. NetAPI function loadFile(const QString &fileURL_, const QString &fileHash_, const QString &cashPath_)
-
 * 17. Add ShaderAnalyze class
 
     * build vector of content type trim(line) == "" before a "\n" and a position of a "\n"
@@ -50,8 +48,5 @@
 * 20. test description substraction from a shader code
 21. add action: add existing shader
 22. add action: refresh arguments
-
-
-
-
+16. NetAPI function loadFile(const QString &fileURL_, const QString &fileHash_, const QString &cashingPath_)
 
