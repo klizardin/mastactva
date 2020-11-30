@@ -20,6 +20,7 @@
         <file>AutoSizeMenu.qml</file>
         <file>EffectEditDialog.qml</file>
         <file>ShaderEditDialog.qml</file>
+        <file>ChooseShaderDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

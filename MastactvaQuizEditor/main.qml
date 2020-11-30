@@ -272,6 +272,15 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    ShaderModel {
+        id: shaderModel
+        objectName: "ShaderModel"
+        layoutQMLName: "ShaderModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     Connections {
         target: mastactva
 
@@ -295,6 +304,8 @@ ApplicationWindow {
             shaderTypeModel.loadList()
             shaderEditDialog.mastactva = mastactva
             shaderEditDialog.shaderTypeModel = shaderTypeModel
+            chooseShaderDialog.shaderTypeModel = shaderTypeModel
+            chooseShaderDialog.shaderModel = shaderModel
         }
     }
 
@@ -860,6 +871,33 @@ ApplicationWindow {
         {
             effectShadersCurrentModel.itemAdded.disconnect(effectShaderAdded)
             fieldEffectShader = undefined
+        }
+    }
+
+    ChooseShaderDialog {
+        id: chooseShaderDialog
+
+        onOpened: {
+            fieldShader = undefined
+            init()
+        }
+
+        onAccepted: {
+            if(fieldShader !== undefined && fieldShader !== null && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            {
+                var newEffectShader = effectShadersCurrentModel.createItem()
+                newEffectShader.setShaderId(fieldShader.shaderId)
+                newEffectShader.effectShaderEffectId = effectModel.getCurrentItem().effectId
+                fieldShader = undefined
+                effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
+                effectShadersCurrentModel.addItem(newEffectShader)
+            }
+        }
+
+        function effectShaderAdded()
+        {
+            effectShadersCurrentModel.itemAdded.disconnect(effectShaderAdded)
+            fieldShader = undefined
         }
     }
 
@@ -1702,6 +1740,10 @@ ApplicationWindow {
         id: addExistingShader
         text: qsTr("Add &existing shader")
         onTriggered: {
+            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            {
+                chooseShaderDialog.open()
+            }
         }
     }
 
@@ -2832,6 +2874,7 @@ ApplicationWindow {
         MouseArea {
             width: childrenRect.width
             height: childrenRect.height
+
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
             property var shaderItem: effectShaderShader.currentItem
@@ -2887,41 +2930,47 @@ ApplicationWindow {
                 }
 
                 Row {
-
-                    id: effectShaderItemFirtsRow
-                    width: effectShadersList.width
                     padding: Constants.effectShaderListHeaderPadding
-
                     Label {
                         id: effectShaderItemTypeLabel
                         text: qsTr("Type : ")
                     }
-
                     Text {
                         id: effectShaderItemType
+                        width: effectShadersList.width - effectShaderItemTypeLabel.width
                         text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.shaderTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.shaderTypeId).shaderTypeType : ""
+                        wrapMode: Text.Wrap
                     }
+                }
 
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
                     Label {
                         id: effectShaderItemFilenameLabel
-                        text: qsTr("; Filename : ")
+                        text: qsTr("Filename : ")
                     }
 
                     Text {
                         id: effectShaderItemFilename
+                        width: effectShadersList.width - effectShaderItemFilenameLabel.width
                         text: shaderItem !== undefined && shaderItem !== null ? shaderItem.shaderFilename : ""
+                        wrapMode: Text.Wrap
                     }
+                }
 
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
                     Label {
                         id: effectShaderItemHashLabel
-                        text: qsTr("; Hash : ")
+                        text: qsTr("Hash : ")
                     }
 
                     Text {
                         id: effectShaderItemHash
+                        width: effectShadersList.width - effectShaderItemHashLabel.width
                         text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderHash : ""
+                        wrapMode: Text.Wrap
                     }
-
                 }
 
                 Text {
