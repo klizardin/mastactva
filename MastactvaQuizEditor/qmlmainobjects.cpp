@@ -122,6 +122,13 @@ void QMLObjects::setInitialized()
     m_mastactvaAPI->setInitialized();
 }
 
+void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
+{
+    Q_UNUSED(errorCode_);
+    searchObjects();
+    if(nullptr == m_mastactvaAPI) { return; }
+    m_mastactvaAPI->showErrorMessage(errorCodeStr_, reply_.toJson(QJsonDocument::Indented));
+}
 
 static const QString g_effectModel = "EffectModel";
 static const QString g_shaderTypeModel = "ShaderTypeModel";

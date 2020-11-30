@@ -32,6 +32,26 @@ void RequestData::allowModelProccessError()
     m_processErrorInNetAPI = false;
 }
 
+void RequestData::setItemData(void *itemData_)
+{
+    m_itemData = itemData_;
+}
+
+void *RequestData::getItemData()
+{
+    return m_itemData;
+}
+
+void RequestData::setSetCurrentItemIndex(bool setCurrentItemIndex_)
+{
+    m_setCurrentItemIndex = setCurrentItemIndex_;
+}
+
+bool RequestData::getSetCurrentItemIndex() const
+{
+    return m_setCurrentItemIndex;
+}
+
 void RequestData::setRequestName(const QString &requestName_)
 {
     m_requestName = requestName_;

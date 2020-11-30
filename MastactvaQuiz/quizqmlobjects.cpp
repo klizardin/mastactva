@@ -61,3 +61,9 @@ void QMLObjects::setInitialized()
     if(nullptr == m_mastactvaAPI) { return; }
     m_mastactvaAPI->setInitialized();
 }
+
+void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
+{
+    if(nullptr == m_mastactvaAPI) { return; }
+    m_mastactvaAPI->showModelError(errorCode_, errorCodeStr_, reply_.toJson(QJsonDocument::Indented));
+}

@@ -30,3 +30,9 @@ void MastactvaAPI::setInitialized()
 {
     emit initialized();
 }
+
+void MastactvaAPI::showModelError(int errorCode_, const QString & errorCodeStr_, const QString & description_)
+{
+    Q_UNUSED(errorCode_);
+    emit errorMessage(errorCodeStr_, description_);
+}

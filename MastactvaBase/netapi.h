@@ -30,6 +30,10 @@ public:
     QVariant getItemId() const;
     QVariant getItemAppId() const;
     void allowModelProccessError();
+    void setItemData(void *itemData_);
+    void *getItemData();
+    void setSetCurrentItemIndex(bool setCurrentItemIndex_);
+    bool getSetCurrentItemIndex() const;
 
 protected:
     void setRequestName(const QString &requestName_);
@@ -46,6 +50,8 @@ private:
     QVariant m_itemId = QVariant::fromValue(-1);
     QVariant m_itemAppId = QVariant::fromValue(-1);
     QNetworkReply *m_reply = nullptr;
+    void *m_itemData = nullptr;
+    bool m_setCurrentItemIndex = false;
 
     friend class NetAPI;
 };

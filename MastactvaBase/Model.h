@@ -508,20 +508,16 @@ protected:
         NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return false; }
 
-        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + 1 - 1);
-        m_data.push_back(item_);
-        endInsertRows();
-
-        if(setCurrentIndex_)
-        {
-            setCurrentIndexImpl(m_data.size() - 1);
-        }
-
         if(getJsonLayoutName().isEmpty())
         {
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
             RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>(), itemAppId, itemId);
+            if(nullptr != request)
+            {
+                request->setItemData(reinterpret_cast<void *>(item_));
+                request->setSetCurrentItemIndex(setCurrentIndex_);
+            }
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
@@ -542,6 +538,11 @@ protected:
             }
             extraFields = renameFields(extraFields);
             RequestData *request = netAPI->addItem(getJsonLayoutName(), m_data.back(), extraFields);
+            if(nullptr != request)
+            {
+                request->setItemData(reinterpret_cast<void *>(item_));
+                request->setSetCurrentItemIndex(setCurrentIndex_);
+            }
             return addRequest(request);
         }
     }
@@ -753,10 +754,21 @@ protected:
 
     virtual void modelItemAdded(RequestData *request_, const QJsonDocument &reply_)
     {
+        if(nullptr == request_->getItemData()) { return; }
         const QVariant appId = request_->getItemAppId();
+
+        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + 1 - 1);
+        m_data.push_back(reinterpret_cast<DataType_ *>(request_->getItemData()));
+        endInsertRows();
+
         DataType_ *item = findDataItemByAppIdImpl(appId);
         if(nullptr == item) { return; }
+
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+        if(request_->getSetCurrentItemIndex())
+        {
+            setCurrentIndexImpl(m_data.size() - 1);
+        }
         itemAddedVF();
     }
 

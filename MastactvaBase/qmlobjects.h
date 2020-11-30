@@ -24,6 +24,7 @@ public:
     void unregisterModel(const QString &layoutName_);
 
     virtual void setInitialized() = 0;
+    virtual void modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) = 0;
 
 protected:
     virtual void searchObjects() = 0;

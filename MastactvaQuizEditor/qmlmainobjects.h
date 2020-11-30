@@ -58,6 +58,7 @@ public:
     QMLObjects() = default;
 
     virtual void setInitialized() override;
+    virtual void modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
 
 protected:
     virtual void searchObjects() override;
