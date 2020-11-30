@@ -47,7 +47,7 @@
     comment.find("description")
 
 * 19. add verify for shader effect post to not add shader of existing type
-20. test description substraction from a shader code
+* 20. test description substraction from a shader code
 21. add action: add existing shader
 22. add action: refresh arguments
 
