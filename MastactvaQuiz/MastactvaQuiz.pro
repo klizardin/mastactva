@@ -12,13 +12,13 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        ../MastactvaBase/IModel.cpp \
-        ../MastactvaBase/Model.cpp \
-        ../MastactvaBase/imagesource.cpp \
-        ../MastactvaBase/netapi.cpp \
-        ../MastactvaBase/netappconsts.cpp \
-        ../MastactvaBase/qmlobjects.cpp \
-        ../MastactvaBase/utils.cpp  \
+        IModel.cpp \
+        Model.cpp \
+        imagesource.cpp \
+        netapi.cpp \
+        netappconsts.cpp \
+        qmlobjects.cpp \
+        utils.cpp  \
         answer.cpp \
         gallery.cpp \
         gallerystatistics.cpp \
@@ -40,8 +40,7 @@ TRANSLATIONS += \
     MastactvaQuiz_be_BY.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH += $${PWD}    \
-    $${PWD}/../MastactvaBase/
+QML_IMPORT_PATH += $${PWD}
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -55,14 +54,14 @@ ANDROID_ABIS = armeabi-v7a
 
 
 HEADERS += \
-    ../MastactvaBase/IModel.h \
-    ../MastactvaBase/Layout.h \
-    ../MastactvaBase/Model.h \
-    ../MastactvaBase/imagesource.h \
-    ../MastactvaBase/netapi.h \
-    ../MastactvaBase/netappconsts.h \
-    ../MastactvaBase/qmlobjects.h \
-    ../MastactvaBase/utils.h    \
+    IModel.h \
+    Layout.h \
+    Model.h \
+    imagesource.h \
+    netapi.h \
+    netappconsts.h \
+    qmlobjects.h \
+    utils.h    \
     answer.h \
     gallery.h \
     gallerystatistics.h \

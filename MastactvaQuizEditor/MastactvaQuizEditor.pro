@@ -24,14 +24,14 @@ HEADERS += \
         mastactvaapi.h    \
         netapiv0.h \
         qmlmainobjects.h \
-        ../MastactvaBase/utils.h \
-        ../MastactvaBase/netappconsts.h \
-        ../MastactvaBase/IModel.h   \
-        ../MastactvaBase/qmlobjects.h   \
-        ../MastactvaBase/imagesource.h  \
-        ../MastactvaBase/Layout.h   \
-        ../MastactvaBase/netapi.h   \
-        ../MastactvaBase/Model.h \
+        utils.h \
+        netappconsts.h \
+        IModel.h   \
+        qmlobjects.h   \
+        imagesource.h  \
+        Layout.h   \
+        netapi.h   \
+        Model.h \
         shader.h \
         shaderargtype.h \
         shadertype.h
@@ -50,13 +50,13 @@ SOURCES += \
         mastactvaapi.cpp    \
         netapiv0.cpp \
         qmlmainobjects.cpp  \
-        ../MastactvaBase/utils.cpp  \
-        ../MastactvaBase/netappconsts.cpp  \
-        ../MastactvaBase/IModel.cpp \
-        ../MastactvaBase/qmlobjects.cpp \
-        ../MastactvaBase/imagesource.cpp    \
-        ../MastactvaBase/netapi.cpp \
-        ../MastactvaBase/Model.cpp \
+        utils.cpp  \
+        netappconsts.cpp  \
+        IModel.cpp \
+        qmlobjects.cpp \
+        imagesource.cpp    \
+        netapi.cpp \
+        Model.cpp \
         shader.cpp \
         shaderargtype.cpp \
         shadertype.cpp

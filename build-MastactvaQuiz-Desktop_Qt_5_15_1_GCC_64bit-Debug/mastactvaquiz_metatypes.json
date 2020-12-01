@@ -5242,6 +5242,25 @@
                         "access": "public",
                         "name": "now",
                         "returnType": "QDateTime"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "description_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "showModelError",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -5250,6 +5269,21 @@
                     {
                         "access": "public",
                         "name": "initialized",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "header_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "description_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "errorMessage",
                         "returnType": "void"
                     }
                 ],
