@@ -66,6 +66,11 @@ void EffectShader::setShader(const QVariant &obj_)
     }
 }
 
+ShaderModel *EffectShader::getShader()
+{
+    return m_shaderModel;
+}
+
 ShaderModel *EffectShader::createShaderModel()
 {
     ShaderModel *m = new ShaderModel(this);

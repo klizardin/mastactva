@@ -597,6 +597,23 @@
         "classes": [
             {
                 "className": "Effect",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "startRefreshArguments",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "cancelRefreshArguments",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "applyRefreshArguments",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -714,6 +731,40 @@
                     {
                         "access": "public",
                         "name": "argSetsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "rate_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "refreshArgumentsProgress",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshArgumentsBeforeApply",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshArgumentsShaderDownloadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "refreshArgumentsProgressSlot",
                         "returnType": "void"
                     }
                 ],
@@ -8982,6 +9033,17 @@
                         ],
                         "name": "getProgressRate",
                         "returnType": "qreal"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "urls_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "cancel",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

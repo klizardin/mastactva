@@ -1,4 +1,9 @@
 #include "effect.h"
+#include "shader.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/utils.h"
+
 
 Effect::Effect(EffectModel *parent_)
     : QObject(parent_)
@@ -142,6 +147,71 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
+}
+
+bool Effect::startRefreshArguments()
+{
+    if(nullptr == m_effectShadersModel || !m_effectShadersModel->isListLoadedImpl()) { return false; }
+    // get all shaders urls
+    const int shadersCnt = m_effectShadersModel->size();
+    QList<QPair<QString, QString>> urlHashPairs;
+    for(int i = 0; i < shadersCnt; i++)
+    {
+        EffectShader* m = m_effectShadersModel->dataItemAtImpl(i);
+        if(nullptr == m || nullptr == m->getShader() || !m->getShader()->isListLoadedImpl()) { return false; }
+        Shader* shader = m->getShader()->dataItemAtImpl(0);
+        if(nullptr == shader) { return false; }
+        urlHashPairs.push_back({shader->getFilename(), shader->hash()});
+    }
+    m_shaderUrls.clear();
+    for(const QPair<QString,QString> &url_: urlHashPairs)
+    {
+        m_shaderUrls.push_back(url_.first);
+    }
+    m_shaderLocalUrls.clear();
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+    QObject::connect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
+    for(const QPair<QString,QString> &url_: urlHashPairs)
+    {
+        sf->add(url_.first, url_.second, g_shadersRelPath);
+    }
+    return true;
+}
+
+void Effect::cancelRefreshArguments()
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+    QObject::disconnect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
+    sf->cancel(m_shaderUrls);
+    m_shaderUrls.clear();
+    m_shaderLocalUrls.clear();
+}
+
+void Effect::applyRefreshArguments()
+{
+}
+
+void Effect::refreshArgumentsShaderDownloadedSlot(const QString &url_)
+{
+    const auto fit = std::find(std::begin(m_shaderUrls), std::end(m_shaderUrls), url_);
+    if(std::end(m_shaderUrls) == fit) { return; }
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    m_shaderLocalUrls.insert(url_, sf->get(url_));
+    if(m_shaderLocalUrls.size() == m_shaderUrls.size())
+    {
+        QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+        QObject::disconnect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
+        emit refreshArgumentsBeforeApply();
+    }
+}
+
+void Effect::refreshArgumentsProgressSlot()
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    qreal rate = sf->getProgressRate(m_shaderUrls);
+    emit refreshArgumentsProgress(rate);
 }
 
 

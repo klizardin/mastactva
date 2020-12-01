@@ -60,6 +60,15 @@ public:
     QVariant argSets() const;
     void setArgSets(const QVariant &obj_);
 
+public:
+    Q_INVOKABLE bool startRefreshArguments();
+    Q_INVOKABLE void cancelRefreshArguments();
+    Q_INVOKABLE void applyRefreshArguments();
+
+protected slots:
+    void refreshArgumentsShaderDownloadedSlot(const QString &url_);
+    void refreshArgumentsProgressSlot();
+
 protected:
     EffectShaderModel *createEffectShadersModel();
     EffectArgModel *createEffectArgModel();
@@ -72,6 +81,8 @@ signals:
     void effectShadersChanged();
     void argsChanged();
     void argSetsChanged();
+    void refreshArgumentsProgress(qreal rate_);
+    void refreshArgumentsBeforeApply();
 
 private:
     EffectModel *m_effectModel = nullptr;
@@ -83,6 +94,9 @@ private:
     EffectShaderModel *m_effectShadersModel = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;
+
+    QStringList m_shaderUrls;
+    QHash<QString, QString> m_shaderLocalUrls;
 };
 
 

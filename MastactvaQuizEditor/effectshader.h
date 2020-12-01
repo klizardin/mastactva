@@ -48,6 +48,7 @@ public:
     void setEffectId(const int &effectId_);
     QVariant shader() const;
     void setShader(const QVariant &obj_);
+    ShaderModel *getShader();
 
 protected:
     ShaderModel *createShaderModel();
