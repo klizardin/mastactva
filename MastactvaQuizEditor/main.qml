@@ -254,28 +254,11 @@ ApplicationWindow {
         objectName: "MastactvaAPI"
     }
 
-    EffectModel {
-        id: effectModel
-        objectName: "EffectModel"
-        layoutQMLName: "EffectModel"
-        layoutIdField: "id"
-        jsonParamsGet: false
-        autoCreateChildrenModels: false
-    }
-
+    // constant models
     ShaderTypeModel {
         id: shaderTypeModel
         objectName: "ShaderTypeModel"
         layoutQMLName: "ShaderTypeModel"
-        layoutIdField: "id"
-        jsonParamsGet: false
-        autoCreateChildrenModels: false
-    }
-
-    ShaderModel {
-        id: shaderModel
-        objectName: "ShaderModel"
-        layoutQMLName: "ShaderModel"
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
@@ -294,6 +277,25 @@ ApplicationWindow {
         id: easingTypeModel
         objectName: "EasingTypeModel"
         layoutQMLName: "EasingTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
+    // data models
+    EffectModel {
+        id: effectModel
+        objectName: "EffectModel"
+        layoutQMLName: "EffectModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
+    ShaderModel {
+        id: shaderModel
+        objectName: "ShaderModel"
+        layoutQMLName: "ShaderModel"
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
