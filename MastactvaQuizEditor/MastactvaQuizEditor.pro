@@ -24,6 +24,11 @@ HEADERS += \
         mastactvaapi.h    \
         netapiv0.h \
         qmlmainobjects.h \
+        shader.h \
+        shaderargtype.h \
+        shadertype.h
+
+unix: HEADERS += \
         utils.h \
         netappconsts.h \
         IModel.h   \
@@ -31,10 +36,7 @@ HEADERS += \
         imagesource.h  \
         Layout.h   \
         netapi.h   \
-        Model.h \
-        shader.h \
-        shaderargtype.h \
-        shadertype.h
+        Model.h
 
 
 SOURCES += \
@@ -50,16 +52,18 @@ SOURCES += \
         mastactvaapi.cpp    \
         netapiv0.cpp \
         qmlmainobjects.cpp  \
+        shader.cpp \
+        shaderargtype.cpp \
+        shadertype.cpp
+
+unix: SOURCES += \
         utils.cpp  \
         netappconsts.cpp  \
         IModel.cpp \
         qmlobjects.cpp \
         imagesource.cpp    \
         netapi.cpp \
-        Model.cpp \
-        shader.cpp \
-        shaderargtype.cpp \
-        shadertype.cpp
+        Model.cpp
 
 
 RESOURCES += qml.qrc    \

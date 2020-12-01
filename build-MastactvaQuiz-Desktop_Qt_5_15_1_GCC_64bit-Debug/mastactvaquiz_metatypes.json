@@ -2,86 +2,6 @@
     {
         "classes": [
             {
-                "classInfos": [
-                    {
-                        "name": "QML.Element",
-                        "value": "auto"
-                    }
-                ],
-                "className": "NetAPI",
-                "object": true,
-                "qualifiedClassName": "NetAPI",
-                "signals": [
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "errorCode_",
-                                "type": "int"
-                            },
-                            {
-                                "name": "errorCodeStr_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "request_",
-                                "type": "RequestData*"
-                            },
-                            {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
-                            }
-                        ],
-                        "name": "response",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "errorCode_",
-                                "type": "int"
-                            },
-                            {
-                                "name": "errorCodeStr_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
-                            }
-                        ],
-                        "name": "error",
-                        "returnType": "void"
-                    }
-                ],
-                "slots": [
-                    {
-                        "access": "protected",
-                        "arguments": [
-                            {
-                                "name": "reply_",
-                                "type": "QNetworkReply*"
-                            }
-                        ],
-                        "name": "replayFinished",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QObject"
-                    }
-                ]
-            }
-        ],
-        "inputFile": "netapi.h",
-        "outputRevision": 67
-    },
-    {
-        "classes": [
-            {
                 "className": "Answer",
                 "object": true,
                 "properties": [
@@ -7851,6 +7771,80 @@
             }
         ],
         "inputFile": "userstep.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "NetAPI",
+                "object": true,
+                "qualifiedClassName": "NetAPI",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "response",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "reply_",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "replayFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "netapi.h",
         "outputRevision": 67
     }
 ]
