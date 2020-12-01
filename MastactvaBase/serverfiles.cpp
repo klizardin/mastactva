@@ -102,6 +102,26 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
     return qreal((std::min(recieved, total) * 1000) / total) / qreal(1000.0);
 }
 
+void ServerFiles::cancel(const QStringList &urls_)
+{
+    QList<ServerFileDownload *> toRemove;
+    for(ServerFileDownload *download: m_downloads)
+    {
+        if(nullptr == download) { continue; }
+        const auto fit = std::find(std::begin(urls_), std::end(urls_), download->getUrl());
+        if(std::end(urls_) == fit) { continue; }
+        download->cancel();
+        toRemove.push_back(download);
+    }
+    for(ServerFileDownload *download: toRemove)
+    {
+        auto fit = std::find(std::begin(m_downloads), std::end(m_downloads), download);
+        delete *fit;
+        *fit = nullptr;
+        m_downloads.erase(fit);
+    }
+}
+
 void ServerFiles::finished(ServerFileDownload *download_)
 {
     if(nullptr == download_) { return; }
@@ -188,6 +208,18 @@ void ServerFileDownload::start(QNetworkAccessManager &manager_)
     connect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
 }
 
+void ServerFileDownload::cancel()
+{
+    disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
+    disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
+    disconnect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
+    m_outputFile.close();
+    if(!ok())
+    {
+        m_outputFile.remove();
+    }
+}
+
 bool ServerFileDownload::ok() const
 {
     return calculateFileURLHash(getLocalURL()) == m_hash;
@@ -214,6 +246,9 @@ void ServerFileDownload::downloadProgress(qint64 bytesReceived_, qint64 bytesTot
 void ServerFileDownload::downloadFinished()
 {
     m_outputFile.close();
+    disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
+    disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
+    disconnect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
     bool success = false;
     if (m_download->error())
     {

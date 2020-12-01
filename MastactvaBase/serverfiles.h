@@ -18,6 +18,7 @@ public:
     void setPath(const QString &rootDir_, const QString &relPath_);
     void setFile(const QString &url_, const QString &hash_);
     void start(QNetworkAccessManager &manager_);
+    void cancel();
     bool ok() const;
     const QString &getUrl() const;
     QString getLocalURL() const;
@@ -66,6 +67,7 @@ public:
     Q_INVOKABLE QString get(const QString &url_) const;
     Q_INVOKABLE void clean(const QDateTime &to_);
     Q_INVOKABLE qreal getProgressRate(const QStringList &urls_) const;
+    Q_INVOKABLE void cancel(const QStringList &urls_);
 
 protected:
     bool testHash(const QString &url_, const QString &hash_) const;
