@@ -1278,15 +1278,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArgArgType",
+                        "name": "effectArgArgTypeId",
                         "notify": "argTypeChanged",
-                        "read": "argType",
+                        "read": "argTypeId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QVariant",
+                        "type": "int",
                         "user": false,
-                        "write": "setArgType"
+                        "write": "setArgTypeId"
                     },
                     {
                         "constant": false,
@@ -8980,7 +8980,7 @@
                                 "type": "QStringList"
                             }
                         ],
-                        "name": "getProgress",
+                        "name": "getProgressRate",
                         "returnType": "qreal"
                     }
                 ],

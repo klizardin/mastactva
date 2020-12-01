@@ -21,7 +21,7 @@ public:
 
     Q_PROPERTY(int effectArgId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArgEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
-    Q_PROPERTY(QVariant effectArgArgType READ argType WRITE setArgType NOTIFY argTypeChanged)
+    Q_PROPERTY(int effectArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
     Q_PROPERTY(QString effectArgName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString effectArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
@@ -36,8 +36,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArg::m_appId);
             addField<int>("id", "effectArgId", &EffectArg::id, &EffectArg::setId);
             addField<int>("effect", "effectArgEffectId", &EffectArg::effectId, &EffectArg::setEffectId);
-            addField<int>("arg_type", "", &EffectArg::argTypeId, &EffectArg::setArgTypeId);
-            addModel<ShaderArgTypeModel>("effectArgArgType", &EffectArg::m_shaderArgTypeModel, &EffectArg::createShaderArgTypeModel);
+            addField<int>("arg_type", "effectArgArgTypeId", &EffectArg::argTypeId, &EffectArg::setArgTypeId);
             addField<QString>("name", "effectArgName", &EffectArg::name, &EffectArg::setName);
             addField<QString>("default_value", "effectArgDefaultValue", &EffectArg::defaultValue, &EffectArg::setDefaultValue);
             addField<QString>("description", "effectArgDescription", &EffectArg::description, &EffectArg::setDescription);
@@ -51,17 +50,12 @@ public:
     void setEffectId(const int &effectId_);
     int argTypeId() const;
     void setArgTypeId(const int &argTypeId_);
-    QVariant argType() const;
-    void setArgType(const QVariant &obj_);
     QString name() const;
     void setName(const QString &name_);
     QString defaultValue() const;
     void setDefaultValue(const QString &defaultValue_);
     QString description() const;
     void setDescription(const QString &description_);
-
-protected:
-    ShaderArgTypeModel *createShaderArgTypeModel();
 
 signals:
     void idChanged();
@@ -78,7 +72,6 @@ private:
     int m_id = -1;
     int m_effectId = -1;
     int m_argTypeId = -1;
-    ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;
     QString m_name;
     QString m_defaultValue;
     QString m_description;

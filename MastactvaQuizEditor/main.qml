@@ -281,6 +281,15 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    ShaderArgTypeModel {
+        id: shaderArgTypeModel
+        objectName: "ShaderArgTypeModel"
+        layoutQMLName: "ShaderArgTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     Connections {
         target: mastactva
 

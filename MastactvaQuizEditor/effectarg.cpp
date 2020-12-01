@@ -1,5 +1,6 @@
 #include "effectarg.h"
 
+
 EffectArg::EffectArg(EffectArgModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
@@ -38,34 +39,8 @@ int EffectArg::argTypeId() const
 void EffectArg::setArgTypeId(const int &argTypeId_)
 {
     if(argTypeId_ == m_argTypeId) { return; }
-
     m_argTypeId = argTypeId_;
-    if(nullptr != m_shaderArgTypeModel)
-    {
-        m_shaderArgTypeModel->parentItemChanged();
-    }
-
     emit argTypeChanged();
-}
-
-QVariant EffectArg::argType() const
-{
-    if(nullptr == m_shaderArgTypeModel)
-    {
-        const_cast<EffectArg *>(this)->m_shaderArgTypeModel = const_cast<EffectArg *>(this)->createShaderArgTypeModel();
-    }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<ShaderArgTypeModel *>(m_shaderArgTypeModel)));
-}
-
-void EffectArg::setArgType(const QVariant &obj_)
-{
-    if(obj_.isNull() && nullptr != m_shaderArgTypeModel)
-    {
-        delete  m_shaderArgTypeModel;
-        m_shaderArgTypeModel = nullptr;
-
-        emit argTypeChanged();
-    }
 }
 
 QString EffectArg::name() const
@@ -102,20 +77,6 @@ void EffectArg::setDescription(const QString &description_)
     m_description = description_;
 
     emit descriptionChanged();
-}
-
-ShaderArgTypeModel *EffectArg::createShaderArgTypeModel()
-{
-    ShaderArgTypeModel *m = new ShaderArgTypeModel(this);
-    m->initResponse();
-    m->setLayoutRefImpl("id", m_effectArgModel->getQMLLayoutName(), "arg_type");
-    m->setCurrentRef("id");
-    m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArgModel->getQMLLayoutName() + QString("_ShaderArgTypeModel_") + QVariant::fromValue(m_appId).toString());
-    m->registerListModel();
-    m->setAutoCreateChildrenModels(true);
-    m->loadList();
-    return m;
 }
 
 
