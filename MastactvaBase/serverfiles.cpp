@@ -115,6 +115,8 @@ void ServerFiles::cancel(const QStringList &urls_)
     }
     for(ServerFileDownload *download: toRemove)
     {
+        QObject::disconnect(download, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
+        QObject::disconnect(download, SIGNAL(progress()), this, SLOT(progressSlot()));
         auto fit = std::find(std::begin(m_downloads), std::end(m_downloads), download);
         delete *fit;
         *fit = nullptr;
