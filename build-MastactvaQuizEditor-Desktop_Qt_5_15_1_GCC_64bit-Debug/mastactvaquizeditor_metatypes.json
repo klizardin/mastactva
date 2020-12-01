@@ -8841,5 +8841,170 @@
         ],
         "inputFile": "netapi.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "ServerFileDownload",
+                "object": true,
+                "qualifiedClassName": "ServerFileDownload",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "download_",
+                                "type": "ServerFileDownload*"
+                            }
+                        ],
+                        "name": "finished",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "bytesReceived",
+                                "type": "qint64"
+                            },
+                            {
+                                "name": "bytesTotal",
+                                "type": "qint64"
+                            }
+                        ],
+                        "name": "downloadProgress",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "downloadFinished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "name": "downloadReadyRead",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "ServerFiles",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "path_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "setRootDir",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "hash_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "relCachePath_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "add",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "isUrlDownloaded",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "get",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "to_",
+                                "type": "QDateTime"
+                            }
+                        ],
+                        "name": "clean",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "ServerFiles",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "downloaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "download_",
+                                "type": "ServerFileDownload*"
+                            }
+                        ],
+                        "name": "finished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "serverfiles.h",
+        "outputRevision": 67
     }
 ]

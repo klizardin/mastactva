@@ -1070,13 +1070,7 @@ QString MastactvaAPI::leftDoubleCR(const QString &str_)
 
 QString MastactvaAPI::calculateHash(const QString &fileUrl_)
 {
-    QUrl url(fileUrl_);
-    QString filename = url.toLocalFile();
-    QFile *f1 = new QFile(filename);
-    QFileInfo fileInfo(f1->fileName());
-    QByteArray fd = f1->open(QIODevice::ReadOnly) ? f1->readAll() : fileInfo.fileName().toUtf8();
-    delete f1;
-    return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+    return calculateFileURLHash(fileUrl_);
 }
 
 QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)

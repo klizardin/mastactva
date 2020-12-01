@@ -34,6 +34,7 @@ unix: SOURCES += \
         netappconsts.cpp \
         qmlobjects.cpp \
         utils.cpp  \
+        serverfiles.cpp
 
 
 RESOURCES += qml.qrc \
@@ -79,6 +80,7 @@ unix: HEADERS += \
     netappconsts.h \
     qmlobjects.h \
     utils.h    \
+    serverfiles.h
 
 
 DISTFILES += \

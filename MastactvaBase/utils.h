@@ -30,6 +30,7 @@ QString leftDoubleCR(const QString &str_);
 qreal sqr(qreal val_);
 bool isSymbol(const QChar &ch_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
+QString calculateFileURLHash(const QString &fileUrl_);
 
 
 static const QString g_englishLanguage = "English";

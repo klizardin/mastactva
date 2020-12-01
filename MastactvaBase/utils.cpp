@@ -1,5 +1,10 @@
 #include "utils.h"
 #include <QStringList>
+#include <QUrl>
+#include <QFile>
+#include <QFileInfo>
+#include <QCryptographicHash>
+
 
 QString leftDoubleCR(const QString &str_)
 {
@@ -246,4 +251,14 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
         }
         comment.extractLineValues(shaderText_);
     }
+}
+
+QString calculateFileURLHash(const QString &fileUrl_)
+{
+    QUrl url(fileUrl_);
+    QString filename = url.toLocalFile();
+    QFile f1(filename);
+    if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
+    QByteArray fd = f1.readAll();
+    return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
 }
