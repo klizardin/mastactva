@@ -290,6 +290,15 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    EasingTypeModel {
+        id: easingTypeModel
+        objectName: "EasingTypeModel"
+        layoutQMLName: "EasingTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     Connections {
         target: mastactva
 

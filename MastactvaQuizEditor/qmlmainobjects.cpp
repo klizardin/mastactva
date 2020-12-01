@@ -115,6 +115,7 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 #include "shadertype.h"
 #include "shader.h"
 #include "shaderargtype.h"
+#include "easingtype.h"
 
 
 void QMLObjects::setInitialized()
@@ -136,6 +137,7 @@ static const QString g_effectModel = "EffectModel";
 static const QString g_shaderTypeModel = "ShaderTypeModel";
 static const QString g_shaderModel = "ShaderModel";
 static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
+static const QString g_easingTypeModel = "EasingTypeModel";
 
 
 void QMLObjects::searchObjects()
@@ -173,6 +175,12 @@ void QMLObjects::searchObjects()
     {
         ShaderArgTypeModel *m1 = m_root->findChild<ShaderArgTypeModel *>(g_shaderArgTypeModel);
         registerModel(g_shaderArgTypeModel, m1);
+    }
+    m = findListModel(g_easingTypeModel);
+    if(nullptr == m)
+    {
+        EasingTypeModel *m1 = m_root->findChild<EasingTypeModel *>(g_easingTypeModel);
+        registerModel(g_easingTypeModel, m1);
     }
     for(IListModel *m : m_models)
     {
