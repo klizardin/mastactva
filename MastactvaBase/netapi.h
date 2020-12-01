@@ -60,7 +60,7 @@ private:
 class NetAPI : public QObject
 {
     Q_OBJECT
-    //QML_ELEMENT
+    QML_ELEMENT
 
 public:
     static void createInstance(QObject *parent_);

@@ -7001,6 +7001,12 @@
     {
         "classes": [
             {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
                 "className": "NetAPI",
                 "object": true,
                 "qualifiedClassName": "NetAPI",
