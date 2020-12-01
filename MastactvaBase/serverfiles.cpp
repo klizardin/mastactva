@@ -58,7 +58,7 @@ void ServerFiles::clean(const QDateTime &to_)
     // TODO: add implementation
 }
 
-qreal ServerFiles::getProgress(const QStringList &urls_) const
+qreal ServerFiles::getProgressRate(const QStringList &urls_) const
 {
     const bool done = std::all_of(std::begin(m_downloads), std::end(m_downloads),
                                   [&urls_](const ServerFileDownload *download_)->bool
@@ -70,6 +70,7 @@ qreal ServerFiles::getProgress(const QStringList &urls_) const
                 );
     });
     if(done) { return 1.0; }
+
     qint64 recieved = std::accumulate(std::begin(m_downloads), std::end(m_downloads), qint64(0),
                                       [&urls_](qint64 val_, const ServerFileDownload *download_)->qint64
     {
@@ -96,8 +97,9 @@ qreal ServerFiles::getProgress(const QStringList &urls_) const
                 : 0
              );
     });
-    if(0 == total) { return 1.0; }
-    return qreal((std::min(recieved, total) * 100) / total) / qreal(100.0);
+
+    if(0 == total) { return 0.0; }
+    return qreal((std::min(recieved, total) * 1000) / total) / qreal(1000.0);
 }
 
 void ServerFiles::finished(ServerFileDownload *download_)

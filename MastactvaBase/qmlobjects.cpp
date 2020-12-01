@@ -4,11 +4,14 @@
 #include "IModel.h"
 #include "netapi.h"
 #include "Model.h"
+#include "serverfiles.h"
 
 
 void QMLObjectsBase::setRoot(QObject *root_)
 {
+    if(m_root == root_) { return; }
     m_root = root_;
+    clearDependedFromRoot();
     searchObjects();
 }
 
@@ -31,10 +34,22 @@ IListModel *QMLObjectsBase::findListModel(const QString &layoutName_) const
     return *fit;
 }
 
+void QMLObjectsBase::clearDependedFromRoot()
+{
+    delete m_serverFiles;
+    m_serverFiles = nullptr;
+}
+
 NetAPI *QMLObjectsBase::getNetAPI()
 {
     if(nullptr == m_netAPI) { searchObjects(); }
     return m_netAPI;
+}
+
+ServerFiles *QMLObjectsBase::getServerFiles()
+{
+    if(nullptr == m_serverFiles) { m_serverFiles = new ServerFiles(m_root); }
+    return m_serverFiles;
 }
 
 void QMLObjectsBase::registerModel(const QString &layoutName_, IListModel *m_)

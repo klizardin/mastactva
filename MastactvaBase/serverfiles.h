@@ -65,7 +65,7 @@ public:
     Q_INVOKABLE bool isUrlDownloaded(const QString &url_) const;
     Q_INVOKABLE QString get(const QString &url_) const;
     Q_INVOKABLE void clean(const QDateTime &to_);
-    Q_INVOKABLE qreal getProgress(const QStringList &urls_) const;
+    Q_INVOKABLE qreal getProgressRate(const QStringList &urls_) const;
 
 protected:
     bool testHash(const QString &url_, const QString &hash_) const;

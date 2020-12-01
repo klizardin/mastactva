@@ -7,6 +7,7 @@
 
 class QObject;
 class NetAPI;
+class ServerFiles;
 
 
 class QMLObjectsBase
@@ -19,6 +20,7 @@ public:
 
     void setRoot(QObject *root_);
     NetAPI *getNetAPI();
+    ServerFiles *getServerFiles();
     IListModel *getListModel(const QString &layoutName_);
     void registerModel(const QString &layoutName_, IListModel *m_);
     void unregisterModel(const QString &layoutName_);
@@ -29,11 +31,13 @@ public:
 protected:
     virtual void searchObjects() = 0;
     IListModel *findListModel(const QString &layoutName_) const;
+    virtual void clearDependedFromRoot();
 
 protected:
     QObject *m_root = nullptr;
     QVector<IListModel *> m_models;
     NetAPI *m_netAPI = nullptr;
+    ServerFiles *m_serverFiles = nullptr;
 };
 
 
