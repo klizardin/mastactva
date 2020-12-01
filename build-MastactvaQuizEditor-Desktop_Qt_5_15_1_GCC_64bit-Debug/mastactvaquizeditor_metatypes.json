@@ -1953,15 +1953,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArgSetEasing",
+                        "name": "effectArgSetEasingId",
                         "notify": "easingChanged",
-                        "read": "easing",
+                        "read": "easingId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QVariant",
+                        "type": "int",
                         "user": false,
-                        "write": "setEasing"
+                        "write": "setEasingId"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSet",

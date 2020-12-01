@@ -73,32 +73,8 @@ void EffectArgSet::setEasingId(const int &easingId_)
     if(easingId_ == m_easingTypeId) { return; }
 
     m_easingTypeId = easingId_;
-    if(nullptr != m_easingTypeModel)
-    {
-        m_easingTypeModel->parentItemChanged();
-    }
 
     emit easingChanged();
-}
-
-QVariant EffectArgSet::easing() const
-{
-    if(nullptr == m_easingTypeModel)
-    {
-        const_cast<EffectArgSet *>(this)->m_easingTypeModel = const_cast<EffectArgSet *>(this)->createEasingTypeModel();
-    }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<EasingTypeModel *>(m_easingTypeModel)));
-}
-
-void EffectArgSet::setEasing(const QVariant &obj_)
-{
-    if(obj_.isNull() && nullptr != m_easingTypeModel)
-    {
-        delete m_easingTypeModel;
-        m_easingTypeModel = nullptr;
-
-        emit easingChanged();
-    }
 }
 
 EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
@@ -109,20 +85,6 @@ EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
     m->setCurrentRef("arg_set");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgValueModel_") + QVariant::fromValue(m_appId).toString());
-    m->registerListModel();
-    m->setAutoCreateChildrenModels(true);
-    m->loadList();
-    return m;
-}
-
-EasingTypeModel *EffectArgSet::createEasingTypeModel()
-{
-    EasingTypeModel *m = new EasingTypeModel(this);
-    m->initResponse();
-    m->setLayoutRefImpl("id", m_effectArgSetModel->getQMLLayoutName(), "easing");
-    m->setCurrentRef("id");
-    m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArgSetModel->getQMLLayoutName() + QString("_EasingTypeModel_") + QVariant::fromValue(m_appId).toString());
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
