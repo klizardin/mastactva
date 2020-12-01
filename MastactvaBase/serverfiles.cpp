@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
+#include <numeric>
 
 
 static const QString g_currentDir = "./";
@@ -33,7 +34,8 @@ void ServerFiles::add(const QString &url_, const QString &hash_, const QString &
     }
     ServerFileDownload *sfd = new ServerFileDownload(this);
     m_downloads.push_back(sfd);
-    QObject::connect(sfd, SIGNAL(finished(ServerFileDownload *)), this, SLOT(void finished(ServerFileDownload *)));
+    QObject::connect(sfd, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
+    QObject::connect(sfd, SIGNAL(progress()), this, SLOT(progressSlot()));
     sfd->setPath(m_rootDir, relCachePath_);
     sfd->setFile(url_, hash_);
     sfd->start(m_manager);
@@ -56,10 +58,53 @@ void ServerFiles::clean(const QDateTime &to_)
     // TODO: add implementation
 }
 
+qreal ServerFiles::getProgress(const QStringList &urls_) const
+{
+    const bool done = std::all_of(std::begin(m_downloads), std::end(m_downloads),
+                                  [&urls_](const ServerFileDownload *download_)->bool
+    {
+        return nullptr == download_  ||
+                (
+                    nullptr != download_ &&
+                    std::end(urls_) == std::find(std::begin(urls_), std::end(urls_), download_->getUrl())
+                );
+    });
+    if(done) { return 1.0; }
+    qint64 recieved = std::accumulate(std::begin(m_downloads), std::end(m_downloads), qint64(0),
+                                      [&urls_](qint64 val_, const ServerFileDownload *download_)->qint64
+    {
+        return val_ +
+            (
+                (
+                    nullptr != download_
+                    && std::end(urls_) != std::find(std::begin(urls_), std::end(urls_), download_->getUrl())
+                )
+                ? download_->bytesReceived()
+                : 0
+            );
+    });
+    qint64 total = std::accumulate(std::begin(m_downloads), std::end(m_downloads), qint64(0),
+                                      [&urls_](qint64 val_, const ServerFileDownload *download_)->qint64
+    {
+        return val_ +
+            (
+                (
+                    nullptr != download_
+                    && std::end(urls_) != std::find(std::begin(urls_), std::end(urls_), download_->getUrl())
+                )
+                ? download_->bytesTotal()
+                : 0
+             );
+    });
+    if(0 == total) { return 1.0; }
+    return qreal((std::min(recieved, total) * 100) / total) / qreal(100.0);
+}
+
 void ServerFiles::finished(ServerFileDownload *download_)
 {
     if(nullptr == download_) { return; }
-    QObject::disconnect(download_, SIGNAL(finished(ServerFileDownload *)), this, SLOT(void finished(ServerFileDownload *)));
+    QObject::disconnect(download_, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
+    QObject::disconnect(download_, SIGNAL(progress()), this, SLOT(progressSlot()));
 
     const auto fitd = std::find(std::begin(m_downloads), std::end(m_downloads), download_);
     if(std::end(m_downloads) == fitd)
@@ -82,6 +127,11 @@ void ServerFiles::finished(ServerFileDownload *download_)
     download_ = nullptr;
 
     if(ok) { emit downloaded(url); }
+}
+
+void ServerFiles::progressSlot()
+{
+    emit progress();
 }
 
 bool ServerFiles::testHash(const QString &url_, const QString &hash_) const
@@ -151,10 +201,12 @@ QString ServerFileDownload::getLocalURL() const
     return QUrl::fromLocalFile(m_filename).toString();
 }
 
-void ServerFileDownload::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+void ServerFileDownload::downloadProgress(qint64 bytesReceived_, qint64 bytesTotal_)
 {
-    Q_UNUSED(bytesReceived);
-    Q_UNUSED(bytesTotal);
+    m_bytesReceived = bytesReceived_;
+    m_bytesTotal = bytesTotal_;
+
+    emit progress();
 }
 
 void ServerFileDownload::downloadFinished()
@@ -223,4 +275,14 @@ QString ServerFileDownload::getFilename()
     QDir dir(savePath);
     dir.remove(basename);
     return dir.filePath(basename);
+}
+
+qint64 ServerFileDownload::bytesReceived() const
+{
+    return m_bytesReceived;
+}
+
+qint64 ServerFileDownload::bytesTotal() const
+{
+    return m_bytesTotal;
 }

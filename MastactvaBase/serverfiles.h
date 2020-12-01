@@ -21,6 +21,8 @@ public:
     bool ok() const;
     const QString &getUrl() const;
     QString getLocalURL() const;
+    qint64 bytesReceived() const;
+    qint64 bytesTotal() const;
 
 protected:
     QString getFilename();
@@ -28,12 +30,13 @@ protected:
     void reportRedirect();
 
 private slots:
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void downloadProgress(qint64 bytesReceived_, qint64 bytesTotal_);
     void downloadFinished();
     void downloadReadyRead();
 
 signals:
     void finished(ServerFileDownload *download_);
+    void progress();
 
 private:
     QString m_rootDir;
@@ -43,6 +46,8 @@ private:
     QString m_filename;
     QNetworkReply *m_download = nullptr;
     QFile m_outputFile;
+    qint64 m_bytesReceived = 0;
+    qint64 m_bytesTotal = 0;
 };
 
 
@@ -60,6 +65,7 @@ public:
     Q_INVOKABLE bool isUrlDownloaded(const QString &url_) const;
     Q_INVOKABLE QString get(const QString &url_) const;
     Q_INVOKABLE void clean(const QDateTime &to_);
+    Q_INVOKABLE qreal getProgress(const QStringList &urls_) const;
 
 protected:
     bool testHash(const QString &url_, const QString &hash_) const;
@@ -67,9 +73,11 @@ protected:
 
 protected slots:
     void finished(ServerFileDownload *download_);
+    void progressSlot();
 
 signals:
     void downloaded(const QString &url_);
+    void progress();
 
 private:
     QString m_rootDir;

@@ -8859,6 +8859,11 @@
                         ],
                         "name": "finished",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "progress",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -8866,11 +8871,11 @@
                         "access": "private",
                         "arguments": [
                             {
-                                "name": "bytesReceived",
+                                "name": "bytesReceived_",
                                 "type": "qint64"
                             },
                             {
-                                "name": "bytesTotal",
+                                "name": "bytesTotal_",
                                 "type": "qint64"
                             }
                         ],
@@ -8966,6 +8971,17 @@
                         ],
                         "name": "clean",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "urls_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "getProgress",
+                        "returnType": "qreal"
                     }
                 ],
                 "object": true,
@@ -8981,6 +8997,11 @@
                         ],
                         "name": "downloaded",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "progress",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -8993,6 +9014,11 @@
                             }
                         ],
                         "name": "finished",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "progressSlot",
                         "returnType": "void"
                     }
                 ],
