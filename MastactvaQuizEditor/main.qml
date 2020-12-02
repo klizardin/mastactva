@@ -921,6 +921,24 @@ ApplicationWindow {
         }
     }
 
+    RefreshEffectArgumentsDialog {
+        id: refreshEffectsArgumentsDialog
+
+        onOpened : {
+            connect()
+            init()
+        }
+
+        onAccepted : {
+            fieldEffect.applyRefreshArguments()
+            disconnect()
+        }
+
+        onRejected: {
+            disconnect()
+        }
+    }
+
     WarningDialog {
         id: popupMessage
     }
@@ -1798,26 +1816,14 @@ ApplicationWindow {
     }
 
     Action {
-        id: addEffectArgument
-        text: qsTr("&Add effect argument")
+        id: refreshEffectArguments
+        text: qsTr("&Refresh effect arguments")
         onTriggered: {
-
-        }
-    }
-
-    Action {
-        id: editEffectArgument
-        text: qsTr("&Edit effect argument")
-        onTriggered: {
-
-        }
-    }
-
-    Action {
-        id: removeEffectArgument
-        text: qsTr("&Remove effect argument")
-        onTriggered: {
-
+            if(effectModel.currentIndex >= 0 && effectModel.currentItem !== undefined && effectModel.currentItem !== null)
+            {
+                refreshEffectsArgumentsDialog.fieldEffect = effectModel.currentItem
+                refreshEffectsArgumentsDialog.open()
+            }
         }
     }
 
@@ -1904,9 +1910,7 @@ ApplicationWindow {
         }
         AutoSizeMenu {
             title: qsTr("&Arguments")
-            MenuItem { action: addEffectArgument }
-            MenuItem { action: editEffectArgument }
-            MenuItem { action: removeEffectArgument }
+            MenuItem { action: refreshEffectArguments }
         }
         AutoSizeMenu {
             title: qsTr("Argument Se&ts")

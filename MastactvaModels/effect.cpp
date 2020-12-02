@@ -163,6 +163,10 @@ bool Effect::startRefreshArguments()
         if(nullptr == shader) { return false; }
         urlHashPairs.push_back({shader->getFilename(), shader->hash()});
     }
+    for(const QPair<QString,QString> &url_: urlHashPairs)
+    {
+        qDebug() << url_.first << ", " << url_.second;
+    }
     m_shaderUrls.clear();
     for(const QPair<QString,QString> &url_: urlHashPairs)
     {
