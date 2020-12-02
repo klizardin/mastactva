@@ -3551,6 +3551,32 @@
                         "access": "public",
                         "name": "size",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -3984,6 +4010,10 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "download_",
+                                "type": "bool"
+                            },
+                            {
                                 "name": "rate_",
                                 "type": "qreal"
                             }
@@ -3994,6 +4024,11 @@
                     {
                         "access": "public",
                         "name": "refreshArgumentsBeforeApply",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshArgumentsAfterApply",
                         "returnType": "void"
                     }
                 ],
@@ -4012,6 +4047,21 @@
                     {
                         "access": "protected",
                         "name": "refreshArgumentsProgressSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "itemAddedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "itemSetSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "itemDeletedSlot",
                         "returnType": "void"
                     }
                 ],
@@ -4248,6 +4298,32 @@
                     {
                         "access": "public",
                         "name": "size",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
                         "returnType": "int"
                     }
                 ],
@@ -4896,6 +4972,32 @@
                         "access": "public",
                         "name": "size",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -5523,6 +5625,32 @@
                     {
                         "access": "public",
                         "name": "size",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
                         "returnType": "int"
                     }
                 ],
@@ -6152,6 +6280,32 @@
                         "access": "public",
                         "name": "size",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -6759,6 +6913,32 @@
                     {
                         "access": "public",
                         "name": "size",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
                         "returnType": "int"
                     }
                 ],
@@ -7388,6 +7568,32 @@
                         "access": "public",
                         "name": "size",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -7959,6 +8165,32 @@
                         "access": "public",
                         "name": "size",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,
@@ -8529,6 +8761,32 @@
                     {
                         "access": "public",
                         "name": "size",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
                         "returnType": "int"
                     }
                 ],

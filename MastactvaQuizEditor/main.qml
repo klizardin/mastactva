@@ -930,11 +930,11 @@ ApplicationWindow {
         }
 
         onAccepted : {
-            fieldEffect.applyRefreshArguments()
             disconnect()
         }
 
         onRejected: {
+            fieldEffect.cancelRefreshArguments()
             disconnect()
         }
     }

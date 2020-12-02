@@ -68,11 +68,15 @@ public:
 protected slots:
     void refreshArgumentsShaderDownloadedSlot(const QString &url_);
     void refreshArgumentsProgressSlot();
+    void itemAddedSlot();
+    void itemSetSlot();
+    void itemDeletedSlot();
 
 protected:
     EffectShaderModel *createEffectShadersModel();
     EffectArgModel *createEffectArgModel();
     EffectArgSetModel *createEffectArgSetModel();
+    void applyRefreshArgumentsStep();
 
 signals:
     void idChanged();
@@ -81,8 +85,9 @@ signals:
     void effectShadersChanged();
     void argsChanged();
     void argSetsChanged();
-    void refreshArgumentsProgress(qreal rate_);
+    void refreshArgumentsProgress(bool download_, qreal rate_);
     void refreshArgumentsBeforeApply();
+    void refreshArgumentsAfterApply();
 
 private:
     EffectModel *m_effectModel = nullptr;
@@ -97,6 +102,10 @@ private:
 
     QStringList m_shaderUrls;
     QHash<QString, QString> m_shaderLocalUrls;
+    QList<EffectArg *> m_itemsToSet;
+    QList<EffectArg *> m_itemsToDel;
+    QList<EffectArg *> m_itemsToAdd;
+    int m_itemsToChangeCount = 0;
 };
 
 

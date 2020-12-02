@@ -1,4 +1,6 @@
 #include "effect.h"
+#include "effectarg.h"
+#include <QTextCodec>
 #include "shader.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
@@ -151,7 +153,12 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
 
 bool Effect::startRefreshArguments()
 {
-    if(nullptr == m_effectShadersModel || !m_effectShadersModel->isListLoadedImpl()) { return false; }
+    if(nullptr == m_effectShadersModel
+            || !m_effectShadersModel->isListLoadedImpl()
+            || nullptr == m_effectArgModel
+            || !m_effectArgModel->isListLoadedImpl()
+            ) { return false; }
+
     // get all shaders urls
     const int shadersCnt = m_effectShadersModel->size();
     QList<QPair<QString, QString>> urlHashPairs;
@@ -193,10 +200,6 @@ void Effect::cancelRefreshArguments()
     m_shaderLocalUrls.clear();
 }
 
-void Effect::applyRefreshArguments()
-{
-}
-
 void Effect::refreshArgumentsShaderDownloadedSlot(const QString &url_)
 {
     const auto fit = std::find(std::begin(m_shaderUrls), std::end(m_shaderUrls), url_);
@@ -215,7 +218,191 @@ void Effect::refreshArgumentsProgressSlot()
 {
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     qreal rate = sf->getProgressRate(m_shaderUrls);
-    emit refreshArgumentsProgress(rate);
+    emit refreshArgumentsProgress(true, rate);
+}
+
+void Effect::applyRefreshArguments()
+{
+    QList<EffectArg *> newArguments;
+    ShaderArgTypeModel *argTypesModel = static_cast<ShaderArgTypeModel *>(QMLObjectsBase::getInstance().getListModel("ShaderArgTypeModel"));
+    Q_ASSERT(nullptr != argTypesModel);
+
+    // read comments from shaders files
+    // get file, form commens list
+    // form arguments data
+    for(const QString &localUrl : m_shaderLocalUrls.values())
+    {
+        const QUrl url(localUrl);
+        const QString filename = url.toLocalFile();
+        QFile f(filename);
+        if(!f.open(QIODevice::ReadOnly)) { continue; }
+        QByteArray fd = f.readAll();
+
+        QTextCodec *codec = QTextCodec::codecForUtfText(fd);
+        QString shaderText = codec->toUnicode(fd);
+
+        QVector<Comment> comments;
+        getShaderComments(shaderText, comments);
+        for(const Comment &comment: comments)
+        {
+            if(!comment.values().contains(g_argumentName) ||
+                    !comment.values().contains(g_nameName) ||
+                    !comment.values().contains(g_typeName)
+                    ) { continue; }
+            const QString argName = comment.values().value(g_nameName);
+            const QString argTypeStr = comment.values().value(g_typeName);
+            const QString argDefaultValue = comment.values().value(g_defaultValueName, QString());
+            const QString argDescription = comment.values().value(g_descriptionName, QString());
+            ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(argTypeStr));
+            Q_ASSERT(nullptr != shaderArgType);
+            const int argTypeId = shaderArgType->id();
+
+            auto fitni = std::find_if(std::begin(newArguments), std::end(newArguments),
+                                      [&argName](EffectArg *effectArg)->bool
+            {
+                return nullptr != effectArg && effectArg->name() == argName;
+            });
+            EffectArg *newArg = nullptr;
+            const bool newArgCreated = std::end(newArguments) != fitni;
+            if(newArgCreated)
+            {
+                newArg = *fitni;
+            }
+            else
+            {
+                newArg = m_effectArgModel->createDataItemImpl();
+                newArg->setName(argName);
+            }
+            newArg->setArgTypeId(argTypeId);
+            newArg->setDefaultValue(argDefaultValue);
+            newArg->setDescription(argDescription);
+
+            EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(argName));
+            if(nullptr != existingArg)
+            {
+                if(existingArg->argTypeId() == argTypeId &&
+                        existingArg->defaultValue() == argDefaultValue &&
+                        existingArg->description() == argDescription)
+                {
+                    delete newArg;
+                    newArg = nullptr;
+                }
+            }
+
+            if(!newArgCreated)
+            {
+                if(nullptr != newArg)
+                {
+                    newArguments.push_back(newArg);
+                }
+            }
+            else
+            {
+                if(nullptr == newArg)
+                {
+                    newArguments.erase(fitni);
+                }
+            }
+        }
+    }
+
+    // form lists: 1) to set items (index, and new value) 2) to del items (items) 3) to add items (items)
+    m_itemsToSet.clear();
+    m_itemsToDel.clear();
+    m_itemsToAdd.clear();
+    for(EffectArg *newArg: newArguments)
+    {
+        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(newArg->name()));
+        if(nullptr != existingArg)
+        {
+            m_itemsToSet.push_back(newArg);
+        }
+        else
+        {
+            m_itemsToAdd.push_back(newArg);
+        }
+    }
+    for(int i = 0; i < m_effectArgModel->sizeImpl(); i++)
+    {
+        const QString argName = m_effectArgModel->dataItemAtImpl(i)->name();
+        const auto fitni = std::find_if(std::begin(newArguments), std::end(newArguments),
+                                  [&argName](EffectArg *effectArg)->bool
+        {
+            return nullptr != effectArg && effectArg->name() == argName;
+        });
+        if(std::end(newArguments) == fitni)
+        {
+            m_itemsToDel.push_back(m_effectArgModel->dataItemAtImpl(i));
+        }
+    }
+    newArguments.clear();
+    m_itemsToChangeCount = m_itemsToSet.size() + m_itemsToDel.size() + m_itemsToAdd.size();
+    QObject::connect(m_effectArgModel, SIGNAL(itemAdded()), this, SLOT(itemAddedSlot()));
+    QObject::connect(m_effectArgModel, SIGNAL(itemSet()), this, SLOT(itemSetSlot()));
+    QObject::connect(m_effectArgModel, SIGNAL(itemDeleted()), this, SLOT(itemDeletedSlot()));
+    applyRefreshArgumentsStep();
+}
+
+void Effect::itemAddedSlot()
+{
+    applyRefreshArgumentsStep();
+}
+
+void Effect::itemSetSlot()
+{
+    applyRefreshArgumentsStep();
+}
+
+void Effect::itemDeletedSlot()
+{
+    applyRefreshArgumentsStep();
+}
+
+void Effect::applyRefreshArgumentsStep()
+{
+    const int leftItems = m_itemsToSet.size() + m_itemsToDel.size() + m_itemsToAdd.size();
+    if(0 == m_itemsToChangeCount)
+    {
+        emit refreshArgumentsProgress(false, 1.0);
+    }
+    else
+    {
+        emit refreshArgumentsProgress(false, qreal((std::min(leftItems, m_itemsToChangeCount) * 1000) / m_itemsToChangeCount) / 1000.0);
+    }
+
+    if(m_itemsToSet.isEmpty() && m_itemsToDel.isEmpty() && m_itemsToAdd.isEmpty())
+    {
+        QObject::disconnect(m_effectArgModel, SIGNAL(itemAdded()), this, SLOT(itemAddedSlot()));
+        QObject::disconnect(m_effectArgModel, SIGNAL(itemSet()), this, SLOT(itemSetSlot()));
+        QObject::disconnect(m_effectArgModel, SIGNAL(itemDeleted()), this, SLOT(itemDeletedSlot()));
+
+        emit refreshArgumentsAfterApply();
+        return;
+    }
+
+    if(!m_itemsToSet.isEmpty())
+    {
+        EffectArg *arg = m_itemsToSet.back();
+        m_itemsToSet.pop_back();
+        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(arg->name()));
+        Q_ASSERT(nullptr != existingArg);
+        m_effectArgModel->setDataItemImpl(m_effectArgModel->indexOfDataItemImpl(existingArg), arg);
+        return;
+    }
+    if(!m_itemsToDel.isEmpty())
+    {
+        EffectArg *arg = m_itemsToDel.back();
+        m_itemsToDel.pop_back();
+        m_effectArgModel->delDataItemImpl(arg);
+        return;
+    }
+    if(!m_itemsToAdd.isEmpty())
+    {
+        EffectArg *arg = m_itemsToAdd.back();
+        m_itemsToAdd.pop_back();
+        m_effectArgModel->addDataItemImpl(arg);
+        return;
+    }
 }
 
 

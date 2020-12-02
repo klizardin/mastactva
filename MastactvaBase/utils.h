@@ -39,6 +39,7 @@ static const QString g_shaderName = "shader";
 static const QString g_argumentName = "argument";
 static const QString g_typeName = "type";
 static const QString g_nameName = "name";
+static const QString g_defaultValueName = "defaultvalue";
 static const QString g_descriptionName = "description";
 static const QString g_shadersRelPath = "shaders";
 
