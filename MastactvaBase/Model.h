@@ -397,7 +397,7 @@ public:
 
     DataType_ *findDataItemByFieldValueImpl(const QString &qmlFieldName_, const QVariant &value_)
     {
-        return dataItemFindIf([&qmlFieldName_, &value_](DataType_ *item_)->bool
+        return dataItemFindIf([&qmlFieldName_, &value_](const DataType_ *item_)->bool
         {
             return getDataLayout<DataType_>().getQMLValue(item_, qmlFieldName_) == value_;
         });
@@ -411,6 +411,27 @@ public:
                         ->findDataItemByFieldValueImpl(qmlFieldName_,value_)
                         )
                     );
+    }
+
+    template<typename Op_>
+    int indexFindIf(Op_ op_) const
+    {
+        const int count = sizeImpl();
+        for(int i = 0; i < count; i++)
+        {
+            if(op_(m_data[i])) { return i; }
+        }
+        return -1;
+    }
+
+    int indexOfDataItemImpl(const DataType_ *item_) const
+    {
+        const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+        return indexFindIf([&appId](const DataType_ *i)->bool
+        {
+            const QVariant iAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, i);
+            return appId.isValid() && iAppId.isValid() && appId == iAppId;
+        });
     }
 
     DataType_ *createDataItemImpl()
