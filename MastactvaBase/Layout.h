@@ -403,6 +403,13 @@ public:
         return layoutItem->getValue(obj_, false);
     }
 
+    QVariant getQMLValue(const DataType_ *obj_, const QString &qmlFieldName_) const
+    {
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByQMLName(qmlFieldName_);
+        if(nullptr == layoutItem) { return QVariant(); }
+        return layoutItem->getValue(obj_, true);
+    }
+
     bool getJsonValues(const DataType_ *obj_, QHash<QString, QVariant> &values_) const
     {
         bool ret = false;
@@ -573,6 +580,25 @@ protected:
         return const_cast<layout::Private::ILayoutItem<DataType_> *>
                 (const_cast<const LayoutBase<DataType_> *>
                    (this)->findItemByJsonName(fieldJsonName_)
+                );
+    }
+
+    const layout::Private::ILayoutItem<DataType_> *findItemByQMLName(const QString &fieldQMLName_) const
+    {
+        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
+                     [&fieldQMLName_](layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return nullptr != item_ && item_->getQMLName() == fieldQMLName_;
+        });
+        if(std::end(m_fields) == fit) { return nullptr; }
+        return *fit;
+    }
+
+    layout::Private::ILayoutItem<DataType_> *findItemByQMLName(const QString &fieldQMLName_)
+    {
+        return const_cast<layout::Private::ILayoutItem<DataType_> *>
+                (const_cast<const LayoutBase<DataType_> *>
+                   (this)->findItemByQMLName(fieldQMLName_)
                 );
     }
 

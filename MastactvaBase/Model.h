@@ -371,12 +371,46 @@ public:
 
     QVariant itemAtImpl(int index_) const
     {
-        return QVariant::fromValue(static_cast<QObject *>(const_cast<ListModelBaseOfData<DataType_, ModelType_> *>(this)->dataItemAtImpl(index_)));;
+        return QVariant::fromValue(
+                    static_cast<QObject *>(
+                        const_cast<ListModelBaseOfData<DataType_, ModelType_> *>(this)
+                        ->dataItemAtImpl(index_)
+                        )
+                    );
     }
 
     int sizeImpl() const
     {
         return m_data.size();
+    }
+
+    template<typename Op_>
+    DataType_ *dataItemFindIf(Op_ op_)
+    {
+        const int count = sizeImpl();
+        for(int i = 0; i < count; i++)
+        {
+            if(op_(m_data[i])) { return m_data[i]; }
+        }
+        return nullptr;
+    }
+
+    DataType_ *findDataItemByFieldValueImpl(const QString &qmlFieldName_, const QVariant &value_)
+    {
+        return dataItemFindIf([&qmlFieldName_, &value_](DataType_ *item_)->bool
+        {
+            return getDataLayout<DataType_>().getQMLValue(item_, qmlFieldName_) == value_;
+        });
+    }
+
+    QVariant findItemByFieldValueImpl(const QString &qmlFieldName_, const QVariant &value_) const
+    {
+        return QVariant::fromValue(
+                    static_cast<QObject *>(
+                        const_cast<ListModelBaseOfData<DataType_, ModelType_> *>(this)
+                        ->findDataItemByFieldValueImpl(qmlFieldName_,value_)
+                        )
+                    );
     }
 
 protected:
@@ -1015,6 +1049,10 @@ public:                                                                         
     Q_INVOKABLE int size()                                                                                      \
     {                                                                                                           \
         return sizeImpl();                                                                                      \
+    }                                                                                                           \
+    Q_INVOKABLE QVariant findItemByFieldValue(const QString &qmlFieldName_, const QVariant &value_) const       \
+    {                                                                                                           \
+        return findItemByFieldValueImpl(qmlFieldName_, value_);                                                 \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
