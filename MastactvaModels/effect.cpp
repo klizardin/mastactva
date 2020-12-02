@@ -171,10 +171,10 @@ bool Effect::startRefreshArguments()
         if(nullptr == shader) { return false; }
         urlHashPairs.push_back({shader->getFilename(), shader->hash()});
     }
-    for(const QPair<QString,QString> &url_: urlHashPairs)
-    {
-        qDebug() << url_.first << ", " << url_.second;
-    }
+    //for(const QPair<QString,QString> &url_: urlHashPairs)
+    //{
+    //    qDebug() << url_.first << ", " << url_.second;
+    //}
     m_shaderUrls.clear();
     for(const QPair<QString,QString> &url_: urlHashPairs)
     {
@@ -254,7 +254,8 @@ void Effect::applyRefreshArguments()
             const QString argTypeStr = comment.values().value(g_typeName);
             const QString argDefaultValue = comment.values().value(g_defaultValueName, QString());
             const QString argDescription = comment.values().value(g_descriptionName, QString());
-            ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(argTypeStr));
+            //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
+            ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl("shaderArgTypeType", QVariant::fromValue(argTypeStr));
             Q_ASSERT(nullptr != shaderArgType);
             const int argTypeId = shaderArgType->id();
 
@@ -273,6 +274,7 @@ void Effect::applyRefreshArguments()
             {
                 newArg = m_effectArgModel->createDataItemImpl();
                 newArg->setName(argName);
+                newArg->setEffectId(id());
             }
             newArg->setArgTypeId(argTypeId);
             newArg->setDefaultValue(argDefaultValue);

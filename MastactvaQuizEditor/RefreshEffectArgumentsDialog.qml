@@ -87,7 +87,6 @@ Dialog {
         refreshProgress.value = 1.0;
         refreshProgressPercent.text = 100 + qsTr(" %")
         message.text = qsTr("Refresh of effect argument was done")
-        standardButtons = Dialog.Ok
     }
 
     function init()
@@ -115,5 +114,5 @@ Dialog {
         fieldEffect.refreshArgumentsAfterApply.disconnect(refreshArgumentsAfterApply)
     }
 
-    standardButtons: Dialog.Cancel
+    standardButtons: Dialog.Cancel | Dialog.Ok
 }

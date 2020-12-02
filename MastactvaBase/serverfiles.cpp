@@ -193,13 +193,13 @@ void ServerFileDownload::setFile(const QString &url_, const QString &hash_)
 
 void ServerFileDownload::start(QNetworkAccessManager &manager_)
 {
-    qDebug() << "ServerFileDownload::start() url = " << m_url;
+    //qDebug() << "ServerFileDownload::start() url = " << m_url;
     m_filename = getFilename();
     m_outputFile.setFileName(m_filename);
-    qDebug() << "m_filename = " << m_filename;
+    //qDebug() << "m_filename = " << m_filename;
     if (!m_outputFile.open(QIODevice::WriteOnly))
     {
-        qDebug() << "!m_outputFile.open(QIODevice::WriteOnly)";
+        //qDebug() << "!m_outputFile.open(QIODevice::WriteOnly)";
         m_outputFile.close();
 
         emit finished(this);
@@ -215,7 +215,7 @@ void ServerFileDownload::start(QNetworkAccessManager &manager_)
 
 void ServerFileDownload::cancel()
 {
-    qDebug() << "ServerFileDownload::cancel() url = " << m_url;
+    //qDebug() << "ServerFileDownload::cancel() url = " << m_url;
 
     disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
     disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
@@ -244,7 +244,7 @@ QString ServerFileDownload::getLocalURL() const
 
 void ServerFileDownload::downloadProgress(qint64 bytesReceived_, qint64 bytesTotal_)
 {
-    qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url << " bytesReceived_ = " << bytesReceived_ << " bytesTotal_ = " << bytesTotal_;
+    //qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url << " bytesReceived_ = " << bytesReceived_ << " bytesTotal_ = " << bytesTotal_;
 
     m_bytesReceived = bytesReceived_;
     m_bytesTotal = bytesTotal_;
@@ -254,7 +254,7 @@ void ServerFileDownload::downloadProgress(qint64 bytesReceived_, qint64 bytesTot
 
 void ServerFileDownload::downloadFinished()
 {
-    qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url;
+    //qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url;
 
     m_outputFile.close();
     disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
@@ -263,7 +263,7 @@ void ServerFileDownload::downloadFinished()
     bool success = false;
     if (m_download->error())
     {
-        qDebug() << "m_download->error() = " << m_download->error();
+        qDebug() << "download error() = " << m_download->error();
         m_outputFile.remove();
     }
     else
@@ -309,7 +309,7 @@ void ServerFileDownload::reportRedirect()
 
 void ServerFileDownload::downloadReadyRead()
 {
-    qDebug() << "ServerFileDownload::downloadReadyRead() url = " << m_url;
+    //qDebug() << "ServerFileDownload::downloadReadyRead() url = " << m_url;
 
     m_outputFile.write(m_download->readAll());
 }

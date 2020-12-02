@@ -323,6 +323,8 @@ ApplicationWindow {
             console.log("MastactvaAPI::onInitialized() at main.qml")
             effectModel.loadList()
             shaderTypeModel.loadList()
+            shaderArgTypeModel.loadList()
+            easingTypeModel.loadList()
             shaderEditDialog.mastactva = mastactva
             shaderEditDialog.shaderTypeModel = shaderTypeModel
             chooseShaderDialog.shaderTypeModel = shaderTypeModel
