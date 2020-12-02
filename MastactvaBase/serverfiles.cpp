@@ -193,10 +193,13 @@ void ServerFileDownload::setFile(const QString &url_, const QString &hash_)
 
 void ServerFileDownload::start(QNetworkAccessManager &manager_)
 {
+    qDebug() << "ServerFileDownload::start() url = " << m_url;
     m_filename = getFilename();
     m_outputFile.setFileName(m_filename);
+    qDebug() << "m_filename = " << m_filename;
     if (!m_outputFile.open(QIODevice::WriteOnly))
     {
+        qDebug() << "!m_outputFile.open(QIODevice::WriteOnly)";
         m_outputFile.close();
 
         emit finished(this);
@@ -212,6 +215,8 @@ void ServerFileDownload::start(QNetworkAccessManager &manager_)
 
 void ServerFileDownload::cancel()
 {
+    qDebug() << "ServerFileDownload::cancel() url = " << m_url;
+
     disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
     disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
     disconnect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
@@ -239,6 +244,8 @@ QString ServerFileDownload::getLocalURL() const
 
 void ServerFileDownload::downloadProgress(qint64 bytesReceived_, qint64 bytesTotal_)
 {
+    qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url << " bytesReceived_ = " << bytesReceived_ << " bytesTotal_ = " << bytesTotal_;
+
     m_bytesReceived = bytesReceived_;
     m_bytesTotal = bytesTotal_;
 
@@ -247,6 +254,8 @@ void ServerFileDownload::downloadProgress(qint64 bytesReceived_, qint64 bytesTot
 
 void ServerFileDownload::downloadFinished()
 {
+    qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url;
+
     m_outputFile.close();
     disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
     disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
@@ -254,6 +263,7 @@ void ServerFileDownload::downloadFinished()
     bool success = false;
     if (m_download->error())
     {
+        qDebug() << "m_download->error() = " << m_download->error();
         m_outputFile.remove();
     }
     else
@@ -291,16 +301,16 @@ void ServerFileDownload::reportRedirect()
              << " was redirected with code: " << statusCode;
 
     QVariant target = m_download->attribute(QNetworkRequest::RedirectionTargetAttribute);
-    if (!target.isValid())
-        return;
+    if (!target.isValid()) { return; }
     QUrl redirectUrl = target.toUrl();
-    if (redirectUrl.isRelative())
-        redirectUrl = requestUrl.resolved(redirectUrl);
+    if (redirectUrl.isRelative()) { redirectUrl = requestUrl.resolved(redirectUrl); }
     qDebug() << "Redirected to: " << redirectUrl.toDisplayString();
 }
 
 void ServerFileDownload::downloadReadyRead()
 {
+    qDebug() << "ServerFileDownload::downloadReadyRead() url = " << m_url;
+
     m_outputFile.write(m_download->readAll());
 }
 
@@ -312,6 +322,7 @@ QString ServerFileDownload::getFilename()
     if(basename.isEmpty()) { return QString(); }
     QString savePath = QDir(m_rootDir).filePath(m_relPath);
     QDir dir(savePath);
+    if(!dir.exists()) { dir.mkpath("."); }
     dir.remove(basename);
     return dir.filePath(basename);
 }
