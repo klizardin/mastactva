@@ -44,6 +44,7 @@ public:
     void registerListModel();
     void setParentListModelInfo(IListModelInfo *parentListModelInfo_);
     bool autoCreateChildrenModelsImpl() const;
+    bool autoCreateChildrenModelsOnSelectImpl() const;
     void addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_);
 
 public:
@@ -81,6 +82,7 @@ protected:
     void init(QObject *modelObj_);
     void addModelParamImpl(const QString &name_, const QVariant &value_);
     void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
+    void setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateChildrenModelsOnSelect_);
     void startListLoad();
     void setListLoaded();
     bool listLoading() const;
@@ -110,6 +112,7 @@ private:
     bool m_autoRegister = false;
     IListModel *m_model = nullptr;
     bool m_autoCreateChildrenModels = false;
+    bool m_autoCreateChildrenModelsOnSelect = false;
     bool m_listLoaded = false;
     bool m_listLoading = false;
     int m_loadingChildenModels = 0;
@@ -283,6 +286,7 @@ public:
         const int ni = std::distance(std::begin(m_data), fit);
         if(ni == getCurrentIndexImpl()) { return false; }
         setCurrentIndexImpl(ni);
+        autoLoadItemData();
         return true;
     }
 
@@ -301,6 +305,7 @@ public:
         const int ni = std::distance(std::begin(m_data), fit);
         if(ni == getCurrentIndexImpl()) { return false; }
         setCurrentIndexImpl(ni);
+        autoLoadItemData();
         return true;
     }
 
@@ -741,10 +746,12 @@ protected:
         if(std::end(m_data) == fit)
         {
             setCurrentIndexImpl(m_data.isEmpty()? -1: 0);
+            autoLoadItemData();
         }
         else
         {
             setCurrentIndexImpl(std::distance(std::begin(m_data), fit));
+            autoLoadItemData();
         }
     }
 
@@ -792,10 +799,12 @@ protected:
         if(nullptr == oldIdItem)
         {
             setCurrentIndexImpl(0);
+            autoLoadItemData();
         }
         else
         {
             setCurrentIndexByAppIdImpl(oldCurrentAppId);
+            autoLoadItemData();
         }
         loaded.clear();
         if(autoCreateChildrenModelsImpl())
@@ -834,6 +843,7 @@ protected:
         if(request_->getSetCurrentItemIndex())
         {
             setCurrentIndexImpl(m_data.size() - 1);
+            autoLoadItemData();
         }
         itemAddedVF();
     }
@@ -891,6 +901,17 @@ protected:
     virtual QHash<int, QByteArray> roleNames() const override
     {
         return m_roleNames;
+    }
+
+    void autoLoadItemData()
+    {
+        if(autoCreateChildrenModelsOnSelectImpl()
+                && getCurrentIndexImpl() >= 0
+                && isIndexValid(getCurrentIndexImpl(), m_data.size())
+                )
+        {
+            getDataLayout<DataType_>().createQMLValues(m_data[getCurrentIndexImpl()]);
+        }
     }
 
     void clearData()
@@ -989,6 +1010,7 @@ public:                                                                         
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
     Q_PROPERTY(bool jsonParamsGet READ jsonParamsGet WRITE setJsonParamsGet NOTIFY jsonParamsGetChanged)        \
     Q_PROPERTY(bool autoCreateChildrenModels READ autoCreateChildrenModels WRITE setAutoCreateChildrenModels NOTIFY autoCreateChildrenModelsChanged)    \
+    Q_PROPERTY(bool autoCreateChildrenModelsOnSelect READ autoCreateChildrenModelsOnSelect WRITE setAutoCreateChildrenModelsOnSelect NOTIFY autoCreateChildrenModelsOnSelectChanged)    \
     Q_PROPERTY(bool outputModel READ outputModel WRITE setOutputModel NOTIFY outputModelChanged)                \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
@@ -1113,6 +1135,7 @@ public:                                                                         
     void setCurrentIndex(int index_)                                                                            \
     {                                                                                                           \
         setCurrentIndexImpl(index_);                                                                            \
+        autoLoadItemData();                                                                                     \
         emit currentIndexChanged();                                                                             \
         emit currentItemChanged();                                                                              \
     }                                                                                                           \
@@ -1164,6 +1187,15 @@ public:                                                                         
     {                                                                                                           \
         setAutoCreateChildrenModelsImpl(autoCreateChildrenModels_);                                             \
         emit autoCreateChildrenModelsChanged();                                                                 \
+    }                                                                                                           \
+    bool autoCreateChildrenModelsOnSelect() const                                                               \
+    {                                                                                                           \
+        return autoCreateChildrenModelsOnSelectImpl();                                                          \
+    }                                                                                                           \
+    void setAutoCreateChildrenModelsOnSelect(bool autoCreateChildrenModelsOnSelect_)                            \
+    {                                                                                                           \
+        setAutoCreateChildrenModelsOnSelectImpl(autoCreateChildrenModelsOnSelect_);                             \
+        emit autoCreateChildrenModelsOnSelectChanged();                                                         \
     }                                                                                                           \
     bool outputModel() const                                                                                    \
     {                                                                                                           \

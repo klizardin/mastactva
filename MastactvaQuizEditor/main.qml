@@ -1822,7 +1822,10 @@ ApplicationWindow {
             if(effectModel.currentIndex >= 0 && effectModel.currentItem !== undefined && effectModel.currentItem !== null)
             {
                 refreshEffectsArgumentsDialog.fieldEffect = effectModel.currentItem
-                refreshEffectsArgumentsDialog.open()
+                if(refreshEffectsArgumentsDialog.fieldEffect.startRefreshArguments())
+                {
+                    refreshEffectsArgumentsDialog.open()
+                }
             }
         }
     }

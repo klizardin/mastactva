@@ -3710,6 +3710,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -3776,6 +3790,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -4458,6 +4477,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -4524,6 +4557,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -5131,6 +5169,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -5197,6 +5249,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -5785,6 +5842,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -5851,6 +5922,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -6439,6 +6515,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -6505,6 +6595,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -7073,6 +7168,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -7139,6 +7248,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -7727,6 +7841,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -7793,6 +7921,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -8324,6 +8457,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -8390,6 +8537,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {
@@ -8921,6 +9073,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "outputModel",
                         "notify": "outputModelChanged",
                         "read": "outputModel",
@@ -8987,6 +9153,11 @@
                     {
                         "access": "public",
                         "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
                         "returnType": "void"
                     },
                     {

@@ -153,6 +153,7 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
 
 bool Effect::startRefreshArguments()
 {
+    qDebug() << "Effect::startRefreshArguments()";
     if(nullptr == m_effectShadersModel
             || !m_effectShadersModel->isListLoadedImpl()
             || nullptr == m_effectArgModel
@@ -389,6 +390,7 @@ void Effect::applyRefreshArgumentsStep()
         m_effectArgModel->setDataItemImpl(m_effectArgModel->indexOfDataItemImpl(existingArg), arg);
         return;
     }
+
     if(!m_itemsToDel.isEmpty())
     {
         EffectArg *arg = m_itemsToDel.back();
@@ -396,6 +398,7 @@ void Effect::applyRefreshArgumentsStep()
         m_effectArgModel->delDataItemImpl(arg);
         return;
     }
+
     if(!m_itemsToAdd.isEmpty())
     {
         EffectArg *arg = m_itemsToAdd.back();

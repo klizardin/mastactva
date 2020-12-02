@@ -108,6 +108,7 @@ signals:
     void refreshChildren(QString);
     void jsonParamsGetChanged();
     void autoCreateChildrenModelsChanged();
+    void autoCreateChildrenModelsOnSelectChanged();
     void listReloaded();
     void itemAdded();
     void itemSet();

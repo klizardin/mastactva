@@ -193,9 +193,19 @@ bool ListModelBaseData::autoCreateChildrenModelsImpl() const
     return m_autoCreateChildrenModels;
 }
 
+bool ListModelBaseData::autoCreateChildrenModelsOnSelectImpl() const
+{
+    return m_autoCreateChildrenModelsOnSelect;
+}
+
 void ListModelBaseData::setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_)
 {
     m_autoCreateChildrenModels = autoCreateChildrenModels_;
+}
+
+void ListModelBaseData::setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateChildrenModelsOnSelect_)
+{
+    m_autoCreateChildrenModelsOnSelect = autoCreateChildrenModelsOnSelect_;
 }
 
 bool ListModelBaseData::isListLoadedImpl() const

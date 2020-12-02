@@ -87,13 +87,12 @@ Dialog {
         refreshProgress.value = 1.0;
         refreshProgressPercent.text = 100 + qsTr(" %")
         message.text = qsTr("Refresh of effect argument was done")
-        doneOk = true
+        standardButtons = Dialog.Ok
     }
 
     function init()
     {
         doneOk = false
-        fieldEffect.startRefreshArguments()
         downloadProgress.value = 0.0
         downloadProgressPercent.text = 0 + qsTr(" %")
         refreshProgress.value = 0.0;
@@ -116,5 +115,5 @@ Dialog {
         fieldEffect.refreshArgumentsAfterApply.disconnect(refreshArgumentsAfterApply)
     }
 
-    standardButtons: doneOk ? Dialog.Cancel : Dialog.Ok
+    standardButtons: Dialog.Cancel
 }
