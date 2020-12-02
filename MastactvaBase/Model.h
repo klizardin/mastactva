@@ -647,6 +647,14 @@ protected:
         return delDataItemImpl(dataItem);
     }
 
+    int indexOfItemImpl(const QVariant &item_) const
+    {
+        QObject *obj = qvariant_cast<QObject *>(item_);
+        DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
+        if(nullptr == dataItem) { return -1; }
+        return indexOfDataItemImpl(dataItem);
+    }
+
     void setLayoutJsonNameImpl(const QString &layoutJsonName_)
     {
         setDataLayout<DataType_>().setLayoutJsonName(layoutJsonName_);
@@ -1074,6 +1082,10 @@ public:                                                                         
     Q_INVOKABLE QVariant findItemByFieldValue(const QString &qmlFieldName_, const QVariant &value_) const       \
     {                                                                                                           \
         return findItemByFieldValueImpl(qmlFieldName_, value_);                                                 \
+    }                                                                                                           \
+    Q_INVOKABLE int indexOfItem(const QVariant &item_)                                                          \
+    {                                                                                                           \
+        return indexOfItemImpl(item_);                                                                          \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
