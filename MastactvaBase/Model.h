@@ -624,6 +624,10 @@ protected:
         if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
         {
             modelError(errorCode_, errorCodeStr_, reply_);
+            DataType_ *itemToDel = reinterpret_cast<DataType_ *>(request_->getItemData());
+            delete itemToDel;
+            itemToDel = nullptr;
+            request_->setItemData(nullptr);
         }
         else if(request_->getRequestName() == netAPI->getListRequestName<DataType_>())
         {
@@ -758,6 +762,8 @@ protected:
         m_data.push_back(reinterpret_cast<DataType_ *>(request_->getItemData()));
         endInsertRows();
 
+        request_->setItemData(nullptr);
+
         DataType_ *item = findDataItemByAppIdImpl(appId);
         if(nullptr == item) { return; }
 
@@ -771,6 +777,11 @@ protected:
 
     virtual void modelItemSet(RequestData *request_, const QJsonDocument &reply_)
     {
+        DataType_ *itemToDel = reinterpret_cast<DataType_ *>(request_->getItemData());
+        delete itemToDel;
+        itemToDel = nullptr;
+        request_->setItemData(nullptr);
+
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
