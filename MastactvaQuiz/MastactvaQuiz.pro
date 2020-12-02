@@ -12,21 +12,21 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        answer.cpp \
-        gallery.cpp \
+        main.cpp \
+        mastactvaapi.cpp \
+        quizqmlobjects.cpp \
+
+unix: SOURCES += \
+        question.cpp \
+        questionanswer.cpp \
         gallerystatistics.cpp \
         image.cpp \
         imagedescription.cpp \
         imagepoint.cpp \
-        main.cpp \
-        mastactvaapi.cpp \
-        question.cpp \
-        questionanswer.cpp \
-        quizqmlobjects.cpp \
+        answer.cpp \
+        gallery.cpp \
         quizuser.cpp \
-        userstep.cpp
-
-unix: SOURCES += \
+        userstep.cpp  \
         IModel.cpp \
         Model.cpp \
         imagesource.cpp \
@@ -58,20 +58,20 @@ ANDROID_ABIS = armeabi-v7a
 
 
 HEADERS += \
+    mastactvaapi.h \
+    quizqmlobjects.h \
+
+unix: HEADERS += \
     answer.h \
     gallery.h \
     gallerystatistics.h \
     image.h \
     imagedescription.h \
     imagepoint.h \
-    mastactvaapi.h \
     question.h \
     questionanswer.h \
-    quizqmlobjects.h \
     quizuser.h \
-    userstep.h
-
-unix: HEADERS += \
+    userstep.h  \
     IModel.h \
     Layout.h \
     Model.h \

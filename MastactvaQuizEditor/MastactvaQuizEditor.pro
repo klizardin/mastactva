@@ -14,21 +14,21 @@ CONFIG += c++14
 
 HEADERS += \
         appconsts.h \
+        galleryeditviewmodel.h    \
+        mastactvaapi.h    \
+        netapiv0.h \
+        qmlmainobjects.h \
+
+unix: HEADERS += \
         easingtype.h \
         effect.h \
         effectarg.h \
         effectargset.h \
         effectargvalue.h \
         effectshader.h \
-        galleryeditviewmodel.h    \
-        mastactvaapi.h    \
-        netapiv0.h \
-        qmlmainobjects.h \
         shader.h \
         shaderargtype.h \
-        shadertype.h
-
-unix: HEADERS += \
+        shadertype.h    \
         utils.h \
         netappconsts.h \
         IModel.h   \
@@ -42,22 +42,22 @@ unix: HEADERS += \
 
 SOURCES += \
         appconsts.cpp \
+        main.cpp    \
+        galleryeditviewmodel.cpp    \
+        mastactvaapi.cpp    \
+        netapiv0.cpp \
+        qmlmainobjects.cpp  \
+
+unix: SOURCES += \
         easingtype.cpp \
         effect.cpp \
         effectarg.cpp \
         effectargset.cpp \
         effectargvalue.cpp \
         effectshader.cpp \
-        main.cpp    \
-        galleryeditviewmodel.cpp    \
-        mastactvaapi.cpp    \
-        netapiv0.cpp \
-        qmlmainobjects.cpp  \
         shader.cpp \
         shaderargtype.cpp \
-        shadertype.cpp
-
-unix: SOURCES += \
+        shadertype.cpp  \
         utils.cpp  \
         netappconsts.cpp  \
         IModel.cpp \
