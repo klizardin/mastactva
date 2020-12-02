@@ -413,72 +413,6 @@ public:
                     );
     }
 
-protected:
-    bool storeAfterSaveImpl() const
-    {
-        return getDataLayout<DataType_>().storeAfterSave();
-    }
-
-    void setStoreAfterSaveImpl(bool storeAfterSave_)
-    {
-        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
-    }
-
-    void loadListImpl()
-    {
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return; }
-        RequestData *request = findRequest(netAPI->getListRequestName<DataType_>());
-        if(nullptr != request)
-        {
-            reloadList = true;
-            return;
-        }
-        startListLoad();
-        if(getJsonLayoutName().isEmpty())
-        {
-            request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
-            if(addRequest(request))
-            {
-                jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
-            }
-            netAPI->freeRequest(request);
-        }
-        else
-        {
-            QString parentModel;
-            QString parentModelJsonFieldName;
-            if(m_refs.contains(currentRefImpl()))
-            {
-                parentModel = m_refs.value(currentRefImpl()).m_parentModel;
-                parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
-            }
-            QHash<QString, QVariant> extraFields(m_modelParams);
-            for(const ExtraFields &f: m_extraFields)
-            {
-                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
-                if(nullptr != m)
-                {
-                    m->getValuesForAppId(f.m_appId, extraFields);
-                }
-            }
-            extraFields = renameFields(extraFields);
-            request = netAPI->getList<DataType_>(
-                        getJsonLayoutName(),
-                        currentRefImpl(),
-                        parentModel,
-                        parentModelJsonFieldName,
-                        getRefAppIdImpl(),
-                        getJsonParamsGetImpl(),
-                        extraFields
-                        );
-            if(!addRequest(request))
-            {
-                setListLoaded();
-            }
-        }
-    }
-
     DataType_ *createDataItemImpl()
     {
         DataType_ *dta = new DataType_(m_model);
@@ -491,11 +425,6 @@ protected:
                     QVariant::fromValue(static_cast<IListModelInfo *>(this)),
                     dta);
         return dta;
-    }
-
-    QVariant createItemImpl()
-    {
-        return QVariant::fromValue(createDataItemImpl());
     }
 
     bool setDataItemImpl(int index_, DataType_ *item_)
@@ -595,6 +524,77 @@ protected:
 
         RequestData *request = netAPI->delItem(getJsonLayoutName(), item_);
         return addRequest(request);
+    }
+
+protected:
+    bool storeAfterSaveImpl() const
+    {
+        return getDataLayout<DataType_>().storeAfterSave();
+    }
+
+    void setStoreAfterSaveImpl(bool storeAfterSave_)
+    {
+        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
+    }
+
+    void loadListImpl()
+    {
+        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
+        if(nullptr == netAPI) { return; }
+        RequestData *request = findRequest(netAPI->getListRequestName<DataType_>());
+        if(nullptr != request)
+        {
+            reloadList = true;
+            return;
+        }
+        startListLoad();
+        if(getJsonLayoutName().isEmpty())
+        {
+            request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
+            if(addRequest(request))
+            {
+                jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
+            }
+            netAPI->freeRequest(request);
+        }
+        else
+        {
+            QString parentModel;
+            QString parentModelJsonFieldName;
+            if(m_refs.contains(currentRefImpl()))
+            {
+                parentModel = m_refs.value(currentRefImpl()).m_parentModel;
+                parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
+            }
+            QHash<QString, QVariant> extraFields(m_modelParams);
+            for(const ExtraFields &f: m_extraFields)
+            {
+                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
+                if(nullptr != m)
+                {
+                    m->getValuesForAppId(f.m_appId, extraFields);
+                }
+            }
+            extraFields = renameFields(extraFields);
+            request = netAPI->getList<DataType_>(
+                        getJsonLayoutName(),
+                        currentRefImpl(),
+                        parentModel,
+                        parentModelJsonFieldName,
+                        getRefAppIdImpl(),
+                        getJsonParamsGetImpl(),
+                        extraFields
+                        );
+            if(!addRequest(request))
+            {
+                setListLoaded();
+            }
+        }
+    }
+
+    QVariant createItemImpl()
+    {
+        return QVariant::fromValue(createDataItemImpl());
     }
 
     bool setItemImpl(int index_, const QVariant &item_)
