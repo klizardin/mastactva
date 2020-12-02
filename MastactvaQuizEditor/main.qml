@@ -290,6 +290,7 @@ ApplicationWindow {
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
+        autoCreateChildrenModelsOnSelect: true
     }
 
     ShaderModel {
