@@ -552,6 +552,11 @@ public:
         return addRequest(request);
     }
 
+    void setLayoutIdFieldImpl(const QString &fieldJsonName_)
+    {
+        setDataLayout<DataType_>().setIdField(fieldJsonName_);
+    }
+
 protected:
     bool storeAfterSaveImpl() const
     {
@@ -668,11 +673,6 @@ protected:
     const QString &getLayoutJsonNameImpl()
     {
         return getDataLayout<DataType_>().getLayoutJsonName();
-    }
-
-    void setLayoutIdFieldImpl(const QString &fieldJsonName_)
-    {
-        setDataLayout<DataType_>().setIdField(fieldJsonName_);
     }
 
     QString getLayoutIdFieldImpl()
@@ -850,15 +850,14 @@ protected:
 
     virtual void modelItemSet(RequestData *request_, const QJsonDocument &reply_)
     {
-        DataType_ *itemToDel = reinterpret_cast<DataType_ *>(request_->getItemData());
-        delete itemToDel;
-        itemToDel = nullptr;
-        request_->setItemData(nullptr);
-
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+        const int itemIndex = indexOfDataItemImpl(item);
+        QModelIndex changedIndex0 = createIndex(itemIndex, 0);
+        QModelIndex changedIndex1 = createIndex(itemIndex, m_roleNames.size());
+        emit dataChanged(changedIndex0, changedIndex1);
         itemSetVF();
     }
 
