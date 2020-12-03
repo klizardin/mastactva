@@ -46,6 +46,10 @@ void EffectArgValue::setArgId(const int &argId_)
     {
         m_effectArgModel->parentItemChanged();
     }
+    else
+    {
+        (void)arg();
+    }
 
     emit argChanged();
 }

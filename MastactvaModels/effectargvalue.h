@@ -43,12 +43,14 @@ public:
     };
 
 public:
+    Q_INVOKABLE int argSetId() const;
+    Q_INVOKABLE void setArgSetId(const int &argSetId_);
+    Q_INVOKABLE int argId() const;
+    Q_INVOKABLE void setArgId(const int &argId_);
+
+public:
     int id() const;
     void setId(const int &id_);
-    int argSetId() const;
-    void setArgSetId(const int &argSetId_);
-    int argId() const;
-    void setArgId(const int &argId_);
     QVariant arg() const;
     void setArg(const QVariant &obj_);
     QString value() const;
