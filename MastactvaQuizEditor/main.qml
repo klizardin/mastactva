@@ -2140,7 +2140,13 @@ ApplicationWindow {
         id: addArgumentOfArgumentSet
         text: qsTr("Add a&rgument of argument set")
         onTriggered: {
-
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0 && effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectArgumentSetValuesCurrentIndex >= 0)
+            {
+                effectArgumentValueEditDialog.fieldNew = false
+                effectArgumentValueEditDialog.fieldEffectArgumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                effectArgumentValueEditDialog.fieldEffectArgumentValue = effectArgumentSetValuesCurrentModel.itemAt(effectArgumentSetValuesCurrentIndex)
+                effectArgumentValueEditDialog.open()
+            }
         }
     }
 
@@ -2156,7 +2162,10 @@ ApplicationWindow {
         id: removeArgumentOfArgumentSet
         text: qsTr("Remove argument of argument set")
         onTriggered: {
-
+            if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectArgumentSetValuesCurrentIndex >= 0)
+            {
+                effectArgumentSetValuesCurrentModel.delItem(effectArgumentSetValuesCurrentIndex)
+            }
         }
     }
 
