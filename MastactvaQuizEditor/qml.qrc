@@ -22,6 +22,7 @@
         <file>ShaderEditDialog.qml</file>
         <file>ChooseShaderDialog.qml</file>
         <file>RefreshEffectArgumentsDialog.qml</file>
+        <file>EffectArgumentSetEditDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

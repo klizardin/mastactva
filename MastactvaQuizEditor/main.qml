@@ -418,6 +418,7 @@ ApplicationWindow {
             shaderEditDialog.shaderTypeModel = shaderTypeModel
             chooseShaderDialog.shaderTypeModel = shaderTypeModel
             chooseShaderDialog.shaderModel = shaderModel
+            effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
         }
     }
 
@@ -1035,6 +1036,69 @@ ApplicationWindow {
                 fieldEffect.cancelRefreshArguments()
             }
             disconnect()
+        }
+    }
+
+    EffectArgumentSetEditDialog {
+        id: effectArgumentSetEditDialog
+
+        property var effectArgumentSetsModel : undefined
+        property int effectArgumentSetsModelIndex : -1
+
+        onOpened: {
+            effectArgumentSetsModel = effectArgumentSetsCurrentModel
+            effectArgumentSetsModelIndex = effectArgumentSetsCurrentIndex
+            init()
+        }
+
+        onAccepted: {
+            if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && fieldEffectArgumentSet !== undefined && fieldEffectArgumentSet !== null)
+            {
+                update()
+                if(fieldNew)
+                {
+                    effectArgumentSetsModel.itemAdded.connect(effectArgumentSetAdded)
+                    effectArgumentSetsModel.addItem(fieldEffectArgumentSet)
+                }
+                else
+                {
+                    console.log("effectArgumentSetsModel = ", effectArgumentSetsModel)
+                    console.log("effectArgumentSetsModelIndex = ", effectArgumentSetsModelIndex)
+                    console.log("fieldEffectArgumentSet = ", fieldEffectArgumentSet)
+                    effectArgumentSetsModel.itemSet.connect(effectArgumentSetSet)
+                    effectArgumentSetsModel.setItem(effectArgumentSetsModelIndex, fieldEffectArgumentSet)
+                }
+            }
+        }
+
+        onRejected: {
+            fieldEffectArgumentSet = undefined
+            effectArgumentSetsModel = undefined
+            effectArgumentSetsModelIndex = -1
+        }
+
+        function effectArgumentSetAdded()
+        {
+            if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && fieldEffectArgumentSet !== undefined && fieldEffectArgumentSet !== null)
+            {
+                effectArgumentSetsModel.itemAdded.disconnect(effectArgumentSetAdded)
+                effectArgumentSetsCurrentIndex = effectArgumentSetsModel.indexOfItem(fieldEffectArgumentSet)
+            }
+            fieldEffectArgumentSet = undefined
+            effectArgumentSetsModel = undefined
+            effectArgumentSetsModelIndex = -1
+        }
+
+        function effectArgumentSetSet()
+        {
+            console.log("effectArgumentSetSet()")
+            if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && fieldEffectArgumentSet !== undefined && fieldEffectArgumentSet !== null)
+            {
+                effectArgumentSetsModel.itemSet.disconnect(effectArgumentSetSet)
+            }
+            fieldEffectArgumentSet = undefined
+            effectArgumentSetsModel = undefined
+            effectArgumentSetsModelIndex = -1
         }
     }
 
@@ -1933,7 +1997,37 @@ ApplicationWindow {
         id: addArgumentSet
         text: qsTr("&Add argument set")
         onTriggered: {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            {
+                effectArgumentSetEditDialog.fieldNew = true
+                effectArgumentSetEditDialog.fieldEffectArgumentSet = effectArgumentSetsCurrentModel.createItem()
+                effectArgumentSetEditDialog.fieldEffectArgumentSet.effectArgSetEffectId = effectModel.getCurrentItem().effectId
+                effectArgumentSetEditDialog.open()
+            }
+        }
+    }
 
+    Action {
+        id: editArgumentSet
+        text: qsTr("Edit argument &set")
+        onTriggered: {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
+            {
+                effectArgumentSetEditDialog.fieldNew = false
+                effectArgumentSetEditDialog.fieldEffectArgumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                effectArgumentSetEditDialog.open()
+            }
+        }
+    }
+
+    Action {
+        id: removeArgumentSet
+        text: qsTr("Remove argument set")
+        onTriggered: {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
+            {
+                effectArgumentSetsCurrentModel.delItem(effectArgumentSetsCurrentIndex)
+            }
         }
     }
 
@@ -1956,14 +2050,6 @@ ApplicationWindow {
     Action {
         id: removeArgumentOfArgumentSet
         text: qsTr("Remove argument of argument set")
-        onTriggered: {
-
-        }
-    }
-
-    Action {
-        id: removeArgumentSet
-        text: qsTr("Remove argument set")
         onTriggered: {
 
         }
@@ -2017,10 +2103,11 @@ ApplicationWindow {
         AutoSizeMenu {
             title: qsTr("Argument Se&ts")
             MenuItem { action: addArgumentSet }
+            MenuItem { action: editArgumentSet }
+            MenuItem { action: removeArgumentSet }
             MenuItem { action: addArgumentOfArgumentSet }
             MenuItem { action: editArgumentOfArgumentSet }
             MenuItem { action: removeArgumentOfArgumentSet }
-            MenuItem { action: removeArgumentSet }
         }
         AutoSizeMenu {
             title: qsTr("&Demo")
@@ -3304,10 +3391,11 @@ ApplicationWindow {
             AutoSizeMenu {
                 id: effectArgumentSetsItemMenu
                 MenuItem { action: addArgumentSet }
+                MenuItem { action: editArgumentSet }
+                MenuItem { action: removeArgumentSet }
                 MenuItem { action: addArgumentOfArgumentSet }
                 MenuItem { action: editArgumentOfArgumentSet }
                 MenuItem { action: removeArgumentOfArgumentSet }
-                MenuItem { action: removeArgumentSet }
             }
 
             Column {
@@ -3328,7 +3416,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentSetsItemType
                         width: effectArgumentSetsList.width - effectArgumentSetsItemTypeLabel.width
-                        text: easingTypeModel.findItemById(effectArgSetEasingId) !== null ? easingTypeModel.findItemById(effectArgSetEasingId).shaderArgTypeType : ""
+                        text: easingTypeModel.findItemById(effectArgSetEasingId) !== null ? easingTypeModel.findItemById(effectArgSetEasingId).easingTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
