@@ -88,6 +88,10 @@ Dialog {
             easingTypeList.model.currentIndex = 0
             fieldEffectArgumentSet.effectArgSetEasingId = easingTypeList.model.getCurrentItem().easingTypeId
         }
+        else
+        {
+            easingTypeList.currentIndex = easingTypeList.model.currentIndex
+        }
         effectArgumentSetDescription.text = fieldEffectArgumentSet.effectArgSetDescription
     }
 

@@ -142,6 +142,10 @@ Dialog {
             editShaderTypeList.model.currentIndex = 0
             fieldShader.shaderTypeId = editShaderTypeList.model.getCurrentItem().shaderTypeId
         }
+        else
+        {
+            editShaderTypeList.currentIndex = editShaderTypeList.model.currentIndex
+        }
         editShaderFilename.text = fieldShader.shaderFilename
         editShaderHash.text = fieldShader.shaderHash
         editShaderDescription.text = fieldShader.shaderDescription
