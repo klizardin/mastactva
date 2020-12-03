@@ -32,6 +32,8 @@ ApplicationWindow {
     property int effectShaderCurrentIndex: -1
     property var effectArgumentsCurrentModel: undefined
     property int effectArgumentsCurrentIndex: -1
+    property var effectArgumentSetsCurrentModel: undefined
+    property int effectArgumentSetsCurrentIndex: -1
 
     Connections {
         target: root
@@ -225,6 +227,17 @@ ApplicationWindow {
                 {
                     effectArgumentsModel.listReloaded.connect(effectArgumentsListReloaded)
                 }
+                var effectArgumentSetsModel = effect.effectArgSets
+                if(effectArgumentSetsModel.isListLoaded())
+                {
+                    effectArgumentSetsCurrentModel = effectArgumentSetsModel
+                    effectArgumentSetsList.model = effectArgumentSetsCurrentModel
+                    effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
+                }
+                else
+                {
+                    effectArgumentSetsModel.listReloaded.connect(effectArgumentSetsListReloaded)
+                }
             }
             else
             {
@@ -236,6 +249,9 @@ ApplicationWindow {
                 effectArgumentsCurrentModel = undefined
                 effectArgumentsList.model = 0
                 effectArgumentsCurrentIndex = -1
+                effectArgumentSetsCurrentModel = undefined
+                effectArgumentSetsList.model = 0
+                effectArgumentSetsCurrentIndex = -1
             }
         }
 
@@ -275,6 +291,25 @@ ApplicationWindow {
             }
         }
 
+        function effectArgumentSetsListReloaded()
+        {
+            var effect = effectModel.getCurrentItem()
+            var effectArgumentSetsModel = effect.effectArgSets
+            effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
+            if(effectArgumentSetsModel.isListLoaded())
+            {
+                effectArgumentSetsCurrentModel = effectArgumentSetsModel
+                effectArgumentSetsList.model = effectArgumentSetsCurrentModel
+                effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
+            }
+            else
+            {
+                effectArgumentSetsCurrentModel = undefined
+                effectArgumentSetsList.model = 0
+                effectArgumentSetsCurrentIndex = -1
+            }
+        }
+
         function onEffectShaderCurrentIndexChanged()
         {
             effectShadersList.currentIndex = effectShaderCurrentIndex
@@ -290,6 +325,15 @@ ApplicationWindow {
             if(effectArgumentsCurrentModel !== undefined && effectArgumentsCurrentModel !== null)
             {
                 effectArgumentsCurrentModel.currentIndex = effectArgumentsCurrentIndex
+            }
+        }
+
+        function onEffectArgumentSetsCurrentIndexChanged()
+        {
+            effectArgumentSetsList.currentIndex = effectArgumentSetsCurrentIndex
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            {
+                effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
             }
         }
     }
@@ -2368,7 +2412,17 @@ ApplicationWindow {
                             }
                             Item {
                                 id: effectInfoArgumentSets
-                                Text { text: qsTr("Argument Sets list") }
+                                ListView {
+                                    id: effectArgumentSetsList
+
+                                    anchors.fill: parent
+                                    spacing: Constants.effectsListViewSpacing
+                                    clip: true
+                                    model: 0
+                                    delegate: effectArgumentSetsItem
+                                    highlight: effectArgumentSetsItemHighlight
+                                    highlightFollowsCurrentItem: false
+                                }
                             }
                         }
                     }
@@ -3211,6 +3265,100 @@ ApplicationWindow {
             x: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.x : 0
             width: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.width : 0
             height: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: effectArgumentSetsItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectArgumentSetsItemMenu.popup()
+                }
+                else
+                {
+                    effectArgumentSetsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                    effectArgumentSetsItemMenu.popup()
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectArgumentSetsItemMenu
+                MenuItem { action: addArgumentSet }
+                MenuItem { action: addArgumentOfArgumentSet }
+                MenuItem { action: editArgumentOfArgumentSet }
+                MenuItem { action: removeArgumentOfArgumentSet }
+                MenuItem { action: removeArgumentSet }
+            }
+
+            Column {
+                id: effectArgumentSetsItemRect
+                width: effectArgumentSetsList.width
+
+                FontMetrics{
+                    id: effectArgumentSetsItemFontMetrics
+                    font: effectArgumentSetsItemType.font
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentSetsItemTypeLabel
+                        text: qsTr("Easing type : ")
+                    }
+                    Text {
+                        id: effectArgumentSetsItemType
+                        width: effectArgumentSetsList.width - effectArgumentSetsItemTypeLabel.width
+                        text: easingTypeModel.findItemById(effectArgSetEasingId) !== null ? easingTypeModel.findItemById(effectArgSetEasingId).shaderArgTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectArgumentSetsItemDescriptionText
+                    width: effectArgumentSetsList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgSetDescription) : mastactva.readMore(effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectArgumentSetsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectArgumentSetsItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectArgumentSetsItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.y : 0
+            x: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.x : 0
+            width: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.width : 0
+            height: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.height : 0
         }
     }
 }
