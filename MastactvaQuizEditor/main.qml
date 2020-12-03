@@ -2495,16 +2495,46 @@ ApplicationWindow {
                             }
                             Item {
                                 id: effectInfoArgumentSets
-                                ListView {
-                                    id: effectArgumentSetsList
 
+                                SplitView {
+                                    id: slitEffectArgumentSetsAndEffectArgumentValues
                                     anchors.fill: parent
-                                    spacing: Constants.effectsListViewSpacing
-                                    clip: true
-                                    model: 0
-                                    delegate: effectArgumentSetsItem
-                                    highlight: effectArgumentSetsItemHighlight
-                                    highlightFollowsCurrentItem: false
+                                    orientation: Qt.Vertical
+
+                                    Rectangle {
+                                        width: effectInfoArgumentSets.width
+                                        SplitView.minimumHeight: effectInfoArgumentSets.height / 4
+                                        SplitView.maximumHeight: effectInfoArgumentSets.height * 3 / 4
+                                        SplitView.preferredHeight: effectInfoArgumentSets.height / 2
+                                        ListView {
+                                            id: effectArgumentSetsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.effectsListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectArgumentSetsItem
+                                            highlight: effectArgumentSetsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                        }
+                                    }
+                                    Rectangle {
+                                        width: effectInfoArgumentSets.width
+                                        SplitView.minimumHeight: effectInfoArgumentSets.height / 4
+                                        SplitView.maximumHeight: effectInfoArgumentSets.height * 3 / 4
+                                        SplitView.preferredHeight: effectInfoArgumentSets.height/2
+                                        /*ListView {
+                                            id: effectArgumentSetValuesList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.effectsListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectArgumentSetValuesItem
+                                            highlight: effectArgumentSetValuesItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                        }*/
+                                    }
                                 }
                             }
                         }
