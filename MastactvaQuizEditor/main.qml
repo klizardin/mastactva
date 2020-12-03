@@ -1062,9 +1062,6 @@ ApplicationWindow {
                 }
                 else
                 {
-                    console.log("effectArgumentSetsModel = ", effectArgumentSetsModel)
-                    console.log("effectArgumentSetsModelIndex = ", effectArgumentSetsModelIndex)
-                    console.log("fieldEffectArgumentSet = ", fieldEffectArgumentSet)
                     effectArgumentSetsModel.itemSet.connect(effectArgumentSetSet)
                     effectArgumentSetsModel.setItem(effectArgumentSetsModelIndex, fieldEffectArgumentSet)
                 }
@@ -1091,7 +1088,6 @@ ApplicationWindow {
 
         function effectArgumentSetSet()
         {
-            console.log("effectArgumentSetSet()")
             if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && fieldEffectArgumentSet !== undefined && fieldEffectArgumentSet !== null)
             {
                 effectArgumentSetsModel.itemSet.disconnect(effectArgumentSetSet)

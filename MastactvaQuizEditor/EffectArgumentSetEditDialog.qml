@@ -97,8 +97,6 @@ Dialog {
 
     function update()
     {
-        console.log("easingTypeList.model.currentIndex = ", easingTypeList.model.currentIndex)
-        console.log("easingTypeList.model.getCurrentItem().easingTypeId = ", easingTypeList.model.getCurrentItem().easingTypeId)
         fieldEffectArgumentSet.effectArgSetId = effectArgumentSetId.text
         fieldEffectArgumentSet.effectArgSetEasingId = easingTypeList.model.getCurrentItem().easingTypeId
         fieldEffectArgumentSet.effectArgSetDescription = effectArgumentSetDescription.text
@@ -122,7 +120,6 @@ Dialog {
                 {
                     easingTypeList.currentIndex = index
                     easingTypeList.model.currentIndex = index
-                    console.log("easingTypeList.model.currentIndex = ", easingTypeList.model.currentIndex)
                     mouse.accepted = false
                 }
             }
