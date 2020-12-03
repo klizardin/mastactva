@@ -23,7 +23,7 @@ Dialog {
 
     FontMetrics{
         id: effectArgumentSetFontMetrics
-        font: effectArgumentSetId.font
+        font: effectArgumentValueId.font
     }
 
     ColumnLayout {
@@ -128,7 +128,8 @@ Dialog {
     {
         effectArgumentValueId.text = fieldEffectArgumentValue.effectArgValueId
         effectArgumentValueSetDescription.text = fieldEffectArgumentSet.effectArgSetDescription
-        effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.effectArgArgTypeId).shaderArgTypeType
+        console.log("fieldEffectArgumentValue.effectArgValueArg.isListLoaded() = ", fieldEffectArgumentValue.effectArgValueArg.isListLoaded())
+        effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType
         effectArgumentValueArgName.text = fieldEffectArgumentValue.effectArgValueArg.effectArgName
         effectArgumentValueArgDefaultValue.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDefaultValue
         effectArgumentValueArgDescription.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDescription

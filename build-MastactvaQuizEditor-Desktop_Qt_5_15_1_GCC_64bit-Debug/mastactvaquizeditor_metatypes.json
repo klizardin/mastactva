@@ -6021,6 +6021,40 @@
         "classes": [
             {
                 "className": "EffectArgValue",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "argSetId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "argSetId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setArgSetId",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "argId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setArgId",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {

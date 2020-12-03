@@ -468,6 +468,8 @@ ApplicationWindow {
             chooseShaderDialog.shaderTypeModel = shaderTypeModel
             chooseShaderDialog.shaderModel = shaderModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
+            effectArgumentValueEditDialog.shaderArgTypeModel = shaderArgTypeModel
+            chooseEffectArgumentDialog.shaderArgTypeModel = shaderArgTypeModel
         }
     }
 
@@ -1204,6 +1206,39 @@ ApplicationWindow {
             fieldEffectArgumentValue = undefined
             effectArgumentValuesModel = undefined
             effectArgumentValuesModelIndex = -1
+        }
+    }
+
+    ChooseEffectArgumentDialog {
+        id: chooseEffectArgumentDialog
+
+        property var fieldEffectArgumentValue: undefined
+        property var fieldEffectArgumentSet: undefined
+
+        onOpened: {
+            fieldEffectArg = undefined
+            init()
+        }
+
+        onAccepted: {
+            if(fieldEffectArg !== undefined && fieldEffectArg !== null)
+            {
+                if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
+                {
+                    fieldEffectArgumentValue.setArgSetId(fieldEffectArgumentSet.effectArgSetId)
+                    fieldEffectArgumentValue.setArgId(fieldEffectArg.effectArgId)
+                    effectArgumentValueEditDialog.fieldEffectArgumentSet = fieldEffectArgumentSet
+                    effectArgumentValueEditDialog.fieldEffectArgumentValue = fieldEffectArgumentValue
+                    effectArgumentValueEditDialog.open()
+                }
+            }
+            fieldEffectArgumentValue = undefined
+            fieldEffectArg = undefined
+        }
+
+        onRejected: {
+            fieldEffectArgumentValue = undefined
+            fieldEffectArg = undefined
         }
     }
 
@@ -1995,9 +2030,12 @@ ApplicationWindow {
         id: editEffect
         text: qsTr("&Edit effect")
         onTriggered: {
-            effectEditDialog.fieldEffect = effectModel.getCurrentItem()
-            effectEditDialog.fieldNewItem = false
-            effectEditDialog.open()
+            if(effectCurrentIndex >= 0)
+            {
+                effectEditDialog.fieldEffect = effectModel.getCurrentItem()
+                effectEditDialog.fieldNewItem = false
+                effectEditDialog.open()
+            }
         }
     }
 
@@ -2140,12 +2178,15 @@ ApplicationWindow {
         id: addArgumentOfArgumentSet
         text: qsTr("Add a&rgument of argument set")
         onTriggered: {
-            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0 && effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectArgumentSetValuesCurrentIndex >= 0)
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0 && effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectCurrentIndex >= 0)
             {
-                effectArgumentValueEditDialog.fieldNew = false
-                effectArgumentValueEditDialog.fieldEffectArgumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
-                effectArgumentValueEditDialog.fieldEffectArgumentValue = effectArgumentSetValuesCurrentModel.itemAt(effectArgumentSetValuesCurrentIndex)
-                effectArgumentValueEditDialog.open()
+                effectArgumentValueEditDialog.fieldNew = true
+                var effectArgumentSetItem = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                var effectArgumentValueItem = effectArgumentSetValuesCurrentModel.createItem()
+                chooseEffectArgumentDialog.fieldEffectArgumentSet = effectArgumentSetItem
+                chooseEffectArgumentDialog.fieldEffectArgumentValue = effectArgumentValueItem
+                chooseEffectArgumentDialog.effectArgModel = effectModel.currentItem.effectArgs
+                chooseEffectArgumentDialog.open()
             }
         }
     }
@@ -2154,7 +2195,13 @@ ApplicationWindow {
         id: editArgumentOfArgumentSet
         text: qsTr("&Edit argument of argument set")
         onTriggered: {
-
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0 && effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectArgumentSetValuesCurrentIndex >= 0)
+            {
+                effectArgumentValueEditDialog.fieldNew = false
+                effectArgumentValueEditDialog.fieldEffectArgumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                effectArgumentValueEditDialog.fieldEffectArgumentValue = effectArgumentSetValuesCurrentModel.itemAt(effectArgumentSetValuesCurrentIndex)
+                effectArgumentValueEditDialog.open()
+            }
         }
     }
 
