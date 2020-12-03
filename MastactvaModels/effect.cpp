@@ -117,6 +117,7 @@ EffectShaderModel *Effect::createEffectShadersModel()
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectShaderModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
@@ -131,6 +132,7 @@ EffectArgModel *Effect::createEffectArgModel()
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
@@ -145,6 +147,7 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgSetModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();

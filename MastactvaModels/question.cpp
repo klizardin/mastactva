@@ -93,6 +93,7 @@ AnswerModel *Question::createAnswerModel()
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_AnswerModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
@@ -109,6 +110,7 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_UserQuestionAnswerModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->setOutputModel(true);

@@ -79,6 +79,7 @@ QuestionModel *ImagePointToQuestion::createQuestionModel()
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointToQuestionModel->getQMLLayoutName() + QString("_QuestionModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->setParentListModelInfo(m_parentModelInfo);
@@ -286,6 +287,7 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
     m->setCurrentRef("image_point");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePointToNextImageModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->loadList();
@@ -300,6 +302,7 @@ ImagePointToQuestionModel *ImagePoint::createImagePointToQuestionModel()
     m->setCurrentRef("image_point");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePointToQuestionModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->setParentListModelInfo(m_parentModelInfo);

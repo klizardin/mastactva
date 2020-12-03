@@ -142,6 +142,7 @@ ImagePointModel *Image::createImagePoints()
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImagePointModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
@@ -156,6 +157,7 @@ ImageDescriptionModel *Image::createImageDescriptionModel()
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImageDescriptionModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setAutoCreateChildrenModels(true);
     m->loadList();
