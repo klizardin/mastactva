@@ -30,6 +30,8 @@ ApplicationWindow {
     property int effectCurrentIndex: -1
     property var effectShadersCurrentModel: undefined
     property int effectShaderCurrentIndex: -1
+    property var effectArgumentsCurrentModel: undefined
+    property int effectArgumentsCurrentIndex: -1
 
     Connections {
         target: root
@@ -206,20 +208,35 @@ ApplicationWindow {
                 {
                     effectShadersCurrentModel = shadersModel
                     effectShadersList.model = shadersModel
+                    effectShaderCurrentIndex = effectShadersCurrentModel.currentIndex
                 }
                 else
                 {
                     shadersModel.listReloaded.connect(shadersListReloaded)
+                }
+                var effectArgumentsModel = effect.effectArgs
+                if(effectArgumentsModel.isListLoaded())
+                {
+                    effectArgumentsCurrentModel = effectArgumentsModel
+                    effectArgumentsList.model = effectArgumentsCurrentModel
+                    effectArgumentsCurrentIndex = effectArgumentsCurrentModel.currentIndex
+                }
+                else
+                {
+                    effectArgumentsModel.listReloaded.connect(effectArgumentsListReloaded)
                 }
             }
             else
             {
                 effectInfoCommonName.text = qsTr("Please, select effect item")
                 effectInfoCommonDescription.text = qsTr("")
-                effectShadersList.model = 0
                 effectShadersCurrentModel = undefined
+                effectShadersList.model = 0
+                effectShaderCurrentIndex = -1
+                effectArgumentsCurrentModel = undefined
+                effectArgumentsList.model = 0
+                effectArgumentsCurrentIndex = -1
             }
-            effectShaderCurrentIndex = -1
         }
 
         function shadersListReloaded()
@@ -239,12 +256,40 @@ ApplicationWindow {
             }
         }
 
+        function effectArgumentsListReloaded()
+        {
+            var effect = effectModel.getCurrentItem()
+            var effectArgumentsModel = effect.effectArgs
+            effectArgumentsModel.listReloaded.disconnect(effectArgumentsListReloaded)
+            if(effectArgumentsModel.isListLoaded())
+            {
+                effectArgumentsCurrentModel = effectArgumentsModel
+                effectArgumentsList.model = effectArgumentsCurrentModel
+                effectArgumentsCurrentIndex = effectArgumentsCurrentModel.currentIndex
+            }
+            else
+            {
+                effectArgumentsCurrentModel = undefined
+                effectArgumentsList.model = 0
+                effectArgumentsCurrentIndex = -1
+            }
+        }
+
         function onEffectShaderCurrentIndexChanged()
         {
             effectShadersList.currentIndex = effectShaderCurrentIndex
             if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
                 effectShadersCurrentModel.currentIndex = effectShaderCurrentIndex
+            }
+        }
+
+        function onEffectArgumentsCurrentIndexChanged()
+        {
+            effectArgumentsList.currentIndex = effectArgumentsCurrentIndex
+            if(effectArgumentsCurrentModel !== undefined && effectArgumentsCurrentModel !== null)
+            {
+                effectArgumentsCurrentModel.currentIndex = effectArgumentsCurrentIndex
             }
         }
     }
@@ -2302,7 +2347,17 @@ ApplicationWindow {
                             }
                             Item {
                                 id: effectInfoArguments
-                                Text { text: qsTr("Arguments list") }
+                                ListView {
+                                    id: effectArgumentsList
+
+                                    anchors.fill: parent
+                                    spacing: Constants.effectsListViewSpacing
+                                    clip: true
+                                    model: 0
+                                    delegate: effectArgumentsItem
+                                    highlight: effectArgumentsItemHighlight
+                                    highlightFollowsCurrentItem: false
+                                }
                             }
                             Item {
                                 id: effectInfoArgumentSets
@@ -3032,5 +3087,124 @@ ApplicationWindow {
         }
     }
 
+    Component {
+        id: effectArgumentsItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectArgumentsItemMenu.popup()
+                }
+                else
+                {
+                    effectArgumentsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                    effectArgumentsItemMenu.popup()
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectArgumentsItemMenu
+                MenuItem { action: refreshEffectArguments }
+            }
+
+            Column {
+                id: effectArgumentsItemRect
+                width: effectArgumentsList.width
+
+                FontMetrics{
+                    id: effectArgumentsItemFontMetrics
+                    font: effectArgumentsItemType.font
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentsItemTypeLabel
+                        text: qsTr("Type : ")
+                    }
+                    Text {
+                        id: effectArgumentsItemType
+                        width: effectArgumentsList.width - effectArgumentsItemTypeLabel.width
+                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).shaderArgTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentsItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+
+                    Text {
+                        id: effectArgumentsItemName
+                        width: effectArgumentsList.width - effectArgumentsItemNameLabel.width
+                        text: effectArgName
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentsItemDefaultValueLabel
+                        text: qsTr("Default value : ")
+                    }
+
+                    Text {
+                        id: effectArgumentsDefaultValue
+                        width: effectArgumentsList.width - effectArgumentsItemDefaultValueLabel.width
+                        text: effectArgDefaultValue
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectArgumentsItemDescriptionText
+                    width: effectArgumentsList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgDescription) : mastactva.readMore(effectArgDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectArgumentsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectArgumentsItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectArgumentsItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.y : 0
+            x: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.x : 0
+            width: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.width : 0
+            height: (effectArgumentsList.currentItem !== undefined && effectArgumentsList.currentItem !== null) ? effectArgumentsList.currentItem.height : 0
+        }
+    }
 }
 
