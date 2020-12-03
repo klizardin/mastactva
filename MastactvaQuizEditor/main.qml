@@ -34,6 +34,8 @@ ApplicationWindow {
     property int effectArgumentsCurrentIndex: -1
     property var effectArgumentSetsCurrentModel: undefined
     property int effectArgumentSetsCurrentIndex: -1
+    property var effectArgumentSetValuesCurrentModel: undefined
+    property int effectArgumentSetValuesCurrentIndex: -1
 
     Connections {
         target: root
@@ -334,6 +336,53 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
+                var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
+                if(effectSetValuesModel.isListLoaded())
+                {
+                    effectArgumentSetValuesCurrentModel = effectSetValuesModel
+                    effectArgumentSetValuesList.model = effectSetValuesModel
+                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.currentIndex
+                }
+                else
+                {
+                    effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
+                }
+            }
+            else
+            {
+                effectArgumentSetValuesCurrentModel = undefined
+                effectArgumentSetValuesList.model = 0
+                effectArgumentSetValuesCurrentIndex = -1
+            }
+        }
+
+        function effectSetValuesListReloaded()
+        {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            {
+                var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
+                effectSetValuesModel.listReloaded.disconnect(effectSetValuesListReloaded)
+                if(effectSetValuesModel.isListLoaded())
+                {
+                    effectArgumentSetValuesCurrentModel = effectSetValuesModel
+                    effectArgumentSetValuesList.model = effectSetValuesModel
+                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.currentIndex
+                }
+                else
+                {
+                    effectArgumentSetValuesCurrentModel = undefined
+                    effectArgumentSetValuesList.model = 0
+                    effectArgumentSetValuesCurrentIndex = -1
+                }
+            }
+        }
+
+        function onEffectArgumentSetValuesCurrentIndexChanged()
+        {
+            effectArgumentSetValuesList.currentIndex = effectArgumentSetValuesCurrentIndex
+            if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
+            {
+                effectArgumentSetValuesCurrentModel.currentIndex = effectArgumentSetValuesCurrentIndex
             }
         }
     }
@@ -2523,7 +2572,7 @@ ApplicationWindow {
                                         SplitView.minimumHeight: effectInfoArgumentSets.height / 4
                                         SplitView.maximumHeight: effectInfoArgumentSets.height * 3 / 4
                                         SplitView.preferredHeight: effectInfoArgumentSets.height/2
-                                        /*ListView {
+                                        ListView {
                                             id: effectArgumentSetValuesList
 
                                             anchors.fill: parent
@@ -2533,7 +2582,7 @@ ApplicationWindow {
                                             delegate: effectArgumentSetValuesItem
                                             highlight: effectArgumentSetValuesItemHighlight
                                             highlightFollowsCurrentItem: false
-                                        }*/
+                                        }
                                     }
                                 }
                             }
@@ -3419,9 +3468,6 @@ ApplicationWindow {
                 MenuItem { action: addArgumentSet }
                 MenuItem { action: editArgumentSet }
                 MenuItem { action: removeArgumentSet }
-                MenuItem { action: addArgumentOfArgumentSet }
-                MenuItem { action: editArgumentOfArgumentSet }
-                MenuItem { action: removeArgumentOfArgumentSet }
             }
 
             Column {
@@ -3473,6 +3519,150 @@ ApplicationWindow {
             x: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.x : 0
             width: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.width : 0
             height: (effectArgumentSetsList.currentItem !== undefined && effectArgumentSetsList.currentItem !== null) ? effectArgumentSetsList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: effectArgumentSetValuesItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectArgumentSetValuesItemMenu.popup()
+                }
+                else
+                {
+                    effectArgumentSetValuesCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                    effectArgumentSetValuesItemMenu.popup()
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectArgumentSetValuesItemMenu
+                MenuItem { action: addArgumentOfArgumentSet }
+                MenuItem { action: editArgumentOfArgumentSet }
+                MenuItem { action: removeArgumentOfArgumentSet }
+            }
+
+            Connections {
+                target: effectArgValueArg
+                function onListReloaded()
+                {
+                    effectArgumentSetValuesItemArgType.text = shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType
+                    effectArgumentSetValuesItemArgName = effectArgValueArg.currentItem.effectArgName
+                    effectArgumentSetValuesItemArgDefaultValue = effectArgValueArg.currentItem.effectArgDefaultValue
+                }
+            }
+
+            Column {
+                id: effectArgumentSetValuesItemRect
+                width: effectArgumentSetValuesList.width
+
+                FontMetrics{
+                    id: effectArgumentSetValuesItemFontMetrics
+                    font: effectArgumentSetValuesItemType.font
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentSetValuesItemArgTypeLabel
+                        text: qsTr("Argument type : ")
+                    }
+                    Text {
+                        id: effectArgumentSetValuesItemArgType
+                        width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgTypeLabel.width
+                        text: effectArgValueArg.isListLoaded() ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType : "" : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentSetValuesItemArgNameLabel
+                        text: qsTr("Argument name : ")
+                    }
+                    Text {
+                        id: effectArgumentSetValuesItemArgName
+                        width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgNameLabel.width
+                        text: effectArgValueArg.isListLoaded() ? effectArgValueArg.currentItem.effectArgName : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentSetValuesItemArgDefaultValueLabel
+                        text: qsTr("Argument default value : ")
+                    }
+                    Text {
+                        id: effectArgumentSetValuesItemArgDefaultValue
+                        width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgDefaultValueLabel.width
+                        text: effectArgValueArg.isListLoaded() ? effectArgValueArg.currentItem.effectArgDefaultValue : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: effectArgumentSetValuesItemValueLabel
+                        text: qsTr("Value : ")
+                    }
+                    Text {
+                        id: effectArgumentSetValuesItemValue
+                        width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemValueLabel.width
+                        text: effectArgValueValue
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectArgumentSetValuesItemDescriptionText
+                    width: effectArgumentSetValuesList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgValueDescription) : mastactva.readMore(effectArgValueDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectArgumentSetValuesItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectArgumentSetValuesItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectArgumentSetValuesItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectArgumentSetValuesList.currentItem !== undefined && effectArgumentSetValuesList.currentItem !== null) ? effectArgumentSetValuesList.currentItem.y : 0
+            x: (effectArgumentSetValuesList.currentItem !== undefined && effectArgumentSetValuesList.currentItem !== null) ? effectArgumentSetValuesList.currentItem.x : 0
+            width: (effectArgumentSetValuesList.currentItem !== undefined && effectArgumentSetValuesList.currentItem !== null) ? effectArgumentSetValuesList.currentItem.width : 0
+            height: (effectArgumentSetValuesList.currentItem !== undefined && effectArgumentSetValuesList.currentItem !== null) ? effectArgumentSetValuesList.currentItem.height : 0
         }
     }
 }
