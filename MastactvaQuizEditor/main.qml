@@ -978,11 +978,18 @@ ApplicationWindow {
         }
 
         onAccepted : {
+            if(!doneOk)
+            {
+                fieldEffect.cancelRefreshArguments()
+            }
             disconnect()
         }
 
         onRejected: {
-            fieldEffect.cancelRefreshArguments()
+            if(!doneOk)
+            {
+                fieldEffect.cancelRefreshArguments()
+            }
             disconnect()
         }
     }

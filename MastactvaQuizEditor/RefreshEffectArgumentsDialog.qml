@@ -87,6 +87,7 @@ Dialog {
         refreshProgress.value = 1.0;
         refreshProgressPercent.text = 100 + qsTr(" %")
         message.text = qsTr("Refresh of effect argument was done")
+        doneOk = true
     }
 
     function init()
