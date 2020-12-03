@@ -1147,6 +1147,66 @@ ApplicationWindow {
         }
     }
 
+    EffectArgumentValueEditDialog {
+        id : effectArgumentValueEditDialog
+
+        property var effectArgumentValuesModel : undefined
+        property int effectArgumentValuesModelIndex : -1
+
+
+        onOpened: {
+            effectArgumentValuesModel = effectArgumentSetValuesCurrentModel
+            effectArgumentValuesModelIndex = effectArgumentSetValuesCurrentIndex
+            init()
+        }
+
+        onAccepted: {
+            if(effectArgumentValuesModel !== undefined && effectArgumentValuesModel !== null)
+            {
+                update()
+                if(fieldNew)
+                {
+                    effectArgumentValuesModel.itemAdded.connect(effectArgumentValueAdded)
+                    effectArgumentValuesModel.addItem(fieldEffectArgumentValue)
+                }
+                else
+                {
+                    effectArgumentValuesModel.itemSet.connect(effectArgumentValueSet)
+                    effectArgumentValuesModel.setItem(effectArgumentValuesModelIndex, fieldEffectArgumentValue)
+                }
+            }
+        }
+
+        onRejected: {
+            fieldEffectArgumentValue = undefined
+            effectArgumentValuesModel = undefined
+            effectArgumentValuesModelIndex = -1
+        }
+
+        function effectArgumentSetAdded()
+        {
+            if(effectArgumentValuesModel !== undefined && effectArgumentValuesModel !== null)
+            {
+                effectArgumentValuesModel.itemAdded.disconnect(effectArgumentValueAdded)
+                effectArgumentSetValuesCurrentIndex = effectArgumentValuesModel.indexOfItem(fieldEffectArgumentValue)
+            }
+            fieldEffectArgumentValue = undefined
+            effectArgumentValuesModel = undefined
+            effectArgumentValuesModelIndex = -1
+        }
+
+        function effectArgumentSetSet()
+        {
+            if(effectArgumentValuesModel !== undefined && effectArgumentValuesModel !== null)
+            {
+                effectArgumentValuesModel.itemSet.disconnect(effectArgumentValueSet)
+            }
+            fieldEffectArgumentValue = undefined
+            effectArgumentValuesModel = undefined
+            effectArgumentValuesModelIndex = -1
+        }
+    }
+
     WarningDialog {
         id: popupMessage
     }
