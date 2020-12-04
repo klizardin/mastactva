@@ -444,7 +444,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -455,7 +455,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -1195,7 +1195,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -1206,7 +1206,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -1871,7 +1871,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -1882,7 +1882,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -2634,7 +2634,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -2645,7 +2645,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -3310,7 +3310,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -3321,7 +3321,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -3986,7 +3986,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -3997,7 +3997,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -4637,7 +4637,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -4648,7 +4648,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -5383,7 +5383,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -5394,7 +5394,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     },
                     {
@@ -6152,7 +6152,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -6163,7 +6163,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -6866,7 +6866,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -6877,7 +6877,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -7485,7 +7485,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -7496,7 +7496,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
@@ -8256,7 +8256,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftItemsByIDs",
+                        "name": "filterItemsLeftIDs",
                         "returnType": "void"
                     },
                     {
@@ -8267,7 +8267,7 @@
                                 "type": "QVariantList"
                             }
                         ],
-                        "name": "filterLeftExceptItemsByIDs",
+                        "name": "filterItemsLeftExceptIDs",
                         "returnType": "void"
                     }
                 ],
