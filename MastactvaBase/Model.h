@@ -755,7 +755,74 @@ protected:
         }
     }
 
+    template<typename Op_>
+    void filterItemsIf(Op_ op_)
+    {
+        QVector<const DataType_ *> toRemove;
+        toRemove.reserve(m_data.size());
+        for(const DataType_ * item: m_data)
+        {
+            if(!op_(item)) { toRemove.push_back(item); }
+        }
+        for(const DataType_ * item: toRemove)
+        {
+            removeItem(item);
+        }
+    }
+
+    void leftItemsByIDsImpl(const QVariantList &ids_)
+    {
+        filterItemsIf([&ids_](const DataType_ *i)->bool
+        {
+            return nullptr != i &&
+                    std::end(ids_) != std::find_if(std::begin(ids_), std::end(ids_),
+                                                [&i](const QVariant &id_)
+            {
+                const QVariant id = getDataLayout<DataType_>().getIdJsonValue(i);
+                return id_.isValid() && id.isValid() && id_ == id;
+            });
+        });
+    }
+
+    void leftItemsByIDsIntsImpl(const QVector<int> &ids_)
+    {
+        QVariantList ids;
+        convertIds(ids_, ids);
+        leftItemsByIDsImpl(ids);
+    }
+
+    void leftExceptItemsByIDsImpl(const QVariantList &ids_)
+    {
+        filterItemsIf([&ids_](const DataType_ *i)->bool
+        {
+            return nullptr != i &&
+                    std::end(ids_) == std::find_if(std::begin(ids_), std::end(ids_),
+                                                [&i](const QVariant &id_)
+            {
+                const QVariant id = getDataLayout<DataType_>().getIdJsonValue(i);
+                return id_.isValid() && id.isValid() && id_ == id;
+            });
+        });
+    }
+
+    void leftExceptItemsByIDsIntImpl(const QVector<int> &ids_)
+    {
+        QVariantList ids;
+        convertIds(ids_, ids);
+        leftExceptItemsByIDsImpl(ids);
+    }
+
 protected:
+    void convertIds(const QVector<int> &idsInt_, QVariantList &idsVariant_)
+    {
+        idsVariant_.clear();
+        idsVariant_.reserve(idsInt_.size());
+        for(int id : idsInt_)
+        {
+            idsVariant_.push_back(id);
+        }
+    }
+
     virtual void modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
     {
         errorVF(errorCode_, errorCodeStr_, reply_);
@@ -925,7 +992,7 @@ protected:
         endRemoveRows();
     }
 
-    void removeItem(DataType_ *item_)
+    void removeItem(const DataType_ *item_)
     {
         QVariant appId0 = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId0.isValid() || appId0.isNull()) { return; }
@@ -1107,6 +1174,14 @@ public:                                                                         
     Q_INVOKABLE int indexOfItem(const QVariant &item_)                                                          \
     {                                                                                                           \
         return indexOfItemImpl(item_);                                                                          \
+    }                                                                                                           \
+    Q_INVOKABLE void leftItemsByIDs(const QVariantList &ids_)                                                   \
+    {                                                                                                           \
+        leftItemsByIDsImpl(ids_);                                                                               \
+    }                                                                                                           \
+    Q_INVOKABLE void leftExceptItemsByIDs(const QVariantList &ids_)                                             \
+    {                                                                                                           \
+        leftExceptItemsByIDsImpl(ids_);                                                                         \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \

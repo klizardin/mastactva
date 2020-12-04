@@ -3577,6 +3577,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -4344,6 +4366,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -5036,6 +5080,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -5709,6 +5775,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -6416,6 +6504,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -7069,6 +7179,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -7742,6 +7874,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -8358,6 +8512,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -8974,6 +9150,28 @@
                         ],
                         "name": "indexOfItem",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftItemsByIDs",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "leftExceptItemsByIDs",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
