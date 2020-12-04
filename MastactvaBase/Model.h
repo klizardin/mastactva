@@ -770,7 +770,7 @@ protected:
         }
     }
 
-    void leftItemsByIDsImpl(const QVariantList &ids_)
+    void filterLeftItemsByIDsImpl(const QVariantList &ids_)
     {
         filterItemsIf([&ids_](const DataType_ *i)->bool
         {
@@ -784,14 +784,14 @@ protected:
         });
     }
 
-    void leftItemsByIDsIntsImpl(const QVector<int> &ids_)
+    void filterLeftItemsByIDsIntsImpl(const QVector<int> &ids_)
     {
         QVariantList ids;
         convertIds(ids_, ids);
-        leftItemsByIDsImpl(ids);
+        filterLeftItemsByIDsImpl(ids);
     }
 
-    void leftExceptItemsByIDsImpl(const QVariantList &ids_)
+    void filterLeftExceptItemsByIDsImpl(const QVariantList &ids_)
     {
         filterItemsIf([&ids_](const DataType_ *i)->bool
         {
@@ -805,11 +805,11 @@ protected:
         });
     }
 
-    void leftExceptItemsByIDsIntImpl(const QVector<int> &ids_)
+    void filterLeftExceptItemsByIDsIntImpl(const QVector<int> &ids_)
     {
         QVariantList ids;
         convertIds(ids_, ids);
-        leftExceptItemsByIDsImpl(ids);
+        filterLeftExceptItemsByIDsImpl(ids);
     }
 
 protected:
@@ -1175,13 +1175,13 @@ public:                                                                         
     {                                                                                                           \
         return indexOfItemImpl(item_);                                                                          \
     }                                                                                                           \
-    Q_INVOKABLE void leftItemsByIDs(const QVariantList &ids_)                                                   \
+    Q_INVOKABLE void filterLeftItemsByIDs(const QVariantList &ids_)                                             \
     {                                                                                                           \
-        leftItemsByIDsImpl(ids_);                                                                               \
+        filterLeftItemsByIDsImpl(ids_);                                                                         \
     }                                                                                                           \
-    Q_INVOKABLE void leftExceptItemsByIDs(const QVariantList &ids_)                                             \
+    Q_INVOKABLE void filterLeftExceptItemsByIDs(const QVariantList &ids_)                                       \
     {                                                                                                           \
-        leftExceptItemsByIDsImpl(ids_);                                                                         \
+        filterLeftExceptItemsByIDsImpl(ids_);                                                                   \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
