@@ -66,7 +66,7 @@ Dialog {
         else
         {
             fieldEffectArg = undefined
-            message.text = qsTr("Sorry, there is no arguments to add to the argument set")
+            message.text = qsTr("Sorry, there is no arguments to add to the argument set. Try to edit existing ones")
         }
     }
 
