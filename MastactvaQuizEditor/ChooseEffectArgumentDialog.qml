@@ -16,12 +16,19 @@ Dialog {
     property var shaderArgTypeModel: undefined
     property var effectArgModel: undefined
     property var fieldEffectArg: undefined
+    property var fieldExceptIds: undefined
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
 
     Column
     {
+        Text {
+            id: message
+            width: Constants.smallDialogWidth
+            wrapMode: Text.WordWrap
+        }
+
         Rectangle {
             id: effectArgumentsListRect
             width: Constants.smallDialogWidth
@@ -49,7 +56,18 @@ Dialog {
     function listReloaded()
     {
         effectArgModel.listReloaded.disconnect(listReloaded)
-        fieldEffectArg = effectArgumentsList.currentItem
+        effectArgumentsList.filterItemsLeftExceptIds(fieldExceptIds)
+        if(effectArgumentsList.size() > 0)
+        {
+            effectArgumentsList.currentIndex = 0
+            fieldEffectArg = effectArgumentsList.currentItem
+            message.text = qsTr("Please choose argument to set up value")
+        }
+        else
+        {
+            fieldEffectArg = undefined
+            message.text = qsTr("Sorry, there is no arguments to add to the argument set")
+        }
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
