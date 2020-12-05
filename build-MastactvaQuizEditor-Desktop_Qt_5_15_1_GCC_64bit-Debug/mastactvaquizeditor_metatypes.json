@@ -3587,7 +3587,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -3598,7 +3598,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -4376,7 +4376,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -4387,7 +4387,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -5090,7 +5090,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -5101,7 +5101,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -5414,6 +5414,13 @@
         "classes": [
             {
                 "className": "EffectArgSet",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "argValuesOfSetIdList",
+                        "returnType": "QVariantList"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -5785,7 +5792,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -5796,7 +5803,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -6514,7 +6521,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -6525,7 +6532,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -7189,7 +7196,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -7200,7 +7207,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -7884,7 +7891,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -7895,7 +7902,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -8522,7 +8529,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -8533,7 +8540,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -9160,7 +9167,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -9171,7 +9178,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

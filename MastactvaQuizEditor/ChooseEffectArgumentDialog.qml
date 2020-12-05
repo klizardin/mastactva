@@ -56,11 +56,11 @@ Dialog {
     function listReloaded()
     {
         effectArgModel.listReloaded.disconnect(listReloaded)
-        effectArgumentsList.filterItemsLeftExceptIds(fieldExceptIds)
-        if(effectArgumentsList.size() > 0)
+        effectArgModel.filterItemsLeftExceptIDs(fieldExceptIds)
+        if(effectArgModel.size() > 0)
         {
             effectArgumentsList.currentIndex = 0
-            fieldEffectArg = effectArgumentsList.currentItem
+            fieldEffectArg = effectArgModel.currentItem
             message.text = qsTr("Please choose argument to set up value")
         }
         else
@@ -87,7 +87,8 @@ Dialog {
             onClicked:
             {
                 effectArgumentsList.currentIndex = index
-                fieldEffectArg = effectArgumentsList.currentItem
+                effectArgModel.currentIndex = index
+                fieldEffectArg = effectArgModel.currentItem
                 mouse.accepted = false
             }
 

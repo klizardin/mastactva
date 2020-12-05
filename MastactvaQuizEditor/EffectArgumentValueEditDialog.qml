@@ -15,6 +15,7 @@ Dialog {
     property bool fieldNew: false
     property var fieldEffectArgumentSet: undefined
     property var fieldEffectArgumentValue: undefined
+    property var fieldEffectArg: undefined
 
     title: fieldNew ? "Add new argument set" : "Edit argument set"
 
@@ -128,19 +129,32 @@ Dialog {
     {
         effectArgumentValueId.text = fieldEffectArgumentValue.effectArgValueId
         effectArgumentValueSetDescription.text = fieldEffectArgumentSet.effectArgSetDescription
-        console.log("fieldEffectArgumentValue.effectArgValueArg.isListLoaded() = ", fieldEffectArgumentValue.effectArgValueArg.isListLoaded())
-        effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType
-        effectArgumentValueArgName.text = fieldEffectArgumentValue.effectArgValueArg.effectArgName
-        effectArgumentValueArgDefaultValue.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDefaultValue
-        effectArgumentValueArgDescription.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDescription
-        effectArgumentValueValue = fieldEffectArgumentValue.effectArgValueValue
-        effectArgumentValueValueDescription = fieldEffectArgumentValue.effectArgValueDescription
+        if(fieldNew)
+        {
+            effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArg.effectArgArgTypeId).shaderArgTypeType
+            effectArgumentValueArgName.text = fieldEffectArg.effectArgName
+            effectArgumentValueArgDefaultValue.text = fieldEffectArg.effectArgDefaultValue
+            effectArgumentValueArgDescription.text = fieldEffectArg.effectArgDescription
+        }
+        else
+        {
+            effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.effectArgArgTypeId).shaderArgTypeType
+            effectArgumentValueArgName.text = fieldEffectArgumentValue.effectArgValueArg.effectArgName
+            effectArgumentValueArgDefaultValue.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDefaultValue
+            effectArgumentValueArgDescription.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDescription
+        }
+        effectArgumentValueValue.text = fieldEffectArgumentValue.effectArgValueValue
+        effectArgumentValueValueDescription.text = fieldEffectArgumentValue.effectArgValueDescription
     }
 
     function update()
     {
-        fieldEffectArgumentValue.effectArgValueValue = effectArgumentValueValue
-        fieldEffectArgumentValue.effectArgValueDescription = effectArgumentValueValueDescription
+        fieldEffectArgumentValue.effectArgValueValue = effectArgumentValueValue.text
+        fieldEffectArgumentValue.effectArgValueDescription = effectArgumentValueValueDescription.text
+        if(fieldNew)
+        {
+            fieldEffectArgumentValue.setArgId(fieldEffectArg.effectArgId)
+        }
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save

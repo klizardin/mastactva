@@ -1185,7 +1185,7 @@ ApplicationWindow {
             effectArgumentValuesModelIndex = -1
         }
 
-        function effectArgumentSetAdded()
+        function effectArgumentValueAdded()
         {
             if(effectArgumentValuesModel !== undefined && effectArgumentValuesModel !== null)
             {
@@ -1197,7 +1197,7 @@ ApplicationWindow {
             effectArgumentValuesModelIndex = -1
         }
 
-        function effectArgumentSetSet()
+        function effectArgumentValueSet()
         {
             if(effectArgumentValuesModel !== undefined && effectArgumentValuesModel !== null)
             {
@@ -1226,7 +1226,8 @@ ApplicationWindow {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
                 {
                     fieldEffectArgumentValue.setArgSetId(fieldEffectArgumentSet.effectArgSetId)
-                    fieldEffectArgumentValue.setArgId(fieldEffectArg.effectArgId)
+                    console.log("fieldEffectArg = ", fieldEffectArg)
+                    effectArgumentValueEditDialog.fieldEffectArg = fieldEffectArg
                     effectArgumentValueEditDialog.fieldEffectArgumentSet = fieldEffectArgumentSet
                     effectArgumentValueEditDialog.fieldEffectArgumentValue = fieldEffectArgumentValue
                     effectArgumentValueEditDialog.open()
@@ -1239,6 +1240,18 @@ ApplicationWindow {
         onRejected: {
             fieldEffectArgumentValue = undefined
             fieldEffectArg = undefined
+        }
+
+        function argReloaded()
+        {
+            console.log("argReloaded()")
+            if(fieldEffectArg !== undefined && fieldEffectArg !== null)
+            {
+                if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
+                {
+                    fieldEffectArgumentValue.effectArgValueArg.listReloaded.disconnect(argReloaded)
+                }
+            }
         }
     }
 
@@ -2185,6 +2198,7 @@ ApplicationWindow {
                 var effectArgumentValueItem = effectArgumentSetValuesCurrentModel.createItem()
                 chooseEffectArgumentDialog.fieldEffectArgumentSet = effectArgumentSetItem
                 chooseEffectArgumentDialog.fieldEffectArgumentValue = effectArgumentValueItem
+                chooseEffectArgumentDialog.fieldExceptIds = effectArgumentSetItem.argValuesOfSetIdList()
                 chooseEffectArgumentDialog.effectArgModel = effectModel.currentItem.effectArgs
                 chooseEffectArgumentDialog.open()
             }
@@ -3683,19 +3697,14 @@ ApplicationWindow {
                 function onListReloaded()
                 {
                     effectArgumentSetValuesItemArgType.text = shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType
-                    effectArgumentSetValuesItemArgName = effectArgValueArg.currentItem.effectArgName
-                    effectArgumentSetValuesItemArgDefaultValue = effectArgValueArg.currentItem.effectArgDefaultValue
+                    effectArgumentSetValuesItemArgName.text = effectArgValueArg.currentItem.effectArgName
+                    effectArgumentSetValuesItemArgDefaultValue.text = effectArgValueArg.currentItem.effectArgDefaultValue
                 }
             }
 
             Column {
                 id: effectArgumentSetValuesItemRect
                 width: effectArgumentSetValuesList.width
-
-                FontMetrics{
-                    id: effectArgumentSetValuesItemFontMetrics
-                    font: effectArgumentSetValuesItemType.font
-                }
 
                 Row {
                     padding: Constants.effectShaderListHeaderPadding
@@ -3706,7 +3715,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentSetValuesItemArgType
                         width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgTypeLabel.width
-                        text: effectArgValueArg.isListLoaded() ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType : "" : ""
+                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType : "" : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -3720,7 +3729,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentSetValuesItemArgName
                         width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgNameLabel.width
-                        text: effectArgValueArg.isListLoaded() ? effectArgValueArg.currentItem.effectArgName : ""
+                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? effectArgValueArg.currentItem.effectArgName : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -3734,7 +3743,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentSetValuesItemArgDefaultValue
                         width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgDefaultValueLabel.width
-                        text: effectArgValueArg.isListLoaded() ? effectArgValueArg.currentItem.effectArgDefaultValue : ""
+                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? effectArgValueArg.currentItem.effectArgDefaultValue : ""
                         wrapMode: Text.Wrap
                     }
                 }

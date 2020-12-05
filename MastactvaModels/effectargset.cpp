@@ -7,6 +7,34 @@ EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
     m_effectArgSetModel = parent_;
 }
 
+QVariantList EffectArgSet::argValuesOfSetIdList()
+{
+    if(nullptr == m_affectArgValueModel
+            || !m_affectArgValueModel->isListLoaded()
+            ) { return QVariantList(); }
+    for(int i = 0; i < m_affectArgValueModel->size(); i++)
+    {
+        EffectArgValue *effectArgValue = m_affectArgValueModel->dataItemAtImpl(i);
+        if(nullptr == effectArgValue ||
+                nullptr == effectArgValue->getArg() ||
+                !effectArgValue->getArg()->isListLoaded()
+                ) { return QVariantList(); }
+    }
+
+    QVariantList res;
+    for(int i = 0; i < m_affectArgValueModel->size(); i++)
+    {
+        EffectArgValue *effectArgValue = m_affectArgValueModel->dataItemAtImpl(i);
+        if(nullptr == effectArgValue) { continue; }
+        EffectArg *effectArg = effectArgValue->getArg()->getCurrentDataItem();
+        if(nullptr == effectArg) { continue; }
+        res.push_back(QVariant::fromValue(effectArg->id()));
+    }
+
+    qDebug() << "argValuesOfSetIdList() res = " << res;
+    return res;
+}
+
 int EffectArgSet::id() const
 {
     return m_id;

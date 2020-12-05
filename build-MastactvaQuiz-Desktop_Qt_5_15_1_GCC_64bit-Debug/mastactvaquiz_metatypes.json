@@ -445,7 +445,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -456,7 +456,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -1196,7 +1196,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -1207,7 +1207,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -1872,7 +1872,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -1883,7 +1883,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -2635,7 +2635,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -2646,7 +2646,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -3311,7 +3311,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -3322,7 +3322,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -3987,7 +3987,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -3998,7 +3998,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -4638,7 +4638,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -4649,7 +4649,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -5384,7 +5384,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -5395,7 +5395,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -6153,7 +6153,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -6164,7 +6164,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -6867,7 +6867,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -6878,7 +6878,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -7486,7 +7486,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -7497,7 +7497,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -8257,7 +8257,7 @@
                             }
                         ],
                         "name": "filterItemsLeftIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -8268,7 +8268,7 @@
                             }
                         ],
                         "name": "filterItemsLeftExceptIDs",
-                        "returnType": "void"
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

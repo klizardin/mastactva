@@ -43,6 +43,9 @@ public:
     };
 
 public:
+    Q_INVOKABLE QVariantList argValuesOfSetIdList();
+
+public:
     int id() const;
     void setId(const int &id_);
     int effectId() const;

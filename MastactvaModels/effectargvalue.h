@@ -58,6 +58,8 @@ public:
     QString description() const;
     void setDescription(const QString &description_);
 
+    EffectArgModel *getArg();
+
 protected:
     EffectArgModel *createEffectArgModel();
 

@@ -98,6 +98,11 @@ void EffectArgValue::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
+EffectArgModel *EffectArgValue::getArg()
+{
+    return m_effectArgModel;
+}
+
 EffectArgModel *EffectArgValue::createEffectArgModel()
 {
     EffectArgModel *m = new EffectArgModel(this);
