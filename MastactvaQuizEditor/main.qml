@@ -200,6 +200,7 @@ ApplicationWindow {
 
         function onEffectCurrentIndexChanged()
         {
+            //console.log("onEffectCurrentIndexChanged()")
             effectsList.currentIndex = effectCurrentIndex
             effectModel.currentIndex = effectCurrentIndex
             if(effectCurrentIndex >= 0)
@@ -212,7 +213,7 @@ ApplicationWindow {
                 {
                     effectShadersCurrentModel = shadersModel
                     effectShadersList.model = shadersModel
-                    effectShaderCurrentIndex = effectShadersCurrentModel.currentIndex
+                    effectShaderCurrentIndex = effectShadersCurrentModel.size() > 0 ? effectShadersCurrentModel.currentIndex : -1
                 }
                 else
                 {
@@ -223,7 +224,7 @@ ApplicationWindow {
                 {
                     effectArgumentsCurrentModel = effectArgumentsModel
                     effectArgumentsList.model = effectArgumentsCurrentModel
-                    effectArgumentsCurrentIndex = effectArgumentsCurrentModel.currentIndex
+                    effectArgumentsCurrentIndex = effectArgumentsCurrentModel.size() > 0 ? effectArgumentsCurrentModel.currentIndex : -1
                 }
                 else
                 {
@@ -232,12 +233,14 @@ ApplicationWindow {
                 var effectArgumentSetsModel = effect.effectArgSets
                 if(effectArgumentSetsModel.isListLoaded())
                 {
+                    //console.log("effectArgumentSetsModel.isListLoaded()")
                     effectArgumentSetsCurrentModel = effectArgumentSetsModel
                     effectArgumentSetsList.model = effectArgumentSetsCurrentModel
-                    effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
+                    effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
                 }
                 else
                 {
+                    //console.log("!effectArgumentSetsModel.isListLoaded() -> effectArgumentSetsListReloaded()")
                     effectArgumentSetsModel.listReloaded.connect(effectArgumentSetsListReloaded)
                 }
             }
@@ -254,6 +257,9 @@ ApplicationWindow {
                 effectArgumentSetsCurrentModel = undefined
                 effectArgumentSetsList.model = 0
                 effectArgumentSetsCurrentIndex = -1
+                effectArgumentSetValuesCurrentModel = undefined
+                effectArgumentSetValuesList.model = 0
+                effectArgumentSetValuesCurrentIndex = -1
             }
         }
 
@@ -283,7 +289,7 @@ ApplicationWindow {
             {
                 effectArgumentsCurrentModel = effectArgumentsModel
                 effectArgumentsList.model = effectArgumentsCurrentModel
-                effectArgumentsCurrentIndex = effectArgumentsCurrentModel.currentIndex
+                effectArgumentsCurrentIndex = effectArgumentsCurrentModel.size() > 0 ? effectArgumentsCurrentModel.currentIndex : -1
             }
             else
             {
@@ -295,6 +301,7 @@ ApplicationWindow {
 
         function effectArgumentSetsListReloaded()
         {
+            //console.log("effectArgumentSetsListReloaded()")
             var effect = effectModel.getCurrentItem()
             var effectArgumentSetsModel = effect.effectArgSets
             effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
@@ -302,13 +309,17 @@ ApplicationWindow {
             {
                 effectArgumentSetsCurrentModel = effectArgumentSetsModel
                 effectArgumentSetsList.model = effectArgumentSetsCurrentModel
-                effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
+                //console.log("effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex //", effectArgumentSetsCurrentModel.currentIndex)
+                effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
             }
             else
             {
                 effectArgumentSetsCurrentModel = undefined
                 effectArgumentSetsList.model = 0
                 effectArgumentSetsCurrentIndex = -1
+                effectArgumentSetValuesCurrentModel = undefined
+                effectArgumentSetValuesList.model = 0
+                effectArgumentSetValuesCurrentIndex = -1
             }
         }
 
@@ -318,6 +329,12 @@ ApplicationWindow {
             if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
                 effectShadersCurrentModel.currentIndex = effectShaderCurrentIndex
+            }
+            else
+            {
+                effectArgumentSetValuesCurrentModel = undefined
+                effectArgumentSetValuesList.model = 0
+                effectArgumentSetValuesCurrentIndex = -1
             }
         }
 
@@ -332,19 +349,22 @@ ApplicationWindow {
 
         function onEffectArgumentSetsCurrentIndexChanged()
         {
+            //console.log("onEffectArgumentSetsCurrentIndexChanged()")
             effectArgumentSetsList.currentIndex = effectArgumentSetsCurrentIndex
-            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentModel.currentItem !== null)
             {
                 effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
                 if(effectSetValuesModel.isListLoaded())
                 {
+                    //console.log("effectSetValuesModel.isListLoaded()")
                     effectArgumentSetValuesCurrentModel = effectSetValuesModel
                     effectArgumentSetValuesList.model = effectSetValuesModel
-                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.currentIndex
+                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
                 }
                 else
                 {
+                    //console.log("!effectSetValuesModel.isListLoaded() -> effectSetValuesListReloaded()")
                     effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
                 }
             }
@@ -358,15 +378,18 @@ ApplicationWindow {
 
         function effectSetValuesListReloaded()
         {
+            //console.log("effectSetValuesListReloaded()")
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
                 effectSetValuesModel.listReloaded.disconnect(effectSetValuesListReloaded)
                 if(effectSetValuesModel.isListLoaded())
                 {
+                    //console.log("effectSetValuesModel.isListLoaded()")
                     effectArgumentSetValuesCurrentModel = effectSetValuesModel
                     effectArgumentSetValuesList.model = effectSetValuesModel
-                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.currentIndex
+                    //console.log("effectArgumentSetValuesCurrentIndex = effectSetValuesModel.currentIndex // ", effectSetValuesModel.currentIndex)
+                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
                 }
                 else
                 {
@@ -374,6 +397,12 @@ ApplicationWindow {
                     effectArgumentSetValuesList.model = 0
                     effectArgumentSetValuesCurrentIndex = -1
                 }
+            }
+            else
+            {
+                effectArgumentSetValuesCurrentModel = undefined
+                effectArgumentSetValuesList.model = 0
+                effectArgumentSetValuesCurrentIndex = -1
             }
         }
 

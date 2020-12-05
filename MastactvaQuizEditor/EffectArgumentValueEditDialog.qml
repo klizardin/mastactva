@@ -138,10 +138,10 @@ Dialog {
         }
         else
         {
-            effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.effectArgArgTypeId).shaderArgTypeType
-            effectArgumentValueArgName.text = fieldEffectArgumentValue.effectArgValueArg.effectArgName
-            effectArgumentValueArgDefaultValue.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDefaultValue
-            effectArgumentValueArgDescription.text = fieldEffectArgumentValue.effectArgValueArg.effectArgDescription
+            effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType
+            effectArgumentValueArgName.text = fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgName
+            effectArgumentValueArgDefaultValue.text = fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgDefaultValue
+            effectArgumentValueArgDescription.text = fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgDescription
         }
         effectArgumentValueValue.text = fieldEffectArgumentValue.effectArgValueValue
         effectArgumentValueValueDescription.text = fieldEffectArgumentValue.effectArgValueDescription
