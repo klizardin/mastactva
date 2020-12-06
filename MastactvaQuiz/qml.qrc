@@ -7,6 +7,8 @@
         <file>qtquickcontrols2.conf</file>
         <file>GalleryFunctions.js</file>
         <file>QuestionForm.qml</file>
+        <file>default.frag</file>
+        <file>default.vert</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

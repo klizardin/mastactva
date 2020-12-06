@@ -25,6 +25,8 @@
         <file>EffectArgumentSetEditDialog.qml</file>
         <file>EffectArgumentValueEditDialog.qml</file>
         <file>ChooseEffectArgumentDialog.qml</file>
+        <file>default.vert</file>
+        <file>default.frag</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
