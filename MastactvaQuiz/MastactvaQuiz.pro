@@ -1,5 +1,6 @@
 _QT += quick
-QT += quickcontrols2
+QT += quickcontrols2 \
+    quick
 
 CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuiz
@@ -34,7 +35,8 @@ unix: SOURCES += \
         netappconsts.cpp \
         qmlobjects.cpp \
         utils.cpp  \
-        serverfiles.cpp
+        serverfiles.cpp \
+        quizimage.cpp
 
 
 RESOURCES += qml.qrc \
@@ -80,7 +82,8 @@ unix: HEADERS += \
     netappconsts.h \
     qmlobjects.h \
     utils.h    \
-    serverfiles.h
+    serverfiles.h   \
+    quizimage.h
 
 
 DISTFILES += \
