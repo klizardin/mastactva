@@ -2,23 +2,6 @@
     {
         "classes": [
             {
-                "className": "QuizImage",
-                "object": true,
-                "qualifiedClassName": "QuizImage",
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QQuickItem"
-                    }
-                ]
-            }
-        ],
-        "inputFile": "quizimage.h",
-        "outputRevision": 67
-    },
-    {
-        "classes": [
-            {
                 "classInfos": [
                     {
                         "name": "QML.Element",
@@ -8868,6 +8851,23 @@
             }
         ],
         "inputFile": "serverfiles.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "QuizImage",
+                "object": true,
+                "qualifiedClassName": "QuizImage",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickItem"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "quizimage.h",
         "outputRevision": 67
     }
 ]

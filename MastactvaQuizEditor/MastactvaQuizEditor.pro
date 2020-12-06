@@ -38,7 +38,8 @@ unix: HEADERS += \
         netapi.h   \
         Model.h \
         serverfiles.h   \
-        quizimage.h
+        quizimage.h \
+        openglquizimage.h
 
 
 SOURCES += \
@@ -67,7 +68,8 @@ unix: SOURCES += \
         netapi.cpp \
         Model.cpp   \
         serverfiles.cpp \
-        quizimage.cpp
+        quizimage.cpp   \
+        openglquizimage.cpp
 
 
 RESOURCES += qml.qrc    \

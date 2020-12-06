@@ -36,7 +36,8 @@ unix: SOURCES += \
         qmlobjects.cpp \
         utils.cpp  \
         serverfiles.cpp \
-        quizimage.cpp
+        quizimage.cpp   \
+        openglquizimage.cpp
 
 
 RESOURCES += qml.qrc \
@@ -83,7 +84,8 @@ unix: HEADERS += \
     qmlobjects.h \
     utils.h    \
     serverfiles.h   \
-    quizimage.h
+    quizimage.h \
+    openglquizimage.h
 
 
 DISTFILES += \
