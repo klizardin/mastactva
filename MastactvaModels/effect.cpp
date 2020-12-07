@@ -416,6 +416,11 @@ void Effect::applyRefreshArgumentsStep()
     }
 }
 
+void Effect::listLoadedVF()
+{
+    emit childrenLoaded();
+}
+
 bool Effect::isChildrenLoaded() const
 {
     return isListLoadedImpl();

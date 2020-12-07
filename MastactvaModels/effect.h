@@ -81,6 +81,8 @@ protected:
     EffectArgSetModel *createEffectArgSetModel();
     void applyRefreshArgumentsStep();
 
+    virtual void listLoadedVF() override;
+
 signals:
     void idChanged();
     void nameChanged();
@@ -91,6 +93,7 @@ signals:
     void refreshArgumentsProgress(bool download_, qreal rate_);
     void refreshArgumentsBeforeApply();
     void refreshArgumentsAfterApply();
+    void childrenLoaded();
 
 private:
     EffectModel *m_effectModel = nullptr;
