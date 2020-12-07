@@ -50,8 +50,12 @@ public:
     virtual void itemDeletedVF() override;
     virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
 
+protected:
+    void setParentModelInfo(IListModelInfo *parentListModelInfo_);
+
 private:
     int m_loadingChildenModels = 0;
+    IListModelInfo *m_parentListModelInfo = nullptr;
 };
 
 

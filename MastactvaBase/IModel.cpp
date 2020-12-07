@@ -1,14 +1,24 @@
 #include "IModel.h"
+#include "qmlobjects.h"
+
 
 void IListModelInfoObjectImpl::startLoadChildModel()
 {
     ++m_loadingChildenModels;
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->startLoadChildModel();
+    }
 }
 
 void IListModelInfoObjectImpl::endLoadChildModel()
 {
     --m_loadingChildenModels;
     Q_ASSERT(m_loadingChildenModels >= 0);
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->endLoadChildModel();
+    }
     if(isListLoadedImpl())
     {
         listLoadedVF();
@@ -38,7 +48,10 @@ void IListModelInfoObjectImpl::itemDeletedVF()
 
 void IListModelInfoObjectImpl::errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
 {
-    Q_UNUSED(errorCode_);
-    Q_UNUSED(errorCodeStr_);
-    Q_UNUSED(reply_);
+    QMLObjectsBase::getInstance().modelError(errorCode_, errorCodeStr_, reply_);
+}
+
+void IListModelInfoObjectImpl::setParentModelInfo(IListModelInfo *parentListModelInfo_)
+{
+    m_parentListModelInfo = parentListModelInfo_;
 }
