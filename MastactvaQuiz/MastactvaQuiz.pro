@@ -37,7 +37,16 @@ unix: SOURCES += \
         utils.cpp  \
         serverfiles.cpp \
         quizimage.cpp   \
-        openglquizimage.cpp
+        openglquizimage.cpp \
+        easingtype.cpp    \
+        effectarg.cpp \
+        effectargset.cpp  \
+        effectargvalue.cpp    \
+        effect.cpp    \
+        effectshader.cpp  \
+        shaderargtype.cpp \
+        shader.cpp    \
+        shadertype.cpp
 
 
 RESOURCES += qml.qrc \
@@ -85,7 +94,16 @@ unix: HEADERS += \
     utils.h    \
     serverfiles.h   \
     quizimage.h \
-    openglquizimage.h
+    openglquizimage.h   \
+    easingtype.h    \
+    effectarg.h \
+    effectargset.h  \
+    effectargvalue.h    \
+    effect.h    \
+    effectshader.h  \
+    shaderargtype.h \
+    shader.h    \
+    shadertype.h
 
 
 DISTFILES += \
