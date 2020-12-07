@@ -46,8 +46,8 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     m_height = item_->height();
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
     m_t = quizImage->t();
-    m_fromImageUrlNew = quizImage->fromImage();
-    m_toImageUrlNew = quizImage->toImage();
+    m_fromImageUrlNew = quizImage->fromImage().at(0).toString();
+    m_toImageUrlNew = quizImage->toImage().at(0).toString();
 }
 
 void OpenGlQuizImage::makeObject()

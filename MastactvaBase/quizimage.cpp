@@ -11,6 +11,9 @@
 #include <QSGRendererInterface>
 #include <QSGRenderNode>
 #include "openglquizimage.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/utils.h"
 
 
 QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
@@ -24,29 +27,56 @@ void QuizImage::updateState()
     update();
 }
 
-QString QuizImage::fromImage() const
+QVariantList QuizImage::fromImage() const
 {
-    return m_fromImageUrl;
+    QVariantList res;
+    res.push_back(QVariant::fromValue(m_fromImageUrl));
+    return res;
 }
 
-void QuizImage::setFromImage(const QString &fromImageUrl_)
+void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
 {
-    m_fromImageUrl = fromImageUrl_;
+    if(fromImageInfo_.size() < 2) { return; }
+    const QString imageUrl = fromImageInfo_.at(0).toString();
+    const QString imageHash = fromImageInfo_.at(1).toString();
 
-    updateState();
+    if(imageUrl == m_fromImageUrl) { return; }
+
+    m_fromImageUrl = imageUrl;
+
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+        sf->add(imageUrl, imageHash, g_imagesCachePath);
+    }
     emit fromImageChanged();
 }
 
-QString QuizImage::toImage() const
+QVariantList QuizImage::toImage() const
 {
-    return m_toImageUrl;
+    QVariantList res;
+    res.push_back(QVariant::fromValue(m_toImageUrl));
+    return res;
 }
 
-void QuizImage::setToImage(const QString &toImageUrl_)
+void QuizImage::setToImage(const QVariantList &toImageInfo_)
 {
-    m_toImageUrl = toImageUrl_;
+    if(toImageInfo_.size() < 2) { return; }
+    const QString imageUrl = toImageInfo_.at(0).toString();
+    const QString imageHash = toImageInfo_.at(1).toString();
 
-    updateState();
+    if(imageUrl == m_fromImageUrl) { return; }
+
+    m_toImageUrl = imageUrl;
+
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+        sf->add(imageUrl, imageHash, g_imagesCachePath);
+    }
+
     emit toImageChanged();
 }
 
@@ -60,9 +90,14 @@ void QuizImage::setEffect(const QVariant &effect_)
     QObject *obj = qvariant_cast<QObject *>(effect_);
     Effect *effect = qobject_cast<Effect *>(obj);
     if(m_effect == effect) { return; }
-    m_effect = effect;
 
-    updateState();
+    m_effect = effect;
+    QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+    if(m_effect->isChildrenLoaded())
+    {
+        updateStateIfOk();
+    }
+
     emit effectChanged();
 }
 
@@ -119,3 +154,38 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     return n;
 }
 
+void QuizImage::imageDownloadedSlot(const QString &url_)
+{
+    Q_UNUSED(url_);
+    updateStateIfOk();
+}
+
+void QuizImage::effectChildrenLoadedSlot()
+{
+    updateStateIfOk();
+}
+
+void QuizImage::updateStateIfOk()
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        if(!sf->isUrlDownloaded(m_fromImageUrl)) { return; }
+        if(!sf->isUrlDownloaded(m_toImageUrl)) { return; }
+    }
+    if(nullptr != m_effect)
+    {
+        if(!m_effect->isChildrenLoaded()) { return; }
+
+        QObject::disconnect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+        if(nullptr != sf)
+        {
+            QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+        }
+        updateState();
+    }
+    else if(nullptr != sf)
+    {
+        QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+    }
+}

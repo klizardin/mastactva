@@ -15,8 +15,8 @@ class QuizImage : public QQuickItem
 public:
     QuizImage(QQuickItem *parent_ = nullptr);
 
-    Q_PROPERTY(QString fromImage READ fromImage WRITE setFromImage NOTIFY fromImageChanged)
-    Q_PROPERTY(QString toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
+    Q_PROPERTY(QVariantList fromImage READ fromImage WRITE setFromImage NOTIFY fromImageChanged)
+    Q_PROPERTY(QVariantList toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
     Q_PROPERTY(QVariant effect READ effect WRITE setEffect NOTIFY effectChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
 
@@ -24,10 +24,10 @@ public:
     Q_INVOKABLE void updateState();
 
 public:
-    QString fromImage() const;
-    void setFromImage(const QString &fromImageUrl_);
-    QString toImage() const;
-    void setToImage(const QString &toImageUrl_);
+    QVariantList fromImage() const;
+    void setFromImage(const QVariantList &fromImageInfo_);
+    QVariantList toImage() const;
+    void setToImage(const QVariantList &toImageInfo_);
     QVariant effect() const;
     void setEffect(const QVariant &effect_);
     qreal t() const;
@@ -35,6 +35,13 @@ public:
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
+
+protected slots:
+    void imageDownloadedSlot(const QString &url_);
+    void effectChildrenLoadedSlot();
+
+protected:
+    void updateStateIfOk();
 
 signals:
     void fromImageChanged();
