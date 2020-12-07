@@ -24,6 +24,8 @@ public:
     QString getLocalURL() const;
     qint64 bytesReceived() const;
     qint64 bytesTotal() const;
+    const QString &getOldName() const;
+    void removeOldFile(const QString &oldURL_);
 
 protected:
     QString getFilename();
@@ -45,6 +47,7 @@ private:
     QString m_url;
     QString m_hash;
     QString m_filename;
+    QString m_oldName;
     QNetworkReply *m_download = nullptr;
     QFile m_outputFile;
     qint64 m_bytesReceived = 0;

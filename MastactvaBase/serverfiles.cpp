@@ -38,6 +38,7 @@ void ServerFiles::add(const QString &url_, const QString &hash_, const QString &
     QObject::connect(sfd, SIGNAL(progress()), this, SLOT(progressSlot()));
     sfd->setPath(m_rootDir, relCachePath_);
     sfd->setFile(url_, hash_);
+
     sfd->start(m_manager);
 }
 
@@ -142,10 +143,12 @@ void ServerFiles::finished(ServerFileDownload *download_)
     const QString url = download_->getUrl();
 
     const auto fitm = m_map.find(url);
+    const QString oldUrl = std::end(m_map) != fitm ? fitm.value() : QString();
     m_map.erase(fitm);
 
     const bool ok = download_->ok();
     if(ok) { m_map.insert(url, download_->getLocalURL()); }
+    download_->removeOldFile(oldUrl);
 
     delete download_;
     download_ = nullptr;
@@ -319,11 +322,27 @@ QString ServerFileDownload::getFilename()
     QUrl url(m_url);
     QString path = url.path();
     QString basename = QFileInfo(path).fileName();
+    QString ext = QFileInfo(path).suffix();
     if(basename.isEmpty()) { return QString(); }
     QString savePath = QDir(m_rootDir).filePath(m_relPath);
     QDir dir(savePath);
     if(!dir.exists()) { dir.mkpath("."); }
-    dir.remove(basename);
+    if(QFile::exists(dir.filePath(basename)))
+    {
+        m_oldName = dir.filePath(basename);
+        if(ext.isEmpty())
+        {
+            basename += ".";
+        }
+        else
+        {
+            basename = basename.mid(0, basename.length() - (ext.length() + 1)) + ".";
+            ext = QString(".") + ext;
+        }
+        int i = 0;
+        for(; QFile::exists(dir.filePath(basename + QString::number(i) + ext)); i++ ) {}
+        basename += QString::number(i) + ext;
+    }
     return dir.filePath(basename);
 }
 
@@ -335,4 +354,15 @@ qint64 ServerFileDownload::bytesReceived() const
 qint64 ServerFileDownload::bytesTotal() const
 {
     return m_bytesTotal;
+}
+
+const QString &ServerFileDownload::getOldName() const
+{
+    return m_oldName;
+}
+
+void ServerFileDownload::removeOldFile(const QString &oldURL_)
+{
+    if(QUrl::fromLocalFile(m_oldName).toString() != oldURL_) { return; }
+    QFile(m_oldName).remove();
 }
