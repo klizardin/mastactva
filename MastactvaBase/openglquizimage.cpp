@@ -44,8 +44,13 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 {
     m_width = item_->width();
     m_height = item_->height();
+
+    // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
+    // base data
     m_t = quizImage->t();
+    if(!quizImage->areAllDataAvailable()) { return; }
+    // all data
     m_fromImageUrlNew = quizImage->fromImage().at(0).toString();
     m_toImageUrlNew = quizImage->toImage().at(0).toString();
 }

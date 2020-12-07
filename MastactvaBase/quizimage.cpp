@@ -95,7 +95,7 @@ void QuizImage::setEffect(const QVariant &effect_)
     QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
     if(m_effect->isChildrenLoaded())
     {
-        updateStateIfOk();
+        updateStateIfDataIsReady();
     }
 
     emit effectChanged();
@@ -112,6 +112,26 @@ void QuizImage::setT(qreal t_)
 
     updateState();
     emit tChanged();
+}
+
+bool QuizImage::areAllDataAvailable() const
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        if(!sf->isUrlDownloaded(m_fromImageUrl) || !sf->isUrlDownloaded(m_toImageUrl))
+        {
+            return false;
+        }
+    }
+    if(nullptr != m_effect)
+    {
+        if(!m_effect->isChildrenLoaded())
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
@@ -157,35 +177,27 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 void QuizImage::imageDownloadedSlot(const QString &url_)
 {
     Q_UNUSED(url_);
-    updateStateIfOk();
+    updateStateIfDataIsReady();
 }
 
 void QuizImage::effectChildrenLoadedSlot()
 {
-    updateStateIfOk();
+    updateStateIfDataIsReady();
 }
 
-void QuizImage::updateStateIfOk()
+void QuizImage::updateStateIfDataIsReady()
 {
+    const bool canUpdate = areAllDataAvailable();
+    if(!canUpdate) { return; }
+
+    if(nullptr != m_effect)
+    {
+        QObject::disconnect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+    }
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
-        if(!sf->isUrlDownloaded(m_fromImageUrl)) { return; }
-        if(!sf->isUrlDownloaded(m_toImageUrl)) { return; }
-    }
-    if(nullptr != m_effect)
-    {
-        if(!m_effect->isChildrenLoaded()) { return; }
-
-        QObject::disconnect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
-        if(nullptr != sf)
-        {
-            QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
-        }
-        updateState();
-    }
-    else if(nullptr != sf)
-    {
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
     }
+    updateState();
 }

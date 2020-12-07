@@ -33,6 +33,8 @@ public:
     qreal t() const;
     void setT(qreal t_);
 
+    bool areAllDataAvailable() const;
+
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
@@ -41,7 +43,7 @@ protected slots:
     void effectChildrenLoadedSlot();
 
 protected:
-    void updateStateIfOk();
+    void updateStateIfDataIsReady();
 
 signals:
     void fromImageChanged();
