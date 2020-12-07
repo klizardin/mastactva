@@ -15,7 +15,7 @@
 class EffectModel;
 
 
-class Effect : public QObject
+class Effect : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 
@@ -59,6 +59,9 @@ public:
     void setArgs(const QVariant &obj_);
     QVariant argSets() const;
     void setArgSets(const QVariant &obj_);
+
+public:
+    bool isChildrenLoaded() const;
 
 public:
     Q_INVOKABLE bool startRefreshArguments();

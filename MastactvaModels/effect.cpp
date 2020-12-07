@@ -111,6 +111,7 @@ void Effect::setArgSets(const QVariant &obj_)
 
 EffectShaderModel *Effect::createEffectShadersModel()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     EffectShaderModel *m = new EffectShaderModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
@@ -126,6 +127,7 @@ EffectShaderModel *Effect::createEffectShadersModel()
 
 EffectArgModel *Effect::createEffectArgModel()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     EffectArgModel *m = new EffectArgModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
@@ -141,6 +143,7 @@ EffectArgModel *Effect::createEffectArgModel()
 
 EffectArgSetModel *Effect::createEffectArgSetModel()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     EffectArgSetModel *m = new EffectArgSetModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
@@ -411,6 +414,11 @@ void Effect::applyRefreshArgumentsStep()
         m_effectArgModel->addDataItemImpl(arg);
         return;
     }
+}
+
+bool Effect::isChildrenLoaded() const
+{
+    return isListLoadedImpl();
 }
 
 
