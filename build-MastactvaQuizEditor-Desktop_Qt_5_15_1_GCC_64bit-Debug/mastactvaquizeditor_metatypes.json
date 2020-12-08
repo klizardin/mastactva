@@ -9851,6 +9851,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "argumentSet",
+                        "notify": "argumentSetChanged",
+                        "read": "argumentSet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArgumentSet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "t",
                         "notify": "tChanged",
                         "read": "t",
@@ -9882,6 +9896,11 @@
                     {
                         "access": "public",
                         "name": "tChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argumentSetChanged",
                         "returnType": "void"
                     }
                 ],

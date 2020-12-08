@@ -5,6 +5,7 @@
 #include <QQuickItem>
 #include <QtQuick/QQuickFramebufferObject>
 #include "../MastactvaModels/effect.h"
+#include "../MastactvaModels/effectargset.h"
 
 
 class QuizImage : public QQuickItem
@@ -18,6 +19,7 @@ public:
     Q_PROPERTY(QVariantList fromImage READ fromImage WRITE setFromImage NOTIFY fromImageChanged)
     Q_PROPERTY(QVariantList toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
     Q_PROPERTY(QVariant effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(QVariant argumentSet READ argumentSet WRITE setArgumentSet NOTIFY argumentSetChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
 
 public:
@@ -32,6 +34,8 @@ public:
     void setEffect(const QVariant &effect_);
     qreal t() const;
     void setT(qreal t_);
+    QVariant argumentSet() const;
+    void setArgumentSet(const QVariant &argumentSet_);
 
     bool areAllDataAvailable();
     QString getFromImage() const;
@@ -54,12 +58,14 @@ signals:
     void toImageChanged();
     void effectChanged();
     void tChanged();
+    void argumentSetChanged();
 
 private:
     QString m_fromImageUrl;
     QString m_toImageUrl;
     qreal m_t = 0.0;
     Effect *m_effect = nullptr;
+    EffectArgSet *m_argumentSet = nullptr;
     QStringList m_shadersUrls;
     bool m_effectLoading = false;
 };

@@ -120,8 +120,34 @@ void QuizImage::setT(qreal t_)
     emit tChanged();
 }
 
+QVariant QuizImage::argumentSet() const
+{
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArgSet *>(m_argumentSet)));
+}
+
+void QuizImage::setArgumentSet(const QVariant &argumentSet_)
+{
+    QObject *obj = qvariant_cast<QObject *>(argumentSet_);
+    EffectArgSet *argumentSet = qobject_cast<EffectArgSet *>(obj);
+    if(m_argumentSet == argumentSet) { return; }
+
+    m_argumentSet = argumentSet;
+
+    QObject::connect(m_argumentSet, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+    if(m_argumentSet->isChildrenLoaded())
+    {
+        updateStateIfDataIsReady();
+    }
+
+    emit argumentSetChanged();
+}
+
 bool QuizImage::areAllDataAvailable()
 {
+    if(nullptr != m_argumentSet)
+    {
+        if(!m_argumentSet->isChildrenLoaded()) { return false; }
+    }
     if(nullptr != m_effect)
     {
         if(!m_effect->isChildrenLoaded()) { return false; }
