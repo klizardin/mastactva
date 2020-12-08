@@ -58,6 +58,8 @@
     3) retry values or default values of arguments
     4) set arguments values
 26. debug QuizImage with Effect and EffectArgSet properties
+27. implement demo qml scripts
+
 
 
 
