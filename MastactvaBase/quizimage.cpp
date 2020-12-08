@@ -48,7 +48,7 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
     if(nullptr != sf)
     {
         QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
-        sf->add(imageUrl, imageHash, g_imagesCachePath);
+        sf->add(imageUrl, imageHash, g_imagesRelPath);
     }
     emit fromImageChanged();
 }
@@ -74,7 +74,7 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
     if(nullptr != sf)
     {
         QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
-        sf->add(imageUrl, imageHash, g_imagesCachePath);
+        sf->add(imageUrl, imageHash, g_imagesRelPath);
     }
 
     emit toImageChanged();
@@ -91,11 +91,17 @@ void QuizImage::setEffect(const QVariant &effect_)
     Effect *effect = qobject_cast<Effect *>(obj);
     if(m_effect == effect) { return; }
 
+    m_effectLoading = false;
     m_effect = effect;
+
     QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
     if(m_effect->isChildrenLoaded())
     {
-        updateStateIfDataIsReady();
+        addShadersToWaitDownload();
+    }
+    else
+    {
+        m_effectLoading = true;
     }
 
     emit effectChanged();
@@ -114,24 +120,47 @@ void QuizImage::setT(qreal t_)
     emit tChanged();
 }
 
-bool QuizImage::areAllDataAvailable() const
+bool QuizImage::areAllDataAvailable()
 {
+    if(nullptr != m_effect)
+    {
+        if(!m_effect->isChildrenLoaded()) { return false; }
+        else
+        {
+            if(m_effectLoading)
+            {
+                addShadersToWaitDownload();
+                m_effectLoading = false;
+            }
+        }
+    }
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
-        if(!sf->isUrlDownloaded(m_fromImageUrl) || !sf->isUrlDownloaded(m_toImageUrl))
+        if(!sf->isUrlDownloaded(m_fromImageUrl)
+                || !sf->isUrlDownloaded(m_toImageUrl)
+                ) { return false; }
+        for(const QString &shaderUrl : m_shadersUrls)
         {
-            return false;
-        }
-    }
-    if(nullptr != m_effect)
-    {
-        if(!m_effect->isChildrenLoaded())
-        {
-            return false;
+            if(!sf->isUrlDownloaded(shaderUrl)) { return false; }
         }
     }
     return true;
+}
+
+QString QuizImage::getFromImage() const
+{
+    return m_fromImageUrl;
+}
+
+QString QuizImage::getToImage() const
+{
+    return m_toImageUrl;
+}
+
+Effect *QuizImage::getEffect() const
+{
+    return m_effect;
 }
 
 QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
@@ -190,6 +219,7 @@ void QuizImage::updateStateIfDataIsReady()
     const bool canUpdate = areAllDataAvailable();
     if(!canUpdate) { return; }
 
+    m_shadersUrls.clear();
     if(nullptr != m_effect)
     {
         QObject::disconnect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
@@ -200,4 +230,27 @@ void QuizImage::updateStateIfDataIsReady()
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
     }
     updateState();
+}
+
+void QuizImage::addShadersToWaitDownload()
+{
+    m_shadersUrls.clear();
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+
+    EffectShaderModel *shaders = m_effect->getEffectShaders();
+    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
+    for(int i = 0; i < shaders->sizeImpl(); i++)
+    {
+        EffectShader *effect_shader = shaders->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effect_shader);
+        ShaderModel *shaderModel = effect_shader->getShader();
+        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
+        Shader *shader = shaderModel->dataItemAtImpl(0);
+        m_shadersUrls.push_back(shader->filename());
+        if(nullptr != sf)
+        {
+            sf->add(shader->filename(), shader->hash(), g_shadersRelPath);
+        }
+    }
+    updateStateIfDataIsReady();
 }

@@ -33,7 +33,10 @@ public:
     qreal t() const;
     void setT(qreal t_);
 
-    bool areAllDataAvailable() const;
+    bool areAllDataAvailable();
+    QString getFromImage() const;
+    QString getToImage() const;
+    Effect *getEffect() const;
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
@@ -44,6 +47,7 @@ protected slots:
 
 protected:
     void updateStateIfDataIsReady();
+    void addShadersToWaitDownload();
 
 signals:
     void fromImageChanged();
@@ -56,6 +60,8 @@ private:
     QString m_toImageUrl;
     qreal m_t = 0.0;
     Effect *m_effect = nullptr;
+    QStringList m_shadersUrls;
+    bool m_effectLoading = false;
 };
 
 
