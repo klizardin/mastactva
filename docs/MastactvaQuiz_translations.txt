@@ -1,0 +1,55 @@
+﻿DescriptionForm
+
+        <source>Description</source>
+        <translation>Апісанне</translation>
+
+        <source></source>
+        <translation></translation>
+
+        <source>Close</source>
+        <translation>Закрыць</translation>
+
+GalleryForm
+
+        <source>Galleries</source>
+        <translation>Галерэі</translation>
+
+        <source>/</source>
+        <translation>/</translation>
+
+        <source>...</source>
+        <translation>...</translation>
+
+        <source> ...</source>
+        <translation> ...</translation>
+
+QuestionForm
+
+        <source>Question</source>
+        <translation>Пытанне</translation>
+
+        <source>Question : </source>
+        <translation>Пытанне : </translation>
+
+        <source>Points for question : </source>
+        <translation>Балаў за пытанне : </translation>
+
+        <source>Choose</source>
+        <translation>Абраць</translation>
+
+QuizForm
+
+        <source>Quiz</source>
+        <translation>Віктарына</translation>
+
+main
+
+        <source>Mastactva Quiz</source>
+        <translation>Віктарына Мастацтва</translation>
+
+        <source>Description</source>
+        <translation>Апісанне</translation>
+
+        <source>Quiz</source>
+        <translation>Віктарына</translation>
+

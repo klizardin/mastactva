@@ -1,0 +1,792 @@
+﻿AnswerEditDialog
+
+        <source>Edit Answer</source>
+        <translation>Рэдагаваць адказ</translation>
+
+        <source>Id : </source>
+        <translation>Id : </translation>
+
+        <source>Question : </source>
+        <translation>Пытанне : </translation>
+
+        <source>Points to Pass Question : </source>
+        <translation>Балаў за адказ на пытанне : </translation>
+
+        <source>Answer : </source>
+        <translation>Адказ : </translation>
+
+        <source>Enter answer for the question</source>
+        <translation>Ввядзіце адказ на пытанне</translation>
+
+        <source>Points for Answer : </source>
+        <translation>Балаў за адказ : </translation>
+
+        <source>Enter points for answer</source>
+        <translation>Ввядзіце колькасць балаў за адказ</translation>
+
+ChooseEffectArgumentDialog
+
+        <source>Choose shader</source>
+        <translation>Абярыце шейдэр</translation>
+
+        <source>Please choose argument to set up value</source>
+        <translation>Калі ласка абярыце параметр для устаноўкі значэння</translation>
+
+        <source>Sorry, there is no arguments to add to the argument set. Try to edit existing ones</source>
+        <translation>Прабачце, няма параметраў якія б вы маглі б дадаць да множства параметраў. Паспрабуйце адрэдактавацйь існуючыя параметры множства параметраў</translation>
+
+        <source>Type : </source>
+        <translation>Тып : </translation>
+
+        <source>Name : </source>
+        <translation>Назва : </translation>
+
+        <source>Default value : </source>
+        <translation>Значэнне па ўмалчанню : </translation>
+
+        <source> ...</source>
+        <translation> ...</translation>
+
+ChooseShaderDialog
+
+        <source>Choose shader</source>
+        <translation>Абярыце шейдэр</translation>
+
+        <source>Type : </source>
+        <translation>Тып : </translation>
+
+        <source>Filename : </source>
+        <translation>Назва файла : </translation>
+
+        <source>Hash : </source>
+        <translation>Хэш : </translation>
+
+        <source> ...</source>
+        <translation> ...</translation>
+
+ConfirmDialog
+
+        <source>Confirm operation</source>
+        <translation>Падцвярдзіце дзеянне</translation>
+
+Constants
+
+        <source>Not a point to question</source>
+        <translation>Не кропка да пытання</translation>
+
+        <source>Not a point to next image</source>
+        <translation>Не кропка для пераходу на выяву</translation>
+
+        <source>Point to next image</source>
+        <translation>Кропка переход на выяву</translation>
+
+        <source>Select image point</source>
+        <translation>Абярыце кропку на выяву</translation>
+
+DescriptionEditDialog
+
+        <source>Edit Image Description</source>
+        <translation>Рэдагаваць апісанне выявы</translation>
+
+        <source>Id : </source>
+        <translation>Id : </translation>
+
+        <source>Image id : </source>
+        <translation>Id выявы : </translation>
+
+        <source>Description : </source>
+        <translation>Апісанне : </translation>
+
+        <source>Enter the description of image</source>
+        <translation>Ввядзіце апісанне выявы</translation>
+
+        <source>From : </source>
+        <translation>Ад : </translation>
+
+        <source>Enter description activation date</source>
+        <translation>Ввядзіце дату пачатку паказа апісання выявы</translation>
+
+EffectArgumentSetEditDialog
+
+        <source>Id :</source>
+        <translation>Id :</translation>
+
+        <source>Easing :</source>
+        <translation>Easing :</translation>
+
+        <source>Description :</source>
+        <translation>Апісанне :</translation>
+
+        <source>Enter argument set description</source>
+        <translation>Дадайце апісанне для множства параметраў</translation>
+
+EffectArgumentValueEditDialog
+
+        <source>Id :</source>
+        <translation>Id :</translation>
+
+        <source>Set description :</source>
+        <translation>Апісанне множства параметраў :</translation>
+
+        <source>Argument type :</source>
+        <translation>Тып параметра :</translation>
+
+        <source>Argument name :</source>
+        <translation>Імя параметра :</translation>
+
+        <source>Argument default value :</source>
+        <translation>Значэнне па ўзмаўчанні :</translation>
+
+        <source>Argument description :</source>
+        <translation>Апісанне параметра :</translation>
+
+        <source>Value :</source>
+        <translation>Значэнне :</translation>
+
+        <source>Value description :</source>
+        <translation>Апісанне значэння :</translation>
+
+EffectEditDialog
+
+        <source>Create New Effect</source>
+        <translation>Стварыць новы эфект</translation>
+
+        <source>Edit Effect</source>
+        <translation>Рэдагаваць эфект</translation>
+
+        <source>Id : </source>
+        <translation>Id : </translation>
+
+        <source>Name  : </source>
+        <translation>Імя  : </translation>
+
+        <source>Enter effect name</source>
+        <translation>Ввядзіце імя эфекту</translation>
+
+        <source>Description  : </source>
+        <translation>Апісанне  : </translation>
+
+        <source>Enter effect description</source>
+        <translation>Ввядзіце апісанне эфекту</translation>
+
+GalleryEditDialog
+
+        <source>Edit Gallery Info</source>
+        <translation>Рэдагаваць апісанне галерэі</translation>
+
+        <source>Id : </source>
+        <translation>Id : </translation>
+
+        <source>Description : </source>
+        <translation>Апісанне : </translation>
+
+        <source>Enter the gallery`s description</source>
+        <translation>Ввядзіце апісанне галэрэі</translation>
+
+        <source>Keywords : </source>
+        <translation>Ключавыя словы : </translation>
+
+        <source>Enter gallery`s keywords</source>
+        <translation>Ввядзіце ключавыя словы галерэі</translation>
+
+        <source>Created : </source>
+        <translation>Створана : </translation>
+
+        <source>Points to pass level : </source>
+        <translation>Колькасць балаў галерэі : </translation>
+
+        <source>Enter points to pass number</source>
+        <translation>Ввядзіце колькасць балаў каб прайсці галерэю</translation>
+
+ImageEditDialog
+
+        <source>Edit Image</source>
+        <translation>Рэдагаваць выяву</translation>
+
+        <source>Please choose image to upload to the server</source>
+        <translation>Абярыце выяву для загрузкі на сэрвер</translation>
+
+        <source>Image file name : </source>
+        <translation>Імя файла : </translation>
+
+        <source>Enter image file name</source>
+        <translation>Ввядзіце імя файла</translation>
+
+        <source>Browse</source>
+        <translation>Адкрыць</translation>
+
+        <source>Top Gallery Image</source>
+        <translation>Выява будзе уваходнай</translation>
+
+ImagePointDialog
+
+        <source>Edit image point</source>
+        <translation>Рэдагаваць кропку выявы</translation>
+
+        <source>Image :</source>
+        <translation>Выява :</translation>
+
+        <source>x :</source>
+        <translation>x :</translation>
+
+        <source>Input x coordinate of point [0..1]</source>
+        <translation>Ввядзіце x каардынату кропкі (ад 0 да 1)</translation>
+
+        <source>y :</source>
+        <translation>y :</translation>
+
+        <source>Input y coordinate of point [0..1]</source>
+        <translation>Ввядзіце y каардынату кропкі (ад 0 да 1)</translation>
+
+        <source>weight :</source>
+        <translation>вага :</translation>
+
+        <source>Point to next image</source>
+        <translation>Кропка на наступную выяву</translation>
+
+        <source>Point to question</source>
+        <translation>Кропка да пытання</translation>
+
+        <source>Update</source>
+        <translation>Абнавіць</translation>
+
+Login
+
+        <source>Mastactva Quiz Editor (Login)</source>
+        <translation>Рэдактар віктарын Мастацтва (Уваход)</translation>
+
+        <source></source>
+        <translation></translation>
+
+        <source>Server URL : </source>
+        <translation>URL сервера : </translation>
+
+        <source>Login : </source>
+        <translation>Лагін : </translation>
+
+        <source>Enter login</source>
+        <translation>Ввядзіце лагін</translation>
+
+        <source>Password : </source>
+        <translation>Пароль : </translation>
+
+        <source>Enter pasword</source>
+        <translation>Ввядзіце пароль</translation>
+
+        <source>Login</source>
+        <translation>Увайсці</translation>
+
+NextImageEditDialog
+
+        <source>Edit Next Image</source>
+        <translation>Абраць наступную выяву</translation>
+
+        <source>Show Image Points</source>
+        <translation>Паказаць кропкі выявы</translation>
+
+        <source>Show Voronoy Diagram</source>
+        <translation>Паказаць дыяграму Варанога</translation>
+
+OptionsEditDialog
+
+        <source>Edit Options</source>
+        <translation>Рэдагаваць налады</translation>
+
+        <source>Use colors voronoy diagram</source>
+        <translation>Выкарыстоўваць каларовую дыяграму Варанога</translation>
+
+        <source>Regenerate colors</source>
+        <translation>Перебудаваць калоры дыяграмы Варанога</translation>
+
+        <source>Belarus</source>
+        <translation>Belarus</translation>
+
+        <source>English</source>
+        <translation>English</translation>
+
+QuestionEditDialog
+
+        <source>Edit Question</source>
+        <translation>Рэдагаваць пытанне</translation>
+
+        <source>Id : </source>
+        <translation>Id : </translation>
+
+        <source>Question : </source>
+        <translation>Пытанне : </translation>
+
+        <source>Enter question text</source>
+        <translation>Ввядзіце тэкст пытання</translation>
+
+        <source>Points To Pass Question : </source>
+        <translation>Балаў за пытанне : </translation>
+
+        <source>Enter points to pass</source>
+        <translation>Ввядзіце колькасць балаў за пытанне</translation>
+
+RefreshEffectArgumentsDialog
+
+        <source>Download shader files progress</source>
+        <translation>Прагрэс загрузкі файлаў шейдэраў</translation>
+
+        <source>Refresh arguments progress</source>
+        <translation>Прагрэс абнаўлення параметраў</translation>
+
+        <source>Refresh</source>
+        <translation>Абнавіць</translation>
+
+        <source>Wait while effects argument are refreshing...</source>
+        <translation>Пачакайце пакуль параметры эфектаў абнавяцца...</translation>
+
+        <source> %</source>
+        <translation> %</translation>
+
+        <source>Now you can apply refresh effect arguments</source>
+        <translation>Цяпер вы можаце прымяніць абнаўленне параметраў эффекту</translation>
+
+        <source>Refresh of effect argument was done</source>
+        <translation>Абнаўленне параметраў эфектаў адбылося</translation>
+
+        <source>Wait while shader files are downloading ...</source>
+        <translation>Пачакайце пакуль загрузяцца файлы шэйдэраў ...</translation>
+
+ShaderEditDialog
+
+        <source>Add new shader</source>
+        <translation>Дадаць новы шэйдер</translation>
+
+        <source>Edit shader info</source>
+        <translation>Ввядзце інфармацыю аб шэйдере</translation>
+
+        <source>Please choose a shader file to upload to the server</source>
+        <translation>Калі ласка абярыце файл шэйдера для загрузкі на сэрвер</translation>
+
+        <source>Id : </source>
+        <translation>Id : </translation>
+
+        <source>Type  : </source>
+        <translation>Тып  : </translation>
+
+        <source>Filename  : </source>
+        <translation>Імя файла  : </translation>
+
+        <source>Enter shader filename</source>
+        <translation>Ввядзіце імя файла шейдера</translation>
+
+        <source>Browse</source>
+        <translation>Адкрыць</translation>
+
+        <source>Hash  : </source>
+        <translation>Хэш  : </translation>
+
+        <source>Shader hash value</source>
+        <translation>Значэнне хэшу шэйдера</translation>
+
+        <source>Description  : </source>
+        <translation>Апісанне  : </translation>
+
+        <source>Enter shader description</source>
+        <translation>Ввядзіце апісанне шэйдера</translation>
+
+WarningDialog
+
+        <source>Close</source>
+        <translation>Закрыць</translation>
+
+main
+
+        <source>Mastactva Quiz Editor</source>
+        <translation>Рэдактар віктарын Мастацтва</translation>
+
+        <source>Please, select effect item</source>
+        <translation>Калі ласка, абярыце шэйдер</translation>
+
+        <source></source>
+        <translation></translation>
+
+        <source>Application Error</source>
+        <translation>Памылка аплікацыі</translation>
+
+        <source>Error code : </source>
+        <translation>Код памылкі : </translation>
+
+        <source>Description : </source>
+        <translation>Апісанне : </translation>
+
+        <source>&amp;Refresh Galleries</source>
+        <translation>&amp;Абнавіць галэрэі</translation>
+
+        <source>Refresh &amp;All Images</source>
+        <translation>Абнавіць &amp;выявы галерэі</translation>
+
+        <source>&amp;Create New Gallery</source>
+        <translation>&amp;Стварыць новую галерэю</translation>
+
+        <source>&amp;Edit Current Gallery</source>
+        <translation>&amp;Рэдагаваць абраную галерэю</translation>
+
+        <source>Select gallery first</source>
+        <translation>Абярыце галерэю з пачатку</translation>
+
+        <source>To edit the gallery you should first select a gallery</source>
+        <translation>Для рэдагавання галерэі вы павінны з пачатку абраць галерэю</translation>
+
+        <source>&amp;Remove Current Gallery</source>
+        <translation>&amp;Выдаліць абраную галерэю</translation>
+
+        <source>Do you really want to remove the current gallery</source>
+        <translation>Вы сапраўды жадаеце выдаліць абраную галерэю</translation>
+
+        <source>Add &amp;Image To Current Gallery</source>
+        <translation>&amp;Дадаць выяву ў абраную галерэю</translation>
+
+        <source>To add an image to the gallery you should first select a gallery</source>
+        <translation>Для дадання выявы да галерэі вы павіны па-першае абраць галерэю</translation>
+
+        <source>Take &amp;Ownship of Current Gallery</source>
+        <translation>&amp;Пачаць рэдагаванне абранай галерэі</translation>
+
+        <source>To take ownship of the gallery you should first select a gallery</source>
+        <translation>Для пачатку рэдагавання галеруі вы па-першае павіны абраць галерэю</translation>
+
+        <source>&amp;Free Ownship of Current Gallery</source>
+        <translation>С&amp;кончыць рэдагаванне абранай галерэі</translation>
+
+        <source>To free ownship of the gallery you should first select a gallery</source>
+        <translation>Для сканчэння рэдагавання галерэі вы па-першае павіны абраць галерэю</translation>
+
+        <source>&amp;Remove Current Image</source>
+        <translation>В&amp;ыдаліць абраную выяву</translation>
+
+        <source>Select image of gallery first</source>
+        <translation>Абярыце з пачатку выяву</translation>
+
+        <source>To remove an image of the gallery you should first select a image</source>
+        <translation>Для выдалення выявы вы па-першае павіны абраць выяву</translation>
+
+        <source>Do you really want to remove the image from the gallery</source>
+        <translation>Вы сапраўды жадаеце выдаліць выяву з галерэі</translation>
+
+        <source>Make Image &amp;Top</source>
+        <translation>Зрабіць выяву &amp;ўваходнай</translation>
+
+        <source>Select an image of the gallery first</source>
+        <translation>Абярыце выяву галерэі з пачатку</translation>
+
+        <source>To make an image of the gallery top you should first select a image</source>
+        <translation>Для таго каб зрабіць выяву уваходнай вы па-першае павіны абраць выяву</translation>
+
+        <source>Make Image &amp;Non Top</source>
+        <translation>&amp;Скасаваць уваходнасць выявы</translation>
+
+        <source>To make an image of the gallery non top you should first select a image</source>
+        <translation>Для таго каб скасаваць уваходнасць выявы вы па-першае павіны абраць выяву</translation>
+
+        <source>Show image &amp;points</source>
+        <translation>Паказаць &amp;кропкі выявы</translation>
+
+        <source>Show &amp;voronoy diagram</source>
+        <translation>Паказаць дыяграму &amp;Варанога</translation>
+
+        <source>&amp;New Description</source>
+        <translation>Новае &amp;апісанне</translation>
+
+        <source>To create a description of the image of the gallery you should first select an image</source>
+        <translation>Для стварэння новага апісання выявы вы па-першае павіны абраць выяву</translation>
+
+        <source>&amp;Edit Description</source>
+        <translation>&amp;Рэдагаваць апісанне</translation>
+
+        <source>Select a description of the image first</source>
+        <translation>Абярыце апісанне выявы з пачатку</translation>
+
+        <source>To edit a description of the image of the gallery you should first select a description</source>
+        <translation>Для рэдагавання апісання выявы вы па-першае павіны абраць апісанне выявы</translation>
+
+        <source>&amp;Delete Description</source>
+        <translation>&amp;Выдаліць апісанне</translation>
+
+        <source>Do you really want to delete description?</source>
+        <translation>Вы сапраўды жадаеце выдаліць апісанне?</translation>
+
+        <source> ...</source>
+        <translation> ...</translation>
+
+        <source>&lt;br/&gt;</source>
+        <translation>&lt;br/&gt;</translation>
+
+        <source>&amp;Edit question</source>
+        <translation>&amp;Рэдагаваць пытанне</translation>
+
+        <source>Select an image point of the image first</source>
+        <translation>Абярыце кропку выявы з пачатку</translation>
+
+        <source>To edit a question of an image point of an image of the gallery you should first select an image point</source>
+        <translation>Для рэдагавання пытання для кропкі выявы  вы павіны па-першае абраць кропку выяву</translation>
+
+        <source>&amp;New answer</source>
+        <translation>&amp;Новы адказ</translation>
+
+        <source>To add new answer of the question of the image point of the image of the gallery you should first select an image point</source>
+        <translation>Для дадання новага адказу на пытанне кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
+
+        <source>&amp;Edit answer</source>
+        <translation>&amp;Рэдагаваць адказ</translation>
+
+        <source>To edit an answer of the question of the image point of the image of the gallery you should first select an image point</source>
+        <translation>Для рэдагавання адказу на пытанне на кропке выявы вы па-першае павіны абраць кропку выявы</translation>
+
+        <source>Select an answer of the image point of the image first</source>
+        <translation>Абярыце адказ на пытанне</translation>
+
+        <source>To edit an answer of the question of the image point of the image of the gallery you should first select an answer</source>
+        <translation>Для рэдагаваня адказу на пытанне па кропцы выявы вы павіны па-першае абраць адказ</translation>
+
+        <source>&amp;Delete answer</source>
+        <translation>&amp;Выдаліць адказ</translation>
+
+        <source>To remove the answer of the question of the image point of the image of the gallery you should first select an image point</source>
+        <translation>Для выдалення адказу на патанне па кропцы выявы вы па-першае павіны адраць кропку выяву з пытаннем</translation>
+
+        <source>To remove an answer of the question of the image point of the image of the gallery you should first select an answer</source>
+        <translation>Для выдалення адказу на пытанне па кропцы выявы вы па-першае павіны абраць адказ</translation>
+
+        <source>Add point template</source>
+        <translation>Дадаць шаблон кропкі выявы</translation>
+
+        <source>To add an image point of the image of the gallery you should first select an image</source>
+        <translation>Для дадання шаблону кропкі выявы вы па-першае павіны абраць выяву</translation>
+
+        <source>Create image point template</source>
+        <translation>Стварыць шаблон кропкі выявы</translation>
+
+        <source>Edit point of image</source>
+        <translation>Рэдагаваць кропку выявы</translation>
+
+        <source>To edit properties of the image point of the image of the gallery you should first select an image point</source>
+        <translation>Для рэдагавання кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
+
+        <source>Edit image point</source>
+        <translation>Рэдагаваць кропку выявы</translation>
+
+        <source>Remove point of image</source>
+        <translation>Выдаліць кропку выявы</translation>
+
+        <source>To remove an image point of the image of the gallery you should first select an image point</source>
+        <translation>Для выдалення кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
+
+        <source>Description text : </source>
+        <translation>Апісанне : </translation>
+
+        <source>From : </source>
+        <translation>Ад : </translation>
+
+        <source>Do you really want to remove answer?</source>
+        <translation>Вы сапраўды жадаеце выдаліць адказ?</translation>
+
+        <source>Answer : </source>
+        <translation>Адказ : </translation>
+
+        <source>Points for answer : </source>
+        <translation>Балаў за адказ : </translation>
+
+        <source>Do you really want to remove image point?</source>
+        <translation>Вы сапраўды жадаеце выдаліць кропку выявы?</translation>
+
+        <source>x : </source>
+        <translation>x : </translation>
+
+        <source>y : </source>
+        <translation>y : </translation>
+
+        <source>weight : </source>
+        <translation>вага : </translation>
+
+        <source>&amp;Edit options</source>
+        <translation>Рэдагаваць &amp;налады</translation>
+
+        <source>Edit next image</source>
+        <translation>Рэдагаваць настыпную выяву</translation>
+
+        <source>To edit next image of the image point of the image of the gallery you should first select an image point</source>
+        <translation>Для рэдагавання наступнай выявы кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
+
+        <source>&amp;Galleries</source>
+        <translation>&amp;Галерэі</translation>
+
+        <source>All &amp;Images of Gallery</source>
+        <translation>&amp;Усе выявы галерэі</translation>
+
+        <source>Image &amp;point</source>
+        <translation>&amp;Кропка выявы</translation>
+
+        <source>&amp;Description</source>
+        <translation>&amp;Апісанне</translation>
+
+        <source>&amp;Next Image</source>
+        <translation>Наступная &amp;выява</translation>
+
+        <source>&amp;Question</source>
+        <translation>&amp;Пытанне</translation>
+
+        <source>&amp;Answer</source>
+        <translation>А&amp;дказ</translation>
+
+        <source>&amp;Options</source>
+        <translation>&amp;Налады</translation>
+
+        <source>Re&amp;fresh effect</source>
+        <translation>Абнавіць эфект</translation>
+
+        <source>&amp;Add effect</source>
+        <translation>Дадаць эфект</translation>
+
+        <source>&amp;Edit effect</source>
+        <translation>Рэдагаваць эфект</translation>
+
+        <source>&amp;Remove effect</source>
+        <translation>Удаліць эфект</translation>
+
+        <source>Re&amp;fresh shaders</source>
+        <translation>Абнавіць шэйдеры</translation>
+
+        <source>&amp;Add new shader</source>
+        <translation>Дадаць новы шэйдер</translation>
+
+        <source>Add &amp;existing shader</source>
+        <translation>Дадаць існуючы шэйдер</translation>
+
+        <source>Edit shader &amp;info</source>
+        <translation>Рэдагаваць інфармацыю аб шэйдеры</translation>
+
+        <source>&amp;Remove shader</source>
+        <translation>Выдаліць шэйдер</translation>
+
+        <source>&amp;Refresh effect arguments</source>
+        <translation>Абнавіць параметры шэйдера</translation>
+
+        <source>&amp;Add argument set</source>
+        <translation>Дадаць множства параметраў</translation>
+
+        <source>Edit argument &amp;set</source>
+        <translation>Рэдагаваць множства параметраў</translation>
+
+        <source>Remove argument set</source>
+        <translation>Выдаліць множства параметраў</translation>
+
+        <source>Add a&amp;rgument of argument set</source>
+        <translation>Дадаць параметр да множства параметраў</translation>
+
+        <source>&amp;Edit argument of argument set</source>
+        <translation>Рэдагаваць параметр множства параметраў</translation>
+
+        <source>Remove argument of argument set</source>
+        <translation>Выдаліць параметр множства параметраў</translation>
+
+        <source>&amp;Play effect demo</source>
+        <translation>Граць дэма эфекта</translation>
+
+        <source>P&amp;ause effect demo</source>
+        <translation>Паўза дэма эфекта</translation>
+
+        <source>&amp;Stop effect demo</source>
+        <translation>Астанавіць дэма эфекта</translation>
+
+        <source>&amp;Effects</source>
+        <translation>Эфекты</translation>
+
+        <source>&amp;Shaders</source>
+        <translation>Шэйдеры</translation>
+
+        <source>&amp;Arguments</source>
+        <translation>Параметры</translation>
+
+        <source>Argument Se&amp;ts</source>
+        <translation>Множства параметраў</translation>
+
+        <source>&amp;Demo</source>
+        <translation>Дэма</translation>
+
+        <source>Galleries</source>
+        <translation>Галерэі</translation>
+
+        <source>Effects</source>
+        <translation>Эфекты</translation>
+
+        <source>Description</source>
+        <translation>Апісанне</translation>
+
+        <source>Next image</source>
+        <translation>Наступная выява</translation>
+
+        <source>Question</source>
+        <translation>Пытанне</translation>
+
+        <source>Points to pass : </source>
+        <translation>Балы за пытанне : </translation>
+
+        <source>PointsToPass</source>
+        <translation>Балы за пытанне</translation>
+
+        <source>Info</source>
+        <translation>Інфармацыя</translation>
+
+        <source>Shaders</source>
+        <translation>Шэйдеры</translation>
+
+        <source>Arguments</source>
+        <translation>Параметры</translation>
+
+        <source>Argument Sets</source>
+        <translation>Множства параметраў</translation>
+
+        <source>Effect name : </source>
+        <translation>Імя эфекта : </translation>
+
+        <source>Effect description : </source>
+        <translation>Апісанне эфекта : </translation>
+
+        <source>Effects Demo</source>
+        <translation>Дэма эфекта</translation>
+
+        <source>You own gallery</source>
+        <translation>Ваша галерэя</translation>
+
+        <source> ( points = </source>
+        <translation> ( балаў = </translation>
+
+        <source>)</source>
+        <translation>)</translation>
+
+        <source>Type : </source>
+        <translation>Тып : </translation>
+
+        <source>Filename : </source>
+        <translation>Імя файла : </translation>
+
+        <source>Hash : </source>
+        <translation>Хэш : </translation>
+
+        <source>Name : </source>
+        <translation>Імя : </translation>
+
+        <source>Default value : </source>
+        <translation>Значэнне па змаўчанні : </translation>
+
+        <source>Easing type : </source>
+        <translation>Тып easing : </translation>
+
+        <source>Argument type : </source>
+        <translation>Тып аргумента : </translation>
+
+        <source>Argument name : </source>
+        <translation>Імя параметра : </translation>
+
+        <source>Argument default value : </source>
+        <translation>Значэнне па змаўчанні параметра : </translation>
+
+        <source>Value : </source>
+        <translation>Значэнне : </translation>
+
+
+
