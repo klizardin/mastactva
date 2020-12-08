@@ -45,6 +45,9 @@ static const QString g_shadersRelPath = "shaders";
 static const QString g_imagesRelPath = "images";
 static const QString g_shaderTypeVertex = "Vertex";
 static const QString g_shaderTypeFragmet = "Fragmet";
+static const QString g_shaderTypeModel = "ShaderTypeModel";
+static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
+static const QString g_easingTypeModel = "EasingTypeModel";
 
 
 #endif // UTILS_H

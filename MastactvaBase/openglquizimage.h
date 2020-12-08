@@ -1,4 +1,4 @@
-#ifndef OPENGLQUIZIMAGE_H
+﻿#ifndef OPENGLQUIZIMAGE_H
 #define OPENGLQUIZIMAGE_H
 
 
@@ -10,6 +10,7 @@
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
 #include <QQuickItem>
+#include <QByteArray>
 #include "../MastactvaModels/effect.h"
 
 
@@ -26,7 +27,7 @@ public:
     void setType(const QString &type_);
     void setValue(const QString &value_);
     void initId(QOpenGLShaderProgram *program_);
-    void setValue(QOpenGLShaderProgram *program_);
+    void setValue(QOpenGLShaderProgram *program_) const;
 
 private:
     QString m_name;
@@ -59,6 +60,9 @@ private:
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
     void extractArguments();
+    void resetProgram();
+    QString loadFile(const QString &filename_);
+    QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 
 private:
     QObject *m_parent = nullptr;
@@ -94,6 +98,8 @@ private:
     QList<ArgumentInfo> m_arguments;
     QString m_vertexShader;
     QString m_fragmentShader;
+    QByteArray m_vshaderBA;
+    QByteArray m_fshaderBA;
 };
 
 

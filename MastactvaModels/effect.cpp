@@ -431,6 +431,11 @@ EffectShaderModel *Effect::getEffectShaders()
     return m_effectShadersModel;
 }
 
+EffectArgModel *Effect::getEffectArguments()
+{
+    return m_effectArgModel;
+}
+
 
 EffectModel::EffectModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)

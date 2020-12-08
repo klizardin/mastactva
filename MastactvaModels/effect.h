@@ -63,6 +63,7 @@ public:
 public:
     bool isChildrenLoaded() const;
     EffectShaderModel *getEffectShaders();
+    EffectArgModel *getEffectArguments();
 
 public:
     Q_INVOKABLE bool startRefreshArguments();

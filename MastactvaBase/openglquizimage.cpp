@@ -1,13 +1,14 @@
-#include "openglquizimage.h"
+﻿#include "openglquizimage.h"
 #include <QByteArray>
 #include <QTextCodec>
 #include "quizimage.h"
 #include "../MastactvaModels/effectshader.h"
 #include "../MastactvaModels/shader.h"
 #include "../MastactvaModels/shadertype.h"
+#include "../MastactvaModels/effectarg.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
-#include "qmlmainobjects.h"
+#include "../MastactvaBase/qmlobjects.h"
 
 
 void ArgumentInfo::setName(const QString &name_)
@@ -78,9 +79,10 @@ void ArgumentInfo::setValue(const QString &value_)
 
 void ArgumentInfo::initId(QOpenGLShaderProgram *program_)
 {
+    m_id = program_->attributeLocation(m_name);
 }
 
-void ArgumentInfo::setValue(QOpenGLShaderProgram *program_)
+void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
 {
     if(1 == m_size && !m_floatType)
     {
@@ -224,41 +226,15 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     if(nullptr == m_vshader)
     {
         m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, m_parent);
-        const char *vsrc =
-            "attribute highp vec4 vertexArg;\n"
-            "attribute mediump vec4 texCoordArg;\n"
-            "uniform mediump mat4 matrixArg;\n"
-            "uniform mediump mat4 texMatrix1Arg;\n"
-            "uniform mediump mat4 texMatrix2Arg;\n"
-            "varying mediump vec4 texCoord1Var;\n"
-            "varying mediump vec4 texCoord2Var;\n"
-            "void main(void)\n"
-            "{\n"
-            "    gl_Position = matrixArg * vertexArg;\n"
-            "    texCoord1Var = texMatrix1Arg * texCoordArg;\n"
-            "    texCoord2Var = texMatrix2Arg * texCoordArg;\n"
-            "}\n";
-        m_vshader->compileSourceCode(vsrc);
+        m_vshaderBA = m_vertexShader.toUtf8();
+        m_vshader->compileSourceCode(m_vshaderBA.constData());
     }
 
     if(nullptr == m_fshader)
     {
         m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, m_parent);
-        const char *fsrc =
-            "uniform sampler2D texture1Arg;\n"
-            "uniform sampler2D texture2Arg;\n"
-            "uniform mediump float t;\n"
-            "varying mediump vec4 texCoord1Var;\n"
-            "varying mediump vec4 texCoord2Var;\n"
-            "void main(void)\n"
-            "{\n"
-            "    vec4 s1 = texture2D( texture1Arg, texCoord1Var.st );\n"
-            "    vec4 s2 = texture2D( texture2Arg, texCoord2Var.st );\n"
-            "    gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, 1.0 ),\n"
-            "                        vec4( s2.r, s2.g, s2.b, 1.0 ),\n"
-            "                        t );\n"
-            "}\n";
-        m_fshader->compileSourceCode(fsrc);
+        m_fshaderBA = m_fragmentShader.toUtf8();
+        m_fshader->compileSourceCode(m_fshaderBA.constData());
     }
 
     m_program = new QOpenGLShaderProgram();
@@ -277,6 +253,11 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
     if(0 > m_tId) { m_tId = m_program->uniformLocation("t"); }
     //if(0 > m_colorId) { m_colorId = m_program->uniformLocation("color"); }
+
+    for(ArgumentInfo &ai: m_arguments)
+    {
+        ai.initId(m_program);
+    }
 
     m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
     m_program->bindAttributeLocation("texCoordArg", m_texCoordAttrId);
@@ -308,6 +289,11 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_matrixId, m);
     m_program->setUniformValue(m_texMatrix1Id, texm1);
     m_program->setUniformValue(m_texMatrix2Id, texm2);
+
+    for(const ArgumentInfo &ai: m_arguments)
+    {
+        ai.setValue(m_program);
+    }
 
     m_vbo->bind();
     m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());
@@ -354,12 +340,13 @@ void OpenGlQuizImage::extractArguments()
 {
     if(nullptr == m_effect)
     {
-        // reinit after
-        delete m_program;
-        m_program = nullptr;
+        resetProgram();
     }
 
-    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel));
+    // read shaders files
+    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
+                );
     Q_ASSERT(nullptr != shaderTypeModel);
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     Q_ASSERT(nullptr != sf);
@@ -369,7 +356,7 @@ void OpenGlQuizImage::extractArguments()
 
     EffectShaderModel *shaders = m_effect->getEffectShaders();
     Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
-    for(int i = 0; i < shaders->sizeImpl(); i++)
+    for(int i = 0; i < shaders->sizeImpl(); ++i)
     {
         EffectShader *effect_shader = shaders->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_shader);
@@ -378,15 +365,15 @@ void OpenGlQuizImage::extractArguments()
         Shader *shader = shaderModel->dataItemAtImpl(0);
 
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
-        QUrl url(sf->get(shader->filename()));
-        QFile file(url.toLocalFile());
-        if(!file.open(QIODevice::ReadOnly)) { continue; }
-        QByteArray fd = file.readAll();
-        QTextCodec *codec = QTextCodec::codecForUtfText(fd);
-        QString shaderText = codec->toUnicode(fd);
+        QString shaderText = loadFileByUrl(shader->filename());
 
         ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
-        Q_ASSERT(nullptr != shaderType && (g_shaderTypeVertex == shaderType->type() || g_shaderTypeFragmet == shaderType->type()));
+        Q_ASSERT(nullptr != shaderType &&
+                    (
+                        g_shaderTypeVertex == shaderType->type() ||
+                        g_shaderTypeFragmet == shaderType->type()
+                    )
+                );
         if(g_shaderTypeVertex == shaderType->type())
         {
             m_vertexShader = shaderText;
@@ -397,7 +384,71 @@ void OpenGlQuizImage::extractArguments()
         }
     }
 
-    // reinit after
+    if(m_vertexShader.isEmpty())
+    {
+        m_vertexShader = loadFile(":/default.vert");
+    }
+    if(m_fragmentShader.isEmpty())
+    {
+        m_fragmentShader = loadFile(":/default.frag");
+    }
+
+    ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
+                );
+    Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
+
+    m_arguments.clear();
+    // read default arguments values
+    EffectArgModel *effectArguments = m_effect->getEffectArguments();
+    Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
+    for(int i = 0; i < effectArguments->sizeImpl(); ++i)
+    {
+        ArgumentInfo ai;
+        EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effectArgument);
+        ai.setName(effectArgument->name());
+        ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
+        Q_ASSERT(nullptr != argType);
+        ai.setType(argType->type());
+        ai.setValue(effectArgument->defaultValue());
+        m_arguments.push_back(ai);
+    }
+
+    resetProgram();
+}
+
+void OpenGlQuizImage::resetProgram()
+{
+    delete m_vshader;
+    m_vshader = nullptr;
+    delete m_fshader;
+    m_fshader = nullptr;
     delete m_program;
     m_program = nullptr;
+}
+
+QString OpenGlQuizImage::loadFile(const QString &filename_)
+{
+    QFile file(filename_);
+    if(!file.open(QIODevice::ReadOnly)) { return QString(); }
+    QByteArray fd = file.readAll();
+    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
+    return codec->toUnicode(fd);
+}
+
+QString OpenGlQuizImage::loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
+{
+    if(useServerFiles_)
+    {
+        ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+        Q_ASSERT(nullptr != sf);
+        QUrl url(sf->get(filenameUrl_));
+        return loadFile(url.toLocalFile());
+    }
+    else
+    {
+        QUrl url(filenameUrl_);
+        return loadFile(url.toLocalFile());
+    }
 }

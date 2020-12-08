@@ -3,11 +3,7 @@
 
 #include <QObject>
 #include "../MastactvaBase/qmlobjects.h"
-
-
-static const QString g_shaderTypeModel = "ShaderTypeModel";
-static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
-static const QString g_easingTypeModel = "EasingTypeModel";
+#include "../MastactvaBase/utils.h"
 
 
 class GalleryImagesModel;

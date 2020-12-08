@@ -8882,7 +8882,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "QVariantList",
                         "user": false,
                         "write": "setFromImage"
                     },
@@ -8896,7 +8896,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "QVariantList",
                         "user": false,
                         "write": "setToImage"
                     },
@@ -8949,6 +8949,24 @@
                     {
                         "access": "public",
                         "name": "tChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "imageDownloadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "effectChildrenLoadedSlot",
                         "returnType": "void"
                     }
                 ],
@@ -11910,6 +11928,11 @@
                         "access": "public",
                         "name": "refreshArgumentsAfterApply",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "childrenLoaded",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
@@ -11949,6 +11972,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "IListModelInfoObjectImpl"
                     }
                 ]
             },
