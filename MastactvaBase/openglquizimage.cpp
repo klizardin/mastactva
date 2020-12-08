@@ -1,5 +1,127 @@
 #include "openglquizimage.h"
+#include <QByteArray>
+#include <QTextCodec>
 #include "quizimage.h"
+#include "../MastactvaModels/effectshader.h"
+#include "../MastactvaModels/shader.h"
+#include "../MastactvaModels/shadertype.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/utils.h"
+#include "qmlmainobjects.h"
+
+
+void ArgumentInfo::setName(const QString &name_)
+{
+    m_name = name_;
+}
+
+void ArgumentInfo::setType(const QString &type_)
+{
+    using TypeInfo = QPair<QString, QPair<int, QPair<bool, bool>>>;
+    static const TypeInfo typeInfos[] = {
+        {"int", {1, {false, false}}},
+        {"float", {1, {true, false}}},
+        {"vec2", {2, {true, false}}},
+        {"vec3", {3, {true, false}}},
+        {"vec4", {4, {true, false}}},
+        {"mat2", {4, {true, true}}},
+        {"mat3", {9, {true, true}}},
+        {"mat4", {16, {true, true}}},
+    };
+
+    const auto fit = std::find_if(std::begin(typeInfos), std::end(typeInfos),
+                                  [&type_](const TypeInfo &ti_)->bool
+    {
+        return ti_.first == type_;
+    });
+
+    Q_ASSERT(std::end(typeInfos) != fit);   // unknown type
+    if(std::end(typeInfos) == fit) { return; }
+
+    m_floatType = fit->second.second.first;
+    m_matrixType = fit->second.second.second;
+    m_size = fit->second.first;
+    if(m_floatType) { m_valueFloat.reserve(m_size); }
+    else { m_valueInt.reserve(m_size); }
+}
+
+void ArgumentInfo::setValue(const QString &value_)
+{
+    QString value = value_;
+    value.replace(QString("("), QString(", "));
+    value.replace(QString(")"), QString(", "));
+    value.replace(QString("{"), QString(", "));
+    value.replace(QString("}"), QString(", "));
+    value.replace(QString("\n"), QString(", "));
+    QStringList values = value.split(QString(","));
+    int pos = 0;
+    for(const QString &s : values)
+    {
+        QString val = s.trimmed();
+        if(val.isEmpty()) { continue; }
+        bool ok = false;
+        if(m_floatType)
+        {
+            qreal nv = QVariant::fromValue(val).toDouble(&ok);
+            if(!ok) { continue; }
+            if(m_valueFloat.size() > pos) { m_valueFloat[pos] = nv; }
+        }
+        else
+        {
+            int nv = QVariant::fromValue(val).toInt(&ok);
+            if(!ok) { continue; }
+            if(m_valueInt.size() > pos) { m_valueInt[pos] = nv; }
+        }
+        ++pos;
+    }
+}
+
+void ArgumentInfo::initId(QOpenGLShaderProgram *program_)
+{
+}
+
+void ArgumentInfo::setValue(QOpenGLShaderProgram *program_)
+{
+    if(1 == m_size && !m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueInt[0]);
+    }
+    else if(1 == m_size && m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0]);
+    }
+    else if(2 == m_size && m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1]);
+    }
+    else if(3 == m_size && m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2]);
+    }
+    else if(4 == m_size && m_floatType && !m_matrixType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2], m_valueFloat[4]);
+    }
+    else if(4 == m_size && m_floatType && m_matrixType)
+    {
+        QMatrix2x2 m(&m_valueFloat[0]);
+        program_->setUniformValue(m_id, m);
+    }
+    else if(9 == m_size && m_floatType && m_matrixType)
+    {
+        QMatrix3x3 m(&m_valueFloat[0]);
+        program_->setUniformValue(m_id, m);
+    }
+    else if(16 == m_size && m_floatType && m_matrixType)
+    {
+        QMatrix4x4 m(&m_valueFloat[0]);
+        program_->setUniformValue(m_id, m);
+    }
+    else
+    {
+        Q_ASSERT(false); // unknown type
+    }
+}
 
 
 OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
@@ -51,8 +173,15 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     m_t = quizImage->t();
     if(!quizImage->areAllDataAvailable()) { return; }
     // all data
-    m_fromImageUrlNew = quizImage->fromImage().at(0).toString();
-    m_toImageUrlNew = quizImage->toImage().at(0).toString();
+    m_fromImageUrlNew = quizImage->getFromImage();
+    m_toImageUrlNew = quizImage->getToImage();
+    m_effect = quizImage->getEffect();
+    int effectId = nullptr != m_effect ? m_effect->id() : -1;
+    if(effectId != m_oldEffectId)
+    {
+        m_oldEffectId = effectId;
+        extractArguments();
+    }
 }
 
 void OpenGlQuizImage::makeObject()
@@ -219,4 +348,56 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_fromTexture->bind();
 
     f_->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+}
+
+void OpenGlQuizImage::extractArguments()
+{
+    if(nullptr == m_effect)
+    {
+        // reinit after
+        delete m_program;
+        m_program = nullptr;
+    }
+
+    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel));
+    Q_ASSERT(nullptr != shaderTypeModel);
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    Q_ASSERT(nullptr != sf);
+
+    m_vertexShader.clear();
+    m_fragmentShader.clear();
+
+    EffectShaderModel *shaders = m_effect->getEffectShaders();
+    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
+    for(int i = 0; i < shaders->sizeImpl(); i++)
+    {
+        EffectShader *effect_shader = shaders->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effect_shader);
+        ShaderModel *shaderModel = effect_shader->getShader();
+        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
+        Shader *shader = shaderModel->dataItemAtImpl(0);
+
+        Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
+        QUrl url(sf->get(shader->filename()));
+        QFile file(url.toLocalFile());
+        if(!file.open(QIODevice::ReadOnly)) { continue; }
+        QByteArray fd = file.readAll();
+        QTextCodec *codec = QTextCodec::codecForUtfText(fd);
+        QString shaderText = codec->toUnicode(fd);
+
+        ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
+        Q_ASSERT(nullptr != shaderType && (g_shaderTypeVertex == shaderType->type() || g_shaderTypeFragmet == shaderType->type()));
+        if(g_shaderTypeVertex == shaderType->type())
+        {
+            m_vertexShader = shaderText;
+        }
+        else if(g_shaderTypeFragmet == shaderType->type())
+        {
+            m_fragmentShader = shaderText;
+        }
+    }
+
+    // reinit after
+    delete m_program;
+    m_program = nullptr;
 }

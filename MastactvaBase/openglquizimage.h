@@ -10,9 +10,33 @@
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
 #include <QQuickItem>
+#include "../MastactvaModels/effect.h"
 
 
 #if QT_CONFIG(opengl)
+
+
+class ArgumentInfo
+{
+public:
+    ArgumentInfo() = default;
+    ~ArgumentInfo() = default;
+
+    void setName(const QString &name_);
+    void setType(const QString &type_);
+    void setValue(const QString &value_);
+    void initId(QOpenGLShaderProgram *program_);
+    void setValue(QOpenGLShaderProgram *program_);
+
+private:
+    QString m_name;
+    int m_id = 0;
+    bool m_floatType = true;
+    bool m_matrixType = false;
+    int m_size = 0;
+    QVector<GLfloat> m_valueFloat;
+    QVector<GLint> m_valueInt;
+};
 
 
 class OpenGlQuizImage : public QSGRenderNode
@@ -34,6 +58,7 @@ private:
     void createTextures();
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
+    void extractArguments();
 
 private:
     QObject *m_parent = nullptr;
@@ -64,6 +89,11 @@ private:
     QString m_toImageUrl;
     QString m_fromImageUrlNew;
     QString m_toImageUrlNew;
+    Effect *m_effect = nullptr;
+    int m_oldEffectId = -1;
+    QList<ArgumentInfo> m_arguments;
+    QString m_vertexShader;
+    QString m_fragmentShader;
 };
 
 
