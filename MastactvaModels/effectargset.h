@@ -14,7 +14,7 @@
 class EffectArgSetModel;
 
 
-class EffectArgSet : public QObject
+class EffectArgSet : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 public:
@@ -44,6 +44,7 @@ public:
 
 public:
     Q_INVOKABLE QVariantList argValuesOfSetIdList();
+    Q_INVOKABLE bool isChildrenLoaded();
 
 public:
     int id() const;
@@ -60,12 +61,15 @@ public:
 protected:
     EffectArgValueModel *createAffectArgValueModel();
 
+    virtual void listLoadedVF() override;
+
 signals:
     void idChanged();
     void effectIdChanged();
     void descriptionChanged();
     void valuesChanged();
     void easingChanged();
+    void childrenLoaded();
 
 private:
     EffectArgSetModel *m_effectArgSetModel = nullptr;

@@ -35,6 +35,11 @@ QVariantList EffectArgSet::argValuesOfSetIdList()
     return res;
 }
 
+bool EffectArgSet::isChildrenLoaded()
+{
+    return IListModelInfoObjectImpl::isListLoadedImpl();
+}
+
 int EffectArgSet::id() const
 {
     return m_id;
@@ -107,6 +112,7 @@ void EffectArgSet::setEasingId(const int &easingId_)
 
 EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     EffectArgValueModel *m = new EffectArgValueModel(this);
     m->initResponse();
     m->setLayoutRefImpl("arg_set", m_effectArgSetModel->getQMLLayoutName(), "id");
@@ -118,6 +124,11 @@ EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
+}
+
+void EffectArgSet::listLoadedVF()
+{
+    emit childrenLoaded();
 }
 
 

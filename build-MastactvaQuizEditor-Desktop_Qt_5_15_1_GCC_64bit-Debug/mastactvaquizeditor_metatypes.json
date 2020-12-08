@@ -5428,6 +5428,11 @@
                         "access": "public",
                         "name": "argValuesOfSetIdList",
                         "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isChildrenLoaded",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -5529,12 +5534,21 @@
                         "access": "public",
                         "name": "easingChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "childrenLoaded",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "IListModelInfoObjectImpl"
                     }
                 ]
             },
