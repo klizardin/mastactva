@@ -14,7 +14,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="DescriptionForm.qml" line="36"/>
+        <location filename="DescriptionForm.qml" line="35"/>
         <source>Close</source>
         <translation>Закрыць</translation>
     </message>
@@ -27,18 +27,18 @@
         <translation>Галерэі</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="122"/>
-        <location filename="GalleryForm.qml" line="126"/>
+        <location filename="GalleryForm.qml" line="121"/>
+        <location filename="GalleryForm.qml" line="125"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="126"/>
+        <location filename="GalleryForm.qml" line="125"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="134"/>
+        <location filename="GalleryForm.qml" line="133"/>
         <source> ...</source>
         <translation> ...</translation>
     </message>
@@ -51,17 +51,17 @@
         <translation>Пытанне</translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="33"/>
+        <location filename="QuestionForm.qml" line="32"/>
         <source>Question : </source>
         <translation>Пытанне : </translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="47"/>
+        <location filename="QuestionForm.qml" line="46"/>
         <source>Points for question : </source>
         <translation>Балаў за пытанне : </translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="69"/>
+        <location filename="QuestionForm.qml" line="68"/>
         <source>Choose</source>
         <translation>Абраць</translation>
     </message>
@@ -82,13 +82,13 @@
         <translation>Віктарына Мастацтва</translation>
     </message>
     <message>
-        <location filename="main.qml" line="232"/>
-        <location filename="main.qml" line="258"/>
+        <location filename="main.qml" line="222"/>
+        <location filename="main.qml" line="248"/>
         <source>Description</source>
         <translation>Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="250"/>
+        <location filename="main.qml" line="240"/>
         <source>Quiz</source>
         <translation>Віктарына</translation>
     </message>
