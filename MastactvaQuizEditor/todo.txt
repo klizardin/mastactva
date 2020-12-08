@@ -52,11 +52,13 @@
 * 22. add action: refresh arguments
 
 24. test cascade delete of effect, shader, argument, argument set and so on (db support is added)
-25. Implement effect info retry for openglquizimage code
+* 25. Implement effect info retry for openglquizimage code
     1) retry shaders or use default shaders
     2) retry arguments
     3) retry values or default values of arguments
     4) set arguments values
+26. debug QuizImage with Effect and EffectArgSet properties
+
 
 
 
