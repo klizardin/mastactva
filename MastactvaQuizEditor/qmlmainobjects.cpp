@@ -134,10 +134,7 @@ void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const 
 }
 
 static const QString g_effectModel = "EffectModel";
-static const QString g_shaderTypeModel = "ShaderTypeModel";
 static const QString g_shaderModel = "ShaderModel";
-static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
-static const QString g_easingTypeModel = "EasingTypeModel";
 
 
 void QMLObjects::searchObjects()

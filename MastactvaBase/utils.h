@@ -42,7 +42,9 @@ static const QString g_nameName = "name";
 static const QString g_defaultValueName = "defaultvalue";
 static const QString g_descriptionName = "description";
 static const QString g_shadersRelPath = "shaders";
-static const QString g_imagesCachePath = "images";
+static const QString g_imagesRelPath = "images";
+static const QString g_shaderTypeVertex = "Vertex";
+static const QString g_shaderTypeFragmet = "Fragmet";
 
 
 #endif // UTILS_H
