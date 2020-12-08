@@ -40,6 +40,11 @@ bool EffectArgSet::isChildrenLoaded()
     return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
+EffectArgValueModel *EffectArgSet::getArgumentValues()
+{
+    return m_affectArgValueModel;
+}
+
 int EffectArgSet::id() const
 {
     return m_id;

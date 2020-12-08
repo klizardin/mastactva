@@ -41,6 +41,7 @@ public:
     QString getFromImage() const;
     QString getToImage() const;
     Effect *getEffect() const;
+    EffectArgSet *getArgumentSet() const;
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;

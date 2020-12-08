@@ -45,6 +45,7 @@ public:
 public:
     Q_INVOKABLE QVariantList argValuesOfSetIdList();
     Q_INVOKABLE bool isChildrenLoaded();
+    EffectArgValueModel *getArgumentValues();
 
 public:
     int id() const;

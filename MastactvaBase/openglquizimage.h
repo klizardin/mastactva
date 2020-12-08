@@ -12,6 +12,7 @@
 #include <QQuickItem>
 #include <QByteArray>
 #include "../MastactvaModels/effect.h"
+#include "../MastactvaModels/effectargset.h"
 
 
 #if QT_CONFIG(opengl)
@@ -23,6 +24,8 @@ public:
     ArgumentInfo() = default;
     ~ArgumentInfo() = default;
 
+    void setArgId(int argId_);
+    int getArgId() const;
     void setName(const QString &name_);
     void setType(const QString &type_);
     void setValue(const QString &value_);
@@ -32,6 +35,7 @@ public:
 private:
     QString m_name;
     int m_id = 0;
+    int m_argId = -1;
     bool m_floatType = true;
     bool m_matrixType = false;
     int m_size = 0;
@@ -95,6 +99,8 @@ private:
     QString m_toImageUrlNew;
     Effect *m_effect = nullptr;
     int m_oldEffectId = -1;
+    EffectArgSet *m_argumentSet = nullptr;
+    int m_oldArgumentSetId = -1;
     QList<ArgumentInfo> m_arguments;
     QString m_vertexShader;
     QString m_fragmentShader;

@@ -189,6 +189,11 @@ Effect *QuizImage::getEffect() const
     return m_effect;
 }
 
+EffectArgSet *QuizImage::getArgumentSet() const
+{
+    return m_argumentSet;
+}
+
 QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 {
     QSGRenderNode *n = static_cast<QSGRenderNode *>(node);

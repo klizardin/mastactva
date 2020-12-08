@@ -6,10 +6,21 @@
 #include "../MastactvaModels/shader.h"
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/effectarg.h"
+#include "../MastactvaModels/effectargvalue.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/qmlobjects.h"
 
+
+void ArgumentInfo::setArgId(int argId_)
+{
+    m_argId = argId_;
+}
+
+int ArgumentInfo::getArgId() const
+{
+    return m_argId;
+}
 
 void ArgumentInfo::setName(const QString &name_)
 {
@@ -178,10 +189,13 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     m_fromImageUrlNew = quizImage->getFromImage();
     m_toImageUrlNew = quizImage->getToImage();
     m_effect = quizImage->getEffect();
+    m_argumentSet = quizImage->getArgumentSet();
     int effectId = nullptr != m_effect ? m_effect->id() : -1;
-    if(effectId != m_oldEffectId)
+    int argumentSetId = nullptr != m_argumentSet ? m_argumentSet->id() : -1;
+    if(effectId != m_oldEffectId || argumentSetId != m_oldArgumentSetId)
     {
         m_oldEffectId = effectId;
+        m_oldArgumentSetId = argumentSetId;
         extractArguments();
     }
 }
@@ -341,6 +355,7 @@ void OpenGlQuizImage::extractArguments()
     if(nullptr == m_effect)
     {
         resetProgram();
+        return;
     }
 
     // read shaders files
@@ -413,6 +428,28 @@ void OpenGlQuizImage::extractArguments()
         ai.setType(argType->type());
         ai.setValue(effectArgument->defaultValue());
         m_arguments.push_back(ai);
+    }
+
+    if(nullptr != m_argumentSet)
+    {
+        EffectArgValueModel *argumentValuesModel = m_argumentSet->getArgumentValues();
+        Q_ASSERT(nullptr != argumentValuesModel && argumentValuesModel->isListLoaded());
+        for(int i = 0; i < argumentValuesModel->sizeImpl(); ++i)
+        {
+            EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
+            Q_ASSERT(nullptr != effectArgumentValue);
+            EffectArgModel *effectArgumentModel = effectArgumentValue->getArg();
+            Q_ASSERT(nullptr != effectArgumentModel && effectArgumentModel->isListLoaded());
+            EffectArg *effectArgument = effectArgumentModel->dataItemAtImpl(0);
+            Q_ASSERT(nullptr != effectArgument);
+            const int argId = effectArgument->id();
+            const auto fita = std::find_if(std::begin(m_arguments), std::end(m_arguments), [argId](const ArgumentInfo &ai)->bool
+            {
+                return ai.getArgId() == argId;
+            });
+            Q_ASSERT(std::end(m_arguments) != fita);
+            fita->setValue(effectArgumentValue->value());
+        }
     }
 
     resetProgram();
