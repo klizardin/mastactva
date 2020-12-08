@@ -426,6 +426,11 @@ bool Effect::isChildrenLoaded() const
     return isListLoadedImpl();
 }
 
+EffectShaderModel *Effect::getEffectShaders()
+{
+    return m_effectShadersModel;
+}
+
 
 EffectModel::EffectModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
