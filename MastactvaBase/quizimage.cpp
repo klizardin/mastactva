@@ -251,6 +251,10 @@ void QuizImage::updateStateIfDataIsReady()
     if(!canUpdate) { return; }
 
     m_shadersUrls.clear();
+    if(nullptr != m_argumentSet)
+    {
+        QObject::disconnect(m_argumentSet, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+    }
     if(nullptr != m_effect)
     {
         QObject::disconnect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
