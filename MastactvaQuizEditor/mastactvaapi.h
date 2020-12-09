@@ -11,10 +11,10 @@
 class RequestDataV0;
 class JsonRequestDataV0;
 class MultiPartRequestDataV0;
-class ImagePointToQuestion;
+class ImagePointToQuestionV0;
 class ImagePointData;
 class ImagePointsModel;
-class ImagePointToNextImage;
+class ImagePointToNextImageV0;
 
 
 class MastactvaAPI : public QObject
@@ -202,9 +202,9 @@ private:
     JsonRequestDataV0 *m_resetImageOfGalleryAsTopRequest = nullptr;
     JsonRequestDataV0 *m_testLoginRequest = nullptr;
     JsonRequestDataV0 *m_removeCurrentGalleryRequest = nullptr;
-    ImagePointToQuestion *m_imagePointToQuestion = nullptr;
+    ImagePointToQuestionV0 *m_imagePointToQuestion = nullptr;
     QString m_lastHostURL;
-    ImagePointToNextImage *m_imagePointToNextImage = nullptr;
+    ImagePointToNextImageV0 *m_ImagePointToNextImageV0 = nullptr;
     int m_lastNextImageID = -1;
 
 private:

@@ -111,11 +111,13 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 }
 
 
-#include "effect.h"
-#include "shadertype.h"
-#include "shader.h"
-#include "shaderargtype.h"
-#include "easingtype.h"
+#include "../MastactvaModels/effect.h"
+#include "../MastactvaModels/shadertype.h"
+#include "../MastactvaModels/shader.h"
+#include "../MastactvaModels/shaderargtype.h"
+#include "../MastactvaModels/easingtype.h"
+#include "../MastactvaModels/gallery.h"
+#include "../MastactvaModels/image.h"
 
 
 void QMLObjects::setInitialized()
@@ -178,6 +180,18 @@ void QMLObjects::searchObjects()
     {
         EasingTypeModel *m1 = m_root->findChild<EasingTypeModel *>(g_easingTypeModel);
         registerModel(g_easingTypeModel, m1);
+    }
+    m = findListModel(g_galleryModel);
+    if(nullptr == m)
+    {
+        GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
+        registerModel(g_galleryModel, m1);
+    }
+    m = findListModel(g_allImagesOfGalleryModel);
+    if(nullptr == m)
+    {
+        ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
+        registerModel(g_allImagesOfGalleryModel, m1);
     }
     for(IListModel *m : m_models)
     {

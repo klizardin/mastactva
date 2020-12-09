@@ -276,7 +276,7 @@ private:
 };
 
 
-class ImagePointToNextImage : public QObject
+class ImagePointToNextImageV0 : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
@@ -284,8 +284,8 @@ class ImagePointToNextImage : public QObject
     Q_PROPERTY(bool noImageSource READ noImageSource WRITE setNoImageSource NOTIFY noImageSourceChanged)
 
 public:
-    ImagePointToNextImage(QObject* parent_ = nullptr, int imagePointId_ = -1);
-    virtual ~ImagePointToNextImage() override = default;
+    ImagePointToNextImageV0(QObject* parent_ = nullptr, int imagePointId_ = -1);
+    virtual ~ImagePointToNextImageV0() override = default;
 
     Q_INVOKABLE bool loaded() const;
 
@@ -459,7 +459,7 @@ private:
     QDateTime m_created;
 };
 
-class ImagePointToQuestion : public QObject
+class ImagePointToQuestionV0 : public QObject
 {
     Q_OBJECT
     //Q_PROPERTY(QVariant answers READ answers WRITE setAnswers NOTIFY answersChanged)
@@ -469,8 +469,8 @@ class ImagePointToQuestion : public QObject
     Q_PROPERTY(QVariant questionObj READ questionObj WRITE setQuestionObj NOTIFY questionObjChanged)
 
 public:
-    ImagePointToQuestion(QObject *parent_ = nullptr, int imagePointId_ = -1);
-    virtual ~ImagePointToQuestion() override;
+    ImagePointToQuestionV0(QObject *parent_ = nullptr, int imagePointId_ = -1);
+    virtual ~ImagePointToQuestionV0() override;
 
     Q_INVOKABLE bool questionIdLoaded() const;
     Q_INVOKABLE bool questionDataLoaded() const;
@@ -552,8 +552,8 @@ public:
     void setWeight(qreal weight_);
     void setToNextImage(QVariant toNextImage_);
     void setToQuestion(QVariant toQuestion_);
-    ImagePointToQuestion *getQuestion();
-    ImagePointToNextImage *getNextImageData();
+    ImagePointToQuestionV0 *getQuestion();
+    ImagePointToNextImageV0 *getNextImageData();
     const QDateTime &created() const;
     void setCreated(const QDateTime &created_);
 
@@ -604,8 +604,8 @@ private:
     qreal m_x = 0.5;
     qreal m_y = 0.5;
     qreal m_weight = 1.0;
-    ImagePointToNextImage *m_imagePointToNextImage = nullptr;
-    ImagePointToQuestion *m_imagePointToQuestion = nullptr;
+    ImagePointToNextImageV0 *m_ImagePointToNextImageV0 = nullptr;
+    ImagePointToQuestionV0 *m_imagePointToQuestion = nullptr;
     QDateTime m_created;
     bool m_pointToNextImage = true;
     int m_questionID = -1;

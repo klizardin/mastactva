@@ -866,7 +866,7 @@ QVariant GalleryEditViewModel::getCurrentItem()
     return QVariant::fromValue(m_data.at(m_currentIndex));
 }
 
-ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
+ImagePointToNextImageV0::ImagePointToNextImageV0(QObject* parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
     :QObject(parent_),
       m_imagePointId(imagePointId_),
       m_imageSource(g_noImageSource),
@@ -880,12 +880,12 @@ ImagePointToNextImage::ImagePointToNextImage(QObject* parent_ /*= nullptr*/, int
     startLoad();
 }
 
-const QString &ImagePointToNextImage::imageSource()
+const QString &ImagePointToNextImageV0::imageSource()
 {
     return m_imageSource;
 }
 
-void ImagePointToNextImage::setImageSource(const QString &imageSource_, bool emitFlag_ /*= true*/)
+void ImagePointToNextImageV0::setImageSource(const QString &imageSource_, bool emitFlag_ /*= true*/)
 {
     m_imageSource = imageSource_;
 
@@ -895,12 +895,12 @@ void ImagePointToNextImage::setImageSource(const QString &imageSource_, bool emi
     }
 }
 
-bool ImagePointToNextImage::noImageSource() const
+bool ImagePointToNextImageV0::noImageSource() const
 {
     return m_noImageSource;
 }
 
-void ImagePointToNextImage::setNoImageSource(bool noImageSource_, bool emitFlag_ /*= true*/)
+void ImagePointToNextImageV0::setNoImageSource(bool noImageSource_, bool emitFlag_ /*= true*/)
 {
     m_noImageSource = noImageSource_;
 
@@ -910,7 +910,7 @@ void ImagePointToNextImage::setNoImageSource(bool noImageSource_, bool emitFlag_
     }
 }
 
-void ImagePointToNextImage::startLoad()
+void ImagePointToNextImageV0::startLoad()
 {
     Q_ASSERT(nullptr != NetAPIV0::getSingelton());
     if(!(nullptr != NetAPIV0::getSingelton())) { return; }
@@ -921,7 +921,7 @@ void ImagePointToNextImage::startLoad()
                 m_request);
 }
 
-void ImagePointToNextImage::loadData(const QJsonDocument &reply_)
+void ImagePointToNextImageV0::loadData(const QJsonDocument &reply_)
 {
     QJsonValue item = reply_.isArray() ? reply_[0] : reply_.isObject() ? reply_.object() : QJsonValue();
     if(item.isUndefined())
@@ -955,7 +955,7 @@ void ImagePointToNextImage::loadData(const QJsonDocument &reply_)
     emit noImageSourceChanged();
 }
 
-void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
+void ImagePointToNextImageV0::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(loaded() || m_request != request_)
     {
@@ -969,17 +969,17 @@ void ImagePointToNextImage::onJsonRequestFinished(int errorCode_, RequestDataV0 
     emit imagePointToImageLoaded();
 }
 
-bool ImagePointToNextImage::loaded() const
+bool ImagePointToNextImageV0::loaded() const
 {
     return nullptr == m_request;
 }
 
-int ImagePointToNextImage::id() const
+int ImagePointToNextImageV0::id() const
 {
     return m_id;
 }
 
-void ImagePointToNextImage::setId(int id_, bool emitFlag_ /*= true*/)
+void ImagePointToNextImageV0::setId(int id_, bool emitFlag_ /*= true*/)
 {
     m_id = id_;
 
@@ -989,7 +989,7 @@ void ImagePointToNextImage::setId(int id_, bool emitFlag_ /*= true*/)
     }
 }
 
-void ImagePointToNextImage::setNextImage(int nextImageId_)
+void ImagePointToNextImageV0::setNextImage(int nextImageId_)
 {
     Q_ASSERT(nullptr != NetAPIV0::getSingelton());
     if(!(nullptr != NetAPIV0::getSingelton())) { return; }
@@ -1006,7 +1006,7 @@ void ImagePointToNextImage::setNextImage(int nextImageId_)
                 m_setNextImageRequest);
 }
 
-void ImagePointToNextImage::onSetNextImageJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
+void ImagePointToNextImageV0::onSetNextImageJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(nullptr == m_setNextImageRequest || static_cast<RequestDataV0 *>(m_setNextImageRequest) != request_)
     {
@@ -1388,7 +1388,7 @@ QuestionData *QuestionData::fromJson(QObject *parent_, const QJsonValue &jsonVal
     return QuestionData_fromJsonT(parent_, jsonValue_, error_);
 }
 
-ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
+ImagePointToQuestionV0::ImagePointToQuestionV0(QObject *parent_ /*= nullptr*/, int imagePointId_ /*= -1*/)
     :QObject(parent_),
     m_imagePointId(imagePointId_)
 {
@@ -1398,30 +1398,30 @@ ImagePointToQuestion::ImagePointToQuestion(QObject *parent_ /*= nullptr*/, int i
     startLoad();
 }
 
-ImagePointToQuestion::~ImagePointToQuestion()
+ImagePointToQuestionV0::~ImagePointToQuestionV0()
 {
     delete m_question;
     m_question = nullptr;
 }
 
-int ImagePointToQuestion::questionId() const
+int ImagePointToQuestionV0::questionId() const
 {
     return m_questionId;
 }
 
-void ImagePointToQuestion::setQuestionId(int questionId_)
+void ImagePointToQuestionV0::setQuestionId(int questionId_)
 {
     m_questionId = questionId_;
 
     emit questionIdChanged();
 }
 
-QString ImagePointToQuestion::question() const
+QString ImagePointToQuestionV0::question() const
 {
     return nullptr != m_question? m_question->questionText() : QString();
 }
 
-void ImagePointToQuestion::setQuestion(const QString &question_)
+void ImagePointToQuestionV0::setQuestion(const QString &question_)
 {
     if(nullptr == m_question)
     {
@@ -1432,12 +1432,12 @@ void ImagePointToQuestion::setQuestion(const QString &question_)
     emit questionChanged();
 }
 
-qreal ImagePointToQuestion::pointsToPass() const
+qreal ImagePointToQuestionV0::pointsToPass() const
 {
     return nullptr != m_question ? m_question->pointsToPass() : 1.0;
 }
 
-void ImagePointToQuestion::setPointsToPass(qreal pointsToPass_)
+void ImagePointToQuestionV0::setPointsToPass(qreal pointsToPass_)
 {
     if(nullptr == m_question)
     {
@@ -1448,17 +1448,17 @@ void ImagePointToQuestion::setPointsToPass(qreal pointsToPass_)
     emit pointsToPassChanged();
 }
 
-QVariant ImagePointToQuestion::questionObj() const
+QVariant ImagePointToQuestionV0::questionObj() const
 {
-    return QVariant::fromValue(const_cast<ImagePointToQuestion *>(this)->questionData());
+    return QVariant::fromValue(const_cast<ImagePointToQuestionV0 *>(this)->questionData());
 }
 
-QuestionData *ImagePointToQuestion::questionData()
+QuestionData *ImagePointToQuestionV0::questionData()
 {
     return m_question;
 }
 
-void ImagePointToQuestion::setQuestionObj(const QVariant &questionObj_)
+void ImagePointToQuestionV0::setQuestionObj(const QVariant &questionObj_)
 {
     QObject *obj = qvariant_cast<QObject *>(questionObj_);
     QuestionData *newQuestion = qobject_cast<QuestionData *>(static_cast<QObject *>(obj));
@@ -1470,7 +1470,7 @@ void ImagePointToQuestion::setQuestionObj(const QVariant &questionObj_)
     emit questionObjChanged();
 }
 
-void ImagePointToQuestion::refresh()
+void ImagePointToQuestionV0::refresh()
 {
     if(nullptr != m_request1 || nullptr != m_request2)
     {
@@ -1482,7 +1482,7 @@ void ImagePointToQuestion::refresh()
     startLoad();
 }
 
-void ImagePointToQuestion::startLoad()
+void ImagePointToQuestionV0::startLoad()
 {
     Q_ASSERT(nullptr != NetAPIV0::getSingelton());
     if(!(nullptr != NetAPIV0::getSingelton())) { return; }
@@ -1493,7 +1493,7 @@ void ImagePointToQuestion::startLoad()
                 m_request1);
 }
 
-void ImagePointToQuestion::startLoad2()
+void ImagePointToQuestionV0::startLoad2()
 {
     if(questionId() < 0) { return; }
     Q_ASSERT(nullptr != NetAPIV0::getSingelton());
@@ -1505,17 +1505,17 @@ void ImagePointToQuestion::startLoad2()
                 m_request2);
 }
 
-bool ImagePointToQuestion::questionIdLoaded() const
+bool ImagePointToQuestionV0::questionIdLoaded() const
 {
     return nullptr == m_request1;
 }
 
-bool ImagePointToQuestion::questionDataLoaded() const
+bool ImagePointToQuestionV0::questionDataLoaded() const
 {
     return nullptr == m_request1 && nullptr == m_request2;
 }
 
-void ImagePointToQuestion::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
+void ImagePointToQuestionV0::onJsonRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
 {
     if(request_ == nullptr || (m_request1 != request_ && m_request2 != request_))
     {
@@ -1606,8 +1606,8 @@ ImagePointData::ImagePointData(QObject *parent_,
 
 ImagePointData::~ImagePointData()
 {
-    delete m_imagePointToNextImage;
-    m_imagePointToNextImage = nullptr;
+    delete m_ImagePointToNextImageV0;
+    m_ImagePointToNextImageV0 = nullptr;
     delete m_imagePointToQuestion;
     m_imagePointToQuestion = nullptr;
 }
@@ -1674,24 +1674,24 @@ void ImagePointData::setWeight(qreal weight_)
 
 QVariant ImagePointData::toNextImage() const
 {
-    if(nullptr == m_imagePointToNextImage)
+    if(nullptr == m_ImagePointToNextImageV0)
     {
-        const_cast<ImagePointData *>(this)->m_imagePointToNextImage = new ImagePointToNextImage(
+        const_cast<ImagePointData *>(this)->m_ImagePointToNextImageV0 = new ImagePointToNextImageV0(
                     const_cast<ImagePointData *>(this), pointId());
     }
-    return QVariant::fromValue(m_imagePointToNextImage);
+    return QVariant::fromValue(m_ImagePointToNextImageV0);
 }
 
 void ImagePointData::setToNextImage(QVariant toNextImage_)
 {
     QObject *obj = qvariant_cast<QObject *>(toNextImage_);
-    ImagePointToNextImage *newNextImage = qobject_cast<ImagePointToNextImage *>(static_cast<QObject *>(obj));
-    if(m_imagePointToNextImage == newNextImage)
+    ImagePointToNextImageV0 *newNextImage = qobject_cast<ImagePointToNextImageV0 *>(static_cast<QObject *>(obj));
+    if(m_ImagePointToNextImageV0 == newNextImage)
     {
         return;
     }
-    delete m_imagePointToNextImage;
-    m_imagePointToNextImage = newNextImage;
+    delete m_ImagePointToNextImageV0;
+    m_ImagePointToNextImageV0 = newNextImage;
     emit toNextImageChanged();
 }
 
@@ -1699,7 +1699,7 @@ QVariant ImagePointData::toQuestion() const
 {
     if(nullptr == m_imagePointToQuestion)
     {
-        const_cast<ImagePointData *>(this)->m_imagePointToQuestion = new ImagePointToQuestion(
+        const_cast<ImagePointData *>(this)->m_imagePointToQuestion = new ImagePointToQuestionV0(
                     const_cast<ImagePointData *>(this), pointId());
     }
     return QVariant::fromValue(m_imagePointToQuestion);
@@ -1708,7 +1708,7 @@ QVariant ImagePointData::toQuestion() const
 void ImagePointData::setToQuestion(QVariant toQuestion_)
 {
     QObject *obj = qvariant_cast<QObject *>(toQuestion_);
-    ImagePointToQuestion *newQuestion = qobject_cast<ImagePointToQuestion *>(static_cast<QObject *>(obj));
+    ImagePointToQuestionV0 *newQuestion = qobject_cast<ImagePointToQuestionV0 *>(static_cast<QObject *>(obj));
     if(m_imagePointToQuestion == newQuestion)
     {
         return;
@@ -1717,14 +1717,14 @@ void ImagePointData::setToQuestion(QVariant toQuestion_)
     emit toQuestionChanged();
 }
 
-ImagePointToQuestion *ImagePointData::getQuestion()
+ImagePointToQuestionV0 *ImagePointData::getQuestion()
 {
     return m_imagePointToQuestion;
 }
 
-ImagePointToNextImage *ImagePointData::getNextImageData()
+ImagePointToNextImageV0 *ImagePointData::getNextImageData()
 {
-    return m_imagePointToNextImage;
+    return m_ImagePointToNextImageV0;
 }
 
 const QDateTime &ImagePointData::created() const
@@ -1911,9 +1911,9 @@ void ImagePointData::onPointToImageRequestFinished(int errorCode_, RequestDataV0
     m_createImagePointToImageRequest = nullptr;
     if(0 != errorCode_) { return; }
 
-    if(nullptr != m_imagePointToNextImage)
+    if(nullptr != m_ImagePointToNextImageV0)
     {
-        m_imagePointToNextImage->startLoad();
+        m_ImagePointToNextImageV0->startLoad();
     }
 
     emit onTemplateDataCreated(pointId());

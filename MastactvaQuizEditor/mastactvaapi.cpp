@@ -948,31 +948,31 @@ void MastactvaAPI::editNextImageOfCurrentImagePoint(int nextImageID_)
     auto *pImagePoint = getCurrentImagePointData();
     if(nullptr == pImagePoint) { return; }
     (void)pImagePoint->toNextImage();
-    m_imagePointToNextImage = pImagePoint->getNextImageData();
-    if(nullptr == m_imagePointToNextImage) { return; }
+    m_ImagePointToNextImageV0 = pImagePoint->getNextImageData();
+    if(nullptr == m_ImagePointToNextImageV0) { return; }
     m_lastNextImageID = nextImageID_;
-    if(m_imagePointToNextImage->loaded())
+    if(m_ImagePointToNextImageV0->loaded())
     {
-        QObject::connect(m_imagePointToNextImage, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
-        m_imagePointToNextImage->setNextImage(m_lastNextImageID);
+        QObject::connect(m_ImagePointToNextImageV0, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
+        m_ImagePointToNextImageV0->setNextImage(m_lastNextImageID);
     }
     else
     {
-        QObject::connect(m_imagePointToNextImage, SIGNAL(imagePointToImageLoaded()), this, SLOT(imagePointToImageLoadedSlot()));
+        QObject::connect(m_ImagePointToNextImageV0, SIGNAL(imagePointToImageLoaded()), this, SLOT(imagePointToImageLoadedSlot()));
     }
 }
 
 void MastactvaAPI::imagePointToImageLoadedSlot()
 {
-    QObject::disconnect(m_imagePointToNextImage, SIGNAL(imagePointToImageLoaded()), this, SLOT(imagePointToImageLoadedSlot()));
-    Q_ASSERT(m_imagePointToNextImage->loaded());
-    QObject::connect(m_imagePointToNextImage, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
-    m_imagePointToNextImage->setNextImage(m_lastNextImageID);
+    QObject::disconnect(m_ImagePointToNextImageV0, SIGNAL(imagePointToImageLoaded()), this, SLOT(imagePointToImageLoadedSlot()));
+    Q_ASSERT(m_ImagePointToNextImageV0->loaded());
+    QObject::connect(m_ImagePointToNextImageV0, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
+    m_ImagePointToNextImageV0->setNextImage(m_lastNextImageID);
 }
 
 void MastactvaAPI::nextImageSetSlot()
 {
-    QObject::disconnect(m_imagePointToNextImage, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
+    QObject::disconnect(m_ImagePointToNextImageV0, SIGNAL(nextImageSet()), this, SLOT(nextImageSetSlot()));
 
     emit nextImageEdited();
 }

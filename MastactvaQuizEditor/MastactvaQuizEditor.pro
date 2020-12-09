@@ -40,7 +40,15 @@ unix: HEADERS += \
         serverfiles.h   \
         quizimage.h \
         openglquizimage.h   \
-        imagepointeffect.h \
+        imagepointeffect.h  \
+        gallery.h   \
+        image.h \
+        imagepoint.h    \
+        imagedescription.h  \
+        gallerystatistics.h \
+        question.h  \
+        answer.h    \
+        questionanswer.h
 
 
 SOURCES += \
@@ -71,7 +79,15 @@ unix: SOURCES += \
         serverfiles.cpp \
         quizimage.cpp   \
         openglquizimage.cpp \
-        imagepointeffect.cpp
+        imagepointeffect.cpp    \
+        gallery.cpp   \
+        image.cpp   \
+        imagepoint.cpp    \
+        imagedescription.cpp    \
+        gallerystatistics.cpp   \
+        question.cpp    \
+        answer.cpp  \
+        questionanswer.cpp
 
 
 RESOURCES += qml.qrc    \

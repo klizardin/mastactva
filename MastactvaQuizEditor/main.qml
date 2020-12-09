@@ -469,6 +469,36 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    GalleryModel {
+        id: galleryModel
+        objectName: "GalleryModel"
+        layoutQMLName: "GalleryModel"
+        layoutIdField: "id"
+        currentRef: ""
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
+    ImageModel {
+        id: allImagesOfGallery
+        objectName: "AllImagesOfGallery"
+        layoutQMLName: "AllImagesOfGallery"
+        layoutIdField: "id"
+        currentRef: "gallery"
+        jsonParamsGet: false
+        autoCreateChildrenModels: true
+    }
+
+    function initGalleryModel()
+    {
+    }
+
+    function initAllImagesOfGalleryModel()
+    {
+        allImagesOfGallery.setLayoutRef("gallery", "GalleryModel", "id")
+        allImagesOfGallery.addModelParam("use_in_gallery_view", "0")
+    }
+
     Connections {
         target: mastactva
 
@@ -488,6 +518,11 @@ ApplicationWindow {
         function onInitialized()
         {
             console.log("MastactvaAPI::onInitialized() at main.qml")
+            initGalleryModel()
+            initAllImagesOfGalleryModel()
+
+            //galleryModel.loadList()
+
             effectModel.loadList()
             shaderTypeModel.loadList()
             shaderArgTypeModel.loadList()

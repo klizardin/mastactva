@@ -48,6 +48,8 @@ static const QString g_shaderTypeFragmet = "Fragmet";
 static const QString g_shaderTypeModel = "ShaderTypeModel";
 static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
 static const QString g_easingTypeModel = "EasingTypeModel";
+static const QString g_galleryModel = "GalleryModel";
+static const QString g_allImagesOfGalleryModel = "AllImagesOfGallery";
 
 
 #endif // UTILS_H
