@@ -7,8 +7,8 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "effectargvalue.h"
-#include "easingtype.h"
+#include "../MastactvaModels/effectargvalue.h"
+#include "../MastactvaModels/easingtype.h"
 
 
 class EffectArgSetModel;

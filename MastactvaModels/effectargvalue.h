@@ -7,7 +7,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "effectarg.h"
+#include "../MastactvaModels/effectarg.h"
 
 
 class EffectArgValueModel;

@@ -8,8 +8,8 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "answer.h"
-#include "questionanswer.h"
+#include "../MastactvaModels/answer.h"
+#include "../MastactvaModels/questionanswer.h"
 
 
 class QuestionModel;

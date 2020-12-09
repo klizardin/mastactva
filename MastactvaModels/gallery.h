@@ -6,10 +6,12 @@
 #include <QDateTime>
 #include <QString>
 #include <QtQuick/QQuickItem>
-#include "image.h"
+#include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "gallerystatistics.h"
+#include "../MastactvaModels/image.h"
+#include "../MastactvaModels/gallerystatistics.h"
 
 
 class GalleryModel;

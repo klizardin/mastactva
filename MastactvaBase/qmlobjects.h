@@ -2,7 +2,7 @@
 #define QMLOBJECTS_H
 
 #include <QVector>
-#include "IModel.h"
+#include "../MastactvaBase/IModel.h"
 
 
 class QObject;

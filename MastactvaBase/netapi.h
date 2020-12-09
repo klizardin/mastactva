@@ -7,9 +7,9 @@
 #include <QList>
 #include <QJsonDocument>
 #include <QtQuick/QQuickItem>
-#include "Layout.h"
-#include "qmlobjects.h"
-#include "IModel.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/IModel.h"
 
 
 class NetAPI;

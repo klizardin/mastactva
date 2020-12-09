@@ -7,7 +7,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "shader.h"
+#include "../MastactvaModels/shader.h"
 
 
 class EffectShaderModel;

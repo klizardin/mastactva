@@ -5,11 +5,12 @@
 #include <QDateTime>
 #include <QString>
 #include <QtQuick/QQuickItem>
+#include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "imagepoint.h"
-#include "imagedescription.h"
+#include "../MastactvaModels/imagepoint.h"
+#include "../MastactvaModels/imagedescription.h"
 
 
 class ImageModel;
