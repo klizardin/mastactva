@@ -39,7 +39,8 @@ unix: HEADERS += \
         Model.h \
         serverfiles.h   \
         quizimage.h \
-        openglquizimage.h
+        openglquizimage.h   \
+        imagepointeffect.h \
 
 
 SOURCES += \
@@ -69,7 +70,8 @@ unix: SOURCES += \
         Model.cpp   \
         serverfiles.cpp \
         quizimage.cpp   \
-        openglquizimage.cpp
+        openglquizimage.cpp \
+        imagepointeffect.cpp
 
 
 RESOURCES += qml.qrc    \

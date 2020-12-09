@@ -46,7 +46,8 @@ unix: SOURCES += \
         effectshader.cpp  \
         shaderargtype.cpp \
         shader.cpp    \
-        shadertype.cpp
+        shadertype.cpp  \
+        imagepointeffect.cpp
 
 
 RESOURCES += qml.qrc \
@@ -103,7 +104,8 @@ unix: HEADERS += \
     effectshader.h  \
     shaderargtype.h \
     shader.h    \
-    shadertype.h
+    shadertype.h    \
+    imagepointeffect.h
 
 
 DISTFILES += \
