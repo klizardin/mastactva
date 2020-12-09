@@ -64,6 +64,7 @@
 28. implement test gallery
 * 29. implement ImagePointEffect
 30. fix bug of removing shader files, may be will not delete shaders at all
+31. implement effect list select for a next image
 
 
 
