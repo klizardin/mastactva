@@ -8,7 +8,7 @@ import Mastactva 1.0
 
 
 Dialog {
-    id : chooseShaderDialog
+    id : chooseImageDialog
     modal: true
 
     title: qsTr("Choose image")
