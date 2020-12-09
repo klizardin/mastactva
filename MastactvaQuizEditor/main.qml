@@ -36,6 +36,8 @@ ApplicationWindow {
     property int effectArgumentSetsCurrentIndex: -1
     property var effectArgumentSetValuesCurrentModel: undefined
     property int effectArgumentSetValuesCurrentIndex: -1
+    property var demoImageFrom: undefined
+    property var demoImageTo: undefined
 
     Connections {
         target: root
@@ -480,7 +482,7 @@ ApplicationWindow {
     }
 
     ImageModel {
-        id: allImagesOfGallery
+        id: allImagesOfGalleryModel
         objectName: "AllImagesOfGallery"
         layoutQMLName: "AllImagesOfGallery"
         layoutIdField: "id"
@@ -495,8 +497,8 @@ ApplicationWindow {
 
     function initAllImagesOfGalleryModel()
     {
-        allImagesOfGallery.setLayoutRef("gallery", "GalleryModel", "id")
-        allImagesOfGallery.addModelParam("use_in_gallery_view", "0")
+        allImagesOfGalleryModel.setLayoutRef("gallery", "GalleryModel", "id")
+        allImagesOfGalleryModel.addModelParam("use_in_gallery_view", "0")
     }
 
     Connections {
@@ -534,6 +536,9 @@ ApplicationWindow {
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
             effectArgumentValueEditDialog.shaderArgTypeModel = shaderArgTypeModel
             chooseEffectArgumentDialog.shaderArgTypeModel = shaderArgTypeModel
+            chooseImageDialog.galleryModel = galleryModel
+            chooseImageDialog.allImagesOfGalleryModel = allImagesOfGalleryModel
+            chooseImageDialog.mastactva = mastactva
         }
     }
 
@@ -1316,6 +1321,27 @@ ApplicationWindow {
                     fieldEffectArgumentValue.effectArgValueArg.listReloaded.disconnect(argReloaded)
                 }
             }
+        }
+    }
+
+    ChooseImageDialog {
+        id: chooseImageDialog
+
+        signal imageChoosed()
+
+        onOpened: {
+            fieldImage = undefined
+            init()
+        }
+
+        onAccepted: {
+            imageChoosed()
+            fieldImage = undefined
+        }
+
+        onRejected: {
+            fieldImage = undefined
+            imageChoosed()
         }
     }
 
@@ -2295,6 +2321,39 @@ ApplicationWindow {
     }
 
     Action {
+        id: demoSetImageFrom
+        text: qsTr("Choose image to play demo &from it")
+        onTriggered: {
+            chooseImageDialog.imageChoosed.connect(imageChoosed)
+            chooseImageDialog.open()
+        }
+
+        function imageChoosed()
+        {
+            chooseImageDialog.imageChoosed.disconnect(imageChoosed)
+            if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
+                demoImageFrom = chooseImageDialog.fieldImage
+            }
+        }
+    }
+
+    Action {
+        id: demoSetImageTo
+        text: qsTr("Choose image to play demo &to it")
+        onTriggered: {
+            chooseImageDialog.imageChoosed.connect(imageChoosed)
+            chooseImageDialog.open()
+        }
+        function imageChoosed()
+        {
+            chooseImageDialog.imageChoosed.disconnect(imageChoosed)
+            if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
+                demoImageTo = chooseImageDialog.fieldImage
+            }
+        }
+    }
+
+    Action {
         id: playEffectDemo
         text: qsTr("&Play effect demo")
         onTriggered: {
@@ -2350,6 +2409,8 @@ ApplicationWindow {
         }
         AutoSizeMenu {
             title: qsTr("&Demo")
+            MenuItem { action: demoSetImageFrom }
+            MenuItem { action: demoSetImageTo }
             MenuItem { action: playEffectDemo }
             MenuItem { action: pauseEffectDemo }
             MenuItem { action: stopEffectDemo }
