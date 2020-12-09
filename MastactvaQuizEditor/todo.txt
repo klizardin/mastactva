@@ -59,7 +59,10 @@
     4) set arguments values
 26. debug QuizImage with Effect and EffectArgSet properties
 27. implement demo qml scripts
-
+    * implement dialog to choose images from galleries
+    * implement demo control
+28. implement test gallery
+29. implement ImagePointEffect
 
 
 
