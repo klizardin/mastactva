@@ -61,8 +61,6 @@ Dialog {
             {
                 shadersList.currentIndex = index
                 fieldShader = shaderModel.itemAt(index)
-                console.log("fieldShader = ", fieldShader)
-                console.log("fieldShader.shaderId = ", fieldShader.shaderId)
                 mouse.accepted = false
             }
 
