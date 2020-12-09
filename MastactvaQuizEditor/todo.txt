@@ -62,7 +62,8 @@
     * implement dialog to choose images from galleries
     * implement demo control
 28. implement test gallery
-29. implement ImagePointEffect
+* 29. implement ImagePointEffect
+30. fix bug of removing shader files, may be will not delete shaders at all
 
 
 
