@@ -261,6 +261,25 @@ void ImagePoint::setNextQuestion(const QVariant &obj_)
     }
 }
 
+QVariant ImagePoint::effect() const
+{
+    if(nullptr == m_imagePointToQuestionModel)
+    {
+        const_cast<ImagePoint *>(this)->m_imagePointEffectModel = const_cast<ImagePoint *>(this)->createImagePointEffectModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<ImagePointEffectModel *>(m_imagePointEffectModel)));
+}
+
+void ImagePoint::setEffect(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_imagePointEffectModel)
+    {
+        delete m_imagePointEffectModel;
+        m_imagePointEffectModel = nullptr;
+
+        emit effectChanged();
+    }
+}
 
 ImagePointToNextImageModel *ImagePoint::getNextImage() const
 {
@@ -309,6 +328,23 @@ ImagePointToQuestionModel *ImagePoint::createImagePointToQuestionModel()
     m->loadList();
     return m;
 }
+
+ImagePointEffectModel *ImagePoint::createImagePointEffectModel()
+{
+    ImagePointEffectModel *m = new ImagePointEffectModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("image_point", m_imagePointModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("image_point");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePointEffectModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutIdFieldImpl("id");
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->loadList();
+    return m;
+}
+
 
 ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
     :ListModelBaseOfData<ImagePoint, ImagePointModel>(parent_)

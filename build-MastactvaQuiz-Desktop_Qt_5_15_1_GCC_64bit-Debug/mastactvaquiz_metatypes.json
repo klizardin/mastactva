@@ -5069,6 +5069,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setNextQuestion"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effect",
+                        "notify": "effectChanged",
+                        "read": "effect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setEffect"
                     }
                 ],
                 "qualifiedClassName": "ImagePoint",
@@ -5111,6 +5125,11 @@
                     {
                         "access": "public",
                         "name": "nextQuestionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "effectChanged",
                         "returnType": "void"
                     }
                 ],

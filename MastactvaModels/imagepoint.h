@@ -8,7 +8,8 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "question.h"
+#include "../MastactvaModels/imagepointeffect.h"
+#include "../MastactvaModels/question.h"
 
 
 class ImagePointToQuestionModel;
@@ -223,6 +224,7 @@ public:
     Q_PROPERTY(QDateTime ipCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant nextImage READ nextImage WRITE setNextImage NOTIFY nextImageChanged)
     Q_PROPERTY(QVariant nextQuestion READ nextQuestion WRITE setNextQuestion NOTIFY nextQuestionChanged)
+    Q_PROPERTY(QVariant effect READ effect WRITE setEffect NOTIFY effectChanged)
 
     class DefaultLayout : public LayoutBase<ImagePoint>
     {
@@ -240,6 +242,7 @@ public:
             addField<QDateTime>("created", "ipCreated", &ImagePoint::created, &ImagePoint::setCreated);
             addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImage, &ImagePoint::createImagePointToNextImage);
             addModel<ImagePointToQuestionModel>("nextQuestion", &ImagePoint::m_imagePointToQuestionModel, &ImagePoint::createImagePointToQuestionModel);
+            addModel<ImagePointEffectModel>("ipEffect", &ImagePoint::m_imagePointEffectModel, &ImagePoint::createImagePointEffectModel);
         }
     };
 
@@ -259,6 +262,9 @@ public:
     void setNextImage(const QVariant &obj_);
     QVariant nextQuestion() const;
     void setNextQuestion(const QVariant &obj_);
+    QVariant effect() const;
+    void setEffect(const QVariant &obj_);
+
     ImagePointToNextImageModel *getNextImage() const;
     ImagePointToQuestionModel *getNextQuestion() const;
 
@@ -273,10 +279,12 @@ signals:
     void createdChanged();
     void nextImageChanged();
     void nextQuestionChanged();
+    void effectChanged();
 
 protected:
     ImagePointToNextImageModel *createImagePointToNextImage();
     ImagePointToQuestionModel *createImagePointToQuestionModel();
+    ImagePointEffectModel *createImagePointEffectModel();
 
 private:
     int m_appId = -1;
@@ -288,6 +296,7 @@ private:
     QDateTime m_created;
     ImagePointToNextImageModel *m_imagePointToNextImage = nullptr;
     ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
+    ImagePointEffectModel *m_imagePointEffectModel = nullptr;
     ImagePointModel *m_imagePointModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
 };
