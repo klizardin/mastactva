@@ -140,6 +140,10 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
 OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
 {
     m_parent = parent_;
+
+    m_fromImageUrlNew = ":/resources/no-image.png";
+    m_toImageUrlNew = ":/resources/no-image.png";
+    extractArguments();
 }
 
 OpenGlQuizImage::~OpenGlQuizImage()
@@ -149,6 +153,11 @@ OpenGlQuizImage::~OpenGlQuizImage()
 
 void OpenGlQuizImage::releaseResources()
 {
+    delete m_fromTexture;
+    m_fromTexture = nullptr;
+    delete m_toTexture;
+    m_toTexture = nullptr;
+    resetProgram();
 }
 
 void OpenGlQuizImage::render(const RenderState *state_)
@@ -172,11 +181,13 @@ QSGRenderNode::RenderingFlags OpenGlQuizImage::flags() const
 
 QRectF OpenGlQuizImage::rect() const
 {
-    return QRect(0, 0, m_width, m_height);
+    return QRect(m_left, m_top, m_width, m_height);
 }
 
 void OpenGlQuizImage::sync(QQuickItem *item_)
 {
+    m_left = item_->x();
+    m_top = item_->y();
     m_width = item_->width();
     m_height = item_->height();
 
@@ -203,15 +214,15 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 void OpenGlQuizImage::makeObject()
 {
     static const int coords[4][3] = {
-        { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 }
+        { 1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, { 1, 1, 0 }
     };
 
     m_vertData.clear();
     for (int j = 0; j < 4; ++j) {
         // vertex position
-        m_vertData.append(0.5 * coords[j][0]);
-        m_vertData.append(0.5 * coords[j][1]);
-        m_vertData.append(0.5 * coords[j][2]);
+        m_vertData.append(coords[j][0] * (m_width - 1));
+        m_vertData.append(coords[j][1] * (m_height - 1));
+        m_vertData.append(coords[j][2]);
         // texture coordinate
         m_vertData.append(j == 0 || j == 3);
         m_vertData.append(j == 0 || j == 1);
@@ -293,14 +304,11 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue("texture1Arg", 0); // GL_TEXTURE0
     m_program->setUniformValue("texture2Arg", 1);  // GL_TEXTURE1
 
-    QMatrix4x4 m;
-    m.ortho(-0.5f, +0.5f, +0.5f, -0.5f, 4.0f, 15.0f);
-    m.translate(0.0f, 0.0f, -10.0f);
     QMatrix4x4 texm1;
     QMatrix4x4 texm2;
 
     m_program->setUniformValue(m_tId, (GLfloat)m_t);
-    m_program->setUniformValue(m_matrixId, m);
+    m_program->setUniformValue(m_matrixId, *state_->projectionMatrix() * *matrix());
     m_program->setUniformValue(m_texMatrix1Id, texm1);
     m_program->setUniformValue(m_texMatrix2Id, texm2);
 
@@ -316,10 +324,6 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->enableAttributeArray(m_texCoordAttrId);
     m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
     m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
-
-    f_->glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
-    f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
     // We are prepared both for the legacy (direct OpenGL) and the modern
     // (abstracted by RHI) OpenGL scenegraph. So set all the states that are
@@ -354,6 +358,7 @@ void OpenGlQuizImage::extractArguments()
 {
     if(nullptr == m_effect)
     {
+        initDefaultShaders();
         resetProgram();
         return;
     }
@@ -398,15 +403,7 @@ void OpenGlQuizImage::extractArguments()
             m_fragmentShader = shaderText;
         }
     }
-
-    if(m_vertexShader.isEmpty())
-    {
-        m_vertexShader = loadFile(":/default.vert");
-    }
-    if(m_fragmentShader.isEmpty())
-    {
-        m_fragmentShader = loadFile(":/default.frag");
-    }
+    initDefaultShaders();
 
     ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
@@ -455,6 +452,18 @@ void OpenGlQuizImage::extractArguments()
     resetProgram();
 }
 
+void OpenGlQuizImage::initDefaultShaders()
+{
+    if(m_vertexShader.isEmpty())
+    {
+        m_vertexShader = loadFile(":/default.vert");
+    }
+    if(m_fragmentShader.isEmpty())
+    {
+        m_fragmentShader = loadFile(":/default.frag");
+    }
+}
+
 void OpenGlQuizImage::resetProgram()
 {
     delete m_vshader;
@@ -463,6 +472,8 @@ void OpenGlQuizImage::resetProgram()
     m_fshader = nullptr;
     delete m_program;
     m_program = nullptr;
+    delete m_vbo;
+    m_vbo = nullptr;
 }
 
 QString OpenGlQuizImage::loadFile(const QString &filename_)

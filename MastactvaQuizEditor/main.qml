@@ -544,6 +544,8 @@ ApplicationWindow {
         function onInitialized()
         {
             console.log("MastactvaAPI::onInitialized() at main.qml")
+            Constants.noImageHash = mastactva.calculateHash(Constants.noImageResource)
+
             initGalleryModel()
             initAllImagesOfGalleryModel()
 
@@ -2356,7 +2358,7 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                demoImageFrom = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash] // imageInfo
+                demoImageFrom = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash]
             }
         }
     }
@@ -2372,7 +2374,7 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                demoImageTo = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash] //imageInfo
+                demoImageTo = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash]
             }
         }
     }
@@ -2381,7 +2383,7 @@ ApplicationWindow {
         id: playEffectDemo
         text: qsTr("&Play effect demo")
         onTriggered: {
-
+            effectDemoImageAnimationForward.running = true
         }
     }
 
@@ -2397,7 +2399,7 @@ ApplicationWindow {
         id: stopEffectDemo
         text: qsTr("&Stop effect demo")
         onTriggered: {
-
+            effectDemoImageAnimationForward.running = false
         }
     }
 
@@ -2871,7 +2873,32 @@ ApplicationWindow {
                         id: splitEffectsDemo
                         height: parent.height
 
+                        property var effectDemoImageAnimationDuration: 10000
+
                         Column {
+                            QuizImage {
+                                id: effectImageDemo
+                                width: splitEffectsDemo.width
+                                height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                fromImage: [Constants.noImage, Constants.noImageHash]
+                                toImage: [Constants.noImage, Constants.noImageHash]
+                                clip: true
+
+                                SequentialAnimation {
+                                    id: effectDemoImageAnimationForward
+                                    running: false
+
+                                    NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                }
+
+                                SequentialAnimation {
+                                    id: effectDemoImageAnimationBackward
+                                    running: false
+
+                                    NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                }
+                            }
+
                             Image {
                                 id: effectDemoImageFrom
                                 width: splitEffectsDemo.width
@@ -2879,6 +2906,7 @@ ApplicationWindow {
                                 fillMode: Image.PreserveAspectFit
                                 source: Constants.noImage
                             }
+
                             Image {
                                 id: effectDemoImageTo
                                 width: splitEffectsDemo.width

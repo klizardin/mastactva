@@ -257,8 +257,18 @@ QString calculateFileURLHash(const QString &fileUrl_)
 {
     QUrl url(fileUrl_);
     QString filename = url.toLocalFile();
-    QFile f1(filename);
-    if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
-    QByteArray fd = f1.readAll();
-    return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+    if(filename.isEmpty())
+    {
+        QFile f1(fileUrl_);
+        if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
+        QByteArray fd = f1.readAll();
+        return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+    }
+    else
+    {
+        QFile f1(filename);
+        if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
+        QByteArray fd = f1.readAll();
+        return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+    }
 }

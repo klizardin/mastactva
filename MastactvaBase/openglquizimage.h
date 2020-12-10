@@ -64,12 +64,15 @@ private:
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
     void extractArguments();
+    void initDefaultShaders();
     void resetProgram();
     QString loadFile(const QString &filename_);
     QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 
 private:
     QObject *m_parent = nullptr;
+    int m_left = 0;
+    int m_top = 0;
     int m_width = 0;
     int m_height = 0;
     QVector<GLfloat> m_vertData;
@@ -91,7 +94,6 @@ private:
     int m_texMatrix2Id = -1;
     int m_tId = -1;
 
-    QColor m_clearColor = Qt::black;
     qreal m_t = 0.0;
     QString m_fromImageUrl;
     QString m_toImageUrl;
