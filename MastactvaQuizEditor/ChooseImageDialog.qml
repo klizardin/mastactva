@@ -18,15 +18,22 @@ Dialog {
     property var allImagesOfGalleryModel: undefined
     property var mastactva: undefined
 
+    property int galleryListWidth: Constants.smallDialogWidth / 2
+    property int galleryListHeight: Constants.smallDialogHeight
+    property int imagesListWidth: Constants.smallDialogWidth / 2
+    property int imagesListHeight: Constants.smallDialogHeight / 2
+    property int descriptionWidth: Constants.smallDialogWidth / 2
+    property int descriptionHeight: Constants.smallDialogHeight / 2
+
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
 
-    Column
+    Row
     {
         Rectangle {
-            id: shadersListRect
-            width: Constants.smallDialogWidth
-            height: Constants.smallDialogHeight
+            id: galleryListRect
+            width: galleryListWidth
+            height: galleryListHeight
 
             ListView {
                 id: galleryList
@@ -37,6 +44,39 @@ Dialog {
                 delegate: galleryItem
                 highlight: galleryItemHighlight
                 highlightFollowsCurrentItem: false
+            }
+        }
+
+        Column {
+            Rectangle {
+                id: imagesListRect
+                width: imagesListWidth
+                height: imagesListHeight
+
+                ListView {
+                    id: imagesList
+                    anchors.fill: parent
+                    clip: true
+                    spacing: Constants.effectShaderTypeListSpacing
+                    model: allImagesOfGalleryModel
+                    delegate: imageItem
+                    highlight: imageItemHighlight
+                    highlightFollowsCurrentItem: false
+                }
+            }
+            Rectangle {
+                id: descriptionRect
+                width: descriptionWidth
+                height: descriptionHeight
+
+                Text {
+                    id: description
+                    anchors.fill: parent
+                    width: descriptionWidth
+                    height: descriptionHeight
+                    clip: true
+                    wrapMode: Text.Wrap
+                }
             }
         }
     }
@@ -52,7 +92,7 @@ Dialog {
         id: galleryItem
 
         MouseArea {
-            width: Constants.smallDialogWidth
+            width: galleryListWidth
             height: childrenRect.height
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
@@ -70,7 +110,7 @@ Dialog {
             }
 
             Column {
-                width: Constants.smallDialogWidth
+                width: galleryListWidth
 
                 FontMetrics{
                     id: galleryItemFontMetrics
@@ -85,7 +125,7 @@ Dialog {
 
                     Text {
                         id: galleryItemCreated
-                        width: Constants.smallDialogWidth - galleryItemCreatedLabel
+                        width: galleryListWidth - galleryItemCreatedLabel
                         text: mastactva.dateTimeToUserStr(created)
                         wrapMode: Text.Wrap
                     }
@@ -99,7 +139,7 @@ Dialog {
 
                     Text {
                         id: galleryItemPointsToPass
-                        width: Constants.smallDialogWidth - galleryItemPointsToPassLabel.width
+                        width: galleryListWidth - galleryItemPointsToPassLabel.width
                         text: pointsToPass
                         wrapMode: Text.Wrap
                     }
@@ -113,7 +153,7 @@ Dialog {
 
                     Text {
                         id: galleryItemKeywords
-                        width: Constants.smallDialogWidth - galleryItemKeywordsLabel.width
+                        width: galleryListWidth - galleryItemKeywordsLabel.width
                         text: showFullDescription ? mastactva.leftDoubleCR(keywords) : mastactva.readMore(keywords, Constants.effectsListReadMoreLength, qsTr(" ..."))
                         wrapMode: Text.Wrap
                     }
@@ -121,7 +161,7 @@ Dialog {
 
                 Text {
                     id: galleryItemDescriptionText
-                    width: Constants.smallDialogWidth
+                    width: galleryListWidth
                     text: showFullDescription ? mastactva.leftDoubleCR(description) : mastactva.readMore(description, Constants.effectsListReadMoreLength, qsTr(" ..."))
                     wrapMode: Text.WordWrap
                 }
@@ -145,6 +185,101 @@ Dialog {
             x: (galleryList.currentItem !== undefined && galleryList.currentItem !== null) ? galleryList.currentItem.x : 0
             width: (galleryList.currentItem !== undefined && galleryList.currentItem !== null) ? galleryList.currentItem.width : 0
             height: (galleryList.currentItem !== undefined && galleryList.currentItem !== null) ? galleryList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: imageItem
+
+        MouseArea {
+            width: imagesListWidth
+            height: childrenRect.height
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                imagesList.currentIndex = index
+                allImagesOfGalleryModel.currentIndex = index
+                fieldImage = allImagesOfGalleryModel.currentItem
+                description.text = imageDescription.currentItem !== null ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : ""
+                mouse.accepted = false
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            Column {
+                width: imagesListWidth
+
+                FontMetrics{
+                    id: imageItemFontMetrics
+                    font: imageItemCreated.font
+                }
+
+                Image {
+                    id: image
+                    width: imagesListWidth
+                    height: imagesListWidth * Constants.aspectY / Constants.aspectX
+                    fillMode: Image.PreserveAspectFit
+                    source: imageSource
+                }
+
+                Row {
+                    Label {
+                        id: imageItemCreatedLabel
+                        text: qsTr("Created : ")
+                    }
+
+                    Text {
+                        id: imageItemCreated
+                        width: imagesListWidth - imageItemCreatedLabel.width
+                        text: mastactva.dateTimeToUserStr(imageCreated)
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: imageItemDescriptionText
+                    width: imagesListWidth
+                    text: imageDescription.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : mastactva.readMore(imageDescription.currentItem.idDescriptionText, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                    wrapMode: Text.WordWrap
+                }
+
+                Connections {
+                    target: imageDescription
+
+                    function onListReloaded()
+                    {
+                        imageItemDescriptionText.text = imageDescription.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : mastactva.readMore(imageDescription.currentItem.idDescriptionText, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                        if(index === imagesList.currentIndex)
+                        {
+                            description.text = imageDescription.currentItem !== null ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: imageItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: imageItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: imageItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (imagesList.currentItem !== undefined && imagesList.currentItem !== null) ? imagesList.currentItem.y : 0
+            x: (imagesList.currentItem !== undefined && imagesList.currentItem !== null) ? imagesList.currentItem.x : 0
+            width: (imagesList.currentItem !== undefined && imagesList.currentItem !== null) ? imagesList.currentItem.width : 0
+            height: (imagesList.currentItem !== undefined && imagesList.currentItem !== null) ? imagesList.currentItem.height : 0
         }
     }
 }

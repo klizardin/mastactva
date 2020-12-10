@@ -27,7 +27,7 @@ public:
     Q_PROPERTY(QString hash READ hash WRITE setHash NOTIFY hashChanged)
     Q_PROPERTY(int gallery READ gallery WRITE setGallery NOTIFY galleryChanged)
     Q_PROPERTY(bool top READ top WRITE setTop NOTIFY topChanged)
-    Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(QDateTime imageCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant imagePoints READ imagePoints WRITE setImagePoints NOTIFY imagePointsChanged)
     Q_PROPERTY(QVariant imageDescription READ imageDescription WRITE setImageDescription NOTIFY imageDescriptionChanged)
 
@@ -47,6 +47,7 @@ public:
             addField<QString>("hash", "hash", &Image::hash, &Image::setHash);
             addField<int>("gallery", "galleryId", &Image::gallery, &Image::setGallery);
             addField<bool>("use_in_gallery_view", "top", &Image::top, &Image::setTop);
+            addField<QDateTime>("created", "imageCreated", &Image::created, &Image::setCreated);
             addModel<ImagePointModel>("imagePoints", &Image::m_imagePoints, &Image::createImagePoints);
             addModel<ImageDescriptionModel>("imageDescription", &Image::m_imageDescriptionModel, &Image::createImageDescriptionModel);
         }
