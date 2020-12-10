@@ -2356,11 +2356,7 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                var imgSrc = chooseImageDialog.fieldImage.imageSource
-                var imgHash = chooseImageDialog.fieldImage.imageHash
-                var imageInfo = [imgSrc, imgHash]
-                demoImageFrom = imageInfo
-                console.log("demoImageFrom = ", demoImageFrom)
+                demoImageFrom = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash] // imageInfo
             }
         }
     }
@@ -2376,11 +2372,7 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                var imgSrc = chooseImageDialog.fieldImage.imageSource
-                var imgHash = chooseImageDialog.fieldImage.imageHash
-                var imageInfo = [imgSrc, imgHash]
-                demoImageTo = imageInfo
-                console.log("demoImageTo = ", demoImageTo)
+                demoImageTo = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash] //imageInfo
             }
         }
     }
