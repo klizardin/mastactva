@@ -141,5 +141,4 @@ signals:
 };
 
 
-
 #endif // GALLERY_H

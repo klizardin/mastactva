@@ -100,6 +100,7 @@ private:
     IListModelInfo *m_thisListModelInfo = 0;
 };
 
+
 class ImageModel : public ListModelBaseOfData<Image, ImageModel>
 {
     Q_OBJECT

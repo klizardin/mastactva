@@ -19,7 +19,6 @@ class QNetworkAccessManager;
 
 
 // TODO: add sqllite holder for caching requests
-
 class RequestData
 {
 public:
@@ -185,5 +184,6 @@ private:
     QNetworkAccessManager *m_networkManager = nullptr;
     QList<RequestData*> m_requests;
 };
+
 
 #endif // NETAPI_H

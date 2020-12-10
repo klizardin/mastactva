@@ -26,4 +26,5 @@ signals:
     void errorMessage(const QString &header_, const QString &description_);
 };
 
+
 #endif // MASTACTVAAPI_H

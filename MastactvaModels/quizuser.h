@@ -94,5 +94,4 @@ protected:
 };
 
 
-
 #endif // QUIZUSER_H

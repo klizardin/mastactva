@@ -104,5 +104,4 @@ signals:
 };
 
 
-
 #endif // ANSWER_H

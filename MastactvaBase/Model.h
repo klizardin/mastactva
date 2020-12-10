@@ -1064,7 +1064,6 @@ private:
     ModelType_ *m_model = nullptr;
 };
 
-// TODO: may be refactor define
 
 #define LAYOUT_MODEL_IMPL()                                                                                     \
 public:                                                                                                         \

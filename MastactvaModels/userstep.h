@@ -46,7 +46,6 @@ public:
         }
     };
 
-
     int id() const;
     void setId(const int &id_);
     int userId() const;
@@ -135,7 +134,6 @@ signals:
     void outputModelChanged();
     void error(const QString &errorCode_, const QString &description_);
 };
-
 
 
 #endif // USERSTEP_H

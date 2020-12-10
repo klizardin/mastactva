@@ -14,8 +14,8 @@
 template<typename DataType_>
 class Layout;
 
-// TODO: better function implementation
 
+// TODO: better function implementation
 inline
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ_)
 {
@@ -38,6 +38,7 @@ QString dateTimeToJsonString(const QDateTime &dt_)
 {
     return dt_.toString(Qt::DateFormat::ISODateWithMs);
 }
+
 
 namespace layout
 {
@@ -322,7 +323,6 @@ namespace layout
 
 
 // TODO: review methods use, remove extra ones
-
 template<typename DataType_>
 class LayoutBase
 {
@@ -650,6 +650,7 @@ private:
     QVector<layout::Private::ILayoutItem<DataType_> *> m_fields;
     bool m_storeAfterSave = true;
 };
+
 
 template<class DataType_> inline
 const LayoutBase<DataType_> &getDataLayout()

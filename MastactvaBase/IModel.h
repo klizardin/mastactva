@@ -6,8 +6,8 @@
 #include <QVariant>
 #include <QHash>
 
-// TODO: review methods use, remove extra methods
 
+// TODO: review methods use, remove extra methods
 class IListModel
 {
 public:
@@ -23,6 +23,7 @@ public:
     virtual QVariant getFieldValueForAppId(const QVariant &appId_, const QString &jsonFieldName) const = 0;
 };
 
+
 class IListModelInfo
 {
 public:
@@ -35,8 +36,8 @@ public:
     virtual void itemDeletedVF() = 0;
     virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) = 0;
 };
-
 Q_DECLARE_METATYPE(IListModelInfo*)
+
 
 class IListModelInfoObjectImpl : public IListModelInfo
 {

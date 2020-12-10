@@ -162,6 +162,7 @@ private:
     int m_nextImage = -1;
 };
 
+
 class ImagePointToNextImageModel : public ListModelBaseOfData<ImagePointToNextImage, ImagePointToNextImageModel>
 {
     Q_OBJECT
@@ -300,6 +301,7 @@ private:
     ImagePointModel *m_imagePointModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
 };
+
 
 class ImagePointModel : public ListModelBaseOfData<ImagePoint, ImagePointModel>
 {

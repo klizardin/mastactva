@@ -107,5 +107,4 @@ signals:
 };
 
 
-
 #endif // IMAGEDESCRIPTION_H

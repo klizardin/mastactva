@@ -73,6 +73,7 @@ private:
     qreal m_points = 0.0;
 };
 
+
 class UserQuestionAnswerModel : public ListModelBaseOfData<UserQuestionAnswer, UserQuestionAnswerModel>
 {
     Q_OBJECT
