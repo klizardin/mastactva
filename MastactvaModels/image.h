@@ -24,7 +24,7 @@ public:
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString imageSource READ getFilename WRITE setFilenameStr NOTIFY filenameChanged)
-    Q_PROPERTY(QString hash READ hash WRITE setHash NOTIFY hashChanged)
+    Q_PROPERTY(QString imageHash READ hash WRITE setHash NOTIFY hashChanged)
     Q_PROPERTY(int gallery READ gallery WRITE setGallery NOTIFY galleryChanged)
     Q_PROPERTY(bool top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QDateTime imageCreated READ created WRITE setCreated NOTIFY createdChanged)
@@ -44,7 +44,7 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Image::m_thisListModelInfo);
             addField<int>("id", "id", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
-            addField<QString>("hash", "hash", &Image::hash, &Image::setHash);
+            addField<QString>("imageHash", "hash", &Image::hash, &Image::setHash);
             addField<int>("gallery", "galleryId", &Image::gallery, &Image::setGallery);
             addField<bool>("use_in_gallery_view", "top", &Image::top, &Image::setTop);
             addField<QDateTime>("created", "imageCreated", &Image::created, &Image::setCreated);

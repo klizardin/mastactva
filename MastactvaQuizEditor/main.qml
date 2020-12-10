@@ -416,6 +416,30 @@ ApplicationWindow {
                 effectArgumentSetValuesCurrentModel.currentIndex = effectArgumentSetValuesCurrentIndex
             }
         }
+
+        function onDemoImageFromChanged()
+        {
+            if(demoImageFrom === undefined || demoImageFrom === null)
+            {
+                effectDemoImageFrom.source = Constants.noImage
+            }
+            else
+            {
+                effectDemoImageFrom.source = demoImageFrom[0]
+            }
+        }
+
+        function onDemoImageToChanged()
+        {
+            if(demoImageTo === undefined || demoImageTo === null)
+            {
+                effectDemoImageTo.source = Constants.noImage
+            }
+            else
+            {
+                effectDemoImageTo.source = demoImageTo[0]
+            }
+        }
     }
 
     MastactvaAPI {
@@ -2332,7 +2356,11 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                demoImageFrom = chooseImageDialog.fieldImage
+                var imgSrc = chooseImageDialog.fieldImage.imageSource
+                var imgHash = chooseImageDialog.fieldImage.imageHash
+                var imageInfo = [imgSrc, imgHash]
+                demoImageFrom = imageInfo
+                console.log("demoImageFrom = ", demoImageFrom)
             }
         }
     }
@@ -2348,7 +2376,11 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                demoImageTo = chooseImageDialog.fieldImage
+                var imgSrc = chooseImageDialog.fieldImage.imageSource
+                var imgHash = chooseImageDialog.fieldImage.imageHash
+                var imageInfo = [imgSrc, imgHash]
+                demoImageTo = imageInfo
+                console.log("demoImageTo = ", demoImageTo)
             }
         }
     }
@@ -2847,8 +2879,21 @@ ApplicationWindow {
                         id: splitEffectsDemo
                         height: parent.height
 
-                        Text {
-                            text: qsTr("Effects Demo")
+                        Column {
+                            Image {
+                                id: effectDemoImageFrom
+                                width: splitEffectsDemo.width
+                                height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                fillMode: Image.PreserveAspectFit
+                                source: Constants.noImage
+                            }
+                            Image {
+                                id: effectDemoImageTo
+                                width: splitEffectsDemo.width
+                                height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                fillMode: Image.PreserveAspectFit
+                                source: Constants.noImage
+                            }
                         }
                     }
                 }
