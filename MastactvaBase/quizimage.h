@@ -28,8 +28,10 @@ public:
 public:
     QVariantList fromImage() const;
     void setFromImage(const QVariantList &fromImageInfo_);
+    QString fromImageLocalUrl() const;
     QVariantList toImage() const;
     void setToImage(const QVariantList &toImageInfo_);
+    QString toImageLocalUrl() const;
     QVariant effect() const;
     void setEffect(const QVariant &effect_);
     qreal t() const;
@@ -38,8 +40,6 @@ public:
     void setArgumentSet(const QVariant &argumentSet_);
 
     bool areAllDataAvailable();
-    QString getFromImage() const;
-    QString getToImage() const;
     Effect *getEffect() const;
     EffectArgSet *getArgumentSet() const;
 

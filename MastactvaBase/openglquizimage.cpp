@@ -12,6 +12,9 @@
 #include "../MastactvaBase/qmlobjects.h"
 
 
+static const QString g_noImage = ":/resources/no-image.png";
+
+
 void ArgumentInfo::setArgId(int argId_)
 {
     m_argId = argId_;
@@ -141,8 +144,8 @@ OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
 {
     m_parent = parent_;
 
-    m_fromImageUrlNew = ":/resources/no-image.png";
-    m_toImageUrlNew = ":/resources/no-image.png";
+    m_fromImageUrlNew = g_noImage;
+    m_toImageUrlNew = g_noImage;
     extractArguments();
 }
 
@@ -157,6 +160,10 @@ void OpenGlQuizImage::releaseResources()
     m_fromTexture = nullptr;
     delete m_toTexture;
     m_toTexture = nullptr;
+    delete m_fromImage;
+    m_fromImage = nullptr;
+    delete m_toImage;
+    m_toImage = nullptr;
     resetProgram();
 }
 
@@ -164,8 +171,8 @@ void OpenGlQuizImage::render(const RenderState *state_)
 {
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->initializeOpenGLFunctions();
-    createTextures();
     if (nullptr == m_program) { init(f); }
+    createTextures();
     paintGL(f, state_);
 }
 
@@ -197,8 +204,10 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     m_t = quizImage->t();
     if(!quizImage->areAllDataAvailable()) { return; }
     // all data
-    m_fromImageUrlNew = quizImage->getFromImage();
-    m_toImageUrlNew = quizImage->getToImage();
+    m_fromImageUrlNew = quizImage->fromImageLocalUrl();
+    if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
+    m_toImageUrlNew = quizImage->toImageLocalUrl();
+    if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
     m_effect = quizImage->getEffect();
     m_argumentSet = quizImage->getArgumentSet();
     int effectId = nullptr != m_effect ? m_effect->id() : -1;
@@ -234,12 +243,18 @@ void OpenGlQuizImage::createTextures()
     if(m_fromImageUrlNew != m_fromImageUrl)
     {
         m_fromImageUrl = m_fromImageUrlNew;
-        m_fromTexture = new QOpenGLTexture(QImage(m_fromImageUrl).mirrored());
+        delete m_fromImage;
+        QUrl url(m_fromImageUrl);
+        m_fromImage = new QImage(url.path());
+        m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored());
     }
     if(m_toImageUrlNew != m_toImageUrl)
     {
         m_toImageUrl = m_toImageUrlNew;
-        m_toTexture = new QOpenGLTexture(QImage(m_toImageUrl).mirrored());
+        delete m_toImage;
+        QUrl url(m_toImageUrl);
+        m_toImage = new QImage(url.path());
+        m_toTexture = new QOpenGLTexture(m_toImage->mirrored());
     }
 }
 
@@ -301,8 +316,8 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
     m_program->bind();
 
-    m_program->setUniformValue("texture1Arg", 0); // GL_TEXTURE0
-    m_program->setUniformValue("texture2Arg", 1);  // GL_TEXTURE1
+    m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0
+    m_program->setUniformValue(m_toTextureId, 1);  // GL_TEXTURE1
 
     QMatrix4x4 texm1;
     QMatrix4x4 texm2;

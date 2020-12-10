@@ -40,7 +40,7 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
     const QString imageUrl = fromImageInfo_.at(0).toString();
     const QString imageHash = fromImageInfo_.at(1).toString();
 
-    if(imageUrl == m_fromImageUrl) { return; }
+    if(imageUrl == m_fromImageUrl || imageHash.isEmpty()) { return; }
 
     m_fromImageUrl = imageUrl;
 
@@ -51,6 +51,16 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
         sf->add(imageUrl, imageHash, g_imagesRelPath);
     }
     emit fromImageChanged();
+}
+
+QString QuizImage::fromImageLocalUrl() const
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        return sf->get(m_fromImageUrl);
+    }
+    return QString();
 }
 
 QVariantList QuizImage::toImage() const
@@ -66,7 +76,7 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
     const QString imageUrl = toImageInfo_.at(0).toString();
     const QString imageHash = toImageInfo_.at(1).toString();
 
-    if(imageUrl == m_fromImageUrl) { return; }
+    if(imageUrl == m_toImageUrl || imageHash.isEmpty()) { return; }
 
     m_toImageUrl = imageUrl;
 
@@ -78,6 +88,16 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
     }
 
     emit toImageChanged();
+}
+
+QString QuizImage::toImageLocalUrl() const
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        return sf->get(m_toImageUrl);
+    }
+    return QString();
 }
 
 QVariant QuizImage::effect() const
@@ -172,16 +192,6 @@ bool QuizImage::areAllDataAvailable()
         }
     }
     return true;
-}
-
-QString QuizImage::getFromImage() const
-{
-    return m_fromImageUrl;
-}
-
-QString QuizImage::getToImage() const
-{
-    return m_toImageUrl;
 }
 
 Effect *QuizImage::getEffect() const

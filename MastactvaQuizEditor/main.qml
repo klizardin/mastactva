@@ -422,10 +422,12 @@ ApplicationWindow {
             if(demoImageFrom === undefined || demoImageFrom === null)
             {
                 effectDemoImageFrom.source = Constants.noImage
+                effectImageDemo.fromImage = [Constants.noImage, Constants.noImageHash]
             }
             else
             {
                 effectDemoImageFrom.source = demoImageFrom[0]
+                effectImageDemo.fromImage = demoImageFrom
             }
         }
 
@@ -434,10 +436,12 @@ ApplicationWindow {
             if(demoImageTo === undefined || demoImageTo === null)
             {
                 effectDemoImageTo.source = Constants.noImage
+                effectImageDemo.toImage = [Constants.noImage, Constants.noImageHash]
             }
             else
             {
                 effectDemoImageTo.source = demoImageTo[0]
+                effectImageDemo.fromImage = demoImageTo
             }
         }
     }
@@ -2883,12 +2887,14 @@ ApplicationWindow {
                                 fromImage: [Constants.noImage, Constants.noImageHash]
                                 toImage: [Constants.noImage, Constants.noImageHash]
                                 clip: true
+                                t: 0.5
 
                                 SequentialAnimation {
                                     id: effectDemoImageAnimationForward
                                     running: false
 
                                     NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                    loops: Animation.Infinite
                                 }
 
                                 SequentialAnimation {
@@ -2896,6 +2902,7 @@ ApplicationWindow {
                                     running: false
 
                                     NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                    loops: Animation.Infinite
                                 }
                             }
 

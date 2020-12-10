@@ -11,6 +11,7 @@
 #include <QtGui/QOpenGLShader>
 #include <QQuickItem>
 #include <QByteArray>
+#include <QImage>
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/effectargset.h"
 
@@ -108,6 +109,8 @@ private:
     QString m_fragmentShader;
     QByteArray m_vshaderBA;
     QByteArray m_fshaderBA;
+    QImage *m_fromImage;
+    QImage *m_toImage;
 };
 
 
