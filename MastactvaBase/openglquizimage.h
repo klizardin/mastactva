@@ -12,6 +12,7 @@
 #include <QQuickItem>
 #include <QByteArray>
 #include <QImage>
+#include <QMatrix4x4>
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/effectargset.h"
 
@@ -111,6 +112,8 @@ private:
     QByteArray m_fshaderBA;
     QImage *m_fromImage;
     QImage *m_toImage;
+    QMatrix4x4 m_texMatrix1;
+    QMatrix4x4 m_texMatrix2;
 };
 
 

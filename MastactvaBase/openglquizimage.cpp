@@ -319,13 +319,11 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0
     m_program->setUniformValue(m_toTextureId, 1);  // GL_TEXTURE1
 
-    QMatrix4x4 texm1;
-    QMatrix4x4 texm2;
 
     m_program->setUniformValue(m_tId, (GLfloat)m_t);
     m_program->setUniformValue(m_matrixId, *state_->projectionMatrix() * *matrix());
-    m_program->setUniformValue(m_texMatrix1Id, texm1);
-    m_program->setUniformValue(m_texMatrix2Id, texm2);
+    m_program->setUniformValue(m_texMatrix1Id, m_texMatrix1);
+    m_program->setUniformValue(m_texMatrix2Id, m_texMatrix2);
 
     for(const ArgumentInfo &ai: m_arguments)
     {
