@@ -169,6 +169,7 @@ void OpenGlQuizImage::releaseResources()
 
 void OpenGlQuizImage::render(const RenderState *state_)
 {
+    //QOpenGLContext *context = QOpenGLContext::currentContext();
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     f->initializeOpenGLFunctions();
     if (nullptr == m_program) { init(f); }
@@ -226,19 +227,21 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
 void OpenGlQuizImage::makeObject()
 {
-    static const int coords[4][3] = {
+    static const int w = 5, h = 4;
+    static const int coords[h][3] =
+    {
         { 1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, { 1, 1, 0 }
     };
 
-    m_vertData.clear();
-    for (int j = 0; j < 4; ++j) {
+    m_vertData.resize(w * h);
+    for (int j = 0; j < h; ++j) {
         // vertex position
-        m_vertData.append(coords[j][0] * (m_width - 1));
-        m_vertData.append(coords[j][1] * (m_height - 1));
-        m_vertData.append(coords[j][2]);
+        m_vertData[j*w + 0] = coords[j][0] * (m_width - 1);
+        m_vertData[j*w + 1] = coords[j][1] * (m_height - 1);
+        m_vertData[j*w + 2] = coords[j][2];
         // texture coordinate
-        m_vertData.append(j == 0 || j == 3);
-        m_vertData.append(j == 0 || j == 1);
+        m_vertData[j*w + 3] = j == 0 || j == 3;
+        m_vertData[j*w + 4] = j == 0 || j == 1;
     }
 }
 
@@ -251,7 +254,7 @@ void OpenGlQuizImage::createTextures()
         QUrl url(m_fromImageUrl);
         m_fromImage = new QImage(url.path());
         m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
-        m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapNearest);
+        m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     }
     if(m_toImageUrlNew != m_toImageUrl)
     {
@@ -260,7 +263,7 @@ void OpenGlQuizImage::createTextures()
         QUrl url(m_toImageUrl);
         m_toImage = new QImage(url.path());
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
-        m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapNearest);
+        m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     }
 }
 
@@ -269,6 +272,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
 
+    const bool isProgramRecreated = nullptr == m_vshader || nullptr == m_fshader;
     if(nullptr == m_vshader)
     {
         m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, m_parent);
@@ -288,21 +292,22 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     m_program->addShader(m_fshader);
     m_program->link();
 
-    if(0 > m_vertexAttrId) { m_vertexAttrId = m_program->attributeLocation("vertexArg"); }
-    if(0 > m_texCoordAttrId) { m_texCoordAttrId = m_program->attributeLocation("texCoordArg"); }
-
-    if(0 > m_fromTextureId) { m_fromTextureId = m_program->uniformLocation("texture1Arg"); }
-    if(0 > m_toTextureId) { m_toTextureId = m_program->uniformLocation("texture2Arg"); }
-    if(0 > m_matrixId) { m_matrixId = m_program->uniformLocation("matrixArg"); }
-    if(0 > m_texMatrix1Id) { m_texMatrix1Id = m_program->uniformLocation("texMatrix1Arg"); }
-    if(0 > m_texMatrix2Id) { m_texMatrix2Id = m_program->uniformLocation("texMatrix2Arg"); }
-
-    if(0 > m_tId) { m_tId = m_program->uniformLocation("t"); }
-    //if(0 > m_colorId) { m_colorId = m_program->uniformLocation("color"); }
-
-    for(ArgumentInfo &ai: m_arguments)
+    if(isProgramRecreated)
     {
-        ai.initId(m_program);
+        m_vertexAttrId = m_program->attributeLocation("vertexArg");
+        m_texCoordAttrId = m_program->attributeLocation("texCoordArg");
+        m_fromTextureId = m_program->uniformLocation("texture1Arg");
+        m_toTextureId = m_program->uniformLocation("texture2Arg");
+        m_matrixId = m_program->uniformLocation("matrixArg");
+        m_texMatrix1Id = m_program->uniformLocation("texMatrix1Arg");
+        m_texMatrix2Id = m_program->uniformLocation("texMatrix2Arg");
+
+        m_tId = m_program->uniformLocation("t");
+
+        for(ArgumentInfo &ai: m_arguments)
+        {
+            ai.initId(m_program);
+        }
     }
 
     m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
@@ -310,12 +315,15 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
     makeObject();
 
-    m_vbo = new QOpenGLBuffer();
-    m_vbo->create();
-    m_vbo->bind();
-    m_vbo->allocate(m_vertData.count() * sizeof(GLfloat));
-    m_vbo->write(m_vertData.count(), m_vertData.constData(), sizeof(GLfloat));
-    m_vbo->release();
+    if(nullptr == m_vbo)
+    {
+        m_vbo = new QOpenGLBuffer();
+        m_vbo->create();
+        m_vbo->bind();
+        m_vbo->allocate(m_vertData.count() * sizeof(GLfloat));
+        m_vbo->write(m_vertData.count(), m_vertData.constData(), sizeof(GLfloat));
+        m_vbo->release();
+    }
 }
 
 void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
@@ -360,12 +368,14 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     f_->glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     // Clip support.
-    if (state_->scissorEnabled()) {
+    if (state_->scissorEnabled())
+    {
         f_->glEnable(GL_SCISSOR_TEST);
         const QRect r = state_->scissorRect(); // already bottom-up
         f_->glScissor(r.x(), r.y(), r.width(), r.height());
     }
-    if (state_->stencilEnabled()) {
+    if (state_->stencilEnabled())
+    {
         f_->glEnable(GL_STENCIL_TEST);
         f_->glStencilFunc(GL_EQUAL, state_->stencilValue(), 0xFF);
         f_->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -377,6 +387,10 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_fromTexture->bind();
 
     f_->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    m_program->disableAttributeArray(m_vertexAttrId);
+    m_program->disableAttributeArray(m_texCoordAttrId);
+    m_vbo->release();
 }
 
 void OpenGlQuizImage::extractArguments()
