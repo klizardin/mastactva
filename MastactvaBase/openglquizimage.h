@@ -114,6 +114,7 @@ private:
     QImage *m_toImage;
     QMatrix4x4 m_texMatrix1;
     QMatrix4x4 m_texMatrix2;
+    bool m_updateSize = false;
 };
 
 

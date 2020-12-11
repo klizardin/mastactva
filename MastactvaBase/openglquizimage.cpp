@@ -193,6 +193,10 @@ QRectF OpenGlQuizImage::rect() const
 
 void OpenGlQuizImage::sync(QQuickItem *item_)
 {
+    if(item_->width() != m_width || item_->height() != m_height)
+    {
+        m_updateSize = true;
+    }
     m_left = item_->x();
     m_top = item_->y();
     m_width = item_->width();
@@ -328,6 +332,12 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     for(const ArgumentInfo &ai: m_arguments)
     {
         ai.setValue(m_program);
+    }
+
+    if(m_updateSize)
+    {
+        makeObject();
+        m_updateSize = false;
     }
 
     m_vbo->bind();
