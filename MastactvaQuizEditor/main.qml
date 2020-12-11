@@ -441,7 +441,7 @@ ApplicationWindow {
             else
             {
                 effectDemoImageTo.source = demoImageTo[0]
-                effectImageDemo.fromImage = demoImageTo
+                effectImageDemo.toImage = demoImageTo
             }
         }
     }
