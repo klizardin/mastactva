@@ -269,6 +269,8 @@ void OpenGlQuizImage::createTextures()
         m_fromImage = new QImage(url.path());
         m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
+        m_fromTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+        m_fromTexture->setBorderColor(1, 1, 1, 0);
     }
     if(m_toImageUrlNew != m_toImageUrl)
     {
@@ -278,11 +280,43 @@ void OpenGlQuizImage::createTextures()
         m_toImage = new QImage(url.path());
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
+        m_toTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+        m_toTexture->setBorderColor(1, 1, 1, 0);
     }
 }
 
 void OpenGlQuizImage::makeTextureMatrixes()
 {
+    m_texMatrix1 = QMatrix4x4();
+    m_texMatrix2 = QMatrix4x4();
+    if(nullptr != m_fromImage)
+    {
+        QSize imageSize = m_fromImage->size();
+        QSize rectSize(m_width, m_height);
+        calculatePreserveAspectFitTextureMatrix(m_texMatrix1, imageSize, rectSize);
+    }
+    if(nullptr != m_toImage)
+    {
+        QSize imageSize = m_toImage->size();
+        QSize rectSize(m_width, m_height);
+        calculatePreserveAspectFitTextureMatrix(m_texMatrix2, imageSize, rectSize);
+    }
+}
+
+void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textureMatrix_, const QSize &imageSize_, const QSize &rectSize_)
+{
+    const qreal imageRate = (qreal)std::max(1,imageSize_.width())/(qreal)std::max(1, imageSize_.height());
+    const qreal rectRate = (qreal)std::max(1, rectSize_.width())/(qreal)std::max(1, rectSize_.height());
+    if(rectRate >= imageRate)
+    {
+        textureMatrix_.scale(rectRate/imageRate, 1.0);
+        textureMatrix_.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+    }
+    else
+    {
+        textureMatrix_.scale(1.0, imageRate/rectRate);
+        textureMatrix_.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+    }
 }
 
 void OpenGlQuizImage::init(QOpenGLFunctions *f_)
