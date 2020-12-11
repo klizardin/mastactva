@@ -243,6 +243,7 @@ ApplicationWindow {
             ItemDelegate {
                 text: qsTr("Quiz")
                 width: parent.width
+                visible: quizPage.currentImage !== undefined
                 onClicked: {
                     stackView.push(quizPage)
                     drawer.close()
@@ -251,8 +252,10 @@ ApplicationWindow {
             ItemDelegate {
                 text: qsTr("Description")
                 width: parent.width
+                visible: quizPage.hasDescription
                 onClicked: {
                     stackView.push(descriptionPage)
+                    descriptionPage.init()
                     drawer.close()
                 }
             }
