@@ -197,7 +197,13 @@ void ServerFileDownload::setFile(const QString &url_, const QString &hash_)
 void ServerFileDownload::start(QNetworkAccessManager &manager_)
 {
     //qDebug() << "ServerFileDownload::start() url = " << m_url;
-    m_filename = getFilename();
+    bool exists = false;
+    m_filename = getFilename(exists);
+    if(exists)
+    {
+        emit finished(this);
+        return;
+    }
     m_outputFile.setFileName(m_filename);
     //qDebug() << "m_filename = " << m_filename;
     if (!m_outputFile.open(QIODevice::WriteOnly))
@@ -317,19 +323,30 @@ void ServerFileDownload::downloadReadyRead()
     m_outputFile.write(m_download->readAll());
 }
 
-QString ServerFileDownload::getFilename()
+QString ServerFileDownload::getFilename(bool &exists_)
 {
+    exists_ = false;
+    m_oldName = QString();
     QUrl url(m_url);
     QString path = url.path();
-    QString basename = QFileInfo(path).fileName();
-    QString ext = QFileInfo(path).suffix();
+    QFileInfo fi0(path);
+    QString basename = fi0.fileName();
+    QString ext = fi0.suffix();
     if(basename.isEmpty()) { return QString(); }
     QString savePath = QDir(m_rootDir).filePath(m_relPath);
     QDir dir(savePath);
     if(!dir.exists()) { dir.mkpath("."); }
     if(QFile::exists(dir.filePath(basename)))
     {
-        m_oldName = dir.filePath(basename);
+        QFileInfo fi1(dir.filePath(basename));
+        const QString existingFilename = fi1.absoluteFilePath();
+        m_oldName = existingFilename;
+        const QString url = QUrl::fromLocalFile(existingFilename).toString();
+        if(calculateFileURLHash(url) == m_hash)
+        {
+            exists_ = true;
+            return existingFilename;
+        }
         if(ext.isEmpty())
         {
             basename += ".";
@@ -340,10 +357,20 @@ QString ServerFileDownload::getFilename()
             ext = QString(".") + ext;
         }
         int i = 0;
-        for(; QFile::exists(dir.filePath(basename + QString::number(i) + ext)); i++ ) {}
-        basename += QString::number(i) + ext;
+        for(; QFile::exists(dir.filePath(basename + QString::number(i) + ext)); i++)
+        {
+            const QString filename = basename + QString::number(i) + ext;
+            const QString url = QUrl::fromLocalFile(filename).toString();
+            if(calculateFileURLHash(url) == m_hash)
+            {
+                exists_ = true;
+                break;
+            }
+        }
+        basename = basename + QString::number(i) + ext;
     }
-    return dir.filePath(basename);
+    QFileInfo fi2(dir.filePath(basename));
+    return fi2.absoluteFilePath();
 }
 
 qint64 ServerFileDownload::bytesReceived() const
@@ -363,6 +390,36 @@ const QString &ServerFileDownload::getOldName() const
 
 void ServerFileDownload::removeOldFile(const QString &oldURL_)
 {
-    if(QUrl::fromLocalFile(m_oldName).toString() != oldURL_) { return; }
-    QFile(m_oldName).remove();
+    if(!oldURL_.isEmpty() &&
+            (m_oldName.isEmpty() ||
+             QUrl::fromLocalFile(m_oldName).toString() != oldURL_)
+            ) { return; }
+
+    if(m_oldName != m_filename)
+    {
+        QFile(m_oldName).remove();
+    }
+    QFileInfo fi(m_oldName);
+    QString dir = fi.path();
+    QString basename = fi.fileName();
+    QString ext = fi.suffix();
+    if(ext.isEmpty())
+    {
+        basename += ".";
+    }
+    else
+    {
+        basename = basename.mid(0, basename.length() - (ext.length() + 1)) + ".";
+        ext = QString(".") + ext;
+    }
+    QDir d(dir);
+    for(int i = 0; QFile::exists(d.filePath(basename + QString::number(i) + ext)); i++)
+    {
+        const QString filename = d.filePath(basename + QString::number(i) + ext);
+        if(filename != m_filename)
+        {
+            QFile(filename).remove();
+        }
+    }
+    m_oldName.clear();
 }

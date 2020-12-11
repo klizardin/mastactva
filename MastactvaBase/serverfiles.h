@@ -28,7 +28,7 @@ public:
     void removeOldFile(const QString &oldURL_);
 
 protected:
-    QString getFilename();
+    QString getFilename(bool &exists_);
     bool isHttpRedirect() const;
     void reportRedirect();
 
