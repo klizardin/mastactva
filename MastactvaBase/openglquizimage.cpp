@@ -250,7 +250,8 @@ void OpenGlQuizImage::createTextures()
         delete m_fromImage;
         QUrl url(m_fromImageUrl);
         m_fromImage = new QImage(url.path());
-        m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored());
+        m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
+        m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapNearest);
     }
     if(m_toImageUrlNew != m_toImageUrl)
     {
@@ -258,7 +259,8 @@ void OpenGlQuizImage::createTextures()
         delete m_toImage;
         QUrl url(m_toImageUrl);
         m_toImage = new QImage(url.path());
-        m_toTexture = new QOpenGLTexture(m_toImage->mirrored());
+        m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
+        m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapNearest);
     }
 }
 
