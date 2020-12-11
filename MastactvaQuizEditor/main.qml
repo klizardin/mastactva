@@ -2392,14 +2392,6 @@ ApplicationWindow {
     }
 
     Action {
-        id: pauseEffectDemo
-        text: qsTr("P&ause effect demo")
-        onTriggered: {
-
-        }
-    }
-
-    Action {
         id: stopEffectDemo
         text: qsTr("&Stop effect demo")
         onTriggered: {
@@ -2442,7 +2434,6 @@ ApplicationWindow {
             MenuItem { action: demoSetImageFrom }
             MenuItem { action: demoSetImageTo }
             MenuItem { action: playEffectDemo }
-            MenuItem { action: pauseEffectDemo }
             MenuItem { action: stopEffectDemo }
         }
     }
