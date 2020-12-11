@@ -9,6 +9,9 @@
         <file>QuestionForm.qml</file>
         <file>default.frag</file>
         <file>default.vert</file>
+        <file>resources/no-image.png</file>
+        <file>resources/point.png</file>
+        <file>resources/selectedPoint.png</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>

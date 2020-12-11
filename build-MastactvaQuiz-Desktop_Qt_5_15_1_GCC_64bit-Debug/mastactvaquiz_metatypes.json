@@ -52,6 +52,17 @@
                         ],
                         "name": "showModelError",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileUrl_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "calculateHash",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,
@@ -8887,6 +8898,11 @@
                         "access": "public",
                         "name": "updateState",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "swapImages",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -8951,6 +8967,32 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "paintedWidth",
+                        "notify": "paintedWidthChanged",
+                        "read": "paintedWidth",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "paintedHeight",
+                        "notify": "paintedHeightChanged",
+                        "read": "paintedHeight",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "t",
                         "notify": "tChanged",
                         "read": "t",
@@ -8987,6 +9029,16 @@
                     {
                         "access": "public",
                         "name": "argumentSetChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "paintedWidthChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "paintedHeightChanged",
                         "returnType": "void"
                     }
                 ],

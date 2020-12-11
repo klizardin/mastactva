@@ -2884,47 +2884,55 @@ ApplicationWindow {
                             clip:true
 
                             Column {
-                                QuizImage {
-                                    id: effectImageDemo
+                                Rectangle {
+                                    id: effectImageDemoClipper
                                     width: splitEffectsDemo.width
                                     height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
-                                    fromImage: [Constants.noImage, Constants.noImageHash]
-                                    toImage: [Constants.noImage, Constants.noImageHash]
+                                    color: "transparent"
                                     clip: true
-                                    t: 0.5
 
-                                    SequentialAnimation {
-                                        id: effectDemoImageAnimationForward
-                                        running: false
+                                    QuizImage {
+                                        id: effectImageDemo
+                                        width: splitEffectsDemo.width
+                                        height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                        fromImage: [Constants.noImage, Constants.noImageHash]
+                                        toImage: [Constants.noImage, Constants.noImageHash]
+                                        clip: true
+                                        t: 0.5
 
-                                        NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                        //loops: Animation.Infinite
-                                    }
+                                        SequentialAnimation {
+                                            id: effectDemoImageAnimationForward
+                                            running: false
 
-                                    SequentialAnimation {
-                                        id: effectDemoImageAnimationBackward
-                                        running: false
-
-                                        NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                        //loops: Animation.Infinite
-                                    }
-
-                                    Connections {
-                                        target: effectDemoImageAnimationForward
-
-                                        function onFinished()
-                                        {
-                                            console.log("effectDemoImageAnimationForward.finished()");
-                                            //effectImageDemo.swapImages();
+                                            NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                            //loops: Animation.Infinite
                                         }
-                                    }
 
-                                    Connections {
-                                        target: effectDemoImageAnimationBackward
+                                        SequentialAnimation {
+                                            id: effectDemoImageAnimationBackward
+                                            running: false
 
-                                        function onFinished()
-                                        {
-                                            console.log("effectDemoImageAnimationBackward.finished()");
+                                            NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                            //loops: Animation.Infinite
+                                        }
+
+                                        Connections {
+                                            target: effectDemoImageAnimationForward
+
+                                            function onFinished()
+                                            {
+                                                console.log("effectDemoImageAnimationForward.finished()");
+                                                //effectImageDemo.swapImages();
+                                            }
+                                        }
+
+                                        Connections {
+                                            target: effectDemoImageAnimationBackward
+
+                                            function onFinished()
+                                            {
+                                                console.log("effectDemoImageAnimationBackward.finished()");
+                                            }
                                         }
                                     }
                                 }

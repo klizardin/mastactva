@@ -18,6 +18,7 @@ public:
     Q_INVOKABLE QString readMore(const QString &str_, int maxSymbols_, const QString &rmt_);
     Q_INVOKABLE QDateTime now() const;
     Q_INVOKABLE void showModelError(int errorCode_, const QString & errorCodeStr_, const QString & description_);
+    Q_INVOKABLE QString calculateHash(const QString &fileUrl_);
 
     void setInitialized();
 

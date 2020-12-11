@@ -1,6 +1,7 @@
 /*@shader @description default fragment shader. mix to images*/
 uniform sampler2D texture1Arg;
 uniform sampler2D texture2Arg;
+uniform lowp float opacityArg;
 
 uniform mediump float t;
 
@@ -13,5 +14,5 @@ void main(void)
     vec4 s2 = texture2D( texture2Arg, texCoord2Var.st );
     gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, s1.a ),
                         vec4( s2.r, s2.g, s2.b, s2.a ),
-                        t );
+                        t ) * opacityArg;
 }

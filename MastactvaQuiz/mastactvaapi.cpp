@@ -1,4 +1,5 @@
 #include "mastactvaapi.h"
+#include "../MastactvaBase/utils.h"
 
 
 MastactvaAPI::MastactvaAPI(QObject *parent_ /*= nullptr*/)
@@ -35,4 +36,9 @@ void MastactvaAPI::showModelError(int errorCode_, const QString & errorCodeStr_,
 {
     Q_UNUSED(errorCode_);
     emit errorMessage(errorCodeStr_, description_);
+}
+
+QString MastactvaAPI::calculateHash(const QString &fileUrl_)
+{
+    return calculateFileURLHash(fileUrl_);
 }

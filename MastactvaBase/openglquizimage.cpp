@@ -189,7 +189,7 @@ QSGRenderNode::RenderingFlags OpenGlQuizImage::flags() const
 
 QRectF OpenGlQuizImage::rect() const
 {
-    return QRect(m_left, m_top, m_width, m_height);
+    return QRect(0, 0, m_width, m_height);
 }
 
 void OpenGlQuizImage::sync(QQuickItem *item_)
@@ -227,7 +227,7 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
 void OpenGlQuizImage::makeObject()
 {
-    static const int w = 5, h = 4;
+    static const int w = 4, h = 4;
     static const int coords[h][3] =
     {
         { 1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, { 1, 1, 0 }
@@ -238,10 +238,9 @@ void OpenGlQuizImage::makeObject()
         // vertex position
         m_vertData[j*w + 0] = coords[j][0] * (m_width - 1);
         m_vertData[j*w + 1] = coords[j][1] * (m_height - 1);
-        m_vertData[j*w + 2] = coords[j][2];
         // texture coordinate
-        m_vertData[j*w + 3] = j == 0 || j == 3;
-        m_vertData[j*w + 4] = j == 0 || j == 1;
+        m_vertData[j*w + 2] = j == 0 || j == 3;
+        m_vertData[j*w + 3] = j == 0 || j == 1;
     }
 }
 
@@ -265,8 +264,16 @@ void OpenGlQuizImage::createTextures()
     {
         m_fromImageUrl = m_fromImageUrlNew;
         delete m_fromImage;
-        QUrl url(m_fromImageUrl);
-        m_fromImage = new QImage(url.path());
+        if(m_fromImageUrl != g_noImage)
+        {
+            QUrl url(m_fromImageUrl);
+            m_fromImage = new QImage(url.path());
+        }
+        else
+        {
+            m_fromImage = new QImage(m_fromImageUrl);
+        }
+        Q_ASSERT(!m_fromImage->isNull());
         m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_fromTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
@@ -276,8 +283,16 @@ void OpenGlQuizImage::createTextures()
     {
         m_toImageUrl = m_toImageUrlNew;
         delete m_toImage;
-        QUrl url(m_toImageUrl);
-        m_toImage = new QImage(url.path());
+        if(m_toImageUrl != g_noImage)
+        {
+            QUrl url(m_toImageUrl);
+            m_toImage = new QImage(url.path());
+        }
+        else
+        {
+            m_toImage = new QImage(m_toImageUrl);
+        }
+        Q_ASSERT(!m_toImage->isNull());
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_toTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
@@ -350,6 +365,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
         m_texCoordAttrId = m_program->attributeLocation("texCoordArg");
         m_fromTextureId = m_program->uniformLocation("texture1Arg");
         m_toTextureId = m_program->uniformLocation("texture2Arg");
+        m_opacitiId = m_program->uniformLocation("opacityArg");
         m_matrixId = m_program->uniformLocation("matrixArg");
         m_texMatrix1Id = m_program->uniformLocation("texMatrix1Arg");
         m_texMatrix2Id = m_program->uniformLocation("texMatrix2Arg");
@@ -396,6 +412,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_matrixId, *state_->projectionMatrix() * *matrix());
     m_program->setUniformValue(m_texMatrix1Id, m_texMatrix1);
     m_program->setUniformValue(m_texMatrix2Id, m_texMatrix2);
+    m_program->setUniformValue(m_opacitiId, float(inheritedOpacity()));
 
     for(const ArgumentInfo &ai: m_arguments)
     {
@@ -405,10 +422,10 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_vbo->bind();
     m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());
 
+    m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT, 0, 2, 4 * sizeof(GLfloat));
+    m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT, 2 * sizeof(GLfloat), 2, 4 * sizeof(GLfloat));
     m_program->enableAttributeArray(m_vertexAttrId);
     m_program->enableAttributeArray(m_texCoordAttrId);
-    m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
-    m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
 
     // We are prepared both for the legacy (direct OpenGL) and the modern
     // (abstracted by RHI) OpenGL scenegraph. So set all the states that are

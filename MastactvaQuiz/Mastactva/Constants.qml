@@ -25,4 +25,6 @@ QtObject {
     readonly property int logingItemsSpacing: 10
     readonly property int pointImageSize: 32
     readonly property string noImage: "qrc:///resources/no-image.png"
+    readonly property string noImageResource: ":/resources/no-image.png"
+    property string noImageHash: ""
 }

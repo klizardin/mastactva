@@ -93,6 +93,7 @@ private:
     int m_texCoordAttrId = -1;
     int m_fromTextureId = -1;
     int m_toTextureId = -1;
+    int m_opacitiId = -1;
     int m_matrixId = -1;
     int m_texMatrix1Id = -1;
     int m_texMatrix2Id = -1;
@@ -112,8 +113,8 @@ private:
     QString m_fragmentShader;
     QByteArray m_vshaderBA;
     QByteArray m_fshaderBA;
-    QImage *m_fromImage;
-    QImage *m_toImage;
+    QImage *m_fromImage = nullptr;
+    QImage *m_toImage = nullptr;
     QMatrix4x4 m_texMatrix1;
     QMatrix4x4 m_texMatrix2;
     bool m_updateSize = false;

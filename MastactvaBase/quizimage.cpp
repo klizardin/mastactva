@@ -53,6 +53,8 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
     if(imageUrl == m_fromImageUrl || imageHash.isEmpty()) { return; }
 
     m_fromImageUrl = imageUrl;
+    delete m_image;
+    m_image = nullptr;
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
@@ -172,6 +174,16 @@ void QuizImage::setArgumentSet(const QVariant &argumentSet_)
     emit argumentSetChanged();
 }
 
+int QuizImage::paintedWidth() const
+{
+    return std::max(1, m_imageSize.width());
+}
+
+int QuizImage::paintedHeight() const
+{
+    return std::max(1, m_imageSize.height());
+}
+
 bool QuizImage::areAllDataAvailable()
 {
     if(nullptr != m_argumentSet)
@@ -283,6 +295,14 @@ void QuizImage::updateStateIfDataIsReady()
     if(nullptr != sf)
     {
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+    }
+    if(nullptr == m_image && nullptr != sf)
+    {
+        m_image = new QImage(sf->get(m_fromImageUrl));
+        m_imageSize = m_image->size();
+
+        emit paintedWidthChanged();
+        emit paintedHeightChanged();
     }
     updateState();
 }

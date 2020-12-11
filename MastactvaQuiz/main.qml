@@ -78,6 +78,7 @@ ApplicationWindow {
 
         function onInitialized()
         {
+            Constants.noImageHash = mastactvaAPI.calculateHash(Constants.noImageResource)
             galleryPage.galleryModel = galleryModel
             galleryPage.mastactvaAPI = mastactvaAPI
             galleryPage.userStepModel = userStepModel
@@ -110,8 +111,8 @@ ApplicationWindow {
             // log quiz start
             var userStep = userStepModel.createItem()
             userStep.usGalleryId = galleryModel.getCurrentItem().id
-            userStep.usImageId = startImage.id
-            userStep.usNextImageId = startImage.id
+            userStep.usImageId = startImage.imageId
+            userStep.usNextImageId = startImage.imageId
             userStep.usT = mastactvaAPI.now()
             userStepModel.addItem(userStep)
 
@@ -119,7 +120,10 @@ ApplicationWindow {
             quizPage.galleryId = galleryModel.getCurrentItem().id
             quizPage.currentImage = startImage
             quizPage.currentImageSource = startImage.imageSource
-            setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.id)
+            quizPage.currentImageHash = startImage.imageHash
+            quizPage.nextImage = undefined
+            quizPage.init()
+            setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.imageId)
             stackView.push(quizPage)
         }
     }

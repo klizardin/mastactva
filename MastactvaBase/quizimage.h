@@ -20,6 +20,8 @@ public:
     Q_PROPERTY(QVariantList toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
     Q_PROPERTY(QVariant effect READ effect WRITE setEffect NOTIFY effectChanged)
     Q_PROPERTY(QVariant argumentSet READ argumentSet WRITE setArgumentSet NOTIFY argumentSetChanged)
+    Q_PROPERTY(int paintedWidth READ paintedWidth NOTIFY paintedWidthChanged)
+    Q_PROPERTY(int paintedHeight READ paintedHeight NOTIFY paintedHeightChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
 
 public:
@@ -39,6 +41,8 @@ public:
     void setT(qreal t_);
     QVariant argumentSet() const;
     void setArgumentSet(const QVariant &argumentSet_);
+    int paintedWidth() const;
+    int paintedHeight() const;
 
     bool areAllDataAvailable();
     Effect *getEffect() const;
@@ -61,6 +65,8 @@ signals:
     void effectChanged();
     void tChanged();
     void argumentSetChanged();
+    void paintedWidthChanged();
+    void paintedHeightChanged();
 
 private:
     QString m_fromImageUrl;
@@ -70,6 +76,8 @@ private:
     EffectArgSet *m_argumentSet = nullptr;
     QStringList m_shadersUrls;
     bool m_effectLoading = false;
+    QImage *m_image = nullptr;
+    QSize m_imageSize = QSize(0,0);
 };
 
 
