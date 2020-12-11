@@ -298,8 +298,20 @@ void QuizImage::updateStateIfDataIsReady()
     }
     if(nullptr == m_image && nullptr != sf)
     {
-        m_image = new QImage(sf->get(m_fromImageUrl));
-        m_imageSize = m_image->size();
+        const QString fileUrl = sf->get(m_fromImageUrl);
+        QUrl url(fileUrl);
+        m_image = new QImage(url.path());
+        const QSize imageOrigSize = m_image->size();
+        const qreal imageRate = (qreal)std::max(1,imageOrigSize.width())/(qreal)std::max(1,imageOrigSize.height());
+        const qreal rectRate = std::max(1.0, width())/std::max(1.0, height());
+        if(rectRate > imageRate)
+        {
+            m_imageSize = QSize(height()*imageRate, height());
+        }
+        else
+        {
+            m_imageSize = QSize(width(), width()/imageRate);
+        }
 
         emit paintedWidthChanged();
         emit paintedHeightChanged();

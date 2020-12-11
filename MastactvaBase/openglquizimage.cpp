@@ -257,6 +257,7 @@ void OpenGlQuizImage::createTextures()
         std::swap(m_fromImage, m_toImage);
         std::swap(m_fromTexture, m_toTexture);
         m_t = 1.0 - m_t;
+        m_updateSize = true;
         return;
     }
 
@@ -278,6 +279,7 @@ void OpenGlQuizImage::createTextures()
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_fromTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_fromTexture->setBorderColor(1, 1, 1, 0);
+        m_updateSize = true;
     }
     if(m_toImageUrlNew != m_toImageUrl)
     {
@@ -297,6 +299,7 @@ void OpenGlQuizImage::createTextures()
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_toTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_toTexture->setBorderColor(1, 1, 1, 0);
+        m_updateSize = true;
     }
 }
 
@@ -304,23 +307,22 @@ void OpenGlQuizImage::makeTextureMatrixes()
 {
     m_texMatrix1 = QMatrix4x4();
     m_texMatrix2 = QMatrix4x4();
+    QSize rectSize(m_width, m_height);
     if(nullptr != m_fromImage)
     {
-        QSize imageSize = m_fromImage->size();
-        QSize rectSize(m_width, m_height);
+        const QSize imageSize = m_fromImage->size();
         calculatePreserveAspectFitTextureMatrix(m_texMatrix1, imageSize, rectSize);
     }
     if(nullptr != m_toImage)
     {
-        QSize imageSize = m_toImage->size();
-        QSize rectSize(m_width, m_height);
+        const QSize imageSize = m_toImage->size();
         calculatePreserveAspectFitTextureMatrix(m_texMatrix2, imageSize, rectSize);
     }
 }
 
 void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textureMatrix_, const QSize &imageSize_, const QSize &rectSize_)
 {
-    const qreal imageRate = (qreal)std::max(1,imageSize_.width())/(qreal)std::max(1, imageSize_.height());
+    const qreal imageRate = (qreal)std::max(1, imageSize_.width())/(qreal)std::max(1, imageSize_.height());
     const qreal rectRate = (qreal)std::max(1, rectSize_.width())/(qreal)std::max(1, rectSize_.height());
     if(rectRate >= imageRate)
     {

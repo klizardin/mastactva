@@ -20,7 +20,7 @@ Page {
     property string currentImageSource: Constants.noImage
     property string currentImageHash: Constants.noImageHash
     property bool hasDescription: false
-    property int animationDuration: 3000
+    property int animationDuration: 1500
 
     signal showQuestion(var question, int imageId)
     signal setDescription(var descriptionModel, int galleryId, int imageId)
@@ -54,38 +54,39 @@ Page {
                         var y = mouseY / height
                         if(currentImage.imagePoints.isNextObjImageByCoords(x, y))
                         {
-                            var ip = currentImage.imagePoints.nextObjByCoords(x, y)
-                            var nextImgObj = allImagesOfGalleryModel.findItemById(ip.nextImage.getCurrentItem().iptniNextImage)
+                            var ipni = currentImage.imagePoints.nextObjByCoords(x, y)
+                            var nextImgObj = allImagesOfGalleryModel.findItemById(ipni.nextImage.getCurrentItem().iptniNextImage)
                             if(nextImgObj !== undefined && nextImgObj !== null)
                             {
                                 // log jump to next image
-                                var userStep = userStepModel.createItem()
-                                userStep.usGalleryId = galleryModel.getCurrentItem().id
-                                userStep.usImageId = currentImage.id
-                                userStep.usNextImageId = nextImgObj.id
-                                userStep.usT = mastactvaAPI.now()
-                                userStepModel.addItem(userStep)
+                                var userStepNi = userStepModel.createItem()
+                                userStepNi.usGalleryId = galleryModel.getCurrentItem().id
+                                userStepNi.usImageId = currentImage.imageId
+                                userStepNi.usNextImageId = nextImgObj.imageId
+                                userStepNi.usT = mastactvaAPI.now()
+                                userStepModel.addItem(userStepNi)
 
                                 nextImage = nextImgObj
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
+                                quizPage.setDescription(undefined, galleryId, nextImage.imageId)
                                 quizImageAnimation.running = true
                             }
                         }
                         else if(currentImage.imagePoints.isNextObjQuestionByCoords(x, y))
                         {
-                            var ip = currentImage.imagePoints.nextObjByCoords(x, y)
-                            var question = ip.nextQuestion.getCurrentItem().iptqQuestionObj.getCurrentItem()
+                            var ipq = currentImage.imagePoints.nextObjByCoords(x, y)
+                            var question = ipq.nextQuestion.getCurrentItem().iptqQuestionObj.getCurrentItem()
                             if(question !== undefined && question !== null)
                             {
                                 // log jump to question
-                                var userStep = userStepModel.createItem()
-                                userStep.usGalleryId = galleryModel.getCurrentItem().id
-                                userStep.usImageId = currentImage.id
-                                userStep.usQuestionId = question.questionId
-                                userStep.usT = mastactvaAPI.now()
-                                userStepModel.addItem(userStep)
+                                var userStepQ = userStepModel.createItem()
+                                userStepQ.usGalleryId = galleryModel.getCurrentItem().id
+                                userStepQ.usImageId = currentImage.imageId
+                                userStepQ.usQuestionId = question.questionId
+                                userStepQ.usT = mastactvaAPI.now()
+                                userStepModel.addItem(userStepQ)
 
-                                quizPage.showQuestion(question, currentImage.id)
+                                quizPage.showQuestion(question, currentImage.imageId)
                             }
                         }
                     }
@@ -108,7 +109,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
-                    quizPage.setDescription(currentImage.imageDescription, galleryId, nextImgObj.id)
+                    quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId)
                     quizImage.swapImages();
                 }
             }
