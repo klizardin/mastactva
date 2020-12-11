@@ -24,6 +24,7 @@ public:
 
 public:
     Q_INVOKABLE void updateState();
+    Q_INVOKABLE void swapImages();
 
 public:
     QVariantList fromImage() const;

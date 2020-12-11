@@ -9801,6 +9801,11 @@
                         "access": "public",
                         "name": "updateState",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "swapImages",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

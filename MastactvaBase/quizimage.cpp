@@ -27,6 +27,16 @@ void QuizImage::updateState()
     update();
 }
 
+void QuizImage::swapImages()
+{
+    std::swap(m_fromImageUrl, m_toImageUrl);
+
+    updateStateIfDataIsReady();
+
+    emit fromImageChanged();
+    emit toImageChanged();
+}
+
 QVariantList QuizImage::fromImage() const
 {
     QVariantList res;

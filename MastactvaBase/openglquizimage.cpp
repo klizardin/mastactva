@@ -247,6 +247,20 @@ void OpenGlQuizImage::makeObject()
 
 void OpenGlQuizImage::createTextures()
 {
+    if(m_fromImageUrlNew == m_toImageUrl &&
+            m_toImageUrlNew == m_fromImageUrl &&
+            m_fromImageUrlNew != m_fromImageUrl
+            )
+    {
+        // swap textures
+        std::swap(m_fromImageUrl, m_toImageUrl);
+        Q_ASSERT(m_fromImageUrl == m_fromImageUrlNew && m_toImageUrl == m_toImageUrlNew);
+        std::swap(m_fromImage, m_toImage);
+        std::swap(m_fromTexture, m_toTexture);
+        m_t = 1.0 - m_t;
+        return;
+    }
+
     if(m_fromImageUrlNew != m_fromImageUrl)
     {
         m_fromImageUrl = m_fromImageUrlNew;
@@ -265,6 +279,10 @@ void OpenGlQuizImage::createTextures()
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     }
+}
+
+void OpenGlQuizImage::makeTextureMatrixes()
+{
 }
 
 void OpenGlQuizImage::init(QOpenGLFunctions *f_)
@@ -333,6 +351,12 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0
     m_program->setUniformValue(m_toTextureId, 1);  // GL_TEXTURE1
 
+    if(m_updateSize)
+    {
+        makeObject();
+        makeTextureMatrixes();
+        m_updateSize = false;
+    }
 
     m_program->setUniformValue(m_tId, (GLfloat)m_t);
     m_program->setUniformValue(m_matrixId, *state_->projectionMatrix() * *matrix());
@@ -342,12 +366,6 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     for(const ArgumentInfo &ai: m_arguments)
     {
         ai.setValue(m_program);
-    }
-
-    if(m_updateSize)
-    {
-        makeObject();
-        m_updateSize = false;
     }
 
     m_vbo->bind();
@@ -391,6 +409,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
     m_vbo->release();
+    m_program->release();
 }
 
 void OpenGlQuizImage::extractArguments()

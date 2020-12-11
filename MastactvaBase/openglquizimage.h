@@ -62,6 +62,7 @@ public:
 
 private:
     void makeObject();
+    void makeTextureMatrixes();
     void createTextures();
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);

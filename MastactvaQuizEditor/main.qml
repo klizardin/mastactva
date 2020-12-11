@@ -2392,10 +2392,19 @@ ApplicationWindow {
     }
 
     Action {
+        id: reversePlayEffectDemo
+        text: qsTr("&Play reverse effect demo")
+        onTriggered: {
+            effectDemoImageAnimationBackward.running = true
+        }
+    }
+
+    Action {
         id: stopEffectDemo
         text: qsTr("&Stop effect demo")
         onTriggered: {
             effectDemoImageAnimationForward.running = false
+            effectDemoImageAnimationBackward.running = false
         }
     }
 
@@ -2434,6 +2443,7 @@ ApplicationWindow {
             MenuItem { action: demoSetImageFrom }
             MenuItem { action: demoSetImageTo }
             MenuItem { action: playEffectDemo }
+            MenuItem { action: reversePlayEffectDemo }
             MenuItem { action: stopEffectDemo }
         }
     }
@@ -2885,7 +2895,7 @@ ApplicationWindow {
                                     running: false
 
                                     NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                    loops: Animation.Infinite
+                                    //loops: Animation.Infinite
                                 }
 
                                 SequentialAnimation {
@@ -2893,7 +2903,26 @@ ApplicationWindow {
                                     running: false
 
                                     NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                    loops: Animation.Infinite
+                                    //loops: Animation.Infinite
+                                }
+
+                                Connections {
+                                    target: effectDemoImageAnimationForward
+
+                                    function onFinished()
+                                    {
+                                        console.log("effectDemoImageAnimationForward.finished()");
+                                        //effectImageDemo.swapImages();
+                                    }
+                                }
+
+                                Connections {
+                                    target: effectDemoImageAnimationBackward
+
+                                    function onFinished()
+                                    {
+                                        console.log("effectDemoImageAnimationBackward.finished()");
+                                    }
                                 }
                             }
 
