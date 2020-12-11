@@ -2878,68 +2878,72 @@ ApplicationWindow {
                         id: splitEffectsDemo
                         height: parent.height
 
-                        property var effectDemoImageAnimationDuration: 10000
+                        property var effectDemoImageAnimationDuration: 3000
+                        ScrollView {
+                            anchors.fill: parent
+                            clip:true
 
-                        Column {
-                            QuizImage {
-                                id: effectImageDemo
-                                width: splitEffectsDemo.width
-                                height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
-                                fromImage: [Constants.noImage, Constants.noImageHash]
-                                toImage: [Constants.noImage, Constants.noImageHash]
-                                clip: true
-                                t: 0.5
+                            Column {
+                                QuizImage {
+                                    id: effectImageDemo
+                                    width: splitEffectsDemo.width
+                                    height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                    fromImage: [Constants.noImage, Constants.noImageHash]
+                                    toImage: [Constants.noImage, Constants.noImageHash]
+                                    clip: true
+                                    t: 0.5
 
-                                SequentialAnimation {
-                                    id: effectDemoImageAnimationForward
-                                    running: false
+                                    SequentialAnimation {
+                                        id: effectDemoImageAnimationForward
+                                        running: false
 
-                                    NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                    //loops: Animation.Infinite
-                                }
+                                        NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                        //loops: Animation.Infinite
+                                    }
 
-                                SequentialAnimation {
-                                    id: effectDemoImageAnimationBackward
-                                    running: false
+                                    SequentialAnimation {
+                                        id: effectDemoImageAnimationBackward
+                                        running: false
 
-                                    NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                    //loops: Animation.Infinite
-                                }
+                                        NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                                        //loops: Animation.Infinite
+                                    }
 
-                                Connections {
-                                    target: effectDemoImageAnimationForward
+                                    Connections {
+                                        target: effectDemoImageAnimationForward
 
-                                    function onFinished()
-                                    {
-                                        console.log("effectDemoImageAnimationForward.finished()");
-                                        //effectImageDemo.swapImages();
+                                        function onFinished()
+                                        {
+                                            console.log("effectDemoImageAnimationForward.finished()");
+                                            //effectImageDemo.swapImages();
+                                        }
+                                    }
+
+                                    Connections {
+                                        target: effectDemoImageAnimationBackward
+
+                                        function onFinished()
+                                        {
+                                            console.log("effectDemoImageAnimationBackward.finished()");
+                                        }
                                     }
                                 }
 
-                                Connections {
-                                    target: effectDemoImageAnimationBackward
-
-                                    function onFinished()
-                                    {
-                                        console.log("effectDemoImageAnimationBackward.finished()");
-                                    }
+                                Image {
+                                    id: effectDemoImageFrom
+                                    width: splitEffectsDemo.width
+                                    height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                    fillMode: Image.PreserveAspectFit
+                                    source: Constants.noImage
                                 }
-                            }
 
-                            Image {
-                                id: effectDemoImageFrom
-                                width: splitEffectsDemo.width
-                                height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
-                                fillMode: Image.PreserveAspectFit
-                                source: Constants.noImage
-                            }
-
-                            Image {
-                                id: effectDemoImageTo
-                                width: splitEffectsDemo.width
-                                height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
-                                fillMode: Image.PreserveAspectFit
-                                source: Constants.noImage
+                                Image {
+                                    id: effectDemoImageTo
+                                    width: splitEffectsDemo.width
+                                    height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                    fillMode: Image.PreserveAspectFit
+                                    source: Constants.noImage
+                                }
                             }
                         }
                     }
