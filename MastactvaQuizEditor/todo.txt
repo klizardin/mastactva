@@ -53,14 +53,14 @@
 
 24. test cascade delete of effect, shader, argument, argument set and so on (db support is added)
 * 25. Implement effect info retry for openglquizimage code
-    1) retry shaders or use default shaders
-    2) retry arguments
-    3) retry values or default values of arguments
-    4) set arguments values
+*    1) retry shaders or use default shaders
+*    2) retry arguments
+*    3) retry values or default values of arguments
+*    4) set arguments values
 26. debug QuizImage with Effect and EffectArgSet properties
-27. implement demo qml scripts
-    * implement dialog to choose images from galleries
-    * implement demo control
+* 27. implement demo qml scripts
+*     * implement dialog to choose images from galleries
+*     * implement demo control
 28. implement test gallery
 * 29. implement ImagePointEffect
 30. fix bug of removing shader files, may be will not delete shaders at all
