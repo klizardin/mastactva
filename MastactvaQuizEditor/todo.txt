@@ -61,14 +61,15 @@
 * 27. implement demo qml scripts
 *     * implement dialog to choose images from galleries
 *     * implement demo control
-28. implement test gallery
+* 28. implement test gallery
 * 29. implement ImagePointEffect
 * 30. fix bug of removing shader files, may be will not delete shaders at all
 31. implement effect list select for a next image
 32. fix effect edit bugs with lists
 33. fix effect edit view bugs
-34. implement texture matrix move effects (swipe left, swipe right, swipe ip, swipe down)
-35. implement texture matrix effect -- resize image (0..0.8) mix (0.8..1)
+34. implement test gallery #2
+35. implement texture matrix move effects (swipe left, swipe right, swipe ip, swipe down)
+36. implement texture matrix effect -- resize image (0..0.8) mix (0.8..1)
 
 
 
