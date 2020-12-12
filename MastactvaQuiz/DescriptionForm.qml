@@ -45,12 +45,12 @@ Page {
     function init()
     {
         // log view description
-        var userStep = userStepModel.createItem()
-        userStep.usGalleryId = galleryId
-        userStep.usImageId = imageId
-        userStep.usDescriptionId = descriptionId
-        userStep.usT = mastactvaAPI.now()
-        userStepModel.addItem(userStep)
+        var userStepD = userStepModel.createItem()
+        userStepD.usGalleryId = galleryId
+        userStepD.usImageId = imageId
+        userStepD.usDescriptionId = descriptionId
+        userStepD.usT = mastactvaAPI.now()
+        userStepModel.addItem(userStepD)
 
         descriptionText.text = descriptionTextArg
     }

@@ -122,13 +122,13 @@ Page {
         if(currentAnswerIndex >= 0)
         {
             // log answer the question
-            var userStep = userStepModel.createItem()
-            userStep.usGalleryId = galleryModel.getCurrentItem().id
-            userStep.usImageId = imageId
-            userStep.usQuestionId = question.questionId
-            userStep.usT = mastactvaAPI.now()
-            userStep.usAnswerId = answers.model.getCurrentItem().answerId
-            userStepModel.addItem(userStep)
+            var userStepQ = userStepModel.createItem()
+            userStepQ.usGalleryId = galleryModel.getCurrentItem().id
+            userStepQ.usImageId = imageId
+            userStepQ.usQuestionId = question.questionId
+            userStepQ.usT = mastactvaAPI.now()
+            userStepQ.usAnswerId = answers.model.getCurrentItem().answerId
+            userStepModel.addItem(userStepQ)
 
             var userQuestionAnswerModel = question.userQuestionAnswer
             var newAnswer = userQuestionAnswerModel.createItem()
