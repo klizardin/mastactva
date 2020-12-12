@@ -2387,6 +2387,17 @@ ApplicationWindow {
         id: playEffectDemo
         text: qsTr("&Play effect demo")
         onTriggered: {
+            if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null && effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
+            {
+                effectImageDemo.effect = effectModel.getCurrentItem()
+                effectImageDemo.argumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+            }
+            else
+            {
+                effectImageDemo.effect = null
+                effectImageDemo.argumentSet = null
+            }
+            effectImageDemo.updateEffects()
             effectDemoImageAnimationForward.running = true
         }
     }
@@ -2395,6 +2406,17 @@ ApplicationWindow {
         id: reversePlayEffectDemo
         text: qsTr("&Play reverse effect demo")
         onTriggered: {
+            if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null && effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
+            {
+                effectImageDemo.effect = effectModel.getCurrentItem()
+                effectImageDemo.argumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+            }
+            else
+            {
+                effectImageDemo.effect = null
+                effectImageDemo.argumentSet = null
+            }
+            effectImageDemo.updateEffects()
             effectDemoImageAnimationBackward.running = true
         }
     }

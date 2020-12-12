@@ -9804,6 +9804,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "updateEffects",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "swapImages",
                         "returnType": "void"
                     }
@@ -11448,6 +11453,11 @@
                         "access": "public",
                         "name": "isImageLoaded",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loadChildren",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

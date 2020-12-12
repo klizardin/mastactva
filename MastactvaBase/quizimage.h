@@ -26,6 +26,7 @@ public:
 
 public:
     Q_INVOKABLE void updateState();
+    Q_INVOKABLE void updateEffects();
     Q_INVOKABLE void swapImages();
 
 public:
@@ -47,6 +48,7 @@ public:
     bool areAllDataAvailable();
     Effect *getEffect() const;
     EffectArgSet *getArgumentSet() const;
+    bool needToUpdateEffects();
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
@@ -78,6 +80,7 @@ private:
     bool m_effectLoading = false;
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);
+    bool m_updateEffects = false;
 };
 
 

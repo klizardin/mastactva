@@ -27,6 +27,12 @@ void QuizImage::updateState()
     update();
 }
 
+void QuizImage::updateEffects()
+{
+    m_updateEffects = true;
+    updateState();
+}
+
 void QuizImage::swapImages()
 {
     std::swap(m_fromImageUrl, m_toImageUrl);
@@ -126,17 +132,13 @@ void QuizImage::setEffect(const QVariant &effect_)
     Effect *effect = qobject_cast<Effect *>(obj);
     if(m_effect == effect) { return; }
 
-    m_effectLoading = false;
+    m_effectLoading = true;
     m_effect = effect;
 
     QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
     if(m_effect->isChildrenLoaded())
     {
         addShadersToWaitDownload();
-    }
-    else
-    {
-        m_effectLoading = true;
     }
 
     emit effectChanged();
@@ -201,7 +203,7 @@ bool QuizImage::areAllDataAvailable()
             if(m_effectLoading)
             {
                 addShadersToWaitDownload();
-                m_effectLoading = false;
+                return false;
             }
         }
     }
@@ -222,6 +224,13 @@ bool QuizImage::areAllDataAvailable()
 Effect *QuizImage::getEffect() const
 {
     return m_effect;
+}
+
+bool QuizImage::needToUpdateEffects()
+{
+    bool res = m_updateEffects;
+    m_updateEffects = false;
+    return res;
 }
 
 EffectArgSet *QuizImage::getArgumentSet() const
@@ -324,6 +333,8 @@ void QuizImage::updateStateIfDataIsReady()
 
 void QuizImage::addShadersToWaitDownload()
 {
+    m_effectLoading = false;
+
     m_shadersUrls.clear();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
 

@@ -30,6 +30,7 @@ private:
 QString leftDoubleCR(const QString &str_);
 qreal sqr(qreal val_);
 bool isSymbol(const QChar &ch_);
+bool isLetter(const QChar &ch_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateFileURLHash(const QString &fileUrl_);
 QDateTime nowTz();
@@ -48,7 +49,7 @@ static const QString g_descriptionName = "description";
 static const QString g_shadersRelPath = "shaders";
 static const QString g_imagesRelPath = "images";
 static const QString g_shaderTypeVertex = "Vertex";
-static const QString g_shaderTypeFragmet = "Fragmet";
+static const QString g_shaderTypeFragment = "Fragment";
 static const QString g_shaderTypeModel = "ShaderTypeModel";
 static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
 static const QString g_easingTypeModel = "EasingTypeModel";

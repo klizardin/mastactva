@@ -30,6 +30,11 @@ bool isSymbol(const QChar &ch_)
     return ch_.category() >= QChar::Letter_Uppercase;
 }
 
+bool isLetter(const QChar &ch_)
+{
+    return ch_.category() >= QChar::Letter_Uppercase && ch_.category() <= QChar::Letter_Other;
+}
+
 static const QString g_nl = "\n";
 static const QString g_cb = "/*";
 static const QString g_ce = "*/";
@@ -192,12 +197,12 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
     }
     int i = 0;
     int tb = i;
-    for(;isSymbol(line.at(i)); i++) {}
+    for(;i < line.length() && isLetter(line.at(i)); i++) {}
     int te = i + 1;
-    for(;!isSymbol(line.at(i)); i++) {}
+    for(;i < line.length() && !isLetter(line.at(i)); i++) {}
     int nb = i;
-    for(;isSymbol(line.at(i)); i++) {}
-    int ne = i + 1;
+    for(;i < line.length() && isLetter(line.at(i)); i++) {}
+    int ne = i;
     m_values.insert(g_typeName, line.mid(tb, te - tb));
     m_values.insert(g_nameName, line.mid(nb, ne - nb));
 }

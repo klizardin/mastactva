@@ -56,8 +56,8 @@ void ArgumentInfo::setType(const QString &type_)
     m_floatType = fit->second.second.first;
     m_matrixType = fit->second.second.second;
     m_size = fit->second.first;
-    if(m_floatType) { m_valueFloat.reserve(m_size); }
-    else { m_valueInt.reserve(m_size); }
+    if(m_floatType) { m_valueFloat.resize(m_size); }
+    else { m_valueInt.resize(m_size); }
 }
 
 void ArgumentInfo::setValue(const QString &value_)
@@ -93,7 +93,7 @@ void ArgumentInfo::setValue(const QString &value_)
 
 void ArgumentInfo::initId(QOpenGLShaderProgram *program_)
 {
-    m_id = program_->attributeLocation(m_name);
+    m_id = program_->uniformLocation(m_name);
 }
 
 void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
@@ -215,9 +215,10 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
     m_effect = quizImage->getEffect();
     m_argumentSet = quizImage->getArgumentSet();
+    const bool needToUpdateEffects = quizImage->needToUpdateEffects();
     int effectId = nullptr != m_effect ? m_effect->id() : -1;
     int argumentSetId = nullptr != m_argumentSet ? m_argumentSet->id() : -1;
-    if(effectId != m_oldEffectId || argumentSetId != m_oldArgumentSetId)
+    if(needToUpdateEffects || effectId != m_oldEffectId || argumentSetId != m_oldArgumentSetId)
     {
         m_oldEffectId = effectId;
         m_oldArgumentSetId = argumentSetId;
@@ -478,7 +479,7 @@ void OpenGlQuizImage::extractArguments()
     ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
                 );
-    Q_ASSERT(nullptr != shaderTypeModel);
+    Q_ASSERT(nullptr != shaderTypeModel && shaderTypeModel->sizeImpl() > 0);
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     Q_ASSERT(nullptr != sf);
 
@@ -494,6 +495,7 @@ void OpenGlQuizImage::extractArguments()
         ShaderModel *shaderModel = effect_shader->getShader();
         Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
         Shader *shader = shaderModel->dataItemAtImpl(0);
+        Q_ASSERT(shader != nullptr);
 
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
         QString shaderText = loadFileByUrl(shader->filename());
@@ -502,14 +504,14 @@ void OpenGlQuizImage::extractArguments()
         Q_ASSERT(nullptr != shaderType &&
                     (
                         g_shaderTypeVertex == shaderType->type() ||
-                        g_shaderTypeFragmet == shaderType->type()
+                        g_shaderTypeFragment == shaderType->type()
                     )
                 );
         if(g_shaderTypeVertex == shaderType->type())
         {
             m_vertexShader = shaderText;
         }
-        else if(g_shaderTypeFragmet == shaderType->type())
+        else if(g_shaderTypeFragment == shaderType->type())
         {
             m_fragmentShader = shaderText;
         }
@@ -533,6 +535,7 @@ void OpenGlQuizImage::extractArguments()
         ai.setName(effectArgument->name());
         ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
         Q_ASSERT(nullptr != argType);
+        ai.setArgId(effectArgument->id());
         ai.setType(argType->type());
         ai.setValue(effectArgument->defaultValue());
         m_arguments.push_back(ai);
@@ -546,11 +549,7 @@ void OpenGlQuizImage::extractArguments()
         {
             EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
             Q_ASSERT(nullptr != effectArgumentValue);
-            EffectArgModel *effectArgumentModel = effectArgumentValue->getArg();
-            Q_ASSERT(nullptr != effectArgumentModel && effectArgumentModel->isListLoaded());
-            EffectArg *effectArgument = effectArgumentModel->dataItemAtImpl(0);
-            Q_ASSERT(nullptr != effectArgument);
-            const int argId = effectArgument->id();
+            const int argId = effectArgumentValue->getArgId();
             const auto fita = std::find_if(std::begin(m_arguments), std::end(m_arguments), [argId](const ArgumentInfo &ai)->bool
             {
                 return ai.getArgId() == argId;
@@ -559,7 +558,6 @@ void OpenGlQuizImage::extractArguments()
             fita->setValue(effectArgumentValue->value());
         }
     }
-
     resetProgram();
 }
 

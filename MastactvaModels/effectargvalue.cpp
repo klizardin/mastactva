@@ -103,6 +103,11 @@ EffectArgModel *EffectArgValue::getArg()
     return m_effectArgModel;
 }
 
+int EffectArgValue::getArgId() const
+{
+    return m_argId;
+}
+
 EffectArgModel *EffectArgValue::createEffectArgModel()
 {
     EffectArgModel *m = new EffectArgModel(this);
