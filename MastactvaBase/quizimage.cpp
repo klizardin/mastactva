@@ -31,6 +31,9 @@ void QuizImage::swapImages()
 {
     std::swap(m_fromImageUrl, m_toImageUrl);
 
+    delete m_image;
+    m_image = nullptr;
+
     updateStateIfDataIsReady();
 
     emit fromImageChanged();
