@@ -411,7 +411,7 @@ void MastactvaAPI::onDescriptionDeletedSlot(int errorCode_, RequestDataV0 *reque
 
 QString MastactvaAPI::nowJsonStr()
 {
-    QDateTime dt = QDateTime::currentDateTime();
+    QDateTime dt = nowTz();
     return dt.toString(Qt::ISODate);
 }
 

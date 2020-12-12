@@ -19,27 +19,8 @@
 #include "qmlmainobjects.h"
 #include "mastactvaapi.h"
 #include "appconsts.h"
+#include "../MastactvaBase/utils.h"
 
-
-QDateTime dateTimeFromJsonString(const QString& dateTimeZ)
-{
-    QString dateTimeZ1(dateTimeZ);
-    QTextStream s(&dateTimeZ1);
-    int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0;
-    char tmp;
-    s >> year >> tmp >> month >> tmp >> day >> tmp;
-    s >> hours >> tmp >> minites >> tmp >> seconds;
-    if(seconds > 100)
-    {
-        seconds /= 1000;
-    }
-    return QDateTime(QDate(year, month, day), QTime(hours, minites, seconds));
-}
-
-QString dateTimeToJsonString(const QDateTime &dt_)
-{
-    return dt_.toString(Qt::DateFormat::ISODateWithMs);
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /// class ImageData

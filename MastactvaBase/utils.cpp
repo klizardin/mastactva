@@ -4,6 +4,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QCryptographicHash>
+#include <QTimeZone>
+#include <QTextStream>
+#include <QDebug>
 
 
 QString leftDoubleCR(const QString &str_)
@@ -271,4 +274,38 @@ QString calculateFileURLHash(const QString &fileUrl_)
         QByteArray fd = f1.readAll();
         return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
     }
+}
+
+QDateTime nowTz()
+{
+    const QDateTime cdt = QDateTime::currentDateTime();
+    const QDateTime cdtz = QDateTime(cdt.date(), cdt.time(), QTimeZone::systemTimeZone());
+    //qDebug() << dateTimeToJsonString(cdtz);
+    return cdtz.toLocalTime();
+}
+
+QDateTime dateTimeFromJsonString(const QString& dateTimeZ_)
+{
+    QString dateTimeZ(dateTimeZ_);
+    QTextStream s(&dateTimeZ);
+    int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0, ms = 0, tz = 0;
+    char tmp;
+    s >> year >> tmp >> month >> tmp >> day >> tmp;
+    s >> hours >> tmp >> minites >> tmp >> seconds >> tmp >> ms >> tz;
+    if(seconds > 100)
+    {
+        seconds /= 1000;
+        ms = seconds % 1000;
+    }
+    const QDateTime cdt = QDateTime(QDate(year, month, day), QTime(hours, minites, seconds, ms), QTimeZone(tz*3600));
+    //qDebug() << dateTimeToJsonString(cdt);
+    return cdt.toLocalTime();
+}
+
+QString dateTimeToJsonString(const QDateTime &dt_)
+{
+    // server uses UTC
+    const QString res = dt_.toUTC().toString(Qt::DateFormat::ISODateWithMs);
+    //qDebug() << res;
+    return res;
 }

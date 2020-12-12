@@ -7,8 +7,6 @@
 
 
 static QString g_quizUserModel = "QuizUserModel";
-static QString g_galleryModel = "GalleryModel";
-static QString g_allImagesOfGalleryModel = "AllImagesOfGallery";
 static QString g_mastactvaAPI = "MastactvaAPI";
 
 

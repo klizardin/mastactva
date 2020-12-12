@@ -1,5 +1,6 @@
 #include "mastactvaapi.h"
 #include "../MastactvaBase/utils.h"
+#include <QTimeZone>
 
 
 MastactvaAPI::MastactvaAPI(QObject *parent_ /*= nullptr*/)
@@ -24,7 +25,7 @@ QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QStri
 
 QDateTime MastactvaAPI::now() const
 {
-    return QDateTime::currentDateTime();
+    return nowTz();
 }
 
 void MastactvaAPI::setInitialized()

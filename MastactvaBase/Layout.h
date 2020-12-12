@@ -9,35 +9,13 @@
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QTimeZone>
 #include "IModel.h"
+#include "utils.h"
+
 
 template<typename DataType_>
 class Layout;
-
-
-// TODO: better function implementation
-inline
-QDateTime dateTimeFromJsonString(const QString& dateTimeZ_)
-{
-    QString dateTimeZ(dateTimeZ_);
-    QTextStream s(&dateTimeZ);
-    int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0, ms = 0;
-    char tmp;
-    s >> year >> tmp >> month >> tmp >> day >> tmp;
-    s >> hours >> tmp >> minites >> tmp >> seconds;
-    if(seconds > 100)
-    {
-        seconds /= 1000;
-        ms = seconds % 1000;
-    }
-    return QDateTime(QDate(year, month, day), QTime(hours, minites, seconds, ms));
-}
-
-inline
-QString dateTimeToJsonString(const QDateTime &dt_)
-{
-    return dt_.toString(Qt::DateFormat::ISODateWithMs);
-}
 
 
 namespace layout

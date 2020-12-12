@@ -29,10 +29,6 @@ class JsonRequestDataV0;
 class ImagePointsModel;
 
 
-QDateTime dateTimeFromJsonString(const QString& dateTimeZ);
-QString dateTimeToJsonString(const QDateTime &dt_);
-
-
 class ImageData : public QObject
 {
     Q_OBJECT

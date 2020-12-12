@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QHash>
+#include <QDateTime>
 
 
 class Comment
@@ -31,6 +32,9 @@ qreal sqr(qreal val_);
 bool isSymbol(const QChar &ch_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateFileURLHash(const QString &fileUrl_);
+QDateTime nowTz();
+QDateTime dateTimeFromJsonString(const QString& dateTimeZ_);
+QString dateTimeToJsonString(const QDateTime &dt_);
 
 
 static const QString g_englishLanguage = "English";
