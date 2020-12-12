@@ -115,9 +115,9 @@ DISTFILES += \
     imports/MastactvaAPI/qmldir \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
-    ../MastactvaShaders/MoveImages/Vertex/default_view_two_images_mix.frag \
-    ../MastactvaShaders/MoveImages/Vertex/default_view_two_images_prefere_first.frag    \
-    ../MastactvaShaders/MoveImages/Vertex/default_view_two_images_prefere_second.frag    \
+    ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_mix.frag \
+    ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_first.frag    \
+    ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_second.frag    \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a

@@ -1,4 +1,5 @@
-/*@shader @description default fragment shader to view two images at same time, but prefere first*/
+/*@shader @description default fragment shader to view two images at same time, but prefere first
+path: MastactvaShaders/MoveImages/Vertex/default_view_two_images_prefere_first.frag */
 uniform sampler2D texture1Arg;
 uniform sampler2D texture2Arg;
 uniform lowp float opacityArg;
