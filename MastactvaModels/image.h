@@ -1,4 +1,4 @@
-#ifndef IMAGE_H
+﻿#ifndef IMAGE_H
 #define IMAGE_H
 
 #include <QObject>
@@ -32,6 +32,7 @@ public:
     Q_PROPERTY(QVariant imageDescription READ imageDescription WRITE setImageDescription NOTIFY imageDescriptionChanged)
 
     Q_INVOKABLE bool isImageLoaded() const;
+    Q_INVOKABLE void loadChildren();
 
 public:
     class DefaultLayout : public LayoutBase<Image>

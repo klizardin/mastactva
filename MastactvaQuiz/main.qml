@@ -42,7 +42,7 @@ ApplicationWindow {
         layoutIdField: "id"
         currentRef: "gallery"
         jsonParamsGet: false
-        autoCreateChildrenModels: true
+        autoCreateChildrenModels: false
     }
 
     UserStepModel {

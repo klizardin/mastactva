@@ -111,6 +111,7 @@ Page {
                     nextImage = undefined
                     quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId)
                     quizImage.swapImages();
+                    loadChildren()
                 }
             }
         }
@@ -121,5 +122,11 @@ Page {
         quizImage.fromImage = [currentImageSource, currentImageHash]
         quizImage.toImage = [currentImageSource, currentImageHash]
         quizImage.visible = true
+        loadChildren()
+    }
+
+    function loadChildren()
+    {
+        currentImage.loadChildren()
     }
 }

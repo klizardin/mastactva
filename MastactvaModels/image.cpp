@@ -9,8 +9,13 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
 
 bool Image::isImageLoaded() const
 {
-    Q_ASSERT(m_imageModel->autoCreateChildrenModels());
     return isListLoadedImpl();
+}
+
+void Image::loadChildren()
+{
+    (void)imagePoints();
+    (void)imageDescription();
 }
 
 int Image::id() const
