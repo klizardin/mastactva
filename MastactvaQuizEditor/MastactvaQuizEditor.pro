@@ -118,6 +118,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_mix.frag \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_first.frag    \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_second.frag    \
+    ../MastactvaShaders/MoveImages/Vertex/swipe.vert    \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a
