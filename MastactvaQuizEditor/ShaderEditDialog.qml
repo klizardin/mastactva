@@ -26,7 +26,7 @@ Dialog {
         id: openShaderDialog
         title: qsTr("Please choose a shader file to upload to the server")
         folder: shortcuts.pictures
-        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *.*)" ]
+        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh *.*)" ]
         selectExisting: true
         selectMultiple: false
 
