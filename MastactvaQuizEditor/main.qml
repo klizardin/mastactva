@@ -26,6 +26,8 @@ ApplicationWindow {
     property bool showImagePoints: false
     property bool showImagePointsVoronoyDiagram: false
     property var currentImagePointsModel: undefined
+    property int imageOfGalleryNextImageEffectCurrentIndex: -1
+    property var imageOfGalleryNextImageEffectModel: undefined
 
     property int effectCurrentIndex: -1
     property var effectShadersCurrentModel: undefined
@@ -73,24 +75,36 @@ ApplicationWindow {
 
         function onImageOfGalleryPointIndexChanged()
         {
-            if(currentImagePointsModel !== undefined)
+            if(currentImagePointsModel !== undefined && currentImagePointsModel !== null)
             {
                 currentImagePointsModel.currentIndex = imageOfGalleryPointIndex
             }
-            if(imageOfGalleryPointIndex == -1)
+            if(imageOfGalleryPointIndex < 0)
             {
                 clearImageSource()
                 clearQuestionInfo()
+                clearNextImageEffect()
             }
             else
             {
-                if(currentImagePointsModel === undefined)
+                if(currentImagePointsModel === undefined || currentImagePointsModel === null)
                 {
+                    clearImageSource()
+                    clearQuestionInfo()
+                    clearNextImageEffect()
                     return;
                 }
                 var imgPoint = currentImagePointsModel.currentItem
+                if(imgPoint === undefined || imgPoint === null)
+                {
+                    clearImageSource()
+                    clearQuestionInfo()
+                    clearNextImageEffect()
+                    return
+                }
                 var nextImage = imgPoint.toNextImage
                 var question = imgPoint.toQuestion
+                var effect = imgPoint.ipEffect
                 if(nextImage.loaded())
                 {
                     imageOfGalleryNextImageText.text = nextImage.noImageSource
@@ -119,6 +133,15 @@ ApplicationWindow {
                 {
                     question.questionIdChanged.connect(questionIdLoaded)
                     clearQuestionInfo()
+                }
+                if(effect.isListLoaded())
+                {
+                    setNextImageEffect()
+                }
+                else
+                {
+                    effect.listReloaded.connect(nextImageEffectReloaded)
+                    clearNextImageEffect()
                 }
             }
         }
@@ -193,6 +216,47 @@ ApplicationWindow {
             imageOfGalleryQuestionPointsToPass.text = ""
             imageOfGalleryAnswerIndex = 0
             imageOfGalleryQuestionPointsToPassRect.visible = false
+        }
+
+        function setNextImageEffect()
+        {
+            if(currentImagePointsModel === undefined || currentImagePointsModel === null)
+            {
+                return
+            }
+            var imgPoint = currentImagePointsModel.currentItem
+            if(imgPoint === undefined || imgPoint === null)
+            {
+                return
+            }
+            var effect = imgPoint.ipEffect
+            effect.listReloaded.disconnect(nextImageEffectReloaded)
+            if(effect.isListLoaded())
+            {
+                imageOfGalleryNextImageEffectModel = effect
+                imageOfGalleryNextImageEffectList.model = imageOfGalleryNextImageEffectModel
+                imageOfGalleryNextImageEffectCurrentIndex = imageOfGalleryNextImageEffectModel.currentIndex
+            }
+            else
+            {
+                clearNextImageEffect()
+            }
+        }
+
+        function clearNextImageEffect()
+        {
+            imageOfGalleryNextImageEffectModel = undefined
+            imageOfGalleryNextImageEffectList.model = 0
+            imageOfGalleryNextImageEffectCurrentIndex = -1
+        }
+
+        function onImageOfGalleryNextImageEffectCurrentIndexChanged()
+        {
+            imageOfGalleryNextImageEffectList.currentIndex = imageOfGalleryNextImageEffectCurrentIndex
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null)
+            {
+                imageOfGalleryNextImageEffectModel.currentIndex = imageOfGalleryNextImageEffectCurrentIndex
+            }
         }
 
         function onImageOfGalleryAnswerIndexChanged()
@@ -2078,6 +2142,71 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: refreshNextImageEffect
+        text: qsTr("&Refresh next image effects")
+        onTriggered: {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null)
+            {
+                imageOfGalleryNextImageEffectCurrentIndex = -1
+                imageOfGalleryNextImageEffectModel.listReloaded.connect(listReloaded)
+                imageOfGalleryNextImageEffectModel.loadList()
+            }
+        }
+
+        function listReloaded()
+        {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null)
+            {
+                imageOfGalleryNextImageEffectModel.listReloaded.disconnect(listReloaded)
+                imageOfGalleryNextImageEffectCurrentIndex = imageOfGalleryNextImageEffectModel.currentIndex
+            }
+        }
+    }
+
+    Action {
+        id: addNextImageEffect
+        text: qsTr("&Add next image effects")
+        onTriggered: {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null)
+            {
+                //var newItem = imageOfGalleryNextImageEffectModel.createItem()
+            }
+        }
+    }
+
+    Action {
+        id: editNextImageEffect
+        text: qsTr("&Edit next image effects")
+        onTriggered: {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null && imageOfGalleryNextImageEffectCurrentIndex >= 0)
+            {
+                //var item = imageOfGalleryNextImageEffectModel.currentItem
+            }
+        }
+    }
+
+    Action {
+        id: removeNextImageEffect
+        text: qsTr("Remove next image effects")
+        onTriggered: {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null && imageOfGalleryNextImageEffectCurrentIndex >= 0)
+            {
+                imageOfGalleryNextImageEffectModel.itemDeleted.connect(itemDeleted)
+                imageOfGalleryNextImageEffectModel.delItem(imageOfGalleryNextImageEffectCurrentIndex)
+            }
+        }
+
+        function itemDeleted()
+        {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null && imageOfGalleryNextImageEffectCurrentIndex >= 0)
+            {
+                imageOfGalleryNextImageEffectModel.itemDeleted.disconnect(itemDeleted)
+                imageOfGalleryNextImageEffectCurrentIndex = -1
+            }
+        }
+    }
+
     MenuBar
     {
         id: galleriesMenuBar
@@ -2123,6 +2252,10 @@ ApplicationWindow {
         AutoSizeMenu {
             title: qsTr("&Next Image")
             MenuItem { action: nextImageEditAction }
+            MenuItem { action: refreshNextImageEffect }
+            MenuItem { action: addNextImageEffect }
+            MenuItem { action: editNextImageEffect }
+            MenuItem { action: removeNextImageEffect }
         }
         AutoSizeMenu {
             title: qsTr("&Question")
@@ -2791,25 +2924,46 @@ ApplicationWindow {
                                             text: Constants.selectImagePoint
                                         }
                                         Item {
+                                            id: imageOfGalleryNextImageTabNextImage
                                             anchors.fill: parent
                                             visible: imageOfGalleryPointIndex >= 0
 
-                                            Column{
+                                            Row {
+                                                Column{
 
-                                                Text {
-                                                    id: imageOfGalleryNextImageText
-                                                    visible: imageOfGalleryPointIndex >= 0
-                                                    width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
-                                                    text: Constants.notANextImagePoint
+                                                    Text {
+                                                        id: imageOfGalleryNextImageText
+                                                        visible: imageOfGalleryPointIndex >= 0
+                                                        width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                                        text: Constants.notANextImagePoint
+                                                    }
+
+                                                    Image {
+                                                        height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height - imageOfGalleryNextImageText.height
+                                                        width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                                        id: imageOfGalleryNextImageNextImage
+                                                        visible: imageOfGalleryPointIndex >= 0
+                                                        fillMode: Image.PreserveAspectFit
+                                                        source: Constants.noImage
+                                                    }
                                                 }
 
-                                                Image {
-                                                    height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height - imageOfGalleryNextImageText.height
-                                                    width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
-                                                    id: imageOfGalleryNextImageNextImage
+                                                Rectangle {
+                                                    id: imageOfGalleryNextImageEffectRect
                                                     visible: imageOfGalleryPointIndex >= 0
-                                                    fillMode: Image.PreserveAspectFit
-                                                    source: Constants.noImage
+                                                    width: imageOfGalleryNextImageTabNextImage - (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                                    height: imageOfGalleryNextImageTabNextImage.height
+
+                                                    ListView {
+                                                        id: imageOfGalleryNextImageEffectList
+                                                        anchors.fill: parent
+                                                        visible: imageOfGalleryPointIndex >= 0
+                                                        clip: true
+                                                        model: 0
+                                                        delegate: imageOfGalleryNextImageEffectListItem
+                                                        highlight: imageOfGalleryNextImageEffectListItemHighlight
+                                                        highlightFollowsCurrentItem: false
+                                                    }
                                                 }
                                             }
                                         }
@@ -4206,5 +4360,147 @@ ApplicationWindow {
             height: (effectArgumentSetValuesList.currentItem !== undefined && effectArgumentSetValuesList.currentItem !== null) ? effectArgumentSetValuesList.currentItem.height : 0
         }
     }
+
+    Component {
+        id: imageOfGalleryNextImageEffectListItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    imageOfGalleryNextImageEffectListItemMenu.popup()
+                }
+                else
+                {
+                    imageOfGalleryNextImageEffectCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                    imageOfGalleryNextImageEffectListItemMenu.popup()
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: imageOfGalleryNextImageEffectListItemMenu
+                MenuItem { action: refreshNextImageEffect }
+                MenuItem { action: addNextImageEffect }
+                MenuItem { action: editNextImageEffect }
+                MenuItem { action: removeNextImageEffect }
+            }
+
+            Connections {
+                target: imagePointEffectEffect
+                function onListReloaded()
+                {
+                    imageOfGalleryNextImageEffectListItemEffectName.text = imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? imagePointEffectEffect.currentItem.effectName : ""
+                    imageOfGalleryNextImageEffectListItemDescription.text = imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                }
+            }
+
+            Connections {
+                target: imagePointEffectArgSet
+                function onListReloaded()
+                {
+                    imageOfGalleryNextImageEffectListItemEasing.text = imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null && easingTypeModel.findItemById(imagePointEffectArgSet.currentItem.effectArgSetEasingId) !== null ? easingTypeModel.findItemById(imagePointEffectArgSet.currentItem.effectArgSetEasingId).easingTypeType : ""
+                    imageOfGalleryNextImageEffectListItemArgSetDescription.text = imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectArgSet.currentItem.effectArgSetDescription) : mastactva.readMore(imagePointEffectArgSet.currentItem.effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                }
+            }
+
+            Column {
+                id: imageOfGalleryNextImageEffectListItemRect
+                width: imageOfGalleryNextImageEffectList.width
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: imageOfGalleryNextImageEffectListItemEffectNameLabel
+                        text: qsTr("Effect name : ")
+                    }
+                    Text {
+                        id: imageOfGalleryNextImageEffectListItemEffectName
+                        width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemEffectNameLabel.width
+                        text: imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? imagePointEffectEffect.currentItem.effectName : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: imageOfGalleryNextImageEffectListItemDescriptionLabel
+                        text: qsTr("Effect description : ")
+                    }
+                    Text {
+                        id: imageOfGalleryNextImageEffectListItemDescription
+                        width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemDescription.width
+                        text: imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: imageOfGalleryNextImageEffectListItemEasingLabel
+                        text: qsTr("Effect argument set easing : ")
+                    }
+                    Text {
+                        id: imageOfGalleryNextImageEffectListItemEasing
+                        width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemEasingLabel.width
+                        text: imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null && easingTypeModel.findItemById(imagePointEffectArgSet.currentItem.effectArgSetEasingId) !== null ? easingTypeModel.findItemById(imagePointEffectArgSet.currentItem.effectArgSetEasingId).easingTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.effectShaderListHeaderPadding
+                    Label {
+                        id: imageOfGalleryNextImageEffectListItemArgSetDescriptionLabel
+                        text: qsTr("Effect argument set description : ")
+                    }
+                    Text {
+                        id: imageOfGalleryNextImageEffectListItemArgSetDescription
+                        width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemArgSetDescriptionLabel.width
+                        text: imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectArgSet.currentItem.effectArgSetDescription) : mastactva.readMore(imagePointEffectArgSet.currentItem.effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: imageOfGalleryNextImageEffectListItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: imageOfGalleryNextImageEffectListItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: imageOfGalleryNextImageEffectListItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (imageOfGalleryNextImageEffectList.currentItem !== undefined && imageOfGalleryNextImageEffectList.currentItem !== null) ? imageOfGalleryNextImageEffectList.currentItem.y : 0
+            x: (imageOfGalleryNextImageEffectList.currentItem !== undefined && imageOfGalleryNextImageEffectList.currentItem !== null) ? imageOfGalleryNextImageEffectList.currentItem.x : 0
+            width: (imageOfGalleryNextImageEffectList.currentItem !== undefined && imageOfGalleryNextImageEffectList.currentItem !== null) ? imageOfGalleryNextImageEffectList.currentItem.width : 0
+            height: (imageOfGalleryNextImageEffectList.currentItem !== undefined && imageOfGalleryNextImageEffectList.currentItem !== null) ? imageOfGalleryNextImageEffectList.currentItem.height : 0
+        }
+    }
+
 }
 

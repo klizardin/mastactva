@@ -225,7 +225,7 @@ public:
     Q_PROPERTY(QDateTime ipCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant nextImage READ nextImage WRITE setNextImage NOTIFY nextImageChanged)
     Q_PROPERTY(QVariant nextQuestion READ nextQuestion WRITE setNextQuestion NOTIFY nextQuestionChanged)
-    Q_PROPERTY(QVariant effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(QVariant ipEffect READ effect WRITE setEffect NOTIFY effectChanged)
 
     class DefaultLayout : public LayoutBase<ImagePoint>
     {
