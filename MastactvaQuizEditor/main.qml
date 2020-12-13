@@ -2270,6 +2270,28 @@ ApplicationWindow {
     }
 
     Action {
+        id: refreshArgumentSet
+        text: qsTr("Re&fresh argument set")
+        onTriggered: {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            {
+                effectArgumentSetsCurrentIndex = -1
+                effectArgumentSetsCurrentModel.listReloaded.connect(listReloaded)
+                effectArgumentSetsCurrentModel.loadList()
+            }
+        }
+
+        function listReloaded()
+        {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            {
+                effectArgumentSetsCurrentModel.listReloaded.disconnect(listReloaded)
+                effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
+            }
+        }
+    }
+
+    Action {
         id: addArgumentSet
         text: qsTr("&Add argument set")
         onTriggered: {
@@ -2303,6 +2325,28 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
             {
                 effectArgumentSetsCurrentModel.delItem(effectArgumentSetsCurrentIndex)
+            }
+        }
+    }
+
+    Action {
+        id: refreshArgumentOfArgumentSet
+        text: qsTr("Refresh argument of argument set")
+        onTriggered: {
+            if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
+            {
+                effectArgumentSetValuesCurrentIndex = -1
+                effectArgumentSetValuesCurrentModel.listReloaded.connect(listReloaded)
+                effectArgumentSetValuesCurrentModel.loadList()
+            }
+        }
+
+        function listReloaded()
+        {
+            if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
+            {
+                effectArgumentSetValuesCurrentModel.listReloaded.disconnect(listReloaded)
+                effectArgumentSetValuesCurrentIndex = effectArgumentSetValuesCurrentModel.currentIndex
             }
         }
     }
@@ -2559,11 +2603,13 @@ ApplicationWindow {
         }
         AutoSizeMenu {
             title: qsTr("Argument Se&ts")
+            MenuItem { action: refreshArgumentSet }
+            MenuItem { action: refreshArgumentOfArgumentSet }
             MenuItem { action: addArgumentSet }
             MenuItem { action: editArgumentSet }
-            MenuItem { action: removeArgumentSet }
             MenuItem { action: addArgumentOfArgumentSet }
             MenuItem { action: editArgumentOfArgumentSet }
+            MenuItem { action: removeArgumentSet }
             MenuItem { action: removeArgumentOfArgumentSet }
         }
         AutoSizeMenu {
