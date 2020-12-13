@@ -2,6 +2,7 @@
 #include <QByteArray>
 #include <QTextCodec>
 #include "quizimage.h"
+#include <random>
 #include "../MastactvaModels/effectshader.h"
 #include "../MastactvaModels/shader.h"
 #include "../MastactvaModels/shadertype.h"
@@ -13,6 +14,7 @@
 
 
 static const QString g_noImage = ":/resources/no-image.png";
+static const QString g_rand = "rand";
 
 
 void ArgumentInfo::setArgId(int argId_)
@@ -60,9 +62,24 @@ void ArgumentInfo::setType(const QString &type_)
     else { m_valueInt.resize(m_size); }
 }
 
-void ArgumentInfo::setValue(const QString &value_)
+static bool set_value(const QString &valStr_, GLint& val_)
 {
-    QString value = value_;
+    bool ok = false;
+    val_ = QVariant::fromValue(valStr_).toInt(&ok);
+    return ok;
+}
+
+static bool set_value(const QString &valStr_, GLfloat& val_)
+{
+    bool ok = false;
+    val_ = QVariant::fromValue(valStr_).toDouble(&ok);
+    return ok;
+}
+
+template<typename Type_>
+static void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
+{
+    QString value = valuesStr_;
     value.replace(QString("("), QString(", "));
     value.replace(QString(")"), QString(", "));
     value.replace(QString("{"), QString(", "));
@@ -74,20 +91,66 @@ void ArgumentInfo::setValue(const QString &value_)
     {
         QString val = s.trimmed();
         if(val.isEmpty()) { continue; }
-        bool ok = false;
+        if(pos < valuesArray_.size() && set_value(val, valuesArray_[pos]))
+        {
+            ++pos;
+        }
+    }
+}
+
+static void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
+{
+    if(args_.size() < 2) { return; }
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<> dis(args_[0], args_[1]);
+    for(int i = 0; i < valuesArray_.size(); i++)
+    {
+        valuesArray_[i] = dis(gen);
+    }
+}
+
+static void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_)
+{
+    if(args_.size() < 2) { return; }
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<> dis(args_[0], args_[1]);
+    for(int i = 0; i < valuesArray_.size(); i++)
+    {
+        valuesArray_[i] = dis(gen);
+    }
+}
+
+void ArgumentInfo::setValue(const QString &value_)
+{
+    if(value_.contains(g_rand))
+    {
         if(m_floatType)
         {
-            qreal nv = QVariant::fromValue(val).toDouble(&ok);
-            if(!ok) { continue; }
-            if(m_valueFloat.size() > pos) { m_valueFloat[pos] = nv; }
+            QVector<GLfloat> args;
+            args.resize(2);
+            extractValues(value_, args);
+            generateUniformRealRands(args, m_valueFloat);
         }
         else
         {
-            int nv = QVariant::fromValue(val).toInt(&ok);
-            if(!ok) { continue; }
-            if(m_valueInt.size() > pos) { m_valueInt[pos] = nv; }
+            QVector<GLint> args;
+            args.resize(2);
+            extractValues(value_, args);
+            generateUniformIntRands(args, m_valueInt);
         }
-        ++pos;
+    }
+    else
+    {
+        if(m_floatType)
+        {
+            extractValues(value_, m_valueFloat);
+        }
+        else
+        {
+            extractValues(value_, m_valueInt);
+        }
     }
 }
 
