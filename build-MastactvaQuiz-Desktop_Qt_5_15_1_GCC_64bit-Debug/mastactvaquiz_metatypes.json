@@ -5090,7 +5090,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effect",
+                        "name": "ipEffect",
                         "notify": "effectChanged",
                         "read": "effect",
                         "required": false,
@@ -8902,6 +8902,11 @@
                     {
                         "access": "public",
                         "name": "updateState",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "updateEffects",
                         "returnType": "void"
                     },
                     {

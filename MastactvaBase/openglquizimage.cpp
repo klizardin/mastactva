@@ -289,22 +289,40 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     }
 }
 
+static const int g_pointsWidth = 10;
+static const int g_pointsHeight = 10;
+static const int g_triangleElements = 2;
+static const int g_triangleCount = 3;
+static const int g_vertItemSize = 4;
+
 void OpenGlQuizImage::makeObject()
 {
-    static const int w = 4, h = 4;
-    static const int coords[h][3] =
+    static const int coords[g_triangleElements][g_triangleCount][2] =
     {
-        { 1, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 }, { 1, 1, 0 }
+        {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
+        {{ 1, 0 }, { 1, 1 }, { 0, 1 }}
     };
 
-    m_vertData.resize(w * h);
-    for (int j = 0; j < h; ++j) {
-        // vertex position
-        m_vertData[j*w + 0] = coords[j][0] * (m_width - 1);
-        m_vertData[j*w + 1] = coords[j][1] * (m_height - 1);
-        // texture coordinate
-        m_vertData[j*w + 2] = j == 0 || j == 3;
-        m_vertData[j*w + 3] = j == 0 || j == 1;
+    m_vertData.resize(g_pointsWidth * g_pointsHeight * g_triangleElements * g_triangleCount * g_vertItemSize);
+    for(int y = 0; y < g_pointsHeight; y++)
+    {
+        for(int x = 0; x < g_pointsWidth; x++)
+        {
+            const int offs = (y * g_pointsWidth + x) * g_triangleElements * g_triangleCount * g_vertItemSize;
+            for (int j = 0; j < g_triangleElements; ++j)
+            {
+                for(int k = 0; k < g_triangleCount; k++)
+                {
+                    // vertex position
+                    const int offs1 = offs + (j * g_triangleCount + k) * g_vertItemSize;
+                    m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)g_pointsWidth;
+                    m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)g_pointsHeight;
+                    // texture coordinate
+                    m_vertData[offs1 + 2] = (GLfloat)(x + coords[j][k][0])/(GLfloat)g_pointsWidth;
+                    m_vertData[offs1 + 3] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)g_pointsHeight;
+                }
+            }
+        }
     }
 }
 
@@ -521,7 +539,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
 
-    f_->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_vertItemSize);
 
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
