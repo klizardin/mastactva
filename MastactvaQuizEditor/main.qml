@@ -353,9 +353,9 @@ ApplicationWindow {
         {
             //console.log("onEffectArgumentSetsCurrentIndexChanged()")
             effectArgumentSetsList.currentIndex = effectArgumentSetsCurrentIndex
+            effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentModel.currentItem !== null)
             {
-                effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
                 if(effectSetValuesModel.isListLoaded())
                 {
@@ -2336,6 +2336,7 @@ ApplicationWindow {
             if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
             {
                 effectArgumentSetValuesCurrentIndex = -1
+                effectArgumentSetValuesList.model = 0
                 effectArgumentSetValuesCurrentModel.listReloaded.connect(listReloaded)
                 effectArgumentSetValuesCurrentModel.loadList()
             }
@@ -2346,6 +2347,7 @@ ApplicationWindow {
             if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
             {
                 effectArgumentSetValuesCurrentModel.listReloaded.disconnect(listReloaded)
+                effectArgumentSetValuesList.model = effectArgumentSetValuesCurrentModel
                 effectArgumentSetValuesCurrentIndex = effectArgumentSetValuesCurrentModel.currentIndex
             }
         }
