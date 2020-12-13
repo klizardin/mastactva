@@ -2430,6 +2430,112 @@ ApplicationWindow {
         }
     }
 
+    function testEffectDemo(t)
+    {
+        if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null && effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
+        {
+            effectImageDemo.effect = effectModel.getCurrentItem()
+            effectImageDemo.argumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+        }
+        else
+        {
+            effectImageDemo.effect = null
+            effectImageDemo.argumentSet = null
+        }
+        effectImageDemo.updateEffects()
+        effectDemoImageAnimationBackward.running = false
+        effectDemoImageAnimationBackward.running = false
+        effectImageDemo.t = t
+    }
+
+    Action {
+        id: testEffect00Demo
+        text: qsTr("Test effect with t = 0.&0")
+        onTriggered: {
+            testEffectDemo(0.0)
+        }
+    }
+
+    Action {
+        id: testEffect01Demo
+        text: qsTr("Test effect with t = 0.&1")
+        onTriggered: {
+            testEffectDemo(0.1)
+        }
+    }
+
+    Action {
+        id: testEffect02Demo
+        text: qsTr("Test effect with t = 0.&2")
+        onTriggered: {
+            testEffectDemo(0.2)
+        }
+    }
+
+    Action {
+        id: testEffect03Demo
+        text: qsTr("Test effect with t = 0.&3")
+        onTriggered: {
+            testEffectDemo(0.3)
+        }
+    }
+
+    Action {
+        id: testEffect04Demo
+        text: qsTr("Test effect with t = 0.&4")
+        onTriggered: {
+            testEffectDemo(0.4)
+        }
+    }
+
+    Action {
+        id: testEffect05Demo
+        text: qsTr("Test effect with t = 0.&5")
+        onTriggered: {
+            testEffectDemo(0.5)
+        }
+    }
+
+    Action {
+        id: testEffect06Demo
+        text: qsTr("Test effect with t = 0.&6")
+        onTriggered: {
+            testEffectDemo(0.6)
+        }
+    }
+
+    Action {
+        id: testEffect07Demo
+        text: qsTr("Test effect with t = 0.&7")
+        onTriggered: {
+            testEffectDemo(0.7)
+        }
+    }
+
+    Action {
+        id: testEffect08Demo
+        text: qsTr("Test effect with t = 0.&8")
+        onTriggered: {
+            testEffectDemo(0.8)
+        }
+    }
+
+    Action {
+        id: testEffect09Demo
+        text: qsTr("Test effect with t = 0.&9")
+        onTriggered: {
+            testEffectDemo(0.9)
+        }
+    }
+
+    Action {
+        id: testEffect10Demo
+        text: qsTr("Test effect with t = 1.0")
+        onTriggered: {
+            testEffectDemo(1.0)
+        }
+    }
+
     MenuBar {
         id: effectsMenuBar
         AutoSizeMenu {
@@ -2467,6 +2573,17 @@ ApplicationWindow {
             MenuItem { action: playEffectDemo }
             MenuItem { action: reversePlayEffectDemo }
             MenuItem { action: stopEffectDemo }
+            MenuItem { action: testEffect00Demo }
+            MenuItem { action: testEffect01Demo }
+            MenuItem { action: testEffect02Demo }
+            MenuItem { action: testEffect03Demo }
+            MenuItem { action: testEffect04Demo }
+            MenuItem { action: testEffect05Demo }
+            MenuItem { action: testEffect06Demo }
+            MenuItem { action: testEffect07Demo }
+            MenuItem { action: testEffect08Demo }
+            MenuItem { action: testEffect09Demo }
+            MenuItem { action: testEffect10Demo }
         }
     }
 
