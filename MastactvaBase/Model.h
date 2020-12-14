@@ -62,6 +62,8 @@ public:
 protected:
     void setRefAppIdImpl(const QVariant &appId_);
     QVariant getRefAppIdImpl() const;
+    QVariant getRefValueImpl() const;
+    void setRefValueImpl(const QVariant &value_);
     int getCurrentIndexImpl() const;
     void setCurrentIndexImpl(int index_);
     bool isCurrentIndexValid(int size_) const;
@@ -103,6 +105,7 @@ protected:
 
 private:
     QVariant m_refAppId;
+    QVariant m_refValue;
     int m_currentIndex = -1;
     QString m_currentRef;
     QString m_QMLLayoutName;
@@ -613,6 +616,7 @@ protected:
                         parentModel,
                         parentModelJsonFieldName,
                         getRefAppIdImpl(),
+                        getRefValueImpl(),
                         getJsonParamsGetImpl(),
                         extraFields
                         );
@@ -1074,6 +1078,7 @@ public:                                                                         
     Q_PROPERTY(QVariant currentItem READ getCurrentItem NOTIFY currentItemChanged)                              \
     Q_PROPERTY(QString currentRef READ currentRef WRITE setCurrentRef NOTIFY currentRefChanged)                 \
     Q_PROPERTY(QVariant refAppId READ getRefAppId WRITE setRefAppId NOTIFY refAppIdChanged)                     \
+    Q_PROPERTY(QVariant refValue READ getRefValue WRITE setRefValue NOTIFY refValueChanged)                     \
     Q_PROPERTY(bool storeAfterSave READ storeAfterSave WRITE setStoreAfterSave NOTIFY storeAfterSaveChanged)    \
     Q_PROPERTY(bool jsonParamsGet READ jsonParamsGet WRITE setJsonParamsGet NOTIFY jsonParamsGetChanged)        \
     Q_PROPERTY(bool autoCreateChildrenModels READ autoCreateChildrenModels WRITE setAutoCreateChildrenModels NOTIFY autoCreateChildrenModelsChanged)    \
@@ -1231,6 +1236,15 @@ public:                                                                         
     {                                                                                                           \
         setRefAppIdImpl(appId_);                                                                                \
         emit refAppIdChanged();                                                                                 \
+    }                                                                                                           \
+    QVariant getRefValue() const                                                                                \
+    {                                                                                                           \
+        return getRefValueImpl();                                                                               \
+    }                                                                                                           \
+    void setRefValue(const QVariant &value_)                                                                    \
+    {                                                                                                           \
+        setRefValueImpl(value_);                                                                                \
+        emit refValueChanged();                                                                                 \
     }                                                                                                           \
     bool storeAfterSave() const                                                                                 \
     {                                                                                                           \

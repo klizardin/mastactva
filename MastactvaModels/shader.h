@@ -105,6 +105,7 @@ signals:
     void currentRefChanged();
     void storeAfterSaveChanged();
     void refAppIdChanged();
+    void refValueChanged();
     void layoutQMLNameChanged();
     void layoutIdFieldChanged();
     void refreshChildren(QString);

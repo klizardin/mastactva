@@ -104,6 +104,7 @@ public:
                          const QString &parentModel_,
                          const QString &parentModelJsonFieldName_,
                          const QVariant &refAppId_,
+                         const QVariant &refValue_,
                          bool jsonParams_,
                          const QHash<QString, QVariant> &extraFields_
                          )
@@ -111,9 +112,12 @@ public:
         IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
         if(nullptr != parentModelPtr)
         {
-            const QVariant idField = parentModelJsonFieldName_.isEmpty()
-                    ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
-                    : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
+            const QVariant idField =
+                    refAppId_.isValid()
+                        ? parentModelJsonFieldName_.isEmpty()
+                            ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
+                            : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
+                        : refValue_
                     ;
             return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_, extraFields_);
         }

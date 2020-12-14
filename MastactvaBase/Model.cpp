@@ -58,6 +58,16 @@ QVariant ListModelBaseData::getRefAppIdImpl() const
     return m_refAppId;
 }
 
+QVariant ListModelBaseData::getRefValueImpl() const
+{
+    return m_refValue;
+}
+
+void ListModelBaseData::setRefValueImpl(const QVariant &value_)
+{
+    m_refValue = value_;
+}
+
 int ListModelBaseData::getCurrentIndexImpl() const
 {
     return m_currentIndex;

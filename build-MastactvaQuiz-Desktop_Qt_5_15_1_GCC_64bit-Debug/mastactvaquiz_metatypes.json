@@ -559,6 +559,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -651,6 +665,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -1310,6 +1329,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -1402,6 +1435,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -1986,6 +2024,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -2078,6 +2130,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -2754,6 +2811,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -2846,6 +2917,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -3430,6 +3506,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -3522,6 +3612,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -4106,6 +4201,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -4198,6 +4307,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -4757,6 +4871,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -4849,6 +4977,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -5567,6 +5700,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -5659,6 +5806,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -6291,6 +6443,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -6383,6 +6549,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -7005,6 +7176,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -7097,6 +7282,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -7624,6 +7814,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -7716,6 +7920,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -8395,6 +8604,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -8487,6 +8710,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -9502,6 +9730,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -9594,6 +9836,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -10216,6 +10463,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -10308,6 +10569,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -10932,6 +11198,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -11024,6 +11304,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -11661,6 +11946,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -11753,6 +12052,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -12459,6 +12763,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -12551,6 +12869,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -13134,6 +13457,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -13226,6 +13563,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -13772,6 +14114,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -13864,6 +14220,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -14467,6 +14828,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -14559,6 +14934,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -15105,6 +15485,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -15197,6 +15591,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
@@ -15819,6 +16218,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "storeAfterSave",
                         "notify": "storeAfterSaveChanged",
                         "read": "storeAfterSave",
@@ -15911,6 +16324,11 @@
                     {
                         "access": "public",
                         "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
                         "returnType": "void"
                     },
                     {
