@@ -154,7 +154,7 @@ ApplicationWindow {
             quizPage.currentImageHash = startImage.imageHash
             quizPage.nextImage = undefined
             quizPage.init()
-            setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.imageId)
+            setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.imageId, startImage.imageSource)
             stackView.push(quizPage)
         }
     }
@@ -174,13 +174,13 @@ ApplicationWindow {
             stackView.push(questionPage)
         }
 
-        function onSetDescription(descriptionModel, galleryId, imageId)
+        function onSetDescription(descriptionModel, galleryId, imageId, imageSource)
         {
-            setDescription(descriptionModel, galleryId, imageId)
+            setDescription(descriptionModel, galleryId, imageId, imageSource)
         }
     }
 
-    function setDescription(imageDescription, galleryId, imageId)
+    function setDescription(imageDescription, galleryId, imageId, imageSource)
     {
         quizPage.hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
         if(quizPage.hasDescription)
@@ -189,6 +189,7 @@ ApplicationWindow {
             descriptionPage.imageId = imageId
             descriptionPage.descriptionId = imageDescription.getCurrentItem().idId
             descriptionPage.descriptionTextArg = imageDescription.getCurrentItem().idDescriptionText
+            descriptionPage.imageSource = imageSource
         }
         else
         {
@@ -196,6 +197,7 @@ ApplicationWindow {
             descriptionPage.imageId = -1
             descriptionPage.descriptionId = -1
             descriptionPage.descriptionTextArg = ""
+            descriptionPage.imageSource = Constants.noImage
         }
     }
 

@@ -23,7 +23,7 @@ Page {
     property int animationDuration: 1500
 
     signal showQuestion(var question, int imageId)
-    signal setDescription(var descriptionModel, int galleryId, int imageId)
+    signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
 
     Rectangle {
         id: quizImageClipper
@@ -68,7 +68,7 @@ Page {
 
                                 nextImage = nextImgObj
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
-                                quizPage.setDescription(undefined, galleryId, nextImage.imageId)
+                                quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageAnimation.running = true
                             }
@@ -110,7 +110,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
-                    quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId)
+                    quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
                     quizImage.swapImages();
                     loadChildren()
                 }

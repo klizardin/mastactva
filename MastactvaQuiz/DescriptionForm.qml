@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
+import MastactvaQuiz 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
 
@@ -12,8 +13,9 @@ Page {
 
     title: qsTr("Description")
 
-    property string descriptionTextArg: qsTr("")
     property bool hasDescription: false
+    property string descriptionTextArg: qsTr("")
+    property string imageSource: Constants.noImage
     property int galleryId: -1
     property int imageId: -1
     property int descriptionId: -1
@@ -23,20 +25,32 @@ Page {
     Rectangle {
         anchors.fill: parent
 
-        Column {
-            Text {
-                id: descriptionText
-                text: qsTr("")
-                x: Constants.questionPadding
-                width: Constants.pageWidth - Constants.questionPadding * 2
-                wrapMode: Text.WordWrap
-            }
-            Button {
-                text: qsTr("Close")
-                width: Constants.pageWidth
-                Layout.alignment: Qt.AlignVCenter
-                onClicked: {
-                    closePage()
+        ScrollView {
+            anchors.fill: parent
+
+            Column {
+                Image {
+                    id: imageOfDescription
+                    width: Constants.pageWidth
+                    height: (Constants.pageWidth / Constants.aspectX) * Constants.aspectY * 0.5
+                    source: imageSource
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                Text {
+                    id: descriptionText
+                    text: qsTr("")
+                    x: Constants.questionPadding
+                    width: Constants.pageWidth - Constants.questionPadding * 2
+                    wrapMode: Text.WordWrap
+                }
+                Button {
+                    text: qsTr("Close")
+                    width: Constants.pageWidth
+                    Layout.alignment: Qt.AlignVCenter
+                    onClicked: {
+                        closePage()
+                    }
                 }
             }
         }
@@ -52,6 +66,7 @@ Page {
         userStepD.usT = mastactvaAPI.now()
         userStepModel.addItem(userStepD)
 
+        imageOfDescription.source = imageSource
         descriptionText.text = descriptionTextArg
     }
 
