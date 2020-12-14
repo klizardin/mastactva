@@ -18,7 +18,7 @@ ApplicationWindow {
     }
 
     // constant models
-    /*ShaderTypeModel {
+    ShaderTypeModel {
         id: shaderTypeModel
         objectName: "ShaderTypeModel"
         layoutQMLName: "ShaderTypeModel"
@@ -34,7 +34,7 @@ ApplicationWindow {
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
-    }*/
+    }
 
     EasingTypeModel {
         id: easingTypeModel
@@ -126,6 +126,8 @@ ApplicationWindow {
 
             quizUserModel.loadList()
             easingTypeModel.loadList()
+            shaderTypeModel.loadList()
+            shaderArgTypeModel.loadList()
         }
     }
 

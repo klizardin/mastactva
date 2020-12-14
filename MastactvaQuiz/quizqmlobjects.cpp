@@ -4,10 +4,13 @@
 #include "gallery.h"
 #include "mastactvaapi.h"
 #include "../MastactvaBase/netapi.h"
+#include "../MastactvaModels/shadertype.h"
+#include "../MastactvaModels/shaderargtype.h"
+#include "../MastactvaModels/easingtype.h"
 
 
-static QString g_quizUserModel = "QuizUserModel";
-static QString g_mastactvaAPI = "MastactvaAPI";
+static const QString g_quizUserModel = "QuizUserModel";
+static const QString g_mastactvaAPI = "MastactvaAPI";
 
 
 void QMLObjects::searchObjects()
@@ -35,6 +38,24 @@ void QMLObjects::searchObjects()
     {
         ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
         registerModel(g_allImagesOfGalleryModel, m1);
+    }
+    m = findListModel(g_shaderTypeModel);
+    if(nullptr == m)
+    {
+        ShaderTypeModel *m1 = m_root->findChild<ShaderTypeModel *>(g_shaderTypeModel);
+        registerModel(g_shaderTypeModel, m1);
+    }
+    m = findListModel(g_shaderArgTypeModel);
+    if(nullptr == m)
+    {
+        ShaderArgTypeModel *m1 = m_root->findChild<ShaderArgTypeModel *>(g_shaderArgTypeModel);
+        registerModel(g_shaderArgTypeModel, m1);
+    }
+    m = findListModel(g_easingTypeModel);
+    if(nullptr == m)
+    {
+        EasingTypeModel *m1 = m_root->findChild<EasingTypeModel *>(g_easingTypeModel);
+        registerModel(g_easingTypeModel, m1);
     }
     if(nullptr == m_mastactvaAPI)
     {

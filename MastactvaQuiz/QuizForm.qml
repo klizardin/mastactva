@@ -68,6 +68,22 @@ Page {
 
                                 nextImage = nextImgObj
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
+                                console.log("ipni.ipEffect = ", ipni.ipEffect)
+                                console.log("ipni.ipEffect.isListLoaded() = ", ipni.ipEffect.isListLoaded())
+                                console.log("ipni.ipEffect.currentItem = ", ipni.ipEffect.currentItem)
+                                if(ipni.ipEffect.currentItem !== null)
+                                {
+                                    quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
+                                    quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
+                                    quizImage.updateEffects()
+                                    quizImageNumberAnimation.duration = ipni.ipEffect.currentItem.imagePointEffectDuration
+                                }
+                                else
+                                {
+                                    quizImage.effect = null
+                                    quizImage.argumentSet = null
+                                    quizImageNumberAnimation.duration = animationDuration
+                                }
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageAnimation.running = true
