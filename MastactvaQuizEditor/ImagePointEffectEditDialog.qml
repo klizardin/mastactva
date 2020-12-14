@@ -30,6 +30,7 @@ Dialog {
     {
         width: Constants.smallDialogWidth
         height: Constants.smallDialogHeight
+        clip: true
 
         Column
         {
@@ -40,7 +41,8 @@ Dialog {
 
             TextField {
                 id: imagePointEffectDuration
-                width: Constants.smallDialogWidth
+                x: Constants.effectShaderTypeListSpacing / 2
+                width: Constants.smallDialogWidth - Constants.effectShaderTypeListSpacing
                 placeholderText: qsTr("Input duration of effect in ms")
             }
 
@@ -93,6 +95,7 @@ Dialog {
                 effectModel.currentIndex = effectIndex
                 var effect = effectModel.currentItem
                 effectId = effect.effectId
+                initEffectArgumentSets()
             }
         }
 
@@ -237,6 +240,8 @@ Dialog {
     {
         setEffectArgumentSetsModel()
     }
+
+    standardButtons: Dialog.Cancel | Dialog.Save
 
     Component {
         id: effectItem
