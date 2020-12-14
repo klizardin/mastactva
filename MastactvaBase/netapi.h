@@ -110,7 +110,7 @@ public:
                          )
     {
         IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
-        if(nullptr != parentModelPtr)
+        if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
         {
             const QVariant idField =
                     refAppId_.isValid()
