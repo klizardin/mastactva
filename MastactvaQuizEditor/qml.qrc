@@ -28,6 +28,7 @@
         <file>default.vert</file>
         <file>default.frag</file>
         <file>ChooseImageDialog.qml</file>
+        <file>ImagePointEffectEditDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
