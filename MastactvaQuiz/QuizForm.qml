@@ -69,6 +69,7 @@ Page {
                                 nextImage = nextImgObj
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId)
+                                quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageAnimation.running = true
                             }
                         }
@@ -97,7 +98,7 @@ Page {
                 id: quizImageAnimation
                 running: false
 
-                NumberAnimation { target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: animationDuration; easing.type: Easing.Linear }
+                NumberAnimation { id: quizImageNumberAnimation; target: quizImage; property: "t"; from: 0.0; to: 1.0; duration: animationDuration; easing.type: Easing.Linear }
             }
 
             Connections {

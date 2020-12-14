@@ -17,6 +17,35 @@ ApplicationWindow {
         objectName: "MastactvaAPI"
     }
 
+    // constant models
+    /*ShaderTypeModel {
+        id: shaderTypeModel
+        objectName: "ShaderTypeModel"
+        layoutQMLName: "ShaderTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
+    ShaderArgTypeModel {
+        id: shaderArgTypeModel
+        objectName: "ShaderArgTypeModel"
+        layoutQMLName: "ShaderArgTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }*/
+
+    EasingTypeModel {
+        id: easingTypeModel
+        objectName: "EasingTypeModel"
+        layoutQMLName: "EasingTypeModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
+    // data models
     QuizUserModel {
         id: quizUserModel
         objectName: "QuizUserModel"
@@ -96,6 +125,7 @@ ApplicationWindow {
             initUserStepModel()
 
             quizUserModel.loadList()
+            easingTypeModel.loadList()
         }
     }
 
