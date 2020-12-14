@@ -675,7 +675,7 @@ void OpenGlQuizImage::initGeometry()
     {
         const Comment &shaderComment = *fitShader;
         m_geometrySolid = shaderComment.values().contains(g_geometrySolidName)
-                || !shaderComment.values().contains(g_geometryFacedName)
+                && !shaderComment.values().contains(g_geometryFacedName)
                 ;
         if(shaderComment.values().contains(g_geometrySizeName))
         {
