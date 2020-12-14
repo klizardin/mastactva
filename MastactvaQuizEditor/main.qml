@@ -3059,18 +3059,18 @@ ApplicationWindow {
 
                                             Row {
                                                 Column{
-
                                                     Text {
                                                         id: imageOfGalleryNextImageText
                                                         visible: imageOfGalleryPointIndex >= 0
                                                         width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
                                                         text: Constants.notANextImagePoint
+                                                        wrapMode: Text.WordWrap
                                                     }
 
                                                     Image {
+                                                        id: imageOfGalleryNextImageNextImage
                                                         height: slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height - imageOfGalleryNextImageText.height
                                                         width: (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
-                                                        id: imageOfGalleryNextImageNextImage
                                                         visible: imageOfGalleryPointIndex >= 0
                                                         fillMode: Image.PreserveAspectFit
                                                         source: Constants.noImage
@@ -3080,7 +3080,7 @@ ApplicationWindow {
                                                 Rectangle {
                                                     id: imageOfGalleryNextImageEffectRect
                                                     visible: imageOfGalleryPointIndex >= 0
-                                                    width: imageOfGalleryNextImageTabNextImage - (slitViewPaneImageInfo.height - imageOfGalleryInfoBar.height) * Constants.aspectX / Constants.aspectY
+                                                    width: imageOfGalleryNextImageTabNextImage.width - imageOfGalleryNextImageNextImage.width
                                                     height: imageOfGalleryNextImageTabNextImage.height
 
                                                     ListView {
@@ -4573,7 +4573,7 @@ ApplicationWindow {
                     }
                     Text {
                         id: imageOfGalleryNextImageEffectListItemDescription
-                        width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemDescription.width
+                        width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemDescriptionLabel.width
                         text: imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
                         wrapMode: Text.Wrap
                     }
