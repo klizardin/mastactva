@@ -113,11 +113,11 @@ public:
         if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
         {
             const QVariant idField =
-                    refAppId_.isValid()
-                        ? parentModelJsonFieldName_.isEmpty()
-                            ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
-                            : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
-                        : refValue_
+                    refValue_.isValid()
+                        ? refValue_
+                        : parentModelJsonFieldName_.isEmpty()
+                          ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
+                          : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
             return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_, extraFields_);
         }
