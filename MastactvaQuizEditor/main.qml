@@ -2292,7 +2292,7 @@ ApplicationWindow {
                 var pointsModel = images_of_gallery.model.currentImagePoints()
                 var pointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
 
-                imagePointEffectEditDialog.fieldNew = true
+                imagePointEffectEditDialog.fieldNew = false
                 imagePointEffectEditDialog.fieldImagePoint = pointsModel.itemAt(pointIndex)
                 if(imagePointEffectEditDialog.fieldImagePoint == null)
                 {
