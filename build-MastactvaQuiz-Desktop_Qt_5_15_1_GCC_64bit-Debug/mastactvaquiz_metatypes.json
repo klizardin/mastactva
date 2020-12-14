@@ -15725,6 +15725,63 @@
         "classes": [
             {
                 "className": "ImagePointEffect",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "imagePointId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setImagePointId",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "effectId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setEffectId",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "argSetId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setArgSetId",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "stepIndex_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setStepIndex",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "duration_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setDuration",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
