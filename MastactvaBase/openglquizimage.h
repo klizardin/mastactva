@@ -69,6 +69,7 @@ private:
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
     void extractArguments();
     void initDefaultShaders();
+    void initGeometry();
     void resetProgram();
     QString loadFile(const QString &filename_);
     QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
@@ -79,6 +80,9 @@ private:
     int m_top = 0;
     int m_width = 0;
     int m_height = 0;
+    int m_geomertyPointsWidth = 2;
+    int m_geometryPointsHeight = 2;
+    bool m_geometrySolid = false;
     QVector<GLfloat> m_vertData;
 
     QOpenGLTexture *m_fromTexture = nullptr;

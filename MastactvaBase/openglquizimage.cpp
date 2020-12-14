@@ -289,11 +289,10 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     }
 }
 
-static const int g_geomertyPointsWidth = 10;
-static const int g_geometryPointsHeight = 10;
 static const int g_trianglesCount = 2;
 static const int g_triangleConers = 3;
 static const int g_geometryItemSize = 4;
+static const GLfloat g_facegGeometryCoef = 1e-3;
 
 void OpenGlQuizImage::makeObject()
 {
@@ -303,23 +302,31 @@ void OpenGlQuizImage::makeObject()
         {{ 1, 0 }, { 1, 1 }, { 0, 1 }}
     };
 
-    m_vertData.resize(g_geomertyPointsWidth * g_geometryPointsHeight * g_trianglesCount * g_triangleConers * g_geometryItemSize);
-    for(int y = 0; y < g_geometryPointsHeight; y++)
+    m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight * g_trianglesCount * g_triangleConers * g_geometryItemSize);
+    for(int y = 0; y < m_geometryPointsHeight; y++)
     {
-        for(int x = 0; x < g_geomertyPointsWidth; x++)
+        for(int x = 0; x < m_geomertyPointsWidth; x++)
         {
-            const int offs = (y * g_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * g_geometryItemSize;
+            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * g_geometryItemSize;
             for (int j = 0; j < g_trianglesCount; ++j)
             {
                 for(int k = 0; k < g_triangleConers; k++)
                 {
                     // vertex position
                     const int offs1 = offs + (j * g_triangleConers + k) * g_geometryItemSize;
-                    m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)g_geomertyPointsWidth;
-                    m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)g_geometryPointsHeight;
+                    if(m_geometrySolid)
+                    {
+                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth;
+                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight;
+                    }
+                    else
+                    {
+                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef;
+                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef;
+                    }
                     // texture coordinate
-                    m_vertData[offs1 + 2] = (GLfloat)(x + coords[j][k][0])/(GLfloat)g_geomertyPointsWidth;
-                    m_vertData[offs1 + 3] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)g_geometryPointsHeight;
+                    m_vertData[offs1 + 2] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth;
+                    m_vertData[offs1 + 3] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight;
                 }
             }
         }
@@ -598,6 +605,7 @@ void OpenGlQuizImage::extractArguments()
         }
     }
     initDefaultShaders();
+    initGeometry();
 
     ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
@@ -651,6 +659,39 @@ void OpenGlQuizImage::initDefaultShaders()
     if(m_fragmentShader.isEmpty())
     {
         m_fragmentShader = loadFile(":/default.frag");
+    }
+}
+
+void OpenGlQuizImage::initGeometry()
+{
+    QVector<Comment> comments;
+    getShaderComments(m_vertexShader, comments);
+    const auto fitShader = std::find_if(std::begin(comments), std::end(comments),
+                                  [](const Comment &comment)->bool
+    {
+        return comment.values().contains(g_shaderName);
+    });
+    if(std::end(comments) != fitShader)
+    {
+        const Comment &shaderComment = *fitShader;
+        m_geometrySolid = shaderComment.values().contains(g_geometrySolidName)
+                || !shaderComment.values().contains(g_geometryFacedName)
+                ;
+        if(shaderComment.values().contains(g_geometrySizeName))
+        {
+            const QString geomSizeStr = shaderComment.values().value(g_geometrySizeName);
+            QVector<GLint> args;
+            args.resize(2);
+            extractValues(geomSizeStr, args);
+            m_geomertyPointsWidth = std::max(1, args[0]);
+            m_geometryPointsHeight = std::max(1, args[1]);
+        }
+    }
+    else
+    {
+        m_geometrySolid = true;
+        m_geomertyPointsWidth = 1;
+        m_geometryPointsHeight = 1;
     }
 }
 
