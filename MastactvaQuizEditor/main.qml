@@ -2568,13 +2568,17 @@ ApplicationWindow {
         onTriggered: {
             if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null && effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
             {
-                effectImageDemo.effect = effectModel.getCurrentItem()
-                effectImageDemo.argumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                var effect = effectModel.getCurrentItem()
+                var effectArgSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                effectImageDemo.effect = effect
+                effectImageDemo.argumentSet = effectArgSet
+                numberAnimationForward.easing.type = easingTypeModel.findItemById(effectArgSet.effectArgSetEasingId) !== null ? GalleryFunctions.easingTypeFromStr(easingTypeModel.findItemById(effectArgSet.effectArgSetEasingId).easingTypeType) : Easing.Linear
             }
             else
             {
                 effectImageDemo.effect = null
                 effectImageDemo.argumentSet = null
+                numberAnimationForward.easing.type = Easing.Linear
             }
             effectImageDemo.updateEffects()
             effectDemoImageAnimationForward.running = true
@@ -2587,13 +2591,17 @@ ApplicationWindow {
         onTriggered: {
             if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null && effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
             {
-                effectImageDemo.effect = effectModel.getCurrentItem()
-                effectImageDemo.argumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                var effect = effectModel.getCurrentItem()
+                var effectArgSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                effectImageDemo.effect = effect
+                effectImageDemo.argumentSet = effectArgSet
+                numberAnimationBackward.easing.type = easingTypeModel.findItemById(effectArgSet.effectArgSetEasingId) !== null ? GalleryFunctions.easingTypeFromStr(easingTypeModel.findItemById(effectArgSet.effectArgSetEasingId).easingTypeType) : Easing.Linear
             }
             else
             {
                 effectImageDemo.effect = null
                 effectImageDemo.argumentSet = null
+                numberAnimationBackward.easing.type = Easing.Linear
             }
             effectImageDemo.updateEffects()
             effectDemoImageAnimationBackward.running = true
@@ -3236,25 +3244,24 @@ ApplicationWindow {
                                         id: effectImageDemo
                                         width: splitEffectsDemo.width
                                         height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
+                                        visible: true
+                                        clip: true
                                         fromImage: [Constants.noImage, Constants.noImageHash]
                                         toImage: [Constants.noImage, Constants.noImageHash]
-                                        clip: true
                                         t: 0.5
 
                                         SequentialAnimation {
                                             id: effectDemoImageAnimationForward
                                             running: false
 
-                                            NumberAnimation { target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                            //loops: Animation.Infinite
+                                            NumberAnimation { id: numberAnimationForward; target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
                                         }
 
                                         SequentialAnimation {
                                             id: effectDemoImageAnimationBackward
                                             running: false
 
-                                            NumberAnimation { target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
-                                            //loops: Animation.Infinite
+                                            NumberAnimation { id: numberAnimationBackward;  target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
                                         }
 
                                         Connections {
@@ -3263,7 +3270,6 @@ ApplicationWindow {
                                             function onFinished()
                                             {
                                                 console.log("effectDemoImageAnimationForward.finished()");
-                                                //effectImageDemo.swapImages();
                                             }
                                         }
 
