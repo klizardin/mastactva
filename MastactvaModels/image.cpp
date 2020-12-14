@@ -3,19 +3,21 @@
 Image::Image(ImageModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+    m_objectModelInfo = this;
     m_imageModel = parent_;
-    m_thisListModelInfo = this;
 }
 
 bool Image::isImageLoaded() const
 {
-    return isListLoadedImpl();
+    return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
 void Image::loadChildren()
 {
+    IListModelInfoObjectImpl::loadChildrenVF();
     (void)imagePoints();
     (void)imageDescription();
+    IListModelInfoObjectImpl::objectLoadedVF();
 }
 
 int Image::id() const
@@ -140,6 +142,7 @@ void Image::setImageDescription(const QVariant &obj_)
 
 ImagePointModel *Image::createImagePoints()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     ImagePointModel *m = new ImagePointModel(this);
     m->initResponse();
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
@@ -149,6 +152,7 @@ ImagePointModel *Image::createImagePoints()
     m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImagePointModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -156,6 +160,7 @@ ImagePointModel *Image::createImagePoints()
 
 ImageDescriptionModel *Image::createImageDescriptionModel()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     ImageDescriptionModel *m = new ImageDescriptionModel(this);
     m->initResponse();
     m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
@@ -164,6 +169,7 @@ ImageDescriptionModel *Image::createImageDescriptionModel()
     m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImageDescriptionModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;

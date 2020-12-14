@@ -81,6 +81,7 @@ ShaderModel *EffectShader::createShaderModel()
     m->setLayoutQMLName(m_effectShaderModel->getQMLLayoutName() + QString("_ShaderModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;

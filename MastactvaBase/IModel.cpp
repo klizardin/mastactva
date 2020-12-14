@@ -27,7 +27,7 @@ void IListModelInfoObjectImpl::endLoadChildModel()
 
 bool IListModelInfoObjectImpl::isListLoadedImpl() const
 {
-    return 0 == m_loadingChildenModels;
+    return 0 == m_loadingChildenModels && m_childrenLoaded && !m_childrenLoading;
 }
 
 void IListModelInfoObjectImpl::listLoadedVF()
@@ -54,4 +54,20 @@ void IListModelInfoObjectImpl::errorVF(int errorCode_, const QString &errorCodeS
 void IListModelInfoObjectImpl::setParentModelInfo(IListModelInfo *parentListModelInfo_)
 {
     m_parentListModelInfo = parentListModelInfo_;
+}
+
+void IListModelInfoObjectImpl::loadChildrenVF()
+{
+    m_childrenLoading = true;
+}
+
+void IListModelInfoObjectImpl::objectLoadedVF()
+{
+    m_childrenLoading = false;
+    m_childrenLoaded = true;
+
+    if(isListLoadedImpl())
+    {
+        listLoadedVF();
+    }
 }

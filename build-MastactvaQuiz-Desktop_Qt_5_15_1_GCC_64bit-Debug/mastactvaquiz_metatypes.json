@@ -12201,6 +12201,16 @@
                         "access": "public",
                         "name": "applyRefreshArguments",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loadChildren",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isChildrenLoaded",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

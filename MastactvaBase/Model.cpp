@@ -244,6 +244,16 @@ void ListModelBaseData::errorVF(int errorCode_, const QString &errorCodeStr_, co
     QMLObjectsBase::getInstance().modelError(errorCode_, errorCodeStr_, reply_);
 }
 
+void ListModelBaseData::loadChildrenVF()
+{
+    startListLoad();
+}
+
+void ListModelBaseData::objectLoadedVF()
+{
+    Q_ASSERT(false); // should not be called
+}
+
 void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_)
 {
     m_renames.insert(oldName_, newName_);

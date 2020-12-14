@@ -36,6 +36,7 @@ public:
         {
             setLayoutJsonName("effect");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Effect::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Effect::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &Effect::m_appId);
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
@@ -61,7 +62,6 @@ public:
     void setArgSets(const QVariant &obj_);
 
 public:
-    bool isChildrenLoaded() const;
     EffectShaderModel *getEffectShaders();
     EffectArgModel *getEffectArguments();
 
@@ -69,6 +69,8 @@ public:
     Q_INVOKABLE bool startRefreshArguments();
     Q_INVOKABLE void cancelRefreshArguments();
     Q_INVOKABLE void applyRefreshArguments();
+    Q_INVOKABLE void loadChildren();
+    Q_INVOKABLE bool isChildrenLoaded() const;
 
 protected slots:
     void refreshArgumentsShaderDownloadedSlot(const QString &url_);
@@ -100,6 +102,7 @@ signals:
 private:
     EffectModel *m_effectModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     QString m_name;

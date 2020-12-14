@@ -120,6 +120,7 @@ EffectShaderModel *Effect::createEffectShadersModel()
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectShaderModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -136,6 +137,7 @@ EffectArgModel *Effect::createEffectArgModel()
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -152,6 +154,7 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgSetModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -421,9 +424,14 @@ void Effect::listLoadedVF()
     emit childrenLoaded();
 }
 
+void Effect::loadChildren()
+{
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
 bool Effect::isChildrenLoaded() const
 {
-    return isListLoadedImpl();
+    return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
 EffectShaderModel *Effect::getEffectShaders()

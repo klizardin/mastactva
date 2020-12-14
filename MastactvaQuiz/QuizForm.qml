@@ -67,7 +67,7 @@ Page {
                                 userStepModel.addItem(userStepNi)
 
                                 nextImage = nextImgObj
-                                nextImage.loadChildren()
+                                //nextImage.loadChildren()
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
                                 if(ipni.ipEffect.currentItem !== null)
                                 {
@@ -127,7 +127,7 @@ Page {
                     nextImage = undefined
                     quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
                     quizImage.swapImages();
-                    //loadChildren()
+                    loadChildren()
                 }
             }
         }

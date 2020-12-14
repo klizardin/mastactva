@@ -95,6 +95,7 @@ AnswerModel *Question::createAnswerModel()
     m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_AnswerModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -112,6 +113,7 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
     m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_UserQuestionAnswerModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->setOutputModel(true);
     //m->loadList(); -- should not be called

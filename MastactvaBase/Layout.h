@@ -24,7 +24,8 @@ namespace layout
     {
         none,
         appId,
-        modelInfo
+        modelInfo,
+        objectModelInfo
     };
 
     template<typename T_>

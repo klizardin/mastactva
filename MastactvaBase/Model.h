@@ -56,6 +56,8 @@ public:
     virtual void itemSetVF() override;
     virtual void itemDeletedVF() override;
     virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
+    virtual void loadChildrenVF() override;
+    virtual void objectLoadedVF() override;
 
     void parentItemRemoved();
 
@@ -119,8 +121,8 @@ private:
     bool m_listLoaded = false;
     bool m_listLoading = false;
     int m_loadingChildenModels = 0;
-    IListModelInfo *m_parentListModelInfo = nullptr;
     bool m_outputModel = false;
+    IListModelInfo *m_parentListModelInfo = nullptr;
 };
 
 
@@ -880,12 +882,9 @@ protected:
             autoLoadItemData();
         }
         loaded.clear();
-        if(autoCreateChildrenModelsImpl())
+        for(DataType_ *item : m_data)
         {
-            for(DataType_ *item : m_data)
-            {
-                getDataLayout<DataType_>().createQMLValues(item);
-            }
+            autoLoadItemData(item);
         }
         setListLoaded();
 #if defined(TRACE_LIST_LOAD_DATA)
@@ -975,14 +974,35 @@ protected:
         return m_roleNames;
     }
 
-    void autoLoadItemData()
+    void autoLoadItemData(const DataType_ *item_ = nullptr)
     {
-        if(autoCreateChildrenModelsOnSelectImpl()
-                && getCurrentIndexImpl() >= 0
-                && isIndexValid(getCurrentIndexImpl(), m_data.size())
-                )
+        if(
+            (
+                nullptr != item_ &&
+                autoCreateChildrenModelsImpl()
+            ) ||
+            (
+                autoCreateChildrenModelsOnSelectImpl() &&
+                getCurrentIndexImpl() >= 0 &&
+                isIndexValid(getCurrentIndexImpl(), m_data.size())
+             ))
         {
-            getDataLayout<DataType_>().createQMLValues(m_data[getCurrentIndexImpl()]);
+            if(nullptr == item_)
+            {
+                item_ = m_data[getCurrentIndexImpl()];
+            }
+            const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
+            IListModelInfo *modelInfo = nullptr;
+            layout::setValue(modelInfoVar, modelInfo);
+            if(nullptr != modelInfo)
+            {
+                modelInfo->loadChildrenVF();
+            }
+            getDataLayout<DataType_>().createQMLValues(item_);
+            if(nullptr != modelInfo)
+            {
+                modelInfo->objectLoadedVF();
+            }
         }
     }
 

@@ -347,7 +347,7 @@ ImagePointEffectModel *ImagePoint::createImagePointEffectModel()
 
 
 ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
-    :ListModelBaseOfData<ImagePoint, ImagePointModel>(parent_)
+    : base(parent_)
 {
     init(this);
 }

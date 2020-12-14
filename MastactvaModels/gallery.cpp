@@ -92,6 +92,7 @@ ImageModel *Gallery::createImages()
     m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_GalleryImageModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    //m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -138,6 +139,7 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_GalleryStatisticsModel_") + QVariant::fromValue(m_appId).toString());
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
+    //m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;

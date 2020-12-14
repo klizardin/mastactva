@@ -42,7 +42,8 @@ public:
         {
             setLayoutJsonName("image");
             addSpecial<int>(layout::SpecialFieldEn::appId, &Image::m_appId);
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Image::m_thisListModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Image::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Image::m_objectModelInfo);
             addField<int>("id", "imageId", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
             addField<QString>("hash", "imageHash", &Image::hash, &Image::setHash);
@@ -98,7 +99,8 @@ private:
     QDateTime m_created;
     ImagePointModel *m_imagePoints = nullptr;
     ImageDescriptionModel *m_imageDescriptionModel = nullptr;
-    IListModelInfo *m_thisListModelInfo = 0;
+    IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
 };
 
 
