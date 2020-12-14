@@ -68,8 +68,9 @@
 32. fix effect edit bugs with lists
 33. fix effect edit view bugs
 34. implement test gallery #2
-35. implement texture matrix move effects (swipe left, swipe right, swipe ip, swipe down)
+* 35. implement texture matrix move effects (swipe left, swipe right, swipe ip, swipe down)
 36. implement texture matrix effect -- resize image (0..0.8) mix (0.8..1)
+37. remove duplications of qml components, better to move component at separate file
 
 
 
