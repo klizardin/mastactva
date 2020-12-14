@@ -94,7 +94,8 @@ Dialog {
             {
                 effectModel.currentIndex = effectIndex
                 var effect = effectModel.currentItem
-                effectId = effect.effectId
+                effectId = effect !== null ? effect.effectId : -1
+                //console.log("onEffectIndexChanged() effectId = ", effectId)
                 initEffectArgumentSets()
             }
         }
@@ -109,7 +110,8 @@ Dialog {
                 {
                     effectArgumentSetsModel.currentIndex = effectArgumentSetsIndex
                     var effectArgumentSet = effectArgumentSetsModel.currentItem
-                    effectArgumentSetsId = effectArgumentSet.effectArgSetId
+                    effectArgumentSetsId = effectArgumentSet !== null ? effectArgumentSet.effectArgSetId : -1
+                    //console.log("onEffectArgumentSetsIndexChanged() effectArgumentSetsId = ", effectArgumentSetsId)
                 }
             }
         }
@@ -117,6 +119,7 @@ Dialog {
 
     function init()
     {
+        console.log("init()")
         if(effectModel !== undefined && effectModel !== null)
         {
             effectModel.listReloaded.connect(effectModelListReloaded)
@@ -144,18 +147,26 @@ Dialog {
 
     function reject()
     {
-        if(effectModel !== undefined && effectModel !== null)
+        //console.log("reject()")
+        if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded())
         {
-            if(effectModel.isListLoaded())
+            effectModel.currentIndex = effectOldIndex
+            //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
+            var effectArgumentSetsModel = effectModel.currentItem.effectArgSets
+            if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && effectArgumentSetsModel.isListLoaded())
             {
-                effectModel.currentIndex = effectOldIndex
-                var effectArgumentSetsModel = effectModel.currentItem.effectArgSets
-                if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && effectArgumentSetsModel.isListLoaded())
-                {
-                    effectArgumentSetsModel.currentIndex = effectArgumentSetsOldIndex
-                }
+                effectArgumentSetsModel.currentIndex = effectArgumentSetsOldIndex
+                //console.log("effectArgumentSetsModel.currentIndex = ", effectArgumentSetsModel.currentIndex)
             }
         }
+    }
+
+    function clearDialogData()
+    {
+        clearEffectArgumentSetsModel()
+        clearEffectModel()
+        effectArgumentSetsIndex = -1
+        effectIndex = -1
     }
 
     function clearEffectModel()
@@ -172,6 +183,22 @@ Dialog {
             if(effectModel.isListLoaded())
             {
                 effectOldIndex = effectModel.currentIndex
+                //console.log("effectId = ", effectId)
+                //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
+                if(effectId >= 0)
+                {
+                    var effect = effectModel.findItemById(effectId)
+                    var initIndex = effectModel.indexOfItem(effect)
+                    if(effect !== null && initIndex >= 0)
+                    {
+                        effectModel.currentIndex = initIndex
+                    }
+                    else
+                    {
+                        effectId = -1
+                    }
+                }
+                //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
                 effectsList.model = effectModel
                 effectIndex = effectModel.currentIndex
                 initEffectArgumentSets()
@@ -225,6 +252,22 @@ Dialog {
                 if(effectArgumentSets.isListLoaded())
                 {
                     effectArgumentSetsOldIndex = effectArgumentSets.currentIndex
+                    //console.log("effectArgumentSetsId = ", effectArgumentSetsId)
+                    //console.log("effectArgumentSets.currentIndex = ", effectArgumentSets.currentIndex)
+                    if(effectArgumentSetsId >= 0)
+                    {
+                        var effectArgumentSet = effectArgumentSets.findItemById(effectArgumentSetsId)
+                        var initIndex = effectArgumentSets.indexOfItem(effectArgumentSet)
+                        if(effectArgumentSet !== null && initIndex >= 0)
+                        {
+                            effectArgumentSets.currentIndex = initIndex
+                        }
+                        else
+                        {
+                            effectArgumentSetsId = -1
+                        }
+                    }
+                    //console.log("effectArgumentSets.currentIndex = ", effectArgumentSets.currentIndex)
                     effectArgumentSetsList.model = effectArgumentSets
                     effectArgumentSetsIndex = effectArgumentSets.currentIndex
                 }

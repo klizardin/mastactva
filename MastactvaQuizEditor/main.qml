@@ -1445,8 +1445,16 @@ ApplicationWindow {
         onOpened: {
             effectOldIndex = -1
             effectArgumentSetsOldIndex = -1
-            effectId = -1
-            effectArgumentSetsId = -1
+            if(fieldNew)
+            {
+                effectId = -1
+                effectArgumentSetsId = -1
+            }
+            else
+            {
+                effectId = fieldImagePointEffect.effectId()
+                effectArgumentSetsId = fieldImagePointEffect.argSetId()
+            }
             init()
         }
 
@@ -1465,8 +1473,16 @@ ApplicationWindow {
             }
             else
             {
-                fieldImagePointEffectModel.itemSet.connect(itemSet)
-                fieldImagePointEffectModel.setItem(fieldImagePointEffect)
+                var index = fieldImagePointEffectModel.indexOfItem(fieldImagePointEffect)
+                if(index >= 0)
+                {
+                    fieldImagePointEffectModel.itemSet.connect(itemSet)
+                    fieldImagePointEffectModel.setItem(index, fieldImagePointEffect)
+                }
+                else
+                {
+                    clear()
+                }
             }
         }
 
@@ -1521,6 +1537,7 @@ ApplicationWindow {
             fieldImagePointEffect = undefined
             fieldImagePoint = undefined
             fieldNew = false
+            clearDialogData()
         }
     }
 

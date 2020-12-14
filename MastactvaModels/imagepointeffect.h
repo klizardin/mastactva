@@ -47,7 +47,9 @@ public:
     };
 
     Q_INVOKABLE void setImagePointId(const int &imagePointId_);
+    Q_INVOKABLE int effectId() const;
     Q_INVOKABLE void setEffectId(const int &effectId_);
+    Q_INVOKABLE int argSetId() const;
     Q_INVOKABLE void setArgSetId(const int &argSetId_);
     Q_INVOKABLE void setStepIndex(const int &stepIndex_);
     Q_INVOKABLE void setDuration(const int &duration_);
@@ -55,10 +57,8 @@ public:
     int id() const;
     void setId(const int &id_);
     int imagePointId() const;
-    int effectId() const;
     QVariant effect() const;
     void setEffect(const QVariant &obj_);
-    int argSetId() const;
     QVariant argSet() const;
     void setArgSet(const QVariant &obj_);
     int stepIndex() const;
