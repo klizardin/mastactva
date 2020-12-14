@@ -1614,7 +1614,18 @@ void ImagePointData::setPointId(int id_)
 {
     m_pointId = id_;
 
+    if(nullptr != m_imagePointEffectModel)
+    {
+        m_imagePointEffectModel->setRefValue(QVariant::fromValue(m_pointId));
+        m_imagePointEffectModel->loadList();
+    }
+    else
+    {
+        (void)effect();
+    }
+
     emit pointIdChanged();
+    emit effectChanged();
 }
 
 qreal ImagePointData::xCoord() const
@@ -1696,6 +1707,26 @@ void ImagePointData::setToQuestion(QVariant toQuestion_)
     }
     m_imagePointToQuestion = newQuestion;
     emit toQuestionChanged();
+}
+
+QVariant ImagePointData::effect() const
+{
+    if(nullptr == m_imagePointEffectModel)
+    {
+        const_cast<ImagePointData *>(this)->m_imagePointEffectModel = const_cast<ImagePointData *>(this)->createImagePointEffectModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<ImagePointEffectModel *>(m_imagePointEffectModel)));
+}
+
+void ImagePointData::setEffect(const QVariant& obj_)
+{
+    if(obj_.isNull() && nullptr != m_imagePointEffectModel)
+    {
+        delete m_imagePointEffectModel;
+        m_imagePointEffectModel = nullptr;
+
+        emit effectChanged();
+    }
 }
 
 ImagePointToQuestionV0 *ImagePointData::getQuestion()
@@ -1992,67 +2023,8 @@ void ImagePointData::onPointToQuestionRequestFinished(int errorCode_, RequestDat
 
 void ImagePointData::removePoint()
 {
-    /*(void)toQuestion();
-    removePoint(true);*/
-
     removeImagePoint();
 }
-
-/*void ImagePointData::removePoint(bool tryToLoad_)
-{
-    if(nullptr != m_imagePointToQuestion)
-    {
-        if(m_imagePointToQuestion->questionIdLoaded())
-        {
-            m_questionID = m_imagePointToQuestion->questionId();
-            if(m_questionID >= 0)
-            {
-                removeQuestion();
-            }
-            else
-            {
-                removeImagePoint();
-            }
-        }
-        else if(tryToLoad_)
-        {
-            QObject::connect(m_imagePointToQuestion, SIGNAL(imagePointToQuestionLoaded()), this, SLOT(imagePointToQuestionLoadedSlot()));
-        }
-    }
-    else
-    {
-        removeImagePoint();
-    }
-}
-
-void ImagePointData::imagePointToQuestionLoadedSlot()
-{
-    QObject::disconnect(m_imagePointToQuestion, SIGNAL(imagePointToQuestionLoaded()), this, SLOT(imagePointToQuestionLoadedSlot()));
-    Q_ASSERT(nullptr != m_imagePointToQuestion && m_imagePointToQuestion->questionIdLoaded());
-    removePoint(false);
-}
-
-void ImagePointData::removeQuestion()
-{
-    Q_ASSERT(m_questionID >= 0);
-    auto *netAPI = NetAPIV0::getSingelton();
-    Q_ASSERT(nullptr != netAPI);
-    if(!(nullptr != netAPI)) { return; }
-
-    m_removeQuestionRequest = netAPI->startJsonRequest();
-    NetAPIV0::getSingelton()->del(QString("image-question/%1/").arg(m_questionID), m_removeQuestionRequest);
-}
-
-void ImagePointData::onQuestionRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)
-{
-    Q_UNUSED(reply_);
-
-    if(nullptr == m_removeQuestionRequest || static_cast<RequestDataV0 *>(m_removeQuestionRequest) != request_) { return; }
-    m_removeQuestionRequest = nullptr;
-    if(0 != errorCode_) { return; }
-
-    removeImagePoint();
-}*/
 
 void ImagePointData::removeImagePoint()
 {
@@ -2062,6 +2034,21 @@ void ImagePointData::removeImagePoint()
 
     m_removeImagePointRequest = netAPI->startJsonRequest();
     NetAPIV0::getSingelton()->del(QString("image-point/%1/").arg(pointId()), m_removeImagePointRequest);
+}
+
+ImagePointEffectModel *ImagePointData::createImagePointEffectModel()
+{
+    ImagePointEffectModel *m = new ImagePointEffectModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("image_point", "", "id");
+    m->setCurrentRef("image_point");
+    m->setRefValue(QVariant::fromValue(m_pointId));
+    m->setLayoutQMLName(QString("NOLINKTOPARENT_ImagePointEffectModel_") + QVariant::fromValue(m_pointId).toString());
+    m->setLayoutIdFieldImpl("id");
+    m->registerListModel();
+    m->setAutoCreateChildrenModels(true);
+    m->loadList();
+    return m;
 }
 
 void ImagePointData::onPointRemovedSlot(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_)

@@ -134,13 +134,13 @@ ApplicationWindow {
                     question.questionIdChanged.connect(questionIdLoaded)
                     clearQuestionInfo()
                 }
+                effect.listReloaded.connect(nextImageEffectReloaded)
                 if(effect.isListLoaded())
                 {
                     setNextImageEffect()
                 }
                 else
                 {
-                    effect.listReloaded.connect(nextImageEffectReloaded)
                     clearNextImageEffect()
                 }
             }
@@ -257,6 +257,11 @@ ApplicationWindow {
             {
                 imageOfGalleryNextImageEffectModel.currentIndex = imageOfGalleryNextImageEffectCurrentIndex
             }
+        }
+
+        function nextImageEffectReloaded()
+        {
+            setNextImageEffect()
         }
 
         function onImageOfGalleryAnswerIndexChanged()

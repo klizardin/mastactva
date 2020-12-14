@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QJsonValue>
 #include <QVector2D>
+#include "../MastactvaModels/imagepointeffect.h"
 
 
 class RequestDataV0;
@@ -531,6 +532,7 @@ public:
     Q_PROPERTY(QVariant toNextImage READ toNextImage WRITE setToNextImage NOTIFY toNextImageChanged)
     Q_PROPERTY(QVariant toQuestion READ toQuestion WRITE setToQuestion NOTIFY toQuestionChanged)
     Q_PROPERTY(QDateTime created READ created WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(QVariant ipEffect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
 
@@ -548,6 +550,10 @@ public:
     void setWeight(qreal weight_);
     void setToNextImage(QVariant toNextImage_);
     void setToQuestion(QVariant toQuestion_);
+    QVariant effect() const;
+    void setEffect(const QVariant& obj_);
+    //void setEffectId(const int &effectId_);
+    //int getEffectId() const;
     ImagePointToQuestionV0 *getQuestion();
     ImagePointToNextImageV0 *getNextImageData();
     const QDateTime &created() const;
@@ -567,6 +573,7 @@ private:
     //void removePoint(bool tryToLoad_);
     void removeImagePoint();
     //void removeQuestion();
+    ImagePointEffectModel *createImagePointEffectModel();
 
 protected slots:
     void onDataSavedRequestFinished(int errorCode_, RequestDataV0 *request_, const QJsonDocument &reply_);
@@ -593,6 +600,7 @@ signals:
     void onTemplateDataCreated(int pointId_);
     void onPointRemoved();
     void createdChanged();
+    void effectChanged();
 
 private:
     int m_sourceImageId = -1;
@@ -606,6 +614,8 @@ private:
     bool m_pointToNextImage = true;
     int m_questionID = -1;
     int m_nextImageId = -1;
+    //int m_effectId = -1;
+    ImagePointEffectModel *m_imagePointEffectModel = nullptr;
 
     JsonRequestDataV0* m_saveDataRequest = nullptr;
     JsonRequestDataV0* m_createDataRequest = nullptr;
