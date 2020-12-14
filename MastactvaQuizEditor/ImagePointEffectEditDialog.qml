@@ -11,7 +11,8 @@ Dialog {
     id : imagePointEffectEditDialog
     modal: true
 
-    property bool fieldNew: true
+    property bool fieldNew: false
+    property int fieldDuration: 1000
     property var effectModel: undefined
     property int effectOldIndex: -1
     property int effectArgumentSetsOldIndex: -1
@@ -25,39 +26,58 @@ Dialog {
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
 
-    Column
+    ScrollView
     {
-        Rectangle {
-            id: effectsListRect
-            width: Constants.smallDialogWidth
-            height: Constants.smallDialogHeight / 2
+        width: Constants.smallDialogWidth
+        height: Constants.smallDialogHeight
 
-            ListView {
-                id: effectsList
-                anchors.fill: parent
-                clip: true
-                spacing: Constants.effectShaderTypeListSpacing
-                model: 0
-                delegate: effectItem
-                highlight: effectItemHighlight
-                highlightFollowsCurrentItem: false
+        Column
+        {
+            Label {
+                width: Constants.smallDialogWidth
+                text: qsTr("Duration (ms) : ")
             }
-        }
 
-        Rectangle {
-            id: effectArgumentSetsListRect
-            width: Constants.smallDialogWidth
-            height: Constants.smallDialogHeight / 2
+            TextField {
+                id: imagePointEffectDuration
+                width: Constants.smallDialogWidth
+                placeholderText: qsTr("Input duration of effect in ms")
+            }
 
-            ListView {
-                id: effectArgumentSetsList
-                anchors.fill: parent
-                clip: true
-                spacing: Constants.effectShaderTypeListSpacing
-                model: 0
-                delegate: effectArgumentSetsItem
-                highlight: effectArgumentSetsItemHighlight
-                highlightFollowsCurrentItem: false
+            Rectangle {
+                id: effectsListRect
+                x: Constants.effectShaderTypeListSpacing / 2
+                width: Constants.smallDialogWidth - Constants.effectShaderTypeListSpacing
+                height: Constants.smallDialogHeight / 2
+
+                ListView {
+                    id: effectsList
+                    anchors.fill: parent
+                    clip: true
+                    spacing: Constants.effectShaderTypeListSpacing
+                    model: 0
+                    delegate: effectItem
+                    highlight: effectItemHighlight
+                    highlightFollowsCurrentItem: false
+                }
+            }
+
+            Rectangle {
+                id: effectArgumentSetsListRect
+                x: Constants.effectShaderTypeListSpacing / 2
+                width: Constants.smallDialogWidth - Constants.effectShaderTypeListSpacing
+                height: Constants.smallDialogHeight / 2
+
+                ListView {
+                    id: effectArgumentSetsList
+                    anchors.fill: parent
+                    clip: true
+                    spacing: Constants.effectShaderTypeListSpacing
+                    model: 0
+                    delegate: effectArgumentSetsItem
+                    highlight: effectArgumentSetsItemHighlight
+                    highlightFollowsCurrentItem: false
+                }
             }
         }
     }
@@ -97,6 +117,7 @@ Dialog {
         if(effectModel !== undefined && effectModel !== null)
         {
             effectModel.listReloaded.connect(effectModelListReloaded)
+            effectModel.loadList()
             if(effectModel.isListLoaded())
             {
                 setEffectModel()
@@ -110,6 +131,12 @@ Dialog {
         {
             clearEffectModel()
         }
+        imagePointEffectDuration.text = fieldDuration
+    }
+
+    function update()
+    {
+        fieldDuration = imagePointEffectDuration.text
     }
 
     function reject()
