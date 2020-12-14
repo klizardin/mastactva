@@ -289,37 +289,37 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     }
 }
 
-static const int g_pointsWidth = 10;
-static const int g_pointsHeight = 10;
-static const int g_triangleElements = 2;
-static const int g_triangleCount = 3;
-static const int g_vertItemSize = 4;
+static const int g_geomertyPointsWidth = 10;
+static const int g_geometryPointsHeight = 10;
+static const int g_trianglesCount = 2;
+static const int g_triangleConers = 3;
+static const int g_geometryItemSize = 4;
 
 void OpenGlQuizImage::makeObject()
 {
-    static const int coords[g_triangleElements][g_triangleCount][2] =
+    static const int coords[g_trianglesCount][g_triangleConers][2] =
     {
         {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
         {{ 1, 0 }, { 1, 1 }, { 0, 1 }}
     };
 
-    m_vertData.resize(g_pointsWidth * g_pointsHeight * g_triangleElements * g_triangleCount * g_vertItemSize);
-    for(int y = 0; y < g_pointsHeight; y++)
+    m_vertData.resize(g_geomertyPointsWidth * g_geometryPointsHeight * g_trianglesCount * g_triangleConers * g_geometryItemSize);
+    for(int y = 0; y < g_geometryPointsHeight; y++)
     {
-        for(int x = 0; x < g_pointsWidth; x++)
+        for(int x = 0; x < g_geomertyPointsWidth; x++)
         {
-            const int offs = (y * g_pointsWidth + x) * g_triangleElements * g_triangleCount * g_vertItemSize;
-            for (int j = 0; j < g_triangleElements; ++j)
+            const int offs = (y * g_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * g_geometryItemSize;
+            for (int j = 0; j < g_trianglesCount; ++j)
             {
-                for(int k = 0; k < g_triangleCount; k++)
+                for(int k = 0; k < g_triangleConers; k++)
                 {
                     // vertex position
-                    const int offs1 = offs + (j * g_triangleCount + k) * g_vertItemSize;
-                    m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)g_pointsWidth;
-                    m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)g_pointsHeight;
+                    const int offs1 = offs + (j * g_triangleConers + k) * g_geometryItemSize;
+                    m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)g_geomertyPointsWidth;
+                    m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)g_geometryPointsHeight;
                     // texture coordinate
-                    m_vertData[offs1 + 2] = (GLfloat)(x + coords[j][k][0])/(GLfloat)g_pointsWidth;
-                    m_vertData[offs1 + 3] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)g_pointsHeight;
+                    m_vertData[offs1 + 2] = (GLfloat)(x + coords[j][k][0])/(GLfloat)g_geomertyPointsWidth;
+                    m_vertData[offs1 + 3] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)g_geometryPointsHeight;
                 }
             }
         }
@@ -539,7 +539,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
 
-    f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_vertItemSize);
+    f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_geometryItemSize);
 
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
