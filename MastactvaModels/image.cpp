@@ -14,6 +14,7 @@ bool Image::isImageLoaded() const
 
 void Image::loadChildren()
 {
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::loadChildrenVF();
     (void)imagePoints();
     (void)imageDescription();
