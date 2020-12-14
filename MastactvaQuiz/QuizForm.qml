@@ -67,25 +67,24 @@ Page {
                                 userStepModel.addItem(userStepNi)
 
                                 nextImage = nextImgObj
+                                nextImage.loadChildren()
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
-                                console.log("ipni.ipEffect = ", ipni.ipEffect)
-                                console.log("ipni.ipEffect.isListLoaded() = ", ipni.ipEffect.isListLoaded())
-                                console.log("ipni.ipEffect.currentItem = ", ipni.ipEffect.currentItem)
                                 if(ipni.ipEffect.currentItem !== null)
                                 {
                                     quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
                                     quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
-                                    quizImage.updateEffects()
+                                    quizImageNumberAnimation.easing.type = Easing.Linear
                                     quizImageNumberAnimation.duration = ipni.ipEffect.currentItem.imagePointEffectDuration
                                 }
                                 else
                                 {
                                     quizImage.effect = null
                                     quizImage.argumentSet = null
+                                    quizImageNumberAnimation.easing.type = Easing.Linear
                                     quizImageNumberAnimation.duration = animationDuration
                                 }
+                                quizImage.updateEffects()
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
-                                quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageAnimation.running = true
                             }
                         }
@@ -128,7 +127,7 @@ Page {
                     nextImage = undefined
                     quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
                     quizImage.swapImages();
-                    loadChildren()
+                    //loadChildren()
                 }
             }
         }
