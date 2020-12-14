@@ -134,6 +134,7 @@ ApplicationWindow {
                     question.questionIdChanged.connect(questionIdLoaded)
                     clearQuestionInfo()
                 }
+
                 effect.listReloaded.connect(nextImageEffectReloaded)
                 if(effect.isListLoaded())
                 {
@@ -271,7 +272,6 @@ ApplicationWindow {
 
         function onEffectCurrentIndexChanged()
         {
-            //console.log("onEffectCurrentIndexChanged()")
             effectsList.currentIndex = effectCurrentIndex
             effectModel.currentIndex = effectCurrentIndex
             if(effectCurrentIndex >= 0)
@@ -304,14 +304,12 @@ ApplicationWindow {
                 var effectArgumentSetsModel = effect.effectArgSets
                 if(effectArgumentSetsModel.isListLoaded())
                 {
-                    //console.log("effectArgumentSetsModel.isListLoaded()")
                     effectArgumentSetsCurrentModel = effectArgumentSetsModel
                     effectArgumentSetsList.model = effectArgumentSetsCurrentModel
                     effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
                 }
                 else
                 {
-                    //console.log("!effectArgumentSetsModel.isListLoaded() -> effectArgumentSetsListReloaded()")
                     effectArgumentSetsModel.listReloaded.connect(effectArgumentSetsListReloaded)
                 }
             }
@@ -372,7 +370,6 @@ ApplicationWindow {
 
         function effectArgumentSetsListReloaded()
         {
-            //console.log("effectArgumentSetsListReloaded()")
             var effect = effectModel.getCurrentItem()
             var effectArgumentSetsModel = effect.effectArgSets
             effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
@@ -380,7 +377,6 @@ ApplicationWindow {
             {
                 effectArgumentSetsCurrentModel = effectArgumentSetsModel
                 effectArgumentSetsList.model = effectArgumentSetsCurrentModel
-                //console.log("effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex //", effectArgumentSetsCurrentModel.currentIndex)
                 effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
             }
             else
@@ -420,7 +416,6 @@ ApplicationWindow {
 
         function onEffectArgumentSetsCurrentIndexChanged()
         {
-            //console.log("onEffectArgumentSetsCurrentIndexChanged()")
             effectArgumentSetsList.currentIndex = effectArgumentSetsCurrentIndex
             effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentModel.currentItem !== null)
@@ -428,14 +423,12 @@ ApplicationWindow {
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
                 if(effectSetValuesModel.isListLoaded())
                 {
-                    //console.log("effectSetValuesModel.isListLoaded()")
                     effectArgumentSetValuesCurrentModel = effectSetValuesModel
                     effectArgumentSetValuesList.model = effectSetValuesModel
                     effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
                 }
                 else
                 {
-                    //console.log("!effectSetValuesModel.isListLoaded() -> effectSetValuesListReloaded()")
                     effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
                 }
             }
@@ -449,17 +442,14 @@ ApplicationWindow {
 
         function effectSetValuesListReloaded()
         {
-            //console.log("effectSetValuesListReloaded()")
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
                 effectSetValuesModel.listReloaded.disconnect(effectSetValuesListReloaded)
                 if(effectSetValuesModel.isListLoaded())
                 {
-                    //console.log("effectSetValuesModel.isListLoaded()")
                     effectArgumentSetValuesCurrentModel = effectSetValuesModel
                     effectArgumentSetValuesList.model = effectSetValuesModel
-                    //console.log("effectArgumentSetValuesCurrentIndex = effectSetValuesModel.currentIndex // ", effectSetValuesModel.currentIndex)
                     effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
                 }
                 else
