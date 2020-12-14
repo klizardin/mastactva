@@ -15739,6 +15739,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "effectId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
                         "arguments": [
                             {
                                 "name": "effectId_",
@@ -15747,6 +15752,11 @@
                         ],
                         "name": "setEffectId",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argSetId",
+                        "returnType": "int"
                     },
                     {
                         "access": "public",
