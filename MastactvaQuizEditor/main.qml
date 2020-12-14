@@ -638,6 +638,7 @@ ApplicationWindow {
             chooseImageDialog.galleryModel = galleryModel
             chooseImageDialog.allImagesOfGalleryModel = allImagesOfGalleryModel
             chooseImageDialog.mastactva = mastactva
+            imagePointEffectEditDialog.effectModel = effectModel
         }
     }
 
@@ -1444,6 +1445,95 @@ ApplicationWindow {
         }
     }
 
+    ImagePointEffectEditDialog {
+        id: imagePointEffectEditDialog
+
+        property var fieldImagePointEffect: undefined
+        property var fieldImagePointEffectModel: undefined
+        property var fieldImagePoint: undefined
+
+        onOpened: {
+            effectOldIndex = -1
+            effectArgumentSetsOldIndex = -1
+            effectId = -1
+            effectArgumentSetsId = -1
+            init()
+        }
+
+        onAccepted: {
+            if(!isValid())
+            {
+                clear()
+                return
+            }
+            update()
+            setupImagePointEffect()
+            if(fieldNew)
+            {
+                fieldImagePointEffectModel.itemAdded.connect(itemAdded)
+                fieldImagePointEffectModel.addItem(fieldImagePointEffect)
+            }
+            else
+            {
+                fieldImagePointEffectModel.itemSet.connect(itemSet)
+                fieldImagePointEffectModel.setItem(fieldImagePointEffect)
+            }
+        }
+
+        onRejected: {
+            reject()
+            clear()
+        }
+
+        function isValid()
+        {
+            return !(fieldImagePointEffect === undefined || fieldImagePointEffect === null || fieldImagePoint === undefined || fieldImagePoint == null || fieldImagePointEffectModel === undefined || fieldImagePointEffectModel === null)
+        }
+
+        function setupImagePointEffect()
+        {
+            if(!isValid())
+            {
+                return
+            }
+
+            fieldImagePointEffect.imagePointEffectImagePointId = fieldImagePoint.pointId
+            fieldImagePointEffect.setEffectId(effectId)
+            fieldImagePointEffect.setArgSetId(effectArgumentSetsId)
+            fieldImagePointEffect.imagePointEffectStepIndex = 0
+            fieldImagePointEffect.imagePointEffectDuration = fieldDuration
+        }
+
+        function itemAdded()
+        {
+            if(!isValid())
+            {
+                return
+            }
+            fieldImagePointEffectModel.itemAdded.disconnect(itemAdded)
+            fieldImagePoint.ipEffect.loadList()
+            clear()
+        }
+
+        function itemSet()
+        {
+            if(!isValid())
+            {
+                return
+            }
+            fieldImagePointEffectModel.itemSet.connect(itemSet)
+            clear()
+        }
+
+        function clear()
+        {
+            fieldImagePointEffectModel = undefined
+            fieldImagePointEffect = undefined
+            fieldImagePoint = undefined
+            fieldNew = false
+        }
+    }
+
     WarningDialog {
         id: popupMessage
     }
@@ -2175,7 +2265,20 @@ ApplicationWindow {
         onTriggered: {
             if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null)
             {
-                //var newItem = imageOfGalleryNextImageEffectModel.createItem()
+                var pointsModel = images_of_gallery.model.currentImagePoints()
+                var pointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
+
+                imagePointEffectEditDialog.fieldNew = true
+                imagePointEffectEditDialog.fieldImagePoint = pointsModel.itemAt(pointIndex)
+                if(imagePointEffectEditDialog.fieldImagePoint == null)
+                {
+                    return
+                }
+                var imagePointEffectModel = imagePointEffectEditDialog.fieldImagePoint.ipEffect
+                imagePointEffectEditDialog.fieldImagePointEffectModel = imagePointEffectModel
+                imagePointEffectEditDialog.fieldImagePointEffect = imagePointEffectModel.createItem()
+                imagePointEffectEditDialog.fieldDuration = 1000
+                imagePointEffectEditDialog.open()
             }
         }
     }
@@ -2186,7 +2289,20 @@ ApplicationWindow {
         onTriggered: {
             if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null && imageOfGalleryNextImageEffectCurrentIndex >= 0)
             {
-                //var item = imageOfGalleryNextImageEffectModel.currentItem
+                var pointsModel = images_of_gallery.model.currentImagePoints()
+                var pointIndex = imageOfGalleryPointIndex >= 0 ? imageOfGalleryPointIndex : images_of_gallery.model.currentImagePoints().getSize() - 1
+
+                imagePointEffectEditDialog.fieldNew = true
+                imagePointEffectEditDialog.fieldImagePoint = pointsModel.itemAt(pointIndex)
+                if(imagePointEffectEditDialog.fieldImagePoint == null)
+                {
+                    return
+                }
+                var imagePointEffectModel = imagePointEffectEditDialog.fieldImagePoint.ipEffect
+                imagePointEffectEditDialog.fieldImagePointEffectModel = imagePointEffectModel
+                imagePointEffectEditDialog.fieldImagePointEffect = imagePointEffectModel.itemAt(imageOfGalleryNextImageEffectCurrentIndex)
+                imagePointEffectEditDialog.fieldDuration = imagePointEffectEditDialog.fieldImagePointEffect.imagePointEffectDuration
+                imagePointEffectEditDialog.open()
             }
         }
     }
