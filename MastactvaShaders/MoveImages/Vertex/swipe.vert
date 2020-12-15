@@ -23,7 +23,11 @@ varying mediump vec4 texCoord2Var;
 
 void main(void)
 {
-    mediump vec4 sd = vec4(-swipeDirection.x, -swipeDirection.y, 0.0, 0.0);
+    mediump vec4 sd = vec4(
+                swipeDirection.x > 0.0 ? -1.0 : swipeDirection.x < 0.0 ? 1.0 : 0.0 ,
+                swipeDirection.y > 0.0 ? -1.0 : swipeDirection.y < 0.0 ? 1.0 : 0.0 ,
+                0.0,
+                0.0);
     gl_Position = matrixArg * vertexArg;
     texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
     texCoord2Var = texMatrix2Arg * (texCoordArg + (t - 1.0) * sd);
