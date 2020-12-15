@@ -20,6 +20,9 @@
 #if QT_CONFIG(opengl)
 
 
+class OpenGlQuizImage;
+
+
 class ArgumentInfo
 {
 public:
@@ -31,11 +34,14 @@ public:
     void setName(const QString &name_);
     void setType(const QString &type_);
     void setValue(const QString &value_);
+    void setValue(const QVariantList &values_);
+    void initValueFromRenderState(OpenGlQuizImage *render_);
     void initId(QOpenGLShaderProgram *program_);
     void setValue(QOpenGLShaderProgram *program_) const;
 
 private:
     QString m_name;
+    bool (OpenGlQuizImage::*m_renderStateInitializeFunc)(QVariantList &values_) = nullptr;
     int m_id = 0;
     int m_argId = -1;
     bool m_floatType = true;
@@ -73,6 +79,8 @@ private:
     void resetProgram();
     QString loadFile(const QString &filename_);
     QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
+    bool getRenderRectSize(QVariantList &values_);
+    bool renderStateInitializeNone(QVariantList &values_);
 
 private:
     QObject *m_parent = nullptr;
@@ -122,6 +130,8 @@ private:
     QMatrix4x4 m_texMatrix1;
     QMatrix4x4 m_texMatrix2;
     bool m_updateSize = false;
+
+    friend class ArgumentInfo;
 };
 
 

@@ -15,6 +15,7 @@
 
 static const QString g_noImage = ":/resources/no-image.png";
 static const QString g_rand = "rand";
+static const QString g_renderRectSize = "renderRectSize";
 
 
 void ArgumentInfo::setArgId(int argId_)
@@ -77,6 +78,21 @@ static bool set_value(const QString &valStr_, GLfloat& val_)
 }
 
 template<typename Type_>
+static void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_)
+{
+    int pos = 0;
+    for(const QVariant &val_ : values_)
+    {
+        QString val = val_.toString().trimmed();
+        if(val.isEmpty()) { continue; }
+        if(pos < valuesArray_.size() && set_value(val, valuesArray_[pos]))
+        {
+            ++pos;
+        }
+    }
+}
+
+template<typename Type_>
 static void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
 {
     QString value = valuesStr_;
@@ -86,16 +102,13 @@ static void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray
     value.replace(QString("}"), QString(", "));
     value.replace(QString("\n"), QString(", "));
     QStringList values = value.split(QString(","));
-    int pos = 0;
+    QVariantList valuesVar;
+    valuesVar.reserve(values.size());
     for(const QString &s : values)
     {
-        QString val = s.trimmed();
-        if(val.isEmpty()) { continue; }
-        if(pos < valuesArray_.size() && set_value(val, valuesArray_[pos]))
-        {
-            ++pos;
-        }
+        valuesVar.push_back(s);
     }
+    extractValues(valuesVar, valuesArray_);
 }
 
 static void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
@@ -124,6 +137,7 @@ static void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> 
 
 void ArgumentInfo::setValue(const QString &value_)
 {
+    m_renderStateInitializeFunc = &OpenGlQuizImage::renderStateInitializeNone;
     if(value_.contains(g_rand))
     {
         if(m_floatType)
@@ -141,6 +155,10 @@ void ArgumentInfo::setValue(const QString &value_)
             generateUniformIntRands(args, m_valueInt);
         }
     }
+    else if(value_.contains(g_renderRectSize))
+    {
+        m_renderStateInitializeFunc = &OpenGlQuizImage::getRenderRectSize;
+    }
     else
     {
         if(m_floatType)
@@ -152,6 +170,25 @@ void ArgumentInfo::setValue(const QString &value_)
             extractValues(value_, m_valueInt);
         }
     }
+}
+
+void ArgumentInfo::setValue(const QVariantList &values_)
+{
+    if(m_floatType)
+    {
+        extractValues(values_, m_valueFloat);
+    }
+    else
+    {
+        extractValues(values_, m_valueInt);
+    }
+}
+
+void ArgumentInfo::initValueFromRenderState(OpenGlQuizImage *render_)
+{
+    QVariantList values;
+    if(!(render_->*m_renderStateInitializeFunc)(values)) { return; }
+    setValue(values);
 }
 
 void ArgumentInfo::initId(QOpenGLShaderProgram *program_)
@@ -242,7 +279,7 @@ void OpenGlQuizImage::render(const RenderState *state_)
 
 QSGRenderNode::StateFlags OpenGlQuizImage::changedStates() const
 {
-    return BlendState | ScissorState | StencilState;
+    return BlendState | ScissorState | StencilState | CullState;
 }
 
 QSGRenderNode::RenderingFlags OpenGlQuizImage::flags() const
@@ -269,7 +306,7 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
     // base data
-    qreal oldT = m_t;
+    //qreal oldT = m_t;
     m_t = quizImage->t();
     //if(oldT != m_t)
     //{
@@ -511,6 +548,11 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
         makeObject();
         makeTextureMatrixes();
         m_updateSize = false;
+    }
+
+    for(ArgumentInfo &ai: m_arguments)
+    {
+        ai.initValueFromRenderState(this);
     }
 
     m_program->setUniformValue(m_tId, (GLfloat)m_t);
@@ -758,4 +800,19 @@ QString OpenGlQuizImage::loadFileByUrl(const QString &filenameUrl_, bool useServ
         QUrl url(filenameUrl_);
         return loadFile(url.toLocalFile());
     }
+}
+
+bool OpenGlQuizImage::getRenderRectSize(QVariantList &values_)
+{
+    values_.clear();
+    values_.reserve(2);
+    values_.push_back(m_width);
+    values_.push_back(m_height);
+    return true;
+}
+
+bool OpenGlQuizImage::renderStateInitializeNone(QVariantList &values_)
+{
+    Q_UNUSED(values_);
+    return false;
 }
