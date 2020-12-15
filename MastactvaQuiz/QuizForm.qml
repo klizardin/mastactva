@@ -67,7 +67,7 @@ Page {
                                 userStepModel.addItem(userStepNi)
 
                                 nextImage = nextImgObj
-                                //nextImage.loadChildren()
+                                nextImage.loadChildren()
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
                                 if(ipni.ipEffect.currentItem !== null)
                                 {
@@ -83,7 +83,6 @@ Page {
                                     quizImageNumberAnimation.easing.type = Easing.Linear
                                     quizImageNumberAnimation.duration = animationDuration
                                 }
-                                quizImage.updateEffects()
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageAnimation.running = true
                             }
@@ -126,8 +125,11 @@ Page {
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
                     quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
+                    quizImage.effect = null
+                    quizImage.argumentSet = null
+                    quizImageNumberAnimation.easing.type = Easing.Linear
+                    quizImageNumberAnimation.duration = animationDuration
                     quizImage.swapImages();
-                    loadChildren()
                 }
             }
         }
