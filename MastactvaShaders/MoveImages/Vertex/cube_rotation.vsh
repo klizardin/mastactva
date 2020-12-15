@@ -88,7 +88,6 @@ void main(void)
         mediump float k = 1.0;
         if(s <= 0.0)
         {
-            //shift1.y = 0.0;
             shift2.y = -1.0;
             if(cubeVertex.y >= rectSize.y)
             {
@@ -100,7 +99,6 @@ void main(void)
         else
         {
             shift1.y = -1.0;
-            //shift2.y = 0.0;
             if(cubeVertex.y <= rectSize.y)
             {
                 cubeVertex.z = -(rectSize.y - cubeVertex.y);
