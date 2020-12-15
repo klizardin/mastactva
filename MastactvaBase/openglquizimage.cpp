@@ -269,13 +269,22 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
     // base data
+    qreal oldT = m_t;
     m_t = quizImage->t();
+    //if(oldT != m_t)
+    //{
+    //    qDebug() << "m_t = " << m_t;
+    //}
     if(!quizImage->areAllDataAvailable()) { return; }
     // all data
     m_fromImageUrlNew = quizImage->fromImageLocalUrl();
     if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
     m_toImageUrlNew = quizImage->toImageLocalUrl();
     if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
+    //if(m_fromImageUrlNew != m_fromImageUrl || m_toImageUrlNew != m_toImageUrl)
+    //{
+    //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
+    //}
     m_effect = quizImage->getEffect();
     m_argumentSet = quizImage->getArgumentSet();
     const bool needToUpdateEffects = quizImage->needToUpdateEffects();
@@ -342,10 +351,10 @@ void OpenGlQuizImage::createTextures()
     {
         // swap textures
         std::swap(m_fromImageUrl, m_toImageUrl);
+        //qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
         Q_ASSERT(m_fromImageUrl == m_fromImageUrlNew && m_toImageUrl == m_toImageUrlNew);
         std::swap(m_fromImage, m_toImage);
         std::swap(m_fromTexture, m_toTexture);
-        m_t = 1.0 - m_t;
         m_updateSize = true;
         return;
     }
@@ -363,6 +372,7 @@ void OpenGlQuizImage::createTextures()
         {
             m_fromImage = new QImage(m_fromImageUrl);
         }
+        //qDebug() << "m_fromImageUrl = " << m_fromImageUrl;
         Q_ASSERT(!m_fromImage->isNull());
         m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
@@ -383,6 +393,7 @@ void OpenGlQuizImage::createTextures()
         {
             m_toImage = new QImage(m_toImageUrl);
         }
+        //qDebug() << "m_toImageUrl = " << m_toImageUrl;
         Q_ASSERT(!m_toImage->isNull());
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
@@ -558,6 +569,9 @@ void OpenGlQuizImage::extractArguments()
 {
     if(nullptr == m_effect)
     {
+        m_arguments.clear();
+        m_vertexShader.clear();
+        m_fragmentShader.clear();
         initDefaultShaders();
         resetProgram();
         return;
@@ -647,6 +661,7 @@ void OpenGlQuizImage::extractArguments()
             fita->setValue(effectArgumentValue->value());
         }
     }
+
     resetProgram();
 }
 

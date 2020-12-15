@@ -36,6 +36,7 @@ void QuizImage::updateEffects()
 void QuizImage::swapImages()
 {
     std::swap(m_fromImageUrl, m_toImageUrl);
+    m_t = 1.0 - m_t;
 
     delete m_image;
     m_image = nullptr;
@@ -62,6 +63,7 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
     if(imageUrl == m_fromImageUrl || imageHash.isEmpty()) { return; }
 
     m_fromImageUrl = imageUrl;
+    //qDebug() << "setFromImage() " << m_fromImageUrl;
     delete m_image;
     m_image = nullptr;
 
@@ -71,6 +73,7 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
         QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
         sf->add(imageUrl, imageHash, g_imagesRelPath);
     }
+
     emit fromImageChanged();
 }
 
@@ -100,6 +103,7 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
     if(imageUrl == m_toImageUrl || imageHash.isEmpty()) { return; }
 
     m_toImageUrl = imageUrl;
+    //qDebug() << "setToImage() " << m_toImageUrl;
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
@@ -132,13 +136,20 @@ void QuizImage::setEffect(const QVariant &effect_)
     Effect *effect = qobject_cast<Effect *>(obj);
     if(m_effect == effect) { return; }
 
-    m_effectLoading = true;
     m_effect = effect;
 
-    QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
-    if(m_effect->isChildrenLoaded())
+    if(nullptr != m_effect)
     {
-        addShadersToWaitDownload();
+        m_effectLoading = true;
+        QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+        if(m_effect->isChildrenLoaded())
+        {
+            addShadersToWaitDownload();
+        }
+    }
+    else
+    {
+        updateStateIfDataIsReady();
     }
 
     emit effectChanged();
@@ -170,8 +181,15 @@ void QuizImage::setArgumentSet(const QVariant &argumentSet_)
 
     m_argumentSet = argumentSet;
 
-    QObject::connect(m_argumentSet, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
-    if(m_argumentSet->isChildrenLoaded())
+    if(nullptr != m_argumentSet)
+    {
+        QObject::connect(m_argumentSet, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+        if(m_argumentSet->isChildrenLoaded())
+        {
+            updateStateIfDataIsReady();
+        }
+    }
+    else
     {
         updateStateIfDataIsReady();
     }
@@ -280,6 +298,7 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 
 void QuizImage::imageDownloadedSlot(const QString &url_)
 {
+    //qDebug() << "imageDownloadedSlot() url = " << url_;
     Q_UNUSED(url_);
     updateStateIfDataIsReady();
 }
@@ -294,6 +313,7 @@ void QuizImage::updateStateIfDataIsReady()
     const bool canUpdate = areAllDataAvailable();
     if(!canUpdate) { return; }
 
+    // free resource for waiting for resource loaded
     m_shadersUrls.clear();
     if(nullptr != m_argumentSet)
     {
@@ -308,6 +328,8 @@ void QuizImage::updateStateIfDataIsReady()
     {
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
     }
+
+    // update image size
     if(nullptr == m_image && nullptr != sf)
     {
         const QString fileUrl = sf->get(m_fromImageUrl);
@@ -328,6 +350,7 @@ void QuizImage::updateStateIfDataIsReady()
         emit paintedWidthChanged();
         emit paintedHeightChanged();
     }
+
     updateState();
 }
 
