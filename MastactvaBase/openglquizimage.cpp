@@ -300,7 +300,9 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
 static const int g_trianglesCount = 2;
 static const int g_triangleConers = 3;
-static const int g_geometryItemSize = 4;
+static const int g_geometryVertexCoords = 3;
+static const int g_geometryTextureCoords = 2;
+static const int g_geometryItemSize = g_geometryVertexCoords + g_geometryTextureCoords;
 static const GLfloat g_facegGeometryCoef = 1e-3;
 
 void OpenGlQuizImage::makeObject()
@@ -308,7 +310,7 @@ void OpenGlQuizImage::makeObject()
     static const int coords[g_trianglesCount][g_triangleConers][2] =
     {
         {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
-        {{ 1, 0 }, { 1, 1 }, { 0, 1 }}
+        {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
     };
 
     m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight * g_trianglesCount * g_triangleConers * g_geometryItemSize);
@@ -333,9 +335,10 @@ void OpenGlQuizImage::makeObject()
                         m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef;
                         m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef;
                     }
+                    m_vertData[offs1 + 2] = 0.1;
                     // texture coordinate
-                    m_vertData[offs1 + 2] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth;
-                    m_vertData[offs1 + 3] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight;
+                    m_vertData[offs1 + 3] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth;
+                    m_vertData[offs1 + 4] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight;
                 }
             }
         }
@@ -524,8 +527,15 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_vbo->bind();
     m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());
 
-    m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT, 0, 2, 4 * sizeof(GLfloat));
-    m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT, 2 * sizeof(GLfloat), 2, 4 * sizeof(GLfloat));
+    m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT,
+                                  0,
+                                  g_geometryVertexCoords,
+                                  g_geometryItemSize * sizeof(GLfloat)
+                                  );
+    m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT,
+                                  g_geometryVertexCoords * sizeof(GLfloat),
+                                  g_geometryTextureCoords,
+                                  g_geometryItemSize * sizeof(GLfloat));
     m_program->enableAttributeArray(m_vertexAttrId);
     m_program->enableAttributeArray(m_texCoordAttrId);
 
@@ -557,6 +567,9 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
 
+    //f_->glEnable(GL_CULL_FACE);
+    //f_->glCullFace(GL_FRONT_AND_BACK);
+    f_->glFrontFace(GL_CCW);
     f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_geometryItemSize);
 
     m_program->disableAttributeArray(m_vertexAttrId);

@@ -80,9 +80,9 @@ private:
     int m_top = 0;
     int m_width = 0;
     int m_height = 0;
-    int m_geomertyPointsWidth = 2;
-    int m_geometryPointsHeight = 2;
-    bool m_geometrySolid = false;
+    int m_geomertyPointsWidth = 1;
+    int m_geometryPointsHeight = 1;
+    bool m_geometrySolid = true;
     QVector<GLfloat> m_vertData;
 
     QOpenGLTexture *m_fromTexture = nullptr;
