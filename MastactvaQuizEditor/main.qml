@@ -2737,6 +2737,20 @@ ApplicationWindow {
     }
 
     Action {
+        id: defaultEffectDemo
+        text: qsTr("&Default effect demo")
+        onTriggered: {
+            effectDemoImageAnimationForward.running = false
+            effectDemoImageAnimationBackward.running = false
+            effectImageDemo.effect = null
+            effectImageDemo.argumentSet = null
+            effectImageDemo.t = 0.5
+            numberAnimationBackward.easing.type = Easing.Linear
+            effectImageDemo.updateEffects()
+        }
+    }
+
+    Action {
         id: stopEffectDemo
         text: qsTr("&Stop effect demo")
         onTriggered: {
@@ -2890,6 +2904,7 @@ ApplicationWindow {
             MenuItem { action: playEffectDemo }
             MenuItem { action: reversePlayEffectDemo }
             MenuItem { action: stopEffectDemo }
+            MenuItem { action: defaultEffectDemo }
             MenuItem { action: testEffect00Demo }
             MenuItem { action: testEffect01Demo }
             MenuItem { action: testEffect02Demo }
