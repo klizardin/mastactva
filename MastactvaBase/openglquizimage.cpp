@@ -744,8 +744,8 @@ void OpenGlQuizImage::initGeometry()
     if(std::end(comments) != fitShader)
     {
         const Comment &shaderComment = *fitShader;
-        m_geometrySolid = shaderComment.values().contains(g_geometrySolidName)
-                && !shaderComment.values().contains(g_geometryFacedName)
+        m_geometrySolid = !(!shaderComment.values().contains(g_geometrySolidName)
+                && shaderComment.values().contains(g_geometryFacedName))
                 ;
         if(shaderComment.values().contains(g_geometrySizeName))
         {
@@ -755,6 +755,11 @@ void OpenGlQuizImage::initGeometry()
             extractValues(geomSizeStr, args);
             m_geomertyPointsWidth = std::max(1, args[0]);
             m_geometryPointsHeight = std::max(1, args[1]);
+        }
+        else
+        {
+            m_geomertyPointsWidth = 1;
+            m_geometryPointsHeight = 1;
         }
     }
     else
