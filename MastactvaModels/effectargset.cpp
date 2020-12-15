@@ -5,6 +5,7 @@ EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
     m_effectArgSetModel = parent_;
+    m_objectModelInfo = this;
 }
 
 QVariantList EffectArgSet::argValuesOfSetIdList()

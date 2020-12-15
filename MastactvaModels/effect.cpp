@@ -11,6 +11,7 @@ Effect::Effect(EffectModel *parent_)
     : QObject(parent_)
 {
     m_effectModel = parent_;
+    m_objectModelInfo = this;
 }
 
 int Effect::id() const

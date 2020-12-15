@@ -33,6 +33,7 @@ public:
         {
             setLayoutJsonName("effect-arg-set");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectArgSet::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &EffectArgSet::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArgSet::m_appId);
             addField<int>("id", "effectArgSetId", &EffectArgSet::id, &EffectArgSet::setId);
             addField<int>("effect", "effectArgSetEffectId", &EffectArgSet::effectId, &EffectArgSet::setEffectId);
@@ -75,6 +76,7 @@ signals:
 private:
     EffectArgSetModel *m_effectArgSetModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
