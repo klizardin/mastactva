@@ -883,7 +883,8 @@ protected:
             }
         }
         clearData();
-        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + loaded.size() - 1);
+        //qDebug() << "modelListLoaded() beginInsertRows(" << m_data.size() << "," << std::max(0, m_data.size() + loaded.size() - 1) << ")";
+        beginInsertRows(QModelIndex(), m_data.size(), std::max(0, m_data.size() + loaded.size() - 1));
         std::copy(std::begin(loaded), std::end(loaded),
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
@@ -919,6 +920,7 @@ protected:
         if(nullptr == request_->getItemData()) { return; }
         const QVariant appId = request_->getItemAppId();
 
+        //qDebug() << "modelItemAdded() beginInsertRows(" << m_data.size() << "," << m_data.size() << ")";
         beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
         m_data.push_back(reinterpret_cast<DataType_ *>(request_->getItemData()));
         endInsertRows();
@@ -1023,7 +1025,8 @@ protected:
 
     void clearData()
     {
-        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        //qDebug() << "clearData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+        beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
             delete p;
@@ -1045,6 +1048,7 @@ protected:
         });
         if(std::end(m_data) == fit) { return; }
         const int index = std::distance(std::begin(m_data), fit);
+        //qDebug() << "removeItem() beginRemoveRows(" << index << "," << index << ")";
         beginRemoveRows(QModelIndex(), index, index);
         delete *fit;
         *fit = nullptr;
@@ -1076,7 +1080,8 @@ protected:
             if(nullptr != item) { waitingToUpdate.push_back(item); }
         }
         if(waitingToUpdate.size() == m_data.size()) { return; }
-        beginRemoveRows(QModelIndex(), 0, m_data.size());
+        //qDebug() << "clearTempData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+        beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
             const auto fit = std::find(std::begin(waitingToUpdate), std::end(waitingToUpdate), p);
@@ -1088,7 +1093,8 @@ protected:
         }
         m_data.clear();
         endRemoveRows();
-        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + waitingToUpdate.size() - 1);
+        //qDebug() << "clearTempData() beginInsertRows(" << 0 << "," << std::max(0, waitingToUpdate.size() - 1) << ")";
+        beginInsertRows(QModelIndex(), 0, std::max(0, waitingToUpdate.size() - 1));
         std::copy(std::begin(waitingToUpdate), std::end(waitingToUpdate),
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
