@@ -72,6 +72,7 @@
 36. implement texture matrix effect -- resize image (0..0.8) mix (0.8..1)
 37. remove duplications of qml components, better to move component at separate file
 38. remove duplications of loadChildren loadList functions in Model.h
+* 39. auto download sgaders and images
 
 
 
