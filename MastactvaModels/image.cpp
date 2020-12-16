@@ -1,4 +1,8 @@
 #include "image.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/utils.h"
+
 
 Image::Image(ImageModel *parent_ /*= nullptr*/)
     : QObject(parent_)
@@ -173,9 +177,26 @@ ImageDescriptionModel *Image::createImageDescriptionModel()
     return m;
 }
 
+void Image::loadChildrenVF()
+{
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
+void Image::objectLoadedVF()
+{
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        sf->add(getFilename(), hash(), g_imagesRelPath);
+    }
+    IListModelInfoObjectImpl::objectLoadedVF();
+}
+
 
 ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Image, ImageModel>(parent_)
 {
     init(this);
+    setAutoCreateChildrenModelsOnSelectImpl(true);
 }

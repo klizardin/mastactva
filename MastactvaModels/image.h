@@ -77,6 +77,8 @@ public:
 protected:
     ImagePointModel *createImagePoints();
     ImageDescriptionModel *createImageDescriptionModel();
+    virtual void loadChildrenVF() override;
+    virtual void objectLoadedVF() override;
 
 signals:
     void idChanged();
