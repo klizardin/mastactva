@@ -58,6 +58,10 @@ Page {
                             var nextImgObj = allImagesOfGalleryModel.findItemById(ipni.nextImage.getCurrentItem().iptniNextImage)
                             if(nextImgObj !== undefined && nextImgObj !== null)
                             {
+                                // for auto upload on select image in the image model
+                                var index = allImagesOfGalleryModel.indexOfItem(nextImgObj)
+                                if(index >= 0) { allImagesOfGalleryModel.currentIndex = index; }
+
                                 // log jump to next image
                                 var userStepNi = userStepModel.createItem()
                                 userStepNi.usGalleryId = galleryModel.getCurrentItem().id
@@ -67,7 +71,7 @@ Page {
                                 userStepModel.addItem(userStepNi)
 
                                 nextImage = nextImgObj
-                                nextImage.loadChildren()
+                                //nextImage.loadChildren()
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
                                 if(ipni.ipEffect.currentItem !== null)
                                 {
