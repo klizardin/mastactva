@@ -291,7 +291,7 @@ public:
         const int ni = std::distance(std::begin(m_data), fit);
         if(ni == getCurrentIndexImpl()) { return false; }
         setCurrentIndexImpl(ni);
-        autoLoadItemData();
+        autoLoadDataItem();
         return true;
     }
 
@@ -310,7 +310,7 @@ public:
         const int ni = std::distance(std::begin(m_data), fit);
         if(ni == getCurrentIndexImpl()) { return false; }
         setCurrentIndexImpl(ni);
-        autoLoadItemData();
+        autoLoadDataItem();
         return true;
     }
 
@@ -562,6 +562,23 @@ public:
         setDataLayout<DataType_>().setIdField(fieldJsonName_);
     }
 
+    void autoLoadDataItemImpl(const DataType_ *item_)
+    {
+        if(nullptr == item_) { return; }
+        const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
+        IListModelInfo *modelInfo = nullptr;
+        layout::setValue(modelInfoVar, modelInfo);
+        if(nullptr != modelInfo)
+        {
+            modelInfo->loadChildrenVF();
+        }
+        getDataLayout<DataType_>().createQMLValues(item_);
+        if(nullptr != modelInfo)
+        {
+            modelInfo->objectLoadedVF();
+        }
+    }
+
 protected:
     bool storeAfterSaveImpl() const
     {
@@ -752,12 +769,12 @@ protected:
         if(std::end(m_data) == fit)
         {
             setCurrentIndexImpl(m_data.isEmpty()? -1: 0);
-            autoLoadItemData();
+            autoLoadDataItem();
         }
         else
         {
             setCurrentIndexImpl(std::distance(std::begin(m_data), fit));
-            autoLoadItemData();
+            autoLoadDataItem();
         }
     }
 
@@ -874,17 +891,17 @@ protected:
         if(nullptr == oldIdItem)
         {
             setCurrentIndexImpl(0);
-            autoLoadItemData();
+            autoLoadDataItem();
         }
         else
         {
             setCurrentIndexByAppIdImpl(oldCurrentAppId);
-            autoLoadItemData();
+            autoLoadDataItem();
         }
         loaded.clear();
         for(DataType_ *item : m_data)
         {
-            autoLoadItemData(item);
+            autoLoadDataItem(item);
         }
         setListLoaded();
 #if defined(TRACE_LIST_LOAD_DATA)
@@ -915,7 +932,7 @@ protected:
         if(request_->getSetCurrentItemIndex())
         {
             setCurrentIndexImpl(m_data.size() - 1);
-            autoLoadItemData();
+            autoLoadDataItem();
         }
         itemAddedVF();
     }
@@ -974,7 +991,7 @@ protected:
         return m_roleNames;
     }
 
-    void autoLoadItemData(const DataType_ *item_ = nullptr)
+    void autoLoadDataItem(const DataType_ *item_ = nullptr)
     {
         if(
             (
@@ -991,19 +1008,16 @@ protected:
             {
                 item_ = m_data[getCurrentIndexImpl()];
             }
-            const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
-            IListModelInfo *modelInfo = nullptr;
-            layout::setValue(modelInfoVar, modelInfo);
-            if(nullptr != modelInfo)
-            {
-                modelInfo->loadChildrenVF();
-            }
-            getDataLayout<DataType_>().createQMLValues(item_);
-            if(nullptr != modelInfo)
-            {
-                modelInfo->objectLoadedVF();
-            }
+            autoLoadDataItemImpl(item_);
         }
+    }
+
+    void autoLoadItemImpl(const QVariant &item_)
+    {
+        QObject *obj = qvariant_cast<QObject *>(item_);
+        DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
+        if(nullptr == dataItem) { return; }
+        autoLoadDataItemImpl(dataItem);
     }
 
     void clearData()
@@ -1209,6 +1223,10 @@ public:                                                                         
     {                                                                                                           \
         return filterItemsLeftExceptIDsImpl(ids_);                                                              \
     }                                                                                                           \
+    Q_INVOKABLE void autoLoadItem(const QVariant &item_)                                                        \
+    {                                                                                                           \
+        autoLoadItemImpl(item_);                                                                                \
+    }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
     {                                                                                                           \
@@ -1235,7 +1253,7 @@ public:                                                                         
     void setCurrentIndex(int index_)                                                                            \
     {                                                                                                           \
         setCurrentIndexImpl(index_);                                                                            \
-        autoLoadItemData();                                                                                     \
+        autoLoadDataItem();                                                                                     \
         emit currentIndexChanged();                                                                             \
         emit currentItemChanged();                                                                              \
     }                                                                                                           \
