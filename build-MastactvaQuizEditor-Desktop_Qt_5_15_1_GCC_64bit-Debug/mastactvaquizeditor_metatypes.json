@@ -3618,6 +3618,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -4445,6 +4456,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -5178,6 +5200,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -5913,6 +5946,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -6661,6 +6705,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -7355,6 +7410,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -7791,6 +7857,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "IListModelInfoObjectImpl"
                     }
                 ]
             },
@@ -8069,6 +8139,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -8726,6 +8807,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -9383,6 +9475,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -10652,6 +10755,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -11422,6 +11536,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -12209,6 +12334,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -12904,6 +13040,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -13574,6 +13721,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -14363,6 +14521,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "x_",
                                 "type": "qreal"
                             },
@@ -15109,6 +15278,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -15804,6 +15984,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -16536,6 +16727,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -17231,6 +17433,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -17964,6 +18177,17 @@
                         ],
                         "name": "filterItemsLeftExceptIDs",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

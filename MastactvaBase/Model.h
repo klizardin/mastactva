@@ -919,7 +919,7 @@ protected:
         if(nullptr == request_->getItemData()) { return; }
         const QVariant appId = request_->getItemAppId();
 
-        beginInsertRows(QModelIndex(), m_data.size(), m_data.size() + 1 - 1);
+        beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
         m_data.push_back(reinterpret_cast<DataType_ *>(request_->getItemData()));
         endInsertRows();
 
@@ -929,10 +929,10 @@ protected:
         if(nullptr == item) { return; }
 
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+        autoLoadDataItem(item);
         if(request_->getSetCurrentItemIndex())
         {
             setCurrentIndexImpl(m_data.size() - 1);
-            autoLoadDataItem();
         }
         itemAddedVF();
     }
@@ -943,6 +943,7 @@ protected:
         DataType_ *item = findDataItemByIdImpl(id);
         if(nullptr == item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
+        autoLoadDataItem(item);
         const int itemIndex = indexOfDataItemImpl(item);
         QModelIndex changedIndex0 = createIndex(itemIndex, 0);
         QModelIndex changedIndex1 = createIndex(itemIndex, m_roleNames.size());
