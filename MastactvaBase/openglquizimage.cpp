@@ -452,11 +452,15 @@ void OpenGlQuizImage::makeTextureMatrixes()
     {
         const QSize imageSize = m_fromImage->size();
         calculatePreserveAspectFitTextureMatrix(m_texMatrix1, imageSize, rectSize);
+        //QVector4D tl(0,0,0,1), br(1, 1, 0, 1);
+        //qDebug() << "tl = " <<  m_texMatrix1 * tl << "br = " << m_texMatrix1 * br;
     }
     if(nullptr != m_toImage)
     {
         const QSize imageSize = m_toImage->size();
         calculatePreserveAspectFitTextureMatrix(m_texMatrix2, imageSize, rectSize);
+        //QVector4D tl(0,0,0,1), br(1, 1, 0, 1);
+        //qDebug() << "tl = " <<  m_texMatrix2 * tl << "br = " << m_texMatrix2 * br;
     }
 }
 
