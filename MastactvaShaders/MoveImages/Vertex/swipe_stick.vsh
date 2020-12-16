@@ -63,6 +63,11 @@ void main(void)
     mediump float ta = t1 + t2 + t3;
 
     mediump float t0 = t*ta;
+    if(t < t1/ta)
+    {
+        texCoord1Var = texMatrix1Arg * texCoordArg;
+        texCoord2Var = texMatrix2Arg * (texCoordArg + (t + s1 - 1.0) * sd);
+    }
     if(t < (t1+t2)/ta)
     {
         texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
