@@ -21,6 +21,7 @@ public:
     void cancel();
     bool ok() const;
     const QString &getUrl() const;
+    const QString &getHash() const;
     QString getLocalURL() const;
     qint64 bytesReceived() const;
     qint64 bytesTotal() const;

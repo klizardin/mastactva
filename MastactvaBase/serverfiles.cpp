@@ -27,11 +27,38 @@ void ServerFiles::setRootDir(const QString &path_)
 
 void ServerFiles::add(const QString &url_, const QString &hash_, const QString &relCachePath_)
 {
+    //qDebug() << "ServerFiles::add() url = " << url_;
+
+    // check if url has currently been downloaded
     if(isUrlDownloaded(url_) && testHash(url_, hash_))
     {
         emit downloaded(url_);
+        //qDebug() << "ServerFiles::add() already has been downloaded";
         return;
     }
+
+    // check if url is currently downloading
+    const auto fitd = std::find_if(std::begin(m_downloads), std::end(m_downloads),
+                 [&url_](ServerFileDownload *sfd_)->bool
+    {
+        return nullptr != sfd_ && sfd_->getUrl() == url_;
+    });
+    if(std::end(m_downloads) != fitd)
+    {
+        ServerFileDownload *sfd = *fitd;
+        if(sfd->getHash() != hash_)
+        {
+            // update hash
+            // prefere new hash
+            // it is just a heuristic, really this hash may not be the latest
+            sfd->setFile(url_, hash_);
+        }
+        //qDebug() << "ServerFiles::add() is downloading";
+        return;
+    }
+
+    // start new download
+    //qDebug() << "ServerFiles::add() start to download";
     ServerFileDownload *sfd = new ServerFileDownload(this);
     m_downloads.push_back(sfd);
     QObject::connect(sfd, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
@@ -188,6 +215,7 @@ void ServerFileDownload::setPath(const QString &rootDir, const QString &relPath_
     m_rootDir = rootDir;
     m_relPath = relPath_;
 }
+
 void ServerFileDownload::setFile(const QString &url_, const QString &hash_)
 {
     m_url = url_;
@@ -244,6 +272,11 @@ bool ServerFileDownload::ok() const
 const QString &ServerFileDownload::getUrl() const
 {
     return m_url;
+}
+
+const QString &ServerFileDownload::getHash() const
+{
+    return m_hash;
 }
 
 QString ServerFileDownload::getLocalURL() const
