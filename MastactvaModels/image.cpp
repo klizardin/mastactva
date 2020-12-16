@@ -22,6 +22,17 @@ void Image::loadChildren()
     m_imageModel->autoLoadDataItemImpl(this);
 }
 
+void Image::downloadImage()
+{
+    //qDebug() << "Image::downloadImage() " << getFilename();
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        sf->add(getFilename(), hash(), g_imagesRelPath);
+    }
+}
+
 int Image::id() const
 {
     return m_id;
@@ -155,6 +166,7 @@ ImagePointModel *Image::createImagePoints()
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
+    m->setImageModel(m_imageModel);
     m->setAutoCreateChildrenModels(true);
     m->loadList();
     return m;
@@ -179,17 +191,14 @@ ImageDescriptionModel *Image::createImageDescriptionModel()
 
 void Image::loadChildrenVF()
 {
+    //qDebug() << "Image::loadChildrenVF() " << getFilename();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::loadChildrenVF();
 }
 
 void Image::objectLoadedVF()
 {
-    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf)
-    {
-        sf->add(getFilename(), hash(), g_imagesRelPath);
-    }
+    downloadImage();
     IListModelInfoObjectImpl::objectLoadedVF();
 }
 

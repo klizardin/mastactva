@@ -13443,6 +13443,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "IListModelInfoObjectImpl"
                     }
                 ]
             },

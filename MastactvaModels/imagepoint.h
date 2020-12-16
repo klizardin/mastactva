@@ -13,6 +13,7 @@
 
 
 class ImagePointToQuestionModel;
+class ImageModel;
 
 
 class ImagePointToQuestion : public QObject
@@ -119,12 +120,15 @@ signals:
 };
 
 
-class ImagePointToNextImage : public QObject
+class ImagePointToNextImageModel;
+
+
+class ImagePointToNextImage : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 
 public:
-    explicit ImagePointToNextImage(QObject *parent_ = nullptr);
+    explicit ImagePointToNextImage(ImagePointToNextImageModel *parent_ = nullptr);
 
     Q_PROPERTY(int iptniId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int iptniImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)
@@ -138,6 +142,8 @@ public:
         {
             setLayoutJsonName("image-point-to-next-image");
             addSpecial<int>(layout::SpecialFieldEn::appId, &ImagePointToNextImage::m_appId);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ImagePointToNextImage::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &ImagePointToNextImage::m_objectModelInfo);
             addField<int>("id", "iptniId", &ImagePointToNextImage::id, &ImagePointToNextImage::setId);
             addField<int>("image_point", "iptniImagePointId", &ImagePointToNextImage::imagePointId, &ImagePointToNextImage::setImagePointId);
             addField<int>("next_image", "iptniNextImage", &ImagePointToNextImage::nextImage, &ImagePointToNextImage::setNextImage);
@@ -151,6 +157,10 @@ public:
     int nextImage() const;
     void setNextImage(const int &nextImage_);
 
+protected:
+    virtual void loadChildrenVF() override;
+    virtual void objectLoadedVF() override;
+
 signals:
     void idChanged();
     void imagePointIdChanged();
@@ -161,6 +171,9 @@ private:
     int m_id = -1;
     int m_imagePointId = -1;
     int m_nextImage = -1;
+    ImagePointToNextImageModel *m_parentModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
 };
 
 
@@ -174,6 +187,10 @@ protected:
 
 public:
     explicit ImagePointToNextImageModel(QObject *parent_ = nullptr);
+
+    void setImageModel(ImageModel *imageModel_);
+    ImageModel *getImageModel();
+
 
     LAYOUT_MODEL_IMPL();
 
@@ -207,6 +224,9 @@ signals:
     void itemDeleted();
     void outputModelChanged();
     void error(const QString &errorCode_, const QString &description_);
+
+private:
+    ImageModel *m_parentImageModel = nullptr;
 };
 
 
@@ -322,6 +342,9 @@ public:
     Q_INVOKABLE bool isNextObjImageByCoords(qreal x_, qreal y_);
     Q_INVOKABLE bool isNextObjQuestionByCoords(qreal x_, qreal y_);
 
+    void setImageModel(ImageModel *imageModel_);
+    ImageModel *getImageModel();
+
 protected:
     ImagePoint *nextImagePointByCoords(qreal x_, qreal y_);
 
@@ -357,6 +380,9 @@ signals:
     void itemDeleted();
     void outputModelChanged();
     void error(const QString &errorCode_, const QString &description_);
+
+private:
+    ImageModel *m_parentImageModel = nullptr;
 };
 
 

@@ -1,5 +1,6 @@
 #include "imagepoint.h"
 #include <math.h>
+#include "../MastactvaModels/image.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -95,9 +96,11 @@ ImagePointToQuestionModel::ImagePointToQuestionModel(QObject *parent_ /*= nullpt
 }
 
 
-ImagePointToNextImage::ImagePointToNextImage(QObject *parent_ /*= nullptr*/)
+ImagePointToNextImage::ImagePointToNextImage(ImagePointToNextImageModel *parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+    m_objectModelInfo = this;
+    m_parentModel = parent_;
 }
 
 int ImagePointToNextImage::id() const
@@ -136,12 +139,43 @@ void ImagePointToNextImage::setNextImage(const int &nextImage_)
     emit nextImageChanged();
 }
 
+void ImagePointToNextImage::loadChildrenVF()
+{
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
+void ImagePointToNextImage::objectLoadedVF()
+{
+    ImageModel *images = m_parentModel->getImageModel();
+    if(nullptr != images)
+    {
+        Image *image = images->findDataItemByIdImpl(QVariant::fromValue(nextImage()));
+        if(nullptr != image)
+        {
+            image->downloadImage();
+        }
+    }
+    IListModelInfoObjectImpl::objectLoadedVF();
+}
+
 
 ImagePointToNextImageModel::ImagePointToNextImageModel(QObject *parent_ /*= nullptr*/)
     :ListModelBaseOfData<ImagePointToNextImage, ImagePointToNextImageModel>(parent_)
 {
     init(this);
 }
+
+void ImagePointToNextImageModel::setImageModel(ImageModel *imageModel_)
+{
+    m_parentImageModel = imageModel_;
+}
+
+ImageModel *ImagePointToNextImageModel::getImageModel()
+{
+    return m_parentImageModel;
+}
+
 
 ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
     : QObject(parent_)
@@ -309,6 +343,7 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
+    m->setImageModel(m_imagePointModel->getImageModel());
     m->loadList();
     return m;
 }
@@ -360,6 +395,16 @@ void ImagePointModel::modelListLoaded(const QJsonDocument &reply_)
         if(nullptr == ip) { continue; }
         ip->nextImage();
     }
+}
+
+void ImagePointModel::setImageModel(ImageModel *imageModel_)
+{
+    m_parentImageModel = imageModel_;
+}
+
+ImageModel *ImagePointModel::getImageModel()
+{
+    return m_parentImageModel;
 }
 
 ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_)

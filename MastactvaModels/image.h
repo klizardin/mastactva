@@ -33,6 +33,7 @@ public:
 
     Q_INVOKABLE bool isImageLoaded() const;
     Q_INVOKABLE void loadChildren();
+    void downloadImage();
 
 public:
     class DefaultLayout : public LayoutBase<Image>
