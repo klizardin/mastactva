@@ -1,9 +1,14 @@
 #include "shader.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/utils.h"
+
 
 Shader::Shader(ShaderModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
     m_shaderModel = parent_;
+    m_objectModelInfo = this;
 }
 
 int Shader::id() const
@@ -77,9 +82,26 @@ void Shader::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
+void Shader::loadChildrenVF()
+{
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
+void Shader::objectLoadedVF()
+{
+    IListModelInfoObjectImpl::objectLoadedVF();
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        sf->add(filename(), hash(), g_shadersRelPath);
+    }
+}
+
 
 ShaderModel::ShaderModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
     init(this);
+    setAutoCreateChildrenModelsImpl(true);
 }

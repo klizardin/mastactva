@@ -13,7 +13,7 @@
 class ShaderModel;
 
 
-class Shader : public QObject
+class Shader : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 public:
@@ -33,6 +33,7 @@ public:
         {
             setLayoutJsonName("shader");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Shader::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Shader::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &Shader::m_appId);
             addField<int>("id", "shaderId", &Shader::id, &Shader::setId);
             addField<ImageSource>("filename", "shaderFilename", &Shader::getFilename, &Shader::setFilename);
@@ -56,6 +57,10 @@ public:
     QString description() const;
     void setDescription(const QString &description_);
 
+protected:
+    virtual void loadChildrenVF() override;
+    virtual void objectLoadedVF() override;
+
 signals:
     void idChanged();
     void filenameChanged();
@@ -65,6 +70,7 @@ signals:
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     ImageSource m_filename;
