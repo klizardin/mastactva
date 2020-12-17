@@ -110,7 +110,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
     imports/MastactvaAPI/qmldir \
@@ -119,6 +118,8 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_mix.frag \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_first.frag    \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_second.frag    \
+    ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/swipe.vert    \
     ../MastactvaShaders/MoveImages/Vertex/swipe_stick.vsh    \
     todo.txt
