@@ -89,16 +89,6 @@ void main(void)
         if(s <= 0.0)
         {
             shift2.y = -1.0;
-            if(cubeVertex.y >= rectSize.y)
-            {
-                cubeVertex.z = -(cubeVertex.y - rectSize.y);
-                cubeVertex.y = rectSize.y;
-            }
-            k = 0.5;
-        }
-        else
-        {
-            shift1.y = -1.0;
             if(cubeVertex.y <= rectSize.y)
             {
                 cubeVertex.z = -(rectSize.y - cubeVertex.y);
@@ -106,8 +96,18 @@ void main(void)
             }
             k = 1.5;
         }
-        cubeVertex.y -= rectSize.y * k;
-        cubeVertex.z += rectSize.x * 0.5;
+        else
+        {
+            shift1.y = -1.0;
+            if(cubeVertex.y >= rectSize.y)
+            {
+                cubeVertex.z = -(cubeVertex.y - rectSize.y);
+                cubeVertex.y = rectSize.y;
+            }
+            k = 0.5;
+        }
+        cubeVertex.y -= rectSize.x * k;
+        cubeVertex.z += rectSize.y * 0.5;
 
         mediump mat4 rotateMat = mat4(
                     vec4(1.0, 0.0, 0.0, 0.0),
