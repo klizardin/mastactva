@@ -2714,6 +2714,14 @@ ApplicationWindow {
     }
 
     Action {
+        id: playCurrentEffectDemo
+        text: qsTr("Play current effect demo")
+        onTriggered: {
+            effectDemoImageAnimationForward.running = true
+        }
+    }
+
+    Action {
         id: reversePlayEffectDemo
         text: qsTr("&Play reverse effect demo")
         onTriggered: {
@@ -2732,6 +2740,14 @@ ApplicationWindow {
                 numberAnimationBackward.easing.type = Easing.Linear
             }
             effectImageDemo.updateEffects()
+            effectDemoImageAnimationBackward.running = true
+        }
+    }
+
+    Action {
+        id: reverseCurrentEffectDemo
+        text: qsTr("Play reverse current effect demo")
+        onTriggered: {
             effectDemoImageAnimationBackward.running = true
         }
     }
@@ -2761,17 +2777,6 @@ ApplicationWindow {
 
     function testEffectDemo(t)
     {
-        if(effectModel.getCurrentItem() !== undefined && effectModel.getCurrentItem() !== null && effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
-        {
-            effectImageDemo.effect = effectModel.getCurrentItem()
-            effectImageDemo.argumentSet = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
-        }
-        else
-        {
-            effectImageDemo.effect = null
-            effectImageDemo.argumentSet = null
-        }
-        effectImageDemo.updateEffects()
         effectDemoImageAnimationBackward.running = false
         effectDemoImageAnimationBackward.running = false
         effectImageDemo.t = t
@@ -2779,7 +2784,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect00Demo
-        text: qsTr("Test effect with t = 0.&0")
+        text: qsTr("Test current effect with t = 0.&0")
         onTriggered: {
             testEffectDemo(0.0)
         }
@@ -2787,7 +2792,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect01Demo
-        text: qsTr("Test effect with t = 0.&1")
+        text: qsTr("Test current effect with t = 0.&1")
         onTriggered: {
             testEffectDemo(0.1)
         }
@@ -2795,7 +2800,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect02Demo
-        text: qsTr("Test effect with t = 0.&2")
+        text: qsTr("Test current effect with t = 0.&2")
         onTriggered: {
             testEffectDemo(0.2)
         }
@@ -2803,7 +2808,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect03Demo
-        text: qsTr("Test effect with t = 0.&3")
+        text: qsTr("Test current effect with t = 0.&3")
         onTriggered: {
             testEffectDemo(0.3)
         }
@@ -2811,7 +2816,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect04Demo
-        text: qsTr("Test effect with t = 0.&4")
+        text: qsTr("Test current effect with t = 0.&4")
         onTriggered: {
             testEffectDemo(0.4)
         }
@@ -2819,7 +2824,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect05Demo
-        text: qsTr("Test effect with t = 0.&5")
+        text: qsTr("Test current effect with t = 0.&5")
         onTriggered: {
             testEffectDemo(0.5)
         }
@@ -2827,7 +2832,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect06Demo
-        text: qsTr("Test effect with t = 0.&6")
+        text: qsTr("Test current effect with t = 0.&6")
         onTriggered: {
             testEffectDemo(0.6)
         }
@@ -2835,7 +2840,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect07Demo
-        text: qsTr("Test effect with t = 0.&7")
+        text: qsTr("Test current effect with t = 0.&7")
         onTriggered: {
             testEffectDemo(0.7)
         }
@@ -2843,7 +2848,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect08Demo
-        text: qsTr("Test effect with t = 0.&8")
+        text: qsTr("Test current effect with t = 0.&8")
         onTriggered: {
             testEffectDemo(0.8)
         }
@@ -2851,7 +2856,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect09Demo
-        text: qsTr("Test effect with t = 0.&9")
+        text: qsTr("Test current effect with t = 0.&9")
         onTriggered: {
             testEffectDemo(0.9)
         }
@@ -2859,7 +2864,7 @@ ApplicationWindow {
 
     Action {
         id: testEffect10Demo
-        text: qsTr("Test effect with t = 1.0")
+        text: qsTr("Test current effect with t = 1.0")
         onTriggered: {
             testEffectDemo(1.0)
         }
@@ -2903,6 +2908,8 @@ ApplicationWindow {
             MenuItem { action: demoSetImageTo }
             MenuItem { action: playEffectDemo }
             MenuItem { action: reversePlayEffectDemo }
+            MenuItem { action: playCurrentEffectDemo }
+            MenuItem { action: reverseCurrentEffectDemo }
             MenuItem { action: stopEffectDemo }
             MenuItem { action: defaultEffectDemo }
             MenuItem { action: testEffect00Demo }
