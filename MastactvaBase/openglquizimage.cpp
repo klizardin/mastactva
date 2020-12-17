@@ -216,7 +216,7 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
     }
     else if(4 == m_size && m_floatType && !m_matrixType)
     {
-        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2], m_valueFloat[4]);
+        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2], m_valueFloat[3]);
     }
     else if(4 == m_size && m_floatType && m_matrixType)
     {
