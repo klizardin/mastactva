@@ -115,11 +115,13 @@ DISTFILES += \
     imports/MastactvaAPI/qmldir \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
+    ../MastactvaShaders/MoveImages/Fragment/position_color.fsh \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_mix.frag \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_first.frag    \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_second.frag    \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh \
     ../MastactvaShaders/MoveImages/Vertex/swipe.vert    \
     ../MastactvaShaders/MoveImages/Vertex/swipe_stick.vsh    \
     todo.txt
