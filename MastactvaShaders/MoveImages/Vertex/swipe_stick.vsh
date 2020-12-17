@@ -54,28 +54,28 @@ void main(void)
     mediump vec2 img1sz = fixSize(img1br.xy - img1tl.xy);
     mediump vec2 img2sz = fixSize(img2br.xy - img2tl.xy);
     // shift 2nd image by this value at start
-    mediump float s1 = (img2br.x > 0.0 ? (img2br.x - 1.0)/img2sz.x : 0.0 ) + ( img2br.y > 0.0 ? (img2br.y - 1.0)/img2sz.y : 0.0);
+    mediump float s1 = (img2br.x > 1.0 ? (img2br.x - 1.0)/img2sz.x : 0.0) + (img2br.y > 1.0 ? (img2br.y - 1.0)/img2sz.y : 0.0);
     mediump float l2 = -img2tl.x/img2sz.x + -img2tl.y/img2sz.y;
 
-    mediump float t1 = -img1tl.x/img1sz.x + -img1tl.y/img1sz.y;                     // move second image
-    mediump float t2 = 1.0/img2sz.x + 1.0/img2sz.y + l2 - t1 - 1.0;                 // move both images
-    mediump float t3 = s1;                                                          // move first image
+    mediump float t1 = -img1tl.x/img1sz.x + -img1tl.y/img1sz.y;                                 // move second image
+    mediump float t2 = 1.0/img2sz.x + 1.0/img2sz.y - 1.0 + l2 - t1;   // move both images
+    mediump float t3 = s1;                                                                      // move first image
     mediump float ta = t1 + t2 + t3;
 
-    mediump float t0 = t*ta;
-    if(t < t1/ta)
+    mediump float t11 = t1/ta;
+    if(t < t11)
     {
         texCoord1Var = texMatrix1Arg * texCoordArg;
         texCoord2Var = texMatrix2Arg * (texCoordArg + (t + s1 - 1.0) * sd);
     }
     if(t < (t1+t2)/ta)
     {
-        texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
+        texCoord1Var = texMatrix1Arg * (texCoordArg + (t - t11) * sd);
         texCoord2Var = texMatrix2Arg * (texCoordArg + (t + s1 - 1.0) * sd);
     }
     else
     {
-        texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
+        texCoord1Var = texMatrix1Arg * (texCoordArg + (t - t11) * sd);
         texCoord2Var = texMatrix2Arg * texCoordArg;
     }
 }
