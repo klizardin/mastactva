@@ -260,10 +260,10 @@ void Effect::applyRefreshArguments()
                     !comment.values().contains(g_nameName) ||
                     !comment.values().contains(g_typeName)
                     ) { continue; }
-            const QString argName = comment.values().value(g_nameName);
-            const QString argTypeStr = comment.values().value(g_typeName);
-            const QString argDefaultValue = comment.values().value(g_defaultValueName, QString());
-            const QString argDescription = comment.values().value(g_descriptionName, QString());
+            const QString argName = comment.values().value(g_nameName).trimmed();
+            const QString argTypeStr = comment.values().value(g_typeName).trimmed();
+            const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
+            const QString argDescription = comment.values().value(g_descriptionName, QString()).trimmed();
             //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
             ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl("shaderArgTypeType", QVariant::fromValue(argTypeStr));
             Q_ASSERT(nullptr != shaderArgType);
