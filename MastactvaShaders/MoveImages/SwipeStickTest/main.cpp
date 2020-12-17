@@ -57,7 +57,7 @@ public:
         const mediump vec4 tl = vec4(0.0, 0.0, 0.0, 1.0);
         const mediump vec4 br = vec4(1.0, 1.0, 0.0, 1.0);
 
-        mediump vec4 sds = vec4(abs(sd.x()), abs(sd.y()), 0.0, 1.0);
+        mediump vec4 sds = vec4(abs(sd.x()), abs(sd.y()), 0.0, 0.0);
         //qDebug() << texMatrix1Arg * tl;
         //qDebug() << texMatrix1Arg * br;
         //qDebug() << texMatrix2Arg * tl;
@@ -80,34 +80,47 @@ public:
         mediump vec2 img2sz = fixSize(vec2(img2br) - vec2(img2tl));
 
         // shift 2nd image by this value at start
-        mediump float s1 = (img2br.x() > 0.0 ? (img2br.x() - 1.0)/img2sz.x() : 0.0) + (img2br.y() > 0.0 ? (img2br.y() - 1.0)/img2sz.y() : 0.0);
-        mediump float l2 = -img2tl.x()/img2sz.x() + -img2tl.y()/img2sz.y();
+        mediump float img2BorderRight =
+                (img2br.x() > 1.0 ? (img2br.x() - 1.0)/img2sz.x() : 0.0)
+                + (img2br.y() > 1.0 ? (img2br.y() - 1.0)/img2sz.y() : 0.0)
+                ;
+        // left shift of image 2
+        mediump float img2BorderLeft = -img2tl.x()/img2sz.x() + -img2tl.y()/img2sz.y();
 
+        // left shift of image 1
         // move second image
-        mediump float t1 = -img1tl.x()/img1sz.x() + -img1tl.y()/img1sz.y();
+        mediump float img1BorderLeft = -img1tl.x()/img1sz.x() + -img1tl.y()/img1sz.y();
+        mediump float t1 = img1BorderLeft;
         // move both images
-        mediump float t2 = 1.0/img2sz.x() + 1.0/img2sz.y() + l2 - t1 - 1.0;
+        mediump float img2Width = 1.0/img2sz.x() + 1.0/img2sz.y() - 1.0;
+        mediump float t2 = img2Width + img2BorderLeft - img1BorderLeft;
         // move first image
-        mediump float t3 = s1;
+        mediump float t3 = img2BorderRight;
         mediump float ta = t1 + t2 + t3;
 
-        //mediump float t0 = t*ta;
-        if(t < t1/ta)
+        mediump float t1n = t1/ta;
+        mediump float t2n = t2/ta;
+        //mediump float t3n = t3/ta;
+
+        if(t < t1n)
         {
-            qDebug() << "1: (texCoordArg + t * sd) = " << (texCoordArg + t * sd) << "(texCoordArg + (t + s1 - 1.0) * sd) = " << (texCoordArg + (t + s1 - 1.0) * sd);
-            texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
-            texCoord2Var = texMatrix2Arg * (texCoordArg + (t + s1 - 1.0) * sd);
+            qDebug() << "1: texCoordArg = " << texCoordArg
+                     << "(texCoordArg + (t + s1 - 1.0) * sd) = " << (texCoordArg + (t + img2BorderRight - 1.0) * sd);
+            texCoord1Var = texMatrix1Arg * texCoordArg;
+            texCoord2Var = texMatrix2Arg * (texCoordArg + (t + img2BorderRight - 1.0) * sd);
         }
-        else if(t < (t1+t2)/ta)
+        else if(t < t1n+t2n)
         {
-            qDebug() << "2: (texCoordArg + t * sd) = " << (texCoordArg + t * sd) << "(texCoordArg + (t + s1 - 1.0) * sd) = " << (texCoordArg + (t + s1 - 1.0) * sd);
-            texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
-            texCoord2Var = texMatrix2Arg * (texCoordArg + (t + s1 - 1.0) * sd);
+            qDebug() << "2: (texCoordArg + (t - t1/ta) * sd) = " << (texCoordArg + (t - t1n) * sd)
+                     << "(texCoordArg + (t + s1 - 1.0) * sd) = " << (texCoordArg + (t + img2BorderRight - 1.0) * sd);
+            texCoord1Var = texMatrix1Arg * (texCoordArg + (t - t1n) * sd);
+            texCoord2Var = texMatrix2Arg * (texCoordArg + (t + img2BorderRight - 1.0) * sd);
         }
         else // if(t <= 1.0)
         {
-            qDebug() << "3: (texCoordArg + t * sd) = " << (texCoordArg + t * sd) << "texCoordArg = " << texCoordArg;
-            texCoord1Var = texMatrix1Arg * (texCoordArg + t * sd);
+            qDebug() << "3: (texCoordArg + (t - t1/ta) * sd) = " << (texCoordArg + (t - t1n) * sd)
+                     << "texCoordArg = " << texCoordArg;
+            texCoord1Var = texMatrix1Arg * (texCoordArg + (t - t1n) * sd);
             texCoord2Var = texMatrix2Arg * texCoordArg;
         }
     }
@@ -142,7 +155,7 @@ public:
     {
         Shader shader;
 
-        const int count = 10;
+        const int count = 25;
         for(int i = 0; i < count; i++)
         {
             qreal t = (qreal)i/(qreal)count;
@@ -153,9 +166,12 @@ public:
             shader.texCoordArg = vec4(0.0, 0.0, 0.0, 1.0);
             shader.main();
 
-            qDebug() << "shader.texCoord1Var = " << shader.texCoord1Var;
-            qDebug() << "shader.texCoord2Var = " << shader.texCoord2Var;
-            qDebug() << "shader.gl_Position = " << shader.gl_Position;
+            //qDebug() << "shader.texCoord1Var = " << shader.texCoord1Var;
+            //qDebug() << "shader.texCoord2Var = " << shader.texCoord2Var;
+            //qDebug() << "shader.gl_Position = " << shader.gl_Position;
+
+            vec2 img1tl = vec2(shader.texCoord1Var);
+            vec2 img2tl = vec2(shader.texCoord2Var);
 
             init(shader);
             shader.t = t;
@@ -163,7 +179,20 @@ public:
             shader.texCoordArg = vec4(1.0, 1.0, 0.0, 1.0);
             shader.main();
 
-            //qDebug() << "shader.texCoord1Var = " << shader.texCoord1Var;
+            vec2 img1br = vec2(shader.texCoord1Var);
+            vec2 img2br = vec2(shader.texCoord2Var);
+
+            vec2 img1sz = (img1br - img1tl);
+            vec2 img2sz = (img2br - img2tl);
+            qreal img1l = -img1tl.x()/img1sz.x();
+            qreal img2l = -img2tl.x()/img2sz.x();
+            qreal img1r = (1.0-img1tl.x())/img1sz.x();
+            qreal img2r = (1.0-img2tl.x())/img2sz.x();
+
+            qDebug() << "img2x = " << img2l << "img2r = " << img2r;
+            qDebug() << "img1x = " << img1l << "img1r = " << img1r;
+
+/*            //qDebug() << "shader.texCoord1Var = " << shader.texCoord1Var;
             //qDebug() << "shader.texCoord2Var = " << shader.texCoord2Var;
             //qDebug() << "shader.gl_Position = " << shader.gl_Position;
 
@@ -186,6 +215,7 @@ public:
             //qDebug() << "shader.texCoord1Var = " << shader.texCoord1Var;
             //qDebug() << "shader.texCoord2Var = " << shader.texCoord2Var;
             //qDebug() << "shader.gl_Position = " << shader.gl_Position;
+*/
         }
     }
 
@@ -225,7 +255,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     Render render;
-    render.init(QSize(100, 80), QSize(1024, 640), QSize(640, 800), vec2(1.0, 0.0));
+    render.init(QSize(100, 100), QSize(200, 800), QSize(400, 800), vec2(1.0, 0.0));
     render.test();
 
     qDebug() << "done";
