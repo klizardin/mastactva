@@ -341,6 +341,7 @@ static const int g_geometryVertexCoords = 3;
 static const int g_geometryTextureCoords = 2;
 static const int g_geometryItemSize = g_geometryVertexCoords + g_geometryTextureCoords;
 static const GLfloat g_facegGeometryCoef = 1e-3;
+static const GLfloat g_facegGeometryCoef2 = 1e-2;
 
 void OpenGlQuizImage::makeObject()
 {
@@ -371,8 +372,12 @@ void OpenGlQuizImage::makeObject()
                     {
                         m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef;
                         m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef;
+                        // // texture coordinate
+                        //m_vertData[offs1 + 3] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef2;
+                        //m_vertData[offs1 + 4] = 1.0 - ((GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef2);
                     }
                     m_vertData[offs1 + 2] = 0.1;
+
                     // texture coordinate
                     m_vertData[offs1 + 3] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth;
                     m_vertData[offs1 + 4] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight;
@@ -608,16 +613,31 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
         f_->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     }
 
+    //f_->glEnable(GL_CULL_FACE);
+    //f_->glCullFace(GL_FRONT_AND_BACK);
+
+//    f_->glFrontFace(GL_CCW);
+//    for(int y = 0; y < m_geometryPointsHeight; y++)
+//    {
+//        for(int x = 0; x < m_geomertyPointsWidth; x++)
+//        {
+//            f_->glActiveTexture(GL_TEXTURE1);
+//            m_toTexture->bind();
+//            f_->glActiveTexture(GL_TEXTURE0);
+//            m_fromTexture->bind();
+//
+//            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers;
+//            f_->glDrawArrays(GL_TRIANGLES, offs, g_trianglesCount * g_triangleConers);
+//        }
+//    }
+
     f_->glActiveTexture(GL_TEXTURE1);
     m_toTexture->bind();
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
 
-    //f_->glEnable(GL_CULL_FACE);
-    //f_->glCullFace(GL_FRONT_AND_BACK);
     f_->glFrontFace(GL_CCW);
     f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_geometryItemSize);
-
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
     m_vbo->release();
