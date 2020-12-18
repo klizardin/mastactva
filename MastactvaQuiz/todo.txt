@@ -5,3 +5,6 @@
 * 4) make compiling after adding QuizImage source that uses Effect class and other classes from ../MastactvaModels/
 5. Add ImagePointEffectModel
 6. update loading mechanism. load one image children at time
+7. add progress load
+8. allow to action in participale load
+
