@@ -74,7 +74,8 @@
 38. remove duplications of loadChildren loadList functions in Model.h
 * 39. auto download sgaders and images
 * 40. fix ServerFiles to not start download of same item in parrallel, just subscribe to informate on first download
-
+41. test geometry 
+42. simple test app
 
 
 
