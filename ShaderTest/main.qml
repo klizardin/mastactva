@@ -1,9 +1,15 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
+import QtQuick 2.12
+import QtQuick.Controls 2.14
+import QtQuick.Dialogs 1.0
+import QtQuick.Layouts 1.15
+import ShaderTest 1.0
+import Mastactva 1.0
 
-Window {
-    width: 640
-    height: 480
+
+ApplicationWindow {
+    id: root
     visible: true
-    title: qsTr("Hello World")
+    width: Constants.width
+    height: Constants.height
+    title: qsTr("Shader test")
 }
