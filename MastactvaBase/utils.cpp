@@ -261,6 +261,16 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
     }
 }
 
+QString calculateHash(const QByteArray &data_)
+{
+    return QString("%1").arg(QString(QCryptographicHash::hash(data_, QCryptographicHash::RealSha3_256).toHex()));
+}
+
+QString calculateHash(const QString &data_)
+{
+    return calculateFileURLHash(data_.toUtf8());
+}
+
 QString calculateFileURLHash(const QString &fileUrl_)
 {
     QUrl url(fileUrl_);
@@ -270,14 +280,14 @@ QString calculateFileURLHash(const QString &fileUrl_)
         QFile f1(fileUrl_);
         if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
         QByteArray fd = f1.readAll();
-        return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+        return calculateHash(fd);
     }
     else
     {
         QFile f1(filename);
         if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
         QByteArray fd = f1.readAll();
-        return QString("%1").arg(QString(QCryptographicHash::hash(fd, QCryptographicHash::RealSha3_256).toHex()));
+        return calculateHash(fd);
     }
 }
 

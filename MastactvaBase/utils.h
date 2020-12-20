@@ -32,6 +32,7 @@ qreal sqr(qreal val_);
 bool isSymbol(const QChar &ch_);
 bool isLetter(const QChar &ch_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
+QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);
 QDateTime nowTz();
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ_);
