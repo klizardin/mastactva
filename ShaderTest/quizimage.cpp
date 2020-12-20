@@ -10,6 +10,7 @@
 #include <QQuickWindow>
 #include <QSGRendererInterface>
 #include <QSGRenderNode>
+#include <QTextCodec>
 #include "openglquizimage.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
@@ -25,6 +26,16 @@ QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
 void QuizImage::updateState()
 {
     update();
+}
+
+void QuizImage::updateFragmantShader()
+{
+    setFragmentShaderFilename(fragmentShaderFilename());
+}
+
+void QuizImage::updateVertexShader()
+{
+    setVertexShaderFilename(vertexShaderFilename());
 }
 
 QString QuizImage::fromImage() const
@@ -83,18 +94,19 @@ QString QuizImage::fragmentShaderFilename()
 
 void QuizImage::setFragmentShaderFilename(const QString &fragmentShaderFilename_)
 {
-    if(fragmentShaderFilename_ == m_fragmentShaderFilename)
-    {
-        QUrl url = QUrl::fromLocalFile(fragmentShaderFilename_);
-        const QString newHash = calculateFileURLHash(url.toString());
-        if(newHash == m_fragmentShaderFilenameHash) { return; }
-        m_fragmentShaderFilenameHash = newHash;
-    }
-
     m_fragmentShaderFilename = fragmentShaderFilename_;
+
+    const QString fragmentShaderNew = loadFile(m_fragmentShaderFilename);
+    const QString newHash = calculateHash(fragmentShaderNew);
+
+    if(newHash == m_fragmentShaderHash) { return; }
+
+    m_fragmentShader = fragmentShaderNew;
+    m_fragmentShaderHash = newHash;
 
     updateState();
     emit fragmentShaderFilenameChanged();
+    emit fragmentShaderChanged();
 }
 
 QString QuizImage::vertexShaderFilename()
@@ -104,18 +116,29 @@ QString QuizImage::vertexShaderFilename()
 
 void QuizImage::setVertexShaderFilename(const QString &vertexShaderFilename_)
 {
-    if(vertexShaderFilename_ == m_vertexShaderFilename)
-    {
-        QUrl url = QUrl::fromLocalFile(vertexShaderFilename_);
-        const QString newHash = calculateFileURLHash(url.toString());
-        if(newHash == m_vertexShaderFilenameHash) { return; }
-        m_vertexShaderFilenameHash = newHash;
-    }
-
     m_vertexShaderFilename = vertexShaderFilename_;
+
+    const QString vertexShaderNew = loadFile(m_vertexShaderFilename);
+    const QString newHash = calculateHash(vertexShaderNew);
+
+    if(newHash == m_vertexShaderHash) { return; }
+
+    m_vertexShader = vertexShaderNew;
+    m_vertexShaderHash = newHash;
 
     updateState();
     emit vertexShaderFilenameChanged();
+    emit vertexShaderChanged();
+}
+
+QString QuizImage::fragmentShader()
+{
+    return m_fragmentShader;
+}
+
+QString QuizImage::vertexShader()
+{
+    return m_vertexShader;
 }
 
 qreal QuizImage::t() const
@@ -180,3 +203,13 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 
     return n;
 }
+
+QString QuizImage::loadFile(const QString &filename_)
+{
+    QFile file(filename_);
+    if(!file.open(QIODevice::ReadOnly)) { return QString(); }
+    QByteArray fd = file.readAll();
+    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
+    return codec->toUnicode(fd);
+}
+

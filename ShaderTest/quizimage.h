@@ -20,12 +20,16 @@ public:
     Q_PROPERTY(QString toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
     Q_PROPERTY(QString fragmentShaderFilename READ fragmentShaderFilename WRITE setFragmentShaderFilename NOTIFY fragmentShaderFilenameChanged)
     Q_PROPERTY(QString vertexShaderFilename READ vertexShaderFilename WRITE setVertexShaderFilename NOTIFY vertexShaderFilenameChanged)
+    Q_PROPERTY(QString fragmentShader READ fragmentShader NOTIFY fragmentShaderChanged)
+    Q_PROPERTY(QString vertexShader READ vertexShader NOTIFY vertexShaderChanged)
     Q_PROPERTY(int paintedWidth READ paintedWidth NOTIFY paintedWidthChanged)
     Q_PROPERTY(int paintedHeight READ paintedHeight NOTIFY paintedHeightChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
 
 public:
     Q_INVOKABLE void updateState();
+    Q_INVOKABLE void updateFragmantShader();
+    Q_INVOKABLE void updateVertexShader();
 
 public:
     QString fromImage() const;
@@ -36,10 +40,15 @@ public:
     void setFragmentShaderFilename(const QString &fragmentShaderFilename_);
     QString vertexShaderFilename();
     void setVertexShaderFilename(const QString &vertextShaderFilename_);
+    QString fragmentShader();
+    QString vertexShader();
     qreal t() const;
     void setT(qreal t_);
     int paintedWidth() const;
     int paintedHeight() const;
+
+protected:
+    QString loadFile(const QString &filename_);
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
@@ -52,14 +61,18 @@ signals:
     void paintedHeightChanged();
     void fragmentShaderFilenameChanged();
     void vertexShaderFilenameChanged();
+    void fragmentShaderChanged();
+    void vertexShaderChanged();
 
 private:
     QString m_fromImage;
     QString m_toImage;
     QString m_fragmentShaderFilename;
-    QString m_fragmentShaderFilenameHash;
+    QString m_fragmentShaderHash;
     QString m_vertexShaderFilename;
-    QString m_vertexShaderFilenameHash;
+    QString m_vertexShaderHash;
+    QString m_fragmentShader;
+    QString m_vertexShader;
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);
     qreal m_t = 0.0;
