@@ -344,6 +344,10 @@ int OpenGlQuizImage::getGeometryItemSize() const
 
 void OpenGlQuizImage::makeObject()
 {
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<> dis(0.0, 1.0);
+
     static const int coords[g_trianglesCount][g_triangleConers][2] =
     {
         {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
@@ -358,9 +362,11 @@ void OpenGlQuizImage::makeObject()
             const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * getGeometryItemSize();
             for (int j = 0; j < g_trianglesCount; ++j)
             {
-                const qreal r = (qreal)rand() / (qreal)RAND_MAX;
-                const qreal g = (qreal)rand() / (qreal)RAND_MAX;
-                const qreal b = (qreal)rand() / (qreal)RAND_MAX;
+                // one color for whole triangle
+                const qreal r = dis(gen);
+                const qreal g = dis(gen);
+                const qreal b = dis(gen);
+
                 for(int k = 0; k < g_triangleConers; k++)
                 {
                     // vertex position
@@ -605,7 +611,10 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
     m_program->enableAttributeArray(m_vertexAttrId);
     m_program->enableAttributeArray(m_texCoordAttrId);
-    m_program->enableAttributeArray(m_colorAttrId);
+    if(m_attributeColors)
+    {
+        m_program->enableAttributeArray(m_colorAttrId);
+    }
 
     // We are prepared both for the legacy (direct OpenGL) and the modern
     // (abstracted by RHI) OpenGL scenegraph. So set all the states that are
@@ -658,7 +667,10 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
-    m_program->disableAttributeArray(m_colorAttrId);
+    if(m_attributeColors)
+    {
+        m_program->disableAttributeArray(m_colorAttrId);
+    }
     m_vbo->release();
     m_program->release();
 }
