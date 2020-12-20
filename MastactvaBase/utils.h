@@ -50,6 +50,7 @@ static const QString g_descriptionName = "description";
 static const QString g_geometrySolidName = "geomentrysolid";
 static const QString g_geometryFacedName = "geomentryfaced";
 static const QString g_geometrySizeName = "geomentrysize";
+static const QString g_colorsAttributeName = "attributecolors";
 static const QString g_shadersRelPath = "shaders";
 static const QString g_imagesRelPath = "images";
 static const QString g_shaderTypeVertex = "Vertex";

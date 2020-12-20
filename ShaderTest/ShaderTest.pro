@@ -13,12 +13,14 @@ CONFIG += c++17
 
 HEADERS += \
         openglquizimage.h \
-        quizimage.h
+        quizimage.h \
+        utils.h
 
 SOURCES += \
         main.cpp    \
         openglquizimage.cpp \
-        quizimage.cpp
+        quizimage.cpp   \
+        utils.cpp
 
 RESOURCES += qml.qrc    \
     ./ShaderTest/

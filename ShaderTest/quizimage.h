@@ -46,6 +46,8 @@ public:
     void setT(qreal t_);
     int paintedWidth() const;
     int paintedHeight() const;
+    bool shadersUpdated() const;
+    void clearShadersUpdated();
 
 protected:
     QString loadFile(const QString &filename_);
@@ -76,6 +78,7 @@ private:
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);
     qreal m_t = 0.0;
+    bool m_shadersUpdated = false;
 };
 
 

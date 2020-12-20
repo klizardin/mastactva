@@ -3,14 +3,7 @@
 #include <QTextCodec>
 #include "quizimage.h"
 #include <random>
-#include "../MastactvaModels/effectshader.h"
-#include "../MastactvaModels/shader.h"
-#include "../MastactvaModels/shadertype.h"
-#include "../MastactvaModels/effectarg.h"
-#include "../MastactvaModels/effectargvalue.h"
-#include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
-#include "../MastactvaBase/qmlobjects.h"
 
 
 static const QString g_noImage = ":/resources/no-image.png";
@@ -31,6 +24,11 @@ int ArgumentInfo::getArgId() const
 void ArgumentInfo::setName(const QString &name_)
 {
     m_name = name_;
+}
+
+const QString &ArgumentInfo::getName() const
+{
+    return m_name;
 }
 
 void ArgumentInfo::setType(const QString &type_)
@@ -240,9 +238,19 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
 }
 
 
+static const int g_trianglesCount = 2;
+static const int g_triangleConers = 3;
+static const int g_geometryVertexCoords = 3;
+static const int g_geometryTextureCoords = 2;
+static const int g_colorCoords = 3;
+static const GLfloat g_facegGeometryCoef = 1e-3;
+
+
 OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
 {
     m_parent = parent_;
+
+    m_geometryItemSize = g_geometryVertexCoords + g_geometryTextureCoords;
 
     m_fromImageUrlNew = g_noImage;
     m_toImageUrlNew = g_noImage;
@@ -312,36 +320,27 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     //{
     //    qDebug() << "m_t = " << m_t;
     //}
-    if(!quizImage->areAllDataAvailable()) { return; }
-    // all data
-    m_fromImageUrlNew = quizImage->fromImageLocalUrl();
+    m_vertexShader = quizImage->vertexShader();
+    m_fragmentShader = quizImage->fragmentShader();
+    m_fromImageUrlNew = quizImage->fromImage();
     if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
-    m_toImageUrlNew = quizImage->toImageLocalUrl();
+    m_toImageUrlNew = quizImage->toImage();
     if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
     //if(m_fromImageUrlNew != m_fromImageUrl || m_toImageUrlNew != m_toImageUrl)
     //{
     //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
     //}
-    m_effect = quizImage->getEffect();
-    m_argumentSet = quizImage->getArgumentSet();
-    const bool needToUpdateEffects = quizImage->needToUpdateEffects();
-    int effectId = nullptr != m_effect ? m_effect->id() : -1;
-    int argumentSetId = nullptr != m_argumentSet ? m_argumentSet->id() : -1;
-    if(needToUpdateEffects || effectId != m_oldEffectId || argumentSetId != m_oldArgumentSetId)
+    if(quizImage->shadersUpdated())
     {
-        m_oldEffectId = effectId;
-        m_oldArgumentSetId = argumentSetId;
         extractArguments();
+        quizImage->clearShadersUpdated();
     }
 }
 
-static const int g_trianglesCount = 2;
-static const int g_triangleConers = 3;
-static const int g_geometryVertexCoords = 3;
-static const int g_geometryTextureCoords = 2;
-static const int g_geometryItemSize = g_geometryVertexCoords + g_geometryTextureCoords;
-static const GLfloat g_facegGeometryCoef = 1e-3;
-static const GLfloat g_facegGeometryCoef2 = 1e-2;
+int OpenGlQuizImage::getGeometryItemSize() const
+{
+    return m_geometryItemSize + (m_attributeColors ? 3 : 0);
+}
 
 void OpenGlQuizImage::makeObject()
 {
@@ -351,18 +350,21 @@ void OpenGlQuizImage::makeObject()
         {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
     };
 
-    m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight * g_trianglesCount * g_triangleConers * g_geometryItemSize);
+    m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight * g_trianglesCount * g_triangleConers * getGeometryItemSize());
     for(int y = 0; y < m_geometryPointsHeight; y++)
     {
         for(int x = 0; x < m_geomertyPointsWidth; x++)
         {
-            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * g_geometryItemSize;
+            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * getGeometryItemSize();
             for (int j = 0; j < g_trianglesCount; ++j)
             {
+                const qreal r = (qreal)rand() / (qreal)RAND_MAX;
+                const qreal g = (qreal)rand() / (qreal)RAND_MAX;
+                const qreal b = (qreal)rand() / (qreal)RAND_MAX;
                 for(int k = 0; k < g_triangleConers; k++)
                 {
                     // vertex position
-                    const int offs1 = offs + (j * g_triangleConers + k) * g_geometryItemSize;
+                    const int offs1 = offs + (j * g_triangleConers + k) * getGeometryItemSize();
                     if(m_geometrySolid)
                     {
                         m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth;
@@ -372,15 +374,20 @@ void OpenGlQuizImage::makeObject()
                     {
                         m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef;
                         m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef;
-                        // // texture coordinate
-                        //m_vertData[offs1 + 3] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef2;
-                        //m_vertData[offs1 + 4] = 1.0 - ((GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef2);
                     }
                     m_vertData[offs1 + 2] = 0.1;
 
                     // texture coordinate
                     m_vertData[offs1 + 3] = (GLfloat)(x + coords[j][k][0])/(GLfloat)m_geomertyPointsWidth;
                     m_vertData[offs1 + 4] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)m_geometryPointsHeight;
+
+                    // color
+                    if(m_attributeColors)
+                    {
+                        m_vertData[offs1 + 5] = r;
+                        m_vertData[offs1 + 6] = g;
+                        m_vertData[offs1 + 7] = b;
+                    }
                 }
             }
         }
@@ -514,6 +521,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     {
         m_vertexAttrId = m_program->attributeLocation("vertexArg");
         m_texCoordAttrId = m_program->attributeLocation("texCoordArg");
+        m_colorAttrId = m_program->attributeLocation("colorArg");
         m_fromTextureId = m_program->uniformLocation("texture1Arg");
         m_toTextureId = m_program->uniformLocation("texture2Arg");
         m_opacitiId = m_program->uniformLocation("opacityArg");
@@ -581,14 +589,23 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT,
                                   0,
                                   g_geometryVertexCoords,
-                                  g_geometryItemSize * sizeof(GLfloat)
+                                  getGeometryItemSize() * sizeof(GLfloat)
                                   );
     m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT,
                                   g_geometryVertexCoords * sizeof(GLfloat),
                                   g_geometryTextureCoords,
-                                  g_geometryItemSize * sizeof(GLfloat));
+                                  getGeometryItemSize() * sizeof(GLfloat));
+    if(m_attributeColors)
+    {
+        m_program->setAttributeBuffer(m_colorAttrId, GL_FLOAT,
+                                      (g_geometryVertexCoords + g_geometryTextureCoords) * sizeof(GLfloat),
+                                      g_colorCoords,
+                                      getGeometryItemSize() * sizeof(GLfloat));
+    }
+
     m_program->enableAttributeArray(m_vertexAttrId);
     m_program->enableAttributeArray(m_texCoordAttrId);
+    m_program->enableAttributeArray(m_colorAttrId);
 
     // We are prepared both for the legacy (direct OpenGL) and the modern
     // (abstracted by RHI) OpenGL scenegraph. So set all the states that are
@@ -616,130 +633,97 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     //f_->glEnable(GL_CULL_FACE);
     //f_->glCullFace(GL_FRONT_AND_BACK);
 
-//    f_->glFrontFace(GL_CCW);
-//    for(int y = 0; y < m_geometryPointsHeight; y++)
-//    {
-//        for(int x = 0; x < m_geomertyPointsWidth; x++)
-//        {
-//            f_->glActiveTexture(GL_TEXTURE1);
-//            m_toTexture->bind();
-//            f_->glActiveTexture(GL_TEXTURE0);
-//            m_fromTexture->bind();
-//
-//            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers;
-//            f_->glDrawArrays(GL_TRIANGLES, offs, g_trianglesCount * g_triangleConers);
-//        }
-//    }
-
     f_->glActiveTexture(GL_TEXTURE1);
     m_toTexture->bind();
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
 
     f_->glFrontFace(GL_CCW);
-    f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_geometryItemSize);
 
+    if(m_geometrySolid)
+    {
+        f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/getGeometryItemSize());
+    }
+    else
+    {
+        for(int y = 0; y < m_geometryPointsHeight; y++)
+        {
+            for(int x = 0; x < m_geomertyPointsWidth; x++)
+            {
+                const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers;
+                f_->glDrawArrays(GL_TRIANGLES, offs, g_trianglesCount * g_triangleConers);
+            }
+        }
+    }
 
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
+    m_program->disableAttributeArray(m_colorAttrId);
     m_vbo->release();
     m_program->release();
 }
 
 void OpenGlQuizImage::extractArguments()
 {
-    if(nullptr == m_effect)
-    {
-        m_arguments.clear();
-        m_vertexShader.clear();
-        m_fragmentShader.clear();
-        initDefaultShaders();
-        resetProgram();
-        return;
-    }
-
-    // read shaders files
-    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
-                );
-    Q_ASSERT(nullptr != shaderTypeModel && shaderTypeModel->sizeImpl() > 0);
-    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    Q_ASSERT(nullptr != sf);
-
-    m_vertexShader.clear();
-    m_fragmentShader.clear();
-
-    EffectShaderModel *shaders = m_effect->getEffectShaders();
-    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
-    for(int i = 0; i < shaders->sizeImpl(); ++i)
-    {
-        EffectShader *effect_shader = shaders->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effect_shader);
-        ShaderModel *shaderModel = effect_shader->getShader();
-        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
-        Shader *shader = shaderModel->dataItemAtImpl(0);
-        Q_ASSERT(shader != nullptr);
-
-        Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
-        QString shaderText = loadFileByUrl(shader->filename());
-
-        ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
-        Q_ASSERT(nullptr != shaderType &&
-                    (
-                        g_shaderTypeVertex == shaderType->type() ||
-                        g_shaderTypeFragment == shaderType->type()
-                    )
-                );
-        if(g_shaderTypeVertex == shaderType->type())
-        {
-            m_vertexShader = shaderText;
-        }
-        else if(g_shaderTypeFragment == shaderType->type())
-        {
-            m_fragmentShader = shaderText;
-        }
-    }
     initDefaultShaders();
     initGeometry();
 
-    ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
-                );
-    Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
-
+    QVector<Comment> vertexComments;
+    getShaderComments(m_vertexShader, vertexComments);
+    QVector<Comment> fragmentComments;
+    getShaderComments(m_fragmentShader, fragmentComments);
     m_arguments.clear();
-    // read default arguments values
-    EffectArgModel *effectArguments = m_effect->getEffectArguments();
-    Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
-    for(int i = 0; i < effectArguments->sizeImpl(); ++i)
+    int argId = 0;
+    for(const Comment &comment: vertexComments)
     {
+        if(!comment.values().contains(g_argumentName))
+        {
+            continue;
+        }
+        if(!comment.values().contains(g_typeName) ||
+                !comment.values().contains(g_nameName) ||
+                !comment.values().contains(g_defaultValueName))
+        {
+            continue;
+        }
+
         ArgumentInfo ai;
-        EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effectArgument);
-        ai.setName(effectArgument->name());
-        ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
-        Q_ASSERT(nullptr != argType);
-        ai.setArgId(effectArgument->id());
-        ai.setType(argType->type());
-        ai.setValue(effectArgument->defaultValue());
+        ai.setName(comment.values().value(g_nameName).trimmed());
+        ai.setType(comment.values().value(g_typeName).trimmed());
+        ai.setValue(comment.values().value(g_defaultValueName).trimmed());
+        ai.setArgId(argId++);
         m_arguments.push_back(ai);
     }
-
-    if(nullptr != m_argumentSet)
+    for(const Comment &comment: fragmentComments)
     {
-        EffectArgValueModel *argumentValuesModel = m_argumentSet->getArgumentValues();
-        Q_ASSERT(nullptr != argumentValuesModel && argumentValuesModel->isListLoaded());
-        for(int i = 0; i < argumentValuesModel->sizeImpl(); ++i)
+        if(!comment.values().contains(g_argumentName))
         {
-            EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
-            Q_ASSERT(nullptr != effectArgumentValue);
-            const int argId = effectArgumentValue->getArgId();
-            const auto fita = std::find_if(std::begin(m_arguments), std::end(m_arguments), [argId](const ArgumentInfo &ai)->bool
-            {
-                return ai.getArgId() == argId;
-            });
-            Q_ASSERT(std::end(m_arguments) != fita);
-            fita->setValue(effectArgumentValue->value());
+            continue;
+        }
+        if(!comment.values().contains(g_typeName) ||
+                !comment.values().contains(g_nameName) ||
+                !comment.values().contains(g_defaultValueName))
+        {
+            continue;
+        }
+
+        ArgumentInfo ai;
+        ai.setName(comment.values().value(g_nameName).trimmed());
+        auto fitc = std::find_if(std::begin(m_arguments), std::end(m_arguments),
+                                       [&ai](const ArgumentInfo &ai_)->bool
+        {
+            return ai_.getName() == ai.getName();
+        });
+        if(std::end(m_arguments) == fitc)
+        {
+            ai.setType(comment.values().value(g_typeName).trimmed());
+            ai.setValue(comment.values().value(g_defaultValueName).trimmed());
+            ai.setArgId(argId++);
+            m_arguments.push_back(ai);
+        }
+        else
+        {
+            //fitc->setValue(comment.values().value(g_defaultValueName).trimmed());
         }
     }
 
@@ -773,6 +757,8 @@ void OpenGlQuizImage::initGeometry()
         m_geometrySolid = !(!shaderComment.values().contains(g_geometrySolidName)
                 && shaderComment.values().contains(g_geometryFacedName))
                 ;
+        m_attributeColors = shaderComment.values().contains(g_colorsAttributeName);
+
         if(shaderComment.values().contains(g_geometrySizeName))
         {
             const QString geomSizeStr = shaderComment.values().value(g_geometrySizeName);
@@ -793,6 +779,7 @@ void OpenGlQuizImage::initGeometry()
         m_geometrySolid = true;
         m_geomertyPointsWidth = 1;
         m_geometryPointsHeight = 1;
+        m_attributeColors = false;
     }
 }
 
@@ -815,22 +802,6 @@ QString OpenGlQuizImage::loadFile(const QString &filename_)
     QByteArray fd = file.readAll();
     QTextCodec *codec = QTextCodec::codecForUtfText(fd);
     return codec->toUnicode(fd);
-}
-
-QString OpenGlQuizImage::loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
-{
-    if(useServerFiles_)
-    {
-        ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-        Q_ASSERT(nullptr != sf);
-        QUrl url(sf->get(filenameUrl_));
-        return loadFile(url.toLocalFile());
-    }
-    else
-    {
-        QUrl url(filenameUrl_);
-        return loadFile(url.toLocalFile());
-    }
 }
 
 bool OpenGlQuizImage::getRenderRectSize(QVariantList &values_)

@@ -101,6 +101,7 @@ void QuizImage::setFragmentShaderFilename(const QString &fragmentShaderFilename_
 
     if(newHash == m_fragmentShaderHash) { return; }
 
+    m_shadersUpdated = true;
     m_fragmentShader = fragmentShaderNew;
     m_fragmentShaderHash = newHash;
 
@@ -123,6 +124,7 @@ void QuizImage::setVertexShaderFilename(const QString &vertexShaderFilename_)
 
     if(newHash == m_vertexShaderHash) { return; }
 
+    m_shadersUpdated = true;
     m_vertexShader = vertexShaderNew;
     m_vertexShaderHash = newHash;
 
@@ -162,6 +164,16 @@ int QuizImage::paintedWidth() const
 int QuizImage::paintedHeight() const
 {
     return std::max(1, m_imageSize.height());
+}
+
+bool QuizImage::shadersUpdated() const
+{
+    return m_shadersUpdated;
+}
+
+void QuizImage::clearShadersUpdated()
+{
+    m_shadersUpdated = false;
 }
 
 QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
@@ -212,4 +224,3 @@ QString QuizImage::loadFile(const QString &filename_)
     QTextCodec *codec = QTextCodec::codecForUtfText(fd);
     return codec->toUnicode(fd);
 }
-

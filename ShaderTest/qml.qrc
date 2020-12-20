@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>resources/no-image.png</file>
+        <file>default.frag</file>
+        <file>default.vert</file>
     </qresource>
 </RCC>

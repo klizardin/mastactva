@@ -32,6 +32,7 @@ public:
     void setArgId(int argId_);
     int getArgId() const;
     void setName(const QString &name_);
+    const QString &getName() const;
     void setType(const QString &type_);
     void setValue(const QString &value_);
     void setValue(const QVariantList &values_);
@@ -78,9 +79,9 @@ private:
     void initGeometry();
     void resetProgram();
     QString loadFile(const QString &filename_);
-    QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
     bool getRenderRectSize(QVariantList &values_);
     bool renderStateInitializeNone(QVariantList &values_);
+    int getGeometryItemSize() const;
 
 private:
     QObject *m_parent = nullptr;
@@ -103,6 +104,7 @@ private:
 
     int m_vertexAttrId = -1;
     int m_texCoordAttrId = -1;
+    int m_colorAttrId = -1;
     int m_fromTextureId = -1;
     int m_toTextureId = -1;
     int m_opacitiId = -1;
@@ -116,10 +118,6 @@ private:
     QString m_toImageUrl;
     QString m_fromImageUrlNew;
     QString m_toImageUrlNew;
-    Effect *m_effect = nullptr;
-    int m_oldEffectId = -1;
-    EffectArgSet *m_argumentSet = nullptr;
-    int m_oldArgumentSetId = -1;
     QList<ArgumentInfo> m_arguments;
     QString m_vertexShader;
     QString m_fragmentShader;
@@ -130,6 +128,8 @@ private:
     QMatrix4x4 m_texMatrix1;
     QMatrix4x4 m_texMatrix2;
     bool m_updateSize = false;
+    bool m_attributeColors = false;
+    int m_geometryItemSize = 1;
 
     friend class ArgumentInfo;
 };
