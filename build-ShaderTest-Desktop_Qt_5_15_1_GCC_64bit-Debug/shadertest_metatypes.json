@@ -95,7 +95,8 @@
                         "scriptable": true,
                         "stored": true,
                         "type": "QString",
-                        "user": false
+                        "user": false,
+                        "write": "setFragmentShader"
                     },
                     {
                         "constant": false,
@@ -108,7 +109,8 @@
                         "scriptable": true,
                         "stored": true,
                         "type": "QString",
-                        "user": false
+                        "user": false,
+                        "write": "setVertexShader"
                     },
                     {
                         "constant": false,

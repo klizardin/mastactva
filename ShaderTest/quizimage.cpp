@@ -138,9 +138,45 @@ QString QuizImage::fragmentShader()
     return m_fragmentShader;
 }
 
+void QuizImage::setFragmentShader(const QString &fragmentShader_)
+{
+    const QString newHash = calculateHash(fragmentShader_);
+    if(newHash == m_fragmentShaderHash) { return; }
+
+    m_shadersUpdated = true;
+    m_fragmentShader = fragmentShader_;
+    m_fragmentShaderHash = newHash;
+
+    if(!m_fragmentShaderFilename.isEmpty())
+    {
+        saveFile(m_fragmentShaderFilename, m_fragmentShader);
+    }
+
+    updateState();
+    emit fragmentShaderChanged();
+}
+
 QString QuizImage::vertexShader()
 {
     return m_vertexShader;
+}
+
+void QuizImage::setVertexShader(const QString &vertexShader_)
+{
+    const QString newHash = calculateHash(vertexShader_);
+    if(newHash == m_vertexShaderHash) { return; }
+
+    m_shadersUpdated = true;
+    m_vertexShader = vertexShader_;
+    m_vertexShaderHash = newHash;
+
+    if(!m_vertexShaderFilename.isEmpty())
+    {
+        saveFile(m_vertexShaderFilename, m_vertexShader);
+    }
+
+    updateState();
+    emit vertexShaderChanged();
 }
 
 qreal QuizImage::t() const
@@ -223,4 +259,11 @@ QString QuizImage::loadFile(const QString &filename_)
     QByteArray fd = file.readAll();
     QTextCodec *codec = QTextCodec::codecForUtfText(fd);
     return codec->toUnicode(fd);
+}
+
+void QuizImage::saveFile(const QString &filename_, const QString& data_)
+{
+    QFile file(filename_);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) { return; }
+    file.write(data_.toUtf8());
 }

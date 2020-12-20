@@ -20,8 +20,8 @@ public:
     Q_PROPERTY(QString toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
     Q_PROPERTY(QString fragmentShaderFilename READ fragmentShaderFilename WRITE setFragmentShaderFilename NOTIFY fragmentShaderFilenameChanged)
     Q_PROPERTY(QString vertexShaderFilename READ vertexShaderFilename WRITE setVertexShaderFilename NOTIFY vertexShaderFilenameChanged)
-    Q_PROPERTY(QString fragmentShader READ fragmentShader NOTIFY fragmentShaderChanged)
-    Q_PROPERTY(QString vertexShader READ vertexShader NOTIFY vertexShaderChanged)
+    Q_PROPERTY(QString fragmentShader READ fragmentShader WRITE setFragmentShader NOTIFY fragmentShaderChanged)
+    Q_PROPERTY(QString vertexShader READ vertexShader WRITE setVertexShader NOTIFY vertexShaderChanged)
     Q_PROPERTY(int paintedWidth READ paintedWidth NOTIFY paintedWidthChanged)
     Q_PROPERTY(int paintedHeight READ paintedHeight NOTIFY paintedHeightChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
@@ -41,7 +41,9 @@ public:
     QString vertexShaderFilename();
     void setVertexShaderFilename(const QString &vertextShaderFilename_);
     QString fragmentShader();
+    void setFragmentShader(const QString &fragmentShader_);
     QString vertexShader();
+    void setVertexShader(const QString &vertexShader_);
     qreal t() const;
     void setT(qreal t_);
     int paintedWidth() const;
@@ -51,6 +53,7 @@ public:
 
 protected:
     QString loadFile(const QString &filename_);
+    void saveFile(const QString &filename_, const QString& data_);
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
