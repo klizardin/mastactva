@@ -615,29 +615,28 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
     //f_->glEnable(GL_CULL_FACE);
     //f_->glCullFace(GL_FRONT_AND_BACK);
-
-//    f_->glFrontFace(GL_CCW);
-//    for(int y = 0; y < m_geometryPointsHeight; y++)
-//    {
-//        for(int x = 0; x < m_geomertyPointsWidth; x++)
-//        {
-//            f_->glActiveTexture(GL_TEXTURE1);
-//            m_toTexture->bind();
-//            f_->glActiveTexture(GL_TEXTURE0);
-//            m_fromTexture->bind();
-//
-//            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers;
-//            f_->glDrawArrays(GL_TRIANGLES, offs, g_trianglesCount * g_triangleConers);
-//        }
-//    }
+    f_->glFrontFace(GL_CCW);
 
     f_->glActiveTexture(GL_TEXTURE1);
     m_toTexture->bind();
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
 
-    f_->glFrontFace(GL_CCW);
-    f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_geometryItemSize);
+    if(m_geometrySolid)
+    {
+        f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/g_geometryItemSize);
+    }
+    else
+    {
+        for(int y = 0; y < m_geometryPointsHeight; y++)
+        {
+            for(int x = 0; x < m_geomertyPointsWidth; x++)
+            {
+                const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers;
+                f_->glDrawArrays(GL_TRIANGLES, offs, g_trianglesCount * g_triangleConers);
+            }
+        }
+    }
     m_program->disableAttributeArray(m_vertexAttrId);
     m_program->disableAttributeArray(m_texCoordAttrId);
     m_vbo->release();
@@ -835,8 +834,8 @@ bool OpenGlQuizImage::getRenderRectSize(QVariantList &values_)
 {
     values_.clear();
     values_.reserve(2);
-    values_.push_back(m_width);
-    values_.push_back(m_height);
+    values_.push_back(m_width-1);
+    values_.push_back(m_height-1);
     return true;
 }
 
