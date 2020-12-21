@@ -503,6 +503,8 @@ void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textu
 
 void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 {
+    if(nullptr != m_program) { return; }
+
     m_vertexAttrId = -1;
     m_texCoordAttrId = -1;
     m_colorAttrId = -1;
@@ -595,7 +597,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
 void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
-    if(nullptr == m_program || !m_program->isLinked()) { return; }
+    if(nullptr == m_program) { return; }
 
     m_program->bind();
 
