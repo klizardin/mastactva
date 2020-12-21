@@ -96,7 +96,9 @@ QString QuizImage::fragmentShaderFilename()
 
 void QuizImage::setFragmentShaderFilename(const QString &fragmentShaderFilename_)
 {
-    m_fragmentShaderFilename = fragmentShaderFilename_;
+    QUrl url(fragmentShaderFilename_);
+
+    m_fragmentShaderFilename = url.toLocalFile();
 
     const QString fragmentShaderNew = loadFile(m_fragmentShaderFilename);
     const QString newHash = calculateHash(fragmentShaderNew);
@@ -119,7 +121,9 @@ QString QuizImage::vertexShaderFilename()
 
 void QuizImage::setVertexShaderFilename(const QString &vertexShaderFilename_)
 {
-    m_vertexShaderFilename = vertexShaderFilename_;
+    QUrl url(vertexShaderFilename_);
+
+    m_vertexShaderFilename = url.toLocalFile();
 
     const QString vertexShaderNew = loadFile(m_vertexShaderFilename);
     const QString newHash = calculateHash(vertexShaderNew);
