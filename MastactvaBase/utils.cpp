@@ -268,7 +268,7 @@ QString calculateHash(const QByteArray &data_)
 
 QString calculateHash(const QString &data_)
 {
-    return calculateFileURLHash(data_.toUtf8());
+    return calculateHash(data_.toUtf8());
 }
 
 QString calculateFileURLHash(const QString &fileUrl_)
