@@ -209,7 +209,7 @@ ApplicationWindow {
     }
 
     Action {
-        id: reverseEffectDemo
+        id: reversePlayEffectDemo
         text: qsTr("Play reverse current effect demo")
         onTriggered: {
             quizImageDemoAnimationBackward.running = true
@@ -376,7 +376,7 @@ ApplicationWindow {
 
             SplitView.preferredWidth: Constants.shadersWidth
             SplitView.minimumWidth: Constants.shadersWidth / 2
-            SplitView.maximumWidth: Constants.shadersWidth * 1.5
+            SplitView.maximumWidth: root.width * 0.75
             height: parent.height
 
             TabBar {
@@ -421,7 +421,7 @@ ApplicationWindow {
             height: parent.height
             SplitView.preferredWidth: Constants.shadersWidth
             SplitView.minimumWidth: Constants.shadersWidth / 2
-            SplitView.maximumWidth: Constants.shadersWidth * 1.5
+            SplitView.maximumWidth: root.width * 0.75
 
             QuizImage {
                 id: quizImageDemo
@@ -436,14 +436,14 @@ ApplicationWindow {
                     id: quizImageDemoAnimationForward
                     running: false
 
-                    NumberAnimation { id: numberAnimationForward; target: effectImageDemo; property: "t"; from: 0.0; to: 1.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                    NumberAnimation { id: numberAnimationForward; target: quizImageDemo; property: "t"; from: 0.0; to: 1.0; duration: 3000; easing.type: Easing.Linear }
                 }
 
                 SequentialAnimation {
                     id: quizImageDemoAnimationBackward
                     running: false
 
-                    NumberAnimation { id: numberAnimationBackward;  target: effectImageDemo; property: "t"; from: 1.0; to: 0.0; duration: splitEffectsDemo.effectDemoImageAnimationDuration; easing.type: Easing.Linear }
+                    NumberAnimation { id: numberAnimationBackward;  target: quizImageDemo; property: "t"; from: 1.0; to: 0.0; duration: 3000; easing.type: Easing.Linear }
                 }
 
                 Connections {
