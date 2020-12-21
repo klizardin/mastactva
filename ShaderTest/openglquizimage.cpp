@@ -254,6 +254,7 @@ OpenGlQuizImage::OpenGlQuizImage(QObject *parent_)
 
     m_fromImageUrlNew = g_noImage;
     m_toImageUrlNew = g_noImage;
+    initDefaultShaders();
     extractArguments();
 }
 

@@ -17,12 +17,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "updateFragmentShader",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "updateVertexShader",
+                        "name": "updateShaders",
                         "returnType": "void"
                     }
                 ],
