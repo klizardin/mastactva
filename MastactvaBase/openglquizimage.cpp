@@ -294,14 +294,14 @@ QRectF OpenGlQuizImage::rect() const
 
 void OpenGlQuizImage::sync(QQuickItem *item_)
 {
-    if(item_->width() != m_width || item_->height() != m_height)
+    if(int(item_->width()) != m_width || int(item_->height()) != m_height)
     {
         m_updateSize = true;
     }
-    m_left = item_->x();
-    m_top = item_->y();
-    m_width = item_->width();
-    m_height = item_->height();
+    m_left = int(item_->x());
+    m_top = int(item_->y());
+    m_width = int(item_->width());
+    m_height = int(item_->height());
 
     // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
