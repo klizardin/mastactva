@@ -867,8 +867,8 @@ bool OpenGlQuizImage::getRenderRectSize(QVariantList &values_)
 {
     values_.clear();
     values_.reserve(2);
-    values_.push_back(m_width);
-    values_.push_back(m_height);
+    values_.push_back(m_width - 1);
+    values_.push_back(m_height - 1);
     return true;
 }
 
