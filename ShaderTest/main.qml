@@ -23,11 +23,13 @@ ApplicationWindow {
         function onVertexFilenameChanged()
         {
             console.log("vertexFilename = ", vertexFilename)
+            quizImageDemo.vertexShaderFilename = vertexFilename
         }
 
         function onFragmentFilenameChanged()
         {
             console.log("fragmentFilename = ", fragmentFilename)
+            quizImageDemo.fragmentShaderFilename = fragmentFilename
         }
     }
 
@@ -126,7 +128,41 @@ ApplicationWindow {
             SplitView.maximumWidth: Constants.shadersWidth * 1.5
             height: parent.height
 
-            Text { text: qsTr("Shaders"); }
+            TabBar {
+                id: shaderTabBar
+                anchors.top: parent.top
+                width: parent.width
+                TabButton {
+                    text: qsTr("Vertex")
+                }
+                TabButton {
+                    text: qsTr("Fragment")
+                }
+            }
+
+            StackLayout {
+                anchors.top: shaderTabBar.bottom
+                anchors.left: parent.left
+                width: parent.width
+                height: parent.height - shaderTabBar.height
+                currentIndex: shaderTabBar.currentIndex
+
+                Item {
+                    TextArea {
+                        id: vertexShaderEdit
+                        anchors.fill: parent
+                        readOnly: false
+                    }
+                }
+
+                Item {
+                    TextArea {
+                        id: fragmentShaderEdit
+                        anchors.fill: parent
+                        readOnly: false
+                    }
+                }
+            }
         }
 
         Rectangle{
@@ -136,7 +172,27 @@ ApplicationWindow {
             SplitView.minimumWidth: Constants.shadersWidth / 2
             SplitView.maximumWidth: Constants.shadersWidth * 1.5
 
-            Text { text: qsTr("Demo"); }
+            QuizImage {
+                id: quizImageDemo
+                width: splitDemo.width
+                height: (splitDemo.width * Constants.aspectY) / Constants.aspectX
+                fromImage: Constants.noImageResource
+                toImage: Constants.noImageResource
+                t: 0.5
+            }
+            Label {
+                id: shadersBuildLogLabel
+                anchors.top: quizImageDemo.bottom
+                text: qsTr("Build log");
+            }
+            Text {
+                id: shadersBuildLog
+                anchors.top: shadersBuildLogLabel.bottom
+                width: splitDemo.width
+                height: splitDemo.height - (quizImageDemo.height + shadersBuildLogLabel.height)
+                text: quizImageDemo.shadersBuildLog
+                wrapMode: Text.WordWrap
+            }
         }
     }
 }

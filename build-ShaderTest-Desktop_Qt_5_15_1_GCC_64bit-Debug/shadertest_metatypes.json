@@ -116,6 +116,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "shadersBuildLog",
+                        "notify": "shadersBuildLogChanged",
+                        "read": "shadersBuildLog",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setShadersBuildLog"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "paintedWidth",
                         "notify": "paintedWidthChanged",
                         "read": "paintedWidth",
@@ -198,6 +212,11 @@
                     {
                         "access": "public",
                         "name": "vertexShaderChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "shadersBuildLogChanged",
                         "returnType": "void"
                     }
                 ],

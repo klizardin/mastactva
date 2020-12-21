@@ -21,6 +21,7 @@
 
 
 class OpenGlQuizImage;
+class QuizImage;
 
 
 class ArgumentInfo
@@ -56,7 +57,7 @@ private:
 class OpenGlQuizImage : public QSGRenderNode
 {
 public:
-    OpenGlQuizImage(QObject * parent_);
+    OpenGlQuizImage(QObject *parent_);
     virtual ~OpenGlQuizImage() override;
 
     virtual void releaseResources() override;
@@ -82,6 +83,9 @@ private:
     bool getRenderRectSize(QVariantList &values_);
     bool renderStateInitializeNone(QVariantList &values_);
     int getGeometryItemSize() const;
+
+signals:
+    void error(const QString &log_);
 
 private:
     QObject *m_parent = nullptr;
@@ -130,6 +134,8 @@ private:
     bool m_updateSize = false;
     bool m_attributeColors = false;
     int m_geometryItemSize = 1;
+
+    QString m_programBuildLog;
 
     friend class ArgumentInfo;
 };

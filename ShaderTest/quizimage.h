@@ -22,6 +22,7 @@ public:
     Q_PROPERTY(QString vertexShaderFilename READ vertexShaderFilename WRITE setVertexShaderFilename NOTIFY vertexShaderFilenameChanged)
     Q_PROPERTY(QString fragmentShader READ fragmentShader WRITE setFragmentShader NOTIFY fragmentShaderChanged)
     Q_PROPERTY(QString vertexShader READ vertexShader WRITE setVertexShader NOTIFY vertexShaderChanged)
+    Q_PROPERTY(QString shadersBuildLog READ shadersBuildLog WRITE setShadersBuildLog NOTIFY shadersBuildLogChanged)
     Q_PROPERTY(int paintedWidth READ paintedWidth NOTIFY paintedWidthChanged)
     Q_PROPERTY(int paintedHeight READ paintedHeight NOTIFY paintedHeightChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
@@ -50,6 +51,9 @@ public:
     int paintedHeight() const;
     bool shadersUpdated() const;
     void clearShadersUpdated();
+    QString shadersBuildLog();
+    void setShadersBuildLog(const QString &log_);
+    void renderBuildError(const QString &log_);
 
 protected:
     QString loadFile(const QString &filename_);
@@ -68,6 +72,7 @@ signals:
     void vertexShaderFilenameChanged();
     void fragmentShaderChanged();
     void vertexShaderChanged();
+    void shadersBuildLogChanged();
 
 private:
     QString m_fromImage;
@@ -78,6 +83,8 @@ private:
     QString m_vertexShaderHash;
     QString m_fragmentShader;
     QString m_vertexShader;
+    QString m_renderBuildLog;
+    QString m_lastLog;
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);
     qreal m_t = 0.0;

@@ -3,6 +3,7 @@
 #include <QTextCodec>
 #include "quizimage.h"
 #include <random>
+#include "quizimage.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -246,7 +247,7 @@ static const int g_colorCoords = 3;
 static const GLfloat g_facegGeometryCoef = 1e-3;
 
 
-OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
+OpenGlQuizImage::OpenGlQuizImage(QObject *parent_)
 {
     m_parent = parent_;
 
@@ -330,11 +331,13 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     //{
     //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
     //}
+    initDefaultShaders();
     if(quizImage->shadersUpdated())
     {
         extractArguments();
         quizImage->clearShadersUpdated();
     }
+    quizImage->renderBuildError(m_programBuildLog);
 }
 
 int OpenGlQuizImage::getGeometryItemSize() const
@@ -500,15 +503,31 @@ void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textu
 
 void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 {
+    m_vertexAttrId = -1;
+    m_texCoordAttrId = -1;
+    m_colorAttrId = -1;
+    m_fromTextureId = -1;
+    m_toTextureId = -1;
+    m_opacitiId = -1;
+    m_matrixId = -1;
+    m_texMatrix1Id = -1;
+    m_texMatrix2Id = -1;
+    m_tId = -1;
+
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
 
+    m_programBuildLog.clear();
     const bool isProgramRecreated = nullptr == m_vshader || nullptr == m_fshader;
     if(nullptr == m_vshader)
     {
         m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, m_parent);
         m_vshaderBA = m_vertexShader.toUtf8();
         m_vshader->compileSourceCode(m_vshaderBA.constData());
+        if(!m_vshader->isCompiled())
+        {
+            m_programBuildLog += m_vshader->log();
+        }
     }
 
     if(nullptr == m_fshader)
@@ -516,18 +535,30 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
         m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, m_parent);
         m_fshaderBA = m_fragmentShader.toUtf8();
         m_fshader->compileSourceCode(m_fshaderBA.constData());
+        if(!m_fshader->isCompiled())
+        {
+            m_programBuildLog += m_fshader->log();
+        }
     }
 
     m_program = new QOpenGLShaderProgram();
     m_program->addShader(m_vshader);
     m_program->addShader(m_fshader);
     m_program->link();
+    if(!m_program->isLinked())
+    {
+        m_programBuildLog += m_program->log();
+        return;
+    }
 
     if(isProgramRecreated)
     {
         m_vertexAttrId = m_program->attributeLocation("vertexArg");
         m_texCoordAttrId = m_program->attributeLocation("texCoordArg");
-        m_colorAttrId = m_program->attributeLocation("colorArg");
+        if(m_attributeColors)
+        {
+            m_colorAttrId = m_program->attributeLocation("colorArg");
+        }
         m_fromTextureId = m_program->uniformLocation("texture1Arg");
         m_toTextureId = m_program->uniformLocation("texture2Arg");
         m_opacitiId = m_program->uniformLocation("opacityArg");
@@ -545,7 +576,10 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
     m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
     m_program->bindAttributeLocation("texCoordArg", m_texCoordAttrId);
-
+    if(m_attributeColors)
+    {
+        m_program->bindAttributeLocation("colorArg", m_colorAttrId);
+    }
     makeObject();
 
     if(nullptr == m_vbo)
@@ -561,6 +595,8 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
 void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
+    if(nullptr == m_program || !m_program->isLinked()) { return; }
+
     m_program->bind();
 
     m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0
@@ -677,7 +713,6 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
 void OpenGlQuizImage::extractArguments()
 {
-    initDefaultShaders();
     initGeometry();
 
     QVector<Comment> vertexComments;
