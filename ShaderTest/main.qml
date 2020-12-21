@@ -123,6 +123,14 @@ ApplicationWindow {
     }
 
     Action {
+        id: useShaders
+        text: qsTr("Use &shaders")
+        onTriggered: {
+            quizImageDemo.updateShaders()
+        }
+    }
+
+    Action {
         id: updateShadersLog
         text: qsTr("&Update log info")
         onTriggered: {
@@ -331,6 +339,7 @@ ApplicationWindow {
             MenuItem { action: openFragmentShaderFile }
             MenuItem { action: updateVertexShaderFile }
             MenuItem { action: updateFragmentShaderFile }
+            MenuItem { action: useShaders }
         }
 
         AutoSizeMenu {
@@ -423,57 +432,65 @@ ApplicationWindow {
             SplitView.minimumWidth: Constants.shadersWidth / 2
             SplitView.maximumWidth: root.width * 0.75
 
-            QuizImage {
-                id: quizImageDemo
+            Rectangle {
+                id: quizImageDemoClipper
                 width: splitDemo.width
                 height: (splitDemo.width * Constants.aspectY) / Constants.aspectX
-                fromImage: Constants.noImageResource
-                toImage: Constants.noImageResource
+                color: "transparent"
                 clip: true
-                t: 0.5
 
-                SequentialAnimation {
-                    id: quizImageDemoAnimationForward
-                    running: false
+                QuizImage {
+                    id: quizImageDemo
+                    width: splitDemo.width
+                    height: (splitDemo.width * Constants.aspectY) / Constants.aspectX
+                    fromImage: Constants.noImageResource
+                    toImage: Constants.noImageResource
+                    clip: true
+                    t: 0.5
 
-                    NumberAnimation { id: numberAnimationForward; target: quizImageDemo; property: "t"; from: 0.0; to: 1.0; duration: 3000; easing.type: Easing.Linear }
-                }
+                    SequentialAnimation {
+                        id: quizImageDemoAnimationForward
+                        running: false
 
-                SequentialAnimation {
-                    id: quizImageDemoAnimationBackward
-                    running: false
-
-                    NumberAnimation { id: numberAnimationBackward;  target: quizImageDemo; property: "t"; from: 1.0; to: 0.0; duration: 3000; easing.type: Easing.Linear }
-                }
-
-                Connections {
-                    target: quizImageDemoAnimationForward
-
-                    function onFinished()
-                    {
-                        console.log("effectDemoImageAnimationForward.finished()");
+                        NumberAnimation { id: numberAnimationForward; target: quizImageDemo; property: "t"; from: 0.0; to: 1.0; duration: 3000; easing.type: Easing.Linear }
                     }
-                }
 
-                Connections {
-                    target: quizImageDemoAnimationBackward
+                    SequentialAnimation {
+                        id: quizImageDemoAnimationBackward
+                        running: false
 
-                    function onFinished()
-                    {
-                        console.log("effectDemoImageAnimationBackward.finished()");
+                        NumberAnimation { id: numberAnimationBackward;  target: quizImageDemo; property: "t"; from: 1.0; to: 0.0; duration: 3000; easing.type: Easing.Linear }
+                    }
+
+                    Connections {
+                        target: quizImageDemoAnimationForward
+
+                        function onFinished()
+                        {
+                            console.log("effectDemoImageAnimationForward.finished()");
+                        }
+                    }
+
+                    Connections {
+                        target: quizImageDemoAnimationBackward
+
+                        function onFinished()
+                        {
+                            console.log("effectDemoImageAnimationBackward.finished()");
+                        }
                     }
                 }
             }
             Label {
                 id: shadersBuildLogLabel
-                anchors.top: quizImageDemo.bottom
+                anchors.top: quizImageDemoClipper.bottom
                 text: qsTr("Build log");
             }
             Text {
                 id: shadersBuildLog
                 anchors.top: shadersBuildLogLabel.bottom
                 width: splitDemo.width
-                height: splitDemo.height - (quizImageDemo.height + shadersBuildLogLabel.height)
+                height: splitDemo.height - (quizImageDemoClipper.height + shadersBuildLogLabel.height)
                 text: quizImageDemo.shadersBuildLog
                 wrapMode: Text.WordWrap
             }

@@ -32,8 +32,7 @@ public:
 
 public:
     Q_INVOKABLE void updateState();
-    Q_INVOKABLE void updateFragmentShader();
-    Q_INVOKABLE void updateVertexShader();
+    Q_INVOKABLE void updateShaders();
 
 public:
     QString fromImage() const;

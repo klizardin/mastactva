@@ -28,14 +28,10 @@ void QuizImage::updateState()
     update();
 }
 
-void QuizImage::updateFragmentShader()
+void QuizImage::updateShaders()
 {
-    setFragmentShaderFilename(fragmentShaderFilename());
-}
-
-void QuizImage::updateVertexShader()
-{
-    setVertexShaderFilename(vertexShaderFilename());
+    m_shadersUpdated = true;
+    updateState();
 }
 
 QString QuizImage::fromImage() const
