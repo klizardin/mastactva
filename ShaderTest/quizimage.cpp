@@ -46,10 +46,11 @@ QString QuizImage::fromImage() const
 void QuizImage::setFromImage(const QString &fromImage_)
 {
     QUrl url(fromImage_);
+    const QString fromImageFile = g_noImage != fromImage_ ? url.toLocalFile() : g_noImage;
 
-    if(url.toLocalFile() == m_fromImage) { return; }
+    if(fromImageFile == m_fromImage) { return; }
 
-    m_fromImage = url.toLocalFile();
+    m_fromImage = fromImageFile;
 
     delete m_image;
     m_image = nullptr;
@@ -82,10 +83,11 @@ QString QuizImage::toImage() const
 void QuizImage::setToImage(const QString &toImage_)
 {
     QUrl url(toImage_);
+    const QString toImageFile = g_noImage != toImage_ ? url.toLocalFile() : g_noImage;
 
-    if(url.toLocalFile() == m_toImage) { return; }
+    if(toImageFile == m_toImage) { return; }
 
-    m_toImage = url.toLocalFile();
+    m_toImage = toImageFile;
 
     updateState();
     emit toImageChanged();

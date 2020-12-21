@@ -7,7 +7,6 @@
 #include "../MastactvaBase/utils.h"
 
 
-static const QString g_noImage = ":/resources/no-image.png";
 static const QString g_rand = "rand";
 static const QString g_renderRectSize = "renderRectSize";
 

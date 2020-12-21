@@ -8,6 +8,9 @@
 #include "../MastactvaModels/effectargset.h"
 
 
+static const QString g_noImage = ":/resources/no-image.png";
+
+
 class QuizImage : public QQuickItem
 {
     Q_OBJECT
