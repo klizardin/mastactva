@@ -1,9 +1,11 @@
 /*@shader @description default vertex shader to rotate in cube images
 path: MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh
+@attributecolors
 @geomentryfaced
 @geomentrysize (4, 4) */
 attribute highp vec4 vertexArg;
 attribute mediump vec4 texCoordArg;
+attribute mediump vec3 colorArg;
 
 uniform mediump mat4 matrixArg;
 uniform mediump mat4 texMatrix1Arg;
@@ -26,7 +28,7 @@ uniform mediump vec4 faceRotateDir;
 uniform mediump float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
-varying mediump vec2 posColor;
+varying mediump vec3 posColor;
 
 const mediump float M_PI = 3.14159265359;
 
@@ -34,7 +36,7 @@ void main(void)
 {
     highp vec4 pos0 = matrixArg * vertexArg;
 
-    posColor = vec2(float(int(10.0 * vertexArg.x / rectSize.x)) / 10.0, float(int(10.0 * vertexArg.y / rectSize.y)) / 10.0);
+    posColor = colorArg;
 
     highp vec4 cubeVertex = vec4(vertexArg.x/vertexArg.w, vertexArg.y/vertexArg.w, 0.0, 1.0);
     highp vec4 pos1 = cubeVertex;

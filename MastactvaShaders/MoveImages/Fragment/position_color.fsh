@@ -8,7 +8,7 @@ uniform mediump float t;
 
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
-varying mediump vec2 posColor;
+varying mediump vec3 posColor;
 
 
 void main(void)
