@@ -408,18 +408,23 @@ ApplicationWindow {
                 currentIndex: shaderTabBar.currentIndex
 
                 Item {
-                    TextArea {
-                        id: vertexShaderEdit
+                    ScrollView{
                         anchors.fill: parent
-                        readOnly: false
+                        TextArea {
+                            id: vertexShaderEdit
+                            readOnly: false
+                        }
                     }
                 }
 
                 Item {
-                    TextArea {
-                        id: fragmentShaderEdit
+                    ScrollView{
                         anchors.fill: parent
-                        readOnly: false
+                        TextArea {
+                            id: fragmentShaderEdit
+                            anchors.fill: parent
+                            readOnly: false
+                        }
                     }
                 }
             }
