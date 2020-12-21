@@ -28,7 +28,7 @@ void QuizImage::updateState()
     update();
 }
 
-void QuizImage::updateFragmantShader()
+void QuizImage::updateFragmentShader()
 {
     setFragmentShaderFilename(fragmentShaderFilename());
 }

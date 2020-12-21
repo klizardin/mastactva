@@ -6,4 +6,8 @@
         <file>default.vert</file>
         <file>AutoSizeMenu.qml</file>
     </qresource>
+    <qresource prefix="/ShaderTestQML">
+        <file>ShaderTestQML/Constants.qml</file>
+        <file>ShaderTestQML/qmldir</file>
+    </qresource>
 </RCC>

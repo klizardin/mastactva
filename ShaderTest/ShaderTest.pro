@@ -23,7 +23,7 @@ SOURCES += \
         utils.cpp
 
 RESOURCES += qml.qrc    \
-    ./ShaderTest/
+    ShaderTestQML/
 
 TRANSLATIONS += \
     ShaderTest_be_BY.ts
@@ -41,5 +41,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     ../build-ShaderTest-Desktop_Qt_5_15_1_GCC_64bit-Debug/shadertest_metatypes.json \
-    ./ShaderTest/Constants.qml \
-    ./ShaderTest/qmldir
+    ./ShaderTestQML/Constants.qml \
+    ./ShaderTestQML/qmldir

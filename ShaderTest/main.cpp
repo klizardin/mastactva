@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
-    engine.addImportPath("qrc:/Mastactva");
+    engine.addImportPath("qrc:/ShaderTestQML");
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if(url == objUrl)

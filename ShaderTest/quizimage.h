@@ -28,7 +28,7 @@ public:
 
 public:
     Q_INVOKABLE void updateState();
-    Q_INVOKABLE void updateFragmantShader();
+    Q_INVOKABLE void updateFragmentShader();
     Q_INVOKABLE void updateVertexShader();
 
 public:
