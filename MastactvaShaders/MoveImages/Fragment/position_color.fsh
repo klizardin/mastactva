@@ -23,14 +23,14 @@ void main(void)
     }
     else if(s1.a > 0.0)
     {
-        gl_FragColor = vec4( s1.r * posColor.x, s1.g * posColor.y, s1.b, s1.a ) * opacityArg;
+        gl_FragColor = vec4( s1.r * posColor.x, s1.g * posColor.y, s1.b * posColor.z, s1.a ) * opacityArg;
     }
     else if(s2.a > 0.0)
     {
-        gl_FragColor = vec4( s2.r * posColor.x, s2.g * posColor.y, s2.b, s2.a ) * opacityArg;
+        gl_FragColor = vec4( s2.r * posColor.x, s2.g * posColor.y, s2.b * posColor.z, s2.a ) * opacityArg;
     }
     else
     {
-        gl_FragColor = vec4( posColor.x, posColor.y, 1.0, 1.0 ) * opacityArg;
+        gl_FragColor = vec4( posColor.x, posColor.y, posColor.z, 1.0 ) * opacityArg;
     }
 }
