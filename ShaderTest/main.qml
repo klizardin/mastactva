@@ -107,25 +107,11 @@ ApplicationWindow {
     }
 
     Action {
-        id: updateVertexShaderFile
-        text: qsTr("Update &vertex file")
-        onTriggered: {
-            quizImageDemo.vertexShader = vertexShaderEdit.text
-        }
-    }
-
-    Action {
-        id: updateFragmentShaderFile
-        text: qsTr("Update &fragment file")
-        onTriggered: {
-            quizImageDemo.fragmentShader = fragmentShaderEdit.text
-        }
-    }
-
-    Action {
         id: useShaders
         text: qsTr("Use &shaders")
         onTriggered: {
+            quizImageDemo.vertexShader = vertexShaderEdit.text
+            quizImageDemo.fragmentShader = fragmentShaderEdit.text
             quizImageDemo.updateShaders()
         }
     }
@@ -337,8 +323,6 @@ ApplicationWindow {
             title: qsTr("&Shaders")
             MenuItem { action: openVertexShaderFile }
             MenuItem { action: openFragmentShaderFile }
-            MenuItem { action: updateVertexShaderFile }
-            MenuItem { action: updateFragmentShaderFile }
             MenuItem { action: useShaders }
         }
 
