@@ -14,8 +14,8 @@ ApplicationWindow {
     title: qsTr("Shader test")
 
 
-    property string vertexFilename: ""
-    property string fragmentFilename: ""
+    property string vertexFilename: Constants.noNameVertex
+    property string fragmentFilename: Constants.noNameFragment
 
     Connections{
         target: root

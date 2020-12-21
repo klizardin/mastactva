@@ -9,5 +9,7 @@ QtObject {
     readonly property int aspectY: 3
     readonly property string noImage: "qrc:///resources/no-image.png"
     readonly property string noImageResource: ":/resources/no-image.png"
+    readonly property string noNameVertex: "no-name.vert"
+    readonly property string noNameFragment: "no-name.frag"
     property string noImageHash: ""
 }
