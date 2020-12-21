@@ -303,14 +303,15 @@ QRectF OpenGlQuizImage::rect() const
 
 void OpenGlQuizImage::sync(QQuickItem *item_)
 {
-    if(item_->width() != m_width || item_->height() != m_height)
+    if(int(item_->width()) != m_width || int(item_->height()) != m_height)
     {
+        qDebug() << "if(item_->width() != m_width || item_->height() != m_height)";
         m_updateSize = true;
     }
-    m_left = item_->x();
-    m_top = item_->y();
-    m_width = item_->width();
-    m_height = item_->height();
+    m_left = int(item_->x());
+    m_top = int(item_->y());
+    m_width = int(item_->width());
+    m_height = int(item_->height());
 
     // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
@@ -416,6 +417,7 @@ void OpenGlQuizImage::createTextures()
         Q_ASSERT(m_fromImageUrl == m_fromImageUrlNew && m_toImageUrl == m_toImageUrlNew);
         std::swap(m_fromImage, m_toImage);
         std::swap(m_fromTexture, m_toTexture);
+        qDebug() << "std::swap(m_fromImageUrl, m_toImageUrl);";
         m_updateSize = true;
         return;
     }
@@ -439,6 +441,7 @@ void OpenGlQuizImage::createTextures()
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_fromTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_fromTexture->setBorderColor(1, 1, 1, 0);
+        qDebug() << "if(m_fromImageUrlNew != m_fromImageUrl)";
         m_updateSize = true;
     }
     if(m_toImageUrlNew != m_toImageUrl)
@@ -460,6 +463,7 @@ void OpenGlQuizImage::createTextures()
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_toTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_toTexture->setBorderColor(1, 1, 1, 0);
+        qDebug() << "if(m_toImageUrlNew != m_toImageUrl)";
         m_updateSize = true;
     }
 }
@@ -606,6 +610,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
     if(m_updateSize)
     {
+        qDebug() << "m_updateSize = " << m_updateSize;
         makeObject();
         makeTextureMatrixes();
         m_updateSize = false;
