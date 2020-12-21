@@ -323,6 +323,7 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     //}
     m_vertexShader = quizImage->vertexShader();
     m_fragmentShader = quizImage->fragmentShader();
+    initDefaultShaders();
     m_fromImageUrlNew = quizImage->fromImage();
     if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
     m_toImageUrlNew = quizImage->toImage();
@@ -331,7 +332,6 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     //{
     //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
     //}
-    initDefaultShaders();
     if(quizImage->shadersUpdated())
     {
         extractArguments();
