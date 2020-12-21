@@ -219,6 +219,13 @@ ApplicationWindow {
         }
     }
 
+    Action {
+        id: updateArguments
+        text: qsTr("&Update arguments")
+        onTriggered: {
+            quizImageDemo.updateArguments()
+        }
+    }
 
     function testEffectDemo(t)
     {
@@ -343,6 +350,7 @@ ApplicationWindow {
             MenuItem { action: playEffectDemo }
             MenuItem { action: reversePlayEffectDemo }
             MenuItem { action: stopEffectDemo }
+            MenuItem { action: updateArguments }
             MenuItem { action: testEffect00Demo }
             MenuItem { action: testEffect01Demo }
             MenuItem { action: testEffect02Demo }

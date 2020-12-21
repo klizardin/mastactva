@@ -34,6 +34,12 @@ void QuizImage::updateShaders()
     updateState();
 }
 
+void QuizImage::updateArguments()
+{
+    m_argumentsUpdated = true;
+    updateState();
+}
+
 QString QuizImage::fromImage() const
 {
     return m_fromImage;
@@ -216,6 +222,16 @@ bool QuizImage::shadersUpdated() const
 void QuizImage::clearShadersUpdated()
 {
     m_shadersUpdated = false;
+}
+
+bool QuizImage::argumentsUpdated() const
+{
+    return m_argumentsUpdated;
+}
+
+void QuizImage::clearArgumentsUpdated()
+{
+    m_argumentsUpdated = false;
 }
 
 QString QuizImage::shadersBuildLog()

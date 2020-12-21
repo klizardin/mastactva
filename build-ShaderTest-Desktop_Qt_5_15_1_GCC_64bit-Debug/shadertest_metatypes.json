@@ -19,6 +19,11 @@
                         "access": "public",
                         "name": "updateShaders",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "updateArguments",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

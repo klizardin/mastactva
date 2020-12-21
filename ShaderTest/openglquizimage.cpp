@@ -330,13 +330,18 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     //{
     //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
     //}
-    if(quizImage->shadersUpdated())
+    bool shadersUpdated = quizImage->shadersUpdated();
+    if(shadersUpdated)
     {
         m_vertexShader = quizImage->vertexShader();
         m_fragmentShader = quizImage->fragmentShader();
         initDefaultShaders();
-        extractArguments();
         quizImage->clearShadersUpdated();
+    }
+    if(quizImage->argumentsUpdated() || shadersUpdated)
+    {
+        extractArguments();
+        quizImage->clearArgumentsUpdated();
     }
     quizImage->renderBuildError(m_programBuildLog);
 }

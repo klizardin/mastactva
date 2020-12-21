@@ -33,6 +33,7 @@ public:
 public:
     Q_INVOKABLE void updateState();
     Q_INVOKABLE void updateShaders();
+    Q_INVOKABLE void updateArguments();
 
 public:
     QString fromImage() const;
@@ -53,6 +54,8 @@ public:
     int paintedHeight() const;
     bool shadersUpdated() const;
     void clearShadersUpdated();
+    bool argumentsUpdated() const;
+    void clearArgumentsUpdated();
     QString shadersBuildLog();
     void setShadersBuildLog(const QString &log_);
     void renderBuildError(const QString &log_);
@@ -91,6 +94,7 @@ private:
     QSize m_imageSize = QSize(0,0);
     qreal m_t = 0.0;
     bool m_shadersUpdated = false;
+    bool m_argumentsUpdated = false;
 };
 
 
