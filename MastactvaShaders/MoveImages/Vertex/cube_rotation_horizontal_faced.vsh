@@ -1,11 +1,9 @@
 /*@shader @description default vertex shader to rotate in cube images
 path: MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh
-@attributecolors
 @geomentryfaced
 @geomentrysize (4, 4) */
 attribute highp vec4 vertexArg;
 attribute mediump vec4 texCoordArg;
-attribute mediump vec3 colorArg;
 
 uniform mediump mat4 matrixArg;
 uniform mediump mat4 texMatrix1Arg;
@@ -28,15 +26,12 @@ uniform mediump vec4 faceRotateDir;
 uniform mediump float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
-varying mediump vec3 posColor;
 
 const mediump float M_PI = 3.14159265359;
 
 void main(void)
 {
     highp vec4 pos0 = matrixArg * vertexArg;
-
-    posColor = colorArg;
 
     highp vec4 cubeVertex = vec4(vertexArg.x/vertexArg.w, vertexArg.y/vertexArg.w, 0.0, 1.0);
     highp vec4 pos1 = cubeVertex;
@@ -45,18 +40,15 @@ void main(void)
     mediump vec4 shift1 = vec4(0.0, 0.0, 0.0, 0.0);
     mediump vec4 shift2 = vec4(0.0, 0.0, 0.0, 0.0);
 
-    //highp int face = int(texCoordArg.y * 2.0);
-    //mediump float rotateDir =
-    //     face == 0
-    //        ? faceRotateDir.x
-    //        : face == 1
-    //            ? faceRotateDir.y
-    //            : face == 2
-    //                ? faceRotateDir.z
-    //                : faceRotateDir.w;
-    mediump float rotateDir = (vertexArg.y < rectSize.y * 0.5) ? faceRotateDir.x : faceRotateDir.y;
+    mediump float rotateDir =
+         vertexArg.y < rectSize.y * 0.25
+            ? faceRotateDir.x
+            : vertexArg.y < rectSize.y * 0.5
+                ? faceRotateDir.y
+                : vertexArg.y < rectSize.y * 0.75
+                    ? faceRotateDir.z
+                    : faceRotateDir.w;
     mediump float s = rotateDir >= 0.0 ? 1.0 : -1.0;
-
     scale.x = 2.0;
     cubeVertex.x *= 2.0;
     mediump float k = 1.0;
