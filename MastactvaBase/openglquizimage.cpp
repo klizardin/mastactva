@@ -364,15 +364,15 @@ void OpenGlQuizImage::makeObject()
                     const int offs1 = offs + (j * g_triangleConers + k) * g_geometryItemSize;
                     if(m_geometrySolid)
                     {
-                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth;
-                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight;
+                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * m_width / (GLfloat)m_geomertyPointsWidth;
+                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * m_height / (GLfloat)m_geometryPointsHeight;
                     }
                     else
                     {
-                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth
+                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * m_width / (GLfloat)m_geomertyPointsWidth
                                 - (coords[j][k][0] * 2 - 1) * m_facedGeometryXCoef
                                 ;
-                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight
+                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * m_height / (GLfloat)m_geometryPointsHeight
                                 - (coords[j][k][1] * 2 - 1) * m_facedGeometryYCoef
                                 ;
                     }
@@ -882,8 +882,8 @@ bool OpenGlQuizImage::getRenderRectSize(QVariantList &values_)
 {
     values_.clear();
     values_.reserve(2);
-    values_.push_back(m_width - 1);
-    values_.push_back(m_height - 1);
+    values_.push_back(m_width);
+    values_.push_back(m_height);
     return true;
 }
 
