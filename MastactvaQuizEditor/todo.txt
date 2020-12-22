@@ -75,8 +75,8 @@
 * 39. auto download sgaders and images
 * 40. fix ServerFiles to not start download of same item in parrallel, just subscribe to informate on first download
 41. test geometry 
-42. simple test app
-
+* 42. simple test app
+43. add date to the shader load information. or possibility to view shader
 
 
 
