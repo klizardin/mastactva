@@ -9,25 +9,25 @@ uniform mediump mat4 texMatrix2Arg;
 
 /*@argument
   @defaultValue (0.0, 0.0, 0.0, 0.0)
-  @description translate value
+  @description translate value from
 */
 uniform mediump vec4 translate0;
 
 /*@argument
   @defaultValue (0.0, 0.0, 0.0, 0.0)
-  @description translate value
+  @description translate value to
 */
 uniform mediump vec4 translate1;
 
 /*@argument
   @defaultValue (1.0, 1.0, 1.0, 1.0)
-  @description sacle value
+  @description scale value from
 */
 uniform mediump vec4 scale0;
 
 /*@argument
   @defaultValue (1.0, 1.0, 1.0, 1.0)
-  @description sacle value
+  @description scale value to
 */
 uniform mediump vec4 scale1;
 
