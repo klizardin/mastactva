@@ -121,11 +121,13 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_mix_both.fsh \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_first.frag    \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_second.frag    \
+    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t.fsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh \
     ../MastactvaShaders/MoveImages/Vertex/swipe.vert    \
     ../MastactvaShaders/MoveImages/Vertex/swipe_stick.vsh    \
+    ../MastactvaShaders/MoveImages/Vertex/mix_direction.vsh \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a
