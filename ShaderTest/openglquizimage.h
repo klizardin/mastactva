@@ -84,9 +84,6 @@ private:
     bool renderStateInitializeNone(QVariantList &values_);
     int getGeometryItemSize() const;
 
-signals:
-    void error(const QString &log_);
-
 private:
     QObject *m_parent = nullptr;
     int m_left = 0;
@@ -96,6 +93,8 @@ private:
     int m_geomertyPointsWidth = 3;
     int m_geometryPointsHeight = 3;
     bool m_geometrySolid = false;
+    GLfloat m_facedGeometryXCoef = 1e-3;
+    GLfloat m_facedGeometryYCoef = 1e-3;
     QVector<GLfloat> m_vertData;
 
     QOpenGLTexture *m_fromTexture = nullptr;

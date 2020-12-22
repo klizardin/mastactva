@@ -91,6 +91,8 @@ private:
     int m_geomertyPointsWidth = 3;
     int m_geometryPointsHeight = 3;
     bool m_geometrySolid = false;
+    GLfloat m_facedGeometryXCoef = 1e-3;
+    GLfloat m_facedGeometryYCoef = 1e-3;
     QVector<GLfloat> m_vertData;
 
     QOpenGLTexture *m_fromTexture = nullptr;
@@ -130,6 +132,8 @@ private:
     QMatrix4x4 m_texMatrix1;
     QMatrix4x4 m_texMatrix2;
     bool m_updateSize = false;
+
+    QString m_programBuildLog;
 
     friend class ArgumentInfo;
 };

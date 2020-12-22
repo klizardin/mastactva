@@ -243,7 +243,6 @@ static const int g_triangleConers = 3;
 static const int g_geometryVertexCoords = 3;
 static const int g_geometryTextureCoords = 2;
 static const int g_colorCoords = 3;
-static const GLfloat g_facegGeometryCoef = 1e-3;
 
 
 OpenGlQuizImage::OpenGlQuizImage(QObject *parent_)
@@ -387,8 +386,12 @@ void OpenGlQuizImage::makeObject()
                     }
                     else
                     {
-                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth  - (coords[j][k][0] * 2 - 1) * g_facegGeometryCoef;
-                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight  - (coords[j][k][1] * 2 - 1) * g_facegGeometryCoef;
+                        m_vertData[offs1 + 0] = (x + coords[j][k][0]) * (m_width - 1)/(GLfloat)m_geomertyPointsWidth
+                                - (coords[j][k][0] * 2 - 1) * m_facedGeometryXCoef
+                                ;
+                        m_vertData[offs1 + 1] = (y + coords[j][k][1]) * (m_height - 1)/(GLfloat)m_geometryPointsHeight
+                                - (coords[j][k][1] * 2 - 1) * m_facedGeometryYCoef
+                                ;
                     }
                     m_vertData[offs1 + 2] = 0.1;
 
@@ -689,13 +692,12 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
     //f_->glEnable(GL_CULL_FACE);
     //f_->glCullFace(GL_FRONT_AND_BACK);
+    f_->glFrontFace(GL_CCW);
 
     f_->glActiveTexture(GL_TEXTURE1);
     m_toTexture->bind();
     f_->glActiveTexture(GL_TEXTURE0);
     m_fromTexture->bind();
-
-    f_->glFrontFace(GL_CCW);
 
     if(m_geometrySolid)
     {
@@ -832,6 +834,20 @@ void OpenGlQuizImage::initGeometry()
             m_geomertyPointsWidth = 1;
             m_geometryPointsHeight = 1;
         }
+        if(shaderComment.values().contains(g_facedGeometryCoefName))
+        {
+            const QString geomCoefsStr = shaderComment.values().value(g_facedGeometryCoefName);
+            QVector<GLfloat> args;
+            args.resize(2);
+            extractValues(geomCoefsStr, args);
+            m_facedGeometryXCoef = args[0];
+            m_facedGeometryYCoef = args[1];
+        }
+        else
+        {
+            m_facedGeometryXCoef = 1e-3;
+            m_facedGeometryYCoef = 1e-3;
+        }
     }
     else
     {
@@ -839,6 +855,8 @@ void OpenGlQuizImage::initGeometry()
         m_geomertyPointsWidth = 1;
         m_geometryPointsHeight = 1;
         m_attributeColors = false;
+        m_facedGeometryXCoef = 1e-3;
+        m_facedGeometryYCoef = 1e-3;
     }
 }
 

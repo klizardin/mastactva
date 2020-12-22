@@ -207,6 +207,29 @@ int QuizImage::paintedHeight() const
     return std::max(1, m_imageSize.height());
 }
 
+QString QuizImage::shadersBuildLog()
+{
+    return m_renderBuildLog;
+}
+
+void QuizImage::setShadersBuildLog(const QString &log_)
+{
+    m_lastLog = log_;
+    m_renderBuildLog = m_lastLog;
+
+    emit shadersBuildLogChanged();
+}
+
+void QuizImage::renderBuildError(const QString &log_)
+{
+    if(log_ == m_lastLog) { return; }
+
+    m_lastLog = log_;
+    m_renderBuildLog += m_lastLog;
+
+    emit shadersBuildLogChanged();
+}
+
 bool QuizImage::areAllDataAvailable()
 {
     if(nullptr != m_argumentSet)
@@ -270,7 +293,9 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     case QSGRendererInterface::OpenGLRhi:
 #if QT_CONFIG(opengl)
         if (!n)
+        {
             n = new OpenGlQuizImage(this);
+        }
         static_cast<OpenGlQuizImage *>(n)->sync(this);
 #endif
         break;

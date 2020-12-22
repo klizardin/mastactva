@@ -20,6 +20,7 @@ public:
     Q_PROPERTY(QVariantList toImage READ toImage WRITE setToImage NOTIFY toImageChanged)
     Q_PROPERTY(QVariant effect READ effect WRITE setEffect NOTIFY effectChanged)
     Q_PROPERTY(QVariant argumentSet READ argumentSet WRITE setArgumentSet NOTIFY argumentSetChanged)
+    Q_PROPERTY(QString shadersBuildLog READ shadersBuildLog WRITE setShadersBuildLog NOTIFY shadersBuildLogChanged)
     Q_PROPERTY(int paintedWidth READ paintedWidth NOTIFY paintedWidthChanged)
     Q_PROPERTY(int paintedHeight READ paintedHeight NOTIFY paintedHeightChanged)
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
@@ -44,6 +45,9 @@ public:
     void setArgumentSet(const QVariant &argumentSet_);
     int paintedWidth() const;
     int paintedHeight() const;
+    QString shadersBuildLog();
+    void setShadersBuildLog(const QString &log_);
+    void renderBuildError(const QString &log_);
 
     bool areAllDataAvailable();
     Effect *getEffect() const;
@@ -69,6 +73,7 @@ signals:
     void argumentSetChanged();
     void paintedWidthChanged();
     void paintedHeightChanged();
+    void shadersBuildLogChanged();
 
 private:
     QString m_fromImageUrl;
@@ -76,6 +81,8 @@ private:
     qreal m_t = 0.0;
     Effect *m_effect = nullptr;
     EffectArgSet *m_argumentSet = nullptr;
+    QString m_renderBuildLog;
+    QString m_lastLog;
     QStringList m_shadersUrls;
     bool m_effectLoading = false;
     QImage *m_image = nullptr;
