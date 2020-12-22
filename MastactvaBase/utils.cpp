@@ -202,7 +202,7 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
     for(;i < line.length() && !isLetter(line.at(i)); i++) {}
     int nb = i;
     for(;i < line.length() && isLetter(line.at(i)); i++) {}
-    int ne = i;
+    int ne = i + 1;
     m_values.insert(g_typeName, line.mid(tb, te - tb));
     m_values.insert(g_nameName, line.mid(nb, ne - nb));
 }
