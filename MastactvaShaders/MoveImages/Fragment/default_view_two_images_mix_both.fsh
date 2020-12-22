@@ -1,5 +1,5 @@
 /*@shader @description default fragment shader to view two images at same time
-path: MastactvaShaders/MoveImages/Vertex/default_view_two_images_mix.frag */
+path: MastactvaShaders/MoveImages/Vertex/default_view_two_images_mix_both.frag */
 uniform sampler2D texture1Arg;
 uniform sampler2D texture2Arg;
 uniform lowp float opacityArg;
@@ -22,15 +22,11 @@ void main(void)
     }
     else if(s1.a > 0.0)
     {
-        gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, s1.a ),
-                            vec4(0.0, 0.0, 0.0, 0.0 ),
-                            t ) * opacityArg;
+        gl_FragColor = s1 * opacityArg;
     }
     else if(s2.a > 0.0)
     {
-        gl_FragColor = mix( vec4( 0.0, 0.0, 0.0, 0.0 ),
-                            vec4( s2.r, s2.g, s2.b, s2.a ),
-                            t ) * opacityArg;
+        gl_FragColor = s2 * opacityArg;
     }
     else
     {
