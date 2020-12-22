@@ -111,11 +111,9 @@ void QuizImage::setFragmentShaderFilename(const QString &fragmentShaderFilename_
 
     if(newHash == m_fragmentShaderHash) { return; }
 
-    m_shadersUpdated = true;
     m_fragmentShader = fragmentShaderNew;
     m_fragmentShaderHash = newHash;
 
-    updateState();
     emit fragmentShaderFilenameChanged();
     emit fragmentShaderChanged();
 }
@@ -136,11 +134,9 @@ void QuizImage::setVertexShaderFilename(const QString &vertexShaderFilename_)
 
     if(newHash == m_vertexShaderHash) { return; }
 
-    m_shadersUpdated = true;
     m_vertexShader = vertexShaderNew;
     m_vertexShaderHash = newHash;
 
-    updateState();
     emit vertexShaderFilenameChanged();
     emit vertexShaderChanged();
 }
@@ -155,7 +151,6 @@ void QuizImage::setFragmentShader(const QString &fragmentShader_)
     const QString newHash = calculateHash(fragmentShader_);
     if(newHash == m_fragmentShaderHash) { return; }
 
-    m_shadersUpdated = true;
     m_fragmentShader = fragmentShader_;
     m_fragmentShaderHash = newHash;
 
@@ -164,7 +159,6 @@ void QuizImage::setFragmentShader(const QString &fragmentShader_)
         saveFile(m_fragmentShaderFilename, m_fragmentShader);
     }
 
-    updateState();
     emit fragmentShaderChanged();
 }
 
@@ -178,7 +172,6 @@ void QuizImage::setVertexShader(const QString &vertexShader_)
     const QString newHash = calculateHash(vertexShader_);
     if(newHash == m_vertexShaderHash) { return; }
 
-    m_shadersUpdated = true;
     m_vertexShader = vertexShader_;
     m_vertexShaderHash = newHash;
 
@@ -187,7 +180,6 @@ void QuizImage::setVertexShader(const QString &vertexShader_)
         saveFile(m_vertexShaderFilename, m_vertexShader);
     }
 
-    updateState();
     emit vertexShaderChanged();
 }
 
