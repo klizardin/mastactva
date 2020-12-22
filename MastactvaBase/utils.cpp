@@ -276,7 +276,7 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
         }
         comment.extractLineValues(shaderText_);
 
-        qDebug() << comment.values();
+        //qDebug() << comment.values();
     }
 }
 
