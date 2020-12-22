@@ -573,7 +573,11 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
 void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
-    if(nullptr == m_program) { return; }
+    if(nullptr == m_program ||
+            nullptr == m_vshader ||
+            nullptr == m_fshader ||
+            nullptr == m_vbo
+            ) { return; }
 
     m_program->bind();
 
