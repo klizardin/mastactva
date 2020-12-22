@@ -110,7 +110,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    ../MastactvaShaders/MoveImages/Vertex/translate_scale_firts.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/translate_scale_first.vsh \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
     imports/MastactvaAPI/qmldir \
@@ -128,6 +128,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/swipe.vert    \
     ../MastactvaShaders/MoveImages/Vertex/swipe_stick.vsh    \
     ../MastactvaShaders/MoveImages/Vertex/mix_direction.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal.vsh \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a
