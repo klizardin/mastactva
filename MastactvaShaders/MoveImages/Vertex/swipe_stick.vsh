@@ -8,7 +8,7 @@ uniform mediump mat4 texMatrix1Arg;
 uniform mediump mat4 texMatrix2Arg;
 
 /*@argument
-  @defaultvalue (-1.0, 0.0)
+  @defaultValue (-1.0, 0.0)
   @description swipe direction to swipe to the direction
   (1.0, 0.0) -- to the right
   (-1.0, 0.0) -- to the left

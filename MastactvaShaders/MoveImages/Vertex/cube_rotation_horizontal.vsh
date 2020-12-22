@@ -1,7 +1,9 @@
 /*@shader @description default vertex shader to rotate in cube images
 path: MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh
-@geomentryfaced
-@geomentrysize (2,2) */
+@geomentryFaced
+@geomentrySize (2,2)
+@facedGeometryCoef (0.0, 1e-3)
+*/
 attribute highp vec4 vertexArg;
 attribute mediump vec4 texCoordArg;
 
@@ -10,13 +12,13 @@ uniform mediump mat4 texMatrix1Arg;
 uniform mediump mat4 texMatrix2Arg;
 
 /* @argument
-  @defaultvalue renderRectSize()
+  @defaultValue renderRectSize()
   @description pass render rect size from render to the shader
 */
 uniform mediump vec2 rectSize;
 
 /* @argument
-  @defaultvalue 1.0
+  @defaultValue 1.0
   @description
     > 0.0 - rotate on axe X to the right
     < 0.0 - rotate on axe X to the left
