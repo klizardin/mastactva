@@ -129,6 +129,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/swipe.vert    \
     ../MastactvaShaders/MoveImages/Vertex/swipe_stick.vsh    \
     ../MastactvaShaders/MoveImages/Vertex/mix_direction.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_direction_faced4.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal.vsh \
     todo.txt
 
