@@ -122,6 +122,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Fragment/default_view_two_images_prefere_second.frag    \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t.fsh \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t2_and.fsh \
+    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t3_and.fsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh \
@@ -132,6 +133,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/mix_direction_line2.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal_faced4.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_clock2.vsh \
     ../MastactvaShaders/MoveImages/Vertex/translate_scale_first.vsh \
     todo.txt
 
