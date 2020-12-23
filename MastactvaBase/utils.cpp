@@ -30,10 +30,11 @@ bool isSymbol(const QChar &ch_)
     return ch_.category() >= QChar::Letter_Uppercase;
 }
 
-bool isLetter(const QChar &ch_)
+bool isLetterNumeric(const QChar &ch_)
 {
     const QChar::Category c = ch_.category();
-    const bool res = (c >= QChar::Letter_Uppercase) && (c <= QChar::Letter_Other);
+    const bool res = ((c >= QChar::Letter_Uppercase) && (c <= QChar::Letter_Other)) ||
+            ((c >= QChar::Number_DecimalDigit) && (c <= QChar::Number_Other));
     return res;
 }
 
@@ -202,21 +203,21 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
     for(;i < line.length(); )
     {
         QChar c = line.at(i);
-        if(!isLetter(c)) { break; }
+        if(!isLetterNumeric(c)) { break; }
         i++;
     }
-    int te = i + 1;
+    int te = i;
     for(;i < line.length(); )
     {
         QChar c = line.at(i);
-        if(isLetter(c)) { break; }
+        if(isLetterNumeric(c)) { break; }
         i++;
     }
     int nb = i;
     for(;i < line.length(); )
     {
         QChar c = line.at(i);
-        if(!isLetter(c)) { break; }
+        if(!isLetterNumeric(c)) { break; }
         i++;
     }
     int ne = i;

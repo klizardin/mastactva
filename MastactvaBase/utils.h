@@ -30,7 +30,7 @@ private:
 QString leftDoubleCR(const QString &str_);
 qreal sqr(qreal val_);
 bool isSymbol(const QChar &ch_);
-bool isLetter(const QChar &ch_);
+bool isLetterNumeric(const QChar &ch_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);
