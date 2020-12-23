@@ -34,20 +34,27 @@ varying mediump float v_t;
 
 
 const mediump float M_PI = 3.14159265359;
+const mediump float MIN_SLOPE = 0.01;
 
 
 mediump float atan2(in mediump float y, in mediump float x)
 {
     bool s = (abs(x) > abs(y));
-    return mix(M_PI*0.5 - atan(x,y), atan(y,x), s?1.0:0.0);
+    return mix(M_PI*0.5 - atan(x,y), atan(y,x),  s ? 1.0 : 0.0);
 }
 
 void main(void)
 {
     gl_Position = matrixArg * vertexArg;
 
-    highp vec4 cubeVertex = vec4(vertexArg.x/vertexArg.w, vertexArg.y/vertexArg.w, 0.0, 1.0);
-    mediump float a = atan2(-direction.y, direction.x == 0.0 ? direction.x : 1.0);
+    highp vec4 cubeVertex = vec4(
+                vertexArg.x/vertexArg.w - rectSize.x * 0.5, 
+                vertexArg.y/vertexArg.w - rectSize.y * 0.5, 
+                0.0, 
+                1.0);
+    mediump float a = atan2(
+                -direction.y, 
+                direction.x == 0.0 && direction.y == 0.0 ? 1.0 : direction.x);
     mediump mat4 rotateMat = mat4(
                 vec4(cos(a), -sin(a), 0.0, 0.0),
                 vec4(sin(a), cos(a), 0.0, 0.0),
@@ -55,12 +62,12 @@ void main(void)
                 vec4(0.0, 0.0, 0.0, 1.0));
     cubeVertex = rotateMat * cubeVertex;
 
+    mediump float slope1 = slope < MIN_SLOPE ? MIN_SLOPE : slope;
     mediump float szl = length(rectSize);
-    mediump float dirl = length(direction);
-    mediump float x0 =  - (szl * 1.0 + szl*slope);
-    mediump float x1 =  (szl * 1.0 + szl*slope);
+    mediump float x1 =  szl*(1.0 + slope1);
+    mediump float x0 =  -x1;
     mediump float x = mix(x0, x1, t);
-    v_t = -(cubeVertex.x - x)/(szl*slope);
+    v_t = -(cubeVertex.x - x)/(szl*slope1);
 
     texCoord1Var = texMatrix1Arg * texCoordArg;
     texCoord2Var = texMatrix2Arg * texCoordArg;
