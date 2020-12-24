@@ -14,7 +14,9 @@ void main(void)
 {
     mediump vec4 s1 = texture2D( texture1Arg, texCoord1Var.st );
     mediump vec4 s2 = texture2D( texture2Arg, texCoord2Var.st );
+    mediump float tv = v_t1 >= 0.0 || v_t2 >= 0.0 ? max(clamp(v_t1, 0.0, 1.0), clamp(v_t2, 0.0, 1.0)) : 0.0;
     gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, s1.a ),
                         vec4( s2.r, s2.g, s2.b, s2.a ),
-                        v_t1 >= 0.0 || v_t2 >= 0.0 ? clamp(min(v_t1, v_t2), 0.0, 1.0) : 0.0) * opacityArg;
+                        tv
+                        ) * opacityArg;
 }
