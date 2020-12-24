@@ -90,8 +90,9 @@ void main(void)
             mediump float t0 = float(i)/float(RECTANGLES);
             if(!init)
             {
-                 v_t = clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
-                 dTexY = 1.0 - clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
+                mediump float vt = clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
+                v_t = vt;
+                dTexY = 1.0 - vt;
             }
             init = true;
         }
