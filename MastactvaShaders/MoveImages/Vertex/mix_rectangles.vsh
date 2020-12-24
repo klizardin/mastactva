@@ -44,6 +44,7 @@ void main(void)
 {
     gl_Position = matrixArg * vertexArg;
 
+    mediump float dTexY = 0.0;
     v_t = t;
     bool init = false;
     for(int i = 0; i < RECTANGLES; i++)
@@ -90,11 +91,12 @@ void main(void)
             if(!init)
             {
                  v_t = clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
+                 dTexY = 1.0 - clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
             }
             init = true;
         }
     }
 
     texCoord1Var = texMatrix1Arg * texCoordArg;
-    texCoord2Var = texMatrix2Arg * texCoordArg;
+    texCoord2Var = texMatrix2Arg * vec4(texCoordArg.x, texCoordArg.y + dTexY, texCoordArg.z, texCoordArg.w);
 }
