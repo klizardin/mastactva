@@ -1,7 +1,7 @@
 /*@shader @description default vertex shader to mix t in 5 rectangles
 path: MastactvaShaders/MoveImages/Vertex/mix_rectangles.vsh
 @geomentryFaced
-@geomentrySize (10,10)
+@geomentrySize (20, 20)
 @facedGeometryCoef (1e-3, 1e-3)
 */
 attribute highp vec4 vertexArg;
@@ -15,7 +15,13 @@ uniform mediump mat4 texMatrix2Arg;
   @defaultValue rand(0.0, 1.0)
   @description translate value from
 */
-uniform mediump vec4 positions;
+uniform mediump vec4 positions1;
+
+/*@argument
+  @defaultValue rand(0.0, 1.0)
+  @description translate value from
+*/
+uniform mediump vec4 positions2;
 
 /*@argument
     @defaultValue renderRectSize()
@@ -29,7 +35,9 @@ varying mediump vec4 texCoord2Var;
 varying mediump float v_t;
 
 
-const highp int RECTANGLES = 5;
+const highp int RECTANGLES = 9;
+const mediump float WIDTH = 20.0;
+const mediump float HEIGHT = 20.0;
 
 
 void main(void)
@@ -37,39 +45,53 @@ void main(void)
     gl_Position = matrixArg * vertexArg;
 
     v_t = t;
+    bool init = false;
     for(int i = 0; i < RECTANGLES; i++)
     {
         mediump float v =
-                i == 0
-                    ? positions.x
-                    : i == 1
-                        ? positions.y
-                        : i == 2
-                            ? positions.z
-                            : i == 3
-                                ? positions.w
-                                : 0.90091;
+            i == 0
+                ? positions1.x
+                : i == 1
+                    ? positions1.y
+                    : i == 2
+                        ? positions1.z
+                        : i == 3
+                            ? positions1.w
+                            : i == 4
+                                ? positions2.x
+                                : i == 5
+                                    ? positions2.y
+                                    : i == 6
+                                        ? positions2.z
+                                        : positions2.w ;
         v -= floor(v);
-        v *= 10.0;
-        mediump float p1 = floor(v);
-        v -= p1;
-        v *= 10.0;
-        mediump float p2 = floor(v);
-        v -= p2;
-        v *= 10.0;
-        mediump float p3 = floor(v);
-        v -= p3;
-        v *= 10.0;
-        mediump float p4 = floor(v);
-        mediump float left = min(p1, p2) * rectSize.x * 0.1;
-        mediump float right = (max(p1, p2) + 1.0) * rectSize.x * 0.1;
-        mediump float top = min(p3, p4) * rectSize.y * 0.1;
-        mediump float bottom = (max(p3, p4) + 1.0) * rectSize.y * 0.1;
-        if(vertexArg.x >= left && vertexArg.x <= right && vertexArg.y >= top && vertexArg.y <= bottom)
+        v *= WIDTH;
+        mediump float x1 = floor(v);
+        v -= x1;
+        v *= WIDTH;
+        mediump float x2 = floor(v);
+        v -= x2;
+        v *= HEIGHT;
+        mediump float y1 = floor(v);
+        v -= y1;
+        v *= HEIGHT;
+        mediump float y2 = floor(v);
+        mediump float left = min(x1, x2) * rectSize.x / WIDTH;
+        mediump float right = (max(x1, x2) + 1.0) * rectSize.x / WIDTH;
+        mediump float top = min(y1, y2) * rectSize.y / HEIGHT;
+        mediump float bottom = (max(y1, y2) + 1.0) * rectSize.y / HEIGHT;
+        bool insideRect = i < RECTANGLES - 1;
+        if((vertexArg.x > left && vertexArg.x < right &&
+                vertexArg.y > top && vertexArg.y < bottom) ||
+            (!insideRect)
+            )
         {
             mediump float t0 = float(i)/float(RECTANGLES);
-            v_t = clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
-            break;
+            if(!init)
+            {
+                 v_t = clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
+            }
+            init = true;
         }
     }
 
