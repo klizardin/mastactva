@@ -13,10 +13,11 @@ void main(void)
 {
     mediump vec4 s1 = texture2D( texture1Arg, texCoord1Var.st );
     mediump vec4 s2 = texture2D( texture2Arg, texCoord2Var.st );
+    mediump float vt = v_t.x >= 0.0 && v_t.y >= 0.0 && v_t.z >= 0.0
+                        ? clamp(min(min(v_t.x, v_t.y), v_t.z), 0.0, 1.0)
+                        : 0.0
+                        ;
     gl_FragColor = mix( vec4( s1.r, s1.g, s1.b, s1.a ),
                         vec4( s2.r, s2.g, s2.b, s2.a ),
-                        v_t.x >= 0.0 && v_t.y >= 0.0 && v_t.z >= 0.0
-                            ? clamp(min(min(v_t.x, v_t.y), v_t.z), 0.0, 1.0)
-                            : 0.0
-                        ) * opacityArg;
+                        vt ) * opacityArg;
 }
