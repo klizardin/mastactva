@@ -29,6 +29,12 @@ uniform mediump vec4 positions2;
 */
 uniform mediump vec2 rectSize;
 
+/*@argument
+   @defaultValue rand(2,9)
+   @description speed of rising faces
+*/
+uniform mediump int shift;
+
 uniform mediump float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
@@ -47,24 +53,18 @@ void main(void)
     mediump float dTexY = 0.0;
     v_t = t;
     bool init = false;
-    for(int i = 0; i < RECTANGLES; i++)
+    for(highp int i = 0; i < RECTANGLES; i++)
     {
+        mediump vec4 pos = i < 4 ? positions1 : positions2;
+        highp int i1 = i  - (i / 4) * 4;
         mediump float v =
-            i == 0
-                ? positions1.x
-                : i == 1
-                    ? positions1.y
-                    : i == 2
-                        ? positions1.z
-                        : i == 3
-                            ? positions1.w
-                            : i == 4
-                                ? positions2.x
-                                : i == 5
-                                    ? positions2.y
-                                    : i == 6
-                                        ? positions2.z
-                                        : positions2.w ;
+            i1 == 0
+                ? pos.x
+                : i1 == 1
+                    ? pos.y
+                    : i1 == 2
+                        ? pos.z
+                        : pos.w;
         v -= floor(v);
         v *= WIDTH;
         mediump float x1 = floor(v);
@@ -88,9 +88,10 @@ void main(void)
             )
         {
             mediump float t0 = float(i)/float(RECTANGLES);
+            mediump float t1 = float(min(i + shift, RECTANGLES))/float(RECTANGLES);
             if(!init)
             {
-                mediump float vt = clamp((t - t0) / (1.0 - t0), 0.0, 1.0);
+                mediump float vt = clamp((t - t0) / (t1 - t0), 0.0, 1.0);
                 v_t = vt;
                 dTexY = 1.0 - vt;
             }
