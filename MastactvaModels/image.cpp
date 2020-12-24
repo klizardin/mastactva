@@ -202,6 +202,11 @@ void Image::objectLoadedVF()
     IListModelInfoObjectImpl::objectLoadedVF();
 }
 
+void Image::listLoadedVF()
+{
+    emit imageLoaded();
+}
+
 
 ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Image, ImageModel>(parent_)

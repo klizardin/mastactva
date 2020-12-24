@@ -80,6 +80,7 @@ protected:
     ImageDescriptionModel *createImageDescriptionModel();
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
+    virtual void listLoadedVF() override;
 
 signals:
     void idChanged();
@@ -90,6 +91,7 @@ signals:
     void createdChanged();
     void imagePointsChanged();
     void imageDescriptionChanged();
+    void imageLoaded();
 
 private:
     ImageModel *m_imageModel = nullptr;

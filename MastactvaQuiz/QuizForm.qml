@@ -30,6 +30,7 @@ Page {
         anchors.fill: parent
         color: "transparent"
         clip: true
+        z: 0.0
 
         QuizImage {
             id: quizImage
@@ -60,7 +61,11 @@ Page {
                             {
                                 // for auto upload on select image in the image model
                                 var index = allImagesOfGalleryModel.indexOfItem(nextImgObj)
-                                if(index >= 0) { allImagesOfGalleryModel.currentIndex = index; }
+                                if(index >= 0)
+                                {
+                                    loadChildren(nextImgObj)
+                                    allImagesOfGalleryModel.currentIndex = index;
+                                }
 
                                 // log jump to next image
                                 var userStepNi = userStepModel.createItem()
@@ -139,16 +144,48 @@ Page {
         }
     }
 
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        visible: false
+        running: false
+        z: 1.0
+    }
+
+
     function init()
     {
         quizImage.fromImage = [currentImageSource, currentImageHash]
         quizImage.toImage = [currentImageSource, currentImageHash]
         quizImage.visible = true
-        loadChildren()
+        loadChildren(currentImage)
     }
 
-    function loadChildren()
+    property var loadingImage: undefined
+
+    function loadChildren(image)
     {
-        currentImage.loadChildren()
+        if(!image.isImageLoaded())
+        {
+            busyIndicator.visible = true
+            busyIndicator.running = true
+            image.imageLoaded.connect(currentImageLoaded)
+            image.loadChildren()
+            loadingImage = image
+        }
+        else
+        {
+            loadingImage = undefined
+        }
+    }
+
+    function currentImageLoaded()
+    {
+        if(loadingImage !== undefined)
+        {
+            loadingImage.imageLoaded.disconnect(currentImageLoaded)
+            busyIndicator.visible = false
+            busyIndicator.running = false
+        }
     }
 }
