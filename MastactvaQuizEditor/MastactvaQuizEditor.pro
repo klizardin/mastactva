@@ -140,6 +140,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/translate_scale_first.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_rectangles.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_rectangles_3state.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_elipse1.vsh \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a
