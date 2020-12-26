@@ -14,6 +14,7 @@ Page {
     title: qsTr("Description")
 
     property bool hasDescription: false
+    property bool hasCrossPage: false
     property string descriptionTextArg: qsTr("")
     property string imageSource: Constants.noImage
     property int galleryId: -1

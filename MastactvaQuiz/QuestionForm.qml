@@ -18,6 +18,7 @@ Page {
     property int imageId: -1
     property int currentAnswerIndex: -1
     property bool hasDescription: false
+    property bool hasCrossPage: false
 
     signal answered()
 

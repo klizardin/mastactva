@@ -21,9 +21,13 @@ Page {
     property string currentImageHash: Constants.noImageHash
     property bool hasDescription: false
     property int animationDuration: 1500
+    property bool hasCrossPage: true
+    property string crossPageName: qsTr("Gallery")
+    property var crossPage: undefined
 
     signal showQuestion(var question, int imageId)
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
+    signal jumpToImage(var image)
 
     Rectangle {
         id: quizImageClipper
@@ -139,6 +143,7 @@ Page {
                     quizImageNumberAnimation.easing.type = Easing.Linear
                     quizImageNumberAnimation.duration = animationDuration
                     quizImage.swapImages();
+                    jumpToImage(currentImage)
                 }
             }
         }
@@ -159,6 +164,7 @@ Page {
         quizImage.toImage = [currentImageSource, currentImageHash]
         quizImage.visible = true
         loadChildren(currentImage)
+        jumpToImage(currentImage)
     }
 
     property var loadingImage: undefined

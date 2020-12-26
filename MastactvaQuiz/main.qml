@@ -115,6 +115,10 @@ ApplicationWindow {
 
             quizPage.allImagesOfGalleryModel = allImagesOfGallery
             quizPage.userStepModel = userStepModel
+            quizPage.crossPage = galleryAllImagesPage
+
+            galleryAllImagesPage.allImagesOfGalleryModel = allImagesOfGallery
+            galleryAllImagesPage.crossPage = quizPage
 
             questionPage.mastactvaAPI = mastactvaAPI
             questionPage.userStepModel = userStepModel
@@ -155,6 +159,10 @@ ApplicationWindow {
             quizPage.currentImageSource = startImage.imageSource
             quizPage.currentImageHash = startImage.imageHash
             quizPage.nextImage = undefined
+            galleryAllImagesPage.galleryId = galleryModel.getCurrentItem().id
+            galleryAllImagesPage.currentImage = startImage
+            galleryAllImagesPage.currentImageSource = startImage.imageSource
+            galleryAllImagesPage.currentImageHash = startImage.imageHash
             quizPage.init()
             setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.imageId, startImage.imageSource)
             stackView.push(quizPage)
@@ -179,6 +187,13 @@ ApplicationWindow {
         function onSetDescription(descriptionModel, galleryId, imageId, imageSource)
         {
             setDescription(descriptionModel, galleryId, imageId, imageSource)
+        }
+
+        function onJumpToImage(image)
+        {
+            galleryAllImagesPage.currentImage = image
+            galleryAllImagesPage.currentImageSource = image.imageSource
+            galleryAllImagesPage.currentImageHash = image.imageHash
         }
     }
 
@@ -233,6 +248,10 @@ ApplicationWindow {
         }
     }
 
+    GalleryAllImageForm {
+        id: galleryAllImagesPage
+    }
+
 
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
@@ -253,6 +272,18 @@ ApplicationWindow {
         Label {
             text: stackView.currentItem.title
             anchors.centerIn: parent
+        }
+
+        ToolButton {
+            id: crossPage
+            anchors.right: infoButton.left
+            text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
+            visible: stackView.currentItem.hasCrossPage
+            onClicked: {
+                // TODO: remove old same cross page from the stack view
+                stackView.currentItem.crossPage.init()
+                stackView.push(stackView.currentItem.crossPage)
+            }
         }
 
         ToolButton {

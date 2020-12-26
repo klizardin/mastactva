@@ -16,6 +16,7 @@ Page {
     property alias galleryModel: galleries.model
     property var currentImage: undefined
     property bool hasDescription: false
+    property bool hasCrossPage: false
 
     signal startQuiz(var image)
 
