@@ -110,6 +110,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    ../MastactvaShaders/MoveImages/Vertex/mix_eclipse1.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_eclipse3.vsh \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
     imports/MastactvaAPI/qmldir \
@@ -140,7 +142,6 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/translate_scale_first.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_rectangles.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_rectangles_3state.vsh \
-    ../MastactvaShaders/MoveImages/Vertex/mix_elipse1.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_eclipse2.vsh \
     todo.txt
 
