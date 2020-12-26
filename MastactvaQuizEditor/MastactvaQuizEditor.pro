@@ -110,8 +110,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t_colort.fsh \
-    ../MastactvaShaders/MoveImages/Vertex/mix_rectangles.vsh \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
     imports/MastactvaAPI/qmldir \
@@ -126,6 +124,8 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t2_and.fsh \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t2_or.fsh \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t3_and.fsh \
+    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t_colort.fsh \
+    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t_1st_xor_2nd.fsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh \
@@ -138,6 +138,8 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal_faced4.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_clock2.vsh \
     ../MastactvaShaders/MoveImages/Vertex/translate_scale_first.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_rectangles.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_rectangles_3state.vsh \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a

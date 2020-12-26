@@ -12065,6 +12065,11 @@
                         "access": "public",
                         "name": "imageDescriptionChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "imageLoaded",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
