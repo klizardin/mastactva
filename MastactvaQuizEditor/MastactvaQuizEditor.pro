@@ -110,6 +110,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t3_or.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_eclipse1.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_eclipse3.vsh \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
