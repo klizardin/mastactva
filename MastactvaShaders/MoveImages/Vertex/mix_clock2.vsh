@@ -36,8 +36,7 @@ uniform mediump float slope;
 uniform mediump float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
-varying mediump float v_t1;
-varying mediump float v_t2;
+varying mediump vec2 v_t;
 
 
 const mediump float M_PI = 3.14159265359;
@@ -66,7 +65,7 @@ void main(void)
     mediump float l1 = length(rp1);
     if(l1 == 0.0)
     {
-        v_t1 = t;
+        v_t.x = t;
     }
     else
     {
@@ -85,7 +84,7 @@ void main(void)
         a0 = z0 > 0.0 ? M_PI * 2.0 - a0 :  a0;
         mediump float tpt = a0 / (M_PI * 2.0);
         mediump float vt1 = a / (M_PI * 2.0 * slopeNorm);
-        v_t1 = vt1 >= -5.0 && vt1 <= 5.0 
+        v_t.x = vt1 >= -5.0 && vt1 <= 5.0
                          ? vt1
                          : tpt < t
                            ? 5.0
@@ -97,7 +96,7 @@ void main(void)
     mediump float l2 = length(rp2);
     if(l2 == 0.0)
     {
-        v_t2 = t;
+        v_t.y = t;
     }
     else
     {
@@ -116,7 +115,7 @@ void main(void)
         a0 = z0 > 0.0 ? M_PI * 2.0 - a0 :  a0;
         mediump float tpt = a0 / (M_PI * 2.0);
         mediump float vt2 = a / (M_PI * 2.0 * slopeNorm);
-        v_t2 = vt2 >= -5.0 && vt2 <= 5.0 
+        v_t.y = vt2 >= -5.0 && vt2 <= 5.0
                          ? vt2 
                          : tpt < t
                            ? 5.0

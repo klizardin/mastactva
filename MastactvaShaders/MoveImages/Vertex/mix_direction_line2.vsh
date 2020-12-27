@@ -36,8 +36,7 @@ uniform mediump float slope;
 uniform mediump float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
-varying mediump float v_t1;
-varying mediump float v_t2;
+varying mediump vec2 v_t;
 
 
 const mediump float M_PI = 3.14159265359;
@@ -87,8 +86,8 @@ void main(void)
     mediump float x0 =  -x1;
     mediump float x = mix(x0, x1, t);
 
-    v_t1 = -(cubeVertex1.x - x)/(szl*slope1);
-    v_t2 = -(cubeVertex2.x - x)/(szl*slope1);
+    v_t.x = -(cubeVertex1.x - x)/(szl*slope1);
+    v_t.y = -(cubeVertex2.x - x)/(szl*slope1);
 
     texCoord1Var = texMatrix1Arg * texCoordArg;
     texCoord2Var = texMatrix2Arg * texCoordArg;
