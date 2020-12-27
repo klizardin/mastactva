@@ -1,5 +1,5 @@
 /*@shader @description default fragment shader to view two images at same time
-path: MastactvaShaders/MoveImages/Vertex/mix_varying_t_1st_xor_2nd.fsh */
+path: MastactvaShaders/MoveImages/Vertex/mix_varying_t_1st_pxor_2nd.fsh */
 uniform sampler2D texture1Arg;
 uniform sampler2D texture2Arg;
 uniform lowp float opacityArg;
