@@ -83,6 +83,38 @@
     </message>
 </context>
 <context>
+    <name>ChooseImageDialog</name>
+    <message>
+        <location filename="ChooseImageDialog.qml" line="14"/>
+        <source>Choose image</source>
+        <translation>Абярыце выяву</translation>
+    </message>
+    <message>
+        <location filename="ChooseImageDialog.qml" line="123"/>
+        <location filename="ChooseImageDialog.qml" line="233"/>
+        <source>Created : </source>
+        <translation>Створана : </translation>
+    </message>
+    <message>
+        <location filename="ChooseImageDialog.qml" line="137"/>
+        <source>Points to pass : </source>
+        <translation>Балы за пытанне : </translation>
+    </message>
+    <message>
+        <location filename="ChooseImageDialog.qml" line="151"/>
+        <source>Keywords : </source>
+        <translation>Ключавыя словы : </translation>
+    </message>
+    <message>
+        <location filename="ChooseImageDialog.qml" line="157"/>
+        <location filename="ChooseImageDialog.qml" line="165"/>
+        <location filename="ChooseImageDialog.qml" line="247"/>
+        <location filename="ChooseImageDialog.qml" line="256"/>
+        <source> ...</source>
+        <translation> ...</translation>
+    </message>
+</context>
+<context>
     <name>ChooseShaderDialog</name>
     <message>
         <location filename="ChooseShaderDialog.qml" line="14"/>
@@ -90,22 +122,22 @@
         <translation>Абярыце шейдэр</translation>
     </message>
     <message>
-        <location filename="ChooseShaderDialog.qml" line="84"/>
+        <location filename="ChooseShaderDialog.qml" line="82"/>
         <source>Type : </source>
         <translation>Тып : </translation>
     </message>
     <message>
-        <location filename="ChooseShaderDialog.qml" line="98"/>
+        <location filename="ChooseShaderDialog.qml" line="96"/>
         <source>Filename : </source>
         <translation>Назва файла : </translation>
     </message>
     <message>
-        <location filename="ChooseShaderDialog.qml" line="112"/>
+        <location filename="ChooseShaderDialog.qml" line="110"/>
         <source>Hash : </source>
         <translation>Хэш : </translation>
     </message>
     <message>
-        <location filename="ChooseShaderDialog.qml" line="126"/>
+        <location filename="ChooseShaderDialog.qml" line="124"/>
         <source> ...</source>
         <translation> ...</translation>
     </message>
@@ -121,22 +153,22 @@
 <context>
     <name>Constants</name>
     <message>
-        <location filename="Mastactva/Constants.qml" line="41"/>
+        <location filename="Mastactva/Constants.qml" line="43"/>
         <source>Not a point to question</source>
         <translation>Не кропка да пытання</translation>
     </message>
     <message>
-        <location filename="Mastactva/Constants.qml" line="42"/>
+        <location filename="Mastactva/Constants.qml" line="44"/>
         <source>Not a point to next image</source>
         <translation>Не кропка для пераходу на выяву</translation>
     </message>
     <message>
-        <location filename="Mastactva/Constants.qml" line="43"/>
+        <location filename="Mastactva/Constants.qml" line="45"/>
         <source>Point to next image</source>
         <translation>Кропка переход на выяву</translation>
     </message>
     <message>
-        <location filename="Mastactva/Constants.qml" line="44"/>
+        <location filename="Mastactva/Constants.qml" line="46"/>
         <source>Select image point</source>
         <translation>Абярыце кропку на выяву</translation>
     </message>
@@ -419,6 +451,35 @@
     </message>
 </context>
 <context>
+    <name>ImagePointEffectEditDialog</name>
+    <message>
+        <location filename="ImagePointEffectEditDialog.qml" line="24"/>
+        <source>Choose image point effect</source>
+        <translation>Абярыце эфект для кропкі выявы</translation>
+    </message>
+    <message>
+        <location filename="ImagePointEffectEditDialog.qml" line="39"/>
+        <source>Duration (ms) : </source>
+        <translation>Працягласць (мс) : </translation>
+    </message>
+    <message>
+        <location filename="ImagePointEffectEditDialog.qml" line="46"/>
+        <source>Input duration of effect in ms</source>
+        <translation>Увядзіце працягласць эфекту ў мілісекундах</translation>
+    </message>
+    <message>
+        <location filename="ImagePointEffectEditDialog.qml" line="350"/>
+        <location filename="ImagePointEffectEditDialog.qml" line="468"/>
+        <source> ...</source>
+        <translation> ...</translation>
+    </message>
+    <message>
+        <location filename="ImagePointEffectEditDialog.qml" line="454"/>
+        <source>Easing type : </source>
+        <translation>Тып easing : </translation>
+    </message>
+</context>
+<context>
     <name>Login</name>
     <message>
         <location filename="Login.qml" line="14"/>
@@ -667,7 +728,7 @@
         <translation>Рэдактар віктарын Мастацтва</translation>
     </message>
     <message>
-        <location filename="main.qml" line="249"/>
+        <location filename="main.qml" line="318"/>
         <source>Please, select effect item</source>
         <translation>Калі ласка, абярыце шэйдер</translation>
     </message>
@@ -677,698 +738,827 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="main.qml" line="482"/>
-        <location filename="main.qml" line="507"/>
+        <location filename="main.qml" line="601"/>
+        <location filename="main.qml" line="637"/>
         <source>Application Error</source>
         <translation>Памылка аплікацыі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="508"/>
+        <location filename="main.qml" line="638"/>
         <source>Error code : </source>
         <translation>Код памылкі : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="508"/>
+        <location filename="main.qml" line="638"/>
         <source>
 </source>
         <translation>
 </translation>
     </message>
     <message>
-        <location filename="main.qml" line="508"/>
+        <location filename="main.qml" line="638"/>
         <source>Description : </source>
         <translation>Апісанне : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1293"/>
+        <location filename="main.qml" line="1548"/>
         <source>&amp;Refresh Galleries</source>
         <translation>&amp;Абнавіць галэрэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1299"/>
+        <location filename="main.qml" line="1554"/>
         <source>Refresh &amp;All Images</source>
         <translation>Абнавіць &amp;выявы галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1305"/>
+        <location filename="main.qml" line="1560"/>
         <source>&amp;Create New Gallery</source>
         <translation>&amp;Стварыць новую галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1313"/>
+        <location filename="main.qml" line="1568"/>
         <source>&amp;Edit Current Gallery</source>
         <translation>&amp;Рэдагаваць абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1317"/>
-        <location filename="main.qml" line="1334"/>
-        <location filename="main.qml" line="1396"/>
-        <location filename="main.qml" line="1413"/>
-        <location filename="main.qml" line="1436"/>
+        <location filename="main.qml" line="1572"/>
+        <location filename="main.qml" line="1589"/>
+        <location filename="main.qml" line="1651"/>
+        <location filename="main.qml" line="1668"/>
+        <location filename="main.qml" line="1691"/>
         <source>Select gallery first</source>
         <translation>Абярыце галерэю з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1318"/>
-        <location filename="main.qml" line="1335"/>
+        <location filename="main.qml" line="1573"/>
+        <location filename="main.qml" line="1590"/>
         <source>To edit the gallery you should first select a gallery</source>
         <translation>Для рэдагавання галерэі вы павінны з пачатку абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1330"/>
+        <location filename="main.qml" line="1585"/>
         <source>&amp;Remove Current Gallery</source>
         <translation>&amp;Выдаліць абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1341"/>
+        <location filename="main.qml" line="1596"/>
         <source>Do you really want to remove the current gallery</source>
         <translation>Вы сапраўды жадаеце выдаліць абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1392"/>
+        <location filename="main.qml" line="1647"/>
         <source>Add &amp;Image To Current Gallery</source>
         <translation>&amp;Дадаць выяву ў абраную галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1397"/>
+        <location filename="main.qml" line="1652"/>
         <source>To add an image to the gallery you should first select a gallery</source>
         <translation>Для дадання выявы да галерэі вы павіны па-першае абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1409"/>
+        <location filename="main.qml" line="1664"/>
         <source>Take &amp;Ownship of Current Gallery</source>
         <translation>&amp;Пачаць рэдагаванне абранай галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1414"/>
+        <location filename="main.qml" line="1669"/>
         <source>To take ownship of the gallery you should first select a gallery</source>
         <translation>Для пачатку рэдагавання галеруі вы па-першае павіны абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1432"/>
+        <location filename="main.qml" line="1687"/>
         <source>&amp;Free Ownship of Current Gallery</source>
         <translation>С&amp;кончыць рэдагаванне абранай галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1437"/>
+        <location filename="main.qml" line="1692"/>
         <source>To free ownship of the gallery you should first select a gallery</source>
         <translation>Для сканчэння рэдагавання галерэі вы па-першае павіны абраць галерэю</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1455"/>
+        <location filename="main.qml" line="1710"/>
         <source>&amp;Remove Current Image</source>
         <translation>В&amp;ыдаліць абраную выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1459"/>
+        <location filename="main.qml" line="1714"/>
         <source>Select image of gallery first</source>
         <translation>Абярыце з пачатку выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1460"/>
+        <location filename="main.qml" line="1715"/>
         <source>To remove an image of the gallery you should first select a image</source>
         <translation>Для выдалення выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1466"/>
+        <location filename="main.qml" line="1721"/>
         <source>Do you really want to remove the image from the gallery</source>
         <translation>Вы сапраўды жадаеце выдаліць выяву з галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1518"/>
+        <location filename="main.qml" line="1773"/>
         <source>Make Image &amp;Top</source>
         <translation>Зрабіць выяву &amp;ўваходнай</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1522"/>
-        <location filename="main.qml" line="1551"/>
-        <location filename="main.qml" line="1596"/>
-        <location filename="main.qml" line="1613"/>
-        <location filename="main.qml" line="1636"/>
-        <location filename="main.qml" line="1695"/>
-        <location filename="main.qml" line="1718"/>
-        <location filename="main.qml" line="1741"/>
-        <location filename="main.qml" line="1770"/>
-        <location filename="main.qml" line="1835"/>
-        <location filename="main.qml" line="1863"/>
-        <location filename="main.qml" line="1900"/>
+        <location filename="main.qml" line="1777"/>
+        <location filename="main.qml" line="1806"/>
+        <location filename="main.qml" line="1851"/>
+        <location filename="main.qml" line="1868"/>
+        <location filename="main.qml" line="1891"/>
+        <location filename="main.qml" line="1950"/>
         <location filename="main.qml" line="1973"/>
+        <location filename="main.qml" line="1996"/>
+        <location filename="main.qml" line="2025"/>
+        <location filename="main.qml" line="2090"/>
+        <location filename="main.qml" line="2118"/>
+        <location filename="main.qml" line="2155"/>
+        <location filename="main.qml" line="2228"/>
         <source>Select an image of the gallery first</source>
         <translation>Абярыце выяву галерэі з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1523"/>
+        <location filename="main.qml" line="1778"/>
         <source>To make an image of the gallery top you should first select a image</source>
         <translation>Для таго каб зрабіць выяву уваходнай вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1547"/>
+        <location filename="main.qml" line="1802"/>
         <source>Make Image &amp;Non Top</source>
         <translation>&amp;Скасаваць уваходнасць выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1552"/>
+        <location filename="main.qml" line="1807"/>
         <source>To make an image of the gallery non top you should first select a image</source>
         <translation>Для таго каб скасаваць уваходнасць выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1576"/>
+        <location filename="main.qml" line="1831"/>
         <source>Show image &amp;points</source>
         <translation>Паказаць &amp;кропкі выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1584"/>
+        <location filename="main.qml" line="1839"/>
         <source>Show &amp;voronoy diagram</source>
         <translation>Паказаць дыяграму &amp;Варанога</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1592"/>
+        <location filename="main.qml" line="1847"/>
         <source>&amp;New Description</source>
         <translation>Новае &amp;апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1597"/>
-        <location filename="main.qml" line="1614"/>
-        <location filename="main.qml" line="1637"/>
-        <location filename="main.qml" line="1696"/>
-        <location filename="main.qml" line="1719"/>
-        <location filename="main.qml" line="1742"/>
-        <location filename="main.qml" line="1771"/>
-        <location filename="main.qml" line="1864"/>
-        <location filename="main.qml" line="1901"/>
+        <location filename="main.qml" line="1852"/>
+        <location filename="main.qml" line="1869"/>
+        <location filename="main.qml" line="1892"/>
+        <location filename="main.qml" line="1951"/>
         <location filename="main.qml" line="1974"/>
+        <location filename="main.qml" line="1997"/>
+        <location filename="main.qml" line="2026"/>
+        <location filename="main.qml" line="2119"/>
+        <location filename="main.qml" line="2156"/>
+        <location filename="main.qml" line="2229"/>
         <source>To create a description of the image of the gallery you should first select an image</source>
         <translation>Для стварэння новага апісання выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1609"/>
+        <location filename="main.qml" line="1864"/>
         <source>&amp;Edit Description</source>
         <translation>&amp;Рэдагаваць апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1619"/>
-        <location filename="main.qml" line="1642"/>
+        <location filename="main.qml" line="1874"/>
+        <location filename="main.qml" line="1897"/>
         <source>Select a description of the image first</source>
         <translation>Абярыце апісанне выявы з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1620"/>
-        <location filename="main.qml" line="1643"/>
+        <location filename="main.qml" line="1875"/>
+        <location filename="main.qml" line="1898"/>
         <source>To edit a description of the image of the gallery you should first select a description</source>
         <translation>Для рэдагавання апісання выявы вы па-першае павіны абраць апісанне выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1632"/>
+        <location filename="main.qml" line="1887"/>
         <source>&amp;Delete Description</source>
         <translation>&amp;Выдаліць апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1650"/>
+        <location filename="main.qml" line="1905"/>
         <source>Do you really want to delete description?</source>
         <translation>Вы сапраўды жадаеце выдаліць апісанне?</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1650"/>
-        <location filename="main.qml" line="1791"/>
-        <location filename="main.qml" line="2859"/>
-        <location filename="main.qml" line="3116"/>
-        <location filename="main.qml" line="3287"/>
-        <location filename="main.qml" line="3447"/>
-        <location filename="main.qml" line="3567"/>
-        <location filename="main.qml" line="3659"/>
-        <location filename="main.qml" line="3798"/>
+        <location filename="main.qml" line="1905"/>
+        <location filename="main.qml" line="2046"/>
+        <location filename="main.qml" line="3556"/>
+        <location filename="main.qml" line="3813"/>
+        <location filename="main.qml" line="3984"/>
+        <location filename="main.qml" line="4144"/>
+        <location filename="main.qml" line="4264"/>
+        <location filename="main.qml" line="4356"/>
+        <location filename="main.qml" line="4495"/>
+        <location filename="main.qml" line="4566"/>
+        <location filename="main.qml" line="4575"/>
+        <location filename="main.qml" line="4606"/>
+        <location filename="main.qml" line="4634"/>
         <source> ...</source>
         <translation> ...</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1650"/>
-        <location filename="main.qml" line="1791"/>
-        <location filename="main.qml" line="1915"/>
+        <location filename="main.qml" line="1905"/>
+        <location filename="main.qml" line="2046"/>
+        <location filename="main.qml" line="2170"/>
         <source>&lt;br/&gt;</source>
         <translation>&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1691"/>
+        <location filename="main.qml" line="1946"/>
         <source>&amp;Edit question</source>
         <translation>&amp;Рэдагаваць пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1701"/>
-        <location filename="main.qml" line="1724"/>
-        <location filename="main.qml" line="1747"/>
-        <location filename="main.qml" line="1776"/>
-        <location filename="main.qml" line="1869"/>
-        <location filename="main.qml" line="1906"/>
+        <location filename="main.qml" line="1956"/>
         <location filename="main.qml" line="1979"/>
+        <location filename="main.qml" line="2002"/>
+        <location filename="main.qml" line="2031"/>
+        <location filename="main.qml" line="2124"/>
+        <location filename="main.qml" line="2161"/>
+        <location filename="main.qml" line="2234"/>
         <source>Select an image point of the image first</source>
         <translation>Абярыце кропку выявы з пачатку</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1702"/>
+        <location filename="main.qml" line="1957"/>
         <source>To edit a question of an image point of an image of the gallery you should first select an image point</source>
         <translation>Для рэдагавання пытання для кропкі выявы  вы павіны па-першае абраць кропку выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1714"/>
+        <location filename="main.qml" line="1969"/>
         <source>&amp;New answer</source>
         <translation>&amp;Новы адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1725"/>
+        <location filename="main.qml" line="1980"/>
         <source>To add new answer of the question of the image point of the image of the gallery you should first select an image point</source>
         <translation>Для дадання новага адказу на пытанне кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1737"/>
+        <location filename="main.qml" line="1992"/>
         <source>&amp;Edit answer</source>
         <translation>&amp;Рэдагаваць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1748"/>
+        <location filename="main.qml" line="2003"/>
         <source>To edit an answer of the question of the image point of the image of the gallery you should first select an image point</source>
         <translation>Для рэдагавання адказу на пытанне на кропке выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1753"/>
-        <location filename="main.qml" line="1782"/>
+        <location filename="main.qml" line="2008"/>
+        <location filename="main.qml" line="2037"/>
         <source>Select an answer of the image point of the image first</source>
         <translation>Абярыце адказ на пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1754"/>
+        <location filename="main.qml" line="2009"/>
         <source>To edit an answer of the question of the image point of the image of the gallery you should first select an answer</source>
         <translation>Для рэдагаваня адказу на пытанне па кропцы выявы вы павіны па-першае абраць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1766"/>
+        <location filename="main.qml" line="2021"/>
         <source>&amp;Delete answer</source>
         <translation>&amp;Выдаліць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1777"/>
+        <location filename="main.qml" line="2032"/>
         <source>To remove the answer of the question of the image point of the image of the gallery you should first select an image point</source>
         <translation>Для выдалення адказу на патанне па кропцы выявы вы па-першае павіны адраць кропку выяву з пытаннем</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1783"/>
+        <location filename="main.qml" line="2038"/>
         <source>To remove an answer of the question of the image point of the image of the gallery you should first select an answer</source>
         <translation>Для выдалення адказу на пытанне па кропцы выявы вы па-першае павіны абраць адказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1831"/>
+        <location filename="main.qml" line="2086"/>
         <source>Add point template</source>
         <translation>Дадаць шаблон кропкі выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1836"/>
+        <location filename="main.qml" line="2091"/>
         <source>To add an image point of the image of the gallery you should first select an image</source>
         <translation>Для дадання шаблону кропкі выявы вы па-першае павіны абраць выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1847"/>
+        <location filename="main.qml" line="2102"/>
         <source>Create image point template</source>
         <translation>Стварыць шаблон кропкі выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1859"/>
+        <location filename="main.qml" line="2114"/>
         <source>Edit point of image</source>
         <translation>Рэдагаваць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1870"/>
+        <location filename="main.qml" line="2125"/>
         <source>To edit properties of the image point of the image of the gallery you should first select an image point</source>
         <translation>Для рэдагавання кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1883"/>
+        <location filename="main.qml" line="2138"/>
         <source>Edit image point</source>
         <translation>Рэдагаваць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1896"/>
+        <location filename="main.qml" line="2151"/>
         <source>Remove point of image</source>
         <translation>Выдаліць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1907"/>
+        <location filename="main.qml" line="2162"/>
         <source>To remove an image point of the image of the gallery you should first select an image point</source>
         <translation>Для выдалення кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1650"/>
+        <location filename="main.qml" line="2718"/>
+        <source>Play current effect demo</source>
+        <translation>Граць бягучы эфект</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2726"/>
+        <source>&amp;Play reverse effect demo</source>
+        <translation>Граць наўзваротак эфект</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2749"/>
+        <source>Play reverse current effect demo</source>
+        <translation>Граць наўзваротак бягучы эфект</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2757"/>
+        <source>&amp;Default effect demo</source>
+        <translation>Выкарыстаць эфект па змоўчкі</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="4615"/>
+        <source>Effect argument set easing : </source>
+        <translation>Easing для множства параметраў эфекту</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="4629"/>
+        <source>Effect argument set description : </source>
+        <translation>Апісанне множства параметраў эфекту : </translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="1905"/>
         <source>Description text : </source>
         <translation>Апісанне : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1650"/>
-        <location filename="main.qml" line="3118"/>
+        <location filename="main.qml" line="1905"/>
+        <location filename="main.qml" line="3815"/>
         <source>From : </source>
         <translation>Ад : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1791"/>
+        <location filename="main.qml" line="2046"/>
         <source>Do you really want to remove answer?</source>
         <translation>Вы сапраўды жадаеце выдаліць адказ?</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1791"/>
+        <location filename="main.qml" line="2046"/>
         <source>Answer : </source>
         <translation>Адказ : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1791"/>
+        <location filename="main.qml" line="2046"/>
         <source>Points for answer : </source>
         <translation>Балаў за адказ : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1915"/>
+        <location filename="main.qml" line="2170"/>
         <source>Do you really want to remove image point?</source>
         <translation>Вы сапраўды жадаеце выдаліць кропку выявы?</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1915"/>
+        <location filename="main.qml" line="2170"/>
         <source>x : </source>
         <translation>x : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1915"/>
+        <location filename="main.qml" line="2170"/>
         <source>y : </source>
         <translation>y : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1915"/>
+        <location filename="main.qml" line="2170"/>
         <source>weight : </source>
         <translation>вага : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="1961"/>
+        <location filename="main.qml" line="2216"/>
         <source>&amp;Edit options</source>
         <translation>Рэдагаваць &amp;налады</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1969"/>
+        <location filename="main.qml" line="2224"/>
         <source>Edit next image</source>
         <translation>Рэдагаваць настыпную выяву</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1980"/>
+        <location filename="main.qml" line="2235"/>
         <source>To edit next image of the image point of the image of the gallery you should first select an image point</source>
         <translation>Для рэдагавання наступнай выявы кропкі выявы вы па-першае павіны абраць кропку выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="1994"/>
+        <location filename="main.qml" line="2247"/>
+        <source>&amp;Refresh next image effects</source>
+        <translation>Абнавіць эфект наступнаў выявы</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2269"/>
+        <source>&amp;Add next image effects</source>
+        <translation>Дадаць эфект наступнаў выявы</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2293"/>
+        <source>&amp;Edit next image effects</source>
+        <translation>Рэдагаваць эфект наступнай выявы</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2317"/>
+        <source>Remove next image effects</source>
+        <translation>Выдаліць эфект наступнай выявы</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2340"/>
         <source>&amp;Galleries</source>
         <translation>&amp;Галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2004"/>
+        <location filename="main.qml" line="2350"/>
         <source>All &amp;Images of Gallery</source>
         <translation>&amp;Усе выявы галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2011"/>
+        <location filename="main.qml" line="2357"/>
         <source>Image &amp;point</source>
         <translation>&amp;Кропка выявы</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2027"/>
+        <location filename="main.qml" line="2373"/>
         <source>&amp;Description</source>
         <translation>&amp;Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2033"/>
+        <location filename="main.qml" line="2379"/>
         <source>&amp;Next Image</source>
         <translation>Наступная &amp;выява</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2037"/>
+        <location filename="main.qml" line="2387"/>
         <source>&amp;Question</source>
         <translation>&amp;Пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2041"/>
+        <location filename="main.qml" line="2391"/>
         <source>&amp;Answer</source>
         <translation>А&amp;дказ</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2047"/>
+        <location filename="main.qml" line="2397"/>
         <source>&amp;Options</source>
         <translation>&amp;Налады</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2054"/>
+        <location filename="main.qml" line="2404"/>
         <source>Re&amp;fresh effect</source>
         <translation>Абнавіць эфект</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2063"/>
+        <location filename="main.qml" line="2413"/>
         <source>&amp;Add effect</source>
         <translation>Дадаць эфект</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2073"/>
+        <location filename="main.qml" line="2423"/>
         <source>&amp;Edit effect</source>
         <translation>Рэдагаваць эфект</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2086"/>
+        <location filename="main.qml" line="2436"/>
         <source>&amp;Remove effect</source>
         <translation>Удаліць эфект</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2097"/>
+        <location filename="main.qml" line="2447"/>
         <source>Re&amp;fresh shaders</source>
         <translation>Абнавіць шэйдеры</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2110"/>
+        <location filename="main.qml" line="2460"/>
         <source>&amp;Add new shader</source>
         <translation>Дадаць новы шэйдер</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2127"/>
+        <location filename="main.qml" line="2477"/>
         <source>Add &amp;existing shader</source>
         <translation>Дадаць існуючы шэйдер</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2138"/>
+        <location filename="main.qml" line="2488"/>
         <source>Edit shader &amp;info</source>
         <translation>Рэдагаваць інфармацыю аб шэйдеры</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2157"/>
+        <location filename="main.qml" line="2507"/>
         <source>&amp;Remove shader</source>
         <translation>Выдаліць шэйдер</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2168"/>
+        <location filename="main.qml" line="2518"/>
         <source>&amp;Refresh effect arguments</source>
         <translation>Абнавіць параметры шэйдера</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2183"/>
+        <location filename="main.qml" line="2535"/>
+        <source>Re&amp;fresh argument set</source>
+        <translation>Абнавіць множства параметраў</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2557"/>
         <source>&amp;Add argument set</source>
         <translation>Дадаць множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2197"/>
+        <location filename="main.qml" line="2571"/>
         <source>Edit argument &amp;set</source>
         <translation>Рэдагаваць множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2210"/>
+        <location filename="main.qml" line="2584"/>
         <source>Remove argument set</source>
         <translation>Выдаліць множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2221"/>
+        <location filename="main.qml" line="2595"/>
+        <source>Refresh argument of argument set</source>
+        <translation>Абнавіць параметры множства параметраў</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2619"/>
         <source>Add a&amp;rgument of argument set</source>
         <translation>Дадаць параметр да множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2239"/>
+        <location filename="main.qml" line="2637"/>
         <source>&amp;Edit argument of argument set</source>
         <translation>Рэдагаваць параметр множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2253"/>
+        <location filename="main.qml" line="2651"/>
         <source>Remove argument of argument set</source>
         <translation>Выдаліць параметр множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2264"/>
+        <location filename="main.qml" line="2662"/>
+        <source>Choose image to play demo &amp;from it</source>
+        <translation>Абраць базавую выяву для грання эфекту</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2679"/>
+        <source>Choose image to play demo &amp;to it</source>
+        <translation>Абраць наступную выяву для грання эфекту</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2695"/>
         <source>&amp;Play effect demo</source>
         <translation>Граць дэма эфекта</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2272"/>
         <source>P&amp;ause effect demo</source>
-        <translation>Паўза дэма эфекта</translation>
+        <translation type="vanished">Паўза дэма эфекта</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2280"/>
+        <location filename="main.qml" line="2771"/>
         <source>&amp;Stop effect demo</source>
         <translation>Астанавіць дэма эфекта</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2289"/>
+        <location filename="main.qml" line="2787"/>
+        <source>Test current effect with t = 0.&amp;0</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;0</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2795"/>
+        <source>Test current effect with t = 0.&amp;1</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;1</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2803"/>
+        <source>Test current effect with t = 0.&amp;2</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;2</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2811"/>
+        <source>Test current effect with t = 0.&amp;3</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;3</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2819"/>
+        <source>Test current effect with t = 0.&amp;4</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;4</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2827"/>
+        <source>Test current effect with t = 0.&amp;5</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;5</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2835"/>
+        <source>Test current effect with t = 0.&amp;6</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;6</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2843"/>
+        <source>Test current effect with t = 0.&amp;7</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;7</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2851"/>
+        <source>Test current effect with t = 0.&amp;8</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;8</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2859"/>
+        <source>Test current effect with t = 0.&amp;9</source>
+        <translation>Тэставаць бягучы эфект з t = 0.&amp;9</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2867"/>
+        <source>Test current effect with t = 1.0</source>
+        <translation>Тэставаць бягучы эфект з t = 1.0</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="2876"/>
         <source>&amp;Effects</source>
         <translation>Эфекты</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2296"/>
+        <location filename="main.qml" line="2883"/>
         <source>&amp;Shaders</source>
         <translation>Шэйдеры</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2304"/>
+        <location filename="main.qml" line="2891"/>
         <source>&amp;Arguments</source>
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2308"/>
+        <location filename="main.qml" line="2895"/>
         <source>Argument Se&amp;ts</source>
         <translation>Множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2317"/>
+        <location filename="main.qml" line="2906"/>
         <source>&amp;Demo</source>
         <translation>Дэма</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2335"/>
+        <location filename="main.qml" line="2940"/>
         <source>Galleries</source>
         <translation>Галерэі</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2338"/>
+        <location filename="main.qml" line="2943"/>
         <source>Effects</source>
         <translation>Эфекты</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2438"/>
+        <location filename="main.qml" line="3043"/>
         <source>Description</source>
         <translation>Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2441"/>
+        <location filename="main.qml" line="3046"/>
         <source>Next image</source>
         <translation>Наступная выява</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2444"/>
-        <location filename="main.qml" line="2538"/>
+        <location filename="main.qml" line="3049"/>
+        <location filename="main.qml" line="3164"/>
         <source>Question</source>
         <translation>Пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2548"/>
+        <location filename="main.qml" line="3174"/>
         <source>Points to pass : </source>
         <translation>Балы за пытанне : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="2553"/>
+        <location filename="main.qml" line="3179"/>
         <source>PointsToPass</source>
         <translation>Балы за пытанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2627"/>
+        <location filename="main.qml" line="3253"/>
         <source>Info</source>
         <translation>Інфармацыя</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2630"/>
+        <location filename="main.qml" line="3256"/>
         <source>Shaders</source>
         <translation>Шэйдеры</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2633"/>
+        <location filename="main.qml" line="3259"/>
         <source>Arguments</source>
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2636"/>
+        <location filename="main.qml" line="3262"/>
         <source>Argument Sets</source>
         <translation>Множства параметраў</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2651"/>
+        <location filename="main.qml" line="3277"/>
+        <location filename="main.qml" line="4587"/>
         <source>Effect name : </source>
         <translation>Імя эфекта : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="2663"/>
+        <location filename="main.qml" line="3289"/>
+        <location filename="main.qml" line="4601"/>
         <source>Effect description : </source>
         <translation>Апісанне эфекта : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="2755"/>
         <source>Effects Demo</source>
-        <translation>Дэма эфекта</translation>
+        <translation type="vanished">Дэма эфекта</translation>
     </message>
     <message>
-        <location filename="main.qml" line="2777"/>
+        <location filename="main.qml" line="3474"/>
         <source>You own gallery</source>
         <translation>Ваша галерэя</translation>
     </message>
     <message>
-        <location filename="main.qml" line="3190"/>
+        <location filename="main.qml" line="3887"/>
         <source> ( points = </source>
         <translation> ( балаў = </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3190"/>
+        <location filename="main.qml" line="3887"/>
         <source>)</source>
         <translation>)</translation>
     </message>
     <message>
-        <location filename="main.qml" line="3403"/>
-        <location filename="main.qml" line="3523"/>
+        <location filename="main.qml" line="4100"/>
+        <location filename="main.qml" line="4220"/>
         <source>Type : </source>
         <translation>Тып : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3417"/>
+        <location filename="main.qml" line="4114"/>
         <source>Filename : </source>
         <translation>Імя файла : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3432"/>
+        <location filename="main.qml" line="4129"/>
         <source>Hash : </source>
         <translation>Хэш : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3537"/>
+        <location filename="main.qml" line="4234"/>
         <source>Name : </source>
         <translation>Імя : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3552"/>
+        <location filename="main.qml" line="4249"/>
         <source>Default value : </source>
         <translation>Значэнне па змаўчанні : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3645"/>
+        <location filename="main.qml" line="4342"/>
         <source>Easing type : </source>
         <translation>Тып easing : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3742"/>
+        <location filename="main.qml" line="4439"/>
         <source>Argument type : </source>
         <translation>Тып аргумента : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3756"/>
+        <location filename="main.qml" line="4453"/>
         <source>Argument name : </source>
         <translation>Імя параметра : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3770"/>
+        <location filename="main.qml" line="4467"/>
         <source>Argument default value : </source>
         <translation>Значэнне па змаўчанні параметра : </translation>
     </message>
     <message>
-        <location filename="main.qml" line="3784"/>
+        <location filename="main.qml" line="4481"/>
         <source>Value : </source>
         <translation>Значэнне : </translation>
     </message>
