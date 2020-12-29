@@ -79,8 +79,8 @@ void main(void)
                     0.0,
                     1.0);
         highp vec4 vertexCoord2 = vec4(
-                    vertexArg.x/vertexArg.w - (elipsePos11.x + elipsePos12.x - 0.5) * MANH_DIST_MAX * rectSize.x,
-                    vertexArg.y/vertexArg.w - (elipsePos11.y + elipsePos12.y - 0.5) * MANH_DIST_MAX * rectSize.y,
+                    vertexArg.x/vertexArg.w - (elipsePos11.x + (elipsePos12.x - 0.5) * MANH_DIST_MAX) * rectSize.x,
+                    vertexArg.y/vertexArg.w - (elipsePos11.y + (elipsePos12.y - 0.5) * MANH_DIST_MAX) * rectSize.y,
                     0.0,
                     1.0);
         mediump float x = mix(x0, x1, t * 2.0);
@@ -97,8 +97,8 @@ void main(void)
                     0.0,
                     1.0);
         highp vec4 vertexCoord2 = vec4(
-                    vertexArg.x/vertexArg.w - (elipsePos21.x + elipsePos22.x - 0.5) * MANH_DIST_MAX * rectSize.x,
-                    vertexArg.y/vertexArg.w - (elipsePos21.y + elipsePos22.y - 0.5) * MANH_DIST_MAX * rectSize.y,
+                    vertexArg.x/vertexArg.w - (elipsePos21.x + (elipsePos22.x - 0.5) * MANH_DIST_MAX) * rectSize.x,
+                    vertexArg.y/vertexArg.w - (elipsePos21.y + (elipsePos22.y - 0.5) * MANH_DIST_MAX) * rectSize.y,
                     0.0,
                     1.0);
         mediump float x = mix(x0, x1, (t - 0.5) * 2.0);
