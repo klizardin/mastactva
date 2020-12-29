@@ -130,6 +130,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t2_1st_pxor_2nd.fsh \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t3_1st_pxor_2nd.fsh \
     ../MastactvaShaders/MoveImages/Fragment/mix_varying_t_2steps_through_color.fsh \
+    ../MastactvaShaders/MoveImages/Fragment/mix_varying_t2_or_2steps_through_color.fsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh \
