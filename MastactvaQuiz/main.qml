@@ -200,6 +200,7 @@ ApplicationWindow {
     function setDescription(imageDescription, galleryId, imageId, imageSource)
     {
         quizPage.hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
+        galleryAllImagesPage.hasDescription = quizPage.hasDescription
         if(quizPage.hasDescription)
         {
             descriptionPage.galleryId = galleryId
