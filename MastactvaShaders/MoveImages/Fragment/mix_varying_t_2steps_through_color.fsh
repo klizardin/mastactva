@@ -5,10 +5,10 @@ uniform sampler2D texture2Arg;
 uniform lowp float opacityArg;
 
 /*@argument
-    @defaultValue (0.0, 0.0, 0.0)
+    @defaultValue (0.0, 0.0, 0.0, 1.0)
     @description bacground color
 */
-uniform mediump vec3 color;
+uniform mediump vec4 color;
 
 uniform mediump float t;
 
@@ -31,7 +31,7 @@ void main(void)
     }
     else
     {
-        gl_FragColor = mix( vec4( color ),
+        gl_FragColor = mix( color,
                             vec4( s2.r, s2.g, s2.b, s2.a ),
                             vt ) * opacityArg;
     }
