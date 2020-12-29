@@ -54,7 +54,7 @@ varying mediump vec2 v_t;
 
 const mediump float M_PI = 3.14159265359;
 const mediump float MIN_SLOPE = 0.01;
-const mediump float MANH_DIST_MAX = 0.2;
+const mediump float MANH_DIST_MAX = 0.4;
 
 
 mediump float atan2(in mediump float y, in mediump float x)
