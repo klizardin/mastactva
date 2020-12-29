@@ -149,6 +149,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/mix_eclipse2.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_eclipse3.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_eclipse2_2steps.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_eclipse2x2_2steps.vsh \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a
