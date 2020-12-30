@@ -123,7 +123,7 @@ Dialog {
         if(effectModel !== undefined && effectModel !== null)
         {
             effectModel.listReloaded.connect(effectModelListReloaded)
-            effectModel.loadList()
+            //effectModel.loadList()
             if(effectModel.isListLoaded())
             {
                 setEffectModel()
