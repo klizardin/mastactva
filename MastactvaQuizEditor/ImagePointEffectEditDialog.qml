@@ -20,6 +20,7 @@ Dialog {
     property int effectArgumentSetsIndex: -1
     property int effectId: -1
     property int effectArgumentSetsId: -1
+    property bool freezeModel: true
 
     title: qsTr("Choose image point effect")
 
@@ -98,14 +99,6 @@ Dialog {
                     highlightFollowsCurrentItem: false
                     z: 0.0
                 }
-
-                BusyIndicator {
-                    id: busyIndicatorEffectArgumentSetsList
-                    anchors.centerIn: parent
-                    visible: false
-                    running: false
-                    z: 1.0
-                }
             }
         }
     }
@@ -115,41 +108,65 @@ Dialog {
 
         function onEffectIndexChanged()
         {
+            //console.log("onEffectIndexChanged()")
             effectsList.currentIndex = effectIndex
-            if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded() && effectModel.itemAt(effectIndex) !== null)
+            if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded())
             {
-                effectModel.currentIndex = effectIndex
+                if(!freezeModel)
+                {
+                    effectModel.currentIndex = effectIndex
+                }
+                //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
+                effectsList.currentIndex = effectIndex
                 var effect = effectModel.currentItem
                 effectId = effect !== null ? effect.effectId : -1
-                //console.log("onEffectIndexChanged() effectId = ", effectId)
                 initEffectArgumentSets()
             }
+            else
+            {
+                effectId = -1
+            }
+            //console.log("onEffectIndexChanged() effectId = ", effectId)
         }
 
         function onEffectArgumentSetsIndexChanged()
         {
+            //console.log("onEffectArgumentSetsIndexChanged()")
             effectArgumentSetsList.currentIndex = effectArgumentSetsIndex
             if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded() && effectModel.currentItem !== null)
             {
                 var effectArgumentSetsModel = effectModel.currentItem.effectArgSets
                 if(effectArgumentSetsModel !== undefined && effectArgumentSetsModel !== null && effectArgumentSetsModel.isListLoaded())
                 {
-                    effectArgumentSetsModel.currentIndex = effectArgumentSetsIndex
+                    if(!freezeModel)
+                    {
+                        effectArgumentSetsModel.currentIndex = effectArgumentSetsIndex
+                    }
+                    //console.log("effectArgumentSetsModel.currentIndex = ", effectArgumentSetsModel.currentIndex)
+                    effectArgumentSetsList.currentIndex = effectArgumentSetsIndex
                     var effectArgumentSet = effectArgumentSetsModel.currentItem
                     effectArgumentSetsId = effectArgumentSet !== null ? effectArgumentSet.effectArgSetId : -1
-                    //console.log("onEffectArgumentSetsIndexChanged() effectArgumentSetsId = ", effectArgumentSetsId)
+                }
+                else
+                {
+                    effectArgumentSetsId = -1
                 }
             }
+            else
+            {
+                effectArgumentSetsId = -1
+            }
+            //console.log("onEffectArgumentSetsIndexChanged() effectArgumentSetsId = ", effectArgumentSetsId)
         }
     }
 
     function init()
     {
-        console.log("init()")
+        //console.log("init()")
+        freezeModel = false
         if(effectModel !== undefined && effectModel !== null)
         {
             effectModel.listReloaded.connect(effectModelListReloaded)
-            //effectModel.loadList()
             if(effectModel.isListLoaded())
             {
                 setEffectModel()
@@ -163,6 +180,8 @@ Dialog {
         }
         else
         {
+            busyIndicatorEffectsList.visible = false
+            busyIndicatorEffectsList.running = false
             clearEffectModel()
         }
         imagePointEffectDuration.text = fieldDuration
@@ -170,6 +189,7 @@ Dialog {
 
     function refreshEffects()
     {
+        //console.log("refreshEffects()")
         if(effectModel !== undefined && effectModel !== null)
         {
             effectModel.listReloaded.connect(effectModelListReloaded)
@@ -187,18 +207,22 @@ Dialog {
         }
         else
         {
+            busyIndicatorEffectsList.visible = false
+            busyIndicatorEffectsList.running = false
             clearEffectModel()
         }
     }
 
     function update()
     {
+        //console.log("update()")
         fieldDuration = imagePointEffectDuration.text
     }
 
     function reject()
     {
         //console.log("reject()")
+        freezeModel = true
         if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded())
         {
             effectModel.currentIndex = effectOldIndex
@@ -214,6 +238,8 @@ Dialog {
 
     function clearDialogData()
     {
+        //console.log("clearDialogData()")
+        freezeModel = true
         clearEffectArgumentSetsModel()
         clearEffectModel()
         effectArgumentSetsIndex = -1
@@ -222,20 +248,24 @@ Dialog {
 
     function clearEffectModel()
     {
+        //console.log("clearEffectModel()")
         effectsList.model = 0
         effectsList.currentIndex = -1
     }
 
     function setEffectModel()
     {
+        //console.log("setEffectModel()")
         if(effectModel !== undefined && effectModel !== null)
         {
+            busyIndicatorEffectsList.visible = false
+            busyIndicatorEffectsList.running = false
+
             effectModel.listReloaded.disconnect(effectModelListReloaded)
             if(effectModel.isListLoaded())
             {
                 effectOldIndex = effectModel.currentIndex
-                //console.log("effectId = ", effectId)
-                //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
+                //console.log("effectOldIndex = ", effectOldIndex)
                 if(effectId >= 0)
                 {
                     var effect = effectModel.findItemById(effectId)
@@ -243,6 +273,7 @@ Dialog {
                     if(effect !== null && initIndex >= 0)
                     {
                         effectModel.currentIndex = initIndex
+                        //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
                     }
                     else
                     {
@@ -250,8 +281,11 @@ Dialog {
                     }
                 }
                 //console.log("effectModel.currentIndex = ", effectModel.currentIndex)
+                var index = effectModel.currentIndex
                 effectsList.model = effectModel
-                effectIndex = effectModel.currentIndex
+                effectIndex = -1 // to onVarChanged() function will be called
+                effectIndex = index
+                //console.log("set effectIndex = ", effectIndex)
                 initEffectArgumentSets()
             }
             else
@@ -263,14 +297,14 @@ Dialog {
 
     function effectModelListReloaded()
     {
-        busyIndicatorEffectsList.visible = false
-        busyIndicatorEffectsList.running = false
+        //console.log("effectModelListReloaded()")
         setEffectModel()
     }
 
     function initEffectArgumentSets()
     {
-        if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded())
+        //console.log("initEffectArgumentSets()")
+        if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded() && effectModel.currentItem !== null)
         {
             var effectArgumentSets = effectModel.currentItem.effectArgSets
             if(effectArgumentSets !== undefined && effectArgumentSets !== null)
@@ -285,17 +319,27 @@ Dialog {
                     clearEffectArgumentSetsModel()
                 }
             }
+            else
+            {
+                clearEffectArgumentSetsModel()
+            }
+        }
+        else
+        {
+            clearEffectArgumentSetsModel()
         }
     }
 
     function clearEffectArgumentSetsModel()
     {
+        //console.log("clearEffectArgumentSetsModel()")
         effectArgumentSetsList.model = 0
         effectArgumentSetsList.currentIndex = -1
     }
 
     function setEffectArgumentSetsModel()
     {
+        //console.log("setEffectArgumentSetsModel()")
         if(effectModel !== undefined && effectModel !== null && effectModel.isListLoaded())
         {
             var effectArgumentSets = effectModel.currentItem.effectArgSets
@@ -305,8 +349,7 @@ Dialog {
                 if(effectArgumentSets.isListLoaded())
                 {
                     effectArgumentSetsOldIndex = effectArgumentSets.currentIndex
-                    //console.log("effectArgumentSetsId = ", effectArgumentSetsId)
-                    //console.log("effectArgumentSets.currentIndex = ", effectArgumentSets.currentIndex)
+                    //console.log("effectArgumentSetsOldIndex = ", effectArgumentSetsOldIndex)
                     if(effectArgumentSetsId >= 0)
                     {
                         var effectArgumentSet = effectArgumentSets.findItemById(effectArgumentSetsId)
@@ -314,6 +357,7 @@ Dialog {
                         if(effectArgumentSet !== null && initIndex >= 0)
                         {
                             effectArgumentSets.currentIndex = initIndex
+                            //console.log("effectArgumentSets.currentIndex = ", effectArgumentSets.currentIndex)
                         }
                         else
                         {
@@ -321,8 +365,11 @@ Dialog {
                         }
                     }
                     //console.log("effectArgumentSets.currentIndex = ", effectArgumentSets.currentIndex)
+                    var index = effectArgumentSets.currentIndex
                     effectArgumentSetsList.model = effectArgumentSets
-                    effectArgumentSetsIndex = effectArgumentSets.currentIndex
+                    effectArgumentSetsIndex = -1 // to onVarChanged() function will be called
+                    effectArgumentSetsIndex = index
+                    //console.log("set effectArgumentSetsIndex = ", effectArgumentSetsIndex)
                 }
                 else
                 {
@@ -334,6 +381,7 @@ Dialog {
 
     function effectArgumentSetsListReloaded()
     {
+        //console.log("effectArgumentSetsListReloaded()")
         setEffectArgumentSetsModel()
     }
 
