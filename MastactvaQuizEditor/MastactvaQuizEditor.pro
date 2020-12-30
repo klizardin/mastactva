@@ -141,6 +141,7 @@ DISTFILES += \
     ../MastactvaShaders/MoveImages/Vertex/mix_direction_line2.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_line_horizontal_faced4.vsh \
+    ../MastactvaShaders/MoveImages/Vertex/mix_clock.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_clock2.vsh \
     ../MastactvaShaders/MoveImages/Vertex/translate_scale_first.vsh \
     ../MastactvaShaders/MoveImages/Vertex/mix_rectangles.vsh \
