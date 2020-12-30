@@ -81,6 +81,7 @@
 45. fix bugs, test app
 46. add LUA scripting, so can be used step geomery generation, initialization functions
 47. add textures to effect artefacts
+48. don`t upload effects every time
 
 
 
