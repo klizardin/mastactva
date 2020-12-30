@@ -7,4 +7,9 @@
 6. update loading mechanism. load one image children at time
 7. add progress load
 8. allow to action in participale load
+9. simplify inteface
+10. fix bugs
+11. add caching
+12. build android version
+13. add lib to send crach reports
 
