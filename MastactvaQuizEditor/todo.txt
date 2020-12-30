@@ -78,7 +78,9 @@
 * 42. simple test app
 43. add date to the shader load information. or possibility to view shader
 44. add clock shader -- possibly it is too difficult
-
+45. fix bugs, test app
+46. add LUA scripting, so can be used step geomery generation, initialization functions
+47. add textures to effect artefacts
 
 
 
