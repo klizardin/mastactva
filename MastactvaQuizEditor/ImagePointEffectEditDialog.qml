@@ -34,6 +34,14 @@ Dialog {
 
         Column
         {
+            Button {
+                width: Constants.smallDialogWidth
+                text: qsTr("Refresh effects list")
+                onClicked: {
+                    refreshEffects()
+                }
+            }
+
             Label {
                 width: Constants.smallDialogWidth
                 text: qsTr("Duration (ms) : ")
@@ -138,6 +146,27 @@ Dialog {
             clearEffectModel()
         }
         imagePointEffectDuration.text = fieldDuration
+    }
+
+    function refreshEffects()
+    {
+        if(effectModel !== undefined && effectModel !== null)
+        {
+            effectModel.listReloaded.connect(effectModelListReloaded)
+            effectModel.loadList()
+            if(effectModel.isListLoaded())
+            {
+                setEffectModel()
+            }
+            else
+            {
+                clearEffectModel()
+            }
+        }
+        else
+        {
+            clearEffectModel()
+        }
     }
 
     function update()
