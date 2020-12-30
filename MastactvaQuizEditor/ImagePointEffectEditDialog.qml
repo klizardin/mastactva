@@ -69,6 +69,15 @@ Dialog {
                     delegate: effectItem
                     highlight: effectItemHighlight
                     highlightFollowsCurrentItem: false
+                    z: 0.0
+                }
+
+                BusyIndicator {
+                    id: busyIndicatorEffectsList
+                    anchors.centerIn: parent
+                    visible: false
+                    running: false
+                    z: 1.0
                 }
             }
 
@@ -87,6 +96,15 @@ Dialog {
                     delegate: effectArgumentSetsItem
                     highlight: effectArgumentSetsItemHighlight
                     highlightFollowsCurrentItem: false
+                    z: 0.0
+                }
+
+                BusyIndicator {
+                    id: busyIndicatorEffectArgumentSetsList
+                    anchors.centerIn: parent
+                    visible: false
+                    running: false
+                    z: 1.0
                 }
             }
         }
@@ -138,6 +156,8 @@ Dialog {
             }
             else
             {
+                busyIndicatorEffectsList.visible = true
+                busyIndicatorEffectsList.running = true
                 clearEffectModel()
             }
         }
@@ -160,6 +180,8 @@ Dialog {
             }
             else
             {
+                busyIndicatorEffectsList.visible = true
+                busyIndicatorEffectsList.running = true
                 clearEffectModel()
             }
         }
@@ -241,6 +263,8 @@ Dialog {
 
     function effectModelListReloaded()
     {
+        busyIndicatorEffectsList.visible = false
+        busyIndicatorEffectsList.running = false
         setEffectModel()
     }
 
