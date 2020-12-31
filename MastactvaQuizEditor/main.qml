@@ -2728,7 +2728,10 @@ ApplicationWindow {
         function itemDeleted()
         {
             effectShaderCurrentIndex = -1
-            effectShadersCurrentModel.itemDeleted.disconnect(itemDeleted)
+            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            {
+                effectShadersCurrentModel.itemDeleted.disconnect(itemDeleted)
+            }
         }
     }
 
@@ -2806,9 +2809,62 @@ ApplicationWindow {
         id: removeArgumentSet
         text: qsTr("Remove argument set")
         onTriggered: {
+            promptBeforeRemove()
+        }
+
+        function promptBeforeRemove()
+        {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
             {
+                var effectArgumentSets = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
+                if(effectArgumentSets !== undefined && effectArgumentSets !== null)
+                {
+                    confirmDialog.confirmText = qsTr("Do you really want to remove argument set?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Arguments set description  : ") + effectArgumentSets.effectArgSetDescription + qsTr("<br/>");
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
+            remove()
+        }
+
+        function remove()
+        {
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentIndex >= 0)
+            {
+                effectArgumentSetsCurrentModel.itemDeleted.connect(itemDeleted)
                 effectArgumentSetsCurrentModel.delItem(effectArgumentSetsCurrentIndex)
+            }
+        }
+
+        function itemDeleted()
+        {
+            effectArgumentSetsCurrentIndex = -1
+            if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
+            {
+                effectArgumentSetsCurrentModel.itemDeleted.disconnect(itemDeleted)
             }
         }
     }
