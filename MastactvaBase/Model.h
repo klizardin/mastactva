@@ -15,6 +15,8 @@
 
 
 //#define TRACE_LIST_LOAD_DATA
+//#define TRACE_LIST_SIZE
+//#define TRACE_LIST_DATA_ITEMS_CRUD
 
 
 class ListModelBaseData : public IListModelInfo
@@ -145,6 +147,9 @@ public:
     virtual int rowCount(const QModelIndex &parent_) const override
     {
         Q_UNUSED(parent_);
+#if defined(TRACE_LIST_SIZE)
+        qDebug() << "m_data.size = " << m_data.size();
+#endif
         return m_data.size();
     }
 
@@ -883,7 +888,9 @@ protected:
             }
         }
         clearData();
-        //qDebug() << "modelListLoaded() beginInsertRows(" << m_data.size() << "," << std::max(0, m_data.size() + loaded.size() - 1) << ")";
+#if defined(TRACE_LIST_DATA_ITEMS_CRUD)
+        qDebug() << "modelListLoaded() beginInsertRows(" << m_data.size() << "," << std::max(0, m_data.size() + loaded.size() - 1) << ")";
+#endif
         beginInsertRows(QModelIndex(), m_data.size(), std::max(0, m_data.size() + loaded.size() - 1));
         std::copy(std::begin(loaded), std::end(loaded),
                   std::inserter(m_data, std::end(m_data)));
@@ -920,7 +927,9 @@ protected:
         if(nullptr == request_->getItemData()) { return; }
         const QVariant appId = request_->getItemAppId();
 
-        //qDebug() << "modelItemAdded() beginInsertRows(" << m_data.size() << "," << m_data.size() << ")";
+#if defined(TRACE_LIST_DATA_ITEMS_CRUD)
+        qDebug() << "modelItemAdded() beginInsertRows(" << m_data.size() << "," << m_data.size() << ")";
+#endif
         beginInsertRows(QModelIndex(), m_data.size(), m_data.size());
         m_data.push_back(reinterpret_cast<DataType_ *>(request_->getItemData()));
         endInsertRows();
@@ -1025,7 +1034,9 @@ protected:
 
     void clearData()
     {
-        //qDebug() << "clearData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+#if defined(TRACE_LIST_DATA_ITEMS_CRUD)
+        qDebug() << "clearData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+#endif
         beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
@@ -1048,7 +1059,9 @@ protected:
         });
         if(std::end(m_data) == fit) { return; }
         const int index = std::distance(std::begin(m_data), fit);
-        //qDebug() << "removeItem() beginRemoveRows(" << index << "," << index << ")";
+#if defined(TRACE_LIST_DATA_ITEMS_CRUD)
+        qDebug() << "removeItem() beginRemoveRows(" << index << "," << index << ")";
+#endif
         beginRemoveRows(QModelIndex(), index, index);
         delete *fit;
         *fit = nullptr;
@@ -1080,7 +1093,9 @@ protected:
             if(nullptr != item) { waitingToUpdate.push_back(item); }
         }
         if(waitingToUpdate.size() == m_data.size()) { return; }
-        //qDebug() << "clearTempData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+#if defined(TRACE_LIST_DATA_ITEMS_CRUD)
+        qDebug() << "clearTempData() beginRemoveRows(" << 0 << "," << std::max(0, m_data.size() - 1) << ")";
+#endif
         beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
@@ -1093,7 +1108,9 @@ protected:
         }
         m_data.clear();
         endRemoveRows();
-        //qDebug() << "clearTempData() beginInsertRows(" << 0 << "," << std::max(0, waitingToUpdate.size() - 1) << ")";
+#if defined(TRACE_LIST_DATA_ITEMS_CRUD)
+        qDebug() << "clearTempData() beginInsertRows(" << 0 << "," << std::max(0, waitingToUpdate.size() - 1) << ")";
+#endif
         beginInsertRows(QModelIndex(), 0, std::max(0, waitingToUpdate.size() - 1));
         std::copy(std::begin(waitingToUpdate), std::end(waitingToUpdate),
                   std::inserter(m_data, std::end(m_data)));
