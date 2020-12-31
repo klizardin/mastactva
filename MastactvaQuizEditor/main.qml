@@ -2350,6 +2350,50 @@ ApplicationWindow {
         id: removeNextImageEffect
         text: qsTr("Remove next image effects")
         onTriggered: {
+            promptBeforeRemove()
+        }
+
+        function promptBeforeRemove()
+        {
+            if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null && imageOfGalleryNextImageEffectCurrentIndex >= 0)
+            {
+                var effect = imageOfGalleryNextImageEffectModel.itemAt(imageOfGalleryNextImageEffectCurrentIndex).imagePointEffectEffect
+                var argSet = imageOfGalleryNextImageEffectModel.itemAt(imageOfGalleryNextImageEffectCurrentIndex).imagePointEffectArgSet
+                if(effect !== undefined && effect !== null && effect.currentItem !== null && argSet !== undefined && argSet !== null && argSet.currentItem !== null)
+                {
+                    confirmDialog.confirmText = qsTr("Do you really want to remove image point effect?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Effect name : ") + effect.currentItem.effectName + qsTr("<br/>") + qsTr("Effect description : ") + effect.currentItem.effectDescription + qsTr("<br/>") + qsTr("Argument set : ") + argSet.currentItem.effectArgSetDescription + qsTr("<br/>");
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
+            remove()
+        }
+
+        function remove()
+        {
             if(imageOfGalleryNextImageEffectModel !== undefined && imageOfGalleryNextImageEffectModel !== null && imageOfGalleryNextImageEffectCurrentIndex >= 0)
             {
                 imageOfGalleryNextImageEffectModel.itemDeleted.connect(itemDeleted)
