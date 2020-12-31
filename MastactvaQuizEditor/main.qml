@@ -282,12 +282,16 @@ ApplicationWindow {
                 var shadersModel = effect.effectShaders
                 if(shadersModel.isListLoaded())
                 {
+                    effectShadersListBusyIndicator.visible = false
+                    effectShadersListBusyIndicator.running = false
                     effectShadersCurrentModel = shadersModel
                     effectShadersList.model = shadersModel
                     effectShaderCurrentIndex = effectShadersCurrentModel.size() > 0 ? effectShadersCurrentModel.currentIndex : -1
                 }
                 else
                 {
+                    effectShadersListBusyIndicator.visible = true
+                    effectShadersListBusyIndicator.running = true
                     effectShadersList.model = 0
                     shadersModel.listReloaded.connect(shadersListReloaded)
                 }
@@ -337,13 +341,17 @@ ApplicationWindow {
 
         function shadersListReloaded()
         {
+            effectShadersListBusyIndicator.visible = false
+            effectShadersListBusyIndicator.running = false
+
             var effect = effectModel.getCurrentItem()
             var shadersModel = effect.effectShaders
             shadersModel.listReloaded.disconnect(shadersListReloaded)
             if(shadersModel.isListLoaded())
             {
-                effectShadersCurrentModel = shadersModel
                 effectShadersList.model = shadersModel
+                effectShadersCurrentModel = shadersModel
+                effectShadersList.currentIndex = effectShadersCurrentModel.currentIndex
             }
             else
             {
@@ -3348,6 +3356,15 @@ ApplicationWindow {
                                     delegate: effectShaderItem
                                     highlight: effectShaderItemHighlight
                                     highlightFollowsCurrentItem: false
+                                    z: 0.0
+
+                                    BusyIndicator {
+                                        id: effectShadersListBusyIndicator
+                                        anchors.centerIn: parent
+                                        visible: false
+                                        running: false
+                                        z: 1.0
+                                    }
                                 }
                             }
                             Item {
