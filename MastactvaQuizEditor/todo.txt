@@ -85,6 +85,7 @@
 * 49. init in ImagePointEffecEdittDialog correctly all return value. fix bug click ok with not selecting items
 * 50. fix model size // -- fixed model do not uninitialization
 * 51. add load list indicators
+52. add promts for remove actions
 
 
 
