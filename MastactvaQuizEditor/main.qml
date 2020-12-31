@@ -305,6 +305,8 @@ ApplicationWindow {
                 else
                 {
                     effectArgumentsList.model = 0
+                    effectArgumentsListBusyIndicator.visible = false
+                    effectArgumentsListBusyIndicator.running = false
                     effectArgumentsModel.listReloaded.connect(effectArgumentsListReloaded)
                 }
                 var effectArgumentSetsModel = effect.effectArgSets
@@ -362,6 +364,9 @@ ApplicationWindow {
 
         function effectArgumentsListReloaded()
         {
+            effectArgumentsListBusyIndicator.visible = false
+            effectArgumentsListBusyIndicator.running = false
+
             var effect = effectModel.getCurrentItem()
             var effectArgumentsModel = effect.effectArgs
             effectArgumentsModel.listReloaded.disconnect(effectArgumentsListReloaded)
@@ -3379,6 +3384,15 @@ ApplicationWindow {
                                     delegate: effectArgumentsItem
                                     highlight: effectArgumentsItemHighlight
                                     highlightFollowsCurrentItem: false
+                                    z: 0.0
+
+                                    BusyIndicator {
+                                        id: effectArgumentsListBusyIndicator
+                                        anchors.centerIn: parent
+                                        visible: false
+                                        running: false
+                                        z: 1.0
+                                    }
                                 }
                             }
                             Item {
