@@ -2422,6 +2422,7 @@ ApplicationWindow {
         {
             effectsListBusyIndicator.visible = false
             effectsListBusyIndicator.running = false
+            effectCurrentIndex = effectModel.currentIndex
         }
     }
 
