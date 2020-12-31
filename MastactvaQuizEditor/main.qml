@@ -619,6 +619,8 @@ ApplicationWindow {
             //galleryModel.loadList()
 
             effectModel.loadList()
+            effectsListBusyIndicator.visible = true
+            effectsListBusyIndicator.running = true
             shaderTypeModel.loadList()
             shaderArgTypeModel.loadList()
             easingTypeModel.loadList()
@@ -648,6 +650,8 @@ ApplicationWindow {
 
         function onListReloaded()
         {
+            effectsListBusyIndicator.visible = false
+            effectsListBusyIndicator.running = false
             effectCurrentIndex = effectModel.size() > 0 ? effectModel.currentIndex : -1
         }
 
@@ -2405,10 +2409,19 @@ ApplicationWindow {
 
     Action {
         id: refreshEffect
-        text: qsTr("Re&fresh effect")
+        text: qsTr("Re&fresh effects")
         onTriggered: {
             effectCurrentIndex = -1
+            effectsListBusyIndicator.visible = true
+            effectsListBusyIndicator.running = true
+            effectModel.listReloaded.connect(effectModelListReloaded)
             effectModel.loadList()
+        }
+
+        function effectModelListReloaded()
+        {
+            effectsListBusyIndicator.visible = false
+            effectsListBusyIndicator.running = false
         }
     }
 
@@ -3239,6 +3252,15 @@ ApplicationWindow {
                             delegate: effectItem
                             highlight: effectItemHighlight
                             highlightFollowsCurrentItem: false
+                            z: 0.0
+
+                            BusyIndicator {
+                                id: effectsListBusyIndicator
+                                anchors.centerIn: parent
+                                visible: false
+                                running: false
+                                z: 1.0
+                            }
                         }
                     }
                     Rectangle{
