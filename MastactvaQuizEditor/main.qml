@@ -319,6 +319,9 @@ ApplicationWindow {
                 else
                 {
                     effectArgumentSetsList.model = 0
+                    effectArgumentSetsListBusyIndicator.visible = true
+                    effectArgumentSetsListBusyIndicator.running = true
+
                     effectArgumentSetsModel.listReloaded.connect(effectArgumentSetsListReloaded)
                 }
             }
@@ -386,6 +389,9 @@ ApplicationWindow {
 
         function effectArgumentSetsListReloaded()
         {
+            effectArgumentSetsListBusyIndicator.visible = false
+            effectArgumentSetsListBusyIndicator.running = false
+
             var effect = effectModel.getCurrentItem()
             var effectArgumentSetsModel = effect.effectArgSets
             effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
@@ -2578,6 +2584,8 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 effectArgumentSetsCurrentIndex = -1
+                effectArgumentSetsListBusyIndicator.visible = true
+                effectArgumentSetsListBusyIndicator.running = true
                 effectArgumentSetsCurrentModel.listReloaded.connect(listReloaded)
                 effectArgumentSetsCurrentModel.loadList()
             }
@@ -2588,6 +2596,8 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 effectArgumentSetsCurrentModel.listReloaded.disconnect(listReloaded)
+                effectArgumentSetsListBusyIndicator.visible = false
+                effectArgumentSetsListBusyIndicator.running = false
                 effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
             }
         }
@@ -3418,6 +3428,15 @@ ApplicationWindow {
                                             delegate: effectArgumentSetsItem
                                             highlight: effectArgumentSetsItemHighlight
                                             highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectArgumentSetsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
                                         }
                                     }
                                     Rectangle {
