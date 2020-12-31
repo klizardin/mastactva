@@ -288,6 +288,7 @@ ApplicationWindow {
                 }
                 else
                 {
+                    effectShadersList.model = 0
                     shadersModel.listReloaded.connect(shadersListReloaded)
                 }
                 var effectArgumentsModel = effect.effectArgs
@@ -299,6 +300,7 @@ ApplicationWindow {
                 }
                 else
                 {
+                    effectArgumentsList.model = 0
                     effectArgumentsModel.listReloaded.connect(effectArgumentsListReloaded)
                 }
                 var effectArgumentSetsModel = effect.effectArgSets
@@ -310,6 +312,7 @@ ApplicationWindow {
                 }
                 else
                 {
+                    effectArgumentSetsList.model = 0
                     effectArgumentSetsModel.listReloaded.connect(effectArgumentSetsListReloaded)
                 }
             }
@@ -383,10 +386,10 @@ ApplicationWindow {
             {
                 effectArgumentSetsCurrentModel = undefined
                 effectArgumentSetsList.model = 0
-                effectArgumentSetsCurrentIndex = -1
                 effectArgumentSetValuesCurrentModel = undefined
                 effectArgumentSetValuesList.model = 0
                 effectArgumentSetValuesCurrentIndex = -1
+                effectArgumentSetsCurrentIndex = -1
             }
         }
 
@@ -429,6 +432,7 @@ ApplicationWindow {
                 }
                 else
                 {
+                    effectArgumentSetValuesList.model = 0
                     effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
                 }
             }
