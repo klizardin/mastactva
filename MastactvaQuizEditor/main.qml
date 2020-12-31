@@ -371,13 +371,22 @@ ApplicationWindow {
             effectArgumentsListBusyIndicator.running = false
 
             var effect = effectModel.getCurrentItem()
-            var effectArgumentsModel = effect.effectArgs
-            effectArgumentsModel.listReloaded.disconnect(effectArgumentsListReloaded)
-            if(effectArgumentsModel.isListLoaded())
+            if(effect !== undefined && effect !== null)
             {
-                effectArgumentsCurrentModel = effectArgumentsModel
-                effectArgumentsList.model = effectArgumentsCurrentModel
-                effectArgumentsCurrentIndex = effectArgumentsCurrentModel.size() > 0 ? effectArgumentsCurrentModel.currentIndex : -1
+                var effectArgumentsModel = effect.effectArgs
+                effectArgumentsModel.listReloaded.disconnect(effectArgumentsListReloaded)
+                if(effectArgumentsModel.isListLoaded())
+                {
+                    effectArgumentsCurrentModel = effectArgumentsModel
+                    effectArgumentsList.model = effectArgumentsCurrentModel
+                    effectArgumentsCurrentIndex = effectArgumentsCurrentModel.size() > 0 ? effectArgumentsCurrentModel.currentIndex : -1
+                }
+                else
+                {
+                    effectArgumentsCurrentModel = undefined
+                    effectArgumentsList.model = 0
+                    effectArgumentsCurrentIndex = -1
+                }
             }
             else
             {
@@ -393,13 +402,25 @@ ApplicationWindow {
             effectArgumentSetsListBusyIndicator.running = false
 
             var effect = effectModel.getCurrentItem()
-            var effectArgumentSetsModel = effect.effectArgSets
-            effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
-            if(effectArgumentSetsModel.isListLoaded())
+            if(effect !== undefined && effect !== null)
             {
-                effectArgumentSetsCurrentModel = effectArgumentSetsModel
-                effectArgumentSetsList.model = effectArgumentSetsCurrentModel
-                effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
+                var effectArgumentSetsModel = effect.effectArgSets
+                effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
+                if(effectArgumentSetsModel.isListLoaded())
+                {
+                    effectArgumentSetsCurrentModel = effectArgumentSetsModel
+                    effectArgumentSetsList.model = effectArgumentSetsCurrentModel
+                    effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
+                }
+                else
+                {
+                    effectArgumentSetsCurrentModel = undefined
+                    effectArgumentSetsList.model = 0
+                    effectArgumentSetValuesCurrentModel = undefined
+                    effectArgumentSetValuesList.model = 0
+                    effectArgumentSetValuesCurrentIndex = -1
+                    effectArgumentSetsCurrentIndex = -1
+                }
             }
             else
             {
@@ -2575,6 +2596,7 @@ ApplicationWindow {
 
         function itemDeleted()
         {
+            effectCurrentIndex = -1
             effectModel.itemDeleted.disconnect(itemDeleted)
         }
     }
