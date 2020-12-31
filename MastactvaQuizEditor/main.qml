@@ -2675,10 +2675,60 @@ ApplicationWindow {
         id: removeShader
         text: qsTr("&Remove shader")
         onTriggered: {
+            promptBeforeRemove()
+        }
+
+        function promptBeforeRemove()
+        {
             if(effectShaderCurrentIndex >= 0 && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
+                var effectShader = effectShadersCurrentModel.itemAt(effectShaderCurrentIndex).effectShaderShader.currentItem
+                if(effectShader !== undefined && effectShader !== null)
+                {
+                    confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.shaderFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
+            remove()
+        }
+
+        function remove()
+        {
+            if(effectShaderCurrentIndex >= 0 && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            {
+                effectShadersCurrentModel.itemDeleted.connect(itemDeleted)
                 effectShadersCurrentModel.delItem(effectShaderCurrentIndex)
             }
+        }
+
+        function itemDeleted()
+        {
+            effectShaderCurrentIndex = -1
+            effectShadersCurrentModel.itemDeleted.disconnect(itemDeleted)
         }
     }
 
