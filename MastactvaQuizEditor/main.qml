@@ -2819,7 +2819,7 @@ ApplicationWindow {
                 var effectArgumentSets = effectArgumentSetsCurrentModel.itemAt(effectArgumentSetsCurrentIndex)
                 if(effectArgumentSets !== undefined && effectArgumentSets !== null)
                 {
-                    confirmDialog.confirmText = qsTr("Do you really want to remove argument set?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Arguments set description  : ") + effectArgumentSets.effectArgSetDescription + qsTr("<br/>");
+                    confirmDialog.confirmText = qsTr("Do you really want to remove argument set?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Arguments set description : ") + effectArgumentSets.effectArgSetDescription + qsTr("<br/>");
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -2946,7 +2946,7 @@ ApplicationWindow {
                 var effectArgumentSetValue = effectArgumentSetValuesCurrentModel.itemAt(effectArgumentSetValuesCurrentIndex)
                 if(effectArgumentSetValue !== undefined && effectArgumentSetValue !== null)
                 {
-                    confirmDialog.confirmText = qsTr("Do you really want to remove argument set value?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Arguments set value description  : ") + effectArgumentSetValue.effectArgValueDescription + qsTr("Value : ") + effectArgumentSetValue.effectArgValueValue + qsTr("<br/>");
+                    confirmDialog.confirmText = qsTr("Do you really want to remove argument set value?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Arguments set value description : ") + effectArgumentSetValue.effectArgValueDescription + qsTr("Value : ") + effectArgumentSetValue.effectArgValueValue + qsTr("<br/>");
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
