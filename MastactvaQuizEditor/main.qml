@@ -2936,9 +2936,62 @@ ApplicationWindow {
         id: removeArgumentOfArgumentSet
         text: qsTr("Remove argument of argument set")
         onTriggered: {
+            promptBeforeRemove()
+        }
+
+        function promptBeforeRemove()
+        {
             if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectArgumentSetValuesCurrentIndex >= 0)
             {
+                var effectArgumentSetValue = effectArgumentSetValuesCurrentModel.itemAt(effectArgumentSetValuesCurrentIndex)
+                if(effectArgumentSetValue !== undefined && effectArgumentSetValue !== null)
+                {
+                    confirmDialog.confirmText = qsTr("Do you really want to remove argument set value?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Arguments set value description  : ") + effectArgumentSetValue.effectArgValueDescription + qsTr("Value : ") + effectArgumentSetValue.effectArgValueValue + qsTr("<br/>");
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
+            remove()
+        }
+
+        function remove()
+        {
+            if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null && effectArgumentSetValuesCurrentIndex >= 0)
+            {
+                effectArgumentSetValuesCurrentModel.itemDeleted.connect(itemDeleted)
                 effectArgumentSetValuesCurrentModel.delItem(effectArgumentSetValuesCurrentIndex)
+            }
+        }
+
+        function itemDeleted()
+        {
+            effectArgumentSetValuesCurrentIndex = -1
+            if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
+            {
+                effectArgumentSetValuesCurrentModel.itemDeleted.disconnect(itemDeleted)
             }
         }
     }
