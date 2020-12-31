@@ -2523,10 +2523,59 @@ ApplicationWindow {
         id: removeEffect
         text: qsTr("&Remove effect")
         onTriggered: {
+            promptBeforeRemove()
+        }
+
+        function promptBeforeRemove()
+        {
             if(effectCurrentIndex >= 0)
             {
+                var effect = effectModel.itemAt(effectCurrentIndex)
+                if(effect !== undefined && effect !== null)
+                {
+                    confirmDialog.confirmText = qsTr("Do you really want to remove effect?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Effect name : ") + effect.effectName + qsTr("<br/>") + qsTr("Effect description : ") + effect.effectDescription + qsTr("<br/>");
+                    confirmDialog.showImage = false
+                    connectConfirmDialog()
+                    confirmDialog.open()
+                }
+            }
+        }
+
+        function connectConfirmDialog()
+        {
+            confirmDialog.onSkip.connect(onCancelConfirm)
+            confirmDialog.onConfirm.connect(onConfirmed)
+        }
+
+        function disconnectConfirmDialog()
+        {
+            confirmDialog.onSkip.disconnect(onCancelConfirm)
+            confirmDialog.onConfirm.disconnect(onConfirmed)
+        }
+
+        function onCancelConfirm()
+        {
+            disconnectConfirmDialog()
+        }
+
+        function onConfirmed()
+        {
+            disconnectConfirmDialog()
+            remove()
+        }
+
+        function remove()
+        {
+            if(effectCurrentIndex >= 0)
+            {
+                effectModel.itemDeleted.connect(itemDeleted)
                 effectModel.delItem(effectCurrentIndex)
             }
+        }
+
+        function itemDeleted()
+        {
+            effectModel.itemDeleted.disconnect(itemDeleted)
         }
     }
 
