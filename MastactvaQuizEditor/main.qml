@@ -2468,7 +2468,17 @@ ApplicationWindow {
             if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
                 effectShaderCurrentIndex = -1
+                effectShadersCurrentModel.listReloaded.connect(effectShadersCurrentModelListReloaded)
                 effectShadersCurrentModel.loadList()
+            }
+        }
+
+        function effectShadersCurrentModelListReloaded()
+        {
+            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            {
+                effectShadersCurrentModel.listReloaded.disconnect(effectShadersCurrentModelListReloaded)
+                effectShaderCurrentIndex = effectShadersCurrentModel.currentIndex
             }
         }
     }
