@@ -452,6 +452,10 @@ ApplicationWindow {
                 else
                 {
                     effectArgumentSetValuesList.model = 0
+
+                    effectArgumentSetValuesListBusyIndicator.visible = true
+                    effectArgumentSetValuesListBusyIndicator.running = true
+
                     effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
                 }
             }
@@ -465,6 +469,9 @@ ApplicationWindow {
 
         function effectSetValuesListReloaded()
         {
+            effectArgumentSetValuesListBusyIndicator.visible = false
+            effectArgumentSetValuesListBusyIndicator.running = false
+
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
@@ -2649,6 +2656,10 @@ ApplicationWindow {
             {
                 effectArgumentSetValuesCurrentIndex = -1
                 effectArgumentSetValuesList.model = 0
+
+                effectArgumentSetValuesListBusyIndicator.visible = true
+                effectArgumentSetValuesListBusyIndicator.running = true
+
                 effectArgumentSetValuesCurrentModel.listReloaded.connect(listReloaded)
                 effectArgumentSetValuesCurrentModel.loadList()
             }
@@ -2656,6 +2667,9 @@ ApplicationWindow {
 
         function listReloaded()
         {
+            effectArgumentSetValuesListBusyIndicator.visible = false
+            effectArgumentSetValuesListBusyIndicator.running = false
+
             if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
             {
                 effectArgumentSetValuesCurrentModel.listReloaded.disconnect(listReloaded)
@@ -3454,6 +3468,15 @@ ApplicationWindow {
                                             delegate: effectArgumentSetValuesItem
                                             highlight: effectArgumentSetValuesItemHighlight
                                             highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectArgumentSetValuesListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
                                         }
                                     }
                                 }
