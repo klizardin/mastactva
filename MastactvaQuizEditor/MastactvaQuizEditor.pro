@@ -48,7 +48,8 @@ unix: HEADERS += \
         gallerystatistics.h \
         question.h  \
         answer.h    \
-        questionanswer.h
+        questionanswer.h    \
+        localdata.h
 
 
 SOURCES += \
@@ -87,7 +88,8 @@ unix: SOURCES += \
         gallerystatistics.cpp   \
         question.cpp    \
         answer.cpp  \
-        questionanswer.cpp
+        questionanswer.cpp  \
+        localdata.cpp
 
 
 RESOURCES += qml.qrc    \
