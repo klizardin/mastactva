@@ -94,6 +94,7 @@
 59. add DB update requests
 60. WARNING the MastactvaAPI two instances
 61. fix two instances of MastactvaAPI
+62. test memory leaks for editor and quiz
 
 
 
