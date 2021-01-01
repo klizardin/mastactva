@@ -3,11 +3,14 @@
 
 #include <QObject>
 
-class LocalData : public QObject
+class LocalDataAPI : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalData(QObject *parent_ = nullptr);
+    explicit LocalDataAPI(QObject *parent_ = nullptr);
+
+
+
 
 signals:
 

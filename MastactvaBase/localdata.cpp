@@ -1,7 +1,7 @@
 #include "localdata.h"
 
 
-LocalData::LocalData(QObject *parent_ /* = nullptr*/)
+LocalDataAPI::LocalDataAPI(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 }
