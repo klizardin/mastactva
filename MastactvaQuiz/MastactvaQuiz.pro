@@ -48,7 +48,8 @@ unix: SOURCES += \
         shader.cpp    \
         shadertype.cpp  \
         imagepointeffect.cpp    \
-        localdata.cpp
+        localdata.cpp   \
+        requestdata.cpp
 
 
 RESOURCES += qml.qrc \
@@ -107,7 +108,8 @@ unix: HEADERS += \
     shader.h    \
     shadertype.h    \
     imagepointeffect.h  \
-    localdata.h
+    localdata.h \
+    requestdata.h
 
 
 DISTFILES += \

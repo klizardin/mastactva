@@ -49,7 +49,8 @@ unix: HEADERS += \
         question.h  \
         answer.h    \
         questionanswer.h    \
-        localdata.h
+        localdata.h \
+        requestdata.h
 
 
 SOURCES += \
@@ -89,7 +90,8 @@ unix: SOURCES += \
         question.cpp    \
         answer.cpp  \
         questionanswer.cpp  \
-        localdata.cpp
+        localdata.cpp   \
+        requestdata.cpp
 
 
 RESOURCES += qml.qrc    \
