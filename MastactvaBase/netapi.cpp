@@ -67,28 +67,35 @@ void RequestData::setItemAppId(const QVariant &itemAppId_)
     m_itemAppId = itemAppId_;
 }
 
-QNetworkReply *RequestData::getReply() const
-{
-    return m_reply;
-}
-
-void RequestData::setReply(QNetworkReply *reply_)
-{
-    m_reply = reply_;
-}
-
-bool RequestData::compare(QNetworkReply *reply_) const
-{
-    return nullptr != m_reply && m_reply == reply_;
-}
-
 bool RequestData::processErrorInNetAPI() const
 {
     return m_processErrorInNetAPI;
 }
 
 
-class JsonRequestData : public RequestData
+NetRequestData::~NetRequestData()
+{
+    delete m_reply;
+    m_reply = nullptr;
+}
+
+QNetworkReply *NetRequestData::getReply() const
+{
+    return m_reply;
+}
+
+void NetRequestData::setReply(QNetworkReply *reply_)
+{
+    m_reply = reply_;
+}
+
+bool NetRequestData::compare(QNetworkReply *reply_) const
+{
+    return nullptr != m_reply && m_reply == reply_;
+}
+
+
+class JsonRequestData : public NetRequestData
 {
 public:
     JsonRequestData(const QHash<QString, QVariant> &values_);
@@ -102,7 +109,7 @@ private:
 };
 
 
-class MultipartRequestData : public RequestData
+class MultipartRequestData : public NetRequestData
 {
 public:
     MultipartRequestData(const QHash<QString, QVariant> &values_);
@@ -200,7 +207,7 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
 {
     const auto fit = std::find_if(
                 m_requests.begin(),
-                m_requests.end(), [reply_](RequestData* r)->bool
+                m_requests.end(), [reply_](NetRequestData* r)->bool
     {
         return r->compare(reply_);
     });
@@ -228,7 +235,7 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
 
 RequestData *NetAPI::emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
 {
-    RequestData *rd = new RequestData();
+    NetRequestData *rd = new NetRequestData();
     rd->setRequestName(requestName_);
     rd->setItemAppId(itemAppId_);
     rd->setItemId(itemId_);
@@ -261,7 +268,7 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData *rd = nullptr;
+    NetRequestData *rd = nullptr;
     if(jsonParams_ || !extraFields_.isEmpty())
     {
         QHash<QString, QVariant> values(extraFields_);
@@ -278,7 +285,7 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
     }
     else
     {
-        rd = new RequestData();
+        rd = new NetRequestData();
         rd->setReply(m_networkManager->get(request));
     }
     rd->setRequestName(requestName_);
@@ -300,7 +307,7 @@ RequestData *NetAPI::getListImpl(const QString& requestName_,
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData *rd = nullptr;
+    NetRequestData *rd = nullptr;
     if(!extraFields_.isEmpty())
     {
         JsonRequestData *jrd = new JsonRequestData(extraFields_);
@@ -315,7 +322,7 @@ RequestData *NetAPI::getListImpl(const QString& requestName_,
     }
     else
     {
-        rd = new RequestData();
+        rd = new NetRequestData();
         rd->setReply(m_networkManager->get(request));
     }
     rd->setRequestName(requestName_);
@@ -445,7 +452,7 @@ RequestData *NetAPI::addItemImpl(const QString& requestName_, const QString &jso
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData * rd = nullptr;
+    NetRequestData * rd = nullptr;
     if(anyArgIsFile(values_))
     {
         MultipartRequestData *mprd = new MultipartRequestData(values_);
@@ -487,7 +494,7 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData * rd = nullptr;
+    NetRequestData * rd = nullptr;
     if(anyArgIsFile(values_))
     {
         MultipartRequestData *mprd = new MultipartRequestData(values_);
@@ -529,7 +536,7 @@ RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jso
     setBasicAuthentification(&request);
     if(!init()) { return nullptr; }
 
-    RequestData *rd = new RequestData();
+    NetRequestData *rd = new NetRequestData();
     rd->setReply(m_networkManager->sendCustomRequest(request, "DELETE"));
 
     rd->setItemId(id_);

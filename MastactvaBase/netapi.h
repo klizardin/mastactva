@@ -62,9 +62,6 @@ protected:
     void setRequestName(const QString &requestName_);
     void setItemId(const QVariant &itemId_);
     void setItemAppId(const QVariant &itemAppId_);
-    QNetworkReply *getReply() const;
-    void setReply(QNetworkReply *reply_);
-    bool compare(QNetworkReply *reply_) const;
     bool processErrorInNetAPI() const;
 
 private:
@@ -72,9 +69,26 @@ private:
     QString m_requestName;
     QVariant m_itemId = QVariant::fromValue(-1);
     QVariant m_itemAppId = QVariant::fromValue(-1);
-    QNetworkReply *m_reply = nullptr;
     void *m_itemData = nullptr;
     bool m_setCurrentItemIndex = false;
+
+    friend class NetAPI;
+};
+
+
+class NetRequestData: public RequestData
+{
+public:
+    NetRequestData() = default;
+    virtual ~NetRequestData();
+
+protected:
+    QNetworkReply *getReply() const;
+    void setReply(QNetworkReply *reply_);
+    bool compare(QNetworkReply *reply_) const;
+
+private:
+    QNetworkReply *m_reply = nullptr; // TODO: may be leaking here
 
     friend class NetAPI;
 };
@@ -186,7 +200,7 @@ private:
     QString m_hostUrlBase;
 
     QNetworkAccessManager *m_networkManager = nullptr;
-    QList<RequestData*> m_requests;
+    QList<NetRequestData*> m_requests;
 };
 
 
