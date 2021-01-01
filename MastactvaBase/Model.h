@@ -474,7 +474,7 @@ public:
         {
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
-            RequestData *request = netAPI->emptyRequest(netAPI->setItemRequestName<DataType_>(), itemAppId, itemId);
+            RequestData *request = netAPI->emptyRequest(RequestData::setItemRequestName<DataType_>(), itemAppId, itemId);
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
@@ -508,7 +508,7 @@ public:
         {
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
-            RequestData *request = netAPI->emptyRequest(netAPI->addItemRequestName<DataType_>(), itemAppId, itemId);
+            RequestData *request = netAPI->emptyRequest(RequestData::addItemRequestName<DataType_>(), itemAppId, itemId);
             if(nullptr != request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
@@ -599,7 +599,7 @@ protected:
     {
         NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
         if(nullptr == netAPI) { return; }
-        RequestData *request = findRequest(netAPI->getListRequestName<DataType_>());
+        RequestData *request = findRequest(RequestData::getListRequestName<DataType_>());
         if(nullptr != request)
         {
             reloadList = true;
@@ -608,7 +608,7 @@ protected:
         startListLoad();
         if(getJsonLayoutName().isEmpty())
         {
-            request = netAPI->emptyRequest(netAPI->getListRequestName<DataType_>(), QVariant() , QVariant());
+            request = netAPI->emptyRequest(RequestData::getListRequestName<DataType_>(), QVariant() , QVariant());
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
@@ -725,7 +725,7 @@ protected:
             itemToDel = nullptr;
             request_->setItemData(nullptr);
         }
-        else if(request_->getRequestName() == netAPI->getListRequestName<DataType_>())
+        else if(request_->getRequestName() == RequestData::getListRequestName<DataType_>())
         {
             modelListLoaded(reply_);
             if(reloadList)
@@ -734,15 +734,15 @@ protected:
                 loadListImpl();
             }
         }
-        else if(request_->getRequestName() == netAPI->addItemRequestName<DataType_>())
+        else if(request_->getRequestName() == RequestData::addItemRequestName<DataType_>())
         {
             modelItemAdded(request_, reply_);
         }
-        else if(request_->getRequestName() == netAPI->setItemRequestName<DataType_>())
+        else if(request_->getRequestName() == RequestData::setItemRequestName<DataType_>())
         {
             modelItemSet(request_, reply_);
         }
-        else if(request_->getRequestName() == netAPI->delItemRequestName<DataType_>())
+        else if(request_->getRequestName() == RequestData::delItemRequestName<DataType_>())
         {
             modelItemDeleted(request_, reply_);
         }
@@ -1080,12 +1080,12 @@ protected:
         for(const RequestData *r : m_requests)
         {
             DataType_ *item = nullptr;
-            if(r->getRequestName() == netAPI->addItemRequestName<DataType_>())
+            if(r->getRequestName() == RequestData::addItemRequestName<DataType_>())
             {
                 const QVariant appId = r->getItemAppId();
                 item = findDataItemByAppIdImpl(appId);
             }
-            else if(r->getRequestName() == netAPI->setItemRequestName<DataType_>())
+            else if(r->getRequestName() == RequestData::setItemRequestName<DataType_>())
             {
                 const QVariant id = r->getItemId();
                 item = findDataItemByIdImpl(id);

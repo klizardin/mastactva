@@ -16804,5 +16804,22 @@
         ],
         "inputFile": "imagepointeffect.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "LocalDataAPI",
+                "object": true,
+                "qualifiedClassName": "LocalDataAPI",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "localdata.h",
+        "outputRevision": 67
     }
 ]

@@ -34,6 +34,30 @@ public:
     void setSetCurrentItemIndex(bool setCurrentItemIndex_);
     bool getSetCurrentItemIndex() const;
 
+    template<class DataType_>
+    static QString getListRequestName()
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName() + "/GET";
+    }
+
+    template<class DataType_>
+    static QString addItemRequestName()
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName() + "/POST";
+    }
+
+    template<class DataType_>
+    static QString setItemRequestName()
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName() + "/PATCH";
+    }
+
+    template<class DataType_>
+    static QString delItemRequestName()
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName() + "/DELETE";
+    }
+
 protected:
     void setRequestName(const QString &requestName_);
     void setItemId(const QVariant &itemId_);
@@ -71,30 +95,6 @@ public:
 
     void updateAuthConsts();
 
-    template<class DataType_>
-    QString getListRequestName() const
-    {
-        return getDataLayout<DataType_>().getLayoutJsonName() + "/GET";
-    }
-
-    template<class DataType_>
-    QString addItemRequestName() const
-    {
-        return getDataLayout<DataType_>().getLayoutJsonName() + "/POST";
-    }
-
-    template<class DataType_>
-    QString setItemRequestName() const
-    {
-        return getDataLayout<DataType_>().getLayoutJsonName() + "/PATCH";
-    }
-
-    template<class DataType_>
-    QString delItemRequestName() const
-    {
-        return getDataLayout<DataType_>().getLayoutJsonName() + "/DELETE";
-    }
-
     RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_);
     void freeRequest(RequestData *&r_);
 
@@ -119,11 +119,11 @@ public:
                           ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
                           : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
-            return getListByRefImpl(getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_, extraFields_);
+            return getListByRefImpl(RequestData::getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_, extraFields_);
         }
         else
         {
-            return getListImpl(getListRequestName<DataType_>(), layoutName_, extraFields_);
+            return getListImpl(RequestData::getListRequestName<DataType_>(), layoutName_, extraFields_);
         }
     }
 
@@ -136,7 +136,7 @@ public:
         values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        return addItemImpl(addItemRequestName<DataType_>(), layoutName_, appId, values);
+        return addItemImpl(RequestData::addItemRequestName<DataType_>(), layoutName_, appId, values);
     }
 
     template<class DataType_>
@@ -148,7 +148,7 @@ public:
         values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        return setItemImpl(setItemRequestName<DataType_>(), layoutName_, id, values);
+        return setItemImpl(RequestData::setItemRequestName<DataType_>(), layoutName_, id, values);
     }
 
     template<class DataType_>
@@ -156,7 +156,7 @@ public:
     {
         const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid() || id.isNull()) { return nullptr; }
-        return delItemImpl(delItemRequestName<DataType_>(), layoutName_, id);
+        return delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id);
     }
 
 signals:
