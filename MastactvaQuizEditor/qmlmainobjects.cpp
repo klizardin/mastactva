@@ -146,6 +146,11 @@ void QMLObjects::searchObjects()
         NetAPI::createInstance(m_root);
         m_netAPI = NetAPI::getInstance();
     }
+    if(nullptr == m_dataAPI)
+    {
+        LocalDataAPI::createInstance(m_root);
+        m_dataAPI = LocalDataAPI::getInstance();
+    }
     if(nullptr == m_mastactvaAPI)
     {
         m_mastactvaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");

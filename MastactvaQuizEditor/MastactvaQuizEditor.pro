@@ -50,7 +50,8 @@ unix: HEADERS += \
         answer.h    \
         questionanswer.h    \
         localdata.h \
-        requestdata.h
+        requestdata.h   \
+        localdataapinocache.h
 
 
 SOURCES += \
@@ -91,7 +92,8 @@ unix: SOURCES += \
         answer.cpp  \
         questionanswer.cpp  \
         localdata.cpp   \
-        requestdata.cpp
+        requestdata.cpp \
+        localdataapinocache.cpp
 
 
 RESOURCES += qml.qrc    \

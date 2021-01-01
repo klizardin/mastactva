@@ -4,6 +4,7 @@
 #include "gallery.h"
 #include "mastactvaapi.h"
 #include "../MastactvaBase/netapi.h"
+#include "../MastactvaBase/localdata.h"
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/shaderargtype.h"
 #include "../MastactvaModels/easingtype.h"
@@ -19,6 +20,11 @@ void QMLObjects::searchObjects()
     {
         NetAPI::createInstance(m_root);
         m_netAPI = NetAPI::getInstance();
+    }
+    if(nullptr == m_dataAPI)
+    {
+        LocalDataAPI::createInstance(m_root);
+        m_dataAPI = LocalDataAPI::getInstance();
     }
     IListModel *m = nullptr;
     m = findListModel(g_quizUserModel);

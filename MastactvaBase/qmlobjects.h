@@ -7,6 +7,8 @@
 
 class QObject;
 class NetAPI;
+class LocalDataAPINoCache;
+using LocalDataAPI = LocalDataAPINoCache;
 class ServerFiles;
 
 
@@ -20,6 +22,7 @@ public:
 
     void setRoot(QObject *root_);
     NetAPI *getNetAPI();
+    LocalDataAPI *getDataAPI();
     ServerFiles *getServerFiles();
     IListModel *getListModel(const QString &layoutName_);
     void registerModel(const QString &layoutName_, IListModel *m_);
@@ -37,6 +40,7 @@ protected:
     QObject *m_root = nullptr;
     QVector<IListModel *> m_models;
     NetAPI *m_netAPI = nullptr;
+    LocalDataAPI *m_dataAPI = nullptr;
     ServerFiles *m_serverFiles = nullptr;
 };
 

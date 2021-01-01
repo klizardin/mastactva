@@ -1,10 +1,11 @@
 #include "qmlobjects.h"
 #include <QObject>
-#include "imagesource.h"
-#include "IModel.h"
-#include "netapi.h"
-#include "Model.h"
-#include "serverfiles.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/netapi.h"
+#include "../MastactvaBase/localdata.h"
+#include "../MastactvaBase/Model.h"
+#include "../MastactvaBase/serverfiles.h"
 
 
 void QMLObjectsBase::setRoot(QObject *root_)
@@ -44,6 +45,12 @@ NetAPI *QMLObjectsBase::getNetAPI()
 {
     if(nullptr == m_netAPI) { searchObjects(); }
     return m_netAPI;
+}
+
+LocalDataAPI *QMLObjectsBase::getDataAPI()
+{
+    if(nullptr == m_dataAPI) { searchObjects(); }
+    return m_dataAPI;
 }
 
 ServerFiles *QMLObjectsBase::getServerFiles()

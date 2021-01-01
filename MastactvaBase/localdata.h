@@ -1,19 +1,11 @@
 #ifndef LOCALDATA_H
 #define LOCALDATA_H
 
-#include <QObject>
 
-class LocalDataAPI : public QObject
-{
-    Q_OBJECT
-public:
-    explicit LocalDataAPI(QObject *parent_ = nullptr);
+#include "../MastactvaBase/localdataapinocache.h"
 
 
+using LocalDataAPI = LocalDataAPINoCache;
 
-
-signals:
-
-};
 
 #endif // LOCALDATA_H

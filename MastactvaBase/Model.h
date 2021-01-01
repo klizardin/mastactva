@@ -8,10 +8,10 @@
 #include <QHash>
 #include <QDebug>
 #include <QVariant>
-#include "IModel.h"
-#include "Layout.h"
-#include "netapi.h"
-#include "qmlobjects.h"
+#include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/localdata.h"
+#include "../MastactvaBase/qmlobjects.h"
 
 
 //#define TRACE_LIST_LOAD_DATA
@@ -176,9 +176,9 @@ public:
 
     virtual void initResponse() override
     {
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        Q_ASSERT(nullptr != netAPI);
-        QObject::connect(netAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
+        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        Q_ASSERT(nullptr != dataAPI);
+        QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
     }
 
     virtual const QString &getQMLLayoutName() const override
@@ -467,19 +467,19 @@ public:
     {
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return false; }
+        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        if(nullptr == dataAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
-            RequestData *request = netAPI->emptyRequest(RequestData::setItemRequestName<DataType_>(), itemAppId, itemId);
+            RequestData *request = dataAPI->emptyRequest(RequestData::setItemRequestName<DataType_>(), itemAppId, itemId);
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
-            netAPI->freeRequest(request);
+            dataAPI->freeRequest(request);
             return true;
         }
         else
@@ -494,21 +494,21 @@ public:
                 }
             }
             extraFields = renameFields(extraFields);
-            RequestData *request = netAPI->setItem(getJsonLayoutName(), item_, extraFields);
+            RequestData *request = dataAPI->setItem(getJsonLayoutName(), item_, extraFields);
             return addRequest(request);
         }
     }
 
     bool addDataItemImpl(DataType_ *item_, bool setCurrentIndex_ = false)
     {
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return false; }
+        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        if(nullptr == dataAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
             QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
-            RequestData *request = netAPI->emptyRequest(RequestData::addItemRequestName<DataType_>(), itemAppId, itemId);
+            RequestData *request = dataAPI->emptyRequest(RequestData::addItemRequestName<DataType_>(), itemAppId, itemId);
             if(nullptr != request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
@@ -518,7 +518,7 @@ public:
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
-            netAPI->freeRequest(request);
+            dataAPI->freeRequest(request);
             return true;
         }
         else
@@ -533,7 +533,7 @@ public:
                 }
             }
             extraFields = renameFields(extraFields);
-            RequestData *request = netAPI->addItem(getJsonLayoutName(), item_, extraFields);
+            RequestData *request = dataAPI->addItem(getJsonLayoutName(), item_, extraFields);
             if(nullptr != request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
@@ -552,13 +552,13 @@ public:
 
     bool delDataItemImpl(DataType_ *item_)
     {
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return false; }
+        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        if(nullptr == dataAPI) { return false; }
 
         QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!itemId.isValid() || itemId.isNull()) { return false; }
 
-        RequestData *request = netAPI->delItem(getJsonLayoutName(), item_);
+        RequestData *request = dataAPI->delItem(getJsonLayoutName(), item_);
         return addRequest(request);
     }
 
@@ -597,8 +597,8 @@ protected:
 
     void loadListImpl()
     {
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return; }
+        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        if(nullptr == dataAPI) { return; }
         RequestData *request = findRequest(RequestData::getListRequestName<DataType_>());
         if(nullptr != request)
         {
@@ -608,12 +608,12 @@ protected:
         startListLoad();
         if(getJsonLayoutName().isEmpty())
         {
-            request = netAPI->emptyRequest(RequestData::getListRequestName<DataType_>(), QVariant() , QVariant());
+            request = dataAPI->emptyRequest(RequestData::getListRequestName<DataType_>(), QVariant() , QVariant());
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
-            netAPI->freeRequest(request);
+            dataAPI->freeRequest(request);
         }
         else
         {
@@ -634,7 +634,7 @@ protected:
                 }
             }
             extraFields = renameFields(extraFields);
-            request = netAPI->getList<DataType_>(
+            request = dataAPI->getList<DataType_>(
                         getJsonLayoutName(),
                         currentRefImpl(),
                         parentModel,
