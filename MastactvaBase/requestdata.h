@@ -7,6 +7,9 @@
 #include "../MastactvaBase/Layout.h"
 
 
+class NetAPI;
+
+
 class RequestData
 {
 public:
