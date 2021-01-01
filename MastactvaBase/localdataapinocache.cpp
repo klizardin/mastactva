@@ -24,10 +24,11 @@ void LocalDataAPINoCache::errorFromStartegySlot(int errorCode_, const QString &e
 
 LocalDataAPINoCache *LocalDataAPINoCache::g_localDataAPI = nullptr;
 
-void LocalDataAPINoCache::createInstance(QObject *parent_)
+void LocalDataAPINoCache::createInstance(QObject *parent_, NetAPI *netAPI_)
 {
     if(nullptr != g_localDataAPI) { return; }
     g_localDataAPI = new LocalDataAPINoCache(parent_);
+    g_localDataAPI->m_netAPI = netAPI_;
 }
 
 LocalDataAPINoCache *LocalDataAPINoCache::getInstance()

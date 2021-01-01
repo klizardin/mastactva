@@ -21,9 +21,9 @@ void QMLObjects::searchObjects()
         NetAPI::createInstance(m_root);
         m_netAPI = NetAPI::getInstance();
     }
-    if(nullptr == m_dataAPI)
+    if(nullptr == m_dataAPI && nullptr != m_netAPI)
     {
-        LocalDataAPI::createInstance(m_root);
+        LocalDataAPI::createInstance(m_root, m_netAPI);
         m_dataAPI = LocalDataAPI::getInstance();
     }
     IListModel *m = nullptr;

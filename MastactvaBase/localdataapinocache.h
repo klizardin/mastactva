@@ -14,7 +14,7 @@ class LocalDataAPINoCache : public QObject
 public:
     explicit LocalDataAPINoCache(QObject *parent_ = nullptr);
 
-    static void createInstance(QObject *parent_);
+    static void createInstance(QObject *parent_, NetAPI *netAPI_);
     static LocalDataAPINoCache *getInstance();
 
     RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
@@ -82,7 +82,7 @@ protected slots:
     void errorFromStartegySlot(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_);
 
 private:
-    NetAPI * m_netAPI = nullptr;
+    NetAPI *m_netAPI = nullptr;
     static LocalDataAPINoCache *g_localDataAPI;
 };
 
