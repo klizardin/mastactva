@@ -14,8 +14,9 @@
 
 NetRequestData::~NetRequestData()
 {
-    delete m_reply;
-    m_reply = nullptr;
+    // TODO: may be leaking
+    //delete m_reply;
+    //m_reply = nullptr;
 }
 
 QNetworkReply *NetRequestData::getReply() const
