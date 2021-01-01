@@ -88,6 +88,10 @@
 * 52. add prompts for remove actions // for effect remove actions -- all new actions
 53. fix refresh arguments bug (find root case and fix it). not always starts download progress, and refresh button isn`t always enabled
 54. add DataSource that contains way to the DB and to the NetAPI
+55. add app to download data from server to the DB
+57. add DB get requests
+58. add DB view get requests
+59. add DB update requests
 
 
 
