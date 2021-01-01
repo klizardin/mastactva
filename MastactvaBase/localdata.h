@@ -7,5 +7,20 @@
 
 using LocalDataAPI = LocalDataAPINoCache;
 
+/*
+ * NB
+ *
+ * please use following:
+ *
+ * class LocalDataAPINoCache;
+ * using LocalDataAPI = LocalDataAPINoCache;
+ *
+ * not this:
+ *
+ * class LocalDataAPI;
+ *
+*/
+
+
 
 #endif // LOCALDATA_H
