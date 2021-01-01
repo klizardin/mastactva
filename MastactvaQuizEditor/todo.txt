@@ -92,6 +92,10 @@
 57. add DB get requests
 58. add DB view get requests
 59. add DB update requests
+60. WARNING the MastactvaAPI two instances
+61. fix two instances of MastactvaAPI
+
+
 
 
 
