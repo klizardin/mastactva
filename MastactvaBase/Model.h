@@ -711,12 +711,6 @@ protected:
     void jsonResponseSlotImpl(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
     {
         if(!findRequest(request_)) { return; }
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI)
-        {
-            removeRequest(request_);
-            return;
-        }
         if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
         {
             modelError(errorCode_, errorCodeStr_, reply_);
@@ -1072,9 +1066,6 @@ protected:
     void clearTempData()
     {
         if(getDataLayout<DataType_>().storeAfterSave()) { return; }
-
-        NetAPI *netAPI = QMLObjectsBase::getInstance().getNetAPI();
-        if(nullptr == netAPI) { return; }
 
         QVector<DataType_ *> waitingToUpdate;
         for(const RequestData *r : m_requests)
