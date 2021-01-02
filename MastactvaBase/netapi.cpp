@@ -14,7 +14,10 @@
 
 NetRequestData::~NetRequestData()
 {
-    m_reply->deleteLater();
+    if(nullptr != m_reply)
+    {
+        m_reply->deleteLater();
+    }
     m_reply = nullptr;
 }
 
