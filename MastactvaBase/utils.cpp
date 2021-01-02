@@ -25,6 +25,11 @@ qreal sqr(qreal val_)
     return val_*val_;
 }
 
+qreal cube(qreal val_)
+{
+    return val_ * sqr(val_);
+}
+
 bool isSpace(const QChar &ch_)
 {
     const QChar::Category c = ch_.category();
@@ -51,6 +56,7 @@ bool isLetterNumeric(const QChar &ch_)
             ((c >= QChar::Number_DecimalDigit) && (c <= QChar::Number_Other));
     return res;
 }
+
 
 static const QString g_nl = "\n";
 static const QString g_cb = "/*";
