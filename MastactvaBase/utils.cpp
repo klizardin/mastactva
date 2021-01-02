@@ -25,9 +25,23 @@ qreal sqr(qreal val_)
     return val_*val_;
 }
 
+bool isSpace(const QChar &ch_)
+{
+    const QChar::Category c = ch_.category();
+    const bool res = (c >= QChar::Separator_Space && c <= QChar::Separator_Paragraph) ||
+            (c >= QChar::Punctuation_Connector && c <= QChar::Punctuation_Other) ||
+            (c >= QChar::Mark_SpacingCombining && c <= QChar::Mark_Enclosing)
+            ;
+    return res;
+}
+
 bool isSymbol(const QChar &ch_)
 {
-    return ch_.category() >= QChar::Letter_Uppercase;
+    const QChar::Category c = ch_.category();
+    const bool res = (c >= QChar::Letter_Uppercase && c <= QChar::Letter_Other) ||
+            (c >= QChar::Symbol_Math && c <= QChar::Symbol_Other)
+            ;
+    return res;
 }
 
 bool isLetterNumeric(const QChar &ch_)
@@ -81,7 +95,7 @@ bool isSpaces(const QString &str_, int i0_, int i1_)
 {
     for(int i = i0_; i < i1_; i++)
     {
-        if(isSymbol(str_.at(i))) { return false; }
+        if(!isSpace(str_.at(i))) { return false; }
     }
     return true;
 }
@@ -158,7 +172,7 @@ void Comment::extractValues(const QString &shaderText_)
     {
         i += g_nameStart.length();
         int nb = i;
-        for(;i < ce && isSymbol(shaderText_.at(i)); ++i) {}; // find name
+        for(;i < ce && isLetterNumeric(shaderText_.at(i)); ++i) {}; // find name
         int ne = i;
         QString name = shaderText_.mid(nb, ne - nb);
         i = shaderText_.indexOf(g_nameStart, i);

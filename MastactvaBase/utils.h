@@ -29,6 +29,7 @@ private:
 
 QString leftDoubleCR(const QString &str_);
 qreal sqr(qreal val_);
+bool isSpace(const QChar &ch_);
 bool isSymbol(const QChar &ch_);
 bool isLetterNumeric(const QChar &ch_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
