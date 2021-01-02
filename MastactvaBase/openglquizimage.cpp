@@ -1,16 +1,16 @@
 ﻿#include "openglquizimage.h"
 #include <QByteArray>
 #include <QTextCodec>
-#include "quizimage.h"
 #include <random>
+#include "../MastactvaBase/quizimage.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaModels/effectshader.h"
 #include "../MastactvaModels/shader.h"
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/effectargvalue.h"
-#include "../MastactvaBase/serverfiles.h"
-#include "../MastactvaBase/utils.h"
-#include "../MastactvaBase/qmlobjects.h"
 
 
 static const QString g_noImage = ":/resources/no-image.png";

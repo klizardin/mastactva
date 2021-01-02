@@ -1,7 +1,7 @@
 #include "effect.h"
-#include "effectarg.h"
 #include <QTextCodec>
-#include "shader.h"
+#include "../MastactvaModels/effectarg.h"
+#include "../MastactvaModels/shader.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"

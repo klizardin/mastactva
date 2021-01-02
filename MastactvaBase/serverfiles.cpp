@@ -2,8 +2,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QNetworkReply>
-#include "../MastactvaBase/utils.h"
 #include <numeric>
+#include "../MastactvaBase/utils.h"
 
 
 static const QString g_currentDir = "./";

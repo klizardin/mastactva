@@ -1,5 +1,5 @@
 #include "IModel.h"
-#include "qmlobjects.h"
+#include "../MastactvaBase/qmlobjects.h"
 
 
 void IListModelInfoObjectImpl::startLoadChildModel()

@@ -9,7 +9,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QByteArray>
-#include "netappconsts.h"
+#include "../MastactvaBase/netappconsts.h"
 
 
 NetRequestData::~NetRequestData()

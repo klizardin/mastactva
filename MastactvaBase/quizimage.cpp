@@ -10,7 +10,7 @@
 #include <QQuickWindow>
 #include <QSGRendererInterface>
 #include <QSGRenderNode>
-#include "openglquizimage.h"
+#include "../MastactvaBase/openglquizimage.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"

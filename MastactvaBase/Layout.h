@@ -11,8 +11,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTimeZone>
-#include "IModel.h"
-#include "utils.h"
+#include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/utils.h"
 
 
 template<typename DataType_>

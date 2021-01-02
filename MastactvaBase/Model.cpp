@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "qmlobjects.h"
+#include "../MastactvaBase/qmlobjects.h"
 
 
 //#define TRACE_MODEL_LOADING
