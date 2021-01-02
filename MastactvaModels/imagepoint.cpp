@@ -1,7 +1,7 @@
 #include "imagepoint.h"
 #include <math.h>
-#include "../MastactvaModels/image.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaModels/image.h"
 
 
 ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*= nullptr*/)

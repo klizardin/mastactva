@@ -1,13 +1,13 @@
 #include "quizqmlobjects.h"
-#include "../MastactvaModels/image.h"
-#include "../MastactvaModels/quizuser.h"
-#include "../MastactvaModels/gallery.h"
 #include "mastactvaapi.h"
 #include "../MastactvaBase/netapi.h"
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/shaderargtype.h"
 #include "../MastactvaModels/easingtype.h"
+#include "../MastactvaModels/image.h"
+#include "../MastactvaModels/quizuser.h"
+#include "../MastactvaModels/gallery.h"
 
 
 static const QString g_quizUserModel = "QuizUserModel";

@@ -1,10 +1,10 @@
 #include "effect.h"
 #include <QTextCodec>
-#include "../MastactvaModels/effectarg.h"
-#include "../MastactvaModels/shader.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaModels/effectarg.h"
+#include "../MastactvaModels/shader.h"
 
 
 Effect::Effect(EffectModel *parent_)

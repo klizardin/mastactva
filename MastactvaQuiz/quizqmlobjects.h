@@ -3,6 +3,7 @@
 
 
 #include <QJsonDocument>
+#include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/qmlobjects.h"
 
 
