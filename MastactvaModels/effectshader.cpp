@@ -1,5 +1,6 @@
 #include "effectshader.h"
 
+
 EffectShader::EffectShader(EffectShaderModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {

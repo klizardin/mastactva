@@ -1,6 +1,7 @@
 #ifndef QMLOBJECTS_H
 #define QMLOBJECTS_H
 
+
 #include <QVector>
 #include "../MastactvaBase/IModel.h"
 

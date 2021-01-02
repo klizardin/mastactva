@@ -332,6 +332,7 @@ qreal ImagePoint::distanceCoef(qreal x_, qreal y_) const
     return sqrt(sqr(m_x - x_) + sqr(m_y - y_)) * m_weight;
 }
 
+
 ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
 {
     ImagePointToNextImageModel *m = new ImagePointToNextImageModel(this);

@@ -6,7 +6,6 @@
 
 
 using LocalDataAPI = LocalDataAPINoCache;
-
 /*
  * NB
  *
@@ -20,7 +19,6 @@ using LocalDataAPI = LocalDataAPINoCache;
  * class LocalDataAPI;
  *
 */
-
 
 
 #endif // LOCALDATA_H

@@ -1,6 +1,7 @@
 #ifndef QUESTIONANSWER_H
 #define QUESTIONANSWER_H
 
+
 #include <QObject>
 #include <QString>
 #include "../MastactvaBase/IModel.h"

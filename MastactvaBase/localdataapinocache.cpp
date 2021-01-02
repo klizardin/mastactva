@@ -1,5 +1,4 @@
 #include "localdataapinocache.h"
-
 #include "../MastactvaBase/qmlobjects.h"
 
 

@@ -1,5 +1,6 @@
 #include "shadertype.h"
 
+
 ShaderType::ShaderType(QObject *parent_)
     : QObject(parent_)
 {
@@ -28,6 +29,7 @@ void ShaderType::setType(const QString &type_)
 
     emit typeChanged();
 }
+
 
 ShaderTypeModel::ShaderTypeModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)

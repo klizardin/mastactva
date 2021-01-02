@@ -1,6 +1,7 @@
 #ifndef LAYOUT_H
 #define LAYOUT_H
 
+
 #include <QString>
 #include <QVector>
 #include <QList>

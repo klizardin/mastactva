@@ -55,6 +55,7 @@ void ImageDescription::setDescription(const QString &descriptionText_)
     emit descriptionChanged();
 }
 
+
 ImageDescriptionModel::ImageDescriptionModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {

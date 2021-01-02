@@ -1,5 +1,6 @@
 #include "easingtype.h"
 
+
 EasingType::EasingType(EasingTypeModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {

@@ -54,6 +54,7 @@ void GalleryStatistics::setPoints(const qreal &points_)
     emit pointsChanged();
 }
 
+
 GalleryStatisticsModel::GalleryStatisticsModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {

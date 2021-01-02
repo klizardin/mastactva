@@ -1,5 +1,6 @@
 #include "questionanswer.h"
 
+
 UserQuestionAnswer::UserQuestionAnswer(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
@@ -77,9 +78,9 @@ void UserQuestionAnswer::setPoints(const qreal &points_)
     emit pointsChanged();
 }
 
+
 UserQuestionAnswerModel::UserQuestionAnswerModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
     init(this);
 }
-

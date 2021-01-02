@@ -1,6 +1,7 @@
 #ifndef NETAPI_H
 #define NETAPI_H
 
+
 #include <QObject>
 #include <QString>
 #include <QVector>

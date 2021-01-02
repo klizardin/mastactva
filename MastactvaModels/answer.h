@@ -1,6 +1,7 @@
 #ifndef ANSWER_H
 #define ANSWER_H
 
+
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"

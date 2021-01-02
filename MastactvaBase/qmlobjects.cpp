@@ -76,4 +76,3 @@ void QMLObjectsBase::unregisterModel(const QString &layoutName_)
     if(std::end(m_models) == fit) { return; }
     m_models.erase(fit);
 }
-

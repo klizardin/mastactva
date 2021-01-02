@@ -1,5 +1,6 @@
 #include "shaderargtype.h"
 
+
 ShaderArgType::ShaderArgType(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
