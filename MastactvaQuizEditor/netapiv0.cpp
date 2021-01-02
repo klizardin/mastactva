@@ -18,6 +18,15 @@ RequestDataV0::RequestDataV0(const RequestDataV0 *defaultRequestData /*= nullptr
     }
 }
 
+RequestDataV0::~RequestDataV0()
+{
+    if(nullptr != m_reply)
+    {
+        m_reply->deleteLater();
+    }
+    m_reply = nullptr;
+}
+
 int RequestDataV0::getRequestID() const
 {
     return m_requestID;

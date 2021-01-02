@@ -30,7 +30,7 @@ protected:
 
 public:
     explicit RequestDataV0(const RequestDataV0 *defaultRequestData = nullptr);
-    virtual ~RequestDataV0() = default;
+    virtual ~RequestDataV0();
 
     int getRequestID() const;
     void setSkipRequest(bool skipRequest);
