@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.15
 import MastactvaQuiz 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
@@ -11,6 +12,8 @@ ApplicationWindow {
     height: Constants.height
     visible: true
     title: qsTr("Mastactva Quiz")
+
+    property int animationSpeed: Constants.animationSpeedNorm
 
     MastactvaAPI {
         id: mastactvaAPI
@@ -154,11 +157,13 @@ ApplicationWindow {
             userStepModel.addItem(userStepG)
 
             // jump to quiz image
+            quizPage.animationSpeed = animationSpeed
             quizPage.galleryId = galleryModel.getCurrentItem().id
             quizPage.currentImage = startImage
             quizPage.currentImageSource = startImage.imageSource
             quizPage.currentImageHash = startImage.imageHash
             quizPage.nextImage = undefined
+            galleryAllImagesPage.animationSpeed = animationSpeed
             galleryAllImagesPage.galleryId = galleryModel.getCurrentItem().id
             galleryAllImagesPage.currentImage = startImage
             galleryAllImagesPage.currentImageSource = startImage.imageSource
@@ -265,45 +270,51 @@ ApplicationWindow {
 
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
-
-        ToolButton {
-            id: toolButton
-            text: stackView.depth > 1 ? "<" : "\u2630"
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
-            onClicked: {
-                if (stackView.depth > 1) {
-                    stackView.pop()
-                } else {
-                    drawer.open()
+        RowLayout {
+            ToolButton {
+                id: toolButton
+                Layout.alignment: Qt.AlignLeft
+                text: stackView.depth > 1 ? "<" : "\u2630"
+                font.pixelSize: Qt.application.font.pixelSize * 1.6
+                onClicked: {
+                    if (stackView.depth > 1) {
+                        stackView.pop()
+                    } else {
+                        drawer.open()
+                    }
                 }
             }
-        }
 
-        Label {
-            text: stackView.currentItem.title
-            anchors.centerIn: parent
-        }
-
-        ToolButton {
-            id: crossPage
-            anchors.right: infoButton.left
-            text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
-            visible: stackView.currentItem.hasCrossPage
-            onClicked: {
-                // TODO: remove old same cross page from the stack view
-                stackView.currentItem.crossPage.init()
-                stackView.push(stackView.currentItem.crossPage)
+            Label {
+                text: stackView.currentItem.title
+                Layout.minimumWidth: 2 * (Constants.width - toolButton.width) / 4
             }
-        }
 
-        ToolButton {
-            id: infoButton
-            anchors.right: parent.right
-            text: qsTr("Description")
-            visible: stackView.currentItem.hasDescription
-            onClicked: {
-                stackView.push(descriptionPage)
-                descriptionPage.init()
+            ToolButton {
+                id: crossPage
+                Layout.minimumWidth: (Constants.width - toolButton.width) / 4
+                text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
+                visible: stackView.currentItem.hasCrossPage
+                onClicked: {
+                    if(stackView.currentItem.hasCrossPage)
+                    {
+                        var item = stackView.currentItem
+                        var next = stackView.currentItem.crossPage
+                        next.init()
+                        stackView.replace(item, next)
+                    }
+                }
+            }
+
+            ToolButton {
+                id: infoButton
+                Layout.minimumWidth: (Constants.width - toolButton.width) / 4
+                text: qsTr("Description")
+                visible: stackView.currentItem.hasDescription
+                onClicked: {
+                    stackView.push(descriptionPage)
+                    descriptionPage.init()
+                }
             }
         }
     }

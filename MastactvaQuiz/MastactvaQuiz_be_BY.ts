@@ -95,7 +95,7 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="main.qml" line="13"/>
+        <location filename="main.qml" line="14"/>
         <source>Mastactva Quiz</source>
         <translation>Віктарына Мастацтва</translation>
     </message>
@@ -105,13 +105,13 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="main.qml" line="292"/>
-        <location filename="main.qml" line="319"/>
+        <location filename="main.qml" line="308"/>
+        <location filename="main.qml" line="336"/>
         <source>Description</source>
         <translation>Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="310"/>
+        <location filename="main.qml" line="327"/>
         <source>Quiz</source>
         <translation>Віктарына</translation>
     </message>

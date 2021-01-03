@@ -24,6 +24,7 @@ Page {
     property bool hasCrossPage: true
     property string crossPageName: qsTr("Gallery")
     property var crossPage: undefined
+    property int animationSpeed: Constants.animationSpeedNorm
 
     signal showQuestion(var question, int imageId)
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
@@ -87,14 +88,14 @@ Page {
                                     quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
                                     quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
                                     quizImageNumberAnimation.easing.type = Easing.Linear
-                                    quizImageNumberAnimation.duration = ipni.ipEffect.currentItem.imagePointEffectDuration
+                                    quizImageNumberAnimation.duration = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
                                 }
                                 else
                                 {
                                     quizImage.effect = null
                                     quizImage.argumentSet = null
                                     quizImageNumberAnimation.easing.type = Easing.Linear
-                                    quizImageNumberAnimation.duration = animationDuration
+                                    quizImageNumberAnimation.duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
                                 }
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageAnimation.running = true

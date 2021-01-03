@@ -9124,6 +9124,11 @@
                 "methods": [
                     {
                         "access": "public",
+                        "name": "getRootDir",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
                         "arguments": [
                             {
                                 "name": "path_",

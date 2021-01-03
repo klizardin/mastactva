@@ -27,4 +27,7 @@ QtObject {
     readonly property string noImage: "qrc:///resources/no-image.png"
     readonly property string noImageResource: ":/resources/no-image.png"
     property string noImageHash: ""
+    property int animationSpeedNorm: 1000
+    property int animationSpeedMin: 100
+    property int animationSpeedMax: 5000
 }
