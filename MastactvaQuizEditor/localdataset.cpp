@@ -69,7 +69,7 @@ void LocalDataSet::download()
 qreal LocalDataSet::stepProgress()
 {
     int i = m_step++;
-    return (qreal)std::min(i, g_downloadedStepsCount) / (qreal)g_downloadedStepsCount;
+    return (qreal)std::min(i, c_downloadedStepsCount) / (qreal)c_downloadedStepsCount;
 }
 
 void LocalDataSet::downloadStep()

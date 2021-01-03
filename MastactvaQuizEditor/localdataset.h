@@ -38,7 +38,7 @@ private:
     EasingTypeModel *m_easingTypeModel = nullptr;
     int m_step = 0;
 
-    const int g_downloadedStepsCount = 4;
+    const int c_downloadedStepsCount = 4;
 };
 
 #endif // LOCALDATASET_H
