@@ -9,7 +9,7 @@
 #include "../MastactvaModels/easingtype.h"
 
 
-static const QString g_defaultSavePath = "./";
+static const QString g_defaultSavePath = "./LocalData/";
 
 
 LocalDataSet::LocalDataSet(QObject * parent_ /*= nullptr*/)
