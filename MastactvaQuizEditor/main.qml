@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.14
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.15
+//import Qt.labs.platform 1.1
 import MastactvaQuizEditor 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
@@ -1594,6 +1595,57 @@ ApplicationWindow {
         }
     }
 
+    LocalDataSet {
+        id: localDataSet
+        savePath: downloadGalleryLocalDataFileDialog.folder
+    }
+
+    FileDialog {
+        id: downloadGalleryLocalDataFileDialog
+        title: qsTr("Please choose root file to download local data in the folder of a root file")
+        folder: localDataSet.savePath
+        nameFilters: [ "All files (*.*)" ]
+        selectExisting: false
+        selectMultiple: false
+
+        onAccepted: {
+            localDataSet.savePath = fileUrl
+            connect()
+            // TODO: use separate dialog or rewrite possibility to close/stop download
+            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+            popupMessage.open()
+            localDataSet.download()
+        }
+
+        onRejected: {
+            // TODO: add implemention
+        }
+
+        function connect()
+        {
+            localDataSet.progress.connect(localDataSetProgress)
+            localDataSet.downloaded.connect(localDataSetDownloaded)
+        }
+
+        function disconnect()
+        {
+            localDataSet.progress.disconnect(localDataSetProgress)
+            localDataSet.downloaded.disconnect(localDataSetDownloaded)
+        }
+
+        function localDataSetProgress(p)
+        {
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("Progress : ") + p + qsTr(" %")
+        }
+
+        function localDataSetDownloaded()
+        {
+            disconnect()
+            popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + localDataSet.savePath
+        }
+    }
+
     WarningDialog {
         id: popupMessage
     }
@@ -2432,6 +2484,16 @@ ApplicationWindow {
         }
     }
 
+
+    Action {
+        id: downloadGalleryLocalData
+        text: qsTr("&Download local data")
+        onTriggered: {
+            downloadGalleryLocalDataFileDialog.folder = localDataSet.savePath
+            downloadGalleryLocalDataFileDialog.open()
+        }
+    }
+
     MenuBar
     {
         id: galleriesMenuBar
@@ -2492,6 +2554,11 @@ ApplicationWindow {
             MenuItem { action: imageOfGalleryEditAnswer }
             MenuItem { action: imageOfGalleryDeleteAnswer }
         }
+        AutoSizeMenu {
+            title: qsTr("&Local Data")
+            MenuItem { action: downloadGalleryLocalData }
+        }
+
         AutoSizeMenu {
             title: qsTr("&Options")
             MenuItem { action: editOptionsAction }

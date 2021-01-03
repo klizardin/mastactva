@@ -1,4 +1,5 @@
 #include "localdataset.h"
+#include <math.h>
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/localdata.h"
@@ -91,7 +92,7 @@ void LocalDataSet::download()
 qreal LocalDataSet::stepProgress()
 {
     const int i = m_step++;
-    return (qreal)std::min(i, c_downloadStepsCount) / (qreal)c_downloadStepsCount;
+    return floor((qreal)std::min(i, c_downloadStepsCount) / (qreal)c_downloadStepsCount * 1000.0) / 10.0;
 }
 
 QString LocalDataSet::savePath() const
