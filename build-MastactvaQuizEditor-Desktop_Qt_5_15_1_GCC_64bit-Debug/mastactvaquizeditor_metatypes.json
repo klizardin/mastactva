@@ -1995,6 +1995,48 @@
     {
         "classes": [
             {
+                "className": "LocalDataSet",
+                "object": true,
+                "qualifiedClassName": "LocalDataSet",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "downloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "p_",
+                                "type": "qreal"
+                            }
+                        ],
+                        "name": "progress",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "name": "listReloadedSlot",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "localdataset.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
                 "classInfos": [
                     {
                         "name": "QML.Element",

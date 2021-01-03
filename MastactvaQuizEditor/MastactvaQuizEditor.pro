@@ -15,6 +15,7 @@ CONFIG += c++17
 HEADERS += \
         appconsts.h \
         galleryeditviewmodel.h    \
+    localdataset.h \
         mastactvaapi.h    \
         netapiv0.h \
         qmlmainobjects.h \
@@ -56,6 +57,7 @@ unix: HEADERS += \
 
 SOURCES += \
         appconsts.cpp \
+    localdataset.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \
         mastactvaapi.cpp    \
