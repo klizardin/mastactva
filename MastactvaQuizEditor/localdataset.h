@@ -42,14 +42,14 @@ protected slots:
 
 private:
     QString m_savePath;
-    QString m_serverFilesRootDir;
+    QString m_serverFilesOldRootDir;
     GalleryModel *m_galleryModel = nullptr;
     ShaderTypeModel *m_shaderTypeModel = nullptr;
     ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
     int m_step = 0;
 
-    const int c_downloadedStepsCount = 4;
+    const int c_downloadStepsCount = 4;
 };
 
 #endif // LOCALDATASET_H

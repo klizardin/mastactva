@@ -79,7 +79,7 @@ void LocalDataSet::download()
     if(nullptr == sf) { return; }
 
     localDataAPI->startSave(m_savePath);
-    m_serverFilesRootDir = sf->getRootDir();
+    m_serverFilesOldRootDir = sf->getRootDir();
     sf->setRootDir(m_savePath);
     sf->clean(QDateTime::currentDateTime());
 
@@ -90,8 +90,8 @@ void LocalDataSet::download()
 
 qreal LocalDataSet::stepProgress()
 {
-    int i = m_step++;
-    return (qreal)std::min(i, c_downloadedStepsCount) / (qreal)c_downloadedStepsCount;
+    const int i = m_step++;
+    return (qreal)std::min(i, c_downloadStepsCount) / (qreal)c_downloadStepsCount;
 }
 
 QString LocalDataSet::savePath() const
@@ -156,7 +156,7 @@ void LocalDataSet::downloadStep()
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
     if(nullptr != localDataAPI) { localDataAPI->endSave(); }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf) { sf->setRootDir(m_serverFilesRootDir); }
+    if(nullptr != sf) { sf->setRootDir(m_serverFilesOldRootDir); }
 
     emit progress(stepProgress());
     emit downloaded();
