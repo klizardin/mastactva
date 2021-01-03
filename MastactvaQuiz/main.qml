@@ -268,6 +268,27 @@ ApplicationWindow {
         }
     }
 
+    OptionsForm {
+        id: optionsPage
+    }
+
+    Connections {
+        target: optionsPage
+
+        function onSpeedChanged(speed)
+        {
+            animationSpeed = speed
+            quizPage.animationSpeed = animationSpeed
+            galleryAllImagesPage.animationSpeed = animationSpeed
+            optionsPage.animationSpeed = animationSpeed
+        }
+    }
+
+    SystemPalette {
+        id: activePallete
+        colorGroup: SystemPalette.Active
+    }
+
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
         RowLayout {
@@ -288,6 +309,9 @@ ApplicationWindow {
             Label {
                 text: stackView.currentItem.title
                 Layout.minimumWidth: 2 * (Constants.width - toolButton.width) / 4
+                background: Rectangle {
+                    color: activePallete.highlight
+                }
             }
 
             ToolButton {
@@ -336,6 +360,7 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
+
             ItemDelegate {
                 text: qsTr("Description")
                 width: parent.width
@@ -343,6 +368,18 @@ ApplicationWindow {
                 onClicked: {
                     stackView.push(descriptionPage)
                     descriptionPage.init()
+                    drawer.close()
+                }
+            }
+
+            ItemDelegate {
+                text: qsTr("Options")
+                width: parent.width
+                visible: stackView.currentItem !== optionsPage
+                onClicked: {
+                    optionsPage.animationSpeed = animationSpeed
+                    optionsPage.init()
+                    stackView.push(optionsPage)
                     drawer.close()
                 }
             }

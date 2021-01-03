@@ -57,6 +57,24 @@
     </message>
 </context>
 <context>
+    <name>OptionsForm</name>
+    <message>
+        <location filename="OptionsForm.qml" line="14"/>
+        <source>Description</source>
+        <translation>Апісанне</translation>
+    </message>
+    <message>
+        <location filename="OptionsForm.qml" line="30"/>
+        <source>Animation speed</source>
+        <translation>Хуткасць анімацыі</translation>
+    </message>
+    <message>
+        <location filename="OptionsForm.qml" line="39"/>
+        <source>Set default speed value</source>
+        <translation>Устанавіць хуткасць анімацыі па змоўчкі</translation>
+    </message>
+</context>
+<context>
     <name>QuestionForm</name>
     <message>
         <location filename="QuestionForm.qml" line="13"/>
@@ -105,15 +123,20 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="main.qml" line="308"/>
         <location filename="main.qml" line="336"/>
+        <location filename="main.qml" line="365"/>
         <source>Description</source>
         <translation>Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="327"/>
+        <location filename="main.qml" line="355"/>
         <source>Quiz</source>
         <translation>Віктарына</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="376"/>
+        <source>Options</source>
+        <translation>Налады</translation>
     </message>
 </context>
 </TS>

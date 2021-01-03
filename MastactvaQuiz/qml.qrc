@@ -13,6 +13,7 @@
         <file>resources/point.png</file>
         <file>resources/selectedPoint.png</file>
         <file>GalleryAllImageForm.qml</file>
+        <file>OptionsForm.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
