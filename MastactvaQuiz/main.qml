@@ -201,6 +201,7 @@ ApplicationWindow {
     {
         quizPage.hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
         galleryAllImagesPage.hasDescription = quizPage.hasDescription
+        console.log("galleryAllImagesPage.hasDescription = ", galleryAllImagesPage.hasDescription)
         if(quizPage.hasDescription)
         {
             descriptionPage.galleryId = galleryId
@@ -253,6 +254,14 @@ ApplicationWindow {
         id: galleryAllImagesPage
     }
 
+    Connections {
+        target: galleryAllImagesPage
+
+        function onSetDescription(descriptionModel, galleryId, imageId, imageSource)
+        {
+            setDescription(descriptionModel, galleryId, imageId, imageSource)
+        }
+    }
 
     header: ToolBar {
         contentHeight: toolButton.implicitHeight

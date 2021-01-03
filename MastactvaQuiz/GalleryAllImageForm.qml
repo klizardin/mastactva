@@ -24,6 +24,8 @@ Page {
     property string crossPageName: qsTr("Quiz")
     property var crossPage: undefined
 
+    signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
+
     Rectangle {
         id: quizImageClipper
         anchors.fill: parent
@@ -93,6 +95,8 @@ Page {
                                 quizImage.argumentSet = null
                                 quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageNumberAnimation.duration = animationDuration
+
+                                galleryAllImagesPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageAnimation.running = true
                             }
                         }
@@ -117,6 +121,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
+                    galleryAllImagesPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
                     quizImage.effect = null
                     quizImage.argumentSet = null
                     quizImageNumberAnimation.easing.type = Easing.Linear
