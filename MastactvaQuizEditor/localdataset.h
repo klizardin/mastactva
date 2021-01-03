@@ -3,28 +3,37 @@
 
 
 #include <QObject>
-#include "../MastactvaModels/gallery.h"
-#include "../MastactvaModels/shadertype.h"
-#include "../MastactvaModels/shaderargtype.h"
-#include "../MastactvaModels/easingtype.h"
+#include <QtQuick/QQuickItem>
+
+
+class GalleryModel;
+class ShaderTypeModel;
+class ShaderArgTypeModel;
+class EasingTypeModel;
 
 
 class LocalDataSet : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
-    LocalDataSet(QObject * parent_ = nullptr);
+    explicit LocalDataSet(QObject * parent_ = nullptr);
     virtual ~LocalDataSet() override;
 
-    void download();
+    Q_PROPERTY(QString savePath READ savePath WRITE setSavePath NOTIFY savePathChanged)
+
+    Q_INVOKABLE void download();
 
 protected:
     void create();
     void free();
     void downloadStep();
     qreal stepProgress();
+    QString savePath() const;
+    void setSavePath(const QString &url_);
 
 signals:
+    void savePathChanged();
     void downloaded();
     void progress(qreal p_);
 
@@ -32,6 +41,8 @@ protected slots:
     void listReloadedSlot();
 
 private:
+    QString m_savePath;
+    QString m_serverFilesRootDir;
     GalleryModel *m_galleryModel = nullptr;
     ShaderTypeModel *m_shaderTypeModel = nullptr;
     ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;

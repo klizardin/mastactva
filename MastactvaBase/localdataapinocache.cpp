@@ -34,3 +34,13 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
 {
     return g_localDataAPI;
 }
+
+void LocalDataAPINoCache::startSave(const QString &savePath_)
+{
+    // TODO: add implementation
+}
+
+void LocalDataAPINoCache::endSave()
+{
+    // TODO: add implementation
+}

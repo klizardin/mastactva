@@ -65,6 +65,7 @@ public:
     explicit ServerFiles(QObject *parent_ = nullptr);
     virtual ~ServerFiles() override;
 
+    Q_INVOKABLE QString getRootDir() const;
     Q_INVOKABLE void setRootDir(const QString &path_);
     Q_INVOKABLE void add(const QString &url_, const QString &hash_, const QString &relCachePath_);
     Q_INVOKABLE bool isUrlDownloaded(const QString &url_) const;

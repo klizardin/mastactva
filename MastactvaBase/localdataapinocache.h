@@ -73,6 +73,9 @@ public:
         return m_netAPI->delItem(layoutName_, item_);
     }
 
+    void startSave(const QString &savePath_);
+    void endSave();
+
 signals:
     void response(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_);
     void error(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_);

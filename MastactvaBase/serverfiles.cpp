@@ -20,6 +20,11 @@ ServerFiles::~ServerFiles()
     clearDownloads();
 }
 
+QString ServerFiles::getRootDir() const
+{
+    return m_rootDir;
+}
+
 void ServerFiles::setRootDir(const QString &path_)
 {
     m_rootDir = path_;
@@ -82,8 +87,7 @@ QString ServerFiles::get(const QString &url_) const
 
 void ServerFiles::clean(const QDateTime &to_)
 {
-    Q_UNUSED(to_);
-    // TODO: add implementation
+
 }
 
 qreal ServerFiles::getProgressRate(const QStringList &urls_) const

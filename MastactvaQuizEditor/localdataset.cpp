@@ -1,9 +1,21 @@
 #include "localdataset.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/localdata.h"
+#include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaModels/gallery.h"
+#include "../MastactvaModels/shadertype.h"
+#include "../MastactvaModels/shaderargtype.h"
+#include "../MastactvaModels/easingtype.h"
+
+
+static const QString g_defaultSavePath = "./";
 
 
 LocalDataSet::LocalDataSet(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+    m_savePath = g_defaultSavePath;
 }
 
 LocalDataSet::~LocalDataSet()
@@ -61,6 +73,16 @@ void LocalDataSet::free()
 
 void LocalDataSet::download()
 {
+    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+    if(nullptr == localDataAPI) { return; }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr == sf) { return; }
+
+    localDataAPI->startSave(m_savePath);
+    m_serverFilesRootDir = sf->getRootDir();
+    sf->setRootDir(m_savePath);
+    sf->clean(QDateTime::currentDateTime());
+
     create();
     m_step = 0;
     downloadStep();
@@ -70,6 +92,16 @@ qreal LocalDataSet::stepProgress()
 {
     int i = m_step++;
     return (qreal)std::min(i, c_downloadedStepsCount) / (qreal)c_downloadedStepsCount;
+}
+
+QString LocalDataSet::savePath() const
+{
+    return m_savePath;
+}
+
+void LocalDataSet::setSavePath(const QString &url_)
+{
+    m_savePath = url_;
 }
 
 void LocalDataSet::downloadStep()
@@ -120,6 +152,12 @@ void LocalDataSet::downloadStep()
         QObject::disconnect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
     free();
+
+    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+    if(nullptr != localDataAPI) { localDataAPI->endSave(); }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf) { sf->setRootDir(m_serverFilesRootDir); }
+
     emit progress(stepProgress());
     emit downloaded();
 }

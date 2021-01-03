@@ -1995,10 +1995,44 @@
     {
         "classes": [
             {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
                 "className": "LocalDataSet",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "download",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "savePath",
+                        "notify": "savePathChanged",
+                        "read": "savePath",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setSavePath"
+                    }
+                ],
                 "qualifiedClassName": "LocalDataSet",
                 "signals": [
+                    {
+                        "access": "public",
+                        "name": "savePathChanged",
+                        "returnType": "void"
+                    },
                     {
                         "access": "public",
                         "name": "downloaded",
@@ -9996,6 +10030,11 @@
                 ],
                 "className": "ServerFiles",
                 "methods": [
+                    {
+                        "access": "public",
+                        "name": "getRootDir",
+                        "returnType": "QString"
+                    },
                     {
                         "access": "public",
                         "arguments": [
