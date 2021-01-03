@@ -13,4 +13,5 @@
 12. build android version
 13. add lib to send crach reports
 14. options: slowly faster playing
+15. add sort modes to the client code
 
