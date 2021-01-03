@@ -88,6 +88,7 @@ ShaderModel *EffectShader::createShaderModel()
     return m;
 }
 
+
 EffectShaderModel::EffectShaderModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {

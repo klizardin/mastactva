@@ -1,6 +1,7 @@
 #ifndef APPCONSTS_H
 #define APPCONSTS_H
 
+
 #include <QString>
 #include <QVector>
 #include <QVector3D>
@@ -67,5 +68,6 @@ public:
     static void freeInstance();
     void save() const;
 };
+
 
 #endif // APPCONSTS_H

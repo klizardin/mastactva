@@ -1,6 +1,7 @@
 #ifndef QMLMAINOBJECTS_H
 #define QMLMAINOBJECTS_H
 
+
 #include <QObject>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"

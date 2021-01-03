@@ -1,6 +1,7 @@
 #ifndef GALLERYEDITVIEWMODEL_H
 #define GALLERYEDITVIEWMODEL_H
 
+
 #include <QObject>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickFramebufferObject>
@@ -59,6 +60,7 @@ protected:
     QString m_source;
     ImagePointsModel *imagePointsModel = nullptr;
 };
+
 
 class GalleryImagesModel : public QAbstractListModel
 {
@@ -318,6 +320,7 @@ private:
     JsonRequestDataV0 *m_setNextImageRequest = nullptr;
 };
 
+
 class AnswerData : public QObject
 {
     Q_OBJECT
@@ -358,6 +361,7 @@ private:
     QString m_answer;
     qreal m_pointsToPass = 1.0;
 };
+
 
 class QuestionAnswersModel : public QAbstractListModel
 {
@@ -414,6 +418,7 @@ private:
     QVector<AnswerData *> m_data;
 };
 
+
 class QuestionData : public QObject
 {
     Q_OBJECT
@@ -455,6 +460,7 @@ private:
     qreal m_pointsToPass = 1.0;
     QDateTime m_created;
 };
+
 
 class ImagePointToQuestionV0 : public QObject
 {
@@ -627,6 +633,7 @@ private:
     JsonRequestDataV0* m_removeQuestionRequest = nullptr;
 };
 
+
 class ImagePointsModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -753,6 +760,7 @@ private:
     bool m_geometryChanged = true;
     int m_oldPointsCount = -1;
 };
+
 
 class VoronoyNode : public QSGGeometryNode
 {

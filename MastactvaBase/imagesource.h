@@ -1,6 +1,7 @@
 #ifndef IMAGESOURCE_H
 #define IMAGESOURCE_H
 
+
 #include <QString>
 #include <QFile>
 #include <QVariant>

@@ -145,6 +145,7 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     return m;
 }
 
+
 GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Gallery, GalleryModel>(parent_)
 {

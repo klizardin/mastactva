@@ -1,6 +1,7 @@
 #ifndef NETAPIV0_H
 #define NETAPIV0_H
 
+
 #include <QObject>
 #include <QString>
 #include <QList>
@@ -15,6 +16,7 @@ class QFile;
 class QNetworkAccessManager;
 class NetAPIV0;
 class MultiPartRequestDataV0;
+
 
 class RequestDataV0
 {
@@ -53,6 +55,7 @@ protected:
     friend class NetAPIV0;
 };
 
+
 class MultiPartRequestDataV0 : public RequestDataV0
 {
 protected:
@@ -76,6 +79,7 @@ protected:
     friend class NetAPIV0;
 };
 
+
 class JsonRequestDataV0 : public RequestDataV0
 {
 protected:
@@ -93,6 +97,7 @@ protected:
 
     friend class NetAPIV0;
 };
+
 
 class NetAPIV0 : public QObject
 {
