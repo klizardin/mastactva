@@ -647,6 +647,12 @@ public:
         }
     }
 
+    void clearImpl()
+    {
+        clearData();
+        setCurrentIndexImpl(-1);
+    }
+
 protected:
     bool storeAfterSaveImpl() const
     {
@@ -1220,6 +1226,12 @@ public:                                                                         
     Q_INVOKABLE QVariant getCurrentItem()                                                                       \
     {                                                                                                           \
         return findItemByAppIdImpl(QVariant());                                                                 \
+    }                                                                                                           \
+    Q_INVOKABLE void clear()                                                                                    \
+    {                                                                                                           \
+        clearImpl();                                                                                            \
+        emit currentIndexChanged();                                                                             \
+        emit currentItemChanged();                                                                              \
     }                                                                                                           \
     Q_INVOKABLE void loadList()                                                                                 \
     {                                                                                                           \
