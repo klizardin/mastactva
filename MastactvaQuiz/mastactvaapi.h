@@ -19,6 +19,7 @@ public:
     Q_INVOKABLE QDateTime now() const;
     Q_INVOKABLE void showModelError(int errorCode_, const QString & errorCodeStr_, const QString & description_);
     Q_INVOKABLE QString calculateHash(const QString &fileUrl_);
+    Q_INVOKABLE QString dateTimeToISOStr(const QDateTime &dt_);
 
     void setInitialized();
 

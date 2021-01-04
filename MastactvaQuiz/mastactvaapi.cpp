@@ -36,3 +36,8 @@ QString MastactvaAPI::calculateHash(const QString &fileUrl_)
 {
     return calculateFileURLHash(fileUrl_);
 }
+
+QString MastactvaAPI::dateTimeToISOStr(const QDateTime &dt_)
+{
+    return dateTimeToJsonString(dt_);
+}
