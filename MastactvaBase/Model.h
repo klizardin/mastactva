@@ -598,7 +598,7 @@ public:
     bool sortIf(Op_ op_, bool saveSelection_, bool stableSort_ = false)
     {
         const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
-        const QVariant currentAppId = saveSelection_ ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
+        const QVariant currentAppId = saveSelection_ && nullptr != item ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
         if(stableSort_) { std::stable_sort(std::begin(m_data), std::end(m_data), op_); }
         else { std::sort(std::begin(m_data), std::end(m_data), op_); }
         if(saveSelection_) { return selectDataItemByAppIdImpl(currentAppId); }
@@ -608,7 +608,7 @@ public:
     bool randOrderImpl(bool saveSelection_)
     {
         const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
-        const QVariant currentAppId = saveSelection_ ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
+        const QVariant currentAppId = saveSelection_ && nullptr != item ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(std::begin(m_data), std::end(m_data), g);
