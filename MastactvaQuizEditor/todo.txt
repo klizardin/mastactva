@@ -101,6 +101,7 @@ procedure params in the django rest framework // Django REST Framework - pass ex
 https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-parameter-to-actions
 
 64. check warnings
+65. add nullptr check in base classes (Layout)
 
 
 
