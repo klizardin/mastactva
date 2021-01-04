@@ -479,6 +479,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -649,6 +670,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "AnswerModel",
@@ -741,6 +776,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -1260,6 +1300,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -1430,6 +1491,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "GalleryModel",
@@ -1522,6 +1597,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -1966,6 +2046,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2136,6 +2237,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "GalleryStatisticsModel",
@@ -2228,6 +2343,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -2769,6 +2889,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -2939,6 +3080,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ImageModel",
@@ -3031,6 +3186,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -3475,6 +3635,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -3645,6 +3826,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ImageDescriptionModel",
@@ -3737,6 +3932,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -4181,6 +4381,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -4351,6 +4572,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToQuestionModel",
@@ -4443,6 +4678,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -4866,6 +5106,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -5036,6 +5297,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToNextImageModel",
@@ -5128,6 +5403,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -5664,6 +5944,27 @@
                     },
                     {
                         "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "arguments": [
                             {
                                 "name": "x_",
@@ -5876,6 +6177,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ImagePointModel",
@@ -5968,6 +6283,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -6460,6 +6780,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -6630,6 +6971,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "QuestionModel",
@@ -6722,6 +7077,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -7204,6 +7564,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -7374,6 +7755,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "UserQuestionAnswerModel",
@@ -7466,6 +7861,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -7853,6 +8253,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -8023,6 +8444,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "QuizUserModel",
@@ -8115,6 +8550,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -8654,6 +9094,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -8824,6 +9285,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "UserStepModel",
@@ -8916,6 +9391,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -9815,6 +10295,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -9985,6 +10486,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "EasingTypeModel",
@@ -10077,6 +10592,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -10559,6 +11079,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -10729,6 +11270,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "EffectArgModel",
@@ -10821,6 +11376,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -11305,6 +11865,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -11475,6 +12056,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSetModel",
@@ -11567,6 +12162,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -12064,6 +12664,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -12234,6 +12855,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValueModel",
@@ -12326,6 +12961,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -12902,6 +13542,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -13072,6 +13733,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "EffectModel",
@@ -13164,6 +13839,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -13607,6 +14287,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -13777,6 +14478,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "EffectShaderModel",
@@ -13869,6 +14584,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -14275,6 +14995,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -14445,6 +15186,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ShaderArgTypeModel",
@@ -14537,6 +15292,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -15004,6 +15764,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -15174,6 +15955,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ShaderModel",
@@ -15266,6 +16061,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -15672,6 +16472,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -15842,6 +16663,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ShaderTypeModel",
@@ -15934,6 +16769,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {
@@ -16483,6 +17323,27 @@
                         ],
                         "name": "autoLoadItem",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sort",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -16653,6 +17514,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
                     }
                 ],
                 "qualifiedClassName": "ImagePointEffectModel",
@@ -16745,6 +17620,11 @@
                     {
                         "access": "public",
                         "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
                         "returnType": "void"
                     },
                     {

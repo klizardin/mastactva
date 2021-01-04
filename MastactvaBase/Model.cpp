@@ -286,6 +286,16 @@ void ListModelBaseData::setOutputModelImpl(bool outputModel_)
     m_outputModel = outputModel_;
 }
 
+QStringList ListModelBaseData::getSortFieldsImpl() const
+{
+    return m_sortFields;
+}
+
+void ListModelBaseData::setSortFieldsImpl(const QStringList &sortFields_)
+{
+    m_sortFields = sortFields_;
+}
+
 void ListModelBaseData::startListLoad()
 {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)

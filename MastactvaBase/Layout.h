@@ -49,6 +49,13 @@ namespace layout
     }
 
     template<typename T_>
+    inline int compareValues(const T_ &val1_, const T_ &val2_, bool toQML_ = true)
+    {
+        Q_UNUSED(toQML_);
+        return val1_ < val2_ ? -1 : val2_ < val1_  ? 1 : 0;
+    }
+
+    template<typename T_>
     inline void setValue(const QVariant &var_, T_ &dta_)
     {
         dta_ = qvariant_cast<T_>(var_);
@@ -128,6 +135,7 @@ namespace layout
             virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) const = 0;
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
+            virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const = 0;
 
             bool isIdField() const
             {
@@ -202,6 +210,11 @@ namespace layout
                 (obj_->*m_setFunc)(val);
             }
 
+            virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
+            {
+                return layout::compareValues((obj1_->*m_getFunc)(), (obj2_->*m_getFunc)(), toQML_);
+            }
+
         protected:
             getFuncPtr m_getFunc = nullptr;
             setFuncPtr m_setFunc = nullptr;
@@ -259,6 +272,19 @@ namespace layout
                 Q_ASSERT(false); // illegal use
             }
 
+            virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
+            {
+                if(nullptr == obj1_->*m_modelPtr)
+                {
+                    const_cast<DataType_ *>(obj1_)->*m_modelPtr = (const_cast<DataType_ *>(obj1_)->*m_createFuncPtr)();
+                }
+                if(nullptr == obj2_->*m_modelPtr)
+                {
+                    const_cast<DataType_ *>(obj2_)->*m_modelPtr = (const_cast<DataType_ *>(obj2_)->*m_createFuncPtr)();
+                }
+                return layout::compareValues(obj1_->*m_modelPtr, obj2_->*m_modelPtr, toQML_);
+            }
+
         protected:
             ModelTypeFieldPtr m_modelPtr = nullptr;
             createModelFuncPtr m_createFuncPtr;
@@ -292,6 +318,11 @@ namespace layout
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
             {
                 layout::setValue(value_, obj_->*m_itemPtr);
+            }
+
+            virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
+            {
+                return layout::compareValues(obj1_->*m_itemPtr, obj2_->*m_itemPtr, toQML_);
             }
 
         protected:
@@ -381,6 +412,13 @@ public:
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
         if(nullptr == layoutItem) { return QVariant(); }
         return layoutItem->getValue(obj_, false);
+    }
+
+    int compareJsonValues(const DataType_ *obj1_, const DataType_ *obj2_, const QString &jsonFieldName_) const
+    {
+        const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
+        if(nullptr == layoutItem) { return 0; }
+        return layoutItem->compareValues(obj1_, obj2_, false);
     }
 
     QVariant getQMLValue(const DataType_ *obj_, const QString &qmlFieldName_) const

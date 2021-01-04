@@ -2,6 +2,8 @@
 #define MODEL_H
 
 
+#include <random>
+#include <algorithm>
 #include <QAbstractListModel>
 #include <QString>
 #include <QVector>
@@ -18,6 +20,10 @@
 //#define TRACE_LIST_LOAD_DATA
 //#define TRACE_LIST_SIZE
 //#define TRACE_LIST_DATA_ITEMS_CRUD
+
+
+static const QString g_randSort = "?";
+static const QChar g_reverseSortOrder = QChar('-');
 
 
 class ListModelBaseData : public IListModelInfo
@@ -49,6 +55,7 @@ public:
     bool autoCreateChildrenModelsImpl() const;
     bool autoCreateChildrenModelsOnSelectImpl() const;
     void addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_);
+    void setSortFieldsImpl(const QStringList &sortFields_);
 
 public:
     virtual void startLoadChildModel() override;
@@ -96,6 +103,7 @@ protected:
     QHash<QString, QVariant> renameFields(const QHash<QString, QVariant> &src_);
     bool getOutputModelImpl() const;
     void setOutputModelImpl(bool outputModel_);
+    QStringList getSortFieldsImpl() const;
 
 private:
     void unregisterListModel();
@@ -121,6 +129,7 @@ private:
     IListModel *m_model = nullptr;
     bool m_autoCreateChildrenModels = false;
     bool m_autoCreateChildrenModelsOnSelect = false;
+    QStringList m_sortFields;
     bool m_listLoaded = false;
     bool m_listLoading = false;
     int m_loadingChildenModels = 0;
@@ -585,6 +594,59 @@ public:
         }
     }
 
+    template<typename Op_>
+    bool sortIf(Op_ op_, bool saveSelection_, bool stableSort_ = false)
+    {
+        const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
+        const QVariant currentAppId = saveSelection_ ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
+        if(stableSort_) { std::stable_sort(std::begin(m_data), std::end(m_data), op_); }
+        else { std::sort(std::begin(m_data), std::end(m_data), op_); }
+        if(saveSelection_) { return selectDataItemByAppIdImpl(currentAppId); }
+        return false;
+    }
+
+    bool randOrderImpl(bool saveSelection_)
+    {
+        const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
+        const QVariant currentAppId = saveSelection_ ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(std::begin(m_data), std::end(m_data), g);
+        if(saveSelection_) { return selectDataItemByAppIdImpl(currentAppId); }
+        return false;
+    }
+
+    bool sortByFieldsImpl(const QStringList &fields_, bool saveSelection_)
+    {
+        bool res = false;
+        for(const QString &field : fields_)
+        {
+            if(g_randSort == field)
+            {
+                res |= randOrderImpl(saveSelection_);
+            }
+            else
+            {
+                if(g_reverseSortOrder == field.at(0))
+                {
+                    QString fld;
+                    fld = field.mid(1);
+                    res |= sortIf([&field](const DataType_ *i1, const DataType_ *i2)->bool
+                    {
+                        return getDataLayout<DataType_>().compareJsonValues(i1, i2, field) > 0;
+                    }, saveSelection_, true);
+                }
+                else
+                {
+                    res |= sortIf([&field](const DataType_ *i1, const DataType_ *i2)->bool
+                    {
+                        return getDataLayout<DataType_>().compareJsonValues(i1, i2, field) < 0;
+                    }, saveSelection_, true);
+                }
+            }
+        }
+    }
+
 protected:
     bool storeAfterSaveImpl() const
     {
@@ -906,6 +968,7 @@ protected:
         {
             autoLoadDataItem(item);
         }
+        sortByFieldsImpl(getSortFieldsImpl(), true);
         setListLoaded();
 #if defined(TRACE_LIST_LOAD_DATA)
         for(const DataType_ *i: m_data)
@@ -940,6 +1003,7 @@ protected:
         {
             setCurrentIndexImpl(m_data.size() - 1);
         }
+        sortByFieldsImpl(getSortFieldsImpl(), true);
         itemAddedVF();
     }
 
@@ -950,6 +1014,7 @@ protected:
         if(nullptr == item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
         autoLoadDataItem(item);
+        sortByFieldsImpl(getSortFieldsImpl(), true);
         const int itemIndex = indexOfDataItemImpl(item);
         QModelIndex changedIndex0 = createIndex(itemIndex, 0);
         QModelIndex changedIndex1 = createIndex(itemIndex, m_roleNames.size());
@@ -1134,6 +1199,7 @@ public:                                                                         
     Q_PROPERTY(bool autoCreateChildrenModels READ autoCreateChildrenModels WRITE setAutoCreateChildrenModels NOTIFY autoCreateChildrenModelsChanged)    \
     Q_PROPERTY(bool autoCreateChildrenModelsOnSelect READ autoCreateChildrenModelsOnSelect WRITE setAutoCreateChildrenModelsOnSelect NOTIFY autoCreateChildrenModelsOnSelectChanged)    \
     Q_PROPERTY(bool outputModel READ outputModel WRITE setOutputModel NOTIFY outputModelChanged)                \
+    Q_PROPERTY(QStringList sortFields READ sortFields WRITE setSortFields NOTIFY sortFieldsChanged)             \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
@@ -1243,6 +1309,30 @@ public:                                                                         
     {                                                                                                           \
         autoLoadItemImpl(item_);                                                                                \
     }                                                                                                           \
+    Q_INVOKABLE void sort()                                                                                     \
+    {                                                                                                           \
+        if(sortByFieldsImpl(getSortFieldsImpl(), true))                                                         \
+        {                                                                                                       \
+            emit currentIndexChanged();                                                                         \
+            emit currentItemChanged();                                                                          \
+        }                                                                                                       \
+    }                                                                                                           \
+    Q_INVOKABLE void sortByFields(const QStringList &fields_)                                                   \
+    {                                                                                                           \
+        if(sortByFieldsImpl(fields_, true))                                                                     \
+        {                                                                                                       \
+            emit currentIndexChanged();                                                                         \
+            emit currentItemChanged();                                                                          \
+        }                                                                                                       \
+    }                                                                                                           \
+    Q_INVOKABLE void randOrder()                                                                                \
+    {                                                                                                           \
+        if(randOrderImpl(true))                                                                                 \
+        {                                                                                                       \
+            emit currentIndexChanged();                                                                         \
+            emit currentItemChanged();                                                                          \
+        }                                                                                                       \
+    }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
     {                                                                                                           \
@@ -1348,6 +1438,15 @@ public:                                                                         
     {                                                                                                           \
         setOutputModelImpl(outputModel_);                                                                       \
         emit outputModelChanged();                                                                              \
+    }                                                                                                           \
+    QStringList sortFields()                                                                                    \
+    {                                                                                                           \
+        return getSortFieldsImpl();                                                                             \
+    }                                                                                                           \
+    void setSortFields(const QStringList &fields_)                                                              \
+    {                                                                                                           \
+        setSortFieldsImpl(fields_);                                                                             \
+        emit sortFieldsChanged();                                                                               \
     }                                                                                                           \
     virtual void listLoadedVF() override                                                                        \
     {                                                                                                           \
