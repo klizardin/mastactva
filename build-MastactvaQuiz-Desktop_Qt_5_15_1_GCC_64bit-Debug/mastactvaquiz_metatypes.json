@@ -255,6 +255,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -499,6 +504,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -1076,6 +1096,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -1320,6 +1345,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -1822,6 +1862,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -2066,6 +2111,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -2665,6 +2725,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -2909,6 +2974,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -3411,6 +3491,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -3655,6 +3740,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -4157,6 +4257,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -4401,6 +4506,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -4882,6 +5002,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -5126,6 +5251,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -5717,6 +5857,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -5961,6 +6106,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     },
                     {
@@ -6556,6 +6716,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -6800,6 +6965,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -7340,6 +7520,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -7584,6 +7769,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -8029,6 +8229,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -8273,6 +8478,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -8870,6 +9090,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -9114,6 +9339,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -10071,6 +10311,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -10315,6 +10560,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -10855,6 +11115,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -11099,6 +11364,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -11641,6 +11921,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -11885,6 +12170,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -12440,6 +12740,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -12684,6 +12989,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -13318,6 +13638,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -13562,6 +13887,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -14063,6 +14403,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -14307,6 +14652,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -14771,6 +15131,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -15015,6 +15380,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -15540,6 +15920,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -15784,6 +16169,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -16248,6 +16648,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -16492,6 +16897,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],
@@ -17099,6 +17519,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "loadList",
                         "returnType": "void"
                     },
@@ -17343,6 +17768,21 @@
                     {
                         "access": "public",
                         "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
                         "returnType": "void"
                     }
                 ],

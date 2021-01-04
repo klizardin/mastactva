@@ -103,7 +103,8 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    answers.model.currentIndex = index
+                    question.questionAnswers.currentIndex = index
+                    answers.currentIndex = index
                     currentAnswerIndex = index
                 }
             }
@@ -117,26 +118,56 @@ Page {
         questionPoints.text = question.questionPointsToPass
         question.questionAnswers.randOrder()
         answers.model = question.questionAnswers
+        question.userQuestionAnswer.listReloaded.connect(userQuestionAnswerListReloaded)
+        question.userQuestionAnswer.loadList()
+    }
+
+    function userQuestionAnswerListReloaded()
+    {
+        question.userQuestionAnswer.listReloaded.disconnect(userQuestionAnswerListReloaded)
+        for(var i = 0; i < question.userQuestionAnswer.size(); i++)
+        {
+            var item1 = question.userQuestionAnswer.itemAt(i)
+            console.log("at ", i , " id =", item1.qaAnswerId, "t = ", item1.qaT)
+        }
+        question.userQuestionAnswer.sortByFields(["-t"])
+        for(var i = 0; i < question.userQuestionAnswer.size(); i++)
+        {
+            var item2 = question.userQuestionAnswer.itemAt(i)
+            console.log("at ", i , " id =", item2.qaAnswerId, "t = ", item2.qaT)
+        }
+        if(question.userQuestionAnswer.size() > 0)
+        {
+            var userQuestionAnswer = question.userQuestionAnswer.itemAt(0)
+            if(userQuestionAnswer !== undefined && userQuestionAnswer !== null)
+            {
+                question.questionAnswers.selectItemById(userQuestionAnswer.qaAnswerId)
+                currentAnswerIndex = question.questionAnswers.currentIndex
+                answers.currentIndex = currentAnswerIndex
+                console.log("userQuestionAnswerListReloaded() question.questionAnswers.currentItem.answerId =",question.questionAnswers.currentItem.answerId)
+            }
+        }
     }
 
     function chooseAnswer()
     {
-        if(currentAnswerIndex >= 0)
+        if(currentAnswerIndex >= 0 && question.questionAnswers.currentItem !== null)
         {
             // log answer the question
+            console.log("chooseAnswer() question.questionAnswers.currentItem.answerId =",question.questionAnswers.currentItem.answerId)
             var userStepQ = userStepModel.createItem()
-            userStepQ.usGalleryId = galleryModel.getCurrentItem().id
+            userStepQ.usGalleryId = galleryModel.currentItem.id
             userStepQ.usImageId = imageId
             userStepQ.usQuestionId = question.questionId
             userStepQ.usT = mastactvaAPI.now()
-            userStepQ.usAnswerId = answers.model.getCurrentItem().answerId
+            userStepQ.usAnswerId = question.questionAnswers.currentItem.answerId
             userStepModel.addItem(userStepQ)
 
             var userQuestionAnswerModel = question.userQuestionAnswer
             var newAnswer = userQuestionAnswerModel.createItem()
             newAnswer.qaQuestionId = question.questionId
             newAnswer.qaT = mastactvaAPI.now()
-            newAnswer.qaAnswerId = answers.model.getCurrentItem().answerId
+            newAnswer.qaAnswerId = question.questionAnswers.currentItem.answerId
             userQuestionAnswerModel.addItem(newAnswer)
 
             questionPage.answered()
