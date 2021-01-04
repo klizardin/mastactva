@@ -292,6 +292,7 @@ ApplicationWindow {
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
         RowLayout {
+            height: toolButton.implicitHeight
             ToolButton {
                 id: toolButton
                 Layout.alignment: Qt.AlignLeft

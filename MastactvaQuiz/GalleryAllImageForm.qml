@@ -27,9 +27,22 @@ Page {
 
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
 
+    ProgressBar {
+        id: animationProgress
+        width: Constants.pageWidth
+        anchors.top: quizImageClipper.bottom
+        height: animationProgress.implicitContentHeight * 2
+        from: 0.0
+        to: 1.0
+        value: quizImage.t
+    }
+
     Rectangle {
         id: quizImageClipper
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        width: parent.width
+        height: parent.height - animationProgress.height
         color: "transparent"
         clip: true
         z: 0.0

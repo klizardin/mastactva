@@ -30,9 +30,22 @@ Page {
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
     signal jumpToImage(var image)
 
+    ProgressBar {
+        id: animationProgress
+        width: Constants.pageWidth
+        anchors.top: quizImageClipper.bottom
+        height: animationProgress.implicitContentHeight * 2
+        from: 0.0
+        to: 1.0
+        value: quizImage.t
+    }
+
     Rectangle {
         id: quizImageClipper
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        width: parent.width
+        height: parent.height - animationProgress.height
         color: "transparent"
         clip: true
         z: 0.0
@@ -88,14 +101,16 @@ Page {
                                     quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
                                     quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
                                     quizImageNumberAnimation.easing.type = Easing.Linear
-                                    quizImageNumberAnimation.duration = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
+                                    var duration = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
+                                    quizImageNumberAnimation.duration = duration
                                 }
                                 else
                                 {
                                     quizImage.effect = null
                                     quizImage.argumentSet = null
                                     quizImageNumberAnimation.easing.type = Easing.Linear
-                                    quizImageNumberAnimation.duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
+                                    var duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
+                                    quizImageNumberAnimation.duration = duration
                                 }
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageAnimation.running = true
