@@ -63,6 +63,17 @@
                         ],
                         "name": "calculateHash",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "dt_",
+                                "type": "QDateTime"
+                            }
+                        ],
+                        "name": "dateTimeToISOStr",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,

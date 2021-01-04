@@ -125,17 +125,7 @@ Page {
     function userQuestionAnswerListReloaded()
     {
         question.userQuestionAnswer.listReloaded.disconnect(userQuestionAnswerListReloaded)
-        for(var i = 0; i < question.userQuestionAnswer.size(); i++)
-        {
-            var item1 = question.userQuestionAnswer.itemAt(i)
-            console.log("at ", i , " id =", item1.qaAnswerId, "t = ", item1.qaT)
-        }
         question.userQuestionAnswer.sortByFields(["-t"])
-        for(var i = 0; i < question.userQuestionAnswer.size(); i++)
-        {
-            var item2 = question.userQuestionAnswer.itemAt(i)
-            console.log("at ", i , " id =", item2.qaAnswerId, "t = ", item2.qaT)
-        }
         if(question.userQuestionAnswer.size() > 0)
         {
             var userQuestionAnswer = question.userQuestionAnswer.itemAt(0)
@@ -144,7 +134,6 @@ Page {
                 question.questionAnswers.selectItemById(userQuestionAnswer.qaAnswerId)
                 currentAnswerIndex = question.questionAnswers.currentIndex
                 answers.currentIndex = currentAnswerIndex
-                console.log("userQuestionAnswerListReloaded() question.questionAnswers.currentItem.answerId =",question.questionAnswers.currentItem.answerId)
             }
         }
     }
@@ -154,7 +143,6 @@ Page {
         if(currentAnswerIndex >= 0 && question.questionAnswers.currentItem !== null)
         {
             // log answer the question
-            console.log("chooseAnswer() question.questionAnswers.currentItem.answerId =",question.questionAnswers.currentItem.answerId)
             var userStepQ = userStepModel.createItem()
             userStepQ.usGalleryId = galleryModel.currentItem.id
             userStepQ.usImageId = imageId
