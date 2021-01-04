@@ -601,6 +601,9 @@ public:
         const QVariant currentAppId = saveSelection_ && nullptr != item ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
         if(stableSort_) { std::stable_sort(std::begin(m_data), std::end(m_data), op_); }
         else { std::sort(std::begin(m_data), std::end(m_data), op_); }
+        QModelIndex changedIndex0 = createIndex(0, 0);
+        QModelIndex changedIndex1 = createIndex(std::max(0, sizeImpl() - 1), m_roleNames.size());
+        emit dataChanged(changedIndex0, changedIndex1);
         if(saveSelection_) { return selectDataItemByAppIdImpl(currentAppId); }
         return false;
     }
@@ -612,6 +615,9 @@ public:
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(std::begin(m_data), std::end(m_data), g);
+        QModelIndex changedIndex0 = createIndex(0, 0);
+        QModelIndex changedIndex1 = createIndex(std::max(0, sizeImpl() - 1), m_roleNames.size());
+        emit dataChanged(changedIndex0, changedIndex1);
         if(saveSelection_) { return selectDataItemByAppIdImpl(currentAppId); }
         return false;
     }
