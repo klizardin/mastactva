@@ -631,9 +631,9 @@ public:
                 {
                     QString fld;
                     fld = field.mid(1);
-                    res |= sortIf([&field](const DataType_ *i1, const DataType_ *i2)->bool
+                    res |= sortIf([&fld](const DataType_ *i1, const DataType_ *i2)->bool
                     {
-                        return getDataLayout<DataType_>().compareJsonValues(i1, i2, field) > 0;
+                        return getDataLayout<DataType_>().compareJsonValues(i1, i2, fld) > 0;
                     }, saveSelection_, true);
                 }
                 else
