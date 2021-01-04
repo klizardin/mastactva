@@ -97,6 +97,7 @@ AnswerModel *Question::createAnswerModel()
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
+    //m->setSortFieldsImpl({"?",});
     m->loadList();
     return m;
 }

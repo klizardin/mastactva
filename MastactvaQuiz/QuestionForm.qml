@@ -115,6 +115,7 @@ Page {
         currentAnswerIndex = -1
         questionText.text = question.questionText
         questionPoints.text = question.questionPointsToPass
+        question.questionAnswers.randOrder()
         answers.model = question.questionAnswers
     }
 
