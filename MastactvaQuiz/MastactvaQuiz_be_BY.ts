@@ -96,6 +96,11 @@
         <source>Choose</source>
         <translation>Абраць</translation>
     </message>
+    <message>
+        <location filename="QuestionForm.qml" line="198"/>
+        <source>Please choose answer</source>
+        <translation>Калі ласка абярыце адказ</translation>
+    </message>
 </context>
 <context>
     <name>QuizForm</name>
@@ -123,18 +128,18 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="main.qml" line="336"/>
-        <location filename="main.qml" line="365"/>
+        <location filename="main.qml" line="337"/>
+        <location filename="main.qml" line="366"/>
         <source>Description</source>
         <translation>Апісанне</translation>
     </message>
     <message>
-        <location filename="main.qml" line="355"/>
+        <location filename="main.qml" line="356"/>
         <source>Quiz</source>
         <translation>Віктарына</translation>
     </message>
     <message>
-        <location filename="main.qml" line="376"/>
+        <location filename="main.qml" line="377"/>
         <source>Options</source>
         <translation>Налады</translation>
     </message>
