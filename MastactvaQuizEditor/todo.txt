@@ -97,6 +97,11 @@
 62. test memory leaks for editor and quiz
 63. add sort modes to the client code
 
+procedure params in the django rest framework // Django REST Framework - pass extra parameter to actions
+https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-parameter-to-actions
+
+
+
 
 
 
