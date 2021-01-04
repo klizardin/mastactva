@@ -30,4 +30,5 @@ QtObject {
     property int animationSpeedNorm: 1000
     property int animationSpeedMin: 100
     property int animationSpeedMax: 3000
+    property real animationSpeedUpCoef: 0.8
 }

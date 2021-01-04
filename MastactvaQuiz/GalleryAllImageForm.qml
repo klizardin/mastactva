@@ -54,14 +54,16 @@ Page {
                 height: quizImage.paintedHeight
 
                 onClicked: {
-                    console.log("onClicked")
-                    if(!quizImageAnimation.running && currentImage.isImageLoaded())
+                    if(quizImageAnimation.running)
+                    {
+                        // TODO: fix can`t correct value
+                        quizImageNumberAnimation.duration *= Constants.animationSpeedUpCoef
+                    }
+                    else if(currentImage.isImageLoaded())
                     {
                         var x = mouseX / width
                         var y = mouseY / height
-                        console.log("x = ", x, "y = ", y);
                         var index = allImagesOfGalleryModel.indexOfItem(currentImage)
-                        console.log("index = ", index)
                         if(index >= 0)
                         {
                             if(x > 0.5)
@@ -80,7 +82,6 @@ Page {
                                     index = allImagesOfGalleryModel.size() - 1;
                                 }
                             }
-                            console.log("index = ", index)
                             var nextImgObj = allImagesOfGalleryModel.itemAt(index)
                             if(nextImgObj !== undefined && nextImgObj !== null)
                             {
@@ -120,7 +121,6 @@ Page {
 
                 function onFinished()
                 {
-                    console.log("quizImageAnimation.onFinished()")
                     currentImage = nextImage
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash

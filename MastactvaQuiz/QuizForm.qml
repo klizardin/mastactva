@@ -57,7 +57,12 @@ Page {
                 height: quizImage.paintedHeight
 
                 onClicked: {
-                    if(!quizImageAnimation.running && currentImage.isImageLoaded())
+                    if(quizImageAnimation.running)
+                    {
+                        // TODO: fix can`t correct value
+                        quizImageNumberAnimation.duration *= Constants.animationSpeedUpCoef
+                    }
+                    else if(currentImage.isImageLoaded())
                     {
                         var x = mouseX / width
                         var y = mouseY / height
@@ -91,16 +96,16 @@ Page {
                                     quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
                                     quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
                                     quizImageNumberAnimation.easing.type = Easing.Linear
-                                    var duration = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
-                                    quizImageNumberAnimation.duration = duration
+                                    var durationEffect = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
+                                    quizImageNumberAnimation.duration = durationEffect
                                 }
                                 else
                                 {
                                     quizImage.effect = null
                                     quizImage.argumentSet = null
                                     quizImageNumberAnimation.easing.type = Easing.Linear
-                                    var duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
-                                    quizImageNumberAnimation.duration = duration
+                                    var durationNoEffect = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
+                                    quizImageNumberAnimation.duration = durationNoEffect
                                 }
                                 quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
                                 quizImageAnimation.running = true
