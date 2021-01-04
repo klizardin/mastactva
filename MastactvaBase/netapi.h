@@ -59,6 +59,7 @@ public:
 
     template<class DataType_>
     RequestData *getList(const QString &layoutName_,
+                         const QString &procedureName_,
                          const QString &currentRef_,
                          const QString &parentModel_,
                          const QString &parentModelJsonFieldName_,
@@ -68,6 +69,10 @@ public:
                          const QHash<QString, QVariant> &extraFields_
                          )
     {
+        if(!procedureName_.isEmpty())
+        {
+            return getListByProcedureImpl(RequestData::getListRequestName<DataType_>(), layoutName_, procedureName_, jsonParams_, extraFields_);
+        }
         IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
         if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
         {
@@ -127,6 +132,7 @@ protected slots:
 
 protected:
     RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_, const QHash<QString, QVariant> &extraFields_);
+    RequestData *getListByProcedureImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &procedureName_, bool jsonParams_, const QHash<QString, QVariant> &extraFields_);
     RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_, const QHash<QString, QVariant> &extraFields_);
     RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
     RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);

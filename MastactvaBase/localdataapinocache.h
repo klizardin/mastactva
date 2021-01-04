@@ -31,6 +31,7 @@ public:
 
     template<class DataType_>
     RequestData *getList(const QString &layoutName_,
+                         const QString &procedureName_,
                          const QString &currentRef_,
                          const QString &parentModel_,
                          const QString &parentModelJsonFieldName_,
@@ -42,6 +43,7 @@ public:
     {
         if(nullptr == m_netAPI) { return nullptr; }
         return m_netAPI->getList<DataType_>(layoutName_,
+                                             procedureName_,
                                              currentRef_,
                                              parentModel_,
                                              parentModelJsonFieldName_,

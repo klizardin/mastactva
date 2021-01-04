@@ -235,6 +235,67 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
     return rd;
 }
 
+RequestData *NetAPI::getListByProcedureImpl(const QString& requestName_,
+                                            const QString &jsonLayoutName_,
+                                            const QString &procedureName_,
+                                            bool jsonParams_,
+                                            const QHash<QString, QVariant> &extraFields_)
+{
+    const QVariant id = extraFields_.contains("id") ? extraFields_.value("id") : QVariant::fromValue(QString("0"));
+    QString urlString = m_hostUrlBase + QString("%1/%2/%3/")
+            .arg(jsonLayoutName_)
+            .arg(jsonParams_ ? "0" : id.toString())
+            .arg(procedureName_)
+            ;
+    int count = 0;
+    for(const QString &key : extraFields_.keys())
+    {
+        bool ok = false;
+        int ki = extraFields_.value(key).toInt(&ok);
+        if(ok) { count = std::max(count, ki); }
+    }
+    for(int i = 0; i < count + 1; i++)
+    {
+        if(extraFields_.contains(QString::number(i)))
+        {
+            urlString += QString("%1/").arg(extraFields_.value(QString::number(i)).toString());
+        }
+        else
+        {
+            urlString += QString("0/");
+        }
+    }
+    QUrl url(urlString);
+    QNetworkRequest request(url);
+
+    setBasicAuthentification(&request);
+    if(!init()) { return nullptr; }
+
+    NetRequestData *rd = nullptr;
+    if(jsonParams_ || !extraFields_.isEmpty())
+    {
+        QHash<QString, QVariant> values(extraFields_);
+        values.insert("id", id.toString());
+        JsonRequestData *jrd = new JsonRequestData(values);
+        QByteArray jsonString;
+        jrd->getDocument(jsonString);
+        QByteArray postDataSize;
+        jrd->getDocumentLength(postDataSize);
+        request.setRawHeader("Content-Type", "application/json");
+        request.setRawHeader("Content-Length", postDataSize);
+        jrd->setReply(m_networkManager->sendCustomRequest(request, "GET", jsonString));
+        rd = jrd;
+    }
+    else
+    {
+        rd = new NetRequestData();
+        rd->setReply(m_networkManager->get(request));
+    }
+    rd->setRequestName(requestName_);
+    m_requests.push_back(rd);
+    return rd;
+}
+
 RequestData *NetAPI::getListImpl(const QString& requestName_,
                                  const QString &jsonLayoutName_,
                                  const QHash<QString, QVariant> &extraFields_

@@ -645,12 +645,18 @@ public:
                 }
             }
         }
+        return res;
     }
 
     void clearImpl()
     {
         clearData();
         setCurrentIndexImpl(-1);
+    }
+
+    void procedureImpl(const QString &procedureName_, const QHash<QString, QVariant> &extraFields_)
+    {
+        loadListImpl(procedureName_, extraFields_);
     }
 
 protected:
@@ -664,7 +670,7 @@ protected:
         setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
     }
 
-    void loadListImpl()
+    void loadListImpl(const QString &procedureName_ = QString(), const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         if(nullptr == dataAPI) { return; }
@@ -694,6 +700,7 @@ protected:
                 parentModelJsonFieldName = m_refs.value(currentRefImpl()).m_parentModelJsonFieldName;
             }
             QHash<QString, QVariant> extraFields(m_modelParams);
+            extraFields.insert(extraFields_);
             for(const ExtraFields &f: m_extraFields)
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
@@ -705,6 +712,7 @@ protected:
             extraFields = renameFields(extraFields);
             request = dataAPI->getList<DataType_>(
                         getJsonLayoutName(),
+                        procedureName_,
                         currentRefImpl(),
                         parentModel,
                         parentModelJsonFieldName,
@@ -1344,6 +1352,10 @@ public:                                                                         
             emit currentIndexChanged();                                                                         \
             emit currentItemChanged();                                                                          \
         }                                                                                                       \
+    }                                                                                                           \
+    Q_INVOKABLE void procedure(const QString &procedureName_, const QHash<QString, QVariant> &extraValues_)     \
+    {                                                                                                           \
+        procedureImpl(procedureName_, extraValues_);                                                            \
     }                                                                                                           \
     /*property's functions*/                                                                                    \
     const QString &getLayoutQMLName()                                                                           \
