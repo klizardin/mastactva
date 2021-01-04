@@ -346,12 +346,13 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ_)
     int year = 0, month = 0, day = 0, hours = 0, minites = 0, seconds = 0, ms = 0, tz = 0;
     char tmp;
     s >> year >> tmp >> month >> tmp >> day >> tmp;
-    s >> hours >> tmp >> minites >> tmp >> seconds >> tmp >> ms >> tz;
+    s >> hours >> tmp >> minites >> tmp >> seconds >> tmp >> ms >> tmp >> tz;
     if(seconds > 100)
     {
         seconds /= 1000;
         ms = seconds % 1000;
     }
+    while(ms > 1000) { ms /= 10; }
     const QDateTime cdt = QDateTime(QDate(year, month, day), QTime(hours, minites, seconds, ms), QTimeZone(tz*3600));
     //qDebug() << dateTimeToJsonString(cdt);
     return cdt.toLocalTime();
