@@ -98,6 +98,8 @@ protected:
     void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
     void setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateChildrenModelsOnSelect_);
     void startListLoad();
+    void clearListLoaded();
+    void reverseListLoading();
     void setListLoaded();
     bool listLoading() const;
     QHash<QString, QVariant> renameFields(const QHash<QString, QVariant> &src_);
@@ -580,7 +582,7 @@ public:
     void autoLoadDataItemImpl(const DataType_ *item_)
     {
         if(nullptr == item_) { return; }
-        qDebug() << "-start autoLoadDataItemImpl() item =" << item_;
+        qDebug() << "-start autoLoadDataItemImpl() item =" << item_ << getQMLLayoutName();
         const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
         IListModelInfo *modelInfo = nullptr;
         layout::setValue(modelInfoVar, modelInfo);
@@ -593,7 +595,7 @@ public:
         {
             modelInfo->objectLoadedVF();
         }
-        qDebug() << "-end autoLoadDataItemImpl() item =" << item_;
+        qDebug() << "-end autoLoadDataItemImpl() item =" << item_ << getQMLLayoutName();
     }
 
     template<typename Op_>
@@ -660,6 +662,7 @@ public:
     {
         clearData();
         setCurrentIndexImpl(-1);
+        clearListLoaded();
     }
 
     void procedureImpl(const QString &procedureName_, const QHash<QString, QVariant> &extraFields_)
@@ -698,7 +701,7 @@ protected:
             }
             else
             {
-                setListLoaded();
+                reverseListLoading();
             }
             dataAPI->freeRequest(request);
         }
@@ -735,7 +738,7 @@ protected:
                         );
             if(!addRequest(request))
             {
-                setListLoaded();
+                reverseListLoading();
             }
         }
     }

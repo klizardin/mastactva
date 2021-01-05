@@ -64,6 +64,7 @@ protected:
     EffectArgValueModel *createAffectArgValueModel();
     QString getObjectName() const;
 
+    virtual void loadChildrenVF() override;
     virtual void listLoadedVF() override;
 
 signals:

@@ -86,6 +86,7 @@ protected:
     void applyRefreshArgumentsStep();
     QString getObjectName() const;
 
+    virtual void loadChildrenVF() override;
     virtual void listLoadedVF() override;
 
 signals:

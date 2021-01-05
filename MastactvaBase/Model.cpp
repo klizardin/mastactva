@@ -301,15 +301,47 @@ void ListModelBaseData::startListLoad()
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-" << m_QMLLayoutName << "startListLoad()";
 #endif
-    if(m_QMLLayoutName == "AllImagesOfGallery_ImagePointModel_1_ImagePointEffectModel_4_EffectArgSetModel_1")
+    if(m_QMLLayoutName == "GalleryModel_Gallery_1_GalleryImageModel__Image_1_ImagePointModel__ImagePoint_4_ImagePointEffectModel__ImagePointEffect_1_EffectArgSetModel_")
     {
         qDebug() << "start load";
     }
 
     m_listLoading = true;
+
     if(nullptr != m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
+    }
+}
+
+void ListModelBaseData::clearListLoaded()
+{
+#if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
+    qDebug() << "-" << m_QMLLayoutName << "clearListLoaded()";
+#endif
+    if(m_QMLLayoutName == "GalleryModel_Gallery_1_GalleryImageModel__Image_1_ImagePointModel__ImagePoint_4_ImagePointEffectModel__ImagePointEffect_1_EffectArgSetModel_")
+    {
+        qDebug() << "clear load";
+    }
+
+    m_listLoaded = false;
+}
+
+void ListModelBaseData::reverseListLoading()
+{
+#if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
+    qDebug() << "-" << m_QMLLayoutName << "reverseListLoading()";
+#endif
+    if(m_QMLLayoutName == "GalleryModel_Gallery_1_GalleryImageModel__Image_1_ImagePointModel__ImagePoint_4_ImagePointEffectModel__ImagePointEffect_1_EffectArgSetModel_")
+    {
+        qDebug() << "reverse load";
+    }
+
+    m_listLoading = false;
+
+    if(nullptr != m_parentListModelInfo)
+    {
+        m_parentListModelInfo->endLoadChildModel();
     }
 }
 
@@ -318,9 +350,14 @@ void ListModelBaseData::setListLoaded()
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-"  << m_QMLLayoutName << "setListLoaded()";
 #endif
+    if(m_QMLLayoutName == "GalleryModel_Gallery_1_GalleryImageModel__Image_1_ImagePointModel__ImagePoint_4_ImagePointEffectModel__ImagePointEffect_1_EffectArgSetModel_")
+    {
+        qDebug() << "end load";
+    }
 
     m_listLoading = false;
     m_listLoaded = true;
+
     if(nullptr != m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();

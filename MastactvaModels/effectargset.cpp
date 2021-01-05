@@ -140,6 +140,14 @@ QString EffectArgSet::getObjectName() const
     return m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgSet_") + QVariant::fromValue(m_appId).toString();
 }
 
+void EffectArgSet::loadChildrenVF()
+{
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
 void EffectArgSet::listLoadedVF()
 {
     emit childrenLoaded();

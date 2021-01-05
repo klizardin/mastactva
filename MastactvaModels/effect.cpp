@@ -431,6 +431,14 @@ QString Effect::getObjectName() const
     return m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString();
 }
 
+void Effect::loadChildrenVF()
+{
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
 void Effect::listLoadedVF()
 {
     emit childrenLoaded();
