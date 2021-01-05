@@ -89,11 +89,12 @@ ImageModel *Gallery::createImages()
     m->setCurrentRef("gallery");
     m->addModelParam("use_in_gallery_view", "1");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_GalleryImageModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") + QVariant::fromValue(m_appId).toString() + QString("_GalleryImageModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     //m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
+    //m->setAutoCreateChildrenModelsOnSelect(true);
     m->loadList();
     return m;
 }
@@ -136,7 +137,7 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_GalleryStatisticsModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") + QVariant::fromValue(m_appId).toString() + QString("_GalleryStatisticsModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     //m->setParentListModelInfo(m_parentModelInfo);

@@ -57,12 +57,15 @@ public:
 
 protected:
     void setParentModelInfo(IListModelInfo *parentListModelInfo_);
+    void setObjectName(const QString &objName_);
+    void trace();
 
 private:
     int m_loadingChildenModels = 0;
     IListModelInfo *m_parentListModelInfo = nullptr;
     bool m_childrenLoaded = false;
     bool m_childrenLoading = false;
+    QString m_objectName;
 };
 
 

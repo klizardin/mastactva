@@ -9,6 +9,7 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
 {
     m_objectModelInfo = this;
     m_imageModel = parent_;
+    qDebug() << "Image::Image()" << getObjectName();
 }
 
 bool Image::isImageLoaded() const
@@ -18,14 +19,19 @@ bool Image::isImageLoaded() const
 
 void Image::loadChildren()
 {
+    qDebug() << "Image::loadChildren()" << getObjectName();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     m_imageModel->autoLoadDataItemImpl(this);
 }
 
 void Image::downloadImage()
 {
-    //qDebug() << "Image::downloadImage() " << getFilename();
+    qDebug() << "Image::downloadImage() " << getObjectName() << "file =" << getFilename();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
@@ -155,14 +161,17 @@ void Image::setImageDescription(const QVariant &obj_)
 
 ImagePointModel *Image::createImagePoints()
 {
+    qDebug() << "Image::createImagePoints()" << getObjectName();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     ImagePointModel *m = new ImagePointModel(this);
     m->initResponse();
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
     m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImagePointModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_Image_") + QVariant::fromValue(m_appId).toString() + QString("_ImagePointModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
@@ -174,13 +183,16 @@ ImagePointModel *Image::createImagePoints()
 
 ImageDescriptionModel *Image::createImageDescriptionModel()
 {
+    qDebug() << "Image::createImageDescriptionModel()" << getObjectName();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     ImageDescriptionModel *m = new ImageDescriptionModel(this);
     m->initResponse();
     m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_ImageDescriptionModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_imageModel->getQMLLayoutName() + QString("_Image_") + QVariant::fromValue(m_appId).toString() + QString("_ImageDescriptionModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
@@ -189,24 +201,46 @@ ImageDescriptionModel *Image::createImageDescriptionModel()
     return m;
 }
 
+void Image::startLoadChildModel()
+{
+    qDebug() << "Image::startLoadChildModel() " << getObjectName();
+    IListModelInfoObjectImpl::startLoadChildModel();
+}
+
+void Image::endLoadChildModel()
+{
+    qDebug() << "Image::endLoadChildModel() " << getObjectName();
+    IListModelInfoObjectImpl::endLoadChildModel();
+}
+
 void Image::loadChildrenVF()
 {
-    //qDebug() << "Image::loadChildrenVF() " << getFilename();
+    qDebug() << "Image::loadChildrenVF() " << getObjectName() << "file ="  << getFilename();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     IListModelInfoObjectImpl::loadChildrenVF();
 }
 
 void Image::objectLoadedVF()
 {
+    qDebug() << "Image::objectLoadedVF() " << getObjectName() << "file ="  << getFilename();
+    IListModelInfoObjectImpl::trace();
     downloadImage();
     IListModelInfoObjectImpl::objectLoadedVF();
 }
 
 void Image::listLoadedVF()
 {
+    qDebug() << "Image::listLoadedVF() " << getObjectName() << "file =" << getFilename();
+    IListModelInfoObjectImpl::trace();
     emit imageLoaded();
 }
 
+QString Image::getObjectName() const
+{
+    return m_imageModel->getQMLLayoutName() + QString("_Image_") + QVariant::fromValue(m_appId).toString();
+}
 
 ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Image, ImageModel>(parent_)

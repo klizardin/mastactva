@@ -75,6 +75,7 @@ ApplicationWindow {
         currentRef: "gallery"
         jsonParamsGet: false
         autoCreateChildrenModels: false
+        autoCreateChildrenModelsOnSelect: true
     }
 
     UserStepModel {

@@ -162,6 +162,8 @@ protected:
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
 
+    QString getObjectName() const;
+
 signals:
     void idChanged();
     void imagePointIdChanged();

@@ -85,6 +85,8 @@ void Shader::setDescription(const QString &description_)
 void Shader::loadChildrenVF()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     IListModelInfoObjectImpl::loadChildrenVF();
 }
 
@@ -96,6 +98,11 @@ void Shader::objectLoadedVF()
     {
         sf->add(filename(), hash(), g_shadersRelPath);
     }
+}
+
+QString Shader::getObjectName() const
+{
+    return m_shaderModel->getQMLLayoutName() + QString("_Shader_") + QVariant::fromValue(m_appId).toString();
 }
 
 

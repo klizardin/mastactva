@@ -580,6 +580,7 @@ public:
     void autoLoadDataItemImpl(const DataType_ *item_)
     {
         if(nullptr == item_) { return; }
+        qDebug() << "-start autoLoadDataItemImpl() item =" << item_;
         const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
         IListModelInfo *modelInfo = nullptr;
         layout::setValue(modelInfoVar, modelInfo);
@@ -592,6 +593,7 @@ public:
         {
             modelInfo->objectLoadedVF();
         }
+        qDebug() << "-end autoLoadDataItemImpl() item =" << item_;
     }
 
     template<typename Op_>
@@ -693,6 +695,10 @@ protected:
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
+            }
+            else
+            {
+                setListLoaded();
             }
             dataAPI->freeRequest(request);
         }
@@ -1091,6 +1097,7 @@ protected:
                 autoCreateChildrenModelsImpl()
             ) ||
             (
+                nullptr == item_ &&
                 autoCreateChildrenModelsOnSelectImpl() &&
                 getCurrentIndexImpl() >= 0 &&
                 isIndexValid(getCurrentIndexImpl(), m_data.size())

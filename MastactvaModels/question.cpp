@@ -92,7 +92,7 @@ AnswerModel *Question::createAnswerModel()
     m->setLayoutRefImpl("question", m_questionModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_AnswerModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_Question_") + QVariant::fromValue(m_appId).toString() + QString("_AnswerModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
@@ -111,7 +111,7 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
     m->setLayoutRefImpl("question", m_questionModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_UserQuestionAnswerModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_Question_") + QVariant::fromValue(m_appId).toString() + QString("_UserQuestionAnswerModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);

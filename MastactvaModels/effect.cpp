@@ -113,12 +113,14 @@ void Effect::setArgSets(const QVariant &obj_)
 EffectShaderModel *Effect::createEffectShadersModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     EffectShaderModel *m = new EffectShaderModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectShaderModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectShaderModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
@@ -130,12 +132,14 @@ EffectShaderModel *Effect::createEffectShadersModel()
 EffectArgModel *Effect::createEffectArgModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     EffectArgModel *m = new EffectArgModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
@@ -147,12 +151,14 @@ EffectArgModel *Effect::createEffectArgModel()
 EffectArgSetModel *Effect::createEffectArgSetModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
     EffectArgSetModel *m = new EffectArgSetModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_EffectArgSetModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgSetModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
@@ -418,6 +424,11 @@ void Effect::applyRefreshArgumentsStep()
         m_effectArgModel->addDataItemImpl(arg);
         return;
     }
+}
+
+QString Effect::getObjectName() const
+{
+    return m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString();
 }
 
 void Effect::listLoadedVF()

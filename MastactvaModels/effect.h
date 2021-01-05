@@ -84,6 +84,7 @@ protected:
     EffectArgModel *createEffectArgModel();
     EffectArgSetModel *createEffectArgSetModel();
     void applyRefreshArgumentsStep();
+    QString getObjectName() const;
 
     virtual void listLoadedVF() override;
 

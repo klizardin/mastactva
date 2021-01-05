@@ -79,9 +79,12 @@ public:
 protected:
     ImagePointModel *createImagePoints();
     ImageDescriptionModel *createImageDescriptionModel();
+    virtual void startLoadChildModel() override;
+    virtual void endLoadChildModel() override;
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
     virtual void listLoadedVF() override;
+    QString getObjectName() const;
 
 signals:
     void idChanged();

@@ -57,6 +57,7 @@ Page {
                 height: quizImage.paintedHeight
 
                 onClicked: {
+                    console.log("currentImage.isImageLoaded() =",currentImage.isImageLoaded())
                     if(quizImageAnimation.running)
                     {
                         // TODO: fix can`t correct value
@@ -192,8 +193,10 @@ Page {
 
     function loadChildren(image)
     {
+        console.log("loadChildren() image =", image)
         if(!image.isImageLoaded())
         {
+            console.log("!image.isImageLoaded()")
             busyIndicator.visible = true
             busyIndicator.running = true
             image.imageLoaded.connect(currentImageLoaded)
@@ -202,12 +205,14 @@ Page {
         }
         else
         {
+            console.log("image.isImageLoaded()")
             loadingImage = undefined
         }
     }
 
     function currentImageLoaded()
     {
+        console.log("currentImageLoaded() loadingImage =",loadingImage)
         if(loadingImage !== undefined)
         {
             loadingImage.imageLoaded.disconnect(currentImageLoaded)

@@ -2,8 +2,8 @@
 #include "../MastactvaBase/qmlobjects.h"
 
 
-//#define TRACE_MODEL_LOADING
-//#define TRACE_MODEL_LOADED
+#define TRACE_MODEL_LOADING
+#define TRACE_MODEL_LOADED
 
 
 ListModelBaseData::ListModelBaseData(IListModel *model_)
@@ -299,8 +299,12 @@ void ListModelBaseData::setSortFieldsImpl(const QStringList &sortFields_)
 void ListModelBaseData::startListLoad()
 {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
-    qDebug() << m_QMLLayoutName << "startListLoad()";
+    qDebug() << "-" << m_QMLLayoutName << "startListLoad()";
 #endif
+    if(m_QMLLayoutName == "AllImagesOfGallery_ImagePointModel_1_ImagePointEffectModel_4_EffectArgSetModel_1")
+    {
+        qDebug() << "start load";
+    }
 
     m_listLoading = true;
     if(nullptr != m_parentListModelInfo)
@@ -312,7 +316,7 @@ void ListModelBaseData::startListLoad()
 void ListModelBaseData::setListLoaded()
 {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
-    qDebug() << m_QMLLayoutName << "setListLoaded()";
+    qDebug() << "-"  << m_QMLLayoutName << "setListLoaded()";
 #endif
 
     m_listLoading = false;
@@ -321,10 +325,11 @@ void ListModelBaseData::setListLoaded()
     {
         m_parentListModelInfo->endLoadChildModel();
     }
+
     if(isListLoadedImpl())
     {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
-    qDebug() << m_QMLLayoutName << "listLoadedVF() ";
+    qDebug() << "-"  << m_QMLLayoutName << "setListLoaded(), listLoadedVF()";
 #endif
         listLoadedVF();
     }
@@ -342,10 +347,11 @@ bool ListModelBaseData::childrenLoaded() const
 
 void ListModelBaseData::startLoadChildModel()
 {
-    ++m_loadingChildenModels;
 #if defined(TRACE_MODEL_LOADING)
-    qDebug() << m_QMLLayoutName << "startLoadChildModel() " << m_loadingChildenModels;
+    qDebug() << "-" << m_QMLLayoutName << "startLoadChildModel() " << m_loadingChildenModels;
 #endif
+
+    ++m_loadingChildenModels;
     if(nullptr != m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
@@ -354,10 +360,19 @@ void ListModelBaseData::startLoadChildModel()
 
 void ListModelBaseData::endLoadChildModel()
 {
-    --m_loadingChildenModels;
 #if defined(TRACE_MODEL_LOADING)
-    qDebug() << m_QMLLayoutName << "endLoadChildModel() " << m_loadingChildenModels;
+    qDebug() << "-"  << m_QMLLayoutName << "endLoadChildModel() " << m_loadingChildenModels;
 #endif
+
+    --m_loadingChildenModels;
+
+#if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
+    if(m_loadingChildenModels < 0)
+    {
+        qDebug() << "m_loadingChildenModels < 0" << m_QMLLayoutName << "endLoadChildModel()" << m_loadingChildenModels;
+    }
+#endif
+
     if(nullptr != m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
@@ -366,7 +381,7 @@ void ListModelBaseData::endLoadChildModel()
     if(isListLoadedImpl())
     {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
-    qDebug() << m_QMLLayoutName << "listLoadedVF() ";
+    qDebug() << "-"  << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()";
 #endif
         listLoadedVF();
     }

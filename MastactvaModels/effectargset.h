@@ -62,6 +62,7 @@ public:
 
 protected:
     EffectArgValueModel *createAffectArgValueModel();
+    QString getObjectName() const;
 
     virtual void listLoadedVF() override;
 

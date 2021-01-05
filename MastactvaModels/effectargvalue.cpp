@@ -115,7 +115,7 @@ EffectArgModel *EffectArgValue::createEffectArgModel()
     m->setLayoutRefImpl("id", m_effectArgValueModel->getQMLLayoutName(), "arg");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArgValueModel->getQMLLayoutName() + QString("_EffectArgModel_") + QVariant::fromValue(m_appId).toString());
+    m->setLayoutQMLName(m_effectArgValueModel->getQMLLayoutName() + QString("_EffectArgValue_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
