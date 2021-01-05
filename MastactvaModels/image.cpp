@@ -9,7 +9,7 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
 {
     m_objectModelInfo = this;
     m_imageModel = parent_;
-    qDebug() << "Image::Image()" << getObjectName();
+    //qDebug() << "Image::Image()" << getObjectName();
 }
 
 bool Image::isImageLoaded() const
@@ -19,7 +19,7 @@ bool Image::isImageLoaded() const
 
 void Image::loadChildren()
 {
-    qDebug() << "Image::loadChildren()" << getObjectName();
+    //qDebug() << "Image::loadChildren()" << getObjectName();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
@@ -28,7 +28,7 @@ void Image::loadChildren()
 
 void Image::downloadImage()
 {
-    qDebug() << "Image::downloadImage() " << getObjectName() << "file =" << getFilename();
+    //qDebug() << "Image::downloadImage() " << getObjectName() << "file =" << getFilename();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
@@ -161,7 +161,7 @@ void Image::setImageDescription(const QVariant &obj_)
 
 ImagePointModel *Image::createImagePoints()
 {
-    qDebug() << "Image::createImagePoints()" << getObjectName();
+    //qDebug() << "Image::createImagePoints()" << getObjectName();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
@@ -183,7 +183,7 @@ ImagePointModel *Image::createImagePoints()
 
 ImageDescriptionModel *Image::createImageDescriptionModel()
 {
-    qDebug() << "Image::createImageDescriptionModel()" << getObjectName();
+    //qDebug() << "Image::createImageDescriptionModel()" << getObjectName();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
@@ -203,19 +203,19 @@ ImageDescriptionModel *Image::createImageDescriptionModel()
 
 void Image::startLoadChildModel()
 {
-    qDebug() << "Image::startLoadChildModel() " << getObjectName();
+    //qDebug() << "Image::startLoadChildModel() " << getObjectName();
     IListModelInfoObjectImpl::startLoadChildModel();
 }
 
 void Image::endLoadChildModel()
 {
-    qDebug() << "Image::endLoadChildModel() " << getObjectName();
+    //qDebug() << "Image::endLoadChildModel() " << getObjectName();
     IListModelInfoObjectImpl::endLoadChildModel();
 }
 
 void Image::loadChildrenVF()
 {
-    qDebug() << "Image::loadChildrenVF() " << getObjectName() << "file ="  << getFilename();
+    //qDebug() << "Image::loadChildrenVF() " << getObjectName() << "file ="  << getFilename();
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
@@ -224,7 +224,7 @@ void Image::loadChildrenVF()
 
 void Image::objectLoadedVF()
 {
-    qDebug() << "Image::objectLoadedVF() " << getObjectName() << "file ="  << getFilename();
+    //qDebug() << "Image::objectLoadedVF() " << getObjectName() << "file ="  << getFilename();
     IListModelInfoObjectImpl::trace();
     downloadImage();
     IListModelInfoObjectImpl::objectLoadedVF();
@@ -232,7 +232,7 @@ void Image::objectLoadedVF()
 
 void Image::listLoadedVF()
 {
-    qDebug() << "Image::listLoadedVF() " << getObjectName() << "file =" << getFilename();
+    //qDebug() << "Image::listLoadedVF() " << getObjectName() << "file =" << getFilename();
     IListModelInfoObjectImpl::trace();
     emit imageLoaded();
 }

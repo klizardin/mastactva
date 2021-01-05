@@ -20,6 +20,8 @@
 //#define TRACE_LIST_LOAD_DATA
 //#define TRACE_LIST_SIZE
 //#define TRACE_LIST_DATA_ITEMS_CRUD
+//#define TRACE_MODEL_LOADING
+//#define TRACE_MODEL_LOADED
 
 
 static const QString g_randSort = "?";
@@ -582,7 +584,9 @@ public:
     void autoLoadDataItemImpl(const DataType_ *item_)
     {
         if(nullptr == item_) { return; }
+#if defined(TRACE_MODEL_LOADING)
         qDebug() << "-start autoLoadDataItemImpl() item =" << item_ << getQMLLayoutName();
+#endif
         const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
         IListModelInfo *modelInfo = nullptr;
         layout::setValue(modelInfoVar, modelInfo);
@@ -595,7 +599,9 @@ public:
         {
             modelInfo->objectLoadedVF();
         }
+#if defined(TRACE_MODEL_LOADING)
         qDebug() << "-end autoLoadDataItemImpl() item =" << item_ << getQMLLayoutName();
+#endif
     }
 
     template<typename Op_>
