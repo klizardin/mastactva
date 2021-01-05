@@ -17,4 +17,5 @@
    + fix can`t correct animation duration value while running = true
 15. add sort modes to the client code
 * 16. add description for all images of gallery view
+* 17. test load mode -- done
 
