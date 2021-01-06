@@ -20,6 +20,8 @@ Page {
     property int galleryId: -1
     property int imageId: -1
     property int descriptionId: -1
+    property bool hasHelpPage: true
+    property string helpPageText: qsTr("Help for description page")
 
     signal closeDescriptionPage()
 

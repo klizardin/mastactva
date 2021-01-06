@@ -285,6 +285,21 @@ ApplicationWindow {
         }
     }
 
+    HelpForm {
+        id: helpPage
+    }
+
+    Connections {
+        target: helpPage
+
+        function onViewed()
+        {
+            if (stackView.depth > 1) {
+                stackView.pop()
+            }
+        }
+    }
+
     SystemPalette {
         id: activePallete
         colorGroup: SystemPalette.Active
@@ -316,7 +331,13 @@ ApplicationWindow {
                     color: activePallete.highlight
                 }
                 onClicked: {
-                    console.log("show help for page")
+                    if(stackView.currentItem.hasHelpPage)
+                    {
+                        helpPage.helpText = stackView.currentItem.helpPageText
+                        helpPage.helpForPage = stackView.currentItem.title
+                        helpPage.init()
+                        stackView.push(helpPage)
+                    }
                 }
             }
 

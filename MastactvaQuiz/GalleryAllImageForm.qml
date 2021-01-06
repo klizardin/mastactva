@@ -24,6 +24,8 @@ Page {
     property string crossPageName: qsTr("Quiz")
     property var crossPage: undefined
     property int animationSpeed: Constants.animationSpeedNorm
+    property bool hasHelpPage: true
+    property string helpPageText: qsTr("Help for all images of gallery page")
 
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
 

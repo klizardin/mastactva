@@ -19,6 +19,8 @@ Page {
     property int currentAnswerIndex: -1
     property bool hasDescription: false
     property bool hasCrossPage: false
+    property bool hasHelpPage: true
+    property string helpPageText: qsTr("Help for question page")
 
     signal answered()
 

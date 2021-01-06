@@ -16,6 +16,8 @@ Page {
     property int animationSpeed: Constants.animationSpeedNorm
     property bool hasDescription: false
     property bool hasCrossPage: false
+    property bool hasHelpPage: true
+    property string helpPageText: qsTr("Help for options page")
 
     signal speedChanged(var speed)
 
