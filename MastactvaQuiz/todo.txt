@@ -18,4 +18,7 @@
 * 15. add sort modes to the client code
 * 16. add description for all images of gallery view
 * 17. test load mode -- done
+* 18. add help on page caption 
+* 19. show load busy after effect animation
+
 
