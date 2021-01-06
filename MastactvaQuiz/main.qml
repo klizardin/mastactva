@@ -308,17 +308,21 @@ ApplicationWindow {
                 }
             }
 
-            Label {
+            ToolButton {
+                id: currentPage
                 text: stackView.currentItem.title
-                Layout.minimumWidth: 2 * (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: 2.1 * (Constants.width - toolButton.width) / 4
                 background: Rectangle {
                     color: activePallete.highlight
+                }
+                onClicked: {
+                    console.log("show help for page")
                 }
             }
 
             ToolButton {
                 id: crossPage
-                Layout.minimumWidth: (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: 0.95 * (Constants.width - toolButton.width) / 4
                 text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
                 visible: stackView.currentItem.hasCrossPage
                 onClicked: {
@@ -334,7 +338,7 @@ ApplicationWindow {
 
             ToolButton {
                 id: infoButton
-                Layout.minimumWidth: (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: 0.95 * (Constants.width - toolButton.width) / 4
                 text: qsTr("Description")
                 visible: stackView.currentItem.hasDescription
                 onClicked: {
