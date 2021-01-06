@@ -31,15 +31,20 @@ Page {
             Column {
                 Label {
                     text: qsTr("Animation speed")
+                    x: Constants.questionPadding
+                    width: optionsPage.width - Constants.questionPadding * 2
                 }
                 Slider {
                     id: animationSpeedSlider
+                    x: Constants.questionPadding
+                    width: optionsPage.width - Constants.questionPadding * 2
                     from: fromSpeed(Constants.animationSpeedMax)
                     to: fromSpeed(Constants.animationSpeedMin)
                     value: fromSpeed(Constants.animationSpeedNorm)
                 }
                 Button {
                     text: qsTr("Set default speed value")
+                    width: optionsPage.width - Constants.questionPadding * 2
                     onClicked: {
                         animationSpeedSlider.value = fromSpeed(Constants.animationSpeedNorm)
                         optionsPage.speedChanged(toSpeed(animationSpeedSlider.value))
