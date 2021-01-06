@@ -278,7 +278,6 @@ ApplicationWindow {
 
         function onSpeedChanged(speed)
         {
-            console.log("speed =", speed)
             animationSpeed = speed
             quizPage.animationSpeed = animationSpeed
             galleryAllImagesPage.animationSpeed = animationSpeed

@@ -60,12 +60,7 @@ Page {
 
     function init()
     {
-        //console.log("fromSpeed(Constants.animationSpeedMax) =", fromSpeed(Constants.animationSpeedMax))
-        //console.log("fromSpeed(Constants.animationSpeedMin) =", fromSpeed(Constants.animationSpeedMin))
         animationSpeedSlider.value = fromSpeed(animationSpeed)
-        //console.log("toSpeed(animationSpeedSlider.value) =", toSpeed(animationSpeedSlider.value))
-        //console.log("toSpeed(fromSpeed(Constants.animationSpeedMax)) =", fromSpeed(Constants.animationSpeedMax))
-        //console.log("toSpeed(fromSpeed(Constants.animationSpeedMin)) =", fromSpeed(Constants.animationSpeedMin))
     }
 
     function fromSpeed(speed)
