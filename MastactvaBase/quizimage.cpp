@@ -45,6 +45,7 @@ void QuizImage::swapImages()
 
     emit fromImageChanged();
     emit toImageChanged();
+    emit tChanged();
 }
 
 QVariantList QuizImage::fromImage() const
