@@ -131,6 +131,7 @@ Page {
                     quizImageNumberAnimation.easing.type = Easing.Linear
                     quizImageNumberAnimation.duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
                     quizImage.swapImages();
+                    indicateLoadChildren()
                 }
             }
         }
@@ -161,33 +162,48 @@ Page {
         quizImage.toImage = [currentImageSource, currentImageHash]
         quizImage.visible = true
         loadChildren(currentImage)
+        indicateLoadChildren()
     }
 
     property var loadingImage: undefined
 
     function loadChildren(image)
     {
+        //console.log("loadChildren() image =", image)
+        busyIndicator.visible = false
+        busyIndicator.running = false
         if(!image.isImageLoaded())
         {
-            busyIndicator.visible = true
-            busyIndicator.running = true
-            image.imageLoaded.connect(currentImageLoaded)
-            image.loadChildren()
             loadingImage = image
+            loadingImage.imageLoaded.connect(currentImageLoaded)
+            loadingImage.loadChildren()
         }
         else
         {
             loadingImage = undefined
         }
+        //console.log("loadChildren() loadingImage =", loadingImage)
+    }
+
+    function indicateLoadChildren()
+    {
+        //console.log("indicateLoadChildren()")
+        if(loadingImage !== undefined)
+        {
+            busyIndicator.visible = true
+            busyIndicator.running = true
+        }
     }
 
     function currentImageLoaded()
     {
+        //console.log("currentImageLoaded()")
         if(loadingImage !== undefined)
         {
             loadingImage.imageLoaded.disconnect(currentImageLoaded)
             busyIndicator.visible = false
             busyIndicator.running = false
+            loadingImage = undefined
         }
     }
 }

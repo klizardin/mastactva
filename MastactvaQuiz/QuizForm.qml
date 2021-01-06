@@ -155,6 +155,7 @@ Page {
                     quizImageNumberAnimation.easing.type = Easing.Linear
                     quizImageNumberAnimation.duration = animationDuration
                     quizImage.swapImages();
+                    indicateLoadChildren()
                     jumpToImage(currentImage)
                 }
             }
@@ -186,6 +187,7 @@ Page {
         quizImage.toImage = [currentImageSource, currentImageHash]
         quizImage.visible = true
         loadChildren(currentImage)
+        indicateLoadChildren()
         jumpToImage(currentImage)
     }
 
@@ -194,30 +196,40 @@ Page {
     function loadChildren(image)
     {
         //console.log("loadChildren() image =", image)
+        busyIndicator.visible = false
+        busyIndicator.running = false
         if(!image.isImageLoaded())
         {
-            //console.log("!image.isImageLoaded()")
-            busyIndicator.visible = true
-            busyIndicator.running = true
-            image.imageLoaded.connect(currentImageLoaded)
-            image.loadChildren()
             loadingImage = image
+            loadingImage.imageLoaded.connect(currentImageLoaded)
+            loadingImage.loadChildren()
         }
         else
         {
-            //console.log("image.isImageLoaded()")
             loadingImage = undefined
+        }
+        //console.log("loadChildren() loadingImage =", loadingImage)
+    }
+
+    function indicateLoadChildren()
+    {
+        //console.log("indicateLoadChildren()")
+        if(loadingImage !== undefined)
+        {
+            busyIndicator.visible = true
+            busyIndicator.running = true
         }
     }
 
     function currentImageLoaded()
     {
-        //console.log("currentImageLoaded() loadingImage =",loadingImage)
+        //console.log("currentImageLoaded()")
         if(loadingImage !== undefined)
         {
             loadingImage.imageLoaded.disconnect(currentImageLoaded)
             busyIndicator.visible = false
             busyIndicator.running = false
+            loadingImage = undefined
         }
     }
 }
