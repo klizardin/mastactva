@@ -33,7 +33,7 @@ protected:
     bool compare(QNetworkReply *reply_) const;
 
 private:
-    QNetworkReply *m_reply = nullptr; // TODO: may be leaking here
+    QNetworkReply *m_reply = nullptr;
 
     friend class NetAPI;
 };
