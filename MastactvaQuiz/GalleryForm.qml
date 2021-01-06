@@ -50,7 +50,7 @@ Page {
 
             Rectangle {
                 width: galleryPage.width
-                height: (galleryPage.width / Constants.aspectX) * Constants.aspectY
+                height: (galleryPage.width / Constants.galleryAspectX) * Constants.galleryAspectY
 
                 SwipeView {
                     id: galleryImagesSwipeView
@@ -58,7 +58,7 @@ Page {
                     x: Constants.galleryImageSpacing / 2
                     y: Constants.galleryImageSpacing / 2
                     width: (galleryPage.width - Constants.galleryImageSpacing)
-                    height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                    height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.galleryAspectX) * Constants.galleryAspectY
                     clip: true
 
                     Repeater {
@@ -67,7 +67,7 @@ Page {
                         Image {
                             id: imageOfGallery
                             width: (galleryPage.width - Constants.galleryImageSpacing)
-                            height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.aspectX) * Constants.aspectY
+                            height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.galleryAspectX) * Constants.galleryAspectY
                             source: imageSource
                             fillMode: Image.PreserveAspectFit
 

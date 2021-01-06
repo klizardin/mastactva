@@ -21,6 +21,8 @@ QtObject {
     readonly property int imageOfGalleryImageSpacing2: 4
     readonly property int aspectX: 3
     readonly property int aspectY: 4
+    readonly property int galleryAspectX: 4
+    readonly property int galleryAspectY: 3
     readonly property int descriptionRowHeight: 100
     readonly property int logingItemsSpacing: 10
     readonly property int pointImageSize: 32
