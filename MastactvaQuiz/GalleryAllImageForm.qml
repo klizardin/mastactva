@@ -25,7 +25,12 @@ Page {
     property var crossPage: undefined
     property int animationSpeed: Constants.animationSpeedNorm
     property bool hasHelpPage: true
-    property string helpPageText: qsTr("Help for all images of gallery page")
+    property string helpPageText: qsTr("Help for the page of all images of gallery. " +
+                                       "With the 'Gallery' you can learn images that enter the quiz. " +
+                                       "May be you did not find all image. " +
+                                       "So may be you did not find all question. " +
+                                       "Or you can view 'Gallery' without palying quiz. " +
+                                       "Just look for images and it`s description. ")
 
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
 

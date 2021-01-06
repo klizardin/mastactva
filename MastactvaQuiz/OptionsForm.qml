@@ -17,7 +17,8 @@ Page {
     property bool hasDescription: false
     property bool hasCrossPage: false
     property bool hasHelpPage: true
-    property string helpPageText: qsTr("Help for options page")
+    property string helpPageText: qsTr("Help for the options page. " +
+                                       "Here you can set options for the quiz. ")
 
     signal speedChanged(var speed)
 

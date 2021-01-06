@@ -15,11 +15,15 @@
     </message>
     <message>
         <location filename="DescriptionForm.qml" line="24"/>
-        <source>Help for description page</source>
-        <translation>Дапамога для для старонкі апісання</translation>
+        <source>Help for the description page. At the page you can see a description of the image if any. Description can help you learn more about image. Also description can help you answer the questions of the quiz. </source>
+        <translation>Дапамога для старонкі апісання выяў. На гэтай старонцы вы можаце пабачыць апісанне для выяў калі для выявы ёсцб апісанне. Апісанне можа дапамагчы вывучыць больш аб выяве. Таксама апісанне можа дапамагчы адказваць на пытанні віктарыны. </translation>
     </message>
     <message>
-        <location filename="DescriptionForm.qml" line="51"/>
+        <source>Help for description page</source>
+        <translation type="vanished">Дапамога для для старонкі апісання</translation>
+    </message>
+    <message>
+        <location filename="DescriptionForm.qml" line="54"/>
         <source>Close</source>
         <translation>Закрыць</translation>
     </message>
@@ -38,8 +42,13 @@
     </message>
     <message>
         <location filename="GalleryAllImageForm.qml" line="28"/>
+        <source>Help for the page of all images of gallery. With the &apos;Gallery&apos; you can learn images that enter the quiz. May be you did not find all image. So may be you did not find all question. Or you can view &apos;Gallery&apos; without palying quiz. Just look for images and it`s description. </source>
+        <oldsource>Help the page of all images of gallery. With the &apos;Gallery&apos; you can learn images that enter the quiz. May be you did not find all image. So may be you did not find all question. Or you can view &apos;Gallery&apos; without palying quiz. Just look for images and it`s description. </oldsource>
+        <translation>Дапамога для старонкі ўсіх выяў галерэі. З дапамогай старокі &apos;Галерэя&apos; вы можаце пабачыць усе выявы якія ўдзельнічаюць у віктарыне для абранай галерэі. Можа вы не знайшлі ў віктарыне яшчэ ўсе выявы. Таму вы пакуль не знайшлі ўсе пытанні. Таксама &apos;Галерэя&apos; можа дапамагчы не гуляючы проста пабачыць усе выявы віктарны ды іх апісанні. </translation>
+    </message>
+    <message>
         <source>Help for all images of gallery page</source>
-        <translation>Дапамога для старонкі ўсіх выяў галерэі</translation>
+        <translation type="vanished">Дапамога для старонкі ўсіх выяў галерэі</translation>
     </message>
 </context>
 <context>
@@ -50,23 +59,28 @@
         <translation>Галерэі</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="21"/>
         <source>Help for galleries page</source>
-        <translation>Дапамога для старонкі усіх глерэй</translation>
+        <translation type="vanished">Дапамога для старонкі усіх глерэй</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="124"/>
-        <location filename="GalleryForm.qml" line="128"/>
+        <location filename="GalleryForm.qml" line="21"/>
+        <source>Help for the galleries page. At the page you can choose gallery to play quiz in. Also you can view you playing statistics here for every gallery. </source>
+        <oldsource>Help for galleries page. At the page you can choose gallery to play quiz in. Also you can view you playing statistics here for every gallery. </oldsource>
+        <translation>Дапамога для старонкі галерэй. На гэтай старонцы вы можаце абраць галерэю для гульні ці дял прагляду. Таксама тут вы можеце пабачыць статыстыку гульні для кожнай з галерэй.</translation>
+    </message>
+    <message>
+        <location filename="GalleryForm.qml" line="126"/>
+        <location filename="GalleryForm.qml" line="130"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="128"/>
+        <location filename="GalleryForm.qml" line="130"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="136"/>
+        <location filename="GalleryForm.qml" line="138"/>
         <source> ...</source>
         <translation> ...</translation>
     </message>
@@ -103,17 +117,22 @@
         <translation>Апісанне</translation>
     </message>
     <message>
-        <location filename="OptionsForm.qml" line="20"/>
         <source>Help for options page</source>
-        <translation>Дапамога для старонкі налад</translation>
+        <translation type="vanished">Дапамога для старонкі налад</translation>
     </message>
     <message>
-        <location filename="OptionsForm.qml" line="32"/>
+        <location filename="OptionsForm.qml" line="20"/>
+        <source>Help for the options page. Here you can set options for the quiz. </source>
+        <oldsource>Help for options page. Here you can set options for the quiz. </oldsource>
+        <translation>Дапамога для старонкі налад. Туі вы можаце выставіць налады для гульні. </translation>
+    </message>
+    <message>
+        <location filename="OptionsForm.qml" line="33"/>
         <source>Animation speed</source>
         <translation>Хуткасць анімацыі</translation>
     </message>
     <message>
-        <location filename="OptionsForm.qml" line="41"/>
+        <location filename="OptionsForm.qml" line="42"/>
         <source>Set default speed value</source>
         <translation>Устанавіць хуткасць анімацыі па змоўчкі</translation>
     </message>
@@ -126,27 +145,32 @@
         <translation>Пытанне</translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="23"/>
         <source>Help for question page</source>
-        <translation>Дапамога для старонкі пытання</translation>
+        <translation type="vanished">Дапамога для старонкі пытання</translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="35"/>
+        <location filename="QuestionForm.qml" line="23"/>
+        <source>Help for the question page. Here you can answer the question and can get points for your answers. </source>
+        <oldsource>Help for question page. Here you can answer the question and can get points for your answers. </oldsource>
+        <translation>Дапамога для старонкі пытання. Тут вы можаце адказаць на пытанне і атрымаць балы за ваш адказ. </translation>
+    </message>
+    <message>
+        <location filename="QuestionForm.qml" line="36"/>
         <source>Question : </source>
         <translation>Пытанне : </translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="49"/>
+        <location filename="QuestionForm.qml" line="50"/>
         <source>Points for question : </source>
         <translation>Балаў за пытанне : </translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="71"/>
+        <location filename="QuestionForm.qml" line="72"/>
         <source>Choose</source>
         <translation>Абраць</translation>
     </message>
     <message>
-        <location filename="QuestionForm.qml" line="200"/>
+        <location filename="QuestionForm.qml" line="201"/>
         <source>Please choose answer</source>
         <translation>Калі ласка абярыце адказ</translation>
     </message>
@@ -165,8 +189,13 @@
     </message>
     <message>
         <location filename="QuizForm.qml" line="29"/>
+        <source>Help for the quiz page. It is a quiz page. Here you can find images and questions. Watch images and effects between images. Let&apos;s have a fun. </source>
+        <oldsource>Help for quiz page. It is a quiz page. Here you can find images and questions. Watch images and effects between images. Let&apos;s have a fun. </oldsource>
+        <translation>Дамамога для старонкі віктарыны. Тут вы можаце знайсці выявы і пытанні. Аглядаць выявы і эфекты пры змене выяў. Давайце гуляць. </translation>
+    </message>
+    <message>
         <source>Help for quiz page</source>
-        <translation>Дапамога для старонкі віктарыны</translation>
+        <translation type="vanished">Дапамога для старонкі віктарыны</translation>
     </message>
 </context>
 <context>

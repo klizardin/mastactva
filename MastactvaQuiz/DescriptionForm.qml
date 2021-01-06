@@ -21,7 +21,10 @@ Page {
     property int imageId: -1
     property int descriptionId: -1
     property bool hasHelpPage: true
-    property string helpPageText: qsTr("Help for description page")
+    property string helpPageText: qsTr("Help for the description page. " +
+                                       "At the page you can see a description of the image if any. " +
+                                       "Description can help you learn more about image. " +
+                                       "Also description can help you answer the questions of the quiz. ")
 
     signal closeDescriptionPage()
 

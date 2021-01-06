@@ -26,7 +26,11 @@ Page {
     property var crossPage: undefined
     property int animationSpeed: Constants.animationSpeedNorm
     property bool hasHelpPage: true
-    property string helpPageText: qsTr("Help for quiz page")
+    property string helpPageText: qsTr("Help for the quiz page. " +
+                                       "It is a quiz page. " +
+                                       "Here you can find images and questions. " +
+                                       "Watch images and effects between images. " +
+                                       "Let's have a fun. ")
 
     signal showQuestion(var question, int imageId)
     signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)

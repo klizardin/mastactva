@@ -18,7 +18,9 @@ Page {
     property bool hasDescription: false
     property bool hasCrossPage: false
     property bool hasHelpPage: true
-    property string helpPageText: qsTr("Help for galleries page")
+    property string helpPageText: qsTr("Help for the galleries page. " +
+                                       "At the page you can choose gallery to play quiz in. " +
+                                       "Also you can view you playing statistics here for every gallery. ")
 
     signal startQuiz(var image)
 

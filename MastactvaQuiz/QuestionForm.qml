@@ -20,7 +20,8 @@ Page {
     property bool hasDescription: false
     property bool hasCrossPage: false
     property bool hasHelpPage: true
-    property string helpPageText: qsTr("Help for question page")
+    property string helpPageText: qsTr("Help for the question page. " +
+                                       "Here you can answer the question and can get points for your answers. ")
 
     signal answered()
 
