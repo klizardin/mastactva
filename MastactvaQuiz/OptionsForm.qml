@@ -11,7 +11,7 @@ Page {
     width: Constants.pageWidth
     height: Constants.pageHeight
 
-    title: qsTr("Description")
+    title: qsTr("Options")
 
     property int animationSpeed: Constants.animationSpeedNorm
     property bool hasDescription: false

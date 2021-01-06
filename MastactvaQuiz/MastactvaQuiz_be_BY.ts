@@ -113,8 +113,9 @@
     <name>OptionsForm</name>
     <message>
         <location filename="OptionsForm.qml" line="14"/>
-        <source>Description</source>
-        <translation>Апісанне</translation>
+        <source>Options</source>
+        <oldsource>Description</oldsource>
+        <translation>Налады</translation>
     </message>
     <message>
         <source>Help for options page</source>
