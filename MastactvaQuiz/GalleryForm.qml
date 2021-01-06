@@ -77,11 +77,6 @@ Page {
 
                                 onClicked:
                                 {
-                                    mouse.accepted = false
-                                }
-
-                                onDoubleClicked:
-                                {
                                     gallerySwipeViewImageRepeater.model.currentIndex = index
                                     currentImage = gallerySwipeViewImageRepeater.model.getCurrentItem()
                                     var ip = currentImage.imagePoints
@@ -143,7 +138,7 @@ Page {
                 MouseArea {
                     anchors.fill: gallery_description
 
-                    onDoubleClicked: {
+                    onClicked: {
                         showFullDescription = !showFullDescription;
                     }
                 }
