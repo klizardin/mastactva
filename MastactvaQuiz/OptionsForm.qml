@@ -34,15 +34,15 @@ Page {
                 }
                 Slider {
                     id: animationSpeedSlider
-                    from: Constants.animationSpeedMax / Constants.animationSpeedMax * 100
-                    to: Constants.animationSpeedMax / Constants.animationSpeedMin * 100
-                    value: Constants.animationSpeedMax / Constants.animationSpeedNorm * 100
+                    from: fromSpeed(Constants.animationSpeedMax)
+                    to: fromSpeed(Constants.animationSpeedMin)
+                    value: fromSpeed(Constants.animationSpeedNorm)
                 }
                 Button {
                     text: qsTr("Set default speed value")
                     onClicked: {
-                        animationSpeedSlider.value = Constants.animationSpeedMax / Constants.animationSpeedNorm * 100
-                        optionsPage.speedChanged(Constants.animationSpeedMax / animationSpeedSlider.value * 100)
+                        animationSpeedSlider.value = fromSpeed(Constants.animationSpeedNorm)
+                        optionsPage.speedChanged(toSpeed(animationSpeedSlider.value))
                     }
                 }
             }
@@ -54,12 +54,41 @@ Page {
 
         function onMoved()
         {
-            optionsPage.speedChanged(Constants.animationSpeedMax / animationSpeedSlider.value * 100)
+            optionsPage.speedChanged(toSpeed(animationSpeedSlider.value))
         }
     }
 
     function init()
     {
-        animationSpeedSlider.value = Constants.animationSpeedMax / animationSpeed * 100
+        //console.log("fromSpeed(Constants.animationSpeedMax) =", fromSpeed(Constants.animationSpeedMax))
+        //console.log("fromSpeed(Constants.animationSpeedMin) =", fromSpeed(Constants.animationSpeedMin))
+        animationSpeedSlider.value = fromSpeed(animationSpeed)
+        //console.log("toSpeed(animationSpeedSlider.value) =", toSpeed(animationSpeedSlider.value))
+        //console.log("toSpeed(fromSpeed(Constants.animationSpeedMax)) =", fromSpeed(Constants.animationSpeedMax))
+        //console.log("toSpeed(fromSpeed(Constants.animationSpeedMin)) =", fromSpeed(Constants.animationSpeedMin))
+    }
+
+    function fromSpeed(speed)
+    {
+        if(speed >= Constants.animationSpeedNorm)
+        {
+            return (speed - Constants.animationSpeedNorm)/(Constants.animationSpeedMax - Constants.animationSpeedNorm) * 100.0
+        }
+        else
+        {
+            return (speed - Constants.animationSpeedNorm)/(Constants.animationSpeedNorm - Constants.animationSpeedMin) * 100.0
+        }
+    }
+
+    function toSpeed(value)
+    {
+        if(value > 0.0)
+        {
+            return value * (Constants.animationSpeedMax - Constants.animationSpeedNorm) / 100.0 +  Constants.animationSpeedNorm
+        }
+        else
+        {
+            return (Constants.animationSpeedNorm - Constants.animationSpeedMin) * value / 100.0 + Constants.animationSpeedNorm
+        }
     }
 }

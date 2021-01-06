@@ -13,7 +13,7 @@ ApplicationWindow {
     visible: true
     title: qsTr("Mastactva Quiz")
 
-    property int animationSpeed: Constants.animationSpeedNorm
+    property real animationSpeed: Constants.animationSpeedNorm
 
     MastactvaAPI {
         id: mastactvaAPI
@@ -278,6 +278,7 @@ ApplicationWindow {
 
         function onSpeedChanged(speed)
         {
+            console.log("speed =", speed)
             animationSpeed = speed
             quizPage.animationSpeed = animationSpeed
             galleryAllImagesPage.animationSpeed = animationSpeed
