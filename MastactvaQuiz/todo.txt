@@ -20,5 +20,6 @@
 * 17. test load mode -- done
 * 18. add help on page caption 
 * 19. show load busy after effect animation
+* 20. fix option page layout
 
 
