@@ -44,6 +44,7 @@ Page {
                 }
                 Button {
                     text: qsTr("Set default speed value")
+                    x: Constants.questionPadding
                     width: optionsPage.width - Constants.questionPadding * 2
                     onClicked: {
                         animationSpeedSlider.value = fromSpeed(Constants.animationSpeedNorm)
