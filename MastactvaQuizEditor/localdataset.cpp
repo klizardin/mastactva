@@ -110,7 +110,7 @@ void LocalDataSet::downloadStep()
     if(nullptr != m_galleryModel && !m_galleryModel->isListLoaded())
     {
         QObject::connect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
-        m_galleryModel->loadList();
+        m_galleryModel->procedure("all_available", {{"id", 0},});
         emit progress(stepProgress());
         return; // one model at time
     }
