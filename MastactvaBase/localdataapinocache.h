@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QtSql>
 #include <QVector>
+#include <QList>
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/netapi.h"
@@ -189,7 +190,7 @@ private:
     NetAPI *m_netAPI = nullptr;
     QString m_savePath;
     QSqlDatabase m_database;
-    QVector<SaveDBRequest *> m_requests;
+    QList<SaveDBRequest *> m_requests;
     static LocalDataAPINoCache *g_localDataAPI;
 };
 

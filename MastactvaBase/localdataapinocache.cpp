@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QFile>
 #include <QDirIterator>
+#include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
 
 
@@ -192,6 +193,25 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
 }
 
 
+static const char * g_refPrefix = "ref_";
+
+
+inline QString refName(const QString &ref_)
+{
+    return QString(g_refPrefix) + ref_;
+}
+
+inline QStringList refsNames(const QStringList &refs_)
+{
+    QStringList res;
+    for(const auto &s : refs_)
+    {
+        res.push_back(refName(s));
+    }
+    return res;
+}
+
+
 static const char * g_createFieldSpliter = " TEXT , ";
 
 
@@ -202,11 +222,19 @@ void LocalDataAPINoCache::createTable(
         )
 {
     QSqlQuery query = QSqlQuery(m_database);
-    const QString fieldsRequests = refs_.join(g_createFieldSpliter) + tableFieldNames_.join(g_createFieldSpliter);
+    const QString fieldsRequests = (QStringList() << refsNames(refs_) << tableFieldNames_).join(g_createFieldSpliter) + QString(g_createFieldSpliter);
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 )")
             .arg(tableName_, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
-    query.exec(sqlRequest);
+    qDebug() << sqlRequest;
+    if(!query.exec(sqlRequest))
+    {
+        const QSqlError err = query.lastError();
+        qDebug() << err.driverText();
+        qDebug() << err.databaseText();
+        qDebug() << err.nativeErrorCode();
+        qDebug() << err.text();
+    }
 }
 
 
@@ -217,22 +245,23 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
     QSqlQuery query = QSqlQuery(m_database);
-    const QString fieldNames = r_->getRefs().join(g_insertFieldSpliter) + r_->getTableFieldNames().join(g_insertFieldSpliter);
+    const QString fieldNames = (QStringList() << refsNames(r_->getRefs()) << r_->getTableFieldNames()).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : r_->getRefs())
     {
-        bindRefs.push_back(QString(":") + ref);
-        defValues.insert(ref, ref == r_->getCurrentRef() ? r_->getIdField().toString() : "");
+        bindRefs.push_back(QString(":") + refName(ref));
+        defValues.insert(refName(ref), ref == r_->getCurrentRef() ? r_->getIdField().toString() : "");
     }
     QStringList bindFields;
     for(const QString &fieldName : r_->getTableFieldNames())
     {
         bindFields.push_back(QString(":") + fieldName);
     }
-    const QString fieldNamesBindings = bindRefs.join(g_insertFieldSpliter) + bindFields.join(g_insertFieldSpliter);
+    const QString fieldNamesBindings = (QStringList() << bindRefs << bindFields).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
             .arg(r_->getTableName(), fieldNames, fieldNamesBindings);
+    qDebug() << sqlRequest;
     query.prepare(sqlRequest);
     for(int i = 0; ; i++)
     {
@@ -248,7 +277,14 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             QJsonValue valueJV = itemJV[jsonFieldName];
             query.bindValue(bind, !valueJV.isUndefined() && valueJV.isString() ? valueJV.toString() : QString());
         }
-        query.exec();
+        if(!query.exec())
+        {
+            const QSqlError err = query.lastError();
+            qDebug() << err.driverText();
+            qDebug() << err.databaseText();
+            qDebug() << err.nativeErrorCode();
+            qDebug() << err.text();
+        }
     }
 }
 
