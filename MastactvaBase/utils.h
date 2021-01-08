@@ -34,6 +34,8 @@ qreal cube(qreal val_);
 bool isSpace(const QChar &ch_);
 bool isSymbol(const QChar &ch_);
 bool isLetterNumeric(const QChar &ch_);
+bool isNumeric(const QChar &ch_);
+bool isNumeric(const QString &str_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);

@@ -57,6 +57,21 @@ bool isLetterNumeric(const QChar &ch_)
     return res;
 }
 
+bool isNumeric(const QChar &ch_)
+{
+    const QChar::Category c = ch_.category();
+    const bool res = (c >= QChar::Number_DecimalDigit) && (c <= QChar::Number_Other);
+    return res;
+}
+
+bool isNumeric(const QString &str_)
+{
+    return std::all_of(std::begin(str_), std::end(str_), [](const QChar &ch)->bool
+    {
+        return isNumeric(ch);
+    });
+}
+
 
 static const QString g_nl = "\n";
 static const QString g_cb = "/*";
