@@ -21,6 +21,7 @@ Page {
     property var crossPage: undefined
     property bool hasHelpPage: false
     property string helpPageText: qsTr("")
+    property bool needTextCaption: true
     property string defaultHelpText: qsTr("Help for Mastactave Quiz.\n\n " +
                                           "In the application you can view galleries. " +
                                           "You may answer the questions in galleries and get points for you answers. " +
@@ -67,6 +68,7 @@ Page {
     function init()
     {
         helpHeader.text = qsTr("Help for page : ") + helpForPage
+        helpHeader.visible = needTextCaption
         helpTextCtrl.text = helpText
     }
 }

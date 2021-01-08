@@ -335,6 +335,7 @@ ApplicationWindow {
                     {
                         helpPage.helpText = stackView.currentItem.helpPageText
                         helpPage.helpForPage = stackView.currentItem.title
+                        helpPage.needTextCaption = true
                         helpPage.init()
                         stackView.push(helpPage)
                     }
@@ -418,6 +419,7 @@ ApplicationWindow {
                 onClicked: {
                     helpPage.helpText = helpPage.defaultHelpText
                     helpPage.helpForPage = window.title
+                    helpPage.needTextCaption = false
                     helpPage.init()
                     stackView.push(helpPage)
                     drawer.close()
