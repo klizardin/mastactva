@@ -1,6 +1,7 @@
 #include "serverfiles.h"
 #include <QFileInfo>
 #include <QDir>
+#include <QDirIterator>
 #include <QNetworkReply>
 #include <numeric>
 #include "../MastactvaBase/utils.h"
@@ -85,9 +86,18 @@ QString ServerFiles::get(const QString &url_) const
     else { return url_; }
 }
 
-void ServerFiles::clean(const QDateTime &to_)
+void ServerFiles::clean(const QDateTime &beforeEqualDate_)
 {
-
+    QDirIterator fit(m_rootDir, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
+    while(fit.hasNext())
+    {
+        QFile f(fit.next());
+        QFileInfo fi(f);
+        if(fi.lastModified() <= beforeEqualDate_)
+        {
+            f.remove();
+        }
+    }
 }
 
 qreal ServerFiles::getProgressRate(const QStringList &urls_) const
