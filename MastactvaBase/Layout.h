@@ -509,7 +509,7 @@ public:
         return QVariant();
     }
 
-    void getJsonFieldNames(QStringList &fieldsNames_)
+    void getJsonFieldNames(QStringList &fieldsNames_) const
     {
         fieldsNames_.clear();
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
