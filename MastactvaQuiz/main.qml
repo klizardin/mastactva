@@ -410,6 +410,19 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
+
+            ItemDelegate {
+                text: qsTr("Help")
+                width: parent.width
+                visible: stackView.currentItem !== helpPage
+                onClicked: {
+                    helpPage.helpText = helpPage.defaultHelpText
+                    helpPage.helpForPage = window.title
+                    helpPage.init()
+                    stackView.push(helpPage)
+                    drawer.close()
+                }
+            }
         }
     }
 

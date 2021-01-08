@@ -21,6 +21,16 @@ Page {
     property var crossPage: undefined
     property bool hasHelpPage: false
     property string helpPageText: qsTr("")
+    property string defaultHelpText: qsTr("Help for Mastactave Quiz.\n\n " +
+                                          "In the application you can view galleries. " +
+                                          "You may answer the questions in galleries and get points for you answers. " +
+                                          "From galleries page you can get into the quiz page. " +
+                                          "Where you can search for images and questions of gallery by clicking at points at images. " +
+                                          "When you click into an image in the quiz page you will step to a next image or to a question. " +
+                                          "You goal is to answer all questions. " +
+                                          "You may be able not to play quiz (if it is too hard for you) but you may simple view gallerie's " +
+                                          "images by selecting 'Gallery' page in the quiz. " +
+                                          "\n\nPlese click on page title to see help for a specific page. ")
 
     signal viewed()
 
