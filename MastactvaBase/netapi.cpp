@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QByteArray>
 #include "../MastactvaBase/netappconsts.h"
+#include "../MastactvaBase/utils.h"
 
 
 NetRequestData::~NetRequestData()
@@ -247,11 +248,14 @@ RequestData *NetAPI::getListByProcedureImpl(const QString& requestName_,
             .arg(jsonParams_ ? "0" : id.toString())
             .arg(procedureName_)
             ;
-    int count = 0;
+    int count = -1;
     for(const QString &key : extraFields_.keys())
     {
         bool ok = false;
-        int ki = extraFields_.value(key).toInt(&ok);
+        const QVariant v = QVariant::fromValue(key);
+        const QString vs = v.toString();
+        int ki = v.toInt(&ok);
+        ok &= isNumeric(vs);
         if(ok) { count = std::max(count, ki); }
     }
     for(int i = 0; i < count + 1; i++)
