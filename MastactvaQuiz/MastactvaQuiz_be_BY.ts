@@ -69,18 +69,18 @@
         <translation>Дапамога для старонкі галерэй. На гэтай старонцы вы можаце абраць галерэю для гульні ці дял прагляду. Таксама тут вы можеце пабачыць статыстыку гульні для кожнай з галерэй.</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="126"/>
-        <location filename="GalleryForm.qml" line="130"/>
+        <location filename="GalleryForm.qml" line="121"/>
+        <location filename="GalleryForm.qml" line="125"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="130"/>
+        <location filename="GalleryForm.qml" line="125"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="GalleryForm.qml" line="138"/>
+        <location filename="GalleryForm.qml" line="133"/>
         <source> ...</source>
         <translation> ...</translation>
     </message>
@@ -98,13 +98,26 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="HelpForm.qml" line="36"/>
-        <location filename="HelpForm.qml" line="59"/>
+        <location filename="HelpForm.qml" line="24"/>
+        <source>Help for Mastactave Quiz.
+
+ In the application you can view galleries. You may answer the questions in galleries and get points for you answers. From galleries page you can get into the quiz page. Where you can search for images and questions of gallery by clicking at points at images. When you click into an image in the quiz page you will step to a next image or to a question. You goal is to answer all questions. You may be able not to play quiz (if it is too hard for you) but you may simple view gallerie&apos;s images by selecting &apos;Gallery&apos; page in the quiz. 
+
+Plese click on page title to see help for a specific page. </source>
+        <translation>Дапамога для віктарыны Мастацтва.
+
+В аплікацыі вы можаце праглядаць галерэі. Можаце адказваць на пытанні в галерэі і атрымліваць за гэта балы. Са старонкі галерэі вы можаце перайсці на старонку віктарыны (клікнуўшы па выяве). Дзе вы можаце шукаць выявы і пытанні клікаючы па кропках на выяве. Калі вы клікніце па некай кропке на выяве, то віктарына перйдзе да наступнай выявы ці да пытання. Ваша цэль - знайсці ўсе пытанні і адказаць на іх. Калі вы жадаеце, то вы можаце проста прагледзіць выявы галерэі ды апісанні да выяў. Для гэтага на старонцы віктарыны абярыце &apos;Галерэя&apos;. 
+
+Калі ласка, клікайце па загалоўку старонкі для таго каб праглядзецб дапамогу для канкрэтнай старонкі. </translation>
+    </message>
+    <message>
+        <location filename="HelpForm.qml" line="46"/>
+        <location filename="HelpForm.qml" line="69"/>
         <source>Help for page : </source>
         <translation>Дапамога для старонкі : </translation>
     </message>
     <message>
-        <location filename="HelpForm.qml" line="48"/>
+        <location filename="HelpForm.qml" line="58"/>
         <source>Close</source>
         <translation>Закрыць</translation>
     </message>
@@ -133,7 +146,7 @@
         <translation>Хуткасць анімацыі</translation>
     </message>
     <message>
-        <location filename="OptionsForm.qml" line="42"/>
+        <location filename="OptionsForm.qml" line="46"/>
         <source>Set default speed value</source>
         <translation>Устанавіць хуткасць анімацыі па змоўчкі</translation>
     </message>
@@ -226,6 +239,11 @@
         <location filename="main.qml" line="403"/>
         <source>Options</source>
         <translation>Налады</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="415"/>
+        <source>Help</source>
+        <translation>Дапамога</translation>
     </message>
 </context>
 </TS>
