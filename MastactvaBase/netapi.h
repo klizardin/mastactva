@@ -60,6 +60,7 @@ public:
     template<class DataType_>
     RequestData *getList(const QString &layoutName_,
                          const QString &procedureName_,
+                         const QStringList &refs_,
                          const QString &currentRef_,
                          const QString &parentModel_,
                          const QString &parentModelJsonFieldName_,
@@ -69,6 +70,7 @@ public:
                          const QHash<QString, QVariant> &extraFields_
                          )
     {
+        Q_UNUSED(refs_);
         if(!procedureName_.isEmpty())
         {
             return getListByProcedureImpl(RequestData::getListRequestName<DataType_>(), layoutName_, procedureName_, jsonParams_, extraFields_);

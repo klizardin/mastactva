@@ -713,6 +713,11 @@ protected:
         }
         else
         {
+            QStringList refs;
+            for(const RefDescription &ref : m_refs)
+            {
+                refs.push_back(ref.m_ref);
+            }
             QString parentModel;
             QString parentModelJsonFieldName;
             if(m_refs.contains(currentRefImpl()))
@@ -734,6 +739,7 @@ protected:
             request = dataAPI->getList<DataType_>(
                         getJsonLayoutName(),
                         procedureName_,
+                        refs,
                         currentRefImpl(),
                         parentModel,
                         parentModelJsonFieldName,

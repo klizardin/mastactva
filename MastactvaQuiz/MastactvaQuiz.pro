@@ -1,6 +1,7 @@
 _QT += quick
 QT += quickcontrols2 \
-    quick
+    quick   \
+    sql
 
 CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuiz

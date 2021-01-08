@@ -1,6 +1,7 @@
-QT += quick
-QT += quickcontrols2
-QT += widgets
+QT += quick \
+    quickcontrols2  \
+    widgets \
+    sql
 
 CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuizEditor
