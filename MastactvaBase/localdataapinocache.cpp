@@ -191,6 +191,10 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
     return !m_savePath.isEmpty();
 }
 
+
+static const char * g_createFieldSpliter = " TEXT , ";
+
+
 void LocalDataAPINoCache::createTable(
         const QString &tableName_,
         const QStringList &tableFieldNames_,
@@ -198,18 +202,22 @@ void LocalDataAPINoCache::createTable(
         )
 {
     QSqlQuery query = QSqlQuery(m_database);
-    const QString fieldsRequests = refs_.join(" TEXT , ") + tableFieldNames_.join(" TEXT , ");
+    const QString fieldsRequests = refs_.join(g_createFieldSpliter) + tableFieldNames_.join(g_createFieldSpliter);
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 )")
             .arg(tableName_, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
     query.exec(sqlRequest);
 }
 
+
+static const char * g_insertFieldSpliter = " , ";
+
+
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
     QSqlQuery query = QSqlQuery(m_database);
-    const QString fieldNames = r_->getRefs().join(" , ") + r_->getTableFieldNames().join(" , ");
+    const QString fieldNames = r_->getRefs().join(g_insertFieldSpliter) + r_->getTableFieldNames().join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : r_->getRefs())
@@ -222,7 +230,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         bindFields.push_back(QString(":") + fieldName);
     }
-    const QString fieldNamesBindings = bindRefs.join(" , ") + bindFields.join(" , ");
+    const QString fieldNamesBindings = bindRefs.join(g_insertFieldSpliter) + bindFields.join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
             .arg(r_->getTableName(), fieldNames, fieldNamesBindings);
     query.prepare(sqlRequest);
