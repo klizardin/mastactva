@@ -102,7 +102,10 @@ QString LocalDataSet::savePath() const
 
 void LocalDataSet::setSavePath(const QString &url_)
 {
-    m_savePath = url_;
+    QUrl url(url_);
+    QFile f(url.toLocalFile());
+    QFileInfo fi(f);
+    m_savePath = fi.absoluteDir().absolutePath();
 }
 
 void LocalDataSet::downloadStep()

@@ -171,6 +171,7 @@ void LocalDataAPINoCache::cleanRequests()
 
 void LocalDataAPINoCache::cleanPath()
 {
+    //QString savePath = QDir(m_savePath).filePath(g_dbName);
     QFile::remove(g_dbName);
     QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
     while(fit.hasNext())
@@ -182,6 +183,7 @@ void LocalDataAPINoCache::cleanPath()
 
 void LocalDataAPINoCache::createDB()
 {
+    //QString savePath = QDir(m_savePath).filePath(g_dbName);
     m_database = QSqlDatabase::addDatabase("QSQLITE");
     m_database.setDatabaseName(g_dbName);
     m_database.open();
@@ -229,7 +231,7 @@ void LocalDataAPINoCache::createTable(
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 )")
             .arg(tableName, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
-    qDebug() << sqlRequest;
+    //qDebug() << sqlRequest;
     if(!query.exec(sqlRequest))
     {
         const QSqlError err = query.lastError();
@@ -267,7 +269,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QString fieldNamesBindings = (QStringList() << bindRefs << bindFields).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
             .arg(tableName, fieldNames, fieldNamesBindings);
-    qDebug() << sqlRequest;
+    //qDebug() << sqlRequest;
     query.prepare(sqlRequest);
     for(int i = 0; ; i++)
     {
@@ -277,7 +279,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         {
             const QString v = defValues.value(bind);
             query.bindValue(bind, v);
-            qDebug() << bind << v;
+            //qDebug() << bind << v;
         }
         for(const QString &bind : bindFields)
         {
@@ -307,7 +309,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                 }
             }
             query.bindValue(bind, v);
-            qDebug() << bind << v;
+            //qDebug() << bind << v;
         }
         if(!query.exec())
         {
