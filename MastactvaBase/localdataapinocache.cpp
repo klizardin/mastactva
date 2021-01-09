@@ -269,13 +269,17 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         if(itemJV.isUndefined()) { break; }
         for(const QString &bind : bindRefs)
         {
-            query.bindValue(bind, defValues.value(bind));
+            const QString v = defValues.value(bind);
+            query.bindValue(bind, v);
+            qDebug() << bind << v;
         }
         for(const QString &bind : bindFields)
         {
             const QString jsonFieldName = r_->getFieldToJsonNames().value(bind.mid(1));
-            QJsonValue valueJV = itemJV[jsonFieldName];
-            query.bindValue(bind, !valueJV.isUndefined() && valueJV.isString() ? valueJV.toString() : QString());
+            const QJsonValue valueJV = itemJV[jsonFieldName];
+            const QString v = !valueJV.isUndefined() && valueJV.isString() ? valueJV.toString() : QString();
+            query.bindValue(bind, v);
+            qDebug() << bind << v;
         }
         if(!query.exec())
         {
