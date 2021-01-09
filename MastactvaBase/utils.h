@@ -44,28 +44,28 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ_);
 QString dateTimeToJsonString(const QDateTime &dt_);
 
 
-static const QString g_englishLanguage = "English";
-static const QString g_belarusLanguage = "Belarus";
-static const QString g_shaderName = "shader";
-static const QString g_argumentName = "argument";
-static const QString g_typeName = "type";
-static const QString g_nameName = "name";
-static const QString g_defaultValueName = "defaultValue";
-static const QString g_descriptionName = "description";
-static const QString g_geometrySolidName = "geomentrySolid";
-static const QString g_geometryFacedName = "geomentryFaced";
-static const QString g_geometrySizeName = "geomentrySize";
-static const QString g_facedGeometryCoefName = "facedGeometryCoef";
-static const QString g_colorsAttributeName = "attributeColors";
-static const QString g_shadersRelPath = "shaders";
-static const QString g_imagesRelPath = "images";
-static const QString g_shaderTypeVertex = "Vertex";
-static const QString g_shaderTypeFragment = "Fragment";
-static const QString g_shaderTypeModel = "ShaderTypeModel";
-static const QString g_shaderArgTypeModel = "ShaderArgTypeModel";
-static const QString g_easingTypeModel = "EasingTypeModel";
-static const QString g_galleryModel = "GalleryModel";
-static const QString g_allImagesOfGalleryModel = "AllImagesOfGallery";
+static const char *g_englishLanguage = "English";
+static const char *g_belarusLanguage = "Belarus";
+static const char *g_shaderName = "shader";
+static const char *g_argumentName = "argument";
+static const char *g_typeName = "type";
+static const char *g_nameName = "name";
+static const char *g_defaultValueName = "defaultValue";
+static const char *g_descriptionName = "description";
+static const char *g_geometrySolidName = "geomentrySolid";
+static const char *g_geometryFacedName = "geomentryFaced";
+static const char *g_geometrySizeName = "geomentrySize";
+static const char *g_facedGeometryCoefName = "facedGeometryCoef";
+static const char *g_colorsAttributeName = "attributeColors";
+static const char *g_shadersRelPath = "shaders";
+static const char *g_imagesRelPath = "images";
+static const char *g_shaderTypeVertex = "Vertex";
+static const char *g_shaderTypeFragment = "Fragment";
+static const char *g_shaderTypeModel = "ShaderTypeModel";
+static const char *g_shaderArgTypeModel = "ShaderArgTypeModel";
+static const char *g_easingTypeModel = "EasingTypeModel";
+static const char *g_galleryModel = "GalleryModel";
+static const char *g_allImagesOfGalleryModel = "AllImagesOfGallery";
 
 
 #endif // UTILS_H
