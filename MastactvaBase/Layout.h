@@ -338,8 +338,8 @@ namespace layout
             itemMemberPtr m_itemPtr = nullptr;
         };
 
-    }; // namesapce private
-};//namespace layout
+    } // namesapce private
+}//namespace layout
 
 
 // TODO: review methods use, remove extra ones
