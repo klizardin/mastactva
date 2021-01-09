@@ -189,6 +189,7 @@ protected:
 private:
     NetAPI *m_netAPI = nullptr;
     QString m_savePath;
+    QString m_dbName;
     QSqlDatabase m_database;
     QList<SaveDBRequest *> m_requests;
     static LocalDataAPINoCache *g_localDataAPI;

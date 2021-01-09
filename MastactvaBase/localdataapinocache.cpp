@@ -4,9 +4,11 @@
 #include <QDirIterator>
 #include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/utils.h"
 
 
-static const char *g_dbName = "mastactva.db3";
+static const char *g_dbName = "mastactva_";
+static const char *g_dbNameExt = ".db3";
 
 
 LocalDataAPINoCache::SaveDBRequest::SaveDBRequest(const RequestData *request_)
@@ -149,6 +151,7 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
 void LocalDataAPINoCache::startSave(const QString &savePath_)
 {
     m_savePath = savePath_;
+    m_dbName = QString(g_dbName) + dateTimeToJsonString(QDateTime::currentDateTime()) + QString(g_dbNameExt);
     cleanPath();
     createDB();
 }
@@ -172,7 +175,7 @@ void LocalDataAPINoCache::cleanRequests()
 void LocalDataAPINoCache::cleanPath()
 {
     //QString savePath = QDir(m_savePath).filePath(g_dbName);
-    QFile::remove(g_dbName);
+    QFile::remove(m_dbName);
     QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
     while(fit.hasNext())
     {
@@ -185,7 +188,7 @@ void LocalDataAPINoCache::createDB()
 {
     //QString savePath = QDir(m_savePath).filePath(g_dbName);
     m_database = QSqlDatabase::addDatabase("QSQLITE");
-    m_database.setDatabaseName(g_dbName);
+    m_database.setDatabaseName(m_dbName);
     m_database.open();
 }
 
