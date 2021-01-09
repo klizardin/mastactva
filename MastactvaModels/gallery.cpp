@@ -92,7 +92,7 @@ ImageModel *Gallery::createImages()
     m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") + QVariant::fromValue(m_appId).toString() + QString("_GalleryImageModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
-    //m->setParentListModelInfo(m_parentModelInfo);
+    m->setParentListModelInfo(m_galleryModel);
     m->setAutoCreateChildrenModels(true);
     //m->setAutoCreateChildrenModelsOnSelect(true);
     m->loadList();
