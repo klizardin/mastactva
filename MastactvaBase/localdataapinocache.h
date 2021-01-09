@@ -115,7 +115,7 @@ public:
                 }
             }
 
-            createTable(tableName, tableFieldNames, refs);
+            createTable(tableName, tableFieldNames, refs, procedureName_.isEmpty() ? currentRef_ : QString());
         }
         if(nullptr == m_netAPI) { return nullptr; }
         RequestData *resRequest = m_netAPI->getList<DataType_>(layoutName_,
@@ -180,7 +180,7 @@ protected:
     void cleanPath();
     void createDB();
     bool isSaveToDBMode() const;
-    void createTable(const QString &tableName_, const QStringList &tableFieldNames_, const QStringList &refs_);
+    void createTable(const QString &tableName_, const QStringList &tableFieldNames_, const QStringList &refs_, const QString &currentRef_);
     void fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_);
 
 protected:

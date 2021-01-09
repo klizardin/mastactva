@@ -218,13 +218,16 @@ static const char * g_createFieldSpliter = " TEXT , ";
 void LocalDataAPINoCache::createTable(
         const QString &tableName_,
         const QStringList &tableFieldNames_,
-        const QStringList &refs_
+        const QStringList &refs_,
+        const QString &currentRef_
         )
 {
     QSqlQuery query = QSqlQuery(m_database);
+    QString tableName = tableName_;
+    if(!currentRef_.isEmpty()) { tableName += QString("_by_") + namingConversion(currentRef_); }
     const QString fieldsRequests = (QStringList() << refsNames(refs_) << tableFieldNames_).join(g_createFieldSpliter) + QString(g_createFieldSpliter);
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 )")
-            .arg(tableName_, fieldsRequests.mid(0, fieldsRequests.length() - 2))
+            .arg(tableName, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
     qDebug() << sqlRequest;
     if(!query.exec(sqlRequest))
@@ -245,13 +248,16 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
     QSqlQuery query = QSqlQuery(m_database);
+    QString tableName = r_->getTableName();
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString("_by_") + namingConversion(r_->getCurrentRef()); }
     const QString fieldNames = (QStringList() << refsNames(r_->getRefs()) << r_->getTableFieldNames()).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : r_->getRefs())
     {
-        bindRefs.push_back(QString(":") + refName(ref));
-        defValues.insert(refName(ref), ref == r_->getCurrentRef() ? r_->getIdField().toString() : "");
+        const QString refBindName = QString(":") + refName(ref);
+        bindRefs.push_back(refBindName);
+        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : "");
     }
     QStringList bindFields;
     for(const QString &fieldName : r_->getTableFieldNames())
@@ -260,7 +266,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     }
     const QString fieldNamesBindings = (QStringList() << bindRefs << bindFields).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
-            .arg(r_->getTableName(), fieldNames, fieldNamesBindings);
+            .arg(tableName, fieldNames, fieldNamesBindings);
     qDebug() << sqlRequest;
     query.prepare(sqlRequest);
     for(int i = 0; ; i++)
@@ -277,7 +283,29 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         {
             const QString jsonFieldName = r_->getFieldToJsonNames().value(bind.mid(1));
             const QJsonValue valueJV = itemJV[jsonFieldName];
-            const QString v = !valueJV.isUndefined() && valueJV.isString() ? valueJV.toString() : QString();
+            QString v;
+            if(!valueJV.isUndefined())
+            {
+                switch(valueJV.type())
+                {
+                case QJsonValue::Null:
+                    v.clear();
+                    break;
+                case QJsonValue::Bool:
+                    v = QString::number(valueJV.toBool() ? 1 : 0);
+                    break;
+                case QJsonValue::Double:
+                    v = QVariant::fromValue(valueJV.toDouble()).toString();
+                    break;
+                case QJsonValue::String:
+                    v = valueJV.toString();
+                    break;
+                case QJsonValue::Array:
+                case QJsonValue::Object:
+                    Q_ASSERT(false);
+                    break;
+                }
+            }
             query.bindValue(bind, v);
             qDebug() << bind << v;
         }
