@@ -73,15 +73,15 @@ bool isNumeric(const QString &str_)
 }
 
 
-static const QString g_nl = "\n";
-static const QString g_cb = "/*";
-static const QString g_ce = "*/";
-static const QString g_leftAlign = "<";
-static const QString g_nameStart = "@";
-static const QString g_argStart = "uniform";
-static const QString g_argPrecisionLow = "lowp";
-static const QString g_argPrecisionMedium = "mediump";
-static const QString g_argPrecisionHigh = "highp";
+static const char *g_nl = "\n";
+static const char *g_cb = "/*";
+static const char *g_ce = "*/";
+static const char *g_leftAlign = "<";
+static const char *g_nameStart = "@";
+static const char *g_argStart = "uniform";
+static const char *g_argPrecisionLow = "lowp";
+static const char *g_argPrecisionMedium = "mediump";
+static const char *g_argPrecisionHigh = "highp";
 
 
 static int low_bound(const QVector<int> &indexes_, int p_)
@@ -131,13 +131,13 @@ bool Comment::isAlignedToLeft(const QString &shaderText_) const
 void Comment::findLeftLine(const QVector<int> &indexesOfNL_, const QString &shaderText_)
 {
     for(int i0 = low_bound(indexesOfNL_, cb),           // start index on nl
-        te = cb - g_cb.length();                        // test line before comment
+        te = cb - QString(g_cb).length();                        // test line before comment
         ;
         te = indexesOfNL_[i0],                          // test line before nl
         i0--                                            // test prev line
         )
     {
-        int tb = indexesOfNL_[i0] + g_nl.length();      // test line begining, skip nl
+        int tb = indexesOfNL_[i0] + QString(g_nl).length();      // test line begining, skip nl
         if(!isSpaces(shaderText_, tb, te))              // is not empty test line
         {
             lb = tb;                                    // use this non empty line
@@ -156,10 +156,10 @@ void Comment::findLeftLine(const QVector<int> &indexesOfNL_, const QString &shad
 
 void Comment::findRightLine(const QVector<int> &indexesOfNL_, const QString &shaderText_)
 {
-    for(int i0 = high_bound(indexesOfNL_, ce + g_ce.length()),  // start index on nl
-        tb = ce + g_cb.length();                                // test line after comment
+    for(int i0 = high_bound(indexesOfNL_, ce + QString(g_ce).length()),  // start index on nl
+        tb = ce + QString(g_cb).length();                                // test line after comment
         ;
-        tb = indexesOfNL_[i0] + g_nl.length(),                  // test line after nl
+        tb = indexesOfNL_[i0] + QString(g_nl).length(),                  // test line after nl
         i0++                                                    // test prev line
         )
     {
@@ -191,7 +191,7 @@ void Comment::extractValues(const QString &shaderText_)
     if(0 > i || i >= ce) { return; }
     for(; i >= cb && i < ce;)
     {
-        i += g_nameStart.length();
+        i += QString(g_nameStart).length();
         int nb = i;
         for(;i < ce && isLetterNumeric(shaderText_.at(i)); ++i) {}; // find name
         int ne = i;
@@ -220,18 +220,18 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
     if(lb < 0 || le < 0) { return; }
     QString line = shaderText_.mid(lb, le - lb).trimmed();
     if(!line.startsWith(g_argStart)) { return; }
-    line = line.mid(g_argStart.length()).trimmed();
+    line = line.mid(QString(g_argStart).length()).trimmed();
     if(line.startsWith(g_argPrecisionHigh))
     {
-        line = line.mid(g_argPrecisionHigh.length()).trimmed();
+        line = line.mid(QString(g_argPrecisionHigh).length()).trimmed();
     }
     else if(line.startsWith(g_argPrecisionMedium))
     {
-        line = line.mid(g_argPrecisionMedium.length()).trimmed();
+        line = line.mid(QString(g_argPrecisionMedium).length()).trimmed();
     }
     else if(line.startsWith(g_argPrecisionLow))
     {
-        line = line.mid(g_argPrecisionLow.length()).trimmed();
+        line = line.mid(QString(g_argPrecisionLow).length()).trimmed();
     }
     int i = 0;
     int tb = i;
@@ -265,12 +265,12 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
     comments_.clear();
     QVector<int> indexesOfNL;
     int p = 0; int cnt = 0;
-    for(p = shaderText_.indexOf(g_nl); p >= 0; p += g_nl.length(), p = shaderText_.indexOf(g_nl, p))
+    for(p = shaderText_.indexOf(g_nl); p >= 0; p += QString(g_nl).length(), p = shaderText_.indexOf(g_nl, p))
     {
         cnt++;
     }
     indexesOfNL.reserve(cnt);
-    for(p = shaderText_.indexOf(g_nl); p >= 0; p += g_nl.length(), p = shaderText_.indexOf(g_nl, p))
+    for(p = shaderText_.indexOf(g_nl); p >= 0; p += QString(g_nl).length(), p = shaderText_.indexOf(g_nl, p))
     {
         indexesOfNL.push_back(p);
     }
@@ -279,10 +279,10 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
     {
         p = shaderText_.indexOf(g_cb, p);
         if(p < 0) { break; }
-        p += g_cb.length();
+        p += QString(g_cb).length();
         p = shaderText_.indexOf(g_ce, p);
         if(p < 0) { break; }
-        p += g_ce.length();
+        p += QString(g_ce).length();
         cnt++;
     }
     comments_.reserve(cnt);
@@ -290,12 +290,12 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
     {
         p = shaderText_.indexOf(g_cb, p);
         if(p < 0) { break; }
-        const int cb = p + g_cb.length();
-        p += g_cb.length();
+        const int cb = p + QString(g_cb).length();
+        p += QString(g_cb).length();
         p = shaderText_.indexOf(g_ce, p);
         if(p < 0) { break; }
         const int ce = p;
-        p += g_ce.length();
+        p += QString(g_ce).length();
         comments_.push_back(Comment(cb, ce));
     }
 
