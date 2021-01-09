@@ -152,7 +152,7 @@ void LocalDataSet::downloadStep()
     {
         QObject::disconnect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
-    free();
+    //free();
 
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
     if(nullptr != localDataAPI) { localDataAPI->endSave(); }
