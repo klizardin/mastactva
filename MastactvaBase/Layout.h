@@ -2,6 +2,7 @@
 #define LAYOUT_H
 
 
+#include <type_traits>
 #include <QString>
 #include <QVector>
 #include <QList>
@@ -21,6 +22,17 @@ class Layout;
 
 namespace layout
 {
+    enum class JsonTypesEn : int
+    {
+        jt_null,
+        jt_bool,
+        jt_double,
+        jt_string,
+        jt_array,
+        jt_object,
+        jt_undefined
+    };
+
     enum class SpecialFieldEn : int
     {
         none,
@@ -87,6 +99,37 @@ namespace layout
         dta_ = dateTimeFromJsonString(var_.toString());
     }
 
+    template<typename T_>
+    inline JsonTypesEn getJsonType(const T_ *)
+    {
+        return JsonTypesEn::jt_undefined;
+    }
+
+    inline JsonTypesEn getJsonType(const bool *)
+    {
+        return JsonTypesEn::jt_bool;
+    }
+
+    inline JsonTypesEn getJsonType(const int *)
+    {
+        return JsonTypesEn::jt_double;
+    }
+
+    inline JsonTypesEn getJsonType(const qreal *)
+    {
+        return JsonTypesEn::jt_double;
+    }
+
+    inline JsonTypesEn getJsonType(const QString *)
+    {
+        return JsonTypesEn::jt_string;
+    }
+
+    inline JsonTypesEn getJsonType(const QDateTime *)
+    {
+        return JsonTypesEn::jt_string;
+    }
+
     namespace Private
     {
         template<typename DataType_>
@@ -136,6 +179,7 @@ namespace layout
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const = 0;
+            virtual JsonTypesEn getJsonType() const = 0;
 
             bool isIdField() const
             {
@@ -219,6 +263,13 @@ namespace layout
                 return layout::compareValues((obj1_->*m_getFunc)(), (obj2_->*m_getFunc)(), toQML_);
             }
 
+            virtual JsonTypesEn getJsonType() const override
+            {
+                const DataType_ *obj = nullptr;
+                typename std::remove_reference<decltype((obj->*m_getFunc)())>::type *p = nullptr;
+                return layout::getJsonType(p);
+            }
+
         protected:
             getFuncPtr m_getFunc = nullptr;
             setFuncPtr m_setFunc = nullptr;
@@ -290,6 +341,13 @@ namespace layout
                 return layout::compareValues(obj1_->*m_modelPtr, obj2_->*m_modelPtr, toQML_);
             }
 
+            virtual JsonTypesEn getJsonType() const override
+            {
+                const DataType_ *obj = nullptr;
+                typename std::remove_reference<decltype(obj->*m_modelPtr)>::type *p = nullptr;
+                return layout::getJsonType(p);
+            }
+
         protected:
             ModelTypeFieldPtr m_modelPtr = nullptr;
             createModelFuncPtr m_createFuncPtr;
@@ -332,6 +390,13 @@ namespace layout
             {
                 if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
                 return layout::compareValues(obj1_->*m_itemPtr, obj2_->*m_itemPtr, toQML_);
+            }
+
+            virtual JsonTypesEn getJsonType() const override
+            {
+                const DataType_ *obj = nullptr;
+                typename std::remove_reference<decltype(obj->*m_itemPtr)>::type *p = nullptr;
+                return layout::getJsonType(p);
             }
 
         protected:
@@ -509,14 +574,14 @@ public:
         return QVariant();
     }
 
-    void getJsonFieldNames(QStringList &fieldsNames_) const
+    void getJsonFieldsInfo(QList<QPair<QString, layout::JsonTypesEn>> &fieldsInfo_) const
     {
-        fieldsNames_.clear();
+        fieldsInfo_.clear();
         for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
         {
             if(item->isJsonItem())
             {
-                fieldsNames_.push_back(item->getJsonName());
+                fieldsInfo_.push_back({item->getJsonName(), item->getJsonType()});
             }
         }
     }
