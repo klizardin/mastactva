@@ -53,8 +53,7 @@ private:
     UserStepModel *m_userStepModel = nullptr;
     int m_step = 0;
     int m_galleryIndex = -1;
-
-    int c_downloadStepsCount = 5;
+    int c_downloadStepsCount = 1;
 };
 
 #endif // LOCALDATASET_H

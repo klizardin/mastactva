@@ -13,12 +13,15 @@
 
 
 static const char *g_defaultSavePath = "./LocalData/";
+static const int g_downloadStepsCount = 5;
 
 
 LocalDataSet::LocalDataSet(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
     m_savePath = g_defaultSavePath;
+    m_galleryIndex = -1;
+    c_downloadStepsCount = g_downloadStepsCount;
 }
 
 LocalDataSet::~LocalDataSet()
@@ -89,7 +92,7 @@ void LocalDataSet::create()
 void LocalDataSet::free()
 {
     m_galleryIndex = -1;
-    c_downloadStepsCount = 5;
+    c_downloadStepsCount = g_downloadStepsCount;
 
     delete m_galleryModel;
     m_galleryModel = nullptr;
