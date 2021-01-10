@@ -83,6 +83,7 @@ void LocalDataSet::create()
     m_userStepModel->registerListModel();
     m_userStepModel->setAutoCreateChildrenModels(false);
     m_userStepModel->setStoreAfterSave(false);
+    m_userStepModel->setReadonlyImpl(false);
 }
 
 void LocalDataSet::free()

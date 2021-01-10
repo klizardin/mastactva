@@ -117,6 +117,7 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->setOutputModel(true);
+    m->setReadonlyImpl(false);
     //m->loadList(); -- should not be called
     return m;
 }

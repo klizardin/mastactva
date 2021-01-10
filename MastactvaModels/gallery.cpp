@@ -147,6 +147,7 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     m->registerListModel();
     //m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
+    m->setReadonlyImpl(false);
     m->loadList();
     return m;
 }

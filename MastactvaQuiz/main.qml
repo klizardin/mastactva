@@ -87,6 +87,7 @@ ApplicationWindow {
         autoCreateChildrenModels: false
         outputModel: true
         storeAfterSave: false
+        readonly: false
     }
 
     function initGalleryModel()
