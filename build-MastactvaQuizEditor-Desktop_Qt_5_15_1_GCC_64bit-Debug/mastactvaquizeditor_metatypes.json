@@ -3930,6 +3930,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "EasingTypeModel",
@@ -4027,6 +4041,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -4828,6 +4847,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "EffectModel",
@@ -4925,6 +4958,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -5632,6 +5670,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "EffectArgModel",
@@ -5729,6 +5781,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -6438,6 +6495,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSetModel",
@@ -6535,6 +6606,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -7257,6 +7333,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValueModel",
@@ -7354,6 +7444,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -8022,6 +8117,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "EffectShaderModel",
@@ -8119,6 +8228,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -8811,6 +8925,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ShaderModel",
@@ -8908,6 +9036,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -9539,6 +9672,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ShaderArgTypeModel",
@@ -9636,6 +9783,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -10267,6 +10419,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ShaderTypeModel",
@@ -10364,6 +10530,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -11631,6 +11802,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ImagePointEffectModel",
@@ -11728,6 +11913,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -12472,6 +12662,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "GalleryModel",
@@ -12569,6 +12773,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -13335,6 +13544,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ImageModel",
@@ -13432,6 +13655,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -14101,6 +14329,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToQuestionModel",
@@ -14198,6 +14440,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -14846,6 +15093,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToNextImageModel",
@@ -14943,6 +15204,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -15746,6 +16012,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ImagePointModel",
@@ -15843,6 +16123,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -16523,6 +16808,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "ImageDescriptionModel",
@@ -16620,6 +16919,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -17289,6 +17593,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "GalleryStatisticsModel",
@@ -17386,6 +17704,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -18092,6 +18415,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "QuestionModel",
@@ -18189,6 +18526,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -18858,6 +19200,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "AnswerModel",
@@ -18955,6 +19311,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -19662,6 +20023,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "UserQuestionAnswerModel",
@@ -19759,6 +20134,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {
@@ -20645,6 +21025,20 @@
                         "type": "QStringList",
                         "user": false,
                         "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
                     }
                 ],
                 "qualifiedClassName": "UserStepModel",
@@ -20742,6 +21136,11 @@
                     {
                         "access": "public",
                         "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
                         "returnType": "void"
                     },
                     {

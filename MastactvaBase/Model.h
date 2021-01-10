@@ -108,6 +108,8 @@ protected:
     bool getOutputModelImpl() const;
     void setOutputModelImpl(bool outputModel_);
     QStringList getSortFieldsImpl() const;
+    bool getReadonlyImpl() const;
+    void setReadonlyImpl(bool readonly_);
 
 private:
     void unregisterListModel();
@@ -134,6 +136,7 @@ private:
     bool m_autoCreateChildrenModels = false;
     bool m_autoCreateChildrenModelsOnSelect = false;
     QStringList m_sortFields;
+    bool m_readonly = true;
     bool m_listLoaded = false;
     bool m_listLoading = false;
     int m_loadingChildenModels = 0;
@@ -1242,6 +1245,7 @@ public:                                                                         
     Q_PROPERTY(bool autoCreateChildrenModelsOnSelect READ autoCreateChildrenModelsOnSelect WRITE setAutoCreateChildrenModelsOnSelect NOTIFY autoCreateChildrenModelsOnSelectChanged)    \
     Q_PROPERTY(bool outputModel READ outputModel WRITE setOutputModel NOTIFY outputModelChanged)                \
     Q_PROPERTY(QStringList sortFields READ sortFields WRITE setSortFields NOTIFY sortFieldsChanged)             \
+    Q_PROPERTY(bool readonly READ readonly WRITE setReadonly NOTIFY readonlyChanged)                            \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
@@ -1499,6 +1503,15 @@ public:                                                                         
     {                                                                                                           \
         setSortFieldsImpl(fields_);                                                                             \
         emit sortFieldsChanged();                                                                               \
+    }                                                                                                           \
+    bool readonly()                                                                                             \
+    {                                                                                                           \
+        return getReadonlyImpl();                                                                               \
+    }                                                                                                           \
+    void setReadonly(const bool &readonly_)                                                                     \
+    {                                                                                                           \
+        setReadonlyImpl(readonly_);                                                                             \
+        emit readonlyChanged();                                                                                 \
     }                                                                                                           \
     virtual void listLoadedVF() override                                                                        \
     {                                                                                                           \

@@ -117,6 +117,7 @@ signals:
     void itemDeleted();
     void outputModelChanged();
     void sortFieldsChanged();
+    void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 };
 
@@ -227,6 +228,7 @@ signals:
     void itemDeleted();
     void outputModelChanged();
     void sortFieldsChanged();
+    void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 
 private:
@@ -384,6 +386,7 @@ signals:
     void itemDeleted();
     void outputModelChanged();
     void sortFieldsChanged();
+    void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 
 private:

@@ -118,6 +118,7 @@ signals:
     void itemDeleted();
     void outputModelChanged();
     void sortFieldsChanged();
+    void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 };
 

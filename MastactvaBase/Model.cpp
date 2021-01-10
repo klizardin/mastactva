@@ -296,6 +296,16 @@ void ListModelBaseData::setSortFieldsImpl(const QStringList &sortFields_)
     m_sortFields = sortFields_;
 }
 
+bool ListModelBaseData::getReadonlyImpl() const
+{
+    return m_readonly;
+}
+
+void ListModelBaseData::setReadonlyImpl(bool readonly_)
+{
+    m_readonly = readonly_;
+}
+
 void ListModelBaseData::startListLoad()
 {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
