@@ -102,7 +102,8 @@ unix: SOURCES += \
         imagepointeffect.cpp    \
         localdata.cpp   \
         requestdata.cpp \
-        localdataapinocache.cpp
+        localdataapinocache.cpp \
+        localdataapicache.cpp
 
 
 RESOURCES += qml.qrc \
@@ -163,7 +164,8 @@ unix: HEADERS += \
     imagepointeffect.h  \
     localdata.h \
     requestdata.h   \
-    localdataapinocache.h
+    localdataapinocache.h   \
+    localdataapicache.h
 
 
 DISTFILES += \

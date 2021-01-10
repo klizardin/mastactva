@@ -18245,5 +18245,22 @@
         ],
         "inputFile": "localdataapinocache.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "LocalDataAPICache",
+                "object": true,
+                "qualifiedClassName": "LocalDataAPICache",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "localdataapicache.h",
+        "outputRevision": 67
     }
 ]

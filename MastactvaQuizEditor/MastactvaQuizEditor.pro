@@ -104,7 +104,8 @@ unix: HEADERS += \
         questionanswer.h    \
         localdata.h \
         requestdata.h   \
-        localdataapinocache.h
+        localdataapinocache.h   \
+        localdataapicache.h
 
 
 SOURCES += \
@@ -147,7 +148,8 @@ unix: SOURCES += \
         questionanswer.cpp  \
         localdata.cpp   \
         requestdata.cpp \
-        localdataapinocache.cpp
+        localdataapinocache.cpp \
+        localdataapicache.cpp
 
 
 RESOURCES += qml.qrc    \
