@@ -58,6 +58,7 @@ public:
     bool autoCreateChildrenModelsOnSelectImpl() const;
     void addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_);
     void setSortFieldsImpl(const QStringList &sortFields_);
+    void clearListLoaded();
 
 public:
     virtual void startLoadChildModel() override;
@@ -100,7 +101,6 @@ protected:
     void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
     void setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateChildrenModelsOnSelect_);
     void startListLoad();
-    void clearListLoaded();
     void reverseListLoading();
     void setListLoaded();
     bool listLoading() const;
