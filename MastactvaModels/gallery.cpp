@@ -93,7 +93,7 @@ ImageModel *Gallery::createImages()
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_galleryModel);
-    m->setAutoCreateChildrenModels(true);
+    m->setAutoCreateChildrenModels(true);           // TODO: find way to upload images of gallery when it is required
     //m->setAutoCreateChildrenModelsOnSelect(true);
     m->loadList();
     return m;

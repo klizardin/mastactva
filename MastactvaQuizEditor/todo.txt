@@ -104,7 +104,7 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 65. add nullptr check in base classes (Layout)
 66. add editor user download of db (just versions of the current editor + may be with new galleries to test editors current galleries)
 67. how to test galleries for one editor?
-
+68. "TODO: find way to upload images of gallery when it is required" // ImageModel *Gallery::createImages()
 
 
 
