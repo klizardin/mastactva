@@ -749,7 +749,8 @@ protected:
                         getRefAppIdImpl(),
                         getRefValueImpl(),
                         getJsonParamsGetImpl(),
-                        extraFields
+                        extraFields,
+                        getReadonlyImpl()
                         );
             if(!addRequest(request))
             {

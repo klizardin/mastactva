@@ -7,7 +7,8 @@
 #include "../MastactvaBase/utils.h"
 
 
-static const char *g_dbName = "mastactva_";
+static const char *g_dbNameRW = "mastactvarw_";
+static const char *g_dbNameRO = "mastactvaro_";
 static const char *g_dbNameExt = ".db3";
 static const char *g_sqlText = "TEXT";
 static const char *g_sqlInt = "INTEGER";
@@ -137,6 +138,16 @@ void LocalDataAPINoCache::SaveDBRequest::setIdField(const QVariant &idField_)
     m_idField = idField_;
 }
 
+bool LocalDataAPINoCache::SaveDBRequest::getReadonly() const
+{
+    return m_readonly;
+}
+
+void LocalDataAPINoCache::SaveDBRequest::setReadonly(bool readonly_)
+{
+    m_readonly = readonly_;
+}
+
 
 LocalDataAPINoCache::LocalDataAPINoCache(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
@@ -207,14 +218,18 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
 void LocalDataAPINoCache::startSave(const QString &savePath_)
 {
     m_savePath = savePath_;
-    m_dbName = QString(g_dbName) + dateTimeToJsonString(QDateTime::currentDateTime()) + QString(g_dbNameExt);
+    QString dateStr = dateTimeToJsonString(QDateTime::currentDateTime());
+    dateStr.replace(":", "_");
+    m_dbNameRW = QString(g_dbNameRW) + dateStr + QString(g_dbNameExt);
+    m_dbNameRO = QString(g_dbNameRO) + dateStr + QString(g_dbNameExt);
     cleanPath();
     createDB();
 }
 
 void LocalDataAPINoCache::endSave()
 {
-    m_database.close();
+    m_databaseRW.close();
+    m_databaseRO.close();
     m_savePath.clear();
 }
 
@@ -231,7 +246,8 @@ void LocalDataAPINoCache::cleanRequests()
 void LocalDataAPINoCache::cleanPath()
 {
     //QString savePath = QDir(m_savePath).filePath(g_dbName);
-    QFile::remove(m_dbName);
+    QFile::remove(m_dbNameRW);
+    QFile::remove(m_dbNameRO);
     QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
     while(fit.hasNext())
     {
@@ -243,9 +259,12 @@ void LocalDataAPINoCache::cleanPath()
 void LocalDataAPINoCache::createDB()
 {
     //QString savePath = QDir(m_savePath).filePath(g_dbName);
-    m_database = QSqlDatabase::addDatabase("QSQLITE");
-    m_database.setDatabaseName(m_dbName);
-    m_database.open();
+    m_databaseRW = QSqlDatabase::addDatabase("QSQLITE");
+    m_databaseRW.setDatabaseName(m_dbNameRW);
+    m_databaseRW.open();
+    m_databaseRO = QSqlDatabase::addDatabase("QSQLITE");
+    m_databaseRO.setDatabaseName(m_dbNameRO);
+    m_databaseRO.open();
 }
 
 bool LocalDataAPINoCache::isSaveToDBMode() const
@@ -290,10 +309,11 @@ void LocalDataAPINoCache::createTable(
         const QString &tableName_,
         const QList<JsonFieldInfo> &tableFieldsInfo_,
         const QStringList &refs_,
-        const QString &currentRef_
+        const QString &currentRef_,
+        bool readonly_
         )
 {
-    QSqlQuery query = QSqlQuery(m_database);
+    QSqlQuery query = readonly_ ? QSqlQuery(m_databaseRO) : QSqlQuery(m_databaseRW);
     QString tableName = tableName_;
     if(!currentRef_.isEmpty()) { tableName += QString("_by_") + namingConversion(currentRef_); }
     QStringList tableFieldsNameTypePairs;
@@ -320,7 +340,7 @@ void LocalDataAPINoCache::createTable(
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
-    QSqlQuery query = QSqlQuery(m_database);
+    QSqlQuery query = r_->getReadonly() ? QSqlQuery(m_databaseRO) : QSqlQuery(m_databaseRW);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString("_by_") + namingConversion(r_->getCurrentRef()); }
     const QString fieldNames = (QStringList() << refsNames(r_->getRefs()) << getSqlNames(r_->getTableFieldsInfo())).join(g_insertFieldSpliter);

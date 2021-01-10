@@ -43,6 +43,8 @@ private:
         void setCurrentRef(const QString &currentRef_);
         const QVariant &getIdField() const;
         void setIdField(const QVariant &idField_);
+        bool getReadonly() const;
+        void setReadonly(bool readonly_);
 
     private:
         const RequestData *m_request = nullptr;
@@ -51,6 +53,7 @@ private:
         QStringList m_refs;
         QString m_currentRef;
         QVariant m_idField;
+        bool m_readonly = true;
     };
 
 public:
@@ -82,7 +85,8 @@ public:
                          const QVariant &refAppId_,
                          const QVariant &refValue_,
                          bool jsonParams_,
-                         const QHash<QString, QVariant> &extraFields_
+                         const QHash<QString, QVariant> &extraFields_,
+                         bool readonly_
                          )
     {
         QString tableName;
@@ -122,7 +126,7 @@ public:
                 }
             }
 
-            createTable(tableName, tableFieldsInfo, refs, procedureName_.isEmpty() ? currentRef_ : QString());
+            createTable(tableName, tableFieldsInfo, refs, procedureName_.isEmpty() ? currentRef_ : QString(), readonly_);
         }
         if(nullptr == m_netAPI) { return nullptr; }
         RequestData *resRequest = m_netAPI->getList<DataType_>(layoutName_,
@@ -134,7 +138,8 @@ public:
                                              refAppId_,
                                              refValue_,
                                              jsonParams_,
-                                             extraFields_
+                                             extraFields_,
+                                             readonly_
                                              );
         if(nullptr != resRequest && isSaveToDBMode())
         {
@@ -144,6 +149,7 @@ public:
             r->setRefs(refs);
             r->setCurrentRef(procedureName_.isEmpty() ? currentRef_ : QString());
             r->setIdField(procedureName_.isEmpty() ? idField : QVariant());
+            r->setReadonly(readonly_);
             m_requests.push_back(r);
         }
         return resRequest;
@@ -186,7 +192,11 @@ protected:
     void cleanPath();
     void createDB();
     bool isSaveToDBMode() const;
-    void createTable(const QString &tableName_, const QList<JsonFieldInfo> &tableFieldsInfo_, const QStringList &refs_, const QString &currentRef_);
+    void createTable(const QString &tableName_,
+                     const QList<JsonFieldInfo> &tableFieldsInfo_,
+                     const QStringList &refs_,
+                     const QString &currentRef_,
+                     bool readonly_);
     void fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_);
     QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const;
     QStringList getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const;
@@ -197,8 +207,10 @@ protected:
 private:
     NetAPI *m_netAPI = nullptr;
     QString m_savePath;
-    QString m_dbName;
-    QSqlDatabase m_database;
+    QString m_dbNameRW;
+    QString m_dbNameRO;
+    QSqlDatabase m_databaseRW;
+    QSqlDatabase m_databaseRO;
     QList<SaveDBRequest *> m_requests;
     static LocalDataAPINoCache *g_localDataAPI;
 };

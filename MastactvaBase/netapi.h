@@ -67,10 +67,12 @@ public:
                          const QVariant &refAppId_,
                          const QVariant &refValue_,
                          bool jsonParams_,
-                         const QHash<QString, QVariant> &extraFields_
+                         const QHash<QString, QVariant> &extraFields_,
+                         bool readonly_
                          )
     {
         Q_UNUSED(refs_);
+        Q_UNUSED(readonly_);
         if(!procedureName_.isEmpty())
         {
             return getListByProcedureImpl(RequestData::getListRequestName<DataType_>(), layoutName_, procedureName_, jsonParams_, extraFields_);
