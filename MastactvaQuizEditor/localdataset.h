@@ -7,6 +7,7 @@
 
 
 class GalleryModel;
+class ImageModel;
 class ShaderTypeModel;
 class ShaderArgTypeModel;
 class EasingTypeModel;
@@ -44,10 +45,12 @@ private:
     QString m_savePath;
     QString m_serverFilesOldRootDir;
     GalleryModel *m_galleryModel = nullptr;
+    ImageModel *m_imageModel = nullptr;
     ShaderTypeModel *m_shaderTypeModel = nullptr;
     ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
     int m_step = 0;
+    int m_galleryIndex = -1;
 
     const int c_downloadStepsCount = 4;
 };

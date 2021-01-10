@@ -5,6 +5,7 @@
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaModels/gallery.h"
+#include "../MastactvaModels/image.h"
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/shaderargtype.h"
 #include "../MastactvaModels/easingtype.h"
@@ -35,6 +36,15 @@ void LocalDataSet::create()
     m_galleryModel->registerListModel();
     m_galleryModel->setAutoCreateChildrenModels(true);
 
+    m_imageModel = new ImageModel(this);
+    m_imageModel->initResponse();
+    m_imageModel->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
+    m_imageModel->setCurrentRef("gallery");
+    m_imageModel->addModelParam("use_in_gallery_view", "0");
+    m_imageModel->setLayoutIdFieldImpl("id");
+    m_imageModel->registerListModel();
+    m_imageModel->setAutoCreateChildrenModels(true);           // TODO: find way to upload images of gallery when it is required
+
     m_shaderTypeModel = new ShaderTypeModel(this);
     m_shaderTypeModel->initResponse();
     m_shaderTypeModel->setCurrentRef("");
@@ -64,6 +74,9 @@ void LocalDataSet::free()
 {
     delete m_galleryModel;
     m_galleryModel = nullptr;
+    m_galleryIndex = -1;
+    delete m_imageModel;
+    m_imageModel = nullptr;
     delete m_shaderTypeModel;
     m_shaderTypeModel = nullptr;
     delete m_shaderArgTypeModel;
@@ -117,6 +130,27 @@ void LocalDataSet::downloadStep()
         emit progress(stepProgress());
         return; // one model at time
     }
+    if(nullptr != m_imageModel && nullptr != m_galleryModel && m_galleryIndex < m_galleryModel->sizeImpl())
+    {
+        ++m_galleryIndex;
+        m_galleryModel->setCurrentIndex(m_galleryIndex);
+        const QVariant appId = nullptr != m_galleryModel->dataItemAtImpl(m_galleryIndex)
+                ? QVariant::fromValue(m_galleryModel->dataItemAtImpl(m_galleryIndex)->getAppId())
+                : QVariant()
+                ;
+        m_imageModel->setRefAppId(appId);
+        m_imageModel->setLayoutQMLName(
+                    m_galleryModel->getQMLLayoutName() +
+                    QString("_Gallery_") + appId.toString() +
+                    QString("_GalleryImageModel_")
+                    );
+        m_imageModel->clear();
+        m_imageModel->loadList();
+        if(0 == m_galleryIndex)
+        {
+            QObject::connect(m_imageModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        }
+    }
     if(nullptr != m_shaderTypeModel && !m_shaderTypeModel->isListLoaded())
     {
         QObject::connect(m_shaderTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
@@ -142,6 +176,10 @@ void LocalDataSet::downloadStep()
     if(nullptr != m_galleryModel)
     {
         QObject::disconnect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(nullptr != m_imageModel)
+    {
+        QObject::disconnect(m_imageModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
     if(nullptr != m_shaderTypeModel)
     {
