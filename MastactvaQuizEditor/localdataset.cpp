@@ -12,7 +12,7 @@
 #include "../MastactvaModels/userstep.h"
 
 
-static const QString g_defaultSavePath = "./LocalData/";
+static const char *g_defaultSavePath = "./LocalData/";
 
 
 LocalDataSet::LocalDataSet(QObject * parent_ /*= nullptr*/)
