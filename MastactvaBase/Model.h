@@ -59,6 +59,7 @@ public:
     void addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_);
     void setSortFieldsImpl(const QStringList &sortFields_);
     void clearListLoaded();
+    void setReadonlyImpl(bool readonly_);
 
 public:
     virtual void startLoadChildModel() override;
@@ -109,7 +110,6 @@ protected:
     void setOutputModelImpl(bool outputModel_);
     QStringList getSortFieldsImpl() const;
     bool getReadonlyImpl() const;
-    void setReadonlyImpl(bool readonly_);
 
 private:
     void unregisterListModel();
