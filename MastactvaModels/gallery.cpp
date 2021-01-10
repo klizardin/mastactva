@@ -8,6 +8,11 @@ Gallery::Gallery(GalleryModel *parent_)
     m_galleryModel =  parent_;
 }
 
+int Gallery::getAppId() const
+{
+    return m_appId;
+}
+
 int Gallery::id() const
 {
     return m_id;

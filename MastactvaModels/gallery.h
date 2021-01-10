@@ -52,6 +52,7 @@ public:
         }
     };
 
+    int getAppId() const;
     int id() const;
     void setId(const int &id_);
     QString description() const;
