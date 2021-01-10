@@ -9,6 +9,7 @@
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/shaderargtype.h"
 #include "../MastactvaModels/easingtype.h"
+#include "../MastactvaModels/userstep.h"
 
 
 static const QString g_defaultSavePath = "./LocalData/";
@@ -40,6 +41,11 @@ void LocalDataSet::create()
     m_imageModel->initResponse();
     m_imageModel->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m_imageModel->setCurrentRef("gallery");
+    m_imageModel->setLayoutQMLName(
+                m_galleryModel->getQMLLayoutName() +
+                QString("_Gallery_NNN_") +
+                QString("_GalleryImageModel_")
+                );
     m_imageModel->addModelParam("use_in_gallery_view", "0");
     m_imageModel->setLayoutIdFieldImpl("id");
     m_imageModel->registerListModel();
@@ -68,13 +74,24 @@ void LocalDataSet::create()
     m_easingTypeModel->setLayoutIdFieldImpl("id");
     m_easingTypeModel->registerListModel();
     m_easingTypeModel->setAutoCreateChildrenModels(true);
+
+    m_userStepModel = new UserStepModel(this);
+    m_userStepModel->initResponse();
+    m_userStepModel->setCurrentRef("");
+    m_userStepModel->setLayoutQMLName("LocalData_UserStepModel");
+    m_userStepModel->setLayoutIdFieldImpl("id");
+    m_userStepModel->registerListModel();
+    m_userStepModel->setAutoCreateChildrenModels(false);
+    m_userStepModel->setStoreAfterSave(false);
 }
 
 void LocalDataSet::free()
 {
+    m_galleryIndex = -1;
+    c_downloadStepsCount = 5;
+
     delete m_galleryModel;
     m_galleryModel = nullptr;
-    m_galleryIndex = -1;
     delete m_imageModel;
     m_imageModel = nullptr;
     delete m_shaderTypeModel;
@@ -83,6 +100,8 @@ void LocalDataSet::free()
     m_shaderArgTypeModel = nullptr;
     delete m_easingTypeModel;
     m_easingTypeModel = nullptr;
+    delete m_userStepModel;
+    m_userStepModel = nullptr;
 }
 
 void LocalDataSet::download()
@@ -105,7 +124,9 @@ void LocalDataSet::download()
 qreal LocalDataSet::stepProgress()
 {
     const int i = m_step++;
-    return floor((qreal)std::min(i, c_downloadStepsCount) / (qreal)c_downloadStepsCount * 1000.0) / 10.0;
+    const qreal progress = floor((qreal)std::min(i, c_downloadStepsCount) / (qreal)c_downloadStepsCount * 1000.0) / 10.0;
+    qDebug() << "progress =" << progress;
+    return progress;
 }
 
 QString LocalDataSet::savePath() const
@@ -130,7 +151,7 @@ void LocalDataSet::downloadStep()
         emit progress(stepProgress());
         return; // one model at time
     }
-    if(nullptr != m_imageModel && nullptr != m_galleryModel && m_galleryIndex < m_galleryModel->sizeImpl())
+    if(nullptr != m_galleryModel && nullptr != m_imageModel && m_galleryIndex < m_galleryModel->sizeImpl() - 1)
     {
         ++m_galleryIndex;
         m_galleryModel->setCurrentIndex(m_galleryIndex);
@@ -139,20 +160,26 @@ void LocalDataSet::downloadStep()
                 : QVariant()
                 ;
         m_imageModel->setRefAppId(appId);
-        m_imageModel->setLayoutQMLName(
-                    m_galleryModel->getQMLLayoutName() +
-                    QString("_Gallery_") + appId.toString() +
-                    QString("_GalleryImageModel_")
-                    );
-        m_imageModel->clear();
+        m_imageModel->clearListLoaded();
         m_imageModel->loadList();
         if(0 == m_galleryIndex)
         {
+            if(nullptr != m_galleryModel)
+            {
+                QObject::disconnect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+            }
+            c_downloadStepsCount += m_galleryModel->sizeImpl();
             QObject::connect(m_imageModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         }
+        emit progress(stepProgress());
+        return; // one model at time
     }
     if(nullptr != m_shaderTypeModel && !m_shaderTypeModel->isListLoaded())
     {
+        if(nullptr != m_imageModel)
+        {
+            QObject::disconnect(m_imageModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        }
         QObject::connect(m_shaderTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         m_shaderTypeModel->loadList();
         emit progress(stepProgress());
@@ -160,6 +187,10 @@ void LocalDataSet::downloadStep()
     }
     if(nullptr != m_shaderArgTypeModel && !m_shaderArgTypeModel->isListLoaded())
     {
+        if(nullptr != m_shaderTypeModel)
+        {
+            QObject::disconnect(m_shaderTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        }
         QObject::connect(m_shaderArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         m_shaderArgTypeModel->loadList();
         emit progress(stepProgress());
@@ -167,8 +198,23 @@ void LocalDataSet::downloadStep()
     }
     if(nullptr != m_easingTypeModel && !m_easingTypeModel->isListLoaded())
     {
+        if(nullptr != m_shaderArgTypeModel)
+        {
+            QObject::disconnect(m_shaderArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        }
         QObject::connect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         m_easingTypeModel->loadList();
+        emit progress(stepProgress());
+        return; // one model at time
+    }
+    if(nullptr != m_userStepModel && !m_userStepModel->isListLoaded())
+    {
+        if(nullptr != m_easingTypeModel)
+        {
+            QObject::disconnect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        }
+        QObject::connect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_userStepModel->procedure("empty_list", {{"id", 0}, });
         emit progress(stepProgress());
         return; // one model at time
     }
@@ -192,6 +238,10 @@ void LocalDataSet::downloadStep()
     if(nullptr != m_easingTypeModel)
     {
         QObject::disconnect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(nullptr != m_userStepModel)
+    {
+        QObject::disconnect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
     //free();
 

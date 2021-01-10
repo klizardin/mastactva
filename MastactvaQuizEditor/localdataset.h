@@ -11,6 +11,7 @@ class ImageModel;
 class ShaderTypeModel;
 class ShaderArgTypeModel;
 class EasingTypeModel;
+class UserStepModel;
 
 
 class LocalDataSet : public QObject
@@ -49,10 +50,11 @@ private:
     ShaderTypeModel *m_shaderTypeModel = nullptr;
     ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
+    UserStepModel *m_userStepModel = nullptr;
     int m_step = 0;
     int m_galleryIndex = -1;
 
-    const int c_downloadStepsCount = 4;
+    int c_downloadStepsCount = 5;
 };
 
 #endif // LOCALDATASET_H
