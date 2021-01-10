@@ -1361,7 +1361,7 @@ public:                                                                         
     {                                                                                                           \
         autoLoadItemImpl(item_);                                                                                \
     }                                                                                                           \
-    Q_INVOKABLE void sort()                                                                                     \
+    Q_INVOKABLE void sortModel()                                                                                     \
     {                                                                                                           \
         if(sortByFieldsImpl(getSortFieldsImpl(), true))                                                         \
         {                                                                                                       \
