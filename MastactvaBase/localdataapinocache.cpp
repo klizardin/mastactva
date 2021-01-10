@@ -29,6 +29,7 @@ QString LocalDataAPINoCache::JsonFieldInfo::getSqlType() const
         return QString(g_sqlText);
         break;
     }
+    return QString(g_sqlText);
 }
 
 QString LocalDataAPINoCache::JsonFieldInfo::getBindName() const
