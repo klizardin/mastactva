@@ -15,6 +15,12 @@
 class LocalDataAPICache : public QObject
 {
     Q_OBJECT
+protected:
+    class LocalDBRequest : public DBRequestInfo
+    {
+    public:
+        LocalDBRequest() = default;
+    };
 
 public:
     explicit LocalDataAPICache(QObject *parent_ = nullptr);
@@ -46,6 +52,10 @@ public:
                          bool readonly_
                          )
     {
+        Q_UNUSED(jsonParams_);
+        LocalDBRequest *r = new LocalDBRequest();
+        r->init<DataType_>(layoutName_, procedureName_, refs_, currentRef_, parentModel_, parentModelJsonFieldName_, refAppId_, refValue_, readonly_);
+        return getList(layoutName_, extraFields_, r);
     }
 
     template<class DataType_>
@@ -72,6 +82,7 @@ signals:
 
 protected:
     void freeRequests();
+    RequestData *getList(const QString &layoutName_, const QHash<QString, QVariant> &extraFields_, LocalDBRequest *r_);
 
 private:
     QSqlDatabase m_databaseRW;

@@ -30,6 +30,7 @@ public:
 
     template<typename DataType_>
     void init(
+            const QString &layoutName_,
             const QString &procedureName_,
             const QStringList &refs_,
             const QString &currentRef_,
@@ -46,7 +47,7 @@ public:
         QVariant idField;
 
 
-        const QString jsonLayoutName = getDataLayout<DataType_>().getLayoutJsonName();
+        const QString jsonLayoutName = layoutName_;
         tableName = namingConversion(jsonLayoutName);
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);

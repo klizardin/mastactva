@@ -31,3 +31,8 @@ LocalDataAPICache *LocalDataAPICache::getInstance()
 void LocalDataAPICache::freeRequests()
 {
 }
+
+RequestData *LocalDataAPICache::getList(const QString &layoutName_, const QHash<QString, QVariant> &extraFields_, LocalDBRequest *r_)
+{
+    return nullptr;
+}
