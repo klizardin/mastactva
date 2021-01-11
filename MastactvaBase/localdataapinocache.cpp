@@ -8,10 +8,11 @@
 
 
 //#define TRACE_DB_CREATION
+//#define TRACE_DB_DATA_BINDINGS
 
 
-static const char *g_dbNameRW = "mastactvarw_";
-static const char *g_dbNameRO = "mastactvaro_";
+static const char *g_dbNameRW = "mastactva_rw_";
+static const char *g_dbNameRO = "mastactva_ro_";
 static const char *g_dbNameExt = ".db3";
 static const char *g_sqlText = "TEXT";
 static const char *g_sqlInt = "INTEGER";
@@ -49,14 +50,14 @@ void LocalDataAPINoCache::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValu
         bool v = jv_.toBool();
         if(layout::JsonTypesEn::jt_bool == type)
         {
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << getBindName() << (v?1:0);
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(v?1:0));
         }
         else
         {
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << getBindName() << QString::number(v?1:0);
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v?1:0)));
@@ -65,28 +66,28 @@ void LocalDataAPINoCache::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValu
     else if(jv_.isDouble())
     {
         double v = jv_.toDouble();
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
         qDebug() << getBindName() << QString::number(v);
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v)));
     }
     else if(jv_.isString())
     {
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
         qDebug() << getBindName() << jv_.toString();
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(jv_.toString()));
     }
     else if(jv_.isNull())
     {
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
         qDebug() << getBindName() << QString();
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
     }
     else
     {
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
         qDebug() << getBindName() << QString();
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
@@ -236,6 +237,7 @@ void LocalDataAPINoCache::startSave(const QString &savePath_)
     m_savePath = savePath_;
     QString dateStr = dateTimeToJsonString(QDateTime::currentDateTime());
     dateStr.replace(":", "_");
+    dateStr.replace("-", "_");
     m_dbNameRW = QString(g_dbNameRW) + dateStr + QString(g_dbNameExt);
     m_dbNameRO = QString(g_dbNameRO) + dateStr + QString(g_dbNameExt);
     cleanPath();
@@ -358,6 +360,7 @@ void LocalDataAPINoCache::createTable(
         qDebug() << err.nativeErrorCode();
         qDebug() << err.text();
     }
+    query.finish();
 }
 
 
@@ -400,7 +403,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         {
             const QString v = defValues.value(bind);
             query.bindValue(bind, v);
-#if defined(TRACE_DB_CREATION)
+#if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << bind << v;
 #endif
         }
@@ -418,6 +421,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << err.text();
         }
     }
+    query.finish();
 }
 
 QString LocalDataAPINoCache::namingConversion(const QString &name_)
