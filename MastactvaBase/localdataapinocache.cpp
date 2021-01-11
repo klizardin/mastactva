@@ -11,9 +11,6 @@
 //#define TRACE_DB_DATA_BINDINGS
 
 
-static const char *g_splitTableRef = "_by_";
-
-
 bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
 {
     return nullptr != m_request && nullptr != request_ && m_request == request_;
@@ -149,9 +146,6 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
 }
 
 
-static const char * g_refPrefix = "ref_";
-
-
 inline QString refName(const QString &ref_)
 {
     return QString(g_refPrefix) + ref_;
@@ -176,9 +170,6 @@ inline QStringList textTypes(const QStringList &names_)
     }
     return res;
 }
-
-
-static const char * g_insertFieldSpliter = " , ";
 
 
 void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
@@ -240,7 +231,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : "");
+        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs

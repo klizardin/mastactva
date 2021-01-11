@@ -21,8 +21,10 @@ public:
         layout::JsonTypesEn type;
 
         QString getSqlType() const;
+        static QString toBindName(const QString &sqlName_);
         QString getBindName() const;
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
+        QJsonValue jsonValue(const QVariant &val_) const;
     };
 
 public:

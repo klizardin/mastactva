@@ -6,6 +6,7 @@
 #include <QtSql>
 #include <QVector>
 #include <QList>
+#include <QJsonDocument>
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/netapi.h"
@@ -16,10 +17,16 @@ class LocalDataAPICache : public QObject
 {
     Q_OBJECT
 protected:
-    class LocalDBRequest : public DBRequestInfo, public RequestData
+    class LocalDBRequest :
+            public DBRequestInfo,
+            public RequestData
     {
     public:
         LocalDBRequest() = default;
+        void addJsonResult(const QJsonDocument &doc_);
+
+    private:
+        QJsonDocument m_doc;
     };
 
 public:
@@ -29,14 +36,8 @@ public:
     static void createInstance(QObject *parent_);
     static LocalDataAPICache *getInstance();
 
-    RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
-    {
-        return nullptr;
-    }
-
-    void freeRequest(RequestData *&r_)
-    {
-    }
+    RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_);
+    void freeRequest(RequestData *&r_);
 
     template<class DataType_>
     RequestData *getList(const QString &layoutName_,
@@ -53,9 +54,10 @@ public:
                          )
     {
         Q_UNUSED(jsonParams_);
+        Q_UNUSED(extraFields_);
         LocalDBRequest *r = new LocalDBRequest();
         r->init<DataType_>(layoutName_, procedureName_, refs_, currentRef_, parentModel_, parentModelJsonFieldName_, refAppId_, refValue_, readonly_);
-        return getListImpl(RequestData::getListRequestName<DataType_>(), layoutName_, extraFields_, r);
+        return getListImpl(RequestData::getListRequestName<DataType_>(), r);
     }
 
     template<class DataType_>
@@ -102,15 +104,18 @@ signals:
 
 protected:
     void freeRequests();
-    RequestData *getListImpl(const QString& requestName_, const QString &layoutName_, const QHash<QString, QVariant> &extraFields_, LocalDBRequest *r_);
+    RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_);
     RequestData *addItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
     RequestData *setItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
     RequestData *delItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, LocalDBRequest *r_);
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
+    void openDB();
+    void closeDB();
 
 private:
     QSqlDatabase m_databaseRW;
     QSqlDatabase m_databaseRO;
+    QList<LocalDBRequest *> m_requests;
     static LocalDataAPICache *g_localDataAPI;
 };
 

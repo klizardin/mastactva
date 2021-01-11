@@ -72,6 +72,9 @@ static const char *g_sqlInt = "INTEGER";
 static const char *g_dbNameRW = "mastactva_rw";
 static const char *g_dbNameRO = "mastactva_ro";
 static const char *g_dbNameExt = ".db3";
+static const char *g_splitTableRef = "_by_";
+static const char *g_insertFieldSpliter = " , ";
+static const char *g_refPrefix = "ref_";
 
 
 #endif // UTILS_H

@@ -24,9 +24,14 @@ QString DBRequestInfo::JsonFieldInfo::getSqlType() const
     return QString(g_sqlText);
 }
 
+QString DBRequestInfo::JsonFieldInfo::toBindName(const QString &sqlName_)
+{
+    return QString(":") + sqlName_;
+}
+
 QString DBRequestInfo::JsonFieldInfo::getBindName() const
 {
-    return QString(":") + sqlName;
+    return toBindName(sqlName);
 }
 
 void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_) const
@@ -78,6 +83,28 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
     }
+}
+
+QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
+{
+    switch (type) {
+    case layout::JsonTypesEn::jt_bool:
+        return QJsonValue(val_.toInt() != 0);
+        break;
+    case layout::JsonTypesEn::jt_double:
+        return QJsonValue(val_.toDouble());
+        break;
+    case layout::JsonTypesEn::jt_string:
+        return QJsonValue(val_.toString());
+        break;
+    case layout::JsonTypesEn::jt_array:
+    case layout::JsonTypesEn::jt_object:
+    case layout::JsonTypesEn::jt_null:
+    case layout::JsonTypesEn::jt_undefined:
+        return QJsonValue(val_.toString());
+        break;
+    }
+    return QJsonValue(val_.toString());
 }
 
 
