@@ -185,7 +185,7 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
 {
     if(nullptr == r_) { return; }
 #if defined(TRACE_DB_CREATION)
-    qDebug() << "readonly " << readonly_;
+    qDebug() << "readonly " << r_->getReadonly();
 #endif
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
