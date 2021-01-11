@@ -238,6 +238,7 @@ void LocalDataAPINoCache::startSave(const QString &savePath_)
     QString dateStr = dateTimeToJsonString(QDateTime::currentDateTime());
     dateStr.replace(":", "_");
     dateStr.replace("-", "_");
+    dateStr.replace(".", "_");
     m_dbNameRW = QString(g_dbNameRW) + dateStr + QString(g_dbNameExt);
     m_dbNameRO = QString(g_dbNameRO) + dateStr + QString(g_dbNameExt);
     cleanPath();
@@ -275,12 +276,12 @@ void LocalDataAPINoCache::cleanPath()
 
 void LocalDataAPINoCache::createDB()
 {
-    m_databaseRW = QSqlDatabase::addDatabase("QSQLITE");
-    m_databaseRW.setDatabaseName(m_dbNameRW);
-    m_databaseRW.open();
-    m_databaseRO = QSqlDatabase::addDatabase("QSQLITE");
+    m_databaseRO = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRO);
     m_databaseRO.setDatabaseName(m_dbNameRO);
     m_databaseRO.open();
+    m_databaseRW = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRW);
+    m_databaseRW.setDatabaseName(m_dbNameRW);
+    m_databaseRW.open();
 }
 
 bool LocalDataAPINoCache::isSaveToDBMode() const
@@ -332,7 +333,8 @@ void LocalDataAPINoCache::createTable(
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << readonly_;
 #endif
-    QSqlQuery query = readonly_ ? QSqlQuery(m_databaseRO) : QSqlQuery(m_databaseRW);
+    QSqlDatabase db = QSqlDatabase::database(readonly_ ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(db);
     QString tableName = tableName_;
     if(!currentRef_.isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(currentRef_); }
     QStringList tableFieldsNameTypePairs;
@@ -370,7 +372,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    QSqlQuery query = r_->getReadonly() ? QSqlQuery(m_databaseRO) : QSqlQuery(m_databaseRW);
+    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(r_->getCurrentRef()); }
     const QString fieldNames = (QStringList()
@@ -394,11 +397,15 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 #if defined(TRACE_DB_CREATION)
     qDebug() << sqlRequest;
 #endif
-    query.prepare(sqlRequest);
-    for(int i = 0; ; i++)
+    int i = 0;
+    for(i = 0; ; i++)
     {
         QJsonValue itemJV = reply_[i];
         if(itemJV.isUndefined()) { break; }
+        if(0 == i)
+        {
+            query.prepare(sqlRequest);
+        }
         for(const QString &bind : qAsConst(bindRefs))
         {
             const QString v = defValues.value(bind);
@@ -421,7 +428,10 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << err.text();
         }
     }
-    query.finish();
+    if(i > 0)
+    {
+        query.finish();
+    }
 }
 
 QString LocalDataAPINoCache::namingConversion(const QString &name_)
