@@ -339,7 +339,8 @@ RequestData *NetAPI::getListImpl(const QString& requestName_,
 
 static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
 {
-    for(const QVariant &v : values_.values())
+    const QList<QVariant> values = values_.values();
+    for(const QVariant &v : values)
     {
         QObject * obj = qvariant_cast<QObject *>(v);
         QFile *f = qobject_cast<QFile*>(obj);
@@ -407,7 +408,7 @@ void MultipartRequestData::appendParts()
 {
     Q_ASSERT(nullptr != m_multiPart);
     if(nullptr == m_multiPart) { return; }
-    for(const QHttpPart& part : m_httpParts)
+    for(const QHttpPart& part : qAsConst(m_httpParts))
     {
         m_multiPart->append(part);
     }

@@ -334,7 +334,7 @@ void LocalDataAPINoCache::createTable(
     QString tableName = tableName_;
     if(!currentRef_.isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(currentRef_); }
     QStringList tableFieldsNameTypePairs;
-    for(const JsonFieldInfo &fi : tableFieldsInfo_)
+    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
     {
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
@@ -376,7 +376,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
-    for(const QString &ref : r_->getRefs())
+    for(const QString &ref : qAsConst(r_->getRefs()))
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);
@@ -404,7 +404,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << bind << v;
 #endif
         }
-        for(const JsonFieldInfo &bindInfo : r_->getTableFieldsInfo())
+        for(const JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
             const QJsonValue valueJV = itemJV[bindInfo.jsonName];
             bindInfo.bind(query, valueJV);
@@ -430,7 +430,7 @@ QString LocalDataAPINoCache::namingConversion(const QString &name_)
 QStringList LocalDataAPINoCache::getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const
 {
     QStringList res;
-    for(const JsonFieldInfo &fi : tableFieldsInfo_)
+    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
     {
         res.push_back(fi.sqlName);
     }
@@ -440,7 +440,7 @@ QStringList LocalDataAPINoCache::getSqlNames(const QList<JsonFieldInfo> &tableFi
 QStringList LocalDataAPINoCache::getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const
 {
     QStringList res;
-    for(const JsonFieldInfo &fi : tableFieldsInfo_)
+    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
     {
         res.push_back(fi.getBindName());
     }

@@ -502,7 +502,7 @@ public:
         else
         {
             QHash<QString, QVariant> extraFields(m_modelParams);
-            for(const ExtraFields &f: m_extraFields)
+            for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
                 if(nullptr != m)
@@ -541,7 +541,7 @@ public:
         else
         {
             QHash<QString, QVariant> extraFields(m_modelParams);
-            for(const ExtraFields &f: m_extraFields)
+            for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
                 if(nullptr != m)
@@ -717,7 +717,7 @@ protected:
         else
         {
             QStringList refs;
-            for(const RefDescription &ref : m_refs)
+            for(const RefDescription &ref : qAsConst(m_refs))
             {
                 refs.push_back(ref.m_ref);
             }
@@ -730,7 +730,7 @@ protected:
             }
             QHash<QString, QVariant> extraFields(m_modelParams);
             extraFields.insert(extraFields_);
-            for(const ExtraFields &f: m_extraFields)
+            for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
                 if(nullptr != m)
@@ -1180,7 +1180,7 @@ protected:
         if(getDataLayout<DataType_>().storeAfterSave()) { return; }
 
         QVector<DataType_ *> waitingToUpdate;
-        for(const RequestData *r : m_requests)
+        for(const RequestData *r : qAsConst(m_requests))
         {
             DataType_ *item = nullptr;
             if(r->getRequestName() == RequestData::addItemRequestName<DataType_>())

@@ -100,7 +100,7 @@ public:
             QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
             getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
             tableFieldsInfo.clear();
-            for(const auto &jsonFieldName: fieldsInfo)
+            for(const auto &jsonFieldName: qAsConst(fieldsInfo))
             {
                 const QString sqlFieldName = namingConversion(jsonFieldName.first);
                 tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second});

@@ -192,7 +192,7 @@ bool Effect::startRefreshArguments()
     //    qDebug() << url_.first << ", " << url_.second;
     //}
     m_shaderUrls.clear();
-    for(const QPair<QString,QString> &url_: urlHashPairs)
+    for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     {
         m_shaderUrls.push_back(url_.first);
     }
@@ -200,7 +200,7 @@ bool Effect::startRefreshArguments()
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
     QObject::connect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
-    for(const QPair<QString,QString> &url_: urlHashPairs)
+    for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     {
         sf->add(url_.first, url_.second, g_shadersRelPath);
     }
@@ -260,7 +260,7 @@ void Effect::applyRefreshArguments()
 
         QVector<Comment> comments;
         getShaderComments(shaderText, comments);
-        for(const Comment &comment: comments)
+        for(const Comment &comment: qAsConst(comments))
         {
             if(!comment.values().contains(g_argumentName) ||
                     !comment.values().contains(g_nameName) ||
