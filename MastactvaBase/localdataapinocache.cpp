@@ -7,12 +7,16 @@
 #include "../MastactvaBase/utils.h"
 
 
+//#define TRACE_DB_CREATION
+
+
 static const char *g_dbNameRW = "mastactvarw_";
 static const char *g_dbNameRO = "mastactvaro_";
 static const char *g_dbNameExt = ".db3";
 static const char *g_sqlText = "TEXT";
 static const char *g_sqlInt = "INTEGER";
-static const char *g_sqlDouble = "REAL";
+static const char *g_splitTableRef = "_by_";
+//static const char *g_sqlDouble = "REAL";
 
 
 QString LocalDataAPINoCache::JsonFieldInfo::getSqlType() const
@@ -45,34 +49,46 @@ void LocalDataAPINoCache::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValu
         bool v = jv_.toBool();
         if(layout::JsonTypesEn::jt_bool == type)
         {
-            //qDebug() << getBindName() << (v?1:0);
+#if defined(TRACE_DB_CREATION)
+            qDebug() << getBindName() << (v?1:0);
+#endif
             query_.bindValue(getBindName(), QVariant::fromValue(v?1:0));
         }
         else
         {
-            //qDebug() << getBindName() << QString::number(v?1:0);
+#if defined(TRACE_DB_CREATION)
+            qDebug() << getBindName() << QString::number(v?1:0);
+#endif
             query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v?1:0)));
         }
     }
     else if(jv_.isDouble())
     {
         double v = jv_.toDouble();
-        //qDebug() << getBindName() << QString::number(v);
+#if defined(TRACE_DB_CREATION)
+        qDebug() << getBindName() << QString::number(v);
+#endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v)));
     }
     else if(jv_.isString())
     {
-        //qDebug() << getBindName() << jv_.toString();
+#if defined(TRACE_DB_CREATION)
+        qDebug() << getBindName() << jv_.toString();
+#endif
         query_.bindValue(getBindName(), QVariant::fromValue(jv_.toString()));
     }
     else if(jv_.isNull())
     {
-        //qDebug() << getBindName() << QString();
+#if defined(TRACE_DB_CREATION)
+        qDebug() << getBindName() << QString();
+#endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
     }
     else
     {
-        //qDebug() << getBindName() << QString();
+#if defined(TRACE_DB_CREATION)
+        qDebug() << getBindName() << QString();
+#endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
     }
 }
@@ -245,7 +261,6 @@ void LocalDataAPINoCache::cleanRequests()
 
 void LocalDataAPINoCache::cleanPath()
 {
-    //QString savePath = QDir(m_savePath).filePath(g_dbName);
     QFile::remove(m_dbNameRW);
     QFile::remove(m_dbNameRO);
     QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
@@ -258,7 +273,6 @@ void LocalDataAPINoCache::cleanPath()
 
 void LocalDataAPINoCache::createDB()
 {
-    //QString savePath = QDir(m_savePath).filePath(g_dbName);
     m_databaseRW = QSqlDatabase::addDatabase("QSQLITE");
     m_databaseRW.setDatabaseName(m_dbNameRW);
     m_databaseRW.open();
@@ -313,19 +327,29 @@ void LocalDataAPINoCache::createTable(
         bool readonly_
         )
 {
+#if defined(TRACE_DB_CREATION)
+    qDebug() << "readonly " << readonly_;
+#endif
     QSqlQuery query = readonly_ ? QSqlQuery(m_databaseRO) : QSqlQuery(m_databaseRW);
     QString tableName = tableName_;
-    if(!currentRef_.isEmpty()) { tableName += QString("_by_") + namingConversion(currentRef_); }
+    if(!currentRef_.isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(currentRef_); }
     QStringList tableFieldsNameTypePairs;
     for(const JsonFieldInfo &fi : tableFieldsInfo_)
     {
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
-    const QString fieldsRequests = (QStringList() << textTypes(refsNames(refs_)) << tableFieldsNameTypePairs).join(g_insertFieldSpliter) + QString(g_insertFieldSpliter);
+    const QString fieldsRequests = (QStringList()
+                                    << textTypes(refsNames(refs_))
+                                    << tableFieldsNameTypePairs
+                                    ).join(g_insertFieldSpliter) +
+            QString(g_insertFieldSpliter)
+            ;
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 )")
             .arg(tableName, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
-    //qDebug() << sqlRequest;
+#if defined(TRACE_DB_CREATION)
+    qDebug() << sqlRequest;
+#endif
     if(!query.exec(sqlRequest))
     {
         const QSqlError err = query.lastError();
@@ -340,10 +364,16 @@ void LocalDataAPINoCache::createTable(
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
+#if defined(TRACE_DB_CREATION)
+    qDebug() << "readonly " << r_->getReadonly();
+#endif
     QSqlQuery query = r_->getReadonly() ? QSqlQuery(m_databaseRO) : QSqlQuery(m_databaseRW);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString("_by_") + namingConversion(r_->getCurrentRef()); }
-    const QString fieldNames = (QStringList() << refsNames(r_->getRefs()) << getSqlNames(r_->getTableFieldsInfo())).join(g_insertFieldSpliter);
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(r_->getCurrentRef()); }
+    const QString fieldNames = (QStringList()
+                                << refsNames(r_->getRefs())
+                                << getSqlNames(r_->getTableFieldsInfo())
+                                ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : r_->getRefs())
@@ -352,20 +382,27 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : "");
     }
-    const QString fieldNamesBindings = (QStringList() << bindRefs << getSqlBindNames(r_->getTableFieldsInfo())).join(g_insertFieldSpliter);
+    const QString fieldNamesBindings = (QStringList()
+                                        << bindRefs
+                                        << getSqlBindNames(r_->getTableFieldsInfo())
+                                        ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
             .arg(tableName, fieldNames, fieldNamesBindings);
-    //qDebug() << sqlRequest;
+#if defined(TRACE_DB_CREATION)
+    qDebug() << sqlRequest;
+#endif
     query.prepare(sqlRequest);
     for(int i = 0; ; i++)
     {
         QJsonValue itemJV = reply_[i];
         if(itemJV.isUndefined()) { break; }
-        for(const QString &bind : bindRefs)
+        for(const QString &bind : qAsConst(bindRefs))
         {
             const QString v = defValues.value(bind);
             query.bindValue(bind, v);
-            //qDebug() << bind << v;
+#if defined(TRACE_DB_CREATION)
+            qDebug() << bind << v;
+#endif
         }
         for(const JsonFieldInfo &bindInfo : r_->getTableFieldsInfo())
         {
