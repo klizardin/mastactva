@@ -11,9 +11,6 @@
 //#define TRACE_DB_DATA_BINDINGS
 
 
-static const char *g_dbNameRW = "mastactva_rw_";
-static const char *g_dbNameRO = "mastactva_ro_";
-static const char *g_dbNameExt = ".db3";
 static const char *g_splitTableRef = "_by_";
 
 
