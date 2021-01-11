@@ -20,7 +20,7 @@ static const char *g_splitTableRef = "_by_";
 //static const char *g_sqlDouble = "REAL";
 
 
-QString LocalDataAPINoCache::JsonFieldInfo::getSqlType() const
+QString DBRequestInfo::JsonFieldInfo::getSqlType() const
 {
     switch (type) {
     case layout::JsonTypesEn::jt_bool:
@@ -38,12 +38,12 @@ QString LocalDataAPINoCache::JsonFieldInfo::getSqlType() const
     return QString(g_sqlText);
 }
 
-QString LocalDataAPINoCache::JsonFieldInfo::getBindName() const
+QString DBRequestInfo::JsonFieldInfo::getBindName() const
 {
     return QString(":") + sqlName;
 }
 
-void LocalDataAPINoCache::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_) const
+void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_) const
 {
     if(jv_.isBool())
     {
@@ -95,73 +95,97 @@ void LocalDataAPINoCache::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValu
 }
 
 
-LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
-{
-}
-
-bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
-{
-    return nullptr != m_request && nullptr != request_ && m_request == request_;
-}
-
-const QString &LocalDataAPINoCache::SaveDBRequest::getTableName() const
+const QString &DBRequestInfo::getTableName() const
 {
     return m_tableName;
 }
 
-void LocalDataAPINoCache::SaveDBRequest::setTableName(const QString &tableName_)
+void DBRequestInfo::setTableName(const QString &tableName_)
 {
     m_tableName = tableName_;
 }
 
-const QList<LocalDataAPINoCache::JsonFieldInfo> &LocalDataAPINoCache::SaveDBRequest::getTableFieldsInfo() const
+const QList<DBRequestInfo::JsonFieldInfo> &DBRequestInfo::getTableFieldsInfo() const
 {
     return m_tableFieldsInfo;
 }
 
-void LocalDataAPINoCache::SaveDBRequest::setTableFieldsInfo(const QList<LocalDataAPINoCache::JsonFieldInfo> &jsonFieldInfo_)
+void DBRequestInfo::setTableFieldsInfo(const QList<DBRequestInfo::JsonFieldInfo> &jsonFieldInfo_)
 {
     m_tableFieldsInfo = jsonFieldInfo_;
 }
 
-const QStringList &LocalDataAPINoCache::SaveDBRequest::getRefs() const
+const QStringList &DBRequestInfo::getRefs() const
 {
     return m_refs;
 }
 
-void LocalDataAPINoCache::SaveDBRequest::setRefs(const QStringList &refs_)
+void DBRequestInfo::setRefs(const QStringList &refs_)
 {
     m_refs = refs_;
 }
 
-const QString &LocalDataAPINoCache::SaveDBRequest::getCurrentRef() const
+const QString &DBRequestInfo::getCurrentRef() const
 {
     return m_currentRef;
 }
 
-void LocalDataAPINoCache::SaveDBRequest::setCurrentRef(const QString &currentRef_)
+void DBRequestInfo::setCurrentRef(const QString &currentRef_)
 {
     m_currentRef = currentRef_;
 }
 
-const QVariant &LocalDataAPINoCache::SaveDBRequest::getIdField() const
+const QVariant &DBRequestInfo::getIdField() const
 {
     return m_idField;
 }
 
-void LocalDataAPINoCache::SaveDBRequest::setIdField(const QVariant &idField_)
+void DBRequestInfo::setIdField(const QVariant &idField_)
 {
     m_idField = idField_;
 }
 
-bool LocalDataAPINoCache::SaveDBRequest::getReadonly() const
+bool DBRequestInfo::getReadonly() const
 {
     return m_readonly;
 }
 
-void LocalDataAPINoCache::SaveDBRequest::setReadonly(bool readonly_)
+void DBRequestInfo::setReadonly(bool readonly_)
 {
     m_readonly = readonly_;
+}
+
+QString DBRequestInfo::namingConversion(const QString &name_)
+{
+    QString res = name_;
+    res.replace("-", "_");
+    return res;
+}
+
+QStringList DBRequestInfo::getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
+{
+    QStringList res;
+    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    {
+        res.push_back(fi.sqlName);
+    }
+    return res;
+}
+
+QStringList DBRequestInfo::getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
+{
+    QStringList res;
+    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    {
+        res.push_back(fi.getBindName());
+    }
+    return res;
+}
+
+
+bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
+{
+    return nullptr != m_request && nullptr != request_ && m_request == request_;
 }
 
 void LocalDataAPINoCache::SaveDBRequest::setRequest(const RequestData *request_)
@@ -335,9 +359,9 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
     QStringList tableFieldsNameTypePairs;
-    for(const JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
+    for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
     {
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
@@ -374,10 +398,10 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
     const QString fieldNames = (QStringList()
                                 << refsNames(r_->getRefs())
-                                << getSqlNames(r_->getTableFieldsInfo())
+                                << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
@@ -389,7 +413,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs
-                                        << getSqlBindNames(r_->getTableFieldsInfo())
+                                        << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
             .arg(tableName, fieldNames, fieldNamesBindings);
@@ -413,7 +437,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << bind << v;
 #endif
         }
-        for(const JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
             const QJsonValue valueJV = itemJV[bindInfo.jsonName];
             bindInfo.bind(query, valueJV);
@@ -431,31 +455,4 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         query.finish();
     }
-}
-
-QString LocalDataAPINoCache::namingConversion(const QString &name_)
-{
-    QString res = name_;
-    res.replace("-", "_");
-    return res;
-}
-
-QStringList LocalDataAPINoCache::getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const
-{
-    QStringList res;
-    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
-    {
-        res.push_back(fi.sqlName);
-    }
-    return res;
-}
-
-QStringList LocalDataAPINoCache::getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const
-{
-    QStringList res;
-    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
-    {
-        res.push_back(fi.getBindName());
-    }
-    return res;
 }

@@ -11,11 +11,9 @@
 #include "../MastactvaBase/netapi.h"
 
 
-class LocalDataAPINoCache : public QObject
+class DBRequestInfo
 {
-    Q_OBJECT
-
-private:
+public:
     struct JsonFieldInfo
     {
         QString jsonName;
@@ -27,92 +25,108 @@ private:
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
     };
 
-    class SaveDBRequest
+public:
+    DBRequestInfo() = default;
+
+    template<typename DataType_>
+    void init(
+            const QString &procedureName_,
+            const QStringList &refs_,
+            const QString &currentRef_,
+            const QString &parentModel_,
+            const QString &parentModelJsonFieldName_,
+            const QVariant &refAppId_,
+            const QVariant &refValue_,
+            bool readonly_
+            )
     {
-    public:
-        explicit SaveDBRequest();
-        bool operator == (const RequestData *request_) const;
+        QString tableName;
+        QList<JsonFieldInfo> tableFieldsInfo;
+        QStringList refs;
+        QVariant idField;
 
-        template<typename DataType_>
-        void init(
-                const QString &procedureName_,
-                const QStringList &refs_,
-                const QString &currentRef_,
-                const QString &parentModel_,
-                const QString &parentModelJsonFieldName_,
-                const QVariant &refAppId_,
-                const QVariant &refValue_,
-                bool readonly_
-                )
+
+        const QString jsonLayoutName = getDataLayout<DataType_>().getLayoutJsonName();
+        tableName = namingConversion(jsonLayoutName);
+        QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
+        getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
+        tableFieldsInfo.clear();
+        for(const auto &jsonFieldName: qAsConst(fieldsInfo))
         {
-            QString tableName;
-            QList<JsonFieldInfo> tableFieldsInfo;
-            QStringList refs;
-            QVariant idField;
-
-
-            const QString jsonLayoutName = getDataLayout<DataType_>().getLayoutJsonName();
-            tableName = namingConversion(jsonLayoutName);
-            QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
-            getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
-            tableFieldsInfo.clear();
-            for(const auto &jsonFieldName: qAsConst(fieldsInfo))
-            {
-                const QString sqlFieldName = namingConversion(jsonFieldName.first);
-                tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second});
-            }
-
-            if(!procedureName_.isEmpty())
-            {
-                refs.clear();
-            }
-            else
-            {
-                refs = refs_;
-                IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
-                if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
-                {
-                    idField =
-                        refValue_.isValid()
-                            ? refValue_
-                            : parentModelJsonFieldName_.isEmpty()
-                              ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
-                              : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
-                        ;
-                }
-            }
-            setTableName(tableName);
-            setTableFieldsInfo(tableFieldsInfo);
-            setRefs(refs);
-            setCurrentRef(procedureName_.isEmpty() ? currentRef_ : QString());
-            setIdField(procedureName_.isEmpty() ? idField : QVariant());
-            setReadonly(readonly_);
+            const QString sqlFieldName = namingConversion(jsonFieldName.first);
+            tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second});
         }
 
-        const QString &getTableName() const;
-        const QList<JsonFieldInfo> &getTableFieldsInfo() const;
-        const QStringList &getRefs() const;
-        const QString &getCurrentRef() const;
-        const QVariant &getIdField() const;
-        bool getReadonly() const;
-        void setRequest(const RequestData *request_);
+        if(!procedureName_.isEmpty())
+        {
+            refs.clear();
+        }
+        else
+        {
+            refs = refs_;
+            IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
+            if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
+            {
+                idField =
+                    refValue_.isValid()
+                        ? refValue_
+                        : parentModelJsonFieldName_.isEmpty()
+                          ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
+                          : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
+                    ;
+            }
+        }
+        setTableName(tableName);
+        setTableFieldsInfo(tableFieldsInfo);
+        setRefs(refs);
+        setCurrentRef(procedureName_.isEmpty() ? currentRef_ : QString());
+        setIdField(procedureName_.isEmpty() ? idField : QVariant());
+        setReadonly(readonly_);
+    }
 
-    protected:
-        void setTableName(const QString &tableName_);
-        void setTableFieldsInfo(const QList<JsonFieldInfo> &jsonFieldInfo_);
-        void setRefs(const QStringList &refs_);
-        void setCurrentRef(const QString &currentRef_);
-        void setIdField(const QVariant &idField_);
-        void setReadonly(bool readonly_);
+    const QString &getTableName() const;
+    const QList<JsonFieldInfo> &getTableFieldsInfo() const;
+    const QStringList &getRefs() const;
+    const QString &getCurrentRef() const;
+    const QVariant &getIdField() const;
+    bool getReadonly() const;
+
+    static QString namingConversion(const QString &name_);
+    static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
+    static QStringList getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
+
+protected:
+    void setTableName(const QString &tableName_);
+    void setTableFieldsInfo(const QList<JsonFieldInfo> &jsonFieldInfo_);
+    void setRefs(const QStringList &refs_);
+    void setCurrentRef(const QString &currentRef_);
+    void setIdField(const QVariant &idField_);
+    void setReadonly(bool readonly_);
+
+private:
+    QString m_tableName;
+    QList<JsonFieldInfo> m_tableFieldsInfo;
+    QStringList m_refs;
+    QString m_currentRef;
+    QVariant m_idField;
+    bool m_readonly = true;
+};
+
+
+class LocalDataAPINoCache : public QObject
+{
+    Q_OBJECT
+
+private:
+    class SaveDBRequest : public DBRequestInfo
+    {
+    public:
+        SaveDBRequest() = default;
+        bool operator == (const RequestData *request_) const;
+        void setRequest(const RequestData *request_);
 
     private:
         const RequestData *m_request = nullptr;
-        QString m_tableName;
-        QList<JsonFieldInfo> m_tableFieldsInfo;
-        QStringList m_refs;
-        QString m_currentRef;
-        QVariant m_idField;
-        bool m_readonly = true;
     };
 
 public:
@@ -220,11 +234,6 @@ protected:
     bool isSaveToDBMode() const;
     void createTable(const SaveDBRequest * r_);
     void fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_);
-    QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const;
-    QStringList getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_) const;
-
-protected:
-    static QString namingConversion(const QString &name_);
 
 private:
     NetAPI *m_netAPI = nullptr;
