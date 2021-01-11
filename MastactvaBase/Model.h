@@ -679,6 +679,14 @@ public:
         loadListImpl(procedureName_, extraFields_);
     }
 
+    void dataItemProcedureImpl(const DataType_ *item_, const QString &procedureName_, const QHash<QString, QVariant> &extraFields_)
+    {
+        Q_UNUSED(item_);
+        Q_UNUSED(procedureName_);
+        Q_UNUSED(extraFields_);
+        Q_ASSERT(false); // TODO: implement
+    }
+
 protected:
     bool storeAfterSaveImpl() const
     {
