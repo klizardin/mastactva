@@ -95,9 +95,8 @@ void LocalDataAPINoCache::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValu
 }
 
 
-LocalDataAPINoCache::SaveDBRequest::SaveDBRequest(const RequestData *request_)
+LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
 {
-    m_request = request_;
 }
 
 bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
@@ -163,6 +162,11 @@ bool LocalDataAPINoCache::SaveDBRequest::getReadonly() const
 void LocalDataAPINoCache::SaveDBRequest::setReadonly(bool readonly_)
 {
     m_readonly = readonly_;
+}
+
+void LocalDataAPINoCache::SaveDBRequest::setRequest(const RequestData *request_)
+{
+    m_request = request_;
 }
 
 
@@ -322,28 +326,23 @@ inline QStringList textTypes(const QStringList &names_)
 static const char * g_insertFieldSpliter = " , ";
 
 
-void LocalDataAPINoCache::createTable(
-        const QString &tableName_,
-        const QList<JsonFieldInfo> &tableFieldsInfo_,
-        const QStringList &refs_,
-        const QString &currentRef_,
-        bool readonly_
-        )
+void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
 {
+    if(nullptr == r_) { return; }
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << readonly_;
 #endif
-    QSqlDatabase db = QSqlDatabase::database(readonly_ ? g_dbNameRO : g_dbNameRW);
+    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = tableName_;
-    if(!currentRef_.isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(currentRef_); }
+    QString tableName = r_->getTableName();
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + namingConversion(r_->getCurrentRef()); }
     QStringList tableFieldsNameTypePairs;
-    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    for(const JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
     {
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
     const QString fieldsRequests = (QStringList()
-                                    << textTypes(refsNames(refs_))
+                                    << textTypes(refsNames(r_->getRefs()))
                                     << tableFieldsNameTypePairs
                                     ).join(g_insertFieldSpliter) +
             QString(g_insertFieldSpliter)
