@@ -10,6 +10,8 @@
 class NetAPI;
 
 
+
+
 class RequestData
 {
 public:
@@ -64,6 +66,7 @@ private:
     bool m_setCurrentItemIndex = false;
 
     friend class NetAPI;
+    friend class LocalDataAPICache;
 };
 
 
