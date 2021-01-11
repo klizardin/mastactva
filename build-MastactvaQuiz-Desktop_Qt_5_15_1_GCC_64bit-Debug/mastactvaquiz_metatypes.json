@@ -18670,6 +18670,50 @@
                 "className": "LocalDataAPICache",
                 "object": true,
                 "qualifiedClassName": "LocalDataAPICache",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "response",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
+                    }
+                ],
                 "superClasses": [
                     {
                         "access": "public",
