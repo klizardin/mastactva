@@ -31,6 +31,10 @@ LocalDataSet::~LocalDataSet()
 
 void LocalDataSet::create()
 {
+    // TODO: GalleryStatisticsModel and UserQuestionAnswerModel
+    // make view to not load data and create model from view
+    // views should create DB tables for itselfs
+
     free();
     m_galleryModel = new GalleryModel(this);
     m_galleryModel->initResponse();
