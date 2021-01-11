@@ -236,8 +236,13 @@ ApplicationWindow {
 
         function onAnswered()
         {
-            if (stackView.depth > 1) {
+            if (stackView.depth > 1)
+            {
                 stackView.pop()
+            }
+            if(galleryModel.currentItem !== null)
+            {
+                galleryModel.currentItem.galleryStatistics.loadList()
             }
         }
     }
