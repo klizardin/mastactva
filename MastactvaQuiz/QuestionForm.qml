@@ -78,6 +78,14 @@ Page {
         }
     }
 
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        visible: false
+        running: false
+        z: 1.0
+    }
+
     Component {
         id: answerItem
 
@@ -160,6 +168,8 @@ Page {
         }
     }
 
+    property var userQuestionAnswerModel: undefined
+
     function chooseAnswer()
     {
         if(currentAnswerIndex >= 0 && question.questionAnswers.currentItem !== null)
@@ -174,19 +184,34 @@ Page {
             userStepQ.usAnswerId = question.questionAnswers.currentItem.answerId
             userStepModel.addItem(userStepQ)
 
-            var userQuestionAnswerModel = question.userQuestionAnswer
+            userQuestionAnswerModel = question.userQuestionAnswer
             var newAnswer = userQuestionAnswerModel.createItem()
             newAnswer.qaQuestionId = question.questionId
             newAnswer.qaT = mastactvaAPI.now()
             newAnswer.qaAnswerId = question.questionAnswers.currentItem.answerId
             userQuestionAnswerModel.addItem(newAnswer)
+            userQuestionAnswerModel.itemAdded.connect(userQuestionAnswerModelItemAdded)
 
-            questionPage.answered()
+            busyIndicator.visible = true
+            busyIndicator.running = true
         }
         else
         {
             popupText.open()
         }
+    }
+
+    function userQuestionAnswerModelItemAdded()
+    {
+        busyIndicator.visible = false
+        busyIndicator.running = false
+
+        if(userQuestionAnswerModel !== undefined && userQuestionAnswerModel !== null)
+        {
+            userQuestionAnswerModel.itemAdded.disconnect(userQuestionAnswerModelItemAdded)
+            userQuestionAnswerModel = undefined
+        }
+        questionPage.answered()
     }
 
     Popup {
