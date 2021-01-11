@@ -66,6 +66,9 @@ static const char *g_shaderArgTypeModel = "ShaderArgTypeModel";
 static const char *g_easingTypeModel = "EasingTypeModel";
 static const char *g_galleryModel = "GalleryModel";
 static const char *g_allImagesOfGalleryModel = "AllImagesOfGallery";
+static const char *g_sqlText = "TEXT";
+static const char *g_sqlInt = "INTEGER";
+//static const char *g_sqlDouble = "REAL";
 
 
 #endif // UTILS_H

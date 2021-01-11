@@ -103,7 +103,8 @@ unix: SOURCES += \
         localdata.cpp   \
         requestdata.cpp \
         localdataapinocache.cpp \
-        localdataapicache.cpp
+        localdataapicache.cpp   \
+        dbrequestinfo.cpp
 
 
 RESOURCES += qml.qrc \
@@ -165,7 +166,8 @@ unix: HEADERS += \
     localdata.h \
     requestdata.h   \
     localdataapinocache.h   \
-    localdataapicache.h
+    localdataapicache.h \
+    dbrequestinfo.h
 
 
 DISTFILES += \
