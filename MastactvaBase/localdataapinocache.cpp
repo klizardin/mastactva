@@ -7,8 +7,8 @@
 #include "../MastactvaBase/utils.h"
 
 
-//#define TRACE_DB_CREATION
-//#define TRACE_DB_DATA_BINDINGS
+#define TRACE_DB_CREATION
+#define TRACE_DB_DATA_BINDINGS
 
 
 bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
@@ -198,15 +198,15 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
             .arg(tableName, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
 #if defined(TRACE_DB_CREATION)
-    qDebug() << sqlRequest;
+    qDebug() << "create sql" << sqlRequest;
 #endif
     if(!query.exec(sqlRequest))
     {
         const QSqlError err = query.lastError();
-        qDebug() << err.driverText();
-        qDebug() << err.databaseText();
-        qDebug() << err.nativeErrorCode();
-        qDebug() << err.text();
+        //qDebug() << err.driverText();
+        //qDebug() << err.databaseText();
+        //qDebug() << err.nativeErrorCode();
+        qDebug() << "sql error "  << err.text();
     }
     query.finish();
 }
@@ -283,8 +283,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1")
             .arg(tableName, conditionStr);
 #if defined(TRACE_DB_CREATION)
-    qDebug() << sqlRequest;
-    qDebug() << sqlExistsRequest;
+    qDebug() << "insert sql" << sqlRequest;
+    qDebug() << "find sql" << sqlExistsRequest;
 #endif
     int i = 0;
     for(i = 0; ; i++)
@@ -302,23 +302,23 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             const QString v = DBRequestInfo::JsonFieldInfo::toString(valueJV);
             findQuery.bindValue(idFieldSQlBindName, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << idFieldSQlBindName << v;
+            qDebug() << "bind" << idFieldSQlBindName << v;
 #endif
             for(const QString &ref : qAsConst(bindRefs))
             {
                 const QString v = defValues.value(ref);
                 findQuery.bindValue(DBRequestInfo::JsonFieldInfo::toBindName(ref), v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << ref << v;
+            qDebug() << "bind" << ref << v;
 #endif
             }
-            if(!findQuery.exec())
+            if(!findQuery.exec() && query.lastError().type() != QSqlError::NoError)
             {
                 const QSqlError err = query.lastError();
-                qDebug() << err.driverText();
-                qDebug() << err.databaseText();
-                qDebug() << err.nativeErrorCode();
-                qDebug() << err.text();
+                //qDebug() << err.driverText();
+                //qDebug() << err.databaseText();
+                //qDebug() << err.nativeErrorCode();
+                qDebug() << "sql error " << err.text();
             }
             else
             {
@@ -331,7 +331,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             const QString v = defValues.value(bind);
             query.bindValue(bind, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << bind << v;
+            qDebug() << "bind" << bind << v;
 #endif
         }
         for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
@@ -342,14 +342,15 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         if(!query.exec())
         {
             const QSqlError err = query.lastError();
-            qDebug() << err.driverText();
-            qDebug() << err.databaseText();
-            qDebug() << err.nativeErrorCode();
-            qDebug() << err.text();
+            //qDebug() << err.driverText();
+            //qDebug() << err.databaseText();
+            //qDebug() << err.nativeErrorCode();
+            qDebug() << "sql error " << err.text();
         }
     }
     if(i > 0)
     {
+        findQuery.finish();
         query.finish();
     }
 }

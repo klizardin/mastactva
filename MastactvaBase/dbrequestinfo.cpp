@@ -2,8 +2,8 @@
 #include "../MastactvaBase/utils.h"
 
 
-//#define TRACE_DB_CREATION
-//#define TRACE_DB_DATA_BINDINGS
+#define TRACE_DB_CREATION
+#define TRACE_DB_DATA_BINDINGS
 
 
 QString DBRequestInfo::JsonFieldInfo::getSqlType() const
@@ -42,14 +42,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
         if(layout::JsonTypesEn::jt_bool == type)
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << getBindName() << (v?1:0);
+            qDebug() << "bind" << getBindName() << (v?1:0);
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(v?1:0));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << getBindName() << QString::number(v?1:0);
+            qDebug() << "bind" << getBindName() << QString::number(v?1:0);
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v?1:0)));
         }
@@ -58,28 +58,28 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
     {
         double v = jv_.toDouble();
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << getBindName() << QString::number(v);
+        qDebug() << "bind" << getBindName() << QString::number(v);
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v)));
     }
     else if(jv_.isString())
     {
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << getBindName() << jv_.toString();
+        qDebug() << "bind" << getBindName() << jv_.toString();
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(jv_.toString()));
     }
     else if(jv_.isNull())
     {
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << getBindName() << QString();
+        qDebug() << "bind" << getBindName() << QString();
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
     }
     else
     {
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << getBindName() << QString();
+        qDebug() << "bind" << getBindName() << QString();
 #endif
         query_.bindValue(getBindName(), QVariant::fromValue(QString()));
     }
