@@ -26,6 +26,7 @@ namespace layout
     {
         jt_null,
         jt_bool,
+        jt_int,
         jt_double,
         jt_string,
         jt_array,
@@ -112,7 +113,7 @@ namespace layout
 
     inline JsonTypesEn getJsonType(const int *)
     {
-        return JsonTypesEn::jt_double;
+        return JsonTypesEn::jt_int;
     }
 
     inline JsonTypesEn getJsonType(const qreal *)

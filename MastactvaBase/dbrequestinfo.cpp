@@ -8,11 +8,18 @@
 
 QString DBRequestInfo::JsonFieldInfo::getSqlType() const
 {
+    if(idField) { return QString(g_sqlInt); }
+
     switch (type) {
     case layout::JsonTypesEn::jt_bool:
         return QString(g_sqlInt);
         break;
+    case layout::JsonTypesEn::jt_int:
+        return QString(g_sqlInt);
+        break;
     case layout::JsonTypesEn::jt_double:
+        return QString(g_sqlDouble);
+        break;
     case layout::JsonTypesEn::jt_string:
     case layout::JsonTypesEn::jt_array:
     case layout::JsonTypesEn::jt_object:
@@ -38,13 +45,27 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
 {
     if(jv_.isBool())
     {
-        bool v = jv_.toBool();
+        const int v = jv_.toBool() ? 1 : 0;
         if(layout::JsonTypesEn::jt_bool == type)
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << (v?1:0);
+            qDebug() << "bind" << getBindName() << v;
 #endif
-            query_.bindValue(getBindName(), QVariant::fromValue(v?1:0));
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
+        else if(layout::JsonTypesEn::jt_int == type)
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << int(v);
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
+        else if(layout::JsonTypesEn::jt_double == type)
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << double(v);
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(double(v)));
         }
         else
         {
@@ -56,32 +77,109 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
     }
     else if(jv_.isDouble())
     {
-        double v = jv_.toDouble();
+        const double v = jv_.toDouble();
+        if(idField)
+        {
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << "bind" << getBindName() << QString::number(v);
+            qDebug() << "bind" << getBindName() << int(v);
 #endif
-        query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v)));
+            query_.bindValue(getBindName(), QVariant::fromValue(int(v)));
+        }
+        else if(layout::JsonTypesEn::jt_int == type)
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << int(v);
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(int(v)));
+        }
+        else if(layout::JsonTypesEn::jt_double == type)
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
+        else
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << QString::number(v);
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(QString::number(v)));
+        }
     }
     else if(jv_.isString())
     {
+        if(idField || layout::JsonTypesEn::jt_int == type)
+        {
+            const int v = QVariant::fromValue(jv_.toString()).toInt();
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << "bind" << getBindName() << jv_.toString();
+            qDebug() << "bind" << getBindName() << v;
 #endif
-        query_.bindValue(getBindName(), QVariant::fromValue(jv_.toString()));
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
+        else if(layout::JsonTypesEn::jt_double == type)
+        {
+            const double v = QVariant::fromValue(jv_.toString()).toDouble();
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
+        else
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << jv_.toString();
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(jv_.toString()));
+        }
     }
     else if(jv_.isNull())
     {
+        if(idField || layout::JsonTypesEn::jt_int == type)
+        {
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << "bind" << getBindName() << QString();
+            qDebug() << "bind" << getBindName() << (int)0;
 #endif
-        query_.bindValue(getBindName(), QVariant::fromValue(QString()));
+            query_.bindValue(getBindName(), QVariant::fromValue((int)0));
+        }
+        else if(layout::JsonTypesEn::jt_double == type)
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << double(0);
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(double(0)));
+        }
+        else
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << QString();
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(QString()));
+        }
     }
     else
     {
+        if(idField || layout::JsonTypesEn::jt_int == type)
+        {
 #if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << "bind" << getBindName() << QString();
+            qDebug() << "bind" << getBindName() << (int)0;
 #endif
-        query_.bindValue(getBindName(), QVariant::fromValue(QString()));
+            query_.bindValue(getBindName(), QVariant::fromValue((int)0));
+        }
+        else if(layout::JsonTypesEn::jt_double == type)
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << double(0);
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(double(0)));
+        }
+        else
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << QString();
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(QString()));
+        }
     }
 }
 
@@ -91,8 +189,12 @@ QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
     case layout::JsonTypesEn::jt_bool:
         return QJsonValue(val_.toInt() != 0);
         break;
+    case layout::JsonTypesEn::jt_int:
+        return QJsonValue(val_.toInt());
+        break;
     case layout::JsonTypesEn::jt_double:
-        return QJsonValue(val_.toDouble());
+        if(idField) { return QJsonValue(val_.toInt()); }
+        else { return QJsonValue(val_.toDouble()); }
         break;
     case layout::JsonTypesEn::jt_string:
         return QJsonValue(val_.toString());
@@ -130,6 +232,32 @@ QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_)
     else
     {
         return QString();
+    }
+}
+
+int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_)
+{
+    if(jv_.isBool())
+    {
+        bool v = jv_.toBool();
+        return v?1:0;
+    }
+    else if(jv_.isDouble())
+    {
+        double v = jv_.toDouble();
+        return (int)v;
+    }
+    else if(jv_.isString())
+    {
+        return QVariant::fromValue(jv_.toString()).toInt();
+    }
+    else if(jv_.isNull())
+    {
+        return 0;
+    }
+    else
+    {
+        return 0;
     }
 }
 

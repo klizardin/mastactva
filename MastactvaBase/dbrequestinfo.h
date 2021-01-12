@@ -27,6 +27,7 @@ public:
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
         QJsonValue jsonValue(const QVariant &val_) const;
         static QString toString(const QJsonValue &jv_);
+        static int toInt(const QJsonValue &jv_);
     };
 
 public:
