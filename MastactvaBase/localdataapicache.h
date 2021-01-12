@@ -54,9 +54,14 @@ public:
                          )
     {
         Q_UNUSED(jsonParams_);
-        Q_UNUSED(extraFields_);
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, procedureName_, refs_, currentRef_, parentModel_, parentModelJsonFieldName_, refAppId_, refValue_, readonly_);
+        r->init<DataType_>(layoutName_,
+                           procedureName_,
+                           refs_, currentRef_,
+                           parentModel_, parentModelJsonFieldName_,
+                           refAppId_, refValue_,
+                           readonly_,
+                           extraFields_);
         return getListImpl(RequestData::getListRequestName<DataType_>(), r);
     }
 
@@ -64,7 +69,7 @@ public:
     RequestData *addItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, QString(), QStringList(), QString(), QString(), QString(), QVariant(), QVariant(), false);
+        r->init<DataType_>(layoutName_, false);
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
@@ -78,7 +83,7 @@ public:
     RequestData *setItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, QString(), QStringList(), QString(), QString(), QString(), QVariant(), QVariant(), false);
+        r->init<DataType_>(layoutName_, false);
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
@@ -92,7 +97,7 @@ public:
     RequestData *delItem(const QString &layoutName_, const DataType_ *item_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, QString(), QStringList(), QString(), QString(), QString(), QVariant(), QVariant(), false);
+        r->init<DataType_>(layoutName_, false);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
         return delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id, r);

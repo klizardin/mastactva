@@ -65,7 +65,14 @@ public:
         if(isSaveToDBMode())
         {
             r = new SaveDBRequest();
-            r->init<DataType_>(layoutName_, procedureName_, refs_, currentRef_, parentModel_, parentModelJsonFieldName_, refAppId_, refValue_, readonly_);
+            r->init<DataType_>(layoutName_,
+                               procedureName_,
+                               refs_, currentRef_,
+                               parentModel_, parentModelJsonFieldName_,
+                               refAppId_, refValue_,
+                               readonly_,
+                               extraFields_
+                               );
             createTable(r);
         }
         if(nullptr == m_netAPI) { return nullptr; }

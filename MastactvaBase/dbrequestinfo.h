@@ -26,10 +26,30 @@ public:
         QString getBindName() const;
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
         QJsonValue jsonValue(const QVariant &val_) const;
+        static QString toString(const QJsonValue &jv_);
     };
 
 public:
     DBRequestInfo() = default;
+
+    template<typename DataType_>
+    void init(
+            const QString &layoutName_,
+            bool readonly_
+            )
+    {
+        init<DataType_>(layoutName_,
+                        QString(),
+                        QStringList(),
+                        QString(),
+                        QString(),
+                        QString(),
+                        QVariant(),
+                        QVariant(),
+                        readonly_,
+                        QHash<QString, QVariant>()
+                        );
+    }
 
     template<typename DataType_>
     void init(
@@ -41,7 +61,8 @@ public:
             const QString &parentModelJsonFieldName_,
             const QVariant &refAppId_,
             const QVariant &refValue_,
-            bool readonly_
+            bool readonly_,
+            const QHash<QString, QVariant> &extraFields_
             )
     {
         QString tableName;
@@ -87,6 +108,7 @@ public:
         setCurrentRef(procedureName_.isEmpty() ? currentRef_ : QString());
         setIdField(procedureName_.isEmpty() ? idField : QVariant());
         setReadonly(readonly_);
+        setExtraFields(extraFields_);
     }
 
     const QString &getTableName() const;
@@ -95,6 +117,7 @@ public:
     const QString &getCurrentRef() const;
     const QVariant &getIdField() const;
     bool getReadonly() const;
+    const QHash<QString, QVariant> &getExtraFields() const;
 
     static QString namingConversion(const QString &name_);
     static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
@@ -107,6 +130,7 @@ protected:
     void setCurrentRef(const QString &currentRef_);
     void setIdField(const QVariant &idField_);
     void setReadonly(bool readonly_);
+    void setExtraFields(const QHash<QString, QVariant> &extraFields_);
 
 private:
     QString m_tableName;
@@ -114,6 +138,7 @@ private:
     QStringList m_refs;
     QString m_currentRef;
     QVariant m_idField;
+    QHash<QString, QVariant> m_extraFields;
     bool m_readonly = true;
 };
 

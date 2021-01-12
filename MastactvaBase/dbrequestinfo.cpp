@@ -107,6 +107,32 @@ QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
+QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_)
+{
+    if(jv_.isBool())
+    {
+        bool v = jv_.toBool();
+        return QString::number(v?1:0);
+    }
+    else if(jv_.isDouble())
+    {
+        double v = jv_.toDouble();
+        return QString::number(v);
+    }
+    else if(jv_.isString())
+    {
+        return jv_.toString();
+    }
+    else if(jv_.isNull())
+    {
+        return QString();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
 
 const QString &DBRequestInfo::getTableName() const
 {
@@ -166,6 +192,16 @@ bool DBRequestInfo::getReadonly() const
 void DBRequestInfo::setReadonly(bool readonly_)
 {
     m_readonly = readonly_;
+}
+
+const QHash<QString, QVariant> &DBRequestInfo::getExtraFields() const
+{
+    return m_extraFields;
+}
+
+void DBRequestInfo::setExtraFields(const QHash<QString, QVariant> &extraFields_)
+{
+    m_extraFields = extraFields_;
 }
 
 QString DBRequestInfo::namingConversion(const QString &name_)

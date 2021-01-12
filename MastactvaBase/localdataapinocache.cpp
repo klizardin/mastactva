@@ -189,6 +189,7 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     }
     const QString fieldsRequests = (QStringList()
                                     << textTypes(refsNames(r_->getRefs()))
+                                    << textTypes(refsNames(r_->getExtraFields().keys()))
                                     << tableFieldsNameTypePairs
                                     ).join(g_insertFieldSpliter) +
             QString(g_insertFieldSpliter)
@@ -217,12 +218,14 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
+    if(!r_->getReadonly()) { return; } // don't save data for RW tables
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
     const QString fieldNames = (QStringList()
                                 << refsNames(r_->getRefs())
+                                << refsNames(r_->getExtraFields().keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
@@ -233,12 +236,38 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(r_->getExtraFields());
+        it != std::end(r_->getExtraFields())
+        ; ++it
+        )
+    {
+        const QString refBindName = QString(":") + refName(it.key());
+        bindRefs.push_back(refBindName);
+        defValues.insert(refBindName, it.value().toString());
+    }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs
                                         << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
             .arg(tableName, fieldNames, fieldNamesBindings);
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    QString idFieldSQlBindName;
+    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())), std::end(qAsConst(r_->getTableFieldsInfo())),
+                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+    {
+        return bindInfo.idField;
+    });
+    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    {
+        idFieldJsonName = fitId->jsonName;
+        idFieldSqlName = fitId->sqlName;
+        idFieldSQlBindName = fitId->getBindName();
+    }
+    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2=%3 LIMIT 1")
+            .arg(tableName, idFieldSqlName, idFieldSQlBindName);
 #if defined(TRACE_DB_CREATION)
     qDebug() << sqlRequest;
 #endif
@@ -247,6 +276,26 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         QJsonValue itemJV = reply_[i];
         if(itemJV.isUndefined()) { break; }
+        if(!idFieldSqlName.isEmpty())
+        {
+            const QJsonValue valueJV = itemJV[idFieldJsonName];
+            QSqlQuery findQuery(db);
+            findQuery.prepare(sqlExistsRequest);
+            findQuery.bindValue(idFieldSQlBindName, DBRequestInfo::JsonFieldInfo::toString(valueJV));
+            if(!findQuery.exec())
+            {
+                const QSqlError err = query.lastError();
+                qDebug() << err.driverText();
+                qDebug() << err.databaseText();
+                qDebug() << err.nativeErrorCode();
+                qDebug() << err.text();
+            }
+            else
+            {
+                if(findQuery.first()) { continue; } // id value already exists
+            }
+        }
+
         if(0 == i)
         {
             query.prepare(sqlRequest);
