@@ -211,6 +211,15 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     query.finish();
 }
 
+QStringList conditionsFromRefs(const QStringList &bindRefs_)
+{
+    QStringList res;
+    for(const QString &ref : bindRefs_)
+    {
+        res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
+    }
+    return res;
+}
 
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
@@ -221,6 +230,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     if(!r_->getReadonly()) { return; } // don't save data for RW tables
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
+    QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
     const QString fieldNames = (QStringList()
@@ -266,22 +276,42 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         idFieldSqlName = fitId->sqlName;
         idFieldSQlBindName = fitId->getBindName();
     }
-    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2=%3 LIMIT 1")
-            .arg(tableName, idFieldSqlName, idFieldSQlBindName);
+    QString conditionStr = (QStringList()
+                            << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName)
+                            << conditionsFromRefs(bindRefs)
+                            ).join(" AND ");
+    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1")
+            .arg(tableName, conditionStr);
 #if defined(TRACE_DB_CREATION)
     qDebug() << sqlRequest;
+    qDebug() << sqlExistsRequest;
 #endif
     int i = 0;
     for(i = 0; ; i++)
     {
         QJsonValue itemJV = reply_[i];
         if(itemJV.isUndefined()) { break; }
+        if(0 == i)
+        {
+            query.prepare(sqlRequest);
+            findQuery.prepare(sqlExistsRequest);
+        }
         if(!idFieldSqlName.isEmpty())
         {
             const QJsonValue valueJV = itemJV[idFieldJsonName];
-            QSqlQuery findQuery(db);
-            findQuery.prepare(sqlExistsRequest);
-            findQuery.bindValue(idFieldSQlBindName, DBRequestInfo::JsonFieldInfo::toString(valueJV));
+            const QString v = DBRequestInfo::JsonFieldInfo::toString(valueJV);
+            findQuery.bindValue(idFieldSQlBindName, v);
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << idFieldSQlBindName << v;
+#endif
+            for(const QString &ref : qAsConst(bindRefs))
+            {
+                const QString v = defValues.value(ref);
+                findQuery.bindValue(DBRequestInfo::JsonFieldInfo::toBindName(ref), v);
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << ref << v;
+#endif
+            }
             if(!findQuery.exec())
             {
                 const QSqlError err = query.lastError();
@@ -296,10 +326,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             }
         }
 
-        if(0 == i)
-        {
-            query.prepare(sqlRequest);
-        }
         for(const QString &bind : qAsConst(bindRefs))
         {
             const QString v = defValues.value(bind);
