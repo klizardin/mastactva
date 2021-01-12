@@ -63,7 +63,13 @@ public:
                            refAppId_, refValue_,
                            readonly_,
                            extraFields_);
-        return getListImpl(RequestData::getListRequestName<DataType_>(), r);
+        RequestData *res = getListImpl(RequestData::getListRequestName<DataType_>(), r);
+        if(nullptr == res)
+        {
+            delete r;
+            r = nullptr;
+        }
+        return res;
     }
 
     template<class DataType_>
@@ -77,7 +83,13 @@ public:
         values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        return addItemImpl(RequestData::addItemRequestName<DataType_>(), layoutName_, appId, values, r);
+        RequestData *res = addItemImpl(RequestData::addItemRequestName<DataType_>(), appId, values, r);
+        if(nullptr == res)
+        {
+            delete r;
+            r = nullptr;
+        }
+        return res;
     }
 
     template<class DataType_>
@@ -91,7 +103,13 @@ public:
         values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        return setItemImpl(RequestData::addItemRequestName<DataType_>(), layoutName_, id, values, r);
+        RequestData *res = setItemImpl(RequestData::addItemRequestName<DataType_>(), id, values, r);
+        if(nullptr == res)
+        {
+            delete r;
+            r = nullptr;
+        }
+        return res;
     }
 
     template<class DataType_>
@@ -101,7 +119,13 @@ public:
         r->init<DataType_>(layoutName_, false);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        return delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id, r);
+        RequestData *res = delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id, r);
+        if(nullptr == res)
+        {
+            delete r;
+            r = nullptr;
+        }
+        return res;
     }
 
 signals:
@@ -112,7 +136,7 @@ protected:
     void freeRequests();
     RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_);
     RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
-    RequestData *setItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
+    RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
     RequestData *delItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, LocalDBRequest *r_);
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
     void openDB();

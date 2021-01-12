@@ -366,3 +366,16 @@ QStringList DBRequestInfo::getSqlBindNames(const QList<JsonFieldInfo> &tableFiel
     }
     return res;
 }
+
+QStringList DBRequestInfo::getSetNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
+{
+    QStringList res;
+    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    {
+        if(!fi.idField)
+        {
+            res.push_back(QString("%1=%2").arg(fi.sqlName, fi.getBindName()));
+        }
+    }
+    return res;
+}
