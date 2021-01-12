@@ -429,14 +429,8 @@ RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const Q
             .arg(tableName, idFieldSqlName, idFieldSqlBindName);
 
     query.prepare(sqlRequest);
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-    {
-        if(bindInfo.idField)
-        {
-            bindInfo.bind(query, id_);
-            break;
-        }
-    }
+    fitId->bind(query, id_);
+
     if(!query.exec())
     {
         const QSqlError err = query.lastError();
