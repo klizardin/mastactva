@@ -201,9 +201,9 @@ RequestData *NetAPI::getListByRefImpl(const QString& requestName_,
     if(!id_.isValid()) { return nullptr; }
     Q_ASSERT(id_.toString() != "false");
     const QString urlString = m_hostUrlBase + QString("%1/%2/by_%3/")
-            .arg(jsonLayoutName_)
-            .arg(jsonParams_ ? "0" : id_.toString())
-            .arg(ref_)
+            .arg(jsonLayoutName_,
+                jsonParams_ ? QString("0") : id_.toString(),
+                ref_)
             ;
     QUrl url(urlString);
     QNetworkRequest request(url);
@@ -244,12 +244,13 @@ RequestData *NetAPI::getListByProcedureImpl(const QString& requestName_,
 {
     const QVariant id = extraFields_.contains("id") ? extraFields_.value("id") : QVariant::fromValue(QString("0"));
     QString urlString = m_hostUrlBase + QString("%1/%2/%3/")
-            .arg(jsonLayoutName_)
-            .arg(jsonParams_ ? QString("0") : id.toString())
-            .arg(procedureName_)
+            .arg(jsonLayoutName_,
+                jsonParams_ ? QString("0") : id.toString(),
+                procedureName_)
             ;
     int count = -1;
-    for(const QString &key : extraFields_.keys())
+    const QList<QString> keys = extraFields_.keys();
+    for(const QString &key : keys)
     {
         bool ok = false;
         const QVariant v = QVariant::fromValue(key);
@@ -361,8 +362,9 @@ MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &value
         {
             QFileInfo fileInfo(f->fileName());
             addPart(QString("form-data; name=\"%1\"; filename=\"%2\"")
-                        .arg(it.key())
-                        .arg(fileInfo.fileName().replace("\"", "")),
+                        .arg(it.key(),
+                            fileInfo.fileName().replace("\"", "")
+                            ),
                     f, true
                     );
         }
@@ -493,8 +495,8 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
     Q_ASSERT(id_.toString() != "false");
 
     const QString urlString = m_hostUrlBase + QString("%1/%2/")
-            .arg(jsonLayoutName_)
-            .arg(id_.toString())
+            .arg(jsonLayoutName_,
+                id_.toString())
             ;
     QUrl url(urlString);
     QNetworkRequest request(url);
@@ -535,8 +537,8 @@ RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jso
     Q_ASSERT(id_.toString() != "false");
 
     const QString urlString = m_hostUrlBase + QString("%1/%2/")
-            .arg(jsonLayoutName_)
-            .arg(id_.toString())
+            .arg(jsonLayoutName_,
+                id_.toString())
             ;
     QUrl url(urlString);
     QNetworkRequest request(url);
