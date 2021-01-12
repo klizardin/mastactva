@@ -183,6 +183,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
     }
 }
 
+void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QVariant &val_) const
+{
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << val_;
+#endif
+    query_.bindValue(getBindName(), val_);
+}
+
 QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
 {
     switch (type) {

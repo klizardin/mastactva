@@ -24,6 +24,7 @@ protected:
     public:
         LocalDBRequest() = default;
         void addJsonResult(const QJsonDocument &doc_);
+        void addJsonResult(const QHash<QString, QVariant> &values_);
 
     private:
         QJsonDocument m_doc;
@@ -110,7 +111,7 @@ signals:
 protected:
     void freeRequests();
     RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_);
-    RequestData *addItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
+    RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
     RequestData *setItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
     RequestData *delItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, LocalDBRequest *r_);
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);

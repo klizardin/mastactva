@@ -10,6 +10,20 @@ void LocalDataAPICache::LocalDBRequest::addJsonResult(const QJsonDocument &doc_)
     m_doc = doc_;
 }
 
+void LocalDataAPICache::LocalDBRequest::addJsonResult(const QHash<QString, QVariant> &values_)
+{
+    QJsonArray array;
+
+    QJsonObject obj;
+    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(getTableFieldsInfo()))
+    {
+        const QVariant val = values_.contains(bindInfo.jsonName) ? values_.value(bindInfo.jsonName) : QVariant();
+        obj.insert(bindInfo.jsonName, bindInfo.jsonValue(val));
+    }
+    array.push_back(obj);
+    m_doc = QJsonDocument(array);
+}
+
 
 LocalDataAPICache::LocalDataAPICache(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
@@ -76,6 +90,16 @@ void LocalDataAPICache::freeRequests()
 inline QString refName(const QString &ref_)
 {
     return QString(g_refPrefix) + ref_;
+}
+
+inline QStringList refsNames(const QStringList &refs_)
+{
+    QStringList res;
+    for(const auto &s : refs_)
+    {
+        res.push_back(refName(s));
+    }
+    return res;
 }
 
 QStringList conditionsFromSqlNames(const QStringList &names_)
@@ -180,9 +204,125 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
     return r_;
 }
 
-RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
 {
-    return nullptr;
+    if(nullptr == r_) { return nullptr; }
+#if defined(TRACE_DB_USE)
+    qDebug() << "readonly " << r_->getReadonly();
+#endif
+    r_->setRequestName(requestName_);
+    r_->setItemAppId(appId_);
+
+    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(db);
+    QSqlQuery findQuery(db);
+    QString tableName = r_->getTableName();
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    const QString fieldNames = (QStringList()
+                                << refsNames(r_->getRefs())
+                                << refsNames(r_->getExtraFields().keys())
+                                << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
+                                ).join(g_insertFieldSpliter);
+    QHash<QString, QString> defValues;
+    QStringList bindRefs;
+    for(const QString &ref : qAsConst(r_->getRefs()))
+    {
+        const QString refBindName = QString(":") + refName(ref);
+        bindRefs.push_back(refBindName);
+        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
+    }
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(r_->getExtraFields());
+        it != std::end(r_->getExtraFields())
+        ; ++it
+        )
+    {
+        const QString refBindName = QString(":") + refName(it.key());
+        bindRefs.push_back(refBindName);
+        defValues.insert(refBindName, it.value().toString());
+    }
+    const QString fieldNamesBindings = (QStringList()
+                                        << bindRefs
+                                        << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
+                                        ).join(g_insertFieldSpliter);
+    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
+            .arg(tableName, fieldNames, fieldNamesBindings);
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::end(qAsConst(r_->getTableFieldsInfo())),
+                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+    {
+        return bindInfo.idField;
+    });
+    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    {
+        idFieldJsonName = fitId->jsonName;
+        idFieldSqlName = fitId->sqlName;
+    }
+    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2")
+            .arg(idFieldSqlName, tableName);
+
+    query.prepare(sqlRequest);
+    for(const QString &bind : qAsConst(bindRefs))
+    {
+        const QString v = defValues.value(bind);
+        query.bindValue(bind, v);
+#if defined(TRACE_DB_DATA_BINDINGS)
+        qDebug() << "bind" << bind << v;
+#endif
+    }
+    int nextId = 1;
+    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    {
+        if(bindInfo.idField)
+        {
+            if(!findQuery.exec(sqlNextIdRequest) && findQuery.lastError().type() != QSqlError::NoError)
+            {
+                const QSqlError err = findQuery.lastError();
+                //qDebug() << err.driverText();
+                //qDebug() << err.databaseText();
+                //qDebug() << err.nativeErrorCode();
+                qDebug() << "sql error " << err.text();
+            }
+            else if(findQuery.first())
+            {
+                nextId = findQuery.value(0).toInt() + 1;
+            }
+            bindInfo.bind(query, QVariant::fromValue(nextId));
+            findQuery.finish();
+        }
+        else
+        {
+            const QVariant val = values_.value(bindInfo.jsonName);
+            bindInfo.bind(query, val);
+        }
+    }
+    if(!query.exec())
+    {
+        const QSqlError err = query.lastError();
+        //qDebug() << err.driverText();
+        //qDebug() << err.databaseText();
+        //qDebug() << err.nativeErrorCode();
+        qDebug() << "sql error " << err.text();
+
+        r_->addJsonResult(QJsonDocument(QJsonArray()));
+    }
+    else
+    {
+        QHash<QString, QVariant> values = values_;
+        for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        {
+            if(bindInfo.idField)
+            {
+                values.insert(bindInfo.jsonName, QVariant::fromValue(nextId));
+            }
+        }
+        r_->addJsonResult(values);
+    }
+    query.finish();
+    m_requests.push_back(r_);
+    return r_;
 }
 
 RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)

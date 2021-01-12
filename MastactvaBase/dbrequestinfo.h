@@ -25,6 +25,7 @@ public:
         static QString toBindName(const QString &sqlName_);
         QString getBindName() const;
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
+        void bind(QSqlQuery &query_, const QVariant &val_) const;
         QJsonValue jsonValue(const QVariant &val_) const;
         static QString toString(const QJsonValue &jv_);
         static int toInt(const QJsonValue &jv_);
