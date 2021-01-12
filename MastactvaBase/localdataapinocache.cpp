@@ -211,7 +211,7 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     query.finish();
 }
 
-QStringList conditionsFromRefs(const QStringList &refs_)
+QStringList conditionsFromSqlNamesames(const QStringList &refs_)
 {
     QStringList res;
     for(const QString &sqlName : refs_)
@@ -281,8 +281,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
     const QString conditionStr = (conditionsList
-                            << conditionsFromRefs(r_->getRefs())
-                            << conditionsFromRefs(r_->getExtraFields().keys())
+                            << conditionsFromSqlNamesames(r_->getRefs())
+                            << conditionsFromSqlNamesames(r_->getExtraFields().keys())
                             ).join(" AND ");
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1")
             .arg(tableName, conditionStr);
