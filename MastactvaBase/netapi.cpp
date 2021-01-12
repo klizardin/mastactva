@@ -245,7 +245,7 @@ RequestData *NetAPI::getListByProcedureImpl(const QString& requestName_,
     const QVariant id = extraFields_.contains("id") ? extraFields_.value("id") : QVariant::fromValue(QString("0"));
     QString urlString = m_hostUrlBase + QString("%1/%2/%3/")
             .arg(jsonLayoutName_)
-            .arg(jsonParams_ ? "0" : id.toString())
+            .arg(jsonParams_ ? QString("0") : id.toString())
             .arg(procedureName_)
             ;
     int count = -1;
