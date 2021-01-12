@@ -19,6 +19,7 @@ public:
         QString jsonName;
         QString sqlName;
         layout::JsonTypesEn type;
+        bool idField = false;
 
         QString getSqlType() const;
         static QString toBindName(const QString &sqlName_);
@@ -51,13 +52,14 @@ public:
 
         const QString jsonLayoutName = layoutName_;
         tableName = namingConversion(jsonLayoutName);
+        const QString idFieldName = getDataLayout<DataType_>().getIdFieldJsonName();
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         tableFieldsInfo.clear();
         for(const auto &jsonFieldName: qAsConst(fieldsInfo))
         {
             const QString sqlFieldName = namingConversion(jsonFieldName.first);
-            tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second});
+            tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second, idFieldName == jsonFieldName.first});
         }
 
         if(!procedureName_.isEmpty())
