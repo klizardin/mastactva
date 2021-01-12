@@ -155,7 +155,7 @@ void LocalDataSet::downloadStep()
     if(nullptr != m_galleryModel && !m_galleryModel->isListLoaded())
     {
         QObject::connect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
-        m_galleryModel->procedure("all_available", {{"id", 0},});
+        m_galleryModel->procedure("all_available", QHash<QString, QVariant>());
         emit progress(stepProgress());
         return; // one model at time
     }
@@ -222,7 +222,7 @@ void LocalDataSet::downloadStep()
             QObject::disconnect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         }
         QObject::connect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
-        m_userStepModel->procedure("empty_list", {{"id", 0}, });
+        m_userStepModel->procedure("empty_list", QHash<QString, QVariant>());
         emit progress(stepProgress());
         return; // one model at time
     }
