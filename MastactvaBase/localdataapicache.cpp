@@ -390,9 +390,66 @@ RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const Q
     return r_;
 }
 
-RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, LocalDBRequest *r_)
+RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_)
 {
-    return nullptr;
+    if(nullptr == r_) { return nullptr; }
+#if defined(TRACE_DB_USE)
+    qDebug() << "readonly " << r_->getReadonly();
+#endif
+    r_->setRequestName(requestName_);
+    r_->setItemId(id_);
+
+    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(db);
+    QString tableName = r_->getTableName();
+    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    QString idFieldSqlBindName;
+    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::end(qAsConst(r_->getTableFieldsInfo())),
+                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+    {
+        return bindInfo.idField;
+    });
+    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    {
+        idFieldJsonName = fitId->jsonName;
+        idFieldSqlName = fitId->sqlName;
+        idFieldSqlBindName = fitId->getBindName();
+    }
+    else
+    {
+        Q_ASSERT(false);
+        return nullptr;
+    }
+
+    const QString sqlRequest = QString("DELETE FROM %1 WHERE %3=%4")
+            .arg(tableName, idFieldSqlName, idFieldSqlBindName);
+
+    query.prepare(sqlRequest);
+    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    {
+        if(bindInfo.idField)
+        {
+            bindInfo.bind(query, id_);
+            break;
+        }
+    }
+    if(!query.exec())
+    {
+        const QSqlError err = query.lastError();
+        //qDebug() << err.driverText();
+        //qDebug() << err.databaseText();
+        //qDebug() << err.nativeErrorCode();
+        qDebug() << "sql error " << err.text();
+    }
+    query.finish();
+
+    r_->addJsonResult(QJsonDocument(QJsonArray()));
+    m_requests.push_back(r_);
+    return r_;
 }
 
 QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)

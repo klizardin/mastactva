@@ -119,7 +119,7 @@ public:
         r->init<DataType_>(layoutName_, false);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        RequestData *res = delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id, r);
+        RequestData *res = delItemImpl(RequestData::delItemRequestName<DataType_>(), id, r);
         if(nullptr == res)
         {
             delete r;
@@ -137,7 +137,7 @@ protected:
     RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_);
     RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
     RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
-    RequestData *delItemImpl(const QString& requestName_, const QString &layoutName_, const QVariant &id_, LocalDBRequest *r_);
+    RequestData *delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_);
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
     void openDB();
     void closeDB();
