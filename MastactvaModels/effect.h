@@ -44,6 +44,7 @@ public:
             addModel<EffectShaderModel>("effectShaders", &Effect::m_effectShadersModel, &Effect::createEffectShadersModel);
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
+            setIdField("id");
         }
     };
 

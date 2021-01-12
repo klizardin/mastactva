@@ -25,7 +25,6 @@ ApplicationWindow {
         id: shaderTypeModel
         objectName: "ShaderTypeModel"
         layoutQMLName: "ShaderTypeModel"
-        layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
     }
@@ -34,7 +33,6 @@ ApplicationWindow {
         id: shaderArgTypeModel
         objectName: "ShaderArgTypeModel"
         layoutQMLName: "ShaderArgTypeModel"
-        layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
     }
@@ -43,7 +41,6 @@ ApplicationWindow {
         id: easingTypeModel
         objectName: "EasingTypeModel"
         layoutQMLName: "EasingTypeModel"
-        layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
     }
@@ -53,7 +50,6 @@ ApplicationWindow {
         id: quizUserModel
         objectName: "QuizUserModel"
         layoutQMLName: "QuizUserModel"
-        layoutIdField: "deviceid"
         autoCreateChildrenModels: false
     }
 
@@ -61,7 +57,6 @@ ApplicationWindow {
         id: galleryModel
         objectName: "GalleryModel"
         layoutQMLName: "GalleryModel"
-        layoutIdField: "id"
         currentRef: "deviceid"
         jsonParamsGet: true
         autoCreateChildrenModels: false
@@ -71,7 +66,6 @@ ApplicationWindow {
         id: allImagesOfGallery
         objectName: "AllImagesOfGallery"
         layoutQMLName: "AllImagesOfGallery"
-        layoutIdField: "id"
         currentRef: "gallery"
         jsonParamsGet: false
         autoCreateChildrenModels: false
@@ -82,7 +76,6 @@ ApplicationWindow {
         id: userStepModel
         objectName: "UserStepModel"
         layoutQMLName: "UserStepModel"
-        layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
         outputModel: true

@@ -40,6 +40,7 @@ public:
             addField<QString>("name", "effectArgName", &EffectArg::name, &EffectArg::setName);
             addField<QString>("default_value", "effectArgDefaultValue", &EffectArg::defaultValue, &EffectArg::setDefaultValue);
             addField<QString>("description", "effectArgDescription", &EffectArg::description, &EffectArg::setDescription);
+            setIdField("id");
         }
     };
 

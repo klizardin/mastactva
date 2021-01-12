@@ -40,6 +40,7 @@ public:
             addField<QString>("hash", "shaderHash", &Shader::hash, &Shader::setHash);
             addField<int>("type", "shaderTypeId", &Shader::type, &Shader::setType);
             addField<QString>("description", "shaderDescription", &Shader::description, &Shader::setDescription);
+            setIdField("id");
         }
     };
 

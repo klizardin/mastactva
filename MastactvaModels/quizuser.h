@@ -24,6 +24,7 @@ public:
             setLayoutJsonName("");
             addSpecial<int>(layout::SpecialFieldEn::appId, &QuizUser::m_appId);
             addField<QString>("deviceid", "deviceId", &QuizUser::deviceId, &QuizUser::setDeviceId);
+            setIdField("deviceid");
         }
     };
 

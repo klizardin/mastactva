@@ -39,6 +39,7 @@ public:
             addModel<EffectArgModel>("effectArgValueArg", &EffectArgValue::m_effectArgModel, &EffectArgValue::createEffectArgModel);
             addField<QString>("value", "effectArgValueValue", &EffectArgValue::value, &EffectArgValue::setValue);
             addField<QString>("description", "effectArgValueDescription", &EffectArgValue::description, &EffectArgValue::setDescription);
+            setIdField("id");
         }
     };
 

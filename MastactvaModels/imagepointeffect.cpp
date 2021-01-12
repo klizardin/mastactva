@@ -148,7 +148,6 @@ EffectModel *ImagePointEffect::createEffectModel()
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointEffectModel->getQMLLayoutName() + QString("_ImagePointEffect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectModel_"));
-    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
@@ -164,7 +163,6 @@ EffectArgSetModel *ImagePointEffect::createEffectArgSetModel()
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointEffectModel->getQMLLayoutName() + QString("_ImagePointEffect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgSetModel_"));
-    m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);

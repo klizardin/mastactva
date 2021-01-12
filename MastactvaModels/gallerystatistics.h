@@ -33,6 +33,7 @@ public:
             addField<int>("user", "ugsUserId", &GalleryStatistics::userId, &GalleryStatistics::setUserId);
             addField<int>("gallery", "ugsGalleryId", &GalleryStatistics::galleryId, &GalleryStatistics::setGalleryId);
             addField<qreal>("points", "ugsPoints", &GalleryStatistics::points, &GalleryStatistics::setPoints);
+            setIdField("id");
         }
     };
 

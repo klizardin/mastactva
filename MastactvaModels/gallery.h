@@ -49,6 +49,7 @@ public:
             addField<int>("owner", "owner", &Gallery::ownGallery, &Gallery::setOwnGallery);
             addModel<ImageModel>("images", &Gallery::m_images, &Gallery::createImages);
             addModel<GalleryStatisticsModel>("galleryStatistics", &Gallery::m_galleryStatisticsModel, &Gallery::createGalleryStatistics);
+            setIdField("id");
         }
     };
 

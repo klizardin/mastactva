@@ -32,6 +32,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EasingType::m_appId);
             addField<int>("id", "easingTypeId", &EasingType::id, &EasingType::setId);
             addField<QString>("type", "easingTypeType", &EasingType::type, &EasingType::setType);
+            setIdField("id");
         }
     };
 

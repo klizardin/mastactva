@@ -28,6 +28,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &ShaderType::m_appId);
             addField<int>("id", "shaderTypeId", &ShaderType::id, &ShaderType::setId);
             addField<QString>("type", "shaderTypeType", &ShaderType::type, &ShaderType::setType);
+            setIdField("id");
         }
     };
 

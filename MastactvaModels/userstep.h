@@ -43,6 +43,7 @@ public:
             addField<int>("view_question", "usQuestionId", &UserStep::questionId, &UserStep::setQuestionId);
             addField<int>("set_answer", "usAnswerId", &UserStep::answerId, &UserStep::setAnswerId);
             addField<QDateTime>("t", "usT", &UserStep::t, &UserStep::setT);
+            setIdField("id");
         }
     };
 

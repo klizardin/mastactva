@@ -35,6 +35,7 @@ public:
             addField<int>("effect", "effectShaderEffectId", &EffectShader::effectId, &EffectShader::setEffectId);
             addField<int>("shader", "", &EffectShader::shaderId, &EffectShader::setShaderId);
             addModel<ShaderModel>("effectShaderShader", &EffectShader::m_shaderModel, &EffectShader::createShaderModel);
+            setIdField("id");
         }
     };
 

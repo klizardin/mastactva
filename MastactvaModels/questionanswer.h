@@ -39,6 +39,7 @@ public:
             addField<QDateTime>("t", "qaT", &UserQuestionAnswer::t, &UserQuestionAnswer::setT);
             addField<int>("answer", "qaAnswerId", &UserQuestionAnswer::answerId, &UserQuestionAnswer::setAnswerId);
             addField<qreal>("points", "qaPoints", &UserQuestionAnswer::points, &UserQuestionAnswer::setPoints);
+            setIdField("id");
         }
     };
 

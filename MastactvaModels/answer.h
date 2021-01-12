@@ -32,6 +32,7 @@ public:
             addField<int>("question", "answerQuestionId", &Answer::question, &Answer::setQuestion);
             addField<QString>("answer", "answerText", &Answer::answer, &Answer::setAnswer);
             addField<qreal>("points", "answerPoints", &Answer::points, &Answer::setPoints);
+            setIdField("id");
         }
     };
 

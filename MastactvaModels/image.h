@@ -54,6 +54,7 @@ public:
             addField<QDateTime>("created", "imageCreated", &Image::created, &Image::setCreated);
             addModel<ImagePointModel>("imagePoints", &Image::m_imagePoints, &Image::createImagePoints);
             addModel<ImageDescriptionModel>("imageDescription", &Image::m_imageDescriptionModel, &Image::createImageDescriptionModel);
+            setIdField("id");
         }
     };
 

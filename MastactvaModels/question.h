@@ -42,6 +42,7 @@ public:
             addField<QDateTime>("created", "questionCreated", &Question::created, &Question::setCreated);
             addModel<AnswerModel>("questionAnswers", &Question::m_answerModel, &Question::createAnswerModel);
             addModel<UserQuestionAnswerModel>("userQuestionAnswer", &Question::m_userQuestionAnswerModel, &Question::createUserQuestionAnswerModel);
+            setIdField("id");
         }
     };
 

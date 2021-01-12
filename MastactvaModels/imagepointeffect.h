@@ -43,6 +43,7 @@ public:
             addModel<EffectArgSetModel>("imagePointEffectArgSet", &ImagePointEffect::m_effectArgSetModel, &ImagePointEffect::createEffectArgSetModel);
             addField<int>("step_index", "imagePointEffectStepIndex", &ImagePointEffect::stepIndex, &ImagePointEffect::setStepIndex);
             addField<int>("duration", "imagePointEffectDuration", &ImagePointEffect::duration, &ImagePointEffect::setDuration);
+            setIdField("id");
         }
     };
 
