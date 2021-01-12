@@ -7,8 +7,8 @@
 #include "../MastactvaBase/utils.h"
 
 
-#define TRACE_DB_CREATION
-#define TRACE_DB_DATA_BINDINGS
+//#define TRACE_DB_CREATION
+//#define TRACE_DB_DATA_BINDINGS
 
 
 bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
@@ -211,11 +211,12 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     query.finish();
 }
 
-QStringList conditionsFromRefs(const QStringList &bindRefs_)
+QStringList conditionsFromRefs(const QStringList &refs_)
 {
     QStringList res;
-    for(const QString &ref : bindRefs_)
+    for(const QString &sqlName : refs_)
     {
+        const QString ref = refName(sqlName);
         res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
     }
     return res;
@@ -270,15 +271,18 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         return bindInfo.idField;
     });
+    const bool anyIdFields = !(r_->getRefs().empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
+    QStringList conditionsList;
     if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
         idFieldJsonName = fitId->jsonName;
         idFieldSqlName = fitId->sqlName;
         idFieldSQlBindName = fitId->getBindName();
+        conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
-    QString conditionStr = (QStringList()
-                            << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName)
-                            << conditionsFromRefs(bindRefs)
+    const QString conditionStr = (conditionsList
+                            << conditionsFromRefs(r_->getRefs())
+                            << conditionsFromRefs(r_->getExtraFields().keys())
                             ).join(" AND ");
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1")
             .arg(tableName, conditionStr);
@@ -296,20 +300,20 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             query.prepare(sqlRequest);
             findQuery.prepare(sqlExistsRequest);
         }
-        if(!idFieldSqlName.isEmpty())
+        if(anyIdFields)
         {
             const QJsonValue valueJV = itemJV[idFieldJsonName];
             const QString v = DBRequestInfo::JsonFieldInfo::toString(valueJV);
             findQuery.bindValue(idFieldSQlBindName, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << idFieldSQlBindName << v;
+            qDebug() << "bind find" << idFieldSQlBindName << v;
 #endif
             for(const QString &ref : qAsConst(bindRefs))
             {
                 const QString v = defValues.value(ref);
-                findQuery.bindValue(DBRequestInfo::JsonFieldInfo::toBindName(ref), v);
+                findQuery.bindValue(ref, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << ref << v;
+            qDebug() << "bind find" << ref << v;
 #endif
             }
             if(!findQuery.exec() && query.lastError().type() != QSqlError::NoError)
@@ -322,7 +326,13 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             }
             else
             {
-                if(findQuery.first()) { continue; } // id value already exists
+                if(findQuery.first())
+                {
+#if defined(TRACE_DB_DATA_BINDINGS)
+                    qDebug() << "skip row";
+#endif
+                    continue;
+                } // id value already exists
             }
         }
 

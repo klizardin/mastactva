@@ -2,8 +2,8 @@
 #include "../MastactvaBase/utils.h"
 
 
-#define TRACE_DB_CREATION
-#define TRACE_DB_DATA_BINDINGS
+//#define TRACE_DB_CREATION
+//#define TRACE_DB_DATA_BINDINGS
 
 
 QString DBRequestInfo::JsonFieldInfo::getSqlType() const
