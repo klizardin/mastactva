@@ -78,6 +78,17 @@ inline QString refName(const QString &ref_)
     return QString(g_refPrefix) + ref_;
 }
 
+QStringList conditionsFromSqlNames(const QStringList &names_)
+{
+    QStringList res;
+    for(const QString &sqlName : names_)
+    {
+        const QString ref = refName(sqlName);
+        res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
+    }
+    return res;
+}
+
 RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
@@ -91,38 +102,65 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
     const QString fieldsRequests = (r_->getSqlNames(r_->getTableFieldsInfo())).join(g_insertFieldSpliter) + QString(g_insertFieldSpliter);
-    const QString currentRefName = refName(r_->getCurrentRef());
-    const QString currentRefBindName = DBRequestInfo::JsonFieldInfo::toBindName(currentRefName);
-    const QString condition = !r_->getCurrentRef().isEmpty()
-            ? QString("WHERE %1==%2").arg(currentRefName, currentRefBindName)
+    QHash<QString, QString> defValues;
+    QStringList bindRefs;
+    for(const QString &ref : qAsConst(r_->getRefs()))
+    {
+        const QString refBindName = QString(":") + refName(ref);
+        bindRefs.push_back(refBindName);
+        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
+    }
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(r_->getExtraFields());
+        it != std::end(r_->getExtraFields())
+        ; ++it
+        )
+    {
+        const QString refBindName = QString(":") + refName(it.key());
+        bindRefs.push_back(refBindName);
+        defValues.insert(refBindName, it.value().toString());
+    }
+    const bool hasCondition = !(r_->getRefs().isEmpty()) || !(r_->getExtraFields().isEmpty());
+    const QString conditionCases = (QStringList()
+                            << conditionsFromSqlNames(r_->getRefs())
+                            << conditionsFromSqlNames(r_->getExtraFields().keys())
+                            ).join(" AND ");
+    const QString conditionStr = hasCondition
+            ? QString("WHERE %1").arg(conditionCases)
             : QString()
             ;
     const QString sqlRequest = QString("SELECT %1 FROM %2 %3")
-            .arg(fieldsRequests.mid(0, fieldsRequests.length() - 2), tableName, condition)
+            .arg(fieldsRequests.mid(0, fieldsRequests.length() - 2), tableName, conditionStr)
             ;
 #if defined(TRACE_DB_USE)
-    qDebug() << sqlRequest;
+    qDebug() << "select sql" << sqlRequest;
 #endif
     bool sqlRes = true;
-    if(r_->getCurrentRef().isEmpty())
+    if(!hasCondition)
     {
         sqlRes = query.exec(sqlRequest);
     }
     else
     {
         query.prepare(sqlRequest);
-        query.bindValue(currentRefBindName, r_->getIdField().toString());
+        for(const QString &ref : qAsConst(bindRefs))
+        {
+            const QString v = defValues.value(ref);
+            query.bindValue(ref, v);
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << ref << v;
+#endif
+        }
         sqlRes = query.exec();
     }
 
     QJsonArray jsonArray;
-    if(!sqlRes)
+    if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
-        qDebug() << err.driverText();
-        qDebug() << err.databaseText();
-        qDebug() << err.nativeErrorCode();
-        qDebug() << err.text();
+        //qDebug() << err.driverText();
+        //qDebug() << err.databaseText();
+        //qDebug() << err.nativeErrorCode();
+        qDebug() << "sql error" << err.text();
     }
     else if(query.first())
     {
