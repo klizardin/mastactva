@@ -357,9 +357,10 @@ void DBRequestInfo::setTableFieldsInfo(const QList<DBRequestInfo::JsonFieldInfo>
     m_tableFieldsInfo = jsonFieldInfo_;
 }
 
-const QStringList &DBRequestInfo::getRefs() const
+QStringList DBRequestInfo::getRefs(bool transparent_ /*= false*/) const
 {
-    return m_refs;
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty())) { return m_refs; }
+    else { return QStringList(); }
 }
 
 void DBRequestInfo::setRefs(const QStringList &refs_)
@@ -367,9 +368,10 @@ void DBRequestInfo::setRefs(const QStringList &refs_)
     m_refs = refs_;
 }
 
-const QString &DBRequestInfo::getCurrentRef() const
+QString DBRequestInfo::getCurrentRef(bool transparent_ /*= false*/) const
 {
-    return m_currentRef;
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty())) { return m_currentRef; }
+    else { return QString(); }
 }
 
 void DBRequestInfo::setCurrentRef(const QString &currentRef_)
@@ -377,9 +379,10 @@ void DBRequestInfo::setCurrentRef(const QString &currentRef_)
     m_currentRef = currentRef_;
 }
 
-const QVariant &DBRequestInfo::getIdField() const
+QVariant DBRequestInfo::getIdField(bool transparent_ /*= false*/) const
 {
-    return m_idField;
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty())) { return m_idField; }
+    else { return QVariant(); }
 }
 
 void DBRequestInfo::setIdField(const QVariant &idField_)
@@ -405,6 +408,16 @@ const QHash<QString, QVariant> &DBRequestInfo::getExtraFields() const
 void DBRequestInfo::setExtraFields(const QHash<QString, QVariant> &extraFields_)
 {
     m_extraFields = extraFields_;
+}
+
+const QString &DBRequestInfo::getProcedureName() const
+{
+    return m_procedureName;
+}
+
+void DBRequestInfo::setProcedureName(const QString &procedureName_)
+{
+    m_procedureName = procedureName_;
 }
 
 QString DBRequestInfo::namingConversion(const QString &name_)

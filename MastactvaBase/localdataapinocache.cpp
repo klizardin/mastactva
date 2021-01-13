@@ -187,8 +187,9 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     {
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
+    const QStringList refs = r_->getRefs();
     const QString fieldsRequests = (QStringList()
-                                    << textTypes(refsNames(r_->getRefs()))
+                                    << textTypes(refsNames(refs))
                                     << textTypes(refsNames(r_->getExtraFields().keys()))
                                     << tableFieldsNameTypePairs
                                     ).join(g_insertFieldSpliter) +
@@ -234,14 +235,15 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
-                                << refsNames(r_->getRefs())
+                                << refsNames(refs)
                                 << refsNames(r_->getExtraFields().keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
-    for(const QString &ref : qAsConst(r_->getRefs()))
+    for(const QString &ref : refs)
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);
@@ -271,7 +273,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         return bindInfo.idField;
     });
-    const bool anyIdFields = !(r_->getRefs().empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
+    const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
     QStringList conditionsList;
     if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
@@ -281,7 +283,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
     const QString conditionStr = (conditionsList
-                            << conditionsFromSqlNamesames(r_->getRefs())
+                            << conditionsFromSqlNamesames(refs)
                             << conditionsFromSqlNamesames(r_->getExtraFields().keys())
                             ).join(" AND ");
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1")

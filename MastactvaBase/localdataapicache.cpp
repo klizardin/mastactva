@@ -144,7 +144,8 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
     const QString fieldsRequests = (r_->getSqlNames(r_->getTableFieldsInfo())).join(g_insertFieldSpliter) + QString(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
-    for(const QString &ref : qAsConst(r_->getRefs()))
+    const QStringList refs = r_->getRefs();
+    for(const QString &ref : refs)
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);
@@ -159,9 +160,9 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
-    const bool hasCondition = !(r_->getRefs().isEmpty()) || !(r_->getExtraFields().isEmpty());
+    const bool hasCondition = !(refs.isEmpty()) || !(r_->getExtraFields().isEmpty());
     const QString conditionCases = (QStringList()
-                            << conditionsFromSqlNames(r_->getRefs())
+                            << conditionsFromSqlNames(refs)
                             << conditionsFromSqlNames(r_->getExtraFields().keys())
                             ).join(" AND ");
     const QString conditionStr = hasCondition
@@ -238,14 +239,15 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
     QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
-                                << refsNames(r_->getRefs())
+                                << refsNames(refs)
                                 << refsNames(r_->getExtraFields().keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
-    for(const QString &ref : qAsConst(r_->getRefs()))
+    for(const QString &ref : refs)
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);

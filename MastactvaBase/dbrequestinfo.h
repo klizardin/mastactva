@@ -69,7 +69,6 @@ public:
     {
         QString tableName;
         QList<JsonFieldInfo> tableFieldsInfo;
-        QStringList refs;
         QVariant idField;
 
 
@@ -85,39 +84,34 @@ public:
             tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second, idFieldName == jsonFieldName.first});
         }
 
-        if(!procedureName_.isEmpty())
+        IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
+        if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
         {
-            refs.clear();
+            idField =
+                refValue_.isValid()
+                    ? refValue_
+                    : parentModelJsonFieldName_.isEmpty()
+                      ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
+                      : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
+                ;
         }
-        else
-        {
-            refs = refs_;
-            IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
-            if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
-            {
-                idField =
-                    refValue_.isValid()
-                        ? refValue_
-                        : parentModelJsonFieldName_.isEmpty()
-                          ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
-                          : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
-                    ;
-            }
-        }
+
         setTableName(tableName);
         setTableFieldsInfo(tableFieldsInfo);
-        setRefs(refs);
-        setCurrentRef(procedureName_.isEmpty() ? currentRef_ : QString());
-        setIdField(procedureName_.isEmpty() ? idField : QVariant());
+        setRefs(refs_);
+        setCurrentRef(currentRef_);
+        setIdField(idField);
         setReadonly(readonly_);
         setExtraFields(extraFields_);
+        setProcedureName(procedureName_);
     }
 
     const QString &getTableName() const;
+    const QString &getProcedureName() const;
     const QList<JsonFieldInfo> &getTableFieldsInfo() const;
-    const QStringList &getRefs() const;
-    const QString &getCurrentRef() const;
-    const QVariant &getIdField() const;
+    QStringList getRefs(bool transparent_ = false) const;
+    QString getCurrentRef(bool transparent_ = false) const;
+    QVariant getIdField(bool transparent_ = false) const;
     bool getReadonly() const;
     const QHash<QString, QVariant> &getExtraFields() const;
 
@@ -134,9 +128,11 @@ protected:
     void setIdField(const QVariant &idField_);
     void setReadonly(bool readonly_);
     void setExtraFields(const QHash<QString, QVariant> &extraFields_);
+    void setProcedureName(const QString &procedureName_);
 
 private:
     QString m_tableName;
+    QString m_procedureName;
     QList<JsonFieldInfo> m_tableFieldsInfo;
     QStringList m_refs;
     QString m_currentRef;
