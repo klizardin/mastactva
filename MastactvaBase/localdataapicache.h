@@ -25,6 +25,7 @@ protected:
         LocalDBRequest() = default;
         void addJsonResult(const QJsonDocument &doc_);
         void addJsonResult(const QHash<QString, QVariant> &values_);
+        const QJsonDocument &reply() const;
         void setError(bool error_);
         bool error() const;
 
@@ -144,6 +145,10 @@ protected:
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
     void openDB();
     void closeDB();
+    void pushRequest(LocalDBRequest *r_);
+
+private slots:
+    void makeResponses();
 
 private:
     QSqlDatabase m_databaseRW;

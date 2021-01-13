@@ -18714,6 +18714,13 @@
                         "returnType": "void"
                     }
                 ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "name": "makeResponses",
+                        "returnType": "void"
+                    }
+                ],
                 "superClasses": [
                     {
                         "access": "public",

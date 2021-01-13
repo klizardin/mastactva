@@ -1,4 +1,5 @@
 #include "localdataapicache.h"
+#include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
 
 
@@ -22,6 +23,11 @@ void LocalDataAPICache::LocalDBRequest::addJsonResult(const QHash<QString, QVari
     }
     array.push_back(obj);
     m_doc = QJsonDocument(array);
+}
+
+const QJsonDocument &LocalDataAPICache::LocalDBRequest::reply() const
+{
+    return m_doc;
 }
 
 void LocalDataAPICache::LocalDBRequest::setError(bool error_)
@@ -70,7 +76,7 @@ RequestData *LocalDataAPICache::emptyRequest(const QString &requestName_, const 
     r->setRequestName(requestName_);
     r->setItemAppId(itemAppId_);
     r->setItemId(itemId_);
-    m_requests.push_back(r);
+    //m_requests.push_back(r); // TODO: test free the request
     return r;
 }
 
@@ -214,7 +220,7 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         } while(query.next());
     }
     r_->addJsonResult(QJsonDocument(jsonArray));
-    m_requests.push_back(r_);
+    pushRequest(r_);
     return r_;
 }
 
@@ -340,7 +346,7 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
         r_->addJsonResult(values);
     }
     query.finish();
-    m_requests.push_back(r_);
+    pushRequest(r_);
     return r_;
 }
 
@@ -411,7 +417,7 @@ RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const Q
         r_->addJsonResult(values_);
     }
     query.finish();
-    m_requests.push_back(r_);
+    pushRequest(r_);
     return r_;
 }
 
@@ -476,7 +482,7 @@ RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const Q
         r_->addJsonResult(QJsonDocument(QJsonArray()));
     }
     query.finish();
-    m_requests.push_back(r_);
+    pushRequest(r_);
     return r_;
 }
 
@@ -518,4 +524,39 @@ void LocalDataAPICache::closeDB()
 {
     m_databaseRO.close();
     m_databaseRW.close();
+}
+
+void LocalDataAPICache::pushRequest(LocalDataAPICache::LocalDBRequest *r_)
+{
+    if(nullptr == r_) { return; }
+
+    const bool fireNotify = m_requests.isEmpty();
+    m_requests.push_back(r_);
+
+    if(fireNotify)
+    {
+        QTimer::singleShot(0, this, &LocalDataAPICache::makeResponses);
+    }
+}
+
+void LocalDataAPICache::makeResponses()
+{
+    QList<LocalDBRequest *> res = std::move(m_requests);
+    for(LocalDBRequest *&r : res)
+    {
+        static QNetworkReply::NetworkError errCode = QNetworkReply::InternalServerError;
+        static const QString errorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(errCode);
+        static QNetworkReply::NetworkError noErrorCode = QNetworkReply::NoError;
+        static const QString noErrorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(noErrorCode);
+        if(r->error())
+        {
+            emit error(int(errCode), errorCodeStr, r->reply());
+        }
+        else
+        {
+            emit response(int(noErrorCode), noErrorCodeStr, r, r->reply());
+        }
+        delete r;
+        r = nullptr;
+    }
 }
