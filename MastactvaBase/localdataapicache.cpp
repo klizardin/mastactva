@@ -174,6 +174,10 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
             ? QString("%1 %2").arg(g_procedureLimitName, procedureFields.value(g_procedureLimitName).toInt())
             : QString()
             ;
+    const QHash<QString, QVariant> procedureArgs = procedureFields.contains(g_procedureArguments)
+            ? procedureFields.value(g_procedureArguments).toHash()
+            : QHash<QString, QVariant>()
+            ;
     const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
                             << conditionsFromSqlNames(refs)
@@ -199,11 +203,7 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
     qDebug() << "select sql" << sqlRequest;
 #endif
     bool sqlRes = true;
-    if(!hasCondition)
-    {
-        sqlRes = query.exec(sqlRequest);
-    }
-    else
+    if(hasCondition || !procedureArgs.isEmpty())
     {
         query.prepare(sqlRequest);
         for(const QString &ref : qAsConst(bindRefs))
@@ -214,7 +214,20 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
             qDebug() << "bind" << ref << v;
 #endif
         }
+        const QList<QString> procedureArgsKeys = procedureArgs.keys();
+        for(const QString &key : procedureArgsKeys)
+        {
+            const QVariant v = procedureArgs.value(key);
+            query.bindValue(key, v);
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << key << v;
+#endif
+        }
         sqlRes = query.exec();
+    }
+    else
+    {
+        sqlRes = query.exec(sqlRequest);
     }
 
     QJsonArray jsonArray;
