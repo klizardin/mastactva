@@ -20,6 +20,9 @@ QString DBRequestInfo::JsonFieldInfo::getSqlType() const
     case layout::JsonTypesEn::jt_double:
         return QString(g_sqlDouble);
         break;
+    case layout::JsonTypesEn::jt_datetime:
+        return QString(g_sqlText);
+        break;
     case layout::JsonTypesEn::jt_string:
     case layout::JsonTypesEn::jt_array:
     case layout::JsonTypesEn::jt_object:
@@ -67,6 +70,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(double(v)));
         }
+        else if(layout::JsonTypesEn::jt_datetime == type)
+        {
+            const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
@@ -99,6 +110,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(v));
         }
+        else if(layout::JsonTypesEn::jt_datetime == type)
+        {
+            const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
@@ -120,6 +139,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
         else if(layout::JsonTypesEn::jt_double == type)
         {
             const double v = QVariant::fromValue(jv_.toString()).toDouble();
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
+        else if(layout::JsonTypesEn::jt_datetime == type)
+        {
+            const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << getBindName() << v;
 #endif
@@ -149,6 +176,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(double(0)));
         }
+        else if(layout::JsonTypesEn::jt_datetime == type)
+        {
+            const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
+        }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
@@ -172,6 +207,14 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
             qDebug() << "bind" << getBindName() << double(0);
 #endif
             query_.bindValue(getBindName(), QVariant::fromValue(double(0)));
+        }
+        else if(layout::JsonTypesEn::jt_datetime == type)
+        {
+            const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << getBindName() << v;
+#endif
+            query_.bindValue(getBindName(), QVariant::fromValue(v));
         }
         else
         {
@@ -207,6 +250,9 @@ QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
     case layout::JsonTypesEn::jt_string:
         return QJsonValue(val_.toString());
         break;
+    case layout::JsonTypesEn::jt_datetime:
+        return QJsonValue(dateTimeToJsonString(dateTimeFromJsonString(val_.toString())));
+        break;
     case layout::JsonTypesEn::jt_array:
     case layout::JsonTypesEn::jt_object:
     case layout::JsonTypesEn::jt_null:
@@ -217,34 +263,55 @@ QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
-QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_)
+QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_, layout::JsonTypesEn type_)
 {
     if(jv_.isBool())
     {
+        if(layout::JsonTypesEn::jt_datetime == type_)
+        {
+            return dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+        }
         bool v = jv_.toBool();
         return QString::number(v?1:0);
     }
     else if(jv_.isDouble())
     {
+        if(layout::JsonTypesEn::jt_datetime == type_)
+        {
+            return dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+        }
         double v = jv_.toDouble();
         return QString::number(v);
     }
     else if(jv_.isString())
     {
+        if(layout::JsonTypesEn::jt_datetime == type_)
+        {
+            return dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+        }
         return jv_.toString();
     }
     else if(jv_.isNull())
     {
+        if(layout::JsonTypesEn::jt_datetime == type_)
+        {
+            return dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+        }
         return QString();
     }
     else
     {
+        if(layout::JsonTypesEn::jt_datetime == type_)
+        {
+            return dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
+        }
         return QString();
     }
 }
 
-int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_)
+int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_, layout::JsonTypesEn type_)
 {
+    Q_UNUSED(type_);
     if(jv_.isBool())
     {
         bool v = jv_.toBool();

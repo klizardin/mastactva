@@ -29,6 +29,7 @@ namespace layout
         jt_int,
         jt_double,
         jt_string,
+        jt_datetime,
         jt_array,
         jt_object,
         jt_undefined
@@ -128,7 +129,7 @@ namespace layout
 
     inline JsonTypesEn getJsonType(const QDateTime *)
     {
-        return JsonTypesEn::jt_string;
+        return JsonTypesEn::jt_datetime;
     }
 
     namespace Private

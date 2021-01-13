@@ -302,12 +302,16 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         }
         if(anyIdFields)
         {
-            const QJsonValue valueJV = itemJV[idFieldJsonName];
-            const int v = DBRequestInfo::JsonFieldInfo::toInt(valueJV);
-            findQuery.bindValue(idFieldSQlBindName, v);
+            if(!idFieldJsonName.isEmpty())
+            {
+                const QJsonValue valueJV = itemJV[idFieldJsonName];
+                const int v = DBRequestInfo::JsonFieldInfo::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
+                findQuery.bindValue(idFieldSQlBindName, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind find" << idFieldSQlBindName << v;
+                qDebug() << "bind find" << idFieldSQlBindName << v;
 #endif
+            }
+
             for(const QString &ref : qAsConst(bindRefs))
             {
                 const QString v = defValues.value(ref);
