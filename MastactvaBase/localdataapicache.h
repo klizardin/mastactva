@@ -25,9 +25,12 @@ protected:
         LocalDBRequest() = default;
         void addJsonResult(const QJsonDocument &doc_);
         void addJsonResult(const QHash<QString, QVariant> &values_);
+        void setError(bool error_);
+        bool error() const;
 
     private:
         QJsonDocument m_doc;
+        bool m_error = false;
     };
 
 public:

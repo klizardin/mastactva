@@ -24,6 +24,16 @@ void LocalDataAPICache::LocalDBRequest::addJsonResult(const QHash<QString, QVari
     m_doc = QJsonDocument(array);
 }
 
+void LocalDataAPICache::LocalDBRequest::setError(bool error_)
+{
+    m_error = error_;
+}
+
+bool LocalDataAPICache::LocalDBRequest::error() const
+{
+    return m_error;
+}
+
 
 LocalDataAPICache::LocalDataAPICache(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
@@ -185,6 +195,10 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         //qDebug() << err.databaseText();
         //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error" << err.text();
+        QJsonObject jsonObj;
+        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
+        jsonArray.push_back(jsonObj);
+        r_->setError(true);
     }
     else if(query.first())
     {
@@ -298,7 +312,7 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
             bindInfo.bind(query, val);
         }
     }
-    if(!query.exec())
+    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
         //qDebug() << err.driverText();
@@ -306,7 +320,12 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
         //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error " << err.text();
 
-        r_->addJsonResult(QJsonDocument(QJsonArray()));
+        QJsonArray jsonArray;
+        QJsonObject jsonObj;
+        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
+        jsonArray.push_back(jsonObj);
+        r_->setError(true);
+        r_->addJsonResult(QJsonDocument(jsonArray));
     }
     else
     {
@@ -371,7 +390,8 @@ RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const Q
         const QVariant val = values_.value(bindInfo.jsonName);
         bindInfo.bind(query, val);
     }
-    if(!query.exec())
+
+    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
         //qDebug() << err.driverText();
@@ -379,7 +399,12 @@ RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const Q
         //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error " << err.text();
 
-        r_->addJsonResult(QJsonDocument(QJsonArray()));
+        QJsonArray jsonArray;
+        QJsonObject jsonObj;
+        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
+        jsonArray.push_back(jsonObj);
+        r_->setError(true);
+        r_->addJsonResult(QJsonDocument(jsonArray));
     }
     else
     {
@@ -431,17 +456,26 @@ RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const Q
     query.prepare(sqlRequest);
     fitId->bind(query, id_);
 
-    if(!query.exec())
+    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
         //qDebug() << err.driverText();
         //qDebug() << err.databaseText();
         //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error " << err.text();
+
+        QJsonArray jsonArray;
+        QJsonObject jsonObj;
+        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
+        jsonArray.push_back(jsonObj);
+        r_->setError(true);
+        r_->addJsonResult(QJsonDocument(jsonArray));
+    }
+    else
+    {
+        r_->addJsonResult(QJsonDocument(QJsonArray()));
     }
     query.finish();
-
-    r_->addJsonResult(QJsonDocument(QJsonArray()));
     m_requests.push_back(r_);
     return r_;
 }

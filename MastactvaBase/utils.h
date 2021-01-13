@@ -75,6 +75,7 @@ static const char *g_dbNameExt = ".db3";
 static const char *g_splitTableRef = "_by_";
 static const char *g_insertFieldSpliter = " , ";
 static const char *g_refPrefix = "ref_";
+static const char *g_errorDetailTag = "detail";
 
 
 #endif // UTILS_H
