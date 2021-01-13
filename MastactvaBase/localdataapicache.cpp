@@ -151,7 +151,7 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    const QHash<QString, QVariant> extraFields = r_->getExtraFields();
+    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
         it != std::end(extraFields)
         ; ++it
@@ -240,7 +240,7 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
     QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
-    const QHash<QString, QVariant> extraFields = r_->getExtraFields();
+    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
                                 << refsNames(refs)

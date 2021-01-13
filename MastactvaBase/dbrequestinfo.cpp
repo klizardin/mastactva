@@ -459,3 +459,26 @@ QStringList DBRequestInfo::getSetNames(const QList<JsonFieldInfo> &tableFieldsIn
     }
     return res;
 }
+
+QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVariant> &extraFields_)
+{
+    QHash<QString, QVariant> res;
+    const QList<QString> keys = extraFields_.keys();
+    for(const QString &key : keys)
+    {
+        if(QString(g_procedureExtraFieldName) == key) { continue; } // skip procedure params
+        res.insert(key, extraFields_.value(key));
+    }
+}
+
+QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString, QVariant> &extraFields_)
+{
+    if(extraFields_.contains(g_procedureExtraFieldName))
+    {
+        return extraFields_.value(g_procedureExtraFieldName).toHash();
+    }
+    else
+    {
+        return QHash<QString, QVariant>();
+    }
+}

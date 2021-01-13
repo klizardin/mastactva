@@ -11,6 +11,9 @@
 #include "../MastactvaBase/netapi.h"
 
 
+static const char *g_procedureExtraFieldName = "";
+
+
 class DBRequestInfo
 {
 public:
@@ -119,6 +122,8 @@ public:
     static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
     static QStringList getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
     static QStringList getSetNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
+    static QHash<QString, QVariant> apiExtraFields(const QHash<QString, QVariant> &extraFields_);
+    static QHash<QString, QVariant> procedureExtraFields(const QHash<QString, QVariant> &extraFields_);
 
 protected:
     void setTableName(const QString &tableName_);
