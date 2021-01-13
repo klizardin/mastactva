@@ -12,6 +12,9 @@
 
 
 static const char *g_procedureExtraFieldName = "";
+static const char *g_procedureConditionName = "WHERE";
+static const char *g_procedureLimitName = "LIMIT";
+static const char *g_procedureOrderByName = "ORDER BY";
 
 
 class DBRequestInfo

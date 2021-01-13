@@ -161,17 +161,39 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
-    const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty());
+    const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
+    const QString procedureConditions = procedureFields.contains(g_procedureConditionName)
+            ? procedureFields.value(g_procedureConditionName).toString()
+            : QString()
+            ;
+    const QString procedureOrderBy = procedureFields.contains(g_procedureOrderByName)
+            ? QString("%1 %2").arg(g_procedureOrderByName, procedureFields.value(g_procedureOrderByName).toString())
+            : QString()
+            ;
+    const QString procedureLimit = procedureFields.contains(g_procedureLimitName)
+            ? QString("%1 %2").arg(g_procedureLimitName, procedureFields.value(g_procedureLimitName).toInt())
+            : QString()
+            ;
+    const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
                             << conditionsFromSqlNames(refs)
                             << conditionsFromSqlNames(extraFields.keys())
                             ).join(" AND ");
     const QString conditionStr = hasCondition
-            ? QString("WHERE %1").arg(conditionCases)
+            ? QString("WHERE %1")
+              .arg(conditionCases.isEmpty()
+                   ? procedureConditions
+                   : QString("%1 AND ( %2 )").arg(conditionCases, procedureConditions)
+                   )
             : QString()
             ;
-    const QString sqlRequest = QString("SELECT %1 FROM %2 %3")
-            .arg(fieldsRequests.mid(0, fieldsRequests.length() - 2), tableName, conditionStr)
+    const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5")
+            .arg(fieldsRequests.mid(0, fieldsRequests.length() - 2),
+                 tableName,
+                 conditionStr,
+                 procedureOrderBy,
+                 procedureLimit
+                 )
             ;
 #if defined(TRACE_DB_USE)
     qDebug() << "select sql" << sqlRequest;
