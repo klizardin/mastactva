@@ -151,8 +151,9 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(r_->getExtraFields());
-        it != std::end(r_->getExtraFields())
+    const QHash<QString, QVariant> extraFields = r_->getExtraFields();
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
+        it != std::end(extraFields)
         ; ++it
         )
     {
@@ -160,10 +161,10 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
-    const bool hasCondition = !(refs.isEmpty()) || !(r_->getExtraFields().isEmpty());
+    const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty());
     const QString conditionCases = (QStringList()
                             << conditionsFromSqlNames(refs)
-                            << conditionsFromSqlNames(r_->getExtraFields().keys())
+                            << conditionsFromSqlNames(extraFields.keys())
                             ).join(" AND ");
     const QString conditionStr = hasCondition
             ? QString("WHERE %1").arg(conditionCases)
@@ -239,10 +240,11 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
     QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    const QHash<QString, QVariant> extraFields = r_->getExtraFields();
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
                                 << refsNames(refs)
-                                << refsNames(r_->getExtraFields().keys())
+                                << refsNames(extraFields.keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
@@ -253,8 +255,8 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(r_->getExtraFields());
-        it != std::end(r_->getExtraFields())
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
+        it != std::end(extraFields)
         ; ++it
         )
     {
