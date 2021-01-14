@@ -10,8 +10,6 @@
 class NetAPI;
 
 
-
-
 class RequestData
 {
 public:
