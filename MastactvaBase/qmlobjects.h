@@ -8,6 +8,7 @@
 
 class QObject;
 class NetAPI;
+class ILocalDataAPI;
 class LocalDataAPINoCache;
 using LocalDataAPI = LocalDataAPINoCache;
 class ServerFiles;
@@ -26,6 +27,7 @@ public:
     LocalDataAPI *getDataAPI();
     ServerFiles *getServerFiles();
     IListModel *getListModel(const QString &layoutName_);
+    const QVector<ILocalDataAPI *> &getLocalDataAPIViews();
     void registerModel(const QString &layoutName_, IListModel *m_);
     void unregisterModel(const QString &layoutName_);
 
@@ -43,6 +45,7 @@ protected:
     NetAPI *m_netAPI = nullptr;
     LocalDataAPI *m_dataAPI = nullptr;
     ServerFiles *m_serverFiles = nullptr;
+    QVector<ILocalDataAPI *> m_localDataAPIViews;
 };
 
 

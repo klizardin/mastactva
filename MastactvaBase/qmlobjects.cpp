@@ -24,6 +24,15 @@ IListModel *QMLObjectsBase::getListModel(const QString &layoutName_)
     return findListModel(layoutName_);
 }
 
+const QVector<ILocalDataAPI *> &QMLObjectsBase::getLocalDataAPIViews()
+{
+    if(m_localDataAPIViews.isEmpty())
+    {
+        searchObjects();
+    }
+    return m_localDataAPIViews;
+}
+
 IListModel *QMLObjectsBase::findListModel(const QString &layoutName_) const
 {
     const auto fit = std::find_if(std::begin(m_models), std::end(m_models),
