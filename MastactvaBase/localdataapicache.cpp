@@ -145,9 +145,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestNam
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
-        //qDebug() << err.driverText();
-        //qDebug() << err.databaseText();
-        //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error" << err.text();
         QJsonObject jsonObj;
         jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
@@ -168,7 +165,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestNam
         } while(query.next());
     }
     r_->addJsonResult(QJsonDocument(jsonArray));
-    //pushRequest(r_);
     return r_;
 }
 
@@ -250,9 +246,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QString& requestNam
             if(!findQuery.exec(sqlNextIdRequest) && findQuery.lastError().type() != QSqlError::NoError)
             {
                 const QSqlError err = findQuery.lastError();
-                //qDebug() << err.driverText();
-                //qDebug() << err.databaseText();
-                //qDebug() << err.nativeErrorCode();
                 qDebug() << "sql error " << err.text();
             }
             else if(findQuery.first())
@@ -271,9 +264,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QString& requestNam
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
-        //qDebug() << err.driverText();
-        //qDebug() << err.databaseText();
-        //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
@@ -296,7 +286,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QString& requestNam
         r_->addJsonResult(values);
     }
     query.finish();
-    //pushRequest(r_);
     return r_;
 }
 
@@ -350,9 +339,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QString& requestNam
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
-        //qDebug() << err.driverText();
-        //qDebug() << err.databaseText();
-        //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
@@ -367,7 +353,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QString& requestNam
         r_->addJsonResult(values_);
     }
     query.finish();
-    //pushRequest(r_);
     return r_;
 }
 
@@ -415,9 +400,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QString& requestNam
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
-        //qDebug() << err.driverText();
-        //qDebug() << err.databaseText();
-        //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
@@ -432,7 +414,6 @@ RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QString& requestNam
         r_->addJsonResult(QJsonDocument(QJsonArray()));
     }
     query.finish();
-    //pushRequest(r_);
     return r_;
 }
 

@@ -204,9 +204,6 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
     if(!query.exec(sqlRequest))
     {
         const QSqlError err = query.lastError();
-        //qDebug() << err.driverText();
-        //qDebug() << err.databaseText();
-        //qDebug() << err.nativeErrorCode();
         qDebug() << "sql error "  << err.text();
     }
     query.finish();
@@ -325,9 +322,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             if(!findQuery.exec() && query.lastError().type() != QSqlError::NoError)
             {
                 const QSqlError err = query.lastError();
-                //qDebug() << err.driverText();
-                //qDebug() << err.databaseText();
-                //qDebug() << err.nativeErrorCode();
                 qDebug() << "sql error " << err.text();
             }
             else
@@ -358,9 +352,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         if(!query.exec())
         {
             const QSqlError err = query.lastError();
-            //qDebug() << err.driverText();
-            //qDebug() << err.databaseText();
-            //qDebug() << err.nativeErrorCode();
             qDebug() << "sql error " << err.text();
         }
     }
