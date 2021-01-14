@@ -7,6 +7,7 @@
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaBase/qmlobjects.h"
 
 
 template<class ModelType_>
@@ -30,8 +31,25 @@ public:
 
     virtual RequestData *getListImpl(LocalDBRequest *r_) override
     {
-        Q_UNUSED(r_);
-        return nullptr;
+        if(nullptr == r_) { return nullptr; }
+        LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        if(nullptr == localDataAPI) { return nullptr; }
+        ILocalDataAPI *defaultAPI = r_->getDefaultAPI();
+        if(nullptr == defaultAPI) { return nullptr; }
+
+        r_->insertExtraField(g_procedureExtraFieldName,
+                             QVariant::fromValue(
+                                 QHash<QString, QVariant>(
+                                     {
+                                         { g_procedureDefaultAPI, QVariant::fromValue(true) },
+                                         { g_procedureConditionName, QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef())) },
+                                         { g_procedureArguments, QVariant::fromValue(QList<QVariant>({r_->getIdField(),})) }
+                                     })
+                                 )
+                             );
+        r_->clearReferences();
+
+        return defaultAPI->getListImpl(r_);
     }
 
     virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override
