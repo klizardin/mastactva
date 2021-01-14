@@ -16,24 +16,6 @@
 class LocalDataAPICache : public QObject
 {
     Q_OBJECT
-protected:
-    class LocalDBRequest :
-            public DBRequestInfo,
-            public RequestData
-    {
-    public:
-        LocalDBRequest() = default;
-        void addJsonResult(const QJsonDocument &doc_);
-        void addJsonResult(const QHash<QString, QVariant> &values_);
-        const QJsonDocument &reply() const;
-        void setError(bool error_);
-        bool error() const;
-
-    private:
-        QJsonDocument m_doc;
-        bool m_error = false;
-    };
-
 public:
     explicit LocalDataAPICache(QObject *parent_ = nullptr);
     virtual ~LocalDataAPICache() override;

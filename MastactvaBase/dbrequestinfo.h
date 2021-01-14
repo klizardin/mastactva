@@ -151,4 +151,22 @@ private:
 };
 
 
+class LocalDBRequest :
+        public DBRequestInfo,
+        public RequestData
+{
+public:
+    LocalDBRequest() = default;
+    void addJsonResult(const QJsonDocument &doc_);
+    void addJsonResult(const QHash<QString, QVariant> &values_);
+    const QJsonDocument &reply() const;
+    void setError(bool error_);
+    bool error() const;
+
+private:
+    QJsonDocument m_doc;
+    bool m_error = false;
+};
+
+
 #endif // DBREQUESTINFO_H

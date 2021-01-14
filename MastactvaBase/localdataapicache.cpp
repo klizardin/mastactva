@@ -3,42 +3,7 @@
 #include "../MastactvaBase/utils.h"
 
 
-#define TRACE_DB_USE
-
-
-void LocalDataAPICache::LocalDBRequest::addJsonResult(const QJsonDocument &doc_)
-{
-    m_doc = doc_;
-}
-
-void LocalDataAPICache::LocalDBRequest::addJsonResult(const QHash<QString, QVariant> &values_)
-{
-    QJsonArray array;
-
-    QJsonObject obj;
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(getTableFieldsInfo()))
-    {
-        const QVariant val = values_.contains(bindInfo.jsonName) ? values_.value(bindInfo.jsonName) : QVariant();
-        obj.insert(bindInfo.jsonName, bindInfo.jsonValue(val));
-    }
-    array.push_back(obj);
-    m_doc = QJsonDocument(array);
-}
-
-const QJsonDocument &LocalDataAPICache::LocalDBRequest::reply() const
-{
-    return m_doc;
-}
-
-void LocalDataAPICache::LocalDBRequest::setError(bool error_)
-{
-    m_error = error_;
-}
-
-bool LocalDataAPICache::LocalDBRequest::error() const
-{
-    return m_error;
-}
+//#define TRACE_DB_USE
 
 
 LocalDataAPICache::LocalDataAPICache(QObject *parent_ /*= nullptr*/)
@@ -565,7 +530,7 @@ void LocalDataAPICache::closeDB()
     m_databaseRW.close();
 }
 
-void LocalDataAPICache::pushRequest(LocalDataAPICache::LocalDBRequest *r_)
+void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 {
     if(nullptr == r_) { return; }
 
