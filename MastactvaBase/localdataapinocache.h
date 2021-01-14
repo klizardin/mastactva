@@ -116,10 +116,10 @@ public:
     }
 
     template<class DataType_>
-    RequestData *delItem(const QString &layoutName_, const DataType_ *item_)
+    RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         if(nullptr == m_netAPI) { return nullptr; }
-        return m_netAPI->delItem(layoutName_, item_);
+        return m_netAPI->delItem(layoutName_, item_, extraFields_);
     }
 
     void startSave(const QString &savePath_);

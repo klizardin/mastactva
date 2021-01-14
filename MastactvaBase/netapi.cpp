@@ -531,8 +531,10 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
     return rd;
 }
 
-RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_)
+RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &extraFields_)
 {
+    Q_UNUSED(extraFields_);
+
     Q_ASSERT(id_.isValid());
     Q_ASSERT(id_.toString() != "false");
 

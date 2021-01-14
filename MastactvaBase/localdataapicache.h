@@ -137,7 +137,7 @@ public:
     }
 
     template<class DataType_>
-    RequestData *delItem(const QString &layoutName_, const DataType_ *item_)
+    RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
         r->init<DataType_>(layoutName_, false);

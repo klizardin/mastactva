@@ -480,7 +480,7 @@ public:
         return dta;
     }
 
-    bool setDataItemImpl(int index_, DataType_ *item_)
+    bool setDataItemImpl(int index_, DataType_ *item_, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
     {
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
@@ -502,6 +502,7 @@ public:
         else
         {
             QHash<QString, QVariant> extraFields(m_modelParams);
+            extraFields.insert(extraFields_);
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
@@ -516,7 +517,7 @@ public:
         }
     }
 
-    bool addDataItemImpl(DataType_ *item_, bool setCurrentIndex_ = false)
+    bool addDataItemImpl(DataType_ *item_, bool setCurrentIndex_ = false, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         if(nullptr == dataAPI) { return false; }
@@ -541,6 +542,7 @@ public:
         else
         {
             QHash<QString, QVariant> extraFields(m_modelParams);
+            extraFields.insert(extraFields_);
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
@@ -560,14 +562,14 @@ public:
         }
     }
 
-    bool delDataItemImpl(int index_)
+    bool delDataItemImpl(int index_, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
     {
         if(!isIndexValid(index_, m_data.size())) { return false; }
-        return delDataItemImpl(m_data.at(index_));
+        return delDataItemImpl(m_data.at(index_), extraFields_);
 
     }
 
-    bool delDataItemImpl(DataType_ *item_)
+    bool delDataItemImpl(DataType_ *item_, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         if(nullptr == dataAPI) { return false; }
@@ -575,7 +577,7 @@ public:
         QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!itemId.isValid() || itemId.isNull()) { return false; }
 
-        RequestData *request = dataAPI->delItem(getJsonLayoutName(), item_);
+        RequestData *request = dataAPI->delItem(getJsonLayoutName(), item_, extraFields_);
         return addRequest(request);
     }
 

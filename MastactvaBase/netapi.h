@@ -120,11 +120,11 @@ public:
     }
 
     template<class DataType_>
-    RequestData *delItem(const QString &layoutName_, const DataType_ *item_)
+    RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid() || id.isNull()) { return nullptr; }
-        return delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id);
+        return delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id, extraFields_);
     }
 
 signals:
@@ -140,7 +140,7 @@ protected:
     RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_, const QHash<QString, QVariant> &extraFields_);
     RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
     RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
-    RequestData *delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_);
+    RequestData *delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &extraFields_);
 
     void setBasicAuthentification(QNetworkRequest* netRequest_);
     void clearData();
