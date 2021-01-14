@@ -149,6 +149,9 @@ template<class DataType_, class ModelType_>
 class ListModelBaseOfData : public QAbstractListModel, public IListModel, public ListModelBaseData
 {
 public:
+    using DataType = DataType_;
+    using ModelType = ModelType_;
+
     explicit ListModelBaseOfData(QObject *parent_)
         : QAbstractListModel(parent_),
           ListModelBaseData(this)
