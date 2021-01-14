@@ -22,7 +22,7 @@ inline QStringList refsNames(const QStringList &refs_)
     return res;
 }
 
-QStringList conditionsFromSqlNames(const QStringList &names_)
+QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &names_)
 {
     QStringList res;
     for(const QString &sqlName : names_)
@@ -91,8 +91,8 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestNam
             ;
     const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
-                            << conditionsFromSqlNames(refs)
-                            << conditionsFromSqlNames(extraFields.keys())
+                            << equalToValueConditionsFromSqlNamesFromSqlNames(refs)
+                            << equalToValueConditionsFromSqlNamesFromSqlNames(extraFields.keys())
                             ).join(" AND ");
     const QString conditionStr = hasCondition
             ? QString("WHERE %1")
