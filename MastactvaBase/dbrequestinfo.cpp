@@ -420,6 +420,16 @@ void DBRequestInfo::setProcedureName(const QString &procedureName_)
     m_procedureName = procedureName_;
 }
 
+const QString &DBRequestInfo::getDBRequestName() const
+{
+    return m_requestName;
+}
+
+void DBRequestInfo::setDBRequestName(const QString &requestName_)
+{
+    m_requestName = requestName_;
+}
+
 QString DBRequestInfo::namingConversion(const QString &name_)
 {
     QString res = name_;

@@ -44,11 +44,13 @@ public:
 
     template<typename DataType_>
     void init(
+            const QString &requestName_,
             const QString &layoutName_,
             bool readonly_
             )
     {
-        init<DataType_>(layoutName_,
+        init<DataType_>(requestName_,
+                        layoutName_,
                         QString(),
                         QStringList(),
                         QString(),
@@ -63,6 +65,7 @@ public:
 
     template<typename DataType_>
     void init(
+            const QString &requestName_,
             const QString &layoutName_,
             const QString &procedureName_,
             const QStringList &refs_,
@@ -112,6 +115,7 @@ public:
         setReadonly(readonly_);
         setExtraFields(extraFields_);
         setProcedureName(procedureName_);
+        setDBRequestName(requestName_);
     }
 
     const QString &getTableName() const;
@@ -122,6 +126,7 @@ public:
     QVariant getIdField(bool transparent_ = false) const;
     bool getReadonly() const;
     const QHash<QString, QVariant> &getExtraFields() const;
+    const QString &getDBRequestName() const;
 
     static QString namingConversion(const QString &name_);
     static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
@@ -139,8 +144,10 @@ protected:
     void setReadonly(bool readonly_);
     void setExtraFields(const QHash<QString, QVariant> &extraFields_);
     void setProcedureName(const QString &procedureName_);
+    void setDBRequestName(const QString &requestName_);
 
 private:
+    QString m_requestName;
     QString m_tableName;
     QString m_procedureName;
     QList<JsonFieldInfo> m_tableFieldsInfo;
@@ -175,10 +182,10 @@ class ILocalDataAPI
 public:
     virtual ~ILocalDataAPI() = default;
     virtual bool canProcess(const LocalDBRequest *r_) const = 0;
-    virtual RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_) = 0;
-    virtual RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
-    virtual RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
-    virtual RequestData *delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_) = 0;
+    virtual RequestData *getListImpl(LocalDBRequest *r_) = 0;
+    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
+    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
+    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) = 0;
 };
 
 

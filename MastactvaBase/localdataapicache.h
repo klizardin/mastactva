@@ -20,10 +20,10 @@ public:
     virtual ~LocalDataAPIDefaultCacheImpl() = default;
 
     virtual bool canProcess(const LocalDBRequest *r_) const override;
-    virtual RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_) override;
-    virtual RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
-    virtual RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
-    virtual RequestData *delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_) override;
+    virtual RequestData *getListImpl(LocalDBRequest *r_) override;
+    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
+    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
+    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) override;
 };
 
 
@@ -56,7 +56,8 @@ public:
     {
         Q_UNUSED(jsonParams_);
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_,
+        r->init<DataType_>(RequestData::getListRequestName<DataType_>(),
+                           layoutName_,
                            procedureName_,
                            refs_, currentRef_,
                            parentModel_, parentModelJsonFieldName_,
@@ -65,8 +66,8 @@ public:
                            extraFields_);
         ILocalDataAPI *view = findView(r);
         RequestData *res = nullptr == view
-                ? m_defaultAPIImpl.getListImpl(RequestData::getListRequestName<DataType_>(), r)
-                : view->getListImpl(RequestData::getListRequestName<DataType_>(), r)
+                ? m_defaultAPIImpl.getListImpl(r)
+                : view->getListImpl(r)
                 ;
         if(nullptr == res)
         {
@@ -84,7 +85,7 @@ public:
     RequestData *addItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, false);
+        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false);
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
@@ -93,8 +94,8 @@ public:
         if(!appId.isValid()) { return nullptr; }
         ILocalDataAPI *view = findView(r);
         RequestData *res = nullptr == view
-                ? m_defaultAPIImpl.addItemImpl(RequestData::addItemRequestName<DataType_>(), appId, values, r)
-                : view->addItemImpl(RequestData::addItemRequestName<DataType_>(), appId, values, r)
+                ? m_defaultAPIImpl.addItemImpl(appId, values, r)
+                : view->addItemImpl(appId, values, r)
                 ;
         if(nullptr == res)
         {
@@ -112,7 +113,7 @@ public:
     RequestData *setItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, false);
+        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false);
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
@@ -121,8 +122,8 @@ public:
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = findView(r);
         RequestData *res = nullptr == view
-                ? m_defaultAPIImpl.setItemImpl(RequestData::addItemRequestName<DataType_>(), id, values, r)
-                : view->setItemImpl(RequestData::addItemRequestName<DataType_>(), id, values, r)
+                ? m_defaultAPIImpl.setItemImpl(id, values, r)
+                : view->setItemImpl(id, values, r)
                 ;
         if(nullptr == res)
         {
@@ -140,13 +141,13 @@ public:
     RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(layoutName_, false);
+        r->init<DataType_>(RequestData::delItemRequestName<DataType_>(), layoutName_, false);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = findView(r);
         RequestData *res = nullptr == view
-                ? m_defaultAPIImpl.delItemImpl(RequestData::delItemRequestName<DataType_>(), id, r)
-                : view->delItemImpl(RequestData::delItemRequestName<DataType_>(), id, r)
+                ? m_defaultAPIImpl.delItemImpl(id, r)
+                : view->delItemImpl(id, r)
                 ;
         if(nullptr == res)
         {

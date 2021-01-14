@@ -40,13 +40,12 @@ bool LocalDataAPIDefaultCacheImpl::canProcess(const LocalDBRequest *r_) const
     return true;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestName_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setRequestName(requestName_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
@@ -168,13 +167,12 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestNam
     return r_;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setRequestName(requestName_);
     r_->setItemAppId(appId_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
@@ -289,13 +287,12 @@ RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QString& requestNam
     return r_;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setRequestName(requestName_);
     r_->setItemId(id_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
@@ -356,13 +353,12 @@ RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QString& requestNam
     return r_;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setRequestName(requestName_);
     r_->setItemId(id_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
@@ -524,6 +520,7 @@ void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 {
     if(nullptr == r_) { return; }
 
+    r_->setRequestName(r_->getDBRequestName());
     const bool fireNotify = m_requests.isEmpty();
     m_requests.push_back(r_);
 

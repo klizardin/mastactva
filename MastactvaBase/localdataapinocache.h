@@ -65,7 +65,8 @@ public:
         if(isSaveToDBMode())
         {
             r = new SaveDBRequest();
-            r->init<DataType_>(layoutName_,
+            r->init<DataType_>(RequestData::getListRequestName<DataType_>(),
+                               layoutName_,
                                procedureName_,
                                refs_, currentRef_,
                                parentModel_, parentModelJsonFieldName_,
