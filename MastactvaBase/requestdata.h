@@ -8,6 +8,8 @@
 
 
 class NetAPI;
+class LocalDataAPICache;
+class LocalDataAPIDefaultCacheImpl;
 
 
 class RequestData
@@ -65,6 +67,7 @@ private:
 
     friend class NetAPI;
     friend class LocalDataAPICache;
+    friend class LocalDataAPIDefaultCacheImpl;
 };
 
 

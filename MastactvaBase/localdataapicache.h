@@ -13,6 +13,19 @@
 #include "../MastactvaBase/dbrequestinfo.h"
 
 
+class LocalDataAPIDefaultCacheImpl : public ILocalDataAPI
+{
+public:
+    LocalDataAPIDefaultCacheImpl() = default;
+    virtual ~LocalDataAPIDefaultCacheImpl() = default;
+
+    virtual RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_) override;
+    virtual RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
+    virtual RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
+    virtual RequestData *delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_) override;
+};
+
+
 class LocalDataAPICache : public QObject
 {
     Q_OBJECT
@@ -49,11 +62,15 @@ public:
                            refAppId_, refValue_,
                            readonly_,
                            extraFields_);
-        RequestData *res = getListImpl(RequestData::getListRequestName<DataType_>(), r);
+        RequestData *res = m_defaultAPIImpl.getListImpl(RequestData::getListRequestName<DataType_>(), r);
         if(nullptr == res)
         {
             delete r;
             r = nullptr;
+        }
+        else
+        {
+            pushRequest(r);
         }
         return res;
     }
@@ -69,11 +86,15 @@ public:
         values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        RequestData *res = addItemImpl(RequestData::addItemRequestName<DataType_>(), appId, values, r);
+        RequestData *res = m_defaultAPIImpl.addItemImpl(RequestData::addItemRequestName<DataType_>(), appId, values, r);
         if(nullptr == res)
         {
             delete r;
             r = nullptr;
+        }
+        else
+        {
+            pushRequest(r);
         }
         return res;
     }
@@ -89,11 +110,15 @@ public:
         values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        RequestData *res = setItemImpl(RequestData::addItemRequestName<DataType_>(), id, values, r);
+        RequestData *res = m_defaultAPIImpl.setItemImpl(RequestData::addItemRequestName<DataType_>(), id, values, r);
         if(nullptr == res)
         {
             delete r;
             r = nullptr;
+        }
+        else
+        {
+            pushRequest(r);
         }
         return res;
     }
@@ -105,11 +130,15 @@ public:
         r->init<DataType_>(layoutName_, false);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        RequestData *res = delItemImpl(RequestData::delItemRequestName<DataType_>(), id, r);
+        RequestData *res = m_defaultAPIImpl.delItemImpl(RequestData::delItemRequestName<DataType_>(), id, r);
         if(nullptr == res)
         {
             delete r;
             r = nullptr;
+        }
+        else
+        {
+            pushRequest(r);
         }
         return res;
     }
@@ -120,10 +149,6 @@ signals:
 
 protected:
     void freeRequests();
-    RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_);
-    RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
-    RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_);
-    RequestData *delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_);
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
     void openDB();
     void closeDB();
@@ -137,6 +162,7 @@ private:
     QSqlDatabase m_databaseRO;
     QList<LocalDBRequest *> m_requests;
     static LocalDataAPICache *g_localDataAPI;
+    LocalDataAPIDefaultCacheImpl m_defaultAPIImpl;
 };
 
 

@@ -6,68 +6,6 @@
 //#define TRACE_DB_USE
 
 
-LocalDataAPICache::LocalDataAPICache(QObject *parent_ /*= nullptr*/)
-    : QObject(parent_)
-{
-    openDB();
-}
-
-LocalDataAPICache::~LocalDataAPICache()
-{
-    closeDB();
-    freeRequests();
-}
-
-
-LocalDataAPICache *LocalDataAPICache::g_localDataAPI = nullptr;
-
-
-void LocalDataAPICache::createInstance(QObject *parent_)
-{
-    if(nullptr == g_localDataAPI)
-    {
-        g_localDataAPI = new LocalDataAPICache(parent_);
-    }
-}
-
-LocalDataAPICache *LocalDataAPICache::getInstance()
-{
-    return g_localDataAPI;
-}
-
-RequestData *LocalDataAPICache::emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
-{
-    LocalDBRequest *r = new LocalDBRequest();
-    r->setRequestName(requestName_);
-    r->setItemAppId(itemAppId_);
-    r->setItemId(itemId_);
-    //m_requests.push_back(r); // TODO: test free the request
-    return r;
-}
-
-void LocalDataAPICache::freeRequest(RequestData *&r_)
-{
-    const auto fit = std::find_if(std::begin(m_requests), std::end(m_requests),
-                                  [&r_](const LocalDBRequest *r)->bool
-    {
-        return nullptr != r_ && nullptr != r && static_cast<const RequestData *>(r) == r_;
-    });
-    if(std::end(m_requests) == fit) { return; }
-    m_requests.erase(fit);
-    delete r_;
-    r_ = nullptr;
-}
-
-void LocalDataAPICache::freeRequests()
-{
-    for(auto *&p : m_requests)
-    {
-        delete p;
-        p = nullptr;
-    }
-    m_requests.clear();
-}
-
 inline QString refName(const QString &ref_)
 {
     return QString(g_refPrefix) + ref_;
@@ -94,7 +32,8 @@ QStringList conditionsFromSqlNames(const QStringList &names_)
     return res;
 }
 
-RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDBRequest *r_)
+
+RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestName_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
@@ -222,11 +161,11 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
         } while(query.next());
     }
     r_->addJsonResult(QJsonDocument(jsonArray));
-    pushRequest(r_);
+    //pushRequest(r_);
     return r_;
 }
 
-RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
@@ -350,11 +289,11 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
         r_->addJsonResult(values);
     }
     query.finish();
-    pushRequest(r_);
+    //pushRequest(r_);
     return r_;
 }
 
-RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
@@ -421,11 +360,11 @@ RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const Q
         r_->addJsonResult(values_);
     }
     query.finish();
-    pushRequest(r_);
+    //pushRequest(r_);
     return r_;
 }
 
-RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_)
+RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_)
 {
     if(nullptr == r_) { return nullptr; }
 #if defined(TRACE_DB_USE)
@@ -486,8 +425,71 @@ RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const Q
         r_->addJsonResult(QJsonDocument(QJsonArray()));
     }
     query.finish();
-    pushRequest(r_);
+    //pushRequest(r_);
     return r_;
+}
+
+
+LocalDataAPICache::LocalDataAPICache(QObject *parent_ /*= nullptr*/)
+    : QObject(parent_)
+{
+    openDB();
+}
+
+LocalDataAPICache::~LocalDataAPICache()
+{
+    closeDB();
+    freeRequests();
+}
+
+
+LocalDataAPICache *LocalDataAPICache::g_localDataAPI = nullptr;
+
+
+void LocalDataAPICache::createInstance(QObject *parent_)
+{
+    if(nullptr == g_localDataAPI)
+    {
+        g_localDataAPI = new LocalDataAPICache(parent_);
+    }
+}
+
+LocalDataAPICache *LocalDataAPICache::getInstance()
+{
+    return g_localDataAPI;
+}
+
+RequestData *LocalDataAPICache::emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
+{
+    LocalDBRequest *r = new LocalDBRequest();
+    r->setRequestName(requestName_);
+    r->setItemAppId(itemAppId_);
+    r->setItemId(itemId_);
+    //m_requests.push_back(r); // TODO: test free the request
+    return r;
+}
+
+void LocalDataAPICache::freeRequest(RequestData *&r_)
+{
+    const auto fit = std::find_if(std::begin(m_requests), std::end(m_requests),
+                                  [&r_](const LocalDBRequest *r)->bool
+    {
+        return nullptr != r_ && nullptr != r && static_cast<const RequestData *>(r) == r_;
+    });
+    if(std::end(m_requests) == fit) { return; }
+    m_requests.erase(fit);
+    delete r_;
+    r_ = nullptr;
+}
+
+void LocalDataAPICache::freeRequests()
+{
+    for(auto *&p : m_requests)
+    {
+        delete p;
+        p = nullptr;
+    }
+    m_requests.clear();
 }
 
 QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)
