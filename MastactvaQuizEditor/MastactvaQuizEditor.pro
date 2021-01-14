@@ -67,7 +67,7 @@ unix: QMAKE_CXXFLAGS_WARN_OFF += -Wunused-variable
 HEADERS += \
         appconsts.h \
         galleryeditviewmodel.h    \
-    localdataset.h \
+        localdataset.h \
         mastactvaapi.h    \
         netapiv0.h \
         qmlmainobjects.h \
@@ -107,12 +107,13 @@ unix: HEADERS += \
         localdataapinocache.h   \
         localdataapicache.h \
         userstep.h  \
-        dbrequestinfo.h
+        dbrequestinfo.h \
+        localdataapiviews.h
 
 
 SOURCES += \
         appconsts.cpp \
-    localdataset.cpp \
+        localdataset.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \
         mastactvaapi.cpp    \
@@ -153,7 +154,8 @@ unix: SOURCES += \
         localdataapinocache.cpp \
         localdataapicache.cpp   \
         userstep.cpp    \
-        dbrequestinfo.cpp
+        dbrequestinfo.cpp   \
+        localdataapiviews.cpp
 
 
 RESOURCES += qml.qrc    \
