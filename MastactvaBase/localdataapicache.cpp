@@ -1,6 +1,7 @@
 #include "localdataapicache.h"
 #include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/qmlobjects.h"
 
 
 //#define TRACE_DB_USE
@@ -32,6 +33,12 @@ QStringList conditionsFromSqlNames(const QStringList &names_)
     return res;
 }
 
+
+bool LocalDataAPIDefaultCacheImpl::canProcess(const LocalDBRequest *r_) const
+{
+    Q_UNUSED(r_);
+    return true;
+}
 
 RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(const QString& requestName_, LocalDBRequest *r_)
 {
@@ -565,4 +572,13 @@ void LocalDataAPICache::makeResponses()
         delete r;
         r = nullptr;
     }
+}
+
+ILocalDataAPI *LocalDataAPICache::findView(const LocalDBRequest *r_)
+{
+    for(ILocalDataAPI *api : qAsConst(QMLObjectsBase::getInstance().getLocalDataAPIViews()))
+    {
+        if(nullptr != api && api->canProcess(r_)) { return api; }
+    }
+    return nullptr;
 }

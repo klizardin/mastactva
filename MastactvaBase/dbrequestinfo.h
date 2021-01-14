@@ -173,6 +173,7 @@ class ILocalDataAPI
 {
 public:
     virtual ~ILocalDataAPI() = default;
+    virtual bool canProcess(const LocalDBRequest *r_) const = 0;
     virtual RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_) = 0;
     virtual RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
     virtual RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
