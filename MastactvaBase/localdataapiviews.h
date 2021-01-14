@@ -28,34 +28,30 @@ public:
         return true;
     }
 
-    virtual RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_)
+    virtual RequestData *getListImpl(LocalDBRequest *r_) override
     {
-        Q_UNUSED(requestName_);
         Q_UNUSED(r_);
         return nullptr;
     }
 
-    virtual RequestData *addItemImpl(const QString& requestName_, const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override
     {
-        Q_UNUSED(requestName_);
         Q_UNUSED(appId_);
         Q_UNUSED(values_);
         Q_UNUSED(r_);
         return nullptr;
     }
 
-    virtual RequestData *setItemImpl(const QString& requestName_, const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override
     {
-        Q_UNUSED(requestName_);
         Q_UNUSED(id_);
         Q_UNUSED(values_);
         Q_UNUSED(r_);
         return nullptr;
     }
 
-    virtual RequestData *delItemImpl(const QString& requestName_, const QVariant &id_, LocalDBRequest *r_)
+    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) override
     {
-        Q_UNUSED(requestName_);
         Q_UNUSED(id_);
         Q_UNUSED(r_);
         return nullptr;
