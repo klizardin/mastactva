@@ -18,8 +18,14 @@ public:
 
     virtual bool canProcess(const LocalDBRequest *r_) const
     {
-        Q_UNUSED(r_);
-        return false;
+        if(nullptr == r_) { return false; }
+        const QString tableName = DBRequestInfo::namingConversion(
+                    getDataLayout<typename ModelType_::DataType>().getLayoutJsonName()
+                    );
+        if(r_->getTableName() != tableName) { return false; }
+        const QString requestNameGetList = RequestData::getListRequestName<typename ModelType_::DataType>();
+        if(r_->getDBRequestName() != requestNameGetList) { return false; }
+        return true;
     }
 
     virtual RequestData *getListImpl(const QString& requestName_, LocalDBRequest *r_)
