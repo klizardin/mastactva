@@ -8,7 +8,8 @@
 #include <QList>
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
-#include "../MastactvaBase/netapi.h"
+#include "../MastactvaBase/qmlobjects.h"
+//#include "../MastactvaBase/netapi.h"
 
 
 static const char *g_procedureExtraFieldName = "";
@@ -17,6 +18,21 @@ static const char *g_procedureLimitName = "LIMIT";
 static const char *g_procedureOrderByName = "ORDER BY";
 static const char *g_procedureArguments = "ARGS";
 static const char *g_procedureDefaultAPI = "DEFAULTAPI";
+
+
+class LocalDBRequest;
+
+
+class ILocalDataAPI
+{
+public:
+    virtual ~ILocalDataAPI() = default;
+    virtual bool canProcess(const LocalDBRequest *r_) const = 0;
+    virtual RequestData *getListImpl(LocalDBRequest *r_) = 0;
+    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
+    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
+    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) = 0;
+};
 
 
 class DBRequestInfo
@@ -126,7 +142,11 @@ public:
     QVariant getIdField(bool transparent_ = false) const;
     bool getReadonly() const;
     const QHash<QString, QVariant> &getExtraFields() const;
+    void insertExtraField(const QString &key_, const QVariant &value_);
     const QString &getDBRequestName() const;
+    void clearReferences();
+    void setDefaultAPI(ILocalDataAPI *defaultAPI_);
+    ILocalDataAPI *getDefaultAPI();
 
     static QString namingConversion(const QString &name_);
     static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
@@ -156,6 +176,7 @@ private:
     QVariant m_idField;
     QHash<QString, QVariant> m_extraFields;
     bool m_readonly = true;
+    ILocalDataAPI *m_defaultAPI = nullptr;
 };
 
 
@@ -174,18 +195,6 @@ public:
 private:
     QJsonDocument m_doc;
     bool m_error = false;
-};
-
-
-class ILocalDataAPI
-{
-public:
-    virtual ~ILocalDataAPI() = default;
-    virtual bool canProcess(const LocalDBRequest *r_) const = 0;
-    virtual RequestData *getListImpl(LocalDBRequest *r_) = 0;
-    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
-    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
-    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) = 0;
 };
 
 

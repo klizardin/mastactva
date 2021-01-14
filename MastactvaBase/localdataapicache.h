@@ -64,7 +64,7 @@ public:
                            refAppId_, refValue_,
                            readonly_,
                            extraFields_);
-        ILocalDataAPI *view = findView(r);
+        ILocalDataAPI *view = chooseView(r);
         RequestData *res = nullptr == view
                 ? m_defaultAPIImpl.getListImpl(r)
                 : view->getListImpl(r)
@@ -92,7 +92,7 @@ public:
         values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        ILocalDataAPI *view = findView(r);
+        ILocalDataAPI *view = chooseView(r);
         RequestData *res = nullptr == view
                 ? m_defaultAPIImpl.addItemImpl(appId, values, r)
                 : view->addItemImpl(appId, values, r)
@@ -120,7 +120,7 @@ public:
         values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        ILocalDataAPI *view = findView(r);
+        ILocalDataAPI *view = chooseView(r);
         RequestData *res = nullptr == view
                 ? m_defaultAPIImpl.setItemImpl(id, values, r)
                 : view->setItemImpl(id, values, r)
@@ -144,7 +144,7 @@ public:
         r->init<DataType_>(RequestData::delItemRequestName<DataType_>(), layoutName_, false);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        ILocalDataAPI *view = findView(r);
+        ILocalDataAPI *view = chooseView(r);
         RequestData *res = nullptr == view
                 ? m_defaultAPIImpl.delItemImpl(id, r)
                 : view->delItemImpl(id, r)
@@ -171,7 +171,7 @@ protected:
     void openDB();
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
-    ILocalDataAPI *findView(const LocalDBRequest *r_);
+    ILocalDataAPI *chooseView(LocalDBRequest *r_);
 
 private slots:
     void makeResponses();

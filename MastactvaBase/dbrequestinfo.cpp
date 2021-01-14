@@ -410,6 +410,11 @@ void DBRequestInfo::setExtraFields(const QHash<QString, QVariant> &extraFields_)
     m_extraFields = extraFields_;
 }
 
+void DBRequestInfo::insertExtraField(const QString &key_, const QVariant &value_)
+{
+    m_extraFields.insert(key_, value_);
+}
+
 const QString &DBRequestInfo::getProcedureName() const
 {
     return m_procedureName;
@@ -428,6 +433,23 @@ const QString &DBRequestInfo::getDBRequestName() const
 void DBRequestInfo::setDBRequestName(const QString &requestName_)
 {
     m_requestName = requestName_;
+}
+
+void DBRequestInfo::clearReferences()
+{
+    setCurrentRef(QString());
+    setRefs(QStringList());
+    setIdField(QVariant());
+}
+
+void DBRequestInfo::setDefaultAPI(ILocalDataAPI *defaultAPI_)
+{
+    m_defaultAPI = defaultAPI_;
+}
+
+ILocalDataAPI *DBRequestInfo::getDefaultAPI()
+{
+    return m_defaultAPI;
 }
 
 QString DBRequestInfo::namingConversion(const QString &name_)
