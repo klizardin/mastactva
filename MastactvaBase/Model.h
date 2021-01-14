@@ -687,17 +687,6 @@ public:
         Q_ASSERT(false); // TODO: implement
     }
 
-protected:
-    bool storeAfterSaveImpl() const
-    {
-        return getDataLayout<DataType_>().storeAfterSave();
-    }
-
-    void setStoreAfterSaveImpl(bool storeAfterSave_)
-    {
-        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
-    }
-
     void loadListImpl(const QString &procedureName_ = QString(), const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
@@ -765,6 +754,17 @@ protected:
                 reverseListLoading();
             }
         }
+    }
+
+protected:
+    bool storeAfterSaveImpl() const
+    {
+        return getDataLayout<DataType_>().storeAfterSave();
+    }
+
+    void setStoreAfterSaveImpl(bool storeAfterSave_)
+    {
+        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
     }
 
     QVariant createItemImpl()
