@@ -191,7 +191,7 @@ RequestData *LocalDataAPICache::getListImpl(const QString& requestName_, LocalDB
                    )
             : QString()
             ;
-    const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5")
+    const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5 ;")
             .arg(fieldsRequests.mid(0, fieldsRequests.length() - 2),
                  tableName,
                  conditionStr,
@@ -303,7 +303,7 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
                                         << bindRefs
                                         << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
+    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
 
     QString idFieldJsonName;
@@ -319,7 +319,7 @@ RequestData *LocalDataAPICache::addItemImpl(const QString& requestName_, const Q
         idFieldJsonName = fitId->jsonName;
         idFieldSqlName = fitId->sqlName;
     }
-    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2")
+    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
             .arg(idFieldSqlName, tableName);
 
     query.prepare(sqlRequest);
@@ -426,7 +426,7 @@ RequestData *LocalDataAPICache::setItemImpl(const QString& requestName_, const Q
     const QStringList setNames = DBRequestInfo::getSetNames(r_->getTableFieldsInfo());
     const QString setStr = setNames.join(g_insertFieldSpliter);
 
-    const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4")
+    const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
             .arg(tableName, setStr, idFieldSqlName, idFieldSqlBindName);
 
     query.prepare(sqlRequest);
@@ -495,7 +495,7 @@ RequestData *LocalDataAPICache::delItemImpl(const QString& requestName_, const Q
         return nullptr;
     }
 
-    const QString sqlRequest = QString("DELETE FROM %1 WHERE %3=%4")
+    const QString sqlRequest = QString("DELETE FROM %1 WHERE %3=%4 ;")
             .arg(tableName, idFieldSqlName, idFieldSqlBindName);
 
     query.prepare(sqlRequest);

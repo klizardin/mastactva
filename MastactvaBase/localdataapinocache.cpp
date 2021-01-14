@@ -195,7 +195,7 @@ void LocalDataAPINoCache::createTable(const SaveDBRequest * r_)
                                     ).join(g_insertFieldSpliter) +
             QString(g_insertFieldSpliter)
             ;
-    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 )")
+    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
             .arg(tableName, fieldsRequests.mid(0, fieldsRequests.length() - 2))
             ;
 #if defined(TRACE_DB_CREATION)
@@ -262,7 +262,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                                         << bindRefs
                                         << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 )")
+    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
 
     QString idFieldJsonName;
@@ -286,7 +286,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                             << conditionsFromSqlNamesames(refs)
                             << conditionsFromSqlNamesames(r_->getExtraFields().keys())
                             ).join(" AND ");
-    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1")
+    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1 ;")
             .arg(tableName, conditionStr);
 #if defined(TRACE_DB_CREATION)
     qDebug() << "insert sql" << sqlRequest;
