@@ -324,15 +324,13 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                 const QSqlError err = query.lastError();
                 qDebug() << "sql error " << err.text();
             }
-            else
+            else if(findQuery.first())
             {
-                if(findQuery.first())
-                {
 #if defined(TRACE_DB_DATA_BINDINGS)
-                    qDebug() << "skip row";
+                qDebug() << "skip row";
 #endif
-                    continue;
-                } // id value already exists
+                // id value already exists
+                continue;
             }
         }
 
