@@ -16,6 +16,7 @@ static const char *g_procedureConditionName = "WHERE";
 static const char *g_procedureLimitName = "LIMIT";
 static const char *g_procedureOrderByName = "ORDER BY";
 static const char *g_procedureArguments = "ARGS";
+static const char *g_procedureDefaultAPI = "DEFAULTAPI";
 
 
 class DBRequestInfo
