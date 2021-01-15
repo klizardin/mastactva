@@ -529,10 +529,10 @@ void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
     if(nullptr == r_) { return; }
 
     r_->setRequestName(r_->getDBRequestName());
-    const bool fireNotify = m_requests.isEmpty();
+    const bool startNotify = m_requests.isEmpty();
     m_requests.push_back(r_);
 
-    if(fireNotify)
+    if(startNotify)
     {
         QTimer::singleShot(0, this, &LocalDataAPICache::makeResponses);
     }
@@ -569,8 +569,8 @@ void LocalDataAPICache::makeResponses()
         r = nullptr;
     }
 
-    const bool fireNotify = m_requests.isEmpty();
-    if(fireNotify)
+    const bool continueNotify = m_requests.isEmpty();
+    if(continueNotify)
     {
         QTimer::singleShot(0, this, &LocalDataAPICache::makeResponses);
     }
