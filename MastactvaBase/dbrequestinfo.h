@@ -18,6 +18,9 @@ static const char *g_procedureLimitName = "LIMIT";
 static const char *g_procedureOrderByName = "ORDER BY";
 static const char *g_procedureArguments = "ARGS";
 static const char *g_procedureDefaultAPI = "DEFAULTAPI";
+static const char *g_procedureArgFunctionName = "ARGFUNCTION";
+static const char *g_procedureSelectFunctionName = "SELECTFUNCTION";
+static const char *g_procedureFilterNamesName = "FILTERNAMES";
 
 
 class LocalDBRequest;

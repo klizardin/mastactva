@@ -33,6 +33,36 @@ QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &na
     return res;
 }
 
+QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_)
+{
+    if(leftNames_.isEmpty()) { return sqlNames_; }
+    QStringList res;
+    for(const QString &name: sqlNames_)
+    {
+        const auto fit = std::find_if(std::begin(leftNames_), std::end(leftNames_),
+                                      [&name](const QVariant &val)->bool
+        {
+           return val.isValid() && val.toString() == name;
+        });
+        if(std::end(leftNames_) != fit)
+        {
+            res.push_back(name);
+        }
+    }
+    return res;
+}
+
+QStringList applyFunction(const QStringList &sqlNames_, const QString &function_)
+{
+    if(function_.isEmpty()) { return sqlNames_; }
+    QStringList res;
+    for(const QString &name: sqlNames_)
+    {
+        res.push_back(QString("%1(%2)").arg(function_, name));
+    }
+    return res;
+}
+
 
 bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
 {
@@ -51,7 +81,26 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
-    const QString fieldsRequests = (r_->getSqlNames(r_->getTableFieldsInfo())).join(g_insertFieldSpliter) + QString(g_insertFieldSpliter);
+    const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
+    const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
+            ? procedureFields.value(g_procedureSelectFunctionName).toString()
+            : QString()
+            ;
+    const QString procedureArgFunction = procedureFields.contains(g_procedureArgFunctionName)
+            ? procedureFields.value(g_procedureArgFunctionName).toString()
+            : QString()
+            ;
+    const QList<QVariant> procedureFilterFields = procedureFields.contains(g_procedureFilterNamesName)
+            ? procedureFields.value(g_procedureFilterNamesName).toList()
+            : QList<QVariant>()
+            ;
+    const QString fieldsOfRequest = QString("%1 %2").arg(
+                procedureSelectFunction,
+                applyFunction(
+                    filterNames(r_->getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
+                    , procedureArgFunction
+                    ).join(g_insertFieldSpliter)
+                );
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     const QStringList refs = r_->getRefs();
@@ -71,7 +120,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
-    const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
     const QString procedureConditions = procedureFields.contains(g_procedureConditionName)
             ? procedureFields.value(g_procedureConditionName).toString()
             : QString()
@@ -102,7 +150,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             : QString()
             ;
     const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5 ;")
-            .arg(fieldsRequests.mid(0, fieldsRequests.length() - 2),
+            .arg(fieldsOfRequest,
                  tableName,
                  conditionStr,
                  procedureOrderBy,
@@ -159,7 +207,10 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
             {
                 const QVariant val = query.value(fi.sqlName);
-                jsonObj.insert(fi.jsonName, fi.jsonValue(val));
+                if(val.isValid())
+                {
+                    jsonObj.insert(fi.jsonName, fi.jsonValue(val));
+                }
             }
             jsonArray.push_back(jsonObj);
         } while(query.next());
