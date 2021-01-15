@@ -149,6 +149,8 @@ public:
     void clearReferences();
     void setDefaultAPI(ILocalDataAPI *defaultAPI_);
     ILocalDataAPI *getDefaultAPI();
+    bool isProcessed() const;
+    void setProcessed(bool processed_);
 
     static QString namingConversion(const QString &name_);
     static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
@@ -179,6 +181,7 @@ private:
     QHash<QString, QVariant> m_extraFields;
     bool m_readonly = true;
     ILocalDataAPI *m_defaultAPI = nullptr;
+    bool m_processed = true;
 };
 
 

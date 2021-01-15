@@ -536,7 +536,17 @@ void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 
 void LocalDataAPICache::makeResponses()
 {
-    QList<LocalDBRequest *> res = std::move(m_requests);
+    QList<LocalDBRequest *> res;
+    for(LocalDBRequest *r : m_requests)
+    {
+        if(r->isProcessed()) { res.push_back(r); }
+    }
+    for(const LocalDBRequest *r : res)
+    {
+        const auto fit = std::find(std::begin(m_requests), std::end(m_requests), r);
+        m_requests.erase(fit);
+    }
+
     for(LocalDBRequest *&r : res)
     {
         static QNetworkReply::NetworkError errCode = QNetworkReply::InternalServerError;
@@ -553,6 +563,12 @@ void LocalDataAPICache::makeResponses()
         }
         delete r;
         r = nullptr;
+    }
+
+    const bool fireNotify = m_requests.isEmpty();
+    if(fireNotify)
+    {
+        QTimer::singleShot(0, this, &LocalDataAPICache::makeResponses);
     }
 }
 

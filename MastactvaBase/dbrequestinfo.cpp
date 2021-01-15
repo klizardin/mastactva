@@ -452,6 +452,16 @@ ILocalDataAPI *DBRequestInfo::getDefaultAPI()
     return m_defaultAPI;
 }
 
+bool DBRequestInfo::isProcessed() const
+{
+    return m_processed;
+}
+
+void DBRequestInfo::setProcessed(bool processed_)
+{
+    m_processed = processed_;
+}
+
 QString DBRequestInfo::namingConversion(const QString &name_)
 {
     QString res = name_;
