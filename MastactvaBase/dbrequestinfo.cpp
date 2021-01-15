@@ -337,6 +337,11 @@ int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_, layout::JsonTypes
 }
 
 
+DBRequestInfo::DBRequestInfo(const QString &apiName_)
+    :m_apiName(apiName_)
+{
+}
+
 const QString &DBRequestInfo::getTableName() const
 {
     return m_tableName;
@@ -462,6 +467,11 @@ void DBRequestInfo::setProcessed(bool processed_)
     m_processed = processed_;
 }
 
+const QString &DBRequestInfo::getAPIName() const
+{
+    return m_apiName;
+}
+
 QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const
 {
     QJsonObject obj;
@@ -534,6 +544,12 @@ QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString
     {
         return QHash<QString, QVariant>();
     }
+}
+
+
+LocalDBRequest::LocalDBRequest()
+    :DBRequestInfo(g_cachAPI)
+{
 }
 
 void LocalDBRequest::addJsonResult(const QJsonDocument &doc_)

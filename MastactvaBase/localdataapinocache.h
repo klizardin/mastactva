@@ -33,7 +33,7 @@ private:
     class SaveDBRequest : public DBRequestInfo
     {
     public:
-        SaveDBRequest() = default;
+        SaveDBRequest();
         bool operator == (const RequestData *request_) const;
         void setRequest(const RequestData *request_);
 

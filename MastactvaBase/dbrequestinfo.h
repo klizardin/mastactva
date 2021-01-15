@@ -21,6 +21,8 @@ static const char *g_procedureDefaultAPI = "DEFAULTAPI";
 static const char *g_procedureArgFunctionName = "ARGFUNCTION";
 static const char *g_procedureSelectFunctionName = "SELECTFUNCTION";
 static const char *g_procedureFilterNamesName = "FILTERNAMES";
+static const char *g_noCachAPI = "NOCACHE";
+static const char *g_cachAPI = "CACHE";
 
 
 class LocalDBRequest;
@@ -60,7 +62,7 @@ public:
     };
 
 public:
-    DBRequestInfo() = default;
+    DBRequestInfo(const QString &apiName_);
 
     template<typename DataType_>
     void init(
@@ -154,6 +156,7 @@ public:
     ILocalDataAPI *getDefaultAPI();
     bool isProcessed() const;
     void setProcessed(bool processed_);
+    const QString &getAPIName() const;
 
     QJsonObject getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const;
 
@@ -176,6 +179,7 @@ protected:
     void setDBRequestName(const QString &requestName_);
 
 private:
+    QString m_apiName;
     QString m_requestName;
     QString m_tableName;
     QString m_procedureName;
@@ -195,7 +199,7 @@ class LocalDBRequest :
         public RequestData
 {
 public:
-    LocalDBRequest() = default;
+    LocalDBRequest();
     void addJsonResult(const QJsonDocument &doc_);
     void addJsonResult(const QHash<QString, QVariant> &values_);
     const QJsonDocument &reply() const;

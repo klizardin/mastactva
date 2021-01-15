@@ -105,6 +105,10 @@ bool LocalDataAPINoCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_
     return false;
 }
 
+LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
+    :DBRequestInfo(g_noCachAPI)
+{
+}
 
 bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
 {
