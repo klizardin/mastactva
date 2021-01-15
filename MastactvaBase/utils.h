@@ -76,6 +76,7 @@ static const char *g_splitTableRef = "_by_";
 static const char *g_insertFieldSpliter = " , ";
 static const char *g_refPrefix = "ref_";
 static const char *g_errorDetailTag = "detail";
+static const int g_userId = 1;
 
 
 #endif // UTILS_H
