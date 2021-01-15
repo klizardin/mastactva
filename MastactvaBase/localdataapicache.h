@@ -19,11 +19,11 @@ public:
     LocalDataAPIDefaultCacheImpl() = default;
     virtual ~LocalDataAPIDefaultCacheImpl() = default;
 
-    virtual bool canProcess(const LocalDBRequest *r_) const override;
-    virtual RequestData *getListImpl(LocalDBRequest *r_) override;
-    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
-    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override;
-    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) override;
+    virtual bool canProcess(const DBRequestInfo *r_) const override;
+    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
+    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
+    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override;
 };
 
 
@@ -65,11 +65,11 @@ public:
                            readonly_,
                            extraFields_);
         ILocalDataAPI *view = chooseView(r);
-        RequestData *res = nullptr == view
+        bool res = nullptr == view
                 ? m_defaultAPIImpl.getListImpl(r)
                 : view->getListImpl(r)
                 ;
-        if(nullptr == res)
+        if(!res)
         {
             delete r;
             r = nullptr;
@@ -78,26 +78,26 @@ public:
         {
             pushRequest(r);
         }
-        return res;
+        return r;
     }
 
     template<class DataType_>
     RequestData *addItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false);
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
         values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
+        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, values);
         ILocalDataAPI *view = chooseView(r);
-        RequestData *res = nullptr == view
+        bool res = nullptr == view
                 ? m_defaultAPIImpl.addItemImpl(appId, values, r)
                 : view->addItemImpl(appId, values, r)
                 ;
-        if(nullptr == res)
+        if(!res)
         {
             delete r;
             r = nullptr;
@@ -106,26 +106,26 @@ public:
         {
             pushRequest(r);
         }
-        return res;
+        return r;
     }
 
     template<class DataType_>
     RequestData *setItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false);
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
         values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
+        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, values);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
-        RequestData *res = nullptr == view
+        bool res = nullptr == view
                 ? m_defaultAPIImpl.setItemImpl(id, values, r)
                 : view->setItemImpl(id, values, r)
                 ;
-        if(nullptr == res)
+        if(!res)
         {
             delete r;
             r = nullptr;
@@ -134,22 +134,22 @@ public:
         {
             pushRequest(r);
         }
-        return res;
+        return r;
     }
 
     template<class DataType_>
     RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(RequestData::delItemRequestName<DataType_>(), layoutName_, false);
+        r->init<DataType_>(RequestData::delItemRequestName<DataType_>(), layoutName_, false, extraFields_);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
-        RequestData *res = nullptr == view
+        bool res = nullptr == view
                 ? m_defaultAPIImpl.delItemImpl(id, r)
                 : view->delItemImpl(id, r)
                 ;
-        if(nullptr == res)
+        if(!res)
         {
             delete r;
             r = nullptr;
@@ -158,7 +158,7 @@ public:
         {
             pushRequest(r);
         }
-        return res;
+        return r;
     }
 
 signals:
@@ -171,7 +171,7 @@ protected:
     void openDB();
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
-    ILocalDataAPI *chooseView(LocalDBRequest *r_);
+    ILocalDataAPI *chooseView(DBRequestInfo *r_);
 
 private slots:
     void makeResponses();

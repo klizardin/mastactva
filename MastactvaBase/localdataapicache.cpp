@@ -34,15 +34,15 @@ QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &na
 }
 
 
-bool LocalDataAPIDefaultCacheImpl::canProcess(const LocalDBRequest *r_) const
+bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
 {
     Q_UNUSED(r_);
     return true;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(LocalDBRequest *r_)
+bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return nullptr; }
+    if(nullptr == r_) { return false; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
@@ -140,6 +140,7 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(LocalDBRequest *r_)
         sqlRes = query.exec(sqlRequest);
     }
 
+    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     QJsonArray jsonArray;
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
@@ -148,7 +149,7 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(LocalDBRequest *r_)
         QJsonObject jsonObj;
         jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
         jsonArray.push_back(jsonObj);
-        r_->setError(true);
+        r->setError(true);
     }
     else if(query.first())
     {
@@ -163,17 +164,18 @@ RequestData *LocalDataAPIDefaultCacheImpl::getListImpl(LocalDBRequest *r_)
             jsonArray.push_back(jsonObj);
         } while(query.next());
     }
-    r_->addJsonResult(QJsonDocument(jsonArray));
-    return r_;
+    r->addJsonResult(QJsonDocument(jsonArray));
+    return true;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return nullptr; }
+    if(nullptr == r_) { return false; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setItemAppId(appId_);
+    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    r->setItemAppId(appId_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
@@ -268,8 +270,8 @@ RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, c
         QJsonObject jsonObj;
         jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
         jsonArray.push_back(jsonObj);
-        r_->setError(true);
-        r_->addJsonResult(QJsonDocument(jsonArray));
+        r->setError(true);
+        r->addJsonResult(QJsonDocument(jsonArray));
     }
     else
     {
@@ -281,19 +283,20 @@ RequestData *LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, c
                 values.insert(bindInfo.jsonName, QVariant::fromValue(nextId));
             }
         }
-        r_->addJsonResult(values);
+        r->addJsonResult(values);
     }
     query.finish();
-    return r_;
+    return true;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_)
+bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return nullptr; }
+    if(nullptr == r_) { return false; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setItemId(id_);
+    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    r->setItemId(id_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
@@ -318,7 +321,7 @@ RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, cons
     else
     {
         Q_ASSERT(false);
-        return nullptr;
+        return false;
     }
     const QStringList setNames = DBRequestInfo::getSetNames(r_->getTableFieldsInfo());
     const QString setStr = setNames.join(g_insertFieldSpliter);
@@ -342,24 +345,25 @@ RequestData *LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, cons
         QJsonObject jsonObj;
         jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
         jsonArray.push_back(jsonObj);
-        r_->setError(true);
-        r_->addJsonResult(QJsonDocument(jsonArray));
+        r->setError(true);
+        r->addJsonResult(QJsonDocument(jsonArray));
     }
     else
     {
-        r_->addJsonResult(values_);
+        r->addJsonResult(values_);
     }
     query.finish();
-    return r_;
+    return true;
 }
 
-RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, LocalDBRequest *r_)
+bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return nullptr; }
+    if(nullptr == r_) { return false; }
 #if defined(TRACE_DB_USE)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    r_->setItemId(id_);
+    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    r->setItemId(id_);
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
@@ -384,7 +388,7 @@ RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, Loca
     else
     {
         Q_ASSERT(false);
-        return nullptr;
+        return false;
     }
 
     const QString sqlRequest = QString("DELETE FROM %1 WHERE %3=%4 ;")
@@ -402,15 +406,15 @@ RequestData *LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, Loca
         QJsonObject jsonObj;
         jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
         jsonArray.push_back(jsonObj);
-        r_->setError(true);
-        r_->addJsonResult(QJsonDocument(jsonArray));
+        r->setError(true);
+        r->addJsonResult(QJsonDocument(jsonArray));
     }
     else
     {
-        r_->addJsonResult(QJsonDocument(QJsonArray()));
+        r->addJsonResult(QJsonDocument(QJsonArray()));
     }
     query.finish();
-    return r_;
+    return true;
 }
 
 
@@ -552,17 +556,17 @@ void LocalDataAPICache::makeResponses()
     }
 }
 
-ILocalDataAPI *LocalDataAPICache::chooseView(LocalDBRequest *r_)
+ILocalDataAPI *LocalDataAPICache::chooseView(DBRequestInfo *r_)
 {
     if(nullptr == r_) { return nullptr; }
     r_->setDefaultAPI(&m_defaultAPIImpl);
 
-    if(r_->getExtraFields().contains(g_procedureExtraFieldName) &&
-            r_->getExtraFields().value(g_procedureExtraFieldName).toHash().contains(g_procedureDefaultAPI))
-    {
-        // don't use views, use default API implementation
-        return nullptr;
-    }
+//    if(r_->getExtraFields().contains(g_procedureExtraFieldName) &&
+//            r_->getExtraFields().value(g_procedureExtraFieldName).toHash().contains(g_procedureDefaultAPI))
+//    {
+//        // don't use views, use default API implementation
+//        return nullptr;
+//    }
 
     for(ILocalDataAPI *api : qAsConst(QMLObjectsBase::getInstance().getLocalDataAPIViews()))
     {

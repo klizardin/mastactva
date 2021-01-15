@@ -17,7 +17,7 @@ public:
     LocalDataAPIGelListByRefImpl() = default;
     virtual ~LocalDataAPIGelListByRefImpl() = default;
 
-    virtual bool canProcess(const LocalDBRequest *r_) const
+    virtual bool canProcess(const DBRequestInfo *r_) const
     {
         if(nullptr == r_) { return false; }
         const QString tableName = DBRequestInfo::namingConversion(
@@ -29,13 +29,13 @@ public:
         return true;
     }
 
-    virtual RequestData *getListImpl(LocalDBRequest *r_) override
+    virtual bool getListImpl(DBRequestInfo *r_) override
     {
-        if(nullptr == r_) { return nullptr; }
+        if(nullptr == r_) { return false; }
         LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(nullptr == localDataAPI) { return nullptr; }
+        if(nullptr == localDataAPI) { return false; }
         ILocalDataAPI *defaultAPI = r_->getDefaultAPI();
-        if(nullptr == defaultAPI) { return nullptr; }
+        if(nullptr == defaultAPI) { return false; }
 
         r_->insertExtraField(g_procedureExtraFieldName,
                              QVariant::fromValue(
@@ -52,27 +52,27 @@ public:
         return defaultAPI->getListImpl(r_);
     }
 
-    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override
+    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override
     {
         Q_UNUSED(appId_);
         Q_UNUSED(values_);
         Q_UNUSED(r_);
-        return nullptr;
+        return false;
     }
 
-    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) override
+    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override
     {
         Q_UNUSED(id_);
         Q_UNUSED(values_);
         Q_UNUSED(r_);
-        return nullptr;
+        return false;
     }
 
-    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) override
+    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override
     {
         Q_UNUSED(id_);
         Q_UNUSED(r_);
-        return nullptr;
+        return false;
     }
 };
 

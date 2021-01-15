@@ -21,17 +21,18 @@ static const char *g_procedureDefaultAPI = "DEFAULTAPI";
 
 
 class LocalDBRequest;
+class DBRequestInfo;
 
 
 class ILocalDataAPI
 {
 public:
     virtual ~ILocalDataAPI() = default;
-    virtual bool canProcess(const LocalDBRequest *r_) const = 0;
-    virtual RequestData *getListImpl(LocalDBRequest *r_) = 0;
-    virtual RequestData *addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
-    virtual RequestData *setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, LocalDBRequest *r_) = 0;
-    virtual RequestData *delItemImpl(const QVariant &id_, LocalDBRequest *r_) = 0;
+    virtual bool canProcess(const DBRequestInfo *r_) const = 0;
+    virtual bool getListImpl(DBRequestInfo *r_) = 0;
+    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) = 0;
+    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) = 0;
+    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) = 0;
 };
 
 
@@ -62,7 +63,8 @@ public:
     void init(
             const QString &requestName_,
             const QString &layoutName_,
-            bool readonly_
+            bool readonly_,
+            const QHash<QString, QVariant> &extraFields_
             )
     {
         init<DataType_>(requestName_,
@@ -75,7 +77,7 @@ public:
                         QVariant(),
                         QVariant(),
                         readonly_,
-                        QHash<QString, QVariant>()
+                        extraFields_
                         );
     }
 

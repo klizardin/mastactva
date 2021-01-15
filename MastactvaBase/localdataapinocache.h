@@ -12,6 +12,19 @@
 #include "../MastactvaBase/dbrequestinfo.h"
 
 
+class LocalDataAPINoCacheImpl : public ILocalDataAPI
+{
+public:
+    LocalDataAPINoCacheImpl() = default;
+    virtual ~LocalDataAPINoCacheImpl() = default;
+    virtual bool canProcess(const DBRequestInfo *r_) const override;
+    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
+    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
+    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override;
+};
+
+
 class LocalDataAPINoCache : public QObject
 {
     Q_OBJECT
@@ -74,7 +87,9 @@ public:
                                readonly_,
                                extraFields_
                                );
-            createTable(r);
+            ILocalDataAPI *view = chooseAPI(r);
+            if(nullptr == view) { m_defaultAPIImpl.getListImpl(r); }
+            else { view->getListImpl(r); }
         }
         if(nullptr == m_netAPI) { return nullptr; }
         RequestData *resRequest = m_netAPI->getList<DataType_>(layoutName_,
@@ -139,8 +154,8 @@ protected:
     void cleanPath();
     void createDB();
     bool isSaveToDBMode() const;
-    void createTable(const SaveDBRequest * r_);
     void fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_);
+    ILocalDataAPI *chooseAPI(DBRequestInfo *r_);
 
 private:
     NetAPI *m_netAPI = nullptr;
@@ -150,6 +165,7 @@ private:
     QSqlDatabase m_databaseRW;
     QSqlDatabase m_databaseRO;
     QList<SaveDBRequest *> m_requests;
+    LocalDataAPINoCacheImpl m_defaultAPIImpl;
     static LocalDataAPINoCache *g_localDataAPI;
 };
 
