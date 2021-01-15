@@ -78,6 +78,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
         qDebug() << "sql error "  << err.text();
     }
     query.finish();
+    r_->setProcessed(true);
     return true;
 }
 

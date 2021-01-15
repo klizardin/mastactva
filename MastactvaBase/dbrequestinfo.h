@@ -181,7 +181,7 @@ private:
     QHash<QString, QVariant> m_extraFields;
     bool m_readonly = true;
     ILocalDataAPI *m_defaultAPI = nullptr;
-    bool m_processed = true;
+    bool m_processed = false;
 };
 
 

@@ -165,6 +165,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         } while(query.next());
     }
     r->addJsonResult(QJsonDocument(jsonArray));
+    r->setProcessed(true);
     return true;
 }
 
@@ -286,6 +287,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
         r->addJsonResult(values);
     }
     query.finish();
+    r->setProcessed(true);
     return true;
 }
 
@@ -353,6 +355,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<
         r->addJsonResult(values_);
     }
     query.finish();
+    r->setProcessed(true);
     return true;
 }
 
@@ -414,6 +417,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
         r->addJsonResult(QJsonDocument(QJsonArray()));
     }
     query.finish();
+    r->setProcessed(true);
     return true;
 }
 
