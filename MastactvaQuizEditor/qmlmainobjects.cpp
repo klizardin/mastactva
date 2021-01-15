@@ -137,8 +137,8 @@ void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const 
     m_mastactvaAPI->showErrorMessage(errorCodeStr_, reply_.toJson(QJsonDocument::Indented));
 }
 
-static const QString g_effectModel = "EffectModel";
-static const QString g_shaderModel = "ShaderModel";
+static const char *g_effectModel = "EffectModel";
+static const char *g_shaderModel = "ShaderModel";
 
 
 void QMLObjects::searchObjects()

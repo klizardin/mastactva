@@ -12,8 +12,8 @@
 #include "../MastactvaModels/questionanswer.h"
 
 
-static const QString g_quizUserModel = "QuizUserModel";
-static const QString g_mastactvaAPI = "MastactvaAPI";
+static const char *g_quizUserModel = "QuizUserModel";
+static const char *g_mastactvaAPI = "MastactvaAPI";
 
 
 void QMLObjects::searchObjects()
