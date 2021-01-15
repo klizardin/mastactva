@@ -18731,5 +18731,43 @@
         ],
         "inputFile": "localdataapicache.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "GalleryModelView",
+                "object": true,
+                "qualifiedClassName": "GalleryModelView",
+                "slots": [
+                    {
+                        "access": "protected",
+                        "name": "userStepModelListReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "userStepPlayedGallriesModelListReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "galleryModelListReloaded",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "ILocalDataAPI"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "gallerymodelview.h",
+        "outputRevision": 67
     }
 ]
