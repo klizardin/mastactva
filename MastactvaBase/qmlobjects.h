@@ -10,7 +10,12 @@ class QObject;
 class NetAPI;
 class ILocalDataAPI;
 class LocalDataAPINoCache;
+class LocalDataAPICache;
+#if defined(LOCALDATAAPICACHE)
+using LocalDataAPI = LocalDataAPICache;
+#else
 using LocalDataAPI = LocalDataAPINoCache;
+#endif
 class ServerFiles;
 
 

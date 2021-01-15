@@ -3,6 +3,8 @@ QT += quickcontrols2 \
     quick   \
     sql
 
+DEFINES += "LOCALDATAAPICACHE=1"
+
 CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuiz
 QML_IMPORT_MAJOR_VERSION = 1

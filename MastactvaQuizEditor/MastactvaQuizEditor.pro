@@ -3,6 +3,8 @@ QT += quick \
     widgets \
     sql
 
+DEFINES += "LOCALDATAAPINOCACHE=1"
+
 CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuizEditor
 QML_IMPORT_MAJOR_VERSION = 1

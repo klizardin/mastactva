@@ -3,9 +3,14 @@
 
 
 #include "../MastactvaBase/localdataapinocache.h"
+#include "../MastactvaBase/localdataapicache.h"
 
 
+#if defined(LOCALDATAAPICACHE)
+using LocalDataAPI = LocalDataAPICache;
+#else
 using LocalDataAPI = LocalDataAPINoCache;
+#endif
 /*
  * NB
  *

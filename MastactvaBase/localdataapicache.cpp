@@ -489,8 +489,9 @@ LocalDataAPICache::~LocalDataAPICache()
 LocalDataAPICache *LocalDataAPICache::g_localDataAPI = nullptr;
 
 
-void LocalDataAPICache::createInstance(QObject *parent_)
+void LocalDataAPICache::createInstance(QObject *parent_, NetAPI *netAPI_)
 {
+    Q_UNUSED(netAPI_);
     if(nullptr == g_localDataAPI)
     {
         g_localDataAPI = new LocalDataAPICache(parent_);

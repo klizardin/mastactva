@@ -34,7 +34,7 @@ public:
     explicit LocalDataAPICache(QObject *parent_ = nullptr);
     virtual ~LocalDataAPICache() override;
 
-    static void createInstance(QObject *parent_);
+    static void createInstance(QObject *parent_, NetAPI * netAPI_);
     static LocalDataAPICache *getInstance();
 
     RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_);
