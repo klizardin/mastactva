@@ -105,7 +105,8 @@ unix: SOURCES += \
         localdataapinocache.cpp \
         localdataapicache.cpp   \
         dbrequestinfo.cpp   \
-        localdataapiviews.cpp
+        localdataapiviews.cpp   \
+        gallerymodelview.cpp
 
 
 RESOURCES += qml.qrc \
@@ -169,7 +170,8 @@ unix: HEADERS += \
     localdataapinocache.h   \
     localdataapicache.h \
     dbrequestinfo.h \
-    localdataapiviews.h
+    localdataapiviews.h \
+    gallerymodelview.h
 
 
 DISTFILES += \
