@@ -41,7 +41,7 @@ public:
                              QVariant::fromValue(
                                  QHash<QString, QVariant>(
                                      {
-                                         { g_procedureDefaultAPI, QVariant::fromValue(true) },
+                                         //{ g_procedureDefaultAPI, QVariant::fromValue(true) },
                                          { g_procedureConditionName, QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef())) },
                                          { g_procedureArguments, QVariant::fromValue(QList<QVariant>({r_->getIdField(),})) }
                                      })
