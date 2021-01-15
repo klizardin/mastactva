@@ -462,6 +462,17 @@ void DBRequestInfo::setProcessed(bool processed_)
     m_processed = processed_;
 }
 
+QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const
+{
+    QJsonObject obj;
+    for(const JsonFieldInfo &fi : m_tableFieldsInfo)
+    {
+        if(!values_.contains(fi.jsonName)) { continue; }
+        obj.insert(fi.jsonName, fi.jsonValue(values_.value(fi.jsonName)));
+    }
+    return obj;
+}
+
 QString DBRequestInfo::namingConversion(const QString &name_)
 {
     QString res = name_;

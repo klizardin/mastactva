@@ -152,6 +152,8 @@ public:
     bool isProcessed() const;
     void setProcessed(bool processed_);
 
+    QJsonObject getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const;
+
     static QString namingConversion(const QString &name_);
     static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
     static QStringList getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
