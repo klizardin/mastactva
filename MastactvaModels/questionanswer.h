@@ -8,6 +8,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaBase/localdataapiviews.h"
 
 
 class UserQuestionAnswer : public QObject
@@ -122,6 +123,9 @@ signals:
     void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 };
+
+
+using UserQuestionAnswerModelView = LocalDataAPIGelListByRefImpl<UserQuestionAnswerModel>;
 
 
 #endif // QUESTIONANSWER_H

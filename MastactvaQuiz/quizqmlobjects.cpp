@@ -8,6 +8,8 @@
 #include "../MastactvaModels/image.h"
 #include "../MastactvaModels/quizuser.h"
 #include "../MastactvaModels/gallery.h"
+#include "../MastactvaModels/gallerystatistics.h"
+#include "../MastactvaModels/questionanswer.h"
 
 
 static const QString g_quizUserModel = "QuizUserModel";
@@ -25,6 +27,11 @@ void QMLObjects::searchObjects()
     {
         LocalDataAPI::createInstance(m_root, m_netAPI);
         m_dataAPI = LocalDataAPI::getInstance();
+    }
+    if(m_localDataAPIViews.isEmpty())
+    {
+        m_localDataAPIViews.push_back(new GalleryStatisticsModelView());
+        m_localDataAPIViews.push_back(new UserQuestionAnswerModelView());
     }
     IListModel *m = nullptr;
     m = findListModel(g_quizUserModel);

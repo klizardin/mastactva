@@ -118,6 +118,8 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 #include "../MastactvaModels/easingtype.h"
 #include "../MastactvaModels/gallery.h"
 #include "../MastactvaModels/image.h"
+#include "../MastactvaModels/gallerystatistics.h"
+#include "../MastactvaModels/questionanswer.h"
 
 
 void QMLObjects::setInitialized()
@@ -154,6 +156,11 @@ void QMLObjects::searchObjects()
     if(nullptr == m_mastactvaAPI)
     {
         m_mastactvaAPI = m_root->findChild<MastactvaAPI *>("MastactvaAPI");
+    }
+    if(m_localDataAPIViews.isEmpty())
+    {
+        m_localDataAPIViews.push_back(new GalleryStatisticsModelView());
+        m_localDataAPIViews.push_back(new UserQuestionAnswerModelView());
     }
     IListModel *m = nullptr;
     m = findListModel(g_effectModel);

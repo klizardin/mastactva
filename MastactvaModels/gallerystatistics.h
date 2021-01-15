@@ -7,6 +7,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaBase/localdataapiviews.h"
 
 
 class GalleryStatistics : public QObject
@@ -109,6 +110,9 @@ signals:
     void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 };
+
+
+using GalleryStatisticsModelView = LocalDataAPIGelListByRefImpl<GalleryStatisticsModel>;
 
 
 #endif // GALLERYSTATISTICS_H
