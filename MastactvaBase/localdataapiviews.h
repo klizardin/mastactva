@@ -44,7 +44,7 @@ public:
                                          {
                                              //{ g_procedureDefaultAPI, QVariant::fromValue(true) },
                                              { g_procedureConditionName, QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef())) },
-                                             { g_procedureArguments, QVariant::fromValue(QList<QVariant>({r_->getIdField(),})) }
+                                             { g_procedureArguments, QVariant::fromValue(QHash<QString, QVariant>({{QString(":%1").arg(r_->getCurrentRef()), r_->getIdField()},})) }
                                          })
                                  },})
                                  )
