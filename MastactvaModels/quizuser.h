@@ -93,8 +93,14 @@ signals:
     void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
 
+public:
+    void setEmptyModel();
+
 protected:
     virtual void modelListLoaded(const QJsonDocument &reply_) override;
+
+private:
+    bool m_emptyModel = false;
 };
 
 
