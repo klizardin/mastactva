@@ -146,7 +146,9 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ? QString("WHERE %1")
               .arg(conditionCases.isEmpty()
                    ? procedureConditions
-                   : QString("%1 AND ( %2 )").arg(conditionCases, procedureConditions)
+                   : procedureConditions.isEmpty()
+                     ? conditionCases
+                     : QString("%1 AND ( %2 )").arg(conditionCases, procedureConditions)
                    )
             : QString()
             ;
