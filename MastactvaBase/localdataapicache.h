@@ -91,7 +91,10 @@ public:
         values = merge(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
         if(!appId.isValid()) { return nullptr; }
-        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, values);
+        QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
+        getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
+        const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
+        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, extraFields);
         ILocalDataAPI *view = chooseView(r);
         bool res = nullptr == view
                 ? m_defaultAPIImpl.addItemImpl(appId, values, r)
@@ -118,7 +121,10 @@ public:
         if(!ok) { return nullptr; }
         values = merge(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
-        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, values);
+        QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
+        getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
+        const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
+        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, extraFields);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
         bool res = nullptr == view
@@ -141,7 +147,10 @@ public:
     RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
     {
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(RequestData::delItemRequestName<DataType_>(), layoutName_, false, extraFields_);
+        QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
+        getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
+        const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
+        r->init<DataType_>(RequestData::delItemRequestName<DataType_>(), layoutName_, false, extraFields);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
@@ -172,6 +181,8 @@ protected:
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
     ILocalDataAPI *chooseView(DBRequestInfo *r_);
+    static QHash<QString, QVariant> removeFields(const QHash<QString, QVariant> &extraFields_,
+                                          const QList<QPair<QString, layout::JsonTypesEn>> &fieldsInfo_);
 
 private slots:
     void makeResponses();
