@@ -1,10 +1,20 @@
 #include "dbrequestinfo.h"
+#include <QSet>
 #include "../MastactvaBase/utils.h"
 
 
 #define TRACE_DB_CREATION
 #define TRACE_DB_DATA_BINDINGS
 
+
+DBRequestInfo::JsonFieldInfo::JsonFieldInfo(const QString &jsonName_,const QString &sqlName_, const layout::JsonTypesEn type_,bool idField_)
+    :jsonName(jsonName_), sqlName(sqlName_), type(type_), idField(idField_)
+{
+    if(DBRequestInfo::keywords().contains(sqlName.toUpper()))
+    {
+        sqlName = QString("\"%1\"").arg(sqlName);
+    }
+}
 
 QString DBRequestInfo::JsonFieldInfo::getSqlType() const
 {
@@ -36,7 +46,14 @@ QString DBRequestInfo::JsonFieldInfo::getSqlType() const
 
 QString DBRequestInfo::JsonFieldInfo::toBindName(const QString &sqlName_)
 {
-    return QString(":") + sqlName_;
+    if(sqlName_.at(0)==QChar('"'))
+    {
+        return QString("\":") + sqlName_.mid(1);
+    }
+    else
+    {
+        return QString(":") + sqlName_;
+    }
 }
 
 QString DBRequestInfo::JsonFieldInfo::getBindName() const
@@ -492,6 +509,7 @@ QString DBRequestInfo::namingConversion(const QString &name_)
 
 QStringList DBRequestInfo::getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
 {
+
     QStringList res;
     for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
     {
@@ -545,6 +563,159 @@ QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString
     {
         return QHash<QString, QVariant>();
     }
+}
+
+const QSet<QString> &DBRequestInfo::keywords()
+{
+    static const QSet<QString> keys = {
+        "USER",
+        "ABORT",
+        "ACTION",
+        "ADD",
+        "AFTER",
+        "ALL",
+        "ALTER",
+        "ALWAYS",
+        "ANALYZE",
+        "AND",
+        "AS",
+        "ASC",
+        "ATTACH",
+        "AUTOINCREMENT",
+        "BEFORE",
+        "BEGIN",
+        "BETWEEN",
+        "BY",
+        "CASCADE",
+        "CASE",
+        "CAST",
+        "CHECK",
+        "COLLATE",
+        "COLUMN",
+        "COMMIT",
+        "CONFLICT",
+        "CONSTRAINT",
+        "CREATE",
+        "CROSS",
+        "CURRENT",
+        "CURRENT_DATE",
+        "CURRENT_TIME",
+        "CURRENT_TIMESTAMP",
+        "DATABASE",
+        "DEFAULT",
+        "DEFERRABLE",
+        "DEFERRED",
+        "DELETE",
+        "DESC",
+        "DETACH",
+        "DISTINCT",
+        "DO",
+        "DROP",
+        "EACH",
+        "ELSE",
+        "END",
+        "ESCAPE",
+        "EXCEPT",
+        "EXCLUDE",
+        "EXCLUSIVE",
+        "EXISTS",
+        "EXPLAIN",
+        "FAIL",
+        "FILTER",
+        "FIRST",
+        "FOLLOWING",
+        "FOR",
+        "FOREIGN",
+        "FROM",
+        "FULL",
+        "GENERATED",
+        "GLOB",
+        "GROUP",
+        "GROUPS",
+        "HAVING",
+        "IF",
+        "IGNORE",
+        "IMMEDIATE",
+        "IN",
+        "INDEX",
+        "INDEXED",
+        "INITIALLY",
+        "INNER",
+        "INSERT",
+        "INSTEAD",
+        "INTERSECT",
+        "INTO",
+        "IS",
+        "ISNULL",
+        "JOIN",
+        "KEY",
+        "LAST",
+        "LEFT",
+        "LIKE",
+        "LIMIT",
+        "MATCH",
+        "NATURAL",
+        "NO",
+        "NOT",
+        "NOTHING",
+        "NOTNULL",
+        "NULL",
+        "NULLS",
+        "OF",
+        "OFFSET",
+        "ON",
+        "OR",
+        "ORDER",
+        "OTHERS",
+        "OUTER",
+        "OVER",
+        "PARTITION",
+        "PLAN",
+        "PRAGMA",
+        "PRECEDING",
+        "PRIMARY",
+        "QUERY",
+        "RAISE",
+        "RANGE",
+        "RECURSIVE",
+        "REFERENCES",
+        "REGEXP",
+        "REINDEX",
+        "RELEASE",
+        "RENAME",
+        "REPLACE",
+        "RESTRICT",
+        "RIGHT",
+        "ROLLBACK",
+        "ROW",
+        "ROWS",
+        "SAVEPOINT",
+        "SELECT",
+        "SET",
+        "TABLE",
+        "TEMP",
+        "TEMPORARY",
+        "THEN",
+        "TIES",
+        "TO",
+        "TRANSACTION",
+        "TRIGGER",
+        "UNBOUNDED",
+        "UNION",
+        "UNIQUE",
+        "UPDATE",
+        "USING",
+        "VACUUM",
+        "VALUES",
+        "VIEW",
+        "VIRTUAL",
+        "WHEN",
+        "WHERE",
+        "WINDOW",
+        "WITH",
+        "WITHOUT",
+    };
+    return keys;
 }
 
 

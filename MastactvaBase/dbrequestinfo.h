@@ -6,6 +6,7 @@
 #include <QtSql>
 #include <QVector>
 #include <QList>
+#include <QSet>
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/qmlobjects.h"
@@ -48,8 +49,11 @@ public:
     {
         QString jsonName;
         QString sqlName;
+        QString sqlBindName;
         layout::JsonTypesEn type;
         bool idField = false;
+
+        JsonFieldInfo(const QString &jsonName_,const QString &sqlName_, const layout::JsonTypesEn type_,bool idField_);
 
         QString getSqlType() const;
         static QString toBindName(const QString &sqlName_);
@@ -115,7 +119,7 @@ public:
         for(const auto &jsonFieldName: qAsConst(fieldsInfo))
         {
             const QString sqlFieldName = namingConversion(jsonFieldName.first);
-            tableFieldsInfo.push_back({jsonFieldName.first, sqlFieldName, jsonFieldName.second, idFieldName == jsonFieldName.first});
+            tableFieldsInfo.push_back(JsonFieldInfo(jsonFieldName.first, sqlFieldName, jsonFieldName.second, idFieldName == jsonFieldName.first));
         }
 
         IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
@@ -177,6 +181,7 @@ protected:
     void setExtraFields(const QHash<QString, QVariant> &extraFields_);
     void setProcedureName(const QString &procedureName_);
     void setDBRequestName(const QString &requestName_);
+    static const QSet<QString> &keywords();
 
 private:
     QString m_apiName;
