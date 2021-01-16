@@ -42,7 +42,6 @@ public:
                                  QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
                                      QHash<QString, QVariant>(
                                          {
-                                             //{ g_procedureDefaultAPI, QVariant::fromValue(true) },
                                              { g_procedureConditionName,
                                                QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef()))
                                              },

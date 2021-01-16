@@ -402,13 +402,6 @@ ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestInfo * r_)
     if(nullptr == r_) { return nullptr; }
     r_->setDefaultAPI(&m_defaultAPIImpl);
 
-//    if(r_->getExtraFields().contains(g_procedureExtraFieldName) &&
-//            r_->getExtraFields().value(g_procedureExtraFieldName).toHash().contains(g_procedureDefaultAPI))
-//    {
-//        // don't use views, use default API implementation
-//        return nullptr;
-//    }
-
     for(ILocalDataAPI *api : qAsConst(QMLObjectsBase::getInstance().getLocalDataAPIViews()))
     {
         if(nullptr != api && api->canProcess(r_)) { return api; }
