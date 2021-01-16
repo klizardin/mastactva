@@ -106,5 +106,5 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 67. how to test galleries for one editor?
 68. "TODO: find way to upload images of gallery when it is required" // ImageModel *Gallery::createImages()
 69. procedure tables
-* 70. remove g_procedureDefaultAPI ?
+* 70. remove g_procedureDefaultAPI ? // commented
 
