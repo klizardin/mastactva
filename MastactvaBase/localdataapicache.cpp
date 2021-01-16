@@ -4,7 +4,7 @@
 #include "../MastactvaBase/qmlobjects.h"
 
 
-//#define TRACE_DB_USE
+#define TRACE_DB_USE
 
 
 inline QString refName(const QString &ref_)

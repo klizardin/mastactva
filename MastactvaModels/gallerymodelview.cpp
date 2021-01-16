@@ -63,13 +63,15 @@ void GalleryModelView::loadSteps()
     m_userStepModel.clearListLoaded();
     m_userStepModel.loadListImpl(
                 QString(),
-                QHash<QString, QVariant>(
-                    {
-                        { QString(g_procedureConditionName), QVariant::fromValue(QString("user=:user")) },
-                        { QString(g_procedureOrderByName), QVariant::fromValue(QString("t DESC"))},
-                        { QString(g_procedureLimitName), QVariant::fromValue(1)},
-                        { QString(g_procedureArguments), QList<QVariant>({ QVariant::fromValue(g_userId),})}
-                    })
+                QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
+                    QHash<QString, QVariant>(
+                        {
+                            { QString(g_procedureConditionName), QVariant::fromValue(QString("user=:user")) },
+                            { QString(g_procedureOrderByName), QVariant::fromValue(QString("t DESC"))},
+                            { QString(g_procedureLimitName), QVariant::fromValue(1)},
+                            { QString(g_procedureArguments), QList<QVariant>({ QVariant::fromValue(g_userId),})}
+                        })
+                    },})
                 );
 }
 
@@ -82,11 +84,13 @@ void GalleryModelView::userStepModelListReloaded()
     m_userStepPlayedGalleriesModel.clearListLoaded();
     m_userStepPlayedGalleriesModel.loadListImpl(
                 QString(),
-                QHash<QString, QVariant>(
-                    {
-                        { QString(g_procedureSelectFunctionName), QVariant::fromValue(QString("DISTINCT")) },
-                        { QString(g_procedureFilterNamesName), QVariant::fromValue(QList<QVariant>({ QVariant::fromValue(QString("gallery")),}))}
-                    })
+                QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
+                    QHash<QString, QVariant>(
+                        {
+                            { QString(g_procedureSelectFunctionName), QVariant::fromValue(QString("DISTINCT")) },
+                            { QString(g_procedureFilterNamesName), QVariant::fromValue(QList<QVariant>({ QVariant::fromValue(QString("gallery")),}))}
+                        })
+                    },})
                 );
 }
 

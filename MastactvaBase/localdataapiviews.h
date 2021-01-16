@@ -39,12 +39,14 @@ public:
 
         r_->insertExtraField(g_procedureExtraFieldName,
                              QVariant::fromValue(
-                                 QHash<QString, QVariant>(
-                                     {
-                                         //{ g_procedureDefaultAPI, QVariant::fromValue(true) },
-                                         { g_procedureConditionName, QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef())) },
-                                         { g_procedureArguments, QVariant::fromValue(QList<QVariant>({r_->getIdField(),})) }
-                                     })
+                                 QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
+                                     QHash<QString, QVariant>(
+                                         {
+                                             //{ g_procedureDefaultAPI, QVariant::fromValue(true) },
+                                             { g_procedureConditionName, QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef())) },
+                                             { g_procedureArguments, QVariant::fromValue(QList<QVariant>({r_->getIdField(),})) }
+                                         })
+                                 },})
                                  )
                              );
         r_->clearReferences();
