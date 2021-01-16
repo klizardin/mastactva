@@ -89,7 +89,9 @@ ImageModel *Gallery::createImages()
 {
     ImageModel *m = new ImageModel(this);
     m->initResponse();
+#if !defined(LOCALDATAAPICACHE)
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
+#endif
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->addModelParam("use_in_gallery_view", "1");
