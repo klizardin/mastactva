@@ -129,7 +129,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             : QString()
             ;
     const QString procedureLimit = procedureFields.contains(g_procedureLimitName)
-            ? QString("%1 %2").arg(g_procedureLimitName, procedureFields.value(g_procedureLimitName).toInt())
+            ? QString("%1 %2").arg(g_procedureLimitName, procedureFields.value(g_procedureLimitName).toString())
             : QString()
             ;
     const QHash<QString, QVariant> procedureArgs = procedureFields.contains(g_procedureArguments)
