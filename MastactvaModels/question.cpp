@@ -105,8 +105,10 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
 {
     UserQuestionAnswerModel *m = new UserQuestionAnswerModel(this);
     m->initResponse();
+#if !defined(LOCALDATAAPICACHE)
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
     m->addExtraFieldRename("deviceid", "user");
+#endif
     m->setLayoutRefImpl("question", m_questionModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));

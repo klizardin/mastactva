@@ -167,7 +167,9 @@ ImagePointModel *Image::createImagePoints()
     IListModelInfoObjectImpl::trace();
     ImagePointModel *m = new ImagePointModel(this);
     m->initResponse();
+#if !defined(LOCALDATAAPICACHE)
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
+#endif
     m->setLayoutRefImpl("image", m_imageModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("image");
     m->setRefAppId(QVariant::fromValue(m_appId));
