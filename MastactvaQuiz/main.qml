@@ -96,8 +96,15 @@ ApplicationWindow {
 
     function initUserStepModel()
     {
-        userStepModel.addLayoutExtraFields("QuizUserModel", undefined)
-        userStepModel.addExtraFieldRename("deviceid", "user")
+        if(!mastactvaAPI.isLocalDataAPI())
+        {
+            userStepModel.addLayoutExtraFields("QuizUserModel", undefined)
+            userStepModel.addExtraFieldRename("deviceid", "user")
+        }
+        else
+        {
+            userStepModel.addModelParam("user", mastactvaAPI.getLocalDataAPIUserId())
+        }
     }
 
     Connections {

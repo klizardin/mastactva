@@ -74,6 +74,16 @@
                         ],
                         "name": "dateTimeToISOStr",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isLocalDataAPI",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getLocalDataAPIUserId",
+                        "returnType": "int"
                     }
                 ],
                 "object": true,

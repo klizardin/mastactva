@@ -41,3 +41,17 @@ QString MastactvaAPI::dateTimeToISOStr(const QDateTime &dt_)
 {
     return dateTimeToJsonString(dt_);
 }
+
+bool MastactvaAPI::isLocalDataAPI()
+{
+#if defined(LOCALDATAAPICACHE)
+    return true;
+#else
+    return false;
+#endif
+}
+
+int MastactvaAPI::getLocalDataAPIUserId()
+{
+    return g_userId;
+}
