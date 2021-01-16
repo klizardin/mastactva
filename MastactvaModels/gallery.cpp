@@ -138,8 +138,10 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
 {
     GalleryStatisticsModel *m = new GalleryStatisticsModel(this);
     m->initResponse();
+#if !defined(LOCALDATAAPICACHE)
     m->addLayoutExtraFieldsImpl("QuizUserModel", QVariant());
     m->addExtraFieldRenameImpl("deviceid", "user");
+#endif
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));
