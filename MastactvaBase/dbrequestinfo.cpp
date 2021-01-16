@@ -3,8 +3,8 @@
 #include "../MastactvaBase/utils.h"
 
 
-#define TRACE_DB_CREATION
-#define TRACE_DB_DATA_BINDINGS
+//#define TRACE_DB_CREATION
+//#define TRACE_DB_DATA_BINDINGS
 
 
 DBRequestInfo::JsonFieldInfo::JsonFieldInfo(const QString &jsonName_,const QString &sqlName_, const layout::JsonTypesEn type_,bool idField_)
