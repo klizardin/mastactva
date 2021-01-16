@@ -37,9 +37,9 @@ protected slots:
 private:
     QList<DBRequestInfo *> m_requests;
     const UserStep *m_lastUserStep = nullptr;
-    UserStepModel m_userStepModel;
-    UserStepModel m_userStepPlayedGalleriesModel;
-    GalleryModel m_galleryModel;
+    UserStepModel *m_userStepModel;
+    UserStepModel *m_userStepPlayedGalleriesModel;
+    GalleryModel *m_galleryModel;
 };
 
 #endif // GALLERYMODELVIEW_H

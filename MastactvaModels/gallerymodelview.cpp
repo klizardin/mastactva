@@ -6,6 +6,33 @@
 GalleryModelView::GalleryModelView(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+    m_galleryModel = new GalleryModel(this);
+    m_galleryModel->initResponse();
+    m_galleryModel->setCurrentRef("");
+    m_galleryModel->setLayoutQMLName("LocalData_GalleryModel");
+    m_galleryModel->setLayoutIdFieldImpl("id");
+    m_galleryModel->registerListModel();
+    m_galleryModel->setAutoCreateChildrenModels(false);
+
+    m_userStepModel = new UserStepModel(this);
+    m_userStepModel->initResponse();
+    m_userStepModel->setCurrentRef("");
+    m_userStepModel->setLayoutQMLName("LocalData_UserStepModel");
+    m_userStepModel->setLayoutIdFieldImpl("id");
+    m_userStepModel->registerListModel();
+    m_userStepModel->setAutoCreateChildrenModels(false);
+    m_userStepModel->setStoreAfterSave(false);
+    m_userStepModel->setReadonlyImpl(false);
+
+    m_userStepPlayedGalleriesModel = new UserStepModel(this);
+    m_userStepPlayedGalleriesModel->initResponse();
+    m_userStepPlayedGalleriesModel->setCurrentRef("");
+    m_userStepPlayedGalleriesModel->setLayoutQMLName("LocalData_UserStepModelPlayedGalleries");
+    m_userStepPlayedGalleriesModel->setLayoutIdFieldImpl("id");
+    m_userStepPlayedGalleriesModel->registerListModel();
+    m_userStepPlayedGalleriesModel->setAutoCreateChildrenModels(false);
+    m_userStepPlayedGalleriesModel->setStoreAfterSave(false);
+    m_userStepPlayedGalleriesModel->setReadonlyImpl(false);
 }
 
 GalleryModelView::~GalleryModelView()
@@ -22,6 +49,7 @@ bool GalleryModelView::canProcess(const DBRequestInfo *r_) const
     const QString requestNameGetList = RequestData::getListRequestName<typename GalleryModel::DataType>();
     if(r_->getDBRequestName() != requestNameGetList) { return false; }
     if(r_->getAPIName() != g_cachAPI) { return false; }
+    if(r_->getCurrentRef().isEmpty()) { return false; }
     return true;
 }
 
@@ -59,14 +87,14 @@ bool GalleryModelView::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 
 void GalleryModelView::loadSteps()
 {
-    QObject::connect(&m_userStepModel, SIGNAL(listReloaded()), this, SLOT(userStepModelListReloaded()));
-    m_userStepModel.clearListLoaded();
-    m_userStepModel.loadListImpl(
+    QObject::connect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(userStepModelListReloaded()));
+    m_userStepModel->clearListLoaded();
+    m_userStepModel->loadListImpl(
                 QString(),
                 QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
                     QHash<QString, QVariant>(
                         {
-                            { QString(g_procedureConditionName), QVariant::fromValue(QString("user=:user")) },
+                            { QString(g_procedureConditionName), QVariant::fromValue(QString("\"user\"=:user")) },
                             { QString(g_procedureOrderByName), QVariant::fromValue(QString("t DESC"))},
                             { QString(g_procedureLimitName), QVariant::fromValue(1)},
                             { QString(g_procedureArguments),
@@ -85,12 +113,12 @@ void GalleryModelView::loadSteps()
 
 void GalleryModelView::userStepModelListReloaded()
 {
-    QObject::disconnect(&m_userStepModel, SIGNAL(listReloaded()), this, SLOT(userStepModelListReloaded()));
-    m_lastUserStep = m_userStepModel.getCurrentDataItem();
+    QObject::disconnect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(userStepModelListReloaded()));
+    m_lastUserStep = m_userStepModel->getCurrentDataItem();
 
-    QObject::connect(&m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()), this, SLOT(userStepPlayedGallriesModelListReloaded()));
-    m_userStepPlayedGalleriesModel.clearListLoaded();
-    m_userStepPlayedGalleriesModel.loadListImpl(
+    QObject::connect(m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()), this, SLOT(userStepPlayedGallriesModelListReloaded()));
+    m_userStepPlayedGalleriesModel->clearListLoaded();
+    m_userStepPlayedGalleriesModel->loadListImpl(
                 QString(),
                 QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
                     QHash<QString, QVariant>(
@@ -104,11 +132,11 @@ void GalleryModelView::userStepModelListReloaded()
 
 void GalleryModelView::userStepPlayedGallriesModelListReloaded()
 {
-    QObject::disconnect(&m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()), this, SLOT(userStepPlayedGallriesModelListReloaded()));
+    QObject::disconnect(m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()), this, SLOT(userStepPlayedGallriesModelListReloaded()));
 
-    QObject::connect(&m_galleryModel, SIGNAL(listReloaded()), this, SLOT(galleryModelListReloaded()));
-    m_galleryModel.clearListLoaded();
-    m_galleryModel.loadListImpl();
+    QObject::connect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(galleryModelListReloaded()));
+    m_galleryModel->clearListLoaded();
+    m_galleryModel->loadListImpl();
 }
 
 
@@ -117,18 +145,18 @@ static const int g_newGallriesIntervalDays = 30;
 
 void GalleryModelView::galleryModelListReloaded()
 {
-    QObject::disconnect(&m_galleryModel, SIGNAL(listReloaded()), this, SLOT(galleryModelListReloaded()));
+    QObject::disconnect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(galleryModelListReloaded()));
 
     QSet<int> playedGalleries;
-    for( int i = 0; i < m_userStepPlayedGalleriesModel.sizeImpl(); i++ )
+    for( int i = 0; i < m_userStepPlayedGalleriesModel->sizeImpl(); i++ )
     {
-        const UserStep *item = m_userStepPlayedGalleriesModel.dataItemAtImpl(i);
+        const UserStep *item = m_userStepPlayedGalleriesModel->dataItemAtImpl(i);
         playedGalleries.insert(item->galleryId());
     }
     const QDateTime newFromDate = QDateTime::currentDateTime().addDays(-g_newGallriesIntervalDays);
 
-    m_galleryModel.randOrderImpl(false);
-    m_galleryModel.sortIf([this, &playedGalleries, &newFromDate](const Gallery *i1_, const Gallery *i2_) -> int
+    m_galleryModel->randOrderImpl(false);
+    m_galleryModel->sortIf([this, &playedGalleries, &newFromDate](const Gallery *i1_, const Gallery *i2_) -> int
     {
         int w1 = -1;
         int w2 = -1;
@@ -157,7 +185,7 @@ void GalleryModelView::galleryModelListReloaded()
         setData(currentRequest);
         currentRequest->setProcessed(true);
     }
-
+    m_requests.pop_front();
     if(!m_requests.isEmpty()) { loadSteps(); }
 }
 
@@ -165,9 +193,9 @@ void GalleryModelView::setData(DBRequestInfo *request_)
 {
     Q_ASSERT(nullptr != request_ && request_->getAPIName() == g_cachAPI);
     QJsonArray array;
-    for(int i = 0; i < m_galleryModel.sizeImpl(); i++)
+    for(int i = 0; i < m_galleryModel->sizeImpl(); i++)
     {
-        const Gallery *item = m_galleryModel.dataItemAtImpl(i);
+        const Gallery *item = m_galleryModel->dataItemAtImpl(i);
         QHash<QString, QVariant> values;
         getDataLayout<Gallery>().getJsonValues(item, values);
         array.push_back(request_->getJsonObjectFromValues(values));
