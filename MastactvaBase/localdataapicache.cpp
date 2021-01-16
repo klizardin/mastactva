@@ -305,6 +305,8 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
             if(!findQuery.exec(sqlNextIdRequest) && findQuery.lastError().type() != QSqlError::NoError)
             {
                 const QSqlError err = findQuery.lastError();
+                qDebug() << "sql request " << sqlNextIdRequest;
+                qDebug() << "bound " << findQuery.boundValues();
                 qDebug() << "sql error " << err.text();
             }
             else if(findQuery.first())
@@ -323,6 +325,8 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
+        qDebug() << "sql request " << sqlRequest;
+        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
@@ -399,6 +403,8 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
+        qDebug() << "sql request " << sqlRequest;
+        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
@@ -461,6 +467,8 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
+        qDebug() << "sql request " << sqlRequest;
+        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
