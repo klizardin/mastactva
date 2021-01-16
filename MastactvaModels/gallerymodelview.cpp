@@ -69,7 +69,15 @@ void GalleryModelView::loadSteps()
                             { QString(g_procedureConditionName), QVariant::fromValue(QString("user=:user")) },
                             { QString(g_procedureOrderByName), QVariant::fromValue(QString("t DESC"))},
                             { QString(g_procedureLimitName), QVariant::fromValue(1)},
-                            { QString(g_procedureArguments), QList<QVariant>({ QVariant::fromValue(g_userId),})}
+                            { QString(g_procedureArguments),
+                              QVariant::fromValue(
+                                QHash<QString, QVariant>(
+                                    {
+                                        {QString(":user"), QVariant::fromValue(g_userId)},
+                                    }
+                                )
+                              )
+                            }
                         })
                     },})
                 );
