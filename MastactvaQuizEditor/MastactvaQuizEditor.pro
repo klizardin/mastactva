@@ -110,7 +110,8 @@ unix: HEADERS += \
         localdataapicache.h \
         userstep.h  \
         dbrequestinfo.h \
-        localdataapiviews.h
+        localdataapiviews.h \
+        quizuser.h
 
 
 SOURCES += \
@@ -157,7 +158,8 @@ unix: SOURCES += \
         localdataapicache.cpp   \
         userstep.cpp    \
         dbrequestinfo.cpp   \
-        localdataapiviews.cpp
+        localdataapiviews.cpp   \
+        quizuser.cpp
 
 
 RESOURCES += qml.qrc    \

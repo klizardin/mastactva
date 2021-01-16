@@ -12,6 +12,7 @@ class ShaderTypeModel;
 class ShaderArgTypeModel;
 class EasingTypeModel;
 class UserStepModel;
+class QuizUserModel;
 
 
 class LocalDataSet : public QObject
@@ -51,6 +52,7 @@ private:
     ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
     UserStepModel *m_userStepModel = nullptr;
+    QuizUserModel *m_quizUserModel = nullptr;
     int m_step = 0;
     int m_galleryIndex = -1;
     int c_downloadStepsCount = 1;

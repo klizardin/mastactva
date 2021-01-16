@@ -85,11 +85,13 @@ QuizUserModel::QuizUserModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<QuizUser, QuizUserModel>(parent_)
 {
     init(this);
+    setReadonlyImpl(false);
 }
 
 void QuizUserModel::setEmptyModel()
 {
     m_emptyModel = true;
+    //setLayoutJsonNameImpl("quiz-user");
 }
 
 void QuizUserModel::modelListLoaded(const QJsonDocument &reply_)

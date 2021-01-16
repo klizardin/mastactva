@@ -10,6 +10,7 @@
 #include "../MastactvaModels/shaderargtype.h"
 #include "../MastactvaModels/easingtype.h"
 #include "../MastactvaModels/userstep.h"
+#include "../MastactvaModels/quizuser.h"
 
 
 static const char *g_defaultSavePath = "./LocalData/";
@@ -91,6 +92,17 @@ void LocalDataSet::create()
     m_userStepModel->setAutoCreateChildrenModels(false);
     m_userStepModel->setStoreAfterSave(false);
     m_userStepModel->setReadonlyImpl(false);
+
+    //m_quizUserModel = new QuizUserModel(this);
+    //m_quizUserModel->setEmptyModel();
+    //m_quizUserModel->initResponse();
+    //m_quizUserModel->setCurrentRef("");
+    //m_quizUserModel->setLayoutQMLName("LocalData_QuizUserModel");
+    //m_quizUserModel->setLayoutIdFieldImpl("deviceid");
+    //m_quizUserModel->registerListModel();
+    //m_quizUserModel->setAutoCreateChildrenModels(false);
+    //m_quizUserModel->setStoreAfterSave(true);
+    //m_quizUserModel->setReadonlyImpl(false);
 }
 
 void LocalDataSet::free()
@@ -110,6 +122,8 @@ void LocalDataSet::free()
     m_easingTypeModel = nullptr;
     delete m_userStepModel;
     m_userStepModel = nullptr;
+    //delete m_quizUserModel;
+    //m_quizUserModel = nullptr;
 }
 
 void LocalDataSet::download()
@@ -226,6 +240,17 @@ void LocalDataSet::downloadStep()
         emit progress(stepProgress());
         return; // one model at time
     }
+    //if(nullptr != m_quizUserModel && !m_quizUserModel->isListLoaded())
+    //{
+    //    if(nullptr != m_userStepModel)
+    //    {
+    //        QObject::disconnect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    //    }
+    //    QObject::connect(m_quizUserModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    //    m_quizUserModel->loadList();
+    //    emit progress(stepProgress());
+    //    return; // one model at time
+    //}
 
     if(nullptr != m_galleryModel)
     {
@@ -251,6 +276,10 @@ void LocalDataSet::downloadStep()
     {
         QObject::disconnect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
+    //if(nullptr != m_quizUserModel)
+    //{
+    //    QObject::disconnect(m_quizUserModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    //}
     //free();
 
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
