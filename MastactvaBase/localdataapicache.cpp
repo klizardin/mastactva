@@ -4,8 +4,8 @@
 #include "../MastactvaBase/qmlobjects.h"
 
 
-#define TRACE_DB_USE
-#define TRACE_DB_DATA_BINDINGS
+//#define TRACE_DB_USE
+//#define TRACE_DB_DATA_BINDINGS
 
 
 inline QString refName(const QString &ref_)
@@ -198,6 +198,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
+        qDebug() << "select sql" << sqlRequest;
+        qDebug() << "bound" << query.boundValues();
         qDebug() << "sql error" << err.text();
         QJsonObject jsonObj;
         jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
