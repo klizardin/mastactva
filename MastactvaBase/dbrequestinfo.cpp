@@ -48,7 +48,7 @@ QString DBRequestInfo::JsonFieldInfo::toBindName(const QString &sqlName_)
 {
     if(sqlName_.at(0)==QChar('"'))
     {
-        return QString("\":") + sqlName_.mid(1);
+        return QString(":") + sqlName_.mid(1, sqlName_.length() - 2);
     }
     else
     {
