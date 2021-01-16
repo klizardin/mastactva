@@ -5,6 +5,7 @@
 
 
 #define TRACE_DB_USE
+#define TRACE_DB_DATA_BINDINGS
 
 
 inline QString refName(const QString &ref_)
@@ -157,30 +158,32 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
                  procedureLimit
                  )
             ;
+
 #if defined(TRACE_DB_USE)
     qDebug() << "select sql" << sqlRequest;
 #endif
+
     bool sqlRes = true;
     if(hasCondition || !procedureArgs.isEmpty())
     {
         query.prepare(sqlRequest);
+
         for(const QString &ref : qAsConst(bindRefs))
         {
             const QString v = defValues.value(ref);
             query.bindValue(ref, v);
-#if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << ref << v;
-#endif
         }
         const QList<QString> procedureArgsKeys = procedureArgs.keys();
         for(const QString &key : procedureArgsKeys)
         {
             const QVariant v = procedureArgs.value(key);
             query.bindValue(key, v);
-#if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << key << v;
-#endif
         }
+
+#if defined(TRACE_DB_DATA_BINDINGS)
+        qDebug() << "bound" << query.boundValues();
+#endif
+
         sqlRes = query.exec();
     }
     else
@@ -621,7 +624,7 @@ void LocalDataAPICache::makeResponses()
         r = nullptr;
     }
 
-    const bool continueNotify = m_requests.isEmpty();
+    const bool continueNotify = !m_requests.isEmpty();
     if(continueNotify)
     {
         QTimer::singleShot(0, this, &LocalDataAPICache::makeResponses);
