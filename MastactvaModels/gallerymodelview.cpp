@@ -124,7 +124,11 @@ void GalleryModelView::userStepModelListReloaded()
                     QHash<QString, QVariant>(
                         {
                             { QString(g_procedureSelectFunctionName), QVariant::fromValue(QString("DISTINCT")) },
-                            { QString(g_procedureFilterNamesName), QVariant::fromValue(QList<QVariant>({ QVariant::fromValue(QString("gallery")),}))}
+                            { QString(g_procedureFilterNamesName),
+                              QVariant::fromValue(
+                                QList<QVariant>({ QVariant::fromValue(QString("gallery")), })
+                              )
+                            }
                         })
                     },})
                 );
