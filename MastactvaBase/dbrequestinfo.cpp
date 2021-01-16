@@ -532,6 +532,7 @@ QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVar
         if(QString(g_procedureExtraFieldName) == key) { continue; } // skip procedure params
         res.insert(key, extraFields_.value(key));
     }
+    return res;
 }
 
 QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString, QVariant> &extraFields_)

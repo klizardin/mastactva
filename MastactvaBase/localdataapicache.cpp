@@ -111,8 +111,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
-        it != std::end(extraFields)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(extraFields));
+        it != std::end(qAsConst(extraFields))
         ; ++it
         )
     {
