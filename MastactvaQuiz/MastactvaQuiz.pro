@@ -108,7 +108,8 @@ unix: SOURCES += \
         localdataapicache.cpp   \
         dbrequestinfo.cpp   \
         localdataapiviews.cpp   \
-        gallerymodelview.cpp
+        gallerymodelview.cpp    \
+        questionanswermodelview.cpp
 
 
 RESOURCES += qml.qrc \
@@ -174,7 +175,8 @@ unix: HEADERS += \
     dbrequestinfo.h \
     localdataapiviews.h \
     gallerymodelview.h  \
-    defines.h
+    defines.h   \
+    questionanswermodelview.h
 
 
 DISTFILES += \

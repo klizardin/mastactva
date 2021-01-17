@@ -18779,5 +18779,26 @@
         ],
         "inputFile": "gallerymodelview.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "QuestionAnswerModelView",
+                "object": true,
+                "qualifiedClassName": "QuestionAnswerModelView",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "ILocalDataAPI"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "questionanswermodelview.h",
+        "outputRevision": 67
     }
 ]
