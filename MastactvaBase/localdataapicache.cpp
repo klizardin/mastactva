@@ -4,7 +4,7 @@
 #include "../MastactvaBase/qmlobjects.h"
 
 
-//#define TRACE_DB_USE
+#define TRACE_DB_USE
 //#define TRACE_DB_DATA_BINDINGS
 
 
@@ -213,6 +213,12 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             QJsonObject jsonObj;
             for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
             {
+                const auto fitFld = std::find_if(std::begin(procedureFilterFields), std::end(procedureFilterFields),
+                                                 [&fi](const QVariant &v)->bool
+                {
+                    return v.isValid() && fi.sqlName == v.toString();
+                });
+                if(!procedureFilterFields.isEmpty() && std::end(procedureFilterFields) == fitFld) { continue; }
                 const QVariant val = query.value(fi.sqlName);
                 if(val.isValid())
                 {
@@ -608,7 +614,7 @@ void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 void LocalDataAPICache::makeResponses()
 {
     QList<LocalDBRequest *> res;
-    for(LocalDBRequest *r : m_requests)
+    for(LocalDBRequest *r : qAsConst(m_requests))
     {
         if(r->isProcessed()) { res.push_back(r); }
     }
