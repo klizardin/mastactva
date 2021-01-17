@@ -41,15 +41,10 @@ void ImagePointEffect::setEffectId(const int &effectId_)
     if(effectId_ == m_effectId) { return; }
 
     m_effectId = effectId_;
-    qDebug() << "ImagePointEffect::setEffectId()" << m_effectId;
     if(nullptr != m_effectModel)
     {
         m_effectModel->parentItemChanged();
     }
-    //else
-    //{
-    //    (void)effect();
-    //}
 
     emit effectChanged();
 }
@@ -89,10 +84,6 @@ void ImagePointEffect::setArgSetId(const int &argSetId_)
     {
         m_effectArgSetModel->parentItemChanged();
     }
-    //else
-    //{
-    //    (void)argSet();
-    //}
 
     emit argSetChanged();
 }
@@ -143,7 +134,6 @@ void ImagePointEffect::setDuration(const int &duration_)
 
 EffectModel *ImagePointEffect::createEffectModel()
 {
-    qDebug() << "ImagePointEffect::createEffectModel()" << m_imagePointEffectModel->findItemByAppIdImpl(m_appId);
     EffectModel *m = new EffectModel(this);
     m->initResponse();
     m->setLayoutRefImpl("id", m_imagePointEffectModel->getQMLLayoutName(), "effect");
