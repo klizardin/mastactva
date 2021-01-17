@@ -123,6 +123,10 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ? procedureFields.value(g_procedureConditionName).toString()
             : QString()
             ;
+    const QList<QVariant> procedureFilterConditions = procedureFields.contains(g_procedureFilterConditionsName)
+            ? procedureFields.value(g_procedureFilterConditionsName).toList()
+            : QList<QVariant>()
+            ;
     const QString procedureOrderBy = procedureFields.contains(g_procedureOrderByName)
             ? QString("%1 %2").arg(g_procedureOrderByName, procedureFields.value(g_procedureOrderByName).toString())
             : QString()
@@ -137,8 +141,12 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ;
     const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
-                            << equalToValueConditionsFromSqlNamesFromSqlNames(refs)
-                            << equalToValueConditionsFromSqlNamesFromSqlNames(extraFields.keys())
+                            << equalToValueConditionsFromSqlNamesFromSqlNames(
+                                        filterNames(refs,procedureFilterConditions)
+                                        )
+                            << equalToValueConditionsFromSqlNamesFromSqlNames(
+                                        filterNames(extraFields.keys(),procedureFilterConditions)
+                                        )
                             ).join(" AND ");
     const QString conditionStr = hasCondition
             ? QString("WHERE %1")
@@ -170,6 +178,9 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 
         for(const QString &ref : qAsConst(bindRefs))
         {
+            if(!procedureFilterConditions.isEmpty()
+                    && !procedureFilterConditions.contains(QVariant::fromValue(ref))
+                    ) { continue; }
             const QString v = defValues.value(ref);
             query.bindValue(ref, v);
         }
