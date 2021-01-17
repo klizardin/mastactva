@@ -68,22 +68,26 @@ public:
     virtual void objectLoadedVF() override;
 
     void parentItemRemoved();
+    void setCurrentRefImpl(const QString &ref_);
+    void setLayoutQMLNameImpl(const QString &layoutQMLName_);
+    void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
+    void setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateChildrenModelsOnSelect_);
+    void addModelParamImpl(const QString &name_, const QVariant &value_);
+    void setRefAppIdImpl(const QVariant &appId_);
+    void setRefValueImpl(const QVariant &value_);
+    void setCurrentIndexImpl(int index_);
+    void setJsonParamsGetImpl(bool jsonParamsGet_);
+    void setOutputModelImpl(bool outputModel_);
 
 protected:
-    void setRefAppIdImpl(const QVariant &appId_);
     QVariant getRefAppIdImpl() const;
     QVariant getRefValueImpl() const;
-    void setRefValueImpl(const QVariant &value_);
     int getCurrentIndexImpl() const;
-    void setCurrentIndexImpl(int index_);
     bool isCurrentIndexValid(int size_) const;
     bool isIndexValid(int index_, int size_) const;
     const QString &currentRefImpl() const;
-    void setCurrentRefImpl(const QString &ref_);
-    void setLayoutQMLNameImpl(const QString &layoutQMLName_);
     const QString &getLayoutQMLNameImpl() const;
     bool getJsonParamsGetImpl() const;
-    void setJsonParamsGetImpl(bool jsonParamsGet_);
     bool addRequest(RequestData *rd_);
     RequestData * findRequest(const QString &requestName_);
     bool findRequest(RequestData *request_) const;
@@ -92,16 +96,12 @@ protected:
     int getOutOfRangeAppId() const;
     void setNextAppId(int appId_);
     void init(QObject *modelObj_);
-    void addModelParamImpl(const QString &name_, const QVariant &value_);
-    void setAutoCreateChildrenModelsImpl(bool autoCreateChildrenModels_);
-    void setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateChildrenModelsOnSelect_);
     void startListLoad();
     void reverseListLoading();
     void setListLoaded();
     bool listLoading() const;
     QHash<QString, QVariant> renameFields(const QHash<QString, QVariant> &src_);
     bool getOutputModelImpl() const;
-    void setOutputModelImpl(bool outputModel_);
     QStringList getSortFieldsImpl() const;
     bool getReadonlyImpl() const;
 
