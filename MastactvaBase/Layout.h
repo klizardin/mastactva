@@ -516,6 +516,19 @@ public:
         return ret;
     }
 
+    bool setJsonValues(DataType_ *obj_, const QHash<QString, QVariant> &values_) const
+    {
+        bool ret = false;
+        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        {
+            if(!item->isJsonItem()) { continue; }
+            if(!values_.contains(item->getJsonName())) { continue; }
+            item->setValue(obj_, values_.value(item->getJsonName()));
+            ret = true;
+        }
+        return ret;
+    }
+
     bool setJsonValues(DataType_ *obj_, const QJsonDocument &jsonObj_, int index_ = 0) const
     {
         bool ret = false;
