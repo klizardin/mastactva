@@ -10,6 +10,7 @@
 class NetAPI;
 class LocalDataAPICache;
 class LocalDataAPIDefaultCacheImpl;
+class QuestionAnswerModelView;
 
 
 class RequestData
@@ -68,6 +69,7 @@ private:
     friend class NetAPI;
     friend class LocalDataAPICache;
     friend class LocalDataAPIDefaultCacheImpl;
+    friend class QuestionAnswerModelView;
 };
 
 

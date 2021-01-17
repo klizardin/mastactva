@@ -18786,6 +18786,13 @@
                 "className": "QuestionAnswerModelView",
                 "object": true,
                 "qualifiedClassName": "QuestionAnswerModelView",
+                "slots": [
+                    {
+                        "access": "protected",
+                        "name": "imagePointToQuestionModelListReloaded",
+                        "returnType": "void"
+                    }
+                ],
                 "superClasses": [
                     {
                         "access": "public",

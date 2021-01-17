@@ -10,6 +10,8 @@
 #include "../MastactvaBase/dbrequestinfo.h"
 #include "../MastactvaModels/questionanswer.h"
 #include "../MastactvaModels/gallerystatistics.h"
+#include "../MastactvaModels/imagepoint.h"
+#include "../MastactvaModels/image.h"
 
 
 class QuestionAnswerModelView : public QObject, public ILocalDataAPI
@@ -25,9 +27,22 @@ public:
     virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
     virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override;
 
+protected:
+    void loadStatisticsForGallery();
+    void imagePointModelListReloaded();
+
+protected slots:
+    void imagePointToQuestionModelListReloaded();
+
 private:
     UserQuestionAnswerModel *m_userQuestionAnswerModel = nullptr;
+    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
+    ImagePointModel *m_imagePointModel = nullptr;
+    ImageModel *m_imageModel = nullptr;
     GalleryStatisticsModel *m_galleryStatisticsModel = nullptr;
+    QList<QPair<DBRequestInfo *, UserQuestionAnswer *>> m_requests;
+    ImagePointToQuestion *m_imagePointToQuestion = nullptr;
+    ImagePoint *m_imagePoint = nullptr;
 };
 
 #endif // QUESTIONANSWERMODELVIEW_H
