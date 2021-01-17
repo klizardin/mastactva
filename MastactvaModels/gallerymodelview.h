@@ -17,7 +17,7 @@ class GalleryModelView : public QObject, public ILocalDataAPI
     Q_OBJECT
 public:
     GalleryModelView(QObject * parent_ = nullptr);
-    virtual ~GalleryModelView();
+    virtual ~GalleryModelView() override;
 
     virtual bool canProcess(const DBRequestInfo *r_) const override;
     virtual bool getListImpl(DBRequestInfo *r_) override;

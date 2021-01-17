@@ -37,6 +37,12 @@ GalleryModelView::GalleryModelView(QObject * parent_ /*= nullptr*/)
 
 GalleryModelView::~GalleryModelView()
 {
+    delete m_galleryModel;
+    m_galleryModel = nullptr;
+    delete m_userStepModel;
+    m_userStepModel = nullptr;
+    delete m_userStepPlayedGalleriesModel;
+    m_userStepPlayedGalleriesModel = nullptr;
 }
 
 bool GalleryModelView::canProcess(const DBRequestInfo *r_) const
