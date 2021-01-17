@@ -217,7 +217,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
                     return v.isValid() && fi.sqlName == v.toString();
                 });
                 if(!procedureFilterFields.isEmpty() && std::end(procedureFilterFields) == fitFld) { continue; }
-                const QVariant val = query.value(fi.sqlName);
+                const QVariant val = query.value(fi.sqlValueName());
                 if(val.isValid())
                 {
                     jsonObj.insert(fi.jsonName, fi.jsonValue(val));

@@ -58,6 +58,18 @@ QString DBRequestInfo::JsonFieldInfo::getBindName() const
     return toBindName(sqlName);
 }
 
+QString DBRequestInfo::JsonFieldInfo::sqlValueName() const
+{
+    if(sqlName.at(0)==QChar('"'))
+    {
+        return sqlName.mid(1, sqlName.length() - 2);
+    }
+    else
+    {
+        return sqlName;
+    }
+}
+
 void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_) const
 {
     if(jv_.isBool())
