@@ -111,7 +111,8 @@ unix: HEADERS += \
         userstep.h  \
         dbrequestinfo.h \
         localdataapiviews.h \
-        quizuser.h
+        quizuser.h  \
+        defines.h
 
 
 SOURCES += \

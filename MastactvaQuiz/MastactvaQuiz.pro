@@ -173,7 +173,8 @@ unix: HEADERS += \
     localdataapicache.h \
     dbrequestinfo.h \
     localdataapiviews.h \
-    gallerymodelview.h
+    gallerymodelview.h  \
+    defines.h
 
 
 DISTFILES += \
