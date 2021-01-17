@@ -2,10 +2,7 @@
 #include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/qmlobjects.h"
-
-
-#define TRACE_DB_USE
-//#define TRACE_DB_DATA_BINDINGS
+#include "../MastactvaBase/defines.h"
 
 
 inline QString refName(const QString &ref_)

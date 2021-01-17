@@ -5,10 +5,7 @@
 #include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
-
-
-//#define TRACE_DB_CREATION
-//#define TRACE_DB_DATA_BINDINGS
+#include "../MastactvaBase/defines.h"
 
 
 inline QString refName(const QString &ref_)

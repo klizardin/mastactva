@@ -1,9 +1,6 @@
 #include "Model.h"
 #include "../MastactvaBase/qmlobjects.h"
-
-
-//#define TRACE_MODEL_LOADING
-//#define TRACE_MODEL_LOADED
+#include "../MastactvaBase/defines.h"
 
 
 ListModelBaseData::ListModelBaseData(IListModel *model_)

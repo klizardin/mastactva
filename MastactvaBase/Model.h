@@ -15,13 +15,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/qmlobjects.h"
-
-
-//#define TRACE_LIST_LOAD_DATA
-//#define TRACE_LIST_SIZE
-//#define TRACE_LIST_DATA_ITEMS_CRUD
-//#define TRACE_MODEL_LOADING
-//#define TRACE_MODEL_LOADED
+#include "../MastactvaBase/defines.h"
 
 
 static const QString g_randSort = "?";
