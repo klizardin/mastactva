@@ -71,7 +71,8 @@ bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 {
     if(nullptr == r_) { return false; }
-#if defined(TRACE_DB_USE)
+
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
@@ -158,7 +159,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
                  )
             ;
 
-#if defined(TRACE_DB_USE)
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "select sql" << sqlRequest;
 #endif
 
@@ -179,7 +180,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             query.bindValue(key, v);
         }
 
-#if defined(TRACE_DB_DATA_BINDINGS)
+#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
         qDebug() << "bound" << query.boundValues();
 #endif
 
@@ -233,9 +234,11 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
 {
     if(nullptr == r_) { return false; }
-#if defined(TRACE_DB_USE)
+
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
+
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemAppId(appId_);
 
@@ -291,20 +294,27 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
     const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
             .arg(idFieldSqlName, tableName);
 
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "insert sql" << sqlRequest;
+    qDebug() << "select max sql" << sqlNextIdRequest;
+#endif
+
     query.prepare(sqlRequest);
     for(const QString &bind : qAsConst(bindRefs))
     {
         const QString v = defValues.value(bind);
         query.bindValue(bind, v);
-#if defined(TRACE_DB_DATA_BINDINGS)
-        qDebug() << "bind" << bind << v;
-#endif
     }
     int nextId = 1;
     for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
         if(bindInfo.idField)
         {
+
+#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "select max sql bound" << findQuery.boundValues();
+#endif
+
             if(!findQuery.exec(sqlNextIdRequest) && findQuery.lastError().type() != QSqlError::NoError)
             {
                 const QSqlError err = findQuery.lastError();
@@ -325,6 +335,11 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
             bindInfo.bind(query, val);
         }
     }
+
+#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "insert sql bound" << query.boundValues();
+#endif
+
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
@@ -359,9 +374,11 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
 bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
 {
     if(nullptr == r_) { return false; }
-#if defined(TRACE_DB_USE)
+
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
+
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemId(id_);
 
@@ -396,12 +413,20 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<
     const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
             .arg(tableName, setStr, idFieldSqlName, idFieldSqlBindName);
 
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "update sql" << sqlRequest;
+#endif
+
     query.prepare(sqlRequest);
     for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
         const QVariant val = values_.value(bindInfo.jsonName);
         bindInfo.bind(query, val);
     }
+
+#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "update sql bound" << query.boundValues();
+#endif
 
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {
@@ -429,9 +454,11 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 {
     if(nullptr == r_) { return false; }
-#if defined(TRACE_DB_USE)
+
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
+
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemId(id_);
 
@@ -464,8 +491,16 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     const QString sqlRequest = QString("DELETE FROM %1 WHERE %3=%4 ;")
             .arg(tableName, idFieldSqlName, idFieldSqlBindName);
 
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "delete sql" << sqlRequest;
+#endif
+
     query.prepare(sqlRequest);
     fitId->bind(query, id_);
+
+#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "delete sql bound" << query.boundValues();
+#endif
 
     if(!query.exec() && query.lastError().type() != QSqlError::NoError)
     {

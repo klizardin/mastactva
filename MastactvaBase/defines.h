@@ -8,6 +8,7 @@
 //#define TRACE_LIST_SIZE
 //#define TRACE_LIST_DATA_ITEMS_CRUD
 //#define TRACE_DB_CREATION
+//#define TRACE_DB_REQUESTS
 //#define TRACE_DB_DATA_BINDINGS
 //#define TRACE_DB_USE
 
