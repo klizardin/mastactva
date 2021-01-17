@@ -48,6 +48,8 @@ Page {
                 colorGroup: SystemPalette.Active
             }
 
+            property int currentGalleryIndex : index
+
             Rectangle {
                 width: galleryPage.width
                 height: (galleryPage.width / Constants.galleryAspectX) * Constants.galleryAspectY
@@ -77,6 +79,8 @@ Page {
 
                                 onClicked:
                                 {
+                                    galleryModel.currentIndex = currentGalleryIndex
+                                    //console.log("currentGalleryIndex =",currentGalleryIndex)
                                     gallerySwipeViewImageRepeater.model.currentIndex = index
                                     currentImage = gallerySwipeViewImageRepeater.model.getCurrentItem()
                                     var ip = currentImage.imagePoints

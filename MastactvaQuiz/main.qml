@@ -151,27 +151,30 @@ ApplicationWindow {
         function onStartQuiz(startImage)
         {
             // log quiz start
+            allImagesOfGallery.loadList()
+
             var userStepG = userStepModel.createItem()
-            userStepG.usGalleryId = galleryModel.getCurrentItem().id
+            userStepG.usGalleryId = galleryModel.currentItem.id
             userStepG.usImageId = startImage.imageId
             userStepG.usNextImageId = startImage.imageId
             userStepG.usT = mastactvaAPI.now()
             userStepModel.addItem(userStepG)
 
+            //console.log("galleryModel.currentItem.id = ", galleryModel.currentItem.id)
             // jump to quiz image
             quizPage.animationSpeed = animationSpeed
-            quizPage.galleryId = galleryModel.getCurrentItem().id
+            quizPage.galleryId = galleryModel.currentItem.id
             quizPage.currentImage = startImage
             quizPage.currentImageSource = startImage.imageSource
             quizPage.currentImageHash = startImage.imageHash
             quizPage.nextImage = undefined
             galleryAllImagesPage.animationSpeed = animationSpeed
-            galleryAllImagesPage.galleryId = galleryModel.getCurrentItem().id
+            galleryAllImagesPage.galleryId = galleryModel.currentItem.id
             galleryAllImagesPage.currentImage = startImage
             galleryAllImagesPage.currentImageSource = startImage.imageSource
             galleryAllImagesPage.currentImageHash = startImage.imageHash
             quizPage.init()
-            setDescription(startImage.imageDescription, galleryModel.getCurrentItem().id, startImage.imageId, startImage.imageSource)
+            setDescription(startImage.imageDescription, galleryModel.currentItem.id, startImage.imageId, startImage.imageSource)
             stackView.push(quizPage)
         }
     }
