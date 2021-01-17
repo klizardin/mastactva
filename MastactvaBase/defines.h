@@ -11,6 +11,7 @@
 //#define TRACE_DB_REQUESTS
 //#define TRACE_DB_DATA_BINDINGS
 //#define TRACE_DB_USE
+//#define TRACE_DB_DATA_RETURN
 
 
 #endif // DEFINES_H

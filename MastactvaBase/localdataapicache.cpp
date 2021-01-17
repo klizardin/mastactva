@@ -226,7 +226,13 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             jsonArray.push_back(jsonObj);
         } while(query.next());
     }
+
     r->addJsonResult(QJsonDocument(jsonArray));
+
+#if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "select sql result" << r->reply();
+#endif
+
     r->setProcessed(true);
     return true;
 }
@@ -365,7 +371,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
             }
         }
         r->addJsonResult(values);
+
     }
+
+#if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "insert sql result" << r->reply();
+#endif
+
     query.finish();
     r->setProcessed(true);
     return true;
@@ -446,6 +458,11 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<
     {
         r->addJsonResult(values_);
     }
+
+#if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "update sql result" << r->reply();
+#endif
+
     query.finish();
     r->setProcessed(true);
     return true;
@@ -520,6 +537,11 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     {
         r->addJsonResult(QJsonDocument(QJsonArray()));
     }
+
+#if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "delete sql result" << r->reply();
+#endif
+
     query.finish();
     r->setProcessed(true);
     return true;
