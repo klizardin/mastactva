@@ -66,6 +66,7 @@ bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_, const QHash<QS
 
     UserQuestionAnswer *userQuestionAnswer = m_userQuestionAnswerModel->createDataItemImpl();
     getDataLayout<UserQuestionAnswer>().setJsonValues(userQuestionAnswer, values_);
+    userQuestionAnswer->setUserId(g_userId);
 
     m_requests.push_back({r_, userQuestionAnswer});
 
@@ -90,7 +91,10 @@ bool QuestionAnswerModelView::delItemImpl(const QVariant &id_, DBRequestInfo *r_
 
 void QuestionAnswerModelView::addUserQuestionAnswer()
 {
-    if(!m_requests.isEmpty()) { return; }
+    if(m_requests.isEmpty())
+    {
+        return;
+    }
 
     Q_ASSERT(nullptr != m_userQuestionAnswerModel);
 
@@ -119,6 +123,7 @@ void QuestionAnswerModelView::error()
         r->setError(true);
         r->setProcessed(true);
     }
+
     m_requests.pop_front();
     addUserQuestionAnswer();
 }
@@ -157,6 +162,7 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
             error();
             return;
         }
+
         m_galleryStatistics->setGalleryId(nullptr != gallery ? gallery->id() : -1 );
         m_galleryStatistics->setUserId(g_userId);
         m_galleryStatistics->setPoints(userQuestionAnswer->points());
@@ -253,6 +259,7 @@ void QuestionAnswerModelView::addUserQuestionAnswerItem()
         error();
         return;
     }
+
     QHash<QString, QVariant> values;
     getDataLayout<UserQuestionAnswer>().getJsonValues(userQuestionAnswer, values);
 
