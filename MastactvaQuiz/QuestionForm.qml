@@ -189,6 +189,7 @@ Page {
             newAnswer.qaQuestionId = question.questionId
             newAnswer.qaT = mastactvaAPI.now()
             newAnswer.qaAnswerId = question.questionAnswers.currentItem.answerId
+            newAnswer.qaPoints = question.questionAnswers.currentItem.answerPoints
             userQuestionAnswerModel.addItem(newAnswer)
             userQuestionAnswerModel.itemAdded.connect(userQuestionAnswerModelItemAdded)
 
