@@ -55,3 +55,12 @@ int MastactvaAPI::getLocalDataAPIUserId()
 {
     return g_userId;
 }
+
+bool MastactvaAPI::isAndroidFullscreen()
+{
+#if defined(ANDROID_FULLSCREEN)
+    return true;
+#else
+    return false;
+#endif
+}

@@ -131,6 +131,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 android {
     DEFINES += "ASSETS_ROOT=1"
+    DEFINES += "ANDROID_FULLSCREEN=1"
 
     image_files.path = /assets/images/
     image_files.files = $$files($$PWD/../MastactvaData/images/*)

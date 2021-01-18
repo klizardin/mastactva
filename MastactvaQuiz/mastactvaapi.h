@@ -22,6 +22,7 @@ public:
     Q_INVOKABLE QString dateTimeToISOStr(const QDateTime &dt_);
     Q_INVOKABLE bool isLocalDataAPI();
     Q_INVOKABLE int getLocalDataAPIUserId();
+    Q_INVOKABLE bool isAndroidFullscreen();
 
     void setInitialized();
 

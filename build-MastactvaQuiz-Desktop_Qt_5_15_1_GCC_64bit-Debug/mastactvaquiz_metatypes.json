@@ -84,6 +84,11 @@
                         "access": "public",
                         "name": "getLocalDataAPIUserId",
                         "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isAndroidFullscreen",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

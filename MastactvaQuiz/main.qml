@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
+import QtQuick.Window 2.15
 import MastactvaQuiz 1.0
 import "GalleryFunctions.js" as GalleryFunctions
 import Mastactva 1.0
@@ -10,6 +11,7 @@ ApplicationWindow {
     id: window
     width: Constants.width
     height: Constants.height
+    //visibility: Window.FullScreen
     visible: true
     title: qsTr("Mastactva Quiz")
 
@@ -112,6 +114,10 @@ ApplicationWindow {
 
         function onInitialized()
         {
+            if(mastactvaAPI.isAndroidFullscreen())
+            {
+                Constants.init()
+            }
             Constants.noImageHash = mastactvaAPI.calculateHash(Constants.noImageResource)
 
             galleryPage.galleryModel = galleryModel
