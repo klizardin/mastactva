@@ -1,4 +1,8 @@
 #include "questionanswermodelview.h"
+#include <QHash>
+#include <QString>
+#include <QVariant>
+#include <QList>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/gallery.h"
@@ -176,28 +180,23 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
         QObject::connect(m_userQuestionAnswerModel, SIGNAL(listReloaded()), this, SLOT(userQuestionAnswerModelListReloaded()));
         m_userQuestionAnswerModel->clearListLoaded();
         m_userQuestionAnswerModel->loadListImpl(
-                    QString(),
-                    QHash<QString, QVariant>
-                    ({{
-                         QString(g_procedureExtraFieldName),
-                         QVariant::fromValue(
-                         QHash<QString, QVariant>
-                         ({
-                             {QString(g_procedureConditionName),
-                              QVariant::fromValue(QString("question=:question"))},
-                             {QString(g_procedureOrderByName),
-                              QVariant::fromValue(QString("t DESC"))},
-                             {QString(g_procedureLimitName),
-                              QVariant::fromValue(1)},
-                             {QString(g_procedureArguments),
-                              QVariant::fromValue(
-                                QHash<QString, QVariant>
-                                ({
-                                  {QString(":question"), QVariant::fromValue(userQuestionAnswer->questionId())},
-                                })
-                              )},
-                         }))
-                     },}));
+            QString(),
+            QHash<QString, QVariant>(
+            {
+                 {g_procedureExtraFieldName,
+                 QHash<QString, QVariant>
+                 ({
+                    {g_procedureConditionName, QVariant::fromValue(QString("question=:question"))},
+                    {g_procedureOrderByName, QVariant::fromValue(QString("t DESC"))},
+                    {g_procedureLimitName, QVariant::fromValue(1)},
+                    {g_procedureArguments,
+                    QVariant::fromValue(QHash<QString, QVariant>
+                    ({
+                      {QString(":question"), QVariant::fromValue(userQuestionAnswer->questionId())},
+                    }))},
+                 })
+                },
+            }));
     }
 }
 
