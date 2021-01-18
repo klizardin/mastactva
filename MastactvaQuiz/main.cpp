@@ -66,12 +66,12 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+    copyAssets();
+
     QGuiApplication app(argc, argv);
     QTranslator translator(&app);
     QTranslator translatorQt(&app);
     switchLanguage(g_belarusLanguage, translator, translatorQt, app);
-
-    copyAssets();
 
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");
