@@ -38,7 +38,7 @@ void switchLanguage(const QString & lang_, QTranslator& translator_, QTranslator
     switchTranslator(app_, translatorQt_, QString("qt_%1.qm").arg(lang));
 }
 
-void copyDbases()
+void copyAssets()
 {
 #if defined(ASSETS_ROOT)
     QFile dfile1("assets:/mastactva_ro.db3");
@@ -53,6 +53,12 @@ void copyDbases()
          dfile2.copy("./mastactva_rw.db3");
          QFile::setPermissions("./mastactva_rw.db3",QFile::WriteOwner | QFile::ReadOwner);
     }
+    QFile dfile3("assets:/MastactvaQuiz_be_BY.qm");
+    if (dfile3.exists())
+    {
+         dfile3.copy("./MastactvaQuiz_be_BY.qm");
+         QFile::setPermissions("./MastactvaQuiz_be_BY.qm", QFile::ReadOwner);
+    }
 #endif
 }
 
@@ -65,7 +71,7 @@ int main(int argc, char *argv[])
     QTranslator translatorQt(&app);
     switchLanguage(g_belarusLanguage, translator, translatorQt, app);
 
-    copyDbases();
+    copyAssets();
 
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");

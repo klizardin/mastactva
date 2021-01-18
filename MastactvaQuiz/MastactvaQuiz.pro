@@ -143,6 +143,9 @@ android {
     dbase_files.files += $$PWD/../MastactvaData/mastactva_ro.db3
     dbase_files.files += $$PWD/../MastactvaData/mastactva_rw.db3
     INSTALLS += dbase_files
+    translate_files.path = /assets/
+    translate_files.files += $$PWD/../MastactvaData/MastactvaQuiz_be_BY.qm
+    INSTALLS += translate_files
 }
 
 ANDROID_ABIS = armeabi-v7a
