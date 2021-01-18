@@ -78,11 +78,11 @@ public:
     void setCurrentIndexImpl(int index_);
     void setJsonParamsGetImpl(bool jsonParamsGet_);
     void setOutputModelImpl(bool outputModel_);
+    int getCurrentIndexImpl() const;
 
 protected:
     QVariant getRefAppIdImpl() const;
     QVariant getRefValueImpl() const;
-    int getCurrentIndexImpl() const;
     bool isCurrentIndexValid(int size_) const;
     bool isIndexValid(int index_, int size_) const;
     const QString &currentRefImpl() const;
