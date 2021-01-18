@@ -94,8 +94,6 @@ void Image::setFilenameStr(const QString &filename_)
 
 QString Image::localImageSource() const
 {
-    qDebug() << m_localImageUrl;
-
     return m_localImageUrl;
 }
 
