@@ -36,7 +36,7 @@ void Image::downloadImage()
     QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloaded(const QString &)));
     if(nullptr != sf)
     {
-        IListModelInfoObjectImpl::startLoadChildModel();
+        //IListModelInfoObjectImpl::startLoadChildModel();
         sf->add(getFilename(), hash(), g_imagesRelPath);
     }
 }
@@ -50,7 +50,7 @@ void Image::imageDownloaded(const QString &url_)
 
     if(nullptr != sf)
     {
-        IListModelInfoObjectImpl::endLoadChildModel();
+        //IListModelInfoObjectImpl::endLoadChildModel();
         if(sf->isUrlDownloaded(getFilename()))
         {
             setLocalImageSource(sf->get(url_));

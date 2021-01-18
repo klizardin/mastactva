@@ -12900,7 +12900,8 @@
                         "scriptable": true,
                         "stored": true,
                         "type": "QString",
-                        "user": false
+                        "user": false,
+                        "write": "setLocalImageSource"
                     },
                     {
                         "constant": false,
