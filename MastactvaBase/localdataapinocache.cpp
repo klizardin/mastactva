@@ -56,15 +56,15 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
     const QStringList refs = r_->getRefs();
+    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldsRequests = (QStringList()
                                     << textTypes(refsNames(refs))
-                                    << textTypes(refsNames(r_->getExtraFields().keys()))
+                                    << textTypes(refsNames(extraFields.keys()))
                                     << tableFieldsNameTypePairs
-                                    ).join(g_insertFieldSpliter) +
-            QString(g_insertFieldSpliter)
+                                    ).join(g_insertFieldSpliter)
             ;
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
-            .arg(tableName, fieldsRequests.mid(0, fieldsRequests.length() - 2))
+            .arg(tableName, fieldsRequests)
             ;
 #if defined(TRACE_DB_CREATION)
     qDebug() << "create sql" << sqlRequest;
@@ -267,9 +267,10 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QString tableName = r_->getTableName();
     if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
     const QStringList refs = r_->getRefs();
+    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldNames = (QStringList()
                                 << refsNames(refs)
-                                << refsNames(r_->getExtraFields().keys())
+                                << refsNames(extraFields.keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
@@ -280,8 +281,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(r_->getExtraFields());
-        it != std::end(r_->getExtraFields())
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
+        it != std::end(extraFields)
         ; ++it
         )
     {
@@ -315,7 +316,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     }
     const QString conditionStr = (conditionsList
                             << conditionsFromSqlNamesames(refs)
-                            << conditionsFromSqlNamesames(r_->getExtraFields().keys())
+                            << conditionsFromSqlNamesames(extraFields.keys())
                             ).join(" AND ");
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1 ;")
             .arg(tableName, conditionStr);
