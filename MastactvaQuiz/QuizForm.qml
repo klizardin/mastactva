@@ -114,7 +114,7 @@ Page {
                                     var durationNoEffect = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
                                     quizImageNumberAnimation.duration = durationNoEffect
                                 }
-                                quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
+                                quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.localImageSource)
                                 quizImageAnimation.running = true
                             }
                         }
@@ -155,7 +155,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
-                    quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
+                    quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.localImageSource)
                     quizImage.effect = null
                     quizImage.argumentSet = null
                     quizImageNumberAnimation.easing.type = Easing.Linear

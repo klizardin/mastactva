@@ -25,6 +25,7 @@ public:
 
     Q_PROPERTY(int imageId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString imageSource READ getFilename WRITE setFilenameStr NOTIFY filenameChanged)
+    Q_PROPERTY(QString localImageSource READ localImageSource WRITE setLocalImageSource NOTIFY localImageSourceChanged)
     Q_PROPERTY(QString imageHash READ hash WRITE setHash NOTIFY hashChanged)
     Q_PROPERTY(int imageGallery READ gallery WRITE setGallery NOTIFY galleryChanged)
     Q_PROPERTY(bool imageTop READ top WRITE setTop NOTIFY topChanged)
@@ -48,6 +49,7 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Image::m_objectModelInfo);
             addField<int>("id", "imageId", &Image::id, &Image::setId);
             addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
+            addField<QString>("", "localImageSource", &Image::localImageSource, &Image::setLocalImageSource);
             addField<QString>("hash", "imageHash", &Image::hash, &Image::setHash);
             addField<int>("gallery", "imageGallery", &Image::gallery, &Image::setGallery);
             addField<bool>("use_in_gallery_view", "imageTop", &Image::top, &Image::setTop);
@@ -64,6 +66,8 @@ public:
     void setFilename(const ImageSource &filename_);
     QString getFilename() const;
     void setFilenameStr(const QString &filename_);
+    QString localImageSource() const;
+    void setLocalImageSource(const QString &url_);
     QString hash() const;
     void setHash(const QString &hash_);
     int gallery() const;
@@ -90,6 +94,7 @@ protected:
 signals:
     void idChanged();
     void filenameChanged();
+    void localImageSourceChanged();
     void hashChanged();
     void galleryChanged();
     void topChanged();
@@ -98,11 +103,15 @@ signals:
     void imageDescriptionChanged();
     void imageLoaded();
 
+protected slots:
+    void imageDownloaded(const QString &url_);
+
 private:
     ImageModel *m_imageModel = nullptr;
     int m_appId = 0;
     int m_id = -1;
     ImageSource m_filename;
+    QString m_localImageUrl;
     QString m_hash;
     int m_gallery = -1;
     bool m_top = false;

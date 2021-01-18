@@ -70,7 +70,7 @@ Page {
                             id: imageOfGallery
                             width: (galleryPage.width - Constants.galleryImageSpacing)
                             height: ((galleryPage.width - Constants.galleryImageSpacing) / Constants.galleryAspectX) * Constants.galleryAspectY
-                            source: imageSource
+                            source: localImageSource
                             fillMode: Image.PreserveAspectFit
 
                             MouseArea {
@@ -86,6 +86,14 @@ Page {
                                     var ip = currentImage.imagePoints
                                     galleryPage.startQuiz(currentImage)
                                     mouse.accepted = false
+                                }
+                            }
+
+                            Connections {
+                                target: images.itemAt(model.index)
+                                function onLocalImageSourceChanged()
+                                {
+                                    source = localImageSource
                                 }
                             }
                         }

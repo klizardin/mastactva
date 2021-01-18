@@ -108,7 +108,7 @@ Page {
                                 quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageNumberAnimation.duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
 
-                                galleryAllImagesPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.imageSource)
+                                galleryAllImagesPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.localImageSource)
                                 quizImageAnimation.running = true
                             }
                         }
@@ -132,7 +132,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
-                    galleryAllImagesPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.imageSource)
+                    galleryAllImagesPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.localImageSource)
                     quizImage.effect = null
                     quizImage.argumentSet = null
                     quizImageNumberAnimation.easing.type = Easing.Linear

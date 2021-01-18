@@ -174,7 +174,7 @@ ApplicationWindow {
             galleryAllImagesPage.currentImageSource = startImage.imageSource
             galleryAllImagesPage.currentImageHash = startImage.imageHash
             quizPage.init()
-            setDescription(startImage.imageDescription, galleryModel.currentItem.id, startImage.imageId, startImage.imageSource)
+            setDescription(startImage.imageDescription, galleryModel.currentItem.id, startImage.imageId, startImage.localImageSource)
             stackView.push(quizPage)
         }
     }
@@ -207,7 +207,7 @@ ApplicationWindow {
         }
     }
 
-    function setDescription(imageDescription, galleryId, imageId, imageSource)
+    function setDescription(imageDescription, galleryId, imageId, localImageSource)
     {
         quizPage.hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
         galleryAllImagesPage.hasDescription = quizPage.hasDescription
@@ -218,7 +218,7 @@ ApplicationWindow {
             descriptionPage.imageId = imageId
             descriptionPage.descriptionId = imageDescription.getCurrentItem().idId
             descriptionPage.descriptionTextArg = imageDescription.getCurrentItem().idDescriptionText
-            descriptionPage.imageSource = imageSource
+            descriptionPage.imageSource = localImageSource
         }
         else
         {
@@ -272,9 +272,9 @@ ApplicationWindow {
     Connections {
         target: galleryAllImagesPage
 
-        function onSetDescription(descriptionModel, galleryId, imageId, imageSource)
+        function onSetDescription(descriptionModel, galleryId, imageId, localImageSource)
         {
-            setDescription(descriptionModel, galleryId, imageId, imageSource)
+            setDescription(descriptionModel, galleryId, imageId, localImageSource)
         }
     }
 

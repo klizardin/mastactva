@@ -33,9 +33,28 @@ void Image::downloadImage()
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloaded(const QString &)));
     if(nullptr != sf)
     {
+        IListModelInfoObjectImpl::startLoadChildModel();
         sf->add(getFilename(), hash(), g_imagesRelPath);
+    }
+}
+
+void Image::imageDownloaded(const QString &url_)
+{
+    if(url_ != getFilename()) { return; }
+
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloaded(const QString &)));
+
+    if(nullptr != sf)
+    {
+        IListModelInfoObjectImpl::endLoadChildModel();
+        if(sf->isUrlDownloaded(getFilename()))
+        {
+            setLocalImageSource(sf->get(url_));
+        }
     }
 }
 
@@ -71,6 +90,20 @@ QString Image::getFilename() const
 void Image::setFilenameStr(const QString &filename_)
 {
     setFilename(filename_);
+}
+
+QString Image::localImageSource() const
+{
+    qDebug() << m_localImageUrl;
+
+    return m_localImageUrl;
+}
+
+void Image::setLocalImageSource(const QString &url_)
+{
+    m_localImageUrl = url_;
+
+    emit localImageSourceChanged();
 }
 
 QString Image::hash() const

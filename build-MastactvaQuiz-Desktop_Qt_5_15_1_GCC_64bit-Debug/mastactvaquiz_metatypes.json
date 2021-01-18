@@ -2601,6 +2601,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "localImageSource",
+                        "notify": "localImageSourceChanged",
+                        "read": "localImageSource",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLocalImageSource"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "imageHash",
                         "notify": "hashChanged",
                         "read": "hash",
@@ -2696,6 +2710,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "localImageSourceChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "hashChanged",
                         "returnType": "void"
                     },
@@ -2727,6 +2746,19 @@
                     {
                         "access": "public",
                         "name": "imageLoaded",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "imageDownloaded",
                         "returnType": "void"
                     }
                 ],
