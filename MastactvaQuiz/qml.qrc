@@ -15,8 +15,6 @@
         <file>GalleryAllImageForm.qml</file>
         <file>OptionsForm.qml</file>
         <file>HelpForm.qml</file>
-    </qresource>
-    <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
         <file>Mastactva/qmldir</file>
     </qresource>
