@@ -124,7 +124,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(RequestData::addItemRequestName<DataType_>(), layoutName_, false, extraFields);
+        r->init<DataType_>(RequestData::setItemRequestName<DataType_>(), layoutName_, false, extraFields);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
         bool res = nullptr == view
