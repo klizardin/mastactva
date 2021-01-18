@@ -18789,7 +18789,22 @@
                 "slots": [
                     {
                         "access": "protected",
-                        "name": "imagePointToQuestionModelListReloaded",
+                        "name": "galleryStatisticsModelListReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "userQuestionAnswerModelListReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "galleryStatisticsModelItemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "galleryStatisticsModelItemSet",
                         "returnType": "void"
                     }
                 ],

@@ -11,6 +11,7 @@
 #include "../MastactvaModels/gallerystatistics.h"
 #include "../MastactvaModels/questionanswer.h"
 #include "../MastactvaModels/gallerymodelview.h"
+#include "../MastactvaModels/questionanswermodelview.h"
 
 
 static const char *g_quizUserModel = "QuizUserModel";
@@ -34,6 +35,7 @@ void QMLObjects::searchObjects()
         m_localDataAPIViews.push_back(new GalleryStatisticsModelView());
         m_localDataAPIViews.push_back(new UserQuestionAnswerModelView());
         m_localDataAPIViews.push_back(new GalleryModelView(m_root));
+        m_localDataAPIViews.push_back(new QuestionAnswerModelView(m_root));
     }
     IListModel *m = nullptr;
     m = findListModel(g_quizUserModel);
