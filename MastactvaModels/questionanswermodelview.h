@@ -28,21 +28,21 @@ public:
     virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override;
 
 protected:
-    void loadStatisticsForGallery();
-    void imagePointModelListReloaded();
+    void addUserQuestionAnswer();
+    void addUserQuestionAnswerItem();
+    void error();
 
 protected slots:
-    void imagePointToQuestionModelListReloaded();
+    void galleryStatisticsModelListReloaded();
+    void userQuestionAnswerModelListReloaded();
+    void galleryStatisticsModelItemAdded();
+    void galleryStatisticsModelItemSet();
 
 private:
     UserQuestionAnswerModel *m_userQuestionAnswerModel = nullptr;
-    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
-    ImagePointModel *m_imagePointModel = nullptr;
-    ImageModel *m_imageModel = nullptr;
     GalleryStatisticsModel *m_galleryStatisticsModel = nullptr;
     QList<QPair<DBRequestInfo *, UserQuestionAnswer *>> m_requests;
-    ImagePointToQuestion *m_imagePointToQuestion = nullptr;
-    ImagePoint *m_imagePoint = nullptr;
+    GalleryStatistics *m_galleryStatistics = nullptr;
 };
 
 #endif // QUESTIONANSWERMODELVIEW_H

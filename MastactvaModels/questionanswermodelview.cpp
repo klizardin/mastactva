@@ -1,4 +1,7 @@
 #include "questionanswermodelview.h"
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/utils.h"
+#include "../MastactvaModels/gallery.h"
 
 
 QuestionAnswerModelView::QuestionAnswerModelView(QObject * parent_ /*= nullptr*/)
@@ -13,43 +16,19 @@ QuestionAnswerModelView::QuestionAnswerModelView(QObject * parent_ /*= nullptr*/
     m_userQuestionAnswerModel->setAutoCreateChildrenModelsImpl(false);
     m_userQuestionAnswerModel->setReadonlyImpl(false);
 
+    GalleryModel *galleryModel = static_cast<GalleryModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_galleryModel)
+                );
+
     m_galleryStatisticsModel = new GalleryStatisticsModel(parent_);
     m_galleryStatisticsModel->initResponse();
-    m_galleryStatisticsModel->setCurrentRefImpl("");
+    m_galleryStatisticsModel->setLayoutRefImpl("gallery", galleryModel->getQMLLayoutName(), "id", false);
+    m_galleryStatisticsModel->setCurrentRefImpl("gallery");
     m_galleryStatisticsModel->setLayoutQMLNameImpl("LocalData_GalleryStatisticsModel");
     m_galleryStatisticsModel->setLayoutIdFieldImpl("id");
     m_galleryStatisticsModel->registerListModel();
     m_galleryStatisticsModel->setAutoCreateChildrenModelsImpl(false);
     m_galleryStatisticsModel->setReadonlyImpl(false);
-
-    m_imagePointToQuestionModel = new ImagePointToQuestionModel(parent_);
-    m_imagePointToQuestionModel->initResponse();
-    m_imagePointToQuestionModel->setCurrentRefImpl("image_point");
-    m_imagePointToQuestionModel->setRefValueImpl(QVariant::fromValue(-1));
-    m_imagePointToQuestionModel->setLayoutQMLNameImpl("LocalData_ImagePointToQuestionModel");
-    m_imagePointToQuestionModel->setLayoutIdFieldImpl("id");
-    m_imagePointToQuestionModel->registerListModel();
-    m_imagePointToQuestionModel->setAutoCreateChildrenModelsImpl(false);
-    m_imagePointToQuestionModel->setReadonlyImpl(true);
-
-    m_imagePointModel = new ImagePointModel(parent_);
-    m_imagePointModel->initResponse();
-    m_imagePointModel->setCurrentRefImpl("image");
-    m_imagePointModel->setRefValueImpl(QVariant::fromValue(-1));
-    m_imagePointModel->setLayoutQMLNameImpl("LocalData_ImagePointModel");
-    m_imagePointModel->setLayoutIdFieldImpl("id");
-    m_imagePointModel->registerListModel();
-    m_imagePointModel->setAutoCreateChildrenModelsImpl(false);
-    m_imagePointModel->setReadonlyImpl(true);
-
-    m_imageModel = new ImageModel(parent_);
-    m_imageModel->initResponse();
-    m_imageModel->setCurrentRefImpl("gallery");
-    m_imageModel->addModelParamImpl("use_in_gallery_view", "1");
-    m_imageModel->setRefValueImpl(QVariant::fromValue(-1));
-    m_imageModel->setLayoutQMLNameImpl("LocalData_ImageModel");
-    m_imageModel->registerListModel();
-    m_imageModel->setAutoCreateChildrenModelsImpl(false);
 }
 
 QuestionAnswerModelView::~QuestionAnswerModelView()
@@ -58,12 +37,6 @@ QuestionAnswerModelView::~QuestionAnswerModelView()
     m_userQuestionAnswerModel = nullptr;
     delete m_galleryStatisticsModel;
     m_galleryStatisticsModel = nullptr;
-    delete m_imagePointToQuestionModel;
-    m_imagePointToQuestionModel = nullptr;
-    delete m_imagePointModel;
-    m_imagePointModel = nullptr;
-    delete m_imageModel;
-    m_imageModel = nullptr;
 }
 
 bool QuestionAnswerModelView::canProcess(const DBRequestInfo *r_) const
@@ -76,7 +49,6 @@ bool QuestionAnswerModelView::canProcess(const DBRequestInfo *r_) const
     const QString requestNameAddItem = RequestData::addItemRequestName<typename UserQuestionAnswerModel::DataType>();
     if(r_->getDBRequestName() != requestNameAddItem) { return false; }
     if(r_->getAPIName() != g_cachAPI) { return false; }
-    if(r_->getCurrentRef().isEmpty()) { return false; }
     return true;
 }
 
@@ -88,7 +60,7 @@ bool QuestionAnswerModelView::getListImpl(DBRequestInfo *r_)
 
 bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
 {
-    Q_ASSERT(nullptr != r_ && r_->getAPIName() == g_cachAPI);
+    if(nullptr == r_ || r_->getAPIName() != g_cachAPI) { return false; }
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemAppId(appId_);
 
@@ -97,7 +69,7 @@ bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_, const QHash<QS
 
     m_requests.push_back({r_, userQuestionAnswer});
 
-    loadStatisticsForGallery();
+    addUserQuestionAnswer();
     return true;
 }
 
@@ -116,91 +88,184 @@ bool QuestionAnswerModelView::delItemImpl(const QVariant &id_, DBRequestInfo *r_
     return false;
 }
 
-void QuestionAnswerModelView::loadStatisticsForGallery()
+void QuestionAnswerModelView::addUserQuestionAnswer()
 {
-    const UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
-    Q_ASSERT(nullptr != userQuestionAnswer);
+    if(!m_requests.isEmpty()) { return; }
 
-    QObject::connect(m_imagePointToQuestionModel, SIGNAL(listReloaded()), this, SLOT(imagePointToQuestionModelListReloaded()));
+    Q_ASSERT(nullptr != m_userQuestionAnswerModel);
 
-    m_imagePointToQuestionModel->clearListLoaded();
-    m_imagePointToQuestionModel->loadListImpl(QString(),
-                QHash<QString, QVariant>(
-                {{
-                    QString(g_procedureExtraFieldName),
-                     QVariant::fromValue(QHash<QString, QVariant>(
-                     {
-                         {QString(g_procedureConditionName), QVariant::fromValue(QString("question=:question"))},
-                         {QString(g_procedureFilterConditionsName),
-                            QVariant::fromValue(
-                                QList<QVariant>(
-                                    {
-                                        QVariant::fromValue(QString("")),
-                                    }
-                                )
-                            )
-                         },
-                         {QString(g_procedureArguments),
-                          QVariant::fromValue(
-                            QHash<QString, QVariant>(
-                            {
-                                {QString(":question"),
-                                 QVariant::fromValue(userQuestionAnswer->questionId())},
-                            })
-                          )
-                         }
-                     }))
-                 },}));
+    QObject::connect(m_galleryStatisticsModel, SIGNAL(listReloaded()), this, SLOT(galleryStatisticsModelListReloaded()));
+    m_galleryStatisticsModel->clearListLoaded();
+    m_galleryStatisticsModel->loadList();
 }
 
-void QuestionAnswerModelView::imagePointToQuestionModelListReloaded()
+void QuestionAnswerModelView::error()
 {
-    QObject::disconnect(m_imagePointToQuestionModel, SIGNAL(listReloaded()), this, SLOT(imagePointToQuestionModelListReloaded()));
-    m_imagePointToQuestion = m_imagePointToQuestionModel->getCurrentDataItem();
-    if(nullptr == m_imagePointToQuestion)
+    if(m_requests.isEmpty())
     {
         return;
     }
 
-    QObject::connect(m_imagePointModel, SIGNAL(listReloaded()), this, SLOT(imagePointModelListReloaded()));
-    m_imagePointModel->clearListLoaded();
-    m_imagePointModel->loadListImpl(QString(),
-                QHash<QString, QVariant>(
-                {{
-                    QString(g_procedureExtraFieldName),
-                     QVariant::fromValue(QHash<QString, QVariant>(
-                     {
-                         {QString(g_procedureConditionName), QVariant::fromValue(QString("id=:id"))},
-                         {QString(g_procedureFilterConditionsName),
-                            QVariant::fromValue(
-                                QList<QVariant>(
-                                    {
-                                        QVariant::fromValue(QString("")),
-                                    }
-                                )
-                            )
-                         },
-                         {QString(g_procedureArguments),
-                          QVariant::fromValue(
-                            QHash<QString, QVariant>(
-                            {
-                                {QString(":id"),
-                                 QVariant::fromValue(m_imagePointToQuestion->imagePointId())},
-                            })
-                          )
-                         }
-                     }))
-                 },}));
+    DBRequestInfo *request = m_requests.front().first;
+    if(nullptr != request && request->getAPIName() == g_cachAPI)
+    {
+        LocalDBRequest *r = static_cast<LocalDBRequest *>(request);
+
+        QJsonArray jsonArray;
+        QJsonObject jsonObj;
+        jsonObj.insert(QString(g_errorDetailTag), QJsonValue("Internal error"));
+        jsonArray.push_back(jsonObj);
+        r->addJsonResult(QJsonDocument(jsonArray));
+        r->setError(true);
+        r->setProcessed(true);
+    }
+    m_requests.pop_front();
+    addUserQuestionAnswer();
 }
 
-void QuestionAnswerModelView::imagePointModelListReloaded()
+void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
 {
-    QObject::disconnect(m_imagePointModel, SIGNAL(listReloaded()), this, SLOT(imagePointModelListReloaded()));
-    m_imagePoint = m_imagePointModel->getCurrentDataItem();
-    if(nullptr == m_imagePoint)
+    Q_ASSERT(nullptr != m_userQuestionAnswerModel);
+    Q_ASSERT(nullptr != m_galleryStatisticsModel);
+
+    QObject::disconnect(m_galleryStatisticsModel, SIGNAL(listReloaded()), this, SLOT(galleryStatisticsModelListReloaded()));
+
+    if(m_requests.isEmpty())
     {
+        error();
         return;
     }
 
+    UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
+    if(nullptr == userQuestionAnswer)
+    {
+        error();
+        return;
+    }
 
+    m_galleryStatistics = m_galleryStatisticsModel->getCurrentDataItem();
+    if(nullptr == m_galleryStatistics)
+    {
+        m_galleryStatistics = m_galleryStatisticsModel->createDataItemImpl();
+
+        GalleryModel *galleryModel = static_cast<GalleryModel *>(
+                    QMLObjectsBase::getInstance().getListModel(g_galleryModel)
+                    );
+        Gallery *gallery = galleryModel->getCurrentDataItem();
+        if(nullptr == gallery)
+        {
+            error();
+            return;
+        }
+        m_galleryStatistics->setGalleryId(nullptr != gallery ? gallery->id() : -1 );
+        m_galleryStatistics->setUserId(g_userId);
+        m_galleryStatistics->setPoints(userQuestionAnswer->points());
+
+        QObject::connect(m_galleryStatisticsModel, SIGNAL(itemAdded()), this, SLOT(galleryStatisticsModelItemAdded()));
+        m_galleryStatisticsModel->addDataItemImpl(m_galleryStatistics);
+    }
+    else
+    {
+
+        QObject::connect(m_userQuestionAnswerModel, SIGNAL(listReloaded()), this, SLOT(userQuestionAnswerModelListReloaded()));
+        m_userQuestionAnswerModel->clearListLoaded();
+        m_userQuestionAnswerModel->loadListImpl(
+                    QString(),
+                    QHash<QString, QVariant>
+                    ({{
+                         QString(g_procedureExtraFieldName),
+                         QVariant::fromValue(
+                         QHash<QString, QVariant>
+                         ({
+                             {QString(g_procedureConditionName),
+                              QVariant::fromValue(QString("question=:question"))},
+                             {QString(g_procedureOrderByName),
+                              QVariant::fromValue(QString("t DESC"))},
+                             {QString(g_procedureLimitName),
+                              QVariant::fromValue(1)},
+                             {QString(g_procedureArguments),
+                              QVariant::fromValue(
+                                QHash<QString, QVariant>
+                                ({
+                                  {QString(":question"), QVariant::fromValue(userQuestionAnswer->questionId())},
+                                })
+                              )},
+                         }))
+                     },}));
+    }
+}
+
+void QuestionAnswerModelView::userQuestionAnswerModelListReloaded()
+{
+    Q_ASSERT(nullptr != m_userQuestionAnswerModel);
+    QObject::disconnect(m_userQuestionAnswerModel, SIGNAL(listReloaded()), this, SLOT(userQuestionAnswerModelListReloaded()));
+
+    if(m_requests.isEmpty())
+    {
+        error();
+        return;
+    }
+
+    UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
+    if(nullptr == userQuestionAnswer)
+    {
+        error();
+        return;
+    }
+
+    UserQuestionAnswer *oldUserQuestionAnswer = m_userQuestionAnswerModel->getCurrentDataItem();
+    if(nullptr == oldUserQuestionAnswer)
+    {
+        m_galleryStatistics->setPoints(m_galleryStatistics->points() + userQuestionAnswer->points());
+
+    }
+    else
+    {
+        m_galleryStatistics->setPoints(m_galleryStatistics->points() - oldUserQuestionAnswer->points() + userQuestionAnswer->points());
+    }
+
+    QObject::connect(m_galleryStatisticsModel, SIGNAL(itemSet()), this, SLOT(galleryStatisticsModelItemSet()));
+    const int index = m_galleryStatisticsModel->indexOfDataItemImpl(m_galleryStatistics);
+    m_galleryStatisticsModel->setDataItemImpl(index, m_galleryStatistics);
+}
+
+void QuestionAnswerModelView::galleryStatisticsModelItemAdded()
+{
+    addUserQuestionAnswerItem();
+}
+
+void QuestionAnswerModelView::galleryStatisticsModelItemSet()
+{
+    addUserQuestionAnswerItem();
+}
+
+void QuestionAnswerModelView::addUserQuestionAnswerItem()
+{
+    if(m_requests.isEmpty())
+    {
+        error();
+        return;
+    }
+
+    UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
+    if(nullptr == userQuestionAnswer)
+    {
+        error();
+        return;
+    }
+    QHash<QString, QVariant> values;
+    getDataLayout<UserQuestionAnswer>().getJsonValues(userQuestionAnswer, values);
+
+    DBRequestInfo *request = m_requests.front().first;
+    if(nullptr == request || request->getAPIName() != g_cachAPI)
+    {
+        error();
+        return;
+    }
+
+    LocalDBRequest *r = static_cast<LocalDBRequest *>(request);
+    request->getDefaultAPI()->addItemImpl(r->getItemAppId(), values, request);
+
+    m_requests.pop_front();
+    addUserQuestionAnswer();
 }
