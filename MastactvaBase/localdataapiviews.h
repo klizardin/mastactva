@@ -26,6 +26,7 @@ public:
         if(r_->getTableName() != tableName) { return false; }
         const QString requestNameGetList = RequestData::getListRequestName<typename ModelType_::DataType>();
         if(r_->getDBRequestName() != requestNameGetList) { return false; }
+        if(r_->getCurrentRef().isEmpty()) { return false; }
         return true;
     }
 
