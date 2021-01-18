@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QTranslator>
+#include <QFile>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
 
@@ -37,6 +38,24 @@ void switchLanguage(const QString & lang_, QTranslator& translator_, QTranslator
     switchTranslator(app_, translatorQt_, QString("qt_%1.qm").arg(lang));
 }
 
+void copyDbases()
+{
+#if defined(ASSETS_ROOT)
+    QFile dfile1("assets:/mastactva_ro.db3");
+    if (dfile1.exists())
+    {
+         dfile1.copy("./mastactva_ro.db3");
+         QFile::setPermissions("./mastactva_ro.db3",QFile::WriteOwner | QFile::ReadOwner);
+    }
+    QFile dfile2("assets:/mastactva_rw.db3");
+    if (dfile2.exists())
+    {
+         dfile2.copy("./mastactva_rw.db3");
+         QFile::setPermissions("./mastactva_rw.db3",QFile::WriteOwner | QFile::ReadOwner);
+    }
+#endif
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -45,6 +64,8 @@ int main(int argc, char *argv[])
     QTranslator translator(&app);
     QTranslator translatorQt(&app);
     switchLanguage(g_belarusLanguage, translator, translatorQt, app);
+
+    copyDbases();
 
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");

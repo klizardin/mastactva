@@ -7,13 +7,18 @@
 #include "../MastactvaBase/utils.h"
 
 
-static const QString g_currentDir = "./";
+static const char *g_currentDir = "./";
+static const char *g_assestsDir = "assets:/";
 
 
 ServerFiles::ServerFiles(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
+#if defined(ASSETS_ROOT)
+    m_rootDir = g_assestsDir;
+#else
     m_rootDir = g_currentDir;
+#endif
 }
 
 ServerFiles::~ServerFiles()
@@ -28,7 +33,11 @@ QString ServerFiles::getRootDir() const
 
 void ServerFiles::setRootDir(const QString &path_)
 {
+#if defined(ASSETS_ROOT)
+    // work only with assets path
+#else
     m_rootDir = path_;
+#endif
 }
 
 void ServerFiles::add(const QString &url_, const QString &hash_, const QString &relCachePath_)

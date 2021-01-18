@@ -129,6 +129,21 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+android {
+    DEFINES += "ASSETS_ROOT=1"
+
+    image_files.path = /assets/images/
+    image_files.files = $$files($$PWD/../MastactvaData/images/*)
+    INSTALLS += image_files
+    shader_files.path = /assets/shaders/
+    shader_files.files = $$files($$PWD/../MastactvaData/shaders/*)
+    INSTALLS += shader_files
+    dbase_files.path = /assets/
+    dbase_files.files += $$PWD/../MastactvaData/mastactva_ro.db3
+    dbase_files.files += $$PWD/../MastactvaData/mastactva_rw.db3
+    INSTALLS += dbase_files
+}
+
 ANDROID_ABIS = armeabi-v7a
 
 
