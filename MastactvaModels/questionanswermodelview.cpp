@@ -7,7 +7,7 @@
 QuestionAnswerModelView::QuestionAnswerModelView(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
-    m_userQuestionAnswerModel = new UserQuestionAnswerModel(parent_);
+    m_userQuestionAnswerModel = new UserQuestionAnswerModel(this);
     m_userQuestionAnswerModel->initResponse();
     m_userQuestionAnswerModel->setCurrentRefImpl("");
     m_userQuestionAnswerModel->setLayoutQMLNameImpl("LocalData_UserQuestionAnswerModel");
@@ -20,7 +20,7 @@ QuestionAnswerModelView::QuestionAnswerModelView(QObject * parent_ /*= nullptr*/
                 QMLObjectsBase::getInstance().getListModel(g_galleryModel)
                 );
 
-    m_galleryStatisticsModel = new GalleryStatisticsModel(parent_);
+    m_galleryStatisticsModel = new GalleryStatisticsModel(this);
     m_galleryStatisticsModel->initResponse();
     m_galleryStatisticsModel->setLayoutRefImpl("gallery", galleryModel->getQMLLayoutName(), "id", false);
     m_galleryStatisticsModel->setCurrentRefImpl("gallery");
