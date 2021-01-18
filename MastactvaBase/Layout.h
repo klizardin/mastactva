@@ -78,27 +78,32 @@ namespace layout
     // TODO: add more types
     inline void setValue(const QJsonValue &var_, int &dta_)
     {
-        dta_ = var_.toInt(dta_);
+        if(var_.isNull() || !var_.isDouble()) { dta_ = 0; }
+        else { dta_ = var_.toInt(dta_); }
     }
 
     inline void setValue(const QJsonValue &var_, bool &dta_)
     {
-        dta_ = var_.toInt(dta_) != 0;
+        if(var_.isNull() || !var_.isDouble()) { dta_ = false; }
+        else { dta_ = var_.toInt(dta_) != 0; }
     }
 
     inline void setValue(const QJsonValue &var_, qreal &dta_)
     {
-        dta_ = var_.toDouble(dta_);
+        if(var_.isNull() || !var_.isDouble()) { dta_ = 0.0; }
+        else { dta_ = var_.toDouble(dta_); }
     }
 
     inline void setValue(const QJsonValue &var_, QString &dta_)
     {
-        dta_ = var_.toString();
+        if(var_.isNull() || !var_.isString()) { dta_ = QString(); }
+        else { dta_ = var_.toString(); }
     }
 
     inline void setValue(const QJsonValue &var_, QDateTime &dta_)
     {
-        dta_ = dateTimeFromJsonString(var_.toString());
+        if(var_.isNull() || !var_.isString()) { dta_ = dateTimeFromJsonString(QString()); }
+        else { dta_ = dateTimeFromJsonString(var_.toString()); }
     }
 
     template<typename T_>
