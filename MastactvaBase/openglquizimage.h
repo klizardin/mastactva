@@ -73,7 +73,7 @@ private:
     void createTextures();
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
-    void extractArguments();
+    void extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_);
     void initDefaultShaders();
     void initGeometry();
     void resetProgram();
@@ -118,9 +118,9 @@ private:
     QString m_toImageUrl;
     QString m_fromImageUrlNew;
     QString m_toImageUrlNew;
-    Effect *m_effect = nullptr;
+    //Effect *m_effect = nullptr;
     int m_oldEffectId = -1;
-    EffectArgSet *m_argumentSet = nullptr;
+    //EffectArgSet *m_argumentSet = nullptr;
     int m_oldArgumentSetId = -1;
     QList<ArgumentInfo> m_arguments;
     QString m_vertexShader;

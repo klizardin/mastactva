@@ -46,6 +46,11 @@ EffectArgValueModel *EffectArgSet::getArgumentValues()
     return m_affectArgValueModel;
 }
 
+const EffectArgValueModel *EffectArgSet::getArgumentValues() const
+{
+    return m_affectArgValueModel;
+}
+
 int EffectArgSet::id() const
 {
     return m_id;

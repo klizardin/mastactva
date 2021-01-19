@@ -457,7 +457,17 @@ EffectShaderModel *Effect::getEffectShaders()
     return m_effectShadersModel;
 }
 
+const EffectShaderModel *Effect::getEffectShaders() const
+{
+    return m_effectShadersModel;
+}
+
 EffectArgModel *Effect::getEffectArguments()
+{
+    return m_effectArgModel;
+}
+
+const EffectArgModel *Effect::getEffectArguments() const
 {
     return m_effectArgModel;
 }

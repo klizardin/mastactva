@@ -50,6 +50,7 @@ public:
     QVariant shader() const;
     void setShader(const QVariant &obj_);
     ShaderModel *getShader();
+    const ShaderModel *getShader() const;
 
 protected:
     ShaderModel *createShaderModel();

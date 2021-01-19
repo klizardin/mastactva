@@ -72,6 +72,11 @@ ShaderModel *EffectShader::getShader()
     return m_shaderModel;
 }
 
+const ShaderModel *EffectShader::getShader() const
+{
+    return m_shaderModel;
+}
+
 ShaderModel *EffectShader::createShaderModel()
 {
     ShaderModel *m = new ShaderModel(this);

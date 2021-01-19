@@ -71,7 +71,7 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
-        QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+        QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)), Qt::QueuedConnection);
         sf->add(imageUrl, imageHash, g_imagesRelPath);
     }
 
@@ -109,7 +109,7 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
-        QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)));
+        QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(imageDownloadedSlot(const QString &)), Qt::QueuedConnection);
         sf->add(imageUrl, imageHash, g_imagesRelPath);
     }
 
@@ -142,7 +142,7 @@ void QuizImage::setEffect(const QVariant &effect_)
     if(nullptr != m_effect)
     {
         m_effectLoading = true;
-        QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+        QObject::connect(m_effect, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()), Qt::QueuedConnection);
         if(m_effect->isChildrenLoaded())
         {
             addShadersToWaitDownload();
@@ -184,7 +184,7 @@ void QuizImage::setArgumentSet(const QVariant &argumentSet_)
 
     if(nullptr != m_argumentSet)
     {
-        QObject::connect(m_argumentSet, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()));
+        QObject::connect(m_argumentSet, SIGNAL(childrenLoaded()), this, SLOT(effectChildrenLoadedSlot()), Qt::QueuedConnection);
         if(m_argumentSet->isChildrenLoaded())
         {
             updateStateIfDataIsReady();

@@ -246,7 +246,7 @@ OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
 
     m_fromImageUrlNew = g_noImage;
     m_toImageUrlNew = g_noImage;
-    extractArguments();
+    extractArguments(nullptr, nullptr);
 }
 
 OpenGlQuizImage::~OpenGlQuizImage()
@@ -322,16 +322,16 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     //{
     //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
     //}
-    m_effect = quizImage->getEffect();
-    m_argumentSet = quizImage->getArgumentSet();
+    const Effect *effect = quizImage->getEffect();
+    const EffectArgSet *argumentSet = quizImage->getArgumentSet();
     const bool needToUpdateEffects = quizImage->needToUpdateEffects();
-    int effectId = nullptr != m_effect ? m_effect->id() : -1;
-    int argumentSetId = nullptr != m_argumentSet ? m_argumentSet->id() : -1;
+    int effectId = nullptr != effect ? effect->id() : -1;
+    int argumentSetId = nullptr != argumentSet ? argumentSet->id() : -1;
     if(needToUpdateEffects || effectId != m_oldEffectId || argumentSetId != m_oldArgumentSetId)
     {
         m_oldEffectId = effectId;
         m_oldArgumentSetId = argumentSetId;
-        extractArguments();
+        extractArguments(effect, argumentSet);
     }
     quizImage->renderBuildError(m_programBuildLog);
 }
@@ -675,9 +675,9 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->release();
 }
 
-void OpenGlQuizImage::extractArguments()
+void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)
 {
-    if(nullptr == m_effect)
+    if(nullptr == effect_)
     {
         m_arguments.clear();
         m_vertexShader.clear();
@@ -698,15 +698,15 @@ void OpenGlQuizImage::extractArguments()
     m_vertexShader.clear();
     m_fragmentShader.clear();
 
-    EffectShaderModel *shaders = m_effect->getEffectShaders();
+    const EffectShaderModel *shaders = effect_->getEffectShaders();
     Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
     for(int i = 0; i < shaders->sizeImpl(); ++i)
     {
-        EffectShader *effect_shader = shaders->dataItemAtImpl(i);
+        const EffectShader *effect_shader = shaders->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_shader);
-        ShaderModel *shaderModel = effect_shader->getShader();
+        const ShaderModel *shaderModel = effect_shader->getShader();
         Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
-        Shader *shader = shaderModel->dataItemAtImpl(0);
+        const Shader *shader = shaderModel->dataItemAtImpl(0);
         Q_ASSERT(shader != nullptr);
 
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
@@ -738,15 +738,15 @@ void OpenGlQuizImage::extractArguments()
 
     m_arguments.clear();
     // read default arguments values
-    EffectArgModel *effectArguments = m_effect->getEffectArguments();
+    const EffectArgModel *effectArguments = effect_->getEffectArguments();
     Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
     for(int i = 0; i < effectArguments->sizeImpl(); ++i)
     {
         ArgumentInfo ai;
-        EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
+        const EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effectArgument);
         ai.setName(effectArgument->name());
-        ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
+        const ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
         Q_ASSERT(nullptr != argType);
         ai.setArgId(effectArgument->id());
         ai.setType(argType->type());
@@ -754,13 +754,13 @@ void OpenGlQuizImage::extractArguments()
         m_arguments.push_back(ai);
     }
 
-    if(nullptr != m_argumentSet)
+    if(nullptr != argumentSet_)
     {
-        EffectArgValueModel *argumentValuesModel = m_argumentSet->getArgumentValues();
+        const EffectArgValueModel *argumentValuesModel = argumentSet_->getArgumentValues();
         Q_ASSERT(nullptr != argumentValuesModel && argumentValuesModel->isListLoaded());
         for(int i = 0; i < argumentValuesModel->sizeImpl(); ++i)
         {
-            EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
+            const EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
             Q_ASSERT(nullptr != effectArgumentValue);
             const int argId = effectArgumentValue->getArgId();
             const auto fita = std::find_if(std::begin(m_arguments), std::end(m_arguments), [argId](const ArgumentInfo &ai)->bool

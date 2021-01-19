@@ -64,7 +64,9 @@ public:
 
 public:
     EffectShaderModel *getEffectShaders();
+    const EffectShaderModel *getEffectShaders() const;
     EffectArgModel *getEffectArguments();
+    const EffectArgModel *getEffectArguments() const;
 
 public:
     Q_INVOKABLE bool startRefreshArguments();
