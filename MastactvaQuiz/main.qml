@@ -327,7 +327,7 @@ ApplicationWindow {
             ToolButton {
                 id: toolButton
                 Layout.alignment: Qt.AlignLeft
-                text: stackView.depth > 1 ? "<" : "⋮"
+                text: stackView.depth > 1 ? "<" : "\u22EE"
                 font.pixelSize: Qt.application.font.pixelSize * 1.6
                 onClicked: {
                     if (stackView.depth > 1) {
