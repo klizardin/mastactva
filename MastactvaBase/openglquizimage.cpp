@@ -11,6 +11,7 @@
 #include "../MastactvaModels/shadertype.h"
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/effectargvalue.h"
+#include "../MastactvaBase/defines.h"
 
 
 static const QString g_noImage = ":/resources/no-image.png";
@@ -242,6 +243,10 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
 
 OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
 {
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "OpenGlQuizImage::OpenGlQuizImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     m_parent = parent_;
 
     m_fromImageUrlNew = g_noImage;
@@ -298,6 +303,9 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     {
         m_updateSize = true;
     }
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    //qDebug() << "OpenGlQuizImage::sync()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_left = int(item_->x());
     m_top = int(item_->y());
     m_width = int(item_->width());
@@ -306,22 +314,14 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
     // base data
-    //qreal oldT = m_t;
     m_t = quizImage->t();
-    //if(oldT != m_t)
-    //{
-    //    qDebug() << "m_t = " << m_t;
-    //}
     if(!quizImage->areAllDataAvailable()) { return; }
+    if(!quizImage->dataUpdated()) { return; }
     // all data
     m_fromImageUrlNew = quizImage->fromImageLocalUrl();
     if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
     m_toImageUrlNew = quizImage->toImageLocalUrl();
     if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
-    //if(m_fromImageUrlNew != m_fromImageUrl || m_toImageUrlNew != m_toImageUrl)
-    //{
-    //    qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
-    //}
     const Effect *effect = quizImage->getEffect();
     const EffectArgSet *argumentSet = quizImage->getArgumentSet();
     const bool needToUpdateEffects = quizImage->needToUpdateEffects();
@@ -333,6 +333,7 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
         m_oldArgumentSetId = argumentSetId;
         extractArguments(effect, argumentSet);
     }
+    quizImage->retryData();
     quizImage->renderBuildError(m_programBuildLog);
 }
 
@@ -401,6 +402,9 @@ void OpenGlQuizImage::createTextures()
         std::swap(m_fromImage, m_toImage);
         std::swap(m_fromTexture, m_toTexture);
         m_updateSize = true;
+#if defined(TRACE_QUIZIMAGE_THREADS)
+        qDebug() << "OpenGlQuizImage::createTextures()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
         return;
     }
 
@@ -424,7 +428,11 @@ void OpenGlQuizImage::createTextures()
         m_fromTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_fromTexture->setBorderColor(1, 1, 1, 0);
         m_updateSize = true;
+#if defined(TRACE_QUIZIMAGE_THREADS)
+        qDebug() << "OpenGlQuizImage::createTextures()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     }
+
     if(m_toImageUrlNew != m_toImageUrl)
     {
         m_toImageUrl = m_toImageUrlNew;
@@ -445,6 +453,9 @@ void OpenGlQuizImage::createTextures()
         m_toTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_toTexture->setBorderColor(1, 1, 1, 0);
         m_updateSize = true;
+#if defined(TRACE_QUIZIMAGE_THREADS)
+        qDebug() << "OpenGlQuizImage::createTextures()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     }
 }
 
@@ -459,6 +470,9 @@ void OpenGlQuizImage::makeTextureMatrixes()
         calculatePreserveAspectFitTextureMatrix(m_texMatrix1, imageSize, rectSize);
         //QVector4D tl(0,0,0,1), br(1, 1, 0, 1);
         //qDebug() << "tl = " <<  m_texMatrix1 * tl << "br = " << m_texMatrix1 * br;
+#if defined(TRACE_QUIZIMAGE_THREADS)
+        qDebug() << "OpenGlQuizImage::makeTextureMatrixes()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     }
     if(nullptr != m_toImage)
     {
@@ -466,6 +480,9 @@ void OpenGlQuizImage::makeTextureMatrixes()
         calculatePreserveAspectFitTextureMatrix(m_texMatrix2, imageSize, rectSize);
         //QVector4D tl(0,0,0,1), br(1, 1, 0, 1);
         //qDebug() << "tl = " <<  m_texMatrix2 * tl << "br = " << m_texMatrix2 * br;
+#if defined(TRACE_QUIZIMAGE_THREADS)
+        qDebug() << "OpenGlQuizImage::makeTextureMatrixes()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     }
 }
 
@@ -488,6 +505,10 @@ void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textu
 void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 {
     if(nullptr != m_program) { return; }
+
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "OpenGlQuizImage::init()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 
     m_vertexAttrId = -1;
     m_texCoordAttrId = -1;
@@ -677,6 +698,10 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 
 void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)
 {
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "OpenGlQuizImage::extractArguments()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     if(nullptr == effect_)
     {
         m_arguments.clear();

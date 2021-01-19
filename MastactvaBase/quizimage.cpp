@@ -14,11 +14,15 @@
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
     : QQuickItem(parent_)
 {
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "QuizImage::QuizImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     setFlag(ItemHasContents);
 }
 
@@ -35,8 +39,13 @@ void QuizImage::updateEffects()
 
 void QuizImage::swapImages()
 {
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "QuizImage::swapImages()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     std::swap(m_fromImageUrl, m_toImageUrl);
     m_t = 1.0 - m_t;
+    m_updateData = true;
 
     delete m_image;
     m_image = nullptr;
@@ -58,12 +67,19 @@ QVariantList QuizImage::fromImage() const
 void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
 {
     if(fromImageInfo_.size() < 2) { return; }
+
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "QuizImage::setFromImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     const QString imageUrl = fromImageInfo_.at(0).toString();
     const QString imageHash = fromImageInfo_.at(1).toString();
 
     if(imageUrl == m_fromImageUrl || imageHash.isEmpty()) { return; }
 
     m_fromImageUrl = imageUrl;
+    m_updateData = true;
+
     //qDebug() << "setFromImage() " << m_fromImageUrl;
     delete m_image;
     m_image = nullptr;
@@ -98,12 +114,18 @@ QVariantList QuizImage::toImage() const
 void QuizImage::setToImage(const QVariantList &toImageInfo_)
 {
     if(toImageInfo_.size() < 2) { return; }
+
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "QuizImage::setToImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     const QString imageUrl = toImageInfo_.at(0).toString();
     const QString imageHash = toImageInfo_.at(1).toString();
 
     if(imageUrl == m_toImageUrl || imageHash.isEmpty()) { return; }
 
     m_toImageUrl = imageUrl;
+    m_updateData = true;
     //qDebug() << "setToImage() " << m_toImageUrl;
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
@@ -133,11 +155,16 @@ QVariant QuizImage::effect() const
 
 void QuizImage::setEffect(const QVariant &effect_)
 {
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "QuizImage::setEffect()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     QObject *obj = qvariant_cast<QObject *>(effect_);
     Effect *effect = qobject_cast<Effect *>(obj);
     if(m_effect == effect) { return; }
 
     m_effect = effect;
+    m_updateData = true;
 
     if(nullptr != m_effect)
     {
@@ -163,6 +190,8 @@ qreal QuizImage::t() const
 
 void QuizImage::setT(qreal t_)
 {
+    //qDebug() << "QuizImage::setT()" << QThread::currentThread() << QThread::currentThreadId();
+
     m_t = t_;
 
     updateState();
@@ -176,11 +205,16 @@ QVariant QuizImage::argumentSet() const
 
 void QuizImage::setArgumentSet(const QVariant &argumentSet_)
 {
+#if defined(TRACE_QUIZIMAGE_THREADS)
+    qDebug() << "QuizImage::setArgumentSet()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     QObject *obj = qvariant_cast<QObject *>(argumentSet_);
     EffectArgSet *argumentSet = qobject_cast<EffectArgSet *>(obj);
     if(m_argumentSet == argumentSet) { return; }
 
     m_argumentSet = argumentSet;
+    m_updateData = true;
 
     if(nullptr != m_argumentSet)
     {
@@ -263,6 +297,16 @@ bool QuizImage::areAllDataAvailable()
     return true;
 }
 
+bool QuizImage::dataUpdated() const
+{
+    return m_updateData;
+}
+
+void QuizImage::retryData()
+{
+    m_updateData = false;
+}
+
 Effect *QuizImage::getEffect() const
 {
     return m_effect;
@@ -293,6 +337,9 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         Q_FALLTHROUGH();
     case QSGRendererInterface::OpenGLRhi:
 #if QT_CONFIG(opengl)
+#if defined(TRACE_QUIZIMAGE_THREADS)
+        qDebug() << "QuizImage::updatePaintNode()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
         if (!n)
         {
             n = new OpenGlQuizImage(this);

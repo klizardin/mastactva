@@ -50,6 +50,8 @@ public:
     void renderBuildError(const QString &log_);
 
     bool areAllDataAvailable();
+    bool dataUpdated() const;
+    void retryData();
     Effect *getEffect() const;
     EffectArgSet *getArgumentSet() const;
     bool needToUpdateEffects();
@@ -88,6 +90,7 @@ private:
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);
     bool m_updateEffects = false;
+    bool m_updateData = false;
 };
 
 
