@@ -40,7 +40,7 @@ QtObject {
         width = Screen.width
         height = Screen.height
         pageWidth = Screen.width
-        pageHeight = Screen.height * 90 / 100
+        pageHeight = Screen.height * 85 / 100
         answersHeight = Screen.height / 4
         smallImageWidth = Screen.width / 2
         smallImageHeight = Screen.height / 2
