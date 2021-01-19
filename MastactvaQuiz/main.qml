@@ -1,4 +1,4 @@
-import QtQuick 2.12
+﻿import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
@@ -327,7 +327,7 @@ ApplicationWindow {
             ToolButton {
                 id: toolButton
                 Layout.alignment: Qt.AlignLeft
-                text: stackView.depth > 1 ? "<" : "\u2630"
+                text: stackView.depth > 1 ? "<" : "⋮"
                 font.pixelSize: Qt.application.font.pixelSize * 1.6
                 onClicked: {
                     if (stackView.depth > 1) {
