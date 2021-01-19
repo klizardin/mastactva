@@ -1,4 +1,4 @@
-import QtQuick 2.12
+﻿import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.15
 import MastactvaQuiz 1.0
@@ -39,27 +39,31 @@ Page {
     {
         anchors.fill: parent
 
-        Column {
+        ScrollView {
+            anchors.fill: parent
 
-            Text {
-                id: helpHeader
-                padding: Constants.questionPadding
-                text: qsTr("Help for page : ")
-            }
+            Column {
 
-            Text {
-                id: helpTextCtrl
-                x: Constants.questionPadding
-                width: questionPage.width - Constants.questionPadding * 2
-                wrapMode: Text.WordWrap
-            }
+                Text {
+                    id: helpHeader
+                    padding: Constants.questionPadding
+                    text: qsTr("Help for page : ")
+                }
 
-            Button {
-                width: Constants.pageWidth
-                text: qsTr("Close")
-                Layout.alignment: Qt.AlignVCenter
-                onClicked: {
-                    viewed()
+                Text {
+                    id: helpTextCtrl
+                    x: Constants.questionPadding
+                    width: questionPage.width - Constants.questionPadding * 2
+                    wrapMode: Text.WordWrap
+                }
+
+                Button {
+                    width: Constants.pageWidth
+                    text: qsTr("Close")
+                    Layout.alignment: Qt.AlignVCenter
+                    onClicked: {
+                        viewed()
+                    }
                 }
             }
         }
