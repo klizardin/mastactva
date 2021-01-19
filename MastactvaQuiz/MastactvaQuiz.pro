@@ -9,7 +9,7 @@ CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuiz
 QML_IMPORT_MAJOR_VERSION = 1
 
-CONFIG += c++17
+CONFIG += c++14
 unix: QMAKE_CXXFLAGS_WARN_ON -= -Wall
 unix: QMAKE_CXXFLAGS_WARN_ON += -Wpedantic
 unix: QMAKE_CXXFLAGS_WARN_ON += -Waddress
@@ -200,6 +200,7 @@ unix: HEADERS += \
 
 DISTFILES += \
     ../build-MastactvaQuiz-Desktop_Qt_5_15_1_GCC_64bit-Debug/mastactvaquiz_metatypes.json \
+    ../build-MastactvaQuiz-Android_Qt_5_15_1_Clang_Multi_Abi-Debug/mastactvaquiz_metatypes.json    \
     GalleryFunctions.js \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
