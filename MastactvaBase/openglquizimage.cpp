@@ -14,9 +14,9 @@
 #include "../MastactvaBase/defines.h"
 
 
-static const QString g_noImage = ":/resources/no-image.png";
-static const QString g_rand = "rand";
-static const QString g_renderRectSize = "renderRectSize";
+static const char *g_noImage = ":/resources/no-image.png";
+static const char *g_rand = "rand";
+static const char *g_renderRectSize = "renderRectSize";
 
 
 void ArgumentInfo::setArgId(int argId_)
