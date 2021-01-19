@@ -241,13 +241,11 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
 }
 
 
-OpenGlQuizImage::OpenGlQuizImage(QObject * parent_)
+OpenGlQuizImage::OpenGlQuizImage()
 {
 #if defined(TRACE_QUIZIMAGE_THREADS)
     qDebug() << "OpenGlQuizImage::OpenGlQuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
-
-    m_parent = parent_;
 
     m_fromImageUrlNew = g_noImage;
     m_toImageUrlNew = g_noImage;
@@ -527,7 +525,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     const bool isProgramRecreated = nullptr == m_vshader || nullptr == m_fshader;
     if(nullptr == m_vshader)
     {
-        m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, m_parent);
+        m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
         m_vshaderBA = m_vertexShader.toUtf8();
         m_vshader->compileSourceCode(m_vshaderBA.constData());
         if(!m_vshader->isCompiled())
@@ -538,7 +536,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
     if(nullptr == m_fshader)
     {
-        m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, m_parent);
+        m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr);
         m_fshaderBA = m_fragmentShader.toUtf8();
         m_fshader->compileSourceCode(m_fshaderBA.constData());
         if(!m_fshader->isCompiled())

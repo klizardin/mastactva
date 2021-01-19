@@ -342,7 +342,7 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 #endif
         if (!n)
         {
-            n = new OpenGlQuizImage(this);
+            n = new OpenGlQuizImage();
         }
         static_cast<OpenGlQuizImage *>(n)->sync(this);
 #endif

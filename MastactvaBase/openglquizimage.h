@@ -55,7 +55,7 @@ private:
 class OpenGlQuizImage : public QSGRenderNode
 {
 public:
-    OpenGlQuizImage(QObject * parent_);
+    OpenGlQuizImage();
     virtual ~OpenGlQuizImage() override;
 
     virtual void releaseResources() override;
@@ -83,7 +83,6 @@ private:
     bool renderStateInitializeNone(QVariantList &values_);
 
 private:
-    QObject *m_parent = nullptr;
     int m_left = 0;
     int m_top = 0;
     int m_width = 0;
