@@ -1,9 +1,13 @@
 #include "imagepointeffect.h"
+#include "../MastactvaBase/defines.h"
 
 
 ImagePointEffect::ImagePointEffect(ImagePointEffectModel *parent_ /*=nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointEffect::ImagePointEffect()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_imagePointEffectModel = parent_;
 }
 
@@ -166,5 +170,8 @@ EffectArgSetModel *ImagePointEffect::createEffectArgSetModel()
 ImagePointEffectModel::ImagePointEffectModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointEffectModel::ImagePointEffectModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

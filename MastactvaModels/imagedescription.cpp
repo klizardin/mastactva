@@ -1,10 +1,14 @@
 #include "imagedescription.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 ImageDescription::ImageDescription(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImageDescription::ImageDescription()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 int ImageDescription::id() const
@@ -59,5 +63,8 @@ void ImageDescription::setDescription(const QString &descriptionText_)
 ImageDescriptionModel::ImageDescriptionModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImageDescriptionModel::ImageDescriptionModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

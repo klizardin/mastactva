@@ -1,4 +1,5 @@
 #include "effectshader.h"
+#include "../MastactvaBase/defines.h"
 
 
 EffectShader::EffectShader(EffectShaderModel *parent_ /* = nullptr*/)

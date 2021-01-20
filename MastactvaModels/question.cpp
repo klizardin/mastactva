@@ -1,10 +1,14 @@
 #include "question.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 Question::Question(QuestionModel *parent_)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Question::Question()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_questionModel = parent_;
 }
 
@@ -126,5 +130,8 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
 QuestionModel::QuestionModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "QuestionModel::QuestionModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

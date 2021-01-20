@@ -12,7 +12,13 @@
 //#define TRACE_DB_DATA_BINDINGS
 //#define TRACE_DB_USE
 //#define TRACE_DB_DATA_RETURN
-#define TRACE_THREADS
+//#define TRACE_THREADS
+//#define TRACE_THREADS_QUIZIMAGE
+
+
+#if defined(TRACE_THREADS) || defined(TRACE_THREADS_QUIZIMAGE)
+#include <QThread>
+#endif
 
 
 #endif // DEFINES_H

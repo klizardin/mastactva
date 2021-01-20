@@ -2,11 +2,15 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 Image::Image(ImageModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Image::Image()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_objectModelInfo = this;
     m_imageModel = parent_;
     //qDebug() << "Image::Image()" << getObjectName();
@@ -276,6 +280,9 @@ QString Image::getObjectName() const
 ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Image, ImageModel>(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImageModel::ImageModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
     setAutoCreateChildrenModelsOnSelectImpl(true);
 }

@@ -1,9 +1,13 @@
 #include "shaderargtype.h"
+#include "../MastactvaBase/defines.h"
 
 
 ShaderArgType::ShaderArgType(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ShaderArgType::ShaderArgType()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 int ShaderArgType::id() const
@@ -33,5 +37,8 @@ void ShaderArgType::setType(const QString &type_)
 ShaderArgTypeModel::ShaderArgTypeModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ShaderArgTypeModel::ShaderArgTypeModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

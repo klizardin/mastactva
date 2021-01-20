@@ -12,6 +12,7 @@
 #include "../MastactvaModels/questionanswer.h"
 #include "../MastactvaModels/gallerymodelview.h"
 #include "../MastactvaModels/questionanswermodelview.h"
+#include "../MastactvaBase/defines.h"
 
 
 static const char *g_quizUserModel = "QuizUserModel";
@@ -20,6 +21,10 @@ static const char *g_mastactvaAPI = "MastactvaAPI";
 
 void QMLObjects::searchObjects()
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "QMLObjects::searchObjects()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     if(nullptr == m_netAPI)
     {
         NetAPI::createInstance(m_root);

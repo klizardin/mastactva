@@ -2,11 +2,15 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 Shader::Shader(ShaderModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Shader::Shader()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_shaderModel = parent_;
     m_objectModelInfo = this;
 }
@@ -109,6 +113,9 @@ QString Shader::getObjectName() const
 ShaderModel::ShaderModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ShaderModel::ShaderModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
     setAutoCreateChildrenModelsImpl(true);
 }

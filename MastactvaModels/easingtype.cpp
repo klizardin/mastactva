@@ -1,4 +1,5 @@
 #include "easingtype.h"
+#include "../MastactvaBase/defines.h"
 
 
 EasingType::EasingType(EasingTypeModel *parent_ /*= nullptr*/)

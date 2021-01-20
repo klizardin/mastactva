@@ -2,11 +2,15 @@
 #include <math.h>
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/image.h"
+#include "../MastactvaBase/defines.h"
 
 
 ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointToQuestion::ImagePointToQuestion()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_imagePointToQuestionModel = parent_;
 }
 
@@ -91,6 +95,9 @@ QuestionModel *ImagePointToQuestion::createQuestionModel()
 ImagePointToQuestionModel::ImagePointToQuestionModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointToQuestionModel::ImagePointToQuestionModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }
 
@@ -98,6 +105,9 @@ ImagePointToQuestionModel::ImagePointToQuestionModel(QObject *parent_ /*= nullpt
 ImagePointToNextImage::ImagePointToNextImage(ImagePointToNextImageModel *parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointToNextImage::ImagePointToNextImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_objectModelInfo = this;
     m_parentModel = parent_;
 }
@@ -169,6 +179,9 @@ QString ImagePointToNextImage::getObjectName() const
 ImagePointToNextImageModel::ImagePointToNextImageModel(QObject *parent_ /*= nullptr*/)
     :ListModelBaseOfData<ImagePointToNextImage, ImagePointToNextImageModel>(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointToNextImageModel::ImagePointToNextImageModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }
 
@@ -186,6 +199,9 @@ ImageModel *ImagePointToNextImageModel::getImageModel()
 ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePoint::ImagePoint()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_imagePointModel = parent_;
 }
 
@@ -388,6 +404,9 @@ ImagePointEffectModel *ImagePoint::createImagePointEffectModel()
 ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointModel::ImagePointModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }
 

@@ -121,6 +121,9 @@ void LocalDataAPINoCache::SaveDBRequest::setRequest(const RequestData *request_)
 LocalDataAPINoCache::LocalDataAPINoCache(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "LocalDataAPINoCache::LocalDataAPINoCache()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_netAPI = QMLObjectsBase::getInstance().getNetAPI();
 
     QObject::connect(m_netAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)),

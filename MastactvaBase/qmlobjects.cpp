@@ -6,10 +6,15 @@
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/defines.h"
 
 
 void QMLObjectsBase::setRoot(QObject *root_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "QMLObjectsBase::setRoot()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     if(m_root == root_) { return; }
     m_root = root_;
     clearDependedFromRoot();

@@ -1,11 +1,15 @@
 #include "mastactvaapi.h"
 #include <QTimeZone>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 MastactvaAPI::MastactvaAPI(QObject *parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "MastactvaAPI::MastactvaAPI()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QString &rmt_)

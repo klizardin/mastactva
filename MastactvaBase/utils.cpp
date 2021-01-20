@@ -7,6 +7,7 @@
 #include <QTimeZone>
 #include <QTextStream>
 #include <QDebug>
+#include "../MastactvaBase/defines.h"
 
 
 QString leftDoubleCR(const QString &str_)

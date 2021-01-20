@@ -1,4 +1,5 @@
 #include "effectargvalue.h"
+#include "../MastactvaBase/defines.h"
 
 
 EffectArgValue::EffectArgValue(EffectArgValueModel *parent_ /*= nullptr*/)

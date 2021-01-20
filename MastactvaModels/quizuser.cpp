@@ -2,6 +2,7 @@
 #include <QNetworkInterface>
 #include <QCryptographicHash>
 //#include <QAndroidJniObject>
+#include "../MastactvaBase/defines.h"
 
 
 // TODO : investigate android defines for code and implement android code in defines
@@ -65,6 +66,9 @@ QString getAndroidUuid()
 
 QuizUser::QuizUser(QObject *parent_ /*= nullptr*/) : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "QuizUser::QuizUser()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_deviceId = getAndroidUuid();
 }
 
@@ -84,6 +88,9 @@ void QuizUser::setDeviceId(const QString &deviceId_)
 QuizUserModel::QuizUserModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<QuizUser, QuizUserModel>(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "QuizUserModel::QuizUserModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
     setReadonlyImpl(false);
 }

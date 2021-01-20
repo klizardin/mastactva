@@ -5,6 +5,7 @@
 #include <QNetworkReply>
 #include <numeric>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 static const char *g_currentDir = "./";
@@ -14,6 +15,10 @@ static const char *g_assestsDir = "assets:/";
 ServerFiles::ServerFiles(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ServerFiles::ServerFiles()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
 #if defined(ASSETS_ROOT)
     m_rootDir = g_assestsDir;
 #else
@@ -34,6 +39,7 @@ QString ServerFiles::getRootDir() const
 void ServerFiles::setRootDir(const QString &path_)
 {
 #if defined(ASSETS_ROOT)
+    Q_UNUSED(path_);
     // work only with assets path
 #else
     m_rootDir = path_;

@@ -1,9 +1,13 @@
 #include "gallerystatistics.h"
+#include "../MastactvaBase/defines.h"
 
 
 GalleryStatistics::GalleryStatistics(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "GalleryStatistics::GalleryStatistics()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 int GalleryStatistics::id() const
@@ -58,5 +62,8 @@ void GalleryStatistics::setPoints(const qreal &points_)
 GalleryStatisticsModel::GalleryStatisticsModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "GalleryStatisticsModel::GalleryStatisticsModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

@@ -11,6 +11,7 @@
 #include <QByteArray>
 #include "../MastactvaBase/netappconsts.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 NetRequestData::~NetRequestData()
@@ -74,6 +75,9 @@ private:
 NetAPI::NetAPI(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "NetAPI::NetAPI()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     updateAuthConsts();
 }
 

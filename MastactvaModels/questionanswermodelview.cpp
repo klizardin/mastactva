@@ -6,11 +6,16 @@
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/gallery.h"
+#include "../MastactvaBase/defines.h"
 
 
 QuestionAnswerModelView::QuestionAnswerModelView(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "QuestionAnswerModelView::QuestionAnswerModelView()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     m_userQuestionAnswerModel = new UserQuestionAnswerModel(this);
     m_userQuestionAnswerModel->initResponse();
     m_userQuestionAnswerModel->setCurrentRefImpl("");

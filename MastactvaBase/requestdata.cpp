@@ -1,4 +1,5 @@
 #include "requestdata.h"
+#include "../MastactvaBase/defines.h"
 
 
 const QString &RequestData::getRequestName() const

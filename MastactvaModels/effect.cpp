@@ -5,6 +5,7 @@
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/shader.h"
+#include "../MastactvaBase/defines.h"
 
 
 Effect::Effect(EffectModel *parent_)

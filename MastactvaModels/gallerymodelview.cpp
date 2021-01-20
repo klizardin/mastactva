@@ -1,11 +1,16 @@
 #include "gallerymodelview.h"
 #include <QJsonDocument>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 GalleryModelView::GalleryModelView(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "GalleryModelView::GalleryModelView()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     m_galleryModel = new GalleryModel(this);
     m_galleryModel->initResponse();
     m_galleryModel->setCurrentRef("");

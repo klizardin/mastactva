@@ -150,6 +150,9 @@ public:
         : QAbstractListModel(parent_),
           ListModelBaseData(this)
     {
+#if defined(TRACE_THREADS)
+    qDebug() << "ListModelBaseOfData::ListModelBaseOfData<" << getDataLayout<DataType_>().getLayoutJsonName() << ">()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
         getDataLayout<DataType_>().initQMLModelRoleNames(m_roleNames);
     }
 

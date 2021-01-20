@@ -1,4 +1,5 @@
 #include "effectargset.h"
+#include "../MastactvaBase/defines.h"
 
 
 EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)

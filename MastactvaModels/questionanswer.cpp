@@ -1,9 +1,13 @@
 #include "questionanswer.h"
+#include "../MastactvaBase/defines.h"
 
 
 UserQuestionAnswer::UserQuestionAnswer(QObject *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "UserQuestionAnswer::UserQuestionAnswer()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 int UserQuestionAnswer::id() const
@@ -82,5 +86,8 @@ void UserQuestionAnswer::setPoints(const qreal &points_)
 UserQuestionAnswerModel::UserQuestionAnswerModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "UserQuestionAnswerModel::UserQuestionAnswerModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

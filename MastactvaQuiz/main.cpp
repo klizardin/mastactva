@@ -6,6 +6,7 @@
 #include <QOpenGLContext>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)
@@ -66,6 +67,10 @@ void copyAssets()
 
 int main(int argc, char *argv[])
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "main()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     copyAssets();

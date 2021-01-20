@@ -1,9 +1,13 @@
 #include "userstep.h"
+#include "../MastactvaBase/defines.h"
 
 
 UserStep::UserStep(QObject *parent_)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "UserStep::UserStep()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 int UserStep::id() const
@@ -118,5 +122,8 @@ void UserStep::setT(const QDateTime &t_)
 UserStepModel::UserStepModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "UserStepModel::UserStepModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

@@ -1,5 +1,6 @@
 #include "gallery.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 Gallery::Gallery(GalleryModel *parent_)
