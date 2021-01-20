@@ -4,6 +4,7 @@
 
 #include <QQuickItem>
 #include <QtQuick/QQuickFramebufferObject>
+#include "../MastactvaBase/quizimagedata.h"
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/effectargset.h"
 
@@ -50,11 +51,13 @@ public:
     void renderBuildError(const QString &log_);
 
     bool areAllDataAvailable();
-    bool dataUpdated() const;
+    bool isImageDataUpdated() const;
     void retryData();
     Effect *getEffect() const;
     EffectArgSet *getArgumentSet() const;
     bool needToUpdateEffects();
+    bool isEffectUpdated() const;
+    const QuizImageData &getData() const;
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
@@ -66,6 +69,7 @@ protected slots:
 protected:
     void updateStateIfDataIsReady();
     void addShadersToWaitDownload();
+    void formImageData();
 
 signals:
     void fromImageChanged();
@@ -90,7 +94,9 @@ private:
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);
     bool m_updateEffects = false;
-    bool m_updateData = false;
+    QuizImageData m_data;
+    bool m_imageDataUpdated = true;
+    bool m_effectUpdated = true;
 };
 
 

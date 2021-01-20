@@ -48,13 +48,13 @@ void copyAssets()
     if (dfile1.exists())
     {
          dfile1.copy("./mastactva_ro.db3");
-         QFile::setPermissions("./mastactva_ro.db3",QFile::WriteOwner | QFile::ReadOwner);
+         QFile::setPermissions("./mastactva_ro.db3", QFile::ReadOwner);
     }
     QFile dfile2("assets:/mastactva_rw.db3");
     if (dfile2.exists())
     {
          dfile2.copy("./mastactva_rw.db3");
-         QFile::setPermissions("./mastactva_rw.db3",QFile::WriteOwner | QFile::ReadOwner);
+         QFile::setPermissions("./mastactva_rw.db3", QFile::WriteOwner | QFile::ReadOwner);
     }
     QFile dfile3("assets:/MastactvaQuiz_be_BY.qm");
     if (dfile3.exists())
@@ -98,7 +98,6 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Mastactva");
     app.setOrganizationDomain("mastactva.by");
     app.setApplicationName("Mastactva Quiz Application");
-
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

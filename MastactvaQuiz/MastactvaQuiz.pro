@@ -109,7 +109,8 @@ unix: SOURCES += \
         dbrequestinfo.cpp   \
         localdataapiviews.cpp   \
         gallerymodelview.cpp    \
-        questionanswermodelview.cpp
+        questionanswermodelview.cpp \
+        quizimagedata.cpp
 
 
 RESOURCES += qml.qrc \
@@ -132,6 +133,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 android {
     DEFINES += "ASSETS_ROOT=1"
     DEFINES += "ANDROID_FULLSCREEN=1"
+
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android-sources
 
     image_files.path = /assets/images/
     image_files.files = $$files($$PWD/../MastactvaData/images/*)
@@ -195,7 +198,8 @@ unix: HEADERS += \
     localdataapiviews.h \
     gallerymodelview.h  \
     defines.h   \
-    questionanswermodelview.h
+    questionanswermodelview.h   \
+    quizimagedata.h
 
 
 DISTFILES += \

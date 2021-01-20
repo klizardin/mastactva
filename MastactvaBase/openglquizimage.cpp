@@ -413,6 +413,96 @@ const QString &QuizImageData::getFragmentShader() const
     return m_fragmentShader;
 }
 
+void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)
+{
+    if(nullptr == effect_)
+    {
+        clearArguments();
+        setShaders(QString(), QString());
+        initDefaultShaders();
+        return;
+    }
+
+    // read shaders files
+    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
+                );
+    Q_ASSERT(nullptr != shaderTypeModel && shaderTypeModel->sizeImpl() > 0);
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    Q_ASSERT(nullptr != sf);
+
+    setShaders(QString(), QString());
+
+    const EffectShaderModel *shaders = effect_->getEffectShaders();
+    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
+    for(int i = 0; i < shaders->sizeImpl(); ++i)
+    {
+        const EffectShader *effect_shader = shaders->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effect_shader);
+        const ShaderModel *shaderModel = effect_shader->getShader();
+        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
+        const Shader *shader = shaderModel->dataItemAtImpl(0);
+        Q_ASSERT(shader != nullptr);
+
+        Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
+        QString shaderText = ::loadTextFileByUrl(shader->filename());
+
+        ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
+        Q_ASSERT(nullptr != shaderType &&
+                    (
+                        g_shaderTypeVertex == shaderType->type() ||
+                        g_shaderTypeFragment == shaderType->type()
+                    )
+                );
+        if(g_shaderTypeVertex == shaderType->type())
+        {
+            setVertexShader(shaderText);
+        }
+        else if(g_shaderTypeFragment == shaderType->type())
+        {
+            setFragmentShader(shaderText);
+        }
+    }
+    initDefaultShaders();
+
+    ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
+                );
+    Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
+
+    clearArguments();
+
+    // read default arguments values
+    const EffectArgModel *effectArguments = effect_->getEffectArguments();
+    Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
+    for(int i = 0; i < effectArguments->sizeImpl(); ++i)
+    {
+        ArgumentInfo ai;
+        const EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effectArgument);
+        ai.setName(effectArgument->name());
+        const ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
+        Q_ASSERT(nullptr != argType);
+        ai.setArgId(effectArgument->id());
+        ai.setType(argType->type());
+        ai.setValue(effectArgument->defaultValue());
+        appendArguments(ai);
+    }
+
+    if(nullptr != argumentSet_)
+    {
+        const EffectArgValueModel *argumentValuesModel = argumentSet_->getArgumentValues();
+        Q_ASSERT(nullptr != argumentValuesModel && argumentValuesModel->isListLoaded());
+        for(int i = 0; i < argumentValuesModel->sizeImpl(); ++i)
+        {
+            const EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
+            Q_ASSERT(nullptr != effectArgumentValue);
+            const int argId = effectArgumentValue->getArgId();
+            setArgumentValue(argId, effectArgumentValue->value());
+        }
+    }
+}
+
 
 OpenGlQuizImage::OpenGlQuizImage()
 {
@@ -420,12 +510,14 @@ OpenGlQuizImage::OpenGlQuizImage()
     qDebug() << "OpenGlQuizImage::OpenGlQuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
-    extractArguments(nullptr, nullptr);
+    m_data.extractArguments(nullptr, nullptr);
+    initGeometry();
+    resetProgram();
 }
 
 OpenGlQuizImage::~OpenGlQuizImage()
 {
-    releaseResources();
+    OpenGlQuizImage::releaseResources();
 }
 
 void OpenGlQuizImage::releaseResources()
@@ -482,33 +574,18 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
     // element data
     QuizImage *quizImage = static_cast<QuizImage *>(item_);
+
     // base data
     m_t = quizImage->t();
-    if(!quizImage->areAllDataAvailable()) { return; }
-    //m_data = quizImage->getData();
+    if(!quizImage->isImageDataUpdated()) { return; }
 
-    if(!quizImage->dataUpdated()) { return; }
     // all data
-
-    //m_fromImageUrlNew = quizImage->fromImageLocalUrl();
-    //if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
-    m_data.setFromImageUrl(quizImage->fromImageLocalUrl());
-
-    //m_toImageUrlNew = quizImage->toImageLocalUrl();
-    //if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
-    m_data.setToImageUrl(quizImage->toImageLocalUrl());
-
-    const Effect *effect = quizImage->getEffect();
-    const EffectArgSet *argumentSet = quizImage->getArgumentSet();
-    const bool needToUpdateEffects = quizImage->needToUpdateEffects();
-    //int effectId = nullptr != effect ? effect->id() : -1;
-    m_data.setEffectId(nullptr != effect ? effect->id() : -1);
-    //int argumentSetId = nullptr != argumentSet ? argumentSet->id() : -1;
-    m_data.setArgumentSetId(nullptr != argumentSet ? argumentSet->id() : -1);
-    if(needToUpdateEffects || m_data.effectChanged())
+    const bool effectUpdated = quizImage->isEffectUpdated();
+    m_data = quizImage->getData();
+    if(effectUpdated)
     {
-        extractArguments(effect, argumentSet);
-        m_data.useNewEffect();
+        initGeometry();
+        resetProgram();
     }
     quizImage->retryData();
     quizImage->renderBuildError(m_programBuildLog);
@@ -567,17 +644,10 @@ void OpenGlQuizImage::makeObject()
 
 void OpenGlQuizImage::createTextures()
 {
-//    if(m_fromImageUrlNew == m_toImageUrl &&
-//            m_toImageUrlNew == m_fromImageUrl &&
-//            m_fromImageUrlNew != m_fromImageUrl
-//            )
     if(m_data.isSwapImages())
     {
         // swap textures
-        //std::swap(m_fromImageUrl, m_toImageUrl);
         m_data.swapImages();
-        //qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
-        //Q_ASSERT(m_fromImageUrl == m_fromImageUrlNew && m_toImageUrl == m_toImageUrlNew);
         std::swap(m_fromImage, m_toImage);
         std::swap(m_fromTexture, m_toTexture);
         m_updateSize = true;
@@ -587,13 +657,10 @@ void OpenGlQuizImage::createTextures()
         return;
     }
 
-    //if(m_fromImageUrlNew != m_fromImageUrl)
     if(m_data.fromImageUrlChanged())
     {
-        //m_fromImageUrl = m_fromImageUrlNew;
         m_data.useNewFromImageUrl();
         delete m_fromImage;
-        //if(m_fromImageUrl != g_noImage)
         if(m_data.isFromImageIsUrl())
         {
             QUrl url(m_data.getFromImageUrl());
@@ -603,7 +670,6 @@ void OpenGlQuizImage::createTextures()
         {
             m_fromImage = new QImage(m_data.getFromImageUrl());
         }
-        //qDebug() << "m_fromImageUrl = " << m_fromImageUrl;
         Q_ASSERT(!m_fromImage->isNull());
         m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
@@ -615,25 +681,19 @@ void OpenGlQuizImage::createTextures()
 #endif
     }
 
-    //if(m_toImageUrlNew != m_toImageUrl)
     if(m_data.toImageUrlChanged())
     {
-        //m_toImageUrl = m_toImageUrlNew;
         m_data.useNewToImageUrl();
         delete m_toImage;
-        //if(m_toImageUrl != g_noImage)
         if(m_data.isFromImageIsUrl())
         {
-            //QUrl url(m_toImageUrl);
             QUrl url(m_data.getToImageUrl());
             m_toImage = new QImage(url.path());
         }
         else
         {
-            //m_toImage = new QImage(m_toImageUrl);
             m_toImage = new QImage(m_data.getToImageUrl());
         }
-        //qDebug() << "m_toImageUrl = " << m_toImageUrl;
         Q_ASSERT(!m_toImage->isNull());
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
@@ -715,7 +775,6 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     if(nullptr == m_vshader)
     {
         m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
-        //m_vshaderBA = m_vertexShader.toUtf8();
         m_vshaderBA = m_data.getVertexShader().toUtf8();
         m_vshader->compileSourceCode(m_vshaderBA.constData());
         if(!m_vshader->isCompiled())
@@ -727,7 +786,6 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     if(nullptr == m_fshader)
     {
         m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr);
-        //m_fshaderBA = m_fragmentShader.toUtf8();
         m_fshaderBA = m_data.getFragmentShader().toUtf8();
         m_fshader->compileSourceCode(m_fshaderBA.constData());
         if(!m_fshader->isCompiled())
@@ -759,7 +817,6 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
         m_tId = m_program->uniformLocation("t");
 
-        //for(ArgumentInfo &ai: m_arguments)
         for(ArgumentInfo &ai: m_data.getArgumentsNC())
         {
             ai.initId(m_program);
@@ -802,7 +859,6 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
         m_updateSize = false;
     }
 
-    //for(ArgumentInfo &ai: m_arguments)
     for(ArgumentInfo &ai: m_data.getArgumentsNC())
     {
         ai.initValueFromRenderState(this);
@@ -814,7 +870,6 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_texMatrix2Id, m_texMatrix2);
     m_program->setUniformValue(m_opacitiId, float(inheritedOpacity()));
 
-    //for(const ArgumentInfo &ai: m_arguments)
     for(ArgumentInfo &ai: m_data.getArgumentsNC())
     {
         ai.setValue(m_program);
@@ -888,113 +943,6 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->release();
 }
 
-void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)
-{
-#if defined(TRACE_THREADS_QUIZIMAGE)
-    qDebug() << "OpenGlQuizImage::extractArguments()" << QThread::currentThread() << QThread::currentThreadId();
-#endif
-
-    if(nullptr == effect_)
-    {
-        //m_arguments.clear();
-        //m_vertexShader.clear();
-        //m_fragmentShader.clear();
-        m_data.clearArguments();
-        m_data.setShaders(QString(), QString());
-        initDefaultShaders();
-        resetProgram();
-        return;
-    }
-
-    // read shaders files
-    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
-                );
-    Q_ASSERT(nullptr != shaderTypeModel && shaderTypeModel->sizeImpl() > 0);
-    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    Q_ASSERT(nullptr != sf);
-
-    //m_vertexShader.clear();
-    //m_fragmentShader.clear();
-    m_data.setShaders(QString(), QString());
-
-    const EffectShaderModel *shaders = effect_->getEffectShaders();
-    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
-    for(int i = 0; i < shaders->sizeImpl(); ++i)
-    {
-        const EffectShader *effect_shader = shaders->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effect_shader);
-        const ShaderModel *shaderModel = effect_shader->getShader();
-        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
-        const Shader *shader = shaderModel->dataItemAtImpl(0);
-        Q_ASSERT(shader != nullptr);
-
-        Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
-        QString shaderText = ::loadTextFileByUrl(shader->filename());
-
-        ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
-        Q_ASSERT(nullptr != shaderType &&
-                    (
-                        g_shaderTypeVertex == shaderType->type() ||
-                        g_shaderTypeFragment == shaderType->type()
-                    )
-                );
-        if(g_shaderTypeVertex == shaderType->type())
-        {
-            //m_vertexShader = shaderText;
-            m_data.setVertexShader(shaderText);
-        }
-        else if(g_shaderTypeFragment == shaderType->type())
-        {
-            //m_fragmentShader = shaderText;
-            m_data.setFragmentShader(shaderText);
-        }
-    }
-    initDefaultShaders();
-    initGeometry();
-
-    ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
-                );
-    Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
-
-    //m_arguments.clear();
-    m_data.clearArguments();
-
-    // read default arguments values
-    const EffectArgModel *effectArguments = effect_->getEffectArguments();
-    Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
-    for(int i = 0; i < effectArguments->sizeImpl(); ++i)
-    {
-        ArgumentInfo ai;
-        const EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effectArgument);
-        ai.setName(effectArgument->name());
-        const ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
-        Q_ASSERT(nullptr != argType);
-        ai.setArgId(effectArgument->id());
-        ai.setType(argType->type());
-        ai.setValue(effectArgument->defaultValue());
-        //m_arguments.push_back(ai);
-        m_data.appendArguments(ai);
-    }
-
-    if(nullptr != argumentSet_)
-    {
-        const EffectArgValueModel *argumentValuesModel = argumentSet_->getArgumentValues();
-        Q_ASSERT(nullptr != argumentValuesModel && argumentValuesModel->isListLoaded());
-        for(int i = 0; i < argumentValuesModel->sizeImpl(); ++i)
-        {
-            const EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
-            Q_ASSERT(nullptr != effectArgumentValue);
-            const int argId = effectArgumentValue->getArgId();
-            m_data.setArgumentValue(argId, effectArgumentValue->value());
-        }
-    }
-
-    resetProgram();
-}
-
 void OpenGlQuizImage::initDefaultShaders()
 {
     m_data.initDefaultShaders();
@@ -1003,7 +951,6 @@ void OpenGlQuizImage::initDefaultShaders()
 void OpenGlQuizImage::initGeometry()
 {
     QVector<Comment> comments;
-    //getShaderComments(m_vertexShader, comments);
     getShaderComments(m_data.getVertexShader(), comments);
     const auto fitShader = std::find_if(std::begin(comments), std::end(comments),
                                   [](const Comment &comment)->bool

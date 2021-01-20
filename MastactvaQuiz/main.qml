@@ -11,8 +11,8 @@ ApplicationWindow {
     id: window
     width: Constants.width
     height: Constants.height
-    //visibility: Window.FullScreen
-    visible: true
+    visible: false
+    opacity: 0.0
     title: qsTr("Mastactva Quiz")
 
     property real animationSpeed: Constants.animationSpeedNorm
@@ -118,6 +118,8 @@ ApplicationWindow {
             {
                 Constants.init()
             }
+            window.visible = true
+            window.opacity = 1.0
             Constants.noImageHash = mastactvaAPI.calculateHash(Constants.noImageResource)
 
             galleryPage.galleryModel = galleryModel

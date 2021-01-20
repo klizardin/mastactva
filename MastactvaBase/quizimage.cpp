@@ -24,6 +24,7 @@ QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
     qDebug() << "QuizImage::QuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     setFlag(ItemHasContents);
+    m_data.extractArguments(nullptr, nullptr);
 }
 
 void QuizImage::updateState()
@@ -34,6 +35,7 @@ void QuizImage::updateState()
 void QuizImage::updateEffects()
 {
     m_updateEffects = true;
+    formImageData();
     updateState();
 }
 
@@ -45,7 +47,6 @@ void QuizImage::swapImages()
 
     std::swap(m_fromImageUrl, m_toImageUrl);
     m_t = 1.0 - m_t;
-    m_updateData = true;
 
     delete m_image;
     m_image = nullptr;
@@ -78,7 +79,6 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
     if(imageUrl == m_fromImageUrl || imageHash.isEmpty()) { return; }
 
     m_fromImageUrl = imageUrl;
-    m_updateData = true;
 
     //qDebug() << "setFromImage() " << m_fromImageUrl;
     delete m_image;
@@ -125,7 +125,6 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
     if(imageUrl == m_toImageUrl || imageHash.isEmpty()) { return; }
 
     m_toImageUrl = imageUrl;
-    m_updateData = true;
     //qDebug() << "setToImage() " << m_toImageUrl;
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
@@ -164,7 +163,6 @@ void QuizImage::setEffect(const QVariant &effect_)
     if(m_effect == effect) { return; }
 
     m_effect = effect;
-    m_updateData = true;
 
     if(nullptr != m_effect)
     {
@@ -214,7 +212,6 @@ void QuizImage::setArgumentSet(const QVariant &argumentSet_)
     if(m_argumentSet == argumentSet) { return; }
 
     m_argumentSet = argumentSet;
-    m_updateData = true;
 
     if(nullptr != m_argumentSet)
     {
@@ -297,14 +294,15 @@ bool QuizImage::areAllDataAvailable()
     return true;
 }
 
-bool QuizImage::dataUpdated() const
+bool QuizImage::isImageDataUpdated() const
 {
-    return m_updateData;
+    return m_imageDataUpdated;
 }
 
 void QuizImage::retryData()
 {
-    m_updateData = false;
+    m_imageDataUpdated = false;
+    m_effectUpdated = false;
 }
 
 Effect *QuizImage::getEffect() const
@@ -317,6 +315,16 @@ bool QuizImage::needToUpdateEffects()
     bool res = m_updateEffects;
     m_updateEffects = false;
     return res;
+}
+
+bool QuizImage::isEffectUpdated() const
+{
+    return m_effectUpdated;
+}
+
+const QuizImageData &QuizImage::getData() const
+{
+    return m_data;
 }
 
 EffectArgSet *QuizImage::getArgumentSet() const
@@ -424,6 +432,7 @@ void QuizImage::updateStateIfDataIsReady()
         emit paintedHeightChanged();
     }
 
+    formImageData();
     updateState();
 }
 
@@ -450,4 +459,24 @@ void QuizImage::addShadersToWaitDownload()
         }
     }
     updateStateIfDataIsReady();
+}
+
+void QuizImage::formImageData()
+{
+    // all data
+    m_imageDataUpdated = true;
+    m_data.setFromImageUrl(fromImageLocalUrl());
+    m_data.setToImageUrl(toImageLocalUrl());
+
+    const Effect *effect = getEffect();
+    const EffectArgSet *argumentSet = getArgumentSet();
+    const bool updateEffectRequired = needToUpdateEffects();
+    m_data.setEffectId(nullptr != effect ? effect->id() : -1);
+    m_data.setArgumentSetId(nullptr != argumentSet ? argumentSet->id() : -1);
+    if(updateEffectRequired || m_data.effectChanged())
+    {
+        m_effectUpdated = true;
+        m_data.useNewEffect();
+        m_data.extractArguments(effect, argumentSet);
+    }
 }

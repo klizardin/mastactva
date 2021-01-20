@@ -112,7 +112,8 @@ unix: HEADERS += \
         dbrequestinfo.h \
         localdataapiviews.h \
         quizuser.h  \
-        defines.h
+        defines.h   \
+        quizimagedata.h
 
 
 SOURCES += \
@@ -160,7 +161,8 @@ unix: SOURCES += \
         userstep.cpp    \
         dbrequestinfo.cpp   \
         localdataapiviews.cpp   \
-        quizuser.cpp
+        quizuser.cpp    \
+        quizimagedata.cpp
 
 
 RESOURCES += qml.qrc    \
