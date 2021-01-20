@@ -294,7 +294,7 @@ bool QuizImage::areAllDataAvailable()
         if(!sf->isUrlDownloaded(m_fromImageUrl)
                 || !sf->isUrlDownloaded(m_toImageUrl)
                 ) { return false; }
-        for(const QString &shaderUrl : m_shadersUrls)
+        for(const QString &shaderUrl : qAsConst(m_shadersUrls))
         {
             if(!sf->isUrlDownloaded(shaderUrl)) { return false; }
         }
