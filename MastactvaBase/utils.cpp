@@ -6,7 +6,10 @@
 #include <QCryptographicHash>
 #include <QTimeZone>
 #include <QTextStream>
+#include <QTextCodec>
 #include <QDebug>
+#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/defines.h"
 
 
@@ -380,4 +383,29 @@ QString dateTimeToJsonString(const QDateTime &dt_)
     const QString res = dt_.toUTC().toString(Qt::DateFormat::ISODateWithMs);
     //qDebug() << res;
     return res;
+}
+
+QString loadTextFile(const QString &filename_)
+{
+    QFile file(filename_);
+    if(!file.open(QIODevice::ReadOnly)) { return QString(); }
+    QByteArray fd = file.readAll();
+    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
+    return codec->toUnicode(fd);
+}
+
+QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
+{
+    if(useServerFiles_)
+    {
+        ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+        Q_ASSERT(nullptr != sf);
+        QUrl url(sf->get(filenameUrl_));
+        return loadTextFile(url.toLocalFile());
+    }
+    else
+    {
+        QUrl url(filenameUrl_);
+        return loadTextFile(url.toLocalFile());
+    }
 }

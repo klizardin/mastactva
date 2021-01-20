@@ -42,6 +42,8 @@ QString calculateFileURLHash(const QString &fileUrl_);
 QDateTime nowTz();
 QDateTime dateTimeFromJsonString(const QString& dateTimeZ_);
 QString dateTimeToJsonString(const QDateTime &dt_);
+QString loadTextFile(const QString &filename_);
+QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 
 
 static const char *g_englishLanguage = "English";

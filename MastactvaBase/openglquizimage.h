@@ -52,6 +52,55 @@ private:
 };
 
 
+class QuizImageData
+{
+public:
+    QuizImageData();
+
+    void setFromImageUrl(const QString &fromImageUrl_);
+    void setToImageUrl(const QString &toImageUrl_);
+    bool fromImageUrlChanged() const;
+    void useNewFromImageUrl();
+    bool toImageUrlChanged() const;
+    void useNewToImageUrl();
+    bool isSwapImages() const;
+    void swapImages();
+    void setEffectId(int effectId_);
+    void setArgumentSetId(int argumentSetId_);
+    bool effectChanged() const;
+    void useNewEffect();
+    void setShaders(const QString &vertexShader_, const QString &fragmentShader_);
+    void setVertexShader(const QString &vertexShader_);
+    void setFragmentShader(const QString &fragmentShader_);
+    void initDefaultShaders();
+    void setArguments(const QList<ArgumentInfo> &arguments_);
+    void clearArguments();
+    void appendArguments(const ArgumentInfo &argument_);
+    void setArgumentValue(int argId_, const QString &value_);
+    bool isFromImageIsUrl() const;
+    bool isToImageIsUrl() const;
+    const QString &getFromImageUrl() const;
+    const QString &getToImageUrl() const;
+    const QList<ArgumentInfo> &getArguments() const;
+    QList<ArgumentInfo> &getArgumentsNC();
+    const QString &getVertexShader() const;
+    const QString &getFragmentShader() const;
+
+protected:
+    QString m_newFromImageUrl;
+    QString m_newToImageUrl;
+    QString m_fromImageUrl;
+    QString m_toImageUrl;
+    int m_newEffectId = -1;
+    int m_newArgumentSetId = -1;
+    int m_effectId = -1;
+    int m_argumentSetId = -1;
+    QList<ArgumentInfo> m_arguments;
+    QString m_vertexShader;
+    QString m_fragmentShader;
+};
+
+
 class OpenGlQuizImage : public QSGRenderNode
 {
 public:
@@ -77,8 +126,8 @@ private:
     void initDefaultShaders();
     void initGeometry();
     void resetProgram();
-    QString loadFile(const QString &filename_);
-    QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
+    //QString loadFile(const QString &filename_);
+    //QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
     bool getRenderRectSize(QVariantList &values_);
     bool renderStateInitializeNone(QVariantList &values_);
 
@@ -112,18 +161,8 @@ private:
     int m_texMatrix2Id = -1;
     int m_tId = -1;
 
+    QuizImageData m_data;
     qreal m_t = 0.0;
-    QString m_fromImageUrl;
-    QString m_toImageUrl;
-    QString m_fromImageUrlNew;
-    QString m_toImageUrlNew;
-    //Effect *m_effect = nullptr;
-    int m_oldEffectId = -1;
-    //EffectArgSet *m_argumentSet = nullptr;
-    int m_oldArgumentSetId = -1;
-    QList<ArgumentInfo> m_arguments;
-    QString m_vertexShader;
-    QString m_fragmentShader;
     QByteArray m_vshaderBA;
     QByteArray m_fshaderBA;
     QImage *m_fromImage = nullptr;

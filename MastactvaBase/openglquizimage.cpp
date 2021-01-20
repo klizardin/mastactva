@@ -240,6 +240,179 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
     }
 }
 
+QuizImageData::QuizImageData()
+{
+    m_newFromImageUrl = g_noImage;
+    m_newToImageUrl = g_noImage;
+}
+
+void QuizImageData::setFromImageUrl(const QString &fromImageUrl_)
+{
+    m_newFromImageUrl = fromImageUrl_;
+    if(m_newFromImageUrl.isEmpty()) { m_newFromImageUrl = g_noImage; }
+}
+
+void QuizImageData::setToImageUrl(const QString &toImageUrl_)
+{
+    m_newToImageUrl = toImageUrl_;
+    if(m_newToImageUrl.isEmpty()) { m_newToImageUrl = g_noImage; }
+}
+
+bool QuizImageData::fromImageUrlChanged() const
+{
+    return m_newFromImageUrl != m_fromImageUrl;
+}
+
+void QuizImageData::useNewFromImageUrl()
+{
+    m_fromImageUrl = m_newFromImageUrl;
+}
+
+bool QuizImageData::toImageUrlChanged() const
+{
+    return m_newToImageUrl != m_toImageUrl;
+}
+
+void QuizImageData::useNewToImageUrl()
+{
+    m_toImageUrl = m_newToImageUrl;
+}
+
+bool QuizImageData::isSwapImages() const
+{
+    return m_newFromImageUrl != m_fromImageUrl &&
+            m_newToImageUrl != m_toImageUrl &&
+            m_newFromImageUrl == m_toImageUrl &&
+            m_newToImageUrl == m_fromImageUrl
+            ;
+}
+
+void QuizImageData::swapImages()
+{
+    if(!isSwapImages()) { return; }
+    useNewFromImageUrl();
+    useNewToImageUrl();
+}
+
+void QuizImageData::setEffectId(int effectId_)
+{
+    m_newEffectId = effectId_;
+}
+
+void QuizImageData::setArgumentSetId(int argumentSetId_)
+{
+    m_newArgumentSetId = argumentSetId_;
+}
+
+bool QuizImageData::effectChanged() const
+{
+    return m_newEffectId != m_effectId || m_newArgumentSetId != m_argumentSetId;
+}
+
+void QuizImageData::useNewEffect()
+{
+    m_newEffectId = m_effectId;
+    m_newArgumentSetId = m_argumentSetId;
+}
+
+void QuizImageData::setShaders(const QString &vertexShader_, const QString &fragmentShader_)
+{
+    m_vertexShader = vertexShader_;
+    m_fragmentShader = fragmentShader_;
+}
+
+void QuizImageData::setVertexShader(const QString &vertexShader_)
+{
+    m_vertexShader = vertexShader_;
+}
+
+void QuizImageData::setFragmentShader(const QString &fragmentShader_)
+{
+    m_fragmentShader = fragmentShader_;
+}
+
+void QuizImageData::initDefaultShaders()
+{
+    if(m_vertexShader.isEmpty())
+    {
+        m_vertexShader = ::loadTextFile(":/default.vert");
+    }
+    if(m_fragmentShader.isEmpty())
+    {
+        m_fragmentShader = ::loadTextFile(":/default.frag");
+    }
+}
+
+void QuizImageData::setArguments(const QList<ArgumentInfo> &arguments_)
+{
+    m_arguments = arguments_;
+}
+
+void QuizImageData::clearArguments()
+{
+    m_arguments.clear();
+}
+
+void QuizImageData::appendArguments(const ArgumentInfo &argument_)
+{
+    m_arguments.push_back(argument_);
+}
+
+void QuizImageData::setArgumentValue(int argId_, const QString &value_)
+{
+    const auto fita = std::find_if(
+                std::begin(m_arguments),
+                std::end(m_arguments),
+                [argId_](const ArgumentInfo &ai)->bool
+    {
+        return ai.getArgId() == argId_;
+    });
+    if(std::end(m_arguments) != fita)
+    {
+        fita->setValue(value_);
+    }
+}
+
+bool QuizImageData::isFromImageIsUrl() const
+{
+    return m_fromImageUrl != g_noImage;
+}
+
+bool QuizImageData::isToImageIsUrl() const
+{
+    return m_toImageUrl != g_noImage;
+}
+
+const QString &QuizImageData::getFromImageUrl() const
+{
+    return m_fromImageUrl;
+}
+
+const QString &QuizImageData::getToImageUrl() const
+{
+    return m_toImageUrl;
+}
+
+const QList<ArgumentInfo> &QuizImageData::getArguments() const
+{
+    return m_arguments;
+}
+
+QList<ArgumentInfo> &QuizImageData::getArgumentsNC()
+{
+    return m_arguments;
+}
+
+const QString &QuizImageData::getVertexShader() const
+{
+    return m_vertexShader;
+}
+
+const QString &QuizImageData::getFragmentShader() const
+{
+    return m_fragmentShader;
+}
+
 
 OpenGlQuizImage::OpenGlQuizImage()
 {
@@ -247,8 +420,6 @@ OpenGlQuizImage::OpenGlQuizImage()
     qDebug() << "OpenGlQuizImage::OpenGlQuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
-    m_fromImageUrlNew = g_noImage;
-    m_toImageUrlNew = g_noImage;
     extractArguments(nullptr, nullptr);
 }
 
@@ -314,22 +485,30 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
     // base data
     m_t = quizImage->t();
     if(!quizImage->areAllDataAvailable()) { return; }
+    //m_data = quizImage->getData();
+
     if(!quizImage->dataUpdated()) { return; }
     // all data
-    m_fromImageUrlNew = quizImage->fromImageLocalUrl();
-    if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
-    m_toImageUrlNew = quizImage->toImageLocalUrl();
-    if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
+
+    //m_fromImageUrlNew = quizImage->fromImageLocalUrl();
+    //if(m_fromImageUrlNew.isEmpty()) { m_fromImageUrlNew = g_noImage; }
+    m_data.setFromImageUrl(quizImage->fromImageLocalUrl());
+
+    //m_toImageUrlNew = quizImage->toImageLocalUrl();
+    //if(m_toImageUrlNew.isEmpty()) { m_toImageUrlNew = g_noImage; }
+    m_data.setToImageUrl(quizImage->toImageLocalUrl());
+
     const Effect *effect = quizImage->getEffect();
     const EffectArgSet *argumentSet = quizImage->getArgumentSet();
     const bool needToUpdateEffects = quizImage->needToUpdateEffects();
-    int effectId = nullptr != effect ? effect->id() : -1;
-    int argumentSetId = nullptr != argumentSet ? argumentSet->id() : -1;
-    if(needToUpdateEffects || effectId != m_oldEffectId || argumentSetId != m_oldArgumentSetId)
+    //int effectId = nullptr != effect ? effect->id() : -1;
+    m_data.setEffectId(nullptr != effect ? effect->id() : -1);
+    //int argumentSetId = nullptr != argumentSet ? argumentSet->id() : -1;
+    m_data.setArgumentSetId(nullptr != argumentSet ? argumentSet->id() : -1);
+    if(needToUpdateEffects || m_data.effectChanged())
     {
-        m_oldEffectId = effectId;
-        m_oldArgumentSetId = argumentSetId;
         extractArguments(effect, argumentSet);
+        m_data.useNewEffect();
     }
     quizImage->retryData();
     quizImage->renderBuildError(m_programBuildLog);
@@ -388,15 +567,17 @@ void OpenGlQuizImage::makeObject()
 
 void OpenGlQuizImage::createTextures()
 {
-    if(m_fromImageUrlNew == m_toImageUrl &&
-            m_toImageUrlNew == m_fromImageUrl &&
-            m_fromImageUrlNew != m_fromImageUrl
-            )
+//    if(m_fromImageUrlNew == m_toImageUrl &&
+//            m_toImageUrlNew == m_fromImageUrl &&
+//            m_fromImageUrlNew != m_fromImageUrl
+//            )
+    if(m_data.isSwapImages())
     {
         // swap textures
-        std::swap(m_fromImageUrl, m_toImageUrl);
+        //std::swap(m_fromImageUrl, m_toImageUrl);
+        m_data.swapImages();
         //qDebug() << "m_fromImageUrl = " << m_fromImageUrl << "m_toImageUrl = " << m_toImageUrl;
-        Q_ASSERT(m_fromImageUrl == m_fromImageUrlNew && m_toImageUrl == m_toImageUrlNew);
+        //Q_ASSERT(m_fromImageUrl == m_fromImageUrlNew && m_toImageUrl == m_toImageUrlNew);
         std::swap(m_fromImage, m_toImage);
         std::swap(m_fromTexture, m_toTexture);
         m_updateSize = true;
@@ -406,18 +587,21 @@ void OpenGlQuizImage::createTextures()
         return;
     }
 
-    if(m_fromImageUrlNew != m_fromImageUrl)
+    //if(m_fromImageUrlNew != m_fromImageUrl)
+    if(m_data.fromImageUrlChanged())
     {
-        m_fromImageUrl = m_fromImageUrlNew;
+        //m_fromImageUrl = m_fromImageUrlNew;
+        m_data.useNewFromImageUrl();
         delete m_fromImage;
-        if(m_fromImageUrl != g_noImage)
+        //if(m_fromImageUrl != g_noImage)
+        if(m_data.isFromImageIsUrl())
         {
-            QUrl url(m_fromImageUrl);
+            QUrl url(m_data.getFromImageUrl());
             m_fromImage = new QImage(url.path());
         }
         else
         {
-            m_fromImage = new QImage(m_fromImageUrl);
+            m_fromImage = new QImage(m_data.getFromImageUrl());
         }
         //qDebug() << "m_fromImageUrl = " << m_fromImageUrl;
         Q_ASSERT(!m_fromImage->isNull());
@@ -431,18 +615,23 @@ void OpenGlQuizImage::createTextures()
 #endif
     }
 
-    if(m_toImageUrlNew != m_toImageUrl)
+    //if(m_toImageUrlNew != m_toImageUrl)
+    if(m_data.toImageUrlChanged())
     {
-        m_toImageUrl = m_toImageUrlNew;
+        //m_toImageUrl = m_toImageUrlNew;
+        m_data.useNewToImageUrl();
         delete m_toImage;
-        if(m_toImageUrl != g_noImage)
+        //if(m_toImageUrl != g_noImage)
+        if(m_data.isFromImageIsUrl())
         {
-            QUrl url(m_toImageUrl);
+            //QUrl url(m_toImageUrl);
+            QUrl url(m_data.getToImageUrl());
             m_toImage = new QImage(url.path());
         }
         else
         {
-            m_toImage = new QImage(m_toImageUrl);
+            //m_toImage = new QImage(m_toImageUrl);
+            m_toImage = new QImage(m_data.getToImageUrl());
         }
         //qDebug() << "m_toImageUrl = " << m_toImageUrl;
         Q_ASSERT(!m_toImage->isNull());
@@ -526,7 +715,8 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     if(nullptr == m_vshader)
     {
         m_vshader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
-        m_vshaderBA = m_vertexShader.toUtf8();
+        //m_vshaderBA = m_vertexShader.toUtf8();
+        m_vshaderBA = m_data.getVertexShader().toUtf8();
         m_vshader->compileSourceCode(m_vshaderBA.constData());
         if(!m_vshader->isCompiled())
         {
@@ -537,7 +727,8 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     if(nullptr == m_fshader)
     {
         m_fshader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr);
-        m_fshaderBA = m_fragmentShader.toUtf8();
+        //m_fshaderBA = m_fragmentShader.toUtf8();
+        m_fshaderBA = m_data.getFragmentShader().toUtf8();
         m_fshader->compileSourceCode(m_fshaderBA.constData());
         if(!m_fshader->isCompiled())
         {
@@ -568,7 +759,8 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
         m_tId = m_program->uniformLocation("t");
 
-        for(ArgumentInfo &ai: m_arguments)
+        //for(ArgumentInfo &ai: m_arguments)
+        for(ArgumentInfo &ai: m_data.getArgumentsNC())
         {
             ai.initId(m_program);
         }
@@ -610,7 +802,8 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
         m_updateSize = false;
     }
 
-    for(ArgumentInfo &ai: m_arguments)
+    //for(ArgumentInfo &ai: m_arguments)
+    for(ArgumentInfo &ai: m_data.getArgumentsNC())
     {
         ai.initValueFromRenderState(this);
     }
@@ -621,7 +814,8 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_texMatrix2Id, m_texMatrix2);
     m_program->setUniformValue(m_opacitiId, float(inheritedOpacity()));
 
-    for(const ArgumentInfo &ai: m_arguments)
+    //for(const ArgumentInfo &ai: m_arguments)
+    for(ArgumentInfo &ai: m_data.getArgumentsNC())
     {
         ai.setValue(m_program);
     }
@@ -702,9 +896,11 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
 
     if(nullptr == effect_)
     {
-        m_arguments.clear();
-        m_vertexShader.clear();
-        m_fragmentShader.clear();
+        //m_arguments.clear();
+        //m_vertexShader.clear();
+        //m_fragmentShader.clear();
+        m_data.clearArguments();
+        m_data.setShaders(QString(), QString());
         initDefaultShaders();
         resetProgram();
         return;
@@ -718,8 +914,9 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     Q_ASSERT(nullptr != sf);
 
-    m_vertexShader.clear();
-    m_fragmentShader.clear();
+    //m_vertexShader.clear();
+    //m_fragmentShader.clear();
+    m_data.setShaders(QString(), QString());
 
     const EffectShaderModel *shaders = effect_->getEffectShaders();
     Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
@@ -733,7 +930,7 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
         Q_ASSERT(shader != nullptr);
 
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
-        QString shaderText = loadFileByUrl(shader->filename());
+        QString shaderText = ::loadTextFileByUrl(shader->filename());
 
         ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
         Q_ASSERT(nullptr != shaderType &&
@@ -744,11 +941,13 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
                 );
         if(g_shaderTypeVertex == shaderType->type())
         {
-            m_vertexShader = shaderText;
+            //m_vertexShader = shaderText;
+            m_data.setVertexShader(shaderText);
         }
         else if(g_shaderTypeFragment == shaderType->type())
         {
-            m_fragmentShader = shaderText;
+            //m_fragmentShader = shaderText;
+            m_data.setFragmentShader(shaderText);
         }
     }
     initDefaultShaders();
@@ -759,7 +958,9 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
                 );
     Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
 
-    m_arguments.clear();
+    //m_arguments.clear();
+    m_data.clearArguments();
+
     // read default arguments values
     const EffectArgModel *effectArguments = effect_->getEffectArguments();
     Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
@@ -774,7 +975,8 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
         ai.setArgId(effectArgument->id());
         ai.setType(argType->type());
         ai.setValue(effectArgument->defaultValue());
-        m_arguments.push_back(ai);
+        //m_arguments.push_back(ai);
+        m_data.appendArguments(ai);
     }
 
     if(nullptr != argumentSet_)
@@ -786,12 +988,7 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
             const EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
             Q_ASSERT(nullptr != effectArgumentValue);
             const int argId = effectArgumentValue->getArgId();
-            const auto fita = std::find_if(std::begin(m_arguments), std::end(m_arguments), [argId](const ArgumentInfo &ai)->bool
-            {
-                return ai.getArgId() == argId;
-            });
-            Q_ASSERT(std::end(m_arguments) != fita);
-            fita->setValue(effectArgumentValue->value());
+            m_data.setArgumentValue(argId, effectArgumentValue->value());
         }
     }
 
@@ -800,20 +997,14 @@ void OpenGlQuizImage::extractArguments(const Effect *effect_, const EffectArgSet
 
 void OpenGlQuizImage::initDefaultShaders()
 {
-    if(m_vertexShader.isEmpty())
-    {
-        m_vertexShader = loadFile(":/default.vert");
-    }
-    if(m_fragmentShader.isEmpty())
-    {
-        m_fragmentShader = loadFile(":/default.frag");
-    }
+    m_data.initDefaultShaders();
 }
 
 void OpenGlQuizImage::initGeometry()
 {
     QVector<Comment> comments;
-    getShaderComments(m_vertexShader, comments);
+    //getShaderComments(m_vertexShader, comments);
+    getShaderComments(m_data.getVertexShader(), comments);
     const auto fitShader = std::find_if(std::begin(comments), std::end(comments),
                                   [](const Comment &comment)->bool
     {
@@ -874,31 +1065,6 @@ void OpenGlQuizImage::resetProgram()
     m_program = nullptr;
     delete m_vbo;
     m_vbo = nullptr;
-}
-
-QString OpenGlQuizImage::loadFile(const QString &filename_)
-{
-    QFile file(filename_);
-    if(!file.open(QIODevice::ReadOnly)) { return QString(); }
-    QByteArray fd = file.readAll();
-    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
-    return codec->toUnicode(fd);
-}
-
-QString OpenGlQuizImage::loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
-{
-    if(useServerFiles_)
-    {
-        ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-        Q_ASSERT(nullptr != sf);
-        QUrl url(sf->get(filenameUrl_));
-        return loadFile(url.toLocalFile());
-    }
-    else
-    {
-        QUrl url(filenameUrl_);
-        return loadFile(url.toLocalFile());
-    }
 }
 
 bool OpenGlQuizImage::getRenderRectSize(QVariantList &values_)
