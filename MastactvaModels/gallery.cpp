@@ -5,6 +5,9 @@
 Gallery::Gallery(GalleryModel *parent_)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Gallery::Gallery()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_galleryModel =  parent_;
 }
 
@@ -158,5 +161,8 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
 GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Gallery, GalleryModel>(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "GalleryModel::GalleryModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

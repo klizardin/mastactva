@@ -4,6 +4,9 @@
 EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectArgSet::EffectArgSet()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_effectArgSetModel = parent_;
     m_objectModelInfo = this;
 }
@@ -161,5 +164,8 @@ void EffectArgSet::listLoadedVF()
 EffectArgSetModel::EffectArgSetModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectArgSetModel::EffectArgSetModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

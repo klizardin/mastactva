@@ -12,7 +12,7 @@
 //#define TRACE_DB_DATA_BINDINGS
 //#define TRACE_DB_USE
 //#define TRACE_DB_DATA_RETURN
-//#define TRACE_QUIZIMAGE_THREADS
+#define TRACE_THREADS
 
 
 #endif // DEFINES_H

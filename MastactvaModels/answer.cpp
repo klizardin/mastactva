@@ -1,10 +1,14 @@
 #include "answer.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/defines.h"
 
 
 Answer::Answer(QObject *parent_)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Answer::Answer()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
 }
 
 int Answer::id() const
@@ -58,5 +62,8 @@ void Answer::setPoints(const qreal &points_)
 AnswerModel::AnswerModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "AnswerModel::AnswerModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

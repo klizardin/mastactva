@@ -4,6 +4,9 @@
 EffectShader::EffectShader(EffectShaderModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectShader::EffectShader()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_effectShaderModel = parent_;
 }
 
@@ -96,5 +99,8 @@ ShaderModel *EffectShader::createShaderModel()
 EffectShaderModel::EffectShaderModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectShaderModel::EffectShaderModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

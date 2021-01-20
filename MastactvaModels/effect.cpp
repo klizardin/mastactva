@@ -10,6 +10,9 @@
 Effect::Effect(EffectModel *parent_)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Effect::Effect()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_effectModel = parent_;
     m_objectModelInfo = this;
 }
@@ -476,5 +479,8 @@ const EffectArgModel *Effect::getEffectArguments() const
 EffectModel::EffectModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectModel::EffectModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     init(this);
 }

@@ -20,7 +20,7 @@
 QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
     : QQuickItem(parent_)
 {
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
     qDebug() << "QuizImage::QuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     setFlag(ItemHasContents);
@@ -39,7 +39,7 @@ void QuizImage::updateEffects()
 
 void QuizImage::swapImages()
 {
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
     qDebug() << "QuizImage::swapImages()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
@@ -68,7 +68,7 @@ void QuizImage::setFromImage(const QVariantList &fromImageInfo_)
 {
     if(fromImageInfo_.size() < 2) { return; }
 
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
     qDebug() << "QuizImage::setFromImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
@@ -115,7 +115,7 @@ void QuizImage::setToImage(const QVariantList &toImageInfo_)
 {
     if(toImageInfo_.size() < 2) { return; }
 
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
     qDebug() << "QuizImage::setToImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
@@ -155,7 +155,7 @@ QVariant QuizImage::effect() const
 
 void QuizImage::setEffect(const QVariant &effect_)
 {
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
     qDebug() << "QuizImage::setEffect()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
@@ -205,7 +205,7 @@ QVariant QuizImage::argumentSet() const
 
 void QuizImage::setArgumentSet(const QVariant &argumentSet_)
 {
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
     qDebug() << "QuizImage::setArgumentSet()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
@@ -337,7 +337,7 @@ QSGNode *QuizImage::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         Q_FALLTHROUGH();
     case QSGRendererInterface::OpenGLRhi:
 #if QT_CONFIG(opengl)
-#if defined(TRACE_QUIZIMAGE_THREADS)
+#if defined(TRACE_THREADS)
         qDebug() << "QuizImage::updatePaintNode()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
         if (!n)
