@@ -61,7 +61,7 @@ void ServerFiles::add(const QString &url_,
 #endif
 
     // check if url has currently been downloaded
-    if(isUrlDownloaded(url_) && testHash(url_, hash_))
+    if(isUrlDownloaded(url_) && (isResourceSheme(url_) || testHash(url_, hash_)))
     {
 #if defined(TRACE_SERVER_FILES)
         qDebug() << "ServerFiles::add() already has been downloaded " << url_;
