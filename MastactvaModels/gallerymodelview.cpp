@@ -73,7 +73,9 @@ bool GalleryModelView::getListImpl(DBRequestInfo *r_)
     return true;
 }
 
-bool GalleryModelView::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool GalleryModelView::addItemImpl(const QVariant &appId_,
+                                   const QHash<QString, QVariant> &values_,
+                                   DBRequestInfo *r_)
 {
     Q_UNUSED(appId_);
     Q_UNUSED(values_);
@@ -81,7 +83,9 @@ bool GalleryModelView::addItemImpl(const QVariant &appId_, const QHash<QString, 
     return false;
 }
 
-bool GalleryModelView::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool GalleryModelView::setItemImpl(const QVariant &id_,
+                                   const QHash<QString, QVariant> &values_,
+                                   DBRequestInfo *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(values_);
@@ -98,7 +102,8 @@ bool GalleryModelView::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 
 void GalleryModelView::loadSteps()
 {
-    QObject::connect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(userStepModelListReloaded()));
+    QObject::connect(m_userStepModel, SIGNAL(listReloaded()),
+                     this, SLOT(userStepModelListReloaded()));
     m_userStepModel->clearListLoaded();
     m_userStepModel->loadListImpl(
                 QString(),
@@ -121,10 +126,12 @@ void GalleryModelView::loadSteps()
 
 void GalleryModelView::userStepModelListReloaded()
 {
-    QObject::disconnect(m_userStepModel, SIGNAL(listReloaded()), this, SLOT(userStepModelListReloaded()));
+    QObject::disconnect(m_userStepModel, SIGNAL(listReloaded()),
+                        this, SLOT(userStepModelListReloaded()));
     m_lastUserStep = m_userStepModel->getCurrentDataItem();
 
-    QObject::connect(m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()), this, SLOT(userStepPlayedGallriesModelListReloaded()));
+    QObject::connect(m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()),
+                     this, SLOT(userStepPlayedGallriesModelListReloaded()));
     m_userStepPlayedGalleriesModel->clearListLoaded();
     m_userStepPlayedGalleriesModel->loadListImpl(
                 QString(),
@@ -144,9 +151,11 @@ void GalleryModelView::userStepModelListReloaded()
 
 void GalleryModelView::userStepPlayedGallriesModelListReloaded()
 {
-    QObject::disconnect(m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()), this, SLOT(userStepPlayedGallriesModelListReloaded()));
+    QObject::disconnect(m_userStepPlayedGalleriesModel, SIGNAL(listReloaded()),
+                        this, SLOT(userStepPlayedGallriesModelListReloaded()));
 
-    QObject::connect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(galleryModelListReloaded()));
+    QObject::connect(m_galleryModel, SIGNAL(listReloaded()),
+                     this, SLOT(galleryModelListReloaded()));
     m_galleryModel->clearListLoaded();
     m_galleryModel->loadListImpl();
 }
@@ -157,7 +166,8 @@ static const int g_newGallriesIntervalDays = 30;
 
 void GalleryModelView::galleryModelListReloaded()
 {
-    QObject::disconnect(m_galleryModel, SIGNAL(listReloaded()), this, SLOT(galleryModelListReloaded()));
+    QObject::disconnect(m_galleryModel, SIGNAL(listReloaded()),
+                        this, SLOT(galleryModelListReloaded()));
 
     QSet<int> playedGalleries;
     for( int i = 0; i < m_userStepPlayedGalleriesModel->sizeImpl(); i++ )

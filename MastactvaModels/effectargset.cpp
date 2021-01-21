@@ -95,9 +95,14 @@ QVariant EffectArgSet::values() const
 {
     if(nullptr == m_affectArgValueModel)
     {
-        const_cast<EffectArgSet *>(this)->m_affectArgValueModel = const_cast<EffectArgSet *>(this)->createAffectArgValueModel();
+        const_cast<EffectArgSet *>(this)->m_affectArgValueModel = const_cast<EffectArgSet *>(this)
+                ->createAffectArgValueModel();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArgValueModel *>(m_affectArgValueModel)));
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<EffectArgValueModel *>(
+                                       m_affectArgValueModel)
+                                   )
+                               );
 }
 
 void EffectArgSet::setValues(const QVariant &obj_)
@@ -135,7 +140,8 @@ EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
     m->setLayoutRefImpl("arg_set", m_effectArgSetModel->getQMLLayoutName(), "id");
     m->setCurrentRef("arg_set");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgSet_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgValueModel_"));
+    m->setLayoutQMLName(m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgSet_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectArgValueModel_"));
     m->registerListModel();
     m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
@@ -145,7 +151,8 @@ EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
 
 QString EffectArgSet::getObjectName() const
 {
-    return m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgSet_") + QVariant::fromValue(m_appId).toString();
+    return m_effectArgSetModel->getQMLLayoutName() + QString("_EffectArgSet_") +
+            QVariant::fromValue(m_appId).toString();
 }
 
 void EffectArgSet::loadChildrenVF()

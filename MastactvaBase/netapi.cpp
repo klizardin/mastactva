@@ -107,7 +107,8 @@ void NetAPI::clearData()
 {
     if(nullptr != m_networkManager)
     {
-        QObject::disconnect(m_networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replayFinished(QNetworkReply *)));
+        QObject::disconnect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
+                            this, SLOT(replayFinished(QNetworkReply *)));
         delete m_networkManager;
         m_networkManager = nullptr;
     }
@@ -118,7 +119,8 @@ void NetAPI::clearData()
     }
 }
 
-QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)
+QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_,
+                                       const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
     for(QHash<QString, QVariant>::const_iterator it = v2_.begin(); it != v2_.end(); ++it)
@@ -146,7 +148,8 @@ bool NetAPI::init()
 {
     if(nullptr != m_networkManager) { return true; }
     m_networkManager = new QNetworkAccessManager();
-    QObject::connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replayFinished(QNetworkReply *)));
+    QObject::connect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
+                     this, SLOT(replayFinished(QNetworkReply *)));
     return nullptr != m_networkManager;
 }
 
@@ -180,7 +183,9 @@ void NetAPI::replayFinished(QNetworkReply *reply_)
     rd = nullptr;
 }
 
-RequestData *NetAPI::emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
+RequestData *NetAPI::emptyRequest(const QString &requestName_,
+                                  const QVariant &itemAppId_,
+                                  const QVariant &itemId_)
 {
     NetRequestData *rd = new NetRequestData();
     rd->setRequestName(requestName_);
@@ -246,7 +251,10 @@ RequestData *NetAPI::getListByProcedureImpl(const QString& requestName_,
                                             bool jsonParams_,
                                             const QHash<QString, QVariant> &extraFields_)
 {
-    const QVariant id = extraFields_.contains("id") ? extraFields_.value("id") : QVariant::fromValue(QString("0"));
+    const QVariant id = extraFields_.contains("id")
+            ? extraFields_.value("id")
+            : QVariant::fromValue(QString("0"))
+            ;
     QString urlString = m_hostUrlBase + QString("%1/%2/%3/")
             .arg(jsonLayoutName_,
                 jsonParams_ ? QString("0") : id.toString(),
@@ -455,7 +463,10 @@ void JsonRequestData::getDocumentLength(QByteArray &dataLength_)
 }
 
 
-RequestData *NetAPI::addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_)
+RequestData *NetAPI::addItemImpl(const QString& requestName_,
+                                 const QString &jsonLayoutName_,
+                                 const QVariant &appId_,
+                                 const QHash<QString, QVariant> &values_)
 {
     const QString urlString = m_hostUrlBase + QString("%1/")
             .arg(jsonLayoutName_)
@@ -493,7 +504,10 @@ RequestData *NetAPI::addItemImpl(const QString& requestName_, const QString &jso
     return rd;
 }
 
-RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_)
+RequestData *NetAPI::setItemImpl(const QString& requestName_,
+                                 const QString &jsonLayoutName_,
+                                 const QVariant &id_,
+                                 const QHash<QString, QVariant> &values_)
 {
     Q_ASSERT(id_.isValid());
     Q_ASSERT(id_.toString() != "false");
@@ -535,7 +549,10 @@ RequestData *NetAPI::setItemImpl(const QString& requestName_, const QString &jso
     return rd;
 }
 
-RequestData *NetAPI::delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &extraFields_)
+RequestData *NetAPI::delItemImpl(const QString& requestName_,
+                                 const QString &jsonLayoutName_,
+                                 const QVariant &id_,
+                                 const QHash<QString, QVariant> &extraFields_)
 {
     Q_UNUSED(extraFields_);
 

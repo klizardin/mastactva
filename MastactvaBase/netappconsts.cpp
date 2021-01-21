@@ -14,7 +14,9 @@ const NetAppConsts &NetAppConsts::getInstance()
     return instance;
 }
 
-void NetAppConsts::set(const QString &serverURL_, const QString &playLogin_, const QString &playPassword_)
+void NetAppConsts::set(const QString &serverURL_,
+                       const QString &playLogin_,
+                       const QString &playPassword_)
 {
     NetAppConsts & v = const_cast<NetAppConsts &>(getInstance());
     v.m_serverURL = serverURL_;

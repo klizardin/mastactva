@@ -208,15 +208,18 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
     }
     else if(2 == m_size && m_floatType)
     {
-        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1]);
+        program_->setUniformValue(m_id, m_valueFloat[0],
+                m_valueFloat[1]);
     }
     else if(3 == m_size && m_floatType)
     {
-        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2]);
+        program_->setUniformValue(m_id, m_valueFloat[0],
+                m_valueFloat[1], m_valueFloat[2]);
     }
     else if(4 == m_size && m_floatType && !m_matrixType)
     {
-        program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2], m_valueFloat[3]);
+        program_->setUniformValue(m_id, m_valueFloat[0],
+                m_valueFloat[1], m_valueFloat[2], m_valueFloat[3]);
     }
     else if(4 == m_size && m_floatType && m_matrixType)
     {
@@ -341,12 +344,14 @@ void OpenGlQuizImage::makeObject()
         {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
     };
 
-    m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight * g_trianglesCount * g_triangleConers * g_geometryItemSize);
+    m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight *
+                      g_trianglesCount * g_triangleConers * g_geometryItemSize);
     for(int y = 0; y < m_geometryPointsHeight; y++)
     {
         for(int x = 0; x < m_geomertyPointsWidth; x++)
         {
-            const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers * g_geometryItemSize;
+            const int offs = (y * m_geomertyPointsWidth + x) *
+                    g_trianglesCount * g_triangleConers * g_geometryItemSize;
             for (int j = 0; j < g_trianglesCount; ++j)
             {
                 for(int k = 0; k < g_triangleConers; k++)
@@ -469,7 +474,9 @@ void OpenGlQuizImage::makeTextureMatrixes()
     }
 }
 
-void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textureMatrix_, const QSize &imageSize_, const QSize &rectSize_)
+void OpenGlQuizImage::calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textureMatrix_,
+                                                              const QSize &imageSize_,
+                                                              const QSize &rectSize_)
 {
     const qreal imageRate = (qreal)std::max(1, imageSize_.width())/(qreal)std::max(1, imageSize_.height());
     const qreal rectRate = (qreal)std::max(1, rectSize_.width())/(qreal)std::max(1, rectSize_.height());

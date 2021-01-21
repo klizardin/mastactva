@@ -55,9 +55,14 @@ QVariant EffectShader::shader() const
 {
     if(nullptr == m_shaderModel)
     {
-        const_cast<EffectShader *>(this)->m_shaderModel = const_cast<EffectShader *>(this)->createShaderModel();
+        const_cast<EffectShader *>(this)->m_shaderModel = const_cast<EffectShader *>(this)
+                ->createShaderModel();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<ShaderModel *>(m_shaderModel)));
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<ShaderModel *>(
+                                       m_shaderModel)
+                                   )
+                               );
 }
 
 void EffectShader::setShader(const QVariant &obj_)
@@ -88,7 +93,8 @@ ShaderModel *EffectShader::createShaderModel()
     m->setLayoutRefImpl("id", m_effectShaderModel->getQMLLayoutName(), "shader");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectShaderModel->getQMLLayoutName() + QString("_EffectShader_") + QVariant::fromValue(m_appId).toString() + QString("_ShaderModel_"));
+    m->setLayoutQMLName(m_effectShaderModel->getQMLLayoutName() + QString("_EffectShader_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_ShaderModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);

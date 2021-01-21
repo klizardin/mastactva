@@ -100,7 +100,8 @@ ImageModel *Gallery::createImages()
     m->setCurrentRef("gallery");
     m->addModelParam("use_in_gallery_view", "1");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") + QVariant::fromValue(m_appId).toString() + QString("_GalleryImageModel_"));
+    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_GalleryImageModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_galleryModel);
     m->setAutoCreateChildrenModels(true);           // TODO: find way to upload images of gallery when it is required
@@ -122,9 +123,14 @@ QVariant Gallery::statistics() const
 {
     if(nullptr == m_galleryStatisticsModel)
     {
-        const_cast<Gallery *>(this)->m_galleryStatisticsModel = const_cast<Gallery *>(this)->createGalleryStatistics();
+        const_cast<Gallery *>(this)->m_galleryStatisticsModel = const_cast<Gallery *>(this)
+                ->createGalleryStatistics();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<GalleryStatisticsModel *>(m_galleryStatisticsModel)));
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<GalleryStatisticsModel *>(
+                                       m_galleryStatisticsModel)
+                                   )
+                               );
 }
 
 void Gallery::setStatistics(const QVariant &obj_)
@@ -149,7 +155,8 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     m->setLayoutRefImpl("gallery", m_galleryModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("gallery");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") + QVariant::fromValue(m_appId).toString() + QString("_GalleryStatisticsModel_"));
+    m->setLayoutQMLName(m_galleryModel->getQMLLayoutName() + QString("_Gallery_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_GalleryStatisticsModel_"));
     m->registerListModel();
     //m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);

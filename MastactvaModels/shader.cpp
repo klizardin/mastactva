@@ -106,7 +106,8 @@ void Shader::objectLoadedVF()
 
 QString Shader::getObjectName() const
 {
-    return m_shaderModel->getQMLLayoutName() + QString("_Shader_") + QVariant::fromValue(m_appId).toString();
+    return m_shaderModel->getQMLLayoutName() + QString("_Shader_")
+            + QVariant::fromValue(m_appId).toString();
 }
 
 

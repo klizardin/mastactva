@@ -124,7 +124,8 @@ EffectShaderModel *Effect::createEffectShadersModel()
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectShaderModel_"));
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectShaderModel_"));
     m->registerListModel();
     m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
@@ -142,7 +143,8 @@ EffectArgModel *Effect::createEffectArgModel()
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgModel_"));
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectArgModel_"));
     m->registerListModel();
     m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
@@ -160,7 +162,8 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgSetModel_"));
+    m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectArgSetModel_"));
     m->setLayoutIdFieldImpl("id");
     m->registerListModel();
     m->setParentListModelInfo(this);
@@ -200,8 +203,10 @@ bool Effect::startRefreshArguments()
     }
     m_shaderLocalUrls.clear();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    QObject::connect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
-    QObject::connect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
+    QObject::connect(sf, SIGNAL(downloaded(const QString &)),
+                     this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+    QObject::connect(sf, SIGNAL(progress()),
+                     this, SLOT(refreshArgumentsProgressSlot()));
     for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     {
         sf->add(url_.first, url_.second, g_shadersRelPath);
@@ -212,8 +217,10 @@ bool Effect::startRefreshArguments()
 void Effect::cancelRefreshArguments()
 {
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
-    QObject::disconnect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
+    QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
+                        this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+    QObject::disconnect(sf, SIGNAL(progress()),
+                        this, SLOT(refreshArgumentsProgressSlot()));
     sf->cancel(m_shaderUrls);
     m_shaderUrls.clear();
     m_shaderLocalUrls.clear();
@@ -227,8 +234,10 @@ void Effect::refreshArgumentsShaderDownloadedSlot(const QString &url_)
     m_shaderLocalUrls.insert(url_, sf->get(url_));
     if(m_shaderLocalUrls.size() == m_shaderUrls.size())
     {
-        QObject::disconnect(sf, SIGNAL(downloaded(const QString &)), this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
-        QObject::disconnect(sf, SIGNAL(progress()), this, SLOT(refreshArgumentsProgressSlot()));
+        QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
+                            this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+        QObject::disconnect(sf, SIGNAL(progress()),
+                            this, SLOT(refreshArgumentsProgressSlot()));
         emit refreshArgumentsBeforeApply();
     }
 }
@@ -243,7 +252,9 @@ void Effect::refreshArgumentsProgressSlot()
 void Effect::applyRefreshArguments()
 {
     QList<EffectArg *> newArguments;
-    ShaderArgTypeModel *argTypesModel = static_cast<ShaderArgTypeModel *>(QMLObjectsBase::getInstance().getListModel("ShaderArgTypeModel"));
+    ShaderArgTypeModel *argTypesModel = static_cast<ShaderArgTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel("ShaderArgTypeModel")
+                );
     Q_ASSERT(nullptr != argTypesModel);
 
     // read comments from shaders files
@@ -273,7 +284,10 @@ void Effect::applyRefreshArguments()
             const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
             const QString argDescription = comment.values().value(g_descriptionName, QString()).trimmed();
             //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
-            ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl("shaderArgTypeType", QVariant::fromValue(argTypeStr));
+            ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl(
+                        "shaderArgTypeType",
+                        QVariant::fromValue(argTypeStr)
+                        );
             Q_ASSERT(nullptr != shaderArgType);
             const int argTypeId = shaderArgType->id();
 
@@ -298,7 +312,10 @@ void Effect::applyRefreshArguments()
             newArg->setDefaultValue(argDefaultValue);
             newArg->setDescription(argDescription);
 
-            EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(argName));
+            EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
+                        "effectArgName",
+                        QVariant::fromValue(argName)
+                        );
             if(nullptr != existingArg)
             {
                 if(existingArg->argTypeId() == argTypeId &&
@@ -333,7 +350,10 @@ void Effect::applyRefreshArguments()
     m_itemsToAdd.clear();
     for(EffectArg *newArg: newArguments)
     {
-        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(newArg->name()));
+        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
+                    "effectArgName",
+                    QVariant::fromValue(newArg->name())
+                    );
         if(nullptr != existingArg)
         {
             m_itemsToSet.push_back(newArg);
@@ -388,7 +408,10 @@ void Effect::applyRefreshArgumentsStep()
     }
     else
     {
-        emit refreshArgumentsProgress(false, qreal((std::min(leftItems, m_itemsToChangeCount) * 1000) / m_itemsToChangeCount) / 1000.0);
+        emit refreshArgumentsProgress(false,
+                                      qreal((std::min(leftItems, m_itemsToChangeCount) * 1000)
+                                            / m_itemsToChangeCount) / 1000.0
+                                      );
     }
 
     if(m_itemsToSet.isEmpty() && m_itemsToDel.isEmpty() && m_itemsToAdd.isEmpty())
@@ -405,7 +428,10 @@ void Effect::applyRefreshArgumentsStep()
     {
         EffectArg *arg = m_itemsToSet.back();
         m_itemsToSet.pop_back();
-        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl("effectArgName", QVariant::fromValue(arg->name()));
+        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
+                    "effectArgName",
+                    QVariant::fromValue(arg->name())
+                    );
         Q_ASSERT(nullptr != existingArg);
         m_effectArgModel->setDataItemImpl(m_effectArgModel->indexOfDataItemImpl(existingArg), arg);
         return;

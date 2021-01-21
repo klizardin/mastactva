@@ -9,7 +9,9 @@
 #include "../MastactvaBase/defines.h"
 
 
-void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)
+void switchTranslator(QGuiApplication &app,
+                      QTranslator& translator,
+                      const QString& filename)
 {
     app.removeTranslator(&translator);
     if(translator.load(filename, "."))
@@ -18,7 +20,10 @@ void switchTranslator(QGuiApplication &app, QTranslator& translator, const QStri
     }
 }
 
-void switchLanguage(const QString & lang_, QTranslator& translator_, QTranslator& translatorQt_, QGuiApplication &app_)
+void switchLanguage(const QString & lang_,
+                    QTranslator& translator_,
+                    QTranslator& translatorQt_,
+                    QGuiApplication &app_)
 {
     QString lang;
     if(g_belarusLanguage == lang_)

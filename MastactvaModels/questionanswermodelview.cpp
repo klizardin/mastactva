@@ -55,7 +55,9 @@ bool QuestionAnswerModelView::canProcess(const DBRequestInfo *r_) const
                 getDataLayout<typename UserQuestionAnswerModel::DataType>().getLayoutJsonName()
                 );
     if(r_->getTableName() != tableName) { return false; }
-    const QString requestNameAddItem = RequestData::addItemRequestName<typename UserQuestionAnswerModel::DataType>();
+    const QString requestNameAddItem = RequestData::addItemRequestName<
+            typename UserQuestionAnswerModel::DataType
+            >();
     if(r_->getDBRequestName() != requestNameAddItem) { return false; }
     if(r_->getAPIName() != g_cachAPI) { return false; }
     return true;
@@ -67,7 +69,9 @@ bool QuestionAnswerModelView::getListImpl(DBRequestInfo *r_)
     return false;
 }
 
-bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_,
+                                          const QHash<QString, QVariant> &values_,
+                                          DBRequestInfo *r_)
 {
     if(nullptr == r_ || r_->getAPIName() != g_cachAPI) { return false; }
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
@@ -83,7 +87,9 @@ bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_, const QHash<QS
     return true;
 }
 
-bool QuestionAnswerModelView::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool QuestionAnswerModelView::setItemImpl(const QVariant &id_,
+                                          const QHash<QString, QVariant> &values_,
+                                          DBRequestInfo *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(values_);
@@ -107,7 +113,8 @@ void QuestionAnswerModelView::addUserQuestionAnswer()
 
     Q_ASSERT(nullptr != m_userQuestionAnswerModel);
 
-    QObject::connect(m_galleryStatisticsModel, SIGNAL(listReloaded()), this, SLOT(galleryStatisticsModelListReloaded()));
+    QObject::connect(m_galleryStatisticsModel, SIGNAL(listReloaded()),
+                     this, SLOT(galleryStatisticsModelListReloaded()));
     m_galleryStatisticsModel->clearListLoaded();
     m_galleryStatisticsModel->loadList();
 }
@@ -142,7 +149,8 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
     Q_ASSERT(nullptr != m_userQuestionAnswerModel);
     Q_ASSERT(nullptr != m_galleryStatisticsModel);
 
-    QObject::disconnect(m_galleryStatisticsModel, SIGNAL(listReloaded()), this, SLOT(galleryStatisticsModelListReloaded()));
+    QObject::disconnect(m_galleryStatisticsModel, SIGNAL(listReloaded()),
+                        this, SLOT(galleryStatisticsModelListReloaded()));
 
     if(m_requests.isEmpty())
     {
@@ -176,13 +184,15 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
         m_galleryStatistics->setUserId(g_userId);
         m_galleryStatistics->setPoints(userQuestionAnswer->points());
 
-        QObject::connect(m_galleryStatisticsModel, SIGNAL(itemAdded()), this, SLOT(galleryStatisticsModelItemAdded()));
+        QObject::connect(m_galleryStatisticsModel, SIGNAL(itemAdded()),
+                         this, SLOT(galleryStatisticsModelItemAdded()));
         m_galleryStatisticsModel->addDataItemImpl(m_galleryStatistics);
     }
     else
     {
 
-        QObject::connect(m_userQuestionAnswerModel, SIGNAL(listReloaded()), this, SLOT(userQuestionAnswerModelListReloaded()));
+        QObject::connect(m_userQuestionAnswerModel, SIGNAL(listReloaded()),
+                         this, SLOT(userQuestionAnswerModelListReloaded()));
         m_userQuestionAnswerModel->clearListLoaded();
         m_userQuestionAnswerModel->loadListImpl(
             QString(),
@@ -208,7 +218,8 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
 void QuestionAnswerModelView::userQuestionAnswerModelListReloaded()
 {
     Q_ASSERT(nullptr != m_userQuestionAnswerModel);
-    QObject::disconnect(m_userQuestionAnswerModel, SIGNAL(listReloaded()), this, SLOT(userQuestionAnswerModelListReloaded()));
+    QObject::disconnect(m_userQuestionAnswerModel, SIGNAL(listReloaded()),
+                        this, SLOT(userQuestionAnswerModelListReloaded()));
 
     if(m_requests.isEmpty())
     {
@@ -226,15 +237,19 @@ void QuestionAnswerModelView::userQuestionAnswerModelListReloaded()
     UserQuestionAnswer *oldUserQuestionAnswer = m_userQuestionAnswerModel->getCurrentDataItem();
     if(nullptr == oldUserQuestionAnswer)
     {
-        m_galleryStatistics->setPoints(m_galleryStatistics->points() + userQuestionAnswer->points());
+        m_galleryStatistics->setPoints(m_galleryStatistics->points()
+                                       + userQuestionAnswer->points());
 
     }
     else
     {
-        m_galleryStatistics->setPoints(m_galleryStatistics->points() - oldUserQuestionAnswer->points() + userQuestionAnswer->points());
+        m_galleryStatistics->setPoints(m_galleryStatistics->points()
+                                       - oldUserQuestionAnswer->points()
+                                       + userQuestionAnswer->points());
     }
 
-    QObject::connect(m_galleryStatisticsModel, SIGNAL(itemSet()), this, SLOT(galleryStatisticsModelItemSet()));
+    QObject::connect(m_galleryStatisticsModel, SIGNAL(itemSet()),
+                     this, SLOT(galleryStatisticsModelItemSet()));
     const int index = m_galleryStatisticsModel->indexOfDataItemImpl(m_galleryStatistics);
     m_galleryStatisticsModel->setDataItemImpl(index, m_galleryStatistics);
 }

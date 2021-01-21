@@ -64,9 +64,14 @@ QVariant Question::answers() const
 {
     if(nullptr == m_answerModel)
     {
-        const_cast<Question *>(this)->m_answerModel = const_cast<Question *>(this)->createAnswerModel();
+        const_cast<Question *>(this)->m_answerModel = const_cast<Question *>(this)
+                ->createAnswerModel();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<AnswerModel *>(m_answerModel)));
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<AnswerModel *>(
+                                       m_answerModel)
+                                   )
+                               );
 }
 
 void Question::setAnswers(const QVariant &answers_)
@@ -84,9 +89,14 @@ QVariant Question::userQuestionAnswer() const
 {
     if(nullptr == m_userQuestionAnswerModel)
     {
-        const_cast<Question *>(this)->m_userQuestionAnswerModel = const_cast<Question *>(this)->createUserQuestionAnswerModel();
+        const_cast<Question *>(this)->m_userQuestionAnswerModel = const_cast<Question *>(this)
+                ->createUserQuestionAnswerModel();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<UserQuestionAnswerModel *>(m_userQuestionAnswerModel)));
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<UserQuestionAnswerModel *>(
+                                       m_userQuestionAnswerModel)
+                                   )
+                               );
 }
 
 AnswerModel *Question::createAnswerModel()
@@ -96,7 +106,8 @@ AnswerModel *Question::createAnswerModel()
     m->setLayoutRefImpl("question", m_questionModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_Question_") + QVariant::fromValue(m_appId).toString() + QString("_AnswerModel_"));
+    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_Question_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_AnswerModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
@@ -116,7 +127,8 @@ UserQuestionAnswerModel *Question::createUserQuestionAnswerModel()
     m->setLayoutRefImpl("question", m_questionModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("question");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_Question_") + QVariant::fromValue(m_appId).toString() + QString("_UserQuestionAnswerModel_"));
+    m->setLayoutQMLName(m_questionModel->getQMLLayoutName() + QString("_Question_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_UserQuestionAnswerModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);

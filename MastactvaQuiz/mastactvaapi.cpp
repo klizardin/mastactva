@@ -12,7 +12,9 @@ MastactvaAPI::MastactvaAPI(QObject *parent_ /*= nullptr*/)
 #endif
 }
 
-QString MastactvaAPI::readMore(const QString &str_, int maxSymbols_, const QString &rmt_)
+QString MastactvaAPI::readMore(const QString &str_,
+                               int maxSymbols_,
+                               const QString &rmt_)
 {
     if(str_.length() <= maxSymbols_) { return str_; }
     int i = maxSymbols_;
@@ -30,7 +32,9 @@ void MastactvaAPI::setInitialized()
     emit initialized();
 }
 
-void MastactvaAPI::showModelError(int errorCode_, const QString & errorCodeStr_, const QString & description_)
+void MastactvaAPI::showModelError(int errorCode_,
+                                  const QString & errorCodeStr_,
+                                  const QString & description_)
 {
     Q_UNUSED(errorCode_);
     emit errorMessage(errorCodeStr_, description_);

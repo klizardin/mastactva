@@ -62,7 +62,8 @@ QVariant EffectArgValue::arg() const
 {
     if(nullptr == m_effectArgModel)
     {
-        const_cast<EffectArgValue *>(this)->m_effectArgModel = const_cast<EffectArgValue *>(this)->createEffectArgModel();
+        const_cast<EffectArgValue *>(this)->m_effectArgModel = const_cast<EffectArgValue *>(this)
+                ->createEffectArgModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArgModel *>(m_effectArgModel)));
 }
@@ -119,7 +120,8 @@ EffectArgModel *EffectArgValue::createEffectArgModel()
     m->setLayoutRefImpl("id", m_effectArgValueModel->getQMLLayoutName(), "arg");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArgValueModel->getQMLLayoutName() + QString("_EffectArgValue_") + QVariant::fromValue(m_appId).toString() + QString("_EffectArgModel_"));
+    m->setLayoutQMLName(m_effectArgValueModel->getQMLLayoutName() + QString("_EffectArgValue_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectArgModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);

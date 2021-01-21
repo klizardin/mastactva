@@ -16,18 +16,23 @@ ListModelBaseData::~ListModelBaseData()
     }
 }
 
-void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ /*= true*/)
+void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_,
+                                         const QString &parentModel_,
+                                         const QString &parentModelRefJsonName_,
+                                         bool notify_ /*= true*/)
 {
     m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
     if(!notify_) { return; }
     IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
     if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
     {
-        QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)), m_modelObj, SLOT(refreshChildrenSlot(QString)));
+        QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)),
+                         m_modelObj, SLOT(refreshChildrenSlot(QString)));
     }
 }
 
-void ListModelBaseData::addLayoutExtraFieldsImpl(const QString &modelName_, const QVariant &appId_)
+void ListModelBaseData::addLayoutExtraFieldsImpl(const QString &modelName_,
+                                                 const QVariant &appId_)
 {
     m_extraFields.push_back({modelName_, appId_});
 }

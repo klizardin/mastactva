@@ -49,7 +49,10 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty())
+    {
+        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
+    }
     QStringList tableFieldsNameTypePairs;
     for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
     {
@@ -79,7 +82,9 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
     return true;
 }
 
-bool LocalDataAPINoCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool LocalDataAPINoCacheImpl::addItemImpl(const QVariant &appId_,
+                                          const QHash<QString, QVariant> &values_,
+                                          DBRequestInfo *r_)
 {
     Q_UNUSED(appId_);
     Q_UNUSED(values_);
@@ -87,7 +92,9 @@ bool LocalDataAPINoCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QS
     return false;
 }
 
-bool LocalDataAPINoCacheImpl::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool LocalDataAPINoCacheImpl::setItemImpl(const QVariant &id_,
+                                          const QHash<QString, QVariant> &values_,
+                                          DBRequestInfo *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(values_);
@@ -268,7 +275,10 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty())
+    {
+        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
+    }
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldNames = (QStringList()
@@ -303,7 +313,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QString idFieldJsonName;
     QString idFieldSqlName;
     QString idFieldSQlBindName;
-    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())), std::end(qAsConst(r_->getTableFieldsInfo())),
+    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::end(qAsConst(r_->getTableFieldsInfo())),
                                     [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
     {
         return bindInfo.idField;

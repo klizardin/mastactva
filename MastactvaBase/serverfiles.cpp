@@ -46,7 +46,9 @@ void ServerFiles::setRootDir(const QString &path_)
 #endif
 }
 
-void ServerFiles::add(const QString &url_, const QString &hash_, const QString &relCachePath_)
+void ServerFiles::add(const QString &url_,
+                      const QString &hash_,
+                      const QString &relCachePath_)
 {
     //qDebug() << "ServerFiles::add() url = " << url_;
 
@@ -82,8 +84,10 @@ void ServerFiles::add(const QString &url_, const QString &hash_, const QString &
     //qDebug() << "ServerFiles::add() start to download";
     ServerFileDownload *sfd = new ServerFileDownload(this);
     m_downloads.push_back(sfd);
-    QObject::connect(sfd, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
-    QObject::connect(sfd, SIGNAL(progress()), this, SLOT(progressSlot()));
+    QObject::connect(sfd, SIGNAL(finished(ServerFileDownload *)),
+                     this, SLOT(finished(ServerFileDownload *)));
+    QObject::connect(sfd, SIGNAL(progress()),
+                     this, SLOT(progressSlot()));
     sfd->setPath(m_rootDir, relCachePath_);
     sfd->setFile(url_, hash_);
 
@@ -123,19 +127,30 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
         return nullptr == download_  ||
                 (
                     nullptr != download_ &&
-                    std::end(urls_) == std::find(std::begin(urls_), std::end(urls_), download_->getUrl())
+                    std::end(urls_)
+                        == std::find(
+                            std::begin(urls_),
+                            std::end(urls_),
+                            download_->getUrl()
+                            )
                 );
     });
     if(done) { return 1.0; }
 
-    qint64 recieved = std::accumulate(std::begin(m_downloads), std::end(m_downloads), qint64(0),
+    qint64 recieved = std::accumulate(std::begin(m_downloads),
+                                      std::end(m_downloads), qint64(0),
                                       [&urls_](qint64 val_, const ServerFileDownload *download_)->qint64
     {
         return val_ +
             (
                 (
                     nullptr != download_
-                    && std::end(urls_) != std::find(std::begin(urls_), std::end(urls_), download_->getUrl())
+                    && std::end(urls_)
+                        != std::find(
+                                std::begin(urls_),
+                                std::end(urls_),
+                                download_->getUrl()
+                                )
                 )
                 ? download_->bytesReceived()
                 : 0
@@ -148,7 +163,12 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
             (
                 (
                     nullptr != download_
-                    && std::end(urls_) != std::find(std::begin(urls_), std::end(urls_), download_->getUrl())
+                    && std::end(urls_)
+                        != std::find(
+                                std::begin(urls_),
+                                std::end(urls_),
+                                download_->getUrl()
+                                )
                 )
                 ? download_->bytesTotal()
                 : 0
@@ -172,8 +192,10 @@ void ServerFiles::cancel(const QStringList &urls_)
     }
     for(ServerFileDownload *download: toRemove)
     {
-        QObject::disconnect(download, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
-        QObject::disconnect(download, SIGNAL(progress()), this, SLOT(progressSlot()));
+        QObject::disconnect(download, SIGNAL(finished(ServerFileDownload *)),
+                            this, SLOT(finished(ServerFileDownload *)));
+        QObject::disconnect(download, SIGNAL(progress()),
+                            this, SLOT(progressSlot()));
         auto fit = std::find(std::begin(m_downloads), std::end(m_downloads), download);
         delete *fit;
         *fit = nullptr;
@@ -184,10 +206,14 @@ void ServerFiles::cancel(const QStringList &urls_)
 void ServerFiles::finished(ServerFileDownload *download_)
 {
     if(nullptr == download_) { return; }
-    QObject::disconnect(download_, SIGNAL(finished(ServerFileDownload *)), this, SLOT(finished(ServerFileDownload *)));
-    QObject::disconnect(download_, SIGNAL(progress()), this, SLOT(progressSlot()));
+    QObject::disconnect(download_, SIGNAL(finished(ServerFileDownload *)),
+                        this, SLOT(finished(ServerFileDownload *)));
+    QObject::disconnect(download_, SIGNAL(progress()),
+                        this, SLOT(progressSlot()));
 
-    const auto fitd = std::find(std::begin(m_downloads), std::end(m_downloads), download_);
+    const auto fitd = std::find(std::begin(m_downloads),
+                                std::end(m_downloads),
+                                download_);
     if(std::end(m_downloads) == fitd)
     {
         delete download_;
@@ -274,18 +300,24 @@ void ServerFileDownload::start(QNetworkAccessManager &manager_)
     QUrl url(m_url);
     QNetworkRequest request(url);
     m_download = manager_.get(request);
-    connect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
-    connect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
-    connect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
+    connect(m_download, &QNetworkReply::downloadProgress,
+            this, &ServerFileDownload::downloadProgress);
+    connect(m_download, &QNetworkReply::finished,
+            this, &ServerFileDownload::downloadFinished);
+    connect(m_download, &QNetworkReply::readyRead,
+            this, &ServerFileDownload::downloadReadyRead);
 }
 
 void ServerFileDownload::cancel()
 {
     //qDebug() << "ServerFileDownload::cancel() url = " << m_url;
 
-    disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
-    disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
-    disconnect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
+    disconnect(m_download, &QNetworkReply::downloadProgress,
+               this, &ServerFileDownload::downloadProgress);
+    disconnect(m_download, &QNetworkReply::finished,
+               this, &ServerFileDownload::downloadFinished);
+    disconnect(m_download, &QNetworkReply::readyRead,
+               this, &ServerFileDownload::downloadReadyRead);
     m_outputFile.close();
     if(!ok())
     {
@@ -328,9 +360,12 @@ void ServerFileDownload::downloadFinished()
     //qDebug() << "ServerFileDownload::downloadProgress() url = " << m_url;
 
     m_outputFile.close();
-    disconnect(m_download, &QNetworkReply::downloadProgress, this, &ServerFileDownload::downloadProgress);
-    disconnect(m_download, &QNetworkReply::finished, this, &ServerFileDownload::downloadFinished);
-    disconnect(m_download, &QNetworkReply::readyRead, this, &ServerFileDownload::downloadReadyRead);
+    disconnect(m_download, &QNetworkReply::downloadProgress,
+               this, &ServerFileDownload::downloadProgress);
+    disconnect(m_download, &QNetworkReply::finished,
+               this, &ServerFileDownload::downloadFinished);
+    disconnect(m_download, &QNetworkReply::readyRead,
+               this, &ServerFileDownload::downloadReadyRead);
     bool success = false;
     if (m_download->error())
     {

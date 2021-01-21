@@ -79,7 +79,10 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty())
+    {
+        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
+    }
     const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
     const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
             ? procedureFields.value(g_procedureSelectFunctionName).toString()
@@ -248,7 +251,9 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     return true;
 }
 
-bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
+                                               const QHash<QString, QVariant> &values_,
+                                               DBRequestInfo *r_)
 {
     if(nullptr == r_) { return false; }
 
@@ -263,7 +268,10 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty())
+    {
+        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
+    }
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
@@ -394,7 +402,9 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_, const QHa
     return true;
 }
 
-bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_)
+bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
+                                               const QHash<QString, QVariant> &values_,
+                                               DBRequestInfo *r_)
 {
     if(nullptr == r_) { return false; }
 
@@ -408,7 +418,10 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_, const QHash<
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty())
+    {
+        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
+    }
 
     QString idFieldJsonName;
     QString idFieldSqlName;
@@ -493,7 +506,10 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty()) { tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef()); }
+    if(!r_->getCurrentRef().isEmpty())
+    {
+        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
+    }
 
     QString idFieldJsonName;
     QString idFieldSqlName;
@@ -592,7 +608,9 @@ LocalDataAPICache *LocalDataAPICache::getInstance()
     return g_localDataAPI;
 }
 
-RequestData *LocalDataAPICache::emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
+RequestData *LocalDataAPICache::emptyRequest(const QString &requestName_,
+                                             const QVariant &itemAppId_,
+                                             const QVariant &itemId_)
 {
     LocalDBRequest *r = new LocalDBRequest();
     r->setRequestName(requestName_);
@@ -625,7 +643,8 @@ void LocalDataAPICache::freeRequests()
     m_requests.clear();
 }
 
-QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_)
+QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant> &v1_,
+                                                  const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
     for(QHash<QString, QVariant>::const_iterator it = v2_.begin(); it != v2_.end(); ++it)
@@ -695,9 +714,11 @@ void LocalDataAPICache::makeResponses()
     for(LocalDBRequest *&r : res)
     {
         static QNetworkReply::NetworkError errCode = QNetworkReply::InternalServerError;
-        static const QString errorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(errCode);
+        static const QString errorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>()
+                .valueToKey(errCode);
         static QNetworkReply::NetworkError noErrorCode = QNetworkReply::NoError;
-        static const QString noErrorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>().valueToKey(noErrorCode);
+        static const QString noErrorCodeStr = QMetaEnum::fromType<QNetworkReply::NetworkError>()
+                .valueToKey(noErrorCode);
         if(r->error())
         {
             emit error(int(errCode), errorCodeStr, r->reply());
