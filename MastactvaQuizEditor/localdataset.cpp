@@ -137,6 +137,7 @@ void LocalDataSet::download()
     m_serverFilesOldRootDir = sf->getRootDir();
     sf->setRootDir(m_savePath);
     sf->clean(QDateTime::currentDateTime());
+    sf->reset();
 
     create();
     m_step = 0;

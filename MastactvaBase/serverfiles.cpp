@@ -229,6 +229,28 @@ void ServerFiles::cancel(const QStringList &urls_)
     }
 }
 
+void ServerFiles::reset()
+{
+    QList<ServerFileDownload *> toRemove;
+    for(ServerFileDownload *download: qAsConst(m_downloads))
+    {
+        if(nullptr == download) { continue; }
+        toRemove.push_back(download);
+    }
+    for(ServerFileDownload *download: toRemove)
+    {
+        QObject::disconnect(download, SIGNAL(finished(ServerFileDownload *)),
+                            this, SLOT(finished(ServerFileDownload *)));
+        QObject::disconnect(download, SIGNAL(progress()),
+                            this, SLOT(progressSlot()));
+        auto fit = std::find(std::begin(m_downloads), std::end(m_downloads), download);
+        delete *fit;
+        *fit = nullptr;
+        m_downloads.erase(fit);
+    }
+    m_map.clear();
+}
+
 void ServerFiles::finished(ServerFileDownload *download_)
 {
     if(nullptr == download_) { return; }
