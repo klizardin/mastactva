@@ -64,7 +64,10 @@ private:
 };
 
 
-class GalleryStatisticsModel : public ListModelBaseOfData<GalleryStatistics, GalleryStatisticsModel>
+class GalleryStatisticsModel : public ListModelBaseOfData<
+        GalleryStatistics,
+        GalleryStatisticsModel
+        >
 {
     Q_OBJECT
     QML_ELEMENT
@@ -78,7 +81,10 @@ public:
     LAYOUT_MODEL_IMPL();
 
 public slots:
-    void jsonResponseSlot(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlot(int errorCode_,
+                          const QString &errorCodeStr_,
+                          RequestData *request_,
+                          const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, errorCodeStr_, request_, reply_);
     }

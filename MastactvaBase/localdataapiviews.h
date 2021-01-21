@@ -62,7 +62,9 @@ public:
         return defaultAPI->getListImpl(r_);
     }
 
-    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override
+    virtual bool addItemImpl(const QVariant &appId_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) override
     {
         Q_UNUSED(appId_);
         Q_UNUSED(values_);
@@ -70,7 +72,9 @@ public:
         return false;
     }
 
-    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override
+    virtual bool setItemImpl(const QVariant &id_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) override
     {
         Q_UNUSED(id_);
         Q_UNUSED(values_);

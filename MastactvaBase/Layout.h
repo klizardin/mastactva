@@ -310,7 +310,8 @@ namespace layout
                 if(!toQML_) { return QVariant(); }
                 if(nullptr == obj_->*m_modelPtr)
                 {
-                    const_cast<DataType_ *>(obj_)->*m_modelPtr = (const_cast<DataType_ *>(obj_)->*m_createFuncPtr)();
+                    const_cast<DataType_ *>(obj_)->*m_modelPtr
+                            = (const_cast<DataType_ *>(obj_)->*m_createFuncPtr)();
                 }
                 return layout::getValue(static_cast<QObject *>(obj_->*m_modelPtr), toQML_);
             }
@@ -339,11 +340,13 @@ namespace layout
                 if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
                 if(nullptr == obj1_->*m_modelPtr)
                 {
-                    const_cast<DataType_ *>(obj1_)->*m_modelPtr = (const_cast<DataType_ *>(obj1_)->*m_createFuncPtr)();
+                    const_cast<DataType_ *>(obj1_)->*m_modelPtr
+                            = (const_cast<DataType_ *>(obj1_)->*m_createFuncPtr)();
                 }
                 if(nullptr == obj2_->*m_modelPtr)
                 {
-                    const_cast<DataType_ *>(obj2_)->*m_modelPtr = (const_cast<DataType_ *>(obj2_)->*m_createFuncPtr)();
+                    const_cast<DataType_ *>(obj2_)->*m_modelPtr
+                            = (const_cast<DataType_ *>(obj2_)->*m_createFuncPtr)();
                 }
                 return layout::compareValues(obj1_->*m_modelPtr, obj2_->*m_modelPtr, toQML_);
             }
@@ -431,7 +434,10 @@ public:
                   typename layout::Private::LayoutField<DataType_,ItemType_>::getFuncPtr getFunc_,
                   typename layout::Private::LayoutField<DataType_,ItemType_>::setFuncPtr setFunc_)
     {
-        m_fields.push_back(new layout::Private::LayoutField<DataType_,ItemType_>(m_lastQMLIndex, jsonName_, qmlName_, getFunc_, setFunc_));
+        m_fields.push_back(
+                    new layout::Private::LayoutField<DataType_,ItemType_>(
+                        m_lastQMLIndex, jsonName_, qmlName_, getFunc_, setFunc_)
+                    );
         if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
     }
 
@@ -440,7 +446,10 @@ public:
                   typename layout::Private::LayoutModelField<DataType_,ModelType_>::ModelTypeFieldPtr varPtr_,
                   typename layout::Private::LayoutModelField<DataType_,ModelType_>::createModelFuncPtr createFunc_)
     {
-        m_fields.push_back(new layout::Private::LayoutModelField<DataType_,ModelType_>(m_lastQMLIndex, qmlName_, varPtr_, createFunc_));
+        m_fields.push_back(
+                    new layout::Private::LayoutModelField<DataType_,ModelType_>(
+                        m_lastQMLIndex, qmlName_, varPtr_, createFunc_)
+                    );
         if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
     }
 
@@ -449,7 +458,10 @@ public:
                   typename layout::Private::LayoutSpecialField<DataType_,ItemType_>::itemMemberPtr varPtr_
                   )
     {
-        m_fields.push_back(new layout::Private::LayoutSpecialField<DataType_,ItemType_>(m_lastQMLIndex, varPtr_, type_));
+        m_fields.push_back(
+                    new layout::Private::LayoutSpecialField<DataType_,ItemType_>(
+                        m_lastQMLIndex, varPtr_, type_)
+                    );
     }
 
     void initQMLModelRoleNames(QHash<int, QByteArray> &roleNames_) const

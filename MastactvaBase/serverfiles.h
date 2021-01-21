@@ -67,7 +67,9 @@ public:
 
     Q_INVOKABLE QString getRootDir() const;
     Q_INVOKABLE void setRootDir(const QString &path_);
-    Q_INVOKABLE void add(const QString &url_, const QString &hash_, const QString &relCachePath_);
+    Q_INVOKABLE void add(const QString &url_,
+                         const QString &hash_,
+                         const QString &relCachePath_);
     Q_INVOKABLE bool isUrlDownloaded(const QString &url_) const;
     Q_INVOKABLE QString get(const QString &url_) const;
     Q_INVOKABLE void clean(const QDateTime &beforeEqualDate_);

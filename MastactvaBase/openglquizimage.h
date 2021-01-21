@@ -38,7 +38,10 @@ public:
 private:
     void makeObject();
     void makeTextureMatrixes();
-    void calculatePreserveAspectFitTextureMatrix(QMatrix4x4 & textureMatrix_, const QSize &imageSize_, const QSize &rectSize_);
+    void calculatePreserveAspectFitTextureMatrix(
+            QMatrix4x4 & textureMatrix_,
+            const QSize &imageSize_,
+            const QSize &rectSize_);
     void createTextures();
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);

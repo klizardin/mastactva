@@ -54,7 +54,9 @@ public:
 
     void updateAuthConsts();
 
-    RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_);
+    RequestData *emptyRequest(const QString &requestName_,
+                              const QVariant &itemAppId_,
+                              const QVariant &itemId_);
     void freeRequest(RequestData *&r_);
 
     template<class DataType_>
@@ -75,7 +77,12 @@ public:
         Q_UNUSED(readonly_);
         if(!procedureName_.isEmpty())
         {
-            return getListByProcedureImpl(RequestData::getListRequestName<DataType_>(), layoutName_, procedureName_, jsonParams_, extraFields_);
+            return getListByProcedureImpl(
+                        RequestData::getListRequestName<DataType_>(),
+                        layoutName_,
+                        procedureName_,
+                        jsonParams_,
+                        extraFields_);
         }
         IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
         if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
@@ -87,28 +94,47 @@ public:
                           ? parentModelPtr->getIdFieldValueForAppId(refAppId_)
                           : parentModelPtr->getFieldValueForAppId(refAppId_, parentModelJsonFieldName_)
                     ;
-            return getListByRefImpl(RequestData::getListRequestName<DataType_>(), layoutName_, currentRef_, idField, jsonParams_, extraFields_);
+            return getListByRefImpl(
+                        RequestData::getListRequestName<DataType_>(),
+                        layoutName_,
+                        currentRef_,
+                        idField,
+                        jsonParams_,
+                        extraFields_);
         }
         else
         {
-            return getListImpl(RequestData::getListRequestName<DataType_>(), layoutName_, extraFields_);
+            return getListImpl(
+                        RequestData::getListRequestName<DataType_>(),
+                        layoutName_,
+                        extraFields_);
         }
     }
 
     template<class DataType_>
-    RequestData *addItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
+    RequestData *addItem(const QString &layoutName_,
+                         const DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_)
     {
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
         values = merge(extraFields_, values);
-        QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+        QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
+                    layout::SpecialFieldEn::appId,
+                    item_);
         if(!appId.isValid()) { return nullptr; }
-        return addItemImpl(RequestData::addItemRequestName<DataType_>(), layoutName_, appId, values);
+        return addItemImpl(
+                    RequestData::addItemRequestName<DataType_>(),
+                    layoutName_,
+                    appId,
+                    values);
     }
 
     template<class DataType_>
-    RequestData *setItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
+    RequestData *setItem(const QString &layoutName_,
+                         const DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_)
     {
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
@@ -120,33 +146,66 @@ public:
     }
 
     template<class DataType_>
-    RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
+    RequestData *delItem(const QString &layoutName_,
+                         const DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_)
     {
         const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid() || id.isNull()) { return nullptr; }
-        return delItemImpl(RequestData::delItemRequestName<DataType_>(), layoutName_, id, extraFields_);
+        return delItemImpl(
+                    RequestData::delItemRequestName<DataType_>(),
+                    layoutName_,
+                    id,
+                    extraFields_);
     }
 
 signals:
-    void response(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_);
-    void error(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_);
+    void response(int errorCode_,
+                  const QString &errorCodeStr_,
+                  RequestData *request_,
+                  const QJsonDocument &reply_);
+    void error(int errorCode_,
+               const QString &errorCodeStr_,
+               const QJsonDocument &reply_);
 
 protected slots:
     void replayFinished(QNetworkReply *reply_);
 
 protected:
-    RequestData *getListByRefImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &ref_, const QVariant &id_, bool jsonParams_, const QHash<QString, QVariant> &extraFields_);
-    RequestData *getListByProcedureImpl(const QString& requestName_, const QString &jsonLayoutName_, const QString &procedureName_, bool jsonParams_, const QHash<QString, QVariant> &extraFields_);
-    RequestData *getListImpl(const QString& requestName_, const QString &jsonLayoutName_, const QHash<QString, QVariant> &extraFields_);
-    RequestData *addItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &appId_, const QHash<QString, QVariant> &values_);
-    RequestData *setItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &values_);
-    RequestData *delItemImpl(const QString& requestName_, const QString &jsonLayoutName_, const QVariant &id_, const QHash<QString, QVariant> &extraFields_);
+    RequestData *getListByRefImpl(const QString& requestName_,
+                                  const QString &jsonLayoutName_,
+                                  const QString &ref_,
+                                  const QVariant &id_,
+                                  bool jsonParams_,
+                                  const QHash<QString, QVariant> &extraFields_);
+    RequestData *getListByProcedureImpl(const QString& requestName_,
+                                        const QString &jsonLayoutName_,
+                                        const QString &procedureName_,
+                                        bool jsonParams_,
+                                        const QHash<QString, QVariant> &extraFields_);
+    RequestData *getListImpl(const QString& requestName_,
+                             const QString &jsonLayoutName_,
+                             const QHash<QString, QVariant> &extraFields_);
+    RequestData *addItemImpl(const QString& requestName_,
+                             const QString &jsonLayoutName_,
+                             const QVariant &appId_,
+                             const QHash<QString, QVariant> &values_);
+    RequestData *setItemImpl(const QString& requestName_,
+                             const QString &jsonLayoutName_,
+                             const QVariant &id_,
+                             const QHash<QString, QVariant> &values_);
+    RequestData *delItemImpl(const QString& requestName_,
+                             const QString &jsonLayoutName_,
+                             const QVariant &id_,
+                             const QHash<QString, QVariant> &extraFields_);
 
     void setBasicAuthentification(QNetworkRequest* netRequest_);
     void clearData();
     bool init();
 
-    QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_, const QHash<QString, QVariant> &v2_);
+    QHash<QString, QVariant> merge(
+            const QHash<QString, QVariant> &v1_,
+            const QHash<QString, QVariant> &v2_);
 
 private:
     QString m_hostName;

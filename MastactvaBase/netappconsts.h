@@ -18,7 +18,9 @@ protected:
 
 public:
     static const NetAppConsts &getInstance();
-    static void set(const QString &serverURL_, const QString &playLogin_, const QString &playPassword_);
+    static void set(const QString &serverURL_,
+                    const QString &playLogin_,
+                    const QString &playPassword_);
 };
 
 

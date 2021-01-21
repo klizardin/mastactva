@@ -36,8 +36,12 @@ public:
     virtual ~ILocalDataAPI() = default;
     virtual bool canProcess(const DBRequestInfo *r_) const = 0;
     virtual bool getListImpl(DBRequestInfo *r_) = 0;
-    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) = 0;
-    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) = 0;
+    virtual bool addItemImpl(const QVariant &appId_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) = 0;
+    virtual bool setItemImpl(const QVariant &id_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) = 0;
     virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) = 0;
 };
 
@@ -53,7 +57,10 @@ public:
         layout::JsonTypesEn type;
         bool idField = false;
 
-        JsonFieldInfo(const QString &jsonName_,const QString &sqlName_, const layout::JsonTypesEn type_,bool idField_);
+        JsonFieldInfo(const QString &jsonName_,
+                      const QString &sqlName_,
+                      const layout::JsonTypesEn type_,
+                      bool idField_);
 
         QString getSqlType() const;
         static QString toBindName(const QString &sqlName_);
@@ -120,7 +127,12 @@ public:
         for(const auto &jsonFieldName: qAsConst(fieldsInfo))
         {
             const QString sqlFieldName = namingConversion(jsonFieldName.first);
-            tableFieldsInfo.push_back(JsonFieldInfo(jsonFieldName.first, sqlFieldName, jsonFieldName.second, idFieldName == jsonFieldName.first));
+            tableFieldsInfo.push_back(
+                        JsonFieldInfo(jsonFieldName.first,
+                                      sqlFieldName,
+                                      jsonFieldName.second,
+                                      idFieldName == jsonFieldName.first)
+                        );
         }
 
         IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);

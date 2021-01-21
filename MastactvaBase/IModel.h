@@ -18,9 +18,11 @@ public:
     virtual QString getLayoutIdFiledName() const = 0;
     virtual bool containsAppId(const QVariant &appId_) const = 0;
     virtual QVariant getCurrentIndexAppId() const = 0;
-    virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const = 0;
+    virtual bool getValuesForAppId(const QVariant &appId_,
+                                   QHash<QString, QVariant> &values_) const = 0;
     virtual QVariant getIdFieldValueForAppId(const QVariant &appId_) const = 0;
-    virtual QVariant getFieldValueForAppId(const QVariant &appId_, const QString &jsonFieldName) const = 0;
+    virtual QVariant getFieldValueForAppId(const QVariant &appId_,
+                                           const QString &jsonFieldName) const = 0;
 };
 
 
@@ -34,7 +36,9 @@ public:
     virtual void itemAddedVF() = 0;
     virtual void itemSetVF() = 0;
     virtual void itemDeletedVF() = 0;
-    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) = 0;
+    virtual void errorVF(int errorCode_,
+                         const QString &errorCodeStr_,
+                         const QJsonDocument &reply_) = 0;
     virtual void loadChildrenVF() = 0;
     virtual void objectLoadedVF() = 0;
 };
@@ -51,7 +55,9 @@ public:
     virtual void itemAddedVF() override;
     virtual void itemSetVF() override;
     virtual void itemDeletedVF() override;
-    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
+    virtual void errorVF(int errorCode_,
+                         const QString &errorCodeStr_,
+                         const QJsonDocument &reply_) override;
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
 

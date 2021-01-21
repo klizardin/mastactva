@@ -75,7 +75,10 @@ private:
 };
 
 
-class ImagePointToQuestionModel : public ListModelBaseOfData<ImagePointToQuestion, ImagePointToQuestionModel>
+class ImagePointToQuestionModel : public ListModelBaseOfData<
+        ImagePointToQuestion,
+        ImagePointToQuestionModel
+        >
 {
     Q_OBJECT
     QML_ELEMENT
@@ -89,7 +92,10 @@ public:
     LAYOUT_MODEL_IMPL();
 
 public slots:
-    void jsonResponseSlot(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlot(int errorCode_,
+                          const QString &errorCodeStr_,
+                          RequestData *request_,
+                          const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, errorCodeStr_, request_, reply_);
     }
@@ -183,7 +189,9 @@ private:
 };
 
 
-class ImagePointToNextImageModel : public ListModelBaseOfData<ImagePointToNextImage, ImagePointToNextImageModel>
+class ImagePointToNextImageModel : public ListModelBaseOfData<
+        ImagePointToNextImage,
+        ImagePointToNextImageModel>
 {
     Q_OBJECT
     QML_ELEMENT
@@ -201,7 +209,10 @@ public:
     LAYOUT_MODEL_IMPL();
 
 public slots:
-    void jsonResponseSlot(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlot(int errorCode_,
+                          const QString &errorCodeStr_,
+                          RequestData *request_,
+                          const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, errorCodeStr_, request_, reply_);
     }
@@ -334,7 +345,9 @@ private:
 };
 
 
-class ImagePointModel : public ListModelBaseOfData<ImagePoint, ImagePointModel>
+class ImagePointModel : public ListModelBaseOfData<
+        ImagePoint,
+        ImagePointModel>
 {
     Q_OBJECT
     QML_ELEMENT
@@ -358,7 +371,10 @@ protected:
     ImagePoint *nextImagePointByCoords(qreal x_, qreal y_);
 
 public slots:
-    void jsonResponseSlot(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlot(int errorCode_,
+                          const QString &errorCodeStr_,
+                          RequestData *request_,
+                          const QJsonDocument &reply_)
     {
         jsonResponseSlotImpl(errorCode_, errorCodeStr_, request_, reply_);
     }

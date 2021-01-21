@@ -44,13 +44,18 @@ public:
     ListModelBaseData(IListModel *model_);
     ~ListModelBaseData();
 
-    void setLayoutRefImpl(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_, bool notify_ = true);
-    void addLayoutExtraFieldsImpl(const QString &modelName_, const QVariant &appId_);
+    void setLayoutRefImpl(const QString &fieldJsonName_,
+                          const QString &parentModel_,
+                          const QString &parentModelRefJsonName_,
+                          bool notify_ = true);
+    void addLayoutExtraFieldsImpl(const QString &modelName_,
+                                  const QVariant &appId_);
     void registerListModel();
     void setParentListModelInfo(IListModelInfo *parentListModelInfo_);
     bool autoCreateChildrenModelsImpl() const;
     bool autoCreateChildrenModelsOnSelectImpl() const;
-    void addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_);
+    void addExtraFieldRenameImpl(const QString &oldName_,
+                                 const QString &newName_);
     void setSortFieldsImpl(const QStringList &sortFields_);
     void clearListLoaded();
     void setReadonlyImpl(bool readonly_);
@@ -63,7 +68,9 @@ public:
     virtual void itemAddedVF() override;
     virtual void itemSetVF() override;
     virtual void itemDeletedVF() override;
-    virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override;
+    virtual void errorVF(int errorCode_,
+                         const QString &errorCodeStr_,
+                         const QJsonDocument &reply_) override;
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
 
@@ -140,7 +147,10 @@ private:
 
 
 template<class DataType_, class ModelType_>
-class ListModelBaseOfData : public QAbstractListModel, public IListModel, public ListModelBaseData
+class ListModelBaseOfData :
+        public QAbstractListModel,
+        public IListModel,
+        public ListModelBaseData
 {
 public:
     using DataType = DataType_;
@@ -195,7 +205,8 @@ public:
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         Q_ASSERT(nullptr != dataAPI);
-        QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)), m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
+        QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)),
+                         m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
     }
 
     virtual const QString &getQMLLayoutName() const override
@@ -221,7 +232,9 @@ public:
     virtual QVariant getCurrentIndexAppId() const override
     {
         if(!isCurrentIndexValid(m_data.size())) { return QVariant::fromValue(-1); }
-        return getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, m_data[getCurrentIndexImpl()]);
+        return getDataLayout<DataType_>().getSpecialFieldValue(
+                    layout::SpecialFieldEn::appId,
+                    m_data[getCurrentIndexImpl()]);
     }
 
     virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const override
@@ -272,7 +285,9 @@ public:
 
     DataType_ *findDataItemByIdImpl(const QVariant &id_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_>*>(this)->findDataItemByIdImpl(id_));
+        return const_cast<DataType_ *>(
+                    const_cast<const ListModelBaseOfData<DataType_, ModelType_>*>(this)
+                    ->findDataItemByIdImpl(id_));
     }
 
     QVariant findItemByIdImpl(const QVariant &id_)
@@ -292,7 +307,9 @@ public:
                                       [&appId1](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
-            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        item);
             return appId1.isValid() && appId1 == appId;
         });
         return std::end(m_data) == fit ? nullptr : *fit;
@@ -306,7 +323,9 @@ public:
                                       [&appId_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
-            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        item);
             return appId_.isValid() && appId_ == appId;
         });
         if(std::end(m_data) == fit) { return false; }
@@ -344,17 +363,23 @@ public:
 
     DataType_ *dataItemAtImpl(int index_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->dataItemAtImpl(index_));
+        return const_cast<DataType_ *>(
+                    const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)
+                    ->dataItemAtImpl(index_));
     }
 
     DataType_ *findDataItemByAppIdImpl(const QVariant &appId_)
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->findDataItemByAppIdImpl(appId_));
+        return const_cast<DataType_ *>(
+                    const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)
+                    ->findDataItemByAppIdImpl(appId_));
     }
 
     QVariant findItemByAppIdImpl(const QVariant &appId_)
     {
-        return QVariant::fromValue(static_cast<QObject *>(findDataItemByAppIdImpl(appId_)));
+        return QVariant::fromValue(static_cast<QObject *>(
+                                       findDataItemByAppIdImpl(appId_))
+                                   );
     }
 
     bool selectItemByAppIdImpl(const QVariant &appId_)
@@ -374,7 +399,10 @@ public:
 
     DataType_ *getCurrentDataItem()
     {
-        return const_cast<DataType_ *>(const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)->getCurrentDataItem());
+        return const_cast<DataType_ *>(
+                    const_cast<const ListModelBaseOfData<DataType_, ModelType_> *>(this)
+                    ->getCurrentDataItem()
+                    );
     }
 
     void parentCurrentIndexChanged()
@@ -458,10 +486,14 @@ public:
 
     int indexOfDataItemImpl(const DataType_ *item_) const
     {
-        const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+        const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
+                    layout::SpecialFieldEn::appId,
+                    item_);
         return indexFindIf([&appId](const DataType_ *i)->bool
         {
-            const QVariant iAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, i);
+            const QVariant iAppId = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        i);
             return appId.isValid() && iAppId.isValid() && appId == iAppId;
         });
     }
@@ -480,7 +512,10 @@ public:
         return dta;
     }
 
-    bool setDataItemImpl(int index_, DataType_ *item_, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
+    bool setDataItemImpl(int index_,
+                         DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
+                         )
     {
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
@@ -489,9 +524,15 @@ public:
 
         if(getJsonLayoutName().isEmpty())
         {
-            QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+            QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        item_);
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
-            RequestData *request = dataAPI->emptyRequest(RequestData::setItemRequestName<DataType_>(), itemAppId, itemId);
+            RequestData *request = dataAPI->emptyRequest(
+                        RequestData::setItemRequestName<DataType_>(),
+                        itemAppId,
+                        itemId
+                        );
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
@@ -517,16 +558,25 @@ public:
         }
     }
 
-    bool addDataItemImpl(DataType_ *item_, bool setCurrentIndex_ = false, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
+    bool addDataItemImpl(DataType_ *item_,
+                         bool setCurrentIndex_ = false,
+                         const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
+                         )
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         if(nullptr == dataAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
-            QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+            QVariant itemAppId = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        item_
+                        );
             QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
-            RequestData *request = dataAPI->emptyRequest(RequestData::addItemRequestName<DataType_>(), itemAppId, itemId);
+            RequestData *request = dataAPI->emptyRequest(
+                        RequestData::addItemRequestName<DataType_>(),
+                        itemAppId,
+                        itemId);
             if(nullptr != request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
@@ -562,14 +612,18 @@ public:
         }
     }
 
-    bool delDataItemImpl(int index_, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
+    bool delDataItemImpl(int index_,
+                         const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
+                         )
     {
         if(!isIndexValid(index_, m_data.size())) { return false; }
         return delDataItemImpl(m_data.at(index_), extraFields_);
 
     }
 
-    bool delDataItemImpl(DataType_ *item_, const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
+    bool delDataItemImpl(DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
+                         )
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         if(nullptr == dataAPI) { return false; }
@@ -592,7 +646,9 @@ public:
 #if defined(TRACE_MODEL_LOADING)
         qDebug() << "-start autoLoadDataItemImpl() item =" << item_ << getQMLLayoutName();
 #endif
-        const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::objectModelInfo, item_);
+        const QVariant modelInfoVar = getDataLayout<DataType_>().getSpecialFieldValue(
+                    layout::SpecialFieldEn::objectModelInfo,
+                    item_);
         IListModelInfo *modelInfo = nullptr;
         layout::setValue(modelInfoVar, modelInfo);
         if(nullptr != modelInfo)
@@ -613,7 +669,9 @@ public:
     bool sortIf(Op_ op_, bool saveSelection_, bool stableSort_ = false)
     {
         const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
-        const QVariant currentAppId = saveSelection_ && nullptr != item ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
+        const QVariant currentAppId = saveSelection_ && nullptr != item
+                ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item)
+                : QVariant();
         if(stableSort_) { std::stable_sort(std::begin(m_data), std::end(m_data), op_); }
         else { std::sort(std::begin(m_data), std::end(m_data), op_); }
         QModelIndex changedIndex0 = createIndex(0, 0);
@@ -626,7 +684,9 @@ public:
     bool randOrderImpl(bool saveSelection_)
     {
         const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
-        const QVariant currentAppId = saveSelection_ && nullptr != item ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item) : QVariant();
+        const QVariant currentAppId = saveSelection_ && nullptr != item
+                ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item)
+                : QVariant();
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(std::begin(m_data), std::end(m_data), g);
@@ -681,15 +741,19 @@ public:
         loadListImpl(procedureName_, extraFields_);
     }
 
-    void dataItemProcedureImpl(const DataType_ *item_, const QString &procedureName_, const QHash<QString, QVariant> &extraFields_)
+    void dataItemProcedureImpl(const DataType_ *item_,
+                               const QString &procedureName_,
+                               const QHash<QString, QVariant> &extraFields_)
     {
         Q_UNUSED(item_);
         Q_UNUSED(procedureName_);
         Q_UNUSED(extraFields_);
-        Q_ASSERT(false); // TODO: implement
+        Q_ASSERT(false); // TODO: implement for "take_ownship" "free_ownship" actions of the server
     }
 
-    void loadListImpl(const QString &procedureName_ = QString(), const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>())
+    void loadListImpl(const QString &procedureName_ = QString(),
+                      const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
+                      )
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         if(nullptr == dataAPI) { return; }
@@ -702,7 +766,10 @@ public:
         startListLoad();
         if(getJsonLayoutName().isEmpty())
         {
-            request = dataAPI->emptyRequest(RequestData::getListRequestName<DataType_>(), QVariant() , QVariant());
+            request = dataAPI->emptyRequest(
+                        RequestData::getListRequestName<DataType_>(),
+                        QVariant() ,
+                        QVariant());
             if(addRequest(request))
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
@@ -826,7 +893,10 @@ protected:
         return getDataLayout<DataType_>().getIdFieldJsonName();
     }
 
-    void jsonResponseSlotImpl(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_)
+    void jsonResponseSlotImpl(int errorCode_,
+                              const QString &errorCodeStr_,
+                              RequestData *request_,
+                              const QJsonDocument &reply_)
     {
         if(!findRequest(request_)) { return; }
         if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
@@ -880,7 +950,9 @@ protected:
                                       [&appId_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
-            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+            const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        item);
             return appId_.isValid() && appId_ == appId;
         });
         if(std::end(m_data) == fit)
@@ -992,9 +1064,14 @@ protected:
                 DataType_ *oldItem = findDataItemByIdImpl(id);
                 if(nullptr != oldItem)
                 {
-                    const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
+                    const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
+                                layout::SpecialFieldEn::appId,
+                                item);
                     Q_ASSERT(appId.isValid());
-                    getDataLayout<DataType_>().setSpecialFieldValue(layout::SpecialFieldEn::appId, appId, item);
+                    getDataLayout<DataType_>().setSpecialFieldValue(
+                                layout::SpecialFieldEn::appId,
+                                appId,
+                                item);
                 }
                 loaded.push_back(item);
             }
@@ -1003,7 +1080,9 @@ protected:
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
         qDebug() << "modelListLoaded() beginInsertRows(" << m_data.size() << "," << std::max(0, m_data.size() + loaded.size() - 1) << ")";
 #endif
-        beginInsertRows(QModelIndex(), m_data.size(), std::max(0, m_data.size() + loaded.size() - 1));
+        beginInsertRows(QModelIndex(),
+                        m_data.size(),
+                        std::max(0, m_data.size() + loaded.size() - 1));
         std::copy(std::begin(loaded), std::end(loaded),
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
@@ -1165,12 +1244,16 @@ protected:
 
     void removeItem(const DataType_ *item_)
     {
-        QVariant appId0 = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item_);
+        QVariant appId0 = getDataLayout<DataType_>().getSpecialFieldValue(
+                    layout::SpecialFieldEn::appId,
+                    item_);
         if(!appId0.isValid() || appId0.isNull()) { return; }
         const auto fit = std::find_if(std::begin(m_data), std::end(m_data),
                                       [&appId0](const DataType_ *i_) -> bool
         {
-            QVariant appId1 = getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, i_);
+            QVariant appId1 = getDataLayout<DataType_>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        i_);
             return appId0 == appId1;
         });
         if(std::end(m_data) == fit) { return; }

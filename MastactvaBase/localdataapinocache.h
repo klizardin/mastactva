@@ -19,9 +19,14 @@ public:
     virtual ~LocalDataAPINoCacheImpl() = default;
     virtual bool canProcess(const DBRequestInfo *r_) const override;
     virtual bool getListImpl(DBRequestInfo *r_) override;
-    virtual bool addItemImpl(const QVariant &appId_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
-    virtual bool setItemImpl(const QVariant &id_, const QHash<QString, QVariant> &values_, DBRequestInfo *r_) override;
-    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override;
+    virtual bool addItemImpl(const QVariant &appId_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) override;
+    virtual bool setItemImpl(const QVariant &id_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) override;
+    virtual bool delItemImpl(const QVariant &id_,
+                             DBRequestInfo *r_) override;
 };
 
 
@@ -48,7 +53,9 @@ public:
     static void createInstance(QObject *parent_, NetAPI *netAPI_);
     static LocalDataAPINoCache *getInstance();
 
-    RequestData *emptyRequest(const QString &requestName_, const QVariant &itemAppId_, const QVariant &itemId_)
+    RequestData *emptyRequest(const QString &requestName_,
+                              const QVariant &itemAppId_,
+                              const QVariant &itemId_)
     {
         if(nullptr == m_netAPI) { return nullptr; }
         return m_netAPI->emptyRequest(requestName_, itemAppId_, itemId_);
@@ -118,21 +125,27 @@ public:
     }
 
     template<class DataType_>
-    RequestData *addItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
+    RequestData *addItem(const QString &layoutName_,
+                         const DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_)
     {
         if(nullptr == m_netAPI) { return nullptr; }
         return m_netAPI->addItem(layoutName_, item_, extraFields_);
     }
 
     template<class DataType_>
-    RequestData *setItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
+    RequestData *setItem(const QString &layoutName_,
+                         const DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_)
     {
         if(nullptr == m_netAPI) { return nullptr; }
         return m_netAPI->setItem(layoutName_, item_, extraFields_);
     }
 
     template<class DataType_>
-    RequestData *delItem(const QString &layoutName_, const DataType_ *item_, const QHash<QString, QVariant> &extraFields_)
+    RequestData *delItem(const QString &layoutName_,
+                         const DataType_ *item_,
+                         const QHash<QString, QVariant> &extraFields_)
     {
         if(nullptr == m_netAPI) { return nullptr; }
         return m_netAPI->delItem(layoutName_, item_, extraFields_);
@@ -142,12 +155,22 @@ public:
     void endSave();
 
 signals:
-    void response(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_);
-    void error(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_);
+    void response(int errorCode_,
+                  const QString &errorCodeStr_,
+                  RequestData *request_,
+                  const QJsonDocument &reply_);
+    void error(int errorCode_,
+               const QString &errorCodeStr_,
+               const QJsonDocument &reply_);
 
 protected slots:
-    void responseFromStartegySlot(int errorCode_, const QString &errorCodeStr_, RequestData *request_, const QJsonDocument &reply_);
-    void errorFromStartegySlot(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_);
+    void responseFromStartegySlot(int errorCode_,
+                                  const QString &errorCodeStr_,
+                                  RequestData *request_,
+                                  const QJsonDocument &reply_);
+    void errorFromStartegySlot(int errorCode_,
+                               const QString &errorCodeStr_,
+                               const QJsonDocument &reply_);
 
 protected:
     void cleanRequests();
