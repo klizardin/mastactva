@@ -24,6 +24,9 @@ ServerFiles::ServerFiles(QObject *parent_ /* = nullptr*/)
 #else
     m_rootDir = g_currentDir;
 #endif
+#if defined(TRACE_SERVER_FILES)
+    qDebug() << "m_rootDir = " << m_rootDir;
+#endif
 }
 
 ServerFiles::~ServerFiles()
@@ -44,19 +47,26 @@ void ServerFiles::setRootDir(const QString &path_)
 #else
     m_rootDir = path_;
 #endif
+#if defined(TRACE_SERVER_FILES)
+    qDebug() << "m_rootDir = " << m_rootDir;
+#endif
 }
 
 void ServerFiles::add(const QString &url_,
                       const QString &hash_,
                       const QString &relCachePath_)
 {
-    //qDebug() << "ServerFiles::add() url = " << url_;
+#if defined(TRACE_SERVER_FILES)
+    qDebug() << "ServerFiles::add() url = " << url_;
+#endif
 
     // check if url has currently been downloaded
     if(isUrlDownloaded(url_) && testHash(url_, hash_))
     {
+#if defined(TRACE_SERVER_FILES)
+        qDebug() << "ServerFiles::add() already has been downloaded " << url_;
+#endif
         emit downloaded(url_);
-        //qDebug() << "ServerFiles::add() already has been downloaded";
         return;
     }
 
@@ -76,12 +86,17 @@ void ServerFiles::add(const QString &url_,
             // it is just a heuristic, really this hash may not be the latest
             sfd->setFile(url_, hash_);
         }
-        //qDebug() << "ServerFiles::add() is downloading";
+#if defined(TRACE_SERVER_FILES)
+        qDebug() << "ServerFiles::add() is downloading now " << url_;
+#endif
         return;
     }
 
     // start new download
-    //qDebug() << "ServerFiles::add() start to download";
+#if defined(TRACE_SERVER_FILES)
+    qDebug() << "ServerFiles::add() start to download new url " << url_;
+#endif
+
     ServerFileDownload *sfd = new ServerFileDownload(this);
     m_downloads.push_back(sfd);
     QObject::connect(sfd, SIGNAL(finished(ServerFileDownload *)),
@@ -96,7 +111,11 @@ void ServerFiles::add(const QString &url_,
 
 bool ServerFiles::isUrlDownloaded(const QString &url_) const
 {
-    return m_map.contains(url_);
+    const bool res = m_map.contains(url_);
+#if defined(TRACE_SERVER_FILES)
+    qDebug() << "ServerFiles::isUrlDownloaded() url = " << url_ << " is downloaded = " << res;
+#endif
+    return res;
 }
 
 QString ServerFiles::get(const QString &url_) const
@@ -182,7 +201,7 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
 void ServerFiles::cancel(const QStringList &urls_)
 {
     QList<ServerFileDownload *> toRemove;
-    for(ServerFileDownload *download: m_downloads)
+    for(ServerFileDownload *download: qAsConst(m_downloads))
     {
         if(nullptr == download) { continue; }
         const auto fit = std::find(std::begin(urls_), std::end(urls_), download->getUrl());
@@ -235,7 +254,19 @@ void ServerFiles::finished(ServerFileDownload *download_)
     delete download_;
     download_ = nullptr;
 
-    if(ok) { emit downloaded(url); }
+    if(ok)
+    {
+#if defined(TRACE_SERVER_FILES)
+        qDebug() << "ServerFiles::finished() ok " << url;
+#endif
+        emit downloaded(url);
+    }
+    else
+    {
+#if defined(TRACE_SERVER_FILES)
+        qDebug() << "ServerFiles::finished() failed " << url;
+#endif
+    }
 }
 
 void ServerFiles::progressSlot()
