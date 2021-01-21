@@ -70,6 +70,16 @@ void ServerFiles::add(const QString &url_,
         return;
     }
 
+    if(isResourceSheme(url_))
+    {
+        addResourceUrl(url_);
+#if defined(TRACE_SERVER_FILES)
+    qDebug() << "ServerFiles::add() resource url = " << url_;
+#endif
+        emit downloaded(url_);
+        return;
+    }
+
     // check if url is currently downloading
     const auto fitd = std::find_if(std::begin(m_downloads), std::end(m_downloads),
                  [&url_](ServerFileDownload *sfd_)->bool
@@ -112,9 +122,6 @@ void ServerFiles::add(const QString &url_,
 bool ServerFiles::isUrlDownloaded(const QString &url_) const
 {
     const bool res = m_map.contains(url_);
-#if defined(TRACE_SERVER_FILES)
-    qDebug() << "ServerFiles::isUrlDownloaded() url = " << url_ << " is downloaded = " << res;
-#endif
     return res;
 }
 
@@ -288,6 +295,21 @@ void ServerFiles::clearDownloads()
         p = nullptr;
     }
     m_downloads.clear();
+}
+
+bool ServerFiles::isResourceSheme(const QString &url_)
+{
+    QUrl url(url_);
+    return url.scheme() == "qrc";
+}
+
+void ServerFiles::addResourceUrl(const QString &url_)
+{
+    const auto fitm = m_map.find(url_);
+    const QString oldUrl = std::end(m_map) != fitm ? fitm.value() : QString();
+    m_map.erase(fitm);
+
+    m_map.insert(url_, url_);
 }
 
 

@@ -79,6 +79,8 @@ public:
 protected:
     bool testHash(const QString &url_, const QString &hash_) const;
     void clearDownloads();
+    bool isResourceSheme(const QString &url_);
+    void addResourceUrl(const QString &url_);
 
 protected slots:
     void finished(ServerFileDownload *download_);
