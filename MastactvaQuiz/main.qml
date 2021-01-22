@@ -322,15 +322,19 @@ ApplicationWindow {
         colorGroup: SystemPalette.Active
     }
 
+    FontLoader { id: emojiFont; name: "Helvetica Neue" }
+
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
+
         RowLayout {
             height: toolButton.implicitHeight
             ToolButton {
                 id: toolButton
                 Layout.alignment: Qt.AlignLeft
-                text: stackView.depth > 1 ? "<" : "\u22EE"
-                font.pixelSize: Qt.application.font.pixelSize * 1.6
+                text: stackView.depth > 1 ? "<" : "\u22EE" // TODO: "\u2630"
+                font.pixelSize: Qt.application.font.pixelSize * 1.0
+                font.family: emojiFont.name
                 onClicked: {
                     if (stackView.depth > 1) {
                         stackView.pop()
@@ -343,7 +347,8 @@ ApplicationWindow {
             ToolButton {
                 id: currentPage
                 text: stackView.currentItem.title
-                Layout.minimumWidth: 2.1 * (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: 1.4 * (Constants.width - toolButton.width) / 4
+                font.pixelSize: Qt.application.font.pixelSize * 0.8
                 background: Rectangle {
                     color: activePallete.highlight
                 }
@@ -361,8 +366,9 @@ ApplicationWindow {
 
             ToolButton {
                 id: crossPage
-                Layout.minimumWidth: 0.95 * (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: 1.3 * (Constants.width - toolButton.width) / 4
                 text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
+                font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: stackView.currentItem.hasCrossPage
                 onClicked: {
                     if(stackView.currentItem.hasCrossPage)
@@ -377,8 +383,9 @@ ApplicationWindow {
 
             ToolButton {
                 id: infoButton
-                Layout.minimumWidth: 0.95 * (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: 1.3 * (Constants.width - toolButton.width) / 4
                 text: qsTr("Description")
+                font.pixelSize: Qt.application.font.pixelSize * 0.8
                 visible: stackView.currentItem.hasDescription
                 onClicked: {
                     stackView.push(descriptionPage)
