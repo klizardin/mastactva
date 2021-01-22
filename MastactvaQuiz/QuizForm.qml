@@ -33,7 +33,7 @@ Page {
                                        "Let's have a fun. ")
 
     signal showQuestion(var question, int imageId)
-    signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
+    signal setDescription(var image)
     signal jumpToImage(var image)
 
     Rectangle {
@@ -114,7 +114,7 @@ Page {
                                     var durationNoEffect = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
                                     quizImageNumberAnimation.duration = durationNoEffect
                                 }
-                                quizPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.localImageSource)
+                                quizPage.setDescription(undefined)
                                 quizImageAnimation.running = true
                             }
                         }
@@ -155,7 +155,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
-                    quizPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.localImageSource)
+                    quizPage.setDescription(currentImage)
                     quizImage.effect = null
                     quizImage.argumentSet = null
                     quizImageNumberAnimation.easing.type = Easing.Linear

@@ -16,6 +16,7 @@ ApplicationWindow {
     title: qsTr("Mastactva Quiz")
 
     property real animationSpeed: Constants.animationSpeedNorm
+    property var quizCurrentImage: undefined
 
     MastactvaAPI {
         id: mastactvaAPI
@@ -182,7 +183,9 @@ ApplicationWindow {
             galleryAllImagesPage.currentImageSource = startImage.imageSource
             galleryAllImagesPage.currentImageHash = startImage.imageHash
             quizPage.init()
-            setDescription(startImage.imageDescription, galleryModel.currentItem.id, startImage.imageId, startImage.localImageSource)
+            //setDescription(startImage.imageDescription, galleryModel.currentItem.id, startImage.imageId, startImage.localImageSource)
+            quizCurrentImage = startImage
+            setDescription(startImage)
             stackView.push(quizPage)
         }
     }
@@ -202,9 +205,9 @@ ApplicationWindow {
             stackView.push(questionPage)
         }
 
-        function onSetDescription(descriptionModel, galleryId, imageId, imageSource)
+        function onSetDescription(image)
         {
-            setDescription(descriptionModel, galleryId, imageId, imageSource)
+            setDescription(image)
         }
 
         function onJumpToImage(image)
@@ -212,13 +215,26 @@ ApplicationWindow {
             galleryAllImagesPage.currentImage = image
             galleryAllImagesPage.currentImageSource = image.imageSource
             galleryAllImagesPage.currentImageHash = image.imageHash
+            quizCurrentImage = image
         }
     }
 
-    function setDescription(imageDescription, galleryId, imageId, localImageSource)
+    //function setDescription(imageDescription, galleryId, imageId, localImageSource)
+    function setDescription(image)
     {
-        quizPage.hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
-        galleryAllImagesPage.hasDescription = quizPage.hasDescription
+        var galleryId = galleryModel.currentItem.id
+        var imageDescription = undefined
+        var imageId = -1
+        var localImageSource = Constants.noImage
+        if(image !== null && image !== undefined)
+        {
+            imageDescription = image.imageDescription
+            imageId = image.imageId
+            localImageSource = image.localImageSource
+        }
+        var hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
+        quizPage.hasDescription = hasDescription
+        galleryAllImagesPage.hasDescription = hasDescription
         //console.log("galleryAllImagesPage.hasDescription = ", galleryAllImagesPage.hasDescription)
         if(quizPage.hasDescription)
         {
@@ -337,6 +353,15 @@ ApplicationWindow {
                 font.family: emojiFont.name
                 onClicked: {
                     if (stackView.depth > 1) {
+                        if(stackView.currentItem.hasCrossPage)
+                        {
+                            var item = stackView.currentItem
+                            var next = stackView.currentItem.crossPage
+                            if(next === quizPage)
+                            {
+                                setDescription(quizCurrentImage)
+                            }
+                        }
                         stackView.pop()
                     } else {
                         drawer.open()
@@ -375,6 +400,10 @@ ApplicationWindow {
                     {
                         var item = stackView.currentItem
                         var next = stackView.currentItem.crossPage
+                        if(next === quizPage)
+                        {
+                            setDescription(quizCurrentImage)
+                        }
                         next.init()
                         stackView.replace(item, next)
                     }
@@ -397,7 +426,7 @@ ApplicationWindow {
 
     Drawer {
         id: drawer
-        width: window.width * 0.66
+        width: window.width * 0.61
         height: window.height
 
         Column {

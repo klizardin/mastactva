@@ -32,7 +32,7 @@ Page {
                                        "Or you can view 'Gallery' without palying quiz. " +
                                        "Just look for images and it`s description. ")
 
-    signal setDescription(var descriptionModel, int galleryId, int imageId, string imageSource)
+    signal setDescription(var image)
 
     Rectangle {
         id: quizImageClipper
@@ -108,7 +108,7 @@ Page {
                                 quizImageNumberAnimation.easing.type = Easing.Linear
                                 quizImageNumberAnimation.duration = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
 
-                                galleryAllImagesPage.setDescription(undefined, galleryId, nextImage.imageId, nextImage.localImageSource)
+                                galleryAllImagesPage.setDescription(undefined)
                                 quizImageAnimation.running = true
                             }
                         }
@@ -132,7 +132,7 @@ Page {
                     currentImageSource = currentImage.imageSource
                     currentImageHash = currentImage.imageHash
                     nextImage = undefined
-                    galleryAllImagesPage.setDescription(currentImage.imageDescription, galleryId, currentImage.imageId, currentImage.localImageSource)
+                    galleryAllImagesPage.setDescription(currentImage)
                     quizImage.effect = null
                     quizImage.argumentSet = null
                     quizImageNumberAnimation.easing.type = Easing.Linear
