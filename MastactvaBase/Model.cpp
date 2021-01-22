@@ -308,6 +308,16 @@ void ListModelBaseData::setReadonlyImpl(bool readonly_)
     m_readonly = readonly_;
 }
 
+bool ListModelBaseData::getStoreAfterSaveBase() const
+{
+    return m_storeAfterSave;
+}
+
+void ListModelBaseData::setStoreAfterSaveBase(bool storeAfterSave_)
+{
+    m_storeAfterSave = storeAfterSave_;
+}
+
 void ListModelBaseData::startListLoad()
 {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)

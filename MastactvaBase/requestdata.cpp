@@ -42,6 +42,16 @@ bool RequestData::getSetCurrentItemIndex() const
     return m_setCurrentItemIndex;
 }
 
+bool RequestData::isRetried() const
+{
+    return m_retry;
+}
+
+void RequestData::setRetry()
+{
+    m_retry = true;
+}
+
 void RequestData::setRequestName(const QString &requestName_)
 {
     m_requestName = requestName_;

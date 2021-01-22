@@ -27,6 +27,8 @@ public:
     void *getItemData();
     void setSetCurrentItemIndex(bool setCurrentItemIndex_);
     bool getSetCurrentItemIndex() const;
+    bool isRetried() const;
+    void setRetry();
 
     template<class DataType_>
     static QString getListRequestName()
@@ -65,6 +67,7 @@ private:
     QVariant m_itemAppId = QVariant::fromValue(-1);
     void *m_itemData = nullptr;
     bool m_setCurrentItemIndex = false;
+    bool m_retry = false;
 
     friend class NetAPI;
     friend class LocalDataAPICache;

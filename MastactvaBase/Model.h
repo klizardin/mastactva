@@ -59,6 +59,7 @@ public:
     void setSortFieldsImpl(const QStringList &sortFields_);
     void clearListLoaded();
     void setReadonlyImpl(bool readonly_);
+    void setStoreAfterSaveBase(bool storeAfterSave_);
 
 public:
     virtual void startLoadChildModel() override;
@@ -111,6 +112,7 @@ protected:
     bool getOutputModelImpl() const;
     QStringList getSortFieldsImpl() const;
     bool getReadonlyImpl() const;
+    bool getStoreAfterSaveBase() const;
 
 private:
     void unregisterListModel();
@@ -143,6 +145,7 @@ private:
     int m_loadingChildenModels = 0;
     bool m_outputModel = false;
     IListModelInfo *m_parentListModelInfo = nullptr;
+    bool m_storeAfterSave = true;
 };
 
 
@@ -164,6 +167,7 @@ public:
     qDebug() << "ListModelBaseOfData::ListModelBaseOfData<" << getDataLayout<DataType_>().getLayoutJsonName() << ">()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
         getDataLayout<DataType_>().initQMLModelRoleNames(m_roleNames);
+        setStoreAfterSaveBase(getDataLayout<DataType_>().storeAfterSave());
     }
 
     virtual ~ListModelBaseOfData() override
@@ -828,12 +832,12 @@ public:
 protected:
     bool storeAfterSaveImpl() const
     {
-        return getDataLayout<DataType_>().storeAfterSave();
+        return getStoreAfterSaveBase();
     }
 
     void setStoreAfterSaveImpl(bool storeAfterSave_)
     {
-        setDataLayout<DataType_>().setStoreAfterSave(storeAfterSave_);
+        setStoreAfterSaveBase(storeAfterSave_);
     }
 
     QVariant createItemImpl()
@@ -898,7 +902,8 @@ protected:
                               RequestData *request_,
                               const QJsonDocument &reply_)
     {
-        if(!findRequest(request_)) { return; }
+        if(request_->isRetried() || !findRequest(request_)) { return; }
+        request_->setRetry();
         if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
         {
             modelError(errorCode_, errorCodeStr_, reply_);
@@ -1270,7 +1275,7 @@ protected:
 
     void clearTempData()
     {
-        if(getDataLayout<DataType_>().storeAfterSave()) { return; }
+        if(getStoreAfterSaveBase()) { return; }
 
         QVector<DataType_ *> waitingToUpdate;
         for(const RequestData *r : qAsConst(m_requests))
