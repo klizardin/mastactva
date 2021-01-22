@@ -10830,6 +10830,11 @@
                         ],
                         "name": "cancel",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "reset",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

@@ -13,7 +13,7 @@ inline QString refName(const QString &ref_)
 inline QStringList refsNames(const QStringList &refs_)
 {
     QStringList res;
-    for(const auto &s : refs_)
+    for(const auto &s : qAsConst(refs_))
     {
         res.push_back(refName(s));
     }
@@ -23,7 +23,7 @@ inline QStringList refsNames(const QStringList &refs_)
 QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &names_)
 {
     QStringList res;
-    for(const QString &sqlName : names_)
+    for(const QString &sqlName : qAsConst(names_))
     {
         const QString ref = refName(sqlName);
         res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
@@ -35,7 +35,7 @@ QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &lef
 {
     if(leftNames_.isEmpty()) { return sqlNames_; }
     QStringList res;
-    for(const QString &name: sqlNames_)
+    for(const QString &name: qAsConst(sqlNames_))
     {
         const auto fit = std::find_if(std::begin(leftNames_), std::end(leftNames_),
                                       [&name](const QVariant &val)->bool
@@ -54,7 +54,7 @@ QStringList applyFunction(const QStringList &sqlNames_, const QString &function_
 {
     if(function_.isEmpty()) { return sqlNames_; }
     QStringList res;
-    for(const QString &name: sqlNames_)
+    for(const QString &name: qAsConst(sqlNames_))
     {
         res.push_back(QString("%1(%2)").arg(function_, name));
     }
@@ -106,7 +106,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     const QStringList refs = r_->getRefs();
-    for(const QString &ref : refs)
+    for(const QString &ref : qAsConst(refs))
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);
@@ -188,7 +188,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             query.bindValue(ref, v);
         }
         const QList<QString> procedureArgsKeys = procedureArgs.keys();
-        for(const QString &key : procedureArgsKeys)
+        for(const QString &key : qAsConst(procedureArgsKeys))
         {
             const QVariant v = procedureArgs.value(key);
             query.bindValue(key, v);
@@ -281,7 +281,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
-    for(const QString &ref : refs)
+    for(const QString &ref : qAsConst(refs))
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);
@@ -647,7 +647,7 @@ QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant>
                                                   const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = v2_.begin(); it != v2_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(v2_); it != std::end(v2_); ++it)
     {
         if(v1_.contains(it.key()))
         {
@@ -658,7 +658,7 @@ QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant>
             res.insert(it.key(), it.value());
         }
     }
-    for(QHash<QString, QVariant>::const_iterator it = v1_.begin(); it != v1_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(v1_); it != std::end(v1_); ++it)
     {
         if(!v2_.contains(it.key()))
         {
@@ -705,7 +705,7 @@ void LocalDataAPICache::makeResponses()
     {
         if(r->isProcessed()) { res.push_back(r); }
     }
-    for(const LocalDBRequest *r : res)
+    for(const LocalDBRequest *r : qAsConst(res))
     {
         const auto fit = std::find(std::begin(m_requests), std::end(m_requests), r);
         m_requests.erase(fit);
@@ -755,7 +755,7 @@ QHash<QString, QVariant> LocalDataAPICache::removeFields(const QHash<QString, QV
                                       const QList<QPair<QString, layout::JsonTypesEn>> &fieldsInfo_)
 {
     QHash<QString, QVariant> res = extraFields_;
-    for(const QPair<QString, layout::JsonTypesEn> &f : fieldsInfo_)
+    for(const QPair<QString, layout::JsonTypesEn> &f : qAsConst(fieldsInfo_))
     {
         res.remove(f.first);
     }

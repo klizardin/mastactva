@@ -61,8 +61,8 @@ private:
     int m_geomertyPointsWidth = 3;
     int m_geometryPointsHeight = 3;
     bool m_geometrySolid = false;
-    GLfloat m_facedGeometryXCoef = 1e-3;
-    GLfloat m_facedGeometryYCoef = 1e-3;
+    GLfloat m_facedGeometryXCoef = 1e-4;
+    GLfloat m_facedGeometryYCoef = 1e-4;
     QVector<GLfloat> m_vertData;
 
     QOpenGLTexture *m_fromTexture = nullptr;

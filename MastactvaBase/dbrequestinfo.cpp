@@ -501,7 +501,7 @@ const QString &DBRequestInfo::getAPIName() const
 QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const
 {
     QJsonObject obj;
-    for(const JsonFieldInfo &fi : m_tableFieldsInfo)
+    for(const JsonFieldInfo &fi : qAsConst(m_tableFieldsInfo))
     {
         if(!values_.contains(fi.jsonName)) { continue; }
         obj.insert(fi.jsonName, fi.jsonValue(values_.value(fi.jsonName)));
@@ -554,7 +554,7 @@ QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVar
 {
     QHash<QString, QVariant> res;
     const QList<QString> keys = extraFields_.keys();
-    for(const QString &key : keys)
+    for(const QString &key : qAsConst(keys))
     {
         if(QString(g_procedureExtraFieldName) == key) { continue; } // skip procedure params
         res.insert(key, extraFields_.value(key));

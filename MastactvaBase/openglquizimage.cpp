@@ -81,7 +81,7 @@ template<typename Type_>
 static void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_)
 {
     int pos = 0;
-    for(const QVariant &val_ : values_)
+    for(const QVariant &val_ : qAsConst(values_))
     {
         QString val = val_.toString().trimmed();
         if(val.isEmpty()) { continue; }

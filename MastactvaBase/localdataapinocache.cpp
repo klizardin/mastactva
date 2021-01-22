@@ -16,7 +16,7 @@ inline QString refName(const QString &ref_)
 inline QStringList refsNames(const QStringList &refs_)
 {
     QStringList res;
-    for(const auto &s : refs_)
+    for(const auto &s : qAsConst(refs_))
     {
         res.push_back(refName(s));
     }
@@ -26,7 +26,7 @@ inline QStringList refsNames(const QStringList &refs_)
 inline QStringList textTypes(const QStringList &names_)
 {
     QStringList res;
-    for(const auto &s : names_)
+    for(const auto &s : qAsConst(names_))
     {
         res.push_back(s + QString(" ") + QString(g_sqlText));
     }
@@ -255,7 +255,7 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
 QStringList conditionsFromSqlNamesames(const QStringList &refs_)
 {
     QStringList res;
-    for(const QString &sqlName : refs_)
+    for(const QString &sqlName : qAsConst(refs_))
     {
         const QString ref = refName(sqlName);
         res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
@@ -288,7 +288,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
-    for(const QString &ref : refs)
+    for(const QString &ref : qAsConst(refs))
     {
         const QString refBindName = QString(":") + refName(ref);
         bindRefs.push_back(refBindName);

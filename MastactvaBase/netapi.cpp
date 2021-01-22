@@ -123,7 +123,7 @@ QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_,
                                        const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = v2_.begin(); it != v2_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(v2_); it != std::end(v2_); ++it)
     {
         if(v1_.contains(it.key()))
         {
@@ -134,7 +134,7 @@ QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_,
             res.insert(it.key(), it.value());
         }
     }
-    for(QHash<QString, QVariant>::const_iterator it = v1_.begin(); it != v1_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(v1_); it != std::end(v1_); ++it)
     {
         if(!v2_.contains(it.key()))
         {
@@ -262,7 +262,7 @@ RequestData *NetAPI::getListByProcedureImpl(const QString& requestName_,
             ;
     int count = -1;
     const QList<QString> keys = extraFields_.keys();
-    for(const QString &key : keys)
+    for(const QString &key : qAsConst(keys))
     {
         bool ok = false;
         const QVariant v = QVariant::fromValue(key);
@@ -353,7 +353,7 @@ RequestData *NetAPI::getListImpl(const QString& requestName_,
 static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
 {
     const QList<QVariant> values = values_.values();
-    for(const QVariant &v : values)
+    for(const QVariant &v : qAsConst(values))
     {
         QObject * obj = qvariant_cast<QObject *>(v);
         QFile *f = qobject_cast<QFile*>(obj);
@@ -366,7 +366,7 @@ static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
 MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &values_)
 {
     m_multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-    for(QHash<QString, QVariant>::const_iterator it = values_.begin(); it != values_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(values_); it != std::end(values_); ++it)
     {
         QObject * obj = qvariant_cast<QObject *>(it.value());
         QFile *f = qobject_cast<QFile*>(obj);
@@ -444,7 +444,7 @@ QHttpMultiPart *MultipartRequestData::getHttpMultiPart(bool releaseOwnship_ /*= 
 JsonRequestData::JsonRequestData(const QHash<QString, QVariant> &values_)
 {
     QJsonObject rec;
-    for(QHash<QString, QVariant>::const_iterator it = values_.begin(); it != values_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(values_); it != std::end(values_); ++it)
     {
         rec.insert(it.key(), QJsonValue::fromVariant(it.value()));
     }
