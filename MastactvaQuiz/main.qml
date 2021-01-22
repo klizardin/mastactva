@@ -333,7 +333,7 @@ ApplicationWindow {
                 id: toolButton
                 Layout.alignment: Qt.AlignLeft
                 text: stackView.depth > 1 ? "<" : "\u22EE" // TODO: "\u2630"
-                font.pixelSize: Qt.application.font.pixelSize * 1.0
+                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ? 1.0 : 1.6)
                 font.family: emojiFont.name
                 onClicked: {
                     if (stackView.depth > 1) {
@@ -347,8 +347,8 @@ ApplicationWindow {
             ToolButton {
                 id: currentPage
                 text: stackView.currentItem.title
-                Layout.minimumWidth: 1.4 * (Constants.width - toolButton.width) / 4
-                font.pixelSize: Qt.application.font.pixelSize * 0.8
+                Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.4 : 2.1)
+                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
                 background: Rectangle {
                     color: activePallete.highlight
                 }
@@ -366,9 +366,9 @@ ApplicationWindow {
 
             ToolButton {
                 id: crossPage
-                Layout.minimumWidth: 1.3 * (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.3 : 0.95)
                 text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
-                font.pixelSize: Qt.application.font.pixelSize * 0.8
+                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
                 visible: stackView.currentItem.hasCrossPage
                 onClicked: {
                     if(stackView.currentItem.hasCrossPage)
@@ -383,9 +383,9 @@ ApplicationWindow {
 
             ToolButton {
                 id: infoButton
-                Layout.minimumWidth: 1.3 * (Constants.width - toolButton.width) / 4
+                Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.3 : 0.95)
                 text: qsTr("Description")
-                font.pixelSize: Qt.application.font.pixelSize * 0.8
+                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
                 visible: stackView.currentItem.hasDescription
                 onClicked: {
                     stackView.push(descriptionPage)
