@@ -14,6 +14,7 @@ class UserStep : public QObject
     Q_OBJECT
 public:
     explicit UserStep(QObject *parent_ = nullptr);
+    virtual ~UserStep() override;
 
     Q_PROPERTY(int usId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int usUserId READ userId WRITE setUserId NOTIFY userIdChanged)
@@ -44,6 +45,7 @@ public:
             addField<int>("set_answer", "usAnswerId", &UserStep::answerId, &UserStep::setAnswerId);
             addField<QDateTime>("t", "usT", &UserStep::t, &UserStep::setT);
             setIdField("id");
+            setStoreAfterSave(false);
         }
     };
 

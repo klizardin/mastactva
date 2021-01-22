@@ -10,6 +10,10 @@ UserStep::UserStep(QObject *parent_)
 #endif
 }
 
+UserStep::~UserStep()
+{
+}
+
 int UserStep::id() const
 {
     return m_id;
