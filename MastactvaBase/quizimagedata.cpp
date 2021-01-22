@@ -15,13 +15,19 @@ QuizImageData::QuizImageData()
 void QuizImageData::setFromImageUrl(const QString &fromImageUrl_)
 {
     m_newFromImageUrl = fromImageUrl_;
-    if(m_newFromImageUrl.isEmpty()) { m_newFromImageUrl = g_noImage; }
+    if(m_newFromImageUrl.isEmpty() || m_newFromImageUrl == g_noImageQRC)
+    {
+        m_newFromImageUrl = g_noImage;
+    }
 }
 
 void QuizImageData::setToImageUrl(const QString &toImageUrl_)
 {
     m_newToImageUrl = toImageUrl_;
-    if(m_newToImageUrl.isEmpty()) { m_newToImageUrl = g_noImage; }
+    if(m_newToImageUrl.isEmpty() || m_newToImageUrl == g_noImageQRC)
+    {
+        m_newToImageUrl = g_noImage;
+    }
 }
 
 bool QuizImageData::fromImageUrlChanged() const
@@ -141,11 +147,15 @@ void QuizImageData::setArgumentValue(int argId_, const QString &value_)
 
 bool QuizImageData::isFromImageIsUrl() const
 {
+    //QUrl url(m_fromImageUrl);
+    //return url.scheme() != "qrc";
     return m_fromImageUrl != g_noImage;
 }
 
 bool QuizImageData::isToImageIsUrl() const
 {
+    //QUrl url(m_toImageUrl);
+    //return url.scheme() != "qrc";
     return m_toImageUrl != g_noImage;
 }
 

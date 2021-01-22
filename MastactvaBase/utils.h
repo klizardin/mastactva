@@ -80,6 +80,7 @@ static const char *g_refPrefix = "ref_";
 static const char *g_errorDetailTag = "detail";
 static const int g_userId = 1;
 static const char *g_noImage = ":/resources/no-image.png";
+static const char *g_noImageQRC = "qrc:///resources/no-image.png";
 
 
 #endif // UTILS_H
