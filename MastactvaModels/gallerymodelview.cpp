@@ -26,8 +26,8 @@ GalleryModelView::GalleryModelView(QObject * parent_ /*= nullptr*/)
     m_userStepModel->setLayoutIdFieldImpl("id");
     m_userStepModel->registerListModel();
     m_userStepModel->setAutoCreateChildrenModels(false);
-    m_userStepModel->setStoreAfterSave(false);
     m_userStepModel->setReadonlyImpl(false);
+    m_userStepModel->setStoreAfterSave(true);
 
     m_userStepPlayedGalleriesModel = new UserStepModel(this);
     m_userStepPlayedGalleriesModel->initResponse();
@@ -36,8 +36,8 @@ GalleryModelView::GalleryModelView(QObject * parent_ /*= nullptr*/)
     m_userStepPlayedGalleriesModel->setLayoutIdFieldImpl("id");
     m_userStepPlayedGalleriesModel->registerListModel();
     m_userStepPlayedGalleriesModel->setAutoCreateChildrenModels(false);
-    m_userStepPlayedGalleriesModel->setStoreAfterSave(false);
     m_userStepPlayedGalleriesModel->setReadonlyImpl(false);
+    m_userStepPlayedGalleriesModel->setStoreAfterSave(true);
 }
 
 GalleryModelView::~GalleryModelView()
@@ -107,8 +107,9 @@ void GalleryModelView::loadSteps()
     m_userStepModel->clearListLoaded();
     m_userStepModel->loadListImpl(
                 QString(),
-                QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
-                    QHash<QString, QVariant>
+                QHash<QString, QVariant>({
+                    {QString(g_procedureExtraFieldName),
+                    QVariant::fromValue(QHash<QString, QVariant>
                     ({
                         { QString(g_procedureConditionName), QVariant::fromValue(QString("\"user\"=:user")) },
                         { QString(g_procedureOrderByName), QVariant::fromValue(QString("t DESC"))},
@@ -119,7 +120,7 @@ void GalleryModelView::loadSteps()
                               {QString(":user"), QVariant::fromValue(g_userId)},
                           }))
                         },
-                     })
+                     }))
                  },})
                 );
 }
@@ -135,8 +136,9 @@ void GalleryModelView::userStepModelListReloaded()
     m_userStepPlayedGalleriesModel->clearListLoaded();
     m_userStepPlayedGalleriesModel->loadListImpl(
                 QString(),
-                QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
-                    QHash<QString, QVariant>(
+                QHash<QString, QVariant>({
+                    {QString(g_procedureExtraFieldName),
+                    QVariant::fromValue(QHash<QString, QVariant>(
                         {
                             { QString(g_procedureSelectFunctionName), QVariant::fromValue(QString("DISTINCT")) },
                             { QString(g_procedureFilterNamesName),
@@ -144,7 +146,7 @@ void GalleryModelView::userStepModelListReloaded()
                                 QList<QVariant>({ QVariant::fromValue(QString("gallery")), })
                               )
                             }
-                        })
+                        }))
                     },})
                 );
 }
