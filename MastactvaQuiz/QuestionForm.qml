@@ -29,50 +29,54 @@ Page {
     {
         anchors.fill: parent
 
-        Column {
+        ScrollView {
+            anchors.fill: parent
 
-            Text {
-                padding: Constants.questionPadding
-                text: qsTr("Question : ")
-            }
+            Column {
 
-            Text {
-                id: questionText
-                //padding: Constants.questionPadding
-                x: Constants.questionPadding
-                width: questionPage.width - Constants.questionPadding * 2
-                wrapMode: Text.WordWrap
-            }
-
-            Row {
-                padding: Constants.questionPadding
-                Label {
-                    text: qsTr("Points for question : ")
-                }
                 Text {
-                    id: questionPoints
+                    padding: Constants.questionPadding
+                    text: qsTr("Question : ")
                 }
-            }
 
-            Rectangle {
-                width: Constants.pageWidth
-                height: Constants.answersHeight
-
-                ListView {
-                    id: answers
-                    anchors.fill: parent
-                    width: Constants.pageWidth - Constants.questionPadding * 2
-                    model: undefined
-                    delegate: answerItem
+                Text {
+                    id: questionText
+                    //padding: Constants.questionPadding
+                    x: Constants.questionPadding
+                    width: questionPage.width - Constants.questionPadding * 2
+                    wrapMode: Text.WordWrap
                 }
-            }
 
-            Button {
-                width: Constants.pageWidth
-                text: qsTr("Choose")
-                Layout.alignment: Qt.AlignVCenter
-                onClicked: {
-                    chooseAnswer()
+                Row {
+                    padding: Constants.questionPadding
+                    Label {
+                        text: qsTr("Points for question : ")
+                    }
+                    Text {
+                        id: questionPoints
+                    }
+                }
+
+                Rectangle {
+                    width: Constants.pageWidth
+                    height: Constants.answersHeight
+
+                    ListView {
+                        id: answers
+                        anchors.fill: parent
+                        width: Constants.pageWidth - Constants.questionPadding * 2
+                        model: undefined
+                        delegate: answerItem
+                    }
+                }
+
+                Button {
+                    width: Constants.pageWidth
+                    text: qsTr("Choose")
+                    Layout.alignment: Qt.AlignVCenter
+                    onClicked: {
+                        chooseAnswer()
+                    }
                 }
             }
         }
