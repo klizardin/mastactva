@@ -39,23 +39,19 @@ public:
         if(nullptr == defaultAPI) { return false; }
 
         r_->insertExtraField(g_procedureExtraFieldName,
-                             QVariant::fromValue(
-                                 QHash<QString, QVariant>({{QString(g_procedureExtraFieldName),
-                                     QHash<QString, QVariant>(
-                                         {
-                                             { g_procedureConditionName,
-                                               QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef()))
-                                             },
-                                             { g_procedureArguments,
-                                               QVariant::fromValue(
-                                                   QHash<QString, QVariant>(
-                                                   {
-                                                       {QString(":%1").arg(r_->getCurrentRef()), r_->getIdField()},
-                                                   }))
-                                             }
-                                         })
-                                 },})
-                                 )
+                             QVariant::fromValue(QHash<QString, QVariant>(
+                                 {
+                                     { QString(g_procedureConditionName),
+                                       QVariant::fromValue(QString("%1=:%1").arg(r_->getCurrentRef()))
+                                     },
+                                     { QString(g_procedureArguments),
+                                       QVariant::fromValue(
+                                           QHash<QString, QVariant>(
+                                           {
+                                               {QString(":%1").arg(r_->getCurrentRef()), r_->getIdField()},
+                                           }))
+                                     }
+                                 }))
                              );
         r_->clearReferences();
 
