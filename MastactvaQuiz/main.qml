@@ -219,7 +219,7 @@ ApplicationWindow {
     {
         quizPage.hasDescription = imageDescription !== undefined && !imageDescription.isEmpty() && imageDescription.getCurrentItem().idDescriptionText.trim() !== ""
         galleryAllImagesPage.hasDescription = quizPage.hasDescription
-        console.log("galleryAllImagesPage.hasDescription = ", galleryAllImagesPage.hasDescription)
+        //console.log("galleryAllImagesPage.hasDescription = ", galleryAllImagesPage.hasDescription)
         if(quizPage.hasDescription)
         {
             descriptionPage.galleryId = galleryId

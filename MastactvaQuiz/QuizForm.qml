@@ -63,7 +63,7 @@ Page {
                 height: quizImage.paintedHeight
 
                 onClicked: {
-                    console.log("currentImage.isImageLoaded() =",currentImage.isImageLoaded())
+                    //console.log("currentImage.isImageLoaded() =",currentImage.isImageLoaded())
                     if(quizImageAnimation.running)
                     {
                         // TODO: fix can`t correct value
