@@ -328,9 +328,9 @@ ApplicationWindow {
     Connections {
         target: galleryAllImagesPage
 
-        function onSetDescription(descriptionModel, galleryId, imageId, localImageSource)
+        function onSetDescription(image)
         {
-            setDescription(descriptionModel, galleryId, imageId, localImageSource)
+            setDescription(image)
         }
     }
 
