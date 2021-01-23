@@ -46,6 +46,10 @@ ApplicationWindow {
         }
     }
 
+    onClosing: {
+        close.accepted = !back()
+    }
+
     // constant models
     ShaderTypeModel {
         id: shaderTypeModel
