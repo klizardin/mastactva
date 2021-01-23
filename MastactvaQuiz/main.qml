@@ -196,12 +196,15 @@ ApplicationWindow {
             // log quiz start
             allImagesOfGallery.loadList()
 
-            var userStepG = userStepModel.createItem()
-            userStepG.usGalleryId = galleryModel.currentItem.id
-            userStepG.usImageId = startImage.imageId
-            userStepG.usNextImageId = startImage.imageId
-            userStepG.usT = mastactvaAPI.now()
-            userStepModel.addItem(userStepG)
+            if(!mastactvaAPI.isAndroidFullscreen())
+            {
+                var userStepG = userStepModel.createItem()
+                userStepG.usGalleryId = galleryModel.currentItem.id
+                userStepG.usImageId = startImage.imageId
+                userStepG.usNextImageId = startImage.imageId
+                userStepG.usT = mastactvaAPI.now()
+                userStepModel.addItem(userStepG)
+            }
 
             //console.log("galleryModel.currentItem.id = ", galleryModel.currentItem.id)
             // jump to quiz image

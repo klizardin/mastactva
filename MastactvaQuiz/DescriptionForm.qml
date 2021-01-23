@@ -66,12 +66,15 @@ Page {
     function init()
     {
         // log view description
-        var userStepD = userStepModel.createItem()
-        userStepD.usGalleryId = galleryId
-        userStepD.usImageId = imageId
-        userStepD.usDescriptionId = descriptionId
-        userStepD.usT = mastactvaAPI.now()
-        userStepModel.addItem(userStepD)
+        if(!mastactvaAPI.isAndroidFullscreen())
+        {
+            var userStepD = userStepModel.createItem()
+            userStepD.usGalleryId = galleryId
+            userStepD.usImageId = imageId
+            userStepD.usDescriptionId = descriptionId
+            userStepD.usT = mastactvaAPI.now()
+            userStepModel.addItem(userStepD)
+        }
 
         imageOfDescription.source = imageSource
         descriptionText.text = descriptionTextArg

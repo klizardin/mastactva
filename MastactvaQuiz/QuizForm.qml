@@ -89,12 +89,15 @@ Page {
                                 }
 
                                 // log jump to next image
-                                var userStepNi = userStepModel.createItem()
-                                userStepNi.usGalleryId = galleryModel.getCurrentItem().id
-                                userStepNi.usImageId = currentImage.imageId
-                                userStepNi.usNextImageId = nextImgObj.imageId
-                                userStepNi.usT = mastactvaAPI.now()
-                                userStepModel.addItem(userStepNi)
+                                if(!mastactvaAPI.isAndroidFullscreen())
+                                {
+                                    var userStepNi = userStepModel.createItem()
+                                    userStepNi.usGalleryId = galleryModel.getCurrentItem().id
+                                    userStepNi.usImageId = currentImage.imageId
+                                    userStepNi.usNextImageId = nextImgObj.imageId
+                                    userStepNi.usT = mastactvaAPI.now()
+                                    userStepModel.addItem(userStepNi)
+                                }
 
                                 nextImage = nextImgObj
                                 //nextImage.loadChildren()
@@ -126,12 +129,15 @@ Page {
                             if(question !== undefined && question !== null)
                             {
                                 // log jump to question
-                                var userStepQ = userStepModel.createItem()
-                                userStepQ.usGalleryId = galleryModel.getCurrentItem().id
-                                userStepQ.usImageId = currentImage.imageId
-                                userStepQ.usQuestionId = question.questionId
-                                userStepQ.usT = mastactvaAPI.now()
-                                userStepModel.addItem(userStepQ)
+                                if(!mastactvaAPI.isAndroidFullscreen())
+                                {
+                                    var userStepQ = userStepModel.createItem()
+                                    userStepQ.usGalleryId = galleryModel.getCurrentItem().id
+                                    userStepQ.usImageId = currentImage.imageId
+                                    userStepQ.usQuestionId = question.questionId
+                                    userStepQ.usT = mastactvaAPI.now()
+                                    userStepModel.addItem(userStepQ)
+                                }
 
                                 quizPage.showQuestion(question, currentImage.imageId)
                             }

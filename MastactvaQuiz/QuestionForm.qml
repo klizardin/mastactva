@@ -180,13 +180,16 @@ Page {
         {
             // log answer the question
             //console.log("chooseAnswer() question.questionAnswers.currentItem.answerId =",question.questionAnswers.currentItem.answerId)
-            var userStepQ = userStepModel.createItem()
-            userStepQ.usGalleryId = galleryModel.currentItem.id
-            userStepQ.usImageId = imageId
-            userStepQ.usQuestionId = question.questionId
-            userStepQ.usT = mastactvaAPI.now()
-            userStepQ.usAnswerId = question.questionAnswers.currentItem.answerId
-            userStepModel.addItem(userStepQ)
+            if(!mastactvaAPI.isAndroidFullscreen())
+            {
+                var userStepQ = userStepModel.createItem()
+                userStepQ.usGalleryId = galleryModel.currentItem.id
+                userStepQ.usImageId = imageId
+                userStepQ.usQuestionId = question.questionId
+                userStepQ.usT = mastactvaAPI.now()
+                userStepQ.usAnswerId = question.questionAnswers.currentItem.answerId
+                userStepModel.addItem(userStepQ)
+            }
 
             userQuestionAnswerModel = question.userQuestionAnswer
             var newAnswer = userQuestionAnswerModel.createItem()

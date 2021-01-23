@@ -97,11 +97,14 @@ Page {
                                 loadChildren(nextImgObj)
                                 allImagesOfGalleryModel.currentIndex = index;
 
-                                var userStepGi = userStepModel.createItem()
-                                userStepGi.usGalleryId = galleryModel.getCurrentItem().id
-                                userStepGi.usImageId = currentImage.imageId
-                                userStepGi.usT = mastactvaAPI.now()
-                                userStepModel.addItem(userStepGi)
+                                if(!mastactvaAPI.isAndroidFullscreen())
+                                {
+                                    var userStepGi = userStepModel.createItem()
+                                    userStepGi.usGalleryId = galleryModel.getCurrentItem().id
+                                    userStepGi.usImageId = currentImage.imageId
+                                    userStepGi.usT = mastactvaAPI.now()
+                                    userStepModel.addItem(userStepGi)
+                                }
 
                                 nextImage = nextImgObj
                                 quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
