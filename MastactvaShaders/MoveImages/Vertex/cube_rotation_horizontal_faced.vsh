@@ -15,7 +15,7 @@ uniform mediump mat4 texMatrix2Arg;
   @defaultValue renderRectSize()
   @description pass render rect size from render to the shader
 */
-uniform mediump vec2 rectSize;
+uniform highp vec2 rectSize;
 
 /* @argument
   @defaultValue rand(-1.0, 1.0)
@@ -23,7 +23,7 @@ uniform mediump vec2 rectSize;
     > 0.0 - rotate on axe X to the right
     < 0.0 - rotate on axe X to the left
 */
-uniform mediump vec4 faceRotateDir;
+uniform highp vec4 faceRotateDir;
 
 uniform mediump float t;
 varying mediump vec4 texCoord1Var;
@@ -37,12 +37,12 @@ void main(void)
 
     highp vec4 cubeVertex = vec4(vertexArg.x/vertexArg.w, vertexArg.y/vertexArg.w, 0.0, 1.0);
     highp vec4 pos1 = cubeVertex;
-    mediump float a1 = -t * M_PI * 0.5;
-    mediump vec4 scale = vec4(1.0, 1.0, 1.0, 1.0);
-    mediump vec4 shift1 = vec4(0.0, 0.0, 0.0, 0.0);
-    mediump vec4 shift2 = vec4(0.0, 0.0, 0.0, 0.0);
+    highp float a1 = -t * M_PI * 0.5;
+    highp vec4 scale = vec4(1.0, 1.0, 1.0, 1.0);
+    highp vec4 shift1 = vec4(0.0, 0.0, 0.0, 0.0);
+    highp vec4 shift2 = vec4(0.0, 0.0, 0.0, 0.0);
 
-    mediump float rotateDir =
+    highp float rotateDir =
          vertexArg.y < rectSize.y * 0.25
             ? faceRotateDir.x
             : vertexArg.y < rectSize.y * 0.5
@@ -50,10 +50,10 @@ void main(void)
                 : vertexArg.y < rectSize.y * 0.75
                     ? faceRotateDir.z
                     : faceRotateDir.w;
-    mediump float s = rotateDir >= 0.0 ? 1.0 : -1.0;
+    highp float s = rotateDir >= 0.0 ? 1.0 : -1.0;
     scale.x = 2.0;
     cubeVertex.x *= 2.0;
-    mediump float k = 1.0;
+    highp float k = 1.0;
     if(s <= 0.0)
     {
         shift2.x = -1.0;
@@ -77,7 +77,7 @@ void main(void)
     cubeVertex.x -= rectSize.x * k;
     cubeVertex.z += rectSize.x * 0.5;
 
-    mediump mat4 rotateMat = mat4(
+    highp mat4 rotateMat = mat4(
                 vec4(cos(s*a1), 0.0, sin(s*a1), 0.0),
                 vec4(0.0, 1.0, 0.0, 0.0),
                 vec4(-sin(s*a1), 0.0, cos(s*a1), 0.0),
