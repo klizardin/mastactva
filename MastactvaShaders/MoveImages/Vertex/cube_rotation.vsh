@@ -15,7 +15,7 @@ uniform mediump mat4 texMatrix2Arg;
   @defaultValue renderRectSize()
   @description pass render rect size from render to the shader
 */
-uniform mediump vec2 rectSize;
+uniform highp vec2 rectSize;
 
 /* @argument
   @defaultValue (1.0, 0.0)
@@ -25,13 +25,13 @@ uniform mediump vec2 rectSize;
     (0.0, 1.0) - rotate on axe Y to the up
     (0.0, -1.0) - rotate on axe Y to the down
 */
-uniform mediump vec2 rotateAxe;
+uniform highp vec2 rotateAxe;
 
-uniform mediump float t;
+uniform highp float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
 
-const mediump float M_PI = 3.14159265359;
+const highp float M_PI = 3.14159265359;
 
 void main(void)
 {
@@ -39,17 +39,17 @@ void main(void)
 
     highp vec4 cubeVertex = vec4(vertexArg.x/vertexArg.w, vertexArg.y/vertexArg.w, 0.0, 1.0);
     highp vec4 pos1 = cubeVertex;
-    mediump float a1 = -t * M_PI * 0.5;
-    mediump vec4 scale = vec4(1.0, 1.0, 1.0, 1.0);
-    mediump vec4 shift1 = vec4(0.0, 0.0, 0.0, 0.0);
-    mediump vec4 shift2 = vec4(0.0, 0.0, 0.0, 0.0);
+    highp float a1 = -t * M_PI * 0.5;
+    highp vec4 scale = vec4(1.0, 1.0, 1.0, 1.0);
+    highp vec4 shift1 = vec4(0.0, 0.0, 0.0, 0.0);
+    highp vec4 shift2 = vec4(0.0, 0.0, 0.0, 0.0);
 
     if(abs(rotateAxe.y) <= abs(rotateAxe.x))
     {
         scale.x = 2.0;
-        mediump float s = rotateAxe.x >= 0.0 ? 1.0 : -1.0;
+        highp float s = rotateAxe.x >= 0.0 ? 1.0 : -1.0;
         cubeVertex.x *= 2.0;
-        mediump float k = 1.0;
+        highp float k = 1.0;
         if(s <= 0.0)
         {
             shift2.x = -1.0;
@@ -73,7 +73,7 @@ void main(void)
         cubeVertex.x -= rectSize.x * k;
         cubeVertex.z += rectSize.x * 0.5;
 
-        mediump mat4 rotateMat = mat4(
+        highp mat4 rotateMat = mat4(
                     vec4(cos(s*a1), 0.0, sin(s*a1), 0.0),
                     vec4(0.0, 1.0, 0.0, 0.0),
                     vec4(-sin(s*a1), 0.0, cos(s*a1), 0.0),
@@ -85,9 +85,9 @@ void main(void)
     else
     {
         scale.y = 2.0;
-        mediump float s = rotateAxe.y >= 0.0 ? 1.0 : -1.0;
+        highp float s = rotateAxe.y >= 0.0 ? 1.0 : -1.0;
         cubeVertex.y *= 2.0;
-        mediump float k = 1.0;
+        highp float k = 1.0;
         if(s <= 0.0)
         {
             shift2.y = -1.0;
@@ -111,7 +111,7 @@ void main(void)
         cubeVertex.y -= rectSize.x * k;
         cubeVertex.z += rectSize.y * 0.5;
 
-        mediump mat4 rotateMat = mat4(
+        highp mat4 rotateMat = mat4(
                     vec4(1.0, 0.0, 0.0, 0.0),
                     vec4(0.0, cos(s*a1), -sin(s*a1), 0.0),
                     vec4(0.0, sin(s*a1), cos(s*a1), 0.0),
