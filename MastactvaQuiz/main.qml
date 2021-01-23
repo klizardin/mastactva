@@ -23,6 +23,29 @@ ApplicationWindow {
         objectName: "MastactvaAPI"
     }
 
+    function back()
+    {
+        if (stackView.depth > 1)
+        {
+            stackView.pop()
+            if(stackView.currentItem.hasCrossPage)
+            {
+                var item = stackView.currentItem
+                var next = stackView.currentItem.crossPage
+                if(next === quizPage)
+                {
+                    // return to quiz, so use quiz current image for description
+                    setDescription(quizCurrentImage)
+                }
+            }
+            return true
+        }
+        else
+        {
+            return false
+        }
+    }
+
     // constant models
     ShaderTypeModel {
         id: shaderTypeModel
@@ -263,10 +286,7 @@ ApplicationWindow {
 
         function onAnswered()
         {
-            if (stackView.depth > 1)
-            {
-                stackView.pop()
-            }
+            back()
             if(galleryModel.currentItem !== null)
             {
                 galleryModel.currentItem.galleryStatistics.loadList()
@@ -283,9 +303,7 @@ ApplicationWindow {
 
         function onCloseDescriptionPage()
         {
-            if (stackView.depth > 1) {
-                stackView.pop()
-            }
+            back()
         }
     }
 
@@ -327,9 +345,7 @@ ApplicationWindow {
 
         function onViewed()
         {
-            if (stackView.depth > 1) {
-                stackView.pop()
-            }
+            back()
         }
     }
 
@@ -353,16 +369,7 @@ ApplicationWindow {
                 font.family: emojiFont.name
                 onClicked: {
                     if (stackView.depth > 1) {
-                        if(stackView.currentItem.hasCrossPage)
-                        {
-                            var item = stackView.currentItem
-                            var next = stackView.currentItem.crossPage
-                            if(next === quizPage)
-                            {
-                                setDescription(quizCurrentImage)
-                            }
-                        }
-                        stackView.pop()
+                        back()
                     } else {
                         drawer.open()
                     }
