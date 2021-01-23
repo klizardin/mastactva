@@ -13,6 +13,7 @@ Page {
 
     title: qsTr("Options")
 
+    property var mastactvaAPI: undefined
     property int animationSpeed: Constants.animationSpeedNorm
     property bool hasDescription: false
     property bool hasCrossPage: false

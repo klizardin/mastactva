@@ -161,7 +161,14 @@ ApplicationWindow {
             galleryAllImagesPage.allImagesOfGalleryModel = allImagesOfGallery
             galleryAllImagesPage.crossPage = quizPage
 
+            descriptionPage.mastactvaAPI = mastactvaAPI
+            galleryAllImagesPage.mastactvaAPI = mastactvaAPI
+            galleryPage.mastactvaAPI = mastactvaAPI
+            helpPage.mastactvaAPI = mastactvaAPI
+            optionsPage.mastactvaAPI = mastactvaAPI
             questionPage.mastactvaAPI = mastactvaAPI
+            quizPage.mastactvaAPI = mastactvaAPI
+
             questionPage.userStepModel = userStepModel
 
 

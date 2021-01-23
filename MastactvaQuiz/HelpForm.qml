@@ -13,6 +13,7 @@ Page {
 
     title: qsTr("Help")
 
+    property var mastactvaAPI: undefined
     property string helpText: qsTr("")
     property string helpForPage: qsTr("")
     property bool hasDescription: false

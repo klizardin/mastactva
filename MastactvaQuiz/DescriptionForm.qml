@@ -13,6 +13,7 @@ Page {
 
     title: qsTr("Description")
 
+    property var mastactvaAPI: undefined
     property bool hasDescription: false
     property bool hasCrossPage: false
     property string descriptionTextArg: qsTr("")

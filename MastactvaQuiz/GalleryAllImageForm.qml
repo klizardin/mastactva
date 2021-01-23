@@ -12,6 +12,7 @@ Page {
 
     title: qsTr("Gallery")
 
+    property var mastactvaAPI: undefined
     property var allImagesOfGalleryModel: undefined
     property int galleryId: -1
     property var currentImage: undefined
