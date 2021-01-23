@@ -27,7 +27,7 @@ uniform highp vec2 rectSize;
 */
 uniform highp vec2 rotateAxe;
 
-uniform highp float t;
+uniform mediump float t;
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
 
