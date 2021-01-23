@@ -70,7 +70,8 @@ Page {
                     {
                         var x = mouseX / width
                         var y = mouseY / height
-                        var index = allImagesOfGalleryModel.indexOfItem(currentImage)
+                        allImagesOfGalleryModel.selectItemById(currentImage.imageId)
+                        var index = allImagesOfGalleryModel.currentIndex
                         if(index >= 0)
                         {
                             if(x > 0.5)
@@ -165,6 +166,7 @@ Page {
 
     function init()
     {
+        var res = allImagesOfGalleryModel.selectItemById(currentImage.imageId)
         quizImage.fromImage = [currentImageSource, currentImageHash]
         quizImage.toImage = [currentImageSource, currentImageHash]
         quizImage.visible = true
