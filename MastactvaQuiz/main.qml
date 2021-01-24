@@ -47,7 +47,14 @@ ApplicationWindow {
     }
 
     onClosing: {
-        close.accepted = !back()
+        if(mastactvaAPI.isAndroidFullscreen())
+        {
+            close.accepted = !back()
+        }
+        else
+        {
+            close.accepted = true
+        }
     }
 
     // constant models
