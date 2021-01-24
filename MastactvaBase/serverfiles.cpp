@@ -567,7 +567,7 @@ void ServerFileDownload::removeOldFile(const QString &oldURL_)
              QUrl::fromLocalFile(m_oldName).toString() != oldURL_)
             ) { return; }
 
-    if(m_oldName != m_filename)
+    if(m_oldName != m_filename && !m_oldName.isEmpty())
     {
         QFile(m_oldName).remove();
     }

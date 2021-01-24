@@ -226,8 +226,14 @@ void LocalDataAPINoCache::cleanRequests()
 
 void LocalDataAPINoCache::cleanPath()
 {
-    QFile::remove(m_dbNameRW);
-    QFile::remove(m_dbNameRO);
+    if(!m_dbNameRW.isEmpty())
+    {
+        QFile::remove(m_dbNameRW);
+    }
+    if(!m_dbNameRO.isEmpty())
+    {
+        QFile::remove(m_dbNameRO);
+    }
     QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
     while(fit.hasNext())
     {
