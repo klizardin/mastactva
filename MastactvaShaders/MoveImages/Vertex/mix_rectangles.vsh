@@ -46,6 +46,12 @@ const mediump float WIDTH = 20.0;
 const mediump float HEIGHT = 20.0;
 
 
+mediump float min(mediump float a1, mediump float a2)
+{
+    return a1 < a2 ? a1 : a2;
+}
+
+
 void main(void)
 {
     gl_Position = matrixArg * vertexArg;
