@@ -9,6 +9,11 @@ varying mediump vec4 texCoord2Var;
 varying mediump vec2 v_t;
 
 
+mediump float min(mediump float a1, mediump float a2)
+{
+    return a1 < a2 ? a1 : a2;
+}
+
 void main(void)
 {
     mediump vec4 s1 = texture2D( texture1Arg, texCoord1Var.st );
