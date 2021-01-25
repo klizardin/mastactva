@@ -67,3 +67,9 @@ GalleryStatisticsModel::GalleryStatisticsModel(QObject *parent_ /*= nullptr*/)
 #endif
     init(this);
 }
+
+
+GalleryStatisticsModelView::GalleryStatisticsModelView(QObject *parent_ /*= nullptr*/)
+    :QObject(parent_)
+{
+}

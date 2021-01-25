@@ -159,8 +159,8 @@ void QMLObjects::searchObjects()
     }
     if(m_localDataAPIViews.isEmpty())
     {
-        m_localDataAPIViews.push_back(new GalleryStatisticsModelView());
-        m_localDataAPIViews.push_back(new UserQuestionAnswerModelView());
+        m_localDataAPIViews.push_back(new GalleryStatisticsModelView(m_root));
+        m_localDataAPIViews.push_back(new UserQuestionAnswerModelView(m_root));
     }
     IListModel *m = nullptr;
     m = findListModel(g_effectModel);

@@ -37,8 +37,8 @@ void QMLObjects::searchObjects()
     }
     if(m_localDataAPIViews.isEmpty())
     {
-        m_localDataAPIViews.push_back(new GalleryStatisticsModelView());
-        m_localDataAPIViews.push_back(new UserQuestionAnswerModelView());
+        m_localDataAPIViews.push_back(new GalleryStatisticsModelView(m_root));
+        m_localDataAPIViews.push_back(new UserQuestionAnswerModelView(m_root));
         m_localDataAPIViews.push_back(new GalleryModelView(m_root));
         m_localDataAPIViews.push_back(new QuestionAnswerModelView(m_root));
     }

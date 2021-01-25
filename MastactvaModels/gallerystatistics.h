@@ -118,7 +118,12 @@ signals:
 };
 
 
-using GalleryStatisticsModelView = LocalDataAPIGelListByRefImpl<GalleryStatisticsModel>;
+class GalleryStatisticsModelView : public QObject, public LocalDataAPIGelListByRefImpl<GalleryStatisticsModel>
+{
+    Q_OBJECT
+public:
+    GalleryStatisticsModelView(QObject *parent_ = nullptr);
+};
 
 
 #endif // GALLERYSTATISTICS_H

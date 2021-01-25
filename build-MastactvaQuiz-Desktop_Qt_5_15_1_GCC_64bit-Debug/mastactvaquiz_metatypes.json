@@ -2551,6 +2551,21 @@
                         "name": "ListModelBaseOfData<GalleryStatistics,GalleryStatisticsModel>"
                     }
                 ]
+            },
+            {
+                "className": "GalleryStatisticsModelView",
+                "object": true,
+                "qualifiedClassName": "GalleryStatisticsModelView",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "LocalDataAPIGelListByRefImpl<GalleryStatisticsModel>"
+                    }
+                ]
             }
         ],
         "inputFile": "gallerystatistics.h",
@@ -8372,6 +8387,21 @@
                     {
                         "access": "public",
                         "name": "ListModelBaseOfData<UserQuestionAnswer,UserQuestionAnswerModel>"
+                    }
+                ]
+            },
+            {
+                "className": "UserQuestionAnswerModelView",
+                "object": true,
+                "qualifiedClassName": "UserQuestionAnswerModelView",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "LocalDataAPIGelListByRefImpl<UserQuestionAnswerModel>"
                     }
                 ]
             }

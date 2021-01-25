@@ -91,3 +91,9 @@ UserQuestionAnswerModel::UserQuestionAnswerModel(QObject *parent_ /*= nullptr*/)
 #endif
     init(this);
 }
+
+
+UserQuestionAnswerModelView::UserQuestionAnswerModelView(QObject *parent_ /*= nullptr*/)
+    :QObject(parent_)
+{
+}

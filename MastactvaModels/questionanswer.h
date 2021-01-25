@@ -130,7 +130,12 @@ signals:
 };
 
 
-using UserQuestionAnswerModelView = LocalDataAPIGelListByRefImpl<UserQuestionAnswerModel>;
+class UserQuestionAnswerModelView : public QObject, public LocalDataAPIGelListByRefImpl<UserQuestionAnswerModel>
+{
+    Q_OBJECT
+public:
+    UserQuestionAnswerModelView(QObject *parent_ = nullptr);
+};
 
 
 #endif // QUESTIONANSWER_H
