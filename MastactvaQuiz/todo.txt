@@ -21,5 +21,18 @@
 * 18. add help on page caption 
 * 19. show load busy after effect animation
 * 20. fix option page layout
+21. fix translations
+22. fix texts 
+23. gallery mode (room), auto generation of gallery from images with algorithms
+24. tutorial
+25. bonus image (script) for all answers
+26. victory animation (choose: play victory animation, choose: fix placing of question point, choose: show bonus image ...
+    only two together on)
+27. right answer the question animation
+28. highlight question point on exit(?)
+
+
+
+
 
 
