@@ -30,6 +30,7 @@
     only two together on)
 27. right answer the question animation
 28. highlight question point on exit(?)
+29. main gallery (start)
 
 
 
