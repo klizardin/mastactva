@@ -107,4 +107,10 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 68. "TODO: find way to upload images of gallery when it is required" // ImageModel *Gallery::createImages()
 69. procedure tables
 * 70. remove g_procedureDefaultAPI
+71. add auto generation of galleries
+72. effects packet for update
+73. mobile data zip generation
+74. shaders/effect artefacts list. add/edit/view/del/replace/depended effects
+
+
 
