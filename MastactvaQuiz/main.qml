@@ -380,73 +380,80 @@ ApplicationWindow {
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
 
-        RowLayout {
-            height: toolButton.implicitHeight
-            ToolButton {
-                id: toolButton
-                Layout.alignment: Qt.AlignLeft
-                text: stackView.depth > 1 ? "<" : "\u22EE" // TODO: "\u2630"
-                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ? 1.0 : 1.6)
-                font.family: emojiFont.name
-                onClicked: {
-                    if (stackView.depth > 1) {
-                        back()
-                    } else {
-                        drawer.open()
-                    }
-                }
-            }
+        ScrollView {
+            anchors.fill: parent
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+            clip: true
 
-            ToolButton {
-                id: currentPage
-                text: stackView.currentItem.title
-                Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.4 : 2.1)
-                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
-                background: Rectangle {
-                    color: activePallete.highlight
-                }
-                onClicked: {
-                    if(stackView.currentItem.hasHelpPage)
-                    {
-                        helpPage.helpText = stackView.currentItem.helpPageText
-                        helpPage.helpForPage = stackView.currentItem.title
-                        helpPage.needTextCaption = true
-                        helpPage.init()
-                        stackView.push(helpPage)
-                    }
-                }
-            }
-
-            ToolButton {
-                id: crossPage
-                Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.3 : 0.95)
-                text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
-                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
-                visible: stackView.currentItem.hasCrossPage
-                onClicked: {
-                    if(stackView.currentItem.hasCrossPage)
-                    {
-                        var item = stackView.currentItem
-                        var next = stackView.currentItem.crossPage
-                        if(next === quizPage)
-                        {
-                            setDescription(quizCurrentImage)
+            RowLayout {
+                height: toolButton.implicitHeight
+                ToolButton {
+                    id: toolButton
+                    Layout.alignment: Qt.AlignLeft
+                    text: stackView.depth > 1 ? "<" : "\u22EE" // TODO: "\u2630"
+                    font.pixelSize: Qt.application.font.pixelSize * 1.6 // Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ? 1.0 : 1.6)
+                    font.family: emojiFont.name
+                    onClicked: {
+                        if (stackView.depth > 1) {
+                            back()
+                        } else {
+                            drawer.open()
                         }
-                        next.init()
-                        stackView.replace(item, next)
                     }
                 }
-            }
 
-            ToolButton {
-                id: infoButton
-                Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.3 : 0.95)
-                text: qsTr("Description")
-                font.pixelSize: Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
-                visible: stackView.currentItem.hasDescription
-                onClicked: {
-                    stackView.push(descriptionPage)
-                    descriptionPage.init()
+                ToolButton {
+                    id: currentPage
+                    text: stackView.currentItem.title
+                    Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * 2.1 // (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.4 : 2.1)
+                    font.pixelSize: Qt.application.font.pixelSize * 1.0 // Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
+                    background: Rectangle {
+                        color: activePallete.highlight
+                    }
+                    onClicked: {
+                        if(stackView.currentItem.hasHelpPage)
+                        {
+                            helpPage.helpText = stackView.currentItem.helpPageText
+                            helpPage.helpForPage = stackView.currentItem.title
+                            helpPage.needTextCaption = true
+                            helpPage.init()
+                            stackView.push(helpPage)
+                        }
+                    }
+                }
+
+                ToolButton {
+                    id: crossPage
+                    Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * 0.95 //  (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.3 : 0.95)
+                    text: stackView.currentItem.hasCrossPage ? stackView.currentItem.crossPageName : qsTr("")
+                    font.pixelSize: Qt.application.font.pixelSize * 1.0 // Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
+                    visible: stackView.currentItem.hasCrossPage
+                    onClicked: {
+                        if(stackView.currentItem.hasCrossPage)
+                        {
+                            var item = stackView.currentItem
+                            var next = stackView.currentItem.crossPage
+                            if(next === quizPage)
+                            {
+                                setDescription(quizCurrentImage)
+                            }
+                            next.init()
+                            stackView.replace(item, next)
+                        }
+                    }
+                }
+
+                ToolButton {
+                    id: infoButton
+                    Layout.minimumWidth: (Constants.width - toolButton.width) / 4 * 0.95 // (Constants.width - toolButton.width) / 4 * (mastactvaAPI.isAndroidFullscreen() ?  1.3 : 0.95)
+                    text: qsTr("Description")
+                    font.pixelSize: Qt.application.font.pixelSize * 1.0 // Qt.application.font.pixelSize * (mastactvaAPI.isAndroidFullscreen() ?  0.8 : 1.0)
+                    visible: stackView.currentItem.hasDescription
+                    onClicked: {
+                        stackView.push(descriptionPage)
+                        descriptionPage.init()
+                    }
                 }
             }
         }
