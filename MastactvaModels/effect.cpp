@@ -209,7 +209,7 @@ bool Effect::startRefreshArguments()
                      this, SLOT(refreshArgumentsProgressSlot()));
     for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     {
-        sf->add(url_.first, url_.second, g_shadersRelPath);
+        sf->add(url_.first, url_.second, g_artefactsRelPath);
     }
     return true;
 }
@@ -253,7 +253,7 @@ void Effect::applyRefreshArguments()
 {
     QList<EffectArg *> newArguments;
     ArtefactArgTypeModel *argTypesModel = static_cast<ArtefactArgTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel("ShaderArgTypeModel")
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
                 );
     Q_ASSERT(nullptr != argTypesModel);
 

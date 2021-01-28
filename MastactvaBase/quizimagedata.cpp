@@ -200,10 +200,10 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
     }
 
     // read shaders files
-    ArtefactTypeModel *shaderTypeModel = static_cast<ArtefactTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
+    ArtefactTypeModel *artefactTypeModel = static_cast<ArtefactTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactTypeModel)
                 );
-    Q_ASSERT(nullptr != shaderTypeModel && shaderTypeModel->sizeImpl() > 0);
+    Q_ASSERT(nullptr != artefactTypeModel && artefactTypeModel->sizeImpl() > 0);
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     Q_ASSERT(nullptr != sf);
 
@@ -223,7 +223,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
         QString shaderText = ::loadTextFileByUrl(shader->filename());
 
-        ArtefactType *artefactType = shaderTypeModel->findDataItemByIdImpl(shader->type());
+        ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(shader->type());
         Q_ASSERT(nullptr != artefactType &&
                     (
                         g_shaderTypeVertex == artefactType->type() ||
@@ -242,7 +242,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
     initDefaultShaders();
 
     ArtefactArgTypeModel *artefactArgTypeModel = static_cast<ArtefactArgTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
                 );
     Q_ASSERT(nullptr != artefactArgTypeModel && artefactArgTypeModel->isListLoaded());
 

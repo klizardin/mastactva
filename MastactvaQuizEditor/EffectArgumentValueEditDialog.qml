@@ -11,7 +11,7 @@ Dialog {
     id : effectArgumentValueEditDialog
     modal: true
 
-    property var shaderArgTypeModel: undefined
+    property var artefactArgTypeModel: undefined
     property bool fieldNew: false
     property var fieldEffectArgumentSet: undefined
     property var fieldEffectArgumentValue: undefined
@@ -131,14 +131,14 @@ Dialog {
         effectArgumentValueSetDescription.text = fieldEffectArgumentSet.effectArgSetDescription
         if(fieldNew)
         {
-            effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArg.effectArgArgTypeId).artefactArgTypeType
+            effectArgumentValueArgType.text = artefactArgTypeModel.findItemById(fieldEffectArg.effectArgArgTypeId).artefactArgTypeType
             effectArgumentValueArgName.text = fieldEffectArg.effectArgName
             effectArgumentValueArgDefaultValue.text = fieldEffectArg.effectArgDefaultValue
             effectArgumentValueArgDescription.text = fieldEffectArg.effectArgDescription
         }
         else
         {
-            effectArgumentValueArgType.text = shaderArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType
+            effectArgumentValueArgType.text = artefactArgTypeModel.findItemById(fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType
             effectArgumentValueArgName.text = fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgName
             effectArgumentValueArgDefaultValue.text = fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgDefaultValue
             effectArgumentValueArgDescription.text = fieldEffectArgumentValue.effectArgValueArg.currentItem.effectArgDescription

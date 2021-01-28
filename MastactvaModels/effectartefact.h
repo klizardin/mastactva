@@ -1,5 +1,5 @@
-#ifndef EFFECTSHADER_H
-#define EFFECTSHADER_H
+#ifndef EFFECTARTEFACT_H
+#define EFFECTARTEFACT_H
 
 
 #include <QObject>
@@ -21,7 +21,7 @@ public:
 
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArtefactEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
-    Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY shaderChanged)
+    Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
 
     class DefaultLayout : public LayoutBase<EffectArtefact>
     {
@@ -58,7 +58,7 @@ protected:
 signals:
     void idChanged();
     void effectIdChanged();
-    void shaderChanged();
+    void artefactChanged();
 
 private:
     EffectArtefactModel *m_effectArtefactModel = nullptr;
@@ -122,4 +122,4 @@ signals:
 };
 
 
-#endif // EFFECTSHADER_H
+#endif // EFFECTARTEFACT_H

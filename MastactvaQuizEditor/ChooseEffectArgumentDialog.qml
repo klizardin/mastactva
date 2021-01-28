@@ -13,7 +13,7 @@ Dialog {
 
     title: qsTr("Choose shader")
 
-    property var shaderArgTypeModel: undefined
+    property var artefactArgTypeModel: undefined
     property var effectArgModel: undefined
     property var fieldEffectArg: undefined
     property var fieldExceptIds: undefined
@@ -110,7 +110,7 @@ Dialog {
                     Text {
                         id: effectArgumentsItemType
                         width: effectArgumentsList.width - effectArgumentsItemTypeLabel.width
-                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).artefactArgTypeType : ""
+                        text: artefactArgTypeModel.findItemById(effectArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(effectArgArgTypeId).artefactArgTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }

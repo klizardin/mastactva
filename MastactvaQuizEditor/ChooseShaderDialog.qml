@@ -14,7 +14,7 @@ Dialog {
     title: qsTr("Choose shader")
 
     property var fieldShader: undefined
-    property var shaderTypeModel: undefined
+    property var artefactTypeModel: undefined
     property var shaderModel: undefined
 
     x: (parent.width - width) / 2
@@ -85,7 +85,7 @@ Dialog {
                     Text {
                         id: shaderItemType
                         width: Constants.smallDialogWidth - shaderItemTypeLabel
-                        text: shaderTypeModel.findItemById(artefactTypeId) !== null ? shaderTypeModel.findItemById(artefactTypeId).artefactTypeType : ""
+                        text: artefactTypeModel.findItemById(artefactTypeId) !== null ? artefactTypeModel.findItemById(artefactTypeId).artefactTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }

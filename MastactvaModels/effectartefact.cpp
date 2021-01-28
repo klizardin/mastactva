@@ -6,7 +6,7 @@ EffectArtefact::EffectArtefact(EffectArtefactModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectShader::EffectShader()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "EffectArtefact::EffectArtefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     m_effectArtefactModel = parent_;
 }
@@ -48,7 +48,7 @@ void EffectArtefact::setArtefactId(const int &artefactId_)
         m_artefactModel->parentItemChanged();
     }
 
-    emit shaderChanged();
+    emit artefactChanged();
 }
 
 QVariant EffectArtefact::artefact() const
@@ -72,7 +72,7 @@ void EffectArtefact::setArtefact(const QVariant &obj_)
         delete m_artefactModel;
         m_artefactModel = nullptr;
 
-        emit shaderChanged();
+        emit artefactChanged();
     }
 }
 
@@ -90,11 +90,11 @@ ArtefactModel *EffectArtefact::createArtefactModel()
 {
     ArtefactModel *m = new ArtefactModel(this);
     m->initResponse();
-    m->setLayoutRefImpl("id", m_effectArtefactModel->getQMLLayoutName(), "shader");
+    m->setLayoutRefImpl("id", m_effectArtefactModel->getQMLLayoutName(), "artefact");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArtefactModel->getQMLLayoutName() + QString("_EffectShader_") +
-                        QVariant::fromValue(m_appId).toString() + QString("_ShaderModel_"));
+    m->setLayoutQMLName(m_effectArtefactModel->getQMLLayoutName() + QString("_EffectArtefact_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_ArtefactModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
@@ -107,7 +107,7 @@ EffectArtefactModel::EffectArtefactModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectShaderModel::EffectShaderModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "EffectArtefactModel::EffectArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
 }

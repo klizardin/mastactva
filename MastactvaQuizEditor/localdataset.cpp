@@ -59,21 +59,21 @@ void LocalDataSet::create()
     m_imageModel->registerListModel();
     m_imageModel->setAutoCreateChildrenModels(true);           // TODO: find way to upload images of gallery when it is required
 
-    m_shaderTypeModel = new ArtefactTypeModel(this);
-    m_shaderTypeModel->initResponse();
-    m_shaderTypeModel->setCurrentRef("");
-    m_shaderTypeModel->setLayoutQMLName("LocalData_ShaderTypeModel");
-    m_shaderTypeModel->setLayoutIdFieldImpl("id");
-    m_shaderTypeModel->registerListModel();
-    m_shaderTypeModel->setAutoCreateChildrenModels(true);
+    m_artefactTypeModel = new ArtefactTypeModel(this);
+    m_artefactTypeModel->initResponse();
+    m_artefactTypeModel->setCurrentRef("");
+    m_artefactTypeModel->setLayoutQMLName("LocalData_ArtefactTypeModel");
+    m_artefactTypeModel->setLayoutIdFieldImpl("id");
+    m_artefactTypeModel->registerListModel();
+    m_artefactTypeModel->setAutoCreateChildrenModels(true);
 
-    m_shaderArgTypeModel = new ArtefactArgTypeModel(this);
-    m_shaderArgTypeModel->initResponse();
-    m_shaderArgTypeModel->setCurrentRef("");
-    m_shaderArgTypeModel->setLayoutQMLName("LocalData_ShaderArgTypeModel");
-    m_shaderArgTypeModel->setLayoutIdFieldImpl("id");
-    m_shaderArgTypeModel->registerListModel();
-    m_shaderArgTypeModel->setAutoCreateChildrenModels(true);
+    m_artefactArgTypeModel = new ArtefactArgTypeModel(this);
+    m_artefactArgTypeModel->initResponse();
+    m_artefactArgTypeModel->setCurrentRef("");
+    m_artefactArgTypeModel->setLayoutQMLName("LocalData_ArtefactArgTypeModel");
+    m_artefactArgTypeModel->setLayoutIdFieldImpl("id");
+    m_artefactArgTypeModel->registerListModel();
+    m_artefactArgTypeModel->setAutoCreateChildrenModels(true);
 
     m_easingTypeModel = new EasingTypeModel(this);
     m_easingTypeModel->initResponse();
@@ -114,10 +114,10 @@ void LocalDataSet::free()
     m_galleryModel = nullptr;
     delete m_imageModel;
     m_imageModel = nullptr;
-    delete m_shaderTypeModel;
-    m_shaderTypeModel = nullptr;
-    delete m_shaderArgTypeModel;
-    m_shaderArgTypeModel = nullptr;
+    delete m_artefactTypeModel;
+    m_artefactTypeModel = nullptr;
+    delete m_artefactArgTypeModel;
+    m_artefactArgTypeModel = nullptr;
     delete m_easingTypeModel;
     m_easingTypeModel = nullptr;
     delete m_userStepModel;
@@ -197,33 +197,33 @@ void LocalDataSet::downloadStep()
         emit progress(stepProgress());
         return; // one model at time
     }
-    if(nullptr != m_shaderTypeModel && !m_shaderTypeModel->isListLoaded())
+    if(nullptr != m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
     {
         if(nullptr != m_imageModel)
         {
             QObject::disconnect(m_imageModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         }
-        QObject::connect(m_shaderTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
-        m_shaderTypeModel->loadList();
+        QObject::connect(m_artefactTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_artefactTypeModel->loadList();
         emit progress(stepProgress());
         return; // one model at time
     }
-    if(nullptr != m_shaderArgTypeModel && !m_shaderArgTypeModel->isListLoaded())
+    if(nullptr != m_artefactArgTypeModel && !m_artefactArgTypeModel->isListLoaded())
     {
-        if(nullptr != m_shaderTypeModel)
+        if(nullptr != m_artefactTypeModel)
         {
-            QObject::disconnect(m_shaderTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+            QObject::disconnect(m_artefactTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         }
-        QObject::connect(m_shaderArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
-        m_shaderArgTypeModel->loadList();
+        QObject::connect(m_artefactArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_artefactArgTypeModel->loadList();
         emit progress(stepProgress());
         return; // one model at time
     }
     if(nullptr != m_easingTypeModel && !m_easingTypeModel->isListLoaded())
     {
-        if(nullptr != m_shaderArgTypeModel)
+        if(nullptr != m_artefactArgTypeModel)
         {
-            QObject::disconnect(m_shaderArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+            QObject::disconnect(m_artefactArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         }
         QObject::connect(m_easingTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         m_easingTypeModel->loadList();
@@ -261,13 +261,13 @@ void LocalDataSet::downloadStep()
     {
         QObject::disconnect(m_imageModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
-    if(nullptr != m_shaderTypeModel)
+    if(nullptr != m_artefactTypeModel)
     {
-        QObject::disconnect(m_shaderTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        QObject::disconnect(m_artefactTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
-    if(nullptr != m_shaderArgTypeModel)
+    if(nullptr != m_artefactArgTypeModel)
     {
-        QObject::disconnect(m_shaderArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        QObject::disconnect(m_artefactArgTypeModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
     if(nullptr != m_easingTypeModel)
     {

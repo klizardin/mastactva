@@ -21325,7 +21325,7 @@
                         "designable": true,
                         "final": false,
                         "name": "effectArtefactArtefact",
-                        "notify": "shaderChanged",
+                        "notify": "artefactChanged",
                         "read": "artefact",
                         "required": false,
                         "scriptable": true,
@@ -21349,7 +21349,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "shaderChanged",
+                        "name": "artefactChanged",
                         "returnType": "void"
                     }
                 ],

@@ -1,5 +1,5 @@
-#ifndef SHADERARGTYPE_H
-#define SHADERARGTYPE_H
+#ifndef ARTEFACTARGTYPE_H
+#define ARTEFACTARGTYPE_H
 
 
 #include <QObject>
@@ -101,4 +101,4 @@ signals:
 };
 
 
-#endif // SHADERARGTYPE_H
+#endif // ARTEFACTARGTYPE_H

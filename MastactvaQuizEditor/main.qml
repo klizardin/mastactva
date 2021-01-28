@@ -563,19 +563,19 @@ ApplicationWindow {
     }
 
     // constant models
-    ShaderTypeModel {
-        id: shaderTypeModel
-        objectName: "ShaderTypeModel"
-        layoutQMLName: "ShaderTypeModel"
+    ArtefactTypeModel {
+        id: artefactTypeModel
+        objectName: "ArtefactTypeModel"
+        layoutQMLName: "ArtefactTypeModel"
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
     }
 
-    ShaderArgTypeModel {
-        id: shaderArgTypeModel
-        objectName: "ShaderArgTypeModel"
-        layoutQMLName: "ShaderArgTypeModel"
+    ArtefactArgTypeModel {
+        id: artefactArgTypeModel
+        objectName: "ArtefactArgTypeModel"
+        layoutQMLName: "ArtefactArgTypeModel"
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
@@ -669,16 +669,16 @@ ApplicationWindow {
             effectModel.loadList()
             effectsListBusyIndicator.visible = true
             effectsListBusyIndicator.running = true
-            shaderTypeModel.loadList()
-            shaderArgTypeModel.loadList()
+            artefactTypeModel.loadList()
+            artefactArgTypeModel.loadList()
             easingTypeModel.loadList()
             shaderEditDialog.mastactva = mastactva
-            shaderEditDialog.shaderTypeModel = shaderTypeModel
-            chooseShaderDialog.shaderTypeModel = shaderTypeModel
+            shaderEditDialog.artefactTypeModel = artefactTypeModel
+            chooseShaderDialog.artefactTypeModel = artefactTypeModel
             chooseShaderDialog.shaderModel = shaderModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
-            effectArgumentValueEditDialog.shaderArgTypeModel = shaderArgTypeModel
-            chooseEffectArgumentDialog.shaderArgTypeModel = shaderArgTypeModel
+            effectArgumentValueEditDialog.artefactArgTypeModel = artefactArgTypeModel
+            chooseEffectArgumentDialog.artefactArgTypeModel = artefactArgTypeModel
             chooseImageDialog.galleryModel = galleryModel
             chooseImageDialog.allImagesOfGalleryModel = allImagesOfGalleryModel
             chooseImageDialog.mastactva = mastactva
@@ -4553,7 +4553,7 @@ ApplicationWindow {
                     Text {
                         id: effectShaderItemType
                         width: effectShadersList.width - effectShaderItemTypeLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.artefactTypeId).artefactTypeType : ""
+                        text: shaderItem !== undefined && shaderItem !== null  && artefactTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? artefactTypeModel.findItemById(shaderItem.artefactTypeId).artefactTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4673,7 +4673,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentsItemType
                         width: effectArgumentsList.width - effectArgumentsItemTypeLabel.width
-                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).artefactArgTypeType : ""
+                        text: artefactArgTypeModel.findItemById(effectArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(effectArgArgTypeId).artefactArgTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4873,7 +4873,7 @@ ApplicationWindow {
                 target: effectArgValueArg
                 function onListReloaded()
                 {
-                    effectArgumentSetValuesItemArgType.text = shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType
+                    effectArgumentSetValuesItemArgType.text = artefactArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType
                     effectArgumentSetValuesItemArgName.text = effectArgValueArg.currentItem.effectArgName
                     effectArgumentSetValuesItemArgDefaultValue.text = effectArgValueArg.currentItem.effectArgDefaultValue
                 }
@@ -4892,7 +4892,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentSetValuesItemArgType
                         width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgTypeLabel.width
-                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType : "" : ""
+                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? artefactArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType : "" : ""
                         wrapMode: Text.Wrap
                     }
                 }

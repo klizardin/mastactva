@@ -9,7 +9,7 @@ Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "Shader::Shader()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "Artefact::Artefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     m_artefactModel = parent_;
     m_objectModelInfo = this;
@@ -100,13 +100,13 @@ void Artefact::objectLoadedVF()
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
-        sf->add(filename(), hash(), g_shadersRelPath);
+        sf->add(filename(), hash(), g_artefactsRelPath);
     }
 }
 
 QString Artefact::getObjectName() const
 {
-    return m_artefactModel->getQMLLayoutName() + QString("_Shader_")
+    return m_artefactModel->getQMLLayoutName() + QString("_Artefact_")
             + QVariant::fromValue(m_appId).toString();
 }
 
@@ -115,7 +115,7 @@ ArtefactModel::ArtefactModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "ShaderModel::ShaderModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ArtefactModel::ArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
     setAutoCreateChildrenModelsImpl(true);

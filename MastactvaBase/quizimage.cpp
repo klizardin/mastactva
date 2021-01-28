@@ -473,7 +473,7 @@ void QuizImage::addShadersToWaitDownload()
         m_shadersUrls.push_back(artefact->filename());
         if(nullptr != sf)
         {
-            sf->add(artefact->filename(), artefact->hash(), g_shadersRelPath);
+            sf->add(artefact->filename(), artefact->hash(), g_artefactsRelPath);
         }
     }
     updateStateIfDataIsReady();

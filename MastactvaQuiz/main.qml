@@ -58,18 +58,18 @@ ApplicationWindow {
     }
 
     // constant models
-    ShaderTypeModel {
-        id: shaderTypeModel
-        objectName: "ShaderTypeModel"
-        layoutQMLName: "ShaderTypeModel"
+    ArtefactTypeModel {
+        id: artefactTypeModel
+        objectName: "ArtefactTypeModel"
+        layoutQMLName: "ArtefactTypeModel"
         jsonParamsGet: false
         autoCreateChildrenModels: false
     }
 
-    ShaderArgTypeModel {
-        id: shaderArgTypeModel
-        objectName: "ShaderArgTypeModel"
-        layoutQMLName: "ShaderArgTypeModel"
+    ArtefactArgTypeModel {
+        id: artefactArgTypeModel
+        objectName: "ArtefactArgTypeModel"
+        layoutQMLName: "ArtefactArgTypeModel"
         jsonParamsGet: false
         autoCreateChildrenModels: false
     }
@@ -185,8 +185,8 @@ ApplicationWindow {
 
             quizUserModel.loadList()
             easingTypeModel.loadList()
-            shaderTypeModel.loadList()
-            shaderArgTypeModel.loadList()
+            artefactTypeModel.loadList()
+            artefactArgTypeModel.loadList()
         }
     }
 

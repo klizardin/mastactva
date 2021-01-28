@@ -1,5 +1,5 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef ARTEFACT_H
+#define ARTEFACT_H
 
 
 #include <QObject>
@@ -135,4 +135,4 @@ signals:
 };
 
 
-#endif // SHADER_H
+#endif // ARTEFACT_H

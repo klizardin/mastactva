@@ -61,17 +61,17 @@ void QMLObjects::searchObjects()
         ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
         registerModel(g_allImagesOfGalleryModel, m1);
     }
-    m = findListModel(g_shaderTypeModel);
+    m = findListModel(g_artefactTypeModel);
     if(nullptr == m)
     {
-        ArtefactTypeModel *m1 = m_root->findChild<ArtefactTypeModel *>(g_shaderTypeModel);
-        registerModel(g_shaderTypeModel, m1);
+        ArtefactTypeModel *m1 = m_root->findChild<ArtefactTypeModel *>(g_artefactTypeModel);
+        registerModel(g_artefactTypeModel, m1);
     }
-    m = findListModel(g_shaderArgTypeModel);
+    m = findListModel(g_artefactArgTypeModel);
     if(nullptr == m)
     {
-        ArtefactArgTypeModel *m1 = m_root->findChild<ArtefactArgTypeModel *>(g_shaderArgTypeModel);
-        registerModel(g_shaderArgTypeModel, m1);
+        ArtefactArgTypeModel *m1 = m_root->findChild<ArtefactArgTypeModel *>(g_artefactArgTypeModel);
+        registerModel(g_artefactArgTypeModel, m1);
     }
     m = findListModel(g_easingTypeModel);
     if(nullptr == m)

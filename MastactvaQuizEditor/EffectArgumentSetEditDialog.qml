@@ -79,7 +79,7 @@ Dialog {
             w = Math.max(w, effectArgumentSetFontMetrics.tightBoundingRect(easingTypeModel.itemAt(i).easingTypeType).width)
         }
         easingTypeListRect.width = w
-        easingTypeListRect.height = (effectArgumentSetFontMetrics.height + Constants.effectShaderTypeListSpacing) * shaderTypeModel.size() * 1.1
+        easingTypeListRect.height = (effectArgumentSetFontMetrics.height + Constants.effectShaderTypeListSpacing) * artefactTypeModel.size() * 1.1
 
         effectArgumentSetId.text = fieldEffectArgumentSet.effectArgSetId
         if(!easingTypeList.model.selectItemById(fieldEffectArgumentSet.effectArgSetEasingId))

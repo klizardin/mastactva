@@ -48,8 +48,8 @@ private:
     QString m_serverFilesOldRootDir;
     GalleryModel *m_galleryModel = nullptr;
     ImageModel *m_imageModel = nullptr;
-    ArtefactTypeModel *m_shaderTypeModel = nullptr;
-    ArtefactArgTypeModel *m_shaderArgTypeModel = nullptr;
+    ArtefactTypeModel *m_artefactTypeModel = nullptr;
+    ArtefactArgTypeModel *m_artefactArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
     UserStepModel *m_userStepModel = nullptr;
     QuizUserModel *m_quizUserModel = nullptr;

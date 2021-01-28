@@ -6,7 +6,7 @@ ArtefactType::ArtefactType(QObject *parent_)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "ShaderType::ShaderType()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ArtefactType::ArtefactType()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 }
 
@@ -39,7 +39,7 @@ ArtefactTypeModel::ArtefactTypeModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "ShaderTypeModel::ShaderTypeModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ArtefactTypeModel::ArtefactTypeModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
 }

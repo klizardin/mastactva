@@ -15,7 +15,7 @@ Dialog {
     property var fieldEffectShader: undefined
     property var fieldShader: undefined
     property var mastactva: undefined
-    property var shaderTypeModel: undefined
+    property var artefactTypeModel: undefined
 
     title: fieldNewItem ? qsTr("Add new shader") : qsTr("Edit shader info")
 
@@ -76,7 +76,7 @@ Dialog {
                     anchors.fill: parent
                     clip: true
                     spacing: Constants.effectShaderTypeListSpacing
-                    model: shaderTypeModel
+                    model: artefactTypeModel
                     delegate: shaderTypeItem
                     highlight: shaderTypeItemHighlight
                     highlightFollowsCurrentItem: false
@@ -129,12 +129,12 @@ Dialog {
     function init()
     {
         var w = 0
-        for(var i = 0; i < shaderTypeModel.size(); i++)
+        for(var i = 0; i < artefactTypeModel.size(); i++)
         {
-            w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(shaderTypeModel.itemAt(i).artefactTypeType).width)
+            w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(artefactTypeModel.itemAt(i).artefactTypeType).width)
         }
         editShaderTypeListRect.width = w
-        editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * shaderTypeModel.size() * 1.1
+        editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * artefactTypeModel.size() * 1.1
         editArtefactId.text = fieldShader.artefactId
         if(!editShaderTypeList.model.selectItemById(fieldShader.artefactTypeId))
         {
