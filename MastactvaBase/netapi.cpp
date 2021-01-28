@@ -123,7 +123,9 @@ QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_,
                                        const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(v2_); it != std::end(v2_); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(v2_));
+        it != std::end(qAsConst(v2_));
+        ++it)
     {
         if(v1_.contains(it.key()))
         {
@@ -134,7 +136,9 @@ QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_,
             res.insert(it.key(), it.value());
         }
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(v1_); it != std::end(v1_); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(v1_));
+        it != std::end(qAsConst(v1_));
+        ++it)
     {
         if(!v2_.contains(it.key()))
         {
@@ -366,7 +370,9 @@ static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
 MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &values_)
 {
     m_multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(values_); it != std::end(values_); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(values_));
+        it != std::end(qAsConst(values_));
+        ++it)
     {
         QObject * obj = qvariant_cast<QObject *>(it.value());
         QFile *f = qobject_cast<QFile*>(obj);
@@ -444,7 +450,9 @@ QHttpMultiPart *MultipartRequestData::getHttpMultiPart(bool releaseOwnship_ /*= 
 JsonRequestData::JsonRequestData(const QHash<QString, QVariant> &values_)
 {
     QJsonObject rec;
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(values_); it != std::end(values_); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(values_));
+        it != std::end(qAsConst(values_));
+        ++it)
     {
         rec.insert(it.key(), QJsonValue::fromVariant(it.value()));
     }

@@ -300,8 +300,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
-        it != std::end(extraFields)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(extraFields));
+        it != std::end(qAsConst(extraFields))
         ; ++it
         )
     {

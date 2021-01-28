@@ -438,7 +438,7 @@ ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
 void ImagePointModel::modelListLoaded(const QJsonDocument &reply_)
 {
     base::modelListLoaded(reply_);
-    for(ImagePoint *ip: m_data)
+    for(const ImagePoint *ip: qAsConst(m_data))
     {
         if(nullptr == ip) { continue; }
         ip->nextImage();
@@ -455,13 +455,13 @@ ImageModel *ImagePointModel::getImageModel()
     return m_parentImageModel;
 }
 
-ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_)
+const ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_) const
 {
     if(!isListLoadedImpl()) { return nullptr; }
 
-    ImagePoint *minIp = nullptr;
+    const ImagePoint *minIp = nullptr;
     qreal mind = 0.0;
-    for(ImagePoint *ip: m_data)
+    for(const ImagePoint *ip: qAsConst(m_data))
     {
         if(nullptr == ip) { continue; }
         ImagePointToNextImageModel *m = ip->getNextImage();
@@ -480,15 +480,15 @@ QVariant ImagePointModel::nextObjByCoords(qreal x_, qreal y_)
 {
     if(!isListLoadedImpl()) { return QVariant(); }
 
-    ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
-    return QVariant::fromValue(static_cast<QObject *>(nearIp));
+    const ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<ImagePoint *>(nearIp)));
 }
 
 bool ImagePointModel::isNextObjImageByCoords(qreal x_, qreal y_)
 {
     if(!isListLoadedImpl()) { return false; }
 
-    ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
+    const ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
     if(nullptr == nearIp) { return false; }
     return !nearIp->getNextImage()->isEmpty();
 }
@@ -497,7 +497,7 @@ bool ImagePointModel::isNextObjQuestionByCoords(qreal x_, qreal y_)
 {
     if(!isListLoadedImpl()) { return false; }
 
-    ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
+    const ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
     if(nullptr == nearIp) { return false; }
     ImagePointToQuestion* iptq = nearIp->getNextQuestion()->getCurrentDataItem();
     return nullptr != iptq && !iptq->getQuestions()->isEmpty();

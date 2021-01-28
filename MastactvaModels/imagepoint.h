@@ -368,7 +368,7 @@ public:
     ImageModel *getImageModel();
 
 protected:
-    ImagePoint *nextImagePointByCoords(qreal x_, qreal y_);
+    const ImagePoint *nextImagePointByCoords(qreal x_, qreal y_) const;
 
 public slots:
     void jsonResponseSlot(int errorCode_,

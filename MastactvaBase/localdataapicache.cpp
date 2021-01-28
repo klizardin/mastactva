@@ -287,8 +287,8 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(extraFields);
-        it != std::end(extraFields)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(extraFields));
+        it != std::end(qAsConst(extraFields))
         ; ++it
         )
     {
@@ -647,7 +647,9 @@ QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant>
                                                   const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(v2_); it != std::end(v2_); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(v2_));
+        it != std::end(qAsConst(v2_));
+        ++it)
     {
         if(v1_.contains(it.key()))
         {
@@ -658,7 +660,9 @@ QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant>
             res.insert(it.key(), it.value());
         }
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(v1_); it != std::end(v1_); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(v1_));
+        it != std::end(qAsConst(v1_));
+        ++it)
     {
         if(!v2_.contains(it.key()))
         {

@@ -613,7 +613,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_texMatrix2Id, m_texMatrix2);
     m_program->setUniformValue(m_opacitiId, float(inheritedOpacity()));
 
-    for(ArgumentInfo &ai: m_data.getArgumentsNC())
+    for(const ArgumentInfo &ai: qAsConst(m_data.getArgumentsNC()))
     {
         ai.setValue(m_program);
     }
