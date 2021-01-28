@@ -20,7 +20,7 @@ public:
     explicit EffectArtefact(EffectArtefactModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectArtefactEffectIdId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
+    Q_PROPERTY(int effectArtefactEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QVariant effectArtefactArtefact READ shader WRITE setShader NOTIFY shaderChanged)
 
     class DefaultLayout : public LayoutBase<EffectArtefact>
@@ -32,7 +32,7 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectArtefact::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefact::m_appId);
             addField<int>("id", "effectArtefactId", &EffectArtefact::id, &EffectArtefact::setId);
-            addField<int>("effect", "effectArtefactEffectIdId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
+            addField<int>("effect", "effectArtefactEffectId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
             addField<int>("shader", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
             addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_shaderModel, &EffectArtefact::createShaderModel);
             setIdField("id");
