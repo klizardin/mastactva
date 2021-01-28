@@ -56,19 +56,19 @@ void Effect::setDescription(const QString &description_)
 
 QVariant Effect::effectShaders() const
 {
-    if(nullptr == m_effectShadersModel)
+    if(nullptr == m_effectArtefactModel)
     {
-        const_cast<Effect *>(this)->m_effectShadersModel = const_cast<Effect *>(this)->createEffectShadersModel();
+        const_cast<Effect *>(this)->m_effectArtefactModel = const_cast<Effect *>(this)->createEffectShadersModel();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArtefactModel *>(m_effectShadersModel)));
+    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArtefactModel *>(m_effectArtefactModel)));
 }
 
 void Effect::setEffectShaders(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectShadersModel)
+    if(obj_.isNull() && nullptr != m_effectArtefactModel)
     {
-        delete m_effectShadersModel;
-        m_effectShadersModel = nullptr;
+        delete m_effectArtefactModel;
+        m_effectArtefactModel = nullptr;
 
         emit effectShadersChanged();
     }
@@ -175,22 +175,22 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
 bool Effect::startRefreshArguments()
 {
     qDebug() << "Effect::startRefreshArguments()";
-    if(nullptr == m_effectShadersModel
-            || !m_effectShadersModel->isListLoadedImpl()
+    if(nullptr == m_effectArtefactModel
+            || !m_effectArtefactModel->isListLoadedImpl()
             || nullptr == m_effectArgModel
             || !m_effectArgModel->isListLoadedImpl()
             ) { return false; }
 
     // get all shaders urls
-    const int shadersCnt = m_effectShadersModel->size();
+    const int shadersCnt = m_effectArtefactModel->size();
     QList<QPair<QString, QString>> urlHashPairs;
     for(int i = 0; i < shadersCnt; i++)
     {
-        EffectArtefact* m = m_effectShadersModel->dataItemAtImpl(i);
-        if(nullptr == m || nullptr == m->getShader() || !m->getShader()->isListLoadedImpl()) { return false; }
-        Artefact* shader = m->getShader()->dataItemAtImpl(0);
-        if(nullptr == shader) { return false; }
-        urlHashPairs.push_back({shader->getFilename(), shader->hash()});
+        EffectArtefact* m = m_effectArtefactModel->dataItemAtImpl(i);
+        if(nullptr == m || nullptr == m->getArtefact() || !m->getArtefact()->isListLoadedImpl()) { return false; }
+        Artefact* artefact = m->getArtefact()->dataItemAtImpl(0);
+        if(nullptr == artefact) { return false; }
+        urlHashPairs.push_back({artefact->getFilename(), artefact->hash()});
     }
     //for(const QPair<QString,QString> &url_: urlHashPairs)
     //{
@@ -484,12 +484,12 @@ bool Effect::isChildrenLoaded() const
 
 EffectArtefactModel *Effect::getEffectShaders()
 {
-    return m_effectShadersModel;
+    return m_effectArtefactModel;
 }
 
 const EffectArtefactModel *Effect::getEffectShaders() const
 {
-    return m_effectShadersModel;
+    return m_effectArtefactModel;
 }
 
 EffectArgModel *Effect::getEffectArguments()

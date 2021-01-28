@@ -41,7 +41,7 @@ public:
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
-            addModel<EffectArtefactModel>("effectShaders", &Effect::m_effectShadersModel, &Effect::createEffectShadersModel);
+            addModel<EffectArtefactModel>("effectShaders", &Effect::m_effectArtefactModel, &Effect::createEffectShadersModel);
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
             setIdField("id");
@@ -112,7 +112,7 @@ private:
     int m_id = -1;
     QString m_name;
     QString m_description;
-    EffectArtefactModel *m_effectShadersModel = nullptr;
+    EffectArtefactModel *m_effectArtefactModel = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;
 

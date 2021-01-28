@@ -215,36 +215,36 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
     {
         const EffectArtefact *effect_shader = shaders->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_shader);
-        const ArtefactModel *shaderModel = effect_shader->getShader();
-        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
-        const Artefact *shader = shaderModel->dataItemAtImpl(0);
+        const ArtefactModel *artefactModel = effect_shader->getArtefact();
+        Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoaded() && artefactModel->sizeImpl() > 0);
+        const Artefact *shader = artefactModel->dataItemAtImpl(0);
         Q_ASSERT(shader != nullptr);
 
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
         QString shaderText = ::loadTextFileByUrl(shader->filename());
 
-        ArtefactType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
-        Q_ASSERT(nullptr != shaderType &&
+        ArtefactType *artefactType = shaderTypeModel->findDataItemByIdImpl(shader->type());
+        Q_ASSERT(nullptr != artefactType &&
                     (
-                        g_shaderTypeVertex == shaderType->type() ||
-                        g_shaderTypeFragment == shaderType->type()
+                        g_shaderTypeVertex == artefactType->type() ||
+                        g_shaderTypeFragment == artefactType->type()
                     )
                 );
-        if(g_shaderTypeVertex == shaderType->type())
+        if(g_shaderTypeVertex == artefactType->type())
         {
             setVertexShader(shaderText);
         }
-        else if(g_shaderTypeFragment == shaderType->type())
+        else if(g_shaderTypeFragment == artefactType->type())
         {
             setFragmentShader(shaderText);
         }
     }
     initDefaultShaders();
 
-    ArtefactArgTypeModel *shaderArgTypeModel = static_cast<ArtefactArgTypeModel *>(
+    ArtefactArgTypeModel *artefactArgTypeModel = static_cast<ArtefactArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
                 );
-    Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
+    Q_ASSERT(nullptr != artefactArgTypeModel && artefactArgTypeModel->isListLoaded());
 
     clearArguments();
 
@@ -257,7 +257,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
         const EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effectArgument);
         ai.setName(effectArgument->name());
-        const ArtefactArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
+        const ArtefactArgType *argType = artefactArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
         Q_ASSERT(nullptr != argType);
         ai.setArgId(effectArgument->id());
         ai.setType(argType->type());

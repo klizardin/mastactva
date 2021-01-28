@@ -21310,7 +21310,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactEffectIdId",
+                        "name": "effectArtefactEffectId",
                         "notify": "effectIdChanged",
                         "read": "effectId",
                         "required": false,
@@ -21326,13 +21326,13 @@
                         "final": false,
                         "name": "effectArtefactArtefact",
                         "notify": "shaderChanged",
-                        "read": "shader",
+                        "read": "artefact",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "QVariant",
                         "user": false,
-                        "write": "setShader"
+                        "write": "setArtefact"
                     }
                 ],
                 "qualifiedClassName": "EffectArtefact",

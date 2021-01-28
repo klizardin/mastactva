@@ -465,15 +465,15 @@ void QuizImage::addShadersToWaitDownload()
     {
         EffectArtefact *effect_shader = shaders->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_shader);
-        ArtefactModel *shaderModel = effect_shader->getShader();
-        Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded()
-                && shaderModel->sizeImpl() > 0
+        ArtefactModel *artefactModel = effect_shader->getArtefact();
+        Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoaded()
+                && artefactModel->sizeImpl() > 0
                 );
-        Artefact *shader = shaderModel->dataItemAtImpl(0);
-        m_shadersUrls.push_back(shader->filename());
+        Artefact *artefact = artefactModel->dataItemAtImpl(0);
+        m_shadersUrls.push_back(artefact->filename());
         if(nullptr != sf)
         {
-            sf->add(shader->filename(), shader->hash(), g_shadersRelPath);
+            sf->add(artefact->filename(), artefact->hash(), g_shadersRelPath);
         }
     }
     updateStateIfDataIsReady();
