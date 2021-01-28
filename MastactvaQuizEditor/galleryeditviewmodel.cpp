@@ -2595,13 +2595,13 @@ VoronoyNode::VoronoyNode(const QVector<QVector2D> &points_, const QVector<qreal>
     m->state()->count = points_.size();
     m->state()->points.reserve(AppConsts::getInstance()->getMaxImagePoints());
     m->state()->points.clear();
-    for(const auto &pt : points_)
+    for(const auto &pt : qAsConst(points_))
     {
         m->state()->points.push_back(QVector2D(rect_.x() + pt.x() * rect_.width(), rect_.y() + pt.y() * rect_.height()));
     }
     m->state()->weights.reserve(AppConsts::getInstance()->getMaxImagePoints());
     m->state()->weights.clear();
-    for(const auto &w : weights_)
+    for(const auto &w : qAsConst(weights_))
     {
         m->state()->weights.push_back(w);
     }

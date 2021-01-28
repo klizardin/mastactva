@@ -216,7 +216,7 @@ void ServerFiles::cancel(const QStringList &urls_)
         download->cancel();
         toRemove.push_back(download);
     }
-    for(ServerFileDownload *download: toRemove)
+    for(ServerFileDownload *download: qAsConst(toRemove))
     {
         QObject::disconnect(download, SIGNAL(finished(ServerFileDownload *)),
                             this, SLOT(finished(ServerFileDownload *)));
@@ -237,7 +237,7 @@ void ServerFiles::reset()
         if(nullptr == download) { continue; }
         toRemove.push_back(download);
     }
-    for(ServerFileDownload *download: toRemove)
+    for(ServerFileDownload *download: qAsConst(toRemove))
     {
         QObject::disconnect(download, SIGNAL(finished(ServerFileDownload *)),
                             this, SLOT(finished(ServerFileDownload *)));

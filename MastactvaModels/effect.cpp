@@ -192,7 +192,7 @@ bool Effect::startRefreshArguments()
         if(nullptr == artefact) { return false; }
         urlHashPairs.push_back({artefact->getFilename(), artefact->hash()});
     }
-    //for(const QPair<QString,QString> &url_: urlHashPairs)
+    //for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     //{
     //    qDebug() << url_.first << ", " << url_.second;
     //}

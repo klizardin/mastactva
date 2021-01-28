@@ -84,7 +84,7 @@ void QMLObjects::searchObjects()
         MastactvaAPI *m1 = m_root->findChild<MastactvaAPI *>(g_mastactvaAPI);
         m_mastactvaAPI = m1;
     }
-    for(IListModel *m : m_models)
+    for(IListModel *m : qAsConst(m_models))
     {
         if(nullptr == m) { continue; }
         m->initResponse();

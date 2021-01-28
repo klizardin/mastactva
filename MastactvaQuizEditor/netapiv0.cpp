@@ -171,7 +171,7 @@ void MultiPartRequestDataV0::appendParts()
     {
         return;
     }
-    for(const QHttpPart& part : m_httpParts)
+    for(const QHttpPart& part : qAsConst(m_httpParts))
     {
         m_multiPart->append(part);
     }

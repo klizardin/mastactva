@@ -205,7 +205,7 @@ void QMLObjects::searchObjects()
         ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
         registerModel(g_allImagesOfGalleryModel, m1);
     }
-    for(IListModel *m : m_models)
+    for(IListModel *m : qAsConst(m_models))
     {
         if(nullptr == m) { continue; }
         m->initResponse();

@@ -1086,7 +1086,7 @@ QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
 
     QVector<Comment> comments;
     getShaderComments(shaderText, comments);
-    for(const Comment& comment : comments)
+    for(const Comment& comment : qAsConst(comments))
     {
         if(comment.values().contains(g_shaderName))
         {

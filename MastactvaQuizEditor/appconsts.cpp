@@ -272,12 +272,12 @@ void AppConsts::save() const
     QFile textFile(g_settingFileName);
     textFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
     QTextStream textStream(&textFile);
-    for(const auto &l : m_serverUrls)
+    for(const auto &l : qAsConst(m_serverUrls))
     {
         textStream << g_hostURLPrefix << l << "\n";
     }
     textStream << g_maxImagePointsPrefix << m_maxImagePoints << "\n";
-    for(const auto &c: m_colors)
+    for(const auto &c: qAsConst(m_colors))
     {
         textStream << g_colorsPrefix << c.x() << "," << c.y() << "," << c.z() << "\n";
     }
