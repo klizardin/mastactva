@@ -264,7 +264,7 @@ void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const Q
 QHash<QString, QVariant> ListModelBaseData::renameFields(const QHash<QString, QVariant> &src_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = src_.begin(); it != src_.end(); ++it)
+    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(src_)); it != std::end(qAsConst(src_)); ++it)
     {
         if(m_renames.contains(it.key()))
         {
