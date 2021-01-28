@@ -28,12 +28,12 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("effect-shader");
+            setLayoutJsonName("effect-artefact");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectArtefact::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefact::m_appId);
             addField<int>("id", "effectArtefactId", &EffectArtefact::id, &EffectArtefact::setId);
             addField<int>("effect", "effectArtefactEffectId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
-            addField<int>("shader", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
+            addField<int>("artefact", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
             addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_shaderModel, &EffectArtefact::createShaderModel);
             setIdField("id");
         }

@@ -23,7 +23,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("shader-arg-type");
+            setLayoutJsonName("artefact-arg-type");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ArtefactArgType::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactArgType::m_appId);
             addField<int>("id", "artefactArgTypeId", &ArtefactArgType::id, &ArtefactArgType::setId);
