@@ -8,7 +8,7 @@ EffectArtefact::EffectArtefact(EffectArtefactModel *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "EffectShader::EffectShader()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
-    m_effectShaderModel = parent_;
+    m_effectArtefactModel = parent_;
 }
 
 int EffectArtefact::id() const
@@ -43,9 +43,9 @@ int EffectArtefact::artefactId() const
 void EffectArtefact::setArtefactId(const int &artefactId_)
 {
     m_artefactId = artefactId_;
-    if(nullptr != m_shaderModel)
+    if(nullptr != m_artefactModel)
     {
-        m_shaderModel->parentItemChanged();
+        m_artefactModel->parentItemChanged();
     }
 
     emit shaderChanged();
@@ -53,47 +53,47 @@ void EffectArtefact::setArtefactId(const int &artefactId_)
 
 QVariant EffectArtefact::artefact() const
 {
-    if(nullptr == m_shaderModel)
+    if(nullptr == m_artefactModel)
     {
-        const_cast<EffectArtefact *>(this)->m_shaderModel = const_cast<EffectArtefact *>(this)
-                ->createShaderModel();
+        const_cast<EffectArtefact *>(this)->m_artefactModel = const_cast<EffectArtefact *>(this)
+                ->createArtefactModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
                                    const_cast<ArtefactModel *>(
-                                       m_shaderModel)
+                                       m_artefactModel)
                                    )
                                );
 }
 
 void EffectArtefact::setArtefact(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_shaderModel)
+    if(obj_.isNull() && nullptr != m_artefactModel)
     {
-        delete m_shaderModel;
-        m_shaderModel = nullptr;
+        delete m_artefactModel;
+        m_artefactModel = nullptr;
 
         emit shaderChanged();
     }
 }
 
-ArtefactModel *EffectArtefact::getShader()
+ArtefactModel *EffectArtefact::getArtefact()
 {
-    return m_shaderModel;
+    return m_artefactModel;
 }
 
-const ArtefactModel *EffectArtefact::getShader() const
+const ArtefactModel *EffectArtefact::getArtefact() const
 {
-    return m_shaderModel;
+    return m_artefactModel;
 }
 
-ArtefactModel *EffectArtefact::createShaderModel()
+ArtefactModel *EffectArtefact::createArtefactModel()
 {
     ArtefactModel *m = new ArtefactModel(this);
     m->initResponse();
-    m->setLayoutRefImpl("id", m_effectShaderModel->getQMLLayoutName(), "shader");
+    m->setLayoutRefImpl("id", m_effectArtefactModel->getQMLLayoutName(), "shader");
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectShaderModel->getQMLLayoutName() + QString("_EffectShader_") +
+    m->setLayoutQMLName(m_effectArtefactModel->getQMLLayoutName() + QString("_EffectShader_") +
                         QVariant::fromValue(m_appId).toString() + QString("_ShaderModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);

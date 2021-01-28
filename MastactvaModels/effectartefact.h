@@ -34,7 +34,7 @@ public:
             addField<int>("id", "effectArtefactId", &EffectArtefact::id, &EffectArtefact::setId);
             addField<int>("effect", "effectArtefactEffectId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
             addField<int>("artefact", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
-            addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_shaderModel, &EffectArtefact::createShaderModel);
+            addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_artefactModel, &EffectArtefact::createArtefactModel);
             setIdField("id");
         }
     };
@@ -49,11 +49,11 @@ public:
     void setEffectId(const int &effectId_);
     QVariant artefact() const;
     void setArtefact(const QVariant &obj_);
-    ArtefactModel *getShader();
-    const ArtefactModel *getShader() const;
+    ArtefactModel *getArtefact();
+    const ArtefactModel *getArtefact() const;
 
 protected:
-    ArtefactModel *createShaderModel();
+    ArtefactModel *createArtefactModel();
 
 signals:
     void idChanged();
@@ -61,13 +61,13 @@ signals:
     void shaderChanged();
 
 private:
-    EffectArtefactModel *m_effectShaderModel = nullptr;
+    EffectArtefactModel *m_effectArtefactModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
     int m_artefactId = -1;
-    ArtefactModel *m_shaderModel = nullptr;
+    ArtefactModel *m_artefactModel = nullptr;
 };
 
 
