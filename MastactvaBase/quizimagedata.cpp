@@ -1,8 +1,8 @@
 #include "quizimagedata.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
-#include "../MastactvaModels/shadertype.h"
-#include "../MastactvaModels/effectshader.h"
+#include "../MastactvaModels/artefacttype.h"
+#include "../MastactvaModels/effectartefact.h"
 #include "../MastactvaModels/effect.h"
 
 

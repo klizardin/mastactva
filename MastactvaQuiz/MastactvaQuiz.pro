@@ -97,10 +97,6 @@ unix: SOURCES += \
         effectargset.cpp  \
         effectargvalue.cpp    \
         effect.cpp    \
-        effectshader.cpp  \
-        shaderargtype.cpp \
-        shader.cpp    \
-        shadertype.cpp  \
         imagepointeffect.cpp    \
         localdata.cpp   \
         requestdata.cpp \
@@ -110,7 +106,11 @@ unix: SOURCES += \
         localdataapiviews.cpp   \
         gallerymodelview.cpp    \
         questionanswermodelview.cpp \
-        quizimagedata.cpp
+        quizimagedata.cpp   \
+        artefact.cpp    \
+        artefacttype.cpp    \
+        artefactargtype.cpp \
+        effectartefact.cpp
 
 
 RESOURCES += qml.qrc \
@@ -139,9 +139,9 @@ android {
     image_files.path = /assets/images/
     image_files.files = $$files($$PWD/../MastactvaData/images/*)
     INSTALLS += image_files
-    shader_files.path = /assets/shaders/
-    shader_files.files = $$files($$PWD/../MastactvaData/shaders/*)
-    INSTALLS += shader_files
+    artefacts_files.path = /assets/artefacts/
+    artefacts_files.files = $$files($$PWD/../MastactvaData/artefacts/*)
+    INSTALLS += artefacts_files
     dbase_files.path = /assets/
     dbase_files.files += $$PWD/../MastactvaData/mastactva_ro.db3
     dbase_files.files += $$PWD/../MastactvaData/mastactva_rw.db3
@@ -185,10 +185,6 @@ unix: HEADERS += \
     effectargset.h  \
     effectargvalue.h    \
     effect.h    \
-    effectshader.h  \
-    shaderargtype.h \
-    shader.h    \
-    shadertype.h    \
     imagepointeffect.h  \
     localdata.h \
     requestdata.h   \
@@ -199,7 +195,11 @@ unix: HEADERS += \
     gallerymodelview.h  \
     defines.h   \
     questionanswermodelview.h   \
-    quizimagedata.h
+    quizimagedata.h \
+    artefact.h  \
+    artefacttype.h    \
+    artefactargtype.h \
+    effectartefact.h
 
 
 DISTFILES += \
@@ -209,4 +209,3 @@ DISTFILES += \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
     todo.txt
-

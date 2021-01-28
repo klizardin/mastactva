@@ -112,9 +112,9 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 
 
 #include "../MastactvaModels/effect.h"
-#include "../MastactvaModels/shadertype.h"
-#include "../MastactvaModels/shader.h"
-#include "../MastactvaModels/shaderargtype.h"
+#include "../MastactvaModels/artefacttype.h"
+#include "../MastactvaModels/artefact.h"
+#include "../MastactvaModels/artefactargtype.h"
 #include "../MastactvaModels/easingtype.h"
 #include "../MastactvaModels/gallery.h"
 #include "../MastactvaModels/image.h"

@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "artefact.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"

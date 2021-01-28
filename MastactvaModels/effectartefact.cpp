@@ -1,4 +1,4 @@
-#include "effectshader.h"
+#include "effectartefact.h"
 #include "../MastactvaBase/defines.h"
 
 

@@ -1,4 +1,4 @@
-#include "shaderargtype.h"
+#include "artefactargtype.h"
 #include "../MastactvaBase/defines.h"
 
 

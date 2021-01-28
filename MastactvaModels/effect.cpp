@@ -4,7 +4,7 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/effectarg.h"
-#include "../MastactvaModels/shader.h"
+#include "../MastactvaModels/artefact.h"
 #include "../MastactvaBase/defines.h"
 
 

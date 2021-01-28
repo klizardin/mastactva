@@ -80,10 +80,6 @@ unix: HEADERS += \
         effectarg.h \
         effectargset.h \
         effectargvalue.h \
-        effectshader.h \
-        shader.h \
-        shaderargtype.h \
-        shadertype.h    \
         utils.h \
         netappconsts.h \
         IModel.h   \
@@ -113,7 +109,11 @@ unix: HEADERS += \
         localdataapiviews.h \
         quizuser.h  \
         defines.h   \
-        quizimagedata.h
+        quizimagedata.h \
+        artefact.h    \
+        artefacttype.h    \
+        artefactargtype.h \
+        effectartefact.h
 
 
 SOURCES += \
@@ -131,10 +131,6 @@ unix: SOURCES += \
         effectarg.cpp \
         effectargset.cpp \
         effectargvalue.cpp \
-        effectshader.cpp \
-        shader.cpp \
-        shaderargtype.cpp \
-        shadertype.cpp  \
         utils.cpp  \
         netappconsts.cpp  \
         IModel.cpp \
@@ -162,7 +158,11 @@ unix: SOURCES += \
         dbrequestinfo.cpp   \
         localdataapiviews.cpp   \
         quizuser.cpp    \
-        quizimagedata.cpp
+        quizimagedata.cpp   \
+        artefact.cpp    \
+        artefacttype.cpp    \
+        artefactargtype.cpp \
+        effectartefact.cpp
 
 
 RESOURCES += qml.qrc    \
@@ -230,4 +230,3 @@ DISTFILES += \
     todo.txt
 
 ANDROID_ABIS = armeabi-v7a
-
