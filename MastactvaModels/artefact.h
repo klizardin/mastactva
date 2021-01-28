@@ -10,36 +10,36 @@
 #include "../MastactvaModels/artefacttype.h"
 
 
-class ShaderModel;
+class ArtefactModel;
 
 
-class Shader : public QObject, protected IListModelInfoObjectImpl
+class Artefact : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 public:
-    explicit Shader(ShaderModel *parent_ = nullptr);
+    explicit Artefact(ArtefactModel *parent_ = nullptr);
 
-    Q_PROPERTY(int shaderId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(QString shaderFilename READ filename WRITE setFilename NOTIFY filenameChanged)
-    Q_PROPERTY(QString shaderHash READ hash WRITE setHash NOTIFY hashChanged)
-    Q_PROPERTY(int shaderTypeId READ type WRITE setType NOTIFY typeChanged)
-    Q_PROPERTY(QString shaderDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(int artefactId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString artefactFilename READ filename WRITE setFilename NOTIFY filenameChanged)
+    Q_PROPERTY(QString artefactHash READ hash WRITE setHash NOTIFY hashChanged)
+    Q_PROPERTY(int artefactTypeId READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(QString artefactDescription READ description WRITE setDescription NOTIFY descriptionChanged)
 
 
-    class DefaultLayout : public LayoutBase<Shader>
+    class DefaultLayout : public LayoutBase<Artefact>
     {
     public:
         DefaultLayout()
         {
             setLayoutJsonName("shader");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Shader::m_parentModelInfo);
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Shader::m_objectModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &Shader::m_appId);
-            addField<int>("id", "shaderId", &Shader::id, &Shader::setId);
-            addField<ImageSource>("filename", "shaderFilename", &Shader::getFilename, &Shader::setFilename);
-            addField<QString>("hash", "shaderHash", &Shader::hash, &Shader::setHash);
-            addField<int>("type", "shaderTypeId", &Shader::type, &Shader::setType);
-            addField<QString>("description", "shaderDescription", &Shader::description, &Shader::setDescription);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Artefact::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Artefact::m_objectModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &Artefact::m_appId);
+            addField<int>("id", "artefactId", &Artefact::id, &Artefact::setId);
+            addField<ImageSource>("filename", "artefactFilename", &Artefact::getFilename, &Artefact::setFilename);
+            addField<QString>("hash", "artefactHash", &Artefact::hash, &Artefact::setHash);
+            addField<int>("type", "artefactTypeId", &Artefact::type, &Artefact::setType);
+            addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
             setIdField("id");
         }
     };
@@ -80,20 +80,20 @@ private:
     QString m_hash;
     int m_typeId = -1;
     QString m_description;
-    ShaderModel *m_shaderModel = nullptr;
+    ArtefactModel *m_shaderModel = nullptr;
 };
 
 
-class ShaderModel : public ListModelBaseOfData<Shader, ShaderModel>
+class ArtefactModel : public ListModelBaseOfData<Artefact, ArtefactModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<Shader, ShaderModel>;
+    using base = ListModelBaseOfData<Artefact, ArtefactModel>;
 
 public:
-    explicit ShaderModel(QObject *parent_ = nullptr);
+    explicit ArtefactModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

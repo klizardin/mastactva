@@ -188,7 +188,7 @@ bool Effect::startRefreshArguments()
     {
         EffectShader* m = m_effectShadersModel->dataItemAtImpl(i);
         if(nullptr == m || nullptr == m->getShader() || !m->getShader()->isListLoadedImpl()) { return false; }
-        Shader* shader = m->getShader()->dataItemAtImpl(0);
+        Artefact* shader = m->getShader()->dataItemAtImpl(0);
         if(nullptr == shader) { return false; }
         urlHashPairs.push_back({shader->getFilename(), shader->hash()});
     }

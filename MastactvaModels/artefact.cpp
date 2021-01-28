@@ -5,7 +5,7 @@
 #include "../MastactvaBase/defines.h"
 
 
-Shader::Shader(ShaderModel *parent_ /* = nullptr*/)
+Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
@@ -15,58 +15,58 @@ Shader::Shader(ShaderModel *parent_ /* = nullptr*/)
     m_objectModelInfo = this;
 }
 
-int Shader::id() const
+int Artefact::id() const
 {
     return m_id;
 }
 
-void Shader::setId(const int &id_)
+void Artefact::setId(const int &id_)
 {
     m_id = id_;
 
     emit idChanged();
 }
 
-QString Shader::filename() const
+QString Artefact::filename() const
 {
     return getFilename();
 }
 
-ImageSource Shader::getFilename() const
+ImageSource Artefact::getFilename() const
 {
     return m_filename;
 }
 
-void Shader::setFilename(const QString &filename_)
+void Artefact::setFilename(const QString &filename_)
 {
     setFilename(ImageSource(filename_));
 }
 
-void Shader::setFilename(const ImageSource &filename_)
+void Artefact::setFilename(const ImageSource &filename_)
 {
     m_filename = filename_;
 
     emit filenameChanged();
 }
 
-QString Shader::hash() const
+QString Artefact::hash() const
 {
     return m_hash;
 }
 
-void Shader::setHash(const QString &hash_)
+void Artefact::setHash(const QString &hash_)
 {
     m_hash = hash_;
 
     emit hashChanged();
 }
 
-int Shader::type() const
+int Artefact::type() const
 {
     return m_typeId;
 }
 
-void Shader::setType(const int &type_)
+void Artefact::setType(const int &type_)
 {
     if(m_typeId == type_) { return; }
     m_typeId = type_;
@@ -74,19 +74,19 @@ void Shader::setType(const int &type_)
     emit typeChanged();
 }
 
-QString Shader::description() const
+QString Artefact::description() const
 {
     return m_description;
 }
 
-void Shader::setDescription(const QString &description_)
+void Artefact::setDescription(const QString &description_)
 {
     m_description = description_;
 
     emit descriptionChanged();
 }
 
-void Shader::loadChildrenVF()
+void Artefact::loadChildrenVF()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
@@ -94,7 +94,7 @@ void Shader::loadChildrenVF()
     IListModelInfoObjectImpl::loadChildrenVF();
 }
 
-void Shader::objectLoadedVF()
+void Artefact::objectLoadedVF()
 {
     IListModelInfoObjectImpl::objectLoadedVF();
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
@@ -104,14 +104,14 @@ void Shader::objectLoadedVF()
     }
 }
 
-QString Shader::getObjectName() const
+QString Artefact::getObjectName() const
 {
     return m_shaderModel->getQMLLayoutName() + QString("_Shader_")
             + QVariant::fromValue(m_appId).toString();
 }
 
 
-ShaderModel::ShaderModel(QObject *parent_ /*= nullptr*/)
+ArtefactModel::ArtefactModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)

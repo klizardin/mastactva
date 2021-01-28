@@ -15,7 +15,7 @@ class ShaderType : public QObject
 public:
     explicit ShaderType(QObject *parent_ = nullptr);
 
-    Q_PROPERTY(int shaderTypeId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int artefactTypeId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString shaderTypeType READ type WRITE setType NOTIFY typeChanged)
 
     class DefaultLayout : public LayoutBase<ShaderType>
@@ -26,7 +26,7 @@ public:
             setLayoutJsonName("shader-type");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ShaderType::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &ShaderType::m_appId);
-            addField<int>("id", "shaderTypeId", &ShaderType::id, &ShaderType::setId);
+            addField<int>("id", "artefactTypeId", &ShaderType::id, &ShaderType::setId);
             addField<QString>("type", "shaderTypeType", &ShaderType::type, &ShaderType::setType);
             setIdField("id");
         }

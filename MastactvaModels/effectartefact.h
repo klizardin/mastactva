@@ -19,7 +19,7 @@ class EffectShader : public QObject
 public:
     explicit EffectShader(EffectShaderModel *parent_ = nullptr);
 
-    Q_PROPERTY(int effectShaderId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectShaderEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QVariant effectShaderShader READ shader WRITE setShader NOTIFY shaderChanged)
 
@@ -31,16 +31,16 @@ public:
             setLayoutJsonName("effect-shader");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectShader::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectShader::m_appId);
-            addField<int>("id", "effectShaderId", &EffectShader::id, &EffectShader::setId);
+            addField<int>("id", "effectArtefactId", &EffectShader::id, &EffectShader::setId);
             addField<int>("effect", "effectShaderEffectId", &EffectShader::effectId, &EffectShader::setEffectId);
-            addField<int>("shader", "", &EffectShader::shaderId, &EffectShader::setShaderId);
-            addModel<ShaderModel>("effectShaderShader", &EffectShader::m_shaderModel, &EffectShader::createShaderModel);
+            addField<int>("shader", "", &EffectShader::artefactId, &EffectShader::setArtefactId);
+            addModel<ArtefactModel>("effectShaderShader", &EffectShader::m_shaderModel, &EffectShader::createShaderModel);
             setIdField("id");
         }
     };
 
-    Q_INVOKABLE int shaderId() const;
-    Q_INVOKABLE void setShaderId(const int &shaderId_);
+    Q_INVOKABLE int artefactId() const;
+    Q_INVOKABLE void setArtefactId(const int &artefactId_);
 
 public:
     int id() const;
@@ -49,11 +49,11 @@ public:
     void setEffectId(const int &effectId_);
     QVariant shader() const;
     void setShader(const QVariant &obj_);
-    ShaderModel *getShader();
-    const ShaderModel *getShader() const;
+    ArtefactModel *getShader();
+    const ArtefactModel *getShader() const;
 
 protected:
-    ShaderModel *createShaderModel();
+    ArtefactModel *createShaderModel();
 
 signals:
     void idChanged();
@@ -66,8 +66,8 @@ private:
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
-    int m_shaderId = -1;
-    ShaderModel *m_shaderModel = nullptr;
+    int m_artefactId = -1;
+    ArtefactModel *m_shaderModel = nullptr;
 };
 
 

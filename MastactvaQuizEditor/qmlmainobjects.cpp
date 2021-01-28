@@ -138,7 +138,7 @@ void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const 
 }
 
 static const char *g_effectModel = "EffectModel";
-static const char *g_shaderModel = "ShaderModel";
+static const char *g_artefactModel = "ArtefactModel";
 
 
 void QMLObjects::searchObjects()
@@ -175,11 +175,11 @@ void QMLObjects::searchObjects()
         ShaderTypeModel *m1 = m_root->findChild<ShaderTypeModel *>(g_shaderTypeModel);
         registerModel(g_shaderTypeModel, m1);
     }
-    m = findListModel(g_shaderModel);
+    m = findListModel(g_artefactModel);
     if(nullptr == m)
     {
-        ShaderModel *m1 = m_root->findChild<ShaderModel *>(g_shaderModel);
-        registerModel(g_shaderModel, m1);
+        ArtefactModel *m1 = m_root->findChild<ArtefactModel *>(g_artefactModel);
+        registerModel(g_artefactModel, m1);
     }
     m = findListModel(g_shaderArgTypeModel);
     if(nullptr == m)

@@ -18969,14 +18969,14 @@
     {
         "classes": [
             {
-                "className": "Shader",
+                "className": "Artefact",
                 "object": true,
                 "properties": [
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderId",
+                        "name": "artefactId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -18990,7 +18990,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderFilename",
+                        "name": "artefactFilename",
                         "notify": "filenameChanged",
                         "read": "filename",
                         "required": false,
@@ -19004,7 +19004,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderHash",
+                        "name": "artefactHash",
                         "notify": "hashChanged",
                         "read": "hash",
                         "required": false,
@@ -19018,7 +19018,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderTypeId",
+                        "name": "artefactTypeId",
                         "notify": "typeChanged",
                         "read": "type",
                         "required": false,
@@ -19032,7 +19032,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderDescription",
+                        "name": "artefactDescription",
                         "notify": "descriptionChanged",
                         "read": "description",
                         "required": false,
@@ -19043,7 +19043,7 @@
                         "write": "setDescription"
                     }
                 ],
-                "qualifiedClassName": "Shader",
+                "qualifiedClassName": "Artefact",
                 "signals": [
                     {
                         "access": "public",
@@ -19089,7 +19089,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "ShaderModel",
+                "className": "ArtefactModel",
                 "methods": [
                     {
                         "access": "public",
@@ -19609,7 +19609,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "ShaderModel",
+                "qualifiedClassName": "ArtefactModel",
                 "signals": [
                     {
                         "access": "public",
@@ -19766,7 +19766,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<Shader,ShaderModel>"
+                        "name": "ListModelBaseOfData<Artefact,ArtefactModel>"
                     }
                 ]
             }
@@ -19784,7 +19784,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderTypeId",
+                        "name": "artefactTypeId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -21275,18 +21275,18 @@
                 "methods": [
                     {
                         "access": "public",
-                        "name": "shaderId",
+                        "name": "artefactId",
                         "returnType": "int"
                     },
                     {
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "shaderId_",
+                                "name": "artefactId_",
                                 "type": "int"
                             }
                         ],
-                        "name": "setShaderId",
+                        "name": "setArtefactId",
                         "returnType": "void"
                     }
                 ],
@@ -21296,7 +21296,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectShaderId",
+                        "name": "effectArtefactId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,

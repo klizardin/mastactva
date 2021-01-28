@@ -85,7 +85,7 @@ Dialog {
                     Text {
                         id: shaderItemType
                         width: Constants.smallDialogWidth - shaderItemTypeLabel
-                        text: shaderTypeModel.findItemById(shaderTypeId) !== null ? shaderTypeModel.findItemById(shaderTypeId).shaderTypeType : ""
+                        text: shaderTypeModel.findItemById(artefactTypeId) !== null ? shaderTypeModel.findItemById(artefactTypeId).shaderTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -99,7 +99,7 @@ Dialog {
                     Text {
                         id: shaderItemFilename
                         width: Constants.smallDialogWidth - shaderItemFilenameLabel.width
-                        text: shaderFilename
+                        text: artefactFilename
                         wrapMode: Text.Wrap
                     }
                 }
@@ -113,7 +113,7 @@ Dialog {
                     Text {
                         id: shaderItemHash
                         width: Constants.smallDialogWidth - shaderItemHashLabel.width
-                        text: shaderHash
+                        text: artefactHash
                         wrapMode: Text.Wrap
                     }
                 }
@@ -121,7 +121,7 @@ Dialog {
                 Text {
                     id: shaderItemDescriptionText
                     width: Constants.smallDialogWidth
-                    text: showFullDescription ? mastactva.leftDoubleCR(shaderDescription) : mastactva.readMore(shaderDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(artefactDescription) : mastactva.readMore(artefactDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
                     wrapMode: Text.WordWrap
                 }
             }

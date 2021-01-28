@@ -31,8 +31,8 @@ Dialog {
         selectMultiple: false
 
         onAccepted: {
-            editShaderFilename.text = fileUrl
-            editShaderHash.text = mastactva.calculateHash(fileUrl)
+            editArtefactFilename.text = fileUrl
+            editArtefactHash.text = mastactva.calculateHash(fileUrl)
             editShaderDescription.text = mastactva.getShaderDescription(fileUrl)
         }
 
@@ -42,8 +42,8 @@ Dialog {
     }
 
     FontMetrics{
-        id: editShaderFilenameFontMetrics
-        font: editShaderFilename.font
+        id: editArtafactFilenameFontMetrics
+        font: editArtefactFilename.font
     }
 
 
@@ -60,7 +60,7 @@ Dialog {
                     text: qsTr("Id : ")
                 }
                 Text {
-                    id: editShaderID
+                    id: editArtefactId
                 }
             }
             Label {
@@ -87,7 +87,7 @@ Dialog {
             }
             Row {
                 TextField {
-                    id: editShaderFilename
+                    id: editArtefactFilename
                     placeholderText: qsTr("Enter shader filename")
                     readOnly: true
                     focus: true
@@ -106,7 +106,7 @@ Dialog {
                 text: qsTr("Hash  : ")
             }
             TextField {
-                id: editShaderHash
+                id: editArtefactHash
                 placeholderText: qsTr("Shader hash value")
                 readOnly: true
                 focus: true
@@ -121,7 +121,7 @@ Dialog {
                 placeholderText: qsTr("Enter shader description")
                 focus: true
                 KeyNavigation.priority: KeyNavigation.BeforeItem
-                KeyNavigation.backtab: editShaderHash
+                KeyNavigation.backtab: editArtefactHash
             }
         }
     }
@@ -131,32 +131,32 @@ Dialog {
         var w = 0
         for(var i = 0; i < shaderTypeModel.size(); i++)
         {
-            w = Math.max(w, editShaderFilenameFontMetrics.tightBoundingRect(shaderTypeModel.itemAt(i).shaderTypeType).width)
+            w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(shaderTypeModel.itemAt(i).shaderTypeType).width)
         }
         editShaderTypeListRect.width = w
-        editShaderTypeListRect.height = (editShaderFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * shaderTypeModel.size() * 1.1
-        editShaderID.text = fieldShader.shaderId
-        if(!editShaderTypeList.model.selectItemById(fieldShader.shaderTypeId))
+        editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * shaderTypeModel.size() * 1.1
+        editArtefactId.text = fieldShader.artefactId
+        if(!editShaderTypeList.model.selectItemById(fieldShader.artefactTypeId))
         {
             editShaderTypeList.currentIndex = 0
             editShaderTypeList.model.currentIndex = 0
-            fieldShader.shaderTypeId = editShaderTypeList.model.getCurrentItem().shaderTypeId
+            fieldShader.artefactTypeId = editShaderTypeList.model.getCurrentItem().artefactTypeId
         }
         else
         {
             editShaderTypeList.currentIndex = editShaderTypeList.model.currentIndex
         }
-        editShaderFilename.text = fieldShader.shaderFilename
-        editShaderHash.text = fieldShader.shaderHash
-        editShaderDescription.text = fieldShader.shaderDescription
+        editArtefactFilename.text = fieldShader.artefactFilename
+        editArtefactHash.text = fieldShader.artefactHash
+        editShaderDescription.text = fieldShader.artefactDescription
     }
 
     function update()
     {
-        //fieldShader.shaderTypeId = editShaderTypeList.currentItem.shaderTypeId
-        fieldShader.shaderFilename = editShaderFilename.text
-        fieldShader.shaderHash = editShaderHash.text
-        fieldShader.shaderDescription = editShaderDescription.text
+        //fieldShader.artefactTypeId = editShaderTypeList.currentItem.artefactTypeId
+        fieldShader.artefactFilename = editArtefactFilename.text
+        fieldShader.artefactHash = editArtefactHash.text
+        fieldShader.artefactDescription = editShaderDescription.text
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
@@ -176,7 +176,7 @@ Dialog {
                 onClicked:
                 {
                     editShaderTypeList.currentIndex = index
-                    fieldShader.shaderTypeId = shaderTypeId
+                    fieldShader.artefactTypeId = artefactTypeId
                     mouse.accepted = false
                 }
             }

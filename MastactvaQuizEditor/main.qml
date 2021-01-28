@@ -1240,7 +1240,7 @@ ApplicationWindow {
         function shaderAdded()
         {
             fieldEffectShader.effectShaderShader.itemAdded.disconnect(shaderAdded)
-            fieldEffectShader.setShaderId(fieldShader.shaderId)
+            fieldEffectShader.setArtefactId(fieldShader.artefactId)
             fieldShader = undefined
             effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
             effectShadersCurrentModel.addItem(fieldEffectShader)
@@ -1265,7 +1265,7 @@ ApplicationWindow {
             if(fieldShader !== undefined && fieldShader !== null && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
                 var newEffectShader = effectShadersCurrentModel.createItem()
-                newEffectShader.setShaderId(fieldShader.shaderId)
+                newEffectShader.setArtefactId(fieldShader.artefactId)
                 newEffectShader.effectShaderEffectId = effectModel.getCurrentItem().effectId
                 fieldShader = undefined
                 effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
@@ -2752,7 +2752,7 @@ ApplicationWindow {
                 var effectShader = effectShadersCurrentModel.itemAt(effectShaderCurrentIndex).effectShaderShader.currentItem
                 if(effectShader !== undefined && effectShader !== null)
                 {
-                    confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.shaderFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
+                    confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.artefactFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
                     confirmDialog.showImage = false
                     connectConfirmDialog()
                     confirmDialog.open()
@@ -4553,7 +4553,7 @@ ApplicationWindow {
                     Text {
                         id: effectShaderItemType
                         width: effectShadersList.width - effectShaderItemTypeLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.shaderTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.shaderTypeId).shaderTypeType : ""
+                        text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.artefactTypeId).shaderTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4568,7 +4568,7 @@ ApplicationWindow {
                     Text {
                         id: effectShaderItemFilename
                         width: effectShadersList.width - effectShaderItemFilenameLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null ? shaderItem.shaderFilename : ""
+                        text: shaderItem !== undefined && shaderItem !== null ? shaderItem.artefactFilename : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4583,7 +4583,7 @@ ApplicationWindow {
                     Text {
                         id: effectShaderItemHash
                         width: effectShadersList.width - effectShaderItemHashLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderHash : ""
+                        text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.artefactHash : ""
                         wrapMode: Text.Wrap
                     }
                 }

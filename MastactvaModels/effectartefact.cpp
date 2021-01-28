@@ -35,14 +35,14 @@ void EffectShader::setEffectId(const int &effectId_)
     emit effectIdChanged();
 }
 
-int EffectShader::shaderId() const
+int EffectShader::artefactId() const
 {
-    return m_shaderId;
+    return m_artefactId;
 }
 
-void EffectShader::setShaderId(const int &shaderId_)
+void EffectShader::setArtefactId(const int &artefactId_)
 {
-    m_shaderId = shaderId_;
+    m_artefactId = artefactId_;
     if(nullptr != m_shaderModel)
     {
         m_shaderModel->parentItemChanged();
@@ -59,7 +59,7 @@ QVariant EffectShader::shader() const
                 ->createShaderModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
-                                   const_cast<ShaderModel *>(
+                                   const_cast<ArtefactModel *>(
                                        m_shaderModel)
                                    )
                                );
@@ -76,19 +76,19 @@ void EffectShader::setShader(const QVariant &obj_)
     }
 }
 
-ShaderModel *EffectShader::getShader()
+ArtefactModel *EffectShader::getShader()
 {
     return m_shaderModel;
 }
 
-const ShaderModel *EffectShader::getShader() const
+const ArtefactModel *EffectShader::getShader() const
 {
     return m_shaderModel;
 }
 
-ShaderModel *EffectShader::createShaderModel()
+ArtefactModel *EffectShader::createShaderModel()
 {
-    ShaderModel *m = new ShaderModel(this);
+    ArtefactModel *m = new ArtefactModel(this);
     m->initResponse();
     m->setLayoutRefImpl("id", m_effectShaderModel->getQMLLayoutName(), "shader");
     m->setCurrentRef("id");

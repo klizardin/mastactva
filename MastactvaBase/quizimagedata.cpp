@@ -215,9 +215,9 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
     {
         const EffectShader *effect_shader = shaders->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_shader);
-        const ShaderModel *shaderModel = effect_shader->getShader();
+        const ArtefactModel *shaderModel = effect_shader->getShader();
         Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded() && shaderModel->sizeImpl() > 0);
-        const Shader *shader = shaderModel->dataItemAtImpl(0);
+        const Artefact *shader = shaderModel->dataItemAtImpl(0);
         Q_ASSERT(shader != nullptr);
 
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
