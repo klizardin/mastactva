@@ -80,7 +80,7 @@ private:
     QString m_hash;
     int m_typeId = -1;
     QString m_description;
-    ArtefactModel *m_shaderModel = nullptr;
+    ArtefactModel *m_artefactModel = nullptr;
 };
 
 

@@ -11,7 +11,7 @@ Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "Shader::Shader()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
-    m_shaderModel = parent_;
+    m_artefactModel = parent_;
     m_objectModelInfo = this;
 }
 
@@ -106,7 +106,7 @@ void Artefact::objectLoadedVF()
 
 QString Artefact::getObjectName() const
 {
-    return m_shaderModel->getQMLLayoutName() + QString("_Shader_")
+    return m_artefactModel->getQMLLayoutName() + QString("_Shader_")
             + QVariant::fromValue(m_appId).toString();
 }
 
