@@ -252,7 +252,7 @@ void Effect::refreshArgumentsProgressSlot()
 void Effect::applyRefreshArguments()
 {
     QList<EffectArg *> newArguments;
-    ShaderArgTypeModel *argTypesModel = static_cast<ShaderArgTypeModel *>(
+    ArtefactArgTypeModel *argTypesModel = static_cast<ArtefactArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel("ShaderArgTypeModel")
                 );
     Q_ASSERT(nullptr != argTypesModel);
@@ -284,8 +284,8 @@ void Effect::applyRefreshArguments()
             const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
             const QString argDescription = comment.values().value(g_descriptionName, QString()).trimmed();
             //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
-            ShaderArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl(
-                        "shaderArgTypeType",
+            ArtefactArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl(
+                        "artefactArgTypeType",
                         QVariant::fromValue(argTypeStr)
                         );
             Q_ASSERT(nullptr != shaderArgType);

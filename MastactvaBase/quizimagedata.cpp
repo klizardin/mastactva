@@ -241,7 +241,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
     }
     initDefaultShaders();
 
-    ShaderArgTypeModel *shaderArgTypeModel = static_cast<ShaderArgTypeModel *>(
+    ArtefactArgTypeModel *shaderArgTypeModel = static_cast<ArtefactArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_shaderArgTypeModel)
                 );
     Q_ASSERT(nullptr != shaderArgTypeModel && shaderArgTypeModel->isListLoaded());
@@ -257,7 +257,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
         const EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effectArgument);
         ai.setName(effectArgument->name());
-        const ShaderArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
+        const ArtefactArgType *argType = shaderArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
         Q_ASSERT(nullptr != argType);
         ai.setArgId(effectArgument->id());
         ai.setType(argType->type());

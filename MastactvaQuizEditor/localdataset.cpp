@@ -67,7 +67,7 @@ void LocalDataSet::create()
     m_shaderTypeModel->registerListModel();
     m_shaderTypeModel->setAutoCreateChildrenModels(true);
 
-    m_shaderArgTypeModel = new ShaderArgTypeModel(this);
+    m_shaderArgTypeModel = new ArtefactArgTypeModel(this);
     m_shaderArgTypeModel->initResponse();
     m_shaderArgTypeModel->setCurrentRef("");
     m_shaderArgTypeModel->setLayoutQMLName("LocalData_ShaderArgTypeModel");

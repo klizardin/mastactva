@@ -20524,14 +20524,14 @@
     {
         "classes": [
             {
-                "className": "ShaderArgType",
+                "className": "ArtefactArgType",
                 "object": true,
                 "properties": [
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderArgTypeId",
+                        "name": "artefactArgTypeId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -20545,7 +20545,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderArgTypeType",
+                        "name": "artefactArgTypeType",
                         "notify": "typeChanged",
                         "read": "type",
                         "required": false,
@@ -20556,7 +20556,7 @@
                         "write": "setType"
                     }
                 ],
-                "qualifiedClassName": "ShaderArgType",
+                "qualifiedClassName": "ArtefactArgType",
                 "signals": [
                     {
                         "access": "public",
@@ -20583,7 +20583,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "ShaderArgTypeModel",
+                "className": "ArtefactArgTypeModel",
                 "methods": [
                     {
                         "access": "public",
@@ -21103,7 +21103,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "ShaderArgTypeModel",
+                "qualifiedClassName": "ArtefactArgTypeModel",
                 "signals": [
                     {
                         "access": "public",
@@ -21260,7 +21260,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<ShaderArgType,ShaderArgTypeModel>"
+                        "name": "ListModelBaseOfData<ArtefactArgType,ArtefactArgTypeModel>"
                     }
                 ]
             }

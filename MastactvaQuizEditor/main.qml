@@ -4673,7 +4673,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentsItemType
                         width: effectArgumentsList.width - effectArgumentsItemTypeLabel.width
-                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).shaderArgTypeType : ""
+                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).artefactArgTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4873,7 +4873,7 @@ ApplicationWindow {
                 target: effectArgValueArg
                 function onListReloaded()
                 {
-                    effectArgumentSetValuesItemArgType.text = shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType
+                    effectArgumentSetValuesItemArgType.text = shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType
                     effectArgumentSetValuesItemArgName.text = effectArgValueArg.currentItem.effectArgName
                     effectArgumentSetValuesItemArgDefaultValue.text = effectArgValueArg.currentItem.effectArgDefaultValue
                 }
@@ -4892,7 +4892,7 @@ ApplicationWindow {
                     Text {
                         id: effectArgumentSetValuesItemArgType
                         width: effectArgumentSetValuesList.width - effectArgumentSetValuesItemArgTypeLabel.width
-                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).shaderArgTypeType : "" : ""
+                        text: effectArgValueArg.isListLoaded() && effectArgValueArg.currentItem !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgValueArg.currentItem.effectArgArgTypeId).artefactArgTypeType : "" : ""
                         wrapMode: Text.Wrap
                     }
                 }

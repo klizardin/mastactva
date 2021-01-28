@@ -9,25 +9,25 @@
 #include "../MastactvaBase/Model.h"
 
 
-class ShaderArgType : public QObject
+class ArtefactArgType : public QObject
 {
     Q_OBJECT
 public:
-    explicit ShaderArgType(QObject *parent_ = nullptr);
+    explicit ArtefactArgType(QObject *parent_ = nullptr);
 
-    Q_PROPERTY(int shaderArgTypeId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(QString shaderArgTypeType READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(int artefactArgTypeId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString artefactArgTypeType READ type WRITE setType NOTIFY typeChanged)
 
-    class DefaultLayout : public LayoutBase<ShaderArgType>
+    class DefaultLayout : public LayoutBase<ArtefactArgType>
     {
     public:
         DefaultLayout()
         {
             setLayoutJsonName("shader-arg-type");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ShaderArgType::m_parentModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &ShaderArgType::m_appId);
-            addField<int>("id", "shaderArgTypeId", &ShaderArgType::id, &ShaderArgType::setId);
-            addField<QString>("type", "shaderArgTypeType", &ShaderArgType::type, &ShaderArgType::setType);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ArtefactArgType::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactArgType::m_appId);
+            addField<int>("id", "artefactArgTypeId", &ArtefactArgType::id, &ArtefactArgType::setId);
+            addField<QString>("type", "artefactArgTypeType", &ArtefactArgType::type, &ArtefactArgType::setType);
             setIdField("id");
         }
     };
@@ -50,16 +50,16 @@ private:
 };
 
 
-class ShaderArgTypeModel : public ListModelBaseOfData<ShaderArgType, ShaderArgTypeModel>
+class ArtefactArgTypeModel : public ListModelBaseOfData<ArtefactArgType, ArtefactArgTypeModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<ShaderArgType, ShaderArgTypeModel>;
+    using base = ListModelBaseOfData<ArtefactArgType, ArtefactArgTypeModel>;
 
 public:
-    explicit ShaderArgTypeModel(QObject *parent_ = nullptr);
+    explicit ArtefactArgTypeModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

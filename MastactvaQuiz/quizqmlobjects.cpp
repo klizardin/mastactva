@@ -70,7 +70,7 @@ void QMLObjects::searchObjects()
     m = findListModel(g_shaderArgTypeModel);
     if(nullptr == m)
     {
-        ShaderArgTypeModel *m1 = m_root->findChild<ShaderArgTypeModel *>(g_shaderArgTypeModel);
+        ArtefactArgTypeModel *m1 = m_root->findChild<ArtefactArgTypeModel *>(g_shaderArgTypeModel);
         registerModel(g_shaderArgTypeModel, m1);
     }
     m = findListModel(g_easingTypeModel);

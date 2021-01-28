@@ -9,7 +9,7 @@
 class GalleryModel;
 class ImageModel;
 class ShaderTypeModel;
-class ShaderArgTypeModel;
+class ArtefactArgTypeModel;
 class EasingTypeModel;
 class UserStepModel;
 class QuizUserModel;
@@ -49,7 +49,7 @@ private:
     GalleryModel *m_galleryModel = nullptr;
     ImageModel *m_imageModel = nullptr;
     ShaderTypeModel *m_shaderTypeModel = nullptr;
-    ShaderArgTypeModel *m_shaderArgTypeModel = nullptr;
+    ArtefactArgTypeModel *m_shaderArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
     UserStepModel *m_userStepModel = nullptr;
     QuizUserModel *m_quizUserModel = nullptr;

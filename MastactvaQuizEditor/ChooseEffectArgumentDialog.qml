@@ -110,7 +110,7 @@ Dialog {
                     Text {
                         id: effectArgumentsItemType
                         width: effectArgumentsList.width - effectArgumentsItemTypeLabel.width
-                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).shaderArgTypeType : ""
+                        text: shaderArgTypeModel.findItemById(effectArgArgTypeId) !== null ? shaderArgTypeModel.findItemById(effectArgArgTypeId).artefactArgTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
