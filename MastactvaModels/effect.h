@@ -25,7 +25,7 @@ public:
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectDescription READ description WRITE setDescription NOTIFY descriptionChanged)
-    Q_PROPERTY(QVariant effectShaders READ effectShaders WRITE setEffectShaders NOTIFY effectShadersChanged)
+    Q_PROPERTY(QVariant effectArtefacts READ effectArtefacts WRITE setEffectArtefacts NOTIFY effectShadersChanged)
     Q_PROPERTY(QVariant effectArgs READ args WRITE setArgs NOTIFY argsChanged)
     Q_PROPERTY(QVariant effectArgSets READ argSets WRITE setArgSets NOTIFY argSetsChanged)
 
@@ -41,7 +41,7 @@ public:
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
-            addModel<EffectArtefactModel>("effectShaders", &Effect::m_effectArtefactModel, &Effect::createEffectShadersModel);
+            addModel<EffectArtefactModel>("effectArtefacts", &Effect::m_effectArtefactModel, &Effect::createEffectShadersModel);
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
             setIdField("id");
@@ -55,16 +55,16 @@ public:
     void setName(const QString &name_);
     QString description() const;
     void setDescription(const QString &description_);
-    QVariant effectShaders() const;
-    void setEffectShaders(const QVariant &obj_);
+    QVariant effectArtefacts() const;
+    void setEffectArtefacts(const QVariant &obj_);
     QVariant args() const;
     void setArgs(const QVariant &obj_);
     QVariant argSets() const;
     void setArgSets(const QVariant &obj_);
 
 public:
-    EffectArtefactModel *getEffectShaders();
-    const EffectArtefactModel *getEffectShaders() const;
+    EffectArtefactModel *getEffectArtefacts();
+    const EffectArtefactModel *getEffectArtefacts() const;
     EffectArgModel *getEffectArguments();
     const EffectArgModel *getEffectArguments() const;
 

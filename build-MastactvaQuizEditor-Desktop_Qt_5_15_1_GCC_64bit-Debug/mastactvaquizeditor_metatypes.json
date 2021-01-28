@@ -4190,15 +4190,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectShaders",
+                        "name": "effectArtefacts",
                         "notify": "effectShadersChanged",
-                        "read": "effectShaders",
+                        "read": "effectArtefacts",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "QVariant",
                         "user": false,
-                        "write": "setEffectShaders"
+                        "write": "setEffectArtefacts"
                     },
                     {
                         "constant": false,

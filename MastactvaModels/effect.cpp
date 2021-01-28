@@ -54,7 +54,7 @@ void Effect::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
-QVariant Effect::effectShaders() const
+QVariant Effect::effectArtefacts() const
 {
     if(nullptr == m_effectArtefactModel)
     {
@@ -63,7 +63,7 @@ QVariant Effect::effectShaders() const
     return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArtefactModel *>(m_effectArtefactModel)));
 }
 
-void Effect::setEffectShaders(const QVariant &obj_)
+void Effect::setEffectArtefacts(const QVariant &obj_)
 {
     if(obj_.isNull() && nullptr != m_effectArtefactModel)
     {
@@ -483,12 +483,12 @@ bool Effect::isChildrenLoaded() const
     return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
-EffectArtefactModel *Effect::getEffectShaders()
+EffectArtefactModel *Effect::getEffectArtefacts()
 {
     return m_effectArtefactModel;
 }
 
-const EffectArtefactModel *Effect::getEffectShaders() const
+const EffectArtefactModel *Effect::getEffectArtefacts() const
 {
     return m_effectArtefactModel;
 }

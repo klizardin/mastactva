@@ -280,7 +280,7 @@ ApplicationWindow {
                 var effect = effectModel.getCurrentItem()
                 effectInfoCommonName.text = effect.effectName
                 effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
-                var shadersModel = effect.effectShaders
+                var shadersModel = effect.effectArtefacts
                 if(shadersModel.isListLoaded())
                 {
                     effectShadersListBusyIndicator.visible = false
@@ -351,7 +351,7 @@ ApplicationWindow {
             effectShadersListBusyIndicator.running = false
 
             var effect = effectModel.getCurrentItem()
-            var shadersModel = effect.effectShaders
+            var shadersModel = effect.effectArtefacts
             shadersModel.listReloaded.disconnect(shadersListReloaded)
             if(shadersModel.isListLoaded())
             {
@@ -2725,10 +2725,10 @@ ApplicationWindow {
         onTriggered: {
             if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
-                if(effectShadersCurrentModel.effectShaders.size() > 0 && effectShaderCurrentIndex >= 0)
+                if(effectShadersCurrentModel.effectArtefacts.size() > 0 && effectShaderCurrentIndex >= 0)
                 {
                     var effectShader = effectShadersCurrentModel
-                    var shader = effectShadersCurrentModel.effectShaders.getCurrentItem()
+                    var shader = effectShadersCurrentModel.effectArtefacts.getCurrentItem()
                     shaderEditDialog.fieldEffectShader = effectShader
                     shaderEditDialog.fieldShader = shader
                     shaderEditDialog.fieldNewItem = false

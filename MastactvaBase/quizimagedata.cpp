@@ -209,7 +209,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
 
     setShaders(QString(), QString());
 
-    const EffectArtefactModel *shaders = effect_->getEffectShaders();
+    const EffectArtefactModel *shaders = effect_->getEffectArtefacts();
     Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
     for(int i = 0; i < shaders->sizeImpl(); ++i)
     {
