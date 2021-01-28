@@ -466,7 +466,7 @@ public:
 
     void initQMLModelRoleNames(QHash<int, QByteArray> &roleNames_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *layoutItem: m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *layoutItem: qAsConst(m_fields))
         {
             if(nullptr == layoutItem || !layoutItem->isQMLItem()) { continue; }
             QString name = layoutItem->getQMLName();
@@ -491,7 +491,7 @@ public:
 
     void createQMLValues(const DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(item->isQMLItem())
             {
@@ -524,7 +524,7 @@ public:
     bool getJsonValues(const DataType_ *obj_, QHash<QString, QVariant> &values_) const
     {
         bool ret = false;
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(!item->isJsonItem()) { continue; }
             values_[item->getJsonName()] = item->getValue(obj_, false);
@@ -536,7 +536,7 @@ public:
     bool setJsonValues(DataType_ *obj_, const QHash<QString, QVariant> &values_) const
     {
         bool ret = false;
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(!item->isJsonItem()) { continue; }
             if(!values_.contains(item->getJsonName())) { continue; }
@@ -584,7 +584,7 @@ public:
 
     QString getIdFieldJsonName() const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(item->isIdField() && item->isJsonItem())
             {
@@ -596,7 +596,7 @@ public:
 
     QVariant getIdJsonValue(const DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(item->isIdField() && item->isJsonItem())
             {
@@ -609,7 +609,7 @@ public:
     void getJsonFieldsInfo(QList<QPair<QString, layout::JsonTypesEn>> &fieldsInfo_) const
     {
         fieldsInfo_.clear();
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(item->isJsonItem())
             {
@@ -620,7 +620,7 @@ public:
 
     QVariant getSpecialFieldValue(layout::SpecialFieldEn type_, const DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(item->getType() == type_)
@@ -633,7 +633,7 @@ public:
 
     bool setSpecialFieldValue(layout::SpecialFieldEn type_, const QVariant &value_, DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(item->getType() == type_)
@@ -666,7 +666,7 @@ public:
     bool copyQMLFields(const DataType_ *from_, DataType_ *to_) const
     {
         bool ret = false;
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(item->autoCreated())
@@ -688,7 +688,7 @@ protected:
     bool setJsonValuesTempl(DataType_ *obj_, const JsonType_ &jsonObj_) const
     {
         bool ret = false;
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(!item->isJsonItem()) { continue; }
@@ -760,7 +760,7 @@ protected:
     template<typename JsonType_>
     void setJsonValues(DataType_ *obj_, const JsonType_ &jsonObj_)
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : m_fields)
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
             if(!item->isJsonItem()) { continue; }
             QJsonValue jv = jsonObj_[item->getJsonName()];
