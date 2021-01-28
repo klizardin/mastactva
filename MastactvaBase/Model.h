@@ -704,7 +704,7 @@ public:
     bool sortByFieldsImpl(const QStringList &fields_, bool saveSelection_)
     {
         bool res = false;
-        for(const QString &field : fields_)
+        for(const QString &field : qAsConst(fields_))
         {
             if(g_randSort == field)
             {
@@ -977,11 +977,11 @@ protected:
     {
         QVector<const DataType_ *> toRemove;
         toRemove.reserve(m_data.size());
-        for(const DataType_ * item: m_data)
+        for(const DataType_ * item: qAsConst(m_data))
         {
             if(!op_(item)) { toRemove.push_back(item); }
         }
-        for(const DataType_ * item: toRemove)
+        for(const DataType_ * item: qAsConst(toRemove))
         {
             removeItem(item);
         }
@@ -1036,7 +1036,7 @@ protected:
     {
         idsVariant_.clear();
         idsVariant_.reserve(idsInt_.size());
-        for(int id : idsInt_)
+        for(int id : qAsConst(idsInt_))
         {
             idsVariant_.push_back(id);
         }
@@ -1103,14 +1103,14 @@ protected:
             autoLoadDataItem();
         }
         loaded.clear();
-        for(DataType_ *item : m_data)
+        for(const DataType_ *item : qAsConst(m_data))
         {
             autoLoadDataItem(item);
         }
         sortByFieldsImpl(getSortFieldsImpl(), true);
         setListLoaded();
 #if defined(TRACE_LIST_LOAD_DATA)
-        for(const DataType_ *i: m_data)
+        for(const DataType_ *i: qAsConst(m_data))
         {
             QHash<QString, QVariant> values;
             getDataLayout<DataType_>().getJsonValues(i, values);
