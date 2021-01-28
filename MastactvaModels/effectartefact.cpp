@@ -51,7 +51,7 @@ void EffectArtefact::setArtefactId(const int &artefactId_)
     emit shaderChanged();
 }
 
-QVariant EffectArtefact::shader() const
+QVariant EffectArtefact::artefact() const
 {
     if(nullptr == m_shaderModel)
     {
@@ -65,7 +65,7 @@ QVariant EffectArtefact::shader() const
                                );
 }
 
-void EffectArtefact::setShader(const QVariant &obj_)
+void EffectArtefact::setArtefact(const QVariant &obj_)
 {
     if(obj_.isNull() && nullptr != m_shaderModel)
     {

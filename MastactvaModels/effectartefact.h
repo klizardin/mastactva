@@ -21,7 +21,7 @@ public:
 
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArtefactEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
-    Q_PROPERTY(QVariant effectArtefactArtefact READ shader WRITE setShader NOTIFY shaderChanged)
+    Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY shaderChanged)
 
     class DefaultLayout : public LayoutBase<EffectArtefact>
     {
@@ -47,8 +47,8 @@ public:
     void setId(const int &id_);
     int effectId() const;
     void setEffectId(const int &effectId_);
-    QVariant shader() const;
-    void setShader(const QVariant &obj_);
+    QVariant artefact() const;
+    void setArtefact(const QVariant &obj_);
     ArtefactModel *getShader();
     const ArtefactModel *getShader() const;
 
