@@ -131,7 +131,7 @@ Dialog {
         var w = 0
         for(var i = 0; i < shaderTypeModel.size(); i++)
         {
-            w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(shaderTypeModel.itemAt(i).shaderTypeType).width)
+            w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(shaderTypeModel.itemAt(i).artefactTypeType).width)
         }
         editShaderTypeListRect.width = w
         editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * shaderTypeModel.size() * 1.1
@@ -167,7 +167,7 @@ Dialog {
         Text {
             id: shaderTypeItemType
             width: editShaderTypeListRect.width
-            text: shaderTypeType
+            text: artefactTypeType
 
             MouseArea {
                 anchors.fill: parent

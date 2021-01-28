@@ -85,7 +85,7 @@ Dialog {
                     Text {
                         id: shaderItemType
                         width: Constants.smallDialogWidth - shaderItemTypeLabel
-                        text: shaderTypeModel.findItemById(artefactTypeId) !== null ? shaderTypeModel.findItemById(artefactTypeId).shaderTypeType : ""
+                        text: shaderTypeModel.findItemById(artefactTypeId) !== null ? shaderTypeModel.findItemById(artefactTypeId).artefactTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }

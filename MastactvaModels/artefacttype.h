@@ -9,25 +9,25 @@
 #include "../MastactvaBase/Model.h"
 
 
-class ShaderType : public QObject
+class ArtefactType : public QObject
 {
     Q_OBJECT
 public:
-    explicit ShaderType(QObject *parent_ = nullptr);
+    explicit ArtefactType(QObject *parent_ = nullptr);
 
     Q_PROPERTY(int artefactTypeId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(QString shaderTypeType READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(QString artefactTypeType READ type WRITE setType NOTIFY typeChanged)
 
-    class DefaultLayout : public LayoutBase<ShaderType>
+    class DefaultLayout : public LayoutBase<ArtefactType>
     {
     public:
         DefaultLayout()
         {
             setLayoutJsonName("shader-type");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ShaderType::m_parentModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &ShaderType::m_appId);
-            addField<int>("id", "artefactTypeId", &ShaderType::id, &ShaderType::setId);
-            addField<QString>("type", "shaderTypeType", &ShaderType::type, &ShaderType::setType);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ArtefactType::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactType::m_appId);
+            addField<int>("id", "artefactTypeId", &ArtefactType::id, &ArtefactType::setId);
+            addField<QString>("type", "artefactTypeType", &ArtefactType::type, &ArtefactType::setType);
             setIdField("id");
         }
     };
@@ -50,16 +50,16 @@ private:
 };
 
 
-class ShaderTypeModel : public ListModelBaseOfData<ShaderType, ShaderTypeModel>
+class ArtefactTypeModel : public ListModelBaseOfData<ArtefactType, ArtefactTypeModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<ShaderType, ShaderTypeModel>;
+    using base = ListModelBaseOfData<ArtefactType, ArtefactTypeModel>;
 
 public:
-    explicit ShaderTypeModel(QObject *parent_ = nullptr);
+    explicit ArtefactTypeModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

@@ -16620,7 +16620,7 @@
     {
         "classes": [
             {
-                "className": "ShaderType",
+                "className": "ArtefactType",
                 "object": true,
                 "properties": [
                     {
@@ -16641,7 +16641,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "shaderTypeType",
+                        "name": "artefactTypeType",
                         "notify": "typeChanged",
                         "read": "type",
                         "required": false,
@@ -16652,7 +16652,7 @@
                         "write": "setType"
                     }
                 ],
-                "qualifiedClassName": "ShaderType",
+                "qualifiedClassName": "ArtefactType",
                 "signals": [
                     {
                         "access": "public",
@@ -16679,7 +16679,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "ShaderTypeModel",
+                "className": "ArtefactTypeModel",
                 "methods": [
                     {
                         "access": "public",
@@ -17199,7 +17199,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "ShaderTypeModel",
+                "qualifiedClassName": "ArtefactTypeModel",
                 "signals": [
                     {
                         "access": "public",
@@ -17356,7 +17356,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<ShaderType,ShaderTypeModel>"
+                        "name": "ListModelBaseOfData<ArtefactType,ArtefactTypeModel>"
                     }
                 ]
             }

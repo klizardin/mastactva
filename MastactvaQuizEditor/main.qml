@@ -4553,7 +4553,7 @@ ApplicationWindow {
                     Text {
                         id: effectShaderItemType
                         width: effectShadersList.width - effectShaderItemTypeLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.artefactTypeId).shaderTypeType : ""
+                        text: shaderItem !== undefined && shaderItem !== null  && shaderTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? shaderTypeModel.findItemById(shaderItem.artefactTypeId).artefactTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }

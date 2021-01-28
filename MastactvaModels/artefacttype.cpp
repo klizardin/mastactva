@@ -2,7 +2,7 @@
 #include "../MastactvaBase/defines.h"
 
 
-ShaderType::ShaderType(QObject *parent_)
+ArtefactType::ArtefactType(QObject *parent_)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
@@ -10,24 +10,24 @@ ShaderType::ShaderType(QObject *parent_)
 #endif
 }
 
-int ShaderType::id() const
+int ArtefactType::id() const
 {
     return m_id;
 }
 
-void ShaderType::setId(const int &id_)
+void ArtefactType::setId(const int &id_)
 {
     m_id = id_;
 
     emit idChanged();
 }
 
-QString ShaderType::type() const
+QString ArtefactType::type() const
 {
     return m_type;
 }
 
-void ShaderType::setType(const QString &type_)
+void ArtefactType::setType(const QString &type_)
 {
     m_type = type_;
 
@@ -35,7 +35,7 @@ void ShaderType::setType(const QString &type_)
 }
 
 
-ShaderTypeModel::ShaderTypeModel(QObject *parent_ /*= nullptr*/)
+ArtefactTypeModel::ArtefactTypeModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)

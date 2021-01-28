@@ -200,7 +200,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
     }
 
     // read shaders files
-    ShaderTypeModel *shaderTypeModel = static_cast<ShaderTypeModel *>(
+    ArtefactTypeModel *shaderTypeModel = static_cast<ArtefactTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_shaderTypeModel)
                 );
     Q_ASSERT(nullptr != shaderTypeModel && shaderTypeModel->sizeImpl() > 0);
@@ -223,7 +223,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
         Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
         QString shaderText = ::loadTextFileByUrl(shader->filename());
 
-        ShaderType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
+        ArtefactType *shaderType = shaderTypeModel->findDataItemByIdImpl(shader->type());
         Q_ASSERT(nullptr != shaderType &&
                     (
                         g_shaderTypeVertex == shaderType->type() ||

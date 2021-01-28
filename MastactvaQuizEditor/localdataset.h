@@ -8,7 +8,7 @@
 
 class GalleryModel;
 class ImageModel;
-class ShaderTypeModel;
+class ArtefactTypeModel;
 class ArtefactArgTypeModel;
 class EasingTypeModel;
 class UserStepModel;
@@ -48,7 +48,7 @@ private:
     QString m_serverFilesOldRootDir;
     GalleryModel *m_galleryModel = nullptr;
     ImageModel *m_imageModel = nullptr;
-    ShaderTypeModel *m_shaderTypeModel = nullptr;
+    ArtefactTypeModel *m_shaderTypeModel = nullptr;
     ArtefactArgTypeModel *m_shaderArgTypeModel = nullptr;
     EasingTypeModel *m_easingTypeModel = nullptr;
     UserStepModel *m_userStepModel = nullptr;

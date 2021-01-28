@@ -59,7 +59,7 @@ void LocalDataSet::create()
     m_imageModel->registerListModel();
     m_imageModel->setAutoCreateChildrenModels(true);           // TODO: find way to upload images of gallery when it is required
 
-    m_shaderTypeModel = new ShaderTypeModel(this);
+    m_shaderTypeModel = new ArtefactTypeModel(this);
     m_shaderTypeModel->initResponse();
     m_shaderTypeModel->setCurrentRef("");
     m_shaderTypeModel->setLayoutQMLName("LocalData_ShaderTypeModel");
