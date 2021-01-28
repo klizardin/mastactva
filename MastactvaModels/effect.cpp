@@ -260,7 +260,8 @@ void Effect::applyRefreshArguments()
     // read comments from shaders files
     // get file, form commens list
     // form arguments data
-    for(const QString &localUrl : m_shaderLocalUrls.values())
+    const QStringList localUrls = m_shaderLocalUrls.values();
+    for(const QString &localUrl : qAsConst(localUrls))
     {
         const QUrl url(localUrl);
         const QString filename = url.toLocalFile();
@@ -348,7 +349,7 @@ void Effect::applyRefreshArguments()
     m_itemsToSet.clear();
     m_itemsToDel.clear();
     m_itemsToAdd.clear();
-    for(EffectArg *newArg: newArguments)
+    for(EffectArg *newArg: qAsConst(newArguments))
     {
         EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
                     "effectArgName",
