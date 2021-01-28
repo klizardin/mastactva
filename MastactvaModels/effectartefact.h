@@ -10,31 +10,31 @@
 #include "../MastactvaModels/artefact.h"
 
 
-class EffectShaderModel;
+class EffectArtefactModel;
 
 
-class EffectShader : public QObject
+class EffectArtefact : public QObject
 {
     Q_OBJECT
 public:
-    explicit EffectShader(EffectShaderModel *parent_ = nullptr);
+    explicit EffectArtefact(EffectArtefactModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectShaderEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
-    Q_PROPERTY(QVariant effectShaderShader READ shader WRITE setShader NOTIFY shaderChanged)
+    Q_PROPERTY(int effectArtefactEffectIdId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
+    Q_PROPERTY(QVariant effectArtefactArtefact READ shader WRITE setShader NOTIFY shaderChanged)
 
-    class DefaultLayout : public LayoutBase<EffectShader>
+    class DefaultLayout : public LayoutBase<EffectArtefact>
     {
     public:
         DefaultLayout()
         {
             setLayoutJsonName("effect-shader");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectShader::m_parentModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &EffectShader::m_appId);
-            addField<int>("id", "effectArtefactId", &EffectShader::id, &EffectShader::setId);
-            addField<int>("effect", "effectShaderEffectId", &EffectShader::effectId, &EffectShader::setEffectId);
-            addField<int>("shader", "", &EffectShader::artefactId, &EffectShader::setArtefactId);
-            addModel<ArtefactModel>("effectShaderShader", &EffectShader::m_shaderModel, &EffectShader::createShaderModel);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectArtefact::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefact::m_appId);
+            addField<int>("id", "effectArtefactId", &EffectArtefact::id, &EffectArtefact::setId);
+            addField<int>("effect", "effectArtefactEffectIdId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
+            addField<int>("shader", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
+            addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_shaderModel, &EffectArtefact::createShaderModel);
             setIdField("id");
         }
     };
@@ -61,7 +61,7 @@ signals:
     void shaderChanged();
 
 private:
-    EffectShaderModel *m_effectShaderModel = nullptr;
+    EffectArtefactModel *m_effectShaderModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
@@ -71,16 +71,16 @@ private:
 };
 
 
-class EffectShaderModel : public ListModelBaseOfData<EffectShader, EffectShaderModel>
+class EffectArtefactModel : public ListModelBaseOfData<EffectArtefact, EffectArtefactModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectShader, EffectShaderModel>;
+    using base = ListModelBaseOfData<EffectArtefact, EffectArtefactModel>;
 
 public:
-    explicit EffectShaderModel(QObject *parent_ = nullptr);
+    explicit EffectArtefactModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

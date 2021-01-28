@@ -21271,7 +21271,7 @@
     {
         "classes": [
             {
-                "className": "EffectShader",
+                "className": "EffectArtefact",
                 "methods": [
                     {
                         "access": "public",
@@ -21310,7 +21310,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectShaderEffectId",
+                        "name": "effectArtefactEffectIdId",
                         "notify": "effectIdChanged",
                         "read": "effectId",
                         "required": false,
@@ -21324,7 +21324,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectShaderShader",
+                        "name": "effectArtefactArtefact",
                         "notify": "shaderChanged",
                         "read": "shader",
                         "required": false,
@@ -21335,7 +21335,7 @@
                         "write": "setShader"
                     }
                 ],
-                "qualifiedClassName": "EffectShader",
+                "qualifiedClassName": "EffectArtefact",
                 "signals": [
                     {
                         "access": "public",
@@ -21367,7 +21367,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "EffectShaderModel",
+                "className": "EffectArtefactModel",
                 "methods": [
                     {
                         "access": "public",
@@ -21887,7 +21887,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "EffectShaderModel",
+                "qualifiedClassName": "EffectArtefactModel",
                 "signals": [
                     {
                         "access": "public",
@@ -22044,7 +22044,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectShader,EffectShaderModel>"
+                        "name": "ListModelBaseOfData<EffectArtefact,EffectArtefactModel>"
                     }
                 ]
             }

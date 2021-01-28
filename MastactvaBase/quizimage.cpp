@@ -459,11 +459,11 @@ void QuizImage::addShadersToWaitDownload()
     m_shadersUrls.clear();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
 
-    EffectShaderModel *shaders = m_effect->getEffectShaders();
+    EffectArtefactModel *shaders = m_effect->getEffectShaders();
     Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
     for(int i = 0; i < shaders->sizeImpl(); i++)
     {
-        EffectShader *effect_shader = shaders->dataItemAtImpl(i);
+        EffectArtefact *effect_shader = shaders->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_shader);
         ArtefactModel *shaderModel = effect_shader->getShader();
         Q_ASSERT(nullptr != shaderModel && shaderModel->isListLoaded()

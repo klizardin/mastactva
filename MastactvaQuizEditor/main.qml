@@ -1203,7 +1203,7 @@ ApplicationWindow {
         onOpened: {
             if(fieldEffectShader !== undefined && fieldEffectShader !== null)
             {
-                fieldEffectShader.effectShaderEffectId = effectModel.getCurrentItem().effectId
+                fieldEffectShader.effectArtefactEffectId = effectModel.getCurrentItem().effectId
             }
             init()
         }
@@ -1214,13 +1214,13 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    fieldEffectShader.effectShaderShader.itemAdded.connect(shaderAdded)
-                    fieldEffectShader.effectShaderShader.addItem(fieldShader)
+                    fieldEffectShader.effectArtefactArtefact.itemAdded.connect(shaderAdded)
+                    fieldEffectShader.effectArtefactArtefact.addItem(fieldShader)
                 }
                 else
                 {
-                    fieldEffectShader.effectShaderShader.itemSet.connect(shaderItemSet)
-                    fieldEffectShader.effectShaderShader.setItem(effectShaderCurrentIndex, fieldShader)
+                    fieldEffectShader.effectArtefactArtefact.itemSet.connect(shaderItemSet)
+                    fieldEffectShader.effectArtefactArtefact.setItem(effectShaderCurrentIndex, fieldShader)
                 }
             }
         }
@@ -1232,14 +1232,14 @@ ApplicationWindow {
 
         function shaderItemSet()
         {
-            fieldEffectShader.effectShaderShader.itemSet.disconnect(shaderItemSet)
+            fieldEffectShader.effectArtefactArtefact.itemSet.disconnect(shaderItemSet)
             fieldShader = undefined
             fieldEffectShader = undefined
         }
 
         function shaderAdded()
         {
-            fieldEffectShader.effectShaderShader.itemAdded.disconnect(shaderAdded)
+            fieldEffectShader.effectArtefactArtefact.itemAdded.disconnect(shaderAdded)
             fieldEffectShader.setArtefactId(fieldShader.artefactId)
             fieldShader = undefined
             effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
@@ -1266,7 +1266,7 @@ ApplicationWindow {
             {
                 var newEffectShader = effectShadersCurrentModel.createItem()
                 newEffectShader.setArtefactId(fieldShader.artefactId)
-                newEffectShader.effectShaderEffectId = effectModel.getCurrentItem().effectId
+                newEffectShader.effectArtefactEffectId = effectModel.getCurrentItem().effectId
                 fieldShader = undefined
                 effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
                 effectShadersCurrentModel.addItem(newEffectShader)
@@ -2698,7 +2698,7 @@ ApplicationWindow {
             if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
                 var newEffectShader = effectShadersCurrentModel.createItem()
-                var newShader = newEffectShader.effectShaderShader.createItem()
+                var newShader = newEffectShader.effectArtefactArtefact.createItem()
 
                 shaderEditDialog.fieldEffectShader = newEffectShader
                 shaderEditDialog.fieldShader = newShader
@@ -2749,7 +2749,7 @@ ApplicationWindow {
         {
             if(effectShaderCurrentIndex >= 0 && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
             {
-                var effectShader = effectShadersCurrentModel.itemAt(effectShaderCurrentIndex).effectShaderShader.currentItem
+                var effectShader = effectShadersCurrentModel.itemAt(effectShaderCurrentIndex).effectArtefactArtefact.currentItem
                 if(effectShader !== undefined && effectShader !== null)
                 {
                     confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.artefactFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
@@ -4492,15 +4492,15 @@ ApplicationWindow {
 
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-            property var shaderItem: effectShaderShader.currentItem
+            property var shaderItem: effectArtefactArtefact.currentItem
             property bool showFullDescription: false
 
             Connections {
-                target: effectShaderShader
+                target: effectArtefactArtefact
 
                 function onListReloaded()
                 {
-                    shaderItem = effectShaderShader.currentItem
+                    shaderItem = effectArtefactArtefact.currentItem
                 }
             }
 

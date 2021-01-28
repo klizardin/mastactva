@@ -2,7 +2,7 @@
 #include "../MastactvaBase/defines.h"
 
 
-EffectShader::EffectShader(EffectShaderModel *parent_ /* = nullptr*/)
+EffectArtefact::EffectArtefact(EffectArtefactModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
@@ -11,36 +11,36 @@ EffectShader::EffectShader(EffectShaderModel *parent_ /* = nullptr*/)
     m_effectShaderModel = parent_;
 }
 
-int EffectShader::id() const
+int EffectArtefact::id() const
 {
     return m_id;
 }
 
-void EffectShader::setId(const int &id_)
+void EffectArtefact::setId(const int &id_)
 {
     m_id = id_;
 
     emit idChanged();
 }
 
-int EffectShader::effectId() const
+int EffectArtefact::effectId() const
 {
     return m_effectId;
 }
 
-void EffectShader::setEffectId(const int &effectId_)
+void EffectArtefact::setEffectId(const int &effectId_)
 {
     m_effectId = effectId_;
 
     emit effectIdChanged();
 }
 
-int EffectShader::artefactId() const
+int EffectArtefact::artefactId() const
 {
     return m_artefactId;
 }
 
-void EffectShader::setArtefactId(const int &artefactId_)
+void EffectArtefact::setArtefactId(const int &artefactId_)
 {
     m_artefactId = artefactId_;
     if(nullptr != m_shaderModel)
@@ -51,11 +51,11 @@ void EffectShader::setArtefactId(const int &artefactId_)
     emit shaderChanged();
 }
 
-QVariant EffectShader::shader() const
+QVariant EffectArtefact::shader() const
 {
     if(nullptr == m_shaderModel)
     {
-        const_cast<EffectShader *>(this)->m_shaderModel = const_cast<EffectShader *>(this)
+        const_cast<EffectArtefact *>(this)->m_shaderModel = const_cast<EffectArtefact *>(this)
                 ->createShaderModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
@@ -65,7 +65,7 @@ QVariant EffectShader::shader() const
                                );
 }
 
-void EffectShader::setShader(const QVariant &obj_)
+void EffectArtefact::setShader(const QVariant &obj_)
 {
     if(obj_.isNull() && nullptr != m_shaderModel)
     {
@@ -76,17 +76,17 @@ void EffectShader::setShader(const QVariant &obj_)
     }
 }
 
-ArtefactModel *EffectShader::getShader()
+ArtefactModel *EffectArtefact::getShader()
 {
     return m_shaderModel;
 }
 
-const ArtefactModel *EffectShader::getShader() const
+const ArtefactModel *EffectArtefact::getShader() const
 {
     return m_shaderModel;
 }
 
-ArtefactModel *EffectShader::createShaderModel()
+ArtefactModel *EffectArtefact::createShaderModel()
 {
     ArtefactModel *m = new ArtefactModel(this);
     m->initResponse();
@@ -103,7 +103,7 @@ ArtefactModel *EffectShader::createShaderModel()
 }
 
 
-EffectShaderModel::EffectShaderModel(QObject *parent_ /*= nullptr*/)
+EffectArtefactModel::EffectArtefactModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)
