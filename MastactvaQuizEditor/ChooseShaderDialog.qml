@@ -15,7 +15,7 @@ Dialog {
 
     property var fieldShader: undefined
     property var artefactTypeModel: undefined
-    property var shaderModel: undefined
+    property var artefactModel: undefined
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
@@ -32,7 +32,7 @@ Dialog {
                 anchors.fill: parent
                 clip: true
                 spacing: Constants.effectShaderTypeListSpacing
-                model: shaderModel
+                model: artefactModel
                 delegate: shaderItem
                 highlight: shaderItemHighlight
                 highlightFollowsCurrentItem: false
@@ -42,7 +42,7 @@ Dialog {
 
     function init()
     {
-        shaderModel.loadList()
+        artefactModel.loadList()
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
@@ -60,7 +60,7 @@ Dialog {
             onClicked:
             {
                 shadersList.currentIndex = index
-                fieldShader = shaderModel.itemAt(index)
+                fieldShader = artefactModel.itemAt(index)
                 mouse.accepted = false
             }
 

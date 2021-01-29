@@ -601,10 +601,10 @@ ApplicationWindow {
         autoCreateChildrenModelsOnSelect: true
     }
 
-    ShaderModel {
-        id: shaderModel
-        objectName: "ShaderModel"
-        layoutQMLName: "ShaderModel"
+    ArtefactModel {
+        id: artefactModel
+        objectName: "ArtefactModel"
+        layoutQMLName: "ArtefactModel"
         layoutIdField: "id"
         jsonParamsGet: false
         autoCreateChildrenModels: false
@@ -675,7 +675,7 @@ ApplicationWindow {
             shaderEditDialog.mastactva = mastactva
             shaderEditDialog.artefactTypeModel = artefactTypeModel
             chooseShaderDialog.artefactTypeModel = artefactTypeModel
-            chooseShaderDialog.shaderModel = shaderModel
+            chooseShaderDialog.artefactModel = artefactModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
             effectArgumentValueEditDialog.artefactArgTypeModel = artefactArgTypeModel
             chooseEffectArgumentDialog.artefactArgTypeModel = artefactArgTypeModel
