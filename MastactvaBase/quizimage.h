@@ -89,7 +89,7 @@ private:
     EffectArgSet *m_argumentSet = nullptr;
     QString m_renderBuildLog;
     QString m_lastLog;
-    QStringList m_shadersUrls;
+    QStringList m_artefactsUrls;
     bool m_effectLoading = false;
     QImage *m_image = nullptr;
     QSize m_imageSize = QSize(0,0);

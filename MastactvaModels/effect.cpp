@@ -58,7 +58,7 @@ QVariant Effect::effectArtefacts() const
 {
     if(nullptr == m_effectArtefactModel)
     {
-        const_cast<Effect *>(this)->m_effectArtefactModel = const_cast<Effect *>(this)->createEffectShadersModel();
+        const_cast<Effect *>(this)->m_effectArtefactModel = const_cast<Effect *>(this)->createEffectArtefactModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArtefactModel *>(m_effectArtefactModel)));
 }
@@ -70,7 +70,7 @@ void Effect::setEffectArtefacts(const QVariant &obj_)
         delete m_effectArtefactModel;
         m_effectArtefactModel = nullptr;
 
-        emit effectShadersChanged();
+        emit effectArtefactChanged();
     }
 }
 
@@ -114,7 +114,7 @@ void Effect::setArgSets(const QVariant &obj_)
     }
 }
 
-EffectArtefactModel *Effect::createEffectShadersModel()
+EffectArtefactModel *Effect::createEffectArtefactModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
@@ -125,7 +125,7 @@ EffectArtefactModel *Effect::createEffectShadersModel()
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") +
-                        QVariant::fromValue(m_appId).toString() + QString("_EffectShaderModel_"));
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectArtefactModel_"));
     m->registerListModel();
     m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
@@ -181,10 +181,10 @@ bool Effect::startRefreshArguments()
             || !m_effectArgModel->isListLoadedImpl()
             ) { return false; }
 
-    // get all shaders urls
-    const int shadersCnt = m_effectArtefactModel->size();
+    // get all artefacts urls
+    const int artefactsCnt = m_effectArtefactModel->size();
     QList<QPair<QString, QString>> urlHashPairs;
-    for(int i = 0; i < shadersCnt; i++)
+    for(int i = 0; i < artefactsCnt; i++)
     {
         EffectArtefact* m = m_effectArtefactModel->dataItemAtImpl(i);
         if(nullptr == m || nullptr == m->getArtefact() || !m->getArtefact()->isListLoadedImpl()) { return false; }
@@ -196,15 +196,15 @@ bool Effect::startRefreshArguments()
     //{
     //    qDebug() << url_.first << ", " << url_.second;
     //}
-    m_shaderUrls.clear();
+    m_artefactsUrls.clear();
     for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     {
-        m_shaderUrls.push_back(url_.first);
+        m_artefactsUrls.push_back(url_.first);
     }
-    m_shaderLocalUrls.clear();
+    m_artefactsLocalUrls.clear();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     QObject::connect(sf, SIGNAL(downloaded(const QString &)),
-                     this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+                     this, SLOT(refreshArgumentsArtefactDownloadedSlot(const QString &)));
     QObject::connect(sf, SIGNAL(progress()),
                      this, SLOT(refreshArgumentsProgressSlot()));
     for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
@@ -218,24 +218,24 @@ void Effect::cancelRefreshArguments()
 {
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
-                        this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+                        this, SLOT(refreshArgumentsArtefactDownloadedSlot(const QString &)));
     QObject::disconnect(sf, SIGNAL(progress()),
                         this, SLOT(refreshArgumentsProgressSlot()));
-    sf->cancel(m_shaderUrls);
-    m_shaderUrls.clear();
-    m_shaderLocalUrls.clear();
+    sf->cancel(m_artefactsUrls);
+    m_artefactsUrls.clear();
+    m_artefactsLocalUrls.clear();
 }
 
-void Effect::refreshArgumentsShaderDownloadedSlot(const QString &url_)
+void Effect::refreshArgumentsArtefactDownloadedSlot(const QString &url_)
 {
-    const auto fit = std::find(std::begin(m_shaderUrls), std::end(m_shaderUrls), url_);
-    if(std::end(m_shaderUrls) == fit) { return; }
+    const auto fit = std::find(std::begin(m_artefactsUrls), std::end(m_artefactsUrls), url_);
+    if(std::end(m_artefactsUrls) == fit) { return; }
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    m_shaderLocalUrls.insert(url_, sf->get(url_));
-    if(m_shaderLocalUrls.size() == m_shaderUrls.size())
+    m_artefactsLocalUrls.insert(url_, sf->get(url_));
+    if(m_artefactsLocalUrls.size() == m_artefactsUrls.size())
     {
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
-                            this, SLOT(refreshArgumentsShaderDownloadedSlot(const QString &)));
+                            this, SLOT(refreshArgumentsArtefactDownloadedSlot(const QString &)));
         QObject::disconnect(sf, SIGNAL(progress()),
                             this, SLOT(refreshArgumentsProgressSlot()));
         emit refreshArgumentsBeforeApply();
@@ -245,7 +245,7 @@ void Effect::refreshArgumentsShaderDownloadedSlot(const QString &url_)
 void Effect::refreshArgumentsProgressSlot()
 {
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    qreal rate = sf->getProgressRate(m_shaderUrls);
+    qreal rate = sf->getProgressRate(m_artefactsUrls);
     emit refreshArgumentsProgress(true, rate);
 }
 
@@ -257,10 +257,10 @@ void Effect::applyRefreshArguments()
                 );
     Q_ASSERT(nullptr != argTypesModel);
 
-    // read comments from shaders files
+    // read comments from artefacts files
     // get file, form commens list
     // form arguments data
-    const QStringList localUrls = m_shaderLocalUrls.values();
+    const QStringList localUrls = m_artefactsLocalUrls.values();
     for(const QString &localUrl : qAsConst(localUrls))
     {
         const QUrl url(localUrl);
@@ -285,12 +285,12 @@ void Effect::applyRefreshArguments()
             const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
             const QString argDescription = comment.values().value(g_descriptionName, QString()).trimmed();
             //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
-            ArtefactArgType *shaderArgType = argTypesModel->findDataItemByFieldValueImpl(
+            ArtefactArgType *artefactArgType = argTypesModel->findDataItemByFieldValueImpl(
                         "artefactArgTypeType",
                         QVariant::fromValue(argTypeStr)
                         );
-            Q_ASSERT(nullptr != shaderArgType);
-            const int argTypeId = shaderArgType->id();
+            Q_ASSERT(nullptr != artefactArgType);
+            const int argTypeId = artefactArgType->id();
 
             auto fitni = std::find_if(std::begin(newArguments), std::end(newArguments),
                                       [&argName](EffectArg *effectArg)->bool

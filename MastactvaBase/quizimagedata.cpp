@@ -209,32 +209,32 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
 
     setShaders(QString(), QString());
 
-    const EffectArtefactModel *shaders = effect_->getEffectArtefacts();
-    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
-    for(int i = 0; i < shaders->sizeImpl(); ++i)
+    const EffectArtefactModel *artefacts = effect_->getEffectArtefacts();
+    Q_ASSERT(nullptr != artefacts && artefacts->isListLoaded());
+    for(int i = 0; i < artefacts->sizeImpl(); ++i)
     {
-        const EffectArtefact *effect_shader = shaders->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effect_shader);
-        const ArtefactModel *artefactModel = effect_shader->getArtefact();
+        const EffectArtefact *effect_artefact = artefacts->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effect_artefact);
+        const ArtefactModel *artefactModel = effect_artefact->getArtefact();
         Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoaded() && artefactModel->sizeImpl() > 0);
-        const Artefact *shader = artefactModel->dataItemAtImpl(0);
-        Q_ASSERT(shader != nullptr);
+        const Artefact *artefact = artefactModel->dataItemAtImpl(0);
+        Q_ASSERT(artefact != nullptr);
 
-        Q_ASSERT(sf->isUrlDownloaded(shader->filename()));
-        QString shaderText = ::loadTextFileByUrl(shader->filename());
+        Q_ASSERT(sf->isUrlDownloaded(artefact->filename()));
+        QString shaderText = ::loadTextFileByUrl(artefact->filename());
 
-        ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(shader->type());
+        ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
         Q_ASSERT(nullptr != artefactType &&
                     (
-                        g_shaderTypeVertex == artefactType->type() ||
-                        g_shaderTypeFragment == artefactType->type()
+                        g_artefactTypeVertex == artefactType->type() ||
+                        g_artefactTypeFragment == artefactType->type()
                     )
                 );
-        if(g_shaderTypeVertex == artefactType->type())
+        if(g_artefactTypeVertex == artefactType->type())
         {
             setVertexShader(shaderText);
         }
-        else if(g_shaderTypeFragment == artefactType->type())
+        else if(g_artefactTypeFragment == artefactType->type())
         {
             setFragmentShader(shaderText);
         }

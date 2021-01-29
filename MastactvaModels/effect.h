@@ -25,7 +25,7 @@ public:
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectDescription READ description WRITE setDescription NOTIFY descriptionChanged)
-    Q_PROPERTY(QVariant effectArtefacts READ effectArtefacts WRITE setEffectArtefacts NOTIFY effectShadersChanged)
+    Q_PROPERTY(QVariant effectArtefacts READ effectArtefacts WRITE setEffectArtefacts NOTIFY effectArtefactChanged)
     Q_PROPERTY(QVariant effectArgs READ args WRITE setArgs NOTIFY argsChanged)
     Q_PROPERTY(QVariant effectArgSets READ argSets WRITE setArgSets NOTIFY argSetsChanged)
 
@@ -41,7 +41,7 @@ public:
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
-            addModel<EffectArtefactModel>("effectArtefacts", &Effect::m_effectArtefactModel, &Effect::createEffectShadersModel);
+            addModel<EffectArtefactModel>("effectArtefacts", &Effect::m_effectArtefactModel, &Effect::createEffectArtefactModel);
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
             setIdField("id");
@@ -76,14 +76,14 @@ public:
     Q_INVOKABLE bool isChildrenLoaded() const;
 
 protected slots:
-    void refreshArgumentsShaderDownloadedSlot(const QString &url_);
+    void refreshArgumentsArtefactDownloadedSlot(const QString &url_);
     void refreshArgumentsProgressSlot();
     void itemAddedSlot();
     void itemSetSlot();
     void itemDeletedSlot();
 
 protected:
-    EffectArtefactModel *createEffectShadersModel();
+    EffectArtefactModel *createEffectArtefactModel();
     EffectArgModel *createEffectArgModel();
     EffectArgSetModel *createEffectArgSetModel();
     void applyRefreshArgumentsStep();
@@ -96,7 +96,7 @@ signals:
     void idChanged();
     void nameChanged();
     void descriptionChanged();
-    void effectShadersChanged();
+    void effectArtefactChanged();
     void argsChanged();
     void argSetsChanged();
     void refreshArgumentsProgress(bool download_, qreal rate_);
@@ -116,8 +116,8 @@ private:
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;
 
-    QStringList m_shaderUrls;
-    QHash<QString, QString> m_shaderLocalUrls;
+    QStringList m_artefactsUrls;
+    QHash<QString, QString> m_artefactsLocalUrls;
     QList<EffectArg *> m_itemsToSet;
     QList<EffectArg *> m_itemsToDel;
     QList<EffectArg *> m_itemsToAdd;

@@ -294,9 +294,9 @@ bool QuizImage::areAllDataAvailable()
         if(!sf->isUrlDownloaded(m_fromImageUrl)
                 || !sf->isUrlDownloaded(m_toImageUrl)
                 ) { return false; }
-        for(const QString &shaderUrl : qAsConst(m_shadersUrls))
+        for(const QString &artefactUrl : qAsConst(m_artefactsUrls))
         {
-            if(!sf->isUrlDownloaded(shaderUrl)) { return false; }
+            if(!sf->isUrlDownloaded(artefactUrl)) { return false; }
         }
     }
     return true;
@@ -403,7 +403,7 @@ void QuizImage::updateStateIfDataIsReady()
     if(!canUpdate) { return; }
 
     // free resource for waiting for resource loaded
-    m_shadersUrls.clear();
+    m_artefactsUrls.clear();
     if(nullptr != m_argumentSet)
     {
         QObject::disconnect(
@@ -456,7 +456,7 @@ void QuizImage::addShadersToWaitDownload()
 {
     m_effectLoading = false;
 
-    m_shadersUrls.clear();
+    m_artefactsUrls.clear();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
 
     EffectArtefactModel *shaders = m_effect->getEffectArtefacts();
@@ -470,7 +470,7 @@ void QuizImage::addShadersToWaitDownload()
                 && artefactModel->sizeImpl() > 0
                 );
         Artefact *artefact = artefactModel->dataItemAtImpl(0);
-        m_shadersUrls.push_back(artefact->filename());
+        m_artefactsUrls.push_back(artefact->filename());
         if(nullptr != sf)
         {
             sf->add(artefact->filename(), artefact->hash(), g_artefactsRelPath);

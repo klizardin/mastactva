@@ -4191,7 +4191,7 @@
                         "designable": true,
                         "final": false,
                         "name": "effectArtefacts",
-                        "notify": "effectShadersChanged",
+                        "notify": "effectArtefactChanged",
                         "read": "effectArtefacts",
                         "required": false,
                         "scriptable": true,
@@ -4248,7 +4248,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectShadersChanged",
+                        "name": "effectArtefactChanged",
                         "returnType": "void"
                     },
                     {
@@ -4301,7 +4301,7 @@
                                 "type": "QString"
                             }
                         ],
-                        "name": "refreshArgumentsShaderDownloadedSlot",
+                        "name": "refreshArgumentsArtefactDownloadedSlot",
                         "returnType": "void"
                     },
                     {
