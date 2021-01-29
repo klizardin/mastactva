@@ -31,6 +31,7 @@
 27. right answer the question animation
 28. highlight question point on exit(?)
 29. main gallery (start)
+30. highlight for clicks, expecially for out of image borders (to allow "wrong" clicks (gestures))
 
 
 
