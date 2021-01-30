@@ -32,6 +32,13 @@
 28. highlight question point on exit(?)
 29. main gallery (start)
 30. highlight for clicks, expecially for out of image borders (to allow "wrong" clicks (gestures))
+31. wrong gestures
+    * swipe left-right -- page system
+    * swipe up-down -- animation
+    * swipe another directions -- or page system or animation
+    * two fingeres resize -- resize hold and return
+    * double clicks -- clicks highlighted
+    * click outside image -- clicks highlighted
 
 
 
