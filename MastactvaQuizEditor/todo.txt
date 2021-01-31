@@ -88,10 +88,10 @@
 * 52. add prompts for remove actions // for effect remove actions -- all new actions
 53. fix refresh arguments bug (find root case and fix it). not always starts download progress, and refresh button isn`t always enabled
 54. add DataSource that contains way to the DB and to the NetAPI
-55. add app to download data from server to the DB
-57. add DB get requests
-58. add DB view get requests
-59. add DB update requests
+* 55. add app to download data from server to the DB
+* 57. add DB get requests
+* 58. add DB view get requests
+* 59. add DB update requests
 60. WARNING the MastactvaAPI two instances
 61. fix two instances of MastactvaAPI
 62. test memory leaks for editor and quiz
@@ -100,17 +100,21 @@
 procedure params in the django rest framework // Django REST Framework - pass extra parameter to actions
 https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-parameter-to-actions
 
-64. check warnings
+- 64. check warnings
 * 65. add nullptr check in base classes (Layout)
 . 66. add editor user download of db (just versions of the current editor + may be with new galleries to test editors current galleries)
 67. how to test galleries for one editor?
 68. "TODO: find way to upload images of gallery when it is required" // ImageModel *Gallery::createImages()
-69. procedure tables
+* 69. procedure tables
 * 70. remove g_procedureDefaultAPI
 71. add auto generation of galleries
 72. effects packet for update
 73. mobile data zip generation
 74. shaders/effect artefacts list. add/edit/view/del/replace/depended effects
+75. add model ArtefctParamSetModel, ArtefactParamModel, TranslateModel
+76. get pack of mobile data after download
+77. get pack of effects after download
+78. upload/download/update effects at the server
 
 
 
