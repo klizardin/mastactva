@@ -39,6 +39,14 @@
     * two fingeres resize -- resize hold and return
     * double clicks -- clicks highlighted
     * click outside image -- clicks highlighted
+32. optimize UserStep to the android flash (minimize writes, only writes if it is requred
+    -- change gallery last used, answe the question, so don`t modify time field just write changes
+    for old smartfones)
+
+
+
+
+
 
 
 
