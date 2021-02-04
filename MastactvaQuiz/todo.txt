@@ -57,6 +57,8 @@
     * show help,
     * switch to galley, start/switch to quiz
     )
+37. plan multistage drawing (drawing to texture, drawing to surface -- last step)
+38. plan particles drawing
 
 
 
