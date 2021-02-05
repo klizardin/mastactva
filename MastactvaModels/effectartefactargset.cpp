@@ -5,7 +5,7 @@
 EffectArtefactArgSet::EffectArtefactArgSet(EffectArtefactArgSetModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
-    m_effectArtefactArgModel = parent_;
+    m_effectArtefactArgSetModel = parent_;
 }
 
 int EffectArtefactArgSet::id() const
@@ -42,6 +42,48 @@ void EffectArtefactArgSet::setDescription(const QString &description_)
     m_description = description_;
 
     emit descriptionChanged();
+}
+
+QVariant EffectArtefactArgSet::effectArtefactArg() const
+{
+    if(nullptr == m_effectArtefactArgModel)
+    {
+        const_cast<EffectArtefactArgSet *>(this)->m_effectArtefactArgModel = const_cast<EffectArtefactArgSet *>(this)
+                ->createEffectArtefactArgModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<EffectArtefactArgModel *>(
+                                       m_effectArtefactArgModel)
+                                   )
+                               );
+}
+
+void EffectArtefactArgSet::setEffectArtefactArg(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_effectArtefactArgModel)
+    {
+        delete m_effectArtefactArgModel;
+        m_effectArtefactArgModel = nullptr;
+
+        emit effectArtefactArgChanged();
+    }
+}
+
+EffectArtefactArgModel *EffectArtefactArgSet::createEffectArtefactArgModel()
+{
+    EffectArtefactArgModel *m = new EffectArtefactArgModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("effect_artefact_arg_set", m_effectArtefactArgSetModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("effect_artefact_arg_set");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_effectArtefactArgSetModel->getQMLLayoutName() + QString("_EffectArtefactArgSet_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectArtefactArgModel_"));
+    m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->setAutoCreateChildrenModels(true);
+    m->setReadonlyImpl(false);
+    m->loadList();
+    return m;
 }
 
 

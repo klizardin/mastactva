@@ -7,6 +7,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaModels/effectartefactarg.h"
 
 
 class EffectArtefactArgSetModel;
@@ -21,6 +22,7 @@ public:
     Q_PROPERTY(int effectArtefactArgSetId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArtefactArgSetEffectArtefactId READ effectArtefactId WRITE setEffectArtefactId NOTIFY effectArtefactIdChanged)
     Q_PROPERTY(QString effectArtefactArgSetDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QVariant effectArtefactArg READ effectArtefactArg WRITE setEffectArtefactArg NOTIFY effectArtefactArgChanged)
 
 
     class DefaultLayout : public LayoutBase<EffectArtefactArgSet>
@@ -35,6 +37,7 @@ public:
             addField<int>("id", "effectArtefactArgSetId", &EffectArtefactArgSet::id, &EffectArtefactArgSet::setId);
             addField<int>("effect_artefact", "effectArtefactArgSetEffectArtefactId", &EffectArtefactArgSet::effectArtefactId, &EffectArtefactArgSet::setEffectArtefactId);
             addField<QString>("description", "effectArtefactArgSetDescription", &EffectArtefactArgSet::description, &EffectArtefactArgSet::setDescription);
+            addModel<EffectArtefactArgModel>("effectArtefactArgSetEffectArtefactArg", &EffectArtefactArgSet::m_effectArtefactArgModel, &EffectArtefactArgSet::createEffectArtefactArgModel);
             setIdField("id");
         }
     };
@@ -46,11 +49,17 @@ public:
     void setEffectArtefactId(const int &effectArtefactId_);
     QString description() const;
     void setDescription(const QString &description_);
+    QVariant effectArtefactArg() const;
+    void setEffectArtefactArg(const QVariant &obj_);
+
+protected:
+    EffectArtefactArgModel *createEffectArtefactArgModel();
 
 signals:
     void idChanged();
     void effectArtefactIdChanged();
     void descriptionChanged();
+    void effectArtefactArgChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
@@ -59,7 +68,8 @@ private:
     int m_id = -1;
     int m_effectArtefactId = -1;
     QString m_description;
-    EffectArtefactArgSetModel *m_effectArtefactArgModel = nullptr;
+    EffectArtefactArgModel *m_effectArtefactArgModel = nullptr;
+    EffectArtefactArgSetModel *m_effectArtefactArgSetModel = nullptr;
 };
 
 
