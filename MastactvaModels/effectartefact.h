@@ -8,6 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/artefact.h"
+#include "../MastactvaModels/effectartefactargset.h"
 
 
 class EffectArtefactModel;
@@ -22,6 +23,7 @@ public:
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArtefactEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
+    Q_PROPERTY(QVariant effectArtefactEffectArtefactArgSet READ effectArtefactArgSet WRITE setEffectArtefactArgSet NOTIFY effectArtefactArgSetChanged)
 
     class DefaultLayout : public LayoutBase<EffectArtefact>
     {
@@ -35,6 +37,7 @@ public:
             addField<int>("effect", "effectArtefactEffectId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
             addField<int>("artefact", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
             addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_artefactModel, &EffectArtefact::createArtefactModel);
+            addModel<EffectArtefactArgSetModel>("effectArtefactEffectArtefactArgSet", &EffectArtefact::m_effectArtefactArgSetModel, &EffectArtefact::createEffectArtefactArgSetModel);
             setIdField("id");
         }
     };
@@ -51,14 +54,18 @@ public:
     void setArtefact(const QVariant &obj_);
     ArtefactModel *getArtefact();
     const ArtefactModel *getArtefact() const;
+    QVariant effectArtefactArgSet() const;
+    void setEffectArtefactArgSet(const QVariant &obj_);
 
 protected:
     ArtefactModel *createArtefactModel();
+    EffectArtefactArgSetModel *createEffectArtefactArgSetModel();
 
 signals:
     void idChanged();
     void effectIdChanged();
     void artefactChanged();
+    void effectArtefactArgSetChanged();
 
 private:
     EffectArtefactModel *m_effectArtefactModel = nullptr;
@@ -68,6 +75,7 @@ private:
     int m_effectId = -1;
     int m_artefactId = -1;
     ArtefactModel *m_artefactModel = nullptr;
+    EffectArtefactArgSetModel *m_effectArtefactArgSetModel = nullptr;
 };
 
 

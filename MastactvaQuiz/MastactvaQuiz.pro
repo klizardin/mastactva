@@ -110,7 +110,10 @@ unix: SOURCES += \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
-        effectartefact.cpp
+        effectartefact.cpp  \
+        effectartefactarg.cpp \
+        effectartefactargset.cpp \
+        translation.cpp
 
 
 RESOURCES += qml.qrc \
@@ -199,7 +202,10 @@ unix: HEADERS += \
     artefact.h  \
     artefacttype.h    \
     artefactargtype.h \
-    effectartefact.h
+    effectartefact.h    \
+    effectartefactarg.h \
+    effectartefactargset.h \
+    translation.h
 
 
 DISTFILES += \
