@@ -18894,5 +18894,56 @@
         ],
         "inputFile": "effectartefact.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "EffectArtefactArg",
+                "object": true,
+                "qualifiedClassName": "EffectArtefactArg",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "effectartefactarg.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "EffectArtefactArgSet",
+                "object": true,
+                "qualifiedClassName": "EffectArtefactArgSet",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "effectartefactargset.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "Translation",
+                "object": true,
+                "qualifiedClassName": "Translation",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "translation.h",
+        "outputRevision": 67
     }
 ]
