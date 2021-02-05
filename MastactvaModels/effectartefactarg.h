@@ -19,7 +19,10 @@ public:
     explicit EffectArtefactArg(EffectArtefactArgModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectArtefactArgId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectArtefactArgEffectArtefactId READ effectArtefactId WRITE setEffectArtefactId NOTIFY effectArtefactIdChanged)
+    Q_PROPERTY(int effectArtefactArgEffectArtefactArgSetId READ effectArtefactArgSetId WRITE setEffectArtefactArgSetId NOTIFY effectArtefactArgSetIdChanged)
+    Q_PROPERTY(int effectArtefactArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
+    Q_PROPERTY(QString effectArtefactArgName READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString effectArtefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString effectArtefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
 
 
@@ -33,7 +36,10 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &EffectArtefactArg::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefactArg::m_appId);
             addField<int>("id", "effectArtefactArgId", &EffectArtefactArg::id, &EffectArtefactArg::setId);
-            addField<int>("effect_artefact", "effectArtefactArgEffectArtefactId", &EffectArtefactArg::effectArtefactId, &EffectArtefactArg::setEffectArtefactId);
+            addField<int>("effect_artefact_arg_set", "effectArtefactArgEffectArtefactArgSetId", &EffectArtefactArg::effectArtefactArgSetId, &EffectArtefactArg::setEffectArtefactArgSetId);
+            addField<int>("arg_type", "effectArtefactArgArgTypeId", &EffectArtefactArg::argTypeId, &EffectArtefactArg::setArgTypeId);
+            addField<QString>("name", "effectArtefactArgName", &EffectArtefactArg::name, &EffectArtefactArg::setName);
+            addField<QString>("default_value", "effectArtefactArgDefaultValue", &EffectArtefactArg::defaultValue, &EffectArtefactArg::setDefaultValue);
             addField<QString>("description", "effectArtefactArgDescription", &EffectArtefactArg::description, &EffectArtefactArg::setDescription);
             setIdField("id");
         }
@@ -42,14 +48,23 @@ public:
 public:
     int id() const;
     void setId(const int &id_);
-    int effectArtefactId() const;
-    void setEffectArtefactId(const int &effectArtefactId_);
+    int effectArtefactArgSetId() const;
+    void setEffectArtefactArgSetId(const int &effectArtefactArgSetId_);
+    int argTypeId() const;
+    void setArgTypeId(const int &argTypeId_);
+    QString name() const;
+    void setName(const QString &name_);
+    QString defaultValue() const;
+    void setDefaultValue(const QString &defaultValue_);
     QString description() const;
     void setDescription(const QString &description_);
 
 signals:
     void idChanged();
-    void effectArtefactIdChanged();
+    void effectArtefactArgSetIdChanged();
+    void argTypeChanged();
+    void nameChanged();
+    void defaultValueChanged();
     void descriptionChanged();
 
 private:
@@ -57,7 +72,10 @@ private:
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
-    int m_effectArtefactId = -1;
+    int m_effectArtefactArgSetId = -1;
+    int m_argTypeId = -1;
+    QString m_name;
+    QString m_defaultValue;
     QString m_description;
     EffectArtefactArgModel *m_effectArtefactArgModel = nullptr;
 };
