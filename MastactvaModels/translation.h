@@ -35,7 +35,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("artefact");
+            setLayoutJsonName("translation");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Translation::m_parentModelInfo);
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Translation::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &Translation::m_appId);
