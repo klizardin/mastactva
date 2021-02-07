@@ -117,6 +117,7 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 78. upload/download/update effects at the server
 79. artefacts view form part, view text of shaders, images
 80. multipass drawing (index)
+81. add arg storage qualifiers (attribute, uniform)
 
 
 
