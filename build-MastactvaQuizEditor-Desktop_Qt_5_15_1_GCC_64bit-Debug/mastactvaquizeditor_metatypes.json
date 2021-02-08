@@ -19801,6 +19801,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setType"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "artefactTypeUniqueForObject",
+                        "notify": "uniqueForObjectChanged",
+                        "read": "uniqueForObject",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setUniqueForObject"
                     }
                 ],
                 "qualifiedClassName": "ArtefactType",
@@ -19813,6 +19827,11 @@
                     {
                         "access": "public",
                         "name": "typeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "uniqueForObjectChanged",
                         "returnType": "void"
                     }
                 ],

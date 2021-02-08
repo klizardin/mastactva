@@ -17,6 +17,7 @@ public:
 
     Q_PROPERTY(int artefactTypeId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString artefactTypeType READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(bool artefactTypeUniqueForObject READ uniqueForObject WRITE setUniqueForObject NOTIFY uniqueForObjectChanged)
 
     class DefaultLayout : public LayoutBase<ArtefactType>
     {
@@ -37,16 +38,20 @@ public:
     void setId(const int &id_);
     QString type() const;
     void setType(const QString &type_);
+    bool uniqueForObject() const;
+    void setUniqueForObject(const bool &uniqueForObject_);
 
 signals:
     void idChanged();
     void typeChanged();
+    void uniqueForObjectChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     QString m_type;
+    bool m_uniqueForObject = false;
 };
 
 
