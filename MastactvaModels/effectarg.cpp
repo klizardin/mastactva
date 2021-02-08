@@ -47,6 +47,18 @@ void EffectArg::setArgTypeId(const int &argTypeId_)
     emit argTypeChanged();
 }
 
+int EffectArg::argStorageId() const
+{
+    return m_argStorageId;
+}
+
+void EffectArg::setArgStorageId(const int &argStorageId_)
+{
+    m_argStorageId = argStorageId_;
+
+    emit argStorageChanged();
+}
+
 QString EffectArg::name() const
 {
     return m_name;

@@ -11314,6 +11314,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "effectArgArgStorageId",
+                        "notify": "argStorageChanged",
+                        "read": "argStorageId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setArgStorageId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "effectArgName",
                         "notify": "nameChanged",
                         "read": "name",
@@ -11368,6 +11382,11 @@
                     {
                         "access": "public",
                         "name": "argTypeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argStorageChanged",
                         "returnType": "void"
                     },
                     {
@@ -18966,6 +18985,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "effectArtefactArgArgStorageId",
+                        "notify": "argStorageChanged",
+                        "read": "argStorageId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setArgStorageId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "effectArtefactArgName",
                         "notify": "nameChanged",
                         "read": "name",
@@ -19020,6 +19053,11 @@
                     {
                         "access": "public",
                         "name": "argTypeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argStorageChanged",
                         "returnType": "void"
                     },
                     {

@@ -21,6 +21,7 @@ public:
     Q_PROPERTY(int effectArtefactArgId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArtefactArgEffectArtefactArgSetId READ effectArtefactArgSetId WRITE setEffectArtefactArgSetId NOTIFY effectArtefactArgSetIdChanged)
     Q_PROPERTY(int effectArtefactArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
+    Q_PROPERTY(int effectArtefactArgArgStorageId READ argStorageId WRITE setArgStorageId NOTIFY argStorageChanged)
     Q_PROPERTY(QString effectArtefactArgName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectArtefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString effectArtefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
@@ -38,6 +39,7 @@ public:
             addField<int>("id", "effectArtefactArgId", &EffectArtefactArg::id, &EffectArtefactArg::setId);
             addField<int>("effect_artefact_arg_set", "effectArtefactArgEffectArtefactArgSetId", &EffectArtefactArg::effectArtefactArgSetId, &EffectArtefactArg::setEffectArtefactArgSetId);
             addField<int>("arg_type", "effectArtefactArgArgTypeId", &EffectArtefactArg::argTypeId, &EffectArtefactArg::setArgTypeId);
+            addField<int>("arg_storage", "effectArtefactArgArgStorageId", &EffectArtefactArg::argStorageId, &EffectArtefactArg::setArgStorageId);
             addField<QString>("name", "effectArtefactArgName", &EffectArtefactArg::name, &EffectArtefactArg::setName);
             addField<QString>("default_value", "effectArtefactArgDefaultValue", &EffectArtefactArg::defaultValue, &EffectArtefactArg::setDefaultValue);
             addField<QString>("description", "effectArtefactArgDescription", &EffectArtefactArg::description, &EffectArtefactArg::setDescription);
@@ -52,6 +54,8 @@ public:
     void setEffectArtefactArgSetId(const int &effectArtefactArgSetId_);
     int argTypeId() const;
     void setArgTypeId(const int &argTypeId_);
+    int argStorageId() const;
+    void setArgStorageId(const int &argStorageId_);
     QString name() const;
     void setName(const QString &name_);
     QString defaultValue() const;
@@ -63,6 +67,7 @@ signals:
     void idChanged();
     void effectArtefactArgSetIdChanged();
     void argTypeChanged();
+    void argStorageChanged();
     void nameChanged();
     void defaultValueChanged();
     void descriptionChanged();
@@ -74,6 +79,7 @@ private:
     int m_id = -1;
     int m_effectArtefactArgSetId = -1;
     int m_argTypeId = -1;
+    int m_argStorageId = -1;
     QString m_name;
     QString m_defaultValue;
     QString m_description;
