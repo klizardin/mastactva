@@ -1,5 +1,5 @@
-#ifndef ARTEFACTTYPE_H
-#define ARTEFACTTYPE_H
+#ifndef ARTEFACTARGSTORAGE_H
+#define ARTEFACTARGSTORAGE_H
 
 
 #include <QObject>
@@ -9,26 +9,25 @@
 #include "../MastactvaBase/Model.h"
 
 
-class ArtefactType : public QObject
+class ArtefactArgStorage : public QObject
 {
     Q_OBJECT
 public:
-    explicit ArtefactType(QObject *parent_ = nullptr);
+    explicit ArtefactArgStorage(QObject *parent_ = nullptr);
 
-    Q_PROPERTY(int artefactTypeId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(QString artefactTypeType READ type WRITE setType NOTIFY typeChanged)
-    Q_PROPERTY(bool artefactTypeUniqueForObject READ uniqueForObject WRITE setUniqueForObject NOTIFY uniqueForObjectChanged)
+    Q_PROPERTY(int artefactArgStorageId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString artefactArgStorageStorage READ storage WRITE setStorage NOTIFY storageChanged)
 
-    class DefaultLayout : public LayoutBase<ArtefactType>
+    class DefaultLayout : public LayoutBase<ArtefactArgStorage>
     {
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("artefact-type");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ArtefactType::m_parentModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactType::m_appId);
-            addField<int>("id", "artefactTypeId", &ArtefactType::id, &ArtefactType::setId);
-            addField<QString>("type", "artefactTypeType", &ArtefactType::type, &ArtefactType::setType);
+            setLayoutJsonName("artefact-arg-storage");
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ArtefactArgStorage::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactArgStorage::m_appId);
+            addField<int>("id", "artefactArgStorageId", &ArtefactArgStorage::id, &ArtefactArgStorage::setId);
+            addField<QString>("storage", "artefactArgStorageStorage", &ArtefactArgStorage::storage, &ArtefactArgStorage::setStorage);
             setIdField("id");
         }
     };
@@ -36,35 +35,31 @@ public:
 public:
     int id() const;
     void setId(const int &id_);
-    QString type() const;
-    void setType(const QString &type_);
-    bool uniqueForObject() const;
-    void setUniqueForObject(const bool &uniqueForObject_);
+    QString storage() const;
+    void setStorage(const QString &storage_);
 
 signals:
     void idChanged();
-    void typeChanged();
-    void uniqueForObjectChanged();
+    void storageChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
-    QString m_type;
-    bool m_uniqueForObject = false;
+    QString m_storage;
 };
 
 
-class ArtefactTypeModel : public ListModelBaseOfData<ArtefactType, ArtefactTypeModel>
+class ArtefactArgStorageModel : public ListModelBaseOfData<ArtefactArgStorage, ArtefactArgStorageModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<ArtefactType, ArtefactTypeModel>;
+    using base = ListModelBaseOfData<ArtefactArgStorage, ArtefactArgStorageModel>;
 
 public:
-    explicit ArtefactTypeModel(QObject *parent_ = nullptr);
+    explicit ArtefactArgStorageModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 
@@ -106,4 +101,4 @@ signals:
 };
 
 
-#endif // ARTEFACTTYPE_H
+#endif // ARTEFACTARGSTORAGE_H

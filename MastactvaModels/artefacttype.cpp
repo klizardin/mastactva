@@ -34,6 +34,18 @@ void ArtefactType::setType(const QString &type_)
     emit typeChanged();
 }
 
+bool ArtefactType::uniqueForObject() const
+{
+    return m_uniqueForObject;
+}
+
+void ArtefactType::setUniqueForObject(const bool &uniqueForObject_)
+{
+    m_uniqueForObject = uniqueForObject_;
+
+    emit uniqueForObjectChanged();
+}
+
 
 ArtefactTypeModel::ArtefactTypeModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
