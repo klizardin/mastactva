@@ -24,7 +24,7 @@ public:
     Q_PROPERTY(int imagePointEffectImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)
     Q_PROPERTY(QVariant imagePointEffectEffect READ effect WRITE setEffect NOTIFY effectChanged)
     Q_PROPERTY(QVariant imagePointEffectArgSet READ argSet WRITE setArgSet NOTIFY argSetChanged)
-    Q_PROPERTY(int imagePointEffectStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
+    //Q_PROPERTY(int imagePointEffectStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(int imagePointEffectDuration READ duration WRITE setDuration NOTIFY durationChanged)
 
     class DefaultLayout : public LayoutBase<ImagePointEffect>
@@ -41,7 +41,7 @@ public:
             addModel<EffectModel>("imagePointEffectEffect", &ImagePointEffect::m_effectModel, &ImagePointEffect::createEffectModel);
             addField<int>("arg_set", "", &ImagePointEffect::argSetId, &ImagePointEffect::setArgSetId);
             addModel<EffectArgSetModel>("imagePointEffectArgSet", &ImagePointEffect::m_effectArgSetModel, &ImagePointEffect::createEffectArgSetModel);
-            addField<int>("step_index", "imagePointEffectStepIndex", &ImagePointEffect::stepIndex, &ImagePointEffect::setStepIndex);
+            //addField<int>("step_index", "imagePointEffectStepIndex", &ImagePointEffect::stepIndex, &ImagePointEffect::setStepIndex);
             addField<int>("duration", "imagePointEffectDuration", &ImagePointEffect::duration, &ImagePointEffect::setDuration);
             setIdField("id");
         }
@@ -52,7 +52,7 @@ public:
     Q_INVOKABLE void setEffectId(const int &effectId_);
     Q_INVOKABLE int argSetId() const;
     Q_INVOKABLE void setArgSetId(const int &argSetId_);
-    Q_INVOKABLE void setStepIndex(const int &stepIndex_);
+    //Q_INVOKABLE void setStepIndex(const int &stepIndex_);
     Q_INVOKABLE void setDuration(const int &duration_);
 
     int id() const;
@@ -62,7 +62,7 @@ public:
     void setEffect(const QVariant &obj_);
     QVariant argSet() const;
     void setArgSet(const QVariant &obj_);
-    int stepIndex() const;
+    //int stepIndex() const;
     int duration() const;
 
 protected:
@@ -85,7 +85,7 @@ private:
     int m_imagePointId = -1;
     int m_effectId = -1;
     int m_effectArgSetId = -1;
-    int m_stepIndex = -1;
+    //int m_stepIndex = -1;
     int m_duration = 1;
     EffectModel *m_effectModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;

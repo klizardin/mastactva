@@ -122,17 +122,17 @@ void ImagePointEffect::setArgSet(const QVariant &obj_)
     }
 }
 
-int ImagePointEffect::stepIndex() const
-{
-    return m_stepIndex;
-}
+//int ImagePointEffect::stepIndex() const
+//{
+//    return m_stepIndex;
+//}
 
-void ImagePointEffect::setStepIndex(const int &stepIndex_)
-{
-    m_stepIndex = stepIndex_;
-
-    emit stepIndexChanged();
-}
+//void ImagePointEffect::setStepIndex(const int &stepIndex_)
+//{
+//    m_stepIndex = stepIndex_;
+//
+//    emit stepIndexChanged();
+//}
 
 int ImagePointEffect::duration() const
 {

@@ -14736,17 +14736,6 @@
                         "access": "public",
                         "arguments": [
                             {
-                                "name": "stepIndex_",
-                                "type": "int"
-                            }
-                        ],
-                        "name": "setStepIndex",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
                                 "name": "duration_",
                                 "type": "int"
                             }
@@ -14812,20 +14801,6 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setArgSet"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "imagePointEffectStepIndex",
-                        "notify": "stepIndexChanged",
-                        "read": "stepIndex",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "int",
-                        "user": false,
-                        "write": "setStepIndex"
                     },
                     {
                         "constant": false,

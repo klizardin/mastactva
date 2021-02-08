@@ -1560,7 +1560,7 @@ ApplicationWindow {
             fieldImagePointEffect.imagePointEffectImagePointId = fieldImagePoint.pointId
             fieldImagePointEffect.setEffectId(effectId)
             fieldImagePointEffect.setArgSetId(effectArgumentSetsId)
-            fieldImagePointEffect.imagePointEffectStepIndex = 0
+            //fieldImagePointEffect.imagePointEffectStepIndex = 0
             fieldImagePointEffect.imagePointEffectDuration = fieldDuration
         }
 
