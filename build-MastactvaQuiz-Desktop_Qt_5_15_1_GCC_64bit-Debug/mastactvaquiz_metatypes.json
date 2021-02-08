@@ -22205,5 +22205,22 @@
         ],
         "inputFile": "artefactargstorage.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "EffectObjectInfo",
+                "object": true,
+                "qualifiedClassName": "EffectObjectInfo",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "effectobjectinfo.h",
+        "outputRevision": 67
     }
 ]
