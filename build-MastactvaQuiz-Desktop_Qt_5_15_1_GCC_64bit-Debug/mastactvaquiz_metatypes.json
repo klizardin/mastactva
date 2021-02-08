@@ -21420,5 +21420,22 @@
         ],
         "inputFile": "translation.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "ArtefactArgStorage",
+                "object": true,
+                "qualifiedClassName": "ArtefactArgStorage",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "artefactargstorage.h",
+        "outputRevision": 67
     }
 ]
