@@ -60,6 +60,7 @@
 37. plan multistage drawing (drawing to texture, drawing to surface -- last step)
 38. plan particles drawing
 * 39. image mask areas
+40. add image point mask areas
 
 
 
