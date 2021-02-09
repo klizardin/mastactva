@@ -99,27 +99,36 @@ Page {
                                     userStepModel.addItem(userStepNi)
                                 }
 
-                                nextImage = nextImgObj
-                                //nextImage.loadChildren()
-                                quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
-                                if(ipni.ipEffect.currentItem !== null)
+                                var maskArea = false
+                                if(nextImgObj.imageId === currentImage.imageId)
                                 {
-                                    quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
-                                    quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
-                                    quizImageNumberAnimation.easing.type = Easing.Linear
-                                    var durationEffect = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
-                                    quizImageNumberAnimation.duration = durationEffect
+                                    maskArea = (ipni.ipEffect.currentItem.imagePointEffectDuration === 0) || (ipni.ipEffect.currentItem === null)
                                 }
-                                else
+
+                                if(!maskArea)
                                 {
-                                    quizImage.effect = null
-                                    quizImage.argumentSet = null
-                                    quizImageNumberAnimation.easing.type = Easing.Linear
-                                    var durationNoEffect = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
-                                    quizImageNumberAnimation.duration = durationNoEffect
+                                    nextImage = nextImgObj
+                                    //nextImage.loadChildren()
+                                    quizImage.toImage = [nextImage.imageSource, nextImage.imageHash]
+                                    if(ipni.ipEffect.currentItem !== null)
+                                    {
+                                        quizImage.effect = ipni.ipEffect.currentItem.imagePointEffectEffect.currentItem
+                                        quizImage.argumentSet = ipni.ipEffect.currentItem.imagePointEffectArgSet.currentItem
+                                        quizImageNumberAnimation.easing.type = Easing.Linear
+                                        var durationEffect = (ipni.ipEffect.currentItem.imagePointEffectDuration * animationSpeed) / Constants.animationSpeedNorm
+                                        quizImageNumberAnimation.duration = durationEffect
+                                    }
+                                    else
+                                    {
+                                        quizImage.effect = null
+                                        quizImage.argumentSet = null
+                                        quizImageNumberAnimation.easing.type = Easing.Linear
+                                        var durationNoEffect = (animationDuration * animationSpeed) / Constants.animationSpeedNorm
+                                        quizImageNumberAnimation.duration = durationNoEffect
+                                    }
+                                    quizPage.setDescription(undefined)
+                                    quizImageAnimation.running = true
                                 }
-                                quizPage.setDescription(undefined)
-                                quizImageAnimation.running = true
                             }
                         }
                         else if(currentImage.imagePoints.isNextObjQuestionByCoords(x, y))
