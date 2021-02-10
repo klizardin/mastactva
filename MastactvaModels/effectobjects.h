@@ -28,7 +28,7 @@ public:
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("artefact");
+            setLayoutJsonName("effect-object");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectObjects::m_parentModelInfo);
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &EffectObjects::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectObjects::m_appId);
