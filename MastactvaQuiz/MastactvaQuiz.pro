@@ -110,7 +110,7 @@ unix: SOURCES += \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
-        effectartefact.cpp  \
+        effectobjectartefact.cpp  \
         effectartefactarg.cpp \
         effectartefactargset.cpp \
         translation.cpp \
@@ -205,7 +205,7 @@ unix: HEADERS += \
     artefact.h  \
     artefacttype.h    \
     artefactargtype.h \
-    effectartefact.h    \
+    effectobjectartefact.h    \
     effectartefactarg.h \
     effectartefactargset.h \
     translation.h   \

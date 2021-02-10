@@ -11,33 +11,33 @@
 #include "../MastactvaModels/effectartefactargset.h"
 
 
-class EffectArtefactModel;
+class EffectObjectArtefactModel;
 
 
-class EffectArtefact : public QObject
+class EffectObjectArtefact : public QObject
 {
     Q_OBJECT
 public:
-    explicit EffectArtefact(EffectArtefactModel *parent_ = nullptr);
+    explicit EffectObjectArtefact(EffectObjectArtefactModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectArtefactEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
+    Q_PROPERTY(int effectArtefactEffectObjectId READ effectObjectId WRITE setEffectObjectId NOTIFY effectObjectIdChanged)
     Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
     Q_PROPERTY(QVariant effectArtefactEffectArtefactArgSet READ effectArtefactArgSet WRITE setEffectArtefactArgSet NOTIFY effectArtefactArgSetChanged)
 
-    class DefaultLayout : public LayoutBase<EffectArtefact>
+    class DefaultLayout : public LayoutBase<EffectObjectArtefact>
     {
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("effect-artefact");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectArtefact::m_parentModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefact::m_appId);
-            addField<int>("id", "effectArtefactId", &EffectArtefact::id, &EffectArtefact::setId);
-            addField<int>("effect", "effectArtefactEffectId", &EffectArtefact::effectId, &EffectArtefact::setEffectId);
-            addField<int>("artefact", "", &EffectArtefact::artefactId, &EffectArtefact::setArtefactId);
-            addModel<ArtefactModel>("effectArtefactArtefact", &EffectArtefact::m_artefactModel, &EffectArtefact::createArtefactModel);
-            addModel<EffectArtefactArgSetModel>("effectArtefactEffectArtefactArgSet", &EffectArtefact::m_effectArtefactArgSetModel, &EffectArtefact::createEffectArtefactArgSetModel);
+            setLayoutJsonName("effect-object-artefact");
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectObjectArtefact::m_parentModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &EffectObjectArtefact::m_appId);
+            addField<int>("id", "effectArtefactId", &EffectObjectArtefact::id, &EffectObjectArtefact::setId);
+            addField<int>("effect_object", "effectArtefactEffectObjectId", &EffectObjectArtefact::effectObjectId, &EffectObjectArtefact::setEffectObjectId);
+            addField<int>("artefact", "", &EffectObjectArtefact::artefactId, &EffectObjectArtefact::setArtefactId);
+            addModel<ArtefactModel>("effectArtefactArtefact", &EffectObjectArtefact::m_artefactModel, &EffectObjectArtefact::createArtefactModel);
+            addModel<EffectArtefactArgSetModel>("effectArtefactEffectArtefactArgSet", &EffectObjectArtefact::m_effectArtefactArgSetModel, &EffectObjectArtefact::createEffectArtefactArgSetModel);
             setIdField("id");
         }
     };
@@ -48,8 +48,8 @@ public:
 public:
     int id() const;
     void setId(const int &id_);
-    int effectId() const;
-    void setEffectId(const int &effectId_);
+    int effectObjectId() const;
+    void setEffectObjectId(const int &effectId_);
     QVariant artefact() const;
     void setArtefact(const QVariant &obj_);
     ArtefactModel *getArtefact();
@@ -63,12 +63,12 @@ protected:
 
 signals:
     void idChanged();
-    void effectIdChanged();
+    void effectObjectIdChanged();
     void artefactChanged();
     void effectArtefactArgSetChanged();
 
 private:
-    EffectArtefactModel *m_effectArtefactModel = nullptr;
+    EffectObjectArtefactModel *m_effectArtefactModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
@@ -79,16 +79,16 @@ private:
 };
 
 
-class EffectArtefactModel : public ListModelBaseOfData<EffectArtefact, EffectArtefactModel>
+class EffectObjectArtefactModel : public ListModelBaseOfData<EffectObjectArtefact, EffectObjectArtefactModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectArtefact, EffectArtefactModel>;
+    using base = ListModelBaseOfData<EffectObjectArtefact, EffectObjectArtefactModel>;
 
 public:
-    explicit EffectArtefactModel(QObject *parent_ = nullptr);
+    explicit EffectObjectArtefactModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

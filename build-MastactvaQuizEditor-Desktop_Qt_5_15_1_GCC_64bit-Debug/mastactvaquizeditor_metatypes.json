@@ -4190,15 +4190,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefacts",
-                        "notify": "effectArtefactChanged",
-                        "read": "effectArtefacts",
+                        "name": "effectObjects",
+                        "notify": "effectObjectsChanged",
+                        "read": "effectObjects",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "QVariant",
                         "user": false,
-                        "write": "setEffectArtefacts"
+                        "write": "setEffectObjectss"
                     },
                     {
                         "constant": false,
@@ -4248,7 +4248,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectArtefactChanged",
+                        "name": "effectObjectsChanged",
                         "returnType": "void"
                     },
                     {
@@ -21284,7 +21284,7 @@
     {
         "classes": [
             {
-                "className": "EffectArtefact",
+                "className": "EffectObjectArtefact",
                 "methods": [
                     {
                         "access": "public",
@@ -21323,15 +21323,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactEffectId",
-                        "notify": "effectIdChanged",
-                        "read": "effectId",
+                        "name": "effectArtefactEffectObjectId",
+                        "notify": "effectObjectIdChanged",
+                        "read": "effectObjectId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setEffectId"
+                        "write": "setEffectObjectId"
                     },
                     {
                         "constant": false,
@@ -21362,7 +21362,7 @@
                         "write": "setEffectArtefactArgSet"
                     }
                 ],
-                "qualifiedClassName": "EffectArtefact",
+                "qualifiedClassName": "EffectObjectArtefact",
                 "signals": [
                     {
                         "access": "public",
@@ -21371,7 +21371,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectIdChanged",
+                        "name": "effectObjectIdChanged",
                         "returnType": "void"
                     },
                     {
@@ -21399,7 +21399,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "EffectArtefactModel",
+                "className": "EffectObjectArtefactModel",
                 "methods": [
                     {
                         "access": "public",
@@ -21919,7 +21919,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "EffectArtefactModel",
+                "qualifiedClassName": "EffectObjectArtefactModel",
                 "signals": [
                     {
                         "access": "public",
@@ -22076,12 +22076,12 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectArtefact,EffectArtefactModel>"
+                        "name": "ListModelBaseOfData<EffectObjectArtefact,EffectObjectArtefactModel>"
                     }
                 ]
             }
         ],
-        "inputFile": "effectartefact.h",
+        "inputFile": "effectobjectartefact.h",
         "outputRevision": 67
     },
     {
