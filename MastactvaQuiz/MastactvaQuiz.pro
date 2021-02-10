@@ -115,7 +115,8 @@ unix: SOURCES += \
         effectartefactargset.cpp \
         translation.cpp \
         artefactargstorage.cpp  \
-        effectobjectinfo.cpp
+        effectobjectinfo.cpp    \
+        effectobjects.cpp
 
 
 RESOURCES += qml.qrc \
@@ -209,7 +210,8 @@ unix: HEADERS += \
     effectartefactargset.h \
     translation.h   \
     artefactargstorage.h    \
-    effectobjectinfo.h
+    effectobjectinfo.h  \
+    effectobjects.h
 
 
 DISTFILES += \

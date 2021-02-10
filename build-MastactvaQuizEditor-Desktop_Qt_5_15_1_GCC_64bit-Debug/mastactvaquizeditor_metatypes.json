@@ -26160,5 +26160,22 @@
         ],
         "inputFile": "effectobjectinfo.h",
         "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "EffectObjects",
+                "object": true,
+                "qualifiedClassName": "EffectObjects",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "effectobjects.h",
+        "outputRevision": 67
     }
 ]
