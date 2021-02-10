@@ -2,7 +2,7 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/artefacttype.h"
-#include "../MastactvaModels/effectartefact.h"
+#include "../MastactvaModels/effectobjectartefact.h"
 #include "../MastactvaModels/effect.h"
 
 
@@ -209,11 +209,14 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
 
     setShaders(QString(), QString());
 
-    const EffectArtefactModel *artefacts = effect_->getEffectArtefacts();
+/*
+ *  TODO: fix add model
+ *
+    const EffectObjectArtefactModel *artefacts = effect_->getEffectArtefacts();
     Q_ASSERT(nullptr != artefacts && artefacts->isListLoaded());
     for(int i = 0; i < artefacts->sizeImpl(); ++i)
     {
-        const EffectArtefact *effect_artefact = artefacts->dataItemAtImpl(i);
+        const EffectObjectArtefact *effect_artefact = artefacts->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effect_artefact);
         const ArtefactModel *artefactModel = effect_artefact->getArtefact();
         Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoaded() && artefactModel->sizeImpl() > 0);
@@ -239,6 +242,7 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
             setFragmentShader(shaderText);
         }
     }
+    */
     initDefaultShaders();
 
     ArtefactArgTypeModel *artefactArgTypeModel = static_cast<ArtefactArgTypeModel *>(

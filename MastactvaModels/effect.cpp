@@ -54,23 +54,32 @@ void Effect::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
-QVariant Effect::effectArtefacts() const
+QVariant Effect::effectObjects() const
 {
-    if(nullptr == m_effectArtefactModel)
+    if(nullptr == m_effectObjectsModel)
     {
-        const_cast<Effect *>(this)->m_effectArtefactModel = const_cast<Effect *>(this)->createEffectArtefactModel();
+        const_cast<Effect *>(this)
+                ->m_effectObjectsModel =
+                const_cast<Effect *>(this)
+                ->createEffectObjectsModel();
     }
-    return QVariant::fromValue(static_cast<QObject *>(const_cast<EffectArtefactModel *>(m_effectArtefactModel)));
+    return QVariant::fromValue(
+                static_cast<QObject *>(
+                    const_cast<EffectObjectsModel *>(
+                        m_effectObjectsModel
+                        )
+                    )
+                );
 }
 
-void Effect::setEffectArtefacts(const QVariant &obj_)
+void Effect::setEffectObjectss(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectArtefactModel)
+    if(obj_.isNull() && nullptr != m_effectObjectsModel)
     {
-        delete m_effectArtefactModel;
-        m_effectArtefactModel = nullptr;
+        delete m_effectObjectsModel;
+        m_effectObjectsModel = nullptr;
 
-        emit effectArtefactChanged();
+        emit effectObjectsChanged();
     }
 }
 
@@ -114,18 +123,18 @@ void Effect::setArgSets(const QVariant &obj_)
     }
 }
 
-EffectArtefactModel *Effect::createEffectArtefactModel()
+EffectObjectsModel *Effect::createEffectObjectsModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
-    EffectArtefactModel *m = new EffectArtefactModel(this);
+    EffectObjectsModel *m = new EffectObjectsModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectModel->getQMLLayoutName() + QString("_Effect_") +
-                        QVariant::fromValue(m_appId).toString() + QString("_EffectArtefactModel_"));
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectObjectsModel_"));
     m->registerListModel();
     m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
@@ -175,23 +184,29 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
 bool Effect::startRefreshArguments()
 {
     qDebug() << "Effect::startRefreshArguments()";
-    if(nullptr == m_effectArtefactModel
-            || !m_effectArtefactModel->isListLoadedImpl()
+    if(nullptr == m_effectObjectsModel
+            || !m_effectObjectsModel->isListLoadedImpl()
             || nullptr == m_effectArgModel
             || !m_effectArgModel->isListLoadedImpl()
             ) { return false; }
 
     // get all artefacts urls
-    const int artefactsCnt = m_effectArtefactModel->size();
+    const int artefactsCnt = m_effectObjectsModel->size();
     QList<QPair<QString, QString>> urlHashPairs;
-    for(int i = 0; i < artefactsCnt; i++)
+
+    return false;
+
+/*  TODO: fix add new objects
+ *
+ *     for(int i = 0; i < artefactsCnt; i++)
     {
-        EffectArtefact* m = m_effectArtefactModel->dataItemAtImpl(i);
+        EffectArtefact* m = m_effectObjectsModel->dataItemAtImpl(i);
         if(nullptr == m || nullptr == m->getArtefact() || !m->getArtefact()->isListLoadedImpl()) { return false; }
         Artefact* artefact = m->getArtefact()->dataItemAtImpl(0);
         if(nullptr == artefact) { return false; }
         urlHashPairs.push_back({artefact->getFilename(), artefact->hash()});
     }
+*/
     //for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     //{
     //    qDebug() << url_.first << ", " << url_.second;
@@ -483,14 +498,14 @@ bool Effect::isChildrenLoaded() const
     return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
-EffectArtefactModel *Effect::getEffectArtefacts()
+EffectObjectsModel *Effect::getEffectArtefacts()
 {
-    return m_effectArtefactModel;
+    return m_effectObjectsModel;
 }
 
-const EffectArtefactModel *Effect::getEffectArtefacts() const
+const EffectObjectsModel *Effect::getEffectArtefacts() const
 {
-    return m_effectArtefactModel;
+    return m_effectObjectsModel;
 }
 
 EffectArgModel *Effect::getEffectArguments()

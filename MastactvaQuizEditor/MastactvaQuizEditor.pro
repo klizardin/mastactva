@@ -113,12 +113,13 @@ unix: HEADERS += \
         artefact.h    \
         artefacttype.h    \
         artefactargtype.h \
-        effectartefact.h    \
+        effectobjectartefact.h    \
         effectartefactarg.h \
         effectartefactargset.h \
         translation.h   \
         artefactargstorage.h    \
-        effectobjectinfo.h
+        effectobjectinfo.h  \
+        effectobjects.h
 
 
 SOURCES += \
@@ -167,12 +168,13 @@ unix: SOURCES += \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
-        effectartefact.cpp  \
+        effectobjectartefact.cpp  \
         effectartefactarg.cpp \
         effectartefactargset.cpp \
         translation.cpp \
         artefactargstorage.cpp  \
-        effectobjectinfo.cpp
+        effectobjectinfo.cpp    \
+        effectobjects.cpp
 
 
 RESOURCES += qml.qrc    \

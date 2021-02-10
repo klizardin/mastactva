@@ -7,9 +7,10 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "../MastactvaModels/effectartefact.h"
+//#include "../MastactvaModels/effectartefact.h"
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/effectargset.h"
+#include "../MastactvaModels/effectobjects.h"
 
 
 class EffectModel;
@@ -25,7 +26,7 @@ public:
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectDescription READ description WRITE setDescription NOTIFY descriptionChanged)
-    Q_PROPERTY(QVariant effectArtefacts READ effectArtefacts WRITE setEffectArtefacts NOTIFY effectArtefactChanged)
+    Q_PROPERTY(QVariant effectObjects READ effectObjects WRITE setEffectObjectss NOTIFY effectObjectsChanged)
     Q_PROPERTY(QVariant effectArgs READ args WRITE setArgs NOTIFY argsChanged)
     Q_PROPERTY(QVariant effectArgSets READ argSets WRITE setArgSets NOTIFY argSetsChanged)
 
@@ -41,7 +42,8 @@ public:
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
-            addModel<EffectArtefactModel>("effectArtefacts", &Effect::m_effectArtefactModel, &Effect::createEffectArtefactModel);
+            addModel<EffectObjectsModel>("effectArtefacts", &Effect::m_effectObjectsModel, &Effect::createEffectObjectsModel);
+            //addModel<EffectArtefactModel>("effectArtefacts", &Effect::m_effectArtefactModel, &Effect::createEffectArtefactModel);
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
             setIdField("id");
@@ -55,16 +57,16 @@ public:
     void setName(const QString &name_);
     QString description() const;
     void setDescription(const QString &description_);
-    QVariant effectArtefacts() const;
-    void setEffectArtefacts(const QVariant &obj_);
+    QVariant effectObjects() const;
+    void setEffectObjectss(const QVariant &obj_);
     QVariant args() const;
     void setArgs(const QVariant &obj_);
     QVariant argSets() const;
     void setArgSets(const QVariant &obj_);
 
 public:
-    EffectArtefactModel *getEffectArtefacts();
-    const EffectArtefactModel *getEffectArtefacts() const;
+    EffectObjectsModel *getEffectArtefacts();
+    const EffectObjectsModel *getEffectArtefacts() const;
     EffectArgModel *getEffectArguments();
     const EffectArgModel *getEffectArguments() const;
 
@@ -83,7 +85,7 @@ protected slots:
     void itemDeletedSlot();
 
 protected:
-    EffectArtefactModel *createEffectArtefactModel();
+    EffectObjectsModel *createEffectObjectsModel();
     EffectArgModel *createEffectArgModel();
     EffectArgSetModel *createEffectArgSetModel();
     void applyRefreshArgumentsStep();
@@ -96,7 +98,7 @@ signals:
     void idChanged();
     void nameChanged();
     void descriptionChanged();
-    void effectArtefactChanged();
+    void effectObjectsChanged();
     void argsChanged();
     void argSetsChanged();
     void refreshArgumentsProgress(bool download_, qreal rate_);
@@ -112,7 +114,7 @@ private:
     int m_id = -1;
     QString m_name;
     QString m_description;
-    EffectArtefactModel *m_effectArtefactModel = nullptr;
+    EffectObjectsModel *m_effectObjectsModel = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;
 
