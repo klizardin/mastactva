@@ -498,12 +498,12 @@ bool Effect::isChildrenLoaded() const
     return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
-EffectObjectsModel *Effect::getEffectArtefacts()
+EffectObjectsModel *Effect::getEffectObjects()
 {
     return m_effectObjectsModel;
 }
 
-const EffectObjectsModel *Effect::getEffectArtefacts() const
+const EffectObjectsModel *Effect::getEffectObjects() const
 {
     return m_effectObjectsModel;
 }

@@ -65,8 +65,8 @@ public:
     void setArgSets(const QVariant &obj_);
 
 public:
-    EffectObjectsModel *getEffectArtefacts();
-    const EffectObjectsModel *getEffectArtefacts() const;
+    EffectObjectsModel *getEffectObjects();
+    const EffectObjectsModel *getEffectObjects() const;
     EffectArgModel *getEffectArguments();
     const EffectArgModel *getEffectArguments() const;
 

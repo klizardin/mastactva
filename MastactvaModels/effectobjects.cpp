@@ -73,6 +73,41 @@ void EffectObjects::setEffectObjectInfo(const QVariant &obj_)
     }
 }
 
+QVariant EffectObjects::effectObjectArtefacts() const
+{
+    if(nullptr == m_effectObjectArtefactModel)
+    {
+        const_cast<EffectObjects *>(this)->m_effectObjectArtefactModel = const_cast<EffectObjects *>(this)
+                ->createEffectObjectArtefactModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<EffectObjectArtefactModel *>(
+                                       m_effectObjectArtefactModel)
+                                   )
+                               );
+}
+
+void EffectObjects::setEffectObjectArtefacts(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_effectObjectArtefactModel)
+    {
+        delete m_effectObjectArtefactModel;
+        m_effectObjectArtefactModel = nullptr;
+
+        emit effectObjectArtefactsChanged();
+    }
+}
+
+EffectObjectArtefactModel *EffectObjects::getEffectObjectArtefacts()
+{
+    return m_effectObjectArtefactModel;
+}
+
+const EffectObjectArtefactModel *EffectObjects::getEffectObjectArtefacts() const
+{
+    return m_effectObjectArtefactModel;
+}
+
 EffectObjectInfoModel *EffectObjects::createEffectObjectInfoModel()
 {
     EffectObjectInfoModel *m = new EffectObjectInfoModel(this);
@@ -85,7 +120,24 @@ EffectObjectInfoModel *EffectObjects::createEffectObjectInfoModel()
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
-    m->setReadonlyImpl(false);
+    m->setReadonlyImpl(true);
+    m->loadList();
+    return m;
+}
+
+EffectObjectArtefactModel *EffectObjects::createEffectObjectArtefactModel()
+{
+    EffectObjectArtefactModel *m = new EffectObjectArtefactModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("effect_object", m_effectObjectsModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("effect_object");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_effectObjectsModel->getQMLLayoutName() + QString("_EffectObjects_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_EffectObjectArtefactModel_"));
+    m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->setAutoCreateChildrenModels(true);
+    m->setReadonlyImpl(true);
     m->loadList();
     return m;
 }

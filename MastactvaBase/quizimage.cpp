@@ -459,29 +459,37 @@ void QuizImage::addShadersToWaitDownload()
     m_artefactsUrls.clear();
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
 
-/*
- *  TODO: fix add models
- *
- *
+    EffectObjectsModel *effectObjectsModel = m_effect->getEffectObjects();
+    Q_ASSERT(nullptr != effectObjectsModel && effectObjectsModel->isListLoaded());
 
-    EffectObjectArtefactModel *shaders = m_effect->getEffectArtefacts();
-    Q_ASSERT(nullptr != shaders && shaders->isListLoaded());
-    for(int i = 0; i < shaders->sizeImpl(); i++)
+    for(int i = 0; i < effectObjectsModel->sizeImpl(); i++ )
     {
-        EffectObjectArtefact *effect_shader = shaders->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effect_shader);
-        ArtefactModel *artefactModel = effect_shader->getArtefact();
-        Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoaded()
-                && artefactModel->sizeImpl() > 0
-                );
-        Artefact *artefact = artefactModel->dataItemAtImpl(0);
-        m_artefactsUrls.push_back(artefact->filename());
-        if(nullptr != sf)
+        EffectObjects *effectObjects = effectObjectsModel->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effectObjects);
+
+        EffectObjectArtefactModel *effectObjectArtefactModel = effectObjects->getEffectObjectArtefacts();
+        Q_ASSERT(nullptr != effectObjectArtefactModel && effectObjectArtefactModel->isListLoadedImpl());
+
+        for(int j = 0; j < effectObjectArtefactModel->sizeImpl(); j++)
         {
-            sf->add(artefact->filename(), artefact->hash(), g_artefactsRelPath);
+            EffectObjectArtefact *effectObjectArtefact = effectObjects->getEffectObjectArtefacts()->dataItemAtImpl(j);
+            Q_ASSERT(nullptr != effectObjectArtefact);
+
+            ArtefactModel * artefactModel = effectObjectArtefact->getArtefact();
+            Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoadedImpl());
+
+            for(int k = 0; k < artefactModel->sizeImpl(); k++)
+            {
+                Artefact *artefact = artefactModel->dataItemAtImpl(k);
+                Q_ASSERT(nullptr != artefact);
+                m_artefactsUrls.push_back(artefact->filename());
+                if(nullptr != sf)
+                {
+                    sf->add(artefact->filename(), artefact->hash(), g_artefactsRelPath);
+                }
+            }
         }
     }
-    */
     updateStateIfDataIsReady();
 }
 
