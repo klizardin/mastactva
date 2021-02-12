@@ -209,40 +209,52 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
 
     setShaders(QString(), QString());
 
-/*
- *  TODO: fix add model
- *
-    const EffectObjectArtefactModel *artefacts = effect_->getEffectArtefacts();
-    Q_ASSERT(nullptr != artefacts && artefacts->isListLoaded());
-    for(int i = 0; i < artefacts->sizeImpl(); ++i)
+    const EffectObjectsModel *effectObjectsModel = effect_->getEffectObjects();
+    Q_ASSERT(nullptr != effectObjectsModel && effectObjectsModel->isListLoaded());
+
+    for(int i = 0; i < effectObjectsModel->sizeImpl(); i++ )
     {
-        const EffectObjectArtefact *effect_artefact = artefacts->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effect_artefact);
-        const ArtefactModel *artefactModel = effect_artefact->getArtefact();
-        Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoaded() && artefactModel->sizeImpl() > 0);
-        const Artefact *artefact = artefactModel->dataItemAtImpl(0);
-        Q_ASSERT(artefact != nullptr);
+        const EffectObjects *effectObjects = effectObjectsModel->dataItemAtImpl(i);
+        Q_ASSERT(nullptr != effectObjects);
 
-        Q_ASSERT(sf->isUrlDownloaded(artefact->filename()));
-        QString shaderText = ::loadTextFileByUrl(artefact->filename());
+        const EffectObjectArtefactModel *effectObjectArtefactModel = effectObjects->getEffectObjectArtefacts();
+        Q_ASSERT(nullptr != effectObjectArtefactModel && effectObjectArtefactModel->isListLoadedImpl());
 
-        ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
-        Q_ASSERT(nullptr != artefactType &&
-                    (
-                        g_artefactTypeVertex == artefactType->type() ||
-                        g_artefactTypeFragment == artefactType->type()
-                    )
-                );
-        if(g_artefactTypeVertex == artefactType->type())
+        for(int j = 0; j < effectObjectArtefactModel->sizeImpl(); j++)
         {
-            setVertexShader(shaderText);
-        }
-        else if(g_artefactTypeFragment == artefactType->type())
-        {
-            setFragmentShader(shaderText);
+            const EffectObjectArtefact *effectObjectArtefact = effectObjects->getEffectObjectArtefacts()->dataItemAtImpl(j);
+            Q_ASSERT(nullptr != effectObjectArtefact);
+
+            const ArtefactModel * artefactModel = effectObjectArtefact->getArtefact();
+            Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoadedImpl());
+
+            for(int k = 0; k < artefactModel->sizeImpl(); k++)
+            {
+                const Artefact *artefact = artefactModel->dataItemAtImpl(k);
+                Q_ASSERT(nullptr != artefact);
+                Q_ASSERT(sf->isUrlDownloaded(artefact->filename()));
+
+                ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
+                QString shaderText;
+                Q_ASSERT(nullptr != artefactType);
+
+                if(g_artefactTypeVertex == artefactType->type() ||
+                        g_artefactTypeFragment == artefactType->type())
+                {
+                    shaderText = ::loadTextFileByUrl(artefact->filename());
+                    if(g_artefactTypeVertex == artefactType->type())
+                    {
+                        setVertexShader(shaderText);
+                    }
+                    else if(g_artefactTypeFragment == artefactType->type())
+                    {
+                        setFragmentShader(shaderText);
+                    }
+                }
+            }
         }
     }
-    */
+
     initDefaultShaders();
 
     ArtefactArgTypeModel *artefactArgTypeModel = static_cast<ArtefactArgTypeModel *>(

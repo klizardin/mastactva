@@ -23051,6 +23051,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setEffectObjectInfo"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectObjectsEffectObjectArtefacts",
+                        "notify": "effectObjectArtefactsChanged",
+                        "read": "effectObjectArtefacts",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setEffectObjectArtefacts"
                     }
                 ],
                 "qualifiedClassName": "EffectObjects",
@@ -23068,6 +23082,11 @@
                     {
                         "access": "public",
                         "name": "effectObjectInfoChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "effectObjectArtefactsChanged",
                         "returnType": "void"
                     }
                 ],

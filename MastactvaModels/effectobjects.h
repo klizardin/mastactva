@@ -8,6 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/effectobjectinfo.h"
+#include "../MastactvaModels/effectobjectartefact.h"
 
 
 class EffectObjectsModel;
@@ -22,6 +23,7 @@ public:
     Q_PROPERTY(int effectObjectsId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectObjectsEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QVariant effectObjectsEffectObjectInfo READ effectObjectInfo WRITE setEffectObjectInfo NOTIFY effectObjectInfoChanged)
+    Q_PROPERTY(QVariant effectObjectsEffectObjectArtefacts READ effectObjectArtefacts WRITE setEffectObjectArtefacts NOTIFY effectObjectArtefactsChanged)
 
     class DefaultLayout : public LayoutBase<EffectObjects>
     {
@@ -36,6 +38,7 @@ public:
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
             addField<int>("effect_object_info", "", &EffectObjects::effectObjectInfoId, &EffectObjects::setEffectObjectInfoId);
             addModel<EffectObjectInfoModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectInfoModel, &EffectObjects::createEffectObjectInfoModel);
+            addModel<EffectObjectArtefactModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectArtefactModel, &EffectObjects::createEffectObjectArtefactModel);
             setIdField("id");
         }
     };
@@ -49,15 +52,20 @@ public:
     void setEffectObjectInfoId(const int &effectObjectInfoId_);
     QVariant effectObjectInfo() const;
     void setEffectObjectInfo(const QVariant &obj_);
+    QVariant effectObjectArtefacts() const;
+    void setEffectObjectArtefacts(const QVariant &obj_);
+    EffectObjectArtefactModel *getEffectObjectArtefacts();
+    const EffectObjectArtefactModel *getEffectObjectArtefacts() const;
 
 protected:
     EffectObjectInfoModel *createEffectObjectInfoModel();
-
+    EffectObjectArtefactModel *createEffectObjectArtefactModel();
 
 signals:
     void idChanged();
     void effectIdChanged();
     void effectObjectInfoChanged();
+    void effectObjectArtefactsChanged();
 
 private:
     EffectObjectsModel *m_effectObjectsModel = nullptr;
@@ -68,6 +76,7 @@ private:
     int m_effectId = -1;
     int m_effectObjectInfoId = -1;
     EffectObjectInfoModel *m_effectObjectInfoModel = nullptr;
+    EffectObjectArtefactModel *m_effectObjectArtefactModel = nullptr;
 };
 
 
