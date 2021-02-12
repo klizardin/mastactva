@@ -81,7 +81,7 @@ EffectArtefactArgModel *EffectArtefactArgSet::createEffectArtefactArgModel()
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
-    m->setReadonlyImpl(false);
+    m->setReadonlyImpl(true);
     m->loadList();
     return m;
 }
