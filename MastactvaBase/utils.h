@@ -67,6 +67,7 @@ static const char *g_artefactTypeVertex = "Vertex";
 static const char *g_artefactTypeFragment = "Fragment";
 static const char *g_artefactTypeModel = "ArtefactTypeModelel";
 static const char *g_artefactArgTypeModel = "ArtefactArgTypeModel";
+static const char *g_artefactArgStorageModel = "ArtefactArgStorageModel";
 static const char *g_easingTypeModel = "EasingTypeModel";
 static const char *g_galleryModel = "GalleryModel";
 static const char *g_allImagesOfGalleryModel = "AllImagesOfGallery";

@@ -581,6 +581,15 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    ArtefactArgStorageModel {
+        id: artefactArgStorageModel
+        objectName: "ArtefactArgStorageModel"
+        layoutQMLName: "ArtefactArgStorageModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     EasingTypeModel {
         id: easingTypeModel
         objectName: "EasingTypeModel"
