@@ -179,7 +179,7 @@ public:
     {
         Q_UNUSED(parent_);
 #if defined(TRACE_LIST_SIZE)
-        qDebug() << "m_data.size = " << m_data.size();
+        qDebug() << getLayoutJsonNameImpl() << "m_data.size = " << m_data.size();
 #endif
         return m_data.size();
     }
@@ -888,6 +888,11 @@ protected:
     }
 
     const QString &getLayoutJsonNameImpl()
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName();
+    }
+
+    const QString &getLayoutJsonNameImpl() const
     {
         return getDataLayout<DataType_>().getLayoutJsonName();
     }
