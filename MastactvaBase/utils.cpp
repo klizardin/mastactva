@@ -225,7 +225,7 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
     if(lb < 0 || le < 0) { return; }
     QString line = shaderText_.mid(lb, le - lb).trimmed();
     // TODO: make lexical analyze
-    //       for data of Lua case
+    //       for object geometry data case
     int i = 0;
     int sb = i;
     for(;i < line.length(); )
