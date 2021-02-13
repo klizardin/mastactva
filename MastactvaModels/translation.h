@@ -47,8 +47,8 @@ public:
             addField<QString>("text", "translationText", &Translation::text, &Translation::setText);
             addField<QDateTime>("text", "translationCreated", &Translation::created, &Translation::setCreated);
             addField<bool>("auto_translate", "translationAutoTranslate", &Translation::autoTranslate, &Translation::setAutoTranslate);
-            addField<QString>("lang_from", "translationLangFrom", &Translation::langFrom, &Translation::setLangFrom);
-            addField<QString>("lang_to", "translationLangTo", &Translation::langTo, &Translation::setLangTo);
+            addField<QString>("language_from", "translationLangFrom", &Translation::langFrom, &Translation::setLangFrom);
+            addField<QString>("language_to", "translationLangTo", &Translation::langTo, &Translation::setLangTo);
             setIdField("id");
         }
     };
