@@ -5,6 +5,7 @@
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/artefact.h"
+#include "../MastactvaModels/artefactargstorage.h"
 #include "../MastactvaBase/defines.h"
 
 
@@ -190,23 +191,45 @@ bool Effect::startRefreshArguments()
             || !m_effectArgModel->isListLoadedImpl()
             ) { return false; }
 
+    ArtefactTypeModel *artefactTypeModel = static_cast<ArtefactTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactTypeModel)
+                );
+    Q_ASSERT(nullptr != artefactTypeModel && artefactTypeModel->sizeImpl() > 0);
+
     // get all artefacts urls
-    const int artefactsCnt = m_effectObjectsModel->size();
+    const int objecsCnt = m_effectObjectsModel->size();
     QList<QPair<QString, QString>> urlHashPairs;
 
-    return false;
-
-/*  TODO: fix add new objects
- *
- *     for(int i = 0; i < artefactsCnt; i++)
+    for(int i = 0; i < objecsCnt; i++)
     {
-        EffectArtefact* m = m_effectObjectsModel->dataItemAtImpl(i);
-        if(nullptr == m || nullptr == m->getArtefact() || !m->getArtefact()->isListLoadedImpl()) { return false; }
-        Artefact* artefact = m->getArtefact()->dataItemAtImpl(0);
-        if(nullptr == artefact) { return false; }
-        urlHashPairs.push_back({artefact->getFilename(), artefact->hash()});
+        EffectObjects *effectObjects = m_effectObjectsModel->dataItemAtImpl(i);
+        if(nullptr == effectObjects) { return false; }
+        EffectObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getEffectObjectArtefacts();
+        if(nullptr == effectObjectArtefactsModel ||
+                !effectObjectArtefactsModel->isListLoadedImpl()) { return false; }
+        for(int j = 0; j < effectObjectArtefactsModel->sizeImpl(); j++)
+        {
+            EffectObjectArtefact *effectObjectArtefact = effectObjectArtefactsModel->dataItemAtImpl(j);
+            if(nullptr == effectObjectArtefact) { return false; }
+            ArtefactModel *artefactsModel = effectObjectArtefact->getArtefact();
+            if(nullptr == artefactsModel ||
+                    !artefactsModel->isListLoadedImpl()) { return false; }
+            for(int k = 0; k < artefactsModel->sizeImpl(); k++)
+            {
+                Artefact *artefact = artefactsModel->dataItemAtImpl(k);
+                if(nullptr == artefact) { return false; }
+                ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
+                if(nullptr == artefactType) { return false; }
+
+                // only for shaders
+                if(g_artefactTypeVertex == artefactType->type() ||
+                        g_artefactTypeFragment == artefactType->type())
+                {
+                    urlHashPairs.push_back({artefact->getFilename(), artefact->hash()});
+                }
+            }
+        }
     }
-*/
     //for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     //{
     //    qDebug() << url_.first << ", " << url_.second;
@@ -271,6 +294,10 @@ void Effect::applyRefreshArguments()
                 QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
                 );
     Q_ASSERT(nullptr != argTypesModel);
+    ArtefactArgStorageModel *argStoragesModel = static_cast<ArtefactArgStorageModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgStorageModel)
+                );
+    Q_ASSERT(nullptr != argStoragesModel);
 
     // read comments from artefacts files
     // get file, form commens list
@@ -297,6 +324,7 @@ void Effect::applyRefreshArguments()
                     ) { continue; }
             const QString argName = comment.values().value(g_nameName).trimmed();
             const QString argTypeStr = comment.values().value(g_typeName).trimmed();
+            const QString argStorageStr = comment.values().value(g_storageName).trimmed();
             const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
             const QString argDescription = comment.values().value(g_descriptionName, QString()).trimmed();
             //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
@@ -306,6 +334,12 @@ void Effect::applyRefreshArguments()
                         );
             Q_ASSERT(nullptr != artefactArgType);
             const int argTypeId = artefactArgType->id();
+            ArtefactArgStorage *artefactArgStorage = argStoragesModel->findDataItemByFieldValueImpl(
+                        "artefactArgStorageStorage",
+                        QVariant::fromValue(argStorageStr)
+                        );
+            Q_ASSERT(nullptr != artefactArgType);
+            const int argStorageId = artefactArgStorage->id();
 
             auto fitni = std::find_if(std::begin(newArguments), std::end(newArguments),
                                       [&argName](EffectArg *effectArg)->bool
@@ -325,6 +359,7 @@ void Effect::applyRefreshArguments()
                 newArg->setEffectId(id());
             }
             newArg->setArgTypeId(argTypeId);
+            newArg->setArgStorageId(argStorageId);
             newArg->setDefaultValue(argDefaultValue);
             newArg->setDescription(argDescription);
 

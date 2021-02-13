@@ -581,6 +581,15 @@ ApplicationWindow {
         autoCreateChildrenModels: false
     }
 
+    ArtefactArgStorageModel {
+        id: artefactArgStorageModel
+        objectName: "ArtefactArgStorageModel"
+        layoutQMLName: "ArtefactArgStorageModel"
+        layoutIdField: "id"
+        jsonParamsGet: false
+        autoCreateChildrenModels: false
+    }
+
     EasingTypeModel {
         id: easingTypeModel
         objectName: "EasingTypeModel"
@@ -700,11 +709,15 @@ ApplicationWindow {
         {
             effectsListBusyIndicator.visible = false
             effectsListBusyIndicator.running = false
-            effectCurrentIndex = effectModel.size() > 0 ? effectModel.currentIndex : -1
+            effectsList.model = effectModel.size() > 0 ? effectModel : 0
+            var newIndex = effectModel.size() > 0 ? effectModel.currentIndex : -1
+            effectsList.currentIndex = newIndex
+            effectCurrentIndex = newIndex
         }
 
         function onItemDeleted()
         {
+            effectsList.model = effectModel.size() > 0 ? effectModel : 0
             effectCurrentIndex = -1
         }
 
@@ -3635,9 +3648,9 @@ ApplicationWindow {
                             id: effectsList
 
                             anchors.fill: parent
-                            spacing: Constants.effectsListViewSpacing
+                            spacing: Constants.smallListViewSpacing
                             clip: true
-                            model: effectModel
+                            model: 0
                             delegate: effectItem
                             highlight: effectItemHighlight
                             highlightFollowsCurrentItem: false
@@ -3690,7 +3703,7 @@ ApplicationWindow {
                                 Column {
                                     Label {
                                         text: qsTr("Effect name : ")
-                                        padding: Constants.effectInfoPadding
+                                        padding: Constants.smallViewPadding
                                     }
                                     Text
                                     {
@@ -3698,11 +3711,11 @@ ApplicationWindow {
                                         width: splitEffectsInfo.width
                                         text: qsTr("")
                                         wrapMode: Text.WordWrap
-                                        padding: Constants.effectInfoPadding
+                                        padding: Constants.smallViewPadding
                                     }
                                     Label {
                                         text: qsTr("Effect description : ")
-                                        padding: Constants.effectInfoPadding
+                                        padding: Constants.smallViewPadding
                                     }
                                     Text
                                     {
@@ -3710,7 +3723,7 @@ ApplicationWindow {
                                         width: splitEffectsInfo.width
                                         text: qsTr("")
                                         wrapMode: Text.WordWrap
-                                        padding: Constants.effectInfoPadding
+                                        padding: Constants.smallViewPadding
                                     }
                                 }
                             }
@@ -3720,7 +3733,7 @@ ApplicationWindow {
                                     id: effectShadersList
 
                                     anchors.fill: parent
-                                    spacing: Constants.effectsListViewSpacing
+                                    spacing: Constants.smallListViewSpacing
                                     clip: true
                                     model: 0
                                     delegate: effectShaderItem
@@ -3743,7 +3756,7 @@ ApplicationWindow {
                                     id: effectArgumentsList
 
                                     anchors.fill: parent
-                                    spacing: Constants.effectsListViewSpacing
+                                    spacing: Constants.smallListViewSpacing
                                     clip: true
                                     model: 0
                                     delegate: effectArgumentsItem
@@ -3777,7 +3790,7 @@ ApplicationWindow {
                                             id: effectArgumentSetsList
 
                                             anchors.fill: parent
-                                            spacing: Constants.effectsListViewSpacing
+                                            spacing: Constants.smallListViewSpacing
                                             clip: true
                                             model: 0
                                             delegate: effectArgumentSetsItem
@@ -3803,7 +3816,7 @@ ApplicationWindow {
                                             id: effectArgumentSetValuesList
 
                                             anchors.fill: parent
-                                            spacing: Constants.effectsListViewSpacing
+                                            spacing: Constants.smallListViewSpacing
                                             clip: true
                                             model: 0
                                             delegate: effectArgumentSetValuesItem
@@ -4390,7 +4403,7 @@ ApplicationWindow {
                 width: effectsList.width
                 wrapMode: Text.WordWrap
                 text: effectName
-                padding: Constants.effectsListHeaderPadding
+                padding: Constants.smallListHeaderPadding
 
                 MouseArea {
                     anchors.fill: parent
@@ -4432,7 +4445,7 @@ ApplicationWindow {
                 id: effectItemDescriptionText
                 width: effectsList.width
                 wrapMode: Text.WordWrap
-                text: showFullDescription ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                text: showFullDescription ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
 
                 MouseArea {
                     anchors.fill: parent
@@ -4545,7 +4558,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectShaderItemTypeLabel
                         text: qsTr("Type : ")
@@ -4559,7 +4572,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectShaderItemFilenameLabel
                         text: qsTr("Filename : ")
@@ -4574,7 +4587,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectShaderItemHashLabel
                         text: qsTr("Hash : ")
@@ -4592,7 +4605,7 @@ ApplicationWindow {
                     id: effectShaderItemDescriptionText
                     width: effectShadersList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.smallListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
@@ -4665,7 +4678,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemTypeLabel
                         text: qsTr("Type : ")
@@ -4679,7 +4692,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemNameLabel
                         text: qsTr("Name : ")
@@ -4694,7 +4707,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemDefaultValueLabel
                         text: qsTr("Default value : ")
@@ -4712,7 +4725,7 @@ ApplicationWindow {
                     id: effectArgumentsItemDescriptionText
                     width: effectArgumentsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgDescription) : mastactva.readMore(effectArgDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgDescription) : mastactva.readMore(effectArgDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
@@ -4787,7 +4800,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentSetsItemTypeLabel
                         text: qsTr("Easing type : ")
@@ -4804,7 +4817,7 @@ ApplicationWindow {
                     id: effectArgumentSetsItemDescriptionText
                     width: effectArgumentSetsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgSetDescription) : mastactva.readMore(effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgSetDescription) : mastactva.readMore(effectArgSetDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
@@ -4884,7 +4897,7 @@ ApplicationWindow {
                 width: effectArgumentSetValuesList.width
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentSetValuesItemArgTypeLabel
                         text: qsTr("Argument type : ")
@@ -4898,7 +4911,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentSetValuesItemArgNameLabel
                         text: qsTr("Argument name : ")
@@ -4912,7 +4925,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentSetValuesItemArgDefaultValueLabel
                         text: qsTr("Argument default value : ")
@@ -4926,7 +4939,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentSetValuesItemValueLabel
                         text: qsTr("Value : ")
@@ -4943,7 +4956,7 @@ ApplicationWindow {
                     id: effectArgumentSetValuesItemDescriptionText
                     width: effectArgumentSetValuesList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgValueDescription) : mastactva.readMore(effectArgValueDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgValueDescription) : mastactva.readMore(effectArgValueDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
@@ -5014,7 +5027,7 @@ ApplicationWindow {
                 function onListReloaded()
                 {
                     imageOfGalleryNextImageEffectListItemEffectName.text = imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? imagePointEffectEffect.currentItem.effectName : ""
-                    imageOfGalleryNextImageEffectListItemDescription.text = imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                    imageOfGalleryNextImageEffectListItemDescription.text = imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.smallListReadMoreLength, qsTr(" ...")) : ""
                 }
             }
 
@@ -5023,7 +5036,7 @@ ApplicationWindow {
                 function onListReloaded()
                 {
                     imageOfGalleryNextImageEffectListItemEasing.text = imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null && easingTypeModel.findItemById(imagePointEffectArgSet.currentItem.effectArgSetEasingId) !== null ? easingTypeModel.findItemById(imagePointEffectArgSet.currentItem.effectArgSetEasingId).easingTypeType : ""
-                    imageOfGalleryNextImageEffectListItemArgSetDescription.text = imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectArgSet.currentItem.effectArgSetDescription) : mastactva.readMore(imagePointEffectArgSet.currentItem.effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                    imageOfGalleryNextImageEffectListItemArgSetDescription.text = imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectArgSet.currentItem.effectArgSetDescription) : mastactva.readMore(imagePointEffectArgSet.currentItem.effectArgSetDescription, Constants.smallListReadMoreLength, qsTr(" ...")) : ""
                 }
             }
 
@@ -5032,7 +5045,7 @@ ApplicationWindow {
                 width: imageOfGalleryNextImageEffectList.width
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: imageOfGalleryNextImageEffectListItemEffectNameLabel
                         text: qsTr("Effect name : ")
@@ -5046,7 +5059,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: imageOfGalleryNextImageEffectListItemDescriptionLabel
                         text: qsTr("Effect description : ")
@@ -5054,13 +5067,13 @@ ApplicationWindow {
                     Text {
                         id: imageOfGalleryNextImageEffectListItemDescription
                         width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemDescriptionLabel.width
-                        text: imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                        text: imagePointEffectEffect !== undefined && imagePointEffectEffect !== null && imagePointEffectEffect.isListLoaded() && imagePointEffectEffect.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectEffect.currentItem.effectDescription) : mastactva.readMore(imagePointEffectEffect.currentItem.effectDescription, Constants.smallListReadMoreLength, qsTr(" ...")) : ""
                         wrapMode: Text.Wrap
                     }
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: imageOfGalleryNextImageEffectListItemEasingLabel
                         text: qsTr("Effect argument set easing : ")
@@ -5074,7 +5087,7 @@ ApplicationWindow {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: imageOfGalleryNextImageEffectListItemArgSetDescriptionLabel
                         text: qsTr("Effect argument set description : ")
@@ -5082,7 +5095,7 @@ ApplicationWindow {
                     Text {
                         id: imageOfGalleryNextImageEffectListItemArgSetDescription
                         width: imageOfGalleryNextImageEffectList.width - imageOfGalleryNextImageEffectListItemArgSetDescriptionLabel.width
-                        text: imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectArgSet.currentItem.effectArgSetDescription) : mastactva.readMore(imagePointEffectArgSet.currentItem.effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                        text: imagePointEffectArgSet !== undefined && imagePointEffectArgSet !== null && imagePointEffectArgSet.isListLoaded() && imagePointEffectArgSet.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imagePointEffectArgSet.currentItem.effectArgSetDescription) : mastactva.readMore(imagePointEffectArgSet.currentItem.effectArgSetDescription, Constants.smallListReadMoreLength, qsTr(" ...")) : ""
                         wrapMode: Text.Wrap
                     }
                 }

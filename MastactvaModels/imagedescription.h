@@ -32,7 +32,7 @@ public:
             addField<int>("id", "idId", &ImageDescription::id, &ImageDescription::setId);
             addField<int>("image", "idImageId", &ImageDescription::image, &ImageDescription::setImage);
             addField<QDateTime>("from_field", "idFromDate", &ImageDescription::fromDate, &ImageDescription::setFromDate);
-            addField<QString>("descr", "idDescriptionText", &ImageDescription::description, &ImageDescription::setDescription);
+            addField<QString>("description", "idDescriptionText", &ImageDescription::description, &ImageDescription::setDescription);
             setIdField("id");
         }
     };

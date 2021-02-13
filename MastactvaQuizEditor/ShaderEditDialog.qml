@@ -75,7 +75,7 @@ Dialog {
                     id: editShaderTypeList
                     anchors.fill: parent
                     clip: true
-                    spacing: Constants.effectShaderTypeListSpacing
+                    spacing: Constants.smallListSmallSpacing
                     model: artefactTypeModel
                     delegate: shaderTypeItem
                     highlight: shaderTypeItemHighlight
@@ -134,7 +134,7 @@ Dialog {
             w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(artefactTypeModel.itemAt(i).artefactTypeType).width)
         }
         editShaderTypeListRect.width = w
-        editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.effectShaderTypeListSpacing) * artefactTypeModel.size() * 1.1
+        editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.smallListSmallSpacing) * artefactTypeModel.size() * 1.1
         editArtefactId.text = fieldShader.artefactId
         if(!editShaderTypeList.model.selectItemById(fieldShader.artefactTypeId))
         {

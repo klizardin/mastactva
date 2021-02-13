@@ -4,6 +4,7 @@
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/artefactargtype.h"
+#include "../MastactvaModels/artefactargstorage.h"
 #include "../MastactvaModels/easingtype.h"
 #include "../MastactvaModels/image.h"
 #include "../MastactvaModels/quizuser.h"
@@ -72,6 +73,12 @@ void QMLObjects::searchObjects()
     {
         ArtefactArgTypeModel *m1 = m_root->findChild<ArtefactArgTypeModel *>(g_artefactArgTypeModel);
         registerModel(g_artefactArgTypeModel, m1);
+    }
+    m = findListModel(g_artefactArgStorageModel);
+    if(nullptr == m)
+    {
+        ArtefactArgStorageModel *m1 = m_root->findChild<ArtefactArgStorageModel *>(g_artefactArgStorageModel);
+        registerModel(g_artefactArgStorageModel, m1);
     }
     m = findListModel(g_easingTypeModel);
     if(nullptr == m)

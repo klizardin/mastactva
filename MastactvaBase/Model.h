@@ -179,7 +179,7 @@ public:
     {
         Q_UNUSED(parent_);
 #if defined(TRACE_LIST_SIZE)
-        qDebug() << "m_data.size = " << m_data.size();
+        qDebug() << getLayoutJsonNameImpl() << "m_data.size = " << m_data.size();
 #endif
         return m_data.size();
     }
@@ -892,6 +892,11 @@ protected:
         return getDataLayout<DataType_>().getLayoutJsonName();
     }
 
+    const QString &getLayoutJsonNameImpl() const
+    {
+        return getDataLayout<DataType_>().getLayoutJsonName();
+    }
+
     QString getLayoutIdFieldImpl()
     {
         return getDataLayout<DataType_>().getIdFieldJsonName();
@@ -1110,12 +1115,14 @@ protected:
         sortByFieldsImpl(getSortFieldsImpl(), true);
         setListLoaded();
 #if defined(TRACE_LIST_LOAD_DATA)
+        qDebug() << "{ modelListLoaded()" << getLayoutJsonNameImpl();
         for(const DataType_ *i: qAsConst(m_data))
         {
             QHash<QString, QVariant> values;
             getDataLayout<DataType_>().getJsonValues(i, values);
             qDebug() << values;
         }
+        qDebug() << "modelListLoaded() }";
 #endif
     }
 

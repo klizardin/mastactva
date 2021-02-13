@@ -82,10 +82,11 @@ static const char *g_cb = "/*";
 static const char *g_ce = "*/";
 static const char *g_leftAlign = "<";
 static const char *g_nameStart = "@";
-static const char *g_argStart = "uniform";
-static const char *g_argPrecisionLow = "lowp";
-static const char *g_argPrecisionMedium = "mediump";
-static const char *g_argPrecisionHigh = "highp";
+//static const char *g_argStorageAttribure = "attribute";
+//static const char *g_argStorageUniform = "uniform";
+//static const char *g_argPrecisionLow = "lowp";
+//static const char *g_argPrecisionMedium = "mediump";
+//static const char *g_argPrecisionHigh = "highp";
 
 
 static int low_bound(const QVector<int> &indexes_, int p_)
@@ -223,21 +224,37 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
 {
     if(lb < 0 || le < 0) { return; }
     QString line = shaderText_.mid(lb, le - lb).trimmed();
-    if(!line.startsWith(g_argStart)) { return; }
-    line = line.mid(QString(g_argStart).length()).trimmed();
-    if(line.startsWith(g_argPrecisionHigh))
-    {
-        line = line.mid(QString(g_argPrecisionHigh).length()).trimmed();
-    }
-    else if(line.startsWith(g_argPrecisionMedium))
-    {
-        line = line.mid(QString(g_argPrecisionMedium).length()).trimmed();
-    }
-    else if(line.startsWith(g_argPrecisionLow))
-    {
-        line = line.mid(QString(g_argPrecisionLow).length()).trimmed();
-    }
+    // TODO: make lexical analyze
+    //       for object geometry data case
     int i = 0;
+    int sb = i;
+    for(;i < line.length(); )
+    {
+        QChar c = line.at(i);
+        if(!isLetterNumeric(c)) { break; }
+        i++;
+    }
+    int se = i;
+    for(;i < line.length(); )
+    {
+        QChar c = line.at(i);
+        if(isLetterNumeric(c)) { break; }
+        i++;
+    }
+    int pb = i;
+    for(;i < line.length(); )
+    {
+        QChar c = line.at(i);
+        if(!isLetterNumeric(c)) { break; }
+        i++;
+    }
+    int pe = i;
+    for(;i < line.length(); )
+    {
+        QChar c = line.at(i);
+        if(isLetterNumeric(c)) { break; }
+        i++;
+    }
     int tb = i;
     for(;i < line.length(); )
     {
@@ -260,6 +277,8 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
         i++;
     }
     int ne = i;
+    m_values.insert(g_storageName, line.mid(sb, se - sb));
+    m_values.insert(g_precisionName, line.mid(pb, pe - pb));
     m_values.insert(g_typeName, line.mid(tb, te - tb));
     m_values.insert(g_nameName, line.mid(nb, ne - nb));
 }

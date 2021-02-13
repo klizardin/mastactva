@@ -50,22 +50,22 @@ Dialog {
 
             TextField {
                 id: imagePointEffectDuration
-                x: Constants.effectShaderTypeListSpacing / 2
-                width: Constants.smallDialogWidth - Constants.effectShaderTypeListSpacing
+                x: Constants.smallListSmallSpacing / 2
+                width: Constants.smallDialogWidth - Constants.smallListSmallSpacing
                 placeholderText: qsTr("Input duration of effect in ms")
             }
 
             Rectangle {
                 id: effectsListRect
-                x: Constants.effectShaderTypeListSpacing / 2
-                width: Constants.smallDialogWidth - Constants.effectShaderTypeListSpacing
+                x: Constants.smallListSmallSpacing / 2
+                width: Constants.smallDialogWidth - Constants.smallListSmallSpacing
                 height: Constants.smallDialogHeight / 2
 
                 ListView {
                     id: effectsList
                     anchors.fill: parent
                     clip: true
-                    spacing: Constants.effectShaderTypeListSpacing
+                    spacing: Constants.smallListSmallSpacing
                     model: 0
                     delegate: effectItem
                     highlight: effectItemHighlight
@@ -84,15 +84,15 @@ Dialog {
 
             Rectangle {
                 id: effectArgumentSetsListRect
-                x: Constants.effectShaderTypeListSpacing / 2
-                width: Constants.smallDialogWidth - Constants.effectShaderTypeListSpacing
+                x: Constants.smallListSmallSpacing / 2
+                width: Constants.smallDialogWidth - Constants.smallListSmallSpacing
                 height: Constants.smallDialogHeight / 2
 
                 ListView {
                     id: effectArgumentSetsList
                     anchors.fill: parent
                     clip: true
-                    spacing: Constants.effectShaderTypeListSpacing
+                    spacing: Constants.smallListSmallSpacing
                     model: 0
                     delegate: effectArgumentSetsItem
                     highlight: effectArgumentSetsItemHighlight
@@ -406,7 +406,7 @@ Dialog {
                 width: effectsList.width
                 wrapMode: Text.WordWrap
                 text: effectName
-                padding: Constants.effectsListHeaderPadding
+                padding: Constants.smallListHeaderPadding
 
                 MouseArea {
                     anchors.fill: parent
@@ -448,7 +448,7 @@ Dialog {
                 id: effectItemDescriptionText
                 width: effectsList.width
                 wrapMode: Text.WordWrap
-                text: showFullDescription ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                text: showFullDescription ? mastactva.leftDoubleCR(effectDescription) : mastactva.readMore(effectDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
 
                 MouseArea {
                     anchors.fill: parent
@@ -549,7 +549,7 @@ Dialog {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentSetsItemTypeLabel
                         text: qsTr("Easing type : ")
@@ -566,7 +566,7 @@ Dialog {
                     id: effectArgumentSetsItemDescriptionText
                     width: effectArgumentSetsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgSetDescription) : mastactva.readMore(effectArgSetDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgSetDescription) : mastactva.readMore(effectArgSetDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
