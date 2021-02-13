@@ -1110,12 +1110,14 @@ protected:
         sortByFieldsImpl(getSortFieldsImpl(), true);
         setListLoaded();
 #if defined(TRACE_LIST_LOAD_DATA)
+        qDebug() << "{ modelListLoaded()" << getLayoutJsonNameImpl();
         for(const DataType_ *i: qAsConst(m_data))
         {
             QHash<QString, QVariant> values;
             getDataLayout<DataType_>().getJsonValues(i, values);
             qDebug() << values;
         }
+        qDebug() << "modelListLoaded() }";
 #endif
     }
 
