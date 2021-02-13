@@ -700,11 +700,15 @@ ApplicationWindow {
         {
             effectsListBusyIndicator.visible = false
             effectsListBusyIndicator.running = false
-            effectCurrentIndex = effectModel.size() > 0 ? effectModel.currentIndex : -1
+            effectsList.model = effectModel.size() > 0 ? effectModel : 0
+            var newIndex = effectModel.size() > 0 ? effectModel.currentIndex : -1
+            effectsList.currentIndex = newIndex
+            effectCurrentIndex = newIndex
         }
 
         function onItemDeleted()
         {
+            effectsList.model = effectModel.size() > 0 ? effectModel : 0
             effectCurrentIndex = -1
         }
 
@@ -3637,7 +3641,7 @@ ApplicationWindow {
                             anchors.fill: parent
                             spacing: Constants.effectsListViewSpacing
                             clip: true
-                            model: effectModel
+                            model: 0
                             delegate: effectItem
                             highlight: effectItemHighlight
                             highlightFollowsCurrentItem: false
