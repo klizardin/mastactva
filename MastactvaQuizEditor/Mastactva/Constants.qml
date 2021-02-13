@@ -13,11 +13,11 @@ QtObject {
     readonly property int leftSideBarTextWidth: 220
     readonly property int leftSideBarPageIndicatorHeight: 30
     readonly property int galleriesListViewSpacing: 10
-    readonly property int effectsListViewSpacing: 10
-    readonly property int effectsListReadMoreLength: 256
-    readonly property int effectsListHeaderPadding: 10
-    readonly property int effectShaderListHeaderPadding: 10
-    readonly property int effectInfoPadding: 10
+    readonly property int smallListViewSpacing: 10
+    readonly property int smallListReadMoreLength: 256
+    readonly property int smallListHeaderPadding: 10
+    readonly property int smallListHeaderPadding: 10
+    readonly property int smallViewPadding: 10
     readonly property int warningDialogWidth: 360
     readonly property int warningDialogHeight: 480
     readonly property int warningDialogPadding: 10
@@ -25,7 +25,7 @@ QtObject {
     readonly property int smallDialogHeight: 480
     readonly property int minConstValueWidth: 150
     readonly property int minConstValueHeight: 75
-    readonly property int effectShaderTypeListSpacing: 5
+    readonly property int smallListSmallSpacing: 5
     readonly property int imagesOfGalleryListViewSpacing: 10
     readonly property int galleryImageSpacing: 10
     readonly property int imageOfGalleryImageSpacing: 10

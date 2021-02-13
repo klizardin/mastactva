@@ -39,7 +39,7 @@ Dialog {
                 id: galleryList
                 anchors.fill: parent
                 clip: true
-                spacing: Constants.effectShaderTypeListSpacing
+                spacing: Constants.smallListSmallSpacing
                 model: galleryModel
                 delegate: galleryItem
                 highlight: galleryItemHighlight
@@ -57,7 +57,7 @@ Dialog {
                     id: imagesList
                     anchors.fill: parent
                     clip: true
-                    spacing: Constants.effectShaderTypeListSpacing
+                    spacing: Constants.smallListSmallSpacing
                     model: allImagesOfGalleryModel
                     delegate: imageItem
                     highlight: imageItemHighlight
@@ -154,7 +154,7 @@ Dialog {
                     Text {
                         id: galleryItemKeywords
                         width: galleryListWidth - galleryItemKeywordsLabel.width
-                        text: showFullDescription ? mastactva.leftDoubleCR(keywords) : mastactva.readMore(keywords, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                        text: showFullDescription ? mastactva.leftDoubleCR(keywords) : mastactva.readMore(keywords, Constants.smallListReadMoreLength, qsTr(" ..."))
                         wrapMode: Text.Wrap
                     }
                 }
@@ -162,7 +162,7 @@ Dialog {
                 Text {
                     id: galleryItemDescriptionText
                     width: galleryListWidth
-                    text: showFullDescription ? mastactva.leftDoubleCR(description) : mastactva.readMore(description, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(description) : mastactva.readMore(description, Constants.smallListReadMoreLength, qsTr(" ..."))
                     wrapMode: Text.WordWrap
                 }
             }
@@ -244,7 +244,7 @@ Dialog {
                 Text {
                     id: imageItemDescriptionText
                     width: imagesListWidth
-                    text: imageDescription.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : mastactva.readMore(imageDescription.currentItem.idDescriptionText, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                    text: imageDescription.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : mastactva.readMore(imageDescription.currentItem.idDescriptionText, Constants.smallListReadMoreLength, qsTr(" ...")) : ""
                     wrapMode: Text.WordWrap
                 }
 
@@ -253,7 +253,7 @@ Dialog {
 
                     function onListReloaded()
                     {
-                        imageItemDescriptionText.text = imageDescription.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : mastactva.readMore(imageDescription.currentItem.idDescriptionText, Constants.effectsListReadMoreLength, qsTr(" ...")) : ""
+                        imageItemDescriptionText.text = imageDescription.currentItem !== null ? showFullDescription ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : mastactva.readMore(imageDescription.currentItem.idDescriptionText, Constants.smallListReadMoreLength, qsTr(" ...")) : ""
                         if(index === imagesList.currentIndex)
                         {
                             description.text = imageDescription.currentItem !== null ? mastactva.leftDoubleCR(imageDescription.currentItem.idDescriptionText) : ""

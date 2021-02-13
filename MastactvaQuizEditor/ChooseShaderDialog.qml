@@ -31,7 +31,7 @@ Dialog {
                 id: shadersList
                 anchors.fill: parent
                 clip: true
-                spacing: Constants.effectShaderTypeListSpacing
+                spacing: Constants.smallListSmallSpacing
                 model: artefactModel
                 delegate: shaderItem
                 highlight: shaderItemHighlight
@@ -121,7 +121,7 @@ Dialog {
                 Text {
                     id: shaderItemDescriptionText
                     width: Constants.smallDialogWidth
-                    text: showFullDescription ? mastactva.leftDoubleCR(artefactDescription) : mastactva.readMore(artefactDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(artefactDescription) : mastactva.readMore(artefactDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
                     wrapMode: Text.WordWrap
                 }
             }

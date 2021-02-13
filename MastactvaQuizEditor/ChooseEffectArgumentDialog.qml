@@ -38,7 +38,7 @@ Dialog {
                 id: effectArgumentsList
                 anchors.fill: parent
                 clip: true
-                spacing: Constants.effectShaderTypeListSpacing
+                spacing: Constants.smallListSmallSpacing
                 model: effectArgModel
                 delegate: effectArgumentsItem
                 highlight: effectArgumentsItemHighlight
@@ -102,7 +102,7 @@ Dialog {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemTypeLabel
                         text: qsTr("Type : ")
@@ -116,7 +116,7 @@ Dialog {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemNameLabel
                         text: qsTr("Name : ")
@@ -131,7 +131,7 @@ Dialog {
                 }
 
                 Row {
-                    padding: Constants.effectShaderListHeaderPadding
+                    padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemDefaultValueLabel
                         text: qsTr("Default value : ")
@@ -149,7 +149,7 @@ Dialog {
                     id: effectArgumentsItemDescriptionText
                     width: effectArgumentsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgDescription) : mastactva.readMore(effectArgDescription, Constants.effectsListReadMoreLength, qsTr(" ..."))
+                    text: showFullDescription ? mastactva.leftDoubleCR(effectArgDescription) : mastactva.readMore(effectArgDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
                 }
             }
         }
