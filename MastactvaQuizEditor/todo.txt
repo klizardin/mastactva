@@ -119,6 +119,7 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 80. multipass drawing (index)
 * 81. add arg storage qualifiers (attribute, uniform)
 82. update models to be equal to db changes
-
+83. for galleries calculate point_to_pass automaticaly. collect all questions of galllery and sum value
+    may be do it in the edit dialog? so that editor can choose value of toughteness of gallery
 
 
