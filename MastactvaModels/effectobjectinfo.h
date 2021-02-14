@@ -9,14 +9,14 @@
 #include "../MastactvaBase/Model.h"
 
 
-class EffectObjectInfoModel;
+class ObjectInfoModel;
 
 
-class EffectObjectInfo : public QObject
+class ObjectInfo : public QObject
 {
     Q_OBJECT
 public:
-    explicit EffectObjectInfo(EffectObjectInfoModel *parent_ = nullptr);
+    explicit ObjectInfo(ObjectInfoModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectObjectInfoId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectObjectInfoName READ name WRITE setName NOTIFY nameChanged)
@@ -25,20 +25,20 @@ public:
     Q_PROPERTY(QDateTime effectObjectInfoCreated READ created WRITE setCreated NOTIFY createdChanged)
 
 
-    class DefaultLayout : public LayoutBase<EffectObjectInfo>
+    class DefaultLayout : public LayoutBase<ObjectInfo>
     {
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("effect-object-info");
-            addSpecial<int>(layout::SpecialFieldEn::appId, &EffectObjectInfo::m_appId);
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectObjectInfo::m_parentModelInfo);
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &EffectObjectInfo::m_objectModelInfo);
-            addField<int>("id", "effectObjectInfoId", &EffectObjectInfo::id, &EffectObjectInfo::setId);
-            addField<QString>("name", "effectObjectInfoName", &EffectObjectInfo::name, &EffectObjectInfo::setName);
-            addField<QString>("programmer_name", "effectObjectInfoProgrammerName", &EffectObjectInfo::programmerName, &EffectObjectInfo::setProgrammerName);
-            addField<QString>("description", "effectObjectInfoDescription", &EffectObjectInfo::description, &EffectObjectInfo::setDescription);
-            addField<QDateTime>("created", "effectObjectInfoCreated", &EffectObjectInfo::created, &EffectObjectInfo::setCreated);
+            setLayoutJsonName("object-info");
+            addSpecial<int>(layout::SpecialFieldEn::appId, &ObjectInfo::m_appId);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ObjectInfo::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &ObjectInfo::m_objectModelInfo);
+            addField<int>("id", "effectObjectInfoId", &ObjectInfo::id, &ObjectInfo::setId);
+            addField<QString>("name", "effectObjectInfoName", &ObjectInfo::name, &ObjectInfo::setName);
+            addField<QString>("programmer_name", "effectObjectInfoProgrammerName", &ObjectInfo::programmerName, &ObjectInfo::setProgrammerName);
+            addField<QString>("description", "effectObjectInfoDescription", &ObjectInfo::description, &ObjectInfo::setDescription);
+            addField<QDateTime>("created", "effectObjectInfoCreated", &ObjectInfo::created, &ObjectInfo::setCreated);
             setIdField("id");
         }
     };
@@ -65,7 +65,7 @@ signals:
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
-    EffectObjectInfoModel *m_effectObjectInfoModel = nullptr;
+    ObjectInfoModel *m_effectObjectInfoModel = nullptr;
     int m_appId = 0;
     int m_id = -1;
     QString m_name;
@@ -75,16 +75,16 @@ private:
 };
 
 
-class EffectObjectInfoModel : public ListModelBaseOfData<EffectObjectInfo, EffectObjectInfoModel>
+class ObjectInfoModel : public ListModelBaseOfData<ObjectInfo, ObjectInfoModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectObjectInfo, EffectObjectInfoModel>;
+    using base = ListModelBaseOfData<ObjectInfo, ObjectInfoModel>;
 
 public:
-    explicit EffectObjectInfoModel(QObject *parent_ = nullptr);
+    explicit ObjectInfoModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

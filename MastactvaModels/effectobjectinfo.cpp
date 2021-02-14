@@ -2,7 +2,7 @@
 #include "../MastactvaBase/defines.h"
 
 
-EffectObjectInfo::EffectObjectInfo(EffectObjectInfoModel *parent_ /* = nullptr*/)
+ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
@@ -11,60 +11,60 @@ EffectObjectInfo::EffectObjectInfo(EffectObjectInfoModel *parent_ /* = nullptr*/
     m_effectObjectInfoModel = parent_;
 }
 
-int EffectObjectInfo::id() const
+int ObjectInfo::id() const
 {
     return m_id;
 }
 
-void EffectObjectInfo::setId(const int &id_)
+void ObjectInfo::setId(const int &id_)
 {
     m_id = id_;
 
     emit idChanged();
 }
 
-QString EffectObjectInfo::name() const
+QString ObjectInfo::name() const
 {
     return m_name;
 }
 
-void EffectObjectInfo::setName(const QString &name_)
+void ObjectInfo::setName(const QString &name_)
 {
     m_name = name_;
 
     emit nameChanged();
 }
 
-QString EffectObjectInfo::programmerName() const
+QString ObjectInfo::programmerName() const
 {
     return m_programmerName;
 }
 
-void EffectObjectInfo::setProgrammerName(const QString &programmerName_)
+void ObjectInfo::setProgrammerName(const QString &programmerName_)
 {
     m_programmerName = programmerName_;
 
     emit programmerNameChanged();
 }
 
-QString EffectObjectInfo::description() const
+QString ObjectInfo::description() const
 {
     return m_description;
 }
 
-void EffectObjectInfo::setDescription(const QString &description_)
+void ObjectInfo::setDescription(const QString &description_)
 {
     m_description = description_;
 
     emit descriptionChanged();
 }
 
-QDateTime EffectObjectInfo::created() const
+QDateTime ObjectInfo::created() const
 {
     return m_created;
 }
 
-void EffectObjectInfo::setCreated(const QDateTime &created_)
+void ObjectInfo::setCreated(const QDateTime &created_)
 {
     m_created = created_;
 
@@ -72,7 +72,7 @@ void EffectObjectInfo::setCreated(const QDateTime &created_)
 }
 
 
-EffectObjectInfoModel::EffectObjectInfoModel(QObject *parent_ /*= nullptr*/)
+ObjectInfoModel::ObjectInfoModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)
 {
 #if defined(TRACE_THREADS)
