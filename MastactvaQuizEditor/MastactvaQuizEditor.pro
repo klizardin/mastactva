@@ -118,7 +118,7 @@ unix: HEADERS += \
         effectartefactargset.h \
         translation.h   \
         artefactargstorage.h    \
-        effectobjectinfo.h  \
+        objectinfo.h  \
         effectobjects.h
 
 
@@ -173,7 +173,7 @@ unix: SOURCES += \
         effectartefactargset.cpp \
         translation.cpp \
         artefactargstorage.cpp  \
-        effectobjectinfo.cpp    \
+        objectinfo.cpp    \
         effectobjects.cpp
 
 

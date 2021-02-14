@@ -1,4 +1,4 @@
-#include "effectobjectinfo.h"
+#include "objectinfo.h"
 #include "../MastactvaBase/defines.h"
 
 

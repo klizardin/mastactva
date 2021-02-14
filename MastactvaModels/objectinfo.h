@@ -1,5 +1,5 @@
-#ifndef EFFECTOBJECTINFO_H
-#define EFFECTOBJECTINFO_H
+#ifndef OBJECTINFO_H
+#define OBJECTINFO_H
 
 
 #include <QObject>
@@ -126,4 +126,4 @@ signals:
 };
 
 
-#endif // EFFECTOBJECTINFO_H
+#endif // OBJECTINFO_H

@@ -4190,6 +4190,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "effectCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "effectObjects",
                         "notify": "effectObjectsChanged",
                         "read": "effectObjects",
@@ -4244,6 +4258,11 @@
                     {
                         "access": "public",
                         "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     },
                     {
@@ -22950,15 +22969,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgSetEffectArtefactId",
+                        "name": "effectArtefactArgSetEffectObjectArtefactId",
                         "notify": "effectArtefactIdChanged",
-                        "read": "effectArtefactId",
+                        "read": "effectObjectArtefactId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setEffectArtefactId"
+                        "write": "setEffectObjectArtefactId"
                     },
                     {
                         "constant": false,
@@ -25360,7 +25379,7 @@
     {
         "classes": [
             {
-                "className": "EffectObjectInfo",
+                "className": "ObjectInfo",
                 "object": true,
                 "properties": [
                     {
@@ -25434,7 +25453,7 @@
                         "write": "setCreated"
                     }
                 ],
-                "qualifiedClassName": "EffectObjectInfo",
+                "qualifiedClassName": "ObjectInfo",
                 "signals": [
                     {
                         "access": "public",
@@ -25476,7 +25495,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "EffectObjectInfoModel",
+                "className": "ObjectInfoModel",
                 "methods": [
                     {
                         "access": "public",
@@ -25996,7 +26015,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "EffectObjectInfoModel",
+                "qualifiedClassName": "ObjectInfoModel",
                 "signals": [
                     {
                         "access": "public",
@@ -26153,12 +26172,12 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectObjectInfo,EffectObjectInfoModel>"
+                        "name": "ListModelBaseOfData<ObjectInfo,ObjectInfoModel>"
                     }
                 ]
             }
         ],
-        "inputFile": "effectobjectinfo.h",
+        "inputFile": "objectinfo.h",
         "outputRevision": 67
     },
     {
