@@ -121,5 +121,7 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 82. update models to be equal to db changes
 83. for galleries calculate point_to_pass automaticaly. collect all questions of galllery and sum value
     may be do it in the edit dialog? so that editor can choose value of toughteness of gallery
-84. add independent view for all time living objects (artefacts and so on) (detail is 74)
+84. check if there is any question that can be pass (not enough points of answers)
+85. add independent view for all time living objects (artefacts and so on) (detail is 74)
+    also EffectObjectInfo
 
