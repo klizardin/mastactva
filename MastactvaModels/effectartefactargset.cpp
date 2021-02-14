@@ -20,12 +20,12 @@ void EffectArtefactArgSet::setId(const int &id_)
     emit idChanged();
 }
 
-int EffectArtefactArgSet::effectArtefactId() const
+int EffectArtefactArgSet::effectObjectArtefactId() const
 {
     return m_effectArtefactId;
 }
 
-void EffectArtefactArgSet::setEffectArtefactId(const int &effectArtefactId_)
+void EffectArtefactArgSet::setEffectObjectArtefactId(const int &effectArtefactId_)
 {
     m_effectArtefactId = effectArtefactId_;
 
