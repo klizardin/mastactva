@@ -11,6 +11,11 @@ ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
     m_effectObjectInfoModel = parent_;
 }
 
+bool ObjectInfo::isInitializeObject()
+{
+    return programmerName().isEmpty();
+}
+
 int ObjectInfo::id() const
 {
     return m_id;

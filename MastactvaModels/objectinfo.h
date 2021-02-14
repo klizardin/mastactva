@@ -43,6 +43,8 @@ public:
         }
     };
 
+    Q_INVOKABLE bool isInitializeObject();
+
 
     int id() const;
     void setId(const int &id_);
