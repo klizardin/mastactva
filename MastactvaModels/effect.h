@@ -26,6 +26,7 @@ public:
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QDateTime effectCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant effectObjects READ effectObjects WRITE setEffectObjectss NOTIFY effectObjectsChanged)
     Q_PROPERTY(QVariant effectArgs READ args WRITE setArgs NOTIFY argsChanged)
     Q_PROPERTY(QVariant effectArgSets READ argSets WRITE setArgSets NOTIFY argSetsChanged)
@@ -42,6 +43,7 @@ public:
             addField<int>("id", "effectId", &Effect::id, &Effect::setId);
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
+            addField<QDateTime>("created", "effectCreated", &Effect::created, &Effect::setCreated);
             addModel<EffectObjectsModel>("effectArtefacts", &Effect::m_effectObjectsModel, &Effect::createEffectObjectsModel);
             //addModel<EffectArtefactModel>("effectArtefacts", &Effect::m_effectArtefactModel, &Effect::createEffectArtefactModel);
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
@@ -57,6 +59,8 @@ public:
     void setName(const QString &name_);
     QString description() const;
     void setDescription(const QString &description_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
     QVariant effectObjects() const;
     void setEffectObjectss(const QVariant &obj_);
     QVariant args() const;
@@ -98,6 +102,7 @@ signals:
     void idChanged();
     void nameChanged();
     void descriptionChanged();
+    void createdChanged();
     void effectObjectsChanged();
     void argsChanged();
     void argSetsChanged();
@@ -114,6 +119,7 @@ private:
     int m_id = -1;
     QString m_name;
     QString m_description;
+    QDateTime m_created;
     EffectObjectsModel *m_effectObjectsModel = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;

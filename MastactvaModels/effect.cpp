@@ -55,6 +55,18 @@ void Effect::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
+QDateTime Effect::created() const
+{
+    return m_created;
+}
+
+void Effect::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 QVariant Effect::effectObjects() const
 {
     if(nullptr == m_effectObjectsModel)
