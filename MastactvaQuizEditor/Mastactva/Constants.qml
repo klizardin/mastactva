@@ -16,7 +16,6 @@ QtObject {
     readonly property int smallListViewSpacing: 10
     readonly property int smallListReadMoreLength: 256
     readonly property int smallListHeaderPadding: 10
-    readonly property int smallListHeaderPadding: 10
     readonly property int smallViewPadding: 10
     readonly property int warningDialogWidth: 360
     readonly property int warningDialogHeight: 480

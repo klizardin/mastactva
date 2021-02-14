@@ -131,8 +131,8 @@ EffectArtefactArgSetModel *EffectObjectArtefact::createEffectArtefactArgSetModel
 {
     EffectArtefactArgSetModel *m = new EffectArtefactArgSetModel(this);
     m->initResponse();
-    m->setLayoutRefImpl("effect_artefact", m_effectArtefactModel->getQMLLayoutName(), "id");
-    m->setCurrentRef("effect_artefact");
+    m->setLayoutRefImpl("effect_object_artefact", m_effectArtefactModel->getQMLLayoutName(), "id");
+    m->setCurrentRef("effect_object_artefact");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectArtefactModel->getQMLLayoutName() + QString("_EffectArtefact_") +
                         QVariant::fromValue(m_appId).toString() + QString("_EffectArtefactArgSetModel_"));

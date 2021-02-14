@@ -7,7 +7,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
-#include "../MastactvaModels/effectobjectinfo.h"
+#include "../MastactvaModels/objectinfo.h"
 #include "../MastactvaModels/effectobjectartefact.h"
 
 
@@ -37,7 +37,7 @@ public:
             addField<int>("id", "effectObjectsId", &EffectObjects::id, &EffectObjects::setId);
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
             addField<int>("effect_object_info", "", &EffectObjects::effectObjectInfoId, &EffectObjects::setEffectObjectInfoId);
-            addModel<EffectObjectInfoModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectInfoModel, &EffectObjects::createEffectObjectInfoModel);
+            addModel<ObjectInfoModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectInfoModel, &EffectObjects::createEffectObjectInfoModel);
             addModel<EffectObjectArtefactModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectArtefactModel, &EffectObjects::createEffectObjectArtefactModel);
             setIdField("id");
         }
@@ -58,7 +58,7 @@ public:
     const EffectObjectArtefactModel *getEffectObjectArtefacts() const;
 
 protected:
-    EffectObjectInfoModel *createEffectObjectInfoModel();
+    ObjectInfoModel *createEffectObjectInfoModel();
     EffectObjectArtefactModel *createEffectObjectArtefactModel();
 
 signals:
@@ -75,7 +75,7 @@ private:
     int m_id = -1;
     int m_effectId = -1;
     int m_effectObjectInfoId = -1;
-    EffectObjectInfoModel *m_effectObjectInfoModel = nullptr;
+    ObjectInfoModel *m_effectObjectInfoModel = nullptr;
     EffectObjectArtefactModel *m_effectObjectArtefactModel = nullptr;
 };
 

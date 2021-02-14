@@ -20,7 +20,7 @@ public:
     explicit EffectArtefactArgSet(EffectArtefactArgSetModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectArtefactArgSetId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectArtefactArgSetEffectArtefactId READ effectArtefactId WRITE setEffectArtefactId NOTIFY effectArtefactIdChanged)
+    Q_PROPERTY(int effectArtefactArgSetEffectObjectArtefactId READ effectObjectArtefactId WRITE setEffectObjectArtefactId NOTIFY effectArtefactIdChanged)
     Q_PROPERTY(QString effectArtefactArgSetDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QVariant effectArtefactArg READ effectArtefactArg WRITE setEffectArtefactArg NOTIFY effectArtefactArgChanged)
 
@@ -35,7 +35,7 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &EffectArtefactArgSet::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefactArgSet::m_appId);
             addField<int>("id", "effectArtefactArgSetId", &EffectArtefactArgSet::id, &EffectArtefactArgSet::setId);
-            addField<int>("effect_artefact", "effectArtefactArgSetEffectArtefactId", &EffectArtefactArgSet::effectArtefactId, &EffectArtefactArgSet::setEffectArtefactId);
+            addField<int>("effect_object_artefact", "effectArtefactArgSetEffectArtefactId", &EffectArtefactArgSet::effectObjectArtefactId, &EffectArtefactArgSet::setEffectObjectArtefactId);
             addField<QString>("description", "effectArtefactArgSetDescription", &EffectArtefactArgSet::description, &EffectArtefactArgSet::setDescription);
             addModel<EffectArtefactArgModel>("effectArtefactArgSetEffectArtefactArg", &EffectArtefactArgSet::m_effectArtefactArgModel, &EffectArtefactArgSet::createEffectArtefactArgModel);
             setIdField("id");
@@ -45,8 +45,8 @@ public:
 public:
     int id() const;
     void setId(const int &id_);
-    int effectArtefactId() const;
-    void setEffectArtefactId(const int &effectArtefactId_);
+    int effectObjectArtefactId() const;
+    void setEffectObjectArtefactId(const int &effectArtefactId_);
     QString description() const;
     void setDescription(const QString &description_);
     QVariant effectArtefactArg() const;
