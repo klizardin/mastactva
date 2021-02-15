@@ -216,7 +216,7 @@ bool Effect::startRefreshArguments()
     {
         EffectObjects *effectObjects = m_effectObjectsModel->dataItemAtImpl(i);
         if(nullptr == effectObjects) { return false; }
-        ObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getEffectObjectArtefacts();
+        ObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getObjectArtefacts();
         if(nullptr == effectObjectArtefactsModel ||
                 !effectObjectArtefactsModel->isListLoadedImpl()) { return false; }
         for(int j = 0; j < effectObjectArtefactsModel->sizeImpl(); j++)

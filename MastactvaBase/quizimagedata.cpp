@@ -217,12 +217,12 @@ void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *
         const EffectObjects *effectObjects = effectObjectsModel->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effectObjects);
 
-        const ObjectArtefactModel *effectObjectArtefactModel = effectObjects->getEffectObjectArtefacts();
+        const ObjectArtefactModel *effectObjectArtefactModel = effectObjects->getObjectArtefacts();
         Q_ASSERT(nullptr != effectObjectArtefactModel && effectObjectArtefactModel->isListLoadedImpl());
 
         for(int j = 0; j < effectObjectArtefactModel->sizeImpl(); j++)
         {
-            const ObjectArtefact *effectObjectArtefact = effectObjects->getEffectObjectArtefacts()->dataItemAtImpl(j);
+            const ObjectArtefact *effectObjectArtefact = effectObjectArtefactModel->dataItemAtImpl(j);
             Q_ASSERT(nullptr != effectObjectArtefact);
 
             const ArtefactModel * artefactModel = effectObjectArtefact->getArtefact();

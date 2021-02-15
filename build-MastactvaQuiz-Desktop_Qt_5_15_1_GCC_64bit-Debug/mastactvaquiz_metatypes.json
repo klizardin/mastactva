@@ -22330,20 +22330,6 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setArtefact"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "effectArtefactEffectArtefactArgSet",
-                        "notify": "effectArtefactArgSetChanged",
-                        "read": "effectArtefactArgSet",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setEffectArtefactArgSet"
                     }
                 ],
                 "qualifiedClassName": "ObjectArtefact",
@@ -23106,29 +23092,29 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectObjectsEffectObjectInfo",
-                        "notify": "effectObjectInfoChanged",
-                        "read": "effectObjectInfo",
+                        "name": "effectObjectsObjectInfo",
+                        "notify": "objectInfoChanged",
+                        "read": "objectInfo",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "QVariant",
                         "user": false,
-                        "write": "setEffectObjectInfo"
+                        "write": "setObjectInfo"
                     },
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectObjectsEffectObjectArtefacts",
-                        "notify": "effectObjectArtefactsChanged",
-                        "read": "effectObjectArtefacts",
+                        "name": "effectObjectsObjectArtefacts",
+                        "notify": "objectArtefactsChanged",
+                        "read": "objectArtefacts",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "QVariant",
                         "user": false,
-                        "write": "setEffectObjectArtefacts"
+                        "write": "setObjectArtefacts"
                     }
                 ],
                 "qualifiedClassName": "EffectObjects",
@@ -23145,12 +23131,12 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectObjectInfoChanged",
+                        "name": "objectInfoChanged",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "effectObjectArtefactsChanged",
+                        "name": "objectArtefactsChanged",
                         "returnType": "void"
                     }
                 ],
