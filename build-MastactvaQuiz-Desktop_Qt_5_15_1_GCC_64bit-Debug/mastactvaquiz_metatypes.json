@@ -15846,6 +15846,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "artefactName",
+                        "notify": "nameChanged",
+                        "read": "name",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setName"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "artefactFilename",
                         "notify": "filenameChanged",
                         "read": "filename",
@@ -15897,6 +15911,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setDescription"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "artefactCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "Artefact",
@@ -15904,6 +15932,11 @@
                     {
                         "access": "public",
                         "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "nameChanged",
                         "returnType": "void"
                     },
                     {
@@ -15924,6 +15957,11 @@
                     {
                         "access": "public",
                         "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -22223,6 +22261,13 @@
         "classes": [
             {
                 "className": "ObjectInfo",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "isInitializeObject",
+                        "returnType": "bool"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {

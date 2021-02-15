@@ -29,6 +29,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactType::m_appId);
             addField<int>("id", "artefactTypeId", &ArtefactType::id, &ArtefactType::setId);
             addField<QString>("type", "artefactTypeType", &ArtefactType::type, &ArtefactType::setType);
+            addField<bool>("unique_for_object", "artefactTypeUniqueForObject", &ArtefactType::uniqueForObject, &ArtefactType::setUniqueForObject);
             setIdField("id");
         }
     };

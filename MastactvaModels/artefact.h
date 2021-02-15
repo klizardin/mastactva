@@ -20,10 +20,12 @@ public:
     explicit Artefact(ArtefactModel *parent_ = nullptr);
 
     Q_PROPERTY(int artefactId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(QString artefactName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString artefactFilename READ filename WRITE setFilename NOTIFY filenameChanged)
     Q_PROPERTY(QString artefactHash READ hash WRITE setHash NOTIFY hashChanged)
     Q_PROPERTY(int artefactTypeId READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(QString artefactDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QDateTime artefactCreated READ created WRITE setCreated NOTIFY createdChanged)
 
 
     class DefaultLayout : public LayoutBase<Artefact>
@@ -36,17 +38,22 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Artefact::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &Artefact::m_appId);
             addField<int>("id", "artefactId", &Artefact::id, &Artefact::setId);
+            addField<QString>("name", "artefactName", &Artefact::name, &Artefact::setName);
             addField<ImageSource>("filename", "artefactFilename", &Artefact::getFilename, &Artefact::setFilename);
             addField<QString>("hash", "artefactHash", &Artefact::hash, &Artefact::setHash);
             addField<int>("type", "artefactTypeId", &Artefact::type, &Artefact::setType);
             addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
+            addField<QDateTime>("created", "artefactCreated", &Artefact::created, &Artefact::setCreated);
             setIdField("id");
         }
     };
 
+
 public:
     int id() const;
     void setId(const int &id_);
+    QString name() const;
+    void setName(const QString &name_);
     QString filename() const;
     ImageSource getFilename() const;
     void setFilename(const QString &filename_);
@@ -57,6 +64,8 @@ public:
     void setType(const int &type_);
     QString description() const;
     void setDescription(const QString &description_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
 
 protected:
     virtual void loadChildrenVF() override;
@@ -66,20 +75,24 @@ protected:
 
 signals:
     void idChanged();
+    void nameChanged();
     void filenameChanged();
     void hashChanged();
     void typeChanged();
     void descriptionChanged();
+    void createdChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
+    QString m_name;
     ImageSource m_filename;
     QString m_hash;
     int m_typeId = -1;
     QString m_description;
+    QDateTime m_created;
     ArtefactModel *m_artefactModel = nullptr;
 };
 

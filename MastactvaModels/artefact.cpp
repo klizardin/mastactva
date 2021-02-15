@@ -27,6 +27,18 @@ void Artefact::setId(const int &id_)
     emit idChanged();
 }
 
+QString Artefact::name() const
+{
+    return m_name;
+}
+
+void Artefact::setName(const QString &name_)
+{
+    m_name = name_;
+
+    emit nameChanged();
+}
+
 QString Artefact::filename() const
 {
     return getFilename();
@@ -84,6 +96,18 @@ void Artefact::setDescription(const QString &description_)
     m_description = description_;
 
     emit descriptionChanged();
+}
+
+QDateTime Artefact::created() const
+{
+    return m_created;
+}
+
+void Artefact::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
 }
 
 void Artefact::loadChildrenVF()
