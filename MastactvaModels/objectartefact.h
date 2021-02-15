@@ -8,7 +8,6 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/artefact.h"
-#include "../MastactvaModels/effectartefactargset.h"
 
 
 class ObjectArtefactModel;
@@ -23,7 +22,6 @@ public:
     Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArtefactEffectObjectId READ effectObjectId WRITE setEffectObjectId NOTIFY effectObjectIdChanged)
     Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
-    Q_PROPERTY(QVariant effectArtefactEffectArtefactArgSet READ effectArtefactArgSet WRITE setEffectArtefactArgSet NOTIFY effectArtefactArgSetChanged)
 
     class DefaultLayout : public LayoutBase<ObjectArtefact>
     {
@@ -37,7 +35,6 @@ public:
             addField<int>("effect_object", "effectArtefactEffectObjectId", &ObjectArtefact::effectObjectId, &ObjectArtefact::setEffectObjectId);
             addField<int>("artefact", "", &ObjectArtefact::artefactId, &ObjectArtefact::setArtefactId);
             addModel<ArtefactModel>("effectArtefactArtefact", &ObjectArtefact::m_artefactModel, &ObjectArtefact::createArtefactModel);
-            addModel<EffectArtefactArgSetModel>("effectArtefactEffectArtefactArgSet", &ObjectArtefact::m_effectArtefactArgSetModel, &ObjectArtefact::createEffectArtefactArgSetModel);
             setIdField("id");
         }
     };
@@ -59,7 +56,6 @@ public:
 
 protected:
     ArtefactModel *createArtefactModel();
-    EffectArtefactArgSetModel *createEffectArtefactArgSetModel();
 
 signals:
     void idChanged();
@@ -75,7 +71,6 @@ private:
     int m_effectId = -1;
     int m_artefactId = -1;
     ArtefactModel *m_artefactModel = nullptr;
-    EffectArtefactArgSetModel *m_effectArtefactArgSetModel = nullptr;
 };
 
 

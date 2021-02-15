@@ -86,31 +86,6 @@ const ArtefactModel *ObjectArtefact::getArtefact() const
     return m_artefactModel;
 }
 
-QVariant ObjectArtefact::effectArtefactArgSet() const
-{
-    if(nullptr == m_effectArtefactArgSetModel)
-    {
-        const_cast<ObjectArtefact *>(this)->m_effectArtefactArgSetModel = const_cast<ObjectArtefact *>(this)
-                ->createEffectArtefactArgSetModel();
-    }
-    return QVariant::fromValue(static_cast<QObject *>(
-                                   const_cast<EffectArtefactArgSetModel *>(
-                                       m_effectArtefactArgSetModel)
-                                   )
-                               );
-}
-
-void ObjectArtefact::setEffectArtefactArgSet(const QVariant &obj_)
-{
-    if(obj_.isNull() && nullptr != m_effectArtefactArgSetModel)
-    {
-        delete m_effectArtefactArgSetModel;
-        m_effectArtefactArgSetModel = nullptr;
-
-        emit effectArtefactArgSetChanged();
-    }
-}
-
 ArtefactModel *ObjectArtefact::createArtefactModel()
 {
     ArtefactModel *m = new ArtefactModel(this);
@@ -120,22 +95,6 @@ ArtefactModel *ObjectArtefact::createArtefactModel()
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectArtefactModel->getQMLLayoutName() + QString("_EffectArtefact_") +
                         QVariant::fromValue(m_appId).toString() + QString("_ArtefactModel_"));
-    m->registerListModel();
-    m->setParentListModelInfo(m_parentModelInfo);
-    m->setAutoCreateChildrenModels(true);
-    m->loadList();
-    return m;
-}
-
-EffectArtefactArgSetModel *ObjectArtefact::createEffectArtefactArgSetModel()
-{
-    EffectArtefactArgSetModel *m = new EffectArtefactArgSetModel(this);
-    m->initResponse();
-    m->setLayoutRefImpl("effect_object_artefact", m_effectArtefactModel->getQMLLayoutName(), "id");
-    m->setCurrentRef("effect_object_artefact");
-    m->setRefAppId(QVariant::fromValue(m_appId));
-    m->setLayoutQMLName(m_effectArtefactModel->getQMLLayoutName() + QString("_EffectArtefact_") +
-                        QVariant::fromValue(m_appId).toString() + QString("_EffectArtefactArgSetModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
