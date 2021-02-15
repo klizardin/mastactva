@@ -6,7 +6,7 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/qmlobjects.h"
-#include "../MastactvaModels/effectobjectartefact.h"
+#include "../MastactvaModels/objectartefact.h"
 #include "../MastactvaModels/artefact.h"
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/effectarg.h"

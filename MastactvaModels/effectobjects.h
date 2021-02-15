@@ -8,7 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/objectinfo.h"
-#include "../MastactvaModels/effectobjectartefact.h"
+#include "../MastactvaModels/objectartefact.h"
 
 
 class EffectObjectsModel;

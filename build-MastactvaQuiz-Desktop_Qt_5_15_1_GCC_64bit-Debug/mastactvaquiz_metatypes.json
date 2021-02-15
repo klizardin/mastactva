@@ -18184,809 +18184,6 @@
     {
         "classes": [
             {
-                "className": "ObjectArtefact",
-                "methods": [
-                    {
-                        "access": "public",
-                        "name": "artefactId",
-                        "returnType": "int"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "artefactId_",
-                                "type": "int"
-                            }
-                        ],
-                        "name": "setArtefactId",
-                        "returnType": "void"
-                    }
-                ],
-                "object": true,
-                "properties": [
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "effectArtefactId",
-                        "notify": "idChanged",
-                        "read": "id",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "int",
-                        "user": false,
-                        "write": "setId"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "effectArtefactEffectObjectId",
-                        "notify": "effectObjectIdChanged",
-                        "read": "effectObjectId",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "int",
-                        "user": false,
-                        "write": "setEffectObjectId"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "effectArtefactArtefact",
-                        "notify": "artefactChanged",
-                        "read": "artefact",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setArtefact"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "effectArtefactEffectArtefactArgSet",
-                        "notify": "effectArtefactArgSetChanged",
-                        "read": "effectArtefactArgSet",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setEffectArtefactArgSet"
-                    }
-                ],
-                "qualifiedClassName": "ObjectArtefact",
-                "signals": [
-                    {
-                        "access": "public",
-                        "name": "idChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "effectObjectIdChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "artefactChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "effectArtefactArgSetChanged",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "QObject"
-                    }
-                ]
-            },
-            {
-                "classInfos": [
-                    {
-                        "name": "QML.Element",
-                        "value": "auto"
-                    }
-                ],
-                "className": "ObjectArtefactModel",
-                "methods": [
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "fieldJsonName_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "parentModel_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "parentModelRefJsonName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "setLayoutRef",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "createItem",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "id_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "findItemById",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "appId_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "findItemByAppId",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "name": "getCurrentItem",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "name": "clear",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "loadList",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "index_",
-                                "type": "int"
-                            }
-                        ],
-                        "name": "getItemId",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "index_",
-                                "type": "int"
-                            }
-                        ],
-                        "name": "getItemAppId",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "index_",
-                                "type": "int"
-                            }
-                        ],
-                        "name": "itemAt",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "appId_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "selectItemByAppId",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "id_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "selectItemById",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "index_",
-                                "type": "int"
-                            },
-                            {
-                                "name": "item_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "setItem",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "item_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "addItem",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "item_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "delItem",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "index_",
-                                "type": "int"
-                            }
-                        ],
-                        "name": "delItem",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "name_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "value_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "addModelParam",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "isListLoaded",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "name": "isEmpty",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "modelName_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "appId_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "addLayoutExtraFields",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "oldName_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "newName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "addExtraFieldRename",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "size",
-                        "returnType": "int"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "qmlFieldName_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "value_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "findItemByFieldValue",
-                        "returnType": "QVariant"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "item_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "indexOfItem",
-                        "returnType": "int"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "ids_",
-                                "type": "QVariantList"
-                            }
-                        ],
-                        "name": "filterItemsLeftIDs",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "ids_",
-                                "type": "QVariantList"
-                            }
-                        ],
-                        "name": "filterItemsLeftExceptIDs",
-                        "returnType": "bool"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "item_",
-                                "type": "QVariant"
-                            }
-                        ],
-                        "name": "autoLoadItem",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "sortModel",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "fields_",
-                                "type": "QStringList"
-                            }
-                        ],
-                        "name": "sortByFields",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "randOrder",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "procedureName_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
-                            }
-                        ],
-                        "name": "procedure",
-                        "returnType": "void"
-                    }
-                ],
-                "object": true,
-                "properties": [
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "layoutQMLName",
-                        "notify": "layoutQMLNameChanged",
-                        "read": "getLayoutQMLName",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QString",
-                        "user": false,
-                        "write": "setLayoutQMLName"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "layoutIdField",
-                        "notify": "layoutIdFieldChanged",
-                        "read": "getLayoutIdField",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QString",
-                        "user": false,
-                        "write": "setLayoutIdField"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "currentIndex",
-                        "notify": "currentIndexChanged",
-                        "read": "currentIndex",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "int",
-                        "user": false,
-                        "write": "setCurrentIndex"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "currentItem",
-                        "notify": "currentItemChanged",
-                        "read": "getCurrentItem",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "currentRef",
-                        "notify": "currentRefChanged",
-                        "read": "currentRef",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QString",
-                        "user": false,
-                        "write": "setCurrentRef"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "refAppId",
-                        "notify": "refAppIdChanged",
-                        "read": "getRefAppId",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setRefAppId"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "refValue",
-                        "notify": "refValueChanged",
-                        "read": "getRefValue",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setRefValue"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "storeAfterSave",
-                        "notify": "storeAfterSaveChanged",
-                        "read": "storeAfterSave",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setStoreAfterSave"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "jsonParamsGet",
-                        "notify": "jsonParamsGetChanged",
-                        "read": "jsonParamsGet",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setJsonParamsGet"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "autoCreateChildrenModels",
-                        "notify": "autoCreateChildrenModelsChanged",
-                        "read": "autoCreateChildrenModels",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setAutoCreateChildrenModels"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "autoCreateChildrenModelsOnSelect",
-                        "notify": "autoCreateChildrenModelsOnSelectChanged",
-                        "read": "autoCreateChildrenModelsOnSelect",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setAutoCreateChildrenModelsOnSelect"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "outputModel",
-                        "notify": "outputModelChanged",
-                        "read": "outputModel",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setOutputModel"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "sortFields",
-                        "notify": "sortFieldsChanged",
-                        "read": "sortFields",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QStringList",
-                        "user": false,
-                        "write": "setSortFields"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
-                        "name": "readonly",
-                        "notify": "readonlyChanged",
-                        "read": "readonly",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "bool",
-                        "user": false,
-                        "write": "setReadonly"
-                    }
-                ],
-                "qualifiedClassName": "ObjectArtefactModel",
-                "signals": [
-                    {
-                        "access": "public",
-                        "name": "currentIndexChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "currentItemChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "currentRefChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "storeAfterSaveChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "refAppIdChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "refValueChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "layoutQMLNameChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "layoutIdFieldChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "refreshChildren",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "jsonParamsGetChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "autoCreateChildrenModelsChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "autoCreateChildrenModelsOnSelectChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "listReloaded",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "itemAdded",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "itemSet",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "itemDeleted",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "outputModelChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "sortFieldsChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "name": "readonlyChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "errorCode_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "description_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "error",
-                        "returnType": "void"
-                    }
-                ],
-                "slots": [
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "errorCode_",
-                                "type": "int"
-                            },
-                            {
-                                "name": "errorCodeStr_",
-                                "type": "QString"
-                            },
-                            {
-                                "name": "request_",
-                                "type": "RequestData*"
-                            },
-                            {
-                                "name": "reply_",
-                                "type": "QJsonDocument"
-                            }
-                        ],
-                        "name": "jsonResponseSlot",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
-                        "arguments": [
-                            {
-                                "name": "modelName_",
-                                "type": "QString"
-                            }
-                        ],
-                        "name": "refreshChildrenSlot",
-                        "returnType": "void"
-                    }
-                ],
-                "superClasses": [
-                    {
-                        "access": "public",
-                        "name": "ListModelBaseOfData<ObjectArtefact,ObjectArtefactModel>"
-                    }
-                ]
-            }
-        ],
-        "inputFile": "effectobjectartefact.h",
-        "outputRevision": 67
-    },
-    {
-        "classes": [
-            {
                 "className": "EffectArtefactArg",
                 "object": true,
                 "properties": [
@@ -23066,6 +22263,809 @@
             }
         ],
         "inputFile": "objectinfo.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
+                "className": "ObjectArtefact",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "artefactId",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "artefactId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setArtefactId",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArtefactId",
+                        "notify": "idChanged",
+                        "read": "id",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArtefactEffectObjectId",
+                        "notify": "effectObjectIdChanged",
+                        "read": "effectObjectId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setEffectObjectId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArtefactArtefact",
+                        "notify": "artefactChanged",
+                        "read": "artefact",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArtefact"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArtefactEffectArtefactArgSet",
+                        "notify": "effectArtefactArgSetChanged",
+                        "read": "effectArtefactArgSet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setEffectArtefactArgSet"
+                    }
+                ],
+                "qualifiedClassName": "ObjectArtefact",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "idChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "effectObjectIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "artefactChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "effectArtefactArgSetChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            },
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "ObjectArtefactModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fieldJsonName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "parentModel_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "parentModelRefJsonName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "setLayoutRef",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createItem",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemById",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getCurrentItem",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "name": "clear",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "loadList",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getItemAppId",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "itemAt",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemByAppId",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "id_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "selectItemById",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "setItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "delItem",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addModelParam",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isListLoaded",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isEmpty",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "appId_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "addLayoutExtraFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "oldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "newName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addExtraFieldRename",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "size",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "qmlFieldName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "findItemByFieldValue",
+                        "returnType": "QVariant"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "indexOfItem",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "filterItemsLeftIDs",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "ids_",
+                                "type": "QVariantList"
+                            }
+                        ],
+                        "name": "filterItemsLeftExceptIDs",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "autoLoadItem",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortModel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fields_",
+                                "type": "QStringList"
+                            }
+                        ],
+                        "name": "sortByFields",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "randOrder",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "procedureName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "extraValues_",
+                                "type": "QHash<QString,QVariant>"
+                            }
+                        ],
+                        "name": "procedure",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutQMLName",
+                        "notify": "layoutQMLNameChanged",
+                        "read": "getLayoutQMLName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutQMLName"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "layoutIdField",
+                        "notify": "layoutIdFieldChanged",
+                        "read": "getLayoutIdField",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLayoutIdField"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentIndex",
+                        "notify": "currentIndexChanged",
+                        "read": "currentIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setCurrentIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentItem",
+                        "notify": "currentItemChanged",
+                        "read": "getCurrentItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "currentRef",
+                        "notify": "currentRefChanged",
+                        "read": "currentRef",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setCurrentRef"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "refAppId",
+                        "notify": "refAppIdChanged",
+                        "read": "getRefAppId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefAppId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "refValue",
+                        "notify": "refValueChanged",
+                        "read": "getRefValue",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setRefValue"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "storeAfterSave",
+                        "notify": "storeAfterSaveChanged",
+                        "read": "storeAfterSave",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setStoreAfterSave"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "jsonParamsGet",
+                        "notify": "jsonParamsGetChanged",
+                        "read": "jsonParamsGet",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setJsonParamsGet"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModels",
+                        "notify": "autoCreateChildrenModelsChanged",
+                        "read": "autoCreateChildrenModels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModels"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "autoCreateChildrenModelsOnSelect",
+                        "notify": "autoCreateChildrenModelsOnSelectChanged",
+                        "read": "autoCreateChildrenModelsOnSelect",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setAutoCreateChildrenModelsOnSelect"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "outputModel",
+                        "notify": "outputModelChanged",
+                        "read": "outputModel",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setOutputModel"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "sortFields",
+                        "notify": "sortFieldsChanged",
+                        "read": "sortFields",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QStringList",
+                        "user": false,
+                        "write": "setSortFields"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "readonly",
+                        "notify": "readonlyChanged",
+                        "read": "readonly",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "write": "setReadonly"
+                    }
+                ],
+                "qualifiedClassName": "ObjectArtefactModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "currentIndexChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentItemChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "currentRefChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "storeAfterSaveChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refAppIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refValueChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutQMLNameChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "layoutIdFieldChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildren",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "jsonParamsGetChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "autoCreateChildrenModelsOnSelectChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "listReloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemSet",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemDeleted",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "outputModelChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortFieldsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "description_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "error",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorCode_",
+                                "type": "int"
+                            },
+                            {
+                                "name": "errorCodeStr_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "request_",
+                                "type": "RequestData*"
+                            },
+                            {
+                                "name": "reply_",
+                                "type": "QJsonDocument"
+                            }
+                        ],
+                        "name": "jsonResponseSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "modelName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "refreshChildrenSlot",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "ListModelBaseOfData<ObjectArtefact,ObjectArtefactModel>"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "objectartefact.h",
         "outputRevision": 67
     },
     {

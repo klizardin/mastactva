@@ -2,7 +2,7 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/artefacttype.h"
-#include "../MastactvaModels/effectobjectartefact.h"
+#include "../MastactvaModels/objectartefact.h"
 #include "../MastactvaModels/effect.h"
 
 

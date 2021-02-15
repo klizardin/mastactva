@@ -1,4 +1,4 @@
-#include "effectobjectartefact.h"
+#include "objectartefact.h"
 #include "../MastactvaBase/defines.h"
 
 

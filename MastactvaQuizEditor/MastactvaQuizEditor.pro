@@ -113,12 +113,12 @@ unix: HEADERS += \
         artefact.h    \
         artefacttype.h    \
         artefactargtype.h \
-        effectobjectartefact.h    \
         effectartefactarg.h \
         effectartefactargset.h \
         translation.h   \
         artefactargstorage.h    \
         objectinfo.h  \
+        objectartefact.h    \
         effectobjects.h
 
 
@@ -168,12 +168,12 @@ unix: SOURCES += \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
-        effectobjectartefact.cpp  \
         effectartefactarg.cpp \
         effectartefactargset.cpp \
         translation.cpp \
         artefactargstorage.cpp  \
         objectinfo.cpp    \
+        objectartefact.cpp  \
         effectobjects.cpp
 
 
