@@ -1,5 +1,5 @@
-#ifndef EFFECTARTEFACTARG_H
-#define EFFECTARTEFACTARG_H
+#ifndef ARTEFACTARG_H
+#define ARTEFACTARG_H
 
 
 #include <QObject>
@@ -138,4 +138,4 @@ signals:
 };
 
 
-#endif // EFFECTARTEFACTARG_H
+#endif // ARTEFACTARG_H
