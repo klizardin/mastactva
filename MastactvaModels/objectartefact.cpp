@@ -6,7 +6,7 @@ ObjectArtefact::ObjectArtefact(ObjectArtefactModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectArtefact::EffectArtefact()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ObjectArtefact::ObjectArtefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     m_effectArtefactModel = parent_;
 }
@@ -107,7 +107,7 @@ ObjectArtefactModel::ObjectArtefactModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectArtefactModel::EffectArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ObjectArtefactModel::ObjectArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
 }
