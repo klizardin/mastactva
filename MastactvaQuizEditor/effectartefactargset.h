@@ -1,1 +1,0 @@
-../MastactvaModels/effectartefactargset.h
