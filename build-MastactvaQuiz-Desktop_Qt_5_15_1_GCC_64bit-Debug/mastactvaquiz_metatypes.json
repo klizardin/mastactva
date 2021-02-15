@@ -18184,7 +18184,7 @@
     {
         "classes": [
             {
-                "className": "EffectObjectArtefact",
+                "className": "ObjectArtefact",
                 "methods": [
                     {
                         "access": "public",
@@ -18262,7 +18262,7 @@
                         "write": "setEffectArtefactArgSet"
                     }
                 ],
-                "qualifiedClassName": "EffectObjectArtefact",
+                "qualifiedClassName": "ObjectArtefact",
                 "signals": [
                     {
                         "access": "public",
@@ -18299,7 +18299,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "EffectObjectArtefactModel",
+                "className": "ObjectArtefactModel",
                 "methods": [
                     {
                         "access": "public",
@@ -18819,7 +18819,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "EffectObjectArtefactModel",
+                "qualifiedClassName": "ObjectArtefactModel",
                 "signals": [
                     {
                         "access": "public",
@@ -18976,7 +18976,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectObjectArtefact,EffectObjectArtefactModel>"
+                        "name": "ListModelBaseOfData<ObjectArtefact,ObjectArtefactModel>"
                     }
                 ]
             }

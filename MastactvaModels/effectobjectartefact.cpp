@@ -2,7 +2,7 @@
 #include "../MastactvaBase/defines.h"
 
 
-EffectObjectArtefact::EffectObjectArtefact(EffectObjectArtefactModel *parent_ /* = nullptr*/)
+ObjectArtefact::ObjectArtefact(ObjectArtefactModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
@@ -11,36 +11,36 @@ EffectObjectArtefact::EffectObjectArtefact(EffectObjectArtefactModel *parent_ /*
     m_effectArtefactModel = parent_;
 }
 
-int EffectObjectArtefact::id() const
+int ObjectArtefact::id() const
 {
     return m_id;
 }
 
-void EffectObjectArtefact::setId(const int &id_)
+void ObjectArtefact::setId(const int &id_)
 {
     m_id = id_;
 
     emit idChanged();
 }
 
-int EffectObjectArtefact::effectObjectId() const
+int ObjectArtefact::effectObjectId() const
 {
     return m_effectId;
 }
 
-void EffectObjectArtefact::setEffectObjectId(const int &effectId_)
+void ObjectArtefact::setEffectObjectId(const int &effectId_)
 {
     m_effectId = effectId_;
 
     emit effectObjectIdChanged();
 }
 
-int EffectObjectArtefact::artefactId() const
+int ObjectArtefact::artefactId() const
 {
     return m_artefactId;
 }
 
-void EffectObjectArtefact::setArtefactId(const int &artefactId_)
+void ObjectArtefact::setArtefactId(const int &artefactId_)
 {
     m_artefactId = artefactId_;
     if(nullptr != m_artefactModel)
@@ -51,11 +51,11 @@ void EffectObjectArtefact::setArtefactId(const int &artefactId_)
     emit artefactChanged();
 }
 
-QVariant EffectObjectArtefact::artefact() const
+QVariant ObjectArtefact::artefact() const
 {
     if(nullptr == m_artefactModel)
     {
-        const_cast<EffectObjectArtefact *>(this)->m_artefactModel = const_cast<EffectObjectArtefact *>(this)
+        const_cast<ObjectArtefact *>(this)->m_artefactModel = const_cast<ObjectArtefact *>(this)
                 ->createArtefactModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
@@ -65,7 +65,7 @@ QVariant EffectObjectArtefact::artefact() const
                                );
 }
 
-void EffectObjectArtefact::setArtefact(const QVariant &obj_)
+void ObjectArtefact::setArtefact(const QVariant &obj_)
 {
     if(obj_.isNull() && nullptr != m_artefactModel)
     {
@@ -76,21 +76,21 @@ void EffectObjectArtefact::setArtefact(const QVariant &obj_)
     }
 }
 
-ArtefactModel *EffectObjectArtefact::getArtefact()
+ArtefactModel *ObjectArtefact::getArtefact()
 {
     return m_artefactModel;
 }
 
-const ArtefactModel *EffectObjectArtefact::getArtefact() const
+const ArtefactModel *ObjectArtefact::getArtefact() const
 {
     return m_artefactModel;
 }
 
-QVariant EffectObjectArtefact::effectArtefactArgSet() const
+QVariant ObjectArtefact::effectArtefactArgSet() const
 {
     if(nullptr == m_effectArtefactArgSetModel)
     {
-        const_cast<EffectObjectArtefact *>(this)->m_effectArtefactArgSetModel = const_cast<EffectObjectArtefact *>(this)
+        const_cast<ObjectArtefact *>(this)->m_effectArtefactArgSetModel = const_cast<ObjectArtefact *>(this)
                 ->createEffectArtefactArgSetModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
@@ -100,7 +100,7 @@ QVariant EffectObjectArtefact::effectArtefactArgSet() const
                                );
 }
 
-void EffectObjectArtefact::setEffectArtefactArgSet(const QVariant &obj_)
+void ObjectArtefact::setEffectArtefactArgSet(const QVariant &obj_)
 {
     if(obj_.isNull() && nullptr != m_effectArtefactArgSetModel)
     {
@@ -111,7 +111,7 @@ void EffectObjectArtefact::setEffectArtefactArgSet(const QVariant &obj_)
     }
 }
 
-ArtefactModel *EffectObjectArtefact::createArtefactModel()
+ArtefactModel *ObjectArtefact::createArtefactModel()
 {
     ArtefactModel *m = new ArtefactModel(this);
     m->initResponse();
@@ -127,7 +127,7 @@ ArtefactModel *EffectObjectArtefact::createArtefactModel()
     return m;
 }
 
-EffectArtefactArgSetModel *EffectObjectArtefact::createEffectArtefactArgSetModel()
+EffectArtefactArgSetModel *ObjectArtefact::createEffectArtefactArgSetModel()
 {
     EffectArtefactArgSetModel *m = new EffectArtefactArgSetModel(this);
     m->initResponse();
@@ -144,7 +144,7 @@ EffectArtefactArgSetModel *EffectObjectArtefact::createEffectArtefactArgSetModel
 }
 
 
-EffectObjectArtefactModel::EffectObjectArtefactModel(QObject *parent_ /*= nullptr*/)
+ObjectArtefactModel::ObjectArtefactModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)
 {
 #if defined(TRACE_THREADS)

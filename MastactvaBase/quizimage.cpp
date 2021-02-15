@@ -467,12 +467,12 @@ void QuizImage::addShadersToWaitDownload()
         EffectObjects *effectObjects = effectObjectsModel->dataItemAtImpl(i);
         Q_ASSERT(nullptr != effectObjects);
 
-        EffectObjectArtefactModel *effectObjectArtefactModel = effectObjects->getEffectObjectArtefacts();
+        ObjectArtefactModel *effectObjectArtefactModel = effectObjects->getEffectObjectArtefacts();
         Q_ASSERT(nullptr != effectObjectArtefactModel && effectObjectArtefactModel->isListLoadedImpl());
 
         for(int j = 0; j < effectObjectArtefactModel->sizeImpl(); j++)
         {
-            EffectObjectArtefact *effectObjectArtefact = effectObjects->getEffectObjectArtefacts()->dataItemAtImpl(j);
+            ObjectArtefact *effectObjectArtefact = effectObjects->getEffectObjectArtefacts()->dataItemAtImpl(j);
             Q_ASSERT(nullptr != effectObjectArtefact);
 
             ArtefactModel * artefactModel = effectObjectArtefact->getArtefact();

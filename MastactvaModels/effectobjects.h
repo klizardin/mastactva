@@ -38,7 +38,7 @@ public:
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
             addField<int>("effect_object_info", "", &EffectObjects::effectObjectInfoId, &EffectObjects::setEffectObjectInfoId);
             addModel<ObjectInfoModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectInfoModel, &EffectObjects::createEffectObjectInfoModel);
-            addModel<EffectObjectArtefactModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectArtefactModel, &EffectObjects::createEffectObjectArtefactModel);
+            addModel<ObjectArtefactModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectArtefactModel, &EffectObjects::createEffectObjectArtefactModel);
             setIdField("id");
         }
     };
@@ -54,12 +54,12 @@ public:
     void setEffectObjectInfo(const QVariant &obj_);
     QVariant effectObjectArtefacts() const;
     void setEffectObjectArtefacts(const QVariant &obj_);
-    EffectObjectArtefactModel *getEffectObjectArtefacts();
-    const EffectObjectArtefactModel *getEffectObjectArtefacts() const;
+    ObjectArtefactModel *getEffectObjectArtefacts();
+    const ObjectArtefactModel *getEffectObjectArtefacts() const;
 
 protected:
     ObjectInfoModel *createEffectObjectInfoModel();
-    EffectObjectArtefactModel *createEffectObjectArtefactModel();
+    ObjectArtefactModel *createEffectObjectArtefactModel();
 
 signals:
     void idChanged();
@@ -76,7 +76,7 @@ private:
     int m_effectId = -1;
     int m_effectObjectInfoId = -1;
     ObjectInfoModel *m_effectObjectInfoModel = nullptr;
-    EffectObjectArtefactModel *m_effectObjectArtefactModel = nullptr;
+    ObjectArtefactModel *m_effectObjectArtefactModel = nullptr;
 };
 
 

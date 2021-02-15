@@ -216,12 +216,12 @@ bool Effect::startRefreshArguments()
     {
         EffectObjects *effectObjects = m_effectObjectsModel->dataItemAtImpl(i);
         if(nullptr == effectObjects) { return false; }
-        EffectObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getEffectObjectArtefacts();
+        ObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getEffectObjectArtefacts();
         if(nullptr == effectObjectArtefactsModel ||
                 !effectObjectArtefactsModel->isListLoadedImpl()) { return false; }
         for(int j = 0; j < effectObjectArtefactsModel->sizeImpl(); j++)
         {
-            EffectObjectArtefact *effectObjectArtefact = effectObjectArtefactsModel->dataItemAtImpl(j);
+            ObjectArtefact *effectObjectArtefact = effectObjectArtefactsModel->dataItemAtImpl(j);
             if(nullptr == effectObjectArtefact) { return false; }
             ArtefactModel *artefactsModel = effectObjectArtefact->getArtefact();
             if(nullptr == artefactsModel ||

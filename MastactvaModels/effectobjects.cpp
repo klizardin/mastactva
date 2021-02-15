@@ -81,7 +81,7 @@ QVariant EffectObjects::effectObjectArtefacts() const
                 ->createEffectObjectArtefactModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
-                                   const_cast<EffectObjectArtefactModel *>(
+                                   const_cast<ObjectArtefactModel *>(
                                        m_effectObjectArtefactModel)
                                    )
                                );
@@ -98,12 +98,12 @@ void EffectObjects::setEffectObjectArtefacts(const QVariant &obj_)
     }
 }
 
-EffectObjectArtefactModel *EffectObjects::getEffectObjectArtefacts()
+ObjectArtefactModel *EffectObjects::getEffectObjectArtefacts()
 {
     return m_effectObjectArtefactModel;
 }
 
-const EffectObjectArtefactModel *EffectObjects::getEffectObjectArtefacts() const
+const ObjectArtefactModel *EffectObjects::getEffectObjectArtefacts() const
 {
     return m_effectObjectArtefactModel;
 }
@@ -125,9 +125,9 @@ ObjectInfoModel *EffectObjects::createEffectObjectInfoModel()
     return m;
 }
 
-EffectObjectArtefactModel *EffectObjects::createEffectObjectArtefactModel()
+ObjectArtefactModel *EffectObjects::createEffectObjectArtefactModel()
 {
-    EffectObjectArtefactModel *m = new EffectObjectArtefactModel(this);
+    ObjectArtefactModel *m = new ObjectArtefactModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect_object", m_effectObjectsModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("effect_object");
