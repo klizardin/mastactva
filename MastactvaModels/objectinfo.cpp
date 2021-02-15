@@ -6,7 +6,7 @@ ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectObjectInfo::EffectObjectInfo()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ObjectInfo::ObjectInfo()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     m_effectObjectInfoModel = parent_;
 }
@@ -81,7 +81,7 @@ ObjectInfoModel::ObjectInfoModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectObjectInfoModel::EffectObjectInfoModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ObjectInfoModel::ObjectInfoModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
 }

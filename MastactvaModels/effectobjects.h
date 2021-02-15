@@ -8,7 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/objectinfo.h"
-#include "../MastactvaModels/effectobjectartefact.h"
+#include "../MastactvaModels/objectartefact.h"
 
 
 class EffectObjectsModel;
@@ -22,8 +22,8 @@ public:
 
     Q_PROPERTY(int effectObjectsId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectObjectsEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
-    Q_PROPERTY(QVariant effectObjectsEffectObjectInfo READ effectObjectInfo WRITE setEffectObjectInfo NOTIFY effectObjectInfoChanged)
-    Q_PROPERTY(QVariant effectObjectsEffectObjectArtefacts READ effectObjectArtefacts WRITE setEffectObjectArtefacts NOTIFY effectObjectArtefactsChanged)
+    Q_PROPERTY(QVariant effectObjectsObjectInfo READ objectInfo WRITE setObjectInfo NOTIFY objectInfoChanged)
+    Q_PROPERTY(QVariant effectObjectsObjectArtefacts READ objectArtefacts WRITE setObjectArtefacts NOTIFY objectArtefactsChanged)
 
     class DefaultLayout : public LayoutBase<EffectObjects>
     {
@@ -36,9 +36,9 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectObjects::m_appId);
             addField<int>("id", "effectObjectsId", &EffectObjects::id, &EffectObjects::setId);
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
-            addField<int>("effect_object_info", "", &EffectObjects::effectObjectInfoId, &EffectObjects::setEffectObjectInfoId);
-            addModel<ObjectInfoModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectInfoModel, &EffectObjects::createEffectObjectInfoModel);
-            addModel<EffectObjectArtefactModel>("effectObjectsEffectObjectInfo", &EffectObjects::m_effectObjectArtefactModel, &EffectObjects::createEffectObjectArtefactModel);
+            addField<int>("object_info", "", &EffectObjects::objectInfoId, &EffectObjects::setObjectInfoId);
+            addModel<ObjectInfoModel>("effectObjectsObjectInfo", &EffectObjects::m_objectInfoModel, &EffectObjects::createObjectInfoModel);
+            addModel<ObjectArtefactModel>("effectObjectsObjectInfo", &EffectObjects::m_objectArtefactModel, &EffectObjects::createObjectArtefactModel);
             setIdField("id");
         }
     };
@@ -48,24 +48,24 @@ public:
     void setId(const int &id_);
     int effectId() const;
     void setEffectId(const int &effectId_);
-    int effectObjectInfoId() const;
-    void setEffectObjectInfoId(const int &effectObjectInfoId_);
-    QVariant effectObjectInfo() const;
-    void setEffectObjectInfo(const QVariant &obj_);
-    QVariant effectObjectArtefacts() const;
-    void setEffectObjectArtefacts(const QVariant &obj_);
-    EffectObjectArtefactModel *getEffectObjectArtefacts();
-    const EffectObjectArtefactModel *getEffectObjectArtefacts() const;
+    int objectInfoId() const;
+    void setObjectInfoId(const int &effectObjectInfoId_);
+    QVariant objectInfo() const;
+    void setObjectInfo(const QVariant &obj_);
+    QVariant objectArtefacts() const;
+    void setObjectArtefacts(const QVariant &obj_);
+    ObjectArtefactModel *getObjectArtefacts();
+    const ObjectArtefactModel *getObjectArtefacts() const;
 
 protected:
-    ObjectInfoModel *createEffectObjectInfoModel();
-    EffectObjectArtefactModel *createEffectObjectArtefactModel();
+    ObjectInfoModel *createObjectInfoModel();
+    ObjectArtefactModel *createObjectArtefactModel();
 
 signals:
     void idChanged();
     void effectIdChanged();
-    void effectObjectInfoChanged();
-    void effectObjectArtefactsChanged();
+    void objectInfoChanged();
+    void objectArtefactsChanged();
 
 private:
     EffectObjectsModel *m_effectObjectsModel = nullptr;
@@ -74,9 +74,9 @@ private:
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
-    int m_effectObjectInfoId = -1;
-    ObjectInfoModel *m_effectObjectInfoModel = nullptr;
-    EffectObjectArtefactModel *m_effectObjectArtefactModel = nullptr;
+    int m_objectInfoId = -1;
+    ObjectInfoModel *m_objectInfoModel = nullptr;
+    ObjectArtefactModel *m_objectArtefactModel = nullptr;
 };
 
 

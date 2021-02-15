@@ -36,79 +36,79 @@ void EffectObjects::setEffectId(const int &effectId_)
     emit effectIdChanged();
 }
 
-int EffectObjects::effectObjectInfoId() const
+int EffectObjects::objectInfoId() const
 {
-    return m_effectObjectInfoId;
+    return m_objectInfoId;
 }
 
-void EffectObjects::setEffectObjectInfoId(const int &effectObjectInfoId_)
+void EffectObjects::setObjectInfoId(const int &effectObjectInfoId_)
 {
-    m_effectObjectInfoId = effectObjectInfoId_;
+    m_objectInfoId = effectObjectInfoId_;
 
-    emit effectObjectInfoChanged();
+    emit objectInfoChanged();
 }
 
-QVariant EffectObjects::effectObjectInfo() const
+QVariant EffectObjects::objectInfo() const
 {
-    if(nullptr == m_effectObjectInfoModel)
+    if(nullptr == m_objectInfoModel)
     {
-        const_cast<EffectObjects *>(this)->m_effectObjectInfoModel = const_cast<EffectObjects *>(this)
-                ->createEffectObjectInfoModel();
+        const_cast<EffectObjects *>(this)->m_objectInfoModel = const_cast<EffectObjects *>(this)
+                ->createObjectInfoModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
                                    const_cast<ObjectInfoModel *>(
-                                       m_effectObjectInfoModel)
+                                       m_objectInfoModel)
                                    )
                                );
 }
 
-void EffectObjects::setEffectObjectInfo(const QVariant &obj_)
+void EffectObjects::setObjectInfo(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectObjectInfoModel)
+    if(obj_.isNull() && nullptr != m_objectInfoModel)
     {
-        delete m_effectObjectInfoModel;
-        m_effectObjectInfoModel = nullptr;
+        delete m_objectInfoModel;
+        m_objectInfoModel = nullptr;
 
-        emit effectObjectInfoChanged();
+        emit objectInfoChanged();
     }
 }
 
-QVariant EffectObjects::effectObjectArtefacts() const
+QVariant EffectObjects::objectArtefacts() const
 {
-    if(nullptr == m_effectObjectArtefactModel)
+    if(nullptr == m_objectArtefactModel)
     {
-        const_cast<EffectObjects *>(this)->m_effectObjectArtefactModel = const_cast<EffectObjects *>(this)
-                ->createEffectObjectArtefactModel();
+        const_cast<EffectObjects *>(this)->m_objectArtefactModel = const_cast<EffectObjects *>(this)
+                ->createObjectArtefactModel();
     }
     return QVariant::fromValue(static_cast<QObject *>(
-                                   const_cast<EffectObjectArtefactModel *>(
-                                       m_effectObjectArtefactModel)
+                                   const_cast<ObjectArtefactModel *>(
+                                       m_objectArtefactModel)
                                    )
                                );
 }
 
-void EffectObjects::setEffectObjectArtefacts(const QVariant &obj_)
+void EffectObjects::setObjectArtefacts(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectObjectArtefactModel)
+    if(obj_.isNull() && nullptr != m_objectArtefactModel)
     {
-        delete m_effectObjectArtefactModel;
-        m_effectObjectArtefactModel = nullptr;
+        delete m_objectArtefactModel;
+        m_objectArtefactModel = nullptr;
 
-        emit effectObjectArtefactsChanged();
+        emit objectArtefactsChanged();
     }
 }
 
-EffectObjectArtefactModel *EffectObjects::getEffectObjectArtefacts()
+ObjectArtefactModel *EffectObjects::getObjectArtefacts()
 {
-    return m_effectObjectArtefactModel;
+    return m_objectArtefactModel;
 }
 
-const EffectObjectArtefactModel *EffectObjects::getEffectObjectArtefacts() const
+const ObjectArtefactModel *EffectObjects::getObjectArtefacts() const
 {
-    return m_effectObjectArtefactModel;
+    return m_objectArtefactModel;
 }
 
-ObjectInfoModel *EffectObjects::createEffectObjectInfoModel()
+ObjectInfoModel *EffectObjects::createObjectInfoModel()
 {
     ObjectInfoModel *m = new ObjectInfoModel(this);
     m->initResponse();
@@ -125,9 +125,9 @@ ObjectInfoModel *EffectObjects::createEffectObjectInfoModel()
     return m;
 }
 
-EffectObjectArtefactModel *EffectObjects::createEffectObjectArtefactModel()
+ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 {
-    EffectObjectArtefactModel *m = new EffectObjectArtefactModel(this);
+    ObjectArtefactModel *m = new ObjectArtefactModel(this);
     m->initResponse();
     m->setLayoutRefImpl("effect_object", m_effectObjectsModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("effect_object");
