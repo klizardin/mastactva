@@ -9,40 +9,40 @@
 #include "../MastactvaBase/Model.h"
 
 
-class EffectArtefactArgModel;
+class ArtefactArgModel;
 
 
-class EffectArtefactArg : public QObject
+class ArtefactArg : public QObject
 {
     Q_OBJECT
 public:
-    explicit EffectArtefactArg(EffectArtefactArgModel *parent_ = nullptr);
+    explicit ArtefactArg(ArtefactArgModel *parent_ = nullptr);
 
-    Q_PROPERTY(int effectArtefactArgId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectArtefactArgEffectArtefactArgSetId READ effectArtefactArgSetId WRITE setEffectArtefactArgSetId NOTIFY effectArtefactArgSetIdChanged)
-    Q_PROPERTY(int effectArtefactArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
-    Q_PROPERTY(int effectArtefactArgArgStorageId READ argStorageId WRITE setArgStorageId NOTIFY argStorageChanged)
-    Q_PROPERTY(QString effectArtefactArgName READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString effectArtefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
-    Q_PROPERTY(QString effectArtefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(int artefactArgId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int artefactArgEffectArtefactArgSetId READ effectArtefactArgSetId WRITE setEffectArtefactArgSetId NOTIFY effectArtefactArgSetIdChanged)
+    Q_PROPERTY(int artefactArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
+    Q_PROPERTY(int artefactArgArgStorageId READ argStorageId WRITE setArgStorageId NOTIFY argStorageChanged)
+    Q_PROPERTY(QString artefactArgName READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString artefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
+    Q_PROPERTY(QString artefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
 
 
-    class DefaultLayout : public LayoutBase<EffectArtefactArg>
+    class DefaultLayout : public LayoutBase<ArtefactArg>
     {
     public:
         DefaultLayout()
         {
             setLayoutJsonName("effect-artefact-arg");
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &EffectArtefactArg::m_parentModelInfo);
-            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &EffectArtefactArg::m_objectModelInfo);
-            addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArtefactArg::m_appId);
-            addField<int>("id", "effectArtefactArgId", &EffectArtefactArg::id, &EffectArtefactArg::setId);
-            addField<int>("effect_artefact_arg_set", "effectArtefactArgEffectArtefactArgSetId", &EffectArtefactArg::effectArtefactArgSetId, &EffectArtefactArg::setEffectArtefactArgSetId);
-            addField<int>("arg_type", "effectArtefactArgArgTypeId", &EffectArtefactArg::argTypeId, &EffectArtefactArg::setArgTypeId);
-            addField<int>("arg_storage", "effectArtefactArgArgStorageId", &EffectArtefactArg::argStorageId, &EffectArtefactArg::setArgStorageId);
-            addField<QString>("name", "effectArtefactArgName", &EffectArtefactArg::name, &EffectArtefactArg::setName);
-            addField<QString>("default_value", "effectArtefactArgDefaultValue", &EffectArtefactArg::defaultValue, &EffectArtefactArg::setDefaultValue);
-            addField<QString>("description", "effectArtefactArgDescription", &EffectArtefactArg::description, &EffectArtefactArg::setDescription);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ArtefactArg::m_parentModelInfo);
+            addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &ArtefactArg::m_objectModelInfo);
+            addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactArg::m_appId);
+            addField<int>("id", "artefactArgId", &ArtefactArg::id, &ArtefactArg::setId);
+            addField<int>("effect_artefact_arg_set", "artefactArgEffectArtefactArgSetId", &ArtefactArg::effectArtefactArgSetId, &ArtefactArg::setEffectArtefactArgSetId);
+            addField<int>("arg_type", "artefactArgArgTypeId", &ArtefactArg::argTypeId, &ArtefactArg::setArgTypeId);
+            addField<int>("arg_storage", "artefactArgArgStorageId", &ArtefactArg::argStorageId, &ArtefactArg::setArgStorageId);
+            addField<QString>("name", "artefactArgName", &ArtefactArg::name, &ArtefactArg::setName);
+            addField<QString>("default_value", "artefactArgDefaultValue", &ArtefactArg::defaultValue, &ArtefactArg::setDefaultValue);
+            addField<QString>("description", "artefactArgDescription", &ArtefactArg::description, &ArtefactArg::setDescription);
             setIdField("id");
         }
     };
@@ -83,20 +83,20 @@ private:
     QString m_name;
     QString m_defaultValue;
     QString m_description;
-    EffectArtefactArgModel *m_effectArtefactArgModel = nullptr;
+    ArtefactArgModel *m_artefactArgModel = nullptr;
 };
 
 
-class EffectArtefactArgModel : public ListModelBaseOfData<EffectArtefactArg, EffectArtefactArgModel>
+class ArtefactArgModel : public ListModelBaseOfData<ArtefactArg, ArtefactArgModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectArtefactArg, EffectArtefactArgModel>;
+    using base = ListModelBaseOfData<ArtefactArg, ArtefactArgModel>;
 
 public:
-    explicit EffectArtefactArgModel(QObject *parent_ = nullptr);
+    explicit ArtefactArgModel(QObject *parent_ = nullptr);
 
     LAYOUT_MODEL_IMPL();
 

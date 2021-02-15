@@ -21341,14 +21341,14 @@
     {
         "classes": [
             {
-                "className": "EffectArtefactArg",
+                "className": "ArtefactArg",
                 "object": true,
                 "properties": [
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgId",
+                        "name": "artefactArgId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -21362,7 +21362,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgEffectArtefactArgSetId",
+                        "name": "artefactArgEffectArtefactArgSetId",
                         "notify": "effectArtefactArgSetIdChanged",
                         "read": "effectArtefactArgSetId",
                         "required": false,
@@ -21376,7 +21376,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgArgTypeId",
+                        "name": "artefactArgArgTypeId",
                         "notify": "argTypeChanged",
                         "read": "argTypeId",
                         "required": false,
@@ -21390,7 +21390,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgArgStorageId",
+                        "name": "artefactArgArgStorageId",
                         "notify": "argStorageChanged",
                         "read": "argStorageId",
                         "required": false,
@@ -21404,7 +21404,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgName",
+                        "name": "artefactArgName",
                         "notify": "nameChanged",
                         "read": "name",
                         "required": false,
@@ -21418,7 +21418,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgDefaultValue",
+                        "name": "artefactArgDefaultValue",
                         "notify": "defaultValueChanged",
                         "read": "defaultValue",
                         "required": false,
@@ -21432,7 +21432,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArgDescription",
+                        "name": "artefactArgDescription",
                         "notify": "descriptionChanged",
                         "read": "description",
                         "required": false,
@@ -21443,7 +21443,7 @@
                         "write": "setDescription"
                     }
                 ],
-                "qualifiedClassName": "EffectArtefactArg",
+                "qualifiedClassName": "ArtefactArg",
                 "signals": [
                     {
                         "access": "public",
@@ -21495,7 +21495,7 @@
                         "value": "auto"
                     }
                 ],
-                "className": "EffectArtefactArgModel",
+                "className": "ArtefactArgModel",
                 "methods": [
                     {
                         "access": "public",
@@ -22015,7 +22015,7 @@
                         "write": "setReadonly"
                     }
                 ],
-                "qualifiedClassName": "EffectArtefactArgModel",
+                "qualifiedClassName": "ArtefactArgModel",
                 "signals": [
                     {
                         "access": "public",
@@ -22172,7 +22172,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectArtefactArg,EffectArtefactArgModel>"
+                        "name": "ListModelBaseOfData<ArtefactArg,ArtefactArgModel>"
                     }
                 ]
             }
