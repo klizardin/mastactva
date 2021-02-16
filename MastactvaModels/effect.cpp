@@ -208,6 +208,9 @@ bool Effect::startRefreshArguments()
                 );
     Q_ASSERT(nullptr != artefactTypeModel && artefactTypeModel->sizeImpl() > 0);
 
+
+    if(nullptr == m_effectObjectsModel || !m_effectObjectsModel->isListLoadedImpl()) { return false; }
+
     // get all artefacts urls
     const int objecsCnt = m_effectObjectsModel->size();
     QList<QPair<QString, QString>> urlHashPairs;
@@ -216,24 +219,29 @@ bool Effect::startRefreshArguments()
     {
         EffectObjects *effectObjects = m_effectObjectsModel->dataItemAtImpl(i);
         if(nullptr == effectObjects) { return false; }
+
         ObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getObjectArtefacts();
         if(nullptr == effectObjectArtefactsModel ||
                 !effectObjectArtefactsModel->isListLoadedImpl()) { return false; }
+
         for(int j = 0; j < effectObjectArtefactsModel->sizeImpl(); j++)
         {
             ObjectArtefact *effectObjectArtefact = effectObjectArtefactsModel->dataItemAtImpl(j);
             if(nullptr == effectObjectArtefact) { return false; }
+
             ArtefactModel *artefactsModel = effectObjectArtefact->getArtefact();
             if(nullptr == artefactsModel ||
                     !artefactsModel->isListLoadedImpl()) { return false; }
+
             for(int k = 0; k < artefactsModel->sizeImpl(); k++)
             {
                 Artefact *artefact = artefactsModel->dataItemAtImpl(k);
                 if(nullptr == artefact) { return false; }
+
                 ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
                 if(nullptr == artefactType) { return false; }
 
-                // only for shaders
+                // load only shaders
                 if(g_artefactTypeVertex == artefactType->type() ||
                         g_artefactTypeFragment == artefactType->type())
                 {
@@ -242,6 +250,7 @@ bool Effect::startRefreshArguments()
             }
         }
     }
+
     //for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     //{
     //    qDebug() << url_.first << ", " << url_.second;
@@ -251,12 +260,15 @@ bool Effect::startRefreshArguments()
     {
         m_artefactsUrls.push_back(url_.first);
     }
+
     m_artefactsLocalUrls.clear();
+
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     QObject::connect(sf, SIGNAL(downloaded(const QString &)),
                      this, SLOT(refreshArgumentsArtefactDownloadedSlot(const QString &)));
     QObject::connect(sf, SIGNAL(progress()),
                      this, SLOT(refreshArgumentsProgressSlot()));
+
     for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
     {
         sf->add(url_.first, url_.second, g_artefactsRelPath);
@@ -272,6 +284,7 @@ void Effect::cancelRefreshArguments()
     QObject::disconnect(sf, SIGNAL(progress()),
                         this, SLOT(refreshArgumentsProgressSlot()));
     sf->cancel(m_artefactsUrls);
+
     m_artefactsUrls.clear();
     m_artefactsLocalUrls.clear();
 }
@@ -280,8 +293,10 @@ void Effect::refreshArgumentsArtefactDownloadedSlot(const QString &url_)
 {
     const auto fit = std::find(std::begin(m_artefactsUrls), std::end(m_artefactsUrls), url_);
     if(std::end(m_artefactsUrls) == fit) { return; }
+
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     m_artefactsLocalUrls.insert(url_, sf->get(url_));
+
     if(m_artefactsLocalUrls.size() == m_artefactsUrls.size())
     {
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
@@ -297,6 +312,15 @@ void Effect::refreshArgumentsProgressSlot()
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     qreal rate = sf->getProgressRate(m_artefactsUrls);
     emit refreshArgumentsProgress(true, rate);
+}
+
+inline bool checkRequeredFields(const Comment &comment_)
+{
+    return comment_.values().contains(g_argumentName) &&
+        comment_.values().contains(g_nameName) &&
+        comment_.values().contains(g_typeName) &&
+        comment_.values().contains(g_storageName)
+        ;
 }
 
 void Effect::applyRefreshArguments()
@@ -321,6 +345,7 @@ void Effect::applyRefreshArguments()
         const QString filename = url.toLocalFile();
         QFile f(filename);
         if(!f.open(QIODevice::ReadOnly)) { continue; }
+
         QByteArray fd = f.readAll();
 
         QTextCodec *codec = QTextCodec::codecForUtfText(fd);
@@ -328,25 +353,26 @@ void Effect::applyRefreshArguments()
 
         QVector<Comment> comments;
         getShaderComments(shaderText, comments);
+
         for(const Comment &comment: qAsConst(comments))
         {
-            if(!comment.values().contains(g_argumentName) ||
-                    !comment.values().contains(g_nameName) ||
-                    !comment.values().contains(g_typeName)
-                    ) { continue; }
+            if(!checkRequeredFields(comment)) { continue; }
+
             const QString argName = comment.values().value(g_nameName).trimmed();
             const QString argTypeStr = comment.values().value(g_typeName).trimmed();
             const QString argStorageStr = comment.values().value(g_storageName).trimmed();
             const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
             const QString argDescription = comment.values().value(g_descriptionName, QString()).trimmed();
             //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
-            ArtefactArgType *artefactArgType = argTypesModel->findDataItemByFieldValueImpl(
+
+            const ArtefactArgType *artefactArgType = argTypesModel->findDataItemByFieldValueImpl(
                         "artefactArgTypeType",
                         QVariant::fromValue(argTypeStr)
                         );
             Q_ASSERT(nullptr != artefactArgType);
             const int argTypeId = artefactArgType->id();
-            ArtefactArgStorage *artefactArgStorage = argStoragesModel->findDataItemByFieldValueImpl(
+
+            const ArtefactArgStorage *artefactArgStorage = argStoragesModel->findDataItemByFieldValueImpl(
                         "artefactArgStorageStorage",
                         QVariant::fromValue(argStorageStr)
                         );
@@ -375,7 +401,7 @@ void Effect::applyRefreshArguments()
             newArg->setDefaultValue(argDefaultValue);
             newArg->setDescription(argDescription);
 
-            EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
+            const EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
                         "effectArgName",
                         QVariant::fromValue(argName)
                         );
@@ -440,10 +466,12 @@ void Effect::applyRefreshArguments()
         }
     }
     newArguments.clear();
+
     m_itemsToChangeCount = m_itemsToSet.size() + m_itemsToDel.size() + m_itemsToAdd.size();
     QObject::connect(m_effectArgModel, SIGNAL(itemAdded()), this, SLOT(itemAddedSlot()));
     QObject::connect(m_effectArgModel, SIGNAL(itemSet()), this, SLOT(itemSetSlot()));
     QObject::connect(m_effectArgModel, SIGNAL(itemDeleted()), this, SLOT(itemDeletedSlot()));
+
     applyRefreshArgumentsStep();
 }
 
