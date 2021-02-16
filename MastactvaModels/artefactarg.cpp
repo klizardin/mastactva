@@ -92,6 +92,18 @@ void ArtefactArg::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
+QDateTime ArtefactArg::created() const
+{
+    return m_created;
+}
+
+void ArtefactArg::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 
 ArtefactArgModel::ArtefactArgModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)

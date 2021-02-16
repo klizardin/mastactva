@@ -25,6 +25,7 @@ public:
     Q_PROPERTY(QString artefactArgName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString artefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString artefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QDateTime artefactArgCreated READ created WRITE setCreated NOTIFY createdChanged)
 
 
     class DefaultLayout : public LayoutBase<ArtefactArg>
@@ -43,6 +44,7 @@ public:
             addField<QString>("name", "artefactArgName", &ArtefactArg::name, &ArtefactArg::setName);
             addField<QString>("default_value", "artefactArgDefaultValue", &ArtefactArg::defaultValue, &ArtefactArg::setDefaultValue);
             addField<QString>("description", "artefactArgDescription", &ArtefactArg::description, &ArtefactArg::setDescription);
+            addField<QDateTime>("created", "artefactArgCreated", &ArtefactArg::created, &ArtefactArg::setCreated);
             setIdField("id");
         }
     };
@@ -62,6 +64,8 @@ public:
     void setDefaultValue(const QString &defaultValue_);
     QString description() const;
     void setDescription(const QString &description_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
 
 signals:
     void idChanged();
@@ -71,6 +75,7 @@ signals:
     void nameChanged();
     void defaultValueChanged();
     void descriptionChanged();
+    void createdChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
@@ -83,6 +88,7 @@ private:
     QString m_name;
     QString m_defaultValue;
     QString m_description;
+    QDateTime m_created;
     ArtefactArgModel *m_artefactArgModel = nullptr;
 };
 
