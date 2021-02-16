@@ -135,6 +135,16 @@ void Artefact::setArtefactArg(const QVariant &obj_)
     }
 }
 
+ArtefactArgModel *Artefact::getArtefactArg()
+{
+    return m_artefactArgModel;
+}
+
+const ArtefactArgModel *Artefact::getArtefactArg() const
+{
+    return m_artefactArgModel;
+}
+
 void Artefact::loadChildrenVF()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);

@@ -144,6 +144,18 @@ void EffectArg::setObjectArtefact(const QVariant &obj_)
     }
 }
 
+void EffectArg::copyFrom(const ArtefactArg *artefactArg_, int effectId, int objectArtefactId_)
+{
+    m_effectId = effectId;
+    m_objectArtefactId = objectArtefactId_;
+    m_argTypeId = artefactArg_->argTypeId();
+    m_argStorageId = artefactArg_->argStorageId();
+    m_name = artefactArg_->name();
+    m_defaultValue = artefactArg_->defaultValue();
+    m_description = artefactArg_->description();
+    m_created = QDateTime::currentDateTime();
+}
+
 ObjectArtefactModel *EffectArg::createObjectArtefactModel()
 {
     ObjectArtefactModel *m = new ObjectArtefactModel(this);

@@ -9,6 +9,7 @@
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/artefactargtype.h"
 #include "../MastactvaModels/objectartefact.h"
+#include "../MastactvaModels/artefactarg.h"
 
 
 class EffectArgModel;
@@ -76,6 +77,8 @@ public:
     void setCreated(const QDateTime &created_);
     QVariant objectArtefact() const;
     void setObjectArtefact(const QVariant &objectArtefact_);
+
+    void copyFrom(const ArtefactArg *artefactArg_, int effectId, int objectArtefactId_);
 
 protected:
     ObjectArtefactModel *createObjectArtefactModel();

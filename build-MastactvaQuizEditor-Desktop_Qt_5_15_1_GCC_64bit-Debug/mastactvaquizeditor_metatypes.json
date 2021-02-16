@@ -6862,20 +6862,6 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArgValueArg",
-                        "notify": "argChanged",
-                        "read": "arg",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QVariant",
-                        "user": false,
-                        "write": "setArg"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
                         "name": "effectArgValueValue",
                         "notify": "valueChanged",
                         "read": "value",
@@ -6913,6 +6899,20 @@
                         "type": "QDateTime",
                         "user": false,
                         "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgValueArg",
+                        "notify": "argChanged",
+                        "read": "arg",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArg"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValue",

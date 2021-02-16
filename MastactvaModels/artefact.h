@@ -72,6 +72,9 @@ public:
     QVariant artefactArg() const;
     void setArtefactArg(const QVariant &obj_);
 
+    ArtefactArgModel *getArtefactArg();
+    const ArtefactArgModel *getArtefactArg() const;
+
 protected:
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;

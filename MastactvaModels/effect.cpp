@@ -19,6 +19,23 @@ Effect::Effect(EffectModel *parent_)
     m_objectModelInfo = this;
 }
 
+Effect::~Effect()
+{
+    clear(m_artefactArgs);
+    clear(m_itemsToSet);
+    clear(m_itemsToDel);
+    clear(m_itemsToAdd);
+
+    delete m_effectObjectsModel;
+    m_effectObjectsModel = nullptr;
+    delete m_effectArgModel;
+    m_effectArgModel = nullptr;
+    delete m_effectArgSetModel;
+    m_effectArgSetModel = nullptr;
+
+    m_artefactInfos.clear();
+}
+
 int Effect::id() const
 {
     return m_id;
@@ -194,6 +211,25 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
     return m;
 }
 
+void Effect::clear(QList<EffectArg *> &artefactArgs_)
+{
+    for(EffectArg *&arg_ : artefactArgs_)
+    {
+        const bool founded = nullptr != m_effectArgModel->findDataItemByAppIdImpl(
+                    getDataLayout<EffectArg>().getSpecialFieldValue(
+                        layout::SpecialFieldEn::appId,
+                        arg_
+                        )
+                    );
+        if(!founded)
+        {
+            delete arg_;
+            arg_ = nullptr;
+        }
+    }
+    artefactArgs_.clear();
+}
+
 bool Effect::startRefreshArguments()
 {
     qDebug() << "Effect::startRefreshArguments()";
@@ -213,7 +249,8 @@ bool Effect::startRefreshArguments()
 
     // get all artefacts urls
     const int objecsCnt = m_effectObjectsModel->size();
-    QList<QPair<QString, QString>> urlHashPairs;
+    m_artefactInfos.clear();
+    clear(m_artefactArgs);
 
     for(int i = 0; i < objecsCnt; i++)
     {
@@ -232,36 +269,47 @@ bool Effect::startRefreshArguments()
             ArtefactModel *artefactsModel = effectObjectArtefact->getArtefact();
             if(nullptr == artefactsModel ||
                     !artefactsModel->isListLoadedImpl()) { return false; }
+            Q_ASSERT(1 == artefactsModel->sizeImpl());
 
             for(int k = 0; k < artefactsModel->sizeImpl(); k++)
             {
                 Artefact *artefact = artefactsModel->dataItemAtImpl(k);
                 if(nullptr == artefact) { return false; }
 
+                // get default arguments from artefacts
+                ArtefactArgModel *artefactArgModel = artefact->getArtefactArg();
+                if(nullptr == artefactArgModel
+                        || !artefactArgModel->isListLoadedImpl()) { return false; }
+
+                for(int m = 0; m < artefactArgModel->sizeImpl(); ++m)
+                {
+                    ArtefactArg *artefactArg = artefactArgModel->dataItemAtImpl(m);
+                    if(nullptr == artefactArg) { return false; }
+
+                    EffectArg *newArg = m_effectArgModel->createDataItemImpl();
+                    newArg->copyFrom(artefactArg, id(), effectObjectArtefact->id());
+                }
+
                 ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
                 if(nullptr == artefactType) { return false; }
 
-                // load only shaders
                 if(g_artefactTypeVertex == artefactType->type() ||
                         g_artefactTypeFragment == artefactType->type())
                 {
-                    urlHashPairs.push_back({artefact->getFilename(), artefact->hash()});
+                    // for reading arguments info from code of shaders
+                    m_artefactInfos.push_back(
+                                {
+                                    artefact->getFilename(),
+                                    artefact->hash(),
+                                    effectObjectArtefact->id(),
+                                    QString()
+                                });
                 }
+
             }
         }
     }
-
-    //for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
-    //{
-    //    qDebug() << url_.first << ", " << url_.second;
-    //}
-    m_artefactsUrls.clear();
-    for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
-    {
-        m_artefactsUrls.push_back(url_.first);
-    }
-
-    m_artefactsLocalUrls.clear();
+    m_artefactsLocalUrlsCount = 0;
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     QObject::connect(sf, SIGNAL(downloaded(const QString &)),
@@ -269,9 +317,9 @@ bool Effect::startRefreshArguments()
     QObject::connect(sf, SIGNAL(progress()),
                      this, SLOT(refreshArgumentsProgressSlot()));
 
-    for(const QPair<QString,QString> &url_: qAsConst(urlHashPairs))
+    for(const ArtefactInfo &ai_: qAsConst(m_artefactInfos))
     {
-        sf->add(url_.first, url_.second, g_artefactsRelPath);
+        sf->add(ai_.filename, ai_.hash, g_artefactsRelPath);
     }
     return true;
 }
@@ -283,21 +331,31 @@ void Effect::cancelRefreshArguments()
                         this, SLOT(refreshArgumentsArtefactDownloadedSlot(const QString &)));
     QObject::disconnect(sf, SIGNAL(progress()),
                         this, SLOT(refreshArgumentsProgressSlot()));
-    sf->cancel(m_artefactsUrls);
 
-    m_artefactsUrls.clear();
-    m_artefactsLocalUrls.clear();
+    QStringList artefactsUrls;
+    for(const ArtefactInfo &ai_: qAsConst(m_artefactInfos))
+    {
+        artefactsUrls.push_back(ai_.filename);
+    }
+    sf->cancel(artefactsUrls);
+    m_artefactInfos.clear();
+    m_artefactsLocalUrlsCount = 0;
 }
 
 void Effect::refreshArgumentsArtefactDownloadedSlot(const QString &url_)
 {
-    const auto fit = std::find(std::begin(m_artefactsUrls), std::end(m_artefactsUrls), url_);
-    if(std::end(m_artefactsUrls) == fit) { return; }
+    const auto fit = std::find_if(std::begin(m_artefactInfos), std::end(m_artefactInfos),
+                                  [&url_](const ArtefactInfo &ai_)->bool
+    {
+        return ai_.filename == url_;
+    });
+    if(std::end(m_artefactInfos) == fit) { return; }
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    m_artefactsLocalUrls.insert(url_, sf->get(url_));
+    fit->localUrl = sf->get(fit->filename);
+    ++m_artefactsLocalUrlsCount;
 
-    if(m_artefactsLocalUrls.size() == m_artefactsUrls.size())
+    if(m_artefactsLocalUrlsCount == m_artefactInfos.size())
     {
         QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
                             this, SLOT(refreshArgumentsArtefactDownloadedSlot(const QString &)));
@@ -310,7 +368,13 @@ void Effect::refreshArgumentsArtefactDownloadedSlot(const QString &url_)
 void Effect::refreshArgumentsProgressSlot()
 {
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    qreal rate = sf->getProgressRate(m_artefactsUrls);
+    QStringList artefactsUrls;
+    artefactsUrls.reserve(m_artefactInfos.size());
+    for(const ArtefactInfo &ai_: qAsConst(m_artefactInfos))
+    {
+        artefactsUrls.push_back(ai_.filename);
+    }
+    qreal rate = sf->getProgressRate(artefactsUrls);
     emit refreshArgumentsProgress(true, rate);
 }
 
@@ -325,7 +389,7 @@ inline bool checkRequeredFields(const Comment &comment_)
 
 void Effect::applyRefreshArguments()
 {
-    QList<EffectArg *> newArguments;
+    QList<EffectArg *> &newArguments = m_artefactArgs;
     ArtefactArgTypeModel *argTypesModel = static_cast<ArtefactArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
                 );
@@ -338,10 +402,9 @@ void Effect::applyRefreshArguments()
     // read comments from artefacts files
     // get file, form commens list
     // form arguments data
-    const QStringList localUrls = m_artefactsLocalUrls.values();
-    for(const QString &localUrl : qAsConst(localUrls))
+    for(const ArtefactInfo &ai_: qAsConst(m_artefactInfos))
     {
-        const QUrl url(localUrl);
+        const QUrl url(ai_.localUrl);
         const QString filename = url.toLocalFile();
         QFile f(filename);
         if(!f.open(QIODevice::ReadOnly)) { continue; }
@@ -379,71 +442,83 @@ void Effect::applyRefreshArguments()
             Q_ASSERT(nullptr != artefactArgType);
             const int argStorageId = artefactArgStorage->id();
 
-            auto fitni = std::find_if(std::begin(newArguments), std::end(newArguments),
-                                      [&argName](EffectArg *effectArg)->bool
+            auto fitni = std::find_if(
+                        std::begin(newArguments),
+                        std::end(newArguments),
+                        [&argName, &ai_] (EffectArg *effectArg) -> bool
             {
-                return nullptr != effectArg && effectArg->name() == argName;
+                return nullptr != effectArg &&
+                        effectArg->name() == argName &&
+                        ai_.objectArtefactId == effectArg->objectArtefactId()
+                        ;
             });
-            EffectArg *newArg = nullptr;
-            const bool newArgCreated = std::end(newArguments) != fitni;
-            if(newArgCreated)
-            {
-                newArg = *fitni;
-            }
-            else
-            {
-                newArg = m_effectArgModel->createDataItemImpl();
-                newArg->setName(argName);
-                newArg->setEffectId(id());
-            }
+            //EffectArg *newArg = nullptr;
+            //const bool newArgCreated = std::end(newArguments) != fitni;
+            //if(newArgCreated)
+            //{
+            //    newArg = *fitni;
+            //}
+            //else
+            //{
+            EffectArg *newArg = m_effectArgModel->createDataItemImpl();
+            newArg->setName(argName);
+            newArg->setEffectId(id());
+            newArg->setObjectArtefactId(ai_.objectArtefactId);
+            //}
             newArg->setArgTypeId(argTypeId);
             newArg->setArgStorageId(argStorageId);
             newArg->setDefaultValue(argDefaultValue);
             newArg->setDescription(argDescription);
 
-            const EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
-                        "effectArgName",
-                        QVariant::fromValue(argName)
-                        );
-            if(nullptr != existingArg)
-            {
-                if(existingArg->argTypeId() == argTypeId &&
-                        existingArg->defaultValue() == argDefaultValue &&
-                        existingArg->description() == argDescription)
-                {
-                    delete newArg;
-                    newArg = nullptr;
-                }
-            }
+            //const EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
+            //            "effectArgName",
+            //            QVariant::fromValue(argName)
+            //            );
+            //if(nullptr != existingArg)
+            //{
+            //    if(existingArg->argTypeId() == argTypeId &&
+            //            existingArg->defaultValue() == argDefaultValue &&
+            //            existingArg->description() == argDescription)
+            //    {
+            //        delete newArg;
+            //        newArg = nullptr;
+            //    }
+            //}
 
-            if(!newArgCreated)
-            {
-                if(nullptr != newArg)
-                {
-                    newArguments.push_back(newArg);
-                }
-            }
-            else
-            {
-                if(nullptr == newArg)
-                {
-                    newArguments.erase(fitni);
-                }
-            }
+            //if(!newArgCreated)
+            //{
+            //    if(nullptr != newArg)
+            //    {
+            //        newArguments.push_back(newArg);
+            //    }
+            //}
+            //else
+            //{
+            //    if(nullptr == newArg)
+            //    {
+            //        newArguments.erase(fitni);
+            //    }
+            //}
         }
     }
 
     // form lists: 1) to set items (index, and new value) 2) to del items (items) 3) to add items (items)
-    m_itemsToSet.clear();
-    m_itemsToDel.clear();
-    m_itemsToAdd.clear();
+    clear(m_itemsToSet);
+    clear(m_itemsToDel);
+    clear(m_itemsToAdd);
+
     for(EffectArg *newArg: qAsConst(newArguments))
     {
-        EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
-                    "effectArgName",
-                    QVariant::fromValue(newArg->name())
-                    );
-        if(nullptr != existingArg)
+        const bool existingItemFounded = nullptr != m_effectArgModel->dataItemFindIf(
+                    [&newArg] (const EffectArg *arg_) -> bool
+        {
+            return nullptr != arg_ &&
+                    nullptr != newArg &&
+                    arg_->name() == newArg->name() &&
+                    arg_->objectArtefactId() == newArg->objectArtefactId()
+                    ;
+        });
+        if(existingItemFounded)
         {
             m_itemsToSet.push_back(newArg);
         }
@@ -454,18 +529,24 @@ void Effect::applyRefreshArguments()
     }
     for(int i = 0; i < m_effectArgModel->sizeImpl(); i++)
     {
-        const QString argName = m_effectArgModel->dataItemAtImpl(i)->name();
-        const auto fitni = std::find_if(std::begin(newArguments), std::end(newArguments),
-                                  [&argName](EffectArg *effectArg)->bool
+        const EffectArg *existingArg = m_effectArgModel->dataItemAtImpl(i);
+        const auto fitni = std::find_if(
+                    std::begin(newArguments),
+                    std::end(newArguments),
+                    [&existingArg] (EffectArg *effectArg) -> bool
         {
-            return nullptr != effectArg && effectArg->name() == argName;
+            return nullptr != effectArg &&
+                nullptr != existingArg &&
+                effectArg->name() == existingArg->name() &&
+                effectArg->objectArtefactId() == existingArg->objectArtefactId()
+                ;
         });
-        if(std::end(newArguments) == fitni)
+        const bool newItemFounded = std::end(newArguments) == fitni;
+        if(!newItemFounded)
         {
             m_itemsToDel.push_back(m_effectArgModel->dataItemAtImpl(i));
         }
     }
-    newArguments.clear();
 
     m_itemsToChangeCount = m_itemsToSet.size() + m_itemsToDel.size() + m_itemsToAdd.size();
     QObject::connect(m_effectArgModel, SIGNAL(itemAdded()), this, SLOT(itemAddedSlot()));
@@ -499,10 +580,13 @@ void Effect::applyRefreshArgumentsStep()
     }
     else
     {
-        emit refreshArgumentsProgress(false,
-                                      qreal((std::min(leftItems, m_itemsToChangeCount) * 1000)
-                                            / m_itemsToChangeCount) / 1000.0
-                                      );
+        emit refreshArgumentsProgress(
+                    false,
+                    qreal(
+                        ( std::min(leftItems, m_itemsToChangeCount) * 1000 )
+                        / m_itemsToChangeCount)
+                        / 1000.0
+                    );
     }
 
     if(m_itemsToSet.isEmpty() && m_itemsToDel.isEmpty() && m_itemsToAdd.isEmpty())
@@ -510,6 +594,8 @@ void Effect::applyRefreshArgumentsStep()
         QObject::disconnect(m_effectArgModel, SIGNAL(itemAdded()), this, SLOT(itemAddedSlot()));
         QObject::disconnect(m_effectArgModel, SIGNAL(itemSet()), this, SLOT(itemSetSlot()));
         QObject::disconnect(m_effectArgModel, SIGNAL(itemDeleted()), this, SLOT(itemDeletedSlot()));
+
+        clear(m_artefactArgs);
 
         emit refreshArgumentsAfterApply();
         return;
