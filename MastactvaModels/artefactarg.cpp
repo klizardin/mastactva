@@ -5,6 +5,9 @@
 ArtefactArg::ArtefactArg(ArtefactArgModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ArtefactArg::ArtefactArg()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_artefactArgModel = parent_;
 }
 
@@ -20,16 +23,16 @@ void ArtefactArg::setId(const int &id_)
     emit idChanged();
 }
 
-int ArtefactArg::effectArtefactArgSetId() const
+int ArtefactArg::artefactId() const
 {
-    return m_effectArtefactArgSetId;
+    return m_artefactId;
 }
 
-void ArtefactArg::setEffectArtefactArgSetId(const int &effectArtefactArgSetId_)
+void ArtefactArg::setArtefactId(const int &effectArtefactArgSetId_)
 {
-    m_effectArtefactArgSetId = effectArtefactArgSetId_;
+    m_artefactId = effectArtefactArgSetId_;
 
-    emit effectArtefactArgSetIdChanged();
+    emit artefactIdChanged();
 }
 
 int ArtefactArg::argTypeId() const
@@ -92,12 +95,24 @@ void ArtefactArg::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
+QDateTime ArtefactArg::created() const
+{
+    return m_created;
+}
+
+void ArtefactArg::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 
 ArtefactArgModel::ArtefactArgModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectArtefactArgModel::EffectArtefactArgModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ArtefactArgModel::ArtefactArgModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
     setAutoCreateChildrenModelsImpl(true);

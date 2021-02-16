@@ -19,22 +19,24 @@ class ObjectArtefact : public QObject
 public:
     explicit ObjectArtefact(ObjectArtefactModel *parent_ = nullptr);
 
-    Q_PROPERTY(int effectArtefactId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int effectArtefactEffectObjectId READ effectObjectId WRITE setEffectObjectId NOTIFY effectObjectIdChanged)
-    Q_PROPERTY(QVariant effectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
+    Q_PROPERTY(int objectArtefactId READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(int objectArtefactObjectInfoId READ objectInfoId WRITE setObjectInfoId NOTIFY objectInfoIdChanged)
+    Q_PROPERTY(QVariant objectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
+    Q_PROPERTY(int objectArtefactStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
 
     class DefaultLayout : public LayoutBase<ObjectArtefact>
     {
     public:
         DefaultLayout()
         {
-            setLayoutJsonName("effect-object-artefact");
+            setLayoutJsonName("object-artefact");
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &ObjectArtefact::m_parentModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &ObjectArtefact::m_appId);
-            addField<int>("id", "effectArtefactId", &ObjectArtefact::id, &ObjectArtefact::setId);
-            addField<int>("effect_object", "effectArtefactEffectObjectId", &ObjectArtefact::effectObjectId, &ObjectArtefact::setEffectObjectId);
+            addField<int>("id", "objectArtefactId", &ObjectArtefact::id, &ObjectArtefact::setId);
+            addField<int>("object_info", "objectArtefactObjectInfoId", &ObjectArtefact::objectInfoId, &ObjectArtefact::setObjectInfoId);
             addField<int>("artefact", "", &ObjectArtefact::artefactId, &ObjectArtefact::setArtefactId);
-            addModel<ArtefactModel>("effectArtefactArtefact", &ObjectArtefact::m_artefactModel, &ObjectArtefact::createArtefactModel);
+            addField<int>("step_index", "objectArtefactStepIndex", &ObjectArtefact::stepIndex, &ObjectArtefact::setStepIndex);
+            addModel<ArtefactModel>("objectArtefactArtefact", &ObjectArtefact::m_artefactModel, &ObjectArtefact::createArtefactModel);
             setIdField("id");
         }
     };
@@ -45,23 +47,23 @@ public:
 public:
     int id() const;
     void setId(const int &id_);
-    int effectObjectId() const;
-    void setEffectObjectId(const int &effectId_);
+    int objectInfoId() const;
+    void setObjectInfoId(const int &effectId_);
     QVariant artefact() const;
     void setArtefact(const QVariant &obj_);
     ArtefactModel *getArtefact();
     const ArtefactModel *getArtefact() const;
-    QVariant effectArtefactArgSet() const;
-    void setEffectArtefactArgSet(const QVariant &obj_);
+    int stepIndex() const;
+    void setStepIndex(const int &stepIndex_);
 
 protected:
     ArtefactModel *createArtefactModel();
 
 signals:
     void idChanged();
-    void effectObjectIdChanged();
+    void objectInfoIdChanged();
     void artefactChanged();
-    void effectArtefactArgSetChanged();
+    void stepIndexChanged();
 
 private:
     ObjectArtefactModel *m_effectArtefactModel = nullptr;
@@ -70,6 +72,7 @@ private:
     int m_id = -1;
     int m_effectId = -1;
     int m_artefactId = -1;
+    int m_stepIndex = -1;
     ArtefactModel *m_artefactModel = nullptr;
 };
 

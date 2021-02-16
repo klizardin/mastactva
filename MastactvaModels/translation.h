@@ -24,10 +24,10 @@ public:
     Q_PROPERTY(int translationQuestionId READ questionId WRITE setQuestionId NOTIFY questionIdChanged)
     Q_PROPERTY(int translationAnswerId READ answerId WRITE setAnswerId NOTIFY answerIdChanged)
     Q_PROPERTY(QString translationText READ text WRITE setText NOTIFY textChanged)
-    Q_PROPERTY(QDateTime translationCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(bool translationAutoTranslate READ autoTranslate WRITE setAutoTranslate NOTIFY autoTranslateChanged)
-    Q_PROPERTY(QString translationLangFrom READ langFrom WRITE setLangFrom NOTIFY langFromChanged)
-    Q_PROPERTY(QString translationLangTo READ langTo WRITE setLangTo NOTIFY langToChanged)
+    Q_PROPERTY(QString translationLanguageFrom READ langFrom WRITE setLangFrom NOTIFY langFromChanged)
+    Q_PROPERTY(QString translationLanguageTo READ langTo WRITE setLangTo NOTIFY langToChanged)
+    Q_PROPERTY(QDateTime translationCreated READ created WRITE setCreated NOTIFY createdChanged)
 
 
     class DefaultLayout : public LayoutBase<Translation>
@@ -45,10 +45,10 @@ public:
             addField<int>("question", "translationQuestionId", &Translation::questionId, &Translation::setQuestionId);
             addField<int>("answer", "translationAnswerId", &Translation::answerId, &Translation::setAnswerId);
             addField<QString>("text", "translationText", &Translation::text, &Translation::setText);
-            addField<QDateTime>("text", "translationCreated", &Translation::created, &Translation::setCreated);
             addField<bool>("auto_translate", "translationAutoTranslate", &Translation::autoTranslate, &Translation::setAutoTranslate);
-            addField<QString>("language_from", "translationLangFrom", &Translation::langFrom, &Translation::setLangFrom);
-            addField<QString>("language_to", "translationLangTo", &Translation::langTo, &Translation::setLangTo);
+            addField<QString>("language_from", "translationLanguageFrom", &Translation::langFrom, &Translation::setLangFrom);
+            addField<QString>("language_to", "translationLanguageTo", &Translation::langTo, &Translation::setLangTo);
+            addField<QDateTime>("created", "translationCreated", &Translation::created, &Translation::setCreated);
             setIdField("id");
         }
     };
@@ -67,14 +67,14 @@ public:
     void setAnswerId(const int &answerId_);
     QString text() const;
     void setText(const QString &text_);
-    QDateTime created() const;
-    void setCreated(const QDateTime &created_);
     bool autoTranslate() const;
     void setAutoTranslate(const bool &autoTranslate_);
     QString langFrom() const;
     void setLangFrom(const QString &langFrom_);
     QString langTo() const;
     void setLangTo(const QString &langTo_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
 
 signals:
     void idChanged();
@@ -83,10 +83,10 @@ signals:
     void questionIdChanged();
     void answerIdChanged();
     void textChanged();
-    void createdChanged();
     void autoTranslateChanged();
     void langFromChanged();
     void langToChanged();
+    void createdChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
@@ -98,10 +98,10 @@ private:
     int m_questionId = -1;
     int m_answerId = -1;
     QString m_text;
-    QDateTime m_created;
     bool m_autoTranslate = false;
     QString m_langFrom;
     QString m_langTo;
+    QDateTime m_created;
     TranslationModel *m_translationModel = nullptr;
 };
 

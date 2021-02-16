@@ -8,6 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/artefacttype.h"
+#include "../MastactvaModels/artefactarg.h"
 
 
 class ArtefactModel;
@@ -26,7 +27,7 @@ public:
     Q_PROPERTY(int artefactTypeId READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(QString artefactDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime artefactCreated READ created WRITE setCreated NOTIFY createdChanged)
-
+    Q_PROPERTY(QVariant artefactArtefactArg READ artefactArg WRITE setArtefactArg NOTIFY artefactArgChanged)
 
     class DefaultLayout : public LayoutBase<Artefact>
     {
@@ -44,6 +45,7 @@ public:
             addField<int>("type", "artefactTypeId", &Artefact::type, &Artefact::setType);
             addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
             addField<QDateTime>("created", "artefactCreated", &Artefact::created, &Artefact::setCreated);
+            addModel<ArtefactArgModel>("artefactArtefactArg", &Artefact::m_artefactArgModel, &Artefact::createArtefactArgModel);
             setIdField("id");
         }
     };
@@ -66,12 +68,16 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+    QVariant artefactArg() const;
+    void setArtefactArg(const QVariant &obj_);
 
 protected:
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
 
     QString getObjectName() const;
+
+    ArtefactArgModel *createArtefactArgModel();
 
 signals:
     void idChanged();
@@ -81,8 +87,10 @@ signals:
     void typeChanged();
     void descriptionChanged();
     void createdChanged();
+    void artefactArgChanged();
 
 private:
+    ArtefactModel *m_artefactModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
@@ -93,7 +101,7 @@ private:
     int m_typeId = -1;
     QString m_description;
     QDateTime m_created;
-    ArtefactModel *m_artefactModel = nullptr;
+    ArtefactArgModel *m_artefactArgModel = nullptr;
 };
 
 

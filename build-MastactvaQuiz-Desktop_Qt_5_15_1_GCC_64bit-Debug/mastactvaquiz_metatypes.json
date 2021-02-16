@@ -11300,6 +11300,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "effectArgObjectArtefactId",
+                        "notify": "objectArtefactIdChanged",
+                        "read": "objectArtefactId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setObjectArtefactId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "effectArgArgTypeId",
                         "notify": "argTypeChanged",
                         "read": "argTypeId",
@@ -11365,6 +11379,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setDescription"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "EffectArg",
@@ -11402,6 +11430,16 @@
                     {
                         "access": "public",
                         "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectArtefactIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -12191,6 +12229,20 @@
                         "type": "int",
                         "user": false,
                         "write": "setEasingId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgSetCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSet",
@@ -12223,6 +12275,11 @@
                     {
                         "access": "public",
                         "name": "childrenLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -13038,6 +13095,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setDescription"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgValueCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValue",
@@ -13065,6 +13136,11 @@
                     {
                         "access": "public",
                         "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -15925,6 +16001,20 @@
                         "type": "QDateTime",
                         "user": false,
                         "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "artefactArtefactArg",
+                        "notify": "artefactArgChanged",
+                        "read": "artefactArg",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArtefactArg"
                     }
                 ],
                 "qualifiedClassName": "Artefact",
@@ -15962,6 +16052,11 @@
                     {
                         "access": "public",
                         "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "artefactArgChanged",
                         "returnType": "void"
                     }
                 ],
@@ -18952,15 +19047,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "artefactArgEffectArtefactArgSetId",
-                        "notify": "effectArtefactArgSetIdChanged",
-                        "read": "effectArtefactArgSetId",
+                        "name": "artefactArgArtefactId",
+                        "notify": "artefactIdChanged",
+                        "read": "artefactId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setEffectArtefactArgSetId"
+                        "write": "setArtefactId"
                     },
                     {
                         "constant": false,
@@ -19031,6 +19126,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setDescription"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "artefactArgCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "ArtefactArg",
@@ -19042,7 +19151,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectArtefactArgSetIdChanged",
+                        "name": "artefactIdChanged",
                         "returnType": "void"
                     },
                     {
@@ -19068,6 +19177,11 @@
                     {
                         "access": "public",
                         "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -19864,20 +19978,6 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "translationCreated",
-                        "notify": "createdChanged",
-                        "read": "created",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QDateTime",
-                        "user": false,
-                        "write": "setCreated"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
                         "name": "translationAutoTranslate",
                         "notify": "autoTranslateChanged",
                         "read": "autoTranslate",
@@ -19892,7 +19992,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "translationLangFrom",
+                        "name": "translationLanguageFrom",
                         "notify": "langFromChanged",
                         "read": "langFrom",
                         "required": false,
@@ -19906,7 +20006,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "translationLangTo",
+                        "name": "translationLanguageTo",
                         "notify": "langToChanged",
                         "read": "langTo",
                         "required": false,
@@ -19915,6 +20015,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setLangTo"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "translationCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "Translation",
@@ -19951,11 +20065,6 @@
                     },
                     {
                         "access": "public",
-                        "name": "createdChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
                         "name": "autoTranslateChanged",
                         "returnType": "void"
                     },
@@ -19967,6 +20076,11 @@
                     {
                         "access": "public",
                         "name": "langToChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -21508,7 +21622,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactId",
+                        "name": "objectArtefactId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -21522,21 +21636,21 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactEffectObjectId",
-                        "notify": "effectObjectIdChanged",
-                        "read": "effectObjectId",
+                        "name": "objectArtefactObjectInfoId",
+                        "notify": "objectInfoIdChanged",
+                        "read": "objectInfoId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setEffectObjectId"
+                        "write": "setObjectInfoId"
                     },
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArtefact",
+                        "name": "objectArtefactArtefact",
                         "notify": "artefactChanged",
                         "read": "artefact",
                         "required": false,
@@ -21545,6 +21659,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setArtefact"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectArtefactStepIndex",
+                        "notify": "stepIndexChanged",
+                        "read": "stepIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setStepIndex"
                     }
                 ],
                 "qualifiedClassName": "ObjectArtefact",
@@ -21556,7 +21684,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectObjectIdChanged",
+                        "name": "objectInfoIdChanged",
                         "returnType": "void"
                     },
                     {
@@ -21566,7 +21694,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectArtefactArgSetChanged",
+                        "name": "stepIndexChanged",
                         "returnType": "void"
                     }
                 ],

@@ -5,6 +5,9 @@
 Translation::Translation(TranslationModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "Translation::Translation()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_translationModel = parent_;
 }
 

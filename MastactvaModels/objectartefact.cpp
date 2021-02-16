@@ -23,16 +23,16 @@ void ObjectArtefact::setId(const int &id_)
     emit idChanged();
 }
 
-int ObjectArtefact::effectObjectId() const
+int ObjectArtefact::objectInfoId() const
 {
     return m_effectId;
 }
 
-void ObjectArtefact::setEffectObjectId(const int &effectId_)
+void ObjectArtefact::setObjectInfoId(const int &effectId_)
 {
     m_effectId = effectId_;
 
-    emit effectObjectIdChanged();
+    emit objectInfoIdChanged();
 }
 
 int ObjectArtefact::artefactId() const
@@ -84,6 +84,18 @@ ArtefactModel *ObjectArtefact::getArtefact()
 const ArtefactModel *ObjectArtefact::getArtefact() const
 {
     return m_artefactModel;
+}
+
+int ObjectArtefact::stepIndex() const
+{
+    return m_stepIndex;
+}
+
+void ObjectArtefact::setStepIndex(const int &stepIndex_)
+{
+    m_stepIndex = stepIndex_;
+
+    emit stepIndexChanged();
 }
 
 ArtefactModel *ObjectArtefact::createArtefactModel()

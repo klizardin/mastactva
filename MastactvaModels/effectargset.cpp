@@ -130,6 +130,18 @@ void EffectArgSet::setEasingId(const int &easingId_)
     emit easingChanged();
 }
 
+QDateTime EffectArgSet::created() const
+{
+    return m_created;
+}
+
+void EffectArgSet::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);

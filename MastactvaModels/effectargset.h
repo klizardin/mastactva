@@ -25,6 +25,8 @@ public:
     Q_PROPERTY(QString effectArgSetDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QVariant effectArgSetValues READ values WRITE setValues NOTIFY valuesChanged)
     Q_PROPERTY(int effectArgSetEasingId READ easingId WRITE setEasingId NOTIFY easingChanged)
+    Q_PROPERTY(QDateTime effectArgSetCreated READ created WRITE setCreated NOTIFY createdChanged)
+
 
     class DefaultLayout : public LayoutBase<EffectArgSet>
     {
@@ -39,10 +41,12 @@ public:
             addField<int>("effect", "effectArgSetEffectId", &EffectArgSet::effectId, &EffectArgSet::setEffectId);
             addField<int>("easing", "effectArgSetEasingId", &EffectArgSet::easingId, &EffectArgSet::setEasingId);
             addField<QString>("description", "effectArgSetDescription", &EffectArgSet::description, &EffectArgSet::setDescription);
+            addField<QDateTime>("created", "effectArgSetCreated", &EffectArgSet::created, &EffectArgSet::setCreated);
             addModel<EffectArgValueModel>("effectArgSetValues", &EffectArgSet::m_affectArgValueModel, &EffectArgSet::createAffectArgValueModel);
             setIdField("id");
         }
     };
+
 
 public:
     Q_INVOKABLE QVariantList argValuesOfSetIdList();
@@ -61,6 +65,8 @@ public:
     void setValues(const QVariant &obj_);
     int easingId() const;
     void setEasingId(const int &easingId_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
 
 protected:
     EffectArgValueModel *createAffectArgValueModel();
@@ -76,6 +82,7 @@ signals:
     void valuesChanged();
     void easingChanged();
     void childrenLoaded();
+    void createdChanged();
 
 private:
     EffectArgSetModel *m_effectArgSetModel = nullptr;
@@ -86,6 +93,7 @@ private:
     int m_effectId = -1;
     int m_easingTypeId = -1;
     QString m_description;
+    QDateTime m_created;
     EffectArgValueModel *m_affectArgValueModel = nullptr;
 };
 

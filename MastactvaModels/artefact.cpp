@@ -110,6 +110,31 @@ void Artefact::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
+QVariant Artefact::artefactArg() const
+{
+    if(nullptr == m_artefactArgModel)
+    {
+        const_cast<Artefact *>(this)->m_artefactArgModel = const_cast<Artefact *>(this)
+                ->createArtefactArgModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<ArtefactArgModel *>(
+                                       m_artefactArgModel)
+                                   )
+                               );
+}
+
+void Artefact::setArtefactArg(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_artefactArgModel)
+    {
+        delete m_artefactArgModel;
+        m_artefactArgModel = nullptr;
+
+        emit artefactArgChanged();
+    }
+}
+
 void Artefact::loadChildrenVF()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
@@ -132,6 +157,22 @@ QString Artefact::getObjectName() const
 {
     return m_artefactModel->getQMLLayoutName() + QString("_Artefact_")
             + QVariant::fromValue(m_appId).toString();
+}
+
+ArtefactArgModel *Artefact::createArtefactArgModel()
+{
+    ArtefactArgModel *m = new ArtefactArgModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("artefact", m_artefactModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("artefact");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_artefactModel->getQMLLayoutName() + QString("_Artefact_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_ArtefactArgModel_"));
+    m->registerListModel();
+    m->setParentListModelInfo(m_artefactModel);
+    m->setAutoCreateChildrenModels(true);
+    m->loadList();
+    return m;
 }
 
 
