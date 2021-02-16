@@ -21,11 +21,14 @@ public:
 
     Q_PROPERTY(int effectArgId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArgEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
+    Q_PROPERTY(int effectArgObjectArtefactId READ objectArtefactId WRITE setObjectArtefactId NOTIFY objectArtefactIdChanged)
     Q_PROPERTY(int effectArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
     Q_PROPERTY(int effectArgArgStorageId READ argStorageId WRITE setArgStorageId NOTIFY argStorageChanged)
     Q_PROPERTY(QString effectArgName READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString effectArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString effectArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QDateTime effectArgCreated READ created WRITE setCreated NOTIFY createdChanged)
+
 
     class DefaultLayout : public LayoutBase<EffectArg>
     {
@@ -37,11 +40,13 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectArg::m_appId);
             addField<int>("id", "effectArgId", &EffectArg::id, &EffectArg::setId);
             addField<int>("effect", "effectArgEffectId", &EffectArg::effectId, &EffectArg::setEffectId);
+            addField<int>("object_artefact", "effectArgObjectArtefactId", &EffectArg::objectArtefactId, &EffectArg::setObjectArtefactId);
             addField<int>("arg_type", "effectArgArgTypeId", &EffectArg::argTypeId, &EffectArg::setArgTypeId);
             addField<int>("arg_storage", "effectArgArgStorageId", &EffectArg::argStorageId, &EffectArg::setArgStorageId);
             addField<QString>("name", "effectArgName", &EffectArg::name, &EffectArg::setName);
             addField<QString>("default_value", "effectArgDefaultValue", &EffectArg::defaultValue, &EffectArg::setDefaultValue);
             addField<QString>("description", "effectArgDescription", &EffectArg::description, &EffectArg::setDescription);
+            addField<QDateTime>("created", "effectArgCreated", &EffectArg::created, &EffectArg::setCreated);
             setIdField("id");
         }
     };
@@ -51,6 +56,8 @@ public:
     void setId(const int &id_);
     int effectId() const;
     void setEffectId(const int &effectId_);
+    int objectArtefactId() const;
+    void setObjectArtefactId(const int &objectArtefactId_);
     int argTypeId() const;
     void setArgTypeId(const int &argTypeId_);
     int argStorageId() const;
@@ -61,6 +68,8 @@ public:
     void setDefaultValue(const QString &defaultValue_);
     QString description() const;
     void setDescription(const QString &description_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
 
 signals:
     void idChanged();
@@ -70,6 +79,8 @@ signals:
     void nameChanged();
     void defaultValueChanged();
     void descriptionChanged();
+    void objectArtefactIdChanged();
+    void createdChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
@@ -77,11 +88,13 @@ private:
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
+    int m_objectArtefactId = -1;
     int m_argTypeId = -1;
     int m_argStorageId = -1;
     QString m_name;
     QString m_defaultValue;
     QString m_description;
+    QDateTime m_created;
 };
 
 

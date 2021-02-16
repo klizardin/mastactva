@@ -35,6 +35,18 @@ void EffectArg::setEffectId(const int &effectId_)
     emit effectIdChanged();
 }
 
+int EffectArg::objectArtefactId() const
+{
+    return m_objectArtefactId;
+}
+
+void EffectArg::setObjectArtefactId(const int &objectArtefactId_)
+{
+    m_objectArtefactId = objectArtefactId_;
+
+    emit objectArtefactIdChanged();
+}
+
 int EffectArg::argTypeId() const
 {
     return m_argTypeId;
@@ -93,6 +105,18 @@ void EffectArg::setDescription(const QString &description_)
     m_description = description_;
 
     emit descriptionChanged();
+}
+
+QDateTime EffectArg::created() const
+{
+    return m_created;
+}
+
+void EffectArg::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
 }
 
 
