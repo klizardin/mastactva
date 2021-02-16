@@ -5,6 +5,9 @@
 ArtefactArg::ArtefactArg(ArtefactArgModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "ArtefactArg::ArtefactArg()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
     m_artefactArgModel = parent_;
 }
 
@@ -109,7 +112,7 @@ ArtefactArgModel::ArtefactArgModel(QObject *parent_ /*= nullptr*/)
     :base(parent_)
 {
 #if defined(TRACE_THREADS)
-    qDebug() << "EffectArtefactArgModel::EffectArtefactArgModel()" << QThread::currentThread() << QThread::currentThreadId();
+    qDebug() << "ArtefactArgModel::ArtefactArgModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     init(this);
     setAutoCreateChildrenModelsImpl(true);
