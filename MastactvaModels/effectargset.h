@@ -47,6 +47,7 @@ public:
         }
     };
 
+
 public:
     Q_INVOKABLE QVariantList argValuesOfSetIdList();
     Q_INVOKABLE bool isChildrenLoaded();

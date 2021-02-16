@@ -6014,6 +6014,20 @@
                         "type": "int",
                         "user": false,
                         "write": "setEasingId"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgSetCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSet",
@@ -6046,6 +6060,11 @@
                     {
                         "access": "public",
                         "name": "childrenLoaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
