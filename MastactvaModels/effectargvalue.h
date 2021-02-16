@@ -24,6 +24,8 @@ public:
     Q_PROPERTY(QVariant effectArgValueArg READ arg WRITE setArg NOTIFY argChanged)
     Q_PROPERTY(QString effectArgValueValue READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(QString effectArgValueDescription READ description WRITE setDescription NOTIFY descriptionChanged)
+    Q_PROPERTY(QDateTime effectArgValueCreated READ created WRITE setCreated NOTIFY createdChanged)
+
 
     class DefaultLayout : public LayoutBase<EffectArgValue>
     {
@@ -39,9 +41,11 @@ public:
             addModel<EffectArgModel>("effectArgValueArg", &EffectArgValue::m_effectArgModel, &EffectArgValue::createEffectArgModel);
             addField<QString>("value", "effectArgValueValue", &EffectArgValue::value, &EffectArgValue::setValue);
             addField<QString>("description", "effectArgValueDescription", &EffectArgValue::description, &EffectArgValue::setDescription);
+            addField<QDateTime>("created", "effectArgValueCreated", &EffectArgValue::created, &EffectArgValue::setCreated);
             setIdField("id");
         }
     };
+
 
 public:
     Q_INVOKABLE int argSetId() const;
@@ -58,6 +62,8 @@ public:
     void setValue(const QString &value_);
     QString description() const;
     void setDescription(const QString &description_);
+    QDateTime created() const;
+    void setCreated(const QDateTime &created_);
 
     EffectArgModel *getArg();
     int getArgId() const;
@@ -71,6 +77,7 @@ signals:
     void argChanged();
     void valueChanged();
     void descriptionChanged();
+    void createdChanged();
 
 private:
     EffectArgValueModel *m_effectArgValueModel = nullptr;
@@ -81,6 +88,7 @@ private:
     int m_argId = -1;
     QString m_value;
     QString m_description;
+    QDateTime m_created;
     EffectArgModel *m_effectArgModel = nullptr;
 };
 

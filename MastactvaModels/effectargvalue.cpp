@@ -103,6 +103,18 @@ void EffectArgValue::setDescription(const QString &description_)
     emit descriptionChanged();
 }
 
+QDateTime EffectArgValue::created() const
+{
+    return m_created;
+}
+
+void EffectArgValue::setCreated(const QDateTime &created_)
+{
+    m_created = created_;
+
+    emit createdChanged();
+}
+
 EffectArgModel *EffectArgValue::getArg()
 {
     return m_effectArgModel;
