@@ -55,7 +55,9 @@ public:
             addField<bool>("use_in_gallery_view", "imageTop", &Image::top, &Image::setTop);
             addField<QDateTime>("created", "imageCreated", &Image::created, &Image::setCreated);
             addModel<ImagePointModel>("imagePoints", &Image::m_imagePoints, &Image::createImagePoints);
+            /* 1:N */
             addModel<ImageDescriptionModel>("imageDescription", &Image::m_imageDescriptionModel, &Image::createImageDescriptionModel);
+            /* 1:N */
             setIdField("id");
         }
     };

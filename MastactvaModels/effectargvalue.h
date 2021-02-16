@@ -21,10 +21,10 @@ public:
 
     Q_PROPERTY(int effectArgValueId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArgValueArgSetId READ argSetId WRITE setArgSetId NOTIFY argSetIdChanged)
-    Q_PROPERTY(QVariant effectArgValueArg READ arg WRITE setArg NOTIFY argChanged)
     Q_PROPERTY(QString effectArgValueValue READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(QString effectArgValueDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime effectArgValueCreated READ created WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(QVariant effectArgValueArg READ arg WRITE setArg NOTIFY argChanged)
 
 
     class DefaultLayout : public LayoutBase<EffectArgValue>
@@ -38,10 +38,11 @@ public:
             addField<int>("id", "effectArgValueId", &EffectArgValue::id, &EffectArgValue::setId);
             addField<int>("arg_set", "effectArgValueArgSetId", &EffectArgValue::argSetId, &EffectArgValue::setArgSetId);
             addField<int>("arg", "", &EffectArgValue::argId, &EffectArgValue::setArgId);
-            addModel<EffectArgModel>("effectArgValueArg", &EffectArgValue::m_effectArgModel, &EffectArgValue::createEffectArgModel);
             addField<QString>("value", "effectArgValueValue", &EffectArgValue::value, &EffectArgValue::setValue);
             addField<QString>("description", "effectArgValueDescription", &EffectArgValue::description, &EffectArgValue::setDescription);
             addField<QDateTime>("created", "effectArgValueCreated", &EffectArgValue::created, &EffectArgValue::setCreated);
+            addModel<EffectArgModel>("effectArgValueArg", &EffectArgValue::m_effectArgModel, &EffectArgValue::createEffectArgModel);
+            /* 1:1 */
             setIdField("id");
         }
     };

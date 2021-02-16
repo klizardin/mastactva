@@ -20,8 +20,20 @@ class Effect : public QObject, protected IListModelInfoObjectImpl
 {
     Q_OBJECT
 
+private:
+    class ArtefactInfo
+    {
+    public:
+        QString filename;
+        QString hash;
+        int objectArtefactId = -1;
+        QString localUrl;
+    };
+
+
 public:
     explicit Effect(EffectModel *parent_ = nullptr);
+    virtual ~Effect() override;
 
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectName READ name WRITE setName NOTIFY nameChanged)
@@ -45,8 +57,11 @@ public:
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
             addField<QDateTime>("created", "effectCreated", &Effect::created, &Effect::setCreated);
             addModel<EffectObjectsModel>("effectArtefacts", &Effect::m_effectObjectsModel, &Effect::createEffectObjectsModel);
+            /* 1:N */
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
+            /* 1:N */
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
+            /* 1:N */
             setIdField("id");
         }
     };
@@ -97,6 +112,8 @@ protected:
     virtual void loadChildrenVF() override;
     virtual void listLoadedVF() override;
 
+    void clear(QList<EffectArg *> &artefactArgs_);
+
 signals:
     void idChanged();
     void nameChanged();
@@ -123,8 +140,9 @@ private:
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;
 
-    QStringList m_artefactsUrls;
-    QHash<QString, QString> m_artefactsLocalUrls;
+    QList<ArtefactInfo> m_artefactInfos;
+    QList<EffectArg *> m_artefactArgs;
+    int m_artefactsLocalUrlsCount = 0;
     QList<EffectArg *> m_itemsToSet;
     QList<EffectArg *> m_itemsToDel;
     QList<EffectArg *> m_itemsToAdd;

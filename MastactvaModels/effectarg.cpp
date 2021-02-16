@@ -119,6 +119,60 @@ void EffectArg::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
+QVariant EffectArg::objectArtefact() const
+{
+    if(nullptr == m_objectArtefactModel)
+    {
+        const_cast<EffectArg *>(this)->m_objectArtefactModel = const_cast<EffectArg *>(this)
+                ->createObjectArtefactModel();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<ObjectArtefactModel *>(
+                                       m_objectArtefactModel)
+                                   )
+                               );
+}
+
+void EffectArg::setObjectArtefact(const QVariant &obj_)
+{
+    if(obj_.isNull() && nullptr != m_objectArtefactModel)
+    {
+        delete m_objectArtefactModel;
+        m_objectArtefactModel = nullptr;
+
+        emit objectArtefactChanged();
+    }
+}
+
+void EffectArg::copyFrom(const ArtefactArg *artefactArg_, int effectId, int objectArtefactId_)
+{
+    m_effectId = effectId;
+    m_objectArtefactId = objectArtefactId_;
+    m_argTypeId = artefactArg_->argTypeId();
+    m_argStorageId = artefactArg_->argStorageId();
+    m_name = artefactArg_->name();
+    m_defaultValue = artefactArg_->defaultValue();
+    m_description = artefactArg_->description();
+    m_created = QDateTime::currentDateTime();
+}
+
+ObjectArtefactModel *EffectArg::createObjectArtefactModel()
+{
+    ObjectArtefactModel *m = new ObjectArtefactModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("id", m_effectArgModel->getQMLLayoutName(), "object_artefact", false);
+    m->setCurrentRef("id");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_effectArgModel->getQMLLayoutName() + QString("_EffectArg_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_ObjectArtefactModel_"));
+    m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->setAutoCreateChildrenModels(true);
+    m->setReadonlyImpl(false);
+    m->loadList();
+    return m;
+}
+
 
 EffectArgModel::EffectArgModel(QObject *parent_ /*= nullptr*/)
     : base(parent_)

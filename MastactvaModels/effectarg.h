@@ -8,6 +8,8 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/artefactargtype.h"
+#include "../MastactvaModels/objectartefact.h"
+#include "../MastactvaModels/artefactarg.h"
 
 
 class EffectArgModel;
@@ -28,6 +30,7 @@ public:
     Q_PROPERTY(QString effectArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString effectArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime effectArgCreated READ created WRITE setCreated NOTIFY createdChanged)
+    Q_PROPERTY(QVariant effectArgObjectArtefact READ objectArtefact WRITE setObjectArtefact NOTIFY objectArtefactChanged)
 
 
     class DefaultLayout : public LayoutBase<EffectArg>
@@ -47,6 +50,8 @@ public:
             addField<QString>("default_value", "effectArgDefaultValue", &EffectArg::defaultValue, &EffectArg::setDefaultValue);
             addField<QString>("description", "effectArgDescription", &EffectArg::description, &EffectArg::setDescription);
             addField<QDateTime>("created", "effectArgCreated", &EffectArg::created, &EffectArg::setCreated);
+            addModel<ObjectArtefactModel>("effectArgObjectArtefact", &EffectArg::m_objectArtefactModel, &EffectArg::createObjectArtefactModel);
+            /* 1:1 */
             setIdField("id");
         }
     };
@@ -70,6 +75,13 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+    QVariant objectArtefact() const;
+    void setObjectArtefact(const QVariant &objectArtefact_);
+
+    void copyFrom(const ArtefactArg *artefactArg_, int effectId, int objectArtefactId_);
+
+protected:
+    ObjectArtefactModel *createObjectArtefactModel();
 
 signals:
     void idChanged();
@@ -81,10 +93,11 @@ signals:
     void descriptionChanged();
     void objectArtefactIdChanged();
     void createdChanged();
+    void objectArtefactChanged();
 
 private:
-    IListModelInfo *m_parentModelInfo = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_effectId = -1;
@@ -95,6 +108,7 @@ private:
     QString m_defaultValue;
     QString m_description;
     QDateTime m_created;
+    ObjectArtefactModel *m_objectArtefactModel = nullptr;
 };
 
 

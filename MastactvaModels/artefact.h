@@ -46,6 +46,7 @@ public:
             addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
             addField<QDateTime>("created", "artefactCreated", &Artefact::created, &Artefact::setCreated);
             addModel<ArtefactArgModel>("artefactArtefactArg", &Artefact::m_artefactArgModel, &Artefact::createArtefactArgModel);
+            /* 1:N */
             setIdField("id");
         }
     };
@@ -70,6 +71,9 @@ public:
     void setCreated(const QDateTime &created_);
     QVariant artefactArg() const;
     void setArtefactArg(const QVariant &obj_);
+
+    ArtefactArgModel *getArtefactArg();
+    const ArtefactArgModel *getArtefactArg() const;
 
 protected:
     virtual void loadChildrenVF() override;
