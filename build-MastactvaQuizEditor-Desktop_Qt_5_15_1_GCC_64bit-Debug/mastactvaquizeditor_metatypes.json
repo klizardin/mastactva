@@ -24665,7 +24665,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactId",
+                        "name": "objectArtefactId",
                         "notify": "idChanged",
                         "read": "id",
                         "required": false,
@@ -24679,21 +24679,21 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactEffectObjectId",
-                        "notify": "effectObjectIdChanged",
-                        "read": "effectObjectId",
+                        "name": "objectArtefactObjectInfoId",
+                        "notify": "objectInfoIdChanged",
+                        "read": "objectInfoId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setEffectObjectId"
+                        "write": "setObjectInfoId"
                     },
                     {
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "effectArtefactArtefact",
+                        "name": "objectArtefactArtefact",
                         "notify": "artefactChanged",
                         "read": "artefact",
                         "required": false,
@@ -24702,6 +24702,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setArtefact"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectArtefactStepIndex",
+                        "notify": "stepIndexChanged",
+                        "read": "stepIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setStepIndex"
                     }
                 ],
                 "qualifiedClassName": "ObjectArtefact",
@@ -24713,7 +24727,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectObjectIdChanged",
+                        "name": "objectInfoIdChanged",
                         "returnType": "void"
                     },
                     {
@@ -24723,7 +24737,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectArtefactArgSetChanged",
+                        "name": "stepIndexChanged",
                         "returnType": "void"
                     }
                 ],
