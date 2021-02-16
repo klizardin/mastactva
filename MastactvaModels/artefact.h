@@ -83,6 +83,7 @@ signals:
     void createdChanged();
 
 private:
+    ArtefactModel *m_artefactModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
@@ -93,7 +94,6 @@ private:
     int m_typeId = -1;
     QString m_description;
     QDateTime m_created;
-    ArtefactModel *m_artefactModel = nullptr;
 };
 
 
