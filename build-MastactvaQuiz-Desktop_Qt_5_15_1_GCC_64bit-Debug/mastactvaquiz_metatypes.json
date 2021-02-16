@@ -13095,6 +13095,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setDescription"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgValueCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValue",
@@ -13122,6 +13136,11 @@
                     {
                         "access": "public",
                         "name": "descriptionChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
@@ -19940,20 +19959,6 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "translationCreated",
-                        "notify": "createdChanged",
-                        "read": "created",
-                        "required": false,
-                        "scriptable": true,
-                        "stored": true,
-                        "type": "QDateTime",
-                        "user": false,
-                        "write": "setCreated"
-                    },
-                    {
-                        "constant": false,
-                        "designable": true,
-                        "final": false,
                         "name": "translationAutoTranslate",
                         "notify": "autoTranslateChanged",
                         "read": "autoTranslate",
@@ -19968,7 +19973,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "translationLangFrom",
+                        "name": "translationLanguageFrom",
                         "notify": "langFromChanged",
                         "read": "langFrom",
                         "required": false,
@@ -19982,7 +19987,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "translationLangTo",
+                        "name": "translationLanguageTo",
                         "notify": "langToChanged",
                         "read": "langTo",
                         "required": false,
@@ -19991,6 +19996,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setLangTo"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "translationCreated",
+                        "notify": "createdChanged",
+                        "read": "created",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QDateTime",
+                        "user": false,
+                        "write": "setCreated"
                     }
                 ],
                 "qualifiedClassName": "Translation",
@@ -20027,11 +20046,6 @@
                     },
                     {
                         "access": "public",
-                        "name": "createdChanged",
-                        "returnType": "void"
-                    },
-                    {
-                        "access": "public",
                         "name": "autoTranslateChanged",
                         "returnType": "void"
                     },
@@ -20043,6 +20057,11 @@
                     {
                         "access": "public",
                         "name": "langToChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "createdChanged",
                         "returnType": "void"
                     }
                 ],
