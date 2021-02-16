@@ -40,6 +40,7 @@ public:
             addField<int>("image_point", "iptqImagePointId", &ImagePointToQuestion::imagePointId, &ImagePointToQuestion::setImagePointId);
             addField<int>("question", "iptqQuestionId", &ImagePointToQuestion::questionId, &ImagePointToQuestion::setQuestionId);
             addModel<QuestionModel>("iptqQuestionObj", &ImagePointToQuestion::m_questionModel, &ImagePointToQuestion::createQuestionModel);
+            /* 1:1 */
             setIdField("id");
         }
     };
@@ -283,8 +284,11 @@ public:
             addField<qreal>("weight", "ipWeight", &ImagePoint::weight, &ImagePoint::setWeight);
             addField<QDateTime>("created", "ipCreated", &ImagePoint::created, &ImagePoint::setCreated);
             addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImage, &ImagePoint::createImagePointToNextImage);
+            /* 1:N */
             addModel<ImagePointToQuestionModel>("nextQuestion", &ImagePoint::m_imagePointToQuestionModel, &ImagePoint::createImagePointToQuestionModel);
+            /* 1:N */
             addModel<ImagePointEffectModel>("ipEffect", &ImagePoint::m_imagePointEffectModel, &ImagePoint::createImagePointEffectModel);
+            /* 1:N(1) */
             setIdField("id");
         }
     };

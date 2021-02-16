@@ -37,10 +37,12 @@ public:
             addField<int>("id", "imagePointEffectId", &ImagePointEffect::id, &ImagePointEffect::setId);
             addField<int>("image_point", "imagePointEffectImagePointId", &ImagePointEffect::imagePointId, &ImagePointEffect::setImagePointId);
             addField<int>("effect", "", &ImagePointEffect::effectId, &ImagePointEffect::setEffectId);
-            addModel<EffectModel>("imagePointEffectEffect", &ImagePointEffect::m_effectModel, &ImagePointEffect::createEffectModel);
             addField<int>("arg_set", "", &ImagePointEffect::argSetId, &ImagePointEffect::setArgSetId);
-            addModel<EffectArgSetModel>("imagePointEffectArgSet", &ImagePointEffect::m_effectArgSetModel, &ImagePointEffect::createEffectArgSetModel);
             addField<int>("duration", "imagePointEffectDuration", &ImagePointEffect::duration, &ImagePointEffect::setDuration);
+            addModel<EffectModel>("imagePointEffectEffect", &ImagePointEffect::m_effectModel, &ImagePointEffect::createEffectModel);
+            /* 1:1 */
+            addModel<EffectArgSetModel>("imagePointEffectArgSet", &ImagePointEffect::m_effectArgSetModel, &ImagePointEffect::createEffectArgSetModel);
+            /* 1:1 */
             setIdField("id");
         }
     };

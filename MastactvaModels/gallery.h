@@ -48,7 +48,9 @@ public:
             addField<qreal>("points_to_pass", "pointsToPass", &Gallery::pointsToPass, &Gallery::setPointsToPass);
             addField<int>("owner", "owner", &Gallery::ownGallery, &Gallery::setOwnGallery);
             addModel<ImageModel>("images", &Gallery::m_images, &Gallery::createImages);
+            /* 1:N */
             addModel<GalleryStatisticsModel>("galleryStatistics", &Gallery::m_galleryStatisticsModel, &Gallery::createGalleryStatistics);
+            /* 1:N(1) */
             setIdField("id");
         }
     };

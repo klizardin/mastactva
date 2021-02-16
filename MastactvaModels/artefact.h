@@ -46,6 +46,7 @@ public:
             addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
             addField<QDateTime>("created", "artefactCreated", &Artefact::created, &Artefact::setCreated);
             addModel<ArtefactArgModel>("artefactArtefactArg", &Artefact::m_artefactArgModel, &Artefact::createArtefactArgModel);
+            /* 1:N */
             setIdField("id");
         }
     };

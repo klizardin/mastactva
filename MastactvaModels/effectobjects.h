@@ -38,7 +38,9 @@ public:
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
             addField<int>("object_info", "", &EffectObjects::objectInfoId, &EffectObjects::setObjectInfoId);
             addModel<ObjectInfoModel>("effectObjectsObjectInfo", &EffectObjects::m_objectInfoModel, &EffectObjects::createObjectInfoModel);
+            /* 1:1 */
             addModel<ObjectArtefactModel>("effectObjectsObjectArtefacts", &EffectObjects::m_objectArtefactModel, &EffectObjects::createObjectArtefactModel);
+            /* 1:N */
             setIdField("id");
         }
     };

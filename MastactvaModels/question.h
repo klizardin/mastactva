@@ -41,7 +41,9 @@ public:
             addField<qreal>("points_to_pass", "questionPointsToPass", &Question::pointsToPass, &Question::setPointsToPass);
             addField<QDateTime>("created", "questionCreated", &Question::created, &Question::setCreated);
             addModel<AnswerModel>("questionAnswers", &Question::m_answerModel, &Question::createAnswerModel);
+            /* 1:N */
             addModel<UserQuestionAnswerModel>("userQuestionAnswer", &Question::m_userQuestionAnswerModel, &Question::createUserQuestionAnswerModel);
+            /* 1:N(?) */
             setIdField("id");
         }
     };

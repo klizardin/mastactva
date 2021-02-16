@@ -45,8 +45,11 @@ public:
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
             addField<QDateTime>("created", "effectCreated", &Effect::created, &Effect::setCreated);
             addModel<EffectObjectsModel>("effectArtefacts", &Effect::m_effectObjectsModel, &Effect::createEffectObjectsModel);
+            /* 1:N */
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
+            /* 1:N */
             addModel<EffectArgSetModel>("effectArgSets", &Effect::m_effectArgSetModel, &Effect::createEffectArgSetModel);
+            /* 1:N */
             setIdField("id");
         }
     };
