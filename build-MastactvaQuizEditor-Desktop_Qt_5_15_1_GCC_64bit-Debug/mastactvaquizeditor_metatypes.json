@@ -19158,6 +19158,20 @@
                         "type": "QDateTime",
                         "user": false,
                         "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "artefactArtefactArg",
+                        "notify": "artefactArgChanged",
+                        "read": "artefactArg",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "write": "setArtefactArg"
                     }
                 ],
                 "qualifiedClassName": "Artefact",
@@ -19195,6 +19209,11 @@
                     {
                         "access": "public",
                         "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "artefactArgChanged",
                         "returnType": "void"
                     }
                 ],
@@ -22185,15 +22204,15 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "name": "artefactArgEffectArtefactArgSetId",
-                        "notify": "effectArtefactArgSetIdChanged",
-                        "read": "effectArtefactArgSetId",
+                        "name": "artefactArgArtefactId",
+                        "notify": "artefactIdChanged",
+                        "read": "artefactId",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
                         "type": "int",
                         "user": false,
-                        "write": "setEffectArtefactArgSetId"
+                        "write": "setArtefactId"
                     },
                     {
                         "constant": false,
@@ -22289,7 +22308,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "effectArtefactArgSetIdChanged",
+                        "name": "artefactIdChanged",
                         "returnType": "void"
                     },
                     {

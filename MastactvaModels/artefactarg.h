@@ -19,7 +19,7 @@ public:
     explicit ArtefactArg(ArtefactArgModel *parent_ = nullptr);
 
     Q_PROPERTY(int artefactArgId READ id WRITE setId NOTIFY idChanged)
-    Q_PROPERTY(int artefactArgEffectArtefactArgSetId READ effectArtefactArgSetId WRITE setEffectArtefactArgSetId NOTIFY effectArtefactArgSetIdChanged)
+    Q_PROPERTY(int artefactArgArtefactId READ artefactId WRITE setArtefactId NOTIFY artefactIdChanged)
     Q_PROPERTY(int artefactArgArgTypeId READ argTypeId WRITE setArgTypeId NOTIFY argTypeChanged)
     Q_PROPERTY(int artefactArgArgStorageId READ argStorageId WRITE setArgStorageId NOTIFY argStorageChanged)
     Q_PROPERTY(QString artefactArgName READ name WRITE setName NOTIFY nameChanged)
@@ -38,7 +38,7 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &ArtefactArg::m_objectModelInfo);
             addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactArg::m_appId);
             addField<int>("id", "artefactArgId", &ArtefactArg::id, &ArtefactArg::setId);
-            addField<int>("effect_artefact_arg_set", "artefactArgEffectArtefactArgSetId", &ArtefactArg::effectArtefactArgSetId, &ArtefactArg::setEffectArtefactArgSetId);
+            addField<int>("artefact", "artefactArgArtefactId", &ArtefactArg::artefactId, &ArtefactArg::setArtefactId);
             addField<int>("arg_type", "artefactArgArgTypeId", &ArtefactArg::argTypeId, &ArtefactArg::setArgTypeId);
             addField<int>("arg_storage", "artefactArgArgStorageId", &ArtefactArg::argStorageId, &ArtefactArg::setArgStorageId);
             addField<QString>("name", "artefactArgName", &ArtefactArg::name, &ArtefactArg::setName);
@@ -52,8 +52,8 @@ public:
 public:
     int id() const;
     void setId(const int &id_);
-    int effectArtefactArgSetId() const;
-    void setEffectArtefactArgSetId(const int &effectArtefactArgSetId_);
+    int artefactId() const;
+    void setArtefactId(const int &effectArtefactArgSetId_);
     int argTypeId() const;
     void setArgTypeId(const int &argTypeId_);
     int argStorageId() const;
@@ -69,7 +69,7 @@ public:
 
 signals:
     void idChanged();
-    void effectArtefactArgSetIdChanged();
+    void artefactIdChanged();
     void argTypeChanged();
     void argStorageChanged();
     void nameChanged();
@@ -82,7 +82,7 @@ private:
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
-    int m_effectArtefactArgSetId = -1;
+    int m_artefactId = -1;
     int m_argTypeId = -1;
     int m_argStorageId = -1;
     QString m_name;

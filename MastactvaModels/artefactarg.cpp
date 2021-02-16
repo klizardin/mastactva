@@ -20,16 +20,16 @@ void ArtefactArg::setId(const int &id_)
     emit idChanged();
 }
 
-int ArtefactArg::effectArtefactArgSetId() const
+int ArtefactArg::artefactId() const
 {
-    return m_effectArtefactArgSetId;
+    return m_artefactId;
 }
 
-void ArtefactArg::setEffectArtefactArgSetId(const int &effectArtefactArgSetId_)
+void ArtefactArg::setArtefactId(const int &effectArtefactArgSetId_)
 {
-    m_effectArtefactArgSetId = effectArtefactArgSetId_;
+    m_artefactId = effectArtefactArgSetId_;
 
-    emit effectArtefactArgSetIdChanged();
+    emit artefactIdChanged();
 }
 
 int ArtefactArg::argTypeId() const
