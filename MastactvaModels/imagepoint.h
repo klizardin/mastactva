@@ -66,12 +66,12 @@ signals:
     void questionObjChanged();
 
 private:
+    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_imagePointId = -1;
     int m_questionId = -1;
-    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     QuestionModel *m_questionModel = nullptr;
 };
 
@@ -180,13 +180,13 @@ signals:
     void nextImageChanged();
 
 private:
+    ImagePointToNextImageModel *m_parentModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_imagePointId = -1;
     int m_nextImage = -1;
-    ImagePointToNextImageModel *m_parentModel = nullptr;
-    IListModelInfo *m_parentModelInfo = nullptr;
-    IListModelInfo *m_objectModelInfo = nullptr;
 };
 
 
@@ -334,6 +334,8 @@ protected:
     ImagePointEffectModel *createImagePointEffectModel();
 
 private:
+    ImagePointModel *m_imagePointModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_imageId = -1;
@@ -344,8 +346,6 @@ private:
     ImagePointToNextImageModel *m_imagePointToNextImage = nullptr;
     ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     ImagePointEffectModel *m_imagePointEffectModel = nullptr;
-    ImagePointModel *m_imagePointModel = nullptr;
-    IListModelInfo *m_parentModelInfo = nullptr;
 };
 
 

@@ -110,6 +110,8 @@ protected slots:
 
 private:
     ImageModel *m_imageModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = 0;
     int m_id = -1;
     ImageSource m_filename;
@@ -120,8 +122,6 @@ private:
     QDateTime m_created;
     ImagePointModel *m_imagePoints = nullptr;
     ImageDescriptionModel *m_imageDescriptionModel = nullptr;
-    IListModelInfo *m_parentModelInfo = nullptr;
-    IListModelInfo *m_objectModelInfo = nullptr;
 };
 
 

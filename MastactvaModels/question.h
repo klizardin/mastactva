@@ -73,6 +73,7 @@ signals:
     void userQuestionAnswerChanged();
 
 private:
+    QuestionModel *m_questionModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
@@ -80,7 +81,6 @@ private:
     qreal m_pointsToPass = 1.0;
     QDateTime m_created;
     AnswerModel *m_answerModel = nullptr;
-    QuestionModel *m_questionModel = nullptr;
     UserQuestionAnswerModel *m_userQuestionAnswerModel = nullptr;
 };
 
