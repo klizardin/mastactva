@@ -179,16 +179,6 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     return m;
 }
 
-ImageModel *Gallery::getImages() const
-{
-    return m_imagesModel;
-}
-
-void Gallery::setImages(ImageModel *imagesModel_)
-{
-    m_imagesModel = imagesModel_;
-}
-
 
 GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
     : ListModelBaseOfData<Gallery, GalleryModel>(parent_)

@@ -73,9 +73,6 @@ public:
     QVariant statistics() const;
     void setStatistics(const QVariant &obj_);
 
-    ImageModel *getImages() const;
-    void setImages(ImageModel *images);
-
 signals:
     void idChanged();
     void descriptionChanged();
