@@ -286,24 +286,24 @@ void ImagePoint::setCreated(const QDateTime &created_)
 
 QVariant ImagePoint::nextImage() const
 {
-    if(nullptr == m_imagePointToNextImage)
+    if(nullptr == m_imagePointToNextImageModel)
     {
-        const_cast<ImagePoint *>(this)->m_imagePointToNextImage = const_cast<ImagePoint *>(this)
+        const_cast<ImagePoint *>(this)->m_imagePointToNextImageModel = const_cast<ImagePoint *>(this)
                 ->createImagePointToNextImage();
     }
     return QVariant::fromValue(static_cast<QObject *>(
                                    const_cast<ImagePointToNextImageModel *>(
-                                       m_imagePointToNextImage)
+                                       m_imagePointToNextImageModel)
                                    )
                                );
 }
 
 void ImagePoint::setNextImage(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePointToNextImage)
+    if(obj_.isNull() && nullptr != m_imagePointToNextImageModel)
     {
-        delete m_imagePointToNextImage;
-        m_imagePointToNextImage = nullptr;
+        delete m_imagePointToNextImageModel;
+        m_imagePointToNextImageModel = nullptr;
 
         emit nextImageChanged();
     }
@@ -362,7 +362,7 @@ void ImagePoint::setEffect(const QVariant &obj_)
 ImagePointToNextImageModel *ImagePoint::getNextImage() const
 {
     nextImage();
-    return m_imagePointToNextImage;
+    return m_imagePointToNextImageModel;
 }
 
 ImagePointToQuestionModel *ImagePoint::getNextQuestion() const

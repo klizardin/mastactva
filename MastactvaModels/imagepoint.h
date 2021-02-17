@@ -283,7 +283,7 @@ public:
             addField<qreal>("y", "ipYCoord", &ImagePoint::yCoord, &ImagePoint::setYCoord);
             addField<qreal>("weight", "ipWeight", &ImagePoint::weight, &ImagePoint::setWeight);
             addField<QDateTime>("created", "ipCreated", &ImagePoint::created, &ImagePoint::setCreated);
-            addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImage, &ImagePoint::createImagePointToNextImage);
+            addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImageModel, &ImagePoint::createImagePointToNextImage);
             /* 1:N */
             addModel<ImagePointToQuestionModel>("nextQuestion", &ImagePoint::m_imagePointToQuestionModel, &ImagePoint::createImagePointToQuestionModel);
             /* 1:N */
@@ -343,7 +343,7 @@ private:
     qreal m_y = 0.0;
     qreal m_weight = 1.0;
     QDateTime m_created;
-    ImagePointToNextImageModel *m_imagePointToNextImage = nullptr;
+    ImagePointToNextImageModel *m_imagePointToNextImageModel = nullptr;
     ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     ImagePointEffectModel *m_imagePointEffectModel = nullptr;
 };

@@ -160,24 +160,24 @@ void Image::setCreated(const QDateTime &created_)
 
 QVariant Image::imagePoints() const
 {
-    if(nullptr == m_imagePoints)
+    if(nullptr == m_imagePointsModel)
     {
-        const_cast<Image *>(this)->m_imagePoints = const_cast<Image *>(this)
+        const_cast<Image *>(this)->m_imagePointsModel = const_cast<Image *>(this)
                 ->createImagePoints();
     }
     return QVariant::fromValue(static_cast<QObject *>(
                                    const_cast<ImagePointModel *>(
-                                       m_imagePoints)
+                                       m_imagePointsModel)
                                    )
                                );
 }
 
 void Image::setImagePoints(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePoints)
+    if(obj_.isNull() && nullptr != m_imagePointsModel)
     {
-        delete m_imagePoints;
-        m_imagePoints = nullptr;
+        delete m_imagePointsModel;
+        m_imagePointsModel = nullptr;
         emit imagePointsChanged();
     }
 }
