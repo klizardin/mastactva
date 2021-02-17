@@ -15,6 +15,15 @@ Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
     m_objectModelInfo = this;
 }
 
+Artefact::~Artefact()
+{
+    if(nullptr != m_artefactArgModel)
+    {
+        m_artefactArgModel->deleteLater();
+    }
+    m_artefactArgModel = nullptr;
+}
+
 int Artefact::id() const
 {
     return m_id;

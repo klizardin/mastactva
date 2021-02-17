@@ -19,6 +19,7 @@ class EffectArgSet : public QObject, protected IListModelInfoObjectImpl
     Q_OBJECT
 public:
     explicit EffectArgSet(EffectArgSetModel *parent_ = nullptr);
+    virtual ~EffectArgSet() override;
 
     Q_PROPERTY(int effectArgSetId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArgSetEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)

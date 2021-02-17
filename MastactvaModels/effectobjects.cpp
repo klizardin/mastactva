@@ -12,6 +12,20 @@ EffectObjects::EffectObjects(EffectObjectsModel *parent_ /*= nullptr*/)
     m_effectObjectsModel = parent_;
 }
 
+EffectObjects::~EffectObjects()
+{
+    if(nullptr != m_objectInfoModel)
+    {
+        m_objectInfoModel->deleteLater();
+    }
+    m_objectInfoModel = nullptr;
+    if(nullptr != m_objectArtefactModel)
+    {
+        m_objectArtefactModel->deleteLater();
+    }
+    m_objectArtefactModel = nullptr;
+}
+
 int EffectObjects::id() const
 {
     return m_id;

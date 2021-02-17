@@ -23,6 +23,7 @@ class Gallery : public QObject
 
 public:
     explicit Gallery(GalleryModel *parent = nullptr);
+    virtual ~Gallery() override;
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
@@ -47,7 +48,7 @@ public:
             addField<QDateTime>("created", "created", &Gallery::created, &Gallery::setCreated);
             addField<qreal>("points_to_pass", "pointsToPass", &Gallery::pointsToPass, &Gallery::setPointsToPass);
             addField<int>("owner", "owner", &Gallery::ownGallery, &Gallery::setOwnGallery);
-            addModel<ImageModel>("images", &Gallery::m_images, &Gallery::createImages);
+            addModel<ImageModel>("images", &Gallery::m_imagesModel, &Gallery::createImages);
             /* 1:N */
             addModel<GalleryStatisticsModel>("galleryStatistics", &Gallery::m_galleryStatisticsModel, &Gallery::createGalleryStatistics);
             /* 1:N(1) */
@@ -72,6 +73,9 @@ public:
     QVariant statistics() const;
     void setStatistics(const QVariant &obj_);
 
+    ImageModel *getImages() const;
+    void setImages(ImageModel *images);
+
 signals:
     void idChanged();
     void descriptionChanged();
@@ -87,6 +91,7 @@ protected:
     GalleryStatisticsModel *createGalleryStatistics();
 
 private:
+    GalleryModel *m_galleryModel = nullptr;
     int m_appId = 0;
     int m_id = -1;
     QString m_description;
@@ -94,8 +99,7 @@ private:
     QDateTime m_created;
     qreal m_pointsToPass = 1.0;
     int m_ownGallery = false;
-    ImageModel *m_images = nullptr;
-    GalleryModel *m_galleryModel = nullptr;
+    ImageModel *m_imagesModel = nullptr;
     GalleryStatisticsModel *m_galleryStatisticsModel = nullptr;
 };
 

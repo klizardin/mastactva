@@ -19,6 +19,7 @@ class Artefact : public QObject, protected IListModelInfoObjectImpl
     Q_OBJECT
 public:
     explicit Artefact(ArtefactModel *parent_ = nullptr);
+    virtual ~Artefact() override;
 
     Q_PROPERTY(int artefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString artefactName READ name WRITE setName NOTIFY nameChanged)

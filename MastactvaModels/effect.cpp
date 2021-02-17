@@ -25,15 +25,23 @@ Effect::~Effect()
     clear(m_itemsToSet);
     clear(m_itemsToDel);
     clear(m_itemsToAdd);
-
-    delete m_effectObjectsModel;
-    m_effectObjectsModel = nullptr;
-    delete m_effectArgModel;
-    m_effectArgModel = nullptr;
-    delete m_effectArgSetModel;
-    m_effectArgSetModel = nullptr;
-
     m_artefactInfos.clear();
+
+    if(nullptr != m_effectObjectsModel)
+    {
+        m_effectObjectsModel->deleteLater();
+    }
+    m_effectObjectsModel = nullptr;
+    if(nullptr != m_effectArgModel)
+    {
+        m_effectArgModel->deleteLater();
+    }
+    m_effectArgModel = nullptr;
+    if(nullptr != m_effectArgSetModel)
+    {
+        m_effectArgSetModel->deleteLater();
+    }
+    m_effectArgSetModel = nullptr;
 }
 
 int Effect::id() const
@@ -223,7 +231,7 @@ void Effect::clear(QList<EffectArg *> &artefactArgs_)
                     );
         if(!founded)
         {
-            delete arg_;
+            arg_->deleteLater();
             arg_ = nullptr;
         }
     }

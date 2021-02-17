@@ -11,6 +11,15 @@ EffectArgValue::EffectArgValue(EffectArgValueModel *parent_ /*= nullptr*/)
     m_effectArgValueModel = parent_;
 }
 
+EffectArgValue::~EffectArgValue()
+{
+    if(nullptr != m_effectArgModel)
+    {
+        m_effectArgModel->deleteLater();
+    }
+    m_effectArgModel = nullptr;
+}
+
 int EffectArgValue::id() const
 {
     return m_id;

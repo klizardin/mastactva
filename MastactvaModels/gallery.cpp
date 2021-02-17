@@ -12,6 +12,20 @@ Gallery::Gallery(GalleryModel *parent_)
     m_galleryModel =  parent_;
 }
 
+Gallery::~Gallery()
+{
+    if(nullptr != m_imagesModel)
+    {
+        m_imagesModel->deleteLater();
+    }
+    m_imagesModel = nullptr;
+    if(nullptr != m_galleryStatisticsModel)
+    {
+        m_galleryStatisticsModel->deleteLater();
+    }
+    m_galleryStatisticsModel = nullptr;
+}
+
 int Gallery::getAppId() const
 {
     return m_appId;
@@ -112,11 +126,11 @@ ImageModel *Gallery::createImages()
 
 QVariant Gallery::images()
 {
-    if(nullptr == m_images)
+    if(nullptr == m_imagesModel)
     {
-        m_images = createImages();
+        m_imagesModel = createImages();
     }
-    return QVariant::fromValue(static_cast<QObject *>(m_images));
+    return QVariant::fromValue(static_cast<QObject *>(m_imagesModel));
 }
 
 QVariant Gallery::statistics() const
@@ -163,6 +177,16 @@ GalleryStatisticsModel *Gallery::createGalleryStatistics()
     m->setReadonlyImpl(false);
     m->loadList();
     return m;
+}
+
+ImageModel *Gallery::getImages() const
+{
+    return m_imagesModel;
+}
+
+void Gallery::setImages(ImageModel *imagesModel_)
+{
+    m_imagesModel = imagesModel_;
 }
 
 

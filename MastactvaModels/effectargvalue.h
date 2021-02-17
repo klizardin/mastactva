@@ -18,6 +18,7 @@ class EffectArgValue : public QObject
     Q_OBJECT
 public:
     explicit EffectArgValue(EffectArgValueModel *parent_ = nullptr);
+    virtual ~EffectArgValue() override;
 
     Q_PROPERTY(int effectArgValueId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectArgValueArgSetId READ argSetId WRITE setArgSetId NOTIFY argSetIdChanged)
