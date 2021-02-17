@@ -460,53 +460,58 @@ void Effect::applyRefreshArguments()
                         ai_.objectArtefactId == effectArg->objectArtefactId()
                         ;
             });
-            //EffectArg *newArg = nullptr;
-            //const bool newArgCreated = std::end(newArguments) != fitni;
-            //if(newArgCreated)
-            //{
-            //    newArg = *fitni;
-            //}
-            //else
-            //{
-            EffectArg *newArg = m_effectArgModel->createDataItemImpl();
-            newArg->setName(argName);
-            newArg->setEffectId(id());
-            newArg->setObjectArtefactId(ai_.objectArtefactId);
-            //}
+            EffectArg *newArg = nullptr;
+            const bool newArgCreated = std::end(newArguments) != fitni;
+            if(newArgCreated && nullptr != *fitni)
+            {
+                newArg = *fitni;
+            }
+            else
+            {
+                newArg = m_effectArgModel->createDataItemImpl();
+                newArg->setName(argName);
+                newArg->setEffectId(id());
+                newArg->setObjectArtefactId(ai_.objectArtefactId);
+            }
             newArg->setArgTypeId(argTypeId);
             newArg->setArgStorageId(argStorageId);
             newArg->setDefaultValue(argDefaultValue);
             newArg->setDescription(argDescription);
 
-            //const EffectArg *existingArg = m_effectArgModel->findDataItemByFieldValueImpl(
-            //            "effectArgName",
-            //            QVariant::fromValue(argName)
-            //            );
-            //if(nullptr != existingArg)
-            //{
-            //    if(existingArg->argTypeId() == argTypeId &&
-            //            existingArg->defaultValue() == argDefaultValue &&
-            //            existingArg->description() == argDescription)
-            //    {
-            //        delete newArg;
-            //        newArg = nullptr;
-            //    }
-            //}
+            const EffectArg *existingArg = m_effectArgModel->dataItemFindIf
+                    ([&newArg] (const EffectArg *arg_) -> bool
+                    {
+                        return nullptr != arg_ &&
+                                nullptr != newArg &&
+                                arg_->name() == newArg->name() &&
+                                arg_->objectArtefactId() == newArg->objectArtefactId()
+                                ;
+                    });
+            if(nullptr != existingArg)
+            {
+                if(existingArg->argTypeId() == argTypeId &&
+                        existingArg->defaultValue() == argDefaultValue &&
+                        existingArg->description() == argDescription)
+                {
+                    delete newArg;
+                    newArg = nullptr;
+                }
+            }
 
-            //if(!newArgCreated)
-            //{
-            //    if(nullptr != newArg)
-            //    {
-            //        newArguments.push_back(newArg);
-            //    }
-            //}
-            //else
-            //{
-            //    if(nullptr == newArg)
-            //    {
-            //        newArguments.erase(fitni);
-            //    }
-            //}
+            if(!newArgCreated)
+            {
+                if(nullptr != newArg)
+                {
+                    newArguments.push_back(newArg);
+                }
+            }
+            else
+            {
+                if(nullptr == newArg)
+                {
+                    newArguments.erase(fitni);
+                }
+            }
         }
     }
 
