@@ -295,7 +295,7 @@ bool Effect::startRefreshArguments()
                     if(nullptr == artefactArg) { return false; }
 
                     EffectArg *newArg = m_effectArgModel->createDataItemImpl();
-                    newArg->copyFrom(artefactArg, id(), effectObjectArtefact->id());
+                    newArg->copyFrom(artefactArg, this->id(), effectObjectArtefact->id());
                 }
 
                 ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
