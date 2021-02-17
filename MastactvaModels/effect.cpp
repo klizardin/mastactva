@@ -699,6 +699,8 @@ void Effect::addDefaultObject()
                 g_createDefaultEffectObjectProcedureName,
                 QHash<QString, QVariant>
                 ({
+                     {g_effectIDName,
+                      QVariant::fromValue(this->id())},
                      {g_defaultObjectInfoNameName,
                       QVariant::fromValue(tr("Default Effect Object"))},
                      {g_defaultObjectInfoProgrammerNameName,
