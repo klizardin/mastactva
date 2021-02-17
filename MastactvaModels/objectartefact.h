@@ -18,6 +18,7 @@ class ObjectArtefact : public QObject
     Q_OBJECT
 public:
     explicit ObjectArtefact(ObjectArtefactModel *parent_ = nullptr);
+    virtual ~ObjectArtefact() override;
 
     Q_PROPERTY(int objectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int objectArtefactObjectInfoId READ objectInfoId WRITE setObjectInfoId NOTIFY objectInfoIdChanged)

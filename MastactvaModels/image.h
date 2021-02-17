@@ -22,6 +22,7 @@ class Image : public QObject, protected IListModelInfoObjectImpl
     Q_OBJECT
 public:
     explicit Image(ImageModel *parent_ = nullptr);
+    virtual ~Image() override;
 
     Q_PROPERTY(int imageId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString imageSource READ getFilename WRITE setFilenameStr NOTIFY filenameChanged)

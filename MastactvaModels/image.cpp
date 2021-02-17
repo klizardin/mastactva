@@ -16,6 +16,20 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
     //qDebug() << "Image::Image()" << getObjectName();
 }
 
+Image::~Image()
+{
+    if(nullptr != m_imagePointsModel)
+    {
+        m_imagePointsModel->deleteLater();
+    }
+    m_imagePointsModel = nullptr;
+    if(nullptr != m_imageDescriptionModel)
+    {
+        m_imageDescriptionModel->deleteLater();
+    }
+    m_imageDescriptionModel = nullptr;
+}
+
 bool Image::isImageLoaded() const
 {
     return IListModelInfoObjectImpl::isListLoadedImpl();

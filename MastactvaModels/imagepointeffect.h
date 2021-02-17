@@ -19,6 +19,7 @@ class ImagePointEffect : public QObject
     Q_OBJECT
 public:
     explicit ImagePointEffect(ImagePointEffectModel *parent_ = nullptr);
+    virtual ~ImagePointEffect() override;
 
     Q_PROPERTY(int imagePointEffectId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int imagePointEffectImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)

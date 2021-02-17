@@ -21,6 +21,7 @@ class ImagePointToQuestion : public QObject
     Q_OBJECT
 public:
     explicit ImagePointToQuestion(ImagePointToQuestionModel *parent_ = nullptr);
+    virtual ~ImagePointToQuestion() override;
 
     Q_PROPERTY(int iptqId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int iptqImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)
@@ -258,6 +259,7 @@ class ImagePoint : public QObject
     Q_OBJECT
 public:
     explicit ImagePoint(ImagePointModel *parent_ = nullptr);
+    virtual ~ImagePoint() override;
 
     Q_PROPERTY(int ipId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int ipImageId READ imageId WRITE setImageId NOTIFY imageIdChanged)

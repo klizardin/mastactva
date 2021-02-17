@@ -14,6 +14,15 @@ ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*
     m_imagePointToQuestionModel = parent_;
 }
 
+ImagePointToQuestion::~ImagePointToQuestion()
+{
+    if(nullptr != m_questionModel)
+    {
+        m_questionModel->deleteLater();
+    }
+    m_questionModel = nullptr;
+}
+
 int ImagePointToQuestion::id() const
 {
     return m_id;
@@ -210,6 +219,25 @@ ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
     qDebug() << "ImagePoint::ImagePoint()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     m_imagePointModel = parent_;
+}
+
+ImagePoint::~ImagePoint()
+{
+    if(nullptr != m_imagePointToNextImageModel)
+    {
+        m_imagePointToNextImageModel->deleteLater();
+    }
+    m_imagePointToNextImageModel = nullptr;
+    if(nullptr != m_imagePointToQuestionModel)
+    {
+        m_imagePointToQuestionModel->deleteLater();
+    }
+    m_imagePointToQuestionModel = nullptr;
+    if(nullptr != m_imagePointEffectModel)
+    {
+        m_imagePointEffectModel->deleteLater();
+    }
+    m_imagePointEffectModel = nullptr;
 }
 
 int ImagePoint::id() const

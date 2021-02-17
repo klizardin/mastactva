@@ -20,6 +20,7 @@ class Question : public QObject
     Q_OBJECT
 public:
     explicit Question(QuestionModel *parent_ = nullptr);
+    virtual ~Question() override;
 
     Q_PROPERTY(int questionId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString questionText READ question WRITE setQuestion NOTIFY questionChanged)
