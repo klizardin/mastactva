@@ -94,6 +94,7 @@ public:
     Q_INVOKABLE void applyRefreshArguments();
     Q_INVOKABLE void loadChildren();
     Q_INVOKABLE bool isChildrenLoaded() const;
+    Q_INVOKABLE void addDefaultObject();
 
 protected slots:
     void refreshArgumentsArtefactDownloadedSlot(const QString &url_);

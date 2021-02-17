@@ -13891,6 +13891,11 @@
                         "access": "public",
                         "name": "isChildrenLoaded",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "addDefaultObject",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

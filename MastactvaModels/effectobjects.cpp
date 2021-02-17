@@ -112,6 +112,16 @@ void EffectObjects::setObjectArtefacts(const QVariant &obj_)
     }
 }
 
+ObjectInfoModel *EffectObjects::getObjectInfoModel()
+{
+    return m_objectInfoModel;
+}
+
+const ObjectInfoModel *EffectObjects::getObjectInfoModel() const
+{
+    return m_objectInfoModel;
+}
+
 ObjectArtefactModel *EffectObjects::getObjectArtefacts()
 {
     return m_objectArtefactModel;

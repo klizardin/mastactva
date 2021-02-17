@@ -672,6 +672,44 @@ bool Effect::isChildrenLoaded() const
     return IListModelInfoObjectImpl::isListLoadedImpl();
 }
 
+void Effect::addDefaultObject()
+{
+    if(nullptr == m_effectObjectsModel ||
+            !m_effectObjectsModel->isListLoadedImpl()) { return; }
+
+    const EffectObjects *existingDefaultObject = m_effectObjectsModel->dataItemFindIf(
+                [](const EffectObjects *effectObj_)->bool
+    {
+        if(nullptr == effectObj_) { return false; }
+        const ObjectInfoModel *objectInfoModel = effectObj_->getObjectInfoModel();
+        if(nullptr == objectInfoModel) { return false; }
+
+        for(int i = 0; i < objectInfoModel->sizeImpl(); i++)
+        {
+            const ObjectInfo *objectInfo = objectInfoModel->dataItemAtImpl(i);
+            if(nullptr == objectInfo) { continue; }
+            if(const_cast<ObjectInfo *>(objectInfo)->isInitializeObject()) { return true; }
+        }
+        return false;
+    });
+
+    if(nullptr != existingDefaultObject) { return; }
+
+    m_effectObjectsModel->procedureImpl(
+                g_createDefaultEffectObjectProcedureName,
+                QHash<QString, QVariant>
+                ({
+                     {g_defaultObjectInfoNameName,
+                      QVariant::fromValue(tr("Default Effect Object"))},
+                     {g_defaultObjectInfoProgrammerNameName,
+                      QVariant::fromValue(QString(g_defaultObjectInfoProgrammerName))},
+                     {g_defaultObjectInfoDescriptionName,
+                      QVariant::fromValue(tr("This is the default effect object"))},
+                     {g_defaultObjectInfoCreatedName,
+                      QVariant::fromValue(dateTimeToJsonString(QDateTime::currentDateTime()))}
+                 }));
+}
+
 EffectObjectsModel *Effect::getEffectObjects()
 {
     return m_effectObjectsModel;

@@ -59,6 +59,8 @@ public:
     void setObjectArtefacts(const QVariant &obj_);
     ObjectArtefactModel *getObjectArtefacts();
     const ObjectArtefactModel *getObjectArtefacts() const;
+    ObjectInfoModel *getObjectInfoModel();
+    const ObjectInfoModel *getObjectInfoModel() const;
 
 protected:
     ObjectInfoModel *createObjectInfoModel();

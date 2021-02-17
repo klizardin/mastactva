@@ -1196,17 +1196,41 @@ ApplicationWindow {
             update()
             if(fieldNewItem)
             {
+                effectModel.itemAdded.connect(effectModelItemAdded)
                 effectModel.addItem(fieldEffect)
             }
             else
             {
                 effectModel.setItem(effectCurrentIndex, fieldEffect)
+                fieldEffect = undefined
             }
-            fieldEffect = undefined
         }
 
         onRejected: {
             fieldEffect = undefined
+        }
+
+        function effectModelItemAdded()
+        {
+            effectModel.itemAdded.disconnect(effectModelItemAdded)
+            effectModel.selectItemByAppId(effectModel.getItemAppId(fieldEffect))
+            fieldEffect = undefined
+            if(effectModel.currentItem === null) { return; }
+            if(effectModel.currentItem.isChildrenLoaded())
+            {
+                effectModel.currentItem.addDefaultObject()
+            }
+            else
+            {
+                effectModel.currentItem.childrenLoaded.connect(effectItemChildrenLoaded)
+            }
+        }
+
+        function effectItemChildrenLoaded()
+        {
+            if(effectModel.currentItem === null) { return; }
+            effectModel.currentItem.childrenLoaded.disconnect(effectItemChildrenLoaded)
+            effectModel.currentItem.addDefaultObject()
         }
     }
 
