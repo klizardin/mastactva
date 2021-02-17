@@ -454,12 +454,12 @@ void Effect::applyRefreshArguments()
                         std::begin(newArguments),
                         std::end(newArguments),
                         [&argName, &ai_] (EffectArg *effectArg) -> bool
-            {
-                return nullptr != effectArg &&
-                        effectArg->name() == argName &&
-                        ai_.objectArtefactId == effectArg->objectArtefactId()
-                        ;
-            });
+                        {
+                            return nullptr != effectArg &&
+                                    effectArg->name() == argName &&
+                                    ai_.objectArtefactId == effectArg->objectArtefactId()
+                                    ;
+                        });
             EffectArg *newArg = nullptr;
             const bool newArgCreated = std::end(newArguments) != fitni;
             if(newArgCreated && nullptr != *fitni)
@@ -522,15 +522,15 @@ void Effect::applyRefreshArguments()
 
     for(EffectArg *newArg: qAsConst(newArguments))
     {
-        const bool existingItemFounded = nullptr != m_effectArgModel->dataItemFindIf(
-                    [&newArg] (const EffectArg *arg_) -> bool
-        {
-            return nullptr != arg_ &&
-                    nullptr != newArg &&
-                    arg_->name() == newArg->name() &&
-                    arg_->objectArtefactId() == newArg->objectArtefactId()
-                    ;
-        });
+        const bool existingItemFounded = nullptr != m_effectArgModel->dataItemFindIf
+                ([&newArg] (const EffectArg *arg_) -> bool
+                {
+                    return nullptr != arg_ &&
+                            nullptr != newArg &&
+                            arg_->name() == newArg->name() &&
+                            arg_->objectArtefactId() == newArg->objectArtefactId()
+                            ;
+                });
         if(existingItemFounded)
         {
             m_itemsToSet.push_back(newArg);
@@ -547,13 +547,13 @@ void Effect::applyRefreshArguments()
                     std::begin(newArguments),
                     std::end(newArguments),
                     [&existingArg] (EffectArg *effectArg) -> bool
-        {
-            return nullptr != effectArg &&
-                nullptr != existingArg &&
-                effectArg->name() == existingArg->name() &&
-                effectArg->objectArtefactId() == existingArg->objectArtefactId()
-                ;
-        });
+                    {
+                        return nullptr != effectArg &&
+                            nullptr != existingArg &&
+                            effectArg->name() == existingArg->name() &&
+                            effectArg->objectArtefactId() == existingArg->objectArtefactId()
+                            ;
+                    });
         const bool newItemFounded = std::end(newArguments) == fitni;
         if(!newItemFounded)
         {
