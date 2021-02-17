@@ -11,6 +11,15 @@ ObjectArtefact::ObjectArtefact(ObjectArtefactModel *parent_ /* = nullptr*/)
     m_effectArtefactModel = parent_;
 }
 
+ObjectArtefact::~ObjectArtefact()
+{
+    if(nullptr != m_artefactModel)
+    {
+        m_artefactModel->deleteLater();
+    }
+    m_artefactModel = nullptr;
+}
+
 int ObjectArtefact::id() const
 {
     return m_id;

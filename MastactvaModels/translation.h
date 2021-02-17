@@ -89,6 +89,7 @@ signals:
     void createdChanged();
 
 private:
+    TranslationModel *m_translationModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
@@ -102,7 +103,6 @@ private:
     QString m_langFrom;
     QString m_langTo;
     QDateTime m_created;
-    TranslationModel *m_translationModel = nullptr;
 };
 
 

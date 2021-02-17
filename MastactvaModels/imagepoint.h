@@ -21,6 +21,7 @@ class ImagePointToQuestion : public QObject
     Q_OBJECT
 public:
     explicit ImagePointToQuestion(ImagePointToQuestionModel *parent_ = nullptr);
+    virtual ~ImagePointToQuestion() override;
 
     Q_PROPERTY(int iptqId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int iptqImagePointId READ imagePointId WRITE setImagePointId NOTIFY imagePointIdChanged)
@@ -66,12 +67,12 @@ signals:
     void questionObjChanged();
 
 private:
+    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_imagePointId = -1;
     int m_questionId = -1;
-    ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     QuestionModel *m_questionModel = nullptr;
 };
 
@@ -180,13 +181,13 @@ signals:
     void nextImageChanged();
 
 private:
+    ImagePointToNextImageModel *m_parentModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_imagePointId = -1;
     int m_nextImage = -1;
-    ImagePointToNextImageModel *m_parentModel = nullptr;
-    IListModelInfo *m_parentModelInfo = nullptr;
-    IListModelInfo *m_objectModelInfo = nullptr;
 };
 
 
@@ -258,6 +259,7 @@ class ImagePoint : public QObject
     Q_OBJECT
 public:
     explicit ImagePoint(ImagePointModel *parent_ = nullptr);
+    virtual ~ImagePoint() override;
 
     Q_PROPERTY(int ipId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int ipImageId READ imageId WRITE setImageId NOTIFY imageIdChanged)
@@ -283,7 +285,7 @@ public:
             addField<qreal>("y", "ipYCoord", &ImagePoint::yCoord, &ImagePoint::setYCoord);
             addField<qreal>("weight", "ipWeight", &ImagePoint::weight, &ImagePoint::setWeight);
             addField<QDateTime>("created", "ipCreated", &ImagePoint::created, &ImagePoint::setCreated);
-            addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImage, &ImagePoint::createImagePointToNextImage);
+            addModel<ImagePointToNextImageModel>("nextImage", &ImagePoint::m_imagePointToNextImageModel, &ImagePoint::createImagePointToNextImage);
             /* 1:N */
             addModel<ImagePointToQuestionModel>("nextQuestion", &ImagePoint::m_imagePointToQuestionModel, &ImagePoint::createImagePointToQuestionModel);
             /* 1:N */
@@ -334,6 +336,8 @@ protected:
     ImagePointEffectModel *createImagePointEffectModel();
 
 private:
+    ImagePointModel *m_imagePointModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
     int m_imageId = -1;
@@ -341,11 +345,9 @@ private:
     qreal m_y = 0.0;
     qreal m_weight = 1.0;
     QDateTime m_created;
-    ImagePointToNextImageModel *m_imagePointToNextImage = nullptr;
+    ImagePointToNextImageModel *m_imagePointToNextImageModel = nullptr;
     ImagePointToQuestionModel *m_imagePointToQuestionModel = nullptr;
     ImagePointEffectModel *m_imagePointEffectModel = nullptr;
-    ImagePointModel *m_imagePointModel = nullptr;
-    IListModelInfo *m_parentModelInfo = nullptr;
 };
 
 

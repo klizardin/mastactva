@@ -14,6 +14,15 @@ ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*
     m_imagePointToQuestionModel = parent_;
 }
 
+ImagePointToQuestion::~ImagePointToQuestion()
+{
+    if(nullptr != m_questionModel)
+    {
+        m_questionModel->deleteLater();
+    }
+    m_questionModel = nullptr;
+}
+
 int ImagePointToQuestion::id() const
 {
     return m_id;
@@ -212,6 +221,25 @@ ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
     m_imagePointModel = parent_;
 }
 
+ImagePoint::~ImagePoint()
+{
+    if(nullptr != m_imagePointToNextImageModel)
+    {
+        m_imagePointToNextImageModel->deleteLater();
+    }
+    m_imagePointToNextImageModel = nullptr;
+    if(nullptr != m_imagePointToQuestionModel)
+    {
+        m_imagePointToQuestionModel->deleteLater();
+    }
+    m_imagePointToQuestionModel = nullptr;
+    if(nullptr != m_imagePointEffectModel)
+    {
+        m_imagePointEffectModel->deleteLater();
+    }
+    m_imagePointEffectModel = nullptr;
+}
+
 int ImagePoint::id() const
 {
     return m_id;
@@ -286,24 +314,24 @@ void ImagePoint::setCreated(const QDateTime &created_)
 
 QVariant ImagePoint::nextImage() const
 {
-    if(nullptr == m_imagePointToNextImage)
+    if(nullptr == m_imagePointToNextImageModel)
     {
-        const_cast<ImagePoint *>(this)->m_imagePointToNextImage = const_cast<ImagePoint *>(this)
+        const_cast<ImagePoint *>(this)->m_imagePointToNextImageModel = const_cast<ImagePoint *>(this)
                 ->createImagePointToNextImage();
     }
     return QVariant::fromValue(static_cast<QObject *>(
                                    const_cast<ImagePointToNextImageModel *>(
-                                       m_imagePointToNextImage)
+                                       m_imagePointToNextImageModel)
                                    )
                                );
 }
 
 void ImagePoint::setNextImage(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePointToNextImage)
+    if(obj_.isNull() && nullptr != m_imagePointToNextImageModel)
     {
-        delete m_imagePointToNextImage;
-        m_imagePointToNextImage = nullptr;
+        delete m_imagePointToNextImageModel;
+        m_imagePointToNextImageModel = nullptr;
 
         emit nextImageChanged();
     }
@@ -362,7 +390,7 @@ void ImagePoint::setEffect(const QVariant &obj_)
 ImagePointToNextImageModel *ImagePoint::getNextImage() const
 {
     nextImage();
-    return m_imagePointToNextImage;
+    return m_imagePointToNextImageModel;
 }
 
 ImagePointToQuestionModel *ImagePoint::getNextQuestion() const

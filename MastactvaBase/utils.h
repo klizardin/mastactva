@@ -84,6 +84,12 @@ static const char *g_errorDetailTag = "detail";
 static const int g_userId = 1;
 static const char *g_noImage = ":/resources/no-image.png";
 static const char *g_noImageQRC = "qrc:///resources/no-image.png";
+static const char *g_createDefaultEffectObjectProcedureName = "create-default-object";
+static const char *g_defaultObjectInfoNameName = "name";
+static const char *g_defaultObjectInfoProgrammerNameName = "programmer_name";
+static const char *g_defaultObjectInfoDescriptionName = "description";
+static const char *g_defaultObjectInfoCreatedName = "created";
+static const char *g_defaultObjectInfoProgrammerName = "";
 
 
 #endif // UTILS_H

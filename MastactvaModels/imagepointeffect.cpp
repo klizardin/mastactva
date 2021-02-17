@@ -11,6 +11,20 @@ ImagePointEffect::ImagePointEffect(ImagePointEffectModel *parent_ /*=nullptr*/)
     m_imagePointEffectModel = parent_;
 }
 
+ImagePointEffect::~ImagePointEffect()
+{
+    if(nullptr != m_effectModel)
+    {
+        m_effectModel->deleteLater();
+    }
+    m_effectModel = nullptr;
+    if(nullptr != m_effectArgSetModel)
+    {
+        m_effectArgSetModel->deleteLater();
+    }
+    m_effectArgSetModel = nullptr;
+}
+
 int ImagePointEffect::id() const
 {
     return m_id;

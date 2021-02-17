@@ -20,6 +20,7 @@ class Question : public QObject
     Q_OBJECT
 public:
     explicit Question(QuestionModel *parent_ = nullptr);
+    virtual ~Question() override;
 
     Q_PROPERTY(int questionId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString questionText READ question WRITE setQuestion NOTIFY questionChanged)
@@ -73,6 +74,7 @@ signals:
     void userQuestionAnswerChanged();
 
 private:
+    QuestionModel *m_questionModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
     int m_id = -1;
@@ -80,7 +82,6 @@ private:
     qreal m_pointsToPass = 1.0;
     QDateTime m_created;
     AnswerModel *m_answerModel = nullptr;
-    QuestionModel *m_questionModel = nullptr;
     UserQuestionAnswerModel *m_userQuestionAnswerModel = nullptr;
 };
 

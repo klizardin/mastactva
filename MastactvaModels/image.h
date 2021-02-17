@@ -22,6 +22,7 @@ class Image : public QObject, protected IListModelInfoObjectImpl
     Q_OBJECT
 public:
     explicit Image(ImageModel *parent_ = nullptr);
+    virtual ~Image() override;
 
     Q_PROPERTY(int imageId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString imageSource READ getFilename WRITE setFilenameStr NOTIFY filenameChanged)
@@ -54,7 +55,7 @@ public:
             addField<int>("gallery", "imageGallery", &Image::gallery, &Image::setGallery);
             addField<bool>("use_in_gallery_view", "imageTop", &Image::top, &Image::setTop);
             addField<QDateTime>("created", "imageCreated", &Image::created, &Image::setCreated);
-            addModel<ImagePointModel>("imagePoints", &Image::m_imagePoints, &Image::createImagePoints);
+            addModel<ImagePointModel>("imagePoints", &Image::m_imagePointsModel, &Image::createImagePoints);
             /* 1:N */
             addModel<ImageDescriptionModel>("imageDescription", &Image::m_imageDescriptionModel, &Image::createImageDescriptionModel);
             /* 1:N */
@@ -110,6 +111,8 @@ protected slots:
 
 private:
     ImageModel *m_imageModel = nullptr;
+    IListModelInfo *m_parentModelInfo = nullptr;
+    IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = 0;
     int m_id = -1;
     ImageSource m_filename;
@@ -118,10 +121,8 @@ private:
     int m_gallery = -1;
     bool m_top = false;
     QDateTime m_created;
-    ImagePointModel *m_imagePoints = nullptr;
+    ImagePointModel *m_imagePointsModel = nullptr;
     ImageDescriptionModel *m_imageDescriptionModel = nullptr;
-    IListModelInfo *m_parentModelInfo = nullptr;
-    IListModelInfo *m_objectModelInfo = nullptr;
 };
 
 

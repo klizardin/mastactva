@@ -12,6 +12,20 @@ Question::Question(QuestionModel *parent_)
     m_questionModel = parent_;
 }
 
+Question::~Question()
+{
+    if(nullptr != m_answerModel)
+    {
+        m_answerModel->deleteLater();
+    }
+    m_answerModel = nullptr;
+    if(nullptr != m_userQuestionAnswerModel)
+    {
+        m_userQuestionAnswerModel->deleteLater();
+    }
+    m_userQuestionAnswerModel = nullptr;
+}
+
 int Question::id() const
 {
     return m_id;

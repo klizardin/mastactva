@@ -12,6 +12,15 @@ EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
     m_objectModelInfo = this;
 }
 
+EffectArgSet::~EffectArgSet()
+{
+    if(nullptr != m_affectArgValueModel)
+    {
+        m_affectArgValueModel->deleteLater();
+    }
+    m_affectArgValueModel = nullptr;
+}
+
 QVariantList EffectArgSet::argValuesOfSetIdList()
 {
     if(nullptr == m_affectArgValueModel

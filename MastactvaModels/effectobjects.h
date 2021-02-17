@@ -19,6 +19,7 @@ class EffectObjects : public QObject
     Q_OBJECT
 public:
     explicit EffectObjects(EffectObjectsModel *parent_ = nullptr);
+    virtual ~EffectObjects() override;
 
     Q_PROPERTY(int effectObjectsId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectObjectsEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
@@ -58,6 +59,8 @@ public:
     void setObjectArtefacts(const QVariant &obj_);
     ObjectArtefactModel *getObjectArtefacts();
     const ObjectArtefactModel *getObjectArtefacts() const;
+    ObjectInfoModel *getObjectInfoModel();
+    const ObjectInfoModel *getObjectInfoModel() const;
 
 protected:
     ObjectInfoModel *createObjectInfoModel();
