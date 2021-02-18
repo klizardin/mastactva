@@ -26,12 +26,9 @@ public:
 };
 
 
-class IListModelInfo
+class IListModelChangeNotify
 {
 public:
-    virtual void startLoadChildModel() = 0;
-    virtual void endLoadChildModel() = 0;
-    virtual bool isListLoadedImpl() const = 0;
     virtual void listLoadedVF() = 0;
     virtual void itemAddedVF() = 0;
     virtual void itemSetVF() = 0;
@@ -39,8 +36,18 @@ public:
     virtual void errorVF(int errorCode_,
                          const QString &errorCodeStr_,
                          const QJsonDocument &reply_) = 0;
-    virtual void loadChildrenVF() = 0;
     virtual void objectLoadedVF() = 0;
+};
+Q_DECLARE_METATYPE(IListModelChangeNotify*)
+
+
+class IListModelInfo : public IListModelChangeNotify
+{
+public:
+    virtual void startLoadChildModel() = 0;
+    virtual void endLoadChildModel() = 0;
+    virtual bool isListLoadedImpl() const = 0;
+    virtual void loadChildrenVF() = 0;
 };
 Q_DECLARE_METATYPE(IListModelInfo*)
 

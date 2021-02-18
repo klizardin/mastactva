@@ -118,7 +118,8 @@ unix: HEADERS += \
         translation.h   \
         objectinfo.h  \
         objectartefact.h    \
-        effectobjects.h
+        effectobjects.h \
+        modelhelpers.h
 
 
 SOURCES += \
@@ -172,7 +173,8 @@ unix: SOURCES += \
         translation.cpp \
         objectinfo.cpp    \
         objectartefact.cpp  \
-        effectobjects.cpp
+        effectobjects.cpp   \
+        modelhelpers.cpp
 
 
 RESOURCES += qml.qrc    \

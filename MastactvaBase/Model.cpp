@@ -227,22 +227,42 @@ bool ListModelBaseData::isListLoadedImpl() const
 
 void ListModelBaseData::listLoadedVF()
 {
+    if(nullptr != m_setModelChangeNotify)
+    {
+        m_setModelChangeNotify->listLoadedVF();
+    }
 }
 
 void ListModelBaseData::itemAddedVF()
 {
+    if(nullptr != m_setModelChangeNotify)
+    {
+        m_setModelChangeNotify->itemAddedVF();
+    }
 }
 
 void ListModelBaseData::itemSetVF()
 {
+    if(nullptr != m_setModelChangeNotify)
+    {
+        m_setModelChangeNotify->itemSetVF();
+    }
 }
 
 void ListModelBaseData::itemDeletedVF()
 {
+    if(nullptr != m_setModelChangeNotify)
+    {
+        m_setModelChangeNotify->itemDeletedVF();
+    }
 }
 
 void ListModelBaseData::errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
 {
+    if(nullptr != m_setModelChangeNotify)
+    {
+        m_setModelChangeNotify->errorVF(errorCode_, errorCodeStr_, reply_);
+    }
     QMLObjectsBase::getInstance().modelError(errorCode_, errorCodeStr_, reply_);
 }
 
@@ -253,7 +273,10 @@ void ListModelBaseData::loadChildrenVF()
 
 void ListModelBaseData::objectLoadedVF()
 {
-    Q_ASSERT(false); // should not be called
+    if(nullptr != m_setModelChangeNotify)
+    {
+        m_setModelChangeNotify->objectLoadedVF();
+    }
 }
 
 void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const QString &newName_)
@@ -318,6 +341,11 @@ bool ListModelBaseData::getStoreAfterSaveBase() const
 void ListModelBaseData::setStoreAfterSaveBase(bool storeAfterSave_)
 {
     m_storeAfterSave = storeAfterSave_;
+}
+
+void ListModelBaseData::setModelChangeNotify(IListModelChangeNotify *setModelChangeNotify_)
+{
+    m_setModelChangeNotify = setModelChangeNotify_;
 }
 
 void ListModelBaseData::startListLoad()
