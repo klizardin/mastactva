@@ -23218,6 +23218,10 @@
                     {
                         "access": "public",
                         "name": "ListModelBaseOfData<EffectObjects,EffectObjectsModel>"
+                    },
+                    {
+                        "access": "public",
+                        "name": "SortModelAfterChangeImpl<EffectObjects,EffectObjectsModel>"
                     }
                 ]
             }

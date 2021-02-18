@@ -9,6 +9,7 @@
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/objectinfo.h"
 #include "../MastactvaModels/objectartefact.h"
+#include "../MastactvaBase/modelhelpers.h"
 
 
 class EffectObjectsModel;
@@ -91,13 +92,16 @@ private:
 };
 
 
-class EffectObjectsModel : public ListModelBaseOfData<EffectObjects, EffectObjectsModel>
+class EffectObjectsModel :
+        public ListModelBaseOfData<EffectObjects, EffectObjectsModel> ,
+        public SortModelAfterChangeImpl<EffectObjects, EffectObjectsModel>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
     using base = ListModelBaseOfData<EffectObjects, EffectObjectsModel>;
+    using sortModelAfterChange = SortModelAfterChangeImpl<EffectObjects, EffectObjectsModel>;
 
 public:
     explicit EffectObjectsModel(QObject *parent_ = nullptr);
@@ -117,6 +121,10 @@ public slots:
     {
         refreshChildrenSlotImpl(modelName_);
     }
+
+private:
+    bool compareModelItems(const EffectObjects *i1_, const EffectObjects *i2_) const;
+    void currentIndexAfterSortChanged();
 
 signals:
     void currentIndexChanged();
@@ -139,6 +147,8 @@ signals:
     void sortFieldsChanged();
     void readonlyChanged();
     void error(const QString &errorCode_, const QString &description_);
+
+    friend class SortModelAfterChangeImpl<EffectObjects, EffectObjectsModel>;
 };
 
 

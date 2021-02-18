@@ -11,7 +11,7 @@ ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
     m_effectObjectInfoModel = parent_;
 }
 
-bool ObjectInfo::isInitializeObject()
+bool ObjectInfo::isInitializeObject() const
 {
     return programmerName().isEmpty();
 }

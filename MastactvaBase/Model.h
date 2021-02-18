@@ -60,6 +60,7 @@ public:
     void clearListLoaded();
     void setReadonlyImpl(bool readonly_);
     void setStoreAfterSaveBase(bool storeAfterSave_);
+    void setModelChangeNotify(IListModelChangeNotify *setModelChangeNotify_);
 
 public:
     virtual void startLoadChildModel() override;
@@ -146,6 +147,7 @@ private:
     bool m_outputModel = false;
     IListModelInfo *m_parentListModelInfo = nullptr;
     bool m_storeAfterSave = true;
+    IListModelChangeNotify *m_setModelChangeNotify = nullptr;
 };
 
 
