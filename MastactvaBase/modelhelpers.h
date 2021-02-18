@@ -46,6 +46,11 @@ public:
 protected:
     virtual bool compareModelItems(const ModelDataType_ &i1_, const ModelDataType_ &i2_) const = 0;
 
+    void init()
+    {
+        static_cast<ModelType_*>(this)->setModelChangeNotify(this);
+    }
+
 private:
     void sortItems()
     {
