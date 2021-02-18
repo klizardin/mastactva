@@ -31,8 +31,8 @@ ApplicationWindow {
     property var imageOfGalleryNextImageEffectModel: undefined
 
     property int effectCurrentIndex: -1
-    property var effectShadersCurrentModel: undefined
-    property int effectShaderCurrentIndex: -1
+    property var effectObjectsCurrentModel: undefined
+    property int effectObjectsCurrentIndex: -1
     property var effectArgumentsCurrentModel: undefined
     property int effectArgumentsCurrentIndex: -1
     property var effectArgumentSetsCurrentModel: undefined
@@ -285,9 +285,9 @@ ApplicationWindow {
                 {
                     effectShadersListBusyIndicator.visible = false
                     effectShadersListBusyIndicator.running = false
-                    effectShadersCurrentModel = shadersModel
+                    effectObjectsCurrentModel = shadersModel
                     effectShadersList.model = shadersModel
-                    effectShaderCurrentIndex = effectShadersCurrentModel.size() > 0 ? effectShadersCurrentModel.currentIndex : -1
+                    effectObjectsCurrentIndex = effectObjectsCurrentModel.size() > 0 ? effectObjectsCurrentModel.currentIndex : -1
                 }
                 else
                 {
@@ -330,9 +330,9 @@ ApplicationWindow {
             {
                 effectInfoCommonName.text = qsTr("Please, select effect item")
                 effectInfoCommonDescription.text = qsTr("")
-                effectShadersCurrentModel = undefined
+                effectObjectsCurrentModel = undefined
                 effectShadersList.model = 0
-                effectShaderCurrentIndex = -1
+                effectObjectsCurrentIndex = -1
                 effectArgumentsCurrentModel = undefined
                 effectArgumentsList.model = 0
                 effectArgumentsCurrentIndex = -1
@@ -356,13 +356,13 @@ ApplicationWindow {
             if(shadersModel.isListLoaded())
             {
                 effectShadersList.model = shadersModel
-                effectShadersCurrentModel = shadersModel
-                effectShadersList.currentIndex = effectShadersCurrentModel.currentIndex
+                effectObjectsCurrentModel = shadersModel
+                effectShadersList.currentIndex = effectObjectsCurrentModel.currentIndex
             }
             else
             {
                 effectShadersList.model = 0
-                effectShadersCurrentModel = undefined
+                effectObjectsCurrentModel = undefined
             }
         }
 
@@ -436,10 +436,10 @@ ApplicationWindow {
 
         function onEffectShaderCurrentIndexChanged()
         {
-            effectShadersList.currentIndex = effectShaderCurrentIndex
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            effectShadersList.currentIndex = effectObjectsCurrentIndex
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectShadersCurrentModel.currentIndex = effectShaderCurrentIndex
+                effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
             }
             else
             {
@@ -1247,7 +1247,7 @@ ApplicationWindow {
 
         onAccepted: {
             update()
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 if(fieldNewItem)
                 {
@@ -1257,7 +1257,7 @@ ApplicationWindow {
                 else
                 {
                     fieldEffectShader.effectArtefactArtefact.itemSet.connect(shaderItemSet)
-                    fieldEffectShader.effectArtefactArtefact.setItem(effectShaderCurrentIndex, fieldShader)
+                    fieldEffectShader.effectArtefactArtefact.setItem(effectObjectsCurrentIndex, fieldShader)
                 }
             }
         }
@@ -1279,13 +1279,13 @@ ApplicationWindow {
             fieldEffectShader.effectArtefactArtefact.itemAdded.disconnect(shaderAdded)
             fieldEffectShader.setArtefactId(fieldShader.artefactId)
             fieldShader = undefined
-            effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
-            effectShadersCurrentModel.addItem(fieldEffectShader)
+            effectObjectsCurrentModel.itemAdded.connect(effectShaderAdded)
+            effectObjectsCurrentModel.addItem(fieldEffectShader)
         }
 
         function effectShaderAdded()
         {
-            effectShadersCurrentModel.itemAdded.disconnect(effectShaderAdded)
+            effectObjectsCurrentModel.itemAdded.disconnect(effectShaderAdded)
             fieldEffectShader = undefined
         }
     }
@@ -1299,20 +1299,20 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            if(fieldShader !== undefined && fieldShader !== null && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(fieldShader !== undefined && fieldShader !== null && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                var newEffectShader = effectShadersCurrentModel.createItem()
+                var newEffectShader = effectObjectsCurrentModel.createItem()
                 newEffectShader.setArtefactId(fieldShader.artefactId)
                 newEffectShader.effectArtefactEffectId = effectModel.getCurrentItem().effectId
                 fieldShader = undefined
-                effectShadersCurrentModel.itemAdded.connect(effectShaderAdded)
-                effectShadersCurrentModel.addItem(newEffectShader)
+                effectObjectsCurrentModel.itemAdded.connect(effectShaderAdded)
+                effectObjectsCurrentModel.addItem(newEffectShader)
             }
         }
 
         function effectShaderAdded()
         {
-            effectShadersCurrentModel.itemAdded.disconnect(effectShaderAdded)
+            effectObjectsCurrentModel.itemAdded.disconnect(effectShaderAdded)
             fieldShader = undefined
         }
     }
@@ -2710,20 +2710,20 @@ ApplicationWindow {
         text: qsTr("Re&fresh shaders")
         onTriggered: {
             //shaderEditDialog
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectShaderCurrentIndex = -1
-                effectShadersCurrentModel.listReloaded.connect(effectShadersCurrentModelListReloaded)
-                effectShadersCurrentModel.loadList()
+                effectObjectsCurrentIndex = -1
+                effectObjectsCurrentModel.listReloaded.connect(effectObjectsCurrentModelListReloaded)
+                effectObjectsCurrentModel.loadList()
             }
         }
 
-        function effectShadersCurrentModelListReloaded()
+        function effectObjectsCurrentModelListReloaded()
         {
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectShadersCurrentModel.listReloaded.disconnect(effectShadersCurrentModelListReloaded)
-                effectShaderCurrentIndex = effectShadersCurrentModel.currentIndex
+                effectObjectsCurrentModel.listReloaded.disconnect(effectObjectsCurrentModelListReloaded)
+                effectObjectsCurrentIndex = effectObjectsCurrentModel.currentIndex
             }
         }
     }
@@ -2732,9 +2732,9 @@ ApplicationWindow {
         id: addNewShader
         text: qsTr("&Add new shader")
         onTriggered: {
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                var newEffectShader = effectShadersCurrentModel.createItem()
+                var newEffectShader = effectObjectsCurrentModel.createItem()
                 var newShader = newEffectShader.effectArtefactArtefact.createItem()
 
                 shaderEditDialog.fieldEffectShader = newEffectShader
@@ -2749,7 +2749,7 @@ ApplicationWindow {
         id: addExistingShader
         text: qsTr("Add &existing shader")
         onTriggered: {
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 chooseShaderDialog.open()
             }
@@ -2760,12 +2760,12 @@ ApplicationWindow {
         id: editShaderInfo
         text: qsTr("Edit shader &info")
         onTriggered: {
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                if(effectShadersCurrentModel.effectArtefacts.size() > 0 && effectShaderCurrentIndex >= 0)
+                if(effectObjectsCurrentModel.effectArtefacts.size() > 0 && effectObjectsCurrentIndex >= 0)
                 {
-                    var effectShader = effectShadersCurrentModel
-                    var shader = effectShadersCurrentModel.effectArtefacts.getCurrentItem()
+                    var effectShader = effectObjectsCurrentModel
+                    var shader = effectObjectsCurrentModel.effectArtefacts.getCurrentItem()
                     shaderEditDialog.fieldEffectShader = effectShader
                     shaderEditDialog.fieldShader = shader
                     shaderEditDialog.fieldNewItem = false
@@ -2784,9 +2784,9 @@ ApplicationWindow {
 
         function promptBeforeRemove()
         {
-            if(effectShaderCurrentIndex >= 0 && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentIndex >= 0 && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                var effectShader = effectShadersCurrentModel.itemAt(effectShaderCurrentIndex).effectArtefactArtefact.currentItem
+                var effectShader = effectObjectsCurrentModel.itemAt(effectObjectsCurrentIndex).effectArtefactArtefact.currentItem
                 if(effectShader !== undefined && effectShader !== null)
                 {
                     confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.artefactFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
@@ -2822,19 +2822,19 @@ ApplicationWindow {
 
         function remove()
         {
-            if(effectShaderCurrentIndex >= 0 && effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            if(effectObjectsCurrentIndex >= 0 && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectShadersCurrentModel.itemDeleted.connect(itemDeleted)
-                effectShadersCurrentModel.delItem(effectShaderCurrentIndex)
+                effectObjectsCurrentModel.itemDeleted.connect(itemDeleted)
+                effectObjectsCurrentModel.delItem(effectObjectsCurrentIndex)
             }
         }
 
         function itemDeleted()
         {
-            effectShaderCurrentIndex = -1
-            if(effectShadersCurrentModel !== undefined && effectShadersCurrentModel !== null)
+            effectObjectsCurrentIndex = -1
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectShadersCurrentModel.itemDeleted.disconnect(itemDeleted)
+                effectObjectsCurrentModel.itemDeleted.disconnect(itemDeleted)
             }
         }
     }
@@ -4549,7 +4549,7 @@ ApplicationWindow {
                 }
                 else
                 {
-                    effectShaderCurrentIndex = index
+                    effectObjectsCurrentIndex = index
                     mouse.accepted = false
                 }
             }

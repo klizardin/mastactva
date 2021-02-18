@@ -703,8 +703,6 @@ void Effect::addDefaultObject()
                       QVariant::fromValue(this->id())},
                      {g_defaultObjectInfoNameName,
                       QVariant::fromValue(tr("Default Effect Object"))},
-                     {g_defaultObjectInfoProgrammerNameName,
-                      QVariant::fromValue(QString(g_defaultObjectInfoProgrammerName))},
                      {g_defaultObjectInfoDescriptionName,
                       QVariant::fromValue(tr("This is the default effect object"))},
                      {g_defaultObjectInfoCreatedName,
