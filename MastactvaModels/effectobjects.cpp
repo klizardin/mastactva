@@ -87,6 +87,18 @@ void EffectObjects::setObjectInfo(const QVariant &obj_)
     }
 }
 
+int EffectObjects::stepIndex() const
+{
+    return m_stepIndex;
+}
+
+void EffectObjects::setStepIndex(const int &stepIndex_)
+{
+    m_stepIndex = stepIndex_;
+
+    emit stepIndexChanged();
+}
+
 QVariant EffectObjects::objectArtefacts() const
 {
     if(nullptr == m_objectArtefactModel)

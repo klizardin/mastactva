@@ -25630,6 +25630,20 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
+                        "name": "effectObjectsStepIndex",
+                        "notify": "stepIndexChanged",
+                        "read": "stepIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setStepIndex"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
                         "name": "effectObjectsObjectArtefacts",
                         "notify": "objectArtefactsChanged",
                         "read": "objectArtefacts",
@@ -25656,6 +25670,11 @@
                     {
                         "access": "public",
                         "name": "objectInfoChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "stepIndexChanged",
                         "returnType": "void"
                     },
                     {

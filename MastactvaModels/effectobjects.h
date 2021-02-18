@@ -24,6 +24,7 @@ public:
     Q_PROPERTY(int effectObjectsId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectObjectsEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
     Q_PROPERTY(QVariant effectObjectsObjectInfo READ objectInfo WRITE setObjectInfo NOTIFY objectInfoChanged)
+    Q_PROPERTY(int effectObjectsStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(QVariant effectObjectsObjectArtefacts READ objectArtefacts WRITE setObjectArtefacts NOTIFY objectArtefactsChanged)
 
     class DefaultLayout : public LayoutBase<EffectObjects>
@@ -38,6 +39,7 @@ public:
             addField<int>("id", "effectObjectsId", &EffectObjects::id, &EffectObjects::setId);
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
             addField<int>("object_info", "", &EffectObjects::objectInfoId, &EffectObjects::setObjectInfoId);
+            addField<int>("step_index", "effectObjectsStepIndex", &EffectObjects::stepIndex, &EffectObjects::setStepIndex);
             addModel<ObjectInfoModel>("effectObjectsObjectInfo", &EffectObjects::m_objectInfoModel, &EffectObjects::createObjectInfoModel);
             /* 1:1 */
             addModel<ObjectArtefactModel>("effectObjectsObjectArtefacts", &EffectObjects::m_objectArtefactModel, &EffectObjects::createObjectArtefactModel);
@@ -55,6 +57,8 @@ public:
     void setObjectInfoId(const int &effectObjectInfoId_);
     QVariant objectInfo() const;
     void setObjectInfo(const QVariant &obj_);
+    int stepIndex() const;
+    void setStepIndex(const int &stepIndex_);
     QVariant objectArtefacts() const;
     void setObjectArtefacts(const QVariant &obj_);
     ObjectArtefactModel *getObjectArtefacts();
@@ -70,6 +74,7 @@ signals:
     void idChanged();
     void effectIdChanged();
     void objectInfoChanged();
+    void stepIndexChanged();
     void objectArtefactsChanged();
 
 private:
@@ -80,6 +85,7 @@ private:
     int m_id = -1;
     int m_effectId = -1;
     int m_objectInfoId = -1;
+    int m_stepIndex = -1;
     ObjectInfoModel *m_objectInfoModel = nullptr;
     ObjectArtefactModel *m_objectArtefactModel = nullptr;
 };
