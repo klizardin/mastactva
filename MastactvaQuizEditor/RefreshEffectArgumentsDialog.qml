@@ -26,7 +26,7 @@ Dialog {
             wrapMode: Text.WordWrap
         }
         Label {
-            text: qsTr("Download shader files progress")
+            text: qsTr("Download text artefact files progress")
         }
         RowLayout{
             ProgressBar {
@@ -97,7 +97,7 @@ Dialog {
         downloadProgressPercent.text = 0 + qsTr(" %")
         refreshProgress.value = 0.0;
         refreshProgressPercent.text = 0 + qsTr(" %")
-        message.text = qsTr("Wait while shader files are downloading ...")
+        message.text = qsTr("Wait while text artefacts files are downloading ...")
         refreshEffectArguments.enabled = false
     }
 
