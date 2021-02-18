@@ -186,5 +186,29 @@ EffectObjectsModel::EffectObjectsModel(QObject *parent_ /*= nullptr*/)
     qDebug() << "EffectObjectsModel::EffectObjectsModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
-    init(this);
+    base::init(this);
+    sortModelAfterChange::init();
+}
+
+bool EffectObjectsModel::compareModelItems(const EffectObjects *i1_, const EffectObjects *i2_) const
+{
+    if(nullptr == i1_->getObjectInfoModel() ||
+            !i1_->getObjectInfoModel()->isListLoadedImpl() ||
+            nullptr == i1_->getObjectInfoModel()->getCurrentDataItem() ||
+            nullptr == i2_->getObjectInfoModel() ||
+            !i2_->getObjectInfoModel()->isListLoadedImpl() ||
+            nullptr == i2_->getObjectInfoModel()->getCurrentDataItem())
+    {
+        // unable correctly sort
+        return i1_->stepIndex() < i2_->stepIndex();
+    }
+    const bool i1IsInitObject = i1_->getObjectInfoModel()->getCurrentDataItem()->isInitializeObject();
+    const bool i2IsInitObject = i2_->getObjectInfoModel()->getCurrentDataItem()->isInitializeObject();
+    if(i1IsInitObject || i2IsInitObject) { return (i1IsInitObject ? 0 : 1 ) < (i2IsInitObject ? 0 : 1 ); }
+    return i1_->stepIndex() < i2_->stepIndex();
+}
+
+void EffectObjectsModel::currentIndexAfterSortChanged()
+{
+    emit currentIndexChanged();
 }

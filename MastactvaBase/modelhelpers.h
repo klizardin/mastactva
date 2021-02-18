@@ -2,31 +2,59 @@
 #define MODELHELPERS_H
 
 
+#include <algorithm>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/Layout.h"
+#include "../MastactvaBase/Model.h"
 
 
 template<class ModelDataType_, class ModelType_>
 class SortModelAfterChangeImpl : public IListModelChangeNotify
 {
+    /*
+     * ModelType_ should implement:
+     *
+     * bool compareModelItems(const ModelDataType_ *i1_, const ModelDataType_ *i2_) const;
+     * void currentIndexAfterSortChanged();
+     *
+     * */
+
 public:
     virtual void listLoadedVF() override
     {
-        sortItems();
+        if(sortItems())
+        {
+            ModelType_* model = static_cast<ModelType_*>(this);
+            model->currentIndexAfterSortChanged();
+        }
     }
 
     virtual void itemAddedVF() override
     {
-        sortItems();
+        if(sortItems())
+        {
+            ModelType_* model = static_cast<ModelType_*>(this);
+            model->currentIndexAfterSortChanged();
+        }
     }
 
     virtual void itemSetVF() override
     {
-        sortItems();
+        if(sortItems())
+        {
+            ModelType_* model = static_cast<ModelType_*>(this);
+            model->currentIndexAfterSortChanged();
+        }
     }
 
     virtual void itemDeletedVF() override
     {
-        sortItems();
+        if(sortItems())
+        {
+            ModelType_* model = static_cast<ModelType_*>(this);
+            model->currentIndexAfterSortChanged();
+        }
     }
 
     virtual void errorVF(int errorCode_,
@@ -44,20 +72,26 @@ public:
     }
 
 protected:
-    virtual bool compareModelItems(const ModelDataType_ &i1_, const ModelDataType_ &i2_) const = 0;
-
     void init()
     {
-        static_cast<ModelType_*>(this)->setModelChangeNotify(this);
+        ModelType_* model = static_cast<ModelType_*>(this);
+        ListModelBaseOfData<ModelDataType_, ModelType_>* listModel
+                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_>*>(model);
+        listModel->setModelChangeNotify(this);
     }
 
 private:
-    void sortItems()
+    bool sortItems()
     {
-        static_cast<ModelType_*>(this)->sortIf(
-                    [this] (const ModelDataType_ &i1_, const ModelDataType_ &i2_) -> bool
-            { return compareItems(i1_, i2_); },
-            true, false);
+        ModelType_* model = static_cast<ModelType_*>(this);
+        ListModelBaseOfData<ModelDataType_, ModelType_>* listModel
+                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_>*>(model);
+        return listModel->sortIf(
+                    [&model](const ModelDataType_ *i1_, const ModelDataType_ *i2_)->bool
+                    {
+                        return model->compareModelItems(i1_, i2_);
+                    },
+                    true,false);
     }
 };
 

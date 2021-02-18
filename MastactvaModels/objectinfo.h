@@ -43,7 +43,7 @@ public:
         }
     };
 
-    Q_INVOKABLE bool isInitializeObject();
+    Q_INVOKABLE bool isInitializeObject() const;
 
 
     int id() const;
