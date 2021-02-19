@@ -4,6 +4,178 @@
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/objectartefact.h"
 #include "../MastactvaModels/effect.h"
+#include "../MastactvaBase/utils.h"
+
+
+static const char *g_rand = "rand";
+static const char *g_renderRectSize = "renderRectSize";
+//static const int g_renderState
+
+
+void ArgumentInfo::setArgId(int argId_)
+{
+    m_argId = argId_;
+}
+
+int ArgumentInfo::getArgId() const
+{
+    return m_argId;
+}
+
+void ArgumentInfo::setName(const QString &name_)
+{
+    m_name = name_;
+}
+
+void ArgumentInfo::setType(const QString &type_)
+{
+    using TypeInfo = QPair<QString, QPair<int, QPair<bool, bool>>>;
+    static const TypeInfo typeInfos[] = {
+        {"int", {1, {false, false}}},
+        {"float", {1, {true, false}}},
+        {"vec2", {2, {true, false}}},
+        {"vec3", {3, {true, false}}},
+        {"vec4", {4, {true, false}}},
+        {"mat2", {4, {true, true}}},
+        {"mat3", {9, {true, true}}},
+        {"mat4", {16, {true, true}}},
+    };
+
+    const auto fit = std::find_if(std::begin(typeInfos), std::end(typeInfos),
+                                  [&type_](const TypeInfo &ti_)->bool
+    {
+        return ti_.first == type_;
+    });
+
+    Q_ASSERT(std::end(typeInfos) != fit);   // unknown type
+    if(std::end(typeInfos) == fit) { return; }
+
+    m_floatType = fit->second.second.first;
+    m_matrixType = fit->second.second.second;
+    m_size = fit->second.first;
+    if(m_floatType) { m_valueFloat.resize(m_size); }
+    else { m_valueInt.resize(m_size); }
+}
+
+void ArgumentInfo::setValue(const QString &value_)
+{
+    m_argumentsSetInitfuctionFunc = &ArgumentsSet::nullInitialization;
+    if(value_.contains(g_rand))
+    {
+        if(m_floatType)
+        {
+            QVector<GLfloat> args;
+            args.resize(2);
+            extractValues(value_, args);
+            generateUniformRealRands(args, m_valueFloat);
+        }
+        else
+        {
+            QVector<GLint> args;
+            args.resize(2);
+            extractValues(value_, args);
+            generateUniformIntRands(args, m_valueInt);
+        }
+    }
+    else if(value_.contains(g_renderRectSize))
+    {
+        m_argumentsSetInitfuctionFunc = &ArgumentsSet::getRenderRectSize;
+    }
+    else
+    {
+        if(m_floatType)
+        {
+            extractValues(value_, m_valueFloat);
+        }
+        else
+        {
+            extractValues(value_, m_valueInt);
+        }
+    }
+}
+
+void ArgumentInfo::setValue(const QVariantList &values_)
+{
+    if(m_floatType)
+    {
+        extractValues(values_, m_valueFloat);
+    }
+    else
+    {
+        extractValues(values_, m_valueInt);
+    }
+}
+
+void ArgumentInfo::initValueFromArtumentsSet(ArgumentsSet *arguments_)
+{
+    QVariantList values;
+    if(!(arguments_->*m_argumentsSetInitfuctionFunc)(values)) { return; }
+    setValue(values);
+}
+
+void ArgumentInfo::initId(QOpenGLShaderProgram *program_)
+{
+    m_id = program_->uniformLocation(m_name);
+}
+
+void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
+{
+    if(1 == m_size && !m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueInt[0]);
+    }
+    else if(1 == m_size && m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0]);
+    }
+    else if(2 == m_size && m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0],
+                m_valueFloat[1]);
+    }
+    else if(3 == m_size && m_floatType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0],
+                m_valueFloat[1], m_valueFloat[2]);
+    }
+    else if(4 == m_size && m_floatType && !m_matrixType)
+    {
+        program_->setUniformValue(m_id, m_valueFloat[0],
+                m_valueFloat[1], m_valueFloat[2], m_valueFloat[3]);
+    }
+    else if(4 == m_size && m_floatType && m_matrixType)
+    {
+        QMatrix2x2 m(&m_valueFloat[0]);
+        program_->setUniformValue(m_id, m);
+    }
+    else if(9 == m_size && m_floatType && m_matrixType)
+    {
+        QMatrix3x3 m(&m_valueFloat[0]);
+        program_->setUniformValue(m_id, m);
+    }
+    else if(16 == m_size && m_floatType && m_matrixType)
+    {
+        QMatrix4x4 m(&m_valueFloat[0]);
+        program_->setUniformValue(m_id, m);
+    }
+    else
+    {
+        Q_ASSERT(false); // unknown type
+    }
+}
+
+bool ArgumentsSet::nullInitialization(QVariantList &values_)
+{
+    Q_UNUSED(values_);
+    return false;
+}
+
+bool ArgumentsSet::getRenderRectSize(QVariantList &values_)
+{
+    // TODO: implement
+    Q_UNUSED(values_);
+    return false;
+}
 
 
 QuizImageData::QuizImageData()

@@ -7,6 +7,7 @@
 #include <QTimeZone>
 #include <QTextStream>
 #include <QTextCodec>
+#include <random>
 #include <QDebug>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
@@ -428,3 +429,45 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
         return loadTextFile(url.toLocalFile());
     }
 }
+
+#if QT_CONFIG(opengl)
+
+bool set_value(const QString &valStr_, GLint& val_)
+{
+    bool ok = false;
+    val_ = QVariant::fromValue(valStr_).toInt(&ok);
+    return ok;
+}
+
+bool set_value(const QString &valStr_, GLfloat& val_)
+{
+    bool ok = false;
+    val_ = QVariant::fromValue(valStr_).toDouble(&ok);
+    return ok;
+}
+
+void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
+{
+    if(args_.size() < 2) { return; }
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<> dis(args_[0], args_[1]);
+    for(int i = 0; i < valuesArray_.size(); i++)
+    {
+        valuesArray_[i] = dis(gen);
+    }
+}
+
+void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_)
+{
+    if(args_.size() < 2) { return; }
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<> dis(args_[0], args_[1]);
+    for(int i = 0; i < valuesArray_.size(); i++)
+    {
+        valuesArray_[i] = dis(gen);
+    }
+}
+
+#endif  // #if QT_CONFIG(opengl)
