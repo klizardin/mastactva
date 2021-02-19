@@ -5,6 +5,12 @@
 #include <QString>
 #include <QHash>
 #include <QDateTime>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QOpenGLFunctions>
+#include <QtGui/QOpenGLTexture>
+#include <QtGui/QOpenGLShaderProgram>
+#include <QtGui/QOpenGLBuffer>
+#include <QtGui/QOpenGLShader>
 
 
 class Comment
@@ -44,6 +50,51 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ_);
 QString dateTimeToJsonString(const QDateTime &dt_);
 QString loadTextFile(const QString &filename_);
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
+
+
+#if QT_CONFIG(opengl)
+
+bool set_value(const QString &valStr_, GLint& val_);
+bool set_value(const QString &valStr_, GLfloat& val_);
+void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);
+void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);
+
+#endif  // #if QT_CONFIG(opengl)
+
+
+template<typename Type_>
+void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_)
+{
+    int pos = 0;
+    for(const QVariant &val_ : qAsConst(values_))
+    {
+        QString val = val_.toString().trimmed();
+        if(val.isEmpty()) { continue; }
+        if(pos < valuesArray_.size() && set_value(val, valuesArray_[pos]))
+        {
+            ++pos;
+        }
+    }
+}
+
+template<typename Type_>
+void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
+{
+    QString value = valuesStr_;
+    value.replace(QString("("), QString(", "));
+    value.replace(QString(")"), QString(", "));
+    value.replace(QString("{"), QString(", "));
+    value.replace(QString("}"), QString(", "));
+    value.replace(QString("\n"), QString(", "));
+    QStringList values = value.split(QString(","));
+    QVariantList valuesVar;
+    valuesVar.reserve(values.size());
+    for(const QString &s : qAsConst(values))
+    {
+        valuesVar.push_back(s);
+    }
+    extractValues(valuesVar, valuesArray_);
+}
 
 
 static const char *g_englishLanguage = "English";
