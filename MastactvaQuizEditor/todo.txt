@@ -124,4 +124,4 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 84. check if there is any question that can be pass (not enough points of answers)
 85. add independent view for all time living objects (artefacts and so on) (detail is 74)
     also EffectObjectInfo
-
+86. formulate arguments' of effects strategy
