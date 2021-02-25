@@ -264,6 +264,7 @@ public:
     virtual ~OpenGLArgumentValueBase() = default;
 
     virtual void create(QOpenGLShaderProgram *program_) = 0;
+    virtual int getArraySize() const = 0;
     virtual int getVBOPartSize() const = 0;
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) = 0;
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
@@ -308,6 +309,11 @@ public:
     virtual void create(QOpenGLShaderProgram *program_) override
     {
         initUniformValueId(program_, arg().getName());
+    }
+
+    virtual int getArraySize() const
+    {
+        return value().getArraySize();
     }
 
     virtual int getVBOPartSize() const override
@@ -393,9 +399,14 @@ public:
         initAttribureValueId(program_, arg().getName());
     }
 
-    virtual int getVBOPartSize() const override
+    virtual int getArraySize() const
     {
         return value().getArraySize();
+    }
+
+    virtual int getVBOPartSize() const override
+    {
+        return value().getArraySize() * sizeof(ItemType);
     }
 
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) override

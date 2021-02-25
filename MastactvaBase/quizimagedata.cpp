@@ -170,7 +170,14 @@ ArgumentValueDataIntArray::ArgumentValueDataIntArray(const ArgumentBase &from_, 
 
 void ArgumentValueDataIntArray::initData()
 {
-    if(m_arraySize > 0) { m_values.resize(m_arraySize); }
+    if(m_isAttribute)
+    {
+        m_arraySize = -1;
+    }
+    else if(m_isUniform)
+    {
+        if(m_arraySize > 0) { m_values.resize(m_arraySize); }
+    }
     ArgumentValueDataArray::initData();
 }
 
@@ -231,7 +238,14 @@ ArgumentValueDataFloatArray::ArgumentValueDataFloatArray(const ArgumentBase &fro
 
 void ArgumentValueDataFloatArray::initData()
 {
-    if(m_arraySize > 0) { m_values.resize(m_arraySize); }
+    if(m_isAttribute)
+    {
+        m_arraySize = -1;
+    }
+    else if(m_isUniform)
+    {
+        if(m_arraySize > 0) { m_values.resize(m_arraySize); }
+    }
     ArgumentValueDataArray::initData();
 }
 
@@ -291,7 +305,14 @@ ArgumentValueDataStringArray::ArgumentValueDataStringArray(const ArgumentBase &f
 
 void ArgumentValueDataStringArray::initData()
 {
-    if(m_arraySize > 0) { m_values.resize(m_arraySize); }
+    if(m_isAttribute)
+    {
+        m_arraySize = -1;
+    }
+    else if(m_isUniform)
+    {
+        if(m_arraySize > 0) { m_values.resize(m_arraySize); }
+    }
     ArgumentValueDataArray::initData();
 }
 
