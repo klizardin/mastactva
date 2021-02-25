@@ -1,4 +1,4 @@
-#ifndef QUIZIMAGEDATA_H
+﻿#ifndef QUIZIMAGEDATA_H
 #define QUIZIMAGEDATA_H
 
 
@@ -49,20 +49,21 @@ private:
 using ArgumentList = QList<ArgumentBase>;
 
 
-class OpenGLArgumentValue;
+class OpenGLArgumentValueBase;
 
 
 class ArgumentValueDataArray : public ArgumentBase
 {
 public:
-    ArgumentValueDataArray(const ArgumentBase &from_, int arraySize_);
+    ArgumentValueDataArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
     virtual ~ArgumentValueDataArray() = default;
 
     virtual void initData();
     virtual void setArray(const QVariantList &values_) = 0;
-    virtual OpenGLArgumentValue *createOpenGlValue() = 0;
+    virtual OpenGLArgumentValueBase *createOpenGlValue() = 0;
 
     int getArraySize() const;
+    int getTupleSize() const;
 
 protected:
     virtual void setArray(const QString &value_) = 0;
@@ -76,6 +77,7 @@ protected:
     bool m_isIndex = false;
 
     int m_arraySize = 0;
+    int m_tupleSize = 1;
 
     friend class ArgumentBase;
 };
@@ -86,12 +88,12 @@ public:
     using ItemType = GLint;
 
 public:
-    ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_);
+    ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
     virtual ~ArgumentValueDataIntArray() override = default;
 
     virtual void initData() override;
     virtual void setArray(const QVariantList &values_) override;
-    virtual OpenGLArgumentValue *createOpenGlValue() override;
+    virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<GLint> &getValues() const;
     bool isMatrixType() const;
@@ -110,12 +112,12 @@ public:
     using ItemType = GLfloat;
 
 public:
-    ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, bool isMatrixType_);
+    ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, int tupleSize_, bool isMatrixType_);
     virtual ~ArgumentValueDataFloatArray() override = default;
 
     virtual void initData() override;
     virtual void setArray(const QVariantList &values_) override;
-    virtual OpenGLArgumentValue *createOpenGlValue() override;
+    virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<GLfloat> &getValues() const;
     bool isMatrixType() const;
@@ -135,12 +137,12 @@ public:
     using ItemType = QString;
 
 public:
-    ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_);
+    ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
     virtual ~ArgumentValueDataStringArray() override = default;
 
     virtual void initData() override;
     virtual void setArray(const QVariantList &values_) override;
-    virtual OpenGLArgumentValue *createOpenGlValue() override;
+    virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<QString> &getValues() const;
     bool isMatrixType() const;
@@ -262,17 +264,21 @@ public:
     virtual ~OpenGLArgumentValueBase() = default;
 
     virtual void create(QOpenGLShaderProgram *program_) = 0;
+    virtual int getVBOPartSize() const = 0;
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) = 0;
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
     virtual void draw(QOpenGLShaderProgram *program_) const = 0;
+    virtual void release(QOpenGLShaderProgram *program_) const = 0;
 
 protected:
     void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
     void initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_);
     void initIndexArray(QOpenGLShaderProgram *program_);
-    void setAttributeValue(QOpenGLShaderProgram *program_) const;
-    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLint> &values_, int arraySize_, bool) const;
+    void setAttributeValue(QOpenGLShaderProgram *program_, GLenum type_, int offset_, int tupleSize_) const;
+    void releaseAttributeValue(QOpenGLShaderProgram *program_) const;
+    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLint> &values_, int arraySize_, bool isMatrixType) const;
     void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLfloat> &values_, int arraySize_, bool isMatrixType) const;
-    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<QString> &values_, int arraySize_, bool) const;
+    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<QString> &values_, int arraySize_, bool isMatrixType) const;
     void setIndexArray(QOpenGLShaderProgram *program_) const;
     void drawIndexArray(QOpenGLShaderProgram *program_) const;
 
@@ -289,7 +295,9 @@ private:
     static_assert(
         std::is_base_of<ArgumentValueDataArray, ArgumentValueDataArrayType_>::value,
         "shoudl be ancestor of ArgumentValueDataArray");
-    using ItemType = typename ArgumentValueDataArrayType_::ItemType;
+    static_assert(
+        std::is_base_of<ArgumentBase, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentBase");
 
 public:
     OpenGLArgumentUniformValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
@@ -302,12 +310,28 @@ public:
         initUniformValueId(program_, arg().getName());
     }
 
+    virtual int getVBOPartSize() const override
+    {
+        return 0;
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) override
+    {
+        Q_UNUSED(vbo_);
+        Q_UNUSED(offset_);
+    }
+
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
         setUniformValue(program_, value().getValues(), value().getArraySize(), value().isMatrixType());
     }
 
     virtual void draw(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+    virtual void release(QOpenGLShaderProgram *program_) const override
     {
         Q_UNUSED(program_);
     }
@@ -322,6 +346,96 @@ private:
     {
         return static_cast<const ArgumentValueDataArrayType_&>(*this);
     }
+};
+
+template<typename Type_>
+struct TypeToGLTypeEnum
+{
+    constexpr static GLenum value = GL_BYTE;
+};
+
+template<>
+struct TypeToGLTypeEnum<GLint>
+{
+    constexpr static GLenum value = GL_INT;
+};
+
+template<>
+struct TypeToGLTypeEnum<GLfloat>
+{
+    constexpr static GLenum value = GL_FLOAT;
+};
+
+
+template<class ArgumentValueDataArrayType_>
+class OpenGLArgumentAttributeValueT :
+        public ArgumentValueDataArrayType_,
+        public OpenGLArgumentValueBase
+{
+private:
+    static_assert(
+        std::is_base_of<ArgumentValueDataArray, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentValueDataArray");
+    static_assert(
+        std::is_base_of<ArgumentBase, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentBase");
+
+    using ItemType = typename ArgumentValueDataArrayType_::ItemType;
+
+public:
+    OpenGLArgumentAttributeValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
+        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    {
+    }
+
+    virtual void create(QOpenGLShaderProgram *program_) override
+    {
+        initAttribureValueId(program_, arg().getName());
+    }
+
+    virtual int getVBOPartSize() const override
+    {
+        return value().getArraySize();
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) override
+    {
+        m_offset = offset_;
+        vbo_->write(
+                    m_offset,
+                    value().getValues(),
+                    value().getArraySize() * sizeof(ItemType)
+                    );
+        offset_ += value().getArraySize() * sizeof(ItemType);
+    }
+
+    virtual void use(QOpenGLShaderProgram *program_) const override
+    {
+        setAttributeValue(program_, TypeToGLTypeEnum<ItemType>::value, m_offset, value().getTupleSize());
+    }
+
+    virtual void draw(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+    virtual void release(QOpenGLShaderProgram *program_) const override
+    {
+        releaseAttributeValue(program_);
+    }
+
+private:
+    const ArgumentBase &arg() const
+    {
+        return static_cast<const ArgumentBase&>(*this);
+    }
+
+    const ArgumentValueDataArrayType_ &value() const
+    {
+        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+    }
+private:
+    int m_offset = -1;
 };
 
 

@@ -59,17 +59,17 @@ void ArgumentBase::setDefaultValue(const QString &defaultValue_)
 
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
-    using TypeInfo = std::tuple<const char *, int, bool, bool, bool>;
+    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { "int", 1, false, false, false },
-        { "float", 1, true, false, false },
-        { "vec2", 2, true, false, false },
-        { "vec3", 3, true, false, false },
-        { "vec4", 4, true, false, false },
-        { "mat2", 4, true, true, false },
-        { "mat3", 9, true, true, false },
-        { "mat4", 16, true, true, false },
-        { "strings", -1, true, true, true },
+        { "int", 1, false, false, false, 1 },
+        { "float", 1, true, false, false, 1 },
+        { "vec2", 2, true, false, false, 2 },
+        { "vec3", 3, true, false, false, 3 },
+        { "vec4", 4, true, false, false, 4 },
+        { "mat2", 4, true, true, false, 4 },
+        { "mat3", 9, true, true, false, 9 },
+        { "mat4", 16, true, true, false, 16 },
+        { "strings", -1, true, true, true, 1 },
     };
 
     const auto fit = std::find_if(
@@ -88,18 +88,19 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     const bool isFloatArrayType = std::get<2>(*fit);
     const bool isMatrixType = std::get<3>(*fit);
     const bool isStringArrayType = std::get<4>(*fit);
+    const int tupleSize = std::get<5>(*fit);
 
     if(isIntArrayType)
     {
-        return new ArgumentValueDataIntArray(*this, arraySize);
+        return new ArgumentValueDataIntArray(*this, arraySize, tupleSize);
     }
     else if(isFloatArrayType)
     {
-        return new ArgumentValueDataFloatArray(*this, arraySize, isMatrixType);
+        return new ArgumentValueDataFloatArray(*this, arraySize, tupleSize, isMatrixType);
     }
     else if(isStringArrayType)
     {
-        return new ArgumentValueDataStringArray(*this, arraySize);
+        return new ArgumentValueDataStringArray(*this, arraySize, tupleSize);
     }
     else
     {
@@ -108,9 +109,10 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 }
 
 
-ArgumentValueDataArray::ArgumentValueDataArray(const ArgumentBase &from_, int arraySize_)
+ArgumentValueDataArray::ArgumentValueDataArray(const ArgumentBase &from_, int arraySize_, int tupleSize_)
     : ArgumentBase(from_),
-      m_arraySize(arraySize_)
+      m_arraySize(arraySize_),
+      m_tupleSize(tupleSize_)
 {
     initStorage(getStorage());
 }
@@ -161,8 +163,8 @@ void ArgumentValueDataArray::initStorage(const QString &storage_)
 static const char *g_rand = "__rand";
 
 
-ArgumentValueDataIntArray::ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_)
-    :ArgumentValueDataArray(from_, arraySize_)
+ArgumentValueDataIntArray::ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_, int tupleSize_)
+    :ArgumentValueDataArray(from_, arraySize_, tupleSize_)
 {
 }
 
@@ -174,12 +176,22 @@ void ArgumentValueDataIntArray::initData()
 
 void ArgumentValueDataIntArray::setArray(const QVariantList &values_)
 {
-    extractValues(values_, m_values, m_arraySize);
+    if(m_isUniform)
+    {
+        extractValues(values_, m_values, m_arraySize);
+    }
 }
 
-OpenGLArgumentValue *ArgumentValueDataIntArray::createOpenGlValue()
+OpenGLArgumentValueBase *ArgumentValueDataIntArray::createOpenGlValue()
 {
-    return nullptr; // TODO: implement function
+    if(m_isUniform)
+    {
+        return new OpenGLArgumentUniformValueT<ArgumentValueDataIntArray>(*this);
+    }
+    else
+    {
+        return nullptr; //TODO: implement
+    }
 }
 
 const QVector<GLint> &ArgumentValueDataIntArray::getValues() const
@@ -194,22 +206,25 @@ bool ArgumentValueDataIntArray::isMatrixType() const
 
 void ArgumentValueDataIntArray::setArray(const QString &value_)
 {
-    if(value_.contains(g_rand))
+    if(m_isUniform)
     {
-        QVector<GLint> args;
-        args.resize(2);
-        extractValues(value_, args);
-        generateUniformIntRands(args, m_values);
-    }
-    else
-    {
-        extractValues(value_, m_values);
+        if(value_.contains(g_rand))
+        {
+            QVector<GLint> args;
+            args.resize(2);
+            extractValues(value_, args);
+            generateUniformIntRands(args, m_values);
+        }
+        else
+        {
+            extractValues(value_, m_values);
+        }
     }
 }
 
 
-ArgumentValueDataFloatArray::ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, bool isMatrixType_)
-    : ArgumentValueDataArray(from_, arraySize_),
+ArgumentValueDataFloatArray::ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, int tupleSize_, bool isMatrixType_)
+    : ArgumentValueDataArray(from_, arraySize_, tupleSize_),
       m_isMatrixType(isMatrixType_)
 {
 }
@@ -222,12 +237,22 @@ void ArgumentValueDataFloatArray::initData()
 
 void ArgumentValueDataFloatArray::setArray(const QVariantList &values_)
 {
-    extractValues(values_, m_values, m_arraySize);
+    if(m_isUniform)
+    {
+        extractValues(values_, m_values, m_arraySize);
+    }
 }
 
-OpenGLArgumentValue *ArgumentValueDataFloatArray::createOpenGlValue()
+OpenGLArgumentValueBase *ArgumentValueDataFloatArray::createOpenGlValue()
 {
-    return nullptr; //TODO: implement
+    if(m_isUniform)
+    {
+        return new OpenGLArgumentUniformValueT<ArgumentValueDataFloatArray>(*this);
+    }
+    else
+    {
+        return nullptr; //TODO: implement
+    }
 }
 
 const QVector<GLfloat> &ArgumentValueDataFloatArray::getValues() const
@@ -242,22 +267,25 @@ bool ArgumentValueDataFloatArray::isMatrixType() const
 
 void ArgumentValueDataFloatArray::setArray(const QString &value_)
 {
-    if(value_.contains(g_rand))
+    if(m_isUniform)
     {
-        QVector<GLfloat> args;
-        args.resize(2);
-        extractValues(value_, args);
-        generateUniformRealRands(args, m_values);
-    }
-    else
-    {
-        extractValues(value_, m_values);
+        if(value_.contains(g_rand))
+        {
+            QVector<GLfloat> args;
+            args.resize(2);
+            extractValues(value_, args);
+            generateUniformRealRands(args, m_values);
+        }
+        else
+        {
+            extractValues(value_, m_values);
+        }
     }
 }
 
 
-ArgumentValueDataStringArray::ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_)
-    : ArgumentValueDataArray(from_, arraySize_)
+ArgumentValueDataStringArray::ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_)
+    : ArgumentValueDataArray(from_, arraySize_, tupleSize_)
 {
 }
 
@@ -269,12 +297,22 @@ void ArgumentValueDataStringArray::initData()
 
 void ArgumentValueDataStringArray::setArray(const QVariantList &values_)
 {
-    extractValues(values_, m_values, m_arraySize);
+    if(m_isUniform)
+    {
+        extractValues(values_, m_values, m_arraySize);
+    }
 }
 
-OpenGLArgumentValue *ArgumentValueDataStringArray::createOpenGlValue()
+OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
 {
-    return nullptr; //TODO: implement
+    if(m_isUniform)
+    {
+        return new OpenGLArgumentUniformValueT<ArgumentValueDataStringArray>(*this);
+    }
+    else
+    {
+        return nullptr; //TODO: implement
+    }
 }
 
 const QVector<QString> &ArgumentValueDataStringArray::getValues() const
@@ -289,9 +327,12 @@ bool ArgumentValueDataStringArray::isMatrixType() const
 
 void ArgumentValueDataStringArray::setArray(const QString &value_)
 {
-    Q_ASSERT(m_values.size() <= 1);
-    if(m_values.size() < 1) { m_values.resize(1); }
-    m_values[0] = value_;
+    if(m_isUniform)
+    {
+        Q_ASSERT(m_values.size() <= 1);
+        if(m_values.size() < 1) { m_values.resize(1); }
+        m_values[0] = value_;
+    }
 }
 
 
@@ -319,6 +360,7 @@ void ArgumentValue::setEffectArgumentId(int effectArgumentId_)
 void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
     m_id = program_->attributeLocation(name_);
+    program_->bindAttributeLocation(name_, m_id);
 }
 
 void OpenGLArgumentValueBase::initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_)
@@ -330,16 +372,28 @@ void OpenGLArgumentValueBase::initIndexArray(QOpenGLShaderProgram *program_)
 {
 }
 
-void OpenGLArgumentValueBase::setAttributeValue(QOpenGLShaderProgram *program_) const
+void OpenGLArgumentValueBase::setAttributeValue(
+        QOpenGLShaderProgram *program_,
+        GLenum type_,
+        int offset_,
+        int tupleSize_) const
 {
+    program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
+    program_->enableAttributeArray(m_id);
+}
+
+void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *program_) const
+{
+    program_->disableAttributeArray(m_id);
 }
 
 void OpenGLArgumentValueBase::setUniformValue(
         QOpenGLShaderProgram *program_,
         const QVector<GLint> &values_,
         int arraySize_,
-        bool ) const
+        bool isMatrixType) const
 {
+    Q_UNUSED(isMatrixType);
     if(arraySize_ >= 1 && values_.size() >= 1)
     {
         program_->setUniformValue(m_id, values_[0]);
@@ -396,11 +450,12 @@ void OpenGLArgumentValueBase::setUniformValue(
         QOpenGLShaderProgram *program_,
         const QVector<QString> &values_,
         int arraySize_,
-        bool ) const
+        bool isMatrixType) const
 {
     Q_UNUSED(program_);
     Q_UNUSED(values_);
     Q_UNUSED(arraySize_);
+    Q_UNUSED(isMatrixType);
     Q_ASSERT(false);
 }
 
