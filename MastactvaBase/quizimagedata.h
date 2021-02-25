@@ -415,9 +415,9 @@ public:
         vbo_->write(
                     m_offset,
                     value().getValues(),
-                    value().getArraySize() * sizeof(ItemType)
+                    getVBOPartSize()
                     );
-        offset_ += value().getArraySize() * sizeof(ItemType);
+        offset_ += getVBOPartSize();
     }
 
     virtual void use(QOpenGLShaderProgram *program_) const override
