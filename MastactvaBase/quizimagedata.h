@@ -9,19 +9,15 @@
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
 #include <QJsonDocument>
+#include <type_traits>
 
 
 #if QT_CONFIG(opengl)
 
 
-class ArgumentsSet;
-class Effect;
-class EffectArgSet;
+class ArgumentValueDataArray;
 
 
-/*
- *  container
-*/
 class ArgumentBase
 {
 public:
@@ -39,6 +35,8 @@ public:
     const QString &getDefaultValue() const;
     void setDefaultValue(const QString &defaultValue_);
 
+    ArgumentValueDataArray *createValueDataArray() const;
+
 private:
     QString m_name;
     QString m_storage;
@@ -51,50 +49,124 @@ private:
 using ArgumentList = QList<ArgumentBase>;
 
 
-class ArgumentValueData : public ArgumentBase
+class OpenGLArgumentValue;
+
+
+class ArgumentValueDataArray : public ArgumentBase
 {
 public:
-    void initData();
+    ArgumentValueDataArray(const ArgumentBase &from_, int arraySize_);
+    virtual ~ArgumentValueDataArray() = default;
 
-    bool isIntType() const;
-    bool isFloatType() const;
-    bool isStyringType() const;
+    virtual void initData();
+    virtual void setArray(const QVariantList &values_) = 0;
+    virtual OpenGLArgumentValue *createOpenGlValue() = 0;
+
+    int getArraySize() const;
+
+protected:
+    virtual void setArray(const QString &value_) = 0;
 
 protected:
     void initStorage(const QString &storage_);
-    void initType(const QString &type_);
-    void setArray(const QString &value_);
-    void setArray(const QVariantList &values_);
 
 protected:
     bool m_isAttribute = false;
     bool m_isUniform = false;
     bool m_isIndex = false;
 
-    bool m_intArrayType = false;
-    bool m_floatArrayType = false;
-    bool m_stringArrayType = false;
-    bool m_matrixType = false;
-
     int m_arraySize = 0;
-    QVector<GLint> m_intValues;
-    QVector<GLfloat> m_floatValues;
-    QVector<QString> m_stringValues;
+
+    friend class ArgumentBase;
+};
+
+class ArgumentValueDataIntArray : public ArgumentValueDataArray
+{
+public:
+    using ItemType = GLint;
+
+public:
+    ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_);
+    virtual ~ArgumentValueDataIntArray() override = default;
+
+    virtual void initData() override;
+    virtual void setArray(const QVariantList &values_) override;
+    virtual OpenGLArgumentValue *createOpenGlValue() override;
+
+    const QVector<GLint> &getValues() const;
+    bool isMatrixType() const;
+
+protected:
+    virtual void setArray(const QString &value_) override;
+
+private:
+    QVector<GLint> m_values;
 };
 
 
-class ArgumentValue: public ArgumentValueData
+class ArgumentValueDataFloatArray : public ArgumentValueDataArray
+{
+public:
+    using ItemType = GLfloat;
+
+public:
+    ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, bool isMatrixType_);
+    virtual ~ArgumentValueDataFloatArray() override = default;
+
+    virtual void initData() override;
+    virtual void setArray(const QVariantList &values_) override;
+    virtual OpenGLArgumentValue *createOpenGlValue() override;
+
+    const QVector<GLfloat> &getValues() const;
+    bool isMatrixType() const;
+
+protected:
+    virtual void setArray(const QString &value_) override;
+
+private:
+    QVector<GLfloat> m_values;
+    bool m_isMatrixType = false;
+};
+
+
+class ArgumentValueDataStringArray : public ArgumentValueDataArray
+{
+public:
+    using ItemType = QString;
+
+public:
+    ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_);
+    virtual ~ArgumentValueDataStringArray() override = default;
+
+    virtual void initData() override;
+    virtual void setArray(const QVariantList &values_) override;
+    virtual OpenGLArgumentValue *createOpenGlValue() override;
+
+    const QVector<QString> &getValues() const;
+    bool isMatrixType() const;
+
+protected:
+    virtual void setArray(const QString &value_) override;
+
+private:
+    QVector<QString> m_values;
+};
+
+
+class ArgumentValue
 {
 public:
     ArgumentValue() = default;
-    ArgumentValue(const ArgumentValueData& argumentValueData_);
-    virtual ~ArgumentValue() override = default;
+    virtual ~ArgumentValue() = default;
 
+    void setDataArray(ArgumentValueDataArray *argumentValueDataArray_);
+    ArgumentValueDataArray *getDataArray() const;
     int getEffectArgumentId() const;
     void setEffectArgumentId(int effectArgumentId_);
 
 private:
     int m_effectArgumentId = -1;
+    ArgumentValueDataArray *m_argumentValueDataArray = nullptr;
 };
 
 
@@ -104,7 +176,7 @@ public:
     DataTableValue() = default;
     ~DataTableValue();
 
-    ArgumentValueData *getArgumentData();
+    ArgumentValueDataArray *getArgumentDataArray();
     void set(const ArgumentBase &argument_, int effectArgumentId_);
     void convertToArgument(const ArgumentBase &templateArgument_);
 
@@ -116,15 +188,17 @@ private:
     QHash<QString, DataTableValue> m_children;
 };
 
+
+class ArgumentsSet;
+
+
 class ArgumentDataTable
 {
-private:
-    QHash<QString, DataTableValue> m_root;
-};
-
-class ArgumentsSet
-{
 public:
+    ArgumentDataTable() = default;
+    ~ArgumentDataTable() = default;
+
+protected:
     void add(
             const QString &objectName_,
             int step_index,
@@ -135,7 +209,39 @@ public:
     void add(
             const ArgumentDataTable &data_,
             const ArgumentList &argumentList_); // add output of the list
-    ArgumentValueData *find(
+    ArgumentValueDataArray *find(
+            const QString &objectName_,
+            int step_index,
+            const ArgumentBase &argument_);
+    ArgumentBase *find(
+            int effectArgumentId_);
+    ArgumentDataTable* slice(
+            const QString &objectName_,
+            int step_index,
+            const ArgumentList &argumentList_); // get input of the list
+private:
+    QHash<QString, DataTableValue> m_root;
+
+    friend class ArgumentsSet;
+};
+
+class ArgumentsSet
+{
+public:
+    ArgumentsSet() = default;
+    ~ArgumentsSet() = default;
+
+    void add(
+            const QString &objectName_,
+            int step_index,
+            const ArgumentBase &argument_,
+            int effectArgumentId_);
+    void add(
+            const ArgumentDataTable &data_);    // add all from data table
+    void add(
+            const ArgumentDataTable &data_,
+            const ArgumentList &argumentList_); // add output of the list
+    ArgumentValueDataArray *find(
             const QString &objectName_,
             int step_index,
             const ArgumentBase &argument_);
@@ -150,19 +256,77 @@ private:
 };
 
 
-class OpenGLArgumentValue : public ArgumentValueData
+class OpenGLArgumentValueBase
 {
 public:
-    OpenGLArgumentValue() = default;
-    OpenGLArgumentValue(const ArgumentValueData &argumentValueData_);
-    virtual ~OpenGLArgumentValue() override = default;
+    virtual ~OpenGLArgumentValueBase() = default;
 
-    void initShaderId(QOpenGLShaderProgram *program_);
-    void setShaderUniformValue(QOpenGLShaderProgram *program_) const;
+    virtual void create(QOpenGLShaderProgram *program_) = 0;
+    virtual void use(QOpenGLShaderProgram *program_) const = 0;
+    virtual void draw(QOpenGLShaderProgram *program_) const = 0;
+
+protected:
+    void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
+    void initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_);
+    void initIndexArray(QOpenGLShaderProgram *program_);
+    void setAttributeValue(QOpenGLShaderProgram *program_) const;
+    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLint> &values_, int arraySize_, bool) const;
+    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLfloat> &values_, int arraySize_, bool isMatrixType) const;
+    void setUniformValue(QOpenGLShaderProgram *program_, const QVector<QString> &values_, int arraySize_, bool) const;
+    void setIndexArray(QOpenGLShaderProgram *program_) const;
+    void drawIndexArray(QOpenGLShaderProgram *program_) const;
 
 private:
-    int m_id = 0;
+    int m_id = -1;
 };
+
+template<class ArgumentValueDataArrayType_>
+class OpenGLArgumentUniformValueT :
+        public ArgumentValueDataArrayType_,
+        public OpenGLArgumentValueBase
+{
+private:
+    static_assert(
+        std::is_base_of<ArgumentValueDataArray, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentValueDataArray");
+    using ItemType = typename ArgumentValueDataArrayType_::ItemType;
+
+public:
+    OpenGLArgumentUniformValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
+        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    {
+    }
+
+    virtual void create(QOpenGLShaderProgram *program_) override
+    {
+        initUniformValueId(program_, arg().getName());
+    }
+
+    virtual void use(QOpenGLShaderProgram *program_) const override
+    {
+        setUniformValue(program_, value().getValues(), value().getArraySize(), value().isMatrixType());
+    }
+
+    virtual void draw(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+private:
+    const ArgumentBase &arg() const
+    {
+        return static_cast<const ArgumentBase&>(*this);
+    }
+
+    const ArgumentValueDataArrayType_ &value() const
+    {
+        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+    }
+};
+
+
+class Effect;
+class EffectArgSet;
 
 
 class QuizImageDataArtefact
