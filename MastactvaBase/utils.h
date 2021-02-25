@@ -63,15 +63,25 @@ void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &values
 
 
 template<typename Type_>
-void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_)
+void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, int arraySize_)
 {
     int pos = 0;
     for(const QVariant &val_ : qAsConst(values_))
     {
         QString val = val_.toString().trimmed();
         if(val.isEmpty()) { continue; }
-        if(pos < valuesArray_.size() && set_value(val, valuesArray_[pos]))
+        if(arraySize_ >= 0 && pos >= valuesArray_.size())
         {
+            continue;
+        }
+        Type_ value = Type_();
+        if(set_value(val, value))
+        {
+            if(arraySize_ < 0 && pos >= valuesArray_.size())
+            {
+                valuesArray_.resize(pos+1);
+            }
+            valuesArray_[pos] = value;
             ++pos;
         }
     }
@@ -93,7 +103,7 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
     {
         valuesVar.push_back(s);
     }
-    extractValues(valuesVar, valuesArray_);
+    extractValues(valuesVar, valuesArray_, valuesArray_.size());
 }
 
 
