@@ -249,8 +249,10 @@ public:
     ArgumentValue() = default;
     virtual ~ArgumentValue() = default;
 
-    void setDataArray(ArgumentValueDataArray *argumentValueDataArray_);
+    bool hasDataArray() const;
     ArgumentValueDataArray *getDataArray() const;
+    void setDataArray(ArgumentValueDataArray *argumentValueDataArray_);
+    void freeDataArray();
     int getEffectArgumentId() const;
     void setEffectArgumentId(int effectArgumentId_);
 
@@ -266,12 +268,16 @@ public:
     DataTableValue() = default;
     ~DataTableValue();
 
+    bool hasArgumentDataArray() const;
     ArgumentValueDataArray *getArgumentDataArray();
     void set(const ArgumentBase &argument_, int effectArgumentId_);
     void convertToArgument(const ArgumentBase &templateArgument_);
 
+protected:
+    void free();
+
 private:
-    ArgumentValue *m_argument = nullptr;
+    ArgumentValue m_argument;
     int *m_intValue = nullptr;
     float *m_floatValue = nullptr;
     QString *m_stringValue = nullptr;

@@ -279,14 +279,25 @@ void ArgumentValueDataStringArray::setArray(const QString &value_)
 }
 
 
-void ArgumentValue::setDataArray(ArgumentValueDataArray *argumentValueDataArray_)
+bool ArgumentValue::hasDataArray() const
 {
-    m_argumentValueDataArray = argumentValueDataArray_;
+    return nullptr != m_argumentValueDataArray;
 }
 
 ArgumentValueDataArray *ArgumentValue::getDataArray() const
 {
     return m_argumentValueDataArray;
+}
+
+void ArgumentValue::setDataArray(ArgumentValueDataArray *argumentValueDataArray_)
+{
+    m_argumentValueDataArray = argumentValueDataArray_;
+}
+
+void ArgumentValue::freeDataArray()
+{
+    delete m_argumentValueDataArray;
+    m_argumentValueDataArray = nullptr;
 }
 
 int ArgumentValue::getEffectArgumentId() const
@@ -297,6 +308,42 @@ int ArgumentValue::getEffectArgumentId() const
 void ArgumentValue::setEffectArgumentId(int effectArgumentId_)
 {
     m_effectArgumentId = effectArgumentId_;
+}
+
+
+DataTableValue::~DataTableValue()
+{
+    free();
+}
+
+bool DataTableValue::hasArgumentDataArray() const
+{
+    return m_argument.hasDataArray();
+}
+
+ArgumentValueDataArray *DataTableValue::getArgumentDataArray()
+{
+    return m_argument.getDataArray();
+}
+
+void DataTableValue::set(const ArgumentBase &argument_, int effectArgumentId_)
+{
+}
+
+void DataTableValue::convertToArgument(const ArgumentBase &templateArgument_)
+{
+}
+
+void DataTableValue::free()
+{
+    m_argument.freeDataArray();
+    delete m_intValue;
+    m_intValue = nullptr;
+    delete m_floatValue;
+    m_floatValue = nullptr;
+    delete m_stringValue;
+    m_stringValue = nullptr;
+    m_children.clear();
 }
 
 
