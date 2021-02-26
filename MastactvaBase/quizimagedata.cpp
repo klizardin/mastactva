@@ -306,7 +306,7 @@ void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program
     program_->bindAttributeLocation(name_, m_id);
 }
 
-void OpenGLArgumentValueBase::setAttributeValue(
+void OpenGLArgumentValueBase::useAttributeValue(
         QOpenGLShaderProgram *program_,
         GLenum type_,
         int offset_,
@@ -314,6 +314,36 @@ void OpenGLArgumentValueBase::setAttributeValue(
 {
     program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
     program_->enableAttributeArray(m_id);
+}
+
+void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const
+{
+    Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
+    vbo_->write(
+                offset_,
+                &values_[0],
+                partSize_
+                );
+}
+
+void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const
+{
+    Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
+    vbo_->write(
+                offset_,
+                &values_[0],
+                partSize_
+                );
+}
+
+void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<QString> &values_, int partSize_, int tupleSize_) const
+{
+    Q_UNUSED(vbo_);
+    Q_UNUSED(offset_);
+    Q_UNUSED(sizeItems_);
+    Q_UNUSED(values_);
+    Q_UNUSED(partSize_);
+    Q_UNUSED(tupleSize_);
 }
 
 void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *program_) const
@@ -395,7 +425,6 @@ void OpenGLArgumentValueBase::setUniformValue(
     Q_UNUSED(values_);
     Q_UNUSED(arraySize_);
     Q_UNUSED(isMatrixType);
-    Q_ASSERT(false);
 }
 
 void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_) const

@@ -363,7 +363,10 @@ public:
 
 protected:
     void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
-    void setAttributeValue(QOpenGLShaderProgram *program_, GLenum type_, int offset_, int tupleSize_) const;
+    void useAttributeValue(QOpenGLShaderProgram *program_, GLenum type_, int offset_, int tupleSize_) const;
+    void writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const;
+    void writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const;
+    void writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<QString> &values_, int partSize_, int tupleSize_) const;
     void releaseAttributeValue(QOpenGLShaderProgram *program_) const;
 
     void initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_);
@@ -533,17 +536,18 @@ public:
 
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
     {
-        Q_ASSERT(getVBOPartSize() <= value().getTupleSize() * sizeItems_);
-        vbo_->write(
+        writeAttributeValue(
+                    vbo_,
                     offset_,
+                    sizeItems_,
                     value().getValues(),
-                    getVBOPartSize()
-                    );
+                    getVBOPartSize(),
+                    value().getTupleSize());
     }
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
-        setAttributeValue(
+        useAttributeValue(
                     program_,
                     TypeToGLTypeEnum<ItemType>::value,
                     m_offset,
