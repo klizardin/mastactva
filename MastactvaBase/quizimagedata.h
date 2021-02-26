@@ -276,15 +276,15 @@ public:
 
 protected:
     void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
-    void initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_);
-    void initIndexArray(QOpenGLShaderProgram *program_);
     void setAttributeValue(QOpenGLShaderProgram *program_, GLenum type_, int offset_, int tupleSize_) const;
     void releaseAttributeValue(QOpenGLShaderProgram *program_) const;
+
+    void initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_);
     void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLint> &values_, int arraySize_, bool isMatrixType) const;
     void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLfloat> &values_, int arraySize_, bool isMatrixType) const;
     void setUniformValue(QOpenGLShaderProgram *program_, const QVector<QString> &values_, int arraySize_, bool isMatrixType) const;
-    void setIndexArray(QOpenGLShaderProgram *program_) const;
-    void drawIndexArray(QOpenGLShaderProgram *program_) const;
+
+    void drawTrianlesArray(QOpenGLFunctions *f_, int size_) const;
 
 private:
     int m_id = -1;
@@ -319,7 +319,9 @@ public:
 
     virtual int getArraySize() const override
     {
-        return value().getArraySize();
+        const int size = value().getArraySize();
+        Q_ASSERT(size > 0);
+        return std::max(0, size);
     }
 
     virtual int getMaxIndex() const override
@@ -346,7 +348,10 @@ public:
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
-        setUniformValue(program_, value().getValues(), value().getArraySize(), value().isMatrixType());
+        setUniformValue(program_,
+                        value().getValues(),
+                        getArraySize(),
+                        value().isMatrixType());
     }
 
     virtual void draw(QOpenGLFunctions *f_) const override
@@ -426,7 +431,7 @@ public:
 
     virtual int getMaxIndex() const override
     {
-        return ((getArraySize() + value().getTupleSize() - 1) / value().getTupleSize()) - 1;
+        return ((getArraySize() + value().getTupleSize() - 1) / value().getTupleSize());
     }
 
     virtual int getVBOPartSize() const override
@@ -497,8 +502,6 @@ private:
         std::is_base_of<ArgumentBase, ArgumentValueDataArrayType_>::value,
         "shoudl be ancestor of ArgumentBase");
 
-    using ItemType = typename ArgumentValueDataArrayType_::ItemType;
-
 public:
     OpenGLArgumentIndexValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
         :ArgumentValueDataArrayType_(argumentValueDataArray_)
@@ -548,7 +551,7 @@ public:
 
     virtual void draw(QOpenGLFunctions *f_) const override
     {
-        f_->glDrawArrays(GL_TRIANGLES, 0, (value().getValues().size() / 3) * 3);
+        drawTrianlesArray(f_, value().getValues().size());
     }
 
     virtual void release(QOpenGLShaderProgram *program_) const override

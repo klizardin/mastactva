@@ -88,7 +88,7 @@ void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, in
 }
 
 template<typename Type_>
-void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
+void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int arraySize_)
 {
     QString value = valuesStr_;
     value.replace(QString("("), QString(", "));
@@ -103,7 +103,7 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
     {
         valuesVar.push_back(s);
     }
-    extractValues(valuesVar, valuesArray_, valuesArray_.size());
+    extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
 
