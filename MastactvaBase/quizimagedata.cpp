@@ -279,6 +279,16 @@ void ArgumentValueDataStringArray::setArray(const QString &value_)
 }
 
 
+ArgumentValue::ArgumentValue()
+{
+    clearEffectArgumentId();
+}
+
+ArgumentValue::~ArgumentValue()
+{
+    freeDataArray();
+}
+
 bool ArgumentValue::hasDataArray() const
 {
     return nullptr != m_argumentValueDataArray;
@@ -305,6 +315,11 @@ int ArgumentValue::getEffectArgumentId() const
     return m_effectArgumentId;
 }
 
+void ArgumentValue::clearEffectArgumentId()
+{
+    m_effectArgumentId = -1;
+}
+
 void ArgumentValue::setEffectArgumentId(int effectArgumentId_)
 {
     m_effectArgumentId = effectArgumentId_;
@@ -328,10 +343,29 @@ ArgumentValueDataArray *DataTableValue::getArgumentDataArray()
 
 void DataTableValue::set(const ArgumentBase &argument_, int effectArgumentId_)
 {
+    if(m_argument.hasDataArray() &&
+            m_argument.getEffectArgumentId() == effectArgumentId_)
+    {
+        return;
+    }
+    if(m_argument.hasDataArray())
+    {
+        m_argument.freeDataArray();
+    }
+    m_argument.setDataArray(argument_.createValueDataArray());
+    if(m_argument.hasDataArray())
+    {
+        m_argument.setEffectArgumentId(effectArgumentId_);
+    }
+    else
+    {
+        m_argument.clearEffectArgumentId();
+    }
 }
 
 void DataTableValue::convertToArgument(const ArgumentBase &templateArgument_)
 {
+    Q_ASSERT(false); // TODO: add implementation
 }
 
 void DataTableValue::free()
@@ -345,6 +379,136 @@ void DataTableValue::free()
     m_stringValue = nullptr;
     m_children.clear();
 }
+
+bool DataTableValue::hasChild(const QString &key_) const
+{
+    return m_children.contains(key_);
+}
+
+DataTableValue *DataTableValue::getChild(const QString &key_)
+{
+    auto fit = std::end(m_children);
+    if(hasChild(key_))
+    {
+        fit = m_children.find(key_);
+    }
+    else
+    {
+        fit = m_children.insert(key_, DataTableValue());
+    }
+    return std::end(m_children) != fit ? &(fit.value()) : nullptr;
+}
+
+
+void ArgumentDataTable::add(
+        const QString &objectName_,
+        int step_index,
+        const ArgumentBase &argument_,
+        int effectArgumentId_)
+{
+    if(argument_.getName().isEmpty()) { return; }
+    DataTableValue *objectValue = getRootChild(objectName_);
+    if(nullptr == objectValue) { return; }
+    DataTableValue *indexValue = objectValue->getChild(QString::number(step_index));
+    if(nullptr == indexValue) { return; }
+    DataTableValue *argumentValue = indexValue->getChild(argument_.getName());
+    argumentValue->set(argument_, effectArgumentId_);
+}
+
+void ArgumentDataTable::add(
+        const ArgumentDataTable &data_)    // add all from data table
+{
+}
+
+void ArgumentDataTable::add(
+        const ArgumentDataTable &data_,
+        const ArgumentList &argumentList_) // add output of the list
+{
+}
+
+ArgumentValueDataArray *ArgumentDataTable::find(
+        const QString &objectName_,
+        int step_index,
+        const ArgumentBase &argument_)
+{
+}
+
+ArgumentBase *ArgumentDataTable::find(
+        int effectArgumentId_)
+{
+}
+
+ArgumentDataTable* ArgumentDataTable::slice(
+        const QString &objectName_,
+        int step_index,
+        const ArgumentList &argumentList_) // get input of the list
+{
+}
+
+bool ArgumentDataTable::hasRootChild(const QString &key_) const
+{
+    return m_root.contains(key_);
+}
+
+DataTableValue *ArgumentDataTable::getRootChild(const QString &key_)
+{
+    auto fit = std::end(m_root);
+    if(hasRootChild(key_))
+    {
+        fit = m_root.find(key_);
+    }
+    else
+    {
+        fit = m_root.insert(key_, DataTableValue());
+    }
+    return std::end(m_root) != fit ? &(fit.value()) : nullptr;
+}
+
+
+void ArgumentsSet::add(
+        const QString &objectName_,
+        int step_index,
+        const ArgumentBase &argument_,
+        int effectArgumentId_)             // add one element from ArgumentBase and effectArgumentId_
+{
+    m_data.add(objectName_, step_index, argument_, effectArgumentId_);
+}
+
+void ArgumentsSet::add(
+        const ArgumentDataTable &data_)    // add all from data table
+{
+    m_data.add(data_);
+}
+
+void ArgumentsSet::add(
+        const ArgumentDataTable &data_,
+        const ArgumentList &argumentList_) // add output of the list
+{
+    m_data.add(data_, argumentList_);
+}
+
+ArgumentValueDataArray *ArgumentsSet::find(
+        const QString &objectName_,
+        int step_index,
+        const ArgumentBase &argument_)
+{
+    return m_data.find(objectName_, step_index, argument_);
+}
+
+ArgumentBase *ArgumentsSet::find(
+        int effectArgumentId_)
+{
+    return m_data.find(effectArgumentId_);
+}
+
+ArgumentDataTable* ArgumentsSet::slice(
+        const QString &objectName_,
+        int step_index,
+        const ArgumentList &argumentList_) // get input of the list
+{
+    return m_data.slice(objectName_, step_index, argumentList_);
+}
+
 
 
 void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)

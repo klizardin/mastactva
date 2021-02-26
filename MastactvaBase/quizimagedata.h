@@ -246,20 +246,25 @@ private:
 class ArgumentValue
 {
 public:
-    ArgumentValue() = default;
-    virtual ~ArgumentValue() = default;
+    ArgumentValue();
+    ~ArgumentValue();
 
     bool hasDataArray() const;
     ArgumentValueDataArray *getDataArray() const;
     void setDataArray(ArgumentValueDataArray *argumentValueDataArray_);
     void freeDataArray();
+
     int getEffectArgumentId() const;
+    void clearEffectArgumentId();
     void setEffectArgumentId(int effectArgumentId_);
 
 private:
     int m_effectArgumentId = -1;
     ArgumentValueDataArray *m_argumentValueDataArray = nullptr;
 };
+
+
+class ArgumentDataTable;
 
 
 class DataTableValue
@@ -276,12 +281,17 @@ public:
 protected:
     void free();
 
+    bool hasChild(const QString &key_) const;
+    DataTableValue *getChild(const QString &key_);
+
 private:
     ArgumentValue m_argument;
     int *m_intValue = nullptr;
     float *m_floatValue = nullptr;
     QString *m_stringValue = nullptr;
     QHash<QString, DataTableValue> m_children;
+
+    friend class ArgumentDataTable;
 };
 
 
@@ -315,6 +325,11 @@ protected:
             const QString &objectName_,
             int step_index,
             const ArgumentList &argumentList_); // get input of the list
+
+private:
+    bool hasRootChild(const QString &key_) const;
+    DataTableValue *getRootChild(const QString &key_);
+
 private:
     QHash<QString, DataTableValue> m_root;
 
