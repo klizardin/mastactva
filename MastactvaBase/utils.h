@@ -56,8 +56,8 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = tr
 
 bool set_value(const QString &valStr_, GLint& val_);
 bool set_value(const QString &valStr_, GLfloat& val_);
-void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);
-void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);
+void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);
+void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);
 
 #endif  // #if QT_CONFIG(opengl)
 
@@ -88,7 +88,7 @@ void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, in
 }
 
 template<typename Type_>
-void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
+void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int arraySize_)
 {
     QString value = valuesStr_;
     value.replace(QString("("), QString(", "));
@@ -103,7 +103,7 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
     {
         valuesVar.push_back(s);
     }
-    extractValues(valuesVar, valuesArray_, valuesArray_.size());
+    extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
 
@@ -152,6 +152,7 @@ static const char *g_defaultObjectInfoProgrammerNameName = "programmer_name";
 static const char *g_defaultObjectInfoDescriptionName = "description";
 static const char *g_defaultObjectInfoCreatedName = "created";
 static const char *g_defaultObjectInfoProgrammerName = "";
+static const char *g_randArgumentValueName = "__rand";
 
 
 #endif // UTILS_H
