@@ -76,6 +76,7 @@ protected:
     bool m_isUniform = false;
     bool m_isIndex = false;
 
+    bool m_isFixedSize = true;
     int m_arraySize = 0;
     int m_tupleSize = 1;
 
@@ -265,10 +266,12 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) = 0;
     virtual int getArraySize() const = 0;
+    virtual int getMaxIndex() const = 0;
     virtual int getVBOPartSize() const = 0;
-    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) = 0;
+    virtual void setVBOPartOffset(int offset_) = 0;
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
-    virtual void draw(QOpenGLShaderProgram *program_) const = 0;
+    virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
 
 protected:
@@ -286,6 +289,7 @@ protected:
 private:
     int m_id = -1;
 };
+
 
 template<class ArgumentValueDataArrayType_>
 class OpenGLArgumentUniformValueT :
@@ -308,12 +312,19 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initUniformValueId(program_, arg().getName());
+        initUniformValueId(
+                    program_,
+                    arg().getName());
     }
 
-    virtual int getArraySize() const
+    virtual int getArraySize() const override
     {
         return value().getArraySize();
+    }
+
+    virtual int getMaxIndex() const override
+    {
+        return 0;
     }
 
     virtual int getVBOPartSize() const override
@@ -321,10 +332,16 @@ public:
         return 0;
     }
 
-    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) override
+    virtual void setVBOPartOffset(int offset_)
+    {
+        Q_UNUSED(offset_);
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
     {
         Q_UNUSED(vbo_);
         Q_UNUSED(offset_);
+        Q_UNUSED(sizeItems_);
     }
 
     virtual void use(QOpenGLShaderProgram *program_) const override
@@ -332,9 +349,9 @@ public:
         setUniformValue(program_, value().getValues(), value().getArraySize(), value().isMatrixType());
     }
 
-    virtual void draw(QOpenGLShaderProgram *program_) const override
+    virtual void draw(QOpenGLFunctions *f_) const override
     {
-        Q_UNUSED(program_);
+        Q_UNUSED(f_);
     }
 
     virtual void release(QOpenGLShaderProgram *program_) const override
@@ -353,6 +370,7 @@ private:
         return static_cast<const ArgumentValueDataArrayType_&>(*this);
     }
 };
+
 
 template<typename Type_>
 struct TypeToGLTypeEnum
@@ -396,38 +414,53 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initAttribureValueId(program_, arg().getName());
+        initAttribureValueId(
+                    program_,
+                    arg().getName());
     }
 
-    virtual int getArraySize() const
+    virtual int getArraySize() const override
     {
-        return value().getArraySize();
+        return value().getValues().size();
+    }
+
+    virtual int getMaxIndex() const override
+    {
+        return ((getArraySize() + value().getTupleSize() - 1) / value().getTupleSize()) - 1;
     }
 
     virtual int getVBOPartSize() const override
     {
-        return value().getArraySize() * sizeof(ItemType);
+        return getArraySize();
     }
 
-    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int &offset_) override
+    virtual void setVBOPartOffset(int offset_)
     {
         m_offset = offset_;
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
+    {
+        Q_ASSERT(getVBOPartSize() <= value().getTupleSize() * sizeItems_);
         vbo_->write(
-                    m_offset,
+                    offset_,
                     value().getValues(),
                     getVBOPartSize()
                     );
-        offset_ += getVBOPartSize();
     }
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
-        setAttributeValue(program_, TypeToGLTypeEnum<ItemType>::value, m_offset, value().getTupleSize());
+        setAttributeValue(
+                    program_,
+                    TypeToGLTypeEnum<ItemType>::value,
+                    m_offset,
+                    value().getTupleSize());
     }
 
-    virtual void draw(QOpenGLShaderProgram *program_) const override
+    virtual void draw(QOpenGLFunctions *f_) const override
     {
-        Q_UNUSED(program_);
+        Q_UNUSED(f_);
     }
 
     virtual void release(QOpenGLShaderProgram *program_) const override
@@ -445,8 +478,97 @@ private:
     {
         return static_cast<const ArgumentValueDataArrayType_&>(*this);
     }
+
 private:
     int m_offset = -1;
+};
+
+
+template<class ArgumentValueDataArrayType_>
+class OpenGLArgumentIndexValueT :
+        public ArgumentValueDataArrayType_,
+        public OpenGLArgumentValueBase
+{
+private:
+    static_assert(
+        std::is_base_of<ArgumentValueDataArray, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentValueDataArray");
+    static_assert(
+        std::is_base_of<ArgumentBase, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentBase");
+
+    using ItemType = typename ArgumentValueDataArrayType_::ItemType;
+
+public:
+    OpenGLArgumentIndexValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
+        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    {
+        m_maxIndex = std::max_element(
+                    std::begin(value().getValues()),
+                    std::end(value().getValues())
+                    );
+    }
+
+    virtual void create(QOpenGLShaderProgram *program_) override
+    {
+        Q_UNUSED(program_);
+    }
+
+    virtual int getArraySize() const override
+    {
+        return value().getValues().size();
+    }
+
+    virtual int getMaxIndex() const override
+    {
+        return std::max(0, m_maxIndex);
+    }
+
+    virtual int getVBOPartSize() const override
+    {
+        return 0;
+    }
+
+    virtual void setVBOPartOffset(int offset_)
+    {
+        Q_UNUSED(offset_);
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
+    {
+        Q_UNUSED(vbo_);
+        Q_UNUSED(offset_);
+        Q_UNUSED(sizeItems_);
+    }
+
+    virtual void use(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+    virtual void draw(QOpenGLFunctions *f_) const override
+    {
+        f_->glDrawArrays(GL_TRIANGLES, 0, (value().getValues().size() / 3) * 3);
+    }
+
+    virtual void release(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+private:
+    const ArgumentBase &arg() const
+    {
+        return static_cast<const ArgumentBase&>(*this);
+    }
+
+    const ArgumentValueDataArrayType_ &value() const
+    {
+        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+    }
+
+private:
+    int m_maxIndex = 0;
 };
 
 
