@@ -446,7 +446,7 @@ bool set_value(const QString &valStr_, GLfloat& val_)
     return ok;
 }
 
-void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
+void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
 {
     if(args_.size() < 2) { return; }
     std::random_device rd;  //Will be used to obtain a seed for the random number engine
@@ -458,7 +458,7 @@ void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &v
     }
 }
 
-void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_)
+void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_)
 {
     if(args_.size() < 2) { return; }
     std::random_device rd;  //Will be used to obtain a seed for the random number engine

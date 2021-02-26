@@ -10,6 +10,7 @@
 #include <QtGui/QOpenGLShader>
 #include <QJsonDocument>
 #include <type_traits>
+#include "../MastactvaBase/utils.h"
 
 
 #if QT_CONFIG(opengl)
@@ -71,6 +72,68 @@ protected:
 protected:
     void initStorage(const QString &storage_);
 
+    template<typename Type_>
+    void initDataT(QVector<Type_> &values_)
+    {
+        if(m_isAttribute || m_isIndex)
+        {
+            m_arraySize = -1;
+        }
+        else if(m_isUniform && m_arraySize > 0)
+        {
+            if(m_arraySize > 0)
+            {
+                values_.resize(m_arraySize);
+            }
+            else
+            {
+                values_.clear();
+            }
+        }
+        ArgumentValueDataArray::initData();
+    }
+
+    template<typename Type_>
+    void setArrayT(const QVariantList &varValues_, QVector<Type_> &values_)
+    {
+        extractValues(varValues_, values_, m_arraySize);
+    }
+
+    template<typename Type_>
+    void setArrayT(const QString &value_, QVector<Type_> &values_)
+    {
+        if(value_.contains(g_randArgumentValueName))
+        {
+            QVector<Type_> args;
+            if(m_isAttribute || m_isIndex)
+            {
+                args.resize(3); // DOC: use 3 arguments (min, max, items count)
+            }
+            else if(m_isUniform)
+            {
+                args.resize(2); // DOC: use 2 arguments (min, max)
+            }
+            extractValues(value_, args, args.size());
+
+            if((m_isAttribute || m_isIndex) && args.size() > 2)
+            {
+                values_.resize(int(args[2]));  // TODO: WARNING: not exact type
+            }
+            generateUniformRands(args, values_);
+        }
+        else
+        {
+            if(m_isAttribute || m_isIndex)
+            {
+                extractValues(value_, values_, m_arraySize);
+            }
+            else if(m_isUniform)
+            {
+                extractValues(value_, values_, values_.size());
+            }
+        }
+    }
+
 protected:
     bool m_isAttribute = false;
     bool m_isUniform = false;
@@ -92,15 +155,24 @@ public:
     ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
     virtual ~ArgumentValueDataIntArray() override = default;
 
-    virtual void initData() override;
-    virtual void setArray(const QVariantList &values_) override;
+    virtual void initData() override
+    {
+        initDataT(m_values);
+    }
+    virtual void setArray(const QVariantList &varValues_) override
+    {
+        setArrayT(varValues_, m_values);
+    }
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<GLint> &getValues() const;
     bool isMatrixType() const;
 
 protected:
-    virtual void setArray(const QString &value_) override;
+    virtual void setArray(const QString &value_) override
+    {
+        setArrayT(value_, m_values);
+    }
 
 private:
     QVector<GLint> m_values;
@@ -116,15 +188,24 @@ public:
     ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, int tupleSize_, bool isMatrixType_);
     virtual ~ArgumentValueDataFloatArray() override = default;
 
-    virtual void initData() override;
-    virtual void setArray(const QVariantList &values_) override;
+    virtual void initData() override
+    {
+        initDataT(m_values);
+    }
+    virtual void setArray(const QVariantList &varValues_) override
+    {
+        setArrayT(varValues_, m_values);
+    }
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<GLfloat> &getValues() const;
     bool isMatrixType() const;
 
 protected:
-    virtual void setArray(const QString &value_) override;
+    virtual void setArray(const QString &value_) override
+    {
+        setArrayT(value_, m_values);
+    }
 
 private:
     QVector<GLfloat> m_values;
@@ -141,8 +222,14 @@ public:
     ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
     virtual ~ArgumentValueDataStringArray() override = default;
 
-    virtual void initData() override;
-    virtual void setArray(const QVariantList &values_) override;
+    virtual void initData() override
+    {
+        initDataT(m_values);
+    }
+    virtual void setArray(const QVariantList &varValues_) override
+    {
+        setArrayT(varValues_, m_values);
+    }
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<QString> &getValues() const;
