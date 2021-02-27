@@ -61,6 +61,7 @@ public:
 
     virtual void initData();
     virtual void setArray(const QVariantList &values_) = 0;
+    virtual QVariantList variantValues() const = 0;
     virtual OpenGLArgumentValueBase *createOpenGlValue() = 0;
 
     int getArraySize() const;
@@ -134,6 +135,17 @@ protected:
         }
     }
 
+    template<typename Type_>
+    QVariantList variantValuesT(const QVector<Type_> &values_) const
+    {
+        QVariantList res;
+        for(const Type_ &v_ : values_)
+        {
+            res.push_back(v_);
+        }
+        return res;
+    }
+
 protected:
     bool m_isAttribute = false;
     bool m_isUniform = false;
@@ -162,6 +174,10 @@ public:
     virtual void setArray(const QVariantList &varValues_) override
     {
         setArrayT(varValues_, m_values);
+    }
+    virtual QVariantList variantValues() const override
+    {
+        return variantValuesT(m_values);
     }
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
@@ -196,6 +212,10 @@ public:
     {
         setArrayT(varValues_, m_values);
     }
+    virtual QVariantList variantValues() const override
+    {
+        return variantValuesT(m_values);
+    }
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
     const QVector<GLfloat> &getValues() const;
@@ -229,6 +249,10 @@ public:
     virtual void setArray(const QVariantList &varValues_) override
     {
         setArrayT(varValues_, m_values);
+    }
+    virtual QVariantList variantValues() const override
+    {
+        return variantValuesT(m_values);
     }
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
 
@@ -275,14 +299,24 @@ public:
 
     bool hasArgumentDataArray() const;
     ArgumentValueDataArray *getArgumentDataArray();
+    const ArgumentValueDataArray *getArgumentDataArray() const;
     void set(const ArgumentBase &argument_, int effectArgumentId_);
     void convertToArgument(const ArgumentBase &templateArgument_);
+    bool hasValue() const;
+    bool isArgument() const;
+    bool isIntValue() const;
+    bool isFloatValue() const;
+    bool isStringValue() const;
+    QVariant getValue() const;
 
 protected:
     void free();
 
     bool hasChild(const QString &key_) const;
     DataTableValue *getChild(const QString &key_);
+    void copyFrom(const DataTableValue &dataTableValue_);
+    int getArgumentValueEffectArgumentId() const;
+    void setValue(const QVariant &value_);
 
 private:
     ArgumentValue m_argument;
@@ -329,6 +363,10 @@ protected:
 private:
     bool hasRootChild(const QString &key_) const;
     DataTableValue *getRootChild(const QString &key_);
+    DataTableValue *getArgument(
+            const QString &objectName_,
+            const QString &stepIndexStr_,
+            const QString &argumentName_);
 
 private:
     QHash<QString, DataTableValue> m_root;
