@@ -7,6 +7,9 @@
 #include "../MastactvaBase/utils.h"
 
 
+static const int g_baseTableIndex = 1;
+
+
 const QString &ArgumentBase::getName() const
 {
     return m_name;
@@ -55,6 +58,21 @@ const QString &ArgumentBase::getDefaultValue() const
 void ArgumentBase::setDefaultValue(const QString &defaultValue_)
 {
     m_defaultValue = defaultValue_;
+}
+
+bool ArgumentBase::isInput() const
+{
+    return m_isInput;
+}
+
+bool ArgumentBase::isOutput() const
+{
+    return !m_isInput;
+}
+
+void ArgumentBase::setInput(bool isInput_)
+{
+    m_isInput = isInput_;
 }
 
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
@@ -106,6 +124,22 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     {
         return nullptr;
     }
+}
+
+
+bool ArgumentList::containsByName(
+        const QString &argumentName_,
+        bool isAny_ /*= true*/,
+        bool isInput_ /*= true*/) const
+{
+    const auto fit = std::find_if(
+                std::begin(*this),
+                std::end(*this),
+                [&argumentName_, isAny_, isInput_](const ArgumentBase &arg_) -> bool
+    {
+        return arg_.getName() == argumentName_ && (isAny_ || (!isAny_ && arg_.isInput() == isInput_));
+    });
+    return std::end(*this) != fit;
 }
 
 
@@ -368,9 +402,19 @@ void DataTableValue::set(const ArgumentBase &argument_, int effectArgumentId_)
     }
 }
 
-void DataTableValue::convertToArgument(const ArgumentBase &templateArgument_)
+bool DataTableValue::convertToArgument(const ArgumentBase &templateArgument_)
 {
-    Q_ASSERT(false); // TODO: add implementation
+    if(hasValue())
+    {
+        if(isArgument())
+        {
+            return m_argument.getDataArray()->getName() == templateArgument_.getName();
+        }
+        return false;
+    }
+    m_argument.setDataArray(templateArgument_.createValueDataArray());
+    m_argument.getDataArray()->setArray(getChilderenValues());
+    return true;
 }
 
 bool DataTableValue::hasValue() const
@@ -439,6 +483,16 @@ bool DataTableValue::hasChild(const QString &key_) const
     return m_children.contains(key_);
 }
 
+DataTableValue *DataTableValue::findChild(const QString &key_)
+{
+    auto fit = std::end(m_children);
+    if(hasChild(key_))
+    {
+        fit = m_children.find(key_);
+    }
+    return std::end(m_children) != fit ? &(fit.value()) : nullptr;
+}
+
 DataTableValue *DataTableValue::getChild(const QString &key_)
 {
     auto fit = std::end(m_children);
@@ -469,7 +523,18 @@ void DataTableValue::copyFrom(const DataTableValue &dataTableValue_)
     }
     if(dataTableValue_.hasValue())
     {
-        setValue(dataTableValue_.getValue());
+        if(dataTableValue_.isIntValue())
+        {
+            setIntValue(dataTableValue_.getValue());
+        }
+        else if(dataTableValue_.isFloatValue())
+        {
+            setFloatValue(dataTableValue_.getValue());
+        }
+        else if(dataTableValue_.isStringValue())
+        {
+            setStringValue(dataTableValue_.getValue());
+        }
     }
 }
 
@@ -478,20 +543,119 @@ int DataTableValue::getArgumentValueEffectArgumentId() const
     return m_argument.getEffectArgumentId();
 }
 
-void DataTableValue::setValue(const QVariant &value_)
+void DataTableValue::setIntValue(const QVariant &value_)
 {
+    if(isArgument())
+    {
+        m_argument.getDataArray()->setArray(QVariantList({value_,}));
+    }
+    else if(value_.isValid())
+    {
+        bool ok = false;
+        if(nullptr == m_intValue)
+        {
+            m_intValue = new int{0};
+        }
+        delete m_floatValue;
+        m_floatValue = nullptr;
+        delete m_stringValue;
+        m_stringValue = nullptr;
+
+        *m_intValue = value_.toInt(&ok);
+        if(!ok)
+        {
+            delete m_intValue;
+            m_intValue = nullptr;
+        }
+    }
 }
+
+void DataTableValue::setFloatValue(const QVariant &value_)
+{
+    if(isArgument())
+    {
+        m_argument.getDataArray()->setArray(QVariantList({value_,}));
+    }
+    else if(value_.isValid())
+    {
+        bool ok = false;
+        if(nullptr == m_floatValue)
+        {
+            m_floatValue = new float{0.0};
+        }
+        delete m_intValue;
+        m_intValue = nullptr;
+        delete m_stringValue;
+        m_stringValue = nullptr;
+
+        *m_floatValue = value_.toDouble(&ok);
+        if(!ok)
+        {
+            delete m_floatValue;
+            m_floatValue = nullptr;
+        }
+    }
+}
+
+void DataTableValue::setStringValue(const QVariant &value_)
+{
+    if(isArgument())
+    {
+        m_argument.getDataArray()->setArray(QVariantList({value_,}));
+    }
+    else if(value_.isValid())
+    {
+        if(nullptr == m_stringValue)
+        {
+            m_stringValue = new QString();
+        }
+        delete m_intValue;
+        m_intValue = nullptr;
+        delete m_floatValue;
+        m_floatValue = nullptr;
+
+        *m_stringValue = value_.toString();
+    }
+}
+
+QVariantList DataTableValue::getChilderenValues() const
+{
+    QVariantList res;
+    for(int i = g_baseTableIndex;; ++i)
+    {
+        const QString key = QString::number(i);
+        if(!m_children.contains(key)) { break; }
+        res.push_back(m_children.value(key).getValue());
+    }
+    return res;
+}
+
+void DataTableValue::freeChilderenValues()
+{
+    for(int i = g_baseTableIndex;; ++i)
+    {
+        const QString key = QString::number(i);
+        if(!m_children.contains(key)) { break; }
+        m_children.remove(key);
+    }
+}
+
+QList<QString> DataTableValue::getChildrenKeys() const
+{
+    return m_children.keys();
+}
+
 
 void ArgumentDataTable::add(
         const QString &objectName_,
-        int step_index,
+        int stepIndex,
         const ArgumentBase &argument_,
         int effectArgumentId_)
 {
     if(argument_.getName().isEmpty()) { return; }
     DataTableValue *objectValue = getRootChild(objectName_);
     if(nullptr == objectValue) { return; }
-    DataTableValue *indexValue = objectValue->getChild(QString::number(step_index));
+    DataTableValue *indexValue = objectValue->getChild(QString::number(stepIndex));
     if(nullptr == indexValue) { return; }
     DataTableValue *argumentValue = indexValue->getChild(argument_.getName());
     argumentValue->set(argument_, effectArgumentId_);
@@ -502,9 +666,23 @@ void ArgumentDataTable::add(
 {
     // TODO: check
     QList<QString> rootKeys = data_.m_root.keys();
-    for(const QString &key_ : qAsConst(rootKeys))
+    for(const QString &objectNameKey_ : qAsConst(rootKeys))
     {
-
+        DataTableValue *objectValue = getRootChild(objectNameKey_);
+        if(nullptr == objectValue) { continue; }
+        QList<QString> indexNamesKeys = objectValue->getChildrenKeys();
+        for(const QString &indexNameKey_ : qAsConst(indexNamesKeys))
+        {
+            DataTableValue *indexValue = objectValue->getChild(indexNameKey_);
+            if(nullptr == indexValue) { continue; }
+            QList<QString> argumentNamesKeys = indexValue->getChildrenKeys();
+            for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+            {
+                DataTableValue *argumentValue = indexValue->getChild(argumentNameKey_);
+                if(nullptr == argumentValue) { continue; }
+                addArgument(objectNameKey_, indexNameKey_, argumentNameKey_, *argumentValue);
+            }
+        }
     }
 }
 
@@ -512,30 +690,102 @@ void ArgumentDataTable::add(
         const ArgumentDataTable &data_,
         const ArgumentList &argumentList_) // add output of the list
 {
+    QList<QString> rootKeys = data_.m_root.keys();
+    for(const QString &objectNameKey_ : qAsConst(rootKeys))
+    {
+        DataTableValue *objectValue = getRootChild(objectNameKey_);
+        if(nullptr == objectValue) { continue; }
+        QList<QString> indexNamesKeys = objectValue->getChildrenKeys();
+        for(const QString &indexNameKey_ : qAsConst(indexNamesKeys))
+        {
+            DataTableValue *indexValue = objectValue->getChild(indexNameKey_);
+            if(nullptr == indexValue) { continue; }
+            QList<QString> argumentNamesKeys = indexValue->getChildrenKeys();
+            for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+            {
+                DataTableValue *argumentValue = indexValue->getChild(argumentNameKey_);
+                if(nullptr == argumentValue) { continue; }
+                if(!argumentList_.containsByName(argumentNameKey_, false, false)) { continue; }
+                addArgument(objectNameKey_, indexNameKey_, argumentNameKey_, *argumentValue);
+            }
+        }
+    }
 }
 
 ArgumentValueDataArray *ArgumentDataTable::find(
         const QString &objectName_,
-        int step_index,
+        int stepIndex,
         const ArgumentBase &argument_)
 {
+    DataTableValue *dataTableValue = findArgument(objectName_, QString::number(stepIndex), argument_.getName());
+    if(nullptr == dataTableValue) { return nullptr; }
+    dataTableValue->convertToArgument(argument_);
+    return dataTableValue->getArgumentDataArray();
 }
 
 ArgumentBase *ArgumentDataTable::find(
         int effectArgumentId_)
 {
+    QList<QString> rootKeys = m_root.keys();
+    for(const QString &objectNameKey_ : qAsConst(rootKeys))
+    {
+        DataTableValue *objectValue = getRootChild(objectNameKey_);
+        if(nullptr == objectValue) { continue; }
+        QList<QString> indexNamesKeys = objectValue->getChildrenKeys();
+        for(const QString &indexNameKey_ : qAsConst(indexNamesKeys))
+        {
+            DataTableValue *indexValue = objectValue->getChild(indexNameKey_);
+            if(nullptr == indexValue) { continue; }
+            QList<QString> argumentNamesKeys = indexValue->getChildrenKeys();
+            for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+            {
+                DataTableValue *argumentValue = indexValue->getChild(argumentNameKey_);
+                if(nullptr == argumentValue) { continue; }
+                if(argumentValue->getArgumentValueEffectArgumentId() == effectArgumentId_)
+                {
+                    return argumentValue->getArgumentDataArray();
+                }
+            }
+        }
+    }
+    return nullptr;
 }
 
 ArgumentDataTable* ArgumentDataTable::slice(
         const QString &objectName_,
-        int step_index,
+        int stepIndex,
         const ArgumentList &argumentList_) // get input of the list
 {
+    ArgumentDataTable *res = new ArgumentDataTable();
+    DataTableValue *objectValue = findRootChild(objectName_);
+    if(nullptr == objectValue) { return res; }
+    const QString stepIndexName = QString::number(stepIndex);
+    DataTableValue *stepIndexValue = objectValue->findChild(stepIndexName);
+    if(nullptr == stepIndexValue) { return res; }
+    QList<QString> argumentNamesKeys = stepIndexValue->getChildrenKeys();
+    for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+    {
+        DataTableValue *argumentValue = stepIndexValue->getChild(argumentNameKey_);
+        if(nullptr == argumentValue) { continue; }
+        if(!argumentList_.containsByName(argumentNameKey_, false, true)) { continue; }
+        res->addArgument(objectName_, stepIndexName, argumentNameKey_, *argumentValue);
+    }
+    return res;
 }
 
 bool ArgumentDataTable::hasRootChild(const QString &key_) const
 {
     return m_root.contains(key_);
+}
+
+DataTableValue *ArgumentDataTable::findRootChild(const QString &key_)
+{
+    auto fit = std::end(m_root);
+    if(hasRootChild(key_))
+    {
+        fit = m_root.find(key_);
+    }
+    return std::end(m_root) != fit ? &(fit.value()) : nullptr;
 }
 
 DataTableValue *ArgumentDataTable::getRootChild(const QString &key_)
@@ -552,6 +802,19 @@ DataTableValue *ArgumentDataTable::getRootChild(const QString &key_)
     return std::end(m_root) != fit ? &(fit.value()) : nullptr;
 }
 
+DataTableValue *ArgumentDataTable::findArgument(
+        const QString &objectName_,
+        const QString &stepIndexStr_,
+        const QString &argumentName_)
+{
+    DataTableValue *objectValue = findRootChild(objectName_);
+    if(nullptr == objectValue) { return nullptr; }
+    DataTableValue *indexValue = objectValue->findChild(stepIndexStr_);
+    if(nullptr == indexValue) { return nullptr; }
+    DataTableValue *argumentValue = indexValue->findChild(argumentName_);
+    return argumentValue;
+}
+
 DataTableValue *ArgumentDataTable::getArgument(
         const QString &objectName_,
         const QString &stepIndexStr_,
@@ -565,14 +828,27 @@ DataTableValue *ArgumentDataTable::getArgument(
     return argumentValue;
 }
 
+void ArgumentDataTable::addArgument(
+        const QString &objectName_,
+        const QString &stepIndexStr_,
+        const QString &argumentName_,
+        const DataTableValue &argumentValue_)
+{
+    DataTableValue *argumentValue = getArgument(objectName_, stepIndexStr_, argumentName_);
+    if(nullptr != argumentValue)
+    {
+        argumentValue->copyFrom(argumentValue_);
+    }
+}
+
 
 void ArgumentsSet::add(
         const QString &objectName_,
-        int step_index,
+        int stepIndex,
         const ArgumentBase &argument_,
         int effectArgumentId_)             // add one element from ArgumentBase and effectArgumentId_
 {
-    m_data.add(objectName_, step_index, argument_, effectArgumentId_);
+    m_data.add(objectName_, stepIndex, argument_, effectArgumentId_);
 }
 
 void ArgumentsSet::add(
@@ -590,10 +866,10 @@ void ArgumentsSet::add(
 
 ArgumentValueDataArray *ArgumentsSet::find(
         const QString &objectName_,
-        int step_index,
+        int stepIndex,
         const ArgumentBase &argument_)
 {
-    return m_data.find(objectName_, step_index, argument_);
+    return m_data.find(objectName_, stepIndex, argument_);
 }
 
 ArgumentBase *ArgumentsSet::find(
@@ -604,10 +880,10 @@ ArgumentBase *ArgumentsSet::find(
 
 ArgumentDataTable* ArgumentsSet::slice(
         const QString &objectName_,
-        int step_index,
+        int stepIndex,
         const ArgumentList &argumentList_) // get input of the list
 {
-    return m_data.slice(objectName_, step_index, argumentList_);
+    return m_data.slice(objectName_, stepIndex, argumentList_);
 }
 
 
