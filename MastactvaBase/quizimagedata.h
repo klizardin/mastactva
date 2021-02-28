@@ -324,6 +324,7 @@ protected:
     void free();
 
     bool hasChild(const QString &key_) const;
+    DataTableValue *findChild(const QString &key_);
     DataTableValue *getChild(const QString &key_);
     void copyFrom(const DataTableValue &dataTableValue_);
     int getArgumentValueEffectArgumentId() const;
@@ -357,7 +358,7 @@ public:
 protected:
     void add(
             const QString &objectName_,
-            int step_index,
+            int stepIndex,
             const ArgumentBase &argument_,
             int effectArgumentId_);
     void add(
@@ -367,18 +368,23 @@ protected:
             const ArgumentList &argumentList_); // add output of the list
     ArgumentValueDataArray *find(
             const QString &objectName_,
-            int step_index,
+            int stepIndex,
             const ArgumentBase &argument_);
     ArgumentBase *find(
             int effectArgumentId_);
     ArgumentDataTable* slice(
             const QString &objectName_,
-            int step_index,
+            int stepIndex,
             const ArgumentList &argumentList_); // get input of the list
 
 private:
     bool hasRootChild(const QString &key_) const;
+    DataTableValue *findRootChild(const QString &key_);
     DataTableValue *getRootChild(const QString &key_);
+    DataTableValue *findArgument(
+            const QString &objectName_,
+            const QString &stepIndexStr_,
+            const QString &argumentName_);
     DataTableValue *getArgument(
             const QString &objectName_,
             const QString &stepIndexStr_,
@@ -403,7 +409,7 @@ public:
 
     void add(
             const QString &objectName_,
-            int step_index,
+            int stepIndex,
             const ArgumentBase &argument_,
             int effectArgumentId_);
     void add(
@@ -413,13 +419,13 @@ public:
             const ArgumentList &argumentList_); // add output of the list
     ArgumentValueDataArray *find(
             const QString &objectName_,
-            int step_index,
+            int stepIndex,
             const ArgumentBase &argument_);
     ArgumentBase *find(
             int effectArgumentId_);
     ArgumentDataTable* slice(
             const QString &objectName_,
-            int step_index,
+            int stepIndex,
             const ArgumentList &argumentList_); // get input of the list
 private:
     ArgumentDataTable m_data;
