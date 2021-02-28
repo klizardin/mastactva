@@ -35,6 +35,9 @@ public:
     void setValue(const QString &value_);
     const QString &getDefaultValue() const;
     void setDefaultValue(const QString &defaultValue_);
+    bool isInput() const;
+    bool isOutput() const;
+    void setInput(bool isInput_);
 
     ArgumentValueDataArray *createValueDataArray() const;
 
@@ -44,10 +47,18 @@ private:
     QString m_type;
     QString m_value;
     QString m_defaultValue;
+    bool m_isInput = false;
 };
 
 
-using ArgumentList = QList<ArgumentBase>;
+class ArgumentList: public QList<ArgumentBase>
+{
+    using base = QList<ArgumentBase>;
+public:
+    using base::base;
+
+    bool containsByName(const QString &argumentName_, bool isAny = true, bool isInput_ = true) const;
+};
 
 
 class OpenGLArgumentValueBase;
@@ -301,7 +312,7 @@ public:
     ArgumentValueDataArray *getArgumentDataArray();
     const ArgumentValueDataArray *getArgumentDataArray() const;
     void set(const ArgumentBase &argument_, int effectArgumentId_);
-    void convertToArgument(const ArgumentBase &templateArgument_);
+    bool convertToArgument(const ArgumentBase &templateArgument_);
     bool hasValue() const;
     bool isArgument() const;
     bool isIntValue() const;
@@ -316,7 +327,12 @@ protected:
     DataTableValue *getChild(const QString &key_);
     void copyFrom(const DataTableValue &dataTableValue_);
     int getArgumentValueEffectArgumentId() const;
-    void setValue(const QVariant &value_);
+    void setIntValue(const QVariant &value_);
+    void setFloatValue(const QVariant &value_);
+    void setStringValue(const QVariant &value_);
+    QVariantList getChilderenValues() const;
+    void freeChilderenValues();
+    QList<QString> getChildrenKeys() const;
 
 private:
     ArgumentValue m_argument;
@@ -367,6 +383,11 @@ private:
             const QString &objectName_,
             const QString &stepIndexStr_,
             const QString &argumentName_);
+    void addArgument(
+            const QString &objectName_,
+            const QString &stepIndexStr_,
+            const QString &argumentName_,
+            const DataTableValue &argumentValue);
 
 private:
     QHash<QString, DataTableValue> m_root;
