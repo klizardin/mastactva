@@ -62,6 +62,7 @@
 * 39. image mask areas
 40. add image point mask areas
 41. review by checklist at the page https://developer.android.com/docs/quality-guidelines/core-app-quality
+42. add simple gestrure mode (only long clicks/simple clicks)
 
 
 
