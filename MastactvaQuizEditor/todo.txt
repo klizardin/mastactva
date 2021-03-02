@@ -125,3 +125,5 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 85. add independent view for all time living objects (artefacts and so on) (detail is 74)
     also EffectObjectInfo
 86. formulate arguments' of effects strategy
+87. auto params:
+    1) compare images
