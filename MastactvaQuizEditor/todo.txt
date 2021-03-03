@@ -127,3 +127,7 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 86. formulate arguments' of effects strategy
 87. auto params:
     1) compare images
+    1.1) get valid points
+    1.1.1) formulate better image characteristics
+    1.1.2) find base points
+
