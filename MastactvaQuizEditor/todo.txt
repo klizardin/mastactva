@@ -131,5 +131,8 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
     1.1.1) formulate better image characteristics
     1.1.2) find base points
     1.1.3) image preprocess
+    1.1.4) optimize image preprocess parameters (maybe, auto calculations)
+
+
 
 
