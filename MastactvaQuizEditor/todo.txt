@@ -127,17 +127,20 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 86. formulate arguments' of effects strategy
 87. auto params:
     1) compare images
-    1.1) get valid points
-        1.1.1) formulate better image characteristics
-        1.1.2) find base points
-        1.1.3) image preprocess
-        1.1.4) optimize image preprocess parameters (maybe, auto calculations)
+    *1.1) get valid points
+    *    1.1.1) formulate better image characteristics
+    *    1.1.2) find base points
+    *    1.1.3) image preprocess
+    *    1.1.4) optimize image preprocess parameters (maybe, auto calculations)
     * 1.2) match all elements
     * 1.3) build groups (with homogr and without)
     * 1.4) select groups, grow groups
-    1.5) use gallery's most likely elements to detect
+    * 1.5) use gallery's most likely elements to detect
     * 1.5.1) try lines approach (build homograph transfrom)
-    1.5.2) try match of key rect areas
+    * 1.5.2) try match of key rect areas
+    1.6) simplify rect finding (just all meaning rects)
+    1.7) build utilities those can be used from GUI
+
 
 
 
