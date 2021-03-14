@@ -6,6 +6,8 @@
 #include <QHash>
 #include <QDateTime>
 #include <QByteArray>
+#include <QJsonDocument>
+#include <type_traits>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLTexture>
@@ -54,6 +56,7 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = tr
 QByteArray loadBinaryFile(const QString &filename_);
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QString getTextFromBinaryData(const QByteArray &data_);
+QJsonDocument graphicsOBJtoJson(const QString &objData_);
 
 
 #if QT_CONFIG(opengl)
@@ -111,6 +114,12 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
 }
 
 
+template <typename EnumType_>
+constexpr auto to_underlying(EnumType_ enumValue_) noexcept
+{
+    return static_cast<std::underlying_type_t<EnumType_>>(enumValue_);
+}
+
 static const char *g_englishLanguage = "English";
 static const char *g_belarusLanguage = "Belarus";
 static const char *g_shaderName = "shader";
@@ -130,7 +139,7 @@ static const char *g_artefactsRelPath = "artefacts";
 static const char *g_imagesRelPath = "images";
 static const char *g_artefactTypeVertex = "Vertex";
 static const char *g_artefactTypeFragment = "Fragment";
-static const char *g_artefactTypeModel = "ArtefactTypeModelel";
+static const char *g_artefactTypeModel = "ArtefactTypeModel";
 static const char *g_artefactArgTypeModel = "ArtefactArgTypeModel";
 static const char *g_artefactArgStorageModel = "ArtefactArgStorageModel";
 static const char *g_easingTypeModel = "EasingTypeModel";
