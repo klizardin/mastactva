@@ -9,6 +9,20 @@
 #include "../MastactvaBase/Model.h"
 
 
+enum class ArtefactTypeEn : int
+{
+    Vertex = 1,
+    Fragment = 2,
+    Texture1D = 3,
+    Texture2D = 4,
+    Texture3D = 5,
+    DataJson = 6,
+    DataObj = 7,
+    ConvertJson = 8,
+    ScriptLua = 9
+};
+
+
 class ArtefactType : public QObject
 {
     Q_OBJECT

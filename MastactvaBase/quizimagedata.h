@@ -17,6 +17,9 @@
 
 
 class ArgumentValueDataArray;
+class ArtefactArg;
+class ArtefactArgStorageModel;
+class ArtefactArgTypeModel;
 
 
 class ArgumentBase
@@ -25,6 +28,11 @@ public:
     ArgumentBase() = default;
     virtual ~ArgumentBase() = default;
 
+    bool set(
+            const ArtefactArg *arg_,
+            ArtefactArgStorageModel* argStorageModel_ = nullptr,
+            ArtefactArgTypeModel *argTypeModel_ = nullptr
+            );
     const QString &getName() const;
     void setName(const QString &name_);
     const QString &getStorage() const;
@@ -35,6 +43,13 @@ public:
     void setValue(const QString &value_);
     const QString &getDefaultValue() const;
     void setDefaultValue(const QString &defaultValue_);
+
+    /* used for scripts arguments
+     * isOutput() == true
+     *      * ... // TODO
+     * isInput() == true
+     *      * ... // TODO
+    */
     bool isInput() const;
     bool isOutput() const;
     void setInput(bool isInput_);
@@ -278,11 +293,11 @@ private:
 };
 
 
-class ArgumentValue
+class DataTableArgumentValue
 {
 public:
-    ArgumentValue();
-    ~ArgumentValue();
+    DataTableArgumentValue();
+    ~DataTableArgumentValue();
 
     bool hasDataArray() const;
     ArgumentValueDataArray *getDataArray() const;
@@ -336,7 +351,7 @@ protected:
     QList<QString> getChildrenKeys() const;
 
 private:
-    ArgumentValue m_argument;
+    DataTableArgumentValue m_argument;
     int *m_intValue = nullptr;
     float *m_floatValue = nullptr;
     QString *m_stringValue = nullptr;
@@ -754,6 +769,145 @@ private:
 
 class Effect;
 class EffectArgSet;
+class Artefact;
+class ArtefactArgModel;
+
+
+class IQuizImageDataArtefact
+{
+public:
+    IQuizImageDataArtefact() = default;
+    virtual ~IQuizImageDataArtefact() = default;
+
+    bool setArtefact(const Artefact *artefact_, int stepIndex_);
+    int getStepIndex() const;
+    const ArgumentList &getArguments() const;
+
+    static IQuizImageDataArtefact *create(const Artefact *artefact_, int stepIndex_);
+
+protected:
+    virtual bool setData(const QByteArray &data_) = 0;
+
+protected:
+    bool setArguments(const ArtefactArgModel *args_);
+
+private:
+    int m_stepIndex = 0;
+    ArgumentList m_arguments;
+};
+
+class QuizImageDataVertexArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataVertexArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QString m_vertexShader;
+};
+
+
+class QuizImageDataFragmentArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataFragmentArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QString m_fragmentShader;
+};
+
+
+class QuizImageDataTexture1DArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataTexture1DArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QImage m_texture1D;
+};
+
+
+class QuizImageDataTexture2DArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataTexture2DArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QImage m_texture2D;
+};
+
+
+class QuizImageDataTexture3DArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataTexture3DArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QImage m_texture3D;
+};
+
+
+class QuizImageDataJsonArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataJsonArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QJsonDocument m_document;
+};
+
+
+class QuizImageData3DOBJArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageData3DOBJArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QJsonDocument m_document;
+};
+
+
+class QuizImageDataConvertJsonArtefact : public QuizImageDataJsonArtefact
+{
+public:
+    QuizImageDataConvertJsonArtefact() = default;
+};
+
+
+class QuizImageDataScriptLuaArtefact : public IQuizImageDataArtefact
+{
+public:
+    QuizImageDataScriptLuaArtefact() = default;
+
+protected:
+    virtual bool setData(const QByteArray &data_) override;
+
+private:
+    QString m_script;
+};
+
+
+
 
 
 class QuizImageDataArtefact

@@ -407,11 +407,8 @@ QString dateTimeToJsonString(const QDateTime &dt_)
 
 QString loadTextFile(const QString &filename_)
 {
-    QFile file(filename_);
-    if(!file.open(QIODevice::ReadOnly)) { return QString(); }
-    QByteArray fd = file.readAll();
-    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
-    return codec->toUnicode(fd);
+    QByteArray fd = loadBinaryFile(filename_);
+    return getTextFromBinaryData(fd);
 }
 
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
@@ -419,7 +416,9 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
     if(useServerFiles_)
     {
         ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-        Q_ASSERT(nullptr != sf);
+        if(nullptr == sf ||
+                !sf->isUrlDownloaded(filenameUrl_)
+                ) { return QString(); }
         QUrl url(sf->get(filenameUrl_));
         return loadTextFile(url.toLocalFile());
     }
@@ -428,6 +427,39 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
         QUrl url(filenameUrl_);
         return loadTextFile(url.toLocalFile());
     }
+}
+
+QByteArray loadBinaryFile(const QString &filename_)
+{
+    QFile file(filename_);
+    if(!file.open(QIODevice::ReadOnly)) { return QByteArray(); }
+    QByteArray fd = file.readAll();
+    return fd;
+}
+
+QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
+{
+    if(useServerFiles_)
+    {
+        ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+        if(nullptr == sf ||
+                !sf->isUrlDownloaded(filenameUrl_)
+                ) { return QByteArray(); }
+        QUrl url(sf->get(filenameUrl_));
+        return loadBinaryFile(url.toLocalFile());
+    }
+    else
+    {
+        QUrl url(filenameUrl_);
+        return loadBinaryFile(url.toLocalFile());
+    }
+}
+
+QString getTextFromBinaryData(const QByteArray &data_)
+{
+    QTextCodec *codec = QTextCodec::codecForUtfText(data_);
+    if(nullptr == codec) { return QString(); }
+    return codec->toUnicode(data_);
 }
 
 #if QT_CONFIG(opengl)

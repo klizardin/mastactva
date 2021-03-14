@@ -2,6 +2,8 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/artefacttype.h"
+#include "../MastactvaModels/artefactargstorage.h"
+#include "../MastactvaModels/artefactargtype.h"
 #include "../MastactvaModels/objectartefact.h"
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaBase/utils.h"
@@ -9,6 +11,42 @@
 
 static const int g_baseTableIndex = 1;
 
+
+bool ArgumentBase::set(
+        const ArtefactArg *arg_,
+        ArtefactArgStorageModel* argStorageModel_ /* = nullptr*/,
+        ArtefactArgTypeModel *argTypeModel_ /* = nullptr*/
+        )
+{
+    if(nullptr == arg_) { return false; }
+    if(arg_->name().isEmpty()) { return false; }
+    setName(arg_->name());
+
+    if(nullptr == argStorageModel_)
+    {
+        argStorageModel_ =
+            static_cast<ArtefactArgStorageModel*>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgStorageModel)
+                );
+    }
+    if(nullptr == argStorageModel_) { return false; }
+    ArtefactArgStorage *storage = argStorageModel_->findDataItemByAppIdImpl(arg_->argStorageId());
+    if(nullptr == storage) { return false; }
+    setStorage(storage->storage());
+    if(nullptr == argTypeModel_)
+    {
+        argTypeModel_ =
+            static_cast<ArtefactArgTypeModel*>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
+                );
+    }
+    if(nullptr == argTypeModel_) { return false; }
+    ArtefactArgType *type = argTypeModel_->findDataItemByAppIdImpl(arg_->argTypeId());
+    if(nullptr == type) { return false; }
+    setType(type->type());
+    setDefaultValue(arg_->defaultValue());
+    return true;
+}
 
 const QString &ArgumentBase::getName() const
 {
@@ -313,48 +351,48 @@ void ArgumentValueDataStringArray::setArray(const QString &value_)
 }
 
 
-ArgumentValue::ArgumentValue()
+DataTableArgumentValue::DataTableArgumentValue()
 {
     clearEffectArgumentId();
 }
 
-ArgumentValue::~ArgumentValue()
+DataTableArgumentValue::~DataTableArgumentValue()
 {
     freeDataArray();
 }
 
-bool ArgumentValue::hasDataArray() const
+bool DataTableArgumentValue::hasDataArray() const
 {
     return nullptr != m_argumentValueDataArray;
 }
 
-ArgumentValueDataArray *ArgumentValue::getDataArray() const
+ArgumentValueDataArray *DataTableArgumentValue::getDataArray() const
 {
     return m_argumentValueDataArray;
 }
 
-void ArgumentValue::setDataArray(ArgumentValueDataArray *argumentValueDataArray_)
+void DataTableArgumentValue::setDataArray(ArgumentValueDataArray *argumentValueDataArray_)
 {
     m_argumentValueDataArray = argumentValueDataArray_;
 }
 
-void ArgumentValue::freeDataArray()
+void DataTableArgumentValue::freeDataArray()
 {
     delete m_argumentValueDataArray;
     m_argumentValueDataArray = nullptr;
 }
 
-int ArgumentValue::getEffectArgumentId() const
+int DataTableArgumentValue::getEffectArgumentId() const
 {
     return m_effectArgumentId;
 }
 
-void ArgumentValue::clearEffectArgumentId()
+void DataTableArgumentValue::clearEffectArgumentId()
 {
     m_effectArgumentId = -1;
 }
 
-void ArgumentValue::setEffectArgumentId(int effectArgumentId_)
+void DataTableArgumentValue::setEffectArgumentId(int effectArgumentId_)
 {
     m_effectArgumentId = effectArgumentId_;
 }
@@ -1018,6 +1056,154 @@ void OpenGLArgumentValueBase::setUniformValue(
 void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_) const
 {
     f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
+}
+
+
+bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepIndex_)
+{
+    if(nullptr == artefact_ || !artefact_->isObjectLoaded()) { return false; }
+    if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
+    if(!setArguments(artefact_->getArtefactArg())) { return false; }
+    m_stepIndex = stepIndex_;
+    return true;
+}
+
+int IQuizImageDataArtefact::getStepIndex() const
+{
+    return m_stepIndex;
+}
+
+const ArgumentList &IQuizImageDataArtefact::getArguments() const
+{
+    return m_arguments;
+}
+
+IQuizImageDataArtefact *IQuizImageDataArtefact::create(const Artefact *artefact_, int stepIndex_)
+{
+    IQuizImageDataArtefact *artefact = nullptr;
+    if(nullptr == artefact_ || !artefact_->isObjectLoaded()) { return artefact; }
+
+    ArtefactTypeModel *artefactTypeModel = static_cast<ArtefactTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactTypeModel)
+                );
+    if(nullptr == artefactTypeModel) { return artefact; }
+    const ArtefactType *type = artefactTypeModel->findDataItemByAppIdImpl(artefact_->type());
+    if(nullptr == type) { return artefact; }
+    switch(type->id())
+    {
+    case to_underlying(ArtefactTypeEn::Vertex):
+        artefact = new QuizImageDataVertexArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::Fragment):
+        artefact = new QuizImageDataFragmentArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::Texture1D):
+        artefact = new QuizImageDataTexture1DArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::Texture2D):
+        artefact = new QuizImageDataTexture2DArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::Texture3D):
+        artefact = new QuizImageDataTexture3DArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::DataJson):
+        artefact = new QuizImageDataJsonArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::DataObj):
+        artefact = new QuizImageData3DOBJArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::ConvertJson):
+        artefact = new QuizImageDataConvertJsonArtefact();
+        break;
+    case to_underlying(ArtefactTypeEn::ScriptLua):
+        artefact = new QuizImageDataScriptLuaArtefact();
+        break;
+    default:
+        break;
+    }
+
+    if(!artefact->setArtefact(artefact_, stepIndex_))
+    {
+        delete artefact;
+        artefact = nullptr;
+    }
+
+    return artefact;
+}
+
+bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
+{
+    if(nullptr == args_ || !args_->isListLoaded()) { return false; }
+    for(int i = 0; i < args_->sizeImpl(); ++i)
+    {
+        const ArtefactArg *artefactArg = args_->dataItemAtImpl(i);
+        if(nullptr == artefactArg) { continue; }
+        ArgumentBase arg;
+        if(!arg.set(artefactArg)) { continue; }
+        m_arguments.push_back(arg);
+    }
+    return true;
+}
+
+
+bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
+{
+    m_vertexShader = getTextFromBinaryData(data_);
+    if(m_vertexShader.isEmpty())
+    {
+        m_vertexShader = ::loadTextFile(":/default.vert");
+    }
+    return !m_vertexShader.isEmpty();
+}
+
+
+bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
+{
+    m_fragmentShader = getTextFromBinaryData(data_);
+    if(m_fragmentShader.isEmpty())
+    {
+        m_fragmentShader = ::loadTextFile(":/default.frag");
+    }
+    return !m_fragmentShader.isEmpty();
+}
+
+
+bool QuizImageDataTexture1DArtefact::setData(const QByteArray &data_)
+{
+    return m_texture1D.loadFromData(data_);
+}
+
+
+bool QuizImageDataTexture2DArtefact::setData(const QByteArray &data_)
+{
+    return m_texture2D.loadFromData(data_);
+}
+
+
+bool QuizImageDataTexture3DArtefact::setData(const QByteArray &data_)
+{
+    return m_texture3D.loadFromData(data_);
+}
+
+
+bool QuizImageDataJsonArtefact::setData(const QByteArray &data_)
+{
+    m_document = QJsonDocument::fromJson(data_);
+    return !m_document.isEmpty();
+}
+
+
+bool QuizImageData3DOBJArtefact::setData(const QByteArray &data_)
+{
+    m_document = graphicsOBJtoJson(data_);
+    return !m_document.isEmpty();
+}
+
+
+bool QuizImageDataScriptLuaArtefact::setData(const QByteArray &data_)
+{
+    m_script = getTextFromBinaryData(data_);
+    return !m_script.isEmpty();
 }
 
 

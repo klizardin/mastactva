@@ -140,6 +140,8 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
     * 1.5.2) try match of key rect areas
     1.6) simplify rect finding (just all meaning rects)
     1.7) build utilities those can be used from GUI
+88. rename ImageSource (as now it is also and artefact, not only images)
+
 
 
 

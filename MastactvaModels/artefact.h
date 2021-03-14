@@ -76,6 +76,8 @@ public:
     ArtefactArgModel *getArtefactArg();
     const ArtefactArgModel *getArtefactArg() const;
 
+    bool isObjectLoaded() const;
+
 protected:
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
@@ -93,6 +95,9 @@ signals:
     void descriptionChanged();
     void createdChanged();
     void artefactArgChanged();
+
+protected slots:
+    void artefactFileDownloaded(const QString &url_);
 
 private:
     ArtefactModel *m_artefactModel = nullptr;

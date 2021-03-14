@@ -154,6 +154,11 @@ const ArtefactArgModel *Artefact::getArtefactArg() const
     return m_artefactArgModel;
 }
 
+bool Artefact::isObjectLoaded() const
+{
+    return IListModelInfoObjectImpl::isListLoadedImpl();
+}
+
 void Artefact::loadChildrenVF()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
@@ -168,7 +173,26 @@ void Artefact::objectLoadedVF()
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
+        QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
+        if(nullptr != m_objectModelInfo)
+        {
+            m_objectModelInfo->startLoadChildModel();
+        }
         sf->add(filename(), hash(), g_artefactsRelPath);
+    }
+}
+
+void Artefact::artefactFileDownloaded(const QString &url_)
+{
+    if(url_ != filename()) { return; }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        QObject::disconnect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
+        if(nullptr != m_objectModelInfo)
+        {
+            m_objectModelInfo->endLoadChildModel();
+        }
     }
 }
 
