@@ -154,6 +154,11 @@ const ArtefactArgModel *Artefact::getArtefactArg() const
     return m_artefactArgModel;
 }
 
+bool Artefact::isObjectLoaded() const
+{
+    return IListModelInfoObjectImpl::isListLoadedImpl();
+}
+
 void Artefact::loadChildrenVF()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);

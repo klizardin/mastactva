@@ -76,6 +76,8 @@ public:
     ArtefactArgModel *getArtefactArg();
     const ArtefactArgModel *getArtefactArg() const;
 
+    bool isObjectLoaded() const;
+
 protected:
     virtual void loadChildrenVF() override;
     virtual void objectLoadedVF() override;
