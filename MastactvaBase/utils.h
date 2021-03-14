@@ -5,6 +5,7 @@
 #include <QString>
 #include <QHash>
 #include <QDateTime>
+#include <QByteArray>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLTexture>
@@ -50,6 +51,9 @@ QDateTime dateTimeFromJsonString(const QString& dateTimeZ_);
 QString dateTimeToJsonString(const QDateTime &dt_);
 QString loadTextFile(const QString &filename_);
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
+QByteArray loadBinaryFile(const QString &filename_);
+QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
+QString getTextFromBinaryData(const QByteArray &data_);
 
 
 #if QT_CONFIG(opengl)
