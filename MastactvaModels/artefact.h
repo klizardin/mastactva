@@ -94,6 +94,9 @@ signals:
     void createdChanged();
     void artefactArgChanged();
 
+protected slots:
+    void artefactFileDownloaded(const QString &url_);
+
 private:
     ArtefactModel *m_artefactModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;

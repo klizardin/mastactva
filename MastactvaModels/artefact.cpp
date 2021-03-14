@@ -168,7 +168,26 @@ void Artefact::objectLoadedVF()
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf)
     {
+        QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
+        if(nullptr != m_objectModelInfo)
+        {
+            m_objectModelInfo->startLoadChildModel();
+        }
         sf->add(filename(), hash(), g_artefactsRelPath);
+    }
+}
+
+void Artefact::artefactFileDownloaded(const QString &url_)
+{
+    if(url_ != filename()) { return; }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        QObject::disconnect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
+        if(nullptr != m_objectModelInfo)
+        {
+            m_objectModelInfo->endLoadChildModel();
+        }
     }
 }
 
