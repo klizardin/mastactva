@@ -49,7 +49,7 @@ public:
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::modelInfo, &Image::m_parentModelInfo);
             addSpecial<IListModelInfo *>(layout::SpecialFieldEn::objectModelInfo, &Image::m_objectModelInfo);
             addField<int>("id", "imageId", &Image::id, &Image::setId);
-            addField<ImageSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
+            addField<FileSource>("filename", "imageSource", &Image::filename, &Image::setFilename);
             addField<QString>("", "localImageSource", &Image::localImageSource, &Image::setLocalImageSource);
             addField<QString>("hash", "imageHash", &Image::hash, &Image::setHash);
             addField<int>("gallery", "imageGallery", &Image::gallery, &Image::setGallery);
@@ -65,8 +65,8 @@ public:
 
     int id() const;
     void setId(const int &id_);
-    ImageSource filename() const;
-    void setFilename(const ImageSource &filename_);
+    FileSource filename() const;
+    void setFilename(const FileSource &filename_);
     QString getFilename() const;
     void setFilenameStr(const QString &filename_);
     QString localImageSource() const;
@@ -115,7 +115,7 @@ private:
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = 0;
     int m_id = -1;
-    ImageSource m_filename;
+    FileSource m_filename;
     QString m_localImageUrl;
     QString m_hash;
     int m_gallery = -1;

@@ -41,7 +41,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &Artefact::m_appId);
             addField<int>("id", "artefactId", &Artefact::id, &Artefact::setId);
             addField<QString>("name", "artefactName", &Artefact::name, &Artefact::setName);
-            addField<ImageSource>("filename", "artefactFilename", &Artefact::getFilename, &Artefact::setFilename);
+            addField<FileSource>("filename", "artefactFilename", &Artefact::getFilename, &Artefact::setFilename);
             addField<QString>("hash", "artefactHash", &Artefact::hash, &Artefact::setHash);
             addField<int>("type", "artefactTypeId", &Artefact::type, &Artefact::setType);
             addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
@@ -59,9 +59,9 @@ public:
     QString name() const;
     void setName(const QString &name_);
     QString filename() const;
-    ImageSource getFilename() const;
+    FileSource getFilename() const;
     void setFilename(const QString &filename_);
-    void setFilename(const ImageSource &filename_);
+    void setFilename(const FileSource &filename_);
     QString hash() const;
     void setHash(const QString &hash_);
     int type() const;
@@ -106,7 +106,7 @@ private:
     int m_appId = -1;
     int m_id = -1;
     QString m_name;
-    ImageSource m_filename;
+    FileSource m_filename;
     QString m_hash;
     int m_typeId = -1;
     QString m_description;

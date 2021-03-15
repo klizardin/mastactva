@@ -90,12 +90,12 @@ void Image::setId(const int &id_)
     emit idChanged();
 }
 
-ImageSource Image::filename() const
+FileSource Image::filename() const
 {
     return m_filename;
 }
 
-void Image::setFilename(const ImageSource &filename_)
+void Image::setFilename(const FileSource &filename_)
 {
     m_filename = filename_;
 
