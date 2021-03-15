@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QByteArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <type_traits>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
@@ -77,6 +78,8 @@ public:
 class Vector3di
 {
 public:
+    Vector3di() = default;
+    Vector3di(int x_, int y_, int z_);
     int x() const;
     void setX(int x_);
     int y() const;
@@ -86,6 +89,11 @@ public:
 
     int operator[] (std::size_t index_) const;
     int& operator[] (std::size_t index_);
+
+    void mask(const Vector3di &val_);
+
+    bool operator == (const Vector3di &val_) const;
+    bool operator < (const Vector3di &val_) const;
 
 private:
     int m_x = 0;
@@ -179,6 +187,11 @@ protected:
     static bool startsWith(const QStringRef &line_, const QString &str_, QStringRef &dataLine_);
     bool hasTextureIndicies() const;
     bool hasNormalIndicies() const;
+    void buildObject(int startLineNumber_, int endLineNumber_, const Vector3di &mask_, QJsonObject &obj_) const;
+    static QVector<WavefrontOBJFaceElement>::const_iterator lower_bound(
+            const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_);
+    static QVector<WavefrontOBJFaceElement>::const_iterator upper_bound(
+            const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_);
 
 private:
     QVector<WavefrontOBJItem> m_comments;
@@ -326,6 +339,7 @@ static const char *g_defaultObjectInfoDescriptionName = "description";
 static const char *g_defaultObjectInfoCreatedName = "created";
 static const char *g_defaultObjectInfoProgrammerName = "";
 static const char *g_randArgumentValueName = "__rand";
+static const char *g_currentSpecialwordName = "__current";
 
 
 #endif // UTILS_H

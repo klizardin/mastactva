@@ -10,6 +10,8 @@
 #include <QTextCodec>
 #include <QRegExp>
 #include <QDebug>
+#include <QJsonArray>
+#include <set>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/defines.h"
@@ -528,6 +530,11 @@ const QString &WavefrontOBJItem::getComment() const
 }
 
 
+Vector3di::Vector3di(int x_, int y_, int z_)
+    :m_x(x_), m_y(y_), m_z(z_)
+{
+}
+
 int Vector3di::x() const
 {
     return m_x;
@@ -589,6 +596,30 @@ int& Vector3di::operator[] (std::size_t index_)
     }
 }
 
+void Vector3di::mask(const Vector3di &val_)
+{
+    for(std::size_t i = 0; i < 3; i++)
+    {
+        if(val_[i] < 0) { (*this)[i] = -1; }
+    }
+}
+
+bool Vector3di::operator == (const Vector3di &val_) const
+{
+    return (*this)[0] == val_[0] &&
+            (*this)[1] == val_[1] &&
+            (*this)[2] == val_[2]
+            ;
+}
+
+bool Vector3di::operator < (const Vector3di &val_) const
+{
+    if((*this)[0] < val_[0]) { return true; }
+    if((*this)[0] > val_[0]) { return false; }
+    if((*this)[1] < val_[1]) { return true; }
+    if((*this)[1] > val_[1]) { return false; }
+    return (*this)[2] < val_[2];
+}
 
 
 bool Bool::get()
@@ -615,6 +646,7 @@ bool& Bool::ref()
 void parseWavefrontOBJLine(const QStringRef &line_, QVector4D &data_)
 {
     QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    data_.setZ(1.0f);
     std::size_t j = 0;
     for(const QStringRef &val_: values)
     {
@@ -956,7 +988,111 @@ bool WavefrontOBJ::hasNormalIndicies() const
 
 QJsonDocument WavefrontOBJ::toJsonData() const
 {
-    return QJsonDocument();
+    const bool hasTexIndixes = hasTextureIndicies();
+    const bool hasNormIndixes = hasNormalIndicies();
+    Vector3di mask(0, hasTexIndixes ? 0 : -1, hasNormIndixes ? 0 : -1);
+
+    QJsonArray objects;
+    if(m_objectNames.isEmpty())
+    {
+        QJsonObject obj;
+        buildObject(-1, -1, mask, obj);
+        objects.push_back(obj);
+    }
+    else
+    {
+        int prevLineNumber = 0;
+        for(const WavefrontOBJObjectName &objectName: m_objectNames)
+        {
+            QJsonObject obj;
+            buildObject(prevLineNumber, objectName.getLine(), mask, obj);
+            objects.push_back(obj);
+            prevLineNumber = objectName.getLine();
+        }
+        if(!m_faceElements.isEmpty())
+        {
+            QJsonObject obj;
+            buildObject(prevLineNumber, m_faceElements.back().getLine(), mask, obj);
+            objects.push_back(obj);
+        }
+    }
+
+    QJsonObject step;
+    step.insert(g_currentSpecialwordName, objects);
+    QJsonObject object;
+    object.insert(g_currentSpecialwordName, step);
+
+    return QJsonDocument(object);
+}
+
+
+QVector<WavefrontOBJFaceElement>::const_iterator WavefrontOBJ::lower_bound(
+        const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_)
+{
+    int i1 = 0, i2 = faceElements_.size();
+    for(;i2 - i1 > 1; )
+    {
+        const int i0 = (i2 - i1) / 2;
+        const int i0line = faceElements_[i0].getLine();
+        if(i0line <= lineNumber_)
+        {
+            i1 = i0;
+        }
+        if(i0line >= lineNumber_)
+        {
+            i2 = i0;
+        }
+    }
+    return std::begin(faceElements_) + i1;
+}
+
+QVector<WavefrontOBJFaceElement>::const_iterator WavefrontOBJ::upper_bound(
+        const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_)
+{
+    int i1 = 0, i2 = faceElements_.size();
+    for(;i2 - i1 > 1; )
+    {
+        const int i0 = (i2 - i1) / 2;
+        const int i0line = faceElements_[i0].getLine();
+        if(i0line <= lineNumber_)
+        {
+            i1 = i0;
+        }
+        if(i0line >= lineNumber_)
+        {
+            i2 = i0;
+        }
+    }
+    return std::begin(faceElements_) + i2;
+}
+
+void WavefrontOBJ::buildObject(
+        int startLineNumber_, int endLineNumber_,
+        const Vector3di &mask_,
+        QJsonObject &obj_
+        ) const
+{
+    QVector<WavefrontOBJFaceElement>::const_iterator fbit = std::begin(m_faceElements);
+    QVector<WavefrontOBJFaceElement>::const_iterator feit = std::end(m_faceElements);
+    if(!(startLineNumber_ < 0 && endLineNumber_ < 0))
+    {
+        fbit = upper_bound(m_faceElements, startLineNumber_);
+        feit = lower_bound(m_faceElements, endLineNumber_);
+    }
+    std::set<Vector3di> unique;
+    for(QVector<WavefrontOBJFaceElement>::const_iterator it = fbit; it != feit; ++it)
+    {
+        for(const Vector3di &f_ : static_cast<const QVector<Vector3di>&>(*it))
+        {
+            Vector3di f(f_);
+            f.mask(mask_);
+            unique.insert(f);
+        }
+    }
+    // TODO: allocate vertex, texture, normal
+    // fill vertex, texture, normal
+    // fill indexes
+    // output to QJsonObject
 }
 
 
