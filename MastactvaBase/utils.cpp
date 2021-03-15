@@ -822,7 +822,7 @@ void WavefrontOBJ::correct()
 {
     for(WavefrontOBJFaceElement &fItems_ : m_faceElements)
     {
-        for(Vector3di &f_: fItems_)
+        for(Vector3di &f_: static_cast<QVector<Vector3di>&>(fItems_))
         {
             if(f_.x() < 0)
             {
@@ -854,7 +854,7 @@ void WavefrontOBJ::correct()
     }
     for(WavefrontOBJLineElement &lItems_ : m_lineElements)
     {
-        for(int &l_: lItems_)
+        for(int &l_: static_cast<QVector<int>&>(lItems_))
         {
             if(l_ < 0)
             {
@@ -876,13 +876,13 @@ bool WavefrontOBJ::validate() const
                 [this](const WavefrontOBJFaceElement &fItems_)->bool
     {
         return std::all_of(
-                std::begin(fItems_),
-                std::end(fItems_),
+                std::begin(static_cast<const QVector<Vector3di>&>(fItems_)),
+                std::end(static_cast<const QVector<Vector3di>&>(fItems_)),
                 [this](const Vector3di &f_)->bool
         {
-            return f_.x() >= 0 && f_.x() < m_vertex.size() &&
-                f_.y() >= 0 && f_.y() < m_vertexTexture.size() &&
-                f_.z() >= 0 && f_.z() < m_normal.size()
+            return (f_.x() >= 0 && f_.x() < m_vertex.size()) &&
+                ((f_.y() >= -1 && f_.y() < m_vertexTexture.size())) &&
+                ((f_.z() >= -1 && f_.z() < m_normal.size()))
             ;
         });
     });
@@ -894,8 +894,8 @@ bool WavefrontOBJ::validate() const
                 [this](const WavefrontOBJLineElement &lItem_)->bool
     {
         return std::all_of(
-                std::begin(lItem_),
-                std::end(lItem_),
+                std::begin(static_cast<const QVector<int>&>(lItem_)),
+                std::end(static_cast<const QVector<int>&>(lItem_)),
                 [this](const int &l_)->bool
         {
             return l_ >= 0 && l_ < m_vertex.size();
@@ -918,6 +918,40 @@ bool WavefrontOBJ::startsWith(const QStringRef &line_, const QString &str_, QStr
         dataLine_.clear();
         return false;
     }
+}
+
+bool WavefrontOBJ::hasTextureIndicies() const
+{
+    return std::all_of(
+                std::begin(m_faceElements),
+                std::end(m_faceElements),
+                [this](const WavefrontOBJFaceElement &fItems_)->bool
+    {
+        return std::all_of(
+                std::begin(fItems_),
+                std::end(fItems_),
+                [this](const Vector3di &f_)->bool
+        {
+            return f_.y() >= 0 && f_.y() < m_vertexTexture.size();
+        });
+    });
+}
+
+bool WavefrontOBJ::hasNormalIndicies() const
+{
+    return std::all_of(
+                std::begin(m_faceElements),
+                std::end(m_faceElements),
+                [this](const WavefrontOBJFaceElement &fItems_)->bool
+    {
+        return std::all_of(
+                std::begin(fItems_),
+                std::end(fItems_),
+                [this](const Vector3di &f_)->bool
+        {
+            return f_.z() >= 0 && f_.z() < m_vertexTexture.size();
+        });
+    });
 }
 
 QJsonDocument WavefrontOBJ::toJsonData() const

@@ -177,6 +177,8 @@ public:
 
 protected:
     static bool startsWith(const QStringRef &line_, const QString &str_, QStringRef &dataLine_);
+    bool hasTextureIndicies() const;
+    bool hasNormalIndicies() const;
 
 private:
     QVector<WavefrontOBJItem> m_comments;
