@@ -1080,19 +1080,66 @@ void WavefrontOBJ::buildObject(
         feit = lower_bound(m_faceElements, endLineNumber_);
     }
     std::set<Vector3di> unique;
+    int indexesCount = 0;
     for(QVector<WavefrontOBJFaceElement>::const_iterator it = fbit; it != feit; ++it)
     {
+        int fc = 0;
         for(const Vector3di &f_ : static_cast<const QVector<Vector3di>&>(*it))
         {
             Vector3di f(f_);
             f.mask(mask_);
             unique.insert(f);
+            ++indexesCount;
+            if(fc >= 3) { ++indexesCount; }
+            ++fc;
         }
     }
-    // TODO: allocate vertex, texture, normal
-    // fill vertex, texture, normal
-    // fill indexes
-    // output to QJsonObject
+    QVector<QVector4D> vertex;
+    QVector<QVector3D> vertexTexture;
+    QVector<QVector3D> vertexNormal;
+    QVector<int> indexes;
+    indexes.resize(indexesCount);
+
+    vertex.resize(unique.size());
+    vertexTexture.resize(unique.size());
+    vertexNormal.resize(unique.size());
+
+    int j = 0;
+    for(const Vector3di &f_: unique)
+    {
+        if(f_.x() >= 0 && f_.x() < m_vertex.size())
+        {
+            vertex[j] = m_vertex[f_.x()];
+        }
+        if(f_.y() >=0 && f_.y() < m_vertexTexture.size())
+        {
+            vertexTexture[j] = m_vertexTexture[f_.y()];
+        }
+        if(f_.z() >=0 && f_.z() < m_normal.size())
+        {
+            vertexNormal[j] = m_normal[f_.z()];
+        }
+        ++j;
+    }
+
+    int i0 = 0;
+    for(QVector<WavefrontOBJFaceElement>::const_iterator it = fbit; it != feit; ++it)
+    {
+        int fc = 0;
+        for(const Vector3di &f_ : static_cast<const QVector<Vector3di>&>(*it))
+        {
+            Vector3di f(f_);
+            f.mask(mask_);
+            std::set<Vector3di>::const_iterator fit = unique.find(f);
+            if(std::end(unique) == fit) { indexes[i0] = 0; }
+            else { indexes[i0] = std::distance(std::begin(unique), fit); }
+            ++i0;
+            if(fc >= 3) { ++i0; }
+            ++fc;
+        }
+    }
+
+    // TODO: output to QJsonObject
 }
 
 
