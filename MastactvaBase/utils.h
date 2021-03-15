@@ -187,7 +187,7 @@ protected:
     static bool startsWith(const QStringRef &line_, const QString &str_, QStringRef &dataLine_);
     bool hasTextureIndicies() const;
     bool hasNormalIndicies() const;
-    void buildObject(int startLineNumber_, int endLineNumber_, const Vector3di &mask_, QJsonObject &obj_) const;
+    bool buildObject(int startLineNumber_, int endLineNumber_, const Vector3di &mask_, QJsonObject &obj_) const;
     static QVector<WavefrontOBJFaceElement>::const_iterator lower_bound(
             const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_);
     static QVector<WavefrontOBJFaceElement>::const_iterator upper_bound(
@@ -344,6 +344,9 @@ static const char *g_vertexSpecialwordName = "__vertex";
 static const char *g_vertexTextureSpecialwordName = "__texture";
 static const char *g_vertexNormalSpecialwordName = "__normal";
 static const char *g_indexesSpecialwordName = "__indexes";
+static const char *g_mainSpecialwordName = "__main";
+static const char *g_firstSpecialwordName = "__first";
+static const char *g_lastSpecialwordName = "__last";
 
 
 #endif // UTILS_H
