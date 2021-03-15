@@ -808,6 +808,7 @@ bool WavefrontOBJ::processLine(const QStringRef &line_, const QStringRef &commen
     }
     else if(line_.trimmed().isEmpty() && !comment_.isEmpty())
     {
+        // whole line comment
         WavefrontOBJItem c;
         c.setComment(comment_.toString());
         c.setLine(lineNumber_);
