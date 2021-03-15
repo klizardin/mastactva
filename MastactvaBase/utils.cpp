@@ -828,7 +828,7 @@ void WavefrontOBJ::correct()
             {
                 f_.setX(m_vertex.size() - f_.x());
             }
-            else if(f_.x() >= 1)
+            else
             {
                 f_.setX(f_.x() - 1);
             }
@@ -837,7 +837,7 @@ void WavefrontOBJ::correct()
             {
                 f_.setY(m_vertex.size() - f_.y());
             }
-            else if(f_.y() >= 1)
+            else
             {
                 f_.setY(f_.y() - 1);
             }
@@ -846,7 +846,7 @@ void WavefrontOBJ::correct()
             {
                 f_.setZ(m_vertex.size() - f_.z());
             }
-            else if(f_.z() >= 1)
+            else
             {
                 f_.setZ(f_.z() - 1);
             }
@@ -860,7 +860,7 @@ void WavefrontOBJ::correct()
             {
                 l_ = m_vertex.size() - l_;
             }
-            else if(l_ > 1)
+            else
             {
                 --l_;
             }
@@ -918,6 +918,11 @@ bool WavefrontOBJ::startsWith(const QStringRef &line_, const QString &str_, QStr
         dataLine_.clear();
         return false;
     }
+}
+
+QJsonDocument WavefrontOBJ::toJsonData() const
+{
+    return QJsonDocument();
 }
 
 
