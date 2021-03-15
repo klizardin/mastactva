@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <random>
 #include <QStringList>
 #include <QUrl>
 #include <QFile>
@@ -7,7 +8,7 @@
 #include <QTimeZone>
 #include <QTextStream>
 #include <QTextCodec>
-#include <random>
+#include <QRegExp>
 #include <QDebug>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
@@ -284,6 +285,7 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
     m_values.insert(g_nameName, line.mid(nb, ne - nb));
 }
 
+
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
 {
     comments_.clear();
@@ -503,3 +505,446 @@ void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArr
 }
 
 #endif  // #if QT_CONFIG(opengl)
+
+
+void WavefrontOBJItem::setLine(int line_)
+{
+    m_line = line_;
+}
+
+int WavefrontOBJItem::getLine() const
+{
+    return m_line;
+}
+
+void WavefrontOBJItem::setComment(const QString &comment_)
+{
+    m_comment = comment_;
+}
+
+const QString &WavefrontOBJItem::getComment() const
+{
+    return m_comment;
+}
+
+
+int Vector3di::x() const
+{
+    return m_x;
+}
+
+void Vector3di::setX(int x_)
+{
+    m_x = x_;
+}
+
+int Vector3di::y() const
+{
+    return m_y;
+}
+
+void Vector3di::setY(int y_)
+{
+    m_y = y_;
+}
+
+int Vector3di::z() const
+{
+    return m_z;
+}
+
+void Vector3di::setZ(int z_)
+{
+    m_z = z_;
+}
+
+int Vector3di::operator[] (std::size_t index_) const
+{
+    switch(index_)
+    {
+    case 0:
+        return m_x;
+    case 1:
+        return m_y;
+    case 2:
+        return m_z;
+    default:
+        return 0;
+    }
+}
+
+int& Vector3di::operator[] (std::size_t index_)
+{
+    static int fish;
+    switch(index_)
+    {
+    case 0:
+        return m_x;
+    case 1:
+        return m_y;
+    case 2:
+        return m_z;
+    default:
+        return fish;
+    }
+}
+
+
+
+bool Bool::get()
+{
+    return m_val;
+}
+
+void Bool::set(bool val_)
+{
+    m_val = val_;
+}
+
+bool Bool::val()
+{
+    return get();
+}
+
+bool& Bool::ref()
+{
+    return m_val;
+}
+
+
+void parseWavefrontOBJLine(const QStringRef &line_, QVector4D &data_)
+{
+    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    std::size_t j = 0;
+    for(const QStringRef &val_: values)
+    {
+        bool ok = false;
+        double vald = QVariant::fromValue(val_).toDouble(&ok);
+        if(ok)
+        {
+            data_[j] = vald;
+            j++;
+        }
+    }
+}
+
+void parseWavefrontOBJLine(const QStringRef &line_, QVector3D &data_)
+{
+    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    std::size_t j = 0;
+    for(const QStringRef &val_: values)
+    {
+        bool ok = false;
+        double vald = QVariant::fromValue(val_).toDouble(&ok);
+        if(ok)
+        {
+            data_[j] = vald;
+            j++;
+        }
+    }
+}
+
+void parseWavefrontOBJLine(const QStringRef &line_, QVector<Vector3di> &data_)
+{
+    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    for(const QStringRef &val_: values)
+    {
+        QVector<QStringRef> faceItems = val_.split(QChar('/'), Qt::SkipEmptyParts);
+        std::size_t j = 0;
+        Vector3di val;
+        for(const QStringRef &fval_: faceItems)
+        {
+            bool ok = false;
+            int vali = QVariant::fromValue(fval_).toInt(&ok);
+            if(ok)
+            {
+                val[j] = vali;
+                j++;
+            }
+        }
+        data_.push_back(val);
+    }
+}
+
+void parseWavefrontOBJLine(const QStringRef &line_, QVector<int> &data_)
+{
+    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    for(const QStringRef &val_: values)
+    {
+        bool ok = false;
+        int vali = QVariant::fromValue(val_).toInt(&ok);
+        if(ok)
+        {
+            data_.push_back(vali);
+        }
+    }
+}
+
+void parseWavefrontOBJLine(const QStringRef &line_, QString &data_)
+{
+    data_ = line_.toString();
+}
+
+void parseWavefrontOBJLine(const QStringRef &line_, Bool &data_)
+{
+    bool ok = false;
+    const int iv = line_.toInt(&ok);
+    if(ok)
+    {
+        data_.set(iv != 0);
+        return;
+    }
+    const bool fv = line_.indexOf("off", 0, Qt::CaseInsensitive) >= 0;
+    if(fv)
+    {
+        data_.set(false);
+        return;
+    }
+    const bool tv = line_.indexOf("on", 0, Qt::CaseInsensitive) >= 0;
+    if(tv)
+    {
+        data_.set(true);
+        return;
+    }
+    const bool bfv = line_.indexOf("false", 0, Qt::CaseInsensitive) >= 0;
+    if(bfv)
+    {
+        data_.set(false);
+        return;
+    }
+    const bool btv = line_.indexOf("true", 0, Qt::CaseInsensitive) >= 0;
+    if(btv)
+    {
+        data_.set(true);
+        return;
+    }
+    data_.set(false);
+}
+
+
+template<typename WavefrontOBJType_>
+void initWavefrontOBJ(
+        WavefrontOBJType_ &d_,
+        const QStringRef &dataLine_,
+        const QStringRef &comment_,
+        int lineNumber_,
+        QVector<WavefrontOBJType_> &vec_
+        )
+{
+    d_.setComment(comment_.toString());
+    d_.setLine(lineNumber_);
+    parseWavefrontOBJLine(dataLine_, d_);
+    vec_.push_back(d_);
+}
+
+bool WavefrontOBJ::processLine(const QStringRef &line_, const QStringRef &comment_, int lineNumber_)
+{
+    QStringRef dataLine;
+    if(startsWith(line_, "v ", dataLine))
+    {
+        WavefrontOBJVertex v;
+        initWavefrontOBJ(v, dataLine, comment_, lineNumber_, m_vertex);
+        return true;
+    }
+    else if(startsWith(line_, "vt ", dataLine))
+    {
+        WavefrontOBJVertexTexture vt;
+        initWavefrontOBJ(vt, dataLine, comment_, lineNumber_, m_vertexTexture);
+        return true;
+    }
+    else if(startsWith(line_, "vn ", dataLine))
+    {
+        WavefrontOBJVertexNormal vn;
+        initWavefrontOBJ(vn, dataLine, comment_, lineNumber_, m_normal);
+        return true;
+    }
+    else if(startsWith(line_, "vp ", dataLine))
+    {
+        WavefrontOBJVertexParameter vp;
+        initWavefrontOBJ(vp, dataLine, comment_, lineNumber_, m_vertexParameter);
+        return true;
+    }
+    else if(startsWith(line_, "f ", dataLine))
+    {
+        WavefrontOBJFaceElement f;
+        initWavefrontOBJ(f, dataLine, comment_, lineNumber_, m_faceElements);
+        return true;
+    }
+    else if(startsWith(line_, "l ", dataLine))
+    {
+        WavefrontOBJLineElement l;
+        initWavefrontOBJ(l, dataLine, comment_, lineNumber_, m_lineElements);
+        return true;
+    }
+    else if(startsWith(line_, "o ", dataLine))
+    {
+        WavefrontOBJObjectName o;
+        initWavefrontOBJ(o, dataLine, comment_, lineNumber_, m_objectNames);
+        return true;
+    }
+    else if(startsWith(line_, "g ", dataLine))
+    {
+        WavefrontOBJGroupName g;
+        initWavefrontOBJ(g, dataLine, comment_, lineNumber_, m_groupNames);
+        return true;
+    }
+    else if(startsWith(line_, "mtllib ", dataLine))
+    {
+        WavefrontOBJMaterialLib mtllib;
+        initWavefrontOBJ(mtllib, dataLine, comment_, lineNumber_, m_materialLibs);
+        return true;
+    }
+    else if(startsWith(line_, "usemtl ", dataLine))
+    {
+        WavefrontOBJMaterialName usemtl;
+        initWavefrontOBJ(usemtl, dataLine, comment_, lineNumber_, m_materialNames);
+        return true;
+    }
+    else if(startsWith(line_, "s ", dataLine))
+    {
+        WavefrontOBJSmoothing s;
+        initWavefrontOBJ(s, dataLine, comment_, lineNumber_, m_smoothing);
+        return true;
+    }
+    else if(line_.trimmed().isEmpty() && !comment_.isEmpty())
+    {
+        WavefrontOBJItem c;
+        c.setComment(comment_.toString());
+        c.setLine(lineNumber_);
+        m_comments.push_back(c);
+        return true;
+    }
+    return false;
+}
+
+void WavefrontOBJ::correct()
+{
+    for(WavefrontOBJFaceElement &fItems_ : m_faceElements)
+    {
+        for(Vector3di &f_: fItems_)
+        {
+            if(f_.x() < 0)
+            {
+                f_.setX(m_vertex.size() - f_.x());
+            }
+            else if(f_.x() >= 1)
+            {
+                f_.setX(f_.x() - 1);
+            }
+            if(f_.y() < 0)
+            {
+                f_.setY(m_vertex.size() - f_.y());
+            }
+            else if(f_.y() >= 1)
+            {
+                f_.setY(f_.y() - 1);
+            }
+            if(f_.z() < 0)
+            {
+                f_.setZ(m_vertex.size() - f_.z());
+            }
+            else if(f_.z() >= 1)
+            {
+                f_.setZ(f_.z() - 1);
+            }
+        }
+    }
+}
+
+bool WavefrontOBJ::validate() const
+{
+    const bool fInRange = std::all_of(
+                std::begin(m_faceElements),
+                std::end(m_faceElements),
+                [this](const WavefrontOBJFaceElement &fItems_)->bool
+    {
+        return std::all_of(
+                std::begin(fItems_),
+                std::end(fItems_),
+                [this](const Vector3di &f_)->bool
+        {
+            return f_.x() >= 0 && f_.x() < m_vertex.size() &&
+                f_.y() >= 0 && f_.y() < m_vertexTexture.size() &&
+                f_.z() >= 0 && f_.z() < m_normal.size()
+            ;
+        });
+    });
+    if(!fInRange) { return false; }
+
+    const bool lInRange = std::all_of(
+                std::begin(m_lineElements),
+                std::end(m_lineElements),
+                [this](const WavefrontOBJLineElement &lItem_)->bool
+    {
+        return std::all_of(
+                std::begin(lItem_),
+                std::end(lItem_),
+                [this](const int &l_)->bool
+        {
+            return l_ >= 0 && l_ < m_vertex.size();
+        });
+    });
+    if(!lInRange) { return false; }
+
+    return true;
+}
+
+bool WavefrontOBJ::startsWith(const QStringRef &line_, const QString &str_, QStringRef &dataLine_)
+{
+    if(line_.startsWith(str_))
+    {
+        dataLine_ = line_.mid(str_.length());
+        return true;
+    }
+    else
+    {
+        dataLine_.clear();
+        return false;
+    }
+}
+
+
+QStringRef removeComment(const QStringRef &str_, QStringRef &comment_)
+{
+    const int cs = str_.indexOf(QChar('#'));
+    if(cs >= 0)
+    {
+        comment_ = str_.mid(cs);
+        return str_.mid(0, cs);
+    }
+    else
+    {
+        return  str_;
+    }
+}
+
+QJsonDocument graphicsOBJtoJson(const QString &objData_)
+{
+    WavefrontOBJ *obj = parseGraphicsOBJ(objData_);
+    QJsonDocument resultDocument;
+    if(nullptr != obj)
+    {
+        resultDocument = obj->toJsonData();
+    }
+    return resultDocument;
+}
+
+WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
+{
+    WavefrontOBJ *res = new WavefrontOBJ();
+    QVector<QStringRef> lines = objData_.splitRef(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
+    int lineNumber = 0;
+    for(const QStringRef &line0 : lines)
+    {
+        QStringRef comment;
+        const QStringRef line = removeComment(line0, comment);
+        if(res->processLine(line, comment, lineNumber)) { ++lineNumber; }
+    }
+    res->correct();
+    if(!res->validate())
+    {
+        delete res;
+        res = nullptr;
+    }
+    return res;
+}
