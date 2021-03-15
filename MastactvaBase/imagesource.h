@@ -9,15 +9,15 @@
 #include <QJsonValue>
 
 
-class ImageSource : public QString
+class FileSource : public QString
 {
 public:
     using QString::QString;
-    ImageSource(const QString &str_)
+    FileSource(const QString &str_)
     {
         operator=(str_);
     }
-    ImageSource &operator = (const QString& str_)
+    FileSource &operator = (const QString& str_)
     {
         *static_cast<QString *>(this) = str_;
         return *this;
@@ -27,7 +27,7 @@ public:
 
 namespace layout
 {
-    inline QVariant getValue(const ImageSource &val_, bool toQML_ = true)
+    inline QVariant getValue(const FileSource &val_, bool toQML_ = true)
     {
         if(toQML_)
         {
@@ -42,12 +42,12 @@ namespace layout
         }
     }
 
-    inline void setValue(const QVariant &var_, ImageSource &dta_)
+    inline void setValue(const QVariant &var_, FileSource &dta_)
     {
         dta_ = qvariant_cast<QString>(var_);
     }
 
-    inline void setValue(const QJsonValue &var_, ImageSource &dta_)
+    inline void setValue(const QJsonValue &var_, FileSource &dta_)
     {
         dta_ = var_.toString();
     }

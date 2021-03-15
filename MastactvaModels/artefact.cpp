@@ -53,17 +53,17 @@ QString Artefact::filename() const
     return getFilename();
 }
 
-ImageSource Artefact::getFilename() const
+FileSource Artefact::getFilename() const
 {
     return m_filename;
 }
 
 void Artefact::setFilename(const QString &filename_)
 {
-    setFilename(ImageSource(filename_));
+    setFilename(FileSource(filename_));
 }
 
-void Artefact::setFilename(const ImageSource &filename_)
+void Artefact::setFilename(const FileSource &filename_)
 {
     m_filename = filename_;
 
