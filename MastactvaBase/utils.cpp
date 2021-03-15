@@ -831,6 +831,7 @@ void WavefrontOBJ::correct()
             {
                 f_.setX(f_.x() - 1);
             }
+
             if(f_.y() < 0)
             {
                 f_.setY(m_vertex.size() - f_.y());
@@ -839,6 +840,7 @@ void WavefrontOBJ::correct()
             {
                 f_.setY(f_.y() - 1);
             }
+
             if(f_.z() < 0)
             {
                 f_.setZ(m_vertex.size() - f_.z());
@@ -846,6 +848,20 @@ void WavefrontOBJ::correct()
             else if(f_.z() >= 1)
             {
                 f_.setZ(f_.z() - 1);
+            }
+        }
+    }
+    for(WavefrontOBJLineElement &lItems_ : m_lineElements)
+    {
+        for(int &l_: lItems_)
+        {
+            if(l_ < 0)
+            {
+                l_ = m_vertex.size() - l_;
+            }
+            else if(l_ > 1)
+            {
+                --l_;
             }
         }
     }
