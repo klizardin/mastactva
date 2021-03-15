@@ -340,6 +340,10 @@ static const char *g_defaultObjectInfoCreatedName = "created";
 static const char *g_defaultObjectInfoProgrammerName = "";
 static const char *g_randArgumentValueName = "__rand";
 static const char *g_currentSpecialwordName = "__current";
+static const char *g_vertexSpecialwordName = "__vertex";
+static const char *g_vertexTextureSpecialwordName = "__texture";
+static const char *g_vertexNormalSpecialwordName = "__normal";
+static const char *g_indexesSpecialwordName = "__indexes";
 
 
 #endif // UTILS_H

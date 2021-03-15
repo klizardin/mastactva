@@ -1111,11 +1111,11 @@ void WavefrontOBJ::buildObject(
         {
             vertex[j] = m_vertex[f_.x()];
         }
-        if(f_.y() >=0 && f_.y() < m_vertexTexture.size())
+        if(f_.y() >= 0 && f_.y() < m_vertexTexture.size())
         {
             vertexTexture[j] = m_vertexTexture[f_.y()];
         }
-        if(f_.z() >=0 && f_.z() < m_normal.size())
+        if(f_.z() >= 0 && f_.z() < m_normal.size())
         {
             vertexNormal[j] = m_normal[f_.z()];
         }
@@ -1139,7 +1139,57 @@ void WavefrontOBJ::buildObject(
         }
     }
 
-    // TODO: output to QJsonObject
+    QJsonObject vertexObj;
+    int vi = 0;
+    for(const QVector4D &v_ : vertex)
+    {
+        QJsonArray arr;
+        for(std::size_t i = 0; i < 4; i++)
+        {
+            arr.append(QJsonValue(v_[i]));
+        }
+        vertexObj.insert(QString::number(vi), arr);
+        ++vi;
+    }
+    obj_.insert(g_vertexSpecialwordName, vertexObj);
+    if(mask_.y() >= 0)
+    {
+        Q_ASSERT(vertexTexture.size() == vertex.size());
+        int vti = 0;
+        for(const QVector3D &v_ : vertexTexture)
+        {
+            QJsonArray arr;
+            for(std::size_t i = 0; i < 3; i++)
+            {
+                arr.append(QJsonValue(v_[i]));
+            }
+            vertexObj.insert(QString::number(vti), arr);
+            ++vti;
+        }
+        obj_.insert(g_vertexTextureSpecialwordName, vertexObj);
+    }
+    if(mask_.z() >= 0)
+    {
+        Q_ASSERT(vertexTexture.size() == vertex.size());
+        int vni = 0;
+        for(const QVector3D &v_ : vertexNormal)
+        {
+            QJsonArray arr;
+            for(std::size_t i = 0; i < 3; i++)
+            {
+                arr.append(QJsonValue(v_[i]));
+            }
+            vertexObj.insert(QString::number(vni), arr);
+            ++vni;
+        }
+        obj_.insert(g_vertexNormalSpecialwordName, vertexObj);
+    }
+    QJsonArray indexesArr;
+    for(const int &index_ : indexes)
+    {
+        indexesArr.append(index_);
+    }
+    obj_.insert(g_indexesSpecialwordName, indexesArr);
 }
 
 
