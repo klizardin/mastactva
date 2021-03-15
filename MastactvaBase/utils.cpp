@@ -1089,8 +1089,9 @@ void WavefrontOBJ::buildObject(
             Vector3di f(f_);
             f.mask(mask_);
             unique.insert(f);
+            // allocate triangles for polygons (pt.count() > 3)
             ++indexesCount;
-            if(fc >= 3) { ++indexesCount; }
+            if(fc >= 3) { indexesCount += 2; }
             ++fc;
         }
     }
@@ -1122,19 +1123,25 @@ void WavefrontOBJ::buildObject(
         ++j;
     }
 
-    int i0 = 0;
     for(QVector<WavefrontOBJFaceElement>::const_iterator it = fbit; it != feit; ++it)
     {
         int fc = 0;
+        std::vector<std::size_t> ii;
         for(const Vector3di &f_ : static_cast<const QVector<Vector3di>&>(*it))
         {
             Vector3di f(f_);
             f.mask(mask_);
             std::set<Vector3di>::const_iterator fit = unique.find(f);
-            if(std::end(unique) == fit) { indexes[i0] = 0; }
-            else { indexes[i0] = std::distance(std::begin(unique), fit); }
-            ++i0;
-            if(fc >= 3) { ++i0; }
+            std::size_t ci = 0;
+            if(std::end(unique) != fit) { ci = std::distance(std::begin(unique), fit); }
+            // build triangles
+            if(fc >= 3 && !ii.empty())
+            {
+                const std::size_t prev = ii.back();
+                ii.push_back(ii[0]);
+                ii.push_back(prev);
+            }
+            ii.push_back(ci);
             ++fc;
         }
     }
@@ -1215,6 +1222,8 @@ QJsonDocument graphicsOBJtoJson(const QString &objData_)
     {
         resultDocument = obj->toJsonData();
     }
+    delete obj;
+    obj = nullptr;
     return resultDocument;
 }
 
