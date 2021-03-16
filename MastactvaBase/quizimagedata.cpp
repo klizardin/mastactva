@@ -1207,6 +1207,67 @@ bool QuizImageDataScriptLuaArtefact::setData(const QByteArray &data_)
 }
 
 
+QuizImageDataObject *QuizImageDataObject::create(EffectObjects *effectObject_)
+{
+    if(nullptr == effectObject_ ||
+            nullptr == effectObject_->getObjectInfoModel() ||
+            !effectObject_->getObjectInfoModel()->isListLoaded() ||
+            nullptr == effectObject_->getObjectInfoModel()->getCurrentDataItem() ||
+            nullptr == effectObject_->getObjectArtefacts() ||
+            !effectObject_->getObjectArtefacts()->isListLoaded()
+            ) { return nullptr; }
+    QuizImageDataObject *res = new QuizImageDataObject();
+    res->m_programmerName = effectObject_->getObjectInfoModel()->getCurrentDataItem()->programmerName();
+    for(int i = 0; i < effectObject_->getObjectArtefacts()->sizeImpl(); i++)
+    {
+        ObjectArtefact *objectArtefact = effectObject_->getObjectArtefacts()->dataItemAtImpl(i);
+        const ArtefactModel *artefactModel = objectArtefact->getArtefact();
+        if(nullptr == artefactModel ||
+                !artefactModel->isListLoaded()
+                ) { continue; }
+        for(int j = 0; j < artefactModel->sizeImpl(); j++)
+        {
+            const Artefact *artefact = artefactModel->dataItemAtImpl(j);
+            IQuizImageDataArtefact *imageDataArtefact = IQuizImageDataArtefact::create(artefact, objectArtefact->stepIndex());
+            if(nullptr != imageDataArtefact &&
+                    nullptr != res)
+            {
+                res->m_artefacts.push_back(imageDataArtefact);
+            }
+        }
+    }
+    if(nullptr != res)
+    {
+        res->sortArtefacts();
+    }
+    return res;
+}
+
+const QString &QuizImageDataObject::getProgrammerName() const
+{
+    return m_programmerName;
+}
+
+const QVector<IQuizImageDataArtefact *> &QuizImageDataObject::getArtefacts() const
+{
+    return m_artefacts;
+}
+
+void QuizImageDataObject::sortArtefacts()
+{
+    std::sort(
+        std::begin(m_artefacts),
+        std::end(m_artefacts),
+        [](const IQuizImageDataArtefact *a1_, const IQuizImageDataArtefact *a2_)->bool
+    {
+        return nullptr != a1_ &&
+                nullptr != a2_ &&
+                a1_->getStepIndex() < a2_->getStepIndex()
+                ;
+    });
+}
+
+
 QuizImageData::QuizImageData()
 {
     m_newFromImageUrl = g_noImage;

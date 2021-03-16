@@ -907,71 +907,24 @@ private:
 };
 
 
-
-
-
-class QuizImageDataArtefact
-{
-public:
-    QuizImageDataArtefact() = default;
-
-    int getIndex() const;
-    void setIndex(int index_);
-
-    bool isData() const;
-    bool isLuaScript() const;
-    bool isTexture() const;
-    bool isVertexShader() const;
-    bool isFragmentShader() const;
-
-    const QJsonDocument &getData() const;
-    void setJsonData(const QString &jsonData_);
-    void setOBJData(const QString &objData_);
-
-    const QString &getLuaScript() const;
-    void setLuaScript(const QString &luaScript_);
-
-    const QImage &getTextureImage() const;
-    void setTextureImage(const QString &imageUrl_);
-
-    const QString &getVertexShader() const;
-    void setVertexShader(const QString &vertexShader_);
-
-    const QString &getFragmentShader() const;
-    void setFragmentShader(const QString &fragmentShader_);
-
-private:
-    int m_index = -1;
-    QJsonDocument *m_artefactDocument = nullptr;
-    QString *m_luaScript = nullptr;
-    QImage *m_texture = nullptr;
-    QString *m_vertexShader = nullptr;
-    QString *m_fragmentShader = nullptr;
-};
+class EffectObjects;
 
 
 class QuizImageDataObject
 {
 public:
-    QuizImageDataObject(const QString &programmerName_);
+    QuizImageDataObject() = default;
 
-    void setArtefact(const QString &artefactType_, const QString &artefactDataString_, int artefactIndex_);
-
-    void setArtefactVertexShader(const QString &vertexShader_, int artefactIndex_);
-    void setArtefactFragmentShader(const QString &fragmentShader_, int artefactIndex_);
-    void setArtefactDataJson(const QString &jsonData_, int artefactIndex_);
-    void setArtefactDataOBJ(const QString &objData_, int artefactIndex_);
-
-    void initDefaultShaderArtefacts();
-
-    const QList<QuizImageDataArtefact> &getArtefacts() const;
+    static QuizImageDataObject *create(EffectObjects *effectObject_);
+    const QString &getProgrammerName() const;
+    const QVector<IQuizImageDataArtefact *> &getArtefacts() const;
 
 protected:
     void sortArtefacts();
 
 protected:
     QString m_programmerName;
-    QList<QuizImageDataArtefact> m_artefactData;
+    QVector<IQuizImageDataArtefact *> m_artefacts;
 };
 
 
