@@ -790,6 +790,7 @@ protected:
 
 protected:
     bool setArguments(const ArtefactArgModel *args_);
+    bool setArguments(const QString &shaderCode_);
 
 private:
     int m_stepIndex = 0;

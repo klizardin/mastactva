@@ -1146,6 +1146,13 @@ bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
     return true;
 }
 
+bool IQuizImageDataArtefact::setArguments(const QString &shaderCode_)
+{
+    if(shaderCode_.trimmed().isEmpty()) { return false; }
+
+    return true;
+}
+
 
 bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
 {
@@ -1154,6 +1161,7 @@ bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
     {
         m_vertexShader = ::loadTextFile(":/default.vert");
     }
+    setArguments(m_vertexShader);
     return !m_vertexShader.isEmpty();
 }
 
@@ -1165,6 +1173,7 @@ bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
     {
         m_fragmentShader = ::loadTextFile(":/default.frag");
     }
+    setArguments(m_fragmentShader);
     return !m_fragmentShader.isEmpty();
 }
 
@@ -1365,76 +1374,18 @@ void QuizImageData::useNewEffect()
     m_newArgumentSetId = m_argumentSetId;
 }
 
-void QuizImageData::setShaders(const QString &vertexShader_, const QString &fragmentShader_)
-{
-    m_vertexShader = vertexShader_;
-    m_fragmentShader = fragmentShader_;
-}
-
-void QuizImageData::setVertexShader(const QString &vertexShader_)
-{
-    m_vertexShader = vertexShader_;
-}
-
-void QuizImageData::setFragmentShader(const QString &fragmentShader_)
-{
-    m_fragmentShader = fragmentShader_;
-}
-
-void QuizImageData::initDefaultShaders()
-{
-    if(m_vertexShader.isEmpty())
-    {
-        m_vertexShader = ::loadTextFile(":/default.vert");
-    }
-    if(m_fragmentShader.isEmpty())
-    {
-        m_fragmentShader = ::loadTextFile(":/default.frag");
-    }
-}
-
-void QuizImageData::setArguments(const QList<ArgumentInfo> &arguments_)
-{
-    m_arguments = arguments_;
-}
-
-void QuizImageData::clearArguments()
-{
-    m_arguments.clear();
-}
-
-void QuizImageData::appendArguments(const ArgumentInfo &argument_)
-{
-    m_arguments.push_back(argument_);
-}
-
-void QuizImageData::setArgumentValue(int argId_, const QString &value_)
-{
-    const auto fita = std::find_if(
-                std::begin(m_arguments),
-                std::end(m_arguments),
-                [argId_](const ArgumentInfo &ai)->bool
-    {
-        return ai.getArgId() == argId_;
-    });
-    if(std::end(m_arguments) != fita)
-    {
-        fita->setValue(value_);
-    }
-}
-
 bool QuizImageData::isFromImageIsUrl() const
 {
     //QUrl url(m_fromImageUrl);
     //return url.scheme() != "qrc";
-    return m_fromImageUrl != g_noImage;
+    return !isDefaultImage(m_fromImageUrl);
 }
 
 bool QuizImageData::isToImageIsUrl() const
 {
     //QUrl url(m_toImageUrl);
     //return url.scheme() != "qrc";
-    return m_toImageUrl != g_noImage;
+    return !isDefaultImage(m_toImageUrl);
 }
 
 const QString &QuizImageData::getFromImageUrl() const
@@ -1445,26 +1396,6 @@ const QString &QuizImageData::getFromImageUrl() const
 const QString &QuizImageData::getToImageUrl() const
 {
     return m_toImageUrl;
-}
-
-const QList<ArgumentInfo> &QuizImageData::getArguments() const
-{
-    return m_arguments;
-}
-
-QList<ArgumentInfo> &QuizImageData::getArgumentsNC()
-{
-    return m_arguments;
-}
-
-const QString &QuizImageData::getVertexShader() const
-{
-    return m_vertexShader;
-}
-
-const QString &QuizImageData::getFragmentShader() const
-{
-    return m_fragmentShader;
 }
 
 void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)
