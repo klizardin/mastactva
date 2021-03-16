@@ -1062,8 +1062,9 @@ void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_)
 bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepIndex_)
 {
     if(nullptr == artefact_ || !artefact_->isObjectLoaded()) { return false; }
-    if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
+    // before set data as setData can add arguments, so setup default arguments
     if(!setArguments(artefact_->getArtefactArg())) { return false; }
+    if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
     m_stepIndex = stepIndex_;
     return true;
 }
