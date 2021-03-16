@@ -352,7 +352,7 @@ protected:
 
 private:
     DataTableArgumentValue m_argument;
-    int *m_intValue = nullptr;
+    int *m_intValue = nullptr;      // TODO: maybe, use QVariant
     float *m_floatValue = nullptr;
     QString *m_stringValue = nullptr;
     QHash<QString, DataTableValue> m_children;
@@ -914,6 +914,7 @@ class QuizImageDataObject
 {
 public:
     QuizImageDataObject() = default;
+    ~QuizImageDataObject();
 
     static QuizImageDataObject *create(EffectObjects *effectObject_);
     const QString &getProgrammerName() const;
@@ -921,6 +922,7 @@ public:
 
 protected:
     void sortArtefacts();
+    void free();
 
 protected:
     QString m_programmerName;
@@ -974,7 +976,7 @@ protected:
     int m_newArgumentSetId = -1;
     int m_effectId = -1;
     int m_argumentSetId = -1;
-    QList<QuizImageDataObject> m_objects;
+    QVector<QuizImageDataObject*> m_objects;
     ArgumentsSet m_arguments;
 };
 

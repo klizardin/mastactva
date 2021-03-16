@@ -1207,6 +1207,11 @@ bool QuizImageDataScriptLuaArtefact::setData(const QByteArray &data_)
 }
 
 
+QuizImageDataObject::~QuizImageDataObject()
+{
+    free();
+}
+
 QuizImageDataObject *QuizImageDataObject::create(EffectObjects *effectObject_)
 {
     if(nullptr == effectObject_ ||
@@ -1265,6 +1270,16 @@ void QuizImageDataObject::sortArtefacts()
                 a1_->getStepIndex() < a2_->getStepIndex()
                 ;
     });
+}
+
+void QuizImageDataObject::free()
+{
+    for(IQuizImageDataArtefact *&ptr : m_artefacts)
+    {
+        delete ptr;
+        ptr = nullptr;
+    }
+    m_artefacts.clear();
 }
 
 
