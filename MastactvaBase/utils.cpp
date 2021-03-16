@@ -1255,3 +1255,15 @@ WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
     }
     return res;
 }
+
+bool isDefaultImage(const QString &imageURLStr_)
+{
+    return imageURLStr_ == g_noImage ||
+            imageURLStr_ == g_noImageQRC
+            ;
+}
+
+bool isDefaultImage(const QUrl &imageUrl_)
+{
+    return isDefaultImage(imageUrl_.toString());
+}

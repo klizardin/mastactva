@@ -1062,8 +1062,9 @@ void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_)
 bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepIndex_)
 {
     if(nullptr == artefact_ || !artefact_->isObjectLoaded()) { return false; }
-    if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
+    // before set data as setData can add arguments, so setup default arguments
     if(!setArguments(artefact_->getArtefactArg())) { return false; }
+    if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
     m_stepIndex = stepIndex_;
     return true;
 }
@@ -1145,6 +1146,13 @@ bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
     return true;
 }
 
+bool IQuizImageDataArtefact::setArguments(const QString &shaderCode_)
+{
+    if(shaderCode_.trimmed().isEmpty()) { return false; }
+
+    return true;
+}
+
 
 bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
 {
@@ -1153,6 +1161,7 @@ bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
     {
         m_vertexShader = ::loadTextFile(":/default.vert");
     }
+    setArguments(m_vertexShader);
     return !m_vertexShader.isEmpty();
 }
 
@@ -1164,6 +1173,7 @@ bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
     {
         m_fragmentShader = ::loadTextFile(":/default.frag");
     }
+    setArguments(m_fragmentShader);
     return !m_fragmentShader.isEmpty();
 }
 
@@ -1204,6 +1214,82 @@ bool QuizImageDataScriptLuaArtefact::setData(const QByteArray &data_)
 {
     m_script = getTextFromBinaryData(data_);
     return !m_script.isEmpty();
+}
+
+
+QuizImageDataObject::~QuizImageDataObject()
+{
+    free();
+}
+
+QuizImageDataObject *QuizImageDataObject::create(EffectObjects *effectObject_)
+{
+    if(nullptr == effectObject_ ||
+            nullptr == effectObject_->getObjectInfoModel() ||
+            !effectObject_->getObjectInfoModel()->isListLoaded() ||
+            nullptr == effectObject_->getObjectInfoModel()->getCurrentDataItem() ||
+            nullptr == effectObject_->getObjectArtefacts() ||
+            !effectObject_->getObjectArtefacts()->isListLoaded()
+            ) { return nullptr; }
+    QuizImageDataObject *res = new QuizImageDataObject();
+    res->m_programmerName = effectObject_->getObjectInfoModel()->getCurrentDataItem()->programmerName();
+    for(int i = 0; i < effectObject_->getObjectArtefacts()->sizeImpl(); i++)
+    {
+        ObjectArtefact *objectArtefact = effectObject_->getObjectArtefacts()->dataItemAtImpl(i);
+        const ArtefactModel *artefactModel = objectArtefact->getArtefact();
+        if(nullptr == artefactModel ||
+                !artefactModel->isListLoaded()
+                ) { continue; }
+        for(int j = 0; j < artefactModel->sizeImpl(); j++)
+        {
+            const Artefact *artefact = artefactModel->dataItemAtImpl(j);
+            IQuizImageDataArtefact *imageDataArtefact = IQuizImageDataArtefact::create(artefact, objectArtefact->stepIndex());
+            if(nullptr != imageDataArtefact &&
+                    nullptr != res)
+            {
+                res->m_artefacts.push_back(imageDataArtefact);
+            }
+        }
+    }
+    if(nullptr != res)
+    {
+        res->sortArtefacts();
+    }
+    return res;
+}
+
+const QString &QuizImageDataObject::getProgrammerName() const
+{
+    return m_programmerName;
+}
+
+const QVector<IQuizImageDataArtefact *> &QuizImageDataObject::getArtefacts() const
+{
+    return m_artefacts;
+}
+
+void QuizImageDataObject::sortArtefacts()
+{
+    std::sort(
+        std::begin(m_artefacts),
+        std::end(m_artefacts),
+        [](const IQuizImageDataArtefact *a1_, const IQuizImageDataArtefact *a2_)->bool
+    {
+        return nullptr != a1_ &&
+                nullptr != a2_ &&
+                a1_->getStepIndex() < a2_->getStepIndex()
+                ;
+    });
+}
+
+void QuizImageDataObject::free()
+{
+    for(IQuizImageDataArtefact *&ptr : m_artefacts)
+    {
+        delete ptr;
+        ptr = nullptr;
+    }
+    m_artefacts.clear();
 }
 
 
@@ -1288,76 +1374,18 @@ void QuizImageData::useNewEffect()
     m_newArgumentSetId = m_argumentSetId;
 }
 
-void QuizImageData::setShaders(const QString &vertexShader_, const QString &fragmentShader_)
-{
-    m_vertexShader = vertexShader_;
-    m_fragmentShader = fragmentShader_;
-}
-
-void QuizImageData::setVertexShader(const QString &vertexShader_)
-{
-    m_vertexShader = vertexShader_;
-}
-
-void QuizImageData::setFragmentShader(const QString &fragmentShader_)
-{
-    m_fragmentShader = fragmentShader_;
-}
-
-void QuizImageData::initDefaultShaders()
-{
-    if(m_vertexShader.isEmpty())
-    {
-        m_vertexShader = ::loadTextFile(":/default.vert");
-    }
-    if(m_fragmentShader.isEmpty())
-    {
-        m_fragmentShader = ::loadTextFile(":/default.frag");
-    }
-}
-
-void QuizImageData::setArguments(const QList<ArgumentInfo> &arguments_)
-{
-    m_arguments = arguments_;
-}
-
-void QuizImageData::clearArguments()
-{
-    m_arguments.clear();
-}
-
-void QuizImageData::appendArguments(const ArgumentInfo &argument_)
-{
-    m_arguments.push_back(argument_);
-}
-
-void QuizImageData::setArgumentValue(int argId_, const QString &value_)
-{
-    const auto fita = std::find_if(
-                std::begin(m_arguments),
-                std::end(m_arguments),
-                [argId_](const ArgumentInfo &ai)->bool
-    {
-        return ai.getArgId() == argId_;
-    });
-    if(std::end(m_arguments) != fita)
-    {
-        fita->setValue(value_);
-    }
-}
-
 bool QuizImageData::isFromImageIsUrl() const
 {
     //QUrl url(m_fromImageUrl);
     //return url.scheme() != "qrc";
-    return m_fromImageUrl != g_noImage;
+    return !isDefaultImage(m_fromImageUrl);
 }
 
 bool QuizImageData::isToImageIsUrl() const
 {
     //QUrl url(m_toImageUrl);
     //return url.scheme() != "qrc";
-    return m_toImageUrl != g_noImage;
+    return !isDefaultImage(m_toImageUrl);
 }
 
 const QString &QuizImageData::getFromImageUrl() const
@@ -1368,26 +1396,6 @@ const QString &QuizImageData::getFromImageUrl() const
 const QString &QuizImageData::getToImageUrl() const
 {
     return m_toImageUrl;
-}
-
-const QList<ArgumentInfo> &QuizImageData::getArguments() const
-{
-    return m_arguments;
-}
-
-QList<ArgumentInfo> &QuizImageData::getArgumentsNC()
-{
-    return m_arguments;
-}
-
-const QString &QuizImageData::getVertexShader() const
-{
-    return m_vertexShader;
-}
-
-const QString &QuizImageData::getFragmentShader() const
-{
-    return m_fragmentShader;
 }
 
 void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)

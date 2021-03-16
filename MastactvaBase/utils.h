@@ -293,6 +293,9 @@ constexpr auto to_underlying(EnumType_ enumValue_) noexcept
     return static_cast<std::underlying_type_t<EnumType_>>(enumValue_);
 }
 
+bool isDefaultImage(const QString &imageURLStr_);
+bool isDefaultImage(const QUrl &imageUrl_);
+
 static const char *g_englishLanguage = "English";
 static const char *g_belarusLanguage = "Belarus";
 static const char *g_shaderName = "shader";
