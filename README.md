@@ -11,3 +11,5 @@
 [2020.11.17 Quiz: galleries view, quiz view, questions view, description view](https://youtu.be/y7p6vMtQGmY)
 
 [2020.11.17 Quiz: galleries view, quiz view, questions view, description view, belarus interface](https://youtu.be/X1jtVyCOC_Y)
+
+TODO: add effect demo
