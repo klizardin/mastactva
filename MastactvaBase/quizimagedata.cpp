@@ -1376,15 +1376,11 @@ void QuizImageData::useNewEffect()
 
 bool QuizImageData::isFromImageIsUrl() const
 {
-    //QUrl url(m_fromImageUrl);
-    //return url.scheme() != "qrc";
     return !isDefaultImage(m_fromImageUrl);
 }
 
 bool QuizImageData::isToImageIsUrl() const
 {
-    //QUrl url(m_toImageUrl);
-    //return url.scheme() != "qrc";
     return !isDefaultImage(m_toImageUrl);
 }
 
