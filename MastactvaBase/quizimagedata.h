@@ -72,7 +72,9 @@ class ArgumentList: public QList<ArgumentBase>
 public:
     using base::base;
 
-    bool containsByName(const QString &argumentName_, bool isAny = true, bool isInput_ = true) const;
+    bool containsByName(const QString &argumentName_, bool isAny_ = true, bool isInput_ = true) const;
+    ArgumentBase *getByName(const QString &argumentName_, bool isAny_ = true, bool isInput_ = true);
+    const ArgumentBase *getByName(const QString &argumentName_, bool isAny_ = true, bool isInput_ = true) const;
 };
 
 
