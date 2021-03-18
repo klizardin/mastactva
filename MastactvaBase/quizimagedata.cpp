@@ -170,14 +170,32 @@ bool ArgumentList::containsByName(
         bool isAny_ /*= true*/,
         bool isInput_ /*= true*/) const
 {
-    const auto fit = std::find_if(
+    return nullptr != getByName(argumentName_, isAny_, isInput_);
+}
+
+ArgumentBase *ArgumentList::getByName(
+        const QString &argumentName_,
+        bool isAny_ /*= true*/,
+        bool isInput_ /*= true*/
+        )
+{
+    auto fit = std::find_if(
                 std::begin(*this),
                 std::end(*this),
                 [&argumentName_, isAny_, isInput_](const ArgumentBase &arg_) -> bool
     {
         return arg_.getName() == argumentName_ && (isAny_ || (!isAny_ && arg_.isInput() == isInput_));
     });
-    return std::end(*this) != fit;
+    return std::end(*this) != fit ? &*fit : nullptr;
+}
+
+const ArgumentBase *ArgumentList::getByName(
+        const QString &argumentName_,
+        bool isAny_ /*= true*/,
+        bool isInput_ /*= true*/
+        ) const
+{
+    return const_cast<ArgumentList *>(this)->getByName(argumentName_, isAny_, isInput_);
 }
 
 
@@ -1146,9 +1164,71 @@ bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
     return true;
 }
 
+static bool checkRequeredFields(const Comment &comment_)
+{
+    return comment_.values().contains(g_argumentName) &&
+        comment_.values().contains(g_nameName) &&
+        comment_.values().contains(g_typeName) &&
+        comment_.values().contains(g_storageName)
+        ;
+}
+
 bool IQuizImageDataArtefact::setArguments(const QString &shaderCode_)
 {
     if(shaderCode_.trimmed().isEmpty()) { return false; }
+
+    ArtefactArgTypeModel *argTypesModel = static_cast<ArtefactArgTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
+                );
+    if(nullptr == argTypesModel) { return false; }
+    ArtefactArgStorageModel *argStoragesModel = static_cast<ArtefactArgStorageModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgStorageModel)
+                );
+    if(nullptr == argStoragesModel) { return false; }
+
+    QVector<Comment> comments;
+    getShaderComments(shaderCode_, comments);
+
+    for(const Comment &comment: qAsConst(comments))
+    {
+        if(!checkRequeredFields(comment)) { continue; }
+
+        const QString argName = comment.values().value(g_nameName).trimmed();
+        const QString argTypeStr = comment.values().value(g_typeName).trimmed();
+        const QString argStorageStr = comment.values().value(g_storageName).trimmed();
+        const QString argDefaultValue = comment.values().value(g_defaultValueName, QString()).trimmed();
+        //qDebug() << "argName : " << argName << " argTypeStr : " << argTypeStr << " argDefaultValue : " << argDefaultValue;
+
+        const ArtefactArgType *artefactArgType = argTypesModel->findDataItemByFieldValueImpl(
+                    "artefactArgTypeType",
+                    QVariant::fromValue(argTypeStr)
+                    );
+        if(nullptr == artefactArgType) { continue; };
+
+        const ArtefactArgStorage *artefactArgStorage = argStoragesModel->findDataItemByFieldValueImpl(
+                    "artefactArgStorageStorage",
+                    QVariant::fromValue(argStorageStr)
+                    );
+        if(nullptr == artefactArgStorage) { continue; }
+
+        ArgumentBase *argument = m_arguments.getByName(argName);
+        const bool doesArgumentExist = nullptr != argument;
+
+        ArgumentBase newArgument;
+        if(!doesArgumentExist)
+        {
+            newArgument.setName(argName);
+            argument = &newArgument;
+        }
+        argument->setStorage(argStorageStr);
+        argument->setType(argTypeStr);
+        argument->setDefaultValue(argDefaultValue);
+        argument->setInput(true);   // shaders declare only input arguments
+        if(!doesArgumentExist)
+        {
+            m_arguments.push_back(*argument);
+        }
+    }
 
     return true;
 }
@@ -1376,15 +1456,11 @@ void QuizImageData::useNewEffect()
 
 bool QuizImageData::isFromImageIsUrl() const
 {
-    //QUrl url(m_fromImageUrl);
-    //return url.scheme() != "qrc";
     return !isDefaultImage(m_fromImageUrl);
 }
 
 bool QuizImageData::isToImageIsUrl() const
 {
-    //QUrl url(m_toImageUrl);
-    //return url.scheme() != "qrc";
     return !isDefaultImage(m_toImageUrl);
 }
 
