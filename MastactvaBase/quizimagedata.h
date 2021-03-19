@@ -919,7 +919,7 @@ public:
     QuizImageDataObject() = default;
     ~QuizImageDataObject();
 
-    static QuizImageDataObject *create(EffectObjects *effectObject_);
+    static QuizImageDataObject *create(const EffectObjects *effectObject_);
     const QString &getProgrammerName() const;
     const QVector<IQuizImageDataArtefact *> &getArtefacts() const;
 
@@ -937,6 +937,7 @@ class QuizImageData
 {
 public:
     QuizImageData();
+    ~QuizImageData();
 
     void setFromImageUrl(const QString &fromImageUrl_);
     void setToImageUrl(const QString &toImageUrl_);
@@ -949,38 +950,29 @@ public:
     bool isSwapImages() const;
     void swapImages();
 
-    void setEffectId(int effectId_);
-    void setArgumentSetId(int argumentSetId_);
-    bool effectChanged() const;
-    void useNewEffect();
-
-    void addNewObject(const QString &programmerName_);
-    QuizImageDataObject &getCurrentObjectRef();
-    const QList<QuizImageDataObject> &getObjects() const;
-
     bool isFromImageIsUrl() const;
     bool isToImageIsUrl() const;
     const QString &getFromImageUrl() const;
     const QString &getToImageUrl() const;
 
-    const ArgumentsSet &getArguments() const;
-    ArgumentsSet &getArgumentsNC();
+    bool isEffectChanged() const;
+    void useNewEffect();
+    void setEffect(const Effect *effect_);
 
-    void extractObjects(const Effect *effect_);
-    void extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_);
 protected:
+    bool canUpdateEffect(const Effect *effect_);
+    void clearEffect();
+    void free();
+    void freeObjects();
 
 protected:
     QString m_newFromImageUrl;
     QString m_newToImageUrl;
     QString m_fromImageUrl;
     QString m_toImageUrl;
-    int m_newEffectId = -1;
-    int m_newArgumentSetId = -1;
-    int m_effectId = -1;
-    int m_argumentSetId = -1;
-    QVector<QuizImageDataObject*> m_objects;
-    ArgumentsSet m_arguments;
+    bool m_effectIsChanged = false;
+    int m_oldEffectId = -1;
+    QVector<QuizImageDataObject *> m_objects;
 };
 
 
