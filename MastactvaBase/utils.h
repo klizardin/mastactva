@@ -295,6 +295,8 @@ constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 
 bool isDefaultImage(const QString &imageURLStr_);
 bool isDefaultImage(const QUrl &imageUrl_);
+QString setDefaultImageIfEmpty(const QString &imageURLStr_);
+
 
 static const char *g_englishLanguage = "English";
 static const char *g_belarusLanguage = "Belarus";
