@@ -92,7 +92,8 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
     // all data
     const bool effectUpdated = quizImage->isEffectUpdated();
-    m_drawingData = DrawingImageData(quizImage->getData());
+    m_drawingData = quizImage->getData();
+    m_drawingData.deepCopy();       // use separate version of data in the separate thread
     if(effectUpdated)
     {
         initGeometry();
