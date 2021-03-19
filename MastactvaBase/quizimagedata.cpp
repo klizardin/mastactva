@@ -1373,6 +1373,44 @@ void QuizImageDataObject::free()
 }
 
 
+bool DrawingImageData::isNewFromImage() const
+{
+    return m_newFromImageUrl;
+}
+
+bool DrawingImageData::isNewToImage() const
+{
+    return m_newToImageUrl;
+}
+
+bool DrawingImageData::isEffectChanged() const
+{
+    return m_newEffect;
+}
+
+const QString &DrawingImageData::getFromImageUrl() const
+{
+    return m_fromImageUrl;
+}
+
+const QString &DrawingImageData::getToImageUrl() const
+{
+    return m_toImageUrl;
+}
+
+void DrawingImageData::setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_)
+{
+    m_fromImageUrl = fromImageUrl_;
+    m_newFromImageUrl = newFromImageUrl_;
+}
+
+void DrawingImageData::setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_)
+{
+    m_toImageUrl = toImageUrl_;
+    m_newToImageUrl = newToImageUrl_;
+}
+
+
 QuizImageData::QuizImageData()
 {
     m_newFromImageUrl = setDefaultImageIfEmpty(QString());
@@ -1470,11 +1508,13 @@ void QuizImageData::setEffect(const Effect *effect_)
         }
         return;
     }
+
     clearEffect();
 
     const EffectObjectsModel *effectObjectModel = effect_->getEffectObjects();
     Q_ASSERT(nullptr != effectObjectModel);
     Q_ASSERT(effectObjectModel->isListLoaded());
+
     for(int i = 0; i < effectObjectModel->sizeImpl(); i++)
     {
         const EffectObjects *effectObjects = effectObjectModel->dataItemAtImpl(i);
@@ -1527,4 +1567,14 @@ void QuizImageData::freeObjects()
         ptr_ = nullptr;
     }
     m_objects.clear();
+}
+
+void QuizImageData::prepareDrawingData()
+{
+    //TODO: impelement
+}
+
+const DrawingImageData &QuizImageData::getDrawingData() const
+{
+    return m_drawingData;
 }

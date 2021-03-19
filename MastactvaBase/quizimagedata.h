@@ -933,6 +933,36 @@ protected:
 };
 
 
+class QuizImageData;
+
+
+class DrawingImageData
+{
+public:
+    DrawingImageData() = default;
+
+    bool isNewFromImage() const;
+    bool isNewToImage() const;
+    bool isEffectChanged() const;
+
+    const QString &getFromImageUrl() const;
+    const QString &getToImageUrl() const;
+
+private:
+    void setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_);
+    void setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_);
+
+private:
+    bool m_newFromImageUrl = false;
+    bool m_newToImageUrl = false;
+    bool m_newEffect = false;
+    QString m_fromImageUrl;
+    QString m_toImageUrl;
+
+private:
+    friend class QuizImageData;
+};
+
 class QuizImageData
 {
 public:
@@ -941,14 +971,18 @@ public:
 
     void setFromImageUrl(const QString &fromImageUrl_);
     void setToImageUrl(const QString &toImageUrl_);
+    void swapImages();
+    void setEffect(const Effect *effect_);
+    void prepareDrawingData();
+    const DrawingImageData &getDrawingData() const;
 
+protected:
     bool fromImageUrlChanged() const;
     void useNewFromImageUrl();
     bool toImageUrlChanged() const;
     void useNewToImageUrl();
 
     bool isSwapImages() const;
-    void swapImages();
 
     bool isFromImageIsUrl() const;
     bool isToImageIsUrl() const;
@@ -957,9 +991,7 @@ public:
 
     bool isEffectChanged() const;
     void useNewEffect();
-    void setEffect(const Effect *effect_);
 
-protected:
     bool canUpdateEffect(const Effect *effect_) const;
     bool differentEffect(const Effect *effect_) const;
     void clearEffect();
@@ -974,6 +1006,7 @@ protected:
     bool m_effectIsChanged = false;
     int m_oldEffectId = -1;
     QVector<QuizImageDataObject *> m_objects;
+    DrawingImageData m_drawingData;
 };
 
 
