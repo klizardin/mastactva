@@ -960,7 +960,8 @@ public:
     void setEffect(const Effect *effect_);
 
 protected:
-    bool canUpdateEffect(const Effect *effect_);
+    bool canUpdateEffect(const Effect *effect_) const;
+    bool differentEffect(const Effect *effect_) const;
     void clearEffect();
     void free();
     void freeObjects();

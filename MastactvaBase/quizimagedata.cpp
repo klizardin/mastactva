@@ -1462,12 +1462,14 @@ void QuizImageData::useNewEffect()
 
 void QuizImageData::setEffect(const Effect *effect_)
 {
-    if(nullptr == effect_)
+    if(!canUpdateEffect(effect_))
     {
-        clearEffect();
+        if(differentEffect(effect_))
+        {
+            clearEffect();
+        }
         return;
     }
-    if(!canUpdateEffect(effect_)) { return; }
     clearEffect();
 
     const EffectObjectsModel *effectObjectModel = effect_->getEffectObjects();
@@ -1485,7 +1487,7 @@ void QuizImageData::setEffect(const Effect *effect_)
     m_effectIsChanged = true;
 }
 
-bool QuizImageData::canUpdateEffect(const Effect *effect_)
+bool QuizImageData::canUpdateEffect(const Effect *effect_) const
 {
     if(nullptr == effect_ ||
             effect_->id() == m_oldEffectId ||
@@ -1494,6 +1496,14 @@ bool QuizImageData::canUpdateEffect(const Effect *effect_)
             !effect_->getEffectObjects()->isListLoaded()
             ) { return false; }
     return true;
+}
+
+bool QuizImageData::differentEffect(const Effect *effect_) const
+{
+    if(nullptr == effect_ ||
+            effect_->id() != m_oldEffectId
+            ) { return true; }
+    return false;
 }
 
 void QuizImageData::clearEffect()
