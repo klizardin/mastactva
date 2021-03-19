@@ -267,7 +267,12 @@ public:
     using ItemType = QString;
 
 public:
-    ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
+    ArgumentValueDataStringArray(
+            const ArgumentBase &from_,
+            int arraySize_,
+            int tupleSize_,
+            bool isTextureType_
+            );
     virtual ~ArgumentValueDataStringArray() override = default;
 
     virtual void initData() override
@@ -292,6 +297,7 @@ protected:
 
 private:
     QVector<QString> m_values;
+    bool m_isTextureType = false;
 };
 
 
@@ -455,12 +461,16 @@ public:
     virtual ~OpenGLArgumentValueBase() = default;
 
     virtual void create(QOpenGLShaderProgram *program_) = 0;
-    virtual int getArraySize() const = 0;
-    virtual int getMaxIndex() const = 0;
-    virtual int getVBOPartSize() const = 0;
-    virtual void setVBOPartOffset(int offset_) = 0;
-    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;
+    virtual bool isTexture() const;         // to count textures
+    virtual void setTextureIndex(int textureIndex_);    // to setup texture indexes, in revers order -- last 0
+    virtual QString getTextureName() const;    // to find texture in the drawing image data
+    virtual int getArraySize() const = 0;       // internaly used (do not know the purpose of this function)
+    virtual int getMaxIndex() const = 0;        // max index value to allocate data
+    virtual int getVBOPartSize() const = 0;     // vbo size of this part
+    virtual void setVBOPartOffset(int offset_) = 0; // set offset of vbo data (data follows in chain)
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;  // write vbo part to draing buffer
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
+    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const;
     virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
 
@@ -567,6 +577,123 @@ private:
     {
         return static_cast<const ArgumentValueDataArrayType_&>(*this);
     }
+};
+
+
+template<class ArgumentValueDataArrayType_>
+class OpenGLArgumentTextureValueT :
+        public ArgumentValueDataArrayType_,
+        public OpenGLArgumentValueBase
+{
+private:
+    static_assert(
+        std::is_base_of<ArgumentValueDataArray, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentValueDataArray");
+    static_assert(
+        std::is_base_of<ArgumentBase, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentBase");
+
+public:
+    OpenGLArgumentTextureValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
+        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    {
+    }
+
+    virtual void create(QOpenGLShaderProgram *program_) override
+    {
+        initUniformValueId(
+                    program_,
+                    arg().getName());
+    }
+
+    virtual bool isTexture() const override
+    {
+        return true && value().getValues().size() > 0;
+    }
+
+    virtual void setTextureIndex(int textureIndex_)
+    {
+        m_textureIndex = textureIndex_;
+    }
+
+    virtual QString getTextureName() const override
+    {
+        if(value().getValues().size() > 0)
+        {
+            return value().getValues()[0];
+        }
+        else
+        {
+            return QString();
+        }
+    }
+
+    virtual int getArraySize() const override
+    {
+        return 0;
+    }
+
+    virtual int getMaxIndex() const override
+    {
+        return 0;
+    }
+
+    virtual int getVBOPartSize() const override
+    {
+        return 0;
+    }
+
+    virtual void setVBOPartOffset(int offset_)
+    {
+        Q_UNUSED(offset_);
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
+    {
+        Q_UNUSED(vbo_);
+        Q_UNUSED(offset_);
+        Q_UNUSED(sizeItems_);
+    }
+
+    virtual void use(QOpenGLShaderProgram *program_) const override
+    {
+        if(m_textureIndex < 0) { return; }
+        setUniformValue(program_,
+                    std::vector<GLint>({m_textureIndex, }),
+                    1,
+                    false);
+    }
+
+    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const override
+    {
+        if(m_textureIndex < 0) { return; }
+        f_->glActiveTexture(GL_TEXTURE0 + m_textureIndex);
+        texture_->bind();
+    }
+
+    virtual void draw(QOpenGLFunctions *f_) const override
+    {
+        Q_UNUSED(f_);
+    }
+
+    virtual void release(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+private:
+    const ArgumentBase &arg() const
+    {
+        return static_cast<const ArgumentBase&>(*this);
+    }
+
+    const ArgumentValueDataArrayType_ &value() const
+    {
+        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+    }
+
+private:
+    int m_textureIndex = -1;
 };
 
 
@@ -745,7 +872,7 @@ public:
 
     virtual void draw(QOpenGLFunctions *f_) const override
     {
-        drawTrianlesArray(f_, value().getValues().size());
+        drawTrianlesArray(f_, getArraySize());
     }
 
     virtual void release(QOpenGLShaderProgram *program_) const override

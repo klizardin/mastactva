@@ -116,17 +116,20 @@ void ArgumentBase::setInput(bool isInput_)
 
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
-    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, int>;
+    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { "int", 1, false, false, false, 1 },
-        { "float", 1, true, false, false, 1 },
-        { "vec2", 2, true, false, false, 2 },
-        { "vec3", 3, true, false, false, 3 },
-        { "vec4", 4, true, false, false, 4 },
-        { "mat2", 4, true, true, false, 4 },
-        { "mat3", 9, true, true, false, 9 },
-        { "mat4", 16, true, true, false, 16 },
-        { "strings", -1, true, true, true, 1 },
+        { "int", 1, false, false, false, false, 1 },
+        { "float", 1, true, false, false, false, 1 },
+        { "vec2", 2, true, false, false, false, 2 },
+        { "vec3", 3, true, false, false, false, 3 },
+        { "vec4", 4, true, false, false, false, 4 },
+        { "mat2", 4, true, true, false, false, 4 },
+        { "mat3", 9, true, true, false, false, 9 },
+        { "mat4", 16, true, true, false, false, 16 },
+        { "strings", -1, false, false, true, false, 1 },
+        { "sampler1D", 1, false, false, true, true, 1 },
+        { "sampler2D", 1, false, false, true, true, 1 },
+        { "sampler3D", 1, false, false, true, true, 1 },
     };
 
     const auto fit = std::find_if(
@@ -145,7 +148,8 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     const bool isFloatArrayType = std::get<2>(*fit);
     const bool isMatrixType = std::get<3>(*fit);
     const bool isStringArrayType = std::get<4>(*fit);
-    const int tupleSize = std::get<5>(*fit);
+    const bool isTextureType = std::get<5>(*fit);
+    const int tupleSize = std::get<6>(*fit);
 
     if(isIntArrayType)
     {
@@ -157,7 +161,7 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     }
     else if(isStringArrayType)
     {
-        return new ArgumentValueDataStringArray(*this, arraySize, tupleSize);
+        return new ArgumentValueDataStringArray(*this, arraySize, tupleSize, isTextureType);
     }
     else
     {
@@ -327,14 +331,24 @@ bool ArgumentValueDataFloatArray::isMatrixType() const
 }
 
 
-ArgumentValueDataStringArray::ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_)
+ArgumentValueDataStringArray::ArgumentValueDataStringArray(
+        const ArgumentBase &from_,
+        int arraySize_,
+        int tupleSize_,
+        bool isTextureType_
+        )
     : ArgumentValueDataArray(from_, arraySize_, tupleSize_)
+    , m_isTextureType(isTextureType_)
 {
 }
 
 OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
 {
-    if(m_isAttribute)
+    if(m_isTextureType)
+    {
+        return new OpenGLArgumentTextureValueT<ArgumentValueDataStringArray>(*this);
+    }
+    else if(m_isAttribute)
     {
         return new OpenGLArgumentAttributeValueT<ArgumentValueDataStringArray>(*this);
     }
@@ -944,6 +958,26 @@ ArgumentDataTable* ArgumentsSet::slice(
 }
 
 
+
+bool OpenGLArgumentValueBase::isTexture() const
+{
+    return false;
+}
+
+void OpenGLArgumentValueBase::setTextureIndex(int textureIndex_)
+{
+    Q_UNUSED(textureIndex_);
+}
+
+QString OpenGLArgumentValueBase::getTextureName() const
+{
+    return QString();
+}
+
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const
+{
+    Q_UNUSED(f_);
+}
 
 void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
