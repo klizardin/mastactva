@@ -2,6 +2,7 @@
 #define QUIZIMAGEDATA_H
 
 
+#include <type_traits>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLTexture>
@@ -9,7 +10,6 @@
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
 #include <QJsonDocument>
-#include <type_traits>
 #include "../MastactvaBase/utils.h"
 
 
@@ -267,7 +267,12 @@ public:
     using ItemType = QString;
 
 public:
-    ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
+    ArgumentValueDataStringArray(
+            const ArgumentBase &from_,
+            int arraySize_,
+            int tupleSize_,
+            bool isTextureType_
+            );
     virtual ~ArgumentValueDataStringArray() override = default;
 
     virtual void initData() override
@@ -292,6 +297,7 @@ protected:
 
 private:
     QVector<QString> m_values;
+    bool m_isTextureType = false;
 };
 
 
@@ -455,12 +461,16 @@ public:
     virtual ~OpenGLArgumentValueBase() = default;
 
     virtual void create(QOpenGLShaderProgram *program_) = 0;
-    virtual int getArraySize() const = 0;
-    virtual int getMaxIndex() const = 0;
-    virtual int getVBOPartSize() const = 0;
-    virtual void setVBOPartOffset(int offset_) = 0;
-    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;
+    virtual bool isTexture() const;         // to count textures
+    virtual void setTextureIndex(int textureIndex_);    // to setup texture indexes, in revers order -- last 0
+    virtual QString getTextureName() const;    // to find texture in the drawing image data
+    virtual int getArraySize() const = 0;       // internaly used (do not know the purpose of this function)
+    virtual int getMaxIndex() const = 0;        // max index value to allocate data
+    virtual int getVBOPartSize() const = 0;     // vbo size of this part
+    virtual void setVBOPartOffset(int offset_) = 0; // set offset of vbo data (data follows in chain)
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;  // write vbo part to draing buffer
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
+    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const;
     virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
 
@@ -567,6 +577,123 @@ private:
     {
         return static_cast<const ArgumentValueDataArrayType_&>(*this);
     }
+};
+
+
+template<class ArgumentValueDataArrayType_>
+class OpenGLArgumentTextureValueT :
+        public ArgumentValueDataArrayType_,
+        public OpenGLArgumentValueBase
+{
+private:
+    static_assert(
+        std::is_base_of<ArgumentValueDataArray, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentValueDataArray");
+    static_assert(
+        std::is_base_of<ArgumentBase, ArgumentValueDataArrayType_>::value,
+        "shoudl be ancestor of ArgumentBase");
+
+public:
+    OpenGLArgumentTextureValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
+        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    {
+    }
+
+    virtual void create(QOpenGLShaderProgram *program_) override
+    {
+        initUniformValueId(
+                    program_,
+                    arg().getName());
+    }
+
+    virtual bool isTexture() const override
+    {
+        return true && value().getValues().size() > 0;
+    }
+
+    virtual void setTextureIndex(int textureIndex_)
+    {
+        m_textureIndex = textureIndex_;
+    }
+
+    virtual QString getTextureName() const override
+    {
+        if(value().getValues().size() > 0)
+        {
+            return value().getValues()[0];
+        }
+        else
+        {
+            return QString();
+        }
+    }
+
+    virtual int getArraySize() const override
+    {
+        return 0;
+    }
+
+    virtual int getMaxIndex() const override
+    {
+        return 0;
+    }
+
+    virtual int getVBOPartSize() const override
+    {
+        return 0;
+    }
+
+    virtual void setVBOPartOffset(int offset_)
+    {
+        Q_UNUSED(offset_);
+    }
+
+    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
+    {
+        Q_UNUSED(vbo_);
+        Q_UNUSED(offset_);
+        Q_UNUSED(sizeItems_);
+    }
+
+    virtual void use(QOpenGLShaderProgram *program_) const override
+    {
+        if(m_textureIndex < 0) { return; }
+        setUniformValue(program_,
+                    std::vector<GLint>({m_textureIndex, }),
+                    1,
+                    false);
+    }
+
+    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const override
+    {
+        if(m_textureIndex < 0) { return; }
+        f_->glActiveTexture(GL_TEXTURE0 + m_textureIndex);
+        texture_->bind();
+    }
+
+    virtual void draw(QOpenGLFunctions *f_) const override
+    {
+        Q_UNUSED(f_);
+    }
+
+    virtual void release(QOpenGLShaderProgram *program_) const override
+    {
+        Q_UNUSED(program_);
+    }
+
+private:
+    const ArgumentBase &arg() const
+    {
+        return static_cast<const ArgumentBase&>(*this);
+    }
+
+    const ArgumentValueDataArrayType_ &value() const
+    {
+        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+    }
+
+private:
+    int m_textureIndex = -1;
 };
 
 
@@ -745,7 +872,7 @@ public:
 
     virtual void draw(QOpenGLFunctions *f_) const override
     {
-        drawTrianlesArray(f_, value().getValues().size());
+        drawTrianlesArray(f_, getArraySize());
     }
 
     virtual void release(QOpenGLShaderProgram *program_) const override
@@ -787,6 +914,14 @@ public:
 
     static IQuizImageDataArtefact *create(const Artefact *artefact_, int stepIndex_);
 
+    int getId() const;
+    virtual bool isVertexShader() const;
+    virtual bool isFragmentShader() const;
+    bool isTexture() const;
+    virtual QString getVertexShader() const;
+    virtual QString getFragmentShader() const;
+    virtual const QImage *getTexture() const;
+
 protected:
     virtual bool setData(const QByteArray &data_) = 0;
 
@@ -795,6 +930,7 @@ protected:
     bool setArguments(const QString &shaderCode_);
 
 private:
+    int m_id = -1;
     int m_stepIndex = 0;
     ArgumentList m_arguments;
 };
@@ -803,6 +939,9 @@ class QuizImageDataVertexArtefact : public IQuizImageDataArtefact
 {
 public:
     QuizImageDataVertexArtefact() = default;
+
+    virtual bool isVertexShader() const override;
+    virtual QString getVertexShader() const override;
 
 protected:
     virtual bool setData(const QByteArray &data_) override;
@@ -817,6 +956,9 @@ class QuizImageDataFragmentArtefact : public IQuizImageDataArtefact
 public:
     QuizImageDataFragmentArtefact() = default;
 
+    virtual bool isFragmentShader() const override;
+    virtual QString getFragmentShader() const override;
+
 protected:
     virtual bool setData(const QByteArray &data_) override;
 
@@ -829,6 +971,8 @@ class QuizImageDataTexture1DArtefact : public IQuizImageDataArtefact
 {
 public:
     QuizImageDataTexture1DArtefact() = default;
+
+    virtual const QImage *getTexture() const override;
 
 protected:
     virtual bool setData(const QByteArray &data_) override;
@@ -843,6 +987,8 @@ class QuizImageDataTexture2DArtefact : public IQuizImageDataArtefact
 public:
     QuizImageDataTexture2DArtefact() = default;
 
+    virtual const QImage *getTexture() const override;
+
 protected:
     virtual bool setData(const QByteArray &data_) override;
 
@@ -855,6 +1001,8 @@ class QuizImageDataTexture3DArtefact : public IQuizImageDataArtefact
 {
 public:
     QuizImageDataTexture3DArtefact() = default;
+
+    virtual const QImage *getTexture() const override;
 
 protected:
     virtual bool setData(const QByteArray &data_) override;
@@ -919,7 +1067,7 @@ public:
     QuizImageDataObject() = default;
     ~QuizImageDataObject();
 
-    static QuizImageDataObject *create(EffectObjects *effectObject_);
+    static QuizImageDataObject *create(const EffectObjects *effectObject_);
     const QString &getProgrammerName() const;
     const QVector<IQuizImageDataArtefact *> &getArtefacts() const;
 
@@ -933,54 +1081,148 @@ protected:
 };
 
 
+class DrawingImageData;
+
+
+class DrawingArtefact
+{
+public:
+    DrawingArtefact() = default;
+
+    bool operator == (const DrawingArtefact &drawingArtefact_) const;
+    bool operator < (const DrawingArtefact &drawingArtefact_) const;
+    int getId() const;
+
+private:
+    void setId(int id_);
+
+private:
+    int m_id = -1;
+
+    friend class DrawingImageData;
+};
+
+
+class DrawingTextureArtefact : public DrawingArtefact
+{
+public:
+    DrawingTextureArtefact() = default;
+
+    bool operator == (const DrawingTextureArtefact &drawingArtefact_) const;
+    bool operator < (const DrawingTextureArtefact &drawingArtefact_) const;
+    void deepCopy();
+
+private:
+    void setTexture(const QImage &image_);
+
+private:
+    QImage m_image;
+
+    friend class DrawingImageData;
+};
+
+class DrawingShaderArtefact : public DrawingArtefact
+{
+public:
+    DrawingShaderArtefact() = default;
+
+    bool operator == (const DrawingShaderArtefact &drawingArtefact_) const;
+    bool operator < (const DrawingShaderArtefact &drawingArtefact_) const;
+    void deepCopy();
+
+private:
+    void setShader(const QString &shaderCode_);
+
+private:
+    QString m_shaderCode;
+
+    friend class DrawingImageData;
+};
+
+
+class QuizImageData;
+
+
+class DrawingImageData
+{
+public:
+    DrawingImageData() = default;
+
+    bool isNewFromImage() const;
+    bool isNewToImage() const;
+    bool isEffectChanged() const;
+
+    const QString &getFromImageUrl() const;
+    const QString &getToImageUrl() const;
+    bool isFromImageIsUrl() const;
+    bool isToImageIsUrl() const;
+
+    void deepCopy();
+
+private:
+    void setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_);
+    void setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_);
+    void setObjects(const QVector<QuizImageDataObject *> &objects_);
+    void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
+
+private:
+    bool m_newFromImageUrl = false;
+    bool m_newToImageUrl = false;
+    bool m_newEffect = false;
+    QString m_fromImageUrl;
+    QString m_toImageUrl;
+
+    QVector<DrawingTextureArtefact> m_texures;
+    QVector<DrawingShaderArtefact> m_vertexShaders;
+    QVector<DrawingShaderArtefact> m_fragmentShaders;
+
+private:
+    friend class QuizImageData;
+};
+
 class QuizImageData
 {
 public:
     QuizImageData();
+    ~QuizImageData();
 
     void setFromImageUrl(const QString &fromImageUrl_);
     void setToImageUrl(const QString &toImageUrl_);
+    void swapImages();
+    void setEffect(const Effect *effect_);
+    void setArgumentSet(const EffectArgSet *argumentSet_);
+    bool isEffectChanged() const;
+    void prepareDrawingData();
+    const DrawingImageData &getDrawingData() const;
 
+protected:
     bool fromImageUrlChanged() const;
     void useNewFromImageUrl();
     bool toImageUrlChanged() const;
     void useNewToImageUrl();
 
     bool isSwapImages() const;
-    void swapImages();
 
-    void setEffectId(int effectId_);
-    void setArgumentSetId(int argumentSetId_);
-    bool effectChanged() const;
-    void useNewEffect();
-
-    void addNewObject(const QString &programmerName_);
-    QuizImageDataObject &getCurrentObjectRef();
-    const QList<QuizImageDataObject> &getObjects() const;
-
-    bool isFromImageIsUrl() const;
-    bool isToImageIsUrl() const;
     const QString &getFromImageUrl() const;
     const QString &getToImageUrl() const;
 
-    const ArgumentsSet &getArguments() const;
-    ArgumentsSet &getArgumentsNC();
+    void useNewEffect();
 
-    void extractObjects(const Effect *effect_);
-    void extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_);
-protected:
+    bool canUpdateEffect(const Effect *effect_) const;
+    bool differentEffect(const Effect *effect_) const;
+    void clearEffect();
+    void free();
+    void freeObjects();
 
 protected:
     QString m_newFromImageUrl;
     QString m_newToImageUrl;
     QString m_fromImageUrl;
     QString m_toImageUrl;
-    int m_newEffectId = -1;
-    int m_newArgumentSetId = -1;
-    int m_effectId = -1;
-    int m_argumentSetId = -1;
-    QVector<QuizImageDataObject*> m_objects;
-    ArgumentsSet m_arguments;
+    bool m_effectIsChanged = false;
+    int m_oldEffectId = -1;
+    QVector<QuizImageDataObject *> m_objects;
+    DrawingImageData m_drawingData;
 };
 
 

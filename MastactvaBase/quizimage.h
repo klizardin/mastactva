@@ -57,7 +57,7 @@ public:
     EffectArgSet *getArgumentSet() const;
     bool needToUpdateEffects();
     bool isEffectUpdated() const;
-    const QuizImageData &getData() const;
+    const DrawingImageData &getData() const;
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;

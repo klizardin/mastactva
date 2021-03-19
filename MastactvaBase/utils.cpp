@@ -1267,3 +1267,17 @@ bool isDefaultImage(const QUrl &imageUrl_)
 {
     return isDefaultImage(imageUrl_.toString());
 }
+
+QString setDefaultImageIfEmpty(const QString &imageURLStr_)
+{
+    if(imageURLStr_.isEmpty() ||
+            isDefaultImage(imageURLStr_)
+            )
+    {
+        return g_noImage;
+    }
+    else
+    {
+        return imageURLStr_;
+    }
+}

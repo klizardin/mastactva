@@ -1,4 +1,5 @@
 #include "quizimagedata.h"
+#include <set>
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/artefacttype.h"
@@ -115,17 +116,20 @@ void ArgumentBase::setInput(bool isInput_)
 
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
-    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, int>;
+    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { "int", 1, false, false, false, 1 },
-        { "float", 1, true, false, false, 1 },
-        { "vec2", 2, true, false, false, 2 },
-        { "vec3", 3, true, false, false, 3 },
-        { "vec4", 4, true, false, false, 4 },
-        { "mat2", 4, true, true, false, 4 },
-        { "mat3", 9, true, true, false, 9 },
-        { "mat4", 16, true, true, false, 16 },
-        { "strings", -1, true, true, true, 1 },
+        { "int", 1, false, false, false, false, 1 },
+        { "float", 1, true, false, false, false, 1 },
+        { "vec2", 2, true, false, false, false, 2 },
+        { "vec3", 3, true, false, false, false, 3 },
+        { "vec4", 4, true, false, false, false, 4 },
+        { "mat2", 4, true, true, false, false, 4 },
+        { "mat3", 9, true, true, false, false, 9 },
+        { "mat4", 16, true, true, false, false, 16 },
+        { "strings", -1, false, false, true, false, 1 },
+        { "sampler1D", 1, false, false, true, true, 1 },
+        { "sampler2D", 1, false, false, true, true, 1 },
+        { "sampler3D", 1, false, false, true, true, 1 },
     };
 
     const auto fit = std::find_if(
@@ -144,7 +148,8 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     const bool isFloatArrayType = std::get<2>(*fit);
     const bool isMatrixType = std::get<3>(*fit);
     const bool isStringArrayType = std::get<4>(*fit);
-    const int tupleSize = std::get<5>(*fit);
+    const bool isTextureType = std::get<5>(*fit);
+    const int tupleSize = std::get<6>(*fit);
 
     if(isIntArrayType)
     {
@@ -156,7 +161,7 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     }
     else if(isStringArrayType)
     {
-        return new ArgumentValueDataStringArray(*this, arraySize, tupleSize);
+        return new ArgumentValueDataStringArray(*this, arraySize, tupleSize, isTextureType);
     }
     else
     {
@@ -326,14 +331,24 @@ bool ArgumentValueDataFloatArray::isMatrixType() const
 }
 
 
-ArgumentValueDataStringArray::ArgumentValueDataStringArray(const ArgumentBase &from_, int arraySize_, int tupleSize_)
+ArgumentValueDataStringArray::ArgumentValueDataStringArray(
+        const ArgumentBase &from_,
+        int arraySize_,
+        int tupleSize_,
+        bool isTextureType_
+        )
     : ArgumentValueDataArray(from_, arraySize_, tupleSize_)
+    , m_isTextureType(isTextureType_)
 {
 }
 
 OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
 {
-    if(m_isAttribute)
+    if(m_isTextureType)
+    {
+        return new OpenGLArgumentTextureValueT<ArgumentValueDataStringArray>(*this);
+    }
+    else if(m_isAttribute)
     {
         return new OpenGLArgumentAttributeValueT<ArgumentValueDataStringArray>(*this);
     }
@@ -944,6 +959,26 @@ ArgumentDataTable* ArgumentsSet::slice(
 
 
 
+bool OpenGLArgumentValueBase::isTexture() const
+{
+    return false;
+}
+
+void OpenGLArgumentValueBase::setTextureIndex(int textureIndex_)
+{
+    Q_UNUSED(textureIndex_);
+}
+
+QString OpenGLArgumentValueBase::getTextureName() const
+{
+    return QString();
+}
+
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const
+{
+    Q_UNUSED(f_);
+}
+
 void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
     m_id = program_->attributeLocation(name_);
@@ -1083,6 +1118,7 @@ bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepInde
     // before set data as setData can add arguments, so setup default arguments
     if(!setArguments(artefact_->getArtefactArg())) { return false; }
     if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
+    m_id = artefact_->id();
     m_stepIndex = stepIndex_;
     return true;
 }
@@ -1148,6 +1184,41 @@ IQuizImageDataArtefact *IQuizImageDataArtefact::create(const Artefact *artefact_
     }
 
     return artefact;
+}
+
+int IQuizImageDataArtefact::getId() const
+{
+    return m_id;
+}
+
+bool IQuizImageDataArtefact::isVertexShader() const
+{
+    return false;
+}
+
+bool IQuizImageDataArtefact::isFragmentShader() const
+{
+    return false;
+}
+
+bool IQuizImageDataArtefact::isTexture() const
+{
+    return nullptr != getTexture();
+}
+
+QString IQuizImageDataArtefact::getVertexShader() const
+{
+    return QString();
+}
+
+QString IQuizImageDataArtefact::getFragmentShader() const
+{
+    return QString();
+}
+
+const QImage *IQuizImageDataArtefact::getTexture() const
+{
+    return nullptr;
 }
 
 bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
@@ -1234,6 +1305,16 @@ bool IQuizImageDataArtefact::setArguments(const QString &shaderCode_)
 }
 
 
+bool QuizImageDataVertexArtefact::isVertexShader() const
+{
+    return true;
+}
+
+QString QuizImageDataVertexArtefact::getVertexShader() const
+{
+    return m_vertexShader;
+}
+
 bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
 {
     m_vertexShader = getTextFromBinaryData(data_);
@@ -1245,6 +1326,16 @@ bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
     return !m_vertexShader.isEmpty();
 }
 
+
+bool QuizImageDataFragmentArtefact::isFragmentShader() const
+{
+    return true;
+}
+
+QString QuizImageDataFragmentArtefact::getFragmentShader() const
+{
+    return m_fragmentShader;
+}
 
 bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
 {
@@ -1258,17 +1349,32 @@ bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
 }
 
 
+const QImage *QuizImageDataTexture1DArtefact::getTexture() const
+{
+    return &m_texture1D;
+}
+
 bool QuizImageDataTexture1DArtefact::setData(const QByteArray &data_)
 {
     return m_texture1D.loadFromData(data_);
 }
 
 
+const QImage *QuizImageDataTexture2DArtefact::getTexture() const
+{
+    return &m_texture2D;
+}
+
 bool QuizImageDataTexture2DArtefact::setData(const QByteArray &data_)
 {
     return m_texture2D.loadFromData(data_);
 }
 
+
+const QImage *QuizImageDataTexture3DArtefact::getTexture() const
+{
+    return &m_texture3D;
+}
 
 bool QuizImageDataTexture3DArtefact::setData(const QByteArray &data_)
 {
@@ -1302,7 +1408,7 @@ QuizImageDataObject::~QuizImageDataObject()
     free();
 }
 
-QuizImageDataObject *QuizImageDataObject::create(EffectObjects *effectObject_)
+QuizImageDataObject *QuizImageDataObject::create(const EffectObjects *effectObject_)
 {
     if(nullptr == effectObject_ ||
             nullptr == effectObject_->getObjectInfoModel() ||
@@ -1315,7 +1421,7 @@ QuizImageDataObject *QuizImageDataObject::create(EffectObjects *effectObject_)
     res->m_programmerName = effectObject_->getObjectInfoModel()->getCurrentDataItem()->programmerName();
     for(int i = 0; i < effectObject_->getObjectArtefacts()->sizeImpl(); i++)
     {
-        ObjectArtefact *objectArtefact = effectObject_->getObjectArtefacts()->dataItemAtImpl(i);
+        const ObjectArtefact *objectArtefact = effectObject_->getObjectArtefacts()->dataItemAtImpl(i);
         const ArtefactModel *artefactModel = objectArtefact->getArtefact();
         if(nullptr == artefactModel ||
                 !artefactModel->isListLoaded()
@@ -1373,28 +1479,206 @@ void QuizImageDataObject::free()
 }
 
 
+bool DrawingArtefact::operator == (const DrawingArtefact &drawingArtefact_) const
+{
+    return getId() == drawingArtefact_.getId();
+}
+
+bool DrawingArtefact::operator < (const DrawingArtefact &drawingArtefact_) const
+{
+    return getId() < drawingArtefact_.getId();
+}
+
+int DrawingArtefact::getId() const
+{
+    return m_id;
+}
+
+void DrawingArtefact::setId(int id_)
+{
+    m_id = id_;
+}
+
+
+bool DrawingTextureArtefact::operator == (const DrawingTextureArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+bool DrawingTextureArtefact::operator < (const DrawingTextureArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+void DrawingTextureArtefact::deepCopy()
+{
+    m_image = m_image.copy();
+}
+
+void DrawingTextureArtefact::setTexture(const QImage &image_)
+{
+    m_image = image_;
+}
+
+
+bool DrawingShaderArtefact::operator == (const DrawingShaderArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+bool DrawingShaderArtefact::operator < (const DrawingShaderArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+void DrawingShaderArtefact::deepCopy()
+{
+    m_shaderCode = QString(m_shaderCode.constData(), m_shaderCode.length());
+}
+
+void DrawingShaderArtefact::setShader(const QString &shaderCode_)
+{
+    m_shaderCode = shaderCode_;
+}
+
+
+bool DrawingImageData::isNewFromImage() const
+{
+    return m_newFromImageUrl;
+}
+
+bool DrawingImageData::isNewToImage() const
+{
+    return m_newToImageUrl;
+}
+
+bool DrawingImageData::isEffectChanged() const
+{
+    return m_newEffect;
+}
+
+const QString &DrawingImageData::getFromImageUrl() const
+{
+    return m_fromImageUrl;
+}
+
+const QString &DrawingImageData::getToImageUrl() const
+{
+    return m_toImageUrl;
+}
+
+bool DrawingImageData::isFromImageIsUrl() const
+{
+    return !isDefaultImage(m_fromImageUrl);
+}
+
+bool DrawingImageData::isToImageIsUrl() const
+{
+    return !isDefaultImage(m_toImageUrl);
+}
+
+void DrawingImageData::setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_)
+{
+    m_fromImageUrl = fromImageUrl_;
+    m_newFromImageUrl = newFromImageUrl_;
+}
+
+void DrawingImageData::setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_)
+{
+    m_toImageUrl = toImageUrl_;
+    m_newToImageUrl = newToImageUrl_;
+}
+
+void DrawingImageData::setObjects(const QVector<QuizImageDataObject *> &objects_)
+{
+    setArtefacts(objects_);
+}
+
+void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &objects_)
+{
+    std::set<DrawingTextureArtefact> textures;
+    std::set<DrawingShaderArtefact> vertexShaders;
+    std::set<DrawingShaderArtefact> fragmentShaders;
+    for(const QuizImageDataObject *obj_ : objects_)
+    {
+        if(nullptr == obj_) { continue; }
+        for(const IQuizImageDataArtefact *artefact_: obj_->getArtefacts())
+        {
+            if(nullptr == artefact_) { continue; }
+
+            if(artefact_->isVertexShader())
+            {
+                DrawingShaderArtefact drawingArtefact;
+                drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setShader(artefact_->getVertexShader());
+                vertexShaders.insert(drawingArtefact);
+            }
+            else if(artefact_->isFragmentShader())
+            {
+                DrawingShaderArtefact drawingArtefact;
+                drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setShader(artefact_->getFragmentShader());
+                fragmentShaders.insert(drawingArtefact);
+            }
+            else if(artefact_->isTexture() && nullptr != artefact_->getTexture())
+            {
+                DrawingTextureArtefact drawingArtefact;
+                drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setTexture(*artefact_->getTexture());
+            }
+        }
+    }
+    for(const DrawingTextureArtefact &artefact_ : textures)
+    {
+        m_texures.push_back(artefact_);
+    }
+    for(const DrawingShaderArtefact &artefact_ : vertexShaders)
+    {
+        m_vertexShaders.push_back(artefact_);
+    }
+    for(const DrawingShaderArtefact &artefact_ : fragmentShaders)
+    {
+        m_fragmentShaders.push_back(artefact_);
+    }
+}
+
+void DrawingImageData::deepCopy()
+{
+    for(DrawingTextureArtefact &artefact_ : m_texures)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
+    {
+        artefact_.deepCopy();
+    }
+}
+
+
 QuizImageData::QuizImageData()
 {
-    m_newFromImageUrl = g_noImage;
-    m_newToImageUrl = g_noImage;
+    m_newFromImageUrl = setDefaultImageIfEmpty(QString());
+    m_newToImageUrl = setDefaultImageIfEmpty(QString());
+    clearEffect();
+}
+
+QuizImageData::~QuizImageData()
+{
+    free();
 }
 
 void QuizImageData::setFromImageUrl(const QString &fromImageUrl_)
 {
-    m_newFromImageUrl = fromImageUrl_;
-    if(m_newFromImageUrl.isEmpty() || m_newFromImageUrl == g_noImageQRC)
-    {
-        m_newFromImageUrl = g_noImage;
-    }
+    m_newFromImageUrl = setDefaultImageIfEmpty(fromImageUrl_);
 }
 
 void QuizImageData::setToImageUrl(const QString &toImageUrl_)
 {
-    m_newToImageUrl = toImageUrl_;
-    if(m_newToImageUrl.isEmpty() || m_newToImageUrl == g_noImageQRC)
-    {
-        m_newToImageUrl = g_noImage;
-    }
+    m_newToImageUrl = setDefaultImageIfEmpty(toImageUrl_);
 }
 
 bool QuizImageData::fromImageUrlChanged() const
@@ -1433,37 +1717,6 @@ void QuizImageData::swapImages()
     useNewToImageUrl();
 }
 
-void QuizImageData::setEffectId(int effectId_)
-{
-    m_newEffectId = effectId_;
-}
-
-void QuizImageData::setArgumentSetId(int argumentSetId_)
-{
-    m_newArgumentSetId = argumentSetId_;
-}
-
-bool QuizImageData::effectChanged() const
-{
-    return m_newEffectId != m_effectId || m_newArgumentSetId != m_argumentSetId;
-}
-
-void QuizImageData::useNewEffect()
-{
-    m_newEffectId = m_effectId;
-    m_newArgumentSetId = m_argumentSetId;
-}
-
-bool QuizImageData::isFromImageIsUrl() const
-{
-    return !isDefaultImage(m_fromImageUrl);
-}
-
-bool QuizImageData::isToImageIsUrl() const
-{
-    return !isDefaultImage(m_toImageUrl);
-}
-
 const QString &QuizImageData::getFromImageUrl() const
 {
     return m_fromImageUrl;
@@ -1474,108 +1727,99 @@ const QString &QuizImageData::getToImageUrl() const
     return m_toImageUrl;
 }
 
-void QuizImageData::extractArguments(const Effect *effect_, const EffectArgSet *argumentSet_)
+bool QuizImageData::isEffectChanged() const
 {
-    if(nullptr == effect_)
+    return m_effectIsChanged;
+}
+
+void QuizImageData::useNewEffect()
+{
+    m_effectIsChanged = false;
+}
+
+void QuizImageData::setEffect(const Effect *effect_)
+{
+    if(!canUpdateEffect(effect_))
     {
-        clearArguments();
-        setShaders(QString(), QString());
-        initDefaultShaders();
+        if(differentEffect(effect_))
+        {
+            clearEffect();
+        }
         return;
     }
 
-    // read shaders files
-    ArtefactTypeModel *artefactTypeModel = static_cast<ArtefactTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_artefactTypeModel)
-                );
-    Q_ASSERT(nullptr != artefactTypeModel && artefactTypeModel->sizeImpl() > 0);
-    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    Q_ASSERT(nullptr != sf);
+    clearEffect();
 
-    setShaders(QString(), QString());
+    const EffectObjectsModel *effectObjectModel = effect_->getEffectObjects();
+    Q_ASSERT(nullptr != effectObjectModel);
+    Q_ASSERT(effectObjectModel->isListLoaded());
 
-    const EffectObjectsModel *effectObjectsModel = effect_->getEffectObjects();
-    Q_ASSERT(nullptr != effectObjectsModel && effectObjectsModel->isListLoaded());
-
-    for(int i = 0; i < effectObjectsModel->sizeImpl(); i++ )
+    for(int i = 0; i < effectObjectModel->sizeImpl(); i++)
     {
-        const EffectObjects *effectObjects = effectObjectsModel->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effectObjects);
-
-        const ObjectArtefactModel *effectObjectArtefactModel = effectObjects->getObjectArtefacts();
-        Q_ASSERT(nullptr != effectObjectArtefactModel && effectObjectArtefactModel->isListLoadedImpl());
-
-        for(int j = 0; j < effectObjectArtefactModel->sizeImpl(); j++)
-        {
-            const ObjectArtefact *effectObjectArtefact = effectObjectArtefactModel->dataItemAtImpl(j);
-            Q_ASSERT(nullptr != effectObjectArtefact);
-
-            const ArtefactModel * artefactModel = effectObjectArtefact->getArtefact();
-            Q_ASSERT(nullptr != artefactModel && artefactModel->isListLoadedImpl());
-
-            for(int k = 0; k < artefactModel->sizeImpl(); k++)
-            {
-                const Artefact *artefact = artefactModel->dataItemAtImpl(k);
-                Q_ASSERT(nullptr != artefact);
-                Q_ASSERT(sf->isUrlDownloaded(artefact->filename()));
-
-                ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
-                QString shaderText;
-                Q_ASSERT(nullptr != artefactType);
-
-                if(g_artefactTypeVertex == artefactType->type() ||
-                        g_artefactTypeFragment == artefactType->type())
-                {
-                    shaderText = ::loadTextFileByUrl(artefact->filename());
-                    if(g_artefactTypeVertex == artefactType->type())
-                    {
-                        setVertexShader(shaderText);
-                    }
-                    else if(g_artefactTypeFragment == artefactType->type())
-                    {
-                        setFragmentShader(shaderText);
-                    }
-                }
-            }
-        }
+        const EffectObjects *effectObjects = effectObjectModel->dataItemAtImpl(i);
+        if(nullptr == effectObjects) { continue; }
+        QuizImageDataObject *dataObj = QuizImageDataObject::create(effectObjects);
+        if(nullptr == dataObj) { continue; }
+        m_objects.push_back(dataObj);
     }
 
-    initDefaultShaders();
+    m_effectIsChanged = true;
+}
 
-    ArtefactArgTypeModel *artefactArgTypeModel = static_cast<ArtefactArgTypeModel *>(
-                QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
-                );
-    Q_ASSERT(nullptr != artefactArgTypeModel && artefactArgTypeModel->isListLoaded());
+bool QuizImageData::canUpdateEffect(const Effect *effect_) const
+{
+    if(nullptr == effect_ ||
+            effect_->id() == m_oldEffectId ||
+            !effect_->isChildrenLoaded() ||
+            nullptr == effect_->getEffectObjects() ||
+            !effect_->getEffectObjects()->isListLoaded()
+            ) { return false; }
+    return true;
+}
 
-    clearArguments();
+bool QuizImageData::differentEffect(const Effect *effect_) const
+{
+    if(nullptr == effect_ ||
+            effect_->id() != m_oldEffectId
+            ) { return true; }
+    return false;
+}
 
-    // read default arguments values
-    const EffectArgModel *effectArguments = effect_->getEffectArguments();
-    Q_ASSERT(nullptr != effectArguments && effectArguments->isListLoaded());
-    for(int i = 0; i < effectArguments->sizeImpl(); ++i)
+void QuizImageData::setArgumentSet(const EffectArgSet *argumentSet_)
+{
+}
+
+void QuizImageData::clearEffect()
+{
+    // TODO: add implementation
+    freeObjects();
+    m_oldEffectId = -1;
+    m_effectIsChanged = true;
+}
+
+void QuizImageData::free()
+{
+    freeObjects();
+}
+
+void QuizImageData::freeObjects()
+{
+    for(QuizImageDataObject *&ptr_ : m_objects)
     {
-        ArgumentInfo ai;
-        const EffectArg *effectArgument = effectArguments->dataItemAtImpl(i);
-        Q_ASSERT(nullptr != effectArgument);
-        ai.setName(effectArgument->name());
-        const ArtefactArgType *argType = artefactArgTypeModel->findDataItemByIdImpl(effectArgument->argTypeId());
-        Q_ASSERT(nullptr != argType);
-        ai.setArgId(effectArgument->id());
-        ai.setType(argType->type());
-        ai.setValue(effectArgument->defaultValue());
-        appendArguments(ai);
+        delete ptr_;
+        ptr_ = nullptr;
     }
+    m_objects.clear();
+}
 
-    if(nullptr != argumentSet_)
-    {
-        const EffectArgValueModel *argumentValuesModel = argumentSet_->getArgumentValues();
-        Q_ASSERT(nullptr != argumentValuesModel && argumentValuesModel->isListLoaded());
-        for(int i = 0; i < argumentValuesModel->sizeImpl(); ++i)
-        {
-            const EffectArgValue *effectArgumentValue = argumentValuesModel->dataItemAtImpl(i);
-            Q_ASSERT(nullptr != effectArgumentValue);
-            const int argId = effectArgumentValue->getArgId();
-            setArgumentValue(argId, effectArgumentValue->value());
-        }
-    }
+void QuizImageData::prepareDrawingData()
+{
+    m_drawingData.setFromImageUrl(getFromImageUrl(), fromImageUrlChanged());
+    m_drawingData.setToImageUrl(getToImageUrl(), toImageUrlChanged());
+    useNewFromImageUrl();
+}
+
+const DrawingImageData &QuizImageData::getDrawingData() const
+{
+    return m_drawingData;
 }
