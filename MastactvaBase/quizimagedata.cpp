@@ -1,4 +1,5 @@
 #include "quizimagedata.h"
+#include <set>
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaModels/artefacttype.h"
@@ -1151,6 +1152,11 @@ IQuizImageDataArtefact *IQuizImageDataArtefact::create(const Artefact *artefact_
     return artefact;
 }
 
+int IQuizImageDataArtefact::getId() const
+{
+    return m_id;
+}
+
 bool IQuizImageDataArtefact::isVertexShader() const
 {
     return false;
@@ -1460,14 +1466,45 @@ void DrawingArtefact::setId(int id_)
 }
 
 
+bool DrawingTextureArtefact::operator == (const DrawingTextureArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+bool DrawingTextureArtefact::operator < (const DrawingTextureArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+void DrawingTextureArtefact::deepCopy()
+{
+    m_image = m_image.copy();
+}
+
 void DrawingTextureArtefact::setTexture(const QImage &image_)
 {
-    m_image = image_.copy();
+    m_image = image_;
+}
+
+
+bool DrawingShaderArtefact::operator == (const DrawingShaderArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+bool DrawingShaderArtefact::operator < (const DrawingShaderArtefact &drawingArtefact_) const
+{
+    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+}
+
+void DrawingShaderArtefact::deepCopy()
+{
+    m_shaderCode = QString(m_shaderCode.constData(), m_shaderCode.length());
 }
 
 void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 {
-    m_shaderCode = QString(shaderCode_);
+    m_shaderCode = shaderCode_;
 }
 
 
@@ -1516,6 +1553,75 @@ void DrawingImageData::setToImageUrl(const QString &toImageUrl_, bool newToImage
 {
     m_toImageUrl = toImageUrl_;
     m_newToImageUrl = newToImageUrl_;
+}
+
+void DrawingImageData::setObjects(const QVector<QuizImageDataObject *> &objects_)
+{
+    setArtefacts(objects_);
+}
+
+void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &objects_)
+{
+    std::set<DrawingTextureArtefact> textures;
+    std::set<DrawingShaderArtefact> vertexShaders;
+    std::set<DrawingShaderArtefact> fragmentShaders;
+    for(const QuizImageDataObject *obj_ : objects_)
+    {
+        if(nullptr == obj_) { continue; }
+        for(const IQuizImageDataArtefact *artefact_: obj_->getArtefacts())
+        {
+            if(nullptr == artefact_) { continue; }
+
+            if(artefact_->isVertexShader())
+            {
+                DrawingShaderArtefact drawingArtefact;
+                drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setShader(artefact_->getVertexShader());
+                vertexShaders.insert(drawingArtefact);
+            }
+            else if(artefact_->isFragmentShader())
+            {
+                DrawingShaderArtefact drawingArtefact;
+                drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setShader(artefact_->getFragmentShader());
+                fragmentShaders.insert(drawingArtefact);
+            }
+            else if(artefact_->isTexture() && nullptr != artefact_->getTexture())
+            {
+                DrawingTextureArtefact drawingArtefact;
+                drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setTexture(*artefact_->getTexture());
+            }
+        }
+    }
+    for(const DrawingTextureArtefact &artefact_ : textures)
+    {
+        m_texures.push_back(artefact_);
+    }
+    for(const DrawingShaderArtefact &artefact_ : vertexShaders)
+    {
+        m_vertexShaders.push_back(artefact_);
+    }
+    for(const DrawingShaderArtefact &artefact_ : fragmentShaders)
+    {
+        m_fragmentShaders.push_back(artefact_);
+    }
+}
+
+void DrawingImageData::deepCopy()
+{
+    for(DrawingTextureArtefact &artefact_ : m_texures)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
+    {
+        artefact_.deepCopy();
+    }
 }
 
 

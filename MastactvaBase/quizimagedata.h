@@ -2,6 +2,7 @@
 #define QUIZIMAGEDATA_H
 
 
+#include <type_traits>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLTexture>
@@ -9,7 +10,6 @@
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
 #include <QJsonDocument>
-#include <type_traits>
 #include "../MastactvaBase/utils.h"
 
 
@@ -787,6 +787,7 @@ public:
 
     static IQuizImageDataArtefact *create(const Artefact *artefact_, int stepIndex_);
 
+    int getId() const;
     virtual bool isVertexShader() const;
     virtual bool isFragmentShader() const;
     bool isTexture() const;
@@ -980,6 +981,10 @@ class DrawingTextureArtefact : public DrawingArtefact
 public:
     DrawingTextureArtefact() = default;
 
+    bool operator == (const DrawingTextureArtefact &drawingArtefact_) const;
+    bool operator < (const DrawingTextureArtefact &drawingArtefact_) const;
+    void deepCopy();
+
 private:
     void setTexture(const QImage &image_);
 
@@ -993,6 +998,10 @@ class DrawingShaderArtefact : public DrawingArtefact
 {
 public:
     DrawingShaderArtefact() = default;
+
+    bool operator == (const DrawingShaderArtefact &drawingArtefact_) const;
+    bool operator < (const DrawingShaderArtefact &drawingArtefact_) const;
+    void deepCopy();
 
 private:
     void setShader(const QString &shaderCode_);
@@ -1021,10 +1030,13 @@ public:
     bool isFromImageIsUrl() const;
     bool isToImageIsUrl() const;
 
+    void deepCopy();
+
 private:
     void setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_);
     void setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_);
     void setObjects(const QVector<QuizImageDataObject *> &objects_);
+    void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
 
 private:
     bool m_newFromImageUrl = false;
@@ -1032,6 +1044,10 @@ private:
     bool m_newEffect = false;
     QString m_fromImageUrl;
     QString m_toImageUrl;
+
+    QVector<DrawingTextureArtefact> m_texures;
+    QVector<DrawingShaderArtefact> m_vertexShaders;
+    QVector<DrawingShaderArtefact> m_fragmentShaders;
 
 private:
     friend class QuizImageData;
