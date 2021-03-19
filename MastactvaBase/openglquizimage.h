@@ -83,7 +83,8 @@ private:
     int m_texMatrix2Id = -1;
     int m_tId = -1;
 
-    QuizImageData m_data;
+    //QuizImageData m_data;
+    DrawingImageData m_drawingData;
     qreal m_t = 0.0;
     QByteArray m_vshaderBA;
     QByteArray m_fshaderBA;

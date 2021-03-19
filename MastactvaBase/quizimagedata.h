@@ -787,6 +787,13 @@ public:
 
     static IQuizImageDataArtefact *create(const Artefact *artefact_, int stepIndex_);
 
+    virtual bool isVertexShader() const;
+    virtual bool isFragmentShader() const;
+    bool isTexture() const;
+    virtual QString getVertexShader() const;
+    virtual QString getFragmentShader() const;
+    virtual const QImage *getTexture() const;
+
 protected:
     virtual bool setData(const QByteArray &data_) = 0;
 
@@ -795,6 +802,7 @@ protected:
     bool setArguments(const QString &shaderCode_);
 
 private:
+    int m_id = -1;
     int m_stepIndex = 0;
     ArgumentList m_arguments;
 };
@@ -803,6 +811,9 @@ class QuizImageDataVertexArtefact : public IQuizImageDataArtefact
 {
 public:
     QuizImageDataVertexArtefact() = default;
+
+    virtual bool isVertexShader() const override;
+    virtual QString getVertexShader() const override;
 
 protected:
     virtual bool setData(const QByteArray &data_) override;
@@ -817,6 +828,9 @@ class QuizImageDataFragmentArtefact : public IQuizImageDataArtefact
 public:
     QuizImageDataFragmentArtefact() = default;
 
+    virtual bool isFragmentShader() const override;
+    virtual QString getFragmentShader() const override;
+
 protected:
     virtual bool setData(const QByteArray &data_) override;
 
@@ -829,6 +843,8 @@ class QuizImageDataTexture1DArtefact : public IQuizImageDataArtefact
 {
 public:
     QuizImageDataTexture1DArtefact() = default;
+
+    virtual const QImage *getTexture() const override;
 
 protected:
     virtual bool setData(const QByteArray &data_) override;
@@ -843,6 +859,8 @@ class QuizImageDataTexture2DArtefact : public IQuizImageDataArtefact
 public:
     QuizImageDataTexture2DArtefact() = default;
 
+    virtual const QImage *getTexture() const override;
+
 protected:
     virtual bool setData(const QByteArray &data_) override;
 
@@ -855,6 +873,8 @@ class QuizImageDataTexture3DArtefact : public IQuizImageDataArtefact
 {
 public:
     QuizImageDataTexture3DArtefact() = default;
+
+    virtual const QImage *getTexture() const override;
 
 protected:
     virtual bool setData(const QByteArray &data_) override;
@@ -933,6 +953,57 @@ protected:
 };
 
 
+class DrawingImageData;
+
+
+class DrawingArtefact
+{
+public:
+    DrawingArtefact() = default;
+
+    bool operator == (const DrawingArtefact &drawingArtefact_) const;
+    bool operator < (const DrawingArtefact &drawingArtefact_) const;
+    int getId() const;
+
+private:
+    void setId(int id_);
+
+private:
+    int m_id = -1;
+
+    friend class DrawingImageData;
+};
+
+
+class DrawingTextureArtefact : public DrawingArtefact
+{
+public:
+    DrawingTextureArtefact() = default;
+
+private:
+    void setTexture(const QImage &image_);
+
+private:
+    QImage m_image;
+
+    friend class DrawingImageData;
+};
+
+class DrawingShaderArtefact : public DrawingArtefact
+{
+public:
+    DrawingShaderArtefact() = default;
+
+private:
+    void setShader(const QString &shaderCode_);
+
+private:
+    QString m_shaderCode;
+
+    friend class DrawingImageData;
+};
+
+
 class QuizImageData;
 
 
@@ -947,10 +1018,13 @@ public:
 
     const QString &getFromImageUrl() const;
     const QString &getToImageUrl() const;
+    bool isFromImageIsUrl() const;
+    bool isToImageIsUrl() const;
 
 private:
     void setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_);
     void setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_);
+    void setObjects(const QVector<QuizImageDataObject *> &objects_);
 
 private:
     bool m_newFromImageUrl = false;
@@ -973,6 +1047,8 @@ public:
     void setToImageUrl(const QString &toImageUrl_);
     void swapImages();
     void setEffect(const Effect *effect_);
+    void setArgumentSet(const EffectArgSet *argumentSet_);
+    bool isEffectChanged() const;
     void prepareDrawingData();
     const DrawingImageData &getDrawingData() const;
 
@@ -984,12 +1060,9 @@ protected:
 
     bool isSwapImages() const;
 
-    bool isFromImageIsUrl() const;
-    bool isToImageIsUrl() const;
     const QString &getFromImageUrl() const;
     const QString &getToImageUrl() const;
 
-    bool isEffectChanged() const;
     void useNewEffect();
 
     bool canUpdateEffect(const Effect *effect_) const;

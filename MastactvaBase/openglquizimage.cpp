@@ -21,7 +21,7 @@ OpenGlQuizImage::OpenGlQuizImage()
     qDebug() << "OpenGlQuizImage::OpenGlQuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
-    m_data.extractArguments(nullptr, nullptr);
+    //m_data.extractArguments(nullptr, nullptr);
     initGeometry();
     resetProgram();
 }
@@ -92,7 +92,7 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
     // all data
     const bool effectUpdated = quizImage->isEffectUpdated();
-    m_data = quizImage->getData();
+    m_drawingData = DrawingImageData(quizImage->getData());
     if(effectUpdated)
     {
         initGeometry();

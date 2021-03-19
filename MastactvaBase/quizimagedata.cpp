@@ -1083,6 +1083,7 @@ bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepInde
     // before set data as setData can add arguments, so setup default arguments
     if(!setArguments(artefact_->getArtefactArg())) { return false; }
     if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
+    m_id = artefact_->id();
     m_stepIndex = stepIndex_;
     return true;
 }
@@ -1148,6 +1149,36 @@ IQuizImageDataArtefact *IQuizImageDataArtefact::create(const Artefact *artefact_
     }
 
     return artefact;
+}
+
+bool IQuizImageDataArtefact::isVertexShader() const
+{
+    return false;
+}
+
+bool IQuizImageDataArtefact::isFragmentShader() const
+{
+    return false;
+}
+
+bool IQuizImageDataArtefact::isTexture() const
+{
+    return nullptr != getTexture();
+}
+
+QString IQuizImageDataArtefact::getVertexShader() const
+{
+    return QString();
+}
+
+QString IQuizImageDataArtefact::getFragmentShader() const
+{
+    return QString();
+}
+
+const QImage *IQuizImageDataArtefact::getTexture() const
+{
+    return nullptr;
 }
 
 bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
@@ -1234,6 +1265,16 @@ bool IQuizImageDataArtefact::setArguments(const QString &shaderCode_)
 }
 
 
+bool QuizImageDataVertexArtefact::isVertexShader() const
+{
+    return true;
+}
+
+QString QuizImageDataVertexArtefact::getVertexShader() const
+{
+    return m_vertexShader;
+}
+
 bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
 {
     m_vertexShader = getTextFromBinaryData(data_);
@@ -1245,6 +1286,16 @@ bool QuizImageDataVertexArtefact::setData(const QByteArray &data_)
     return !m_vertexShader.isEmpty();
 }
 
+
+bool QuizImageDataFragmentArtefact::isFragmentShader() const
+{
+    return true;
+}
+
+QString QuizImageDataFragmentArtefact::getFragmentShader() const
+{
+    return m_fragmentShader;
+}
 
 bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
 {
@@ -1258,17 +1309,32 @@ bool QuizImageDataFragmentArtefact::setData(const QByteArray &data_)
 }
 
 
+const QImage *QuizImageDataTexture1DArtefact::getTexture() const
+{
+    return &m_texture1D;
+}
+
 bool QuizImageDataTexture1DArtefact::setData(const QByteArray &data_)
 {
     return m_texture1D.loadFromData(data_);
 }
 
 
+const QImage *QuizImageDataTexture2DArtefact::getTexture() const
+{
+    return &m_texture2D;
+}
+
 bool QuizImageDataTexture2DArtefact::setData(const QByteArray &data_)
 {
     return m_texture2D.loadFromData(data_);
 }
 
+
+const QImage *QuizImageDataTexture3DArtefact::getTexture() const
+{
+    return &m_texture3D;
+}
 
 bool QuizImageDataTexture3DArtefact::setData(const QByteArray &data_)
 {
@@ -1373,6 +1439,38 @@ void QuizImageDataObject::free()
 }
 
 
+bool DrawingArtefact::operator == (const DrawingArtefact &drawingArtefact_) const
+{
+    return getId() == drawingArtefact_.getId();
+}
+
+bool DrawingArtefact::operator < (const DrawingArtefact &drawingArtefact_) const
+{
+    return getId() < drawingArtefact_.getId();
+}
+
+int DrawingArtefact::getId() const
+{
+    return m_id;
+}
+
+void DrawingArtefact::setId(int id_)
+{
+    m_id = id_;
+}
+
+
+void DrawingTextureArtefact::setTexture(const QImage &image_)
+{
+    m_image = image_.copy();
+}
+
+void DrawingShaderArtefact::setShader(const QString &shaderCode_)
+{
+    m_shaderCode = QString(shaderCode_);
+}
+
+
 bool DrawingImageData::isNewFromImage() const
 {
     return m_newFromImageUrl;
@@ -1398,6 +1496,16 @@ const QString &DrawingImageData::getToImageUrl() const
     return m_toImageUrl;
 }
 
+bool DrawingImageData::isFromImageIsUrl() const
+{
+    return !isDefaultImage(m_fromImageUrl);
+}
+
+bool DrawingImageData::isToImageIsUrl() const
+{
+    return !isDefaultImage(m_toImageUrl);
+}
+
 void DrawingImageData::setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_)
 {
     m_fromImageUrl = fromImageUrl_;
@@ -1415,6 +1523,7 @@ QuizImageData::QuizImageData()
 {
     m_newFromImageUrl = setDefaultImageIfEmpty(QString());
     m_newToImageUrl = setDefaultImageIfEmpty(QString());
+    clearEffect();
 }
 
 QuizImageData::~QuizImageData()
@@ -1466,16 +1575,6 @@ void QuizImageData::swapImages()
     if(!isSwapImages()) { return; }
     useNewFromImageUrl();
     useNewToImageUrl();
-}
-
-bool QuizImageData::isFromImageIsUrl() const
-{
-    return !isDefaultImage(m_fromImageUrl);
-}
-
-bool QuizImageData::isToImageIsUrl() const
-{
-    return !isDefaultImage(m_toImageUrl);
 }
 
 const QString &QuizImageData::getFromImageUrl() const
@@ -1546,6 +1645,10 @@ bool QuizImageData::differentEffect(const Effect *effect_) const
     return false;
 }
 
+void QuizImageData::setArgumentSet(const EffectArgSet *argumentSet_)
+{
+}
+
 void QuizImageData::clearEffect()
 {
     // TODO: add implementation
@@ -1571,7 +1674,9 @@ void QuizImageData::freeObjects()
 
 void QuizImageData::prepareDrawingData()
 {
-    //TODO: impelement
+    m_drawingData.setFromImageUrl(getFromImageUrl(), fromImageUrlChanged());
+    m_drawingData.setToImageUrl(getToImageUrl(), toImageUrlChanged());
+    useNewFromImageUrl();
 }
 
 const DrawingImageData &QuizImageData::getDrawingData() const

@@ -24,7 +24,6 @@ QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
     qDebug() << "QuizImage::QuizImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
     setFlag(ItemHasContents);
-    m_data.extractArguments(nullptr, nullptr);
 }
 
 void QuizImage::updateState()
@@ -330,9 +329,9 @@ bool QuizImage::isEffectUpdated() const
     return m_effectUpdated;
 }
 
-const QuizImageData &QuizImage::getData() const
+const DrawingImageData &QuizImage::getData() const
 {
-    return m_data;
+    return m_data.getDrawingData();
 }
 
 EffectArgSet *QuizImage::getArgumentSet() const
@@ -503,12 +502,11 @@ void QuizImage::formImageData()
     const Effect *effect = getEffect();
     const EffectArgSet *argumentSet = getArgumentSet();
     const bool updateEffectRequired = needToUpdateEffects();
-    m_data.setEffectId(nullptr != effect ? effect->id() : -1);
-    m_data.setArgumentSetId(nullptr != argumentSet ? argumentSet->id() : -1);
-    if(updateEffectRequired || m_data.effectChanged())
+    m_data.setEffect(effect);
+    m_data.setArgumentSet(argumentSet);
+    if(updateEffectRequired || m_data.isEffectChanged())
     {
         m_effectUpdated = true;
-        m_data.useNewEffect();
-        m_data.extractArguments(effect, argumentSet);
+        m_data.prepareDrawingData();
     }
 }
