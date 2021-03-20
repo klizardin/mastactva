@@ -118,18 +118,18 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
     using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { "int", 1, false, false, false, false, 1 },
-        { "float", 1, true, false, false, false, 1 },
-        { "vec2", 2, true, false, false, false, 2 },
-        { "vec3", 3, true, false, false, false, 3 },
-        { "vec4", 4, true, false, false, false, 4 },
-        { "mat2", 4, true, true, false, false, 4 },
-        { "mat3", 9, true, true, false, false, 9 },
-        { "mat4", 16, true, true, false, false, 16 },
-        { "strings", -1, false, false, true, false, 1 },
-        { "sampler1D", 1, false, false, true, true, 1 },
-        { "sampler2D", 1, false, false, true, true, 1 },
-        { "sampler3D", 1, false, false, true, true, 1 },
+        { g_intTypeName, 1, false, false, false, false, 1 },
+        { g_floatTypeName, 1, true, false, false, false, 1 },
+        { g_vec2TypeName, 2, true, false, false, false, 2 },
+        { g_vec3TypeName, 3, true, false, false, false, 3 },
+        { g_vec4TypeName, 4, true, false, false, false, 4 },
+        { g_mat2TypeName, 4, true, true, false, false, 4 },
+        { g_mat3TypeName, 9, true, true, false, false, 9 },
+        { g_mat4TypeName, 16, true, true, false, false, 16 },
+        { g_stringsTypeName, -1, false, false, true, false, 1 },
+        { g_sampler1DTypeName, 1, false, false, true, true, 1 },
+        { g_sampler2DTypeName, 1, false, false, true, true, 1 },
+        { g_sampler3DTypeName, 1, false, false, true, true, 1 },
     };
 
     const auto fit = std::find_if(
