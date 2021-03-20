@@ -499,22 +499,6 @@ private:
 };
 
 
-template<typename ArgType_, typename ReturnType_>
-const ReturnType_ &valueOrFish(const ArgType_ &value_, const ReturnType_ *)
-{
-    Q_UNUSED(value_);
-    static ReturnType_ fish;
-    return fish;
-}
-
-template<typename SameType_>
-const SameType_ &valueOrFish(const SameType_ &value_, const SameType_ *)
-{
-    return value_;
-}
-
-
-
 template<class ArgumentValueDataArrayType_>
 class OpenGLArgumentUniformValueT :
         public ArgumentValueDataArrayType_,

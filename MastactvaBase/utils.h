@@ -286,7 +286,6 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
     extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
-
 template <typename EnumType_>
 constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 {
@@ -296,6 +295,20 @@ constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 bool isDefaultImage(const QString &imageURLStr_);
 bool isDefaultImage(const QUrl &imageUrl_);
 QString setDefaultImageIfEmpty(const QString &imageURLStr_);
+
+template<typename ArgType_, typename ReturnType_>
+const ReturnType_ &valueOrFish(const ArgType_ &value_, const ReturnType_ *)
+{
+    Q_UNUSED(value_);
+    static ReturnType_ fish;
+    return fish;
+}
+
+template<typename SameType_>
+const SameType_ &valueOrFish(const SameType_ &value_, const SameType_ *)
+{
+    return value_;
+}
 
 
 static const char *g_englishLanguage = "English";
