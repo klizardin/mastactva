@@ -381,6 +381,9 @@ static const char *g_stringsTypeName = "strings";
 static const char *g_sampler1DTypeName = "sampler1D";
 static const char *g_sampler2DTypeName = "sampler2D";
 static const char *g_sampler3DTypeName = "sampler3D";
+static const char *g_attributeStorageName = "attribute";
+static const char *g_uniformStorageName = "uniform";
+static const char *g_indexesStorageName = "indexes";
 
 
 #endif // UTILS_H
