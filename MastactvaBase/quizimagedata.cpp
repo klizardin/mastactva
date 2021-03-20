@@ -233,9 +233,9 @@ void ArgumentValueDataArray::initStorage(const QString &storage_)
 {
     using StorageInfo = std::tuple<const char *, bool, bool, bool>;
     static const StorageInfo storageInfos[] = {
-        { "attribute", true, false, false },
-        { "uniform", false, true, false },
-        { "indexes", false, false, true },
+        { g_attributeStorageName, true, false, false },
+        { g_uniformStorageName, false, true, false },
+        { g_indexesStorageName, false, false, true },
     };
 
     const auto fit = std::find_if(
@@ -1120,6 +1120,7 @@ bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepInde
     if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
     m_id = artefact_->id();
     m_stepIndex = stepIndex_;
+    m_filename = artefact_->filename();
     return true;
 }
 
@@ -1189,6 +1190,11 @@ IQuizImageDataArtefact *IQuizImageDataArtefact::create(const Artefact *artefact_
 int IQuizImageDataArtefact::getId() const
 {
     return m_id;
+}
+
+const QString &IQuizImageDataArtefact::filename() const
+{
+    return m_filename;
 }
 
 bool IQuizImageDataArtefact::isVertexShader() const
@@ -1502,17 +1508,23 @@ void DrawingArtefact::setId(int id_)
 
 bool DrawingTextureArtefact::operator == (const DrawingTextureArtefact &drawingArtefact_) const
 {
-    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+    return getFilename() ==  drawingArtefact_.getFilename();
 }
 
 bool DrawingTextureArtefact::operator < (const DrawingTextureArtefact &drawingArtefact_) const
 {
-    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+    return getFilename() <  drawingArtefact_.getFilename();
 }
 
 void DrawingTextureArtefact::deepCopy()
 {
+    m_filename = QString(m_filename.constData(), m_filename.length());
     m_image = m_image.copy();
+}
+
+const QString &DrawingTextureArtefact::getFilename() const
+{
+    return m_filename;
 }
 
 void DrawingTextureArtefact::setTexture(const QImage &image_)
@@ -1750,17 +1762,22 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
                 DrawingTextureArtefact drawingArtefact;
                 drawingArtefact.setId(artefact_->getId());
                 drawingArtefact.setTexture(*artefact_->getTexture());
+                drawingArtefact.setFilename(artefact_->filename());
+                textures.insert(drawingArtefact);
             }
         }
     }
+    m_texures.reserve(textures.size() + 2);
     for(const DrawingTextureArtefact &artefact_ : textures)
     {
         m_texures.push_back(artefact_);
     }
+    m_vertexShaders.reserve(vertexShaders.size());
     for(const DrawingShaderArtefact &artefact_ : vertexShaders)
     {
         m_vertexShaders.push_back(artefact_);
     }
+    m_fragmentShaders.reserve(fragmentShaders.size());
     for(const DrawingShaderArtefact &artefact_ : fragmentShaders)
     {
         m_fragmentShaders.push_back(artefact_);
@@ -1923,9 +1940,64 @@ void QuizImageData::freeObjects()
 
 void QuizImageData::prepareDrawingData()
 {
-    m_drawingData.setFromImageUrl(getFromImageUrl(), fromImageUrlChanged());
-    m_drawingData.setToImageUrl(getToImageUrl(), toImageUrlChanged());
+    setImagesToDrawingData();
+}
+
+void QuizImageData::setImagesToDrawingData()
+{
+    // set from image
+    DrawingTextureArtefact fromTexture;
+    fromTexture.setFilename(getFromImageUrl());
+    fromTexture.setTexture(QImage(getFromImageUrl()));
+    m_drawingData.addTexture(fromTexture);
+
+    ArgumentBase fromArg;
+    fromArg.setName(g_renderFromImageName);
+    fromArg.setType(g_sampler2DTypeName);
+    fromArg.setStorage(g_uniformStorageName);
+    fromArg.setInput(true);
+    fromArg.setValue(getFromImageUrl());
+    ArgumentValueDataArray *valueDataArray = fromArg.createValueDataArray();
+    if(nullptr != valueDataArray)
+    {
+        valueDataArray->initData();
+        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
+        if(nullptr != openglValue)
+        {
+            m_drawingData.setAllArgumentValues(openglValue);
+        }
+        openglValue = nullptr;
+    }
+    delete valueDataArray;
+    valueDataArray = nullptr;
     useNewFromImageUrl();
+
+    // set to image
+    DrawingTextureArtefact toTexture;
+    toTexture.setFilename(getToImageUrl());
+    toTexture.setTexture(QImage(getToImageUrl()));
+    m_drawingData.addTexture(toTexture);
+
+    ArgumentBase toArg;
+    toArg.setName(g_renderToImageName);
+    toArg.setType(g_sampler2DTypeName);
+    toArg.setStorage(g_uniformStorageName);
+    toArg.setInput(true);
+    toArg.setValue(getToImageUrl());
+    valueDataArray = toArg.createValueDataArray();
+    if(nullptr != valueDataArray)
+    {
+        valueDataArray->initData();
+        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
+        if(nullptr != openglValue)
+        {
+            m_drawingData.setAllArgumentValues(openglValue);
+        }
+        openglValue = nullptr;
+    }
+    delete valueDataArray;
+    valueDataArray = nullptr;
+    useNewToImageUrl();
 }
 
 const DrawingImageData &QuizImageData::getDrawingData() const

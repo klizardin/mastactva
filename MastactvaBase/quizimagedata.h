@@ -1000,6 +1000,7 @@ public:
     static IQuizImageDataArtefact *create(const Artefact *artefact_, int stepIndex_);
 
     int getId() const;
+    const QString &filename() const;
     virtual bool isVertexShader() const;
     virtual bool isFragmentShader() const;
     bool isTexture() const;
@@ -1017,6 +1018,7 @@ protected:
 private:
     int m_id = -1;
     int m_stepIndex = 0;
+    QString m_filename;
     ArgumentList m_arguments;
 };
 
@@ -1167,6 +1169,7 @@ protected:
 
 
 class DrawingImageData;
+class QuizImageData;
 
 
 class DrawingArtefact
@@ -1185,6 +1188,7 @@ private:
     int m_id = -1;
 
     friend class DrawingImageData;
+    friend class QuizImageData;
 };
 
 
@@ -1196,14 +1200,18 @@ public:
     bool operator == (const DrawingTextureArtefact &drawingArtefact_) const;
     bool operator < (const DrawingTextureArtefact &drawingArtefact_) const;
     void deepCopy();
+    const QString &getFilename() const;
 
 private:
+    void setFilename(const QString &name_);
     void setTexture(const QImage &image_);
 
 private:
+    QString m_filename;
     QImage m_image;
 
     friend class DrawingImageData;
+    friend class QuizImageData;
 };
 
 class DrawingShaderArtefact : public DrawingArtefact
@@ -1222,6 +1230,7 @@ private:
     QString m_shaderCode;
 
     friend class DrawingImageData;
+    friend class QuizImageData;
 };
 
 
@@ -1259,9 +1268,6 @@ private:
 };
 
 
-class QuizImageData;
-
-
 class DrawingImageData
 {
 public:
@@ -1273,6 +1279,7 @@ public:
 private:
     void setObjects(const QVector<QuizImageDataObject *> &objects_);
     void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
+    void addTexture(const DrawingTextureArtefact &argtefact_);
 
 private:
     std::multiset<DrawingArgument> m_arguments;
@@ -1317,6 +1324,7 @@ protected:
     void clearEffect();
     void free();
     void freeObjects();
+    void setImagesToDrawingData();
 
 protected:
     QString m_newFromImageUrl;
