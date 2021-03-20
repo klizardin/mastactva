@@ -118,18 +118,18 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
     using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { "int", 1, false, false, false, false, 1 },
-        { "float", 1, true, false, false, false, 1 },
-        { "vec2", 2, true, false, false, false, 2 },
-        { "vec3", 3, true, false, false, false, 3 },
-        { "vec4", 4, true, false, false, false, 4 },
-        { "mat2", 4, true, true, false, false, 4 },
-        { "mat3", 9, true, true, false, false, 9 },
-        { "mat4", 16, true, true, false, false, 16 },
-        { "strings", -1, false, false, true, false, 1 },
-        { "sampler1D", 1, false, false, true, true, 1 },
-        { "sampler2D", 1, false, false, true, true, 1 },
-        { "sampler3D", 1, false, false, true, true, 1 },
+        { g_intTypeName, 1, false, false, false, false, 1 },
+        { g_floatTypeName, 1, true, false, false, false, 1 },
+        { g_vec2TypeName, 2, true, false, false, false, 2 },
+        { g_vec3TypeName, 3, true, false, false, false, 3 },
+        { g_vec4TypeName, 4, true, false, false, false, 4 },
+        { g_mat2TypeName, 4, true, true, false, false, 4 },
+        { g_mat3TypeName, 9, true, true, false, false, 9 },
+        { g_mat4TypeName, 16, true, true, false, false, 16 },
+        { g_stringsTypeName, -1, false, false, true, false, 1 },
+        { g_sampler1DTypeName, 1, false, false, true, true, 1 },
+        { g_sampler2DTypeName, 1, false, false, true, true, 1 },
+        { g_sampler3DTypeName, 1, false, false, true, true, 1 },
     };
 
     const auto fit = std::find_if(
@@ -233,9 +233,9 @@ void ArgumentValueDataArray::initStorage(const QString &storage_)
 {
     using StorageInfo = std::tuple<const char *, bool, bool, bool>;
     static const StorageInfo storageInfos[] = {
-        { "attribute", true, false, false },
-        { "uniform", false, true, false },
-        { "indexes", false, false, true },
+        { g_attributeStorageName, true, false, false },
+        { g_uniformStorageName, false, true, false },
+        { g_indexesStorageName, false, false, true },
     };
 
     const auto fit = std::find_if(
@@ -974,13 +974,19 @@ QString OpenGLArgumentValueBase::getTextureName() const
     return QString();
 }
 
-void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const
+void OpenGLArgumentValueBase::createTexture(QImage *image_)
+{
+    Q_UNUSED(image_);
+}
+
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_)
 {
     Q_UNUSED(f_);
 }
 
 void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
+    if(nullptr == program_) { return; }
     m_id = program_->attributeLocation(name_);
     program_->bindAttributeLocation(name_, m_id);
 }
@@ -991,12 +997,14 @@ void OpenGLArgumentValueBase::useAttributeValue(
         int offset_,
         int tupleSize_) const
 {
+    if(nullptr == program_) { return; }
     program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
     program_->enableAttributeArray(m_id);
 }
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const
 {
+    if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
     vbo_->write(
                 offset_,
@@ -1007,6 +1015,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const
 {
+    if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
     vbo_->write(
                 offset_,
@@ -1027,11 +1036,13 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 
 void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *program_) const
 {
+    if(nullptr == program_) { return; }
     program_->disableAttributeArray(m_id);
 }
 
 void OpenGLArgumentValueBase::initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
+    if(nullptr == program_) { return; }
     m_id = program_->uniformLocation(name_);
 }
 
@@ -1041,6 +1052,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         int arraySize_,
         bool isMatrixType) const
 {
+    if(nullptr == program_) { return; }
     Q_UNUSED(isMatrixType);
     if(arraySize_ >= 1 && values_.size() >= 1)
     {
@@ -1054,6 +1066,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         int arraySize_,
         bool isMatrixType) const
 {
+    if(nullptr == program_) { return; }
     if(1 == arraySize_)
     {
         program_->setUniformValue(m_id, values_[0]);
@@ -1108,7 +1121,30 @@ void OpenGLArgumentValueBase::setUniformValue(
 
 void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_) const
 {
+    if(nullptr == f_) { return; }
     f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
+}
+
+void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, QImage *image_)
+{
+    if(nullptr != texture_)
+    {
+        delete texture_;
+        texture_ = nullptr;
+    }
+    if(nullptr == image_ || image_->isNull()) { return; }
+    texture_ = new QOpenGLTexture(image_->mirrored(), QOpenGLTexture::GenerateMipMaps);
+    texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
+    texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+    texture_->setBorderColor(1, 1, 1, 0);
+}
+
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_)
+{
+    if(nullptr == f_ || nullptr == texture_) { return; }
+    if(textureIndex_ < 0) { return; }
+    f_->glActiveTexture(GL_TEXTURE0 + textureIndex_);
+    texture_->bind();
 }
 
 
@@ -1120,6 +1156,7 @@ bool IQuizImageDataArtefact::setArtefact(const Artefact *artefact_, int stepInde
     if(!setData(loadBinaryFileByUrl(artefact_->filename()))) { return false; }
     m_id = artefact_->id();
     m_stepIndex = stepIndex_;
+    m_filename = artefact_->filename();
     return true;
 }
 
@@ -1189,6 +1226,11 @@ IQuizImageDataArtefact *IQuizImageDataArtefact::create(const Artefact *artefact_
 int IQuizImageDataArtefact::getId() const
 {
     return m_id;
+}
+
+const QString &IQuizImageDataArtefact::filename() const
+{
+    return m_filename;
 }
 
 bool IQuizImageDataArtefact::isVertexShader() const
@@ -1502,17 +1544,23 @@ void DrawingArtefact::setId(int id_)
 
 bool DrawingTextureArtefact::operator == (const DrawingTextureArtefact &drawingArtefact_) const
 {
-    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+    return getFilename() ==  drawingArtefact_.getFilename();
 }
 
 bool DrawingTextureArtefact::operator < (const DrawingTextureArtefact &drawingArtefact_) const
 {
-    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+    return getFilename() <  drawingArtefact_.getFilename();
 }
 
 void DrawingTextureArtefact::deepCopy()
 {
+    m_filename = QString(m_filename.constData(), m_filename.length());
     m_image = m_image.copy();
+}
+
+const QString &DrawingTextureArtefact::getFilename() const
+{
+    return m_filename;
 }
 
 void DrawingTextureArtefact::setTexture(const QImage &image_)
@@ -1542,51 +1590,202 @@ void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 }
 
 
-bool DrawingImageData::isNewFromImage() const
+DrawingArgument::DrawingArgument(OpenGLArgumentValueBase *impl_ /* = nullptr*/)
+    :m_impl(impl_)
 {
-    return m_newFromImageUrl;
 }
 
-bool DrawingImageData::isNewToImage() const
+DrawingArgument::~DrawingArgument()
 {
-    return m_newToImageUrl;
+    delete m_impl;
+    m_impl = nullptr;
 }
 
-bool DrawingImageData::isEffectChanged() const
+QString DrawingArgument::getArgumentName() const
 {
-    return m_newEffect;
+    return nullptr != m_impl ? m_impl->getArgumentName() : QString();
 }
 
-const QString &DrawingImageData::getFromImageUrl() const
+void DrawingArgument::create(QOpenGLShaderProgram *program_)
 {
-    return m_fromImageUrl;
+    if(nullptr != m_impl)
+    {
+        m_impl->create(program_);
+    }
 }
 
-const QString &DrawingImageData::getToImageUrl() const
+bool DrawingArgument::isTexture() const
 {
-    return m_toImageUrl;
+    return nullptr != m_impl ? m_impl->isTexture() : false;
 }
 
-bool DrawingImageData::isFromImageIsUrl() const
+void DrawingArgument::setTextureIndex(int textureIndex_)
 {
-    return !isDefaultImage(m_fromImageUrl);
+    if(nullptr != m_impl)
+    {
+        m_impl->setTextureIndex(textureIndex_);
+    }
 }
 
-bool DrawingImageData::isToImageIsUrl() const
+QString DrawingArgument::getTextureName() const
 {
-    return !isDefaultImage(m_toImageUrl);
+    return nullptr != m_impl ? m_impl->getTextureName() : QString();
 }
 
-void DrawingImageData::setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_)
+void DrawingArgument::createTexture(QImage *image_)
 {
-    m_fromImageUrl = fromImageUrl_;
-    m_newFromImageUrl = newFromImageUrl_;
+    if(nullptr != m_impl)
+    {
+        m_impl->createTexture(image_);
+    }
 }
 
-void DrawingImageData::setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_)
+int DrawingArgument::getArraySize() const
 {
-    m_toImageUrl = toImageUrl_;
-    m_newToImageUrl = newToImageUrl_;
+    return nullptr != m_impl ? m_impl->getArraySize() : 0;
+}
+
+int DrawingArgument::getMaxIndex() const
+{
+    return nullptr != m_impl ? m_impl->getMaxIndex() : 0;
+}
+
+int DrawingArgument::getVBOPartSize() const
+{
+    return nullptr != m_impl ? m_impl->getVBOPartSize() : 0;
+}
+
+void DrawingArgument::setVBOPartOffset(int offset_)
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->setVBOPartOffset(offset_);
+    }
+}
+
+void DrawingArgument::writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->writeVBOPart(vbo_, offset_, sizeItems_);
+    }
+}
+
+void DrawingArgument::use(QOpenGLShaderProgram *program_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->use(program_);
+    }
+}
+
+void DrawingArgument::bindTexture(QOpenGLFunctions *f_)
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->bindTexture(f_);
+    }
+}
+
+void DrawingArgument::draw(QOpenGLFunctions *f_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->draw(f_);
+    }
+}
+
+void DrawingArgument::release(QOpenGLShaderProgram *program_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->release(program_);
+    }
+}
+
+const QVector<GLint> &DrawingArgument::intValues() const
+{
+    static QVector<GLint> fish;
+    return nullptr != m_impl ? m_impl->intValues() : fish;
+}
+
+const QVector<GLfloat> &DrawingArgument::floatValues() const
+{
+    static QVector<GLfloat> fish;
+    return nullptr != m_impl ? m_impl->floatValues() : fish;
+}
+
+const QVector<QString> &DrawingArgument::stringValues() const
+{
+    static QVector<QString> fish;
+    return nullptr != m_impl ? m_impl->stringValues() : fish;
+}
+
+bool DrawingArgument::operator == (const DrawingArgument &argument_) const
+{
+    return getArgumentName() == argument_.getArgumentName();
+}
+
+bool DrawingArgument::operator < (const DrawingArgument &argument_) const
+{
+    return getArgumentName() < argument_.getArgumentName();
+}
+
+bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
+{
+    return intValues() == argument_.intValues() &&
+            floatValues() == argument_.floatValues() &&
+            stringValues() == argument_.stringValues()
+            ;
+}
+
+
+void DrawingImageData::deepCopy()
+{
+    m_textures.reserve(m_texturesSet.size());
+    for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
+    {
+        m_textures.push_back(artefact_);
+    }
+    m_texturesSet.clear();
+    m_vertexShaders.reserve(m_vertexShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_vertexShadersSet)
+    {
+        m_vertexShaders.push_back(artefact_);
+    }
+    m_vertexShadersSet.clear();
+    m_fragmentShaders.reserve(m_fragmentShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_fragmentShadersSet)
+    {
+        m_fragmentShaders.push_back(artefact_);
+    }
+    m_fragmentShadersSet.clear();
+    for(DrawingTextureArtefact &artefact_ : m_textures)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
+    {
+        artefact_.deepCopy();
+    }
+}
+
+void DrawingImageData::setAllArgumentValues(OpenGLArgumentValueBase *argument_)
+{
+    DrawingArgument arg(argument_);
+    std::multiset<DrawingArgument>::const_iterator itb = m_argumentsSet.lower_bound(arg);
+    std::multiset<DrawingArgument>::const_iterator ite = m_argumentsSet.upper_bound(arg);
+    for(std::multiset<DrawingArgument>::const_iterator it = itb;
+        it != ite;
+        ++it)
+    {
+        m_argumentsSet.erase(it);
+    }
+    m_argumentsSet.insert(arg);
 }
 
 void DrawingImageData::setObjects(const QVector<QuizImageDataObject *> &objects_)
@@ -1625,36 +1824,10 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
                 DrawingTextureArtefact drawingArtefact;
                 drawingArtefact.setId(artefact_->getId());
                 drawingArtefact.setTexture(*artefact_->getTexture());
+                drawingArtefact.setFilename(artefact_->filename());
+                textures.insert(drawingArtefact);
             }
         }
-    }
-    for(const DrawingTextureArtefact &artefact_ : textures)
-    {
-        m_texures.push_back(artefact_);
-    }
-    for(const DrawingShaderArtefact &artefact_ : vertexShaders)
-    {
-        m_vertexShaders.push_back(artefact_);
-    }
-    for(const DrawingShaderArtefact &artefact_ : fragmentShaders)
-    {
-        m_fragmentShaders.push_back(artefact_);
-    }
-}
-
-void DrawingImageData::deepCopy()
-{
-    for(DrawingTextureArtefact &artefact_ : m_texures)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
-    {
-        artefact_.deepCopy();
     }
 }
 
@@ -1814,9 +1987,64 @@ void QuizImageData::freeObjects()
 
 void QuizImageData::prepareDrawingData()
 {
-    m_drawingData.setFromImageUrl(getFromImageUrl(), fromImageUrlChanged());
-    m_drawingData.setToImageUrl(getToImageUrl(), toImageUrlChanged());
+    setImagesToDrawingData();
+}
+
+void QuizImageData::setImagesToDrawingData()
+{
+    // set from image
+    DrawingTextureArtefact fromTexture;
+    fromTexture.setFilename(getFromImageUrl());
+    fromTexture.setTexture(QImage(getFromImageUrl()));
+    m_drawingData.addTexture(fromTexture);
+
+    ArgumentBase fromArg;
+    fromArg.setName(g_renderFromImageName);
+    fromArg.setType(g_sampler2DTypeName);
+    fromArg.setStorage(g_uniformStorageName);
+    fromArg.setInput(true);
+    fromArg.setValue(getFromImageUrl());
+    ArgumentValueDataArray *valueDataArray = fromArg.createValueDataArray();
+    if(nullptr != valueDataArray)
+    {
+        valueDataArray->initData();
+        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
+        if(nullptr != openglValue)
+        {
+            m_drawingData.setAllArgumentValues(openglValue);
+        }
+        openglValue = nullptr;
+    }
+    delete valueDataArray;
+    valueDataArray = nullptr;
     useNewFromImageUrl();
+
+    // set to image
+    DrawingTextureArtefact toTexture;
+    toTexture.setFilename(getToImageUrl());
+    toTexture.setTexture(QImage(getToImageUrl()));
+    m_drawingData.addTexture(toTexture);
+
+    ArgumentBase toArg;
+    toArg.setName(g_renderToImageName);
+    toArg.setType(g_sampler2DTypeName);
+    toArg.setStorage(g_uniformStorageName);
+    toArg.setInput(true);
+    toArg.setValue(getToImageUrl());
+    valueDataArray = toArg.createValueDataArray();
+    if(nullptr != valueDataArray)
+    {
+        valueDataArray->initData();
+        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
+        if(nullptr != openglValue)
+        {
+            m_drawingData.setAllArgumentValues(openglValue);
+        }
+        openglValue = nullptr;
+    }
+    delete valueDataArray;
+    valueDataArray = nullptr;
+    useNewToImageUrl();
 }
 
 const DrawingImageData &QuizImageData::getDrawingData() const

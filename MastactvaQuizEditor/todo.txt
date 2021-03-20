@@ -143,6 +143,8 @@ https://stackoverflow.com/questions/50425262/django-rest-framework-pass-extra-pa
 * 88. rename ImageSource (as now it is also and artefact, not only images)
 * 89. add wavefront obj format
 90. fix running effects
+* 91. add texture arguments
+
 
 
 

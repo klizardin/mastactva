@@ -286,7 +286,6 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
     extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
-
 template <typename EnumType_>
 constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 {
@@ -296,6 +295,20 @@ constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 bool isDefaultImage(const QString &imageURLStr_);
 bool isDefaultImage(const QUrl &imageUrl_);
 QString setDefaultImageIfEmpty(const QString &imageURLStr_);
+
+template<typename ArgType_, typename ReturnType_>
+const ReturnType_ &valueOrFish(const ArgType_ &value_, const ReturnType_ *)
+{
+    Q_UNUSED(value_);
+    static ReturnType_ fish;
+    return fish;
+}
+
+template<typename SameType_>
+const SameType_ &valueOrFish(const SameType_ &value_, const SameType_ *)
+{
+    return value_;
+}
 
 
 static const char *g_englishLanguage = "English";
@@ -352,6 +365,25 @@ static const char *g_indexesSpecialwordName = "__indexes";
 static const char *g_mainSpecialwordName = "__main";
 static const char *g_firstSpecialwordName = "__first";
 static const char *g_lastSpecialwordName = "__last";
+static const char *g_renderFromImageName = "renderFromImage";
+static const char *g_renderToImageName = "renderToImage";
+static const char *g_renderScreenRectName = "renderScreenRect";
+static const char *g_renderOpacityName = "renderOpacity";
+static const char *g_intTypeName = "int";
+static const char *g_floatTypeName = "float";
+static const char *g_vec2TypeName = "vec2";
+static const char *g_vec3TypeName = "vec3";
+static const char *g_vec4TypeName = "vec4";
+static const char *g_mat2TypeName = "mat2";
+static const char *g_mat3TypeName = "mat3";
+static const char *g_mat4TypeName = "mat4";
+static const char *g_stringsTypeName = "strings";
+static const char *g_sampler1DTypeName = "sampler1D";
+static const char *g_sampler2DTypeName = "sampler2D";
+static const char *g_sampler3DTypeName = "sampler3D";
+static const char *g_attributeStorageName = "attribute";
+static const char *g_uniformStorageName = "uniform";
+static const char *g_indexesStorageName = "indexes";
 
 
 #endif // UTILS_H
