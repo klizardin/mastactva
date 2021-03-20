@@ -1260,13 +1260,14 @@ public:
     virtual bool isTexture() const override;
     virtual void setTextureIndex(int textureIndex_) override;
     virtual QString getTextureName() const override;
+    virtual void createTexture(QImage *image_) override;
     virtual int getArraySize() const override;
     virtual int getMaxIndex() const override;
     virtual int getVBOPartSize() const override;
     virtual void setVBOPartOffset(int offset_) override;
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override;
     virtual void use(QOpenGLShaderProgram *program_) const override;
-    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const override;
+    virtual void bindTexture(QOpenGLFunctions *f_) override;
     virtual void draw(QOpenGLFunctions *f_) const override;
     virtual void release(QOpenGLShaderProgram *program_) const override;
     virtual const QVector<GLint> &intValues() const override;

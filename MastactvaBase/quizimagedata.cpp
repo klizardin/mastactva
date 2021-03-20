@@ -1632,6 +1632,14 @@ QString DrawingArgument::getTextureName() const
     return nullptr != m_impl ? m_impl->getTextureName() : QString();
 }
 
+void DrawingArgument::createTexture(QImage *image_)
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->createTexture(image_);
+    }
+}
+
 int DrawingArgument::getArraySize() const
 {
     return nullptr != m_impl ? m_impl->getArraySize() : 0;
@@ -1671,11 +1679,11 @@ void DrawingArgument::use(QOpenGLShaderProgram *program_) const
     }
 }
 
-void DrawingArgument::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const
+void DrawingArgument::bindTexture(QOpenGLFunctions *f_)
 {
     if(nullptr != m_impl)
     {
-        m_impl->bindTexture(f_, texture_);
+        m_impl->bindTexture(f_);
     }
 }
 
