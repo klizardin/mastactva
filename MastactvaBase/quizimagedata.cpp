@@ -1542,52 +1542,147 @@ void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 }
 
 
-bool DrawingImageData::isNewFromImage() const
+DrawingArgument::DrawingArgument(OpenGLArgumentValueBase *impl_)
+    :m_impl(impl_)
 {
-    return m_newFromImageUrl;
 }
 
-bool DrawingImageData::isNewToImage() const
+DrawingArgument::~DrawingArgument()
 {
-    return m_newToImageUrl;
+    delete m_impl;
+    m_impl = nullptr;
 }
 
-bool DrawingImageData::isEffectChanged() const
+QString DrawingArgument::getArgumentName() const
 {
-    return m_newEffect;
+    return nullptr != m_impl ? m_impl->getArgumentName() : QString();
 }
 
-const QString &DrawingImageData::getFromImageUrl() const
+void DrawingArgument::create(QOpenGLShaderProgram *program_)
 {
-    return m_fromImageUrl;
+    if(nullptr != m_impl)
+    {
+        m_impl->create(program_);
+    }
 }
 
-const QString &DrawingImageData::getToImageUrl() const
+bool DrawingArgument::isTexture() const
 {
-    return m_toImageUrl;
+    return nullptr != m_impl ? m_impl->isTexture() : false;
 }
 
-bool DrawingImageData::isFromImageIsUrl() const
+void DrawingArgument::setTextureIndex(int textureIndex_)
 {
-    return !isDefaultImage(m_fromImageUrl);
+    if(nullptr != m_impl)
+    {
+        m_impl->setTextureIndex(textureIndex_);
+    }
 }
 
-bool DrawingImageData::isToImageIsUrl() const
+QString DrawingArgument::getTextureName() const
 {
-    return !isDefaultImage(m_toImageUrl);
+    return nullptr != m_impl ? m_impl->getTextureName() : QString();
 }
 
-void DrawingImageData::setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_)
+int DrawingArgument::getArraySize() const
 {
-    m_fromImageUrl = fromImageUrl_;
-    m_newFromImageUrl = newFromImageUrl_;
+    return nullptr != m_impl ? m_impl->getArraySize() : 0;
 }
 
-void DrawingImageData::setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_)
+int DrawingArgument::getMaxIndex() const
 {
-    m_toImageUrl = toImageUrl_;
-    m_newToImageUrl = newToImageUrl_;
+    return nullptr != m_impl ? m_impl->getMaxIndex() : 0;
 }
+
+int DrawingArgument::getVBOPartSize() const
+{
+    return nullptr != m_impl ? m_impl->getVBOPartSize() : 0;
+}
+
+void DrawingArgument::setVBOPartOffset(int offset_)
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->setVBOPartOffset(offset_);
+    }
+}
+
+void DrawingArgument::writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->writeVBOPart(vbo_, offset_, sizeItems_);
+    }
+}
+
+void DrawingArgument::use(QOpenGLShaderProgram *program_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->use(program_);
+    }
+}
+
+void DrawingArgument::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->bindTexture(f_, texture_);
+    }
+}
+
+void DrawingArgument::draw(QOpenGLFunctions *f_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->draw(f_);
+    }
+}
+
+void DrawingArgument::release(QOpenGLShaderProgram *program_) const
+{
+    if(nullptr != m_impl)
+    {
+        m_impl->release(program_);
+    }
+}
+
+const QVector<GLint> &DrawingArgument::intValues() const
+{
+    static QVector<GLint> fish;
+    return nullptr != m_impl ? m_impl->intValues() : fish;
+}
+
+const QVector<GLfloat> &DrawingArgument::floatValues() const
+{
+    static QVector<GLfloat> fish;
+    return nullptr != m_impl ? m_impl->floatValues() : fish;
+}
+
+const QVector<QString> &DrawingArgument::stringValues() const
+{
+    static QVector<QString> fish;
+    return nullptr != m_impl ? m_impl->stringValues() : fish;
+}
+
+bool DrawingArgument::operator == (const DrawingArgument &argument_) const
+{
+    return getArgumentName() == argument_.getArgumentName();
+}
+
+bool DrawingArgument::operator < (const DrawingArgument &argument_) const
+{
+    return getArgumentName() < argument_.getArgumentName();
+}
+
+bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
+{
+    return intValues() == argument_.intValues() &&
+            floatValues() == argument_.floatValues() &&
+            stringValues() == argument_.stringValues()
+            ;
+}
+
 
 void DrawingImageData::setObjects(const QVector<QuizImageDataObject *> &objects_)
 {
