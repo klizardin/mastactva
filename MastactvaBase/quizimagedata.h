@@ -1252,7 +1252,7 @@ private:
 class DrawingArgument : public OpenGLArgumentValueBase
 {
 public:
-    DrawingArgument(OpenGLArgumentValueBase *impl_);
+    DrawingArgument(OpenGLArgumentValueBase *impl_ = nullptr);
     ~DrawingArgument();
 
     virtual QString getArgumentName() const override;
@@ -1284,6 +1284,104 @@ private:
 };
 
 
+template<typename Type_, template<typename > class IndexType_>
+class DeepCopyOrderedList
+{
+private:
+    class IndexValue
+    {
+    public:
+        IndexValue(const Type_ *ptr_) :m_ptr(ptr_) {}
+        bool operator == (const IndexValue &val_) const { return *m_ptr == *val_.m_ptr; }
+        bool operator < (const IndexValue &val_) const { return *m_ptr < *val_.m_ptr; }
+        const Type_ *val() const { return m_ptr; }
+    private:
+        const Type_ *m_ptr;
+    };
+
+public:
+    DeepCopyOrderedList()
+    {
+        IndexType_<int> v({0, 0,});
+        m_multiValues = v.size() > 1;
+    }
+
+    void deepCopy()
+    {
+        for(int i = 0; i < m_data.size(); i++)
+        {
+            m_data[i].deepCopy();
+        }
+    }
+
+    bool contains(const Type_ &val_) const
+    {
+        return m_index.find(IndexValue(&val_)) != std::end(m_index);
+    }
+
+    int find(const Type_ &val_) const
+    {
+        const auto fit = m_index.find(IndexValue(&val_));
+        return std::end(m_index) != fit ? std::distance(std::begin(m_index), fit) : -1;
+    }
+
+    bool insert(const Type_ &val_)
+    {
+        if(!multiValues() && contains(val_)) { return false; }
+        m_data.push_back(val_);
+        m_index.insert(IndexValue(m_data.back()));
+        return true;
+    }
+
+    Type_& operator[](int index_)
+    {
+        return at(index_);
+    }
+
+    const Type_& operator[](int index_) const
+    {
+        return at(index_);
+    }
+
+    int size() const
+    {
+        return m_index.size();
+    }
+
+private:
+    Type_& at(int index_)
+    {
+        static Type_ fish = Type_();
+        if(index_ < 0 || index_ >= m_index.size()) { return fish; }
+        return const_cast<Type_&>(*(*(std::begin(m_index) + index_)).val());
+    }
+
+    const Type_& at(int index_) const
+    {
+        static Type_ fish = Type_();
+        if(index_ < 0 || index_ >= m_index.size()) { return fish; }
+        return *(*(std::begin(m_index) + index_)).val();
+    }
+
+private:
+    bool multiValues() const
+    {
+        return m_multiValues;
+    }
+
+private:
+    IndexType_<IndexValue> m_index;
+    QList<Type_> m_data;
+    bool m_multiValues = false;
+    /*
+        QList<T> will allocate its items on the heap unless
+        * sizeof(T) <= sizeof(void*) and
+        * T has been declared to be either a Q_MOVABLE_TYPE or a Q_PRIMITIVE_TYPE using Q_DECLARE_TYPEINFO.
+        See the Pros and Cons of Using QList for an explanation.
+    */
+};
+
+
 class DrawingImageData
 {
 public:
@@ -1298,8 +1396,15 @@ private:
     void setAllArgumentValues(OpenGLArgumentValueBase *argument_);
 
 private:
-    std::multiset<DrawingArgument> m_arguments;
-    QVector<DrawingTextureArtefact> m_texures;
+    // for drawing data creator thread
+    std::multiset<DrawingArgument> m_argumentsSet;
+    std::set<DrawingTextureArtefact> m_texturesSet;
+    std::set<DrawingShaderArtefact> m_vertexShadersSet;
+    std::set<DrawingShaderArtefact> m_fragmentShadersSet;
+
+    // for drawing thread
+    QVector<DrawingArgument> m_arguments;
+    QVector<DrawingTextureArtefact> m_textures;
     QVector<DrawingShaderArtefact> m_vertexShaders;
     QVector<DrawingShaderArtefact> m_fragmentShaders;
 

@@ -1590,7 +1590,7 @@ void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 }
 
 
-DrawingArgument::DrawingArgument(OpenGLArgumentValueBase *impl_)
+DrawingArgument::DrawingArgument(OpenGLArgumentValueBase *impl_ /* = nullptr*/)
     :m_impl(impl_)
 {
 }
@@ -1742,7 +1742,25 @@ bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
 
 void DrawingImageData::deepCopy()
 {
-    for(DrawingTextureArtefact &artefact_ : m_texures)
+    m_textures.reserve(m_texturesSet.size());
+    for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
+    {
+        m_textures.push_back(artefact_);
+    }
+    m_texturesSet.clear();
+    m_vertexShaders.reserve(m_vertexShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_vertexShadersSet)
+    {
+        m_vertexShaders.push_back(artefact_);
+    }
+    m_vertexShadersSet.clear();
+    m_fragmentShaders.reserve(m_fragmentShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_fragmentShadersSet)
+    {
+        m_fragmentShaders.push_back(artefact_);
+    }
+    m_fragmentShadersSet.clear();
+    for(DrawingTextureArtefact &artefact_ : m_textures)
     {
         artefact_.deepCopy();
     }
@@ -1759,15 +1777,15 @@ void DrawingImageData::deepCopy()
 void DrawingImageData::setAllArgumentValues(OpenGLArgumentValueBase *argument_)
 {
     DrawingArgument arg(argument_);
-    std::multiset<DrawingArgument>::const_iterator itb = m_arguments.lower_bound(arg);
-    std::multiset<DrawingArgument>::const_iterator ite = m_arguments.upper_bound(arg);
+    std::multiset<DrawingArgument>::const_iterator itb = m_argumentsSet.lower_bound(arg);
+    std::multiset<DrawingArgument>::const_iterator ite = m_argumentsSet.upper_bound(arg);
     for(std::multiset<DrawingArgument>::const_iterator it = itb;
         it != ite;
         ++it)
     {
-        m_arguments.erase(it);
+        m_argumentsSet.erase(it);
     }
-    m_arguments.insert(arg);
+    m_argumentsSet.insert(arg);
 }
 
 void DrawingImageData::setObjects(const QVector<QuizImageDataObject *> &objects_)
@@ -1810,21 +1828,6 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
                 textures.insert(drawingArtefact);
             }
         }
-    }
-    m_texures.reserve(textures.size() + 2);
-    for(const DrawingTextureArtefact &artefact_ : textures)
-    {
-        m_texures.push_back(artefact_);
-    }
-    m_vertexShaders.reserve(vertexShaders.size());
-    for(const DrawingShaderArtefact &artefact_ : vertexShaders)
-    {
-        m_vertexShaders.push_back(artefact_);
-    }
-    m_fragmentShaders.reserve(fragmentShaders.size());
-    for(const DrawingShaderArtefact &artefact_ : fragmentShaders)
-    {
-        m_fragmentShaders.push_back(artefact_);
     }
 }
 
