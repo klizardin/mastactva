@@ -1289,12 +1289,12 @@ public:
     DrawingImageData() = default;
 
     void deepCopy();
-    void setAllArgumentValues(OpenGLArgumentValueBase *argument_);
 
 private:
     void setObjects(const QVector<QuizImageDataObject *> &objects_);
     void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
     void addTexture(const DrawingTextureArtefact &argtefact_);
+    void setAllArgumentValues(OpenGLArgumentValueBase *argument_);
 
 private:
     std::multiset<DrawingArgument> m_arguments;
