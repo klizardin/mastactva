@@ -369,6 +369,18 @@ static const char *g_renderFromImageName = "renderFromImage";
 static const char *g_renderToImageName = "renderToImage";
 static const char *g_renderScreenRectName = "renderScreenRect";
 static const char *g_renderOpacityName = "renderOpacity";
+static const char *g_intTypeName = "int";
+static const char *g_floatTypeName = "float";
+static const char *g_vec2TypeName = "vec2";
+static const char *g_vec3TypeName = "vec3";
+static const char *g_vec4TypeName = "vec4";
+static const char *g_mat2TypeName = "mat2";
+static const char *g_mat3TypeName = "mat3";
+static const char *g_mat4TypeName = "mat4";
+static const char *g_stringsTypeName = "strings";
+static const char *g_sampler1DTypeName = "sampler1D";
+static const char *g_sampler2DTypeName = "sampler2D";
+static const char *g_sampler3DTypeName = "sampler3D";
 
 
 #endif // UTILS_H
