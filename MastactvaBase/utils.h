@@ -365,6 +365,10 @@ static const char *g_indexesSpecialwordName = "__indexes";
 static const char *g_mainSpecialwordName = "__main";
 static const char *g_firstSpecialwordName = "__first";
 static const char *g_lastSpecialwordName = "__last";
+static const char *g_renderFromImageName = "renderFromImage";
+static const char *g_renderToImageName = "renderToImage";
+static const char *g_renderScreenRectName = "renderScreenRect";
+static const char *g_renderOpacityName = "renderOpacity";
 
 
 #endif // UTILS_H
