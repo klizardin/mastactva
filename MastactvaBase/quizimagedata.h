@@ -1284,10 +1284,9 @@ public:
     DrawingImageData() = default;
 
     void deepCopy();
+    void setAllArgumentValues(OpenGLArgumentValueBase *argument_);
 
 private:
-    void setFromImageUrl(const QString &fromImageUrl_, bool newFromImageUrl_);
-    void setToImageUrl(const QString &toImageUrl_, bool newToImageUrl_);
     void setObjects(const QVector<QuizImageDataObject *> &objects_);
     void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
 

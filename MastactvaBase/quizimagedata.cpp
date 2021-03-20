@@ -1684,6 +1684,36 @@ bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
 }
 
 
+void DrawingImageData::deepCopy()
+{
+    for(DrawingTextureArtefact &artefact_ : m_texures)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
+    {
+        artefact_.deepCopy();
+    }
+}
+
+void DrawingImageData::setAllArgumentValues(OpenGLArgumentValueBase *argument_)
+{
+    DrawingArgument arg(argument_);
+    std::multiset<DrawingArgument>::const_iterator itb = m_arguments.lower_bound(arg);
+    std::multiset<DrawingArgument>::const_iterator ite = m_arguments.upper_bound(arg);
+    for(std::multiset<DrawingArgument>::const_iterator it = itb;
+        it != ite;
+        ++it)
+    {
+        m_arguments.erase(it);
+    }
+    m_arguments.insert(arg);
+}
+
 void DrawingImageData::setObjects(const QVector<QuizImageDataObject *> &objects_)
 {
     setArtefacts(objects_);
@@ -1734,22 +1764,6 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
     for(const DrawingShaderArtefact &artefact_ : fragmentShaders)
     {
         m_fragmentShaders.push_back(artefact_);
-    }
-}
-
-void DrawingImageData::deepCopy()
-{
-    for(DrawingTextureArtefact &artefact_ : m_texures)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
-    {
-        artefact_.deepCopy();
     }
 }
 
