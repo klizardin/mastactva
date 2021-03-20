@@ -974,13 +974,19 @@ QString OpenGLArgumentValueBase::getTextureName() const
     return QString();
 }
 
-void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const
+void OpenGLArgumentValueBase::createTexture(QImage *image_)
+{
+    Q_UNUSED(image_);
+}
+
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_)
 {
     Q_UNUSED(f_);
 }
 
 void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
+    if(nullptr == program_) { return; }
     m_id = program_->attributeLocation(name_);
     program_->bindAttributeLocation(name_, m_id);
 }
@@ -991,12 +997,14 @@ void OpenGLArgumentValueBase::useAttributeValue(
         int offset_,
         int tupleSize_) const
 {
+    if(nullptr == program_) { return; }
     program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
     program_->enableAttributeArray(m_id);
 }
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const
 {
+    if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
     vbo_->write(
                 offset_,
@@ -1007,6 +1015,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const
 {
+    if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
     vbo_->write(
                 offset_,
@@ -1027,11 +1036,13 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 
 void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *program_) const
 {
+    if(nullptr == program_) { return; }
     program_->disableAttributeArray(m_id);
 }
 
 void OpenGLArgumentValueBase::initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
+    if(nullptr == program_) { return; }
     m_id = program_->uniformLocation(name_);
 }
 
@@ -1041,6 +1052,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         int arraySize_,
         bool isMatrixType) const
 {
+    if(nullptr == program_) { return; }
     Q_UNUSED(isMatrixType);
     if(arraySize_ >= 1 && values_.size() >= 1)
     {
@@ -1054,6 +1066,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         int arraySize_,
         bool isMatrixType) const
 {
+    if(nullptr == program_) { return; }
     if(1 == arraySize_)
     {
         program_->setUniformValue(m_id, values_[0]);
@@ -1108,7 +1121,30 @@ void OpenGLArgumentValueBase::setUniformValue(
 
 void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_) const
 {
+    if(nullptr == f_) { return; }
     f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
+}
+
+void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, QImage *image_)
+{
+    if(nullptr != texture_)
+    {
+        delete texture_;
+        texture_ = nullptr;
+    }
+    if(nullptr == image_ || image_->isNull()) { return; }
+    texture_ = new QOpenGLTexture(image_->mirrored(), QOpenGLTexture::GenerateMipMaps);
+    texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
+    texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+    texture_->setBorderColor(1, 1, 1, 0);
+}
+
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_)
+{
+    if(nullptr == f_ || nullptr == texture_) { return; }
+    if(textureIndex_ < 0) { return; }
+    f_->glActiveTexture(GL_TEXTURE0 + textureIndex_);
+    texture_->bind();
 }
 
 

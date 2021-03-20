@@ -466,13 +466,14 @@ public:
     virtual bool isTexture() const;         // to count textures
     virtual void setTextureIndex(int textureIndex_);    // to setup texture indexes, in revers order -- last 0
     virtual QString getTextureName() const;    // to find texture in the drawing image data
+    virtual void createTexture(QImage *image_);
     virtual int getArraySize() const = 0;       // internaly used (do not know the purpose of this function)
     virtual int getMaxIndex() const = 0;        // max index value to allocate data
     virtual int getVBOPartSize() const = 0;     // vbo size of this part
     virtual void setVBOPartOffset(int offset_) = 0; // set offset of vbo data (data follows in chain)
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;  // write vbo part to draing buffer
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
-    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const;
+    virtual void bindTexture(QOpenGLFunctions *f_);
     virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
     virtual const QVector<GLint> &intValues() const = 0;
@@ -494,6 +495,8 @@ protected:
 
     void drawTrianlesArray(QOpenGLFunctions *f_, int size_) const;
 
+    void createTextureFromImage(QOpenGLTexture *&texture_, QImage *image_);
+    void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_);
 private:
     int m_id = -1;
 };
@@ -624,6 +627,12 @@ public:
     {
     }
 
+    virtual ~OpenGLArgumentTextureValueT() override
+    {
+        delete m_texture;
+        m_texture = nullptr;
+    }
+
     virtual QString getArgumentName() const override
     {
         return arg().getName();
@@ -656,6 +665,13 @@ public:
         {
             return QString();
         }
+    }
+
+    virtual void createTexture(QImage *image_) override
+    {
+        delete m_texture;
+        m_texture = nullptr;
+        createTextureFromImage(m_texture, image_);
     }
 
     virtual int getArraySize() const override
@@ -694,11 +710,9 @@ public:
                     false);
     }
 
-    virtual void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_) const override
+    virtual void bindTexture(QOpenGLFunctions *f_) override
     {
-        if(m_textureIndex < 0) { return; }
-        f_->glActiveTexture(GL_TEXTURE0 + m_textureIndex);
-        texture_->bind();
+        bindTexture(f_, m_texture, m_textureIndex);
     }
 
     virtual void draw(QOpenGLFunctions *f_) const override
@@ -739,6 +753,7 @@ private:
 
 private:
     int m_textureIndex = -1;
+    QOpenGLTexture *m_texture = nullptr;
 };
 
 
