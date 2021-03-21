@@ -1112,11 +1112,14 @@ void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program
 {
     if(nullptr == program_) { return; }
     m_id = program_->attributeLocation(name_);
-    bindAttribureValueId(program_, name_);
+    //bindAttribureValueId(program_, name_);
 }
 
 void OpenGLArgumentValueBase::bindAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
+    if(nullptr == program_ ||
+            m_id < 0 ||
+            name_.isEmpty()) { return; }
     program_->bindAttributeLocation(name_, m_id);
 }
 
