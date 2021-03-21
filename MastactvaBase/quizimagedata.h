@@ -446,7 +446,6 @@ class OpenGLArgumentValueBase
 public:
     virtual ~OpenGLArgumentValueBase() = default;
 
-    virtual QString getArgumentName() const = 0;
     virtual void create(QOpenGLShaderProgram *program_) = 0;
     virtual bool isTexture() const;         // to count textures
     virtual void setTextureIndex(int textureIndex_);    // to setup texture indexes, in revers order -- last 0
@@ -501,11 +500,6 @@ public:
     OpenGLArgumentUniformValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
         :ArgumentValueDataArrayType_(argumentValueDataArray_)
     {
-    }
-
-    virtual QString getArgumentName() const override
-    {
-        return arg().getName();
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
@@ -613,11 +607,6 @@ public:
     {
         delete m_texture;
         m_texture = nullptr;
-    }
-
-    virtual QString getArgumentName() const override
-    {
-        return arg().getName();
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
@@ -764,11 +753,6 @@ public:
     {
     }
 
-    virtual QString getArgumentName() const override
-    {
-        return arg().getName();
-    }
-
     virtual void create(QOpenGLShaderProgram *program_) override
     {
         initAttribureValueId(
@@ -878,11 +862,6 @@ public:
                     std::begin(value().getValues()),
                     std::end(value().getValues())
                     );
-    }
-
-    virtual QString getArgumentName() const override
-    {
-        return arg().getName();
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
@@ -1222,7 +1201,6 @@ public:
     DrawingArgument(ArgumentValueDataArray *valueDataArray_ = nullptr);
     ~DrawingArgument();
 
-    virtual QString getArgumentName() const override;
     virtual void create(QOpenGLShaderProgram *program_) override;
     virtual bool isTexture() const override;
     virtual void setTextureIndex(int textureIndex_) override;
@@ -1238,6 +1216,8 @@ public:
     virtual void draw(QOpenGLFunctions *f_) const override;
     virtual void release(QOpenGLShaderProgram *program_) const override;
 
+private:
+    QString getArgumentName() const;
     const QVector<GLint> &intValues() const;
     const QVector<GLfloat> &floatValues() const;
     const QVector<QString> &stringValues() const;
@@ -1259,6 +1239,22 @@ class OpenGLDrawingImageData
 {
 public:
     OpenGLDrawingImageData() = default;
+
+    bool isInitialized() const;
+    void setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_);
+
+    int stepCount() const;
+    void clearStepArgumentIds(int stepIndex_);
+    bool buildStepProgram(int stepIndex_, QString &errorLog_);
+    void initStepArgumentIds(int stepIndex_);
+    void bindStepAttributes(int stepIndex_);
+    void buildStepVBO(int stepIndex_);
+    bool isStepProgramBuilded(int stepIndex_) const;
+    void bindStepProgram(int stepIndex_);
+    void useStepArguments(int stepIndex_);
+    void bindStepTexture(int stepIndex_);
+    void drawStep(int stepIndex_);
+    void releaseStep(int stepIndex_);
 
 private:
     QVector<DrawingArgument> m_arguments;

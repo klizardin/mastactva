@@ -21,7 +21,7 @@
 #if QT_CONFIG(opengl)
 
 
-class OpenGlQuizImage : public QSGRenderNode
+/*class OpenGlQuizImage : public QSGRenderNode
 {
 public:
     OpenGlQuizImage();
@@ -98,8 +98,38 @@ private:
     QString m_programBuildLog;
 
     friend class ArgumentInfo;
-};
+};*/
 
+
+class OpenGlQuizImage : public QSGRenderNode
+{
+public:
+    OpenGlQuizImage();
+    virtual ~OpenGlQuizImage() override;
+
+    virtual void releaseResources() override;
+    virtual void render(const RenderState *state_) override;
+    virtual StateFlags changedStates() const override;
+    virtual RenderingFlags flags() const override;
+    virtual QRectF rect() const override;
+
+    void sync(QQuickItem *item_);
+
+private:
+    void init(QOpenGLFunctions *f_);
+    void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
+    void noPaintGL(QOpenGLFunctions *f_, const RenderState *state_);
+    void updateRenderArguments();
+
+private:
+    OpenGLDrawingImageData *m_drawingData = nullptr;
+    int m_left = 0;
+    int m_top = 0;
+    int m_width = 1;
+    int m_height = 1;
+    qreal m_t = 0.0;
+    QString m_programBuildLog;
+};
 
 #endif // #if QT_CONFIG(opengl)
 #endif // OPENGLQUIZIMAGE_H

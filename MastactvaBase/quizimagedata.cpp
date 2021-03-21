@@ -1693,11 +1693,6 @@ DrawingArgument::~DrawingArgument()
     m_impl = nullptr;
 }
 
-QString DrawingArgument::getArgumentName() const
-{
-    return nullptr != m_impl ? m_impl->getArgumentName() : QString();
-}
-
 void DrawingArgument::create(QOpenGLShaderProgram *program_)
 {
     if(nullptr != m_impl)
@@ -1793,6 +1788,11 @@ void DrawingArgument::release(QOpenGLShaderProgram *program_) const
     {
         m_impl->release(program_);
     }
+}
+
+QString DrawingArgument::getArgumentName() const
+{
+    return nullptr != m_valueDataArray ? m_valueDataArray->getName() : QString();
 }
 
 const QVector<GLint> &DrawingArgument::intValues() const
