@@ -1308,7 +1308,7 @@ public:
     void setArgumentSet(const EffectArgSet *argumentSet_);
     bool isEffectChanged() const;
     void prepareDrawingData();
-    const DrawingImageData &getDrawingData() const;
+    OpenGLDrawingImageData *getDrawingData();
 
 protected:
     bool fromImageUrlChanged() const;
@@ -1329,6 +1329,7 @@ protected:
     void free();
     void freeObjects();
     void setImagesToDrawingData();
+    void freeTempValueDataArray();
 
 protected:
     QString m_newFromImageUrl;
@@ -1339,6 +1340,7 @@ protected:
     int m_oldEffectId = -1;
     QVector<QuizImageDataObject *> m_objects;
     DrawingImageData m_drawingData;
+    QVector<ArgumentValueDataArray *> m_tempValueDataArray;
 };
 
 

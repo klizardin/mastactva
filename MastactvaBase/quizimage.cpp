@@ -329,7 +329,7 @@ bool QuizImage::isEffectUpdated() const
     return m_effectUpdated;
 }
 
-const DrawingImageData &QuizImage::getData() const
+OpenGLDrawingImageData *QuizImage::getData()
 {
     return m_data.getDrawingData();
 }

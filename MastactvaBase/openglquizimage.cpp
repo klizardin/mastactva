@@ -42,6 +42,7 @@ void OpenGlQuizImage::releaseResources()
     delete m_toImage;
     m_toImage = nullptr;
     resetProgram();
+    freeDrawingData();
 }
 
 void OpenGlQuizImage::render(const RenderState *state_)
@@ -92,8 +93,8 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
     // all data
     const bool effectUpdated = quizImage->isEffectUpdated();
+    freeDrawingData();
     m_drawingData = quizImage->getData();
-    m_drawingData.deepCopy();       // use separate version of data in the separate thread
     if(effectUpdated)
     {
         initGeometry();
@@ -544,3 +545,10 @@ bool OpenGlQuizImage::renderStateInitializeNone(QVariantList &values_)
     Q_UNUSED(values_);
     return false;
 }
+
+void OpenGlQuizImage::freeDrawingData()
+{
+    delete m_drawingData;
+    m_drawingData = nullptr;
+}
+

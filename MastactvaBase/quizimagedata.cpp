@@ -1951,6 +1951,7 @@ QuizImageData::QuizImageData()
 
 QuizImageData::~QuizImageData()
 {
+    freeTempValueDataArray();
     free();
 }
 
@@ -2118,14 +2119,9 @@ void QuizImageData::setImagesToDrawingData()
     if(nullptr != valueDataArray)
     {
         valueDataArray->initData();
-        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
-        if(nullptr != openglValue)
-        {
-            m_drawingData.setAllArgumentValues(openglValue);
-        }
-        openglValue = nullptr;
+        m_drawingData.setAllArgumentValues(valueDataArray);
     }
-    delete valueDataArray;
+    m_tempValueDataArray.push_back(valueDataArray);
     valueDataArray = nullptr;
     useNewFromImageUrl();
 
@@ -2145,19 +2141,26 @@ void QuizImageData::setImagesToDrawingData()
     if(nullptr != valueDataArray)
     {
         valueDataArray->initData();
-        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
-        if(nullptr != openglValue)
-        {
-            m_drawingData.setAllArgumentValues(openglValue);
-        }
-        openglValue = nullptr;
+        m_drawingData.setAllArgumentValues(valueDataArray);
     }
-    delete valueDataArray;
+    m_tempValueDataArray.push_back(valueDataArray);
     valueDataArray = nullptr;
     useNewToImageUrl();
 }
 
-const DrawingImageData &QuizImageData::getDrawingData() const
+void QuizImageData::freeTempValueDataArray()
 {
-    return m_drawingData;
+    for(ArgumentValueDataArray *&ptr_ : m_tempValueDataArray)
+    {
+        delete ptr_;
+        ptr_ = nullptr;
+    }
+    m_tempValueDataArray.clear();
+}
+
+OpenGLDrawingImageData *QuizImageData::getDrawingData()
+{
+    OpenGLDrawingImageData *result = m_drawingData.copy();
+    freeTempValueDataArray();
+    return result;
 }

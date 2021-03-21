@@ -52,6 +52,7 @@ private:
     //QString loadFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
     bool getRenderRectSize(QVariantList &values_);
     bool renderStateInitializeNone(QVariantList &values_);
+    void freeDrawingData();
 
 private:
     int m_left = 0;
@@ -84,7 +85,7 @@ private:
     int m_tId = -1;
 
     //QuizImageData m_data;
-    DrawingImageData m_drawingData;
+    OpenGLDrawingImageData *m_drawingData = nullptr;
     qreal m_t = 0.0;
     QByteArray m_vshaderBA;
     QByteArray m_fshaderBA;
