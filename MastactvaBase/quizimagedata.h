@@ -1205,8 +1205,9 @@ private:
     DrawingShaderArtefact *m_vertexArtefact = nullptr;
     DrawingShaderArtefact *m_fragmentArtefact = nullptr;
     QVector<OpenGLArgumentValueBase *> m_programArguments;
-    QVector<DrawingTextureArtefact *> m_argumentTextures;
-
+    QVector<DrawingTextureArtefact *> m_argumentTextures;       // for every argument we set or nullptr
+                                                                // or texture artefact for it
+                                                                // associate textures in object creation time
     QOpenGLShaderProgram *m_program = nullptr;
     QOpenGLShader *m_vertexShader = nullptr;
     QOpenGLShader *m_fragmentShader = nullptr;
