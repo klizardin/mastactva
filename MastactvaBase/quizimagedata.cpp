@@ -1766,7 +1766,7 @@ bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
             ;
 }
 
-OpenGLArgumentValueBase *DrawingArgument::deepCopy()
+OpenGLArgumentValueBase *DrawingArgument::createOpenglValue()
 {
     if(nullptr == m_valueDataArray) { return nullptr; }
     return m_valueDataArray->createOpenGlValue();

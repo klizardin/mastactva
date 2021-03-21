@@ -1172,7 +1172,7 @@ private:
     bool operator == (const DrawingArgument &argument_) const;
     bool operator < (const DrawingArgument &argument_) const;
     bool doesValueEqual(const DrawingArgument &argument_) const;
-    OpenGLArgumentValueBase *deepCopy();
+    OpenGLArgumentValueBase *createOpenglValue();
 
 private:
     ArgumentValueDataArray *m_valueDataArray = nullptr;
