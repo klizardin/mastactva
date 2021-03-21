@@ -1158,7 +1158,7 @@ private:
 };
 
 
-class DrawingArgument : public OpenGLArgumentValueBase
+class DrawingArgument
 {
 public:
     DrawingArgument(ArgumentValueDataArray *valueDataArray_ = nullptr);
