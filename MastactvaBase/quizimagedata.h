@@ -95,6 +95,7 @@ public:
     virtual const QVector<GLint> &intValues() const = 0;
     virtual const QVector<GLfloat> &floatValues() const = 0;
     virtual const QVector<QString> &stringValues() const = 0;
+    virtual ArgumentValueDataArray * copy() const = 0;
 
     int getArraySize() const;
     int getTupleSize() const;
@@ -206,6 +207,7 @@ public:
     virtual const QVector<GLint> &intValues() const override;
     virtual const QVector<GLfloat> &floatValues() const override;
     virtual const QVector<QString> &stringValues() const override;
+    virtual ArgumentValueDataArray *copy() const override;
 
     const QVector<GLint> &getValues() const;
     bool isMatrixType() const;
@@ -237,6 +239,7 @@ public:
     virtual const QVector<GLint> &intValues() const override;
     virtual const QVector<GLfloat> &floatValues() const override;
     virtual const QVector<QString> &stringValues() const override;
+    virtual ArgumentValueDataArray *copy() const override;
 
     const QVector<GLfloat> &getValues() const;
     bool isMatrixType() const;
@@ -274,6 +277,7 @@ public:
     virtual const QVector<GLint> &intValues() const override;
     virtual const QVector<GLfloat> &floatValues() const override;
     virtual const QVector<QString> &stringValues() const override;
+    virtual ArgumentValueDataArray *copy() const override;
 
     const QVector<QString> &getValues() const;
     bool isMatrixType() const;
@@ -485,7 +489,6 @@ private:
 
 template<class ArgumentValueDataArrayType_>
 class OpenGLArgumentUniformValueT :
-        public ArgumentValueDataArrayType_,
         public OpenGLArgumentValueBase
 {
 private:
@@ -497,8 +500,8 @@ private:
         "shoudl be ancestor of ArgumentBase");
 
 public:
-    OpenGLArgumentUniformValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
-        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    OpenGLArgumentUniformValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
+        :m_valueDataArray(argumentValueDataArray_)
     {
     }
 
@@ -556,37 +559,24 @@ public:
         Q_UNUSED(program_);
     }
 
-    virtual const QVector<GLint> &intValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLint> *>(nullptr));
-    }
-
-    virtual const QVector<GLfloat> &floatValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
-    }
-
-    virtual const QVector<QString> &stringValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<QString> *>(nullptr));
-    }
-
 private:
     const ArgumentBase &arg() const
     {
-        return static_cast<const ArgumentBase&>(*this);
+        return static_cast<const ArgumentBase&>(*m_valueDataArray);
     }
 
     const ArgumentValueDataArrayType_ &value() const
     {
-        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+        return static_cast<const ArgumentValueDataArrayType_&>(*m_valueDataArray);
     }
+
+private:
+    const ArgumentValueDataArrayType_ *m_valueDataArray = nullptr;
 };
 
 
 template<class ArgumentValueDataArrayType_>
 class OpenGLArgumentTextureValueT :
-        public ArgumentValueDataArrayType_,
         public OpenGLArgumentValueBase
 {
 private:
@@ -598,8 +588,8 @@ private:
         "shoudl be ancestor of ArgumentBase");
 
 public:
-    OpenGLArgumentTextureValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
-        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    OpenGLArgumentTextureValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
+        :m_valueDataArray(argumentValueDataArray_)
     {
     }
 
@@ -699,17 +689,18 @@ public:
 private:
     const ArgumentBase &arg() const
     {
-        return static_cast<const ArgumentBase&>(*this);
+        return static_cast<const ArgumentBase&>(*m_valueDataArray);
     }
 
     const ArgumentValueDataArrayType_ &value() const
     {
-        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+        return static_cast<const ArgumentValueDataArrayType_&>(*m_valueDataArray);
     }
 
 private:
     int m_textureIndex = -1;
     QOpenGLTexture *m_texture = nullptr;
+    const ArgumentValueDataArrayType_ *m_valueDataArray = nullptr;
 };
 
 
@@ -734,7 +725,6 @@ struct TypeToGLTypeEnum<GLfloat>
 
 template<class ArgumentValueDataArrayType_>
 class OpenGLArgumentAttributeValueT :
-        public ArgumentValueDataArrayType_,
         public OpenGLArgumentValueBase
 {
 private:
@@ -748,8 +738,8 @@ private:
     using ItemType = typename ArgumentValueDataArrayType_::ItemType;
 
 public:
-    OpenGLArgumentAttributeValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
-        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    OpenGLArgumentAttributeValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
+        :m_valueDataArray(argumentValueDataArray_)
     {
     }
 
@@ -810,40 +800,25 @@ public:
         releaseAttributeValue(program_);
     }
 
-    virtual const QVector<GLint> &intValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLint> *>(nullptr));
-    }
-
-    virtual const QVector<GLfloat> &floatValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
-    }
-
-    virtual const QVector<QString> &stringValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<QString> *>(nullptr));
-    }
-
 private:
     const ArgumentBase &arg() const
     {
-        return static_cast<const ArgumentBase&>(*this);
+        return static_cast<const ArgumentBase&>(*m_valueDataArray);
     }
 
     const ArgumentValueDataArrayType_ &value() const
     {
-        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+        return static_cast<const ArgumentValueDataArrayType_&>(*m_valueDataArray);
     }
 
 private:
     int m_offset = -1;
+    const ArgumentValueDataArrayType_ *m_valueDataArray = nullptr;
 };
 
 
 template<class ArgumentValueDataArrayType_>
 class OpenGLArgumentIndexValueT :
-        public ArgumentValueDataArrayType_,
         public OpenGLArgumentValueBase
 {
 private:
@@ -855,8 +830,8 @@ private:
         "shoudl be ancestor of ArgumentBase");
 
 public:
-    OpenGLArgumentIndexValueT(const ArgumentValueDataArrayType_ &argumentValueDataArray_)
-        :ArgumentValueDataArrayType_(argumentValueDataArray_)
+    OpenGLArgumentIndexValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
+        :m_valueDataArray(argumentValueDataArray_)
     {
         m_maxIndex = std::max_element(
                     std::begin(value().getValues()),
@@ -911,34 +886,20 @@ public:
         Q_UNUSED(program_);
     }
 
-    virtual const QVector<GLint> &intValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLint> *>(nullptr));
-    }
-
-    virtual const QVector<GLfloat> &floatValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
-    }
-
-    virtual const QVector<QString> &stringValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<QString> *>(nullptr));
-    }
-
 private:
     const ArgumentBase &arg() const
     {
-        return static_cast<const ArgumentBase&>(*this);
+        return static_cast<const ArgumentBase&>(*m_valueDataArray);
     }
 
     const ArgumentValueDataArrayType_ &value() const
     {
-        return static_cast<const ArgumentValueDataArrayType_&>(*this);
+        return static_cast<const ArgumentValueDataArrayType_&>(*m_valueDataArray);
     }
 
 private:
     int m_maxIndex = 0;
+    const ArgumentValueDataArrayType_ *m_valueDataArray = nullptr;
 };
 
 
@@ -1201,21 +1162,6 @@ public:
     DrawingArgument(ArgumentValueDataArray *valueDataArray_ = nullptr);
     ~DrawingArgument();
 
-    virtual void create(QOpenGLShaderProgram *program_) override;
-    virtual bool isTexture() const override;
-    virtual void setTextureIndex(int textureIndex_) override;
-    virtual QString getTextureName() const override;
-    virtual void createTexture(QImage *image_) override;
-    virtual int getArraySize() const override;
-    virtual int getMaxIndex() const override;
-    virtual int getVBOPartSize() const override;
-    virtual void setVBOPartOffset(int offset_) override;
-    virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override;
-    virtual void use(QOpenGLShaderProgram *program_) const override;
-    virtual void bindTexture(QOpenGLFunctions *f_) override;
-    virtual void draw(QOpenGLFunctions *f_) const override;
-    virtual void release(QOpenGLShaderProgram *program_) const override;
-
 private:
     QString getArgumentName() const;
     const QVector<GLint> &intValues() const;
@@ -1224,11 +1170,10 @@ private:
     bool operator == (const DrawingArgument &argument_) const;
     bool operator < (const DrawingArgument &argument_) const;
     bool doesValueEqual(const DrawingArgument &argument_) const;
-    void deepCopy();
+    OpenGLArgumentValueBase *deepCopy();
 
 private:
     ArgumentValueDataArray *m_valueDataArray = nullptr;
-    OpenGLArgumentValueBase *m_impl = nullptr;
 };
 
 
@@ -1325,7 +1270,6 @@ protected:
     void free();
     void freeObjects();
     void setImagesToDrawingData();
-    void freeTempValueDataArray();
 
 protected:
     QString m_newFromImageUrl;
@@ -1336,7 +1280,6 @@ protected:
     int m_oldEffectId = -1;
     QVector<QuizImageDataObject *> m_objects;
     DrawingImageData m_drawingData;
-    QVector<ArgumentValueDataArray *> m_tempValueDataArray;
 };
 
 
