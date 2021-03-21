@@ -169,6 +169,15 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     }
 }
 
+void ArgumentBase::deepCopy()
+{
+    m_name = QString(m_name.constData(), m_name.length());
+    m_storage = QString(m_storage.constData(), m_storage.length());
+    m_type = QString(m_type.constData(), m_type.length());
+    m_value = QString(m_value.constData(), m_value.length());
+    m_defaultValue = QString(m_defaultValue.constData(), m_defaultValue.length());
+}
+
 
 bool ArgumentList::containsByName(
         const QString &argumentName_,
@@ -315,7 +324,9 @@ const QVector<QString> &ArgumentValueDataIntArray::stringValues() const
 
 ArgumentValueDataArray *ArgumentValueDataIntArray::copy() const
 {
-    return new ArgumentValueDataIntArray(*this);
+    ArgumentValueDataIntArray *result = new ArgumentValueDataIntArray(*this);
+    result->deepCopy();
+    return result;
 }
 
 const QVector<GLint> &ArgumentValueDataIntArray::getValues() const
@@ -387,7 +398,9 @@ const QVector<QString> &ArgumentValueDataFloatArray::stringValues() const
 
 ArgumentValueDataArray *ArgumentValueDataFloatArray::copy() const
 {
-    return new ArgumentValueDataFloatArray(*this);
+    ArgumentValueDataFloatArray *result = new ArgumentValueDataFloatArray(*this);
+    result->deepCopy();
+    return result;
 }
 
 const QVector<GLfloat> &ArgumentValueDataFloatArray::getValues() const
@@ -468,7 +481,13 @@ const QVector<QString> &ArgumentValueDataStringArray::stringValues() const
 
 ArgumentValueDataArray *ArgumentValueDataStringArray::copy() const
 {
-    return new ArgumentValueDataStringArray(*this);
+    ArgumentValueDataStringArray *result = new ArgumentValueDataStringArray(*this);
+    for(QString &str_ : result->m_values)
+    {
+        str_ = QString(str_.constData(), str_.length());
+    }
+    result->deepCopy();
+    return result;
 }
 
 const QVector<QString> &ArgumentValueDataStringArray::getValues() const

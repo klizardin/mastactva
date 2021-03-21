@@ -57,6 +57,8 @@ public:
 
     ArgumentValueDataArray *createValueDataArray() const;
 
+    void deepCopy();
+
 private:
     QString m_name;
     QString m_storage;
