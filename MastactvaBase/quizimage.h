@@ -57,7 +57,7 @@ public:
     EffectArgSet *getArgumentSet() const;
     bool needToUpdateEffects();
     bool isEffectUpdated() const;
-    const DrawingImageData &getData() const;
+    OpenGLDrawingImageData *getData();
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;

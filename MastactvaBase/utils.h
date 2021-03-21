@@ -369,6 +369,7 @@ static const char *g_renderFromImageName = "renderFromImage";
 static const char *g_renderToImageName = "renderToImage";
 static const char *g_renderScreenRectName = "renderScreenRect";
 static const char *g_renderOpacityName = "renderOpacity";
+static const char *g_renderTName = "renderT";
 static const char *g_intTypeName = "int";
 static const char *g_floatTypeName = "float";
 static const char *g_vec2TypeName = "vec2";

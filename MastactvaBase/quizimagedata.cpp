@@ -169,6 +169,15 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     }
 }
 
+void ArgumentBase::deepCopy()
+{
+    m_name = QString(m_name.constData(), m_name.length());
+    m_storage = QString(m_storage.constData(), m_storage.length());
+    m_type = QString(m_type.constData(), m_type.length());
+    m_value = QString(m_value.constData(), m_value.length());
+    m_defaultValue = QString(m_defaultValue.constData(), m_defaultValue.length());
+}
+
 
 bool ArgumentList::containsByName(
         const QString &argumentName_,
@@ -263,24 +272,61 @@ ArgumentValueDataIntArray::ArgumentValueDataIntArray(
 {
 }
 
+void ArgumentValueDataIntArray::initData()
+{
+    initDataT(m_values);
+}
+
+void ArgumentValueDataIntArray::setArray(const QVariantList &varValues_)
+{
+    setArrayT(varValues_, m_values);
+}
+
+QVariantList ArgumentValueDataIntArray::variantValues() const
+{
+    return variantValuesT(m_values);
+}
+
 OpenGLArgumentValueBase *ArgumentValueDataIntArray::createOpenGlValue()
 {
     if(m_isAttribute)
     {
-        return new OpenGLArgumentAttributeValueT<ArgumentValueDataIntArray>(*this);
+        return new OpenGLArgumentAttributeValueT<ArgumentValueDataIntArray>(this);
     }
     else if(m_isUniform)
     {
-        return new OpenGLArgumentUniformValueT<ArgumentValueDataIntArray>(*this);
+        return new OpenGLArgumentUniformValueT<ArgumentValueDataIntArray>(this);
     }
     else if(m_isIndex)
     {
-        return new OpenGLArgumentIndexValueT<ArgumentValueDataIntArray>(*this);
+        return new OpenGLArgumentIndexValueT<ArgumentValueDataIntArray>(this);
     }
     else
     {
         return nullptr;
     }
+}
+
+const QVector<GLint> &ArgumentValueDataIntArray::intValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+}
+
+const QVector<GLfloat> &ArgumentValueDataIntArray::floatValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+}
+
+const QVector<QString> &ArgumentValueDataIntArray::stringValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+}
+
+ArgumentValueDataArray *ArgumentValueDataIntArray::copy() const
+{
+    ArgumentValueDataIntArray *result = new ArgumentValueDataIntArray(*this);
+    result->deepCopy();
+    return result;
 }
 
 const QVector<GLint> &ArgumentValueDataIntArray::getValues() const
@@ -300,24 +346,61 @@ ArgumentValueDataFloatArray::ArgumentValueDataFloatArray(const ArgumentBase &fro
 {
 }
 
+void ArgumentValueDataFloatArray::initData()
+{
+    initDataT(m_values);
+}
+
+void ArgumentValueDataFloatArray::setArray(const QVariantList &varValues_)
+{
+    setArrayT(varValues_, m_values);
+}
+
+QVariantList ArgumentValueDataFloatArray::variantValues() const
+{
+    return variantValuesT(m_values);
+}
+
 OpenGLArgumentValueBase *ArgumentValueDataFloatArray::createOpenGlValue()
 {
     if(m_isAttribute)
     {
-        return new OpenGLArgumentAttributeValueT<ArgumentValueDataFloatArray>(*this);
+        return new OpenGLArgumentAttributeValueT<ArgumentValueDataFloatArray>(this);
     }
     else if(m_isUniform)
     {
-        return new OpenGLArgumentUniformValueT<ArgumentValueDataFloatArray>(*this);
+        return new OpenGLArgumentUniformValueT<ArgumentValueDataFloatArray>(this);
     }
     else if(m_isIndex)
     {
-        return new OpenGLArgumentIndexValueT<ArgumentValueDataFloatArray>(*this);
+        return new OpenGLArgumentIndexValueT<ArgumentValueDataFloatArray>(this);
     }
     else
     {
         return nullptr;
     }
+}
+
+const QVector<GLint> &ArgumentValueDataFloatArray::intValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+}
+
+const QVector<GLfloat> &ArgumentValueDataFloatArray::floatValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+}
+
+const QVector<QString> &ArgumentValueDataFloatArray::stringValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+}
+
+ArgumentValueDataArray *ArgumentValueDataFloatArray::copy() const
+{
+    ArgumentValueDataFloatArray *result = new ArgumentValueDataFloatArray(*this);
+    result->deepCopy();
+    return result;
 }
 
 const QVector<GLfloat> &ArgumentValueDataFloatArray::getValues() const
@@ -342,28 +425,69 @@ ArgumentValueDataStringArray::ArgumentValueDataStringArray(
 {
 }
 
+void ArgumentValueDataStringArray::initData()
+{
+    initDataT(m_values);
+}
+
+void ArgumentValueDataStringArray::setArray(const QVariantList &varValues_)
+{
+    setArrayT(varValues_, m_values);
+}
+
+QVariantList ArgumentValueDataStringArray::variantValues() const
+{
+    return variantValuesT(m_values);
+}
+
 OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
 {
     if(m_isTextureType)
     {
-        return new OpenGLArgumentTextureValueT<ArgumentValueDataStringArray>(*this);
+        return new OpenGLArgumentTextureValueT<ArgumentValueDataStringArray>(this);
     }
     else if(m_isAttribute)
     {
-        return new OpenGLArgumentAttributeValueT<ArgumentValueDataStringArray>(*this);
+        return new OpenGLArgumentAttributeValueT<ArgumentValueDataStringArray>(this);
     }
     else if(m_isUniform)
     {
-        return new OpenGLArgumentUniformValueT<ArgumentValueDataStringArray>(*this);
+        return new OpenGLArgumentUniformValueT<ArgumentValueDataStringArray>(this);
     }
     else if(m_isIndex)
     {
-        return new OpenGLArgumentIndexValueT<ArgumentValueDataStringArray>(*this);
+        return new OpenGLArgumentIndexValueT<ArgumentValueDataStringArray>(this);
     }
     else
     {
         return nullptr;
     }
+}
+
+const QVector<GLint> &ArgumentValueDataStringArray::intValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+}
+
+const QVector<GLfloat> &ArgumentValueDataStringArray::floatValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+}
+
+const QVector<QString> &ArgumentValueDataStringArray::stringValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+}
+
+ArgumentValueDataArray *ArgumentValueDataStringArray::copy() const
+{
+    ArgumentValueDataStringArray *result = new ArgumentValueDataStringArray(*this);
+    for(QString &str_ : result->m_values)
+    {
+        str_ = QString(str_.constData(), str_.length());
+    }
+    result->deepCopy();
+    return result;
 }
 
 const QVector<QString> &ArgumentValueDataStringArray::getValues() const
@@ -964,17 +1088,17 @@ bool OpenGLArgumentValueBase::isTexture() const
     return false;
 }
 
-void OpenGLArgumentValueBase::setTextureIndex(int textureIndex_)
-{
-    Q_UNUSED(textureIndex_);
-}
-
 QString OpenGLArgumentValueBase::getTextureName() const
 {
     return QString();
 }
 
-void OpenGLArgumentValueBase::createTexture(QImage *image_)
+void OpenGLArgumentValueBase::setTextureIndex(int textureIndex_)
+{
+    Q_UNUSED(textureIndex_);
+}
+
+void OpenGLArgumentValueBase::createTexture(const QImage &image_)
 {
     Q_UNUSED(image_);
 }
@@ -988,6 +1112,14 @@ void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program
 {
     if(nullptr == program_) { return; }
     m_id = program_->attributeLocation(name_);
+    //bindAttribureValueId(program_, name_);
+}
+
+void OpenGLArgumentValueBase::bindAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
+{
+    if(nullptr == program_ ||
+            m_id < 0 ||
+            name_.isEmpty()) { return; }
     program_->bindAttributeLocation(name_, m_id);
 }
 
@@ -1125,15 +1257,15 @@ void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_)
     f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
 }
 
-void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, QImage *image_)
+void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_)
 {
     if(nullptr != texture_)
     {
         delete texture_;
         texture_ = nullptr;
     }
-    if(nullptr == image_ || image_->isNull()) { return; }
-    texture_ = new QOpenGLTexture(image_->mirrored(), QOpenGLTexture::GenerateMipMaps);
+    if(image_.isNull()) { return; }
+    texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps);
     texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
     texture_->setBorderColor(1, 1, 1, 0);
@@ -1563,6 +1695,11 @@ const QString &DrawingTextureArtefact::getFilename() const
     return m_filename;
 }
 
+const QImage &DrawingTextureArtefact::getImage() const
+{
+    return m_image;
+}
+
 void DrawingTextureArtefact::setTexture(const QImage &image_)
 {
     m_image = image_;
@@ -1584,141 +1721,49 @@ void DrawingShaderArtefact::deepCopy()
     m_shaderCode = QString(m_shaderCode.constData(), m_shaderCode.length());
 }
 
+const QString &DrawingShaderArtefact::getShaderCode() const
+{
+    return m_shaderCode;
+}
+
 void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 {
     m_shaderCode = shaderCode_;
 }
 
 
-DrawingArgument::DrawingArgument(OpenGLArgumentValueBase *impl_ /* = nullptr*/)
-    :m_impl(impl_)
+DrawingArgument::DrawingArgument(ArgumentValueDataArray *valueDataArray_ /*= nullptr*/)
+    :m_valueDataArray(valueDataArray_)
 {
 }
 
 DrawingArgument::~DrawingArgument()
 {
-    delete m_impl;
-    m_impl = nullptr;
+    delete m_valueDataArray;
+    m_valueDataArray = nullptr;
 }
 
 QString DrawingArgument::getArgumentName() const
 {
-    return nullptr != m_impl ? m_impl->getArgumentName() : QString();
-}
-
-void DrawingArgument::create(QOpenGLShaderProgram *program_)
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->create(program_);
-    }
-}
-
-bool DrawingArgument::isTexture() const
-{
-    return nullptr != m_impl ? m_impl->isTexture() : false;
-}
-
-void DrawingArgument::setTextureIndex(int textureIndex_)
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->setTextureIndex(textureIndex_);
-    }
-}
-
-QString DrawingArgument::getTextureName() const
-{
-    return nullptr != m_impl ? m_impl->getTextureName() : QString();
-}
-
-void DrawingArgument::createTexture(QImage *image_)
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->createTexture(image_);
-    }
-}
-
-int DrawingArgument::getArraySize() const
-{
-    return nullptr != m_impl ? m_impl->getArraySize() : 0;
-}
-
-int DrawingArgument::getMaxIndex() const
-{
-    return nullptr != m_impl ? m_impl->getMaxIndex() : 0;
-}
-
-int DrawingArgument::getVBOPartSize() const
-{
-    return nullptr != m_impl ? m_impl->getVBOPartSize() : 0;
-}
-
-void DrawingArgument::setVBOPartOffset(int offset_)
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->setVBOPartOffset(offset_);
-    }
-}
-
-void DrawingArgument::writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->writeVBOPart(vbo_, offset_, sizeItems_);
-    }
-}
-
-void DrawingArgument::use(QOpenGLShaderProgram *program_) const
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->use(program_);
-    }
-}
-
-void DrawingArgument::bindTexture(QOpenGLFunctions *f_)
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->bindTexture(f_);
-    }
-}
-
-void DrawingArgument::draw(QOpenGLFunctions *f_) const
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->draw(f_);
-    }
-}
-
-void DrawingArgument::release(QOpenGLShaderProgram *program_) const
-{
-    if(nullptr != m_impl)
-    {
-        m_impl->release(program_);
-    }
+    return nullptr != m_valueDataArray ? m_valueDataArray->getName() : QString();
 }
 
 const QVector<GLint> &DrawingArgument::intValues() const
 {
     static QVector<GLint> fish;
-    return nullptr != m_impl ? m_impl->intValues() : fish;
+    return nullptr != m_valueDataArray ? m_valueDataArray->intValues() : fish;
 }
 
 const QVector<GLfloat> &DrawingArgument::floatValues() const
 {
     static QVector<GLfloat> fish;
-    return nullptr != m_impl ? m_impl->floatValues() : fish;
+    return nullptr != m_valueDataArray ? m_valueDataArray->floatValues() : fish;
 }
 
 const QVector<QString> &DrawingArgument::stringValues() const
 {
     static QVector<QString> fish;
-    return nullptr != m_impl ? m_impl->stringValues() : fish;
+    return nullptr != m_valueDataArray ? m_valueDataArray->stringValues() : fish;
 }
 
 bool DrawingArgument::operator == (const DrawingArgument &argument_) const
@@ -1739,44 +1784,150 @@ bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
             ;
 }
 
-
-void DrawingImageData::deepCopy()
+OpenGLArgumentValueBase *DrawingArgument::createOpenglValue()
 {
-    m_textures.reserve(m_texturesSet.size());
-    for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
+    if(nullptr == m_valueDataArray) { return nullptr; }
+    return m_valueDataArray->createOpenGlValue();
+}
+
+
+void OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
+{
+    if(nullptr == m_vertexShader &&
+            nullptr != m_vertexArtefact)
     {
-        m_textures.push_back(artefact_);
+        m_vertexShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
+        m_vertexDataBA = m_vertexArtefact->getShaderCode().toUtf8();
+        m_vertexShader->compileSourceCode(m_vertexDataBA.constData());
+        if(!m_vertexShader->isCompiled())
+        {
+            errorLog_ += m_vertexShader->log();
+        }
     }
-    m_texturesSet.clear();
-    m_vertexShaders.reserve(m_vertexShadersSet.size());
-    for(const DrawingShaderArtefact &artefact_ : m_vertexShadersSet)
+    if(nullptr == m_fragmentShader &&
+            nullptr != m_fragmentArtefact)
     {
-        m_vertexShaders.push_back(artefact_);
+        m_fragmentShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
+        m_fragmentDataBA = m_fragmentArtefact->getShaderCode().toUtf8();
+        m_fragmentShader->compileSourceCode(m_fragmentDataBA.constData());
+        if(!m_fragmentShader->isCompiled())
+        {
+            errorLog_ += m_fragmentShader->log();
+        }
     }
-    m_vertexShadersSet.clear();
-    m_fragmentShaders.reserve(m_fragmentShadersSet.size());
-    for(const DrawingShaderArtefact &artefact_ : m_fragmentShadersSet)
+    m_program = new QOpenGLShaderProgram();
+    m_program->addShader(m_vertexShader);
+    m_program->addShader(m_fragmentShader);
+    m_program->link();
+    if(!m_program->isLinked())
     {
-        m_fragmentShaders.push_back(artefact_);
-    }
-    m_fragmentShadersSet.clear();
-    for(DrawingTextureArtefact &artefact_ : m_textures)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
-    {
-        artefact_.deepCopy();
+        errorLog_ += m_program->log();
+        delete m_program;
+        m_program = nullptr;
     }
 }
 
-void DrawingImageData::setAllArgumentValues(OpenGLArgumentValueBase *argument_)
+bool OpenGLDrawingStepImageData::isProgramBuilded() const
 {
-    DrawingArgument arg(argument_);
+    return nullptr != m_program;
+}
+
+void OpenGLDrawingStepImageData::createArguments(QOpenGLShaderProgram *program_)
+{
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->create(program_);
+    }
+}
+
+void OpenGLDrawingStepImageData::createTextures()
+{
+    int texturesCount = 0;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_ ||
+                !argument_->isTexture()) { continue; }
+        ++texturesCount;
+    }
+    int textureIndex = texturesCount - 1;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_ ||
+                !argument_->isTexture()) { continue; }
+        argument_->setTextureIndex(textureIndex);
+        --textureIndex;
+    }
+    for(int i = 0; i < m_programArguments.size(); i++)
+    {
+        OpenGLArgumentValueBase *argument = m_programArguments[i];
+        if(nullptr == argument ||
+                !argument->isTexture()) { continue; }
+        if(i >= m_argumentTextures.size() ||
+                nullptr == m_argumentTextures[i]) { continue; }
+        argument->createTexture(m_argumentTextures[i]->getImage());
+    }
+}
+
+void OpenGLDrawingStepImageData::bind(QOpenGLShaderProgram *program_)
+{
+    for(OpenGLArgumentValueBase *argument_ : m_programArguments)
+    {
+        argument_->bind(program_);
+    }
+}
+
+void OpenGLDrawingStepImageData::buildVBO()
+{
+    if(nullptr == m_vbo)
+    {
+    }
+}
+
+
+
+OpenGLDrawingImageData *DrawingImageData::copy()
+{
+    OpenGLDrawingImageData *result = new OpenGLDrawingImageData();
+
+    result->m_textures.reserve(m_texturesSet.size());
+    for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
+    {
+        result->m_textures.push_back(artefact_);
+    }
+    result->m_vertexShaders.reserve(m_vertexShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_vertexShadersSet)
+    {
+        result->m_vertexShaders.push_back(artefact_);
+    }
+    result->m_fragmentShaders.reserve(m_fragmentShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_fragmentShadersSet)
+    {
+        result->m_fragmentShaders.push_back(artefact_);
+    }
+    result->m_arguments.reserve(m_argumentsSet.size());
+    for(const DrawingArgument &argument_ : m_argumentsSet)
+    {
+        result->m_arguments.push_back(argument_);
+    }
+    for(DrawingTextureArtefact &artefact_ : result->m_textures)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : result->m_vertexShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : result->m_fragmentShaders)
+    {
+        artefact_.deepCopy();
+    }
+    return result;
+}
+
+void DrawingImageData::setAllArgumentValues(ArgumentValueDataArray *argumentValueDataArray_)
+{
+    DrawingArgument arg(argumentValueDataArray_);
     std::multiset<DrawingArgument>::const_iterator itb = m_argumentsSet.lower_bound(arg);
     std::multiset<DrawingArgument>::const_iterator ite = m_argumentsSet.upper_bound(arg);
     for(std::multiset<DrawingArgument>::const_iterator it = itb;
@@ -2008,14 +2159,8 @@ void QuizImageData::setImagesToDrawingData()
     if(nullptr != valueDataArray)
     {
         valueDataArray->initData();
-        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
-        if(nullptr != openglValue)
-        {
-            m_drawingData.setAllArgumentValues(openglValue);
-        }
-        openglValue = nullptr;
+        m_drawingData.setAllArgumentValues(valueDataArray);
     }
-    delete valueDataArray;
     valueDataArray = nullptr;
     useNewFromImageUrl();
 
@@ -2035,19 +2180,14 @@ void QuizImageData::setImagesToDrawingData()
     if(nullptr != valueDataArray)
     {
         valueDataArray->initData();
-        OpenGLArgumentValueBase *openglValue = valueDataArray->createOpenGlValue();
-        if(nullptr != openglValue)
-        {
-            m_drawingData.setAllArgumentValues(openglValue);
-        }
-        openglValue = nullptr;
+        m_drawingData.setAllArgumentValues(valueDataArray);
     }
-    delete valueDataArray;
     valueDataArray = nullptr;
     useNewToImageUrl();
 }
 
-const DrawingImageData &QuizImageData::getDrawingData() const
+
+OpenGLDrawingImageData *QuizImageData::getDrawingData()
 {
-    return m_drawingData;
+    return m_drawingData.copy();
 }
