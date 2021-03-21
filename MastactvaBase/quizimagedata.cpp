@@ -263,6 +263,21 @@ ArgumentValueDataIntArray::ArgumentValueDataIntArray(
 {
 }
 
+void ArgumentValueDataIntArray::initData()
+{
+    initDataT(m_values);
+}
+
+void ArgumentValueDataIntArray::setArray(const QVariantList &varValues_)
+{
+    setArrayT(varValues_, m_values);
+}
+
+QVariantList ArgumentValueDataIntArray::variantValues() const
+{
+    return variantValuesT(m_values);
+}
+
 OpenGLArgumentValueBase *ArgumentValueDataIntArray::createOpenGlValue()
 {
     if(m_isAttribute)
@@ -283,6 +298,21 @@ OpenGLArgumentValueBase *ArgumentValueDataIntArray::createOpenGlValue()
     }
 }
 
+const QVector<GLint> &ArgumentValueDataIntArray::intValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+}
+
+const QVector<GLfloat> &ArgumentValueDataIntArray::floatValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+}
+
+const QVector<QString> &ArgumentValueDataIntArray::stringValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+}
+
 const QVector<GLint> &ArgumentValueDataIntArray::getValues() const
 {
     return m_values;
@@ -298,6 +328,21 @@ ArgumentValueDataFloatArray::ArgumentValueDataFloatArray(const ArgumentBase &fro
     : ArgumentValueDataArray(from_, arraySize_, tupleSize_),
       m_isMatrixType(isMatrixType_)
 {
+}
+
+void ArgumentValueDataFloatArray::initData()
+{
+    initDataT(m_values);
+}
+
+void ArgumentValueDataFloatArray::setArray(const QVariantList &varValues_)
+{
+    setArrayT(varValues_, m_values);
+}
+
+QVariantList ArgumentValueDataFloatArray::variantValues() const
+{
+    return variantValuesT(m_values);
 }
 
 OpenGLArgumentValueBase *ArgumentValueDataFloatArray::createOpenGlValue()
@@ -318,6 +363,21 @@ OpenGLArgumentValueBase *ArgumentValueDataFloatArray::createOpenGlValue()
     {
         return nullptr;
     }
+}
+
+const QVector<GLint> &ArgumentValueDataFloatArray::intValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+}
+
+const QVector<GLfloat> &ArgumentValueDataFloatArray::floatValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+}
+
+const QVector<QString> &ArgumentValueDataFloatArray::stringValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
 }
 
 const QVector<GLfloat> &ArgumentValueDataFloatArray::getValues() const
@@ -342,6 +402,21 @@ ArgumentValueDataStringArray::ArgumentValueDataStringArray(
 {
 }
 
+void ArgumentValueDataStringArray::initData()
+{
+    initDataT(m_values);
+}
+
+void ArgumentValueDataStringArray::setArray(const QVariantList &varValues_)
+{
+    setArrayT(varValues_, m_values);
+}
+
+QVariantList ArgumentValueDataStringArray::variantValues() const
+{
+    return variantValuesT(m_values);
+}
+
 OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
 {
     if(m_isTextureType)
@@ -364,6 +439,21 @@ OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
     {
         return nullptr;
     }
+}
+
+const QVector<GLint> &ArgumentValueDataStringArray::intValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+}
+
+const QVector<GLfloat> &ArgumentValueDataStringArray::floatValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+}
+
+const QVector<QString> &ArgumentValueDataStringArray::stringValues() const
+{
+    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
 }
 
 const QVector<QString> &ArgumentValueDataStringArray::getValues() const
@@ -1590,13 +1680,15 @@ void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 }
 
 
-DrawingArgument::DrawingArgument(OpenGLArgumentValueBase *impl_ /* = nullptr*/)
-    :m_impl(impl_)
+DrawingArgument::DrawingArgument(ArgumentValueDataArray *valueDataArray_ /*= nullptr*/)
+    :m_valueDataArray(valueDataArray_),
+      m_impl(nullptr)
 {
 }
 
 DrawingArgument::~DrawingArgument()
 {
+    m_valueDataArray = nullptr;
     delete m_impl;
     m_impl = nullptr;
 }
@@ -1706,19 +1798,19 @@ void DrawingArgument::release(QOpenGLShaderProgram *program_) const
 const QVector<GLint> &DrawingArgument::intValues() const
 {
     static QVector<GLint> fish;
-    return nullptr != m_impl ? m_impl->intValues() : fish;
+    return nullptr != m_valueDataArray ? m_valueDataArray->intValues() : fish;
 }
 
 const QVector<GLfloat> &DrawingArgument::floatValues() const
 {
     static QVector<GLfloat> fish;
-    return nullptr != m_impl ? m_impl->floatValues() : fish;
+    return nullptr != m_valueDataArray ? m_valueDataArray->floatValues() : fish;
 }
 
 const QVector<QString> &DrawingArgument::stringValues() const
 {
     static QVector<QString> fish;
-    return nullptr != m_impl ? m_impl->stringValues() : fish;
+    return nullptr != m_valueDataArray ? m_valueDataArray->stringValues() : fish;
 }
 
 bool DrawingArgument::operator == (const DrawingArgument &argument_) const
@@ -1739,44 +1831,62 @@ bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
             ;
 }
 
-
-void DrawingImageData::deepCopy()
+void DrawingArgument::deepCopy()
 {
-    m_textures.reserve(m_texturesSet.size());
-    for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
-    {
-        m_textures.push_back(artefact_);
-    }
-    m_texturesSet.clear();
-    m_vertexShaders.reserve(m_vertexShadersSet.size());
-    for(const DrawingShaderArtefact &artefact_ : m_vertexShadersSet)
-    {
-        m_vertexShaders.push_back(artefact_);
-    }
-    m_vertexShadersSet.clear();
-    m_fragmentShaders.reserve(m_fragmentShadersSet.size());
-    for(const DrawingShaderArtefact &artefact_ : m_fragmentShadersSet)
-    {
-        m_fragmentShaders.push_back(artefact_);
-    }
-    m_fragmentShadersSet.clear();
-    for(DrawingTextureArtefact &artefact_ : m_textures)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_vertexShaders)
-    {
-        artefact_.deepCopy();
-    }
-    for(DrawingShaderArtefact &artefact_ : m_fragmentShaders)
-    {
-        artefact_.deepCopy();
-    }
+    if(nullptr != m_impl ||
+            nullptr == m_valueDataArray
+            ) { return; }
+    m_impl = m_valueDataArray->createOpenGlValue();
+    m_valueDataArray = nullptr;
 }
 
-void DrawingImageData::setAllArgumentValues(OpenGLArgumentValueBase *argument_)
+
+OpenGLDrawingImageData *DrawingImageData::copy()
 {
-    DrawingArgument arg(argument_);
+    OpenGLDrawingImageData *result = new OpenGLDrawingImageData();
+
+    result->m_textures.reserve(m_texturesSet.size());
+    for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
+    {
+        result->m_textures.push_back(artefact_);
+    }
+    result->m_vertexShaders.reserve(m_vertexShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_vertexShadersSet)
+    {
+        result->m_vertexShaders.push_back(artefact_);
+    }
+    result->m_fragmentShaders.reserve(m_fragmentShadersSet.size());
+    for(const DrawingShaderArtefact &artefact_ : m_fragmentShadersSet)
+    {
+        result->m_fragmentShaders.push_back(artefact_);
+    }
+    result->m_arguments.reserve(m_argumentsSet.size());
+    for(const DrawingArgument &argument_ : m_argumentsSet)
+    {
+        result->m_arguments.push_back(argument_);
+    }
+    for(DrawingTextureArtefact &artefact_ : result->m_textures)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : result->m_vertexShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingShaderArtefact &artefact_ : result->m_fragmentShaders)
+    {
+        artefact_.deepCopy();
+    }
+    for(DrawingArgument &argument_ : result->m_arguments)
+    {
+        argument_.deepCopy();
+    }
+    return result;
+}
+
+void DrawingImageData::setAllArgumentValues(ArgumentValueDataArray *argumentValueDataArray_)
+{
+    DrawingArgument arg(argumentValueDataArray_);
     std::multiset<DrawingArgument>::const_iterator itb = m_argumentsSet.lower_bound(arg);
     std::multiset<DrawingArgument>::const_iterator ite = m_argumentsSet.upper_bound(arg);
     for(std::multiset<DrawingArgument>::const_iterator it = itb;

@@ -92,6 +92,9 @@ public:
     virtual void setArray(const QVariantList &values_) = 0;
     virtual QVariantList variantValues() const = 0;
     virtual OpenGLArgumentValueBase *createOpenGlValue() = 0;
+    virtual const QVector<GLint> &intValues() const = 0;
+    virtual const QVector<GLfloat> &floatValues() const = 0;
+    virtual const QVector<QString> &stringValues() const = 0;
 
     int getArraySize() const;
     int getTupleSize() const;
@@ -196,19 +199,13 @@ public:
     ArgumentValueDataIntArray(const ArgumentBase &from_, int arraySize_, int tupleSize_);
     virtual ~ArgumentValueDataIntArray() override = default;
 
-    virtual void initData() override
-    {
-        initDataT(m_values);
-    }
-    virtual void setArray(const QVariantList &varValues_) override
-    {
-        setArrayT(varValues_, m_values);
-    }
-    virtual QVariantList variantValues() const override
-    {
-        return variantValuesT(m_values);
-    }
+    virtual void initData() override;
+    virtual void setArray(const QVariantList &varValues_) override;
+    virtual QVariantList variantValues() const override;
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
+    virtual const QVector<GLint> &intValues() const override;
+    virtual const QVector<GLfloat> &floatValues() const override;
+    virtual const QVector<QString> &stringValues() const override;
 
     const QVector<GLint> &getValues() const;
     bool isMatrixType() const;
@@ -233,19 +230,13 @@ public:
     ArgumentValueDataFloatArray(const ArgumentBase &from_, int arraySize_, int tupleSize_, bool isMatrixType_);
     virtual ~ArgumentValueDataFloatArray() override = default;
 
-    virtual void initData() override
-    {
-        initDataT(m_values);
-    }
-    virtual void setArray(const QVariantList &varValues_) override
-    {
-        setArrayT(varValues_, m_values);
-    }
-    virtual QVariantList variantValues() const override
-    {
-        return variantValuesT(m_values);
-    }
+    virtual void initData() override;
+    virtual void setArray(const QVariantList &varValues_) override;
+    virtual QVariantList variantValues() const override;
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
+    virtual const QVector<GLint> &intValues() const override;
+    virtual const QVector<GLfloat> &floatValues() const override;
+    virtual const QVector<QString> &stringValues() const override;
 
     const QVector<GLfloat> &getValues() const;
     bool isMatrixType() const;
@@ -276,19 +267,13 @@ public:
             );
     virtual ~ArgumentValueDataStringArray() override = default;
 
-    virtual void initData() override
-    {
-        initDataT(m_values);
-    }
-    virtual void setArray(const QVariantList &varValues_) override
-    {
-        setArrayT(varValues_, m_values);
-    }
-    virtual QVariantList variantValues() const override
-    {
-        return variantValuesT(m_values);
-    }
+    virtual void initData() override;
+    virtual void setArray(const QVariantList &varValues_) override;
+    virtual QVariantList variantValues() const override;
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
+    virtual const QVector<GLint> &intValues() const override;
+    virtual const QVector<GLfloat> &floatValues() const override;
+    virtual const QVector<QString> &stringValues() const override;
 
     const QVector<QString> &getValues() const;
     bool isMatrixType() const;
@@ -476,9 +461,6 @@ public:
     virtual void bindTexture(QOpenGLFunctions *f_);
     virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
-    virtual const QVector<GLint> &intValues() const = 0;
-    virtual const QVector<GLfloat> &floatValues() const = 0;
-    virtual const QVector<QString> &stringValues() const = 0;
 
 protected:
     void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
@@ -723,21 +705,6 @@ public:
     virtual void release(QOpenGLShaderProgram *program_) const override
     {
         Q_UNUSED(program_);
-    }
-
-    virtual const QVector<GLint> &intValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLint> *>(nullptr));
-    }
-
-    virtual const QVector<GLfloat> &floatValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
-    }
-
-    virtual const QVector<QString> &stringValues() const override
-    {
-        return valueOrFish(value().getValues(), static_cast<const QVector<QString> *>(nullptr));
     }
 
 private:
@@ -1252,7 +1219,7 @@ private:
 class DrawingArgument : public OpenGLArgumentValueBase
 {
 public:
-    DrawingArgument(OpenGLArgumentValueBase *impl_ = nullptr);
+    DrawingArgument(ArgumentValueDataArray *valueDataArray_ = nullptr);
     ~DrawingArgument();
 
     virtual QString getArgumentName() const override;
@@ -1270,115 +1237,37 @@ public:
     virtual void bindTexture(QOpenGLFunctions *f_) override;
     virtual void draw(QOpenGLFunctions *f_) const override;
     virtual void release(QOpenGLShaderProgram *program_) const override;
-    virtual const QVector<GLint> &intValues() const override;
-    virtual const QVector<GLfloat> &floatValues() const override;
-    virtual const QVector<QString> &stringValues() const override;
 
+    const QVector<GLint> &intValues() const;
+    const QVector<GLfloat> &floatValues() const;
+    const QVector<QString> &stringValues() const;
     bool operator == (const DrawingArgument &argument_) const;
     bool operator < (const DrawingArgument &argument_) const;
-
     bool doesValueEqual(const DrawingArgument &argument_) const;
+    void deepCopy();
 
 private:
+    ArgumentValueDataArray *m_valueDataArray = nullptr;
     OpenGLArgumentValueBase *m_impl = nullptr;
 };
 
 
-template<typename Type_, template<typename > class IndexType_>
-class DeepCopyOrderedList
+class DrawingImageData;
+
+
+class OpenGLDrawingImageData
 {
-private:
-    class IndexValue
-    {
-    public:
-        IndexValue(const Type_ *ptr_) :m_ptr(ptr_) {}
-        bool operator == (const IndexValue &val_) const { return *m_ptr == *val_.m_ptr; }
-        bool operator < (const IndexValue &val_) const { return *m_ptr < *val_.m_ptr; }
-        const Type_ *val() const { return m_ptr; }
-    private:
-        const Type_ *m_ptr;
-    };
-
 public:
-    DeepCopyOrderedList()
-    {
-        IndexType_<int> v({0, 0,});
-        m_multiValues = v.size() > 1;
-    }
-
-    void deepCopy()
-    {
-        for(int i = 0; i < m_data.size(); i++)
-        {
-            m_data[i].deepCopy();
-        }
-    }
-
-    bool contains(const Type_ &val_) const
-    {
-        return m_index.find(IndexValue(&val_)) != std::end(m_index);
-    }
-
-    int find(const Type_ &val_) const
-    {
-        const auto fit = m_index.find(IndexValue(&val_));
-        return std::end(m_index) != fit ? std::distance(std::begin(m_index), fit) : -1;
-    }
-
-    bool insert(const Type_ &val_)
-    {
-        if(!multiValues() && contains(val_)) { return false; }
-        m_data.push_back(val_);
-        m_index.insert(IndexValue(m_data.back()));
-        return true;
-    }
-
-    Type_& operator[](int index_)
-    {
-        return at(index_);
-    }
-
-    const Type_& operator[](int index_) const
-    {
-        return at(index_);
-    }
-
-    int size() const
-    {
-        return m_index.size();
-    }
+    OpenGLDrawingImageData() = default;
 
 private:
-    Type_& at(int index_)
-    {
-        static Type_ fish = Type_();
-        if(index_ < 0 || index_ >= m_index.size()) { return fish; }
-        return const_cast<Type_&>(*(*(std::begin(m_index) + index_)).val());
-    }
-
-    const Type_& at(int index_) const
-    {
-        static Type_ fish = Type_();
-        if(index_ < 0 || index_ >= m_index.size()) { return fish; }
-        return *(*(std::begin(m_index) + index_)).val();
-    }
+    QVector<DrawingArgument> m_arguments;
+    QVector<DrawingTextureArtefact> m_textures;
+    QVector<DrawingShaderArtefact> m_vertexShaders;
+    QVector<DrawingShaderArtefact> m_fragmentShaders;
 
 private:
-    bool multiValues() const
-    {
-        return m_multiValues;
-    }
-
-private:
-    IndexType_<IndexValue> m_index;
-    QList<Type_> m_data;
-    bool m_multiValues = false;
-    /*
-        QList<T> will allocate its items on the heap unless
-        * sizeof(T) <= sizeof(void*) and
-        * T has been declared to be either a Q_MOVABLE_TYPE or a Q_PRIMITIVE_TYPE using Q_DECLARE_TYPEINFO.
-        See the Pros and Cons of Using QList for an explanation.
-    */
+    friend class DrawingImageData;
 };
 
 
@@ -1387,13 +1276,13 @@ class DrawingImageData
 public:
     DrawingImageData() = default;
 
-    void deepCopy();
+    OpenGLDrawingImageData *copy();
 
 private:
     void setObjects(const QVector<QuizImageDataObject *> &objects_);
     void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
     void addTexture(const DrawingTextureArtefact &argtefact_);
-    void setAllArgumentValues(OpenGLArgumentValueBase *argument_);
+    void setAllArgumentValues(ArgumentValueDataArray *argumentValueDataArray_);
 
 private:
     // for drawing data creator thread
@@ -1401,12 +1290,6 @@ private:
     std::set<DrawingTextureArtefact> m_texturesSet;
     std::set<DrawingShaderArtefact> m_vertexShadersSet;
     std::set<DrawingShaderArtefact> m_fragmentShadersSet;
-
-    // for drawing thread
-    QVector<DrawingArgument> m_arguments;
-    QVector<DrawingTextureArtefact> m_textures;
-    QVector<DrawingShaderArtefact> m_vertexShaders;
-    QVector<DrawingShaderArtefact> m_fragmentShaders;
 
 private:
     friend class QuizImageData;
