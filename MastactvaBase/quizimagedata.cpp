@@ -1088,17 +1088,17 @@ bool OpenGLArgumentValueBase::isTexture() const
     return false;
 }
 
-void OpenGLArgumentValueBase::setTextureIndex(int textureIndex_)
-{
-    Q_UNUSED(textureIndex_);
-}
-
 QString OpenGLArgumentValueBase::getTextureName() const
 {
     return QString();
 }
 
-void OpenGLArgumentValueBase::createTexture(QImage *image_)
+void OpenGLArgumentValueBase::setTextureIndex(int textureIndex_)
+{
+    Q_UNUSED(textureIndex_);
+}
+
+void OpenGLArgumentValueBase::createTexture(const QImage &image_)
 {
     Q_UNUSED(image_);
 }
@@ -1112,6 +1112,11 @@ void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program
 {
     if(nullptr == program_) { return; }
     m_id = program_->attributeLocation(name_);
+    bindAttribureValueId(program_, name_);
+}
+
+void OpenGLArgumentValueBase::bindAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
+{
     program_->bindAttributeLocation(name_, m_id);
 }
 
@@ -1249,15 +1254,15 @@ void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_)
     f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
 }
 
-void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, QImage *image_)
+void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_)
 {
     if(nullptr != texture_)
     {
         delete texture_;
         texture_ = nullptr;
     }
-    if(nullptr == image_ || image_->isNull()) { return; }
-    texture_ = new QOpenGLTexture(image_->mirrored(), QOpenGLTexture::GenerateMipMaps);
+    if(image_.isNull()) { return; }
+    texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps);
     texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
     texture_->setBorderColor(1, 1, 1, 0);
@@ -1687,6 +1692,11 @@ const QString &DrawingTextureArtefact::getFilename() const
     return m_filename;
 }
 
+const QImage &DrawingTextureArtefact::getImage() const
+{
+    return m_image;
+}
+
 void DrawingTextureArtefact::setTexture(const QImage &image_)
 {
     m_image = image_;
@@ -1706,6 +1716,11 @@ bool DrawingShaderArtefact::operator < (const DrawingShaderArtefact &drawingArte
 void DrawingShaderArtefact::deepCopy()
 {
     m_shaderCode = QString(m_shaderCode.constData(), m_shaderCode.length());
+}
+
+const QString &DrawingShaderArtefact::getShaderCode() const
+{
+    return m_shaderCode;
 }
 
 void DrawingShaderArtefact::setShader(const QString &shaderCode_)
@@ -1773,6 +1788,101 @@ OpenGLArgumentValueBase *DrawingArgument::createOpenglValue()
 }
 
 
+void OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
+{
+    if(nullptr == m_vertexShader &&
+            nullptr != m_vertexArtefact)
+    {
+        m_vertexShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
+        m_vertexDataBA = m_vertexArtefact->getShaderCode().toUtf8();
+        m_vertexShader->compileSourceCode(m_vertexDataBA.constData());
+        if(!m_vertexShader->isCompiled())
+        {
+            errorLog_ += m_vertexShader->log();
+        }
+    }
+    if(nullptr == m_fragmentShader &&
+            nullptr != m_fragmentArtefact)
+    {
+        m_fragmentShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
+        m_fragmentDataBA = m_fragmentArtefact->getShaderCode().toUtf8();
+        m_fragmentShader->compileSourceCode(m_fragmentDataBA.constData());
+        if(!m_fragmentShader->isCompiled())
+        {
+            errorLog_ += m_fragmentShader->log();
+        }
+    }
+    m_program = new QOpenGLShaderProgram();
+    m_program->addShader(m_vertexShader);
+    m_program->addShader(m_fragmentShader);
+    m_program->link();
+    if(!m_program->isLinked())
+    {
+        errorLog_ += m_program->log();
+        delete m_program;
+        m_program = nullptr;
+    }
+}
+
+bool OpenGLDrawingStepImageData::isProgramBuilded() const
+{
+    return nullptr != m_program;
+}
+
+void OpenGLDrawingStepImageData::createArguments(QOpenGLShaderProgram *program_)
+{
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->create(program_);
+    }
+}
+
+void OpenGLDrawingStepImageData::createTextures()
+{
+    int texturesCount = 0;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_ ||
+                !argument_->isTexture()) { continue; }
+        ++texturesCount;
+    }
+    int textureIndex = texturesCount - 1;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_ ||
+                !argument_->isTexture()) { continue; }
+        argument_->setTextureIndex(textureIndex);
+        --textureIndex;
+    }
+    for(int i = 0; i < m_programArguments.size(); i++)
+    {
+        OpenGLArgumentValueBase *argument = m_programArguments[i];
+        if(nullptr == argument ||
+                !argument->isTexture()) { continue; }
+        if(i >= m_argumentTextures.size() ||
+                nullptr == m_argumentTextures[i]) { continue; }
+        argument->createTexture(m_argumentTextures[i]->getImage());
+    }
+}
+
+void OpenGLDrawingStepImageData::bind(QOpenGLShaderProgram *program_)
+{
+    for(OpenGLArgumentValueBase *argument_ : m_programArguments)
+    {
+        argument_->bind(program_);
+    }
+}
+
+void OpenGLDrawingStepImageData::buildVBO()
+{
+    if(nullptr == m_vbo)
+    {
+    }
+}
+
+
+
 OpenGLDrawingImageData *DrawingImageData::copy()
 {
     OpenGLDrawingImageData *result = new OpenGLDrawingImageData();
@@ -1808,10 +1918,6 @@ OpenGLDrawingImageData *DrawingImageData::copy()
     for(DrawingShaderArtefact &artefact_ : result->m_fragmentShaders)
     {
         artefact_.deepCopy();
-    }
-    for(DrawingArgument &argument_ : result->m_arguments)
-    {
-        argument_.deepCopy();
     }
     return result;
 }

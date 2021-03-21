@@ -718,7 +718,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
         /*m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
         m_program->bindAttributeLocation("texCoordArg", m_texCoordAttrId);
         */
-        m_drawingData->bindStepAttributes(i);
+        m_drawingData->bindStep(i);
 
         /*makeObject();*/
 

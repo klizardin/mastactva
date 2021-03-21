@@ -453,10 +453,11 @@ public:
     virtual ~OpenGLArgumentValueBase() = default;
 
     virtual void create(QOpenGLShaderProgram *program_) = 0;
+    virtual void bind(QOpenGLShaderProgram *program_) = 0;
     virtual bool isTexture() const;         // to count textures
-    virtual void setTextureIndex(int textureIndex_);    // to setup texture indexes, in revers order -- last 0
     virtual QString getTextureName() const;    // to find texture in the drawing image data
-    virtual void createTexture(QImage *image_);
+    virtual void setTextureIndex(int textureIndex_);    // to setup texture indexes, in revers order -- last 0
+    virtual void createTexture(const QImage &image_);
     virtual int getArraySize() const = 0;       // internaly used (do not know the purpose of this function)
     virtual int getMaxIndex() const = 0;        // max index value to allocate data
     virtual int getVBOPartSize() const = 0;     // vbo size of this part
@@ -469,6 +470,7 @@ public:
 
 protected:
     void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
+    void bindAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
     void useAttributeValue(QOpenGLShaderProgram *program_, GLenum type_, int offset_, int tupleSize_) const;
     void writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const;
     void writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const;
@@ -482,7 +484,7 @@ protected:
 
     void drawTrianlesArray(QOpenGLFunctions *f_, int size_) const;
 
-    void createTextureFromImage(QOpenGLTexture *&texture_, QImage *image_);
+    void createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_);
     void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_);
 private:
     int m_id = -1;
@@ -512,6 +514,11 @@ public:
         initUniformValueId(
                     program_,
                     arg().getName());
+    }
+
+    virtual void bind(QOpenGLShaderProgram *program_) override
+    {
+        Q_UNUSED(program_);
     }
 
     virtual int getArraySize() const override
@@ -608,14 +615,14 @@ public:
                     arg().getName());
     }
 
+    virtual void bind(QOpenGLShaderProgram *program_) override
+    {
+        Q_UNUSED(program_);
+    }
+
     virtual bool isTexture() const override
     {
         return true && value().getValues().size() > 0;
-    }
-
-    virtual void setTextureIndex(int textureIndex_)
-    {
-        m_textureIndex = textureIndex_;
     }
 
     virtual QString getTextureName() const override
@@ -630,7 +637,12 @@ public:
         }
     }
 
-    virtual void createTexture(QImage *image_) override
+    virtual void setTextureIndex(int textureIndex_)
+    {
+        m_textureIndex = textureIndex_;
+    }
+
+    virtual void createTexture(const QImage &image_) override
     {
         delete m_texture;
         m_texture = nullptr;
@@ -752,6 +764,13 @@ public:
                     arg().getName());
     }
 
+    virtual void bind(QOpenGLShaderProgram *program_) override
+    {
+        bindAttribureValueId(
+                    program_,
+                    arg().getName());
+    }
+
     virtual int getArraySize() const override
     {
         return value().getValues().size();
@@ -842,6 +861,11 @@ public:
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
+    {
+        Q_UNUSED(program_);
+    }
+
+    virtual void bind(QOpenGLShaderProgram *program_) override
     {
         Q_UNUSED(program_);
     }
@@ -1125,6 +1149,7 @@ public:
     bool operator < (const DrawingTextureArtefact &drawingArtefact_) const;
     void deepCopy();
     const QString &getFilename() const;
+    const QImage &getImage() const;
 
 private:
     void setFilename(const QString &name_);
@@ -1146,6 +1171,7 @@ public:
     bool operator == (const DrawingShaderArtefact &drawingArtefact_) const;
     bool operator < (const DrawingShaderArtefact &drawingArtefact_) const;
     void deepCopy();
+    const QString &getShaderCode() const;
 
 private:
     void setShader(const QString &shaderCode_);
@@ -1182,16 +1208,16 @@ private:
 class DrawingImageData;
 
 
-class OpenGLDrawingImageDataStep
+class OpenGLDrawingStepImageData
 {
 public:
     // init api
-    void clearArgumentIds();
-    void buildProgram();
+    //void clearArgumentIds();
+    void buildProgram(QString &errorLog_);
     bool isProgramBuilded() const;
-    void createArguments();
+    void createArguments(QOpenGLShaderProgram *program_);
     void createTextures();
-    void bindAttributes();
+    void bind(QOpenGLShaderProgram *program_);
     void buildVBO();
 
     // draw api
@@ -1208,6 +1234,8 @@ private:
     QVector<DrawingTextureArtefact *> m_argumentTextures;       // for every argument we set or nullptr
                                                                 // or texture artefact for it
                                                                 // associate textures in object creation time
+    QByteArray m_vertexDataBA;
+    QByteArray m_fragmentDataBA;
     QOpenGLShaderProgram *m_program = nullptr;
     QOpenGLShader *m_vertexShader = nullptr;
     QOpenGLShader *m_fragmentShader = nullptr;
@@ -1225,10 +1253,10 @@ public:
     void setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_);
 
     int stepCount() const;
-    void clearStepArgumentIds(int stepIndex_);
+    //void clearStepArgumentIds(int stepIndex_);
     bool buildStepProgram(int stepIndex_, QString &errorLog_);
     void initStepArgumentIds(int stepIndex_);
-    void bindStepAttributes(int stepIndex_);
+    void bindStep(int stepIndex_);
     void buildStepVBO(int stepIndex_);
     bool isStepProgramBuilded(int stepIndex_) const;
     void bindStepProgram(int stepIndex_);
@@ -1238,10 +1266,11 @@ public:
     void releaseStep(int stepIndex_);
 
 private:
-    QVector<DrawingArgument> m_arguments;
-    QVector<DrawingTextureArtefact> m_textures;
-    QVector<DrawingShaderArtefact> m_vertexShaders;
-    QVector<DrawingShaderArtefact> m_fragmentShaders;
+    QList<OpenGLDrawingStepImageData> m_steps;
+    QList<DrawingArgument> m_arguments;
+    QList<DrawingTextureArtefact> m_textures;
+    QList<DrawingShaderArtefact> m_vertexShaders;
+    QList<DrawingShaderArtefact> m_fragmentShaders;
 
 private:
     friend class DrawingImageData;
