@@ -1182,6 +1182,37 @@ private:
 class DrawingImageData;
 
 
+class OpenGLDrawingImageDataStep
+{
+public:
+    // init api
+    void clearArgumentIds();
+    void buildProgram();
+    bool isProgramBuilded() const;
+    void createArguments();
+    void bindAttributes();
+    void buildVBO();
+
+    // draw api
+    void bindProgram();
+    void useArguments();
+    void bindTextures();
+    void draw();
+    void release();
+
+private:
+    DrawingShaderArtefact *m_vertexArtefact = nullptr;
+    DrawingShaderArtefact *m_fragmentArtefact = nullptr;
+    QVector<OpenGLArgumentValueBase *> m_programArguments;
+
+    QOpenGLShaderProgram *m_program = nullptr;
+    QOpenGLShader *m_vertexShader = nullptr;
+    QOpenGLShader *m_fragmentShader = nullptr;
+    QOpenGLBuffer *m_vbo = nullptr;
+    QVector<GLfloat> m_vboData;
+};
+
+
 class OpenGLDrawingImageData
 {
 public:
