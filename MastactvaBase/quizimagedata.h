@@ -1190,6 +1190,7 @@ public:
     void buildProgram();
     bool isProgramBuilded() const;
     void createArguments();
+    void createTextures();
     void bindAttributes();
     void buildVBO();
 
@@ -1204,6 +1205,7 @@ private:
     DrawingShaderArtefact *m_vertexArtefact = nullptr;
     DrawingShaderArtefact *m_fragmentArtefact = nullptr;
     QVector<OpenGLArgumentValueBase *> m_programArguments;
+    QVector<DrawingTextureArtefact *> m_argumentTextures;
 
     QOpenGLShaderProgram *m_program = nullptr;
     QOpenGLShader *m_vertexShader = nullptr;
