@@ -464,7 +464,7 @@ public:
     virtual void setVBOPartOffset(int offset_) = 0; // set offset of vbo data (data follows in chain)
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;  // write vbo part to draing buffer
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
-    virtual void bindTexture(QOpenGLFunctions *f_);
+    virtual void bindTexture(QOpenGLFunctions *f_) const;
     virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
 
@@ -485,7 +485,7 @@ protected:
     void drawTrianlesArray(QOpenGLFunctions *f_, int size_) const;
 
     void createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_);
-    void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_);
+    void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_) const;
 private:
     int m_id = -1;
 };
@@ -685,7 +685,7 @@ public:
                     false);
     }
 
-    virtual void bindTexture(QOpenGLFunctions *f_) override
+    virtual void bindTexture(QOpenGLFunctions *f_) const override
     {
         bindTexture(f_, m_texture, m_textureIndex);
     }
@@ -1218,17 +1218,17 @@ public:
     //void clearArgumentIds();
     void buildProgram(QString &errorLog_);
     bool isProgramBuilded() const;
-    void createArguments(QOpenGLShaderProgram *program_);
+    void createArguments();
     void createTextures();
-    void bind(QOpenGLShaderProgram *program_);
+    void bind();
     void buildVBO();
 
     // draw api
     void bindProgram();
-    void useArguments();
-    void bindTextures();
-    void draw();
-    void release();
+    void useArguments() const;
+    void bindTextures(QOpenGLFunctions *f_) const;
+    void draw(QOpenGLFunctions *f_) const;
+    void release() const;
 
 private:
     void free();

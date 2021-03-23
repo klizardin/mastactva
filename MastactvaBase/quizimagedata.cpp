@@ -1103,7 +1103,7 @@ void OpenGLArgumentValueBase::createTexture(const QImage &image_)
     Q_UNUSED(image_);
 }
 
-void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_)
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_) const
 {
     Q_UNUSED(f_);
 }
@@ -1271,7 +1271,7 @@ void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, 
     texture_->setBorderColor(1, 1, 1, 0);
 }
 
-void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_)
+void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_) const
 {
     if(nullptr == f_ || nullptr == texture_) { return; }
     if(textureIndex_ < 0) { return; }
@@ -1837,12 +1837,13 @@ bool OpenGLDrawingStepImageData::isProgramBuilded() const
     return nullptr != m_program;
 }
 
-void OpenGLDrawingStepImageData::createArguments(QOpenGLShaderProgram *program_)
+void OpenGLDrawingStepImageData::createArguments()
 {
+    if(nullptr == m_program) { return; }
     for(OpenGLArgumentValueBase *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        argument_->create(program_);
+        argument_->create(m_program);
     }
 }
 
@@ -1874,11 +1875,12 @@ void OpenGLDrawingStepImageData::createTextures()
     }
 }
 
-void OpenGLDrawingStepImageData::bind(QOpenGLShaderProgram *program_)
+void OpenGLDrawingStepImageData::bind()
 {
+    if(nullptr == m_program) { return; }
     for(OpenGLArgumentValueBase *argument_ : m_programArguments)
     {
-        argument_->bind(program_);
+        argument_->bind(m_program);
     }
 }
 
@@ -1912,22 +1914,45 @@ void OpenGLDrawingStepImageData::buildVBO()
 
 void OpenGLDrawingStepImageData::bindProgram()
 {
+    if(nullptr == m_program) { return; }
+    m_program->bind();
 }
 
-void OpenGLDrawingStepImageData::useArguments()
+void OpenGLDrawingStepImageData::useArguments() const
 {
+    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->use(m_program);
+    }
 }
 
-void OpenGLDrawingStepImageData::bindTextures()
+void OpenGLDrawingStepImageData::bindTextures(QOpenGLFunctions *f_) const
 {
+    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->bindTexture(f_);
+    }
 }
 
-void OpenGLDrawingStepImageData::draw()
+void OpenGLDrawingStepImageData::draw(QOpenGLFunctions *f_) const
 {
+    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->draw(f_);
+    }
 }
 
-void OpenGLDrawingStepImageData::release()
+void OpenGLDrawingStepImageData::release() const
 {
+    if(nullptr == m_program) { return; }
+    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->release(m_program);
+    }
 }
 
 void OpenGLDrawingStepImageData::free()
