@@ -1791,6 +1791,11 @@ OpenGLArgumentValueBase *DrawingArgument::createOpenglValue()
 }
 
 
+OpenGLDrawingStepImageData::~OpenGLDrawingStepImageData()
+{
+    free();
+}
+
 void OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
 {
     if(nullptr == m_vertexShader &&
@@ -1879,11 +1884,64 @@ void OpenGLDrawingStepImageData::bind(QOpenGLShaderProgram *program_)
 
 void OpenGLDrawingStepImageData::buildVBO()
 {
-    if(nullptr == m_vbo)
+    if(nullptr != m_vbo) { return; }
+    int vboDataSize = 0;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
     {
+        if(nullptr == argument_) { continue; }
+        const int offset = vboDataSize;
+        vboDataSize += argument_->getVBOPartSize();
+        argument_->setVBOPartOffset(offset);
     }
+    m_vboData.resize(vboDataSize);
+    m_vbo = new QOpenGLBuffer();
+    m_vbo->create();
+    m_vbo->bind();
+    m_vbo->allocate(m_vboData.count() * sizeof(GLfloat));
+
+    int vboPartOffset = 0;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        const int size = argument_->getVBOPartSize();
+        argument_->writeVBOPart(m_vbo, vboPartOffset, argument_->getMaxIndex());
+        vboPartOffset += size;
+    }
+    m_vbo->release();
 }
 
+void OpenGLDrawingStepImageData::bindProgram()
+{
+}
+
+void OpenGLDrawingStepImageData::useArguments()
+{
+}
+
+void OpenGLDrawingStepImageData::bindTextures()
+{
+}
+
+void OpenGLDrawingStepImageData::draw()
+{
+}
+
+void OpenGLDrawingStepImageData::release()
+{
+}
+
+void OpenGLDrawingStepImageData::free()
+{
+    m_vboData.clear();
+    delete m_vbo;
+    m_vbo = nullptr;
+    delete m_program;
+    m_program = nullptr;
+    delete m_vertexShader;
+    m_vertexShader = nullptr;
+    delete m_fragmentShader;
+    m_fragmentShader = nullptr;
+}
 
 
 OpenGLDrawingImageData *DrawingImageData::copy()

@@ -1211,6 +1211,9 @@ class DrawingImageData;
 class OpenGLDrawingStepImageData
 {
 public:
+    OpenGLDrawingStepImageData() = default;
+    ~OpenGLDrawingStepImageData();
+
     // init api
     //void clearArgumentIds();
     void buildProgram(QString &errorLog_);
@@ -1226,6 +1229,9 @@ public:
     void bindTextures();
     void draw();
     void release();
+
+private:
+    void free();
 
 private:
     DrawingShaderArtefact *m_vertexArtefact = nullptr;
