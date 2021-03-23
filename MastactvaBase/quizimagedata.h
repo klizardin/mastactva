@@ -1216,7 +1216,7 @@ public:
 
     // init api
     //void clearArgumentIds();
-    void buildProgram(QString &errorLog_);
+    bool buildProgram(QString &errorLog_);
     bool isProgramBuilded() const;
     void createArguments();
     void createTextures();
@@ -1277,6 +1277,7 @@ private:
     QList<DrawingTextureArtefact> m_textures;
     QList<DrawingShaderArtefact> m_vertexShaders;
     QList<DrawingShaderArtefact> m_fragmentShaders;
+    bool m_initialized = false;
 
 private:
     friend class DrawingImageData;

@@ -1796,7 +1796,7 @@ OpenGLDrawingStepImageData::~OpenGLDrawingStepImageData()
     free();
 }
 
-void OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
+bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
 {
     if(nullptr == m_vertexShader &&
             nullptr != m_vertexArtefact)
@@ -1830,6 +1830,7 @@ void OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
         delete m_program;
         m_program = nullptr;
     }
+    return isProgramBuilded();
 }
 
 bool OpenGLDrawingStepImageData::isProgramBuilded() const
@@ -1966,6 +1967,68 @@ void OpenGLDrawingStepImageData::free()
     m_vertexShader = nullptr;
     delete m_fragmentShader;
     m_fragmentShader = nullptr;
+}
+
+
+bool OpenGLDrawingImageData::isInitialized() const
+{
+    return m_initialized;
+}
+
+void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_)
+{
+    //TODO: implement
+}
+
+int OpenGLDrawingImageData::stepCount() const
+{
+    return m_steps.size();
+}
+
+bool OpenGLDrawingImageData::buildStepProgram(int stepIndex_, QString &errorLog_)
+{
+    if(stepIndex_ < 0 || stepIndex_ >= stepCount()) { return false; }
+    const bool res = m_steps[stepIndex_].buildProgram(errorLog_);
+    m_initialized |= res;
+    return res;
+}
+
+void OpenGLDrawingImageData::initStepArgumentIds(int stepIndex_)
+{
+    if(stepIndex_ < 0 || stepIndex_ >= stepCount()) { return; }
+    m_steps[stepIndex_].createArguments();
+}
+
+void OpenGLDrawingImageData::bindStep(int stepIndex_)
+{
+}
+
+void OpenGLDrawingImageData::buildStepVBO(int stepIndex_)
+{
+}
+
+bool OpenGLDrawingImageData::isStepProgramBuilded(int stepIndex_) const
+{
+}
+
+void OpenGLDrawingImageData::bindStepProgram(int stepIndex_)
+{
+}
+
+void OpenGLDrawingImageData::useStepArguments(int stepIndex_)
+{
+}
+
+void OpenGLDrawingImageData::bindStepTexture(int stepIndex_)
+{
+}
+
+void OpenGLDrawingImageData::drawStep(int stepIndex_)
+{
+}
+
+void OpenGLDrawingImageData::releaseStep(int stepIndex_)
+{
 }
 
 
