@@ -94,9 +94,9 @@ public:
     virtual void setArray(const QVariantList &values_) = 0;
     virtual QVariantList variantValues() const = 0;
     virtual OpenGLArgumentValueBase *createOpenGlValue() = 0;
-    virtual const QVector<GLint> &intValues() const = 0;
-    virtual const QVector<GLfloat> &floatValues() const = 0;
-    virtual const QVector<QString> &stringValues() const = 0;
+    virtual QVector<GLint> &intValues() = 0;
+    virtual QVector<GLfloat> &floatValues() = 0;
+    virtual QVector<QString> &stringValues() = 0;
     virtual ArgumentValueDataArray * copy() const = 0;
 
     int getArraySize() const;
@@ -206,9 +206,9 @@ public:
     virtual void setArray(const QVariantList &varValues_) override;
     virtual QVariantList variantValues() const override;
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
-    virtual const QVector<GLint> &intValues() const override;
-    virtual const QVector<GLfloat> &floatValues() const override;
-    virtual const QVector<QString> &stringValues() const override;
+    virtual QVector<GLint> &intValues() override;
+    virtual QVector<GLfloat> &floatValues() override;
+    virtual QVector<QString> &stringValues() override;
     virtual ArgumentValueDataArray *copy() const override;
 
     const QVector<GLint> &getValues() const;
@@ -238,9 +238,9 @@ public:
     virtual void setArray(const QVariantList &varValues_) override;
     virtual QVariantList variantValues() const override;
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
-    virtual const QVector<GLint> &intValues() const override;
-    virtual const QVector<GLfloat> &floatValues() const override;
-    virtual const QVector<QString> &stringValues() const override;
+    virtual QVector<GLint> &intValues() override;
+    virtual QVector<GLfloat> &floatValues() override;
+    virtual QVector<QString> &stringValues() override;
     virtual ArgumentValueDataArray *copy() const override;
 
     const QVector<GLfloat> &getValues() const;
@@ -276,9 +276,9 @@ public:
     virtual void setArray(const QVariantList &varValues_) override;
     virtual QVariantList variantValues() const override;
     virtual OpenGLArgumentValueBase *createOpenGlValue() override;
-    virtual const QVector<GLint> &intValues() const override;
-    virtual const QVector<GLfloat> &floatValues() const override;
-    virtual const QVector<QString> &stringValues() const override;
+    virtual QVector<GLint> &intValues() override;
+    virtual QVector<GLfloat> &floatValues() override;
+    virtual QVector<QString> &stringValues() override;
     virtual ArgumentValueDataArray *copy() const override;
 
     const QVector<QString> &getValues() const;
@@ -1189,9 +1189,10 @@ class DrawingArgument
 public:
     DrawingArgument(ArgumentValueDataArray *valueDataArray_ = nullptr);
     ~DrawingArgument();
+    QString getArgumentName() const;
+    void setValues(const QVector<GLfloat> &values_);
 
 private:
-    QString getArgumentName() const;
     const QVector<GLint> &intValues() const;
     const QVector<GLfloat> &floatValues() const;
     const QVector<QString> &stringValues() const;
@@ -1261,15 +1262,17 @@ public:
     int stepCount() const;
     //void clearStepArgumentIds(int stepIndex_);
     bool buildStepProgram(int stepIndex_, QString &errorLog_);
-    void initStepArgumentIds(int stepIndex_);
+    bool isStepProgramBuilded(int stepIndex_) const;
+    void createStepArgument(int stepIndex_);
+    void createStepTextures(int stepIndex_);
     void bindStep(int stepIndex_);
     void buildStepVBO(int stepIndex_);
-    bool isStepProgramBuilded(int stepIndex_) const;
+
     void bindStepProgram(int stepIndex_);
-    void useStepArguments(int stepIndex_);
-    void bindStepTexture(int stepIndex_);
-    void drawStep(int stepIndex_);
-    void releaseStep(int stepIndex_);
+    void useStepArguments(int stepIndex_) const;
+    void bindStepTexture(int stepIndex_, QOpenGLFunctions *f_) const;
+    void drawStep(int stepIndex_, QOpenGLFunctions *f_) const;
+    void releaseStep(int stepIndex_) const;
 
 private:
     QList<OpenGLDrawingStepImageData> m_steps;

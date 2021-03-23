@@ -297,7 +297,7 @@ bool isDefaultImage(const QUrl &imageUrl_);
 QString setDefaultImageIfEmpty(const QString &imageURLStr_);
 
 template<typename ArgType_, typename ReturnType_>
-const ReturnType_ &valueOrFish(const ArgType_ &value_, const ReturnType_ *)
+ReturnType_ &valueOrFish(ArgType_ &value_, const ReturnType_ *)
 {
     Q_UNUSED(value_);
     static ReturnType_ fish;
@@ -305,7 +305,7 @@ const ReturnType_ &valueOrFish(const ArgType_ &value_, const ReturnType_ *)
 }
 
 template<typename SameType_>
-const SameType_ &valueOrFish(const SameType_ &value_, const SameType_ *)
+SameType_ &valueOrFish(SameType_ &value_, const SameType_ *)
 {
     return value_;
 }
