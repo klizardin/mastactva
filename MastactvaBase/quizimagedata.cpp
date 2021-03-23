@@ -307,19 +307,19 @@ OpenGLArgumentValueBase *ArgumentValueDataIntArray::createOpenGlValue()
     }
 }
 
-const QVector<GLint> &ArgumentValueDataIntArray::intValues() const
+QVector<GLint> &ArgumentValueDataIntArray::intValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<GLint> *>(nullptr));
 }
 
-const QVector<GLfloat> &ArgumentValueDataIntArray::floatValues() const
+QVector<GLfloat> &ArgumentValueDataIntArray::floatValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<GLfloat> *>(nullptr));
 }
 
-const QVector<QString> &ArgumentValueDataIntArray::stringValues() const
+QVector<QString> &ArgumentValueDataIntArray::stringValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<QString> *>(nullptr));
 }
 
 ArgumentValueDataArray *ArgumentValueDataIntArray::copy() const
@@ -381,19 +381,19 @@ OpenGLArgumentValueBase *ArgumentValueDataFloatArray::createOpenGlValue()
     }
 }
 
-const QVector<GLint> &ArgumentValueDataFloatArray::intValues() const
+QVector<GLint> &ArgumentValueDataFloatArray::intValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<GLint> *>(nullptr));
 }
 
-const QVector<GLfloat> &ArgumentValueDataFloatArray::floatValues() const
+QVector<GLfloat> &ArgumentValueDataFloatArray::floatValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<GLfloat> *>(nullptr));
 }
 
-const QVector<QString> &ArgumentValueDataFloatArray::stringValues() const
+QVector<QString> &ArgumentValueDataFloatArray::stringValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<QString> *>(nullptr));
 }
 
 ArgumentValueDataArray *ArgumentValueDataFloatArray::copy() const
@@ -464,19 +464,19 @@ OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
     }
 }
 
-const QVector<GLint> &ArgumentValueDataStringArray::intValues() const
+QVector<GLint> &ArgumentValueDataStringArray::intValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<GLint> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<GLint> *>(nullptr));
 }
 
-const QVector<GLfloat> &ArgumentValueDataStringArray::floatValues() const
+QVector<GLfloat> &ArgumentValueDataStringArray::floatValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<GLfloat> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<GLfloat> *>(nullptr));
 }
 
-const QVector<QString> &ArgumentValueDataStringArray::stringValues() const
+QVector<QString> &ArgumentValueDataStringArray::stringValues()
 {
-    return valueOrFish(getValues(), static_cast<const QVector<QString> *>(nullptr));
+    return valueOrFish(m_values, static_cast<const QVector<QString> *>(nullptr));
 }
 
 ArgumentValueDataArray *ArgumentValueDataStringArray::copy() const
@@ -1748,6 +1748,16 @@ QString DrawingArgument::getArgumentName() const
     return nullptr != m_valueDataArray ? m_valueDataArray->getName() : QString();
 }
 
+void DrawingArgument::setValues(const QVector<GLfloat> &values_)
+{
+    if(nullptr == m_valueDataArray) { return; }
+    const int cnt = std::min(values_.size(), m_valueDataArray->floatValues().size());
+    for(int i = 0; i < cnt; ++i)
+    {
+        m_valueDataArray->floatValues()[i] = values_[i];
+    }
+}
+
 const QVector<GLint> &DrawingArgument::intValues() const
 {
     static QVector<GLint> fish;
@@ -1977,7 +1987,27 @@ bool OpenGLDrawingImageData::isInitialized() const
 
 void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_)
 {
-    //TODO: implement
+    QList<DrawingArgument>::iterator itb = std::lower_bound(
+                std::begin(m_arguments),
+                std::end(m_arguments),
+                argumentName,
+                [](QList<DrawingArgument>::iterator it_, const QString &name_)->bool
+    {
+        return it_->getArgumentName() < name_;
+    });
+    QList<DrawingArgument>::iterator ite = std::upper_bound(
+                std::begin(m_arguments),
+                std::end(m_arguments),
+                argumentName,
+                [](QList<DrawingArgument>::iterator it_, const QString &name_)->bool
+    {
+        return it_->getArgumentName() < name_;
+    });
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName) { continue; }
+        it->setValues(values_);
+    }
 }
 
 int OpenGLDrawingImageData::stepCount() const
@@ -1993,42 +2023,91 @@ bool OpenGLDrawingImageData::buildStepProgram(int stepIndex_, QString &errorLog_
     return res;
 }
 
-void OpenGLDrawingImageData::initStepArgumentIds(int stepIndex_)
+bool OpenGLDrawingImageData::isStepProgramBuilded(int stepIndex_) const
 {
-    if(stepIndex_ < 0 || stepIndex_ >= stepCount()) { return; }
+    if(stepIndex_ < 0 || stepIndex_ >= stepCount()) { return false; }
+    return m_steps[stepIndex_].isProgramBuilded();
+}
+
+void OpenGLDrawingImageData::createStepArgument(int stepIndex_)
+{
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
     m_steps[stepIndex_].createArguments();
+}
+
+void OpenGLDrawingImageData::createStepTextures(int stepIndex_)
+{
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].createTextures();
 }
 
 void OpenGLDrawingImageData::bindStep(int stepIndex_)
 {
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].bind();
 }
 
 void OpenGLDrawingImageData::buildStepVBO(int stepIndex_)
 {
-}
-
-bool OpenGLDrawingImageData::isStepProgramBuilded(int stepIndex_) const
-{
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].buildVBO();
 }
 
 void OpenGLDrawingImageData::bindStepProgram(int stepIndex_)
 {
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].bindProgram();
 }
 
-void OpenGLDrawingImageData::useStepArguments(int stepIndex_)
+void OpenGLDrawingImageData::useStepArguments(int stepIndex_) const
 {
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].useArguments();
 }
 
-void OpenGLDrawingImageData::bindStepTexture(int stepIndex_)
+void OpenGLDrawingImageData::bindStepTexture(int stepIndex_, QOpenGLFunctions *f_) const
 {
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].bindTextures(f_);
 }
 
-void OpenGLDrawingImageData::drawStep(int stepIndex_)
+void OpenGLDrawingImageData::drawStep(int stepIndex_, QOpenGLFunctions *f_) const
 {
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].draw(f_);
 }
 
-void OpenGLDrawingImageData::releaseStep(int stepIndex_)
+void OpenGLDrawingImageData::releaseStep(int stepIndex_) const
 {
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount()
+            ) { return; }
+    m_steps[stepIndex_].release();
 }
 
 
