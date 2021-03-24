@@ -1,0 +1,81 @@
+#ifndef NAMES_H
+#define NAMES_H
+
+
+static const char *g_englishLanguage = "English";
+static const char *g_belarusLanguage = "Belarus";
+static const char *g_shaderName = "shader";
+static const char *g_argumentName = "argument";
+static const char *g_storageName = "storage";
+static const char *g_precisionName = "precision";
+static const char *g_typeName = "type";
+static const char *g_nameName = "name";
+static const char *g_defaultValueName = "defaultValue";
+static const char *g_descriptionName = "description";
+static const char *g_geometrySolidName = "geomentrySolid";
+static const char *g_geometryFacedName = "geomentryFaced";
+static const char *g_geometrySizeName = "geomentrySize";
+static const char *g_facedGeometryCoefName = "facedGeometryCoef";
+static const char *g_colorsAttributeName = "attributeColors";
+static const char *g_artefactsRelPath = "artefacts";
+static const char *g_imagesRelPath = "images";
+static const char *g_artefactTypeVertex = "Vertex";
+static const char *g_artefactTypeFragment = "Fragment";
+static const char *g_artefactTypeModel = "ArtefactTypeModel";
+static const char *g_artefactArgTypeModel = "ArtefactArgTypeModel";
+static const char *g_artefactArgStorageModel = "ArtefactArgStorageModel";
+static const char *g_easingTypeModel = "EasingTypeModel";
+static const char *g_galleryModel = "GalleryModel";
+static const char *g_allImagesOfGalleryModel = "AllImagesOfGallery";
+static const char *g_sqlText = "TEXT";
+static const char *g_sqlInt = "INTEGER";
+static const char *g_sqlDouble = "REAL";
+static const char *g_dbNameRW = "mastactva_rw";
+static const char *g_dbNameRO = "mastactva_ro";
+static const char *g_dbNameExt = ".db3";
+static const char *g_splitTableRef = "_by_";
+static const char *g_insertFieldSpliter = " , ";
+static const char *g_refPrefix = "ref_";
+static const char *g_errorDetailTag = "detail";
+static const int g_userId = 1;
+static const char *g_noImage = ":/resources/no-image.png";
+static const char *g_noImageQRC = "qrc:///resources/no-image.png";
+static const char *g_createDefaultEffectObjectProcedureName = "create_default_object";
+static const char *g_effectIDName = "id";
+static const char *g_defaultObjectInfoNameName = "name";
+static const char *g_defaultObjectInfoProgrammerNameName = "programmer_name";
+static const char *g_defaultObjectInfoDescriptionName = "description";
+static const char *g_defaultObjectInfoCreatedName = "created";
+static const char *g_defaultObjectInfoProgrammerName = "";
+static const char *g_randArgumentValueName = "__rand";
+static const char *g_currentSpecialwordName = "__current";
+static const char *g_vertexSpecialwordName = "__vertex";
+static const char *g_vertexTextureSpecialwordName = "__texture";
+static const char *g_vertexNormalSpecialwordName = "__normal";
+static const char *g_indexesSpecialwordName = "__indexes";
+static const char *g_mainSpecialwordName = "__main";
+static const char *g_firstSpecialwordName = "__first";
+static const char *g_lastSpecialwordName = "__last";
+static const char *g_renderFromImageName = "renderFromImage";
+static const char *g_renderToImageName = "renderToImage";
+static const char *g_renderScreenRectName = "renderScreenRect";
+static const char *g_renderOpacityName = "renderOpacity";
+static const char *g_renderTName = "renderT";
+static const char *g_intTypeName = "int";
+static const char *g_floatTypeName = "float";
+static const char *g_vec2TypeName = "vec2";
+static const char *g_vec3TypeName = "vec3";
+static const char *g_vec4TypeName = "vec4";
+static const char *g_mat2TypeName = "mat2";
+static const char *g_mat3TypeName = "mat3";
+static const char *g_mat4TypeName = "mat4";
+static const char *g_stringsTypeName = "strings";
+static const char *g_sampler1DTypeName = "sampler1D";
+static const char *g_sampler2DTypeName = "sampler2D";
+static const char *g_sampler3DTypeName = "sampler3D";
+static const char *g_attributeStorageName = "attribute";
+static const char *g_uniformStorageName = "uniform";
+static const char *g_indexesStorageName = "indexes";
+
+
+#endif // NAMES_H

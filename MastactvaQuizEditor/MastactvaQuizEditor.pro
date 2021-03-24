@@ -119,7 +119,8 @@ unix: HEADERS += \
         objectinfo.h  \
         objectartefact.h    \
         effectobjects.h \
-        modelhelpers.h
+        modelhelpers.h  \
+        names.h
 
 
 SOURCES += \
