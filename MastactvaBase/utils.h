@@ -6,8 +6,6 @@
 #include <QHash>
 #include <QDateTime>
 #include <QByteArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <type_traits>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
@@ -37,6 +35,7 @@ private:
     QHash<QString, QString> m_values;
 };
 
+
 class Bool
 {
 public:
@@ -48,7 +47,6 @@ public:
 private:
     bool m_val = false;
 };
-
 
 
 QString leftDoubleCR(const QString &str_);

@@ -10,8 +10,6 @@
 #include <QTextCodec>
 #include <QRegExp>
 #include <QDebug>
-#include <QJsonArray>
-#include <set>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/names.h"
