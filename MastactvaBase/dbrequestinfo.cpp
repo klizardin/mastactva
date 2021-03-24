@@ -1,6 +1,7 @@
 #include "dbrequestinfo.h"
 #include <QSet>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
 

@@ -5,11 +5,8 @@
 #include <QNetworkReply>
 #include <numeric>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
-
-
-static const char *g_currentDir = "./";
-static const char *g_assestsDir = "assets:/";
 
 
 ServerFiles::ServerFiles(QObject *parent_ /* = nullptr*/)

@@ -121,6 +121,7 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 #include "../MastactvaModels/image.h"
 #include "../MastactvaModels/gallerystatistics.h"
 #include "../MastactvaModels/questionanswer.h"
+#include "../MastactvaBase/names.h"
 
 
 void QMLObjects::setInitialized()
@@ -137,10 +138,6 @@ void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const 
     if(nullptr == m_mastactvaAPI) { return; }
     m_mastactvaAPI->showErrorMessage(errorCodeStr_, reply_.toJson(QJsonDocument::Indented));
 }
-
-static const char *g_effectModel = "EffectModel";
-static const char *g_artefactModel = "ArtefactModel";
-
 
 void QMLObjects::searchObjects()
 {

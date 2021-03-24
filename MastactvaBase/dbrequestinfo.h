@@ -10,20 +10,8 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/names.h"
 //#include "../MastactvaBase/netapi.h"
-
-
-static const char *g_procedureExtraFieldName = "";
-static const char *g_procedureConditionName = "WHERE";
-static const char *g_procedureLimitName = "LIMIT";
-static const char *g_procedureOrderByName = "ORDER BY";
-static const char *g_procedureArguments = "ARGS";
-static const char *g_procedureArgFunctionName = "ARGFUNCTION";
-static const char *g_procedureSelectFunctionName = "SELECTFUNCTION";
-static const char *g_procedureFilterNamesName = "FILTERNAMES";
-static const char *g_procedureFilterConditionsName = "FILTERCONDITIONS";
-static const char *g_noCachAPI = "NOCACHE";
-static const char *g_cachAPI = "CACHE";
 
 
 class LocalDBRequest;

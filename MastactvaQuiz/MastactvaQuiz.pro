@@ -116,7 +116,8 @@ unix: SOURCES += \
         objectinfo.cpp    \
         objectartefact.cpp  \
         effectobjects.cpp   \
-        modelhelpers.cpp
+        modelhelpers.cpp    \
+        wavefrontobj.cpp
 
 
 RESOURCES += qml.qrc \
@@ -211,7 +212,9 @@ unix: HEADERS += \
     objectinfo.h  \
     objectartefact.h    \
     effectobjects.h \
-    modelhelpers.h
+    modelhelpers.h  \
+    names.h \
+    wavefrontobj.h
 
 
 DISTFILES += \
