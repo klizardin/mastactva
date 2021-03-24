@@ -1,6 +1,7 @@
 #include "wavefrontobj.h"
 #include <set>
 #include <QJsonArray>
+#include <QJsonObject>
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 

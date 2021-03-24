@@ -2,6 +2,12 @@
 #define NAMES_H
 
 
+#include <QChar>
+
+
+static const int g_userId = 1;
+
+
 static const char *g_englishLanguage = "English";
 static const char *g_belarusLanguage = "Belarus";
 static const char *g_shaderName = "shader";
@@ -21,11 +27,6 @@ static const char *g_artefactsRelPath = "artefacts";
 static const char *g_imagesRelPath = "images";
 static const char *g_artefactTypeVertex = "Vertex";
 static const char *g_artefactTypeFragment = "Fragment";
-static const char *g_artefactTypeModel = "ArtefactTypeModel";
-static const char *g_artefactArgTypeModel = "ArtefactArgTypeModel";
-static const char *g_artefactArgStorageModel = "ArtefactArgStorageModel";
-static const char *g_easingTypeModel = "EasingTypeModel";
-static const char *g_galleryModel = "GalleryModel";
 static const char *g_allImagesOfGalleryModel = "AllImagesOfGallery";
 static const char *g_sqlText = "TEXT";
 static const char *g_sqlInt = "INTEGER";
@@ -37,7 +38,6 @@ static const char *g_splitTableRef = "_by_";
 static const char *g_insertFieldSpliter = " , ";
 static const char *g_refPrefix = "ref_";
 static const char *g_errorDetailTag = "detail";
-static const int g_userId = 1;
 static const char *g_noImage = ":/resources/no-image.png";
 static const char *g_noImageQRC = "qrc:///resources/no-image.png";
 static const char *g_createDefaultEffectObjectProcedureName = "create_default_object";
@@ -76,6 +76,42 @@ static const char *g_sampler3DTypeName = "sampler3D";
 static const char *g_attributeStorageName = "attribute";
 static const char *g_uniformStorageName = "uniform";
 static const char *g_indexesStorageName = "indexes";
+
+
+// db request info
+static const char *g_procedureExtraFieldName = "";
+static const char *g_procedureConditionName = "WHERE";
+static const char *g_procedureLimitName = "LIMIT";
+static const char *g_procedureOrderByName = "ORDER BY";
+static const char *g_procedureArguments = "ARGS";
+static const char *g_procedureArgFunctionName = "ARGFUNCTION";
+static const char *g_procedureSelectFunctionName = "SELECTFUNCTION";
+static const char *g_procedureFilterNamesName = "FILTERNAMES";
+static const char *g_procedureFilterConditionsName = "FILTERCONDITIONS";
+static const char *g_noCachAPI = "NOCACHE";
+static const char *g_cachAPI = "CACHE";
+
+
+// list model
+static const char *g_randSort = "?";
+static const QChar g_reverseSortOrder = QChar('-');
+
+
+// QML Objects
+static const char *g_quizUserModel = "QuizUserModel";
+static const char *g_mastactvaAPI = "MastactvaAPI";
+static const char *g_effectModel = "EffectModel";
+static const char *g_artefactModel = "ArtefactModel";
+static const char *g_artefactTypeModel = "ArtefactTypeModel";
+static const char *g_artefactArgTypeModel = "ArtefactArgTypeModel";
+static const char *g_artefactArgStorageModel = "ArtefactArgStorageModel";
+static const char *g_easingTypeModel = "EasingTypeModel";
+static const char *g_galleryModel = "GalleryModel";
+
+
+// server files
+static const char *g_currentDir = "./";
+static const char *g_assestsDir = "assets:/";
 
 
 #endif // NAMES_H

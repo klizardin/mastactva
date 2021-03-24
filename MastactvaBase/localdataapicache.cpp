@@ -2,6 +2,7 @@
 #include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
 

@@ -657,7 +657,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
     for(int i = 0; i < m_drawingData->stepCount(); i++)
     {
-        m_drawingData->clearStepArgumentIds(i);
+        //m_drawingData->clearStepArgumentIds(i);
         const bool isProgramCreated = m_drawingData->buildStepProgram(i, m_programBuildLog);
 
         /*const bool isProgramRecreated = nullptr == m_vshader || nullptr == m_fshader;
@@ -712,7 +712,7 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
                 ai.initId(m_program);
             }*/
 
-            m_drawingData->initStepArgumentIds(i);
+            m_drawingData->createStepArgument(i);
         }
 
         /*m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
@@ -832,7 +832,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
         m_fromTexture->bind();
         */
 
-        m_drawingData->bindStepTexture(i);
+        m_drawingData->bindStepTexture(i, f_);
 
         /*if(m_geometrySolid)
         {
@@ -850,7 +850,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
             }
         }*/
 
-        m_drawingData->drawStep(i);
+        m_drawingData->drawStep(i, f_);
 
         /*m_program->disableAttributeArray(m_vertexAttrId);
         m_program->disableAttributeArray(m_texCoordAttrId);

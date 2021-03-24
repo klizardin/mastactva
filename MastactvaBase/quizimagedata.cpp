@@ -7,6 +7,7 @@
 #include "../MastactvaModels/artefactargtype.h"
 #include "../MastactvaModels/objectartefact.h"
 #include "../MastactvaModels/effect.h"
+#include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/utils.h"
 
 

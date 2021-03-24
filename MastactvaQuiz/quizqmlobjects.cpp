@@ -13,11 +13,8 @@
 #include "../MastactvaModels/questionanswer.h"
 #include "../MastactvaModels/gallerymodelview.h"
 #include "../MastactvaModels/questionanswermodelview.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
-
-
-static const char *g_quizUserModel = "QuizUserModel";
-static const char *g_mastactvaAPI = "MastactvaAPI";
 
 
 void QMLObjects::searchObjects()

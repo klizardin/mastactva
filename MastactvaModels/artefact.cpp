@@ -2,6 +2,7 @@
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
 

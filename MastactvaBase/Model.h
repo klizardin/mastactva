@@ -15,11 +15,8 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
-
-
-static const QString g_randSort = "?";
-static const QChar g_reverseSortOrder = QChar('-');
 
 
 class ListModelBaseData : public IListModelInfo

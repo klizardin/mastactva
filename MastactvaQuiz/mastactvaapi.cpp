@@ -1,6 +1,7 @@
 #include "mastactvaapi.h"
 #include <QTimeZone>
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
 

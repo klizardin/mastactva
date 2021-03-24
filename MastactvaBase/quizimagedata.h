@@ -4,13 +4,14 @@
 
 #include <type_traits>
 #include <set>
+#include <QJsonDocument>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLTexture>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
-#include <QJsonDocument>
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 
 
