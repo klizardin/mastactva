@@ -1188,7 +1188,9 @@ private:
 class DrawingArgument
 {
 public:
-    DrawingArgument(ArgumentValueDataArray *valueDataArray_ = nullptr);
+    DrawingArgument(
+            ArgumentValueDataArray *valueDataArray_ = nullptr,
+            int position_ = 0);
     ~DrawingArgument();
     QString getArgumentName() const;
     void setValues(const QVector<GLfloat> &values_);
@@ -1204,6 +1206,7 @@ private:
 
 private:
     ArgumentValueDataArray *m_valueDataArray = nullptr;
+    int m_position = 0;
 };
 
 

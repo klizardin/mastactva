@@ -1733,8 +1733,11 @@ void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 }
 
 
-DrawingArgument::DrawingArgument(ArgumentValueDataArray *valueDataArray_ /*= nullptr*/)
-    :m_valueDataArray(valueDataArray_)
+DrawingArgument::DrawingArgument(
+        ArgumentValueDataArray *valueDataArray_ /*= nullptr*/,
+        int position_ /*= 0*/)
+    : m_valueDataArray(valueDataArray_),
+    m_position(position_)
 {
 }
 
@@ -1779,12 +1782,16 @@ const QVector<QString> &DrawingArgument::stringValues() const
 
 bool DrawingArgument::operator == (const DrawingArgument &argument_) const
 {
-    return getArgumentName() == argument_.getArgumentName();
+    return getArgumentName() == argument_.getArgumentName() &&
+            m_position == argument_.m_position
+            ;
 }
 
 bool DrawingArgument::operator < (const DrawingArgument &argument_) const
 {
-    return getArgumentName() < argument_.getArgumentName();
+    if(getArgumentName() < argument_.getArgumentName()) { return false; }
+    if(getArgumentName() > argument_.getArgumentName()) { return true; }
+    return m_position < argument_.m_position;
 }
 
 bool DrawingArgument::doesValueEqual(const DrawingArgument &argument_) const
