@@ -179,6 +179,70 @@ void ArgumentBase::deepCopy()
     m_defaultValue = QString(m_defaultValue.constData(), m_defaultValue.length());
 }
 
+ArgumentBase *ArgumentBase::fromJson(const QJsonObject &obj_, bool isInput_ /*= true*/)
+{
+    ArgumentBase *result = new ArgumentBase();
+    result->setInput(isInput_);
+
+    QJsonValue jsvName = obj_[g_argumentNameName];
+    if(!jsvName.isUndefined() && jsvName.isString())
+    {
+        result->setName(jsvName.toString());
+    }
+    else
+    {
+        delete result;
+        result = nullptr;
+        return result;
+    }
+
+    QJsonValue jsvStorage = obj_[g_argumentStorageName];
+    if(!jsvStorage.isUndefined() && jsvStorage.isString())
+    {
+        result->setStorage(jsvStorage.toString());
+    }
+    else
+    {
+        delete result;
+        result = nullptr;
+        return result;
+    }
+
+    QJsonValue jsvType = obj_[g_argumentTypeName];
+    if(!jsvType.isUndefined() && jsvType.isString())
+    {
+        result->setType(jsvType.toString());
+    }
+    else
+    {
+        delete result;
+        result = nullptr;
+        return result;
+    }
+
+    QJsonValue jsvValue = obj_[g_argumentValueName];
+    bool hasValue = false;
+    if(!jsvValue.isUndefined() && jsvValue.isString())
+    {
+        result->setValue(jsvValue.toString());
+        hasValue = true;
+    }
+
+    QJsonValue jsvDefaultValue = obj_[g_argumentDefaultValueName];
+    if(!jsvDefaultValue.isUndefined() && jsvDefaultValue.isString())
+    {
+        result->setType(jsvDefaultValue.toString());
+    }
+    else if(!hasValue)
+    {
+        delete result;
+        result = nullptr;
+        return result;
+    }
+
+    return result;
+}
+
 
 bool ArgumentList::containsByName(
         const QString &argumentName_,
@@ -1701,9 +1765,32 @@ const QImage &DrawingTextureArtefact::getImage() const
     return m_image;
 }
 
+DrawingTextureArtefact *DrawingTextureArtefact::fromJson(const QJsonObject &obj_)
+{
+    if(obj_.isEmpty()) { return nullptr; }
+    DrawingTextureArtefact *result = new DrawingTextureArtefact();
+    QJsonValue jsvFilename = obj_[g_textureArtefactFilenameName];
+    if(!jsvFilename.isUndefined() && jsvFilename.isString())
+    {
+        result->setFilename(jsvFilename.toString());
+    }
+    if(!result->loadImage())
+    {
+        delete result;
+        result = nullptr;
+    }
+    return result;
+}
+
 void DrawingTextureArtefact::setTexture(const QImage &image_)
 {
     m_image = image_;
+}
+
+bool DrawingTextureArtefact::loadImage()
+{
+    m_image.load(m_filename);
+    return !m_image.isNull();
 }
 
 
@@ -1725,6 +1812,23 @@ void DrawingShaderArtefact::deepCopy()
 const QString &DrawingShaderArtefact::getShaderCode() const
 {
     return m_shaderCode;
+}
+
+DrawingShaderArtefact *DrawingShaderArtefact::fromJson(const QJsonObject &obj_)
+{
+    if(obj_.isEmpty()) { return nullptr; }
+    DrawingShaderArtefact *result = new DrawingShaderArtefact();
+    QJsonValue jsvFilename = obj_[g_shaderArtefactFilenameName];
+    if(!jsvFilename.isUndefined() && jsvFilename.isString())
+    {
+        result->setShader(loadTextFile(jsvFilename.toString()));
+    }
+    if(result->m_shaderCode.trimmed().isEmpty())
+    {
+        delete result;
+        result = nullptr;
+    }
+    return result;
 }
 
 void DrawingShaderArtefact::setShader(const QString &shaderCode_)

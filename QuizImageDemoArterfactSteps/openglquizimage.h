@@ -1,0 +1,1 @@
+../MastactvaBase/openglquizimage.h

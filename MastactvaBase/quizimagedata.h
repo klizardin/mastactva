@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <set>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLTexture>
@@ -57,8 +58,8 @@ public:
     void setInput(bool isInput_);
 
     ArgumentValueDataArray *createValueDataArray() const;
-
     void deepCopy();
+    static ArgumentBase *fromJson(const QJsonObject &obj_, bool isInput_ = true);
 
 private:
     QString m_name;
@@ -1152,9 +1153,12 @@ public:
     const QString &getFilename() const;
     const QImage &getImage() const;
 
+    static DrawingTextureArtefact *fromJson(const QJsonObject &obj_);
+
 private:
     void setFilename(const QString &name_);
     void setTexture(const QImage &image_);
+    bool loadImage();
 
 private:
     QString m_filename;
@@ -1173,6 +1177,8 @@ public:
     bool operator < (const DrawingShaderArtefact &drawingArtefact_) const;
     void deepCopy();
     const QString &getShaderCode() const;
+
+    static DrawingShaderArtefact *fromJson(const QJsonObject &obj_);
 
 private:
     void setShader(const QString &shaderCode_);
