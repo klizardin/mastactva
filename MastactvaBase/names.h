@@ -114,4 +114,14 @@ static const char *g_currentDir = "./";
 static const char *g_assestsDir = "assets:/";
 
 
+// json
+static const char *g_argumentNameName = "name";
+static const char *g_argumentStorageName = "storage";
+static const char *g_argumentTypeName = "type";
+static const char *g_argumentValueName = "value";
+static const char *g_argumentDefaultValueName = "default_value";
+static const char *g_textureArtefactFilenameName = "filename";
+static const char *g_shaderArtefactFilenameName = "filename";
+
+
 #endif // NAMES_H
