@@ -18,6 +18,11 @@ QuizImageDemo::QuizImageDemo(QQuickItem *parent_ /*= nullptr*/)
     setFlag(ItemHasContents);
 }
 
+QuizImageDemo::~QuizImageDemo()
+{
+    freeProject();
+}
+
 QSGNode *QuizImageDemo::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 {
     QSGRenderNode *n = static_cast<QSGRenderNode *>(node);
@@ -86,6 +91,7 @@ QString QuizImageDemo::fromImage() const
 void QuizImageDemo::setFromImage(const QString &fromImage_)
 {
     m_fromImage = fromImage_;
+    loadProject();
 
     updateState();
     emit fromImageChanged();
@@ -99,6 +105,7 @@ QString QuizImageDemo::toImage() const
 void QuizImageDemo::setToImage(const QString &toImage_)
 {
     m_toImage = toImage_;
+    loadProject();
 
     updateState();
     emit toImageChanged();
@@ -113,5 +120,78 @@ void QuizImageDemo::setProject(const QString &project_)
 {
     m_project = project_;
 
+    loadProject();
+
     emit projectChanged();
+}
+
+QString QuizImageDemo::log() const
+{
+    return m_compilerLog;
+}
+
+void QuizImageDemo::setLog(const QString &log_)
+{
+    m_compilerLog = log_;
+
+    emit logChanged();
+}
+
+void QuizImageDemo::freeProject()
+{
+    delete m_drawingData;
+    m_drawingData = nullptr;
+}
+
+void QuizImageDemo::loadProject()
+{
+    freeProject();
+    if(!m_project.isEmpty())
+    {
+        m_drawingData = OpenGLDrawingImageData::fromJson(
+                    QJsonDocument::fromJson(
+                        loadBinaryFile(m_project)
+                        )
+                    );
+    }
+    setProjectFromImage();
+    setProjectToImage();
+}
+
+void QuizImageDemo::setProjectFromImage()
+{
+    if(nullptr == m_drawingData ||
+            fromImage().isEmpty()
+            ) { return; }
+    // do not remove prev image
+    m_drawingData->addRenderImage(fromImage(), true);
+}
+
+void QuizImageDemo::setProjectToImage()
+{
+    if(nullptr == m_drawingData ||
+            toImage().isEmpty()
+            ) { return; }
+    // do not remove prev image
+    m_drawingData->addRenderImage(toImage(), false);
+}
+
+bool QuizImageDemo::isImageDataUpdated() const
+{
+    return nullptr != m_drawingData;
+}
+
+OpenGLDrawingImageData *QuizImageDemo::getData()
+{
+    return m_drawingData;
+}
+
+void QuizImageDemo::retryData()
+{
+    m_drawingData = nullptr;
+}
+
+void QuizImageDemo::renderBuildError(const QString &compilerLog_)
+{
+    setLog(compilerLog_);
 }

@@ -179,7 +179,8 @@ void ArgumentBase::deepCopy()
     m_defaultValue = QString(m_defaultValue.constData(), m_defaultValue.length());
 }
 
-ArgumentBase *ArgumentBase::fromJson(const QJsonObject &obj_, bool isInput_ /*= true*/)
+template<class JSonType_>
+ArgumentBase *fromJsonT(const JSonType_ &obj_, bool isInput_, const ArgumentBase *)
 {
     ArgumentBase *result = new ArgumentBase();
     result->setInput(isInput_);
@@ -241,6 +242,16 @@ ArgumentBase *ArgumentBase::fromJson(const QJsonObject &obj_, bool isInput_ /*= 
     }
 
     return result;
+}
+
+ArgumentBase *ArgumentBase::fromJson(const QJsonDocument &obj_, bool isInput_ /*= true*/)
+{
+    return fromJsonT(obj_, isInput_, static_cast<const ArgumentBase *>(nullptr));
+}
+
+ArgumentBase *ArgumentBase::fromJson(const QJsonObject &obj_, bool isInput_ /*= true*/)
+{
+    return fromJsonT(obj_, isInput_, static_cast<const ArgumentBase *>(nullptr));
 }
 
 
@@ -1765,7 +1776,8 @@ const QImage &DrawingTextureArtefact::getImage() const
     return m_image;
 }
 
-DrawingTextureArtefact *DrawingTextureArtefact::fromJson(const QJsonObject &obj_)
+template<class JsonType>
+DrawingTextureArtefact *fromJsonT(const JsonType &obj_, const DrawingTextureArtefact *)
 {
     if(obj_.isEmpty()) { return nullptr; }
     DrawingTextureArtefact *result = new DrawingTextureArtefact();
@@ -1782,6 +1794,16 @@ DrawingTextureArtefact *DrawingTextureArtefact::fromJson(const QJsonObject &obj_
     return result;
 }
 
+DrawingTextureArtefact *fromJson(const QJsonDocument &obj_)
+{
+    return fromJsonT(obj_, static_cast<const DrawingTextureArtefact *>(nullptr));
+}
+
+DrawingTextureArtefact *DrawingTextureArtefact::fromJson(const QJsonObject &obj_)
+{
+    return fromJsonT(obj_, static_cast<const DrawingTextureArtefact *>(nullptr));
+}
+
 void DrawingTextureArtefact::setTexture(const QImage &image_)
 {
     m_image = image_;
@@ -1796,12 +1818,12 @@ bool DrawingTextureArtefact::loadImage()
 
 bool DrawingShaderArtefact::operator == (const DrawingShaderArtefact &drawingArtefact_) const
 {
-    return static_cast<const DrawingArtefact &>(*this) ==  static_cast<const DrawingArtefact &>(drawingArtefact_);
+    return getFilename() == drawingArtefact_.getFilename();
 }
 
 bool DrawingShaderArtefact::operator < (const DrawingShaderArtefact &drawingArtefact_) const
 {
-    return static_cast<const DrawingArtefact &>(*this) <  static_cast<const DrawingArtefact &>(drawingArtefact_);
+    return getFilename() < drawingArtefact_.getFilename();
 }
 
 void DrawingShaderArtefact::deepCopy()
@@ -1814,16 +1836,17 @@ const QString &DrawingShaderArtefact::getShaderCode() const
     return m_shaderCode;
 }
 
-DrawingShaderArtefact *DrawingShaderArtefact::fromJson(const QJsonObject &obj_)
+template<class JsonType>
+DrawingShaderArtefact *fromJsonT(const JsonType &obj_, const DrawingShaderArtefact *)
 {
     if(obj_.isEmpty()) { return nullptr; }
     DrawingShaderArtefact *result = new DrawingShaderArtefact();
     QJsonValue jsvFilename = obj_[g_shaderArtefactFilenameName];
     if(!jsvFilename.isUndefined() && jsvFilename.isString())
     {
-        result->setShader(loadTextFile(jsvFilename.toString()));
+        result->setFilename(jsvFilename.toString());
     }
-    if(result->m_shaderCode.trimmed().isEmpty())
+    if(!result->loadFile())
     {
         delete result;
         result = nullptr;
@@ -1831,9 +1854,44 @@ DrawingShaderArtefact *DrawingShaderArtefact::fromJson(const QJsonObject &obj_)
     return result;
 }
 
+DrawingShaderArtefact *DrawingShaderArtefact::fromJson(const QJsonDocument &obj_)
+{
+    return fromJsonT(obj_, static_cast<const DrawingShaderArtefact *>(nullptr));
+}
+
+DrawingShaderArtefact *DrawingShaderArtefact::fromJson(const QJsonObject &obj_)
+{
+    return fromJsonT(obj_, static_cast<const DrawingShaderArtefact *>(nullptr));
+}
+
+void DrawingShaderArtefact::toJson(const DrawingShaderArtefact *artefact_, QJsonObject &obj_)
+{
+    if(nullptr == artefact_) { return; }
+    obj_.insert(
+                g_shaderArtefactFilenameName,
+                QJsonValue::fromVariant(QVariant::fromValue(artefact_->getFilename()))
+                );
+}
+
 void DrawingShaderArtefact::setShader(const QString &shaderCode_)
 {
     m_shaderCode = shaderCode_;
+}
+
+void DrawingShaderArtefact::setFilename(const QString &filename_)
+{
+    m_filename = filename_;
+}
+
+const QString &DrawingShaderArtefact::getFilename() const
+{
+    return m_filename;
+}
+
+bool DrawingShaderArtefact::loadFile()
+{
+    setShader(loadTextFile(getFilename()));
+    return !m_shaderCode.trimmed().isEmpty();
 }
 
 
@@ -1864,6 +1922,13 @@ void DrawingArgument::setValues(const QVector<GLfloat> &values_)
     {
         m_valueDataArray->floatValues()[i] = values_[i];
     }
+}
+
+void DrawingArgument::setValue(const QString &value_)
+{
+    if(nullptr == m_valueDataArray) { return; }
+    if(m_valueDataArray->stringValues().size() < 1) { return; }
+    m_valueDataArray->stringValues()[0] = value_;
 }
 
 const QVector<GLint> &DrawingArgument::intValues() const
@@ -1910,6 +1975,11 @@ OpenGLArgumentValueBase *DrawingArgument::createOpenglValue()
 {
     if(nullptr == m_valueDataArray) { return nullptr; }
     return m_valueDataArray->createOpenGlValue();
+}
+
+const ArgumentValueDataArray *DrawingArgument::getValueDataArray() const
+{
+    return m_valueDataArray;
 }
 
 
@@ -2097,28 +2167,67 @@ bool OpenGLDrawingImageData::isInitialized() const
     return m_initialized;
 }
 
-void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_)
+void OpenGLDrawingImageData::findArgumentsRange(
+        const QString &argumentName_,
+        QList<DrawingArgument>::iterator &itb_,
+        QList<DrawingArgument>::iterator &ite_
+        )
 {
-    QList<DrawingArgument>::iterator itb = std::lower_bound(
+    itb_ = std::lower_bound(
                 std::begin(m_arguments),
                 std::end(m_arguments),
-                argumentName,
+                argumentName_,
                 [](QList<DrawingArgument>::iterator it_, const QString &name_)->bool
     {
         return it_->getArgumentName() < name_;
     });
-    QList<DrawingArgument>::iterator ite = std::upper_bound(
+    ite_ = std::upper_bound(
                 std::begin(m_arguments),
                 std::end(m_arguments),
-                argumentName,
+                argumentName_,
                 [](QList<DrawingArgument>::iterator it_, const QString &name_)->bool
     {
         return it_->getArgumentName() < name_;
     });
+}
+
+void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_)
+{
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb, ite);
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName_) { continue; }
+        it->setValues(values_);
+    }
+}
+
+void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromImage_)
+{
+    DrawingTextureArtefact fromTexture;
+    fromTexture.setFilename(filename_);
+    if(!fromTexture.loadImage()) { return; }
+    m_textures.push_back(fromTexture);
+
+    const QString argumentName = fromImage_ ? g_renderFromImageName : g_renderToImageName;
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName, itb, ite);
+
     for(auto it = itb; it != ite; ++it)
     {
         if(it->getArgumentName() != argumentName) { continue; }
-        it->setValues(values_);
+        it->setValue(filename_);
+        for(OpenGLDrawingStepImageData &step_ : m_steps)
+        {
+            const int cnt = std::min(step_.m_programArguments.size(), step_.m_argumentTextures.size());
+            for(int i1 = 0; i1 < cnt; ++i1)
+            {
+                if(!step_.m_programArguments[i1]->valueOf(it->getValueDataArray())) { continue; }
+                step_.m_argumentTextures[i1] = &m_textures.back();
+            }
+        }
     }
 }
 
@@ -2222,6 +2331,105 @@ void OpenGLDrawingImageData::releaseStep(int stepIndex_) const
     m_steps[stepIndex_].release();
 }
 
+OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &doc_)
+{
+    if(doc_.isEmpty()) { return nullptr; }
+    OpenGLDrawingImageData *result = new OpenGLDrawingImageData();
+    const QJsonValue jsvSteps = doc_[g_stepsName];
+    if(jsvSteps.isUndefined() || !jsvSteps.isArray())
+    {
+        delete result;
+        result = nullptr;
+        return result;
+    }
+    const QJsonArray jsaSteps = jsvSteps.toArray();
+    for(int i1 = 0; i1 < jsaSteps.size() ; ++i1)
+    {
+        const DrawingShaderArtefact *vertexShader = nullptr;
+        const DrawingShaderArtefact *fragmentShader = nullptr;
+        do {
+            QJsonValue jsvStep = jsaSteps[i1];
+            if(jsvStep.isUndefined() || !jsvStep.isObject()) { break; }
+            const QJsonObject jsoStep = jsvStep.toObject();
+            QJsonValue jsvStepVertex = jsoStep[g_vertexShaderArtefactForStepName];
+            QJsonValue jsvStepFragment = jsoStep[g_fragmentShaderArtefactForStepName];
+            if(jsvStepVertex.isUndefined() || !jsvStepVertex.isObject()) { break; }
+            if(jsvStepFragment.isUndefined() || !jsvStepFragment.isObject()) { break; }
+            vertexShader = DrawingShaderArtefact::fromJson(jsvStepVertex.toObject());
+            fragmentShader = DrawingShaderArtefact::fromJson(jsvStepFragment.toObject());
+            if(nullptr == vertexShader || fragmentShader == nullptr) { break; }
+            QJsonValue jsvStepArguments = jsoStep[g_argumentsArtefactForStepName];
+            if(jsvStepArguments.isUndefined() || !jsvStepArguments.isArray()) { break; }
+            QList<QPair<const ArgumentBase *, const DrawingTextureArtefact *>> arguments;
+            const QJsonArray jsaStepArguments = jsvStepArguments.toArray();
+            for(int i2 = 0; i2 < jsaStepArguments.size(); ++i2)
+            {
+                const ArgumentBase *argument = nullptr;
+                const DrawingTextureArtefact *texture = nullptr;
+                do {
+                    QJsonValue jsvStepArgument = jsaStepArguments[i2];
+                    if(jsvStepArgument.isUndefined() || !jsvStepArgument.isObject()) { break; }
+                    const QJsonObject jsoStepArgument = jsvStepArgument.toObject();
+                    QJsonValue jsvArgument = jsoStepArgument[g_argumentArtefactForStepName];
+                    QJsonValue jsvTexture = jsoStepArgument[g_textureArtefactForStepName];
+                    if(jsvArgument.isUndefined() || !jsvArgument.isObject()) { break; }
+                    argument = ArgumentBase::fromJson(jsvArgument.toObject());
+                    texture = DrawingTextureArtefact::fromJson(jsvTexture.toObject());
+                    if(nullptr == argument) { break; }
+                    arguments.push_back({argument, texture});
+                    argument = nullptr;
+                    texture = nullptr;
+                } while(false);
+                delete argument;
+                argument = nullptr;
+                delete texture;
+                texture = nullptr;
+            }
+            result->m_steps.push_back(OpenGLDrawingStepImageData());
+            for(const QPair<const ArgumentBase *, const DrawingTextureArtefact *> &arg_ :arguments)
+            {
+                if(nullptr == arg_.first) { continue; }
+                ArgumentValueDataArray *valueDataArray = arg_.first->createValueDataArray();
+                result->m_arguments.push_back(DrawingArgument(valueDataArray, result->m_steps.size()));
+                result->m_steps.back().m_programArguments.push_back(result->m_arguments.back().createOpenglValue());
+                if(nullptr != arg_.second)
+                {
+                    result->m_textures.push_back(*arg_.second);
+                    result->m_steps.back().m_argumentTextures.push_back(&result->m_textures.back());
+                }
+                else
+                {
+                    result->m_steps.back().m_argumentTextures.push_back(nullptr);
+                }
+            }
+            result->m_vertexShaders.push_back(*vertexShader);
+            result->m_fragmentShaders.push_back(*fragmentShader);
+            result->m_steps.back().m_vertexArtefact = &result->m_vertexShaders.back();
+            result->m_steps.back().m_fragmentArtefact = &result->m_fragmentShaders.back();
+            for(QPair<const ArgumentBase *, const DrawingTextureArtefact *> &arg_ :arguments)
+            {
+                delete arg_.first;
+                arg_.first = nullptr;
+                delete arg_.second;
+                arg_.second = nullptr;
+            }
+        } while(false);
+        delete vertexShader;
+        vertexShader = nullptr;
+        delete fragmentShader;
+        fragmentShader = nullptr;
+    }
+    if(nullptr != result)
+    {
+        std::sort(
+            std::begin(result->m_arguments),
+            std::end(result->m_arguments)
+            );
+    }
+
+    return result;
+}
+
 
 OpenGLDrawingImageData *DrawingImageData::copy()
 {
@@ -2297,6 +2505,7 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
             {
                 DrawingShaderArtefact drawingArtefact;
                 drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setFilename(artefact_->filename());
                 drawingArtefact.setShader(artefact_->getVertexShader());
                 vertexShaders.insert(drawingArtefact);
             }
@@ -2304,6 +2513,7 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
             {
                 DrawingShaderArtefact drawingArtefact;
                 drawingArtefact.setId(artefact_->getId());
+                drawingArtefact.setFilename(artefact_->filename());
                 drawingArtefact.setShader(artefact_->getFragmentShader());
                 fragmentShaders.insert(drawingArtefact);
             }

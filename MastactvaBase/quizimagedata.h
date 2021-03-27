@@ -59,6 +59,7 @@ public:
 
     ArgumentValueDataArray *createValueDataArray() const;
     void deepCopy();
+    static ArgumentBase *fromJson(const QJsonDocument &obj_, bool isInput_ = true);
     static ArgumentBase *fromJson(const QJsonObject &obj_, bool isInput_ = true);
 
 private:
@@ -454,6 +455,7 @@ class OpenGLArgumentValueBase
 public:
     virtual ~OpenGLArgumentValueBase() = default;
 
+    virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const = 0;
     virtual void create(QOpenGLShaderProgram *program_) = 0;
     virtual void bind(QOpenGLShaderProgram *program_) = 0;
     virtual bool isTexture() const;         // to count textures
@@ -509,6 +511,11 @@ public:
     OpenGLArgumentUniformValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
         :m_valueDataArray(argumentValueDataArray_)
     {
+    }
+
+    virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const
+    {
+        return static_cast<const ArgumentValueDataArray *>(m_valueDataArray) == valueDataArray_;
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
@@ -610,6 +617,11 @@ public:
         m_texture = nullptr;
     }
 
+    virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const
+    {
+        return static_cast<const ArgumentValueDataArray *>(m_valueDataArray) == valueDataArray_;
+    }
+
     virtual void create(QOpenGLShaderProgram *program_) override
     {
         initUniformValueId(
@@ -682,7 +694,7 @@ public:
     {
         if(m_textureIndex < 0) { return; }
         setUniformValue(program_,
-                    std::vector<GLint>({m_textureIndex, }),
+                    QVector<GLint>({m_textureIndex, }),
                     1,
                     false);
     }
@@ -757,6 +769,11 @@ public:
     OpenGLArgumentAttributeValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
         :m_valueDataArray(argumentValueDataArray_)
     {
+    }
+
+    virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const
+    {
+        return static_cast<const ArgumentValueDataArray *>(m_valueDataArray) == valueDataArray_;
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
@@ -860,6 +877,11 @@ public:
                     std::begin(value().getValues()),
                     std::end(value().getValues())
                     );
+    }
+
+    virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const
+    {
+        return static_cast<const ArgumentValueDataArray *>(m_valueDataArray) == valueDataArray_;
     }
 
     virtual void create(QOpenGLShaderProgram *program_) override
@@ -1142,6 +1164,10 @@ private:
 };
 
 
+class DrawingImageData;
+class OpenGLDrawingImageData;
+
+
 class DrawingTextureArtefact : public DrawingArtefact
 {
 public:
@@ -1153,6 +1179,7 @@ public:
     const QString &getFilename() const;
     const QImage &getImage() const;
 
+    static DrawingTextureArtefact *fromJson(const QJsonDocument &obj_);
     static DrawingTextureArtefact *fromJson(const QJsonObject &obj_);
 
 private:
@@ -1166,6 +1193,9 @@ private:
 
     friend class DrawingImageData;
     friend class QuizImageData;
+    template<class JsonType>
+    friend DrawingTextureArtefact *fromJsonT(const JsonType &obj_, const DrawingTextureArtefact *);
+    friend class OpenGLDrawingImageData;
 };
 
 class DrawingShaderArtefact : public DrawingArtefact
@@ -1178,16 +1208,25 @@ public:
     void deepCopy();
     const QString &getShaderCode() const;
 
+    static DrawingShaderArtefact *fromJson(const QJsonDocument &obj_);
     static DrawingShaderArtefact *fromJson(const QJsonObject &obj_);
+    static void toJson(const DrawingShaderArtefact *artefact_, QJsonObject &obj_);
 
 private:
     void setShader(const QString &shaderCode_);
+    void setFilename(const QString &filename_);
+    const QString &getFilename() const;
+    bool loadFile();
 
 private:
+    QString m_filename;
     QString m_shaderCode;
 
     friend class DrawingImageData;
     friend class QuizImageData;
+    template<class JsonType>
+    friend DrawingShaderArtefact *fromJsonT(const JsonType &obj_, const DrawingShaderArtefact *);
+    friend class OpenGLDrawingImageData;
 };
 
 
@@ -1200,6 +1239,7 @@ public:
     ~DrawingArgument();
     QString getArgumentName() const;
     void setValues(const QVector<GLfloat> &values_);
+    void setValue(const QString &value_);
 
 private:
     const QVector<GLint> &intValues() const;
@@ -1209,14 +1249,13 @@ private:
     bool operator < (const DrawingArgument &argument_) const;
     bool doesValueEqual(const DrawingArgument &argument_) const;
     OpenGLArgumentValueBase *createOpenglValue();
+    const ArgumentValueDataArray *getValueDataArray() const;
 
 private:
     ArgumentValueDataArray *m_valueDataArray = nullptr;
     int m_position = 0;
+    friend class OpenGLDrawingImageData;
 };
-
-
-class DrawingImageData;
 
 
 class OpenGLDrawingStepImageData
@@ -1258,6 +1297,8 @@ private:
     QOpenGLShader *m_fragmentShader = nullptr;
     QOpenGLBuffer *m_vbo = nullptr;
     QVector<GLfloat> m_vboData;
+
+    friend class OpenGLDrawingImageData;
 };
 
 
@@ -1268,6 +1309,7 @@ public:
 
     bool isInitialized() const;
     void setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_);
+    void addRenderImage(const QString &filename_, bool fromImage_);
 
     int stepCount() const;
     //void clearStepArgumentIds(int stepIndex_);
@@ -1283,6 +1325,15 @@ public:
     void bindStepTexture(int stepIndex_, QOpenGLFunctions *f_) const;
     void drawStep(int stepIndex_, QOpenGLFunctions *f_) const;
     void releaseStep(int stepIndex_) const;
+
+    static OpenGLDrawingImageData *fromJson(const QJsonDocument &doc_);
+
+protected:
+    void findArgumentsRange(
+            const QString &argumentName_,
+            QList<DrawingArgument>::iterator &itb_,
+            QList<DrawingArgument>::iterator &ite_
+            );
 
 private:
     QList<OpenGLDrawingStepImageData> m_steps;

@@ -14,8 +14,8 @@
 #include <QImage>
 #include <QMatrix4x4>
 #include "../MastactvaBase/quizimagedata.h"
-#include "../MastactvaModels/effect.h"
-#include "../MastactvaModels/effectargset.h"
+//#include "../MastactvaModels/effect.h"
+//#include "../MastactvaModels/effectargset.h"
 
 
 #if QT_CONFIG(opengl)
