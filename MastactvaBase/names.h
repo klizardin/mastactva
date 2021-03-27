@@ -122,6 +122,11 @@ static const char *g_argumentValueName = "value";
 static const char *g_argumentDefaultValueName = "default_value";
 static const char *g_textureArtefactFilenameName = "filename";
 static const char *g_shaderArtefactFilenameName = "filename";
+static const char *g_vertexShaderArtefactForStepName = "vertex";
+static const char *g_fragmentShaderArtefactForStepName = "fragment";
+static const char *g_argumentsArtefactForStepName = "arguments";
+static const char *g_argumentArtefactForStepName = "argument";
+static const char *g_textureArtefactForStepName = "texture";
 
 
 #endif // NAMES_H
