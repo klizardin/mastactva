@@ -626,6 +626,7 @@ void OpenGlQuizImage::sync(QQuickItem *item_)
 
     // all drawing data need to be updated
     m_drawingData = quizImage->getData();
+    updateRenderArguments();
     quizImage->retryData();
     quizImage->renderBuildError(m_programBuildLog);
 }

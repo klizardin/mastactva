@@ -694,7 +694,7 @@ public:
     {
         if(m_textureIndex < 0) { return; }
         setUniformValue(program_,
-                    std::vector<GLint>({m_textureIndex, }),
+                    QVector<GLint>({m_textureIndex, }),
                     1,
                     false);
     }
