@@ -127,6 +127,7 @@ static const char *g_fragmentShaderArtefactForStepName = "fragment";
 static const char *g_argumentsArtefactForStepName = "arguments";
 static const char *g_argumentArtefactForStepName = "argument";
 static const char *g_textureArtefactForStepName = "texture";
+static const char *g_stepName = "step";
 
 
 #endif // NAMES_H
