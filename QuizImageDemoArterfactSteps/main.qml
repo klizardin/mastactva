@@ -33,6 +33,12 @@ ApplicationWindow {
         onRejected: {
             closeDialog()
         }
+
+        function init(titleVal, nameFiltersVal)
+        {
+            title = titleVal
+            nameFilters = nameFiltersVal
+        }
     }
 
 
@@ -57,6 +63,7 @@ ApplicationWindow {
         text: qsTr("Open from image")
         onTriggered: {
             connect()
+            openImageDialog.init(qsTr("Please choose image to use for effect demo"), [ "Image files (*.jpg *.jpeg *.png)" ])
             openImageDialog.open()
         }
 
@@ -88,6 +95,7 @@ ApplicationWindow {
         text: qsTr("Open to image")
         onTriggered: {
             connect()
+            openImageDialog.init(qsTr("Please choose image to use for effect demo"), [ "Image files (*.jpg *.jpeg *.png)" ])
             openImageDialog.open()
         }
 
@@ -111,6 +119,38 @@ ApplicationWindow {
         function openFile(imageUrl)
         {
             quizImageDemo.toImage = imageUrl
+        }
+    }
+
+    Action {
+        id: openToProjectFile
+        text: qsTr("Open project")
+        onTriggered: {
+            connect()
+            openImageDialog.init(qsTr("Please choose project to use for effect demo"), [ "Project files (*.json)" ])
+            openImageDialog.open()
+        }
+
+        function connect()
+        {
+            openImageDialog.closeDialog.connect(closeDialog)
+            openImageDialog.openFile.connect(openFile)
+        }
+
+        function disconnect()
+        {
+            openImageDialog.closeDialog.disconnect(closeDialog)
+            openImageDialog.openFile.disconnect(openFile)
+        }
+
+        function closeDialog()
+        {
+            disconnect()
+        }
+
+        function openFile(imageUrl)
+        {
+            quizImageDemo.projectFilename = imageUrl
         }
     }
 
