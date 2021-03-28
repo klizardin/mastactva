@@ -10,6 +10,7 @@
 #include <QQuickWindow>
 #include <QSGRendererInterface>
 #include "openglquizimagedemo.h"
+#include "../MastactvaBase/quizimagedata.h"
 
 
 QuizImageDemo::QuizImageDemo(QQuickItem *parent_ /*= nullptr*/)

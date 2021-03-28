@@ -5,7 +5,9 @@
 #include <QtQuick/QQuickFramebufferObject>
 #include <QQuickItem>
 #include <QColor>
-#include "../MastactvaBase/quizimagedata.h"
+
+
+class OpenGLDrawingImageData;
 
 
 class QuizImageDemo : public QQuickItem

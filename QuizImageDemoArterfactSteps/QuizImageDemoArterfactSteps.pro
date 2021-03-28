@@ -143,7 +143,8 @@ unix: HEADERS +=    \
         effectargvalue.h    \
 
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc    \
+    Mastactva/
 
 TRANSLATIONS += \
     QuizImageDemoArterfactSteps_be_BY.ts
@@ -159,3 +160,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+DISTFILES += \
+    Mastactva/Constants.qml \
+    Mastactva/qmldir \
