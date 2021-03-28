@@ -7,7 +7,7 @@
 #include <QVector4D>
 #include <QVector3D>
 #include <QVector2D>
-#include <QStringRef>
+//#include <QStringRef>
 #include <QJsonDocument>
 #include "../MastactvaBase/utils.h"
 
@@ -119,12 +119,12 @@ public:
 };
 
 
-void parseWavefrontOBJLine(const QStringRef &line_, QVector4D &data_);
-void parseWavefrontOBJLine(const QStringRef &line_, QVector3D &data_);
-void parseWavefrontOBJLine(const QStringRef &line_, QVector<Vector3di> &data_);
-void parseWavefrontOBJLine(const QStringRef &line_, QVector<int> &data_);
-void parseWavefrontOBJLine(const QStringRef &line_, QString &data_);
-void parseWavefrontOBJLine(const QStringRef &line_, Bool &data_);
+void parseWavefrontOBJLine(const QString &line_, QVector4D &data_);
+void parseWavefrontOBJLine(const QString &line_, QVector3D &data_);
+void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_);
+void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_);
+void parseWavefrontOBJLine(const QString &line_, QString &data_);
+void parseWavefrontOBJLine(const QString &line_, Bool &data_);
 
 
 class WavefrontOBJ
@@ -141,13 +141,13 @@ public:
     const QVector<WavefrontOBJGroupName> &getGroupNames() const;
     const QVector<WavefrontOBJSmoothing> &getSmoothing() const;
 
-    bool processLine(const QStringRef &line_, const QStringRef &comment_, int lineNumber_);
+    bool processLine(const QString &line_, const QString &comment_, int lineNumber_);
     void correct();
     bool validate() const;
     QJsonDocument toJsonData() const;
 
 protected:
-    static bool startsWith(const QStringRef &line_, const QString &str_, QStringRef &dataLine_);
+    static bool startsWith(const QString &line_, const QString &str_, QString &dataLine_);
     bool hasTextureIndicies() const;
     bool hasNormalIndicies() const;
     bool buildObject(int startLineNumber_, int endLineNumber_, const Vector3di &mask_, QJsonObject &obj_) const;

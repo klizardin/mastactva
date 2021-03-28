@@ -9,7 +9,8 @@
 #include <QtCore/QDebug>
 #include <QQuickWindow>
 #include <QSGRendererInterface>
-#include "../MastactvaBase/openglquizimage.h"
+#include "openglquizimagedemo.h"
+#include "../MastactvaBase/quizimagedata.h"
 
 
 QuizImageDemo::QuizImageDemo(QQuickItem *parent_ /*= nullptr*/)
@@ -36,8 +37,8 @@ QSGNode *QuizImageDemo::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         Q_FALLTHROUGH();
     case QSGRendererInterface::OpenGLRhi:
 #if QT_CONFIG(opengl)
-        if (nullptr == n) { n = new OpenGlQuizImage(); }
-        static_cast<OpenGlQuizImage *>(n)->sync(this);
+        if (nullptr == n) { n = new OpenGlQuizImageDemo(); }
+        static_cast<OpenGlQuizImageDemo *>(n)->sync(this);
 #endif
         break;
 

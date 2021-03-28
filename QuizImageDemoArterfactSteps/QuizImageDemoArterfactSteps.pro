@@ -1,10 +1,14 @@
 QT += quick \
     quickcontrols2  \
     widgets \
-    sql
+    sql \
+    core
 
+
+DEFINES += "LOCALDATAAPICACHE=1"
 
 CONFIG += c++17
+CONFIG += qmltypes
 QML_IMPORT_NAME = QuizImageDemoArtefactSteps
 QML_IMPORT_MAJOR_VERSION = 1
 
@@ -67,23 +71,90 @@ unix: QMAKE_CXXFLAGS_WARN_OFF += -Wunused-variable
 
 SOURCES += \
         main.cpp    \
+        openglquizimagedemo.cpp \
         quizimagedata.cpp   \
-        openglquizimage.cpp \
-        quizimagedemo.cpp
+        quizimagedemo.cpp \
+        quizqmlobjects.cpp
+
+unix: SOURCES +=    \
+        IModel.cpp \
+        Model.cpp \
+        imagesource.cpp \
+        netapi.cpp \
+        netappconsts.cpp \
+        qmlobjects.cpp \
+        utils.cpp  \
+        serverfiles.cpp \
+        localdata.cpp   \
+        requestdata.cpp \
+        localdataapinocache.cpp \
+        localdataapicache.cpp   \
+        dbrequestinfo.cpp   \
+        localdataapiviews.cpp   \
+        modelhelpers.cpp    \
+        wavefrontobj.cpp    \
+        \
+        artefactarg.cpp \
+        artefactargstorage.cpp \
+        artefactargtype.cpp \
+        artefact.cpp \
+        artefacttype.cpp \
+        effectobjects.cpp   \
+        objectinfo.cpp  \
+        objectartefact.cpp  \
+        effect.cpp  \
+        effectarg.cpp   \
+        effectargset.cpp    \
+        effectargvalue.cpp  \
+
 
 HEADERS += \
-    openglquizimage.h \
-    quizimagedata.h \
-    quizimagedemo.h
+        openglquizimagedemo.h \
+        quizimagedata.h \
+        quizimagedemo.h \
+        quizqmlobjects.h
+
+unix: HEADERS +=    \
+        IModel.h    \
+        Model.h \
+        imagesource.h \
+        netapi.h \
+        netappconsts.h \
+        qmlobjects.h \
+        utils.h  \
+        serverfiles.h \
+        localdata.h   \
+        requestdata.h \
+        localdataapinocache.h \
+        localdataapicache.h   \
+        dbrequestinfo.h   \
+        localdataapiviews.h   \
+        modelhelpers.h    \
+        wavefrontobj.h    \
+        \
+        artefactarg.h \
+        artefactargstorage.h \
+        artefactargtype.h \
+        artefact.h \
+        artefacttype.h \
+        effectobjects.h \
+        objectinfo.h    \
+        objectartefact.h    \
+        effect.h    \
+        effectarg.h   \
+        effectargset.h  \
+        effectargvalue.h    \
 
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc    \
+    Mastactva/
 
 TRANSLATIONS += \
     QuizImageDemoArterfactSteps_be_BY.ts
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH = $$PWD
+QML_IMPORT_PATH += $$PWD    \
+    $${PWD}/../MastactvaBase/
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -93,3 +164,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+DISTFILES += \
+    Mastactva/Constants.qml \
+    Mastactva/qmldir \

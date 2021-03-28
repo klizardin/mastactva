@@ -1,0 +1,1 @@
+../MastactvaModels/artefactargtype.cpp

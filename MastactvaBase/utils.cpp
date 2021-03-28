@@ -481,6 +481,12 @@ bool set_value(const QString &valStr_, GLfloat& val_)
     return ok;
 }
 
+bool set_value(const QString &valStr_, QString& val_)
+{
+    val_ = valStr_;
+    return true;
+}
+
 void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
 {
     if(args_.size() < 2) { return; }
