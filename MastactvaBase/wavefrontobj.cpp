@@ -6,7 +6,7 @@
 #include "../MastactvaBase/utils.h"
 
 
-static QStringRef removeComment(const QStringRef &str_, QStringRef &comment_)
+static QString removeComment(const QString &str_, QString &comment_)
 {
     const int cs = str_.indexOf(QChar('#'));
     if(cs >= 0)
@@ -132,12 +132,12 @@ bool Vector3di::operator < (const Vector3di &val_) const
     return (*this)[2] < val_[2];
 }
 
-void parseWavefrontOBJLine(const QStringRef &line_, QVector4D &data_)
+void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
 {
-    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     data_.setZ(1.0f);
     std::size_t j = 0;
-    for(const QStringRef &val_: values)
+    for(const QString &val_: values)
     {
         bool ok = false;
         double vald = QVariant::fromValue(val_).toDouble(&ok);
@@ -149,11 +149,11 @@ void parseWavefrontOBJLine(const QStringRef &line_, QVector4D &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QStringRef &line_, QVector3D &data_)
+void parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
 {
-    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     std::size_t j = 0;
-    for(const QStringRef &val_: values)
+    for(const QString &val_: values)
     {
         bool ok = false;
         double vald = QVariant::fromValue(val_).toDouble(&ok);
@@ -165,15 +165,15 @@ void parseWavefrontOBJLine(const QStringRef &line_, QVector3D &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QStringRef &line_, QVector<Vector3di> &data_)
+void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
 {
-    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
-    for(const QStringRef &val_: values)
+    QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    for(const QString &val_: values)
     {
-        QVector<QStringRef> faceItems = val_.split(QChar('/'), Qt::SkipEmptyParts);
+        QStringList faceItems = val_.split(QChar('/'), Qt::SkipEmptyParts);
         std::size_t j = 0;
         Vector3di val;
-        for(const QStringRef &fval_: faceItems)
+        for(const QString &fval_: faceItems)
         {
             bool ok = false;
             int vali = QVariant::fromValue(fval_).toInt(&ok);
@@ -187,10 +187,10 @@ void parseWavefrontOBJLine(const QStringRef &line_, QVector<Vector3di> &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QStringRef &line_, QVector<int> &data_)
+void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
 {
-    QVector<QStringRef> values = line_.split(QChar(' '), Qt::SkipEmptyParts);
-    for(const QStringRef &val_: values)
+    QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
+    for(const QString &val_: values)
     {
         bool ok = false;
         int vali = QVariant::fromValue(val_).toInt(&ok);
@@ -201,12 +201,12 @@ void parseWavefrontOBJLine(const QStringRef &line_, QVector<int> &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QStringRef &line_, QString &data_)
+void parseWavefrontOBJLine(const QString &line_, QString &data_)
 {
-    data_ = line_.toString();
+    data_ = line_;
 }
 
-void parseWavefrontOBJLine(const QStringRef &line_, Bool &data_)
+void parseWavefrontOBJLine(const QString &line_, Bool &data_)
 {
     bool ok = false;
     const int iv = line_.toInt(&ok);
@@ -246,21 +246,21 @@ void parseWavefrontOBJLine(const QStringRef &line_, Bool &data_)
 template<typename WavefrontOBJType_>
 void initWavefrontOBJItem(
         WavefrontOBJType_ &d_,
-        const QStringRef &dataLine_,
-        const QStringRef &comment_,
+        const QString &dataLine_,
+        const QString &comment_,
         int lineNumber_,
         QVector<WavefrontOBJType_> &vec_
         )
 {
-    d_.setComment(comment_.toString());
+    d_.setComment(comment_);
     d_.setLine(lineNumber_);
     parseWavefrontOBJLine(dataLine_, d_);
     vec_.push_back(d_);
 }
 
-bool WavefrontOBJ::processLine(const QStringRef &line_, const QStringRef &comment_, int lineNumber_)
+bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, int lineNumber_)
 {
-    QStringRef dataLine;
+    QString dataLine;
     if(startsWith(line_, "v ", dataLine))
     {
         WavefrontOBJVertex v;
@@ -331,7 +331,7 @@ bool WavefrontOBJ::processLine(const QStringRef &line_, const QStringRef &commen
     {
         // whole line comment
         WavefrontOBJItem c;
-        c.setComment(comment_.toString());
+        c.setComment(comment_);
         c.setLine(lineNumber_);
         m_comments.push_back(c);
         return true;
@@ -427,7 +427,7 @@ bool WavefrontOBJ::validate() const
     return true;
 }
 
-bool WavefrontOBJ::startsWith(const QStringRef &line_, const QString &str_, QStringRef &dataLine_)
+bool WavefrontOBJ::startsWith(const QString &line_, const QString &str_, QString &dataLine_)
 {
     if(line_.startsWith(str_))
     {
@@ -714,12 +714,12 @@ QJsonDocument graphicsOBJtoJson(const QString &objData_)
 WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
 {
     WavefrontOBJ *res = new WavefrontOBJ();
-    QVector<QStringRef> lines = objData_.splitRef(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
+    QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
     int lineNumber = 0;
-    for(const QStringRef &line0 : lines)
+    for(const QString &line0 : lines)
     {
-        QStringRef comment;
-        const QStringRef line = removeComment(line0, comment);
+        QString comment;
+        const QString line = removeComment(line0, comment);
         if(res->processLine(line, comment, lineNumber)) { ++lineNumber; }
     }
     res->correct();

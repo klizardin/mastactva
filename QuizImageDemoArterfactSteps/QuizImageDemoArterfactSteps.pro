@@ -1,7 +1,8 @@
 QT += quick \
     quickcontrols2  \
     widgets \
-    sql
+    sql \
+    core
 
 
 CONFIG += c++17
@@ -67,14 +68,79 @@ unix: QMAKE_CXXFLAGS_WARN_OFF += -Wunused-variable
 
 SOURCES += \
         main.cpp    \
+        openglquizimagedemo.cpp \
         quizimagedata.cpp   \
-        openglquizimage.cpp \
-        quizimagedemo.cpp
+        quizimagedemo.cpp \
+        quizqmlobjects.cpp
+
+unix: SOURCES +=    \
+        IModel.cpp \
+        Model.cpp \
+        imagesource.cpp \
+        netapi.cpp \
+        netappconsts.cpp \
+        qmlobjects.cpp \
+        utils.cpp  \
+        serverfiles.cpp \
+        localdata.cpp   \
+        requestdata.cpp \
+        localdataapinocache.cpp \
+        localdataapicache.cpp   \
+        dbrequestinfo.cpp   \
+        localdataapiviews.cpp   \
+        modelhelpers.cpp    \
+        wavefrontobj.cpp    \
+        \
+        artefactarg.cpp \
+        artefactargstorage.cpp \
+        artefactargtype.cpp \
+        artefact.cpp \
+        artefacttype.cpp \
+        effectobjects.cpp   \
+        objectinfo.cpp  \
+        objectartefact.cpp  \
+        effect.cpp  \
+        effectarg.cpp   \
+        effectargset.cpp    \
+        effectargvalue.cpp  \
+
 
 HEADERS += \
-    openglquizimage.h \
-    quizimagedata.h \
-    quizimagedemo.h
+        openglquizimagedemo.h \
+        quizimagedata.h \
+        quizimagedemo.h \
+        quizqmlobjects.h
+
+unix: HEADERS +=    \
+        IModel.h    \
+        Model.h \
+        imagesource.h \
+        netapi.h \
+        netappconsts.h \
+        qmlobjects.h \
+        utils.h  \
+        serverfiles.h \
+        localdata.h   \
+        requestdata.h \
+        localdataapinocache.h \
+        localdataapicache.h   \
+        dbrequestinfo.h   \
+        localdataapiviews.h   \
+        modelhelpers.h    \
+        wavefrontobj.h    \
+        \
+        artefactarg.h \
+        artefactargstorage.h \
+        artefactargtype.h \
+        artefact.h \
+        artefacttype.h \
+        effectobjects.h \
+        objectinfo.h    \
+        objectartefact.h    \
+        effect.h    \
+        effectarg.h   \
+        effectargset.h  \
+        effectargvalue.h    \
 
 
 RESOURCES += qml.qrc

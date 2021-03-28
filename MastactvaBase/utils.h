@@ -74,6 +74,7 @@ QString getTextFromBinaryData(const QByteArray &data_);
 
 bool set_value(const QString &valStr_, GLint& val_);
 bool set_value(const QString &valStr_, GLfloat& val_);
+bool set_value(const QString &valStr_, QString& val_);
 void generateUniformRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_);
 void generateUniformRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_);
 

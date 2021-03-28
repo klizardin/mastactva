@@ -5,6 +5,7 @@
 #include <QSurfaceFormat>
 #include <QOpenGLContext>
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/defines.h"
 

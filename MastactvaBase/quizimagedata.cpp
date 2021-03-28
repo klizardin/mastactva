@@ -314,6 +314,11 @@ int ArgumentValueDataArray::getArraySize() const
     return m_arraySize;
 }
 
+int ArgumentValueDataArray::getTupleSize() const
+{
+    return m_tupleSize;
+}
+
 void ArgumentValueDataArray::initStorage(const QString &storage_)
 {
     using StorageInfo = std::tuple<const char *, bool, bool, bool>;
@@ -530,10 +535,10 @@ OpenGLArgumentValueBase *ArgumentValueDataStringArray::createOpenGlValue()
     {
         return new OpenGLArgumentUniformValueT<ArgumentValueDataStringArray>(this);
     }
-    else if(m_isIndex)
-    {
-        return new OpenGLArgumentIndexValueT<ArgumentValueDataStringArray>(this);
-    }
+    //else if(m_isIndex)
+    //{
+    //    return new OpenGLArgumentIndexValueT<ArgumentValueDataStringArray>(this);
+    //}
     else
     {
         return nullptr;
@@ -1804,6 +1809,11 @@ DrawingTextureArtefact *DrawingTextureArtefact::fromJson(const QJsonObject &obj_
     return fromJsonT(obj_, static_cast<const DrawingTextureArtefact *>(nullptr));
 }
 
+void DrawingTextureArtefact::setFilename(const QString &name_)
+{
+    m_filename = name_;
+}
+
 void DrawingTextureArtefact::setTexture(const QImage &image_)
 {
     m_image = image_;
@@ -2177,17 +2187,17 @@ void OpenGLDrawingImageData::findArgumentsRange(
                 std::begin(m_arguments),
                 std::end(m_arguments),
                 argumentName_,
-                [](QList<DrawingArgument>::iterator it_, const QString &name_)->bool
+                [](const DrawingArgument &arg_, const QString &name_)->bool
     {
-        return it_->getArgumentName() < name_;
+        return arg_.getArgumentName() < name_;
     });
     ite_ = std::upper_bound(
                 std::begin(m_arguments),
                 std::end(m_arguments),
                 argumentName_,
-                [](QList<DrawingArgument>::iterator it_, const QString &name_)->bool
+                [](const QString &name_, const DrawingArgument &arg_)->bool
     {
-        return it_->getArgumentName() < name_;
+        return name_ < arg_.getArgumentName();
     });
 }
 
@@ -2694,7 +2704,7 @@ void QuizImageData::setImagesToDrawingData()
     DrawingTextureArtefact fromTexture;
     fromTexture.setFilename(getFromImageUrl());
     fromTexture.setTexture(QImage(getFromImageUrl()));
-    m_drawingData.addTexture(fromTexture);
+    //m_drawingData.addTexture(fromTexture);
 
     ArgumentBase fromArg;
     fromArg.setName(g_renderFromImageName);
@@ -2715,7 +2725,7 @@ void QuizImageData::setImagesToDrawingData()
     DrawingTextureArtefact toTexture;
     toTexture.setFilename(getToImageUrl());
     toTexture.setTexture(QImage(getToImageUrl()));
-    m_drawingData.addTexture(toTexture);
+    //m_drawingData.addTexture(toTexture);
 
     ArgumentBase toArg;
     toArg.setName(g_renderToImageName);

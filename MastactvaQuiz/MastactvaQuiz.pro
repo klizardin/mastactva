@@ -72,6 +72,26 @@ SOURCES += \
         quizqmlobjects.cpp \
 
 unix: SOURCES += \
+        IModel.cpp \
+        Model.cpp \
+        imagesource.cpp \
+        netapi.cpp \
+        netappconsts.cpp \
+        qmlobjects.cpp \
+        utils.cpp  \
+        serverfiles.cpp \
+        localdata.cpp   \
+        requestdata.cpp \
+        localdataapinocache.cpp \
+        localdataapicache.cpp   \
+        dbrequestinfo.cpp   \
+        localdataapiviews.cpp   \
+        modelhelpers.cpp    \
+        wavefrontobj.cpp    \
+        \
+        quizimagedata.cpp   \
+        openglquizimage.cpp \
+        \
         question.cpp \
         questionanswer.cpp \
         gallerystatistics.cpp \
@@ -82,31 +102,13 @@ unix: SOURCES += \
         gallery.cpp \
         quizuser.cpp \
         userstep.cpp  \
-        IModel.cpp \
-        Model.cpp \
-        imagesource.cpp \
-        netapi.cpp \
-        netappconsts.cpp \
-        qmlobjects.cpp \
-        utils.cpp  \
-        serverfiles.cpp \
         quizimage.cpp   \
-        openglquizimage.cpp \
         easingtype.cpp    \
         effectarg.cpp \
         effectargset.cpp  \
         effectargvalue.cpp    \
         effect.cpp    \
         imagepointeffect.cpp    \
-        localdata.cpp   \
-        requestdata.cpp \
-        localdataapinocache.cpp \
-        localdataapicache.cpp   \
-        dbrequestinfo.cpp   \
-        localdataapiviews.cpp   \
-        gallerymodelview.cpp    \
-        questionanswermodelview.cpp \
-        quizimagedata.cpp   \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
@@ -116,8 +118,8 @@ unix: SOURCES += \
         objectinfo.cpp    \
         objectartefact.cpp  \
         effectobjects.cpp   \
-        modelhelpers.cpp    \
-        wavefrontobj.cpp
+        gallerymodelview.cpp    \
+        questionanswermodelview.cpp \
 
 
 RESOURCES += qml.qrc \

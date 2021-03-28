@@ -701,7 +701,7 @@ public:
 
     virtual void bindTexture(QOpenGLFunctions *f_) const override
     {
-        bindTexture(f_, m_texture, m_textureIndex);
+        OpenGLArgumentValueBase::bindTexture(f_, m_texture, m_textureIndex);
     }
 
     virtual void draw(QOpenGLFunctions *f_) const override
@@ -778,14 +778,14 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initAttribureValueId(
+        OpenGLArgumentValueBase::initAttribureValueId(
                     program_,
                     arg().getName());
     }
 
     virtual void bind(QOpenGLShaderProgram *program_) override
     {
-        bindAttribureValueId(
+        OpenGLArgumentValueBase::bindAttribureValueId(
                     program_,
                     arg().getName());
     }
@@ -797,7 +797,7 @@ public:
 
     virtual int getMaxIndex() const override
     {
-        return ((getArraySize() + value().getTupleSize() - 1) / value().getTupleSize());
+        return ((getArraySize() + valueBase().getTupleSize() - 1) / valueBase().getTupleSize());
     }
 
     virtual int getVBOPartSize() const override
@@ -812,22 +812,22 @@ public:
 
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const override
     {
-        writeAttributeValue(
+        OpenGLArgumentValueBase::writeAttributeValue(
                     vbo_,
                     offset_,
                     sizeItems_,
                     value().getValues(),
                     getVBOPartSize(),
-                    value().getTupleSize());
+                    valueBase().getTupleSize());
     }
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
-        useAttributeValue(
+        OpenGLArgumentValueBase::useAttributeValue(
                     program_,
                     TypeToGLTypeEnum<ItemType>::value,
                     m_offset,
-                    value().getTupleSize());
+                    valueBase().getTupleSize());
     }
 
     virtual void draw(QOpenGLFunctions *f_) const override
@@ -837,7 +837,7 @@ public:
 
     virtual void release(QOpenGLShaderProgram *program_) const override
     {
-        releaseAttributeValue(program_);
+        OpenGLArgumentValueBase::releaseAttributeValue(program_);
     }
 
 private:
@@ -849,6 +849,11 @@ private:
     const ArgumentValueDataArrayType_ &value() const
     {
         return static_cast<const ArgumentValueDataArrayType_&>(*m_valueDataArray);
+    }
+
+    const ArgumentValueDataArray &valueBase() const
+    {
+        return static_cast<const ArgumentValueDataArray&>(value());
     }
 
 private:
@@ -873,10 +878,13 @@ public:
     OpenGLArgumentIndexValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
         :m_valueDataArray(argumentValueDataArray_)
     {
-        m_maxIndex = std::max_element(
+        m_maxIndex = value().getValues().isEmpty()
+                ? 0
+                : *std::max_element(
                     std::begin(value().getValues()),
                     std::end(value().getValues())
-                    );
+                    )
+                ;
     }
 
     virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const
@@ -1240,13 +1248,13 @@ public:
     QString getArgumentName() const;
     void setValues(const QVector<GLfloat> &values_);
     void setValue(const QString &value_);
+    bool operator == (const DrawingArgument &argument_) const;
+    bool operator < (const DrawingArgument &argument_) const;
 
 private:
     const QVector<GLint> &intValues() const;
     const QVector<GLfloat> &floatValues() const;
     const QVector<QString> &stringValues() const;
-    bool operator == (const DrawingArgument &argument_) const;
-    bool operator < (const DrawingArgument &argument_) const;
     bool doesValueEqual(const DrawingArgument &argument_) const;
     OpenGLArgumentValueBase *createOpenglValue();
     const ArgumentValueDataArray *getValueDataArray() const;
@@ -1358,7 +1366,7 @@ public:
 private:
     void setObjects(const QVector<QuizImageDataObject *> &objects_);
     void setArtefacts(const QVector<QuizImageDataObject *> &objects_);
-    void addTexture(const DrawingTextureArtefact &argtefact_);
+    //void addTexture(const DrawingTextureArtefact &argtefact_);
     void setAllArgumentValues(ArgumentValueDataArray *argumentValueDataArray_);
 
 private:
