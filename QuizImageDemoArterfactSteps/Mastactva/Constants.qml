@@ -6,4 +6,6 @@ QtObject {
     readonly property int height: 480
     readonly property string noImage: "qrc:///resources/no-image.png"
     readonly property string noImageResource: ":/resources/no-image.png"
+    readonly property int aspectX: 4
+    readonly property int aspectY: 3
 }
