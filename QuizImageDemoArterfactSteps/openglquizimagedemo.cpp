@@ -66,17 +66,17 @@ void OpenGlQuizImageDemo::sync(QQuickItem *item_)
     m_height = int(item_->height());
     m_t = quizImage->t();
 
+    quizImage->renderBuildError(m_programBuildLog);
     if(!quizImage->isImageDataUpdated())
     {
-        updateRenderArguments();
+        updateRenderArguments(true);
         return;
     }
 
     // all drawing data need to be updated
     m_drawingData = quizImage->getData();
-    updateRenderArguments();
     quizImage->retryData();
-    quizImage->renderBuildError(m_programBuildLog);
+    updateRenderArguments(false);
 }
 
 void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
@@ -194,7 +194,8 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
 
     m_drawingData->setRenderArgumentValue(
                 g_renderOpacityName,
-                QVector<GLfloat>({GLfloat(inheritedOpacity()), })
+                QVector<GLfloat>({GLfloat(inheritedOpacity()), }),
+                -1
                 );
 
     for(int i = 0; i < m_drawingData->stepCount(); i++)
@@ -334,18 +335,208 @@ void OpenGlQuizImageDemo::noPaintGL(QOpenGLFunctions *f_, const RenderState *sta
     //f_->glEnable(GL_CULL_FACE);
     //f_->glCullFace(GL_FRONT_AND_BACK);
     f_->glFrontFace(GL_CCW);
-    f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    //f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void OpenGlQuizImageDemo::updateRenderArguments()
+static const int g_trianglesCount = 2;
+static const int g_triangleConers = 3;
+
+void makeGeometry(
+        int width_, int height_,
+        int geomertyPointsWidth_, int geometryPointsHeight_,
+        float facedGeometryXCoef_, float facedGeometryYCoef_,
+        int geometryVertexCoords_, int geometryTextureCoords_,
+        bool hasTextureCoords_,
+        bool isGeometrySolid_,
+        QVector<GLfloat> &vertexData_,
+        QVector<GLfloat> &textureData_
+        )
+{
+    static const int coords[g_trianglesCount][g_triangleConers][2] =
+    {
+        {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
+        {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
+    };
+
+    vertexData_.resize(geomertyPointsWidth_ * geometryPointsHeight_ *
+                      g_trianglesCount * g_triangleConers * geometryVertexCoords_);
+    textureData_.resize(geomertyPointsWidth_ * geometryPointsHeight_ *
+                        g_trianglesCount * g_triangleConers * geometryTextureCoords_);
+    for(int y = 0; y < geometryPointsHeight_; y++)
+    {
+        for(int x = 0; x < geomertyPointsWidth_; x++)
+        {
+            const int offsBase0 = (y * geomertyPointsWidth_ + x) *
+                    g_trianglesCount * g_triangleConers * geometryVertexCoords_;
+            const int offsBase1 = (y * geomertyPointsWidth_ + x) *
+                    g_trianglesCount * g_triangleConers * geometryTextureCoords_;
+            for (int j = 0; j < g_trianglesCount; ++j)
+            {
+                for(int k = 0; k < g_triangleConers; k++)
+                {
+                    // vertex position
+                    const int offs0 = offsBase0 + (j * g_triangleConers + k) * geometryVertexCoords_;
+                    const int offs1 = offsBase1 + (j * g_triangleConers + k) * geometryTextureCoords_;
+                    if(geometryVertexCoords_ >= 2)
+                    {
+                        if(isGeometrySolid_)
+                        {
+                                vertexData_[offs0 + 0] = (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_;
+                                vertexData_[offs0 + 1] = (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_;
+                        }
+                        else
+                        {
+                            vertexData_[offs0 + 0] = (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_
+                                    - (coords[j][k][0] * 2 - 1) * facedGeometryXCoef_
+                                    ;
+                            vertexData_[offs0 + 1] = (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_
+                                    - (coords[j][k][1] * 2 - 1) * facedGeometryYCoef_
+                                    ;
+                        }
+                    }
+                    if(geometryVertexCoords_ >= 3)
+                    {
+                        vertexData_[offs0 + 2] = 0.1;
+                    }
+                    if(geometryVertexCoords_ >= 4)
+                    {
+                        vertexData_[offs0 + 3] = 1.0;
+                    }
+
+                    // texture coordinate
+                    if(hasTextureCoords_)
+                    {
+                        textureData_[offs1 + 0] = (GLfloat)(x + coords[j][k][0])/(GLfloat)geomertyPointsWidth_;
+                        textureData_[offs1 + 1] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)geometryPointsHeight_;
+                        if(geometryTextureCoords_ >= 3)
+                        {
+                            textureData_[offs1 + 1] = 0.0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void calculatePreserveAspectFitTextureMatrix(
+        QMatrix4x4 & textureMatrix_,
+        const QSize &imageSize_,
+        const QSize &rectSize_
+        )
+{
+    const qreal imageRate = (qreal)std::max(1, imageSize_.width())/(qreal)std::max(1, imageSize_.height());
+    const qreal rectRate = (qreal)std::max(1, rectSize_.width())/(qreal)std::max(1, rectSize_.height());
+    if(rectRate >= imageRate)
+    {
+        textureMatrix_.scale(rectRate/imageRate, 1.0);
+        textureMatrix_.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+    }
+    else
+    {
+        textureMatrix_.scale(1.0, imageRate/rectRate);
+        textureMatrix_.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+    }
+}
+
+void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
 {
     if(nullptr == m_drawingData) { return; }
     m_drawingData->setRenderArgumentValue(
                 g_renderScreenRectName,
-                QVector<GLfloat>({GLfloat(m_left), GLfloat(m_top), GLfloat(m_width), GLfloat(m_height)})
+                QVector<GLfloat>({GLfloat(m_left), GLfloat(m_top), GLfloat(m_width), GLfloat(m_height)}),
+                -1
                 );
     m_drawingData->setRenderArgumentValue(
                 g_renderTName,
-                QVector<GLfloat>({GLfloat(m_t),})
+                QVector<GLfloat>({GLfloat(m_t),}),
+                -1
                 );
+
+    if(minimal_) { return; }
+
+    const int vertexTupleSize = m_drawingData->getTupleSize(
+                g_renderVertexAttributeName
+                );
+    const int textureTupleSize = m_drawingData->getTupleSize(
+                g_renderTextureAttributeName
+                );
+    if(!m_drawingData->isArgumentInitialized(g_renderVertexAttributeName) ||
+            (!m_drawingData->isArgumentInitialized(g_renderTextureAttributeName) &&
+             textureTupleSize > 0
+             )
+            )
+    {
+        QVector<GLfloat> facedGeometryCoefs({1e-3f, 1e-3f});
+        m_drawingData->getArgumentValue(
+                    g_renderFacedGeometryCoefsName,
+                    facedGeometryCoefs
+                    );
+        QVector<GLint> geomertySize({1, 1});
+        m_drawingData->getArgumentValue(
+                    g_renderGeomertySizeName,
+                    geomertySize
+                    );
+        QVector<GLint> geomertySolid({1, });
+        m_drawingData->getArgumentValue(
+                    g_renderIsGeomertySolidName,
+                    geomertySolid
+                    );
+        QVector<GLfloat> vertexData;
+        QVector<GLfloat> textureData;
+        makeGeometry(
+                    m_width, m_height,
+                    geomertySize[0], geomertySize[1],
+                    facedGeometryCoefs[0], facedGeometryCoefs[1],
+                    vertexTupleSize, textureTupleSize,
+                    textureTupleSize > 0, geomertySolid[0] > 0,
+                    vertexData, textureData
+                    );
+        m_drawingData->setRenderArgumentValue(
+                    g_renderVertexAttributeName,
+                    vertexData,
+                    vertexData.size()
+                    );
+        if(textureTupleSize > 0)
+        {
+            m_drawingData->setRenderArgumentValue(
+                        g_renderTextureAttributeName,
+                        textureData,
+                        textureData.size()
+                        );
+        }
+    }
+    QSize rectSize(m_width, m_height);
+    if(!m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
+    {
+        QSize fromImageSize;
+        if(m_drawingData->getTextureSize(g_renderFromImageName, fromImageSize))
+        {
+            QMatrix4x4 fromImageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(fromImageTextureMatrix, fromImageSize, rectSize);
+            QVector<GLfloat> mdata(16);
+            std::copy(fromImageTextureMatrix.constData(), fromImageTextureMatrix.constData() + 16, std::begin(mdata));
+            m_drawingData->setRenderArgumentValue(
+                        g_renderFromImageMatrixName,
+                        mdata,
+                        mdata.size()
+                        );
+        }
+    }
+    if(!m_drawingData->isArgumentInitialized(g_renderToImageMatrixName))
+    {
+        QSize fromImageSize;
+        if(m_drawingData->getTextureSize(g_renderToImageName, fromImageSize))
+        {
+            QMatrix4x4 fromImageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(fromImageTextureMatrix, fromImageSize, rectSize);
+            QVector<GLfloat> mdata(16);
+            std::copy(fromImageTextureMatrix.constData(), fromImageTextureMatrix.constData() + 16, std::begin(mdata));
+            m_drawingData->setRenderArgumentValue(
+                        g_renderToImageMatrixName,
+                        mdata,
+                        mdata.size()
+                        );
+        }
+    }
 }

@@ -118,7 +118,7 @@ void OpenGlQuizImage::makeObject()
         {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
     };
 
-    m_vertData.resize(m_geomertyPointsWidth * m_geometryPointsHeight *
+    m_vertData.resize(m_geomertyPointsWidth * m_gg_triangleConerseometryPointsHeight *
                       g_trianglesCount * g_triangleConers * g_geometryItemSize);
     for(int y = 0; y < m_geometryPointsHeight; y++)
     {

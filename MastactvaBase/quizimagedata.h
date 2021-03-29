@@ -1246,8 +1246,12 @@ public:
             int position_ = 0);
     ~DrawingArgument();
     QString getArgumentName() const;
-    void setValues(const QVector<GLfloat> &values_);
+    void setValues(const QVector<GLfloat> &values_, int size_);
+    void getValues(QVector<GLfloat> &values_) const;
+    void getValues(QVector<GLint> &values_) const;
     void setValue(const QString &value_);
+    int getTupleSize() const;
+    bool isInitialized() const;
     bool operator == (const DrawingArgument &argument_) const;
     bool operator < (const DrawingArgument &argument_) const;
 
@@ -1316,7 +1320,12 @@ public:
     OpenGLDrawingImageData() = default;
 
     bool isInitialized() const;
-    void setRenderArgumentValue(const QString &argumentName, const QVector<GLfloat> & values_);
+    void setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_);
+    void getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_);
+    void getArgumentValue(const QString &argumentName_, QVector<GLint> & values_);
+    int getTupleSize(const QString &argumentName_);
+    bool isArgumentInitialized(const QString &argumentName_);
+    bool getTextureSize(const QString &argumentName_, QSize &size_);
     void addRenderImage(const QString &filename_, bool fromImage_);
 
     int stepCount() const;
