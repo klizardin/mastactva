@@ -1924,13 +1924,57 @@ QString DrawingArgument::getArgumentName() const
     return nullptr != m_valueDataArray ? m_valueDataArray->getName() : QString();
 }
 
-void DrawingArgument::setValues(const QVector<GLfloat> &values_)
+void DrawingArgument::setValues(const QVector<GLfloat> &values_, int size_)
 {
     if(nullptr == m_valueDataArray) { return; }
-    const int cnt = std::min(values_.size(), m_valueDataArray->floatValues().size());
+    const int cnt = size_ < 0
+            ? std::min(values_.size(), m_valueDataArray->floatValues().size())
+            : size_;
+    if(m_valueDataArray->floatValues().size() > 0 &&
+            m_valueDataArray->floatValues().size() < size_)
+    {
+        m_valueDataArray->floatValues().resize(size_);
+    }
     for(int i = 0; i < cnt; ++i)
     {
-        m_valueDataArray->floatValues()[i] = values_[i];
+        if(i < m_valueDataArray->floatValues().size())
+        {
+            m_valueDataArray->floatValues()[i] = values_[i];
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
+void DrawingArgument::getValues(QVector<GLfloat> &values_) const
+{
+    if(nullptr == m_valueDataArray) { return; }
+    const int cnti = std::min(values_.size(), m_valueDataArray->intValues().size());
+    for(int i = 0; i < cnti; ++i)
+    {
+        values_[i] = m_valueDataArray->intValues()[i];
+    }
+    const int cntf = std::min(values_.size(), m_valueDataArray->floatValues().size());
+    for(int i = 0; i < cntf; ++i)
+    {
+        values_[i] = m_valueDataArray->floatValues()[i];
+    }
+}
+
+void DrawingArgument::getValues(QVector<GLint> &values_) const
+{
+    if(nullptr == m_valueDataArray) { return; }
+    const int cntf = std::min(values_.size(), m_valueDataArray->floatValues().size());
+    for(int i = 0; i < cntf; ++i)
+    {
+        values_[i] = m_valueDataArray->floatValues()[i];
+    }
+    const int cnti = std::min(values_.size(), m_valueDataArray->intValues().size());
+    for(int i = 0; i < cnti; ++i)
+    {
+        values_[i] = m_valueDataArray->intValues()[i];
     }
 }
 
@@ -1939,6 +1983,21 @@ void DrawingArgument::setValue(const QString &value_)
     if(nullptr == m_valueDataArray) { return; }
     if(m_valueDataArray->stringValues().size() < 1) { return; }
     m_valueDataArray->stringValues()[0] = value_;
+}
+
+int DrawingArgument::getTupleSize() const
+{
+    if(nullptr == m_valueDataArray) { return 0; }
+    return m_valueDataArray->getTupleSize();
+}
+
+bool DrawingArgument::isInitialized() const
+{
+    if(nullptr == m_valueDataArray) { return false; }
+    return !m_valueDataArray->intValues().isEmpty() ||
+            !m_valueDataArray->floatValues().isEmpty() ||
+            !m_valueDataArray->stringValues().isEmpty()
+            ;
 }
 
 const QVector<GLint> &DrawingArgument::intValues() const
@@ -2201,7 +2260,7 @@ void OpenGLDrawingImageData::findArgumentsRange(
     });
 }
 
-void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_)
+void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_)
 {
     QList<DrawingArgument>::iterator itb = std::end(m_arguments);
     QList<DrawingArgument>::iterator ite = std::end(m_arguments);
@@ -2209,8 +2268,85 @@ void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_
     for(auto it = itb; it != ite; ++it)
     {
         if(it->getArgumentName() != argumentName_) { continue; }
-        it->setValues(values_);
+        it->setValues(values_, size_);
     }
+}
+
+void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_)
+{
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb, ite);
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName_) { continue; }
+        it->getValues(values_);
+        break;
+    }
+}
+
+void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVector<GLint> & values_)
+{
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb, ite);
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName_) { continue; }
+        it->getValues(values_);
+        break;
+    }
+}
+
+int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_)
+{
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb, ite);
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName_) { continue; }
+        return it->getTupleSize();
+    }
+    return 0;
+}
+
+bool OpenGLDrawingImageData::isArgumentInitialized(const QString &argumentName_)
+{
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb, ite);
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName_) { continue; }
+        return it->isInitialized();
+    }
+    return false;
+}
+
+bool OpenGLDrawingImageData::getTextureSize(const QString &argumentName_, QSize &size_)
+{
+    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
+    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb, ite);
+    for(auto it = itb; it != ite; ++it)
+    {
+        if(it->getArgumentName() != argumentName_) { continue; }
+        for(OpenGLDrawingStepImageData &step_ : m_steps)
+        {
+            const int cnt = std::min(step_.m_programArguments.size(), step_.m_argumentTextures.size());
+            for(int i1 = 0; i1 < cnt; ++i1)
+            {
+                if(!step_.m_programArguments[i1]->valueOf(it->getValueDataArray())) { continue; }
+                if(nullptr != step_.m_argumentTextures[i1])
+                {
+                    size_ = step_.m_argumentTextures[i1]->getImage().size();
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromImage_)

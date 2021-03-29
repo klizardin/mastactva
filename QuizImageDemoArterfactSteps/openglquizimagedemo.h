@@ -39,7 +39,7 @@ private:
     void init(QOpenGLFunctions *f_);
     void paintGL(QOpenGLFunctions *f_, const RenderState *state_);
     void noPaintGL(QOpenGLFunctions *f_, const RenderState *state_);
-    void updateRenderArguments();
+    void updateRenderArguments(bool minimal_);
 
 private:
     OpenGLDrawingImageData *m_drawingData = nullptr;
