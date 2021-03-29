@@ -194,7 +194,8 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
 
     m_drawingData->setRenderArgumentValue(
                 g_renderOpacityName,
-                QVector<GLfloat>({GLfloat(inheritedOpacity()), })
+                QVector<GLfloat>({GLfloat(inheritedOpacity()), }),
+                -1
                 );
 
     for(int i = 0; i < m_drawingData->stepCount(); i++)
@@ -334,7 +335,7 @@ void OpenGlQuizImageDemo::noPaintGL(QOpenGLFunctions *f_, const RenderState *sta
     //f_->glEnable(GL_CULL_FACE);
     //f_->glCullFace(GL_FRONT_AND_BACK);
     f_->glFrontFace(GL_CCW);
-    f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    //f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 static const int g_trianglesCount = 2;
