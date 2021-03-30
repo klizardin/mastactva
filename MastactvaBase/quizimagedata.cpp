@@ -302,10 +302,14 @@ void ArgumentValueDataArray::initData()
     if(!getValue().trimmed().isEmpty())
     {
         setArray(getValue());
+        m_isInitialized = true;
+        m_isDefault = false;
     }
     else
     {
         setArray(getDefaultValue());
+        m_isInitialized = true;
+        m_isDefault = true;
     }
 }
 
@@ -317,6 +321,16 @@ int ArgumentValueDataArray::getArraySize() const
 int ArgumentValueDataArray::getTupleSize() const
 {
     return m_tupleSize;
+}
+
+bool ArgumentValueDataArray::isInitialized() const
+{
+    return m_isInitialized;
+}
+
+bool ArgumentValueDataArray::isDefaultValue() const
+{
+    return m_isDefault;
 }
 
 void ArgumentValueDataArray::initStorage(const QString &storage_)
@@ -1994,9 +2008,13 @@ int DrawingArgument::getTupleSize() const
 bool DrawingArgument::isInitialized() const
 {
     if(nullptr == m_valueDataArray) { return false; }
-    return !m_valueDataArray->intValues().isEmpty() ||
-            !m_valueDataArray->floatValues().isEmpty() ||
-            !m_valueDataArray->stringValues().isEmpty()
+    return m_valueDataArray->isInitialized() &&
+            !m_valueDataArray->isDefaultValue() &&
+            (
+                !m_valueDataArray->intValues().isEmpty() ||
+                !m_valueDataArray->floatValues().isEmpty() ||
+                !m_valueDataArray->stringValues().isEmpty()
+                )
             ;
 }
 
