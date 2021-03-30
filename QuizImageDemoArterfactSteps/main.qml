@@ -399,9 +399,9 @@ ApplicationWindow {
             SplitView.minimumHeight: parent.height / 4
             SplitView.maximumHeight: parent.height * 0.75
 
-            Row {
-                width: parent
-                height: parent
+            Column {
+                width: parent.width
+                height: parent.height
 
                 Label {
                     id: projectNameLabel
@@ -424,7 +424,6 @@ ApplicationWindow {
                 }
                 Text {
                     id: shadersBuildLog
-                    anchors.top: shadersBuildLogLabel.bottom
                     width: quizCompilerLogSV.width
                     height: quizCompilerLogSV.height - (shadersBuildLogLabel.height + projectNameLabel.height + fromImageNameLabel.height + toImageNameLabel.height)
                     text: quizImageDemo.compilerLog
