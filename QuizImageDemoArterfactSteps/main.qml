@@ -407,17 +407,14 @@ ApplicationWindow {
                     id: projectNameLabel
                     text: qsTr("Project : ") + projectName
                 }
-
                 Label {
                     id: fromImageNameLabel
                     text: qsTr("From image : ") + fromImageName
                 }
-
                 Label {
                     id: toImageNameLabel
                     text: qsTr("To image : ") + toImageName
                 }
-
                 Label {
                     id: shadersBuildLogLabel
                     text: qsTr("Build log");
