@@ -184,6 +184,14 @@ void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
     }
 }
 
+QVector<GLfloat> matrixToVector(const QMatrix4x4 &mat_)
+{
+    static const int sz = 16;
+    QVector<GLfloat> res(sz);
+    std::copy(mat_.constData(), mat_.constData() + sz, std::begin(res));
+    return res;
+}
+
 void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
     noPaintGL(f_, state_);
@@ -196,6 +204,12 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
                 g_renderOpacityName,
                 QVector<GLfloat>({GLfloat(inheritedOpacity()), }),
                 -1
+                );
+    QVector<GLfloat> matIdentityData = matrixToVector(*state_->projectionMatrix() * *matrix());
+    m_drawingData->setRenderArgumentValue(
+                g_renderMatrixName,
+                matIdentityData,
+                matIdentityData.size()
                 );
 
     for(int i = 0; i < m_drawingData->stepCount(); i++)
@@ -509,13 +523,12 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
     QSize rectSize(m_width, m_height);
     if(!m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
     {
-        QSize fromImageSize;
-        if(m_drawingData->getTextureSize(g_renderFromImageName, fromImageSize))
+        QSize imageSize;
+        if(m_drawingData->getTextureSize(g_renderFromImageName, imageSize))
         {
-            QMatrix4x4 fromImageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(fromImageTextureMatrix, fromImageSize, rectSize);
-            QVector<GLfloat> mdata(16);
-            std::copy(fromImageTextureMatrix.constData(), fromImageTextureMatrix.constData() + 16, std::begin(mdata));
+            QMatrix4x4 imageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
+            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
             m_drawingData->setRenderArgumentValue(
                         g_renderFromImageMatrixName,
                         mdata,
@@ -525,13 +538,12 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
     }
     if(!m_drawingData->isArgumentInitialized(g_renderToImageMatrixName))
     {
-        QSize fromImageSize;
-        if(m_drawingData->getTextureSize(g_renderToImageName, fromImageSize))
+        QSize imageSize;
+        if(m_drawingData->getTextureSize(g_renderToImageName, imageSize))
         {
-            QMatrix4x4 fromImageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(fromImageTextureMatrix, fromImageSize, rectSize);
-            QVector<GLfloat> mdata(16);
-            std::copy(fromImageTextureMatrix.constData(), fromImageTextureMatrix.constData() + 16, std::begin(mdata));
+            QMatrix4x4 imageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
+            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
             m_drawingData->setRenderArgumentValue(
                         g_renderToImageMatrixName,
                         mdata,

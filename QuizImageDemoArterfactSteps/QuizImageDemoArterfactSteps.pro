@@ -131,6 +131,7 @@ unix: HEADERS +=    \
         localdataapiviews.h   \
         modelhelpers.h    \
         wavefrontobj.h    \
+        names.h \
         \
         artefactarg.h \
         artefactargstorage.h \

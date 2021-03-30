@@ -14,6 +14,11 @@ ApplicationWindow {
     title: qsTr("Quiz Image Demo")
 
 
+    property strint projectName: ""
+    property strint fromImageName: Constants.noImageResource
+    property strint toImageName: Constants.noImageResource
+
+
     FileDialog {
         id: openImageDialog
         title: qsTr("Please choose image to use for effect demo")
@@ -86,7 +91,8 @@ ApplicationWindow {
 
         function openFile(imageUrl)
         {
-            quizImageDemo.fromImage = imageUrl
+            //quizImageDemo.fromImage = imageUrl
+            fromImageName = imageUrl
         }
     }
 
@@ -118,7 +124,8 @@ ApplicationWindow {
 
         function openFile(imageUrl)
         {
-            quizImageDemo.toImage = imageUrl
+            //quizImageDemo.toImage = imageUrl
+            toImageName = imageUrl
         }
     }
 
@@ -150,7 +157,8 @@ ApplicationWindow {
 
         function openFile(imageUrl)
         {
-            quizImageDemo.projectFilename = imageUrl
+            //quizImageDemo.projectFilename = imageUrl
+            projectName = imageUrl
         }
     }
 
@@ -337,8 +345,9 @@ ApplicationWindow {
             QuizImageDemo {
                 id: quizImageDemo
                 anchors.fill: parent
-                fromImage: Constants.noImageResource
-                toImage: Constants.noImageResource
+                fromImage: fromImageName
+                toImage: toImageName
+                projectFilename: projectName
                 clip: true
                 t: 0.5
 
@@ -390,18 +399,37 @@ ApplicationWindow {
             SplitView.minimumHeight: parent.height / 4
             SplitView.maximumHeight: parent.height * 0.75
 
-            Label {
-                id: shadersBuildLogLabel
-                anchors.top: quizCompilerLogSV.top
-                text: qsTr("Build log");
-            }
-            Text {
-                id: shadersBuildLog
-                anchors.top: shadersBuildLogLabel.bottom
-                width: quizCompilerLogSV.width
-                height: quizCompilerLogSV.height - shadersBuildLogLabel.height
-                text: quizImageDemo.compilerLog
-                wrapMode: Text.WordWrap
+            Row {
+                width: parent
+                height: parent
+
+                Label {
+                    id: projectNameLabel
+                    text: qsTr("Project : ") + projectName
+                }
+
+                Label {
+                    id: fromImageNameLabel
+                    text: qsTr("From image : ") + fromImageName
+                }
+
+                Label {
+                    id: toImageNameLabel
+                    text: qsTr("To image : ") + toImageName
+                }
+
+                Label {
+                    id: shadersBuildLogLabel
+                    text: qsTr("Build log");
+                }
+                Text {
+                    id: shadersBuildLog
+                    anchors.top: shadersBuildLogLabel.bottom
+                    width: quizCompilerLogSV.width
+                    height: quizCompilerLogSV.height - (shadersBuildLogLabel.height + projectNameLabel.height + fromImageNameLabel.height + toImageNameLabel.height)
+                    text: quizImageDemo.compilerLog
+                    wrapMode: Text.WordWrap
+                }
             }
         }
     }

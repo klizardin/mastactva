@@ -58,6 +58,7 @@ static const char *g_firstSpecialwordName = "__first";
 static const char *g_lastSpecialwordName = "__last";
 static const char *g_renderFromImageName = "renderFromImage";
 static const char *g_renderToImageName = "renderToImage";
+static const char *g_renderMatrixName = "renderMatrix";
 static const char *g_renderFromImageMatrixName = "renderFromImageMatrix";
 static const char *g_renderToImageMatrixName = "renderToImageMatrix";
 static const char *g_renderScreenRectName = "renderScreenRect";
