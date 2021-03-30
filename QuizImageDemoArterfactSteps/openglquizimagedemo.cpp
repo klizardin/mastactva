@@ -424,7 +424,11 @@ void makeGeometry(
                         textureData_[offs1 + 1] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)geometryPointsHeight_;
                         if(geometryTextureCoords_ >= 3)
                         {
-                            textureData_[offs1 + 1] = 0.0;
+                            textureData_[offs1 + 2] = 0.0;
+                        }
+                        if(geometryTextureCoords_ >= 4)
+                        {
+                            textureData_[offs1 + 3] = 1.0;
                         }
                     }
                 }
