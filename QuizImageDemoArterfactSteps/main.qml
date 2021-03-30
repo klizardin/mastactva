@@ -14,9 +14,9 @@ ApplicationWindow {
     title: qsTr("Quiz Image Demo")
 
 
-    property strint projectName: ""
-    property strint fromImageName: Constants.noImageResource
-    property strint toImageName: Constants.noImageResource
+    property string projectName: ""
+    property string fromImageName: Constants.noImageResource
+    property string toImageName: Constants.noImageResource
 
 
     FileDialog {
