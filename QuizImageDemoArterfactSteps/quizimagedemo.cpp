@@ -71,6 +71,11 @@ void QuizImageDemo::updateState()
     update();
 }
 
+void QuizImageDemo::updateProject()
+{
+    loadProject();
+}
+
 qreal QuizImageDemo::t() const
 {
     return m_t;

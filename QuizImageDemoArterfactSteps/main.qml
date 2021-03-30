@@ -130,7 +130,7 @@ ApplicationWindow {
     }
 
     Action {
-        id: openToProjectFile
+        id: openProjectFile
         text: qsTr("Open project")
         onTriggered: {
             connect()
@@ -159,6 +159,14 @@ ApplicationWindow {
         {
             //quizImageDemo.projectFilename = imageUrl
             projectName = imageUrl
+        }
+    }
+
+    Action {
+        id: updateProjectFile
+        text: qsTr("Update project")
+        onTriggered: {
+            quizImageDemo.updateProject()
         }
     }
 
@@ -295,15 +303,21 @@ ApplicationWindow {
         id: mainMenu
 
         AutoSizeMenu {
-            title: qsTr("&Log")
-            MenuItem { action: updateShadersLog }
-            MenuItem { action: clearShaderLog }
+            title: qsTr("&Project")
+            MenuItem { action: openProjectFile }
+            MenuItem { action: updateProjectFile }
         }
 
         AutoSizeMenu {
             title: qsTr("&Images")
             MenuItem { action: openFromImageFile }
             MenuItem { action: openToImageFile }
+        }
+
+        AutoSizeMenu {
+            title: qsTr("&Log")
+            MenuItem { action: updateShadersLog }
+            MenuItem { action: clearShaderLog }
         }
 
         AutoSizeMenu {
@@ -403,21 +417,27 @@ ApplicationWindow {
                 width: parent.width
                 height: parent.height
 
-                Label {
+                Text {
                     id: projectNameLabel
+                    width: quizCompilerLogSV.width
                     text: qsTr("Project : ") + projectName
+                    wrapMode: Text.WordWrap
                 }
-                Label {
+                Text {
                     id: fromImageNameLabel
+                    width: quizCompilerLogSV.width
                     text: qsTr("From image : ") + fromImageName
+                    wrapMode: Text.WordWrap
                 }
-                Label {
+                Text {
                     id: toImageNameLabel
+                    width: quizCompilerLogSV.width
                     text: qsTr("To image : ") + toImageName
+                    wrapMode: Text.WordWrap
                 }
                 Label {
                     id: shadersBuildLogLabel
-                    text: qsTr("Build log");
+                    text: qsTr("Build log : ");
                 }
                 Text {
                     id: shadersBuildLog

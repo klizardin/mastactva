@@ -26,6 +26,7 @@ public:
     Q_PROPERTY(QString compilerLog READ log WRITE setLog NOTIFY logChanged)
 
     Q_INVOKABLE void updateState();
+    Q_INVOKABLE void updateProject();
 
 public:
     virtual QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
