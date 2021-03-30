@@ -14,6 +14,11 @@
                         "access": "public",
                         "name": "updateState",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "updateProject",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

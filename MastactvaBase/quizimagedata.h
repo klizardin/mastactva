@@ -104,6 +104,8 @@ public:
 
     int getArraySize() const;
     int getTupleSize() const;
+    bool isInitialized() const;
+    bool isDefaultValue() const;
 
 protected:
     virtual void setArray(const QString &value_) = 0;
@@ -136,6 +138,8 @@ protected:
     void setArrayT(const QVariantList &varValues_, QVector<Type_> &values_)
     {
         extractValues(varValues_, values_, m_arraySize);
+        m_isInitialized = true;
+        m_isDefault = false;
     }
 
     template<typename Type_>
@@ -159,16 +163,22 @@ protected:
                 values_.resize(int(args[2]));  // TODO: WARNING: not exact type
             }
             generateUniformRands(args, values_);
+            m_isInitialized = true;
+            m_isDefault = false;
         }
         else
         {
             if(m_isAttribute || m_isIndex)
             {
                 extractValues(value_, values_, m_arraySize);
+                m_isInitialized = true;
+                m_isDefault = false;
             }
             else if(m_isUniform)
             {
                 extractValues(value_, values_, values_.size());
+                m_isInitialized = true;
+                m_isDefault = false;
             }
         }
     }
@@ -192,6 +202,8 @@ protected:
     bool m_isFixedSize = true;
     int m_arraySize = 0;
     int m_tupleSize = 1;
+    bool m_isInitialized = false;
+    bool m_isDefault = true;
 
     friend class ArgumentBase;
 };
