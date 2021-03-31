@@ -232,7 +232,7 @@ ArgumentBase *fromJsonT(const JSonType_ &obj_, bool isInput_, const ArgumentBase
     QJsonValue jsvDefaultValue = obj_[g_argumentDefaultValueName];
     if(!jsvDefaultValue.isUndefined() && jsvDefaultValue.isString())
     {
-        result->setType(jsvDefaultValue.toString());
+        result->setDefaultValue(jsvDefaultValue.toString());
     }
     else if(!hasValue)
     {
