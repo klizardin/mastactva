@@ -117,20 +117,20 @@ void ArgumentBase::setInput(bool isInput_)
 
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
-    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, int>;
+    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { g_intTypeName, 1, false, false, false, false, 1 },
-        { g_floatTypeName, 1, true, false, false, false, 1 },
-        { g_vec2TypeName, 2, true, false, false, false, 2 },
-        { g_vec3TypeName, 3, true, false, false, false, 3 },
-        { g_vec4TypeName, 4, true, false, false, false, 4 },
-        { g_mat2TypeName, 4, true, true, false, false, 4 },
-        { g_mat3TypeName, 9, true, true, false, false, 9 },
-        { g_mat4TypeName, 16, true, true, false, false, 16 },
-        { g_stringsTypeName, -1, false, false, true, false, 1 },
-        { g_sampler1DTypeName, 1, false, false, true, true, 1 },
-        { g_sampler2DTypeName, 1, false, false, true, true, 1 },
-        { g_sampler3DTypeName, 1, false, false, true, true, 1 },
+        { g_intTypeName, 1,         true,  false, false, false, false, 1 },
+        { g_floatTypeName, 1,       false, true,  false, false, false, 1 },
+        { g_vec2TypeName, 2,        false, true,  false, false, false, 2 },
+        { g_vec3TypeName, 3,        false, true,  false, false, false, 3 },
+        { g_vec4TypeName, 4,        false, true,  false, false, false, 4 },
+        { g_mat2TypeName, 4,        false, true,  true,  false, false, 4 },
+        { g_mat3TypeName, 9,        false, true,  true,  false, false, 9 },
+        { g_mat4TypeName, 16,       false, true,  true,  false, false, 16 },
+        { g_stringsTypeName, -1,    false, false, false, true,  false, 1 },
+        { g_sampler1DTypeName, 1,   false, false, false, true,  true,  1 },
+        { g_sampler2DTypeName, 1,   false, false, false, true,  true,  1 },
+        { g_sampler3DTypeName, 1,   false, false, false, true,  true,  1 },
     };
 
     const auto fit = std::find_if(
@@ -145,12 +145,12 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     if(std::end(typeInfos) == fit) { return nullptr; }
 
     const int arraySize = std::get<1>(*fit);
-    const bool isIntArrayType = !std::get<2>(*fit);
-    const bool isFloatArrayType = std::get<2>(*fit);
-    const bool isMatrixType = std::get<3>(*fit);
-    const bool isStringArrayType = std::get<4>(*fit);
-    const bool isTextureType = std::get<5>(*fit);
-    const int tupleSize = std::get<6>(*fit);
+    const bool isIntArrayType = std::get<2>(*fit);
+    const bool isFloatArrayType = std::get<3>(*fit);
+    const bool isMatrixType = std::get<4>(*fit);
+    const bool isStringArrayType = std::get<5>(*fit);
+    const bool isTextureType = std::get<6>(*fit);
+    const int tupleSize = std::get<7>(*fit);
 
     if(isIntArrayType)
     {
