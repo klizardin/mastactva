@@ -154,9 +154,10 @@ void QuizImageDemo::loadProject()
     freeProject();
     if(!m_project.isEmpty())
     {
+        QUrl url(project());
         m_drawingData = OpenGLDrawingImageData::fromJson(
                     QJsonDocument::fromJson(
-                        loadBinaryFile(m_project)
+                        loadBinaryFile(url.toLocalFile())
                         )
                     );
     }
@@ -170,7 +171,8 @@ void QuizImageDemo::setProjectFromImage()
             fromImage().isEmpty()
             ) { return; }
     // do not remove prev image
-    m_drawingData->addRenderImage(fromImage(), true);
+    QUrl url(fromImage());
+    m_drawingData->addRenderImage(url.toLocalFile(), true);
 }
 
 void QuizImageDemo::setProjectToImage()
@@ -179,7 +181,8 @@ void QuizImageDemo::setProjectToImage()
             toImage().isEmpty()
             ) { return; }
     // do not remove prev image
-    m_drawingData->addRenderImage(toImage(), false);
+    QUrl url(toImage());
+    m_drawingData->addRenderImage(url.toLocalFile(), false);
 }
 
 bool QuizImageDemo::isImageDataUpdated() const

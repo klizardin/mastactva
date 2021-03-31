@@ -117,20 +117,20 @@ void ArgumentBase::setInput(bool isInput_)
 
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
-    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, int>;
+    using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
-        { g_intTypeName, 1, false, false, false, false, 1 },
-        { g_floatTypeName, 1, true, false, false, false, 1 },
-        { g_vec2TypeName, 2, true, false, false, false, 2 },
-        { g_vec3TypeName, 3, true, false, false, false, 3 },
-        { g_vec4TypeName, 4, true, false, false, false, 4 },
-        { g_mat2TypeName, 4, true, true, false, false, 4 },
-        { g_mat3TypeName, 9, true, true, false, false, 9 },
-        { g_mat4TypeName, 16, true, true, false, false, 16 },
-        { g_stringsTypeName, -1, false, false, true, false, 1 },
-        { g_sampler1DTypeName, 1, false, false, true, true, 1 },
-        { g_sampler2DTypeName, 1, false, false, true, true, 1 },
-        { g_sampler3DTypeName, 1, false, false, true, true, 1 },
+        { g_intTypeName, 1,         true,  false, false, false, false, 1 },
+        { g_floatTypeName, 1,       false, true,  false, false, false, 1 },
+        { g_vec2TypeName, 2,        false, true,  false, false, false, 2 },
+        { g_vec3TypeName, 3,        false, true,  false, false, false, 3 },
+        { g_vec4TypeName, 4,        false, true,  false, false, false, 4 },
+        { g_mat2TypeName, 4,        false, true,  true,  false, false, 4 },
+        { g_mat3TypeName, 9,        false, true,  true,  false, false, 9 },
+        { g_mat4TypeName, 16,       false, true,  true,  false, false, 16 },
+        { g_stringsTypeName, -1,    false, false, false, true,  false, 1 },
+        { g_sampler1DTypeName, 1,   false, false, false, true,  true,  1 },
+        { g_sampler2DTypeName, 1,   false, false, false, true,  true,  1 },
+        { g_sampler3DTypeName, 1,   false, false, false, true,  true,  1 },
     };
 
     const auto fit = std::find_if(
@@ -145,12 +145,12 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     if(std::end(typeInfos) == fit) { return nullptr; }
 
     const int arraySize = std::get<1>(*fit);
-    const bool isIntArrayType = !std::get<2>(*fit);
-    const bool isFloatArrayType = std::get<2>(*fit);
-    const bool isMatrixType = std::get<3>(*fit);
-    const bool isStringArrayType = std::get<4>(*fit);
-    const bool isTextureType = std::get<5>(*fit);
-    const int tupleSize = std::get<6>(*fit);
+    const bool isIntArrayType = std::get<2>(*fit);
+    const bool isFloatArrayType = std::get<3>(*fit);
+    const bool isMatrixType = std::get<4>(*fit);
+    const bool isStringArrayType = std::get<5>(*fit);
+    const bool isTextureType = std::get<6>(*fit);
+    const int tupleSize = std::get<7>(*fit);
 
     if(isIntArrayType)
     {
@@ -232,7 +232,7 @@ ArgumentBase *fromJsonT(const JSonType_ &obj_, bool isInput_, const ArgumentBase
     QJsonValue jsvDefaultValue = obj_[g_argumentDefaultValueName];
     if(!jsvDefaultValue.isUndefined() && jsvDefaultValue.isString())
     {
-        result->setType(jsvDefaultValue.toString());
+        result->setDefaultValue(jsvDefaultValue.toString());
     }
     else if(!hasValue)
     {
@@ -2018,6 +2018,14 @@ bool DrawingArgument::isInitialized() const
             ;
 }
 
+DrawingArgument *DrawingArgument::copy() const
+{
+    return new DrawingArgument(
+                nullptr != m_valueDataArray ? m_valueDataArray->copy() : nullptr,
+                m_position
+                );
+}
+
 const QVector<GLint> &DrawingArgument::intValues() const
 {
     static QVector<GLint> fish;
@@ -2249,6 +2257,11 @@ void OpenGLDrawingStepImageData::free()
 }
 
 
+OpenGLDrawingImageData::~OpenGLDrawingImageData()
+{
+    free();
+}
+
 bool OpenGLDrawingImageData::isInitialized() const
 {
     return m_initialized;
@@ -2256,109 +2269,115 @@ bool OpenGLDrawingImageData::isInitialized() const
 
 void OpenGLDrawingImageData::findArgumentsRange(
         const QString &argumentName_,
-        QList<DrawingArgument>::iterator &itb_,
-        QList<DrawingArgument>::iterator &ite_
+        QVector<DrawingArgument *>::iterator &itb_,
+        QVector<DrawingArgument *>::iterator &ite_
         )
 {
     itb_ = std::lower_bound(
                 std::begin(m_arguments),
                 std::end(m_arguments),
                 argumentName_,
-                [](const DrawingArgument &arg_, const QString &name_)->bool
+                [](const DrawingArgument *arg_, const QString &name_)->bool
     {
-        return arg_.getArgumentName() < name_;
+        return nullptr != arg_ && arg_->getArgumentName() < name_;
     });
     ite_ = std::upper_bound(
                 std::begin(m_arguments),
                 std::end(m_arguments),
                 argumentName_,
-                [](const QString &name_, const DrawingArgument &arg_)->bool
+                [](const QString &name_, const DrawingArgument *arg_)->bool
     {
-        return name_ < arg_.getArgumentName();
+        return nullptr != arg_ && name_ < arg_->getArgumentName();
     });
 }
 
 void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_)
 {
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb, ite);
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName_) { continue; }
-        it->setValues(values_, size_);
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { continue; }
+        (*it)->setValues(values_, size_);
     }
 }
 
 void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_)
 {
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb, ite);
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName_) { continue; }
-        it->getValues(values_);
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { continue; }
+        (*it)->getValues(values_);
         break;
     }
 }
 
 void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVector<GLint> & values_)
 {
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb, ite);
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName_) { continue; }
-        it->getValues(values_);
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { continue; }
+        (*it)->getValues(values_);
         break;
     }
 }
 
 int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_)
 {
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb, ite);
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName_) { continue; }
-        return it->getTupleSize();
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { continue; }
+        return (*it)->getTupleSize();
     }
     return 0;
 }
 
 bool OpenGLDrawingImageData::isArgumentInitialized(const QString &argumentName_)
 {
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb, ite);
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName_) { continue; }
-        return it->isInitialized();
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { continue; }
+        return (*it)->isInitialized();
     }
     return false;
 }
 
 bool OpenGLDrawingImageData::getTextureSize(const QString &argumentName_, QSize &size_)
 {
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb, ite);
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName_) { continue; }
-        for(OpenGLDrawingStepImageData &step_ : m_steps)
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { continue; }
+        for(OpenGLDrawingStepImageData *step_ : m_steps)
         {
-            const int cnt = std::min(step_.m_programArguments.size(), step_.m_argumentTextures.size());
+            const int cnt = std::min(step_->m_programArguments.size(), step_->m_argumentTextures.size());
             for(int i1 = 0; i1 < cnt; ++i1)
             {
-                if(!step_.m_programArguments[i1]->valueOf(it->getValueDataArray())) { continue; }
-                if(nullptr != step_.m_argumentTextures[i1])
+                if(!step_->m_programArguments[i1]->valueOf((*it)->getValueDataArray())) { continue; }
+                if(nullptr != step_->m_argumentTextures[i1])
                 {
-                    size_ = step_.m_argumentTextures[i1]->getImage().size();
+                    size_ = step_->m_argumentTextures[i1]->getImage().size();
                     return true;
                 }
             }
@@ -2375,21 +2394,23 @@ void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromI
     m_textures.push_back(fromTexture);
 
     const QString argumentName = fromImage_ ? g_renderFromImageName : g_renderToImageName;
-    QList<DrawingArgument>::iterator itb = std::end(m_arguments);
-    QList<DrawingArgument>::iterator ite = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::iterator ite = std::end(m_arguments);
     findArgumentsRange(argumentName, itb, ite);
 
     for(auto it = itb; it != ite; ++it)
     {
-        if(it->getArgumentName() != argumentName) { continue; }
-        it->setValue(filename_);
-        for(OpenGLDrawingStepImageData &step_ : m_steps)
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName) { continue; }
+        (*it)->setValue(filename_);
+        for(OpenGLDrawingStepImageData *step_ : m_steps)
         {
-            const int cnt = std::min(step_.m_programArguments.size(), step_.m_argumentTextures.size());
+            if(nullptr == step_) { continue; }
+            const int cnt = std::min(step_->m_programArguments.size(), step_->m_argumentTextures.size());
             for(int i1 = 0; i1 < cnt; ++i1)
             {
-                if(!step_.m_programArguments[i1]->valueOf(it->getValueDataArray())) { continue; }
-                step_.m_argumentTextures[i1] = &m_textures.back();
+                if(!step_->m_programArguments[i1]->valueOf((*it)->getValueDataArray())) { continue; }
+                step_->m_argumentTextures[i1] = &m_textures.back();
             }
         }
     }
@@ -2402,97 +2423,112 @@ int OpenGLDrawingImageData::stepCount() const
 
 bool OpenGLDrawingImageData::buildStepProgram(int stepIndex_, QString &errorLog_)
 {
-    if(stepIndex_ < 0 || stepIndex_ >= stepCount()) { return false; }
-    const bool res = m_steps[stepIndex_].buildProgram(errorLog_);
+    if(stepIndex_ < 0 ||
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
+            ) { return false; }
+    const bool res = m_steps[stepIndex_]->buildProgram(errorLog_);
     m_initialized |= res;
     return res;
 }
 
 bool OpenGLDrawingImageData::isStepProgramBuilded(int stepIndex_) const
 {
-    if(stepIndex_ < 0 || stepIndex_ >= stepCount()) { return false; }
-    return m_steps[stepIndex_].isProgramBuilded();
+    if(stepIndex_ < 0 ||
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
+            ) { return false; }
+    return m_steps[stepIndex_]->isProgramBuilded();
 }
 
 void OpenGLDrawingImageData::createStepArgument(int stepIndex_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].createArguments();
+    m_steps[stepIndex_]->createArguments();
 }
 
 void OpenGLDrawingImageData::createStepTextures(int stepIndex_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].createTextures();
+    m_steps[stepIndex_]->createTextures();
 }
 
 void OpenGLDrawingImageData::bindStep(int stepIndex_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].bind();
+    m_steps[stepIndex_]->bind();
 }
 
 void OpenGLDrawingImageData::buildStepVBO(int stepIndex_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].buildVBO();
+    m_steps[stepIndex_]->buildVBO();
 }
 
 void OpenGLDrawingImageData::bindStepProgram(int stepIndex_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].bindProgram();
+    m_steps[stepIndex_]->bindProgram();
 }
 
 void OpenGLDrawingImageData::useStepArguments(int stepIndex_) const
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].useArguments();
+    m_steps[stepIndex_]->useArguments();
 }
 
 void OpenGLDrawingImageData::bindStepTexture(int stepIndex_, QOpenGLFunctions *f_) const
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].bindTextures(f_);
+    m_steps[stepIndex_]->bindTextures(f_);
 }
 
 void OpenGLDrawingImageData::drawStep(int stepIndex_, QOpenGLFunctions *f_) const
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].draw(f_);
+    m_steps[stepIndex_]->draw(f_);
 }
 
 void OpenGLDrawingImageData::releaseStep(int stepIndex_) const
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
-            stepIndex_ >= stepCount()
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_].release();
+    m_steps[stepIndex_]->release();
 }
 
 OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &doc_)
@@ -2549,27 +2585,29 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                 delete texture;
                 texture = nullptr;
             }
-            result->m_steps.push_back(OpenGLDrawingStepImageData());
+            result->m_steps.push_back(new OpenGLDrawingStepImageData());
             for(const QPair<const ArgumentBase *, const DrawingTextureArtefact *> &arg_ :arguments)
             {
                 if(nullptr == arg_.first) { continue; }
                 ArgumentValueDataArray *valueDataArray = arg_.first->createValueDataArray();
-                result->m_arguments.push_back(DrawingArgument(valueDataArray, result->m_steps.size()));
-                result->m_steps.back().m_programArguments.push_back(result->m_arguments.back().createOpenglValue());
+                result->m_arguments.push_back(new DrawingArgument(valueDataArray, result->m_steps.size()));
+                result->m_steps.back()->m_programArguments.push_back(
+                            result->m_arguments.back()->createOpenglValue()
+                            );
                 if(nullptr != arg_.second)
                 {
                     result->m_textures.push_back(*arg_.second);
-                    result->m_steps.back().m_argumentTextures.push_back(&result->m_textures.back());
+                    result->m_steps.back()->m_argumentTextures.push_back(&result->m_textures.back());
                 }
                 else
                 {
-                    result->m_steps.back().m_argumentTextures.push_back(nullptr);
+                    result->m_steps.back()->m_argumentTextures.push_back(nullptr);
                 }
             }
             result->m_vertexShaders.push_back(*vertexShader);
             result->m_fragmentShaders.push_back(*fragmentShader);
-            result->m_steps.back().m_vertexArtefact = &result->m_vertexShaders.back();
-            result->m_steps.back().m_fragmentArtefact = &result->m_fragmentShaders.back();
+            result->m_steps.back()->m_vertexArtefact = &result->m_vertexShaders.back();
+            result->m_steps.back()->m_fragmentArtefact = &result->m_fragmentShaders.back();
             for(QPair<const ArgumentBase *, const DrawingTextureArtefact *> &arg_ :arguments)
             {
                 delete arg_.first;
@@ -2592,6 +2630,22 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
     }
 
     return result;
+}
+
+void OpenGLDrawingImageData::free()
+{
+    for(OpenGLDrawingStepImageData *&ptr_ : m_steps)
+    {
+        delete ptr_;
+        ptr_ = nullptr;
+    }
+    m_steps.clear();
+    for(DrawingArgument *&ptr_ : m_arguments)
+    {
+        delete ptr_;
+        ptr_ = nullptr;
+    }
+    m_arguments.clear();
 }
 
 
@@ -2617,7 +2671,7 @@ OpenGLDrawingImageData *DrawingImageData::copy()
     result->m_arguments.reserve(m_argumentsSet.size());
     for(const DrawingArgument &argument_ : m_argumentsSet)
     {
-        result->m_arguments.push_back(argument_);
+        result->m_arguments.push_back(argument_.copy());
     }
     for(DrawingTextureArtefact &artefact_ : result->m_textures)
     {

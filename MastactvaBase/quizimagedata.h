@@ -1266,6 +1266,7 @@ public:
     bool isInitialized() const;
     bool operator == (const DrawingArgument &argument_) const;
     bool operator < (const DrawingArgument &argument_) const;
+    DrawingArgument * copy() const;
 
 private:
     const QVector<GLint> &intValues() const;
@@ -1330,6 +1331,7 @@ class OpenGLDrawingImageData
 {
 public:
     OpenGLDrawingImageData() = default;
+    ~OpenGLDrawingImageData();
 
     bool isInitialized() const;
     void setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_);
@@ -1360,13 +1362,14 @@ public:
 protected:
     void findArgumentsRange(
             const QString &argumentName_,
-            QList<DrawingArgument>::iterator &itb_,
-            QList<DrawingArgument>::iterator &ite_
+            QVector<DrawingArgument *>::iterator &itb_,
+            QVector<DrawingArgument *>::iterator &ite_
             );
+    void free();
 
 private:
-    QList<OpenGLDrawingStepImageData> m_steps;
-    QList<DrawingArgument> m_arguments;
+    QVector<OpenGLDrawingStepImageData *> m_steps;
+    QVector<DrawingArgument *> m_arguments;
     QList<DrawingTextureArtefact> m_textures;
     QList<DrawingShaderArtefact> m_vertexShaders;
     QList<DrawingShaderArtefact> m_fragmentShaders;
