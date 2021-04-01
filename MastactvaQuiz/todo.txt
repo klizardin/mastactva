@@ -65,6 +65,7 @@
 42. add simple gestrure mode (only long clicks/simple clicks)
 43. base unit tests
 44. base precalculations
+45. test opengl drawing
 
 
 
