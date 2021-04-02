@@ -153,6 +153,7 @@ LUA:
 
 92. refactoring
 93. +,+,+ tests, unit tests
+94. test for con
 
 
 
