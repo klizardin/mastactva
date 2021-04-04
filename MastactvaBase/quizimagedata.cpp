@@ -1224,7 +1224,9 @@ void OpenGLArgumentValueBase::useAttributeValue(
         int offset_,
         int tupleSize_) const
 {
-    if(nullptr == program_) { return; }
+    if(nullptr == program_ ||
+            m_id < 0
+            ) { return; }
     program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
     program_->enableAttributeArray(m_id);
 }
@@ -1233,23 +1235,28 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 {
     if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
-    vbo_->write(
-                offset_,
-                &values_[0],
-                partSize_
-                );
+    if(values_.size() > 0)
+    {
+        vbo_->write(
+                    offset_,
+                    &values_[0],
+                    partSize_
+                    );
+    }
 }
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const
 {
     if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
-    Q_ASSERT(values_.size() > 0);
-    vbo_->write(
-                offset_,
-                &values_[0],
-                partSize_
-                );
+    if(values_.size() > 0)
+    {
+        vbo_->write(
+                   offset_,
+                   &values_[0],
+                   partSize_
+                   );
+    }
 }
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<QString> &values_, int partSize_, int tupleSize_) const
@@ -1264,7 +1271,9 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 
 void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *program_) const
 {
-    if(nullptr == program_) { return; }
+    if(nullptr == program_ ||
+            m_id < 0
+            ) { return; }
     program_->disableAttributeArray(m_id);
 }
 
@@ -1280,7 +1289,9 @@ void OpenGLArgumentValueBase::setUniformValue(
         int arraySize_,
         bool isMatrixType) const
 {
-    if(nullptr == program_) { return; }
+    if(nullptr == program_ ||
+            m_id < 0
+            ) { return; }
     Q_UNUSED(isMatrixType);
     if(arraySize_ >= 1 && values_.size() >= 1)
     {
@@ -1294,40 +1305,63 @@ void OpenGLArgumentValueBase::setUniformValue(
         int arraySize_,
         bool isMatrixType) const
 {
-    if(nullptr == program_) { return; }
+    if(nullptr == program_ ||
+            m_id < 0
+            ) { return; }
     if(1 == arraySize_)
     {
-        program_->setUniformValue(m_id, values_[0]);
+        if(values_.size() >= 1)
+        {
+            program_->setUniformValue(m_id, values_[0]);
+        }
     }
     else if(2 == arraySize_)
     {
-        program_->setUniformValue(m_id, values_[0],
-                values_[1]);
+        if(values_.size() >= 2)
+        {
+            program_->setUniformValue(m_id, values_[0],
+                    values_[1]);
+        }
     }
     else if(3 == arraySize_)
     {
-        program_->setUniformValue(m_id, values_[0],
-                values_[1], values_[2]);
+        if(values_.size() >= 3)
+        {
+            program_->setUniformValue(m_id, values_[0],
+                    values_[1], values_[2]);
+        }
     }
     else if(4 == arraySize_ && !isMatrixType)
     {
-        program_->setUniformValue(m_id, values_[0],
-                values_[1], values_[2], values_[3]);
+        if(values_.size() >= 4)
+        {
+            program_->setUniformValue(m_id, values_[0],
+                    values_[1], values_[2], values_[3]);
+        }
     }
     else if(4 == arraySize_ && isMatrixType)
     {
-        QMatrix2x2 m(&values_[0]);
-        program_->setUniformValue(m_id, m);
+        if(values_.size() >= 4)
+        {
+            QMatrix2x2 m(&values_[0]);
+            program_->setUniformValue(m_id, m);
+        }
     }
     else if(9 == arraySize_ && isMatrixType)
     {
-        QMatrix3x3 m(&values_[0]);
-        program_->setUniformValue(m_id, m);
+        if(values_.size() >= 9)
+        {
+            QMatrix3x3 m(&values_[0]);
+            program_->setUniformValue(m_id, m);
+        }
     }
     else if(16 == arraySize_ && isMatrixType)
     {
-        QMatrix4x4 m(&values_[0]);
-        program_->setUniformValue(m_id, m);
+        if(values_.size() >= 16)
+        {
+            QMatrix4x4 m(&values_[0]);
+            program_->setUniformValue(m_id, m);
+        }
     }
     else
     {
@@ -1349,7 +1383,9 @@ void OpenGLArgumentValueBase::setUniformValue(
 
 void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_) const
 {
-    if(nullptr == f_) { return; }
+    if(nullptr == f_ ||
+            size_ <= 0
+            ) { return; }
     f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
 }
 
