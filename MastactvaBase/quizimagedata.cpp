@@ -2287,10 +2287,19 @@ void OpenGLDrawingStepImageData::buildVBO()
 void OpenGLDrawingStepImageData::writeVBO()
 {
     if(nullptr == m_vbo) { return; }
+    int maxIndex = 0;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        maxIndex = std::max(maxIndex, argument_->getMaxIndex());
+    }
     int vboPartOffset = 0;
     for(OpenGLArgumentValueBase *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
+        if(0 >= argument_->getVBOPartSize() ||
+                0 >= argument_->getMaxIndex()
+                ) { continue; }
         const int size = (argument_->getVBOPartSize() * maxIndex) / argument_->getMaxIndex();
         argument_->writeVBOPart(m_vbo, vboPartOffset, argument_->getMaxIndex());
         vboPartOffset += size * sizeof(GLfloat);
