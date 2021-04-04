@@ -2280,17 +2280,28 @@ void OpenGLDrawingImageData::findArgumentsRange(
     {
         return nullptr != arg_ && arg_->getArgumentName() < name_;
     });
-    /*ite_ = std::upper_bound(
+}
+
+void OpenGLDrawingImageData::findArgumentsRange(
+        const QString &argumentName_,
+        QVector<DrawingArgument *>::const_iterator &itb_
+        ) const
+{
+    itb_ = std::lower_bound(
                 std::begin(m_arguments),
                 std::end(m_arguments),
                 argumentName_,
-                [](const QString &name_, const DrawingArgument *arg_)->bool
+                [](const DrawingArgument *arg_, const QString &name_)->bool
     {
-        return nullptr != arg_ && name_ < arg_->getArgumentName();
-    });*/
+        return nullptr != arg_ && arg_->getArgumentName() < name_;
+    });
 }
 
-void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_)
+void OpenGLDrawingImageData::setRenderArgumentValue(
+        const QString &argumentName_,
+        const QVector<GLfloat> & values_,
+        int size_
+        )
 {
     QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
@@ -2302,9 +2313,12 @@ void OpenGLDrawingImageData::setRenderArgumentValue(const QString &argumentName_
     }
 }
 
-void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_)
+void OpenGLDrawingImageData::getArgumentValue(
+        const QString &argumentName_,
+        QVector<GLfloat> & values_
+        ) const
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2315,9 +2329,12 @@ void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVec
     }
 }
 
-void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVector<GLint> & values_)
+void OpenGLDrawingImageData::getArgumentValue(
+        const QString &argumentName_,
+        QVector<GLint> & values_
+        ) const
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2328,9 +2345,9 @@ void OpenGLDrawingImageData::getArgumentValue(const QString &argumentName_, QVec
     }
 }
 
-int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_)
+int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_) const
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2341,27 +2358,27 @@ int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_)
     return 0;
 }
 
-bool OpenGLDrawingImageData::isArgumentInitialized(const QString &argumentName_)
+bool OpenGLDrawingImageData::isArgumentInitialized(const QString &argumentName_) const
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
         if(nullptr == *it) { continue; }
-        if((*it)->getArgumentName() != argumentName_) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { break; }
         return (*it)->isInitialized();
     }
     return false;
 }
 
-bool OpenGLDrawingImageData::getTextureSize(const QString &argumentName_, QSize &size_)
+bool OpenGLDrawingImageData::getTextureSize(const QString &argumentName_, QSize &size_) const
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
         if(nullptr == *it) { continue; }
-        if((*it)->getArgumentName() != argumentName_) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { break; }
         for(OpenGLDrawingStepImageData *step_ : m_steps)
         {
             const int cnt = std::min(step_->m_programArguments.size(), step_->m_argumentTextures.size());
@@ -2558,7 +2575,8 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
             if(nullptr == vertexShader || fragmentShader == nullptr) { break; }
             QJsonValue jsvStepArguments = jsoStep[g_argumentsArtefactForStepName];
             if(jsvStepArguments.isUndefined() || !jsvStepArguments.isArray()) { break; }
-            QList<QPair<const ArgumentBase *, const DrawingTextureArtefact *>> arguments;
+            using ArgumentAndTexture = QPair<const ArgumentBase *, const DrawingTextureArtefact *>;
+            QVector<ArgumentAndTexture> arguments;
             const QJsonArray jsaStepArguments = jsvStepArguments.toArray();
             for(int i2 = 0; i2 < jsaStepArguments.size(); ++i2)
             {
@@ -2584,7 +2602,7 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                 texture = nullptr;
             }
             result->m_steps.push_back(new OpenGLDrawingStepImageData());
-            for(const QPair<const ArgumentBase *, const DrawingTextureArtefact *> &arg_ :arguments)
+            for(const ArgumentAndTexture &arg_ :arguments)
             {
                 if(nullptr == arg_.first) { continue; }
                 ArgumentValueDataArray *valueDataArray = arg_.first->createValueDataArray();
@@ -2606,7 +2624,7 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
             result->m_fragmentShaders.push_back(*fragmentShader);
             result->m_steps.back()->m_vertexArtefact = &result->m_vertexShaders.back();
             result->m_steps.back()->m_fragmentArtefact = &result->m_fragmentShaders.back();
-            for(QPair<const ArgumentBase *, const DrawingTextureArtefact *> &arg_ :arguments)
+            for(ArgumentAndTexture &arg_ :arguments)
             {
                 delete arg_.first;
                 arg_.first = nullptr;
@@ -2623,8 +2641,14 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
     {
         std::sort(
             std::begin(result->m_arguments),
-            std::end(result->m_arguments)
-            );
+            std::end(result->m_arguments),
+            [](const DrawingArgument *a1_, const DrawingArgument *a2_)->bool
+        {
+            return nullptr != a1_ &&
+                    nullptr != a2_ &&
+                    a1_->getArgumentName() < a2_->getArgumentName()
+                    ;
+        });
     }
 
     return result;

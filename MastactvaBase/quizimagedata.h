@@ -1335,11 +1335,11 @@ public:
 
     bool isInitialized() const;
     void setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_);
-    void getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_);
-    void getArgumentValue(const QString &argumentName_, QVector<GLint> & values_);
-    int getTupleSize(const QString &argumentName_);
-    bool isArgumentInitialized(const QString &argumentName_);
-    bool getTextureSize(const QString &argumentName_, QSize &size_);
+    void getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_) const;
+    void getArgumentValue(const QString &argumentName_, QVector<GLint> & values_) const;
+    int getTupleSize(const QString &argumentName_) const;
+    bool isArgumentInitialized(const QString &argumentName_) const;
+    bool getTextureSize(const QString &argumentName_, QSize &size_) const;
     void addRenderImage(const QString &filename_, bool fromImage_);
 
     int stepCount() const;
@@ -1364,6 +1364,10 @@ protected:
             const QString &argumentName_,
             QVector<DrawingArgument *>::iterator &itb_
             );
+    void findArgumentsRange(
+            const QString &argumentName_,
+            QVector<DrawingArgument *>::const_iterator &itb_
+            ) const;
     void free();
 
 private:
