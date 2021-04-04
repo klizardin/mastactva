@@ -1,4 +1,4 @@
-﻿#ifndef QUIZIMAGEDATA_H
+#ifndef QUIZIMAGEDATA_H
 #define QUIZIMAGEDATA_H
 
 
@@ -533,7 +533,7 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initUniformValueId(
+        OpenGLArgumentValueBase::initUniformValueId(
                     program_,
                     arg().getName());
     }
@@ -574,7 +574,7 @@ public:
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
-        setUniformValue(program_,
+        OpenGLArgumentValueBase::setUniformValue(program_,
                         value().getValues(),
                         getArraySize(),
                         value().isMatrixType());
@@ -637,7 +637,7 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initUniformValueId(
+        OpenGLArgumentValueBase::initUniformValueId(
                     program_,
                     arg().getName());
     }
@@ -706,7 +706,7 @@ public:
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
         if(m_textureIndex < 0) { return; }
-        setUniformValue(program_,
+        OpenGLArgumentValueBase::setUniformValue(program_,
                     QVector<GLint>({m_textureIndex, }),
                     1,
                     false);
@@ -749,18 +749,21 @@ template<typename Type_>
 struct TypeToGLTypeEnum
 {
     constexpr static GLenum value = GL_BYTE;
+    constexpr static GLenum sizeOfType = 1;
 };
 
 template<>
 struct TypeToGLTypeEnum<GLint>
 {
     constexpr static GLenum value = GL_INT;
+    constexpr static GLenum sizeOfType = sizeof(GLint);
 };
 
 template<>
 struct TypeToGLTypeEnum<GLfloat>
 {
     constexpr static GLenum value = GL_FLOAT;
+    constexpr static GLenum sizeOfType = sizeof(GLfloat);
 };
 
 
@@ -839,7 +842,7 @@ public:
         OpenGLArgumentValueBase::useAttributeValue(
                     program_,
                     TypeToGLTypeEnum<ItemType>::value,
-                    m_offset,
+                    m_offset * TypeToGLTypeEnum<ItemType>::sizeOfType,
                     valueBase().getTupleSize());
     }
 
