@@ -35,7 +35,7 @@ public:
     qreal t() const;
     bool isImageDataUpdated() const;
     OpenGLDrawingImageData *getData();
-    void retryData();
+    void retryData(OpenGLDrawingImageData *old_);
     void renderBuildError(const QString &compilerLog_);
 
 protected:
@@ -67,6 +67,7 @@ private:
     QString m_toImage;
     QString m_project;
     OpenGLDrawingImageData *m_drawingData = nullptr;
+    OpenGLDrawingImageData *m_drawingOldData = nullptr;
     QString m_compilerLog;
 };
 

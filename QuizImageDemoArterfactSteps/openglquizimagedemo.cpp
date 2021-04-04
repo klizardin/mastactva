@@ -74,8 +74,9 @@ void OpenGlQuizImageDemo::sync(QQuickItem *item_)
     }
 
     // all drawing data need to be updated
+    OpenGLDrawingImageData *old = m_drawingData;
     m_drawingData = quizImage->getData();
-    quizImage->retryData();
+    quizImage->retryData(old);
     updateRenderArguments(false);
 }
 
