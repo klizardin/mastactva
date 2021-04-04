@@ -163,6 +163,7 @@ void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
             }*/
 
             m_drawingData->createStepArgument(i);
+            m_drawingData->createStepTextures(i);
         }
 
         /*m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
@@ -465,9 +466,15 @@ void calculatePreserveAspectFitTextureMatrix(
 void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
 {
     if(nullptr == m_drawingData) { return; }
+    const int screeRectTupleSize = m_drawingData->getTupleSize(
+                g_renderScreenRectName
+                );
     m_drawingData->setRenderArgumentValue(
                 g_renderScreenRectName,
-                QVector<GLfloat>({GLfloat(m_left), GLfloat(m_top), GLfloat(m_width), GLfloat(m_height)}),
+                screeRectTupleSize <= 2
+                    ? QVector<GLfloat>({GLfloat(m_width), GLfloat(m_height)})
+                    : QVector<GLfloat>({GLfloat(m_left), GLfloat(m_top), GLfloat(m_width), GLfloat(m_height)})
+                    ,
                 -1
                 );
     m_drawingData->setRenderArgumentValue(
