@@ -370,7 +370,8 @@ void makeGeometry(
         bool hasTextureCoords_,
         bool isGeometrySolid_,
         QVector<GLfloat> &vertexData_,
-        QVector<GLfloat> &textureData_
+        QVector<GLfloat> &textureData_,
+        QVector<GLint> &indexesData_
         )
 {
     static const int coords[g_trianglesCount][g_triangleConers][2] =
@@ -441,6 +442,15 @@ void makeGeometry(
                 }
             }
         }
+    }
+    indexesData_.resize(1);
+    if(isGeometrySolid_)
+    {
+        indexesData_[0] = 1;
+    }
+    else
+    {
+        indexesData_[0] = geomertyPointsWidth_ * geometryPointsHeight_;
     }
 }
 
@@ -515,13 +525,14 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                     );
         QVector<GLfloat> vertexData;
         QVector<GLfloat> textureData;
+        QVector<GLint> indexesData;
         makeGeometry(
                     m_width, m_height,
                     geomertySize[0], geomertySize[1],
                     facedGeometryCoefs[0], facedGeometryCoefs[1],
                     vertexTupleSize, textureTupleSize,
                     textureTupleSize > 0, geomertySolid[0] > 0,
-                    vertexData, textureData
+                    vertexData, textureData, indexesData
                     );
         m_drawingData->setRenderArgumentValue(
                     g_renderVertexAttributeName,
@@ -536,6 +547,11 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                         textureData.size()
                         );
         }
+        m_drawingData->setRenderArgumentValue(
+                    g_renderIndexesName,
+                    indexesData,
+                    indexesData.size()
+                    );
     }
     QSize rectSize(m_width, m_height);
     if(!m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))

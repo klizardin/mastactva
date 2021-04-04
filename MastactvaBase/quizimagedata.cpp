@@ -1198,6 +1198,11 @@ void OpenGLArgumentValueBase::createTexture(const QImage &image_)
     Q_UNUSED(image_);
 }
 
+void OpenGLArgumentValueBase::setMaxIndex(int maxIndex_)
+{
+    Q_UNUSED(maxIndex_);
+}
+
 void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_) const
 {
     Q_UNUSED(f_);
@@ -1381,12 +1386,13 @@ void OpenGLArgumentValueBase::setUniformValue(
     Q_UNUSED(isMatrixType);
 }
 
-void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int size_) const
+void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int offset_, int size_) const
 {
     if(nullptr == f_ ||
-            size_ <= 0
+            size_ <= 0 ||
+            offset_ < 0
             ) { return; }
-    f_->glDrawArrays(GL_TRIANGLES, 0, (size_ / 3) * 3);
+    f_->glDrawArrays(GL_TRIANGLES, (offset_ / 3) * 3, (size_ / 3) * 3);
 }
 
 void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_)
@@ -2005,6 +2011,30 @@ void DrawingArgument::setValues(const QVector<GLfloat> &values_, int size_)
     }
 }
 
+void DrawingArgument::setValues(const QVector<GLint> &values_, int size_)
+{
+    if(nullptr == m_valueDataArray) { return; }
+    const int cnt = size_ < 0
+            ? std::min(values_.size(), m_valueDataArray->intValues().size())
+            : size_;
+    if(size_ >= 0 &&
+            m_valueDataArray->intValues().size() != size_)
+    {
+        m_valueDataArray->intValues().resize(size_);
+    }
+    for(int i = 0; i < cnt; ++i)
+    {
+        if(i < m_valueDataArray->intValues().size())
+        {
+            m_valueDataArray->intValues()[i] = values_[i];
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
 void DrawingArgument::getValues(QVector<GLfloat> &values_) const
 {
     if(nullptr == m_valueDataArray) { return; }
@@ -2218,13 +2248,28 @@ void OpenGLDrawingStepImageData::bind()
 void OpenGLDrawingStepImageData::buildVBO()
 {
     if(nullptr != m_vbo) { return; }
+    int maxIndex = 0;
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        maxIndex = std::max(maxIndex, argument_->getMaxIndex());
+    }
+    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->setMaxIndex(maxIndex);
+    }
     int vboDataSize = 0;
     for(OpenGLArgumentValueBase *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        const int offset = vboDataSize;
-        vboDataSize += argument_->getVBOPartSize();
-        argument_->setVBOPartOffset(offset);
+        if(0 < argument_->getVBOPartSize() &&
+                0 < argument_->getMaxIndex())
+        {
+            const int offset = vboDataSize;
+            vboDataSize += (argument_->getVBOPartSize() * maxIndex) / argument_->getMaxIndex();
+            argument_->setVBOPartOffset(offset);
+        }
     }
     m_vboData.resize(vboDataSize);
     m_vbo = new QOpenGLBuffer();
@@ -2352,6 +2397,22 @@ void OpenGLDrawingImageData::findArgumentsRange(
 void OpenGLDrawingImageData::setRenderArgumentValue(
         const QString &argumentName_,
         const QVector<GLfloat> & values_,
+        int size_
+        )
+{
+    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    findArgumentsRange(argumentName_, itb);
+    for(auto it = itb; it != std::end(m_arguments); ++it)
+    {
+        if(nullptr == *it) { continue; }
+        if((*it)->getArgumentName() != argumentName_) { break; }
+        (*it)->setValues(values_, size_);
+    }
+}
+
+void OpenGLDrawingImageData::setRenderArgumentValue(
+        const QString &argumentName_,
+        const QVector<GLint> & values_,
         int size_
         )
 {

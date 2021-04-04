@@ -69,6 +69,7 @@ static const char *g_renderGeomertySizeName = "renderGeomertySize";
 static const char *g_renderIsGeomertySolidName = "renderIsGeomertySolid";
 static const char *g_renderVertexAttributeName = "renderVertexAttribute";
 static const char *g_renderTextureAttributeName = "renderTextureAttribute";
+static const char *g_renderIndexesName = "renderIndexes";
 static const char *g_intTypeName = "int";
 static const char *g_floatTypeName = "float";
 static const char *g_vec2TypeName = "vec2";
