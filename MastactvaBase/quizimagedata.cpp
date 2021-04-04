@@ -2247,6 +2247,7 @@ void OpenGLDrawingStepImageData::bindProgram()
 {
     if(nullptr == m_program) { return; }
     m_program->bind();
+    m_vbo->bind();
 }
 
 void OpenGLDrawingStepImageData::useArguments() const
@@ -2284,6 +2285,8 @@ void OpenGLDrawingStepImageData::release() const
         if(nullptr == argument_) { continue; }
         argument_->release(m_program);
     }
+    m_vbo->release();
+    m_program->release();
 }
 
 void OpenGLDrawingStepImageData::free()
