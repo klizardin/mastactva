@@ -328,7 +328,10 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
 
 void OpenGlQuizImageDemo::noPaintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
-    f_->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    Q_UNUSED(f_);
+    Q_UNUSED(state_);
+
+/*    f_->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
     f_->glEnable(GL_BLEND);
     f_->glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -351,6 +354,7 @@ void OpenGlQuizImageDemo::noPaintGL(QOpenGLFunctions *f_, const RenderState *sta
     //f_->glCullFace(GL_FRONT_AND_BACK);
     f_->glFrontFace(GL_CCW);
     //f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+*/
 }
 
 static const int g_trianglesCount = 2;
