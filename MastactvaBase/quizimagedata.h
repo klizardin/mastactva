@@ -1,4 +1,4 @@
-﻿#ifndef QUIZIMAGEDATA_H
+#ifndef QUIZIMAGEDATA_H
 #define QUIZIMAGEDATA_H
 
 
@@ -476,6 +476,7 @@ public:
     virtual void createTexture(const QImage &image_);
     virtual int getArraySize() const = 0;       // internaly used (do not know the purpose of this function)
     virtual int getMaxIndex() const = 0;        // max index value to allocate data
+    virtual void setMaxIndex(int maxIndex_);
     virtual int getVBOPartSize() const = 0;     // vbo size of this part
     virtual void setVBOPartOffset(int offset_) = 0; // set offset of vbo data (data follows in chain)
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;  // write vbo part to draing buffer
@@ -498,7 +499,7 @@ protected:
     void setUniformValue(QOpenGLShaderProgram *program_, const QVector<GLfloat> &values_, int arraySize_, bool isMatrixType) const;
     void setUniformValue(QOpenGLShaderProgram *program_, const QVector<QString> &values_, int arraySize_, bool isMatrixType) const;
 
-    void drawTrianlesArray(QOpenGLFunctions *f_, int size_) const;
+    void drawTrianlesArray(QOpenGLFunctions *f_, int offset_, int size_) const;
 
     void createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_);
     void bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *texture_, int textureIndex_) const;
@@ -532,7 +533,7 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initUniformValueId(
+        OpenGLArgumentValueBase::initUniformValueId(
                     program_,
                     arg().getName());
     }
@@ -573,7 +574,7 @@ public:
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
-        setUniformValue(program_,
+        OpenGLArgumentValueBase::setUniformValue(program_,
                         value().getValues(),
                         getArraySize(),
                         value().isMatrixType());
@@ -636,7 +637,7 @@ public:
 
     virtual void create(QOpenGLShaderProgram *program_) override
     {
-        initUniformValueId(
+        OpenGLArgumentValueBase::initUniformValueId(
                     program_,
                     arg().getName());
     }
@@ -705,7 +706,7 @@ public:
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
         if(m_textureIndex < 0) { return; }
-        setUniformValue(program_,
+        OpenGLArgumentValueBase::setUniformValue(program_,
                     QVector<GLint>({m_textureIndex, }),
                     1,
                     false);
@@ -748,18 +749,21 @@ template<typename Type_>
 struct TypeToGLTypeEnum
 {
     constexpr static GLenum value = GL_BYTE;
+    constexpr static GLenum sizeOfType = 1;
 };
 
 template<>
 struct TypeToGLTypeEnum<GLint>
 {
     constexpr static GLenum value = GL_INT;
+    constexpr static GLenum sizeOfType = sizeof(GLint);
 };
 
 template<>
 struct TypeToGLTypeEnum<GLfloat>
 {
     constexpr static GLenum value = GL_FLOAT;
+    constexpr static GLenum sizeOfType = sizeof(GLfloat);
 };
 
 
@@ -829,7 +833,7 @@ public:
                     offset_,
                     sizeItems_,
                     value().getValues(),
-                    getVBOPartSize(),
+                    getVBOPartSize() * TypeToGLTypeEnum<ItemType>::sizeOfType,
                     valueBase().getTupleSize());
     }
 
@@ -890,13 +894,6 @@ public:
     OpenGLArgumentIndexValueT(const ArgumentValueDataArrayType_ *argumentValueDataArray_)
         :m_valueDataArray(argumentValueDataArray_)
     {
-        m_maxIndex = value().getValues().isEmpty()
-                ? 0
-                : *std::max_element(
-                    std::begin(value().getValues()),
-                    std::end(value().getValues())
-                    )
-                ;
     }
 
     virtual bool valueOf(const ArgumentValueDataArray *valueDataArray_) const
@@ -916,12 +913,17 @@ public:
 
     virtual int getArraySize() const override
     {
-        return value().getValues().size();
+        return 0;
     }
 
     virtual int getMaxIndex() const override
     {
-        return std::max(0, m_maxIndex);
+        return 0;
+    }
+
+    virtual void setMaxIndex(int maxIndex_) override
+    {
+        m_maxIndex = maxIndex_;
     }
 
     virtual int getVBOPartSize() const override
@@ -948,7 +950,16 @@ public:
 
     virtual void draw(QOpenGLFunctions *f_) const override
     {
-        drawTrianlesArray(f_, getArraySize());
+        if(value().getValues().size() == 0) { return; }
+        const int elements = value().getValues()[0];
+        for(int i = 0; i < elements; i++)
+        {
+            OpenGLArgumentValueBase::drawTrianlesArray(
+                        f_,
+                        (m_maxIndex * (i + 0)) / elements,
+                        (m_maxIndex * (i + 1)) / elements
+                        );
+        }
     }
 
     virtual void release(QOpenGLShaderProgram *program_) const override
@@ -1260,6 +1271,7 @@ public:
     QString getArgumentName() const;
     void initData();
     void setValues(const QVector<GLfloat> &values_, int size_);
+    void setValues(const QVector<GLint> &values_, int size_);
     void getValues(QVector<GLfloat> &values_) const;
     void getValues(QVector<GLint> &values_) const;
     void setValue(const QString &value_);
@@ -1298,9 +1310,10 @@ public:
     void createTextures();
     void bind();
     void buildVBO();
+    void writeVBO();
 
     // draw api
-    void bindProgram();
+    void bindProgramAndVBO();
     void useArguments() const;
     void bindTextures(QOpenGLFunctions *f_) const;
     void draw(QOpenGLFunctions *f_) const;
@@ -1336,6 +1349,7 @@ public:
 
     bool isInitialized() const;
     void setRenderArgumentValue(const QString &argumentName_, const QVector<GLfloat> & values_, int size_);
+    void setRenderArgumentValue(const QString &argumentName_, const QVector<GLint> & values_, int size_);
     void getArgumentValue(const QString &argumentName_, QVector<GLfloat> & values_) const;
     void getArgumentValue(const QString &argumentName_, QVector<GLint> & values_) const;
     int getTupleSize(const QString &argumentName_) const;
@@ -1352,7 +1366,8 @@ public:
     void bindStep(int stepIndex_);
     void buildStepVBO(int stepIndex_);
 
-    void bindStepProgram(int stepIndex_);
+    void bindStepProgramAndVBO(int stepIndex_);
+    void writeStepVBO(int stepIndex_) const;
     void useStepArguments(int stepIndex_) const;
     void bindStepTexture(int stepIndex_, QOpenGLFunctions *f_) const;
     void drawStep(int stepIndex_, QOpenGLFunctions *f_) const;

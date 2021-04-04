@@ -163,6 +163,7 @@ void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
             }*/
 
             m_drawingData->createStepArgument(i);
+            m_drawingData->createStepTextures(i);
         }
 
         /*m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
@@ -216,10 +217,11 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
     for(int i = 0; i < m_drawingData->stepCount(); i++)
     {
         if(!m_drawingData->isStepProgramBuilded(i)) { continue; }
-        m_drawingData->bindStepProgram(i);
+        m_drawingData->bindStepProgramAndVBO(i);
 
         /*m_program->bind();*/
 
+        m_drawingData->writeStepVBO(i);
         m_drawingData->useStepArguments(i);
 
         /*m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0
@@ -328,7 +330,10 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
 
 void OpenGlQuizImageDemo::noPaintGL(QOpenGLFunctions *f_, const RenderState *state_)
 {
-    f_->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    Q_UNUSED(f_);
+    Q_UNUSED(state_);
+
+/*    f_->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
     f_->glEnable(GL_BLEND);
     f_->glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -351,6 +356,7 @@ void OpenGlQuizImageDemo::noPaintGL(QOpenGLFunctions *f_, const RenderState *sta
     //f_->glCullFace(GL_FRONT_AND_BACK);
     f_->glFrontFace(GL_CCW);
     //f_->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+*/
 }
 
 static const int g_trianglesCount = 2;
@@ -364,7 +370,8 @@ void makeGeometry(
         bool hasTextureCoords_,
         bool isGeometrySolid_,
         QVector<GLfloat> &vertexData_,
-        QVector<GLfloat> &textureData_
+        QVector<GLfloat> &textureData_,
+        QVector<GLint> &indexesData_
         )
 {
     static const int coords[g_trianglesCount][g_triangleConers][2] =
@@ -436,6 +443,15 @@ void makeGeometry(
             }
         }
     }
+    indexesData_.resize(1);
+    if(isGeometrySolid_)
+    {
+        indexesData_[0] = 1;
+    }
+    else
+    {
+        indexesData_[0] = geomertyPointsWidth_ * geometryPointsHeight_;
+    }
 }
 
 void calculatePreserveAspectFitTextureMatrix(
@@ -461,9 +477,15 @@ void calculatePreserveAspectFitTextureMatrix(
 void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
 {
     if(nullptr == m_drawingData) { return; }
+    const int screeRectTupleSize = m_drawingData->getTupleSize(
+                g_renderScreenRectName
+                );
     m_drawingData->setRenderArgumentValue(
                 g_renderScreenRectName,
-                QVector<GLfloat>({GLfloat(m_left), GLfloat(m_top), GLfloat(m_width), GLfloat(m_height)}),
+                screeRectTupleSize <= 2
+                    ? QVector<GLfloat>({GLfloat(m_width), GLfloat(m_height)})
+                    : QVector<GLfloat>({GLfloat(m_left), GLfloat(m_top), GLfloat(m_width), GLfloat(m_height)})
+                    ,
                 -1
                 );
     m_drawingData->setRenderArgumentValue(
@@ -503,13 +525,14 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                     );
         QVector<GLfloat> vertexData;
         QVector<GLfloat> textureData;
+        QVector<GLint> indexesData;
         makeGeometry(
                     m_width, m_height,
                     geomertySize[0], geomertySize[1],
                     facedGeometryCoefs[0], facedGeometryCoefs[1],
                     vertexTupleSize, textureTupleSize,
                     textureTupleSize > 0, geomertySolid[0] > 0,
-                    vertexData, textureData
+                    vertexData, textureData, indexesData
                     );
         m_drawingData->setRenderArgumentValue(
                     g_renderVertexAttributeName,
@@ -524,6 +547,11 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                         textureData.size()
                         );
         }
+        m_drawingData->setRenderArgumentValue(
+                    g_renderIndexesName,
+                    indexesData,
+                    indexesData.size()
+                    );
     }
     QSize rectSize(m_width, m_height);
     if(!m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
