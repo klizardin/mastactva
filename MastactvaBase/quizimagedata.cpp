@@ -2391,7 +2391,13 @@ void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromI
     DrawingTextureArtefact fromTexture;
     fromTexture.setFilename(filename_);
     if(!fromTexture.loadImage()) { return; }
-    m_textures.push_back(fromTexture);
+    auto fTexIt = std::find(std::begin(m_textures), std::end(m_textures), fromTexture);
+    if(std::end(m_textures) == fTexIt)
+    {
+        m_textures.push_back(fromTexture);
+        fTexIt = std::end(m_textures);
+        --fTexIt;
+    }
 
     const QString argumentName = fromImage_ ? g_renderFromImageName : g_renderToImageName;
     QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
@@ -2410,7 +2416,7 @@ void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromI
             for(int i1 = 0; i1 < cnt; ++i1)
             {
                 if(!step_->m_programArguments[i1]->valueOf((*it)->getValueDataArray())) { continue; }
-                step_->m_argumentTextures[i1] = &m_textures.back();
+                step_->m_argumentTextures[i1] = &*fTexIt;
             }
         }
     }
