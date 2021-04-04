@@ -842,7 +842,7 @@ public:
         OpenGLArgumentValueBase::useAttributeValue(
                     program_,
                     TypeToGLTypeEnum<ItemType>::value,
-                    m_offset * TypeToGLTypeEnum<ItemType>::sizeOfType,
+                    m_offset,
                     valueBase().getTupleSize());
     }
 
