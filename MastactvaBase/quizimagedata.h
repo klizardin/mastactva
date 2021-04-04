@@ -1362,8 +1362,7 @@ public:
 protected:
     void findArgumentsRange(
             const QString &argumentName_,
-            QVector<DrawingArgument *>::iterator &itb_,
-            QVector<DrawingArgument *>::iterator &ite_
+            QVector<DrawingArgument *>::iterator &itb_
             );
     void free();
 
