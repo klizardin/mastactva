@@ -1239,12 +1239,14 @@ void OpenGLArgumentValueBase::useAttributeValue(
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const
 {
     if(nullptr == vbo_) { return; }
-    Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
-    if(values_.size() > 0)
+    if(values_.size() > 0 &&
+            values_.size() >= sizeItems_ * tupleSize_ &&
+            partSize_ <= tupleSize_ * sizeItems_ * sizeof(GLint)
+            )
     {
         vbo_->write(
                     offset_,
-                    &values_[0],
+                    reinterpret_cast<const void*>(&values_[0]),
                     partSize_
                     );
     }
@@ -1253,12 +1255,14 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const
 {
     if(nullptr == vbo_) { return; }
-    Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
-    if(values_.size() > 0)
+    if(values_.size() > 0 &&
+            values_.size() >= sizeItems_ * tupleSize_  &&
+            partSize_ <= tupleSize_ * sizeItems_ * sizeof(GLfloat)
+            )
     {
         vbo_->write(
                    offset_,
-                   &values_[0],
+                   reinterpret_cast<const void*>(&values_[0]),
                    partSize_
                    );
     }
@@ -2268,7 +2272,7 @@ void OpenGLDrawingStepImageData::buildVBO()
         {
             const int offset = vboDataSize;
             vboDataSize += (argument_->getVBOPartSize() * maxIndex) / argument_->getMaxIndex();
-            argument_->setVBOPartOffset(offset);
+            argument_->setVBOPartOffset(offset * sizeof(GLfloat));
         }
     }
     m_vboData.resize(vboDataSize);
@@ -2287,9 +2291,9 @@ void OpenGLDrawingStepImageData::writeVBO()
     for(OpenGLArgumentValueBase *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        const int size = argument_->getVBOPartSize();
+        const int size = (argument_->getVBOPartSize() * maxIndex) / argument_->getMaxIndex();
         argument_->writeVBOPart(m_vbo, vboPartOffset, argument_->getMaxIndex());
-        vboPartOffset += size;
+        vboPartOffset += size * sizeof(GLfloat);
     }
 }
 

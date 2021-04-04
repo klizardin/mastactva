@@ -833,7 +833,7 @@ public:
                     offset_,
                     sizeItems_,
                     value().getValues(),
-                    getVBOPartSize(),
+                    getVBOPartSize() * TypeToGLTypeEnum<ItemType>::sizeOfType,
                     valueBase().getTupleSize());
     }
 
