@@ -2398,13 +2398,22 @@ bool OpenGLDrawingImageData::getTextureSize(const QString &argumentName_, QSize 
 
 void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromImage_)
 {
-    DrawingTextureArtefact fromTexture;
-    fromTexture.setFilename(filename_);
-    if(!fromTexture.loadImage()) { return; }
-    auto fTexIt = std::find(std::begin(m_textures), std::end(m_textures), fromTexture);
+    std::unique_ptr<DrawingTextureArtefact> fromTexture(new DrawingTextureArtefact());
+    fromTexture->setFilename(filename_);
+    if(!fromTexture->loadImage()) { return; }
+    auto fTexIt = std::find_if(
+                std::begin(m_textures),
+                std::end(m_textures),
+                [&fromTexture](const DrawingTextureArtefact *t_)->bool
+    {
+        return nullptr != t_ &&
+                nullptr != fromTexture.get() &&
+                *(fromTexture.get()) == *t_
+                ;
+    });
     if(std::end(m_textures) == fTexIt)
     {
-        m_textures.push_back(fromTexture);
+        m_textures.push_back(fromTexture.release());
         fTexIt = std::end(m_textures);
         --fTexIt;
     }
@@ -2425,7 +2434,7 @@ void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromI
             for(int i1 = 0; i1 < cnt; ++i1)
             {
                 if(!step_->m_programArguments[i1]->valueOf((*it)->getValueDataArray())) { continue; }
-                step_->m_argumentTextures[i1] = &*fTexIt;
+                step_->m_argumentTextures[i1] = *fTexIt;
             }
         }
     }
@@ -2602,28 +2611,32 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                 texture = nullptr;
             }
             result->m_steps.push_back(new OpenGLDrawingStepImageData());
-            for(const ArgumentAndTexture &arg_ :arguments)
+            for(ArgumentAndTexture &arg_ :arguments)
             {
                 if(nullptr == arg_.first) { continue; }
                 ArgumentValueDataArray *valueDataArray = arg_.first->createValueDataArray();
-                result->m_arguments.push_back(new DrawingArgument(valueDataArray, result->m_steps.size()));
+                DrawingArgument *argument = new DrawingArgument(valueDataArray, result->m_steps.size());
+                result->m_arguments.push_back(argument);
                 result->m_steps.back()->m_programArguments.push_back(
-                            result->m_arguments.back()->createOpenglValue()
+                            argument->createOpenglValue()
                             );
                 if(nullptr != arg_.second)
                 {
-                    result->m_textures.push_back(*arg_.second);
-                    result->m_steps.back()->m_argumentTextures.push_back(&result->m_textures.back());
+                    result->m_textures.push_back(arg_.second);
+                    result->m_steps.back()->m_argumentTextures.push_back(arg_.second);
                 }
                 else
                 {
                     result->m_steps.back()->m_argumentTextures.push_back(nullptr);
                 }
+                arg_.second = nullptr;
             }
-            result->m_vertexShaders.push_back(*vertexShader);
-            result->m_fragmentShaders.push_back(*fragmentShader);
-            result->m_steps.back()->m_vertexArtefact = &result->m_vertexShaders.back();
-            result->m_steps.back()->m_fragmentArtefact = &result->m_fragmentShaders.back();
+            result->m_vertexShaders.push_back(vertexShader);
+            result->m_fragmentShaders.push_back(fragmentShader);
+            result->m_steps.back()->m_vertexArtefact = vertexShader;
+            result->m_steps.back()->m_fragmentArtefact = fragmentShader;
+            vertexShader = nullptr;
+            fragmentShader = nullptr;
             for(ArgumentAndTexture &arg_ :arguments)
             {
                 delete arg_.first;
@@ -2649,6 +2662,36 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                     a1_->getArgumentName() < a2_->getArgumentName()
                     ;
         });
+        std::sort(
+            std::begin(result->m_textures),
+            std::end(result->m_textures),
+            [](const DrawingTextureArtefact *t1_, const DrawingTextureArtefact *t2_)->bool
+        {
+            return nullptr != t1_ &&
+                    nullptr != t2_ &&
+                    *t1_ < *t2_
+                    ;
+        });
+        std::sort(
+            std::begin(result->m_vertexShaders),
+            std::end(result->m_vertexShaders),
+            [](const DrawingShaderArtefact *s1_, const DrawingShaderArtefact *s2_)->bool
+        {
+            return nullptr != s1_ &&
+                    nullptr != s2_ &&
+                    *s1_ < *s2_
+                    ;
+        });
+        std::sort(
+            std::begin(result->m_fragmentShaders),
+            std::end(result->m_fragmentShaders),
+            [](const DrawingShaderArtefact *s1_, const DrawingShaderArtefact *s2_)->bool
+        {
+            return nullptr != s1_ &&
+                    nullptr != s2_ &&
+                    *s1_ < *s2_
+                    ;
+        });
     }
 
     return result;
@@ -2668,6 +2711,24 @@ void OpenGLDrawingImageData::free()
         ptr_ = nullptr;
     }
     m_arguments.clear();
+    for(const DrawingTextureArtefact *&ptr_ : m_textures)
+    {
+        delete ptr_;
+        ptr_ = nullptr;
+    }
+    m_textures.clear();
+    for(const DrawingShaderArtefact *&ptr_ : m_vertexShaders)
+    {
+        delete ptr_;
+        ptr_ = nullptr;
+    }
+    m_vertexShaders.clear();
+    for(const DrawingShaderArtefact *&ptr_ : m_fragmentShaders)
+    {
+        delete ptr_;
+        ptr_ = nullptr;
+    }
+    m_fragmentShaders.clear();
 }
 
 
@@ -2675,7 +2736,7 @@ OpenGLDrawingImageData *DrawingImageData::copy()
 {
     OpenGLDrawingImageData *result = new OpenGLDrawingImageData();
 
-    result->m_textures.reserve(m_texturesSet.size());
+/*    result->m_textures.reserve(m_texturesSet.size());
     for(const DrawingTextureArtefact &artefact_ : m_texturesSet)
     {
         result->m_textures.push_back(artefact_);
@@ -2706,7 +2767,7 @@ OpenGLDrawingImageData *DrawingImageData::copy()
     for(DrawingShaderArtefact &artefact_ : result->m_fragmentShaders)
     {
         artefact_.deepCopy();
-    }
+    }*/
     return result;
 }
 

@@ -1309,10 +1309,10 @@ private:
     void free();
 
 private:
-    DrawingShaderArtefact *m_vertexArtefact = nullptr;
-    DrawingShaderArtefact *m_fragmentArtefact = nullptr;
+    const DrawingShaderArtefact *m_vertexArtefact = nullptr;
+    const DrawingShaderArtefact *m_fragmentArtefact = nullptr;
     QVector<OpenGLArgumentValueBase *> m_programArguments;
-    QVector<DrawingTextureArtefact *> m_argumentTextures;       // for every argument we set or nullptr
+    QVector<const DrawingTextureArtefact *> m_argumentTextures;       // for every argument we set or nullptr
                                                                 // or texture artefact for it
                                                                 // associate textures in object creation time
     QByteArray m_vertexDataBA;
@@ -1373,9 +1373,9 @@ protected:
 private:
     QVector<OpenGLDrawingStepImageData *> m_steps;
     QVector<DrawingArgument *> m_arguments;
-    QList<DrawingTextureArtefact> m_textures;
-    QList<DrawingShaderArtefact> m_vertexShaders;
-    QList<DrawingShaderArtefact> m_fragmentShaders;
+    QVector<const DrawingTextureArtefact *> m_textures;
+    QVector<const DrawingShaderArtefact *> m_vertexShaders;
+    QVector<const DrawingShaderArtefact *> m_fragmentShaders;
     bool m_initialized = false;
 
 private:
