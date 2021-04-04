@@ -362,6 +362,7 @@ ApplicationWindow {
                 fromImage: fromImageName
                 toImage: toImageName
                 projectFilename: projectName
+                opacity: 1.0
                 clip: true
                 t: 0.5
 
