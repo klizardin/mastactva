@@ -1258,6 +1258,7 @@ public:
             int position_ = 0);
     ~DrawingArgument();
     QString getArgumentName() const;
+    void initData();
     void setValues(const QVector<GLfloat> &values_, int size_);
     void getValues(QVector<GLfloat> &values_) const;
     void getValues(QVector<GLint> &values_) const;

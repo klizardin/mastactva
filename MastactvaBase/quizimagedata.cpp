@@ -1244,6 +1244,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
 {
     if(nullptr == vbo_) { return; }
     Q_ASSERT(partSize_ <= tupleSize_ * sizeItems_);
+    Q_ASSERT(values_.size() > 0);
     vbo_->write(
                 offset_,
                 &values_[0],
@@ -1938,14 +1939,20 @@ QString DrawingArgument::getArgumentName() const
     return nullptr != m_valueDataArray ? m_valueDataArray->getName() : QString();
 }
 
+void DrawingArgument::initData()
+{
+    if(nullptr == m_valueDataArray) { return; }
+    m_valueDataArray->initData();
+}
+
 void DrawingArgument::setValues(const QVector<GLfloat> &values_, int size_)
 {
     if(nullptr == m_valueDataArray) { return; }
     const int cnt = size_ < 0
             ? std::min(values_.size(), m_valueDataArray->floatValues().size())
             : size_;
-    if(m_valueDataArray->floatValues().size() > 0 &&
-            m_valueDataArray->floatValues().size() < size_)
+    if(size_ >= 0 &&
+            m_valueDataArray->floatValues().size() != size_)
     {
         m_valueDataArray->floatValues().resize(size_);
     }
@@ -2692,6 +2699,11 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                     *s1_ < *s2_
                     ;
         });
+        for(DrawingArgument *a_ : result->m_arguments)
+        {
+            if(nullptr == a_) { continue; }
+            a_->initData();
+        }
     }
 
     return result;
