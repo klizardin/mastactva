@@ -2099,7 +2099,7 @@ bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
     if(nullptr == m_fragmentShader &&
             nullptr != m_fragmentArtefact)
     {
-        m_fragmentShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
+        m_fragmentShader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr);
         m_fragmentDataBA = m_fragmentArtefact->getShaderCode().toUtf8();
         m_fragmentShader->compileSourceCode(m_fragmentDataBA.constData());
         if(!m_fragmentShader->isCompiled())
