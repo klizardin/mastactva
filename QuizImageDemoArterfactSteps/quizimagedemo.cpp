@@ -127,7 +127,7 @@ void QuizImageDemo::setProject(const QString &project_)
     m_project = project_;
 
     loadProject();
-
+    updateState();
     emit projectChanged();
 }
 
@@ -147,6 +147,8 @@ void QuizImageDemo::freeProject()
 {
     delete m_drawingData;
     m_drawingData = nullptr;
+    delete m_drawingOldData;
+    m_drawingOldData = nullptr;
 }
 
 void QuizImageDemo::loadProject()
@@ -195,9 +197,10 @@ OpenGLDrawingImageData *QuizImageDemo::getData()
     return m_drawingData;
 }
 
-void QuizImageDemo::retryData()
+void QuizImageDemo::retryData(OpenGLDrawingImageData *old_)
 {
     m_drawingData = nullptr;
+    m_drawingOldData = old_;
 }
 
 void QuizImageDemo::renderBuildError(const QString &compilerLog_)
