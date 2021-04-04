@@ -217,10 +217,11 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
     for(int i = 0; i < m_drawingData->stepCount(); i++)
     {
         if(!m_drawingData->isStepProgramBuilded(i)) { continue; }
-        m_drawingData->bindStepProgram(i);
+        m_drawingData->bindStepProgramAndVBO(i);
 
         /*m_program->bind();*/
 
+        m_drawingData->writeStepVBO(i);
         m_drawingData->useStepArguments(i);
 
         /*m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0

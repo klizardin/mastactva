@@ -1298,9 +1298,10 @@ public:
     void createTextures();
     void bind();
     void buildVBO();
+    void writeVBO();
 
     // draw api
-    void bindProgram();
+    void bindProgramAndVBO();
     void useArguments() const;
     void bindTextures(QOpenGLFunctions *f_) const;
     void draw(QOpenGLFunctions *f_) const;
@@ -1352,7 +1353,8 @@ public:
     void bindStep(int stepIndex_);
     void buildStepVBO(int stepIndex_);
 
-    void bindStepProgram(int stepIndex_);
+    void bindStepProgramAndVBO(int stepIndex_);
+    void writeStepVBO(int stepIndex_) const;
     void useStepArguments(int stepIndex_) const;
     void bindStepTexture(int stepIndex_, QOpenGLFunctions *f_) const;
     void drawStep(int stepIndex_, QOpenGLFunctions *f_) const;

@@ -2231,7 +2231,13 @@ void OpenGLDrawingStepImageData::buildVBO()
     m_vbo->create();
     m_vbo->bind();
     m_vbo->allocate(m_vboData.count() * sizeof(GLfloat));
+    writeVBO();
+    m_vbo->release();
+}
 
+void OpenGLDrawingStepImageData::writeVBO()
+{
+    if(nullptr == m_vbo) { return; }
     int vboPartOffset = 0;
     for(OpenGLArgumentValueBase *argument_: m_programArguments)
     {
@@ -2240,12 +2246,12 @@ void OpenGLDrawingStepImageData::buildVBO()
         argument_->writeVBOPart(m_vbo, vboPartOffset, argument_->getMaxIndex());
         vboPartOffset += size;
     }
-    m_vbo->release();
 }
 
-void OpenGLDrawingStepImageData::bindProgram()
+void OpenGLDrawingStepImageData::bindProgramAndVBO()
 {
-    if(nullptr == m_program) { return; }
+    if(nullptr == m_program ||
+            nullptr == m_vbo) { return; }
     m_program->bind();
     m_vbo->bind();
 }
@@ -2285,7 +2291,7 @@ void OpenGLDrawingStepImageData::release() const
         if(nullptr == argument_) { continue; }
         argument_->release(m_program);
     }
-    m_vbo->release();
+    if(nullptr != m_vbo) { m_vbo->release(); }
     m_program->release();
 }
 
@@ -2551,14 +2557,24 @@ void OpenGLDrawingImageData::buildStepVBO(int stepIndex_)
     m_steps[stepIndex_]->buildVBO();
 }
 
-void OpenGLDrawingImageData::bindStepProgram(int stepIndex_)
+void OpenGLDrawingImageData::bindStepProgramAndVBO(int stepIndex_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
             stepIndex_ >= stepCount() ||
             nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_]->bindProgram();
+    m_steps[stepIndex_]->bindProgramAndVBO();
+}
+
+void OpenGLDrawingImageData::writeStepVBO(int stepIndex_) const
+{
+    if(!isStepProgramBuilded(stepIndex_) ||
+            stepIndex_ < 0 ||
+            stepIndex_ >= stepCount() ||
+            nullptr == m_steps[stepIndex_]
+            ) { return; }
+    m_steps[stepIndex_]->writeVBO();
 }
 
 void OpenGLDrawingImageData::useStepArguments(int stepIndex_) const
