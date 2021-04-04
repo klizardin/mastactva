@@ -127,7 +127,7 @@ void QuizImageDemo::setProject(const QString &project_)
     m_project = project_;
 
     loadProject();
-
+    updateState();
     emit projectChanged();
 }
 
