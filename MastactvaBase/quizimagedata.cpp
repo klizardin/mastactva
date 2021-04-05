@@ -1439,6 +1439,7 @@ void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, 
     }
     if(image_.isNull()) { return; }
     texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps);
+    qDebug() << "texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps) " << texture_ << image_.size().width() << image_.size().height();
     texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
     texture_->setBorderColor(1, 1, 1, 0);
@@ -1451,7 +1452,7 @@ void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *
     f_->glActiveTexture(GL_TEXTURE0 + textureIndex_);
     texture_->bind();
     qDebug() << "glActiveTexture ( GL_TEXTURE0 + " << textureIndex_ << ")";
-    qDebug() << "texture_->bind()";
+    qDebug() << "texture_->bind() " << texture_;
 }
 
 
