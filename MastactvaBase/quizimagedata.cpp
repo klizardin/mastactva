@@ -577,7 +577,7 @@ QVector<QString> &ArgumentValueDataStringArray::stringValues()
 ArgumentValueDataArray *ArgumentValueDataStringArray::copy() const
 {
     ArgumentValueDataStringArray *result = new ArgumentValueDataStringArray(*this);
-    for(QString &str_ : result->m_values)
+    for(auto &str_ : result->m_values)
     {
         str_ = QString(str_.constData(), str_.length());
     }
@@ -956,17 +956,17 @@ void ArgumentDataTable::add(
 {
     // TODO: check
     QList<QString> rootKeys = data_.m_root.keys();
-    for(const QString &objectNameKey_ : qAsConst(rootKeys))
+    for(const auto &objectNameKey_ : qAsConst(rootKeys))
     {
         DataTableValue *objectValue = getRootChild(objectNameKey_);
         if(nullptr == objectValue) { continue; }
         QList<QString> indexNamesKeys = objectValue->getChildrenKeys();
-        for(const QString &indexNameKey_ : qAsConst(indexNamesKeys))
+        for(const auto &indexNameKey_ : qAsConst(indexNamesKeys))
         {
             DataTableValue *indexValue = objectValue->getChild(indexNameKey_);
             if(nullptr == indexValue) { continue; }
             QList<QString> argumentNamesKeys = indexValue->getChildrenKeys();
-            for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+            for(const auto &argumentNameKey_ : qAsConst(argumentNamesKeys))
             {
                 DataTableValue *argumentValue = indexValue->getChild(argumentNameKey_);
                 if(nullptr == argumentValue) { continue; }
@@ -981,17 +981,17 @@ void ArgumentDataTable::add(
         const ArgumentList &argumentList_) // add output of the list
 {
     QList<QString> rootKeys = data_.m_root.keys();
-    for(const QString &objectNameKey_ : qAsConst(rootKeys))
+    for(const auto &objectNameKey_ : qAsConst(rootKeys))
     {
         DataTableValue *objectValue = getRootChild(objectNameKey_);
         if(nullptr == objectValue) { continue; }
         QList<QString> indexNamesKeys = objectValue->getChildrenKeys();
-        for(const QString &indexNameKey_ : qAsConst(indexNamesKeys))
+        for(const auto &indexNameKey_ : qAsConst(indexNamesKeys))
         {
             DataTableValue *indexValue = objectValue->getChild(indexNameKey_);
             if(nullptr == indexValue) { continue; }
             QList<QString> argumentNamesKeys = indexValue->getChildrenKeys();
-            for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+            for(const auto &argumentNameKey_ : qAsConst(argumentNamesKeys))
             {
                 DataTableValue *argumentValue = indexValue->getChild(argumentNameKey_);
                 if(nullptr == argumentValue) { continue; }
@@ -1017,17 +1017,17 @@ ArgumentBase *ArgumentDataTable::find(
         int effectArgumentId_)
 {
     QList<QString> rootKeys = m_root.keys();
-    for(const QString &objectNameKey_ : qAsConst(rootKeys))
+    for(const auto &objectNameKey_ : qAsConst(rootKeys))
     {
         DataTableValue *objectValue = getRootChild(objectNameKey_);
         if(nullptr == objectValue) { continue; }
         QList<QString> indexNamesKeys = objectValue->getChildrenKeys();
-        for(const QString &indexNameKey_ : qAsConst(indexNamesKeys))
+        for(const auto &indexNameKey_ : qAsConst(indexNamesKeys))
         {
             DataTableValue *indexValue = objectValue->getChild(indexNameKey_);
             if(nullptr == indexValue) { continue; }
             QList<QString> argumentNamesKeys = indexValue->getChildrenKeys();
-            for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+            for(const auto &argumentNameKey_ : qAsConst(argumentNamesKeys))
             {
                 DataTableValue *argumentValue = indexValue->getChild(argumentNameKey_);
                 if(nullptr == argumentValue) { continue; }
@@ -1053,7 +1053,7 @@ ArgumentDataTable* ArgumentDataTable::slice(
     DataTableValue *stepIndexValue = objectValue->findChild(stepIndexName);
     if(nullptr == stepIndexValue) { return res; }
     QList<QString> argumentNamesKeys = stepIndexValue->getChildrenKeys();
-    for(const QString &argumentNameKey_ : qAsConst(argumentNamesKeys))
+    for(const auto &argumentNameKey_ : qAsConst(argumentNamesKeys))
     {
         DataTableValue *argumentValue = stepIndexValue->getChild(argumentNameKey_);
         if(nullptr == argumentValue) { continue; }
@@ -1241,7 +1241,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
     if(nullptr == vbo_) { return; }
     if(values_.size() > 0 &&
             values_.size() >= sizeItems_ * tupleSize_ &&
-            partSize_ <= tupleSize_ * sizeItems_ * sizeof(GLint)
+            partSize_ <= (int)(tupleSize_ * sizeItems_ * sizeof(GLint))
             )
     {
         vbo_->write(
@@ -1257,7 +1257,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
     if(nullptr == vbo_) { return; }
     if(values_.size() > 0 &&
             values_.size() >= sizeItems_ * tupleSize_  &&
-            partSize_ <= tupleSize_ * sizeItems_ * sizeof(GLfloat)
+            partSize_ <= (int)(tupleSize_ * sizeItems_ * sizeof(GLfloat))
             )
     {
         vbo_->write(
@@ -1576,7 +1576,7 @@ bool IQuizImageDataArtefact::setArguments(const QString &shaderCode_)
     QVector<Comment> comments;
     getShaderComments(shaderCode_, comments);
 
-    for(const Comment &comment: qAsConst(comments))
+    for(const auto &comment: qAsConst(comments))
     {
         if(!checkRequeredFields(comment)) { continue; }
 
@@ -1786,10 +1786,10 @@ void QuizImageDataObject::sortArtefacts()
 
 void QuizImageDataObject::free()
 {
-    for(IQuizImageDataArtefact *&ptr : m_artefacts)
+    for(auto *&ptr_ : m_artefacts)
     {
-        delete ptr;
-        ptr = nullptr;
+        delete ptr_;
+        ptr_ = nullptr;
     }
     m_artefacts.clear();
 }
@@ -2205,7 +2205,7 @@ bool OpenGLDrawingStepImageData::isProgramBuilded() const
 void OpenGLDrawingStepImageData::createArguments()
 {
     if(nullptr == m_program) { return; }
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         argument_->create(m_program);
@@ -2215,14 +2215,14 @@ void OpenGLDrawingStepImageData::createArguments()
 void OpenGLDrawingStepImageData::createTextures()
 {
     int texturesCount = 0;
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_ ||
                 !argument_->isTexture()) { continue; }
         ++texturesCount;
     }
     int textureIndex = texturesCount - 1;
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_ ||
                 !argument_->isTexture()) { continue; }
@@ -2231,7 +2231,7 @@ void OpenGLDrawingStepImageData::createTextures()
     }
     for(int i = 0; i < m_programArguments.size(); i++)
     {
-        OpenGLArgumentValueBase *argument = m_programArguments[i];
+        auto *argument = m_programArguments[i];
         if(nullptr == argument ||
                 !argument->isTexture()) { continue; }
         if(i >= m_argumentTextures.size() ||
@@ -2243,7 +2243,7 @@ void OpenGLDrawingStepImageData::createTextures()
 void OpenGLDrawingStepImageData::bind()
 {
     if(nullptr == m_program) { return; }
-    for(OpenGLArgumentValueBase *argument_ : m_programArguments)
+    for(auto *argument_ : m_programArguments)
     {
         argument_->bind(m_program);
     }
@@ -2253,18 +2253,18 @@ void OpenGLDrawingStepImageData::buildVBO()
 {
     if(nullptr != m_vbo) { return; }
     int maxIndex = 0;
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         maxIndex = std::max(maxIndex, argument_->getMaxIndex());
     }
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         argument_->setMaxIndex(maxIndex);
     }
     int vboDataSize = 0;
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         if(0 < argument_->getVBOPartSize() &&
@@ -2288,13 +2288,13 @@ void OpenGLDrawingStepImageData::writeVBO()
 {
     if(nullptr == m_vbo) { return; }
     int maxIndex = 0;
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         maxIndex = std::max(maxIndex, argument_->getMaxIndex());
     }
     int vboPartOffset = 0;
-    for(OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         if(0 >= argument_->getVBOPartSize() ||
@@ -2316,7 +2316,7 @@ void OpenGLDrawingStepImageData::bindProgramAndVBO()
 
 void OpenGLDrawingStepImageData::useArguments() const
 {
-    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         argument_->use(m_program);
@@ -2325,7 +2325,7 @@ void OpenGLDrawingStepImageData::useArguments() const
 
 void OpenGLDrawingStepImageData::bindTextures(QOpenGLFunctions *f_) const
 {
-    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         argument_->bindTexture(f_);
@@ -2334,7 +2334,7 @@ void OpenGLDrawingStepImageData::bindTextures(QOpenGLFunctions *f_) const
 
 void OpenGLDrawingStepImageData::draw(QOpenGLFunctions *f_) const
 {
-    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         argument_->draw(f_);
@@ -2344,7 +2344,7 @@ void OpenGLDrawingStepImageData::draw(QOpenGLFunctions *f_) const
 void OpenGLDrawingStepImageData::release() const
 {
     if(nullptr == m_program) { return; }
-    for(const OpenGLArgumentValueBase *argument_: m_programArguments)
+    for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         argument_->release(m_program);
@@ -2413,7 +2413,7 @@ void OpenGLDrawingImageData::setRenderArgumentValue(
         int size_
         )
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2429,7 +2429,7 @@ void OpenGLDrawingImageData::setRenderArgumentValue(
         int size_
         )
 {
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2444,7 +2444,7 @@ void OpenGLDrawingImageData::getArgumentValue(
         QVector<GLfloat> & values_
         ) const
 {
-    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2460,7 +2460,7 @@ void OpenGLDrawingImageData::getArgumentValue(
         QVector<GLint> & values_
         ) const
 {
-    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2473,7 +2473,7 @@ void OpenGLDrawingImageData::getArgumentValue(
 
 int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_) const
 {
-    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2486,7 +2486,7 @@ int OpenGLDrawingImageData::getTupleSize(const QString &argumentName_) const
 
 bool OpenGLDrawingImageData::isArgumentInitialized(const QString &argumentName_) const
 {
-    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
@@ -2499,13 +2499,13 @@ bool OpenGLDrawingImageData::isArgumentInitialized(const QString &argumentName_)
 
 bool OpenGLDrawingImageData::getTextureSize(const QString &argumentName_, QSize &size_) const
 {
-    QVector<DrawingArgument *>::const_iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
     {
         if(nullptr == *it) { continue; }
         if((*it)->getArgumentName() != argumentName_) { break; }
-        for(OpenGLDrawingStepImageData *step_ : m_steps)
+        for(auto *step_ : m_steps)
         {
             const int cnt = std::min(step_->m_programArguments.size(), step_->m_argumentTextures.size());
             for(int i1 = 0; i1 < cnt; ++i1)
@@ -2545,7 +2545,7 @@ void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromI
     }
 
     const QString argumentName = fromImage_ ? g_renderFromImageName : g_renderToImageName;
-    QVector<DrawingArgument *>::iterator itb = std::end(m_arguments);
+    auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName, itb);
 
     for(auto it = itb; it != std::end(m_arguments); ++it)
@@ -2553,7 +2553,7 @@ void OpenGLDrawingImageData::addRenderImage(const QString &filename_, bool fromI
         if(nullptr == *it) { continue; }
         if((*it)->getArgumentName() != argumentName) { break; }
         (*it)->setValue(filename_);
-        for(OpenGLDrawingStepImageData *step_ : m_steps)
+        for(auto *step_ : m_steps)
         {
             if(nullptr == step_) { continue; }
             const int cnt = std::min(step_->m_programArguments.size(), step_->m_argumentTextures.size());
@@ -2747,7 +2747,7 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                 texture = nullptr;
             }
             result->m_steps.push_back(new OpenGLDrawingStepImageData());
-            for(ArgumentAndTexture &arg_ :arguments)
+            for(auto &arg_ :arguments)
             {
                 if(nullptr == arg_.first) { continue; }
                 ArgumentValueDataArray *valueDataArray = arg_.first->createValueDataArray();
@@ -2773,7 +2773,7 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
             result->m_steps.back()->m_fragmentArtefact = fragmentShader;
             vertexShader = nullptr;
             fragmentShader = nullptr;
-            for(ArgumentAndTexture &arg_ :arguments)
+            for(auto &arg_ :arguments)
             {
                 delete arg_.first;
                 arg_.first = nullptr;
@@ -2828,7 +2828,7 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
                     *s1_ < *s2_
                     ;
         });
-        for(DrawingArgument *a_ : result->m_arguments)
+        for(auto *a_ : result->m_arguments)
         {
             if(nullptr == a_) { continue; }
             a_->initData();
@@ -2840,31 +2840,31 @@ OpenGLDrawingImageData *OpenGLDrawingImageData::fromJson(const QJsonDocument &do
 
 void OpenGLDrawingImageData::free()
 {
-    for(OpenGLDrawingStepImageData *&ptr_ : m_steps)
+    for(auto *&ptr_ : m_steps)
     {
         delete ptr_;
         ptr_ = nullptr;
     }
     m_steps.clear();
-    for(DrawingArgument *&ptr_ : m_arguments)
+    for(auto *&ptr_ : m_arguments)
     {
         delete ptr_;
         ptr_ = nullptr;
     }
     m_arguments.clear();
-    for(const DrawingTextureArtefact *&ptr_ : m_textures)
+    for(auto *&ptr_ : m_textures)
     {
         delete ptr_;
         ptr_ = nullptr;
     }
     m_textures.clear();
-    for(const DrawingShaderArtefact *&ptr_ : m_vertexShaders)
+    for(auto *&ptr_ : m_vertexShaders)
     {
         delete ptr_;
         ptr_ = nullptr;
     }
     m_vertexShaders.clear();
-    for(const DrawingShaderArtefact *&ptr_ : m_fragmentShaders)
+    for(auto *&ptr_ : m_fragmentShaders)
     {
         delete ptr_;
         ptr_ = nullptr;
@@ -2915,9 +2915,9 @@ OpenGLDrawingImageData *DrawingImageData::copy()
 void DrawingImageData::setAllArgumentValues(ArgumentValueDataArray *argumentValueDataArray_)
 {
     DrawingArgument arg(argumentValueDataArray_);
-    std::multiset<DrawingArgument>::const_iterator itb = m_argumentsSet.lower_bound(arg);
-    std::multiset<DrawingArgument>::const_iterator ite = m_argumentsSet.upper_bound(arg);
-    for(std::multiset<DrawingArgument>::const_iterator it = itb;
+    auto itb = m_argumentsSet.lower_bound(arg);
+    auto ite = m_argumentsSet.upper_bound(arg);
+    for(auto it = itb;
         it != ite;
         ++it)
     {
@@ -2936,10 +2936,10 @@ void DrawingImageData::setArtefacts(const QVector<QuizImageDataObject *> &object
     std::set<DrawingTextureArtefact> textures;
     std::set<DrawingShaderArtefact> vertexShaders;
     std::set<DrawingShaderArtefact> fragmentShaders;
-    for(const QuizImageDataObject *obj_ : objects_)
+    for(const auto *obj_ : objects_)
     {
         if(nullptr == obj_) { continue; }
-        for(const IQuizImageDataArtefact *artefact_: obj_->getArtefacts())
+        for(const auto *artefact_: obj_->getArtefacts())
         {
             if(nullptr == artefact_) { continue; }
 
@@ -3117,7 +3117,7 @@ void QuizImageData::free()
 
 void QuizImageData::freeObjects()
 {
-    for(QuizImageDataObject *&ptr_ : m_objects)
+    for(auto *&ptr_ : m_objects)
     {
         delete ptr_;
         ptr_ = nullptr;
