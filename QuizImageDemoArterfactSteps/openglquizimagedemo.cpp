@@ -103,6 +103,9 @@ void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
 
+    qDebug() << "glEnable(GL_DEPTH_TEST)";
+    qDebug() << "glEnable(GL_CULL_FACE)";
+
     m_programBuildLog.clear();
 
     for(int i = 0; i < m_drawingData->stepCount(); i++)
@@ -271,27 +274,36 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
         // important to us.
 
         f_->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        qDebug() << "glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)";
 
         f_->glEnable(GL_BLEND);
         f_->glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        qDebug() << "glEnable(GL_BLEND)";
+        qDebug() << "glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)";
 
         // Clip support.
         if (state_->scissorEnabled())
         {
             f_->glEnable(GL_SCISSOR_TEST);
+            qDebug() << "glEnable(GL_SCISSOR_TEST)";
             const QRect r = state_->scissorRect(); // already bottom-up
             f_->glScissor(r.x(), r.y(), r.width(), r.height());
+            qDebug() << "glScissor(" << r.x() << r.y() << r.width() << r.height() << ")";
         }
         if (state_->stencilEnabled())
         {
             f_->glEnable(GL_STENCIL_TEST);
+            qDebug() << "glEnable(GL_STENCIL_TEST)";
             f_->glStencilFunc(GL_EQUAL, state_->stencilValue(), 0xFF);
+            qDebug() << "glStencilFunc(GL_EQUAL " << state_->stencilValue() << " 0xFF)";
             f_->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            qDebug() << "glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP)";
         }
 
         //f_->glEnable(GL_CULL_FACE);
         //f_->glCullFace(GL_FRONT_AND_BACK);
         f_->glFrontFace(GL_CCW);
+        qDebug() << "glFrontFace(GL_CCW)";
 
         /*f_->glActiveTexture(GL_TEXTURE1);
         m_toTexture->bind();
