@@ -192,6 +192,7 @@ void ArgumentInfo::initValueFromRenderState(OpenGlQuizImage *render_)
 void ArgumentInfo::initId(QOpenGLShaderProgram *program_)
 {
     m_id = program_->uniformLocation(m_name);
+    qDebug() << "program_->uniformLocation(" << m_name << ")=" << m_id;
 }
 
 void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
@@ -199,37 +200,54 @@ void ArgumentInfo::setValue(QOpenGLShaderProgram *program_) const
     if(1 == m_size && !m_floatType)
     {
         program_->setUniformValue(m_id, m_valueInt[0]);
+        qDebug() << "program_->setUniformValue(" << m_id << m_valueInt[0] << ")";
     }
     else if(1 == m_size && m_floatType)
     {
         program_->setUniformValue(m_id, m_valueFloat[0]);
+        qDebug() << "program_->setUniformValue(" << m_id << m_valueFloat[0] << ")";
     }
     else if(2 == m_size && m_floatType)
     {
         program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1]);
+        qDebug() << "program_->setUniformValue(" << m_id << m_valueFloat[0] << m_valueFloat[1] << ")";
     }
     else if(3 == m_size && m_floatType)
     {
         program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2]);
+        qDebug() << "program_->setUniformValue(" << m_id << m_valueFloat[0] << m_valueFloat[1]  << m_valueFloat[2]<< ")";
     }
     else if(4 == m_size && m_floatType && !m_matrixType)
     {
         program_->setUniformValue(m_id, m_valueFloat[0], m_valueFloat[1], m_valueFloat[2], m_valueFloat[3]);
+        qDebug() << "program_->setUniformValue(" << m_id << m_valueFloat[0] << m_valueFloat[1] << m_valueFloat[2] << m_valueFloat[3] << ")";
     }
     else if(4 == m_size && m_floatType && m_matrixType)
     {
         QMatrix2x2 m(&m_valueFloat[0]);
         program_->setUniformValue(m_id, m);
+        qDebug() << "program_->setUniformValue(" << m_id << m_valueFloat[0] << m_valueFloat[1] << m_valueFloat[2] << m_valueFloat[3] << ")";
     }
     else if(9 == m_size && m_floatType && m_matrixType)
     {
         QMatrix3x3 m(&m_valueFloat[0]);
         program_->setUniformValue(m_id, m);
+        qDebug() << "program_->setUniformValue(" << m_id
+                 << m_valueFloat[0] << m_valueFloat[1] << m_valueFloat[2]
+                 << m_valueFloat[3] << m_valueFloat[4] << m_valueFloat[5]
+                 << m_valueFloat[6] << m_valueFloat[7] << m_valueFloat[8]
+                 << ")";
     }
     else if(16 == m_size && m_floatType && m_matrixType)
     {
         QMatrix4x4 m(&m_valueFloat[0]);
         program_->setUniformValue(m_id, m);
+        qDebug() << "program_->setUniformValue(" << m_id
+                 << m_valueFloat[0] << m_valueFloat[1] << m_valueFloat[2] << m_valueFloat[3]
+                 << m_valueFloat[4] << m_valueFloat[5] << m_valueFloat[6] << m_valueFloat[7]
+                 << m_valueFloat[8] << m_valueFloat[9] << m_valueFloat[10] << m_valueFloat[11]
+                 << m_valueFloat[12] << m_valueFloat[13] << m_valueFloat[14] << m_valueFloat[15]
+                 << ")";
     }
     else
     {
@@ -446,6 +464,7 @@ void OpenGlQuizImage::createTextures()
         //qDebug() << "m_fromImageUrl = " << m_fromImageUrl;
         Q_ASSERT(!m_fromImage->isNull());
         m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
+        qDebug() << "m_fromTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps)";
         m_fromTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_fromTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_fromTexture->setBorderColor(1, 1, 1, 0);
@@ -468,6 +487,7 @@ void OpenGlQuizImage::createTextures()
         //qDebug() << "m_toImageUrl = " << m_toImageUrl;
         Q_ASSERT(!m_toImage->isNull());
         m_toTexture = new QOpenGLTexture(m_toImage->mirrored(), QOpenGLTexture::GenerateMipMaps);
+        qDebug() << "m_toTexture = new QOpenGLTexture(m_fromImage->mirrored(), QOpenGLTexture::GenerateMipMaps)";
         m_toTexture->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
         m_toTexture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
         m_toTexture->setBorderColor(1, 1, 1, 0);
@@ -559,6 +579,13 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     m_program->addShader(m_vshader);
     m_program->addShader(m_fshader);
     m_program->link();
+    qDebug()
+            << "m_program = new QOpenGLShaderProgram();\n"
+            << "m_program->addShader(m_vshader);\n"
+            << "m_program->addShader(m_fshader);\n"
+            << "m_program->link()\n"
+            ;
+
     if(!m_program->isLinked())
     {
         m_programBuildLog += m_program->log();
@@ -569,6 +596,10 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
     {
         m_vertexAttrId = m_program->attributeLocation("vertexArg");
         m_texCoordAttrId = m_program->attributeLocation("texCoordArg");
+        qDebug()
+                << "m_program->attributeLocation(\"vertexArg\"); = " << m_vertexAttrId
+                << "m_program->attributeLocation(\"texCoordArg\"); = " << m_texCoordAttrId
+                ;
         if(m_attributeColors)
         {
             m_colorAttrId = m_program->attributeLocation("colorArg");
@@ -579,8 +610,17 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
         m_matrixId = m_program->uniformLocation("matrixArg");
         m_texMatrix1Id = m_program->uniformLocation("texMatrix1Arg");
         m_texMatrix2Id = m_program->uniformLocation("texMatrix2Arg");
-
         m_tId = m_program->uniformLocation("t");
+        qDebug()
+                << "m_program->uniformLocation(\"texture1Arg\") = " << m_fromTextureId << "\n"
+                << "m_program->uniformLocation(\"texture2Arg\") = " << m_toTextureId << "\n"
+                << "m_program->uniformLocation(\"opacityArg\") = " << m_opacitiId << "\n"
+                << "m_program->uniformLocation(\"matrixArg\") = " << m_matrixId << "\n"
+                << "m_program->uniformLocation(\"texMatrix1Arg\") = " << m_texMatrix1Id << "\n"
+                << "m_program->uniformLocation(\"texMatrix2Arg\") = " << m_texMatrix2Id << "\n"
+                << "m_program->uniformLocation(\"t\") = " << m_tId << "\n"
+                ;
+
 
         for(ArgumentInfo &ai: m_arguments)
         {
@@ -590,6 +630,10 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
 
     m_program->bindAttributeLocation("vertexArg", m_vertexAttrId);
     m_program->bindAttributeLocation("texCoordArg", m_texCoordAttrId);
+    qDebug()
+            << "m_program->bindAttributeLocation(" << "vertexArg" << m_vertexAttrId << ")\n"
+            << "m_program->bindAttributeLocation(" << "texCoordArg" << m_texCoordAttrId << ")\n"
+            ;
     if(m_attributeColors)
     {
         m_program->bindAttributeLocation("colorArg", m_colorAttrId);
@@ -604,6 +648,9 @@ void OpenGlQuizImage::init(QOpenGLFunctions *f_)
         m_vbo->allocate(m_vertData.count() * sizeof(GLfloat));
         m_vbo->write(m_vertData.count(), m_vertData.constData(), sizeof(GLfloat));
         m_vbo->release();
+        qDebug()
+                << "m_vbo = new QOpenGLBuffer()...\n"
+                ;
     }
 }
 
@@ -616,9 +663,19 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
             ) { return; }
 
     m_program->bind();
+    qDebug() << "m_program->bind()";
+    m_vbo->bind();
+    m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());
+
+    qDebug() << "m_vbo->bind()\nm_vbo->write()";
+
 
     m_program->setUniformValue(m_fromTextureId, 0); // GL_TEXTURE0
     m_program->setUniformValue(m_toTextureId, 1);  // GL_TEXTURE1
+
+    qDebug()
+            << "m_program->setUniformValue(" << m_fromTextureId << 0 << ")\n"
+            << "m_program->setUniformValue(" << m_toTextureId << 1 << ")";
 
     if(m_updateSize)
     {
@@ -638,24 +695,41 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     m_program->setUniformValue(m_texMatrix1Id, m_texMatrix1);
     m_program->setUniformValue(m_texMatrix2Id, m_texMatrix2);
     m_program->setUniformValue(m_opacitiId, float(inheritedOpacity()));
+    qDebug()
+            << "m_program->setUniformValue(" << m_tId << (GLfloat)m_t << ")\n"
+            << "m_program->setUniformValue(" << m_matrixId << *state_->projectionMatrix() * *matrix() << ")\n"
+            << "m_program->setUniformValue(" << m_texMatrix1Id << m_texMatrix1 << ")\n"
+            << "m_program->setUniformValue(" << m_texMatrix2Id << m_texMatrix2 << ")\n"
+            << "m_program->setUniformValue(" << m_opacitiId << float(inheritedOpacity()) << ")\n"
+        ;
 
     for(const ArgumentInfo &ai: m_arguments)
     {
         ai.setValue(m_program);
     }
 
-    m_vbo->bind();
-    m_vbo->write(0, m_vertData.constData(), sizeof(GLfloat)*m_vertData.count());
-
     m_program->setAttributeBuffer(m_vertexAttrId, GL_FLOAT,
                                   0,
                                   g_geometryVertexCoords,
                                   getGeometryItemSize() * sizeof(GLfloat)
                                   );
+    qDebug() << "m_program->setAttributeBuffer(" << m_vertexAttrId << GL_FLOAT
+             << 0 << g_geometryVertexCoords
+             << getGeometryItemSize() * sizeof(GLfloat) << ")";
+    m_program->enableAttributeArray(m_vertexAttrId);
+    qDebug() << "m_program->enableAttributeArray(" << m_vertexAttrId << ")";
+
     m_program->setAttributeBuffer(m_texCoordAttrId, GL_FLOAT,
                                   g_geometryVertexCoords * sizeof(GLfloat),
                                   g_geometryTextureCoords,
                                   getGeometryItemSize() * sizeof(GLfloat));
+
+    qDebug() << "m_program->setAttributeBuffer(" << m_texCoordAttrId << GL_FLOAT
+             << g_geometryVertexCoords * sizeof(GLfloat) << g_geometryVertexCoords
+             << getGeometryItemSize() * sizeof(GLfloat) << ")";
+    m_program->enableAttributeArray(m_texCoordAttrId);
+    qDebug() << "m_program->enableAttributeArray(" << m_texCoordAttrId << ")";
+
     if(m_attributeColors)
     {
         m_program->setAttributeBuffer(m_colorAttrId, GL_FLOAT,
@@ -664,8 +738,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
                                       getGeometryItemSize() * sizeof(GLfloat));
     }
 
-    m_program->enableAttributeArray(m_vertexAttrId);
-    m_program->enableAttributeArray(m_texCoordAttrId);
+
     if(m_attributeColors)
     {
         m_program->enableAttributeArray(m_colorAttrId);
@@ -706,6 +779,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
     if(m_geometrySolid)
     {
         f_->glDrawArrays(GL_TRIANGLES, 0, m_vertData.count()/getGeometryItemSize());
+        qDebug() << "glDrawArrays( GL_TRIANGLES " << 0 << m_vertData.count()/getGeometryItemSize() << ")";
     }
     else
     {
@@ -715,6 +789,7 @@ void OpenGlQuizImage::paintGL(QOpenGLFunctions *f_, const RenderState *state_)
             {
                 const int offs = (y * m_geomertyPointsWidth + x) * g_trianglesCount * g_triangleConers;
                 f_->glDrawArrays(GL_TRIANGLES, offs, g_trianglesCount * g_triangleConers);
+                qDebug() << "glDrawArrays( GL_TRIANGLES " << offs << g_trianglesCount * g_triangleConers << ")";
             }
         }
     }

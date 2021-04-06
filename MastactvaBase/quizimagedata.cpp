@@ -115,8 +115,15 @@ void ArgumentBase::setInput(bool isInput_)
     m_isInput = isInput_;
 }
 
+template<typename EnumType_>
+constexpr std::underlying_type_t<EnumType_> toUnderlaying(EnumType_ ev_) noexcept
+{
+    return {static_cast<std::underlying_type_t<EnumType_>>(ev_)};
+}
+
 ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 {
+    enum class Fields : int {name, arraySize, isIntType, isFloatType, isMatrixType, isString, isTexture, tupleSize};
     using TypeInfo = std::tuple<const char *, int, bool, bool, bool, bool, bool, int>;
     static const TypeInfo typeInfos[] = {
         { g_intTypeName, 1,         true,  false, false, false, false, 1 },
@@ -138,19 +145,19 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
                 std::end(typeInfos),
                 [this] (const TypeInfo &ti_) -> bool
     {
-        return std::get<0>(ti_) == getType();
+        return std::get<toUnderlaying(Fields::name)>(ti_) == getType();
     });
 
     Q_ASSERT(std::end(typeInfos) != fit);   // unknown type
     if(std::end(typeInfos) == fit) { return nullptr; }
 
-    const int arraySize = std::get<1>(*fit);
-    const bool isIntArrayType = std::get<2>(*fit);
-    const bool isFloatArrayType = std::get<3>(*fit);
-    const bool isMatrixType = std::get<4>(*fit);
-    const bool isStringArrayType = std::get<5>(*fit);
-    const bool isTextureType = std::get<6>(*fit);
-    const int tupleSize = std::get<7>(*fit);
+    const int arraySize = std::get<toUnderlaying(Fields::arraySize)>(*fit);
+    const bool isIntArrayType = std::get<toUnderlaying(Fields::isIntType)>(*fit);
+    const bool isFloatArrayType = std::get<toUnderlaying(Fields::isFloatType)>(*fit);
+    const bool isMatrixType = std::get<toUnderlaying(Fields::isMatrixType)>(*fit);
+    const bool isStringArrayType = std::get<toUnderlaying(Fields::isString)>(*fit);
+    const bool isTextureType = std::get<toUnderlaying(Fields::isTexture)>(*fit);
+    const int tupleSize = std::get<toUnderlaying(Fields::tupleSize)>(*fit);
 
     if(isIntArrayType)
     {

@@ -38,12 +38,12 @@ QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &lef
     QStringList res;
     for(const QString &name: qAsConst(sqlNames_))
     {
-        const auto fit = std::find_if(std::begin(leftNames_), std::end(leftNames_),
+        const auto fit = std::find_if(std::cbegin(leftNames_), std::cend(leftNames_),
                                       [&name](const QVariant &val)->bool
         {
            return val.isValid() && val.toString() == name;
         });
-        if(std::end(leftNames_) != fit)
+        if(std::cend(leftNames_) != fit)
         {
             res.push_back(name);
         }
@@ -114,8 +114,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(extraFields));
-        it != std::end(qAsConst(extraFields))
+    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
+        it != std::cend(qAsConst(extraFields))
         ; ++it
         )
     {
@@ -226,12 +226,12 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             QJsonObject jsonObj;
             for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
             {
-                const auto fitFld = std::find_if(std::begin(procedureFilterFields), std::end(procedureFilterFields),
+                const auto fitFld = std::find_if(std::cbegin(procedureFilterFields), std::cend(procedureFilterFields),
                                                  [&fi](const QVariant &v)->bool
                 {
                     return v.isValid() && fi.sqlName == v.toString();
                 });
-                if(!procedureFilterFields.isEmpty() && std::end(procedureFilterFields) == fitFld) { continue; }
+                if(!procedureFilterFields.isEmpty() && std::cend(procedureFilterFields) == fitFld) { continue; }
                 const QVariant val = query.value(fi.sqlValueName());
                 if(val.isValid())
                 {
@@ -288,8 +288,8 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(extraFields));
-        it != std::end(qAsConst(extraFields))
+    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
+        it != std::cend(qAsConst(extraFields))
         ; ++it
         )
     {
@@ -306,13 +306,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     QString idFieldJsonName;
     QString idFieldSqlName;
-    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::end(qAsConst(r_->getTableFieldsInfo())),
+    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
     {
         return bindInfo.idField;
     });
-    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
         idFieldJsonName = fitId->jsonName;
         idFieldSqlName = fitId->sqlName;
@@ -427,13 +427,13 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     QString idFieldJsonName;
     QString idFieldSqlName;
     QString idFieldSqlBindName;
-    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::end(qAsConst(r_->getTableFieldsInfo())),
+    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
     {
         return bindInfo.idField;
     });
-    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
         idFieldJsonName = fitId->jsonName;
         idFieldSqlName = fitId->sqlName;
@@ -515,13 +515,13 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     QString idFieldJsonName;
     QString idFieldSqlName;
     QString idFieldSqlBindName;
-    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::end(qAsConst(r_->getTableFieldsInfo())),
+    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
     {
         return bindInfo.idField;
     });
-    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
         idFieldJsonName = fitId->jsonName;
         idFieldSqlName = fitId->sqlName;
@@ -623,7 +623,7 @@ RequestData *LocalDataAPICache::emptyRequest(const QString &requestName_,
 
 void LocalDataAPICache::freeRequest(RequestData *&r_)
 {
-    const auto fit = std::find_if(std::begin(m_requests), std::end(m_requests),
+    auto fit = std::find_if(std::begin(m_requests), std::end(m_requests),
                                   [&r_](const LocalDBRequest *r)->bool
     {
         return nullptr != r_ && nullptr != r && static_cast<const RequestData *>(r) == r_;
@@ -648,8 +648,8 @@ QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant>
                                                   const QHash<QString, QVariant> &v2_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(v2_));
-        it != std::end(qAsConst(v2_));
+    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(v2_));
+        it != std::cend(qAsConst(v2_));
         ++it)
     {
         if(v1_.contains(it.key()))
@@ -661,8 +661,8 @@ QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant>
             res.insert(it.key(), it.value());
         }
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(v1_));
-        it != std::end(qAsConst(v1_));
+    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(v1_));
+        it != std::cend(qAsConst(v1_));
         ++it)
     {
         if(!v2_.contains(it.key()))
