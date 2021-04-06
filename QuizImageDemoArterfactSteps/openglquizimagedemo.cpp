@@ -506,7 +506,43 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                 -1
                 );
 
-    if(minimal_) { return; }
+    QSize rectSize(m_width, m_height);
+    bool sizeIsChanged = m_oldRectSize.width() != rectSize.width() ||
+            m_oldRectSize.height() != rectSize.height();
+    m_oldRectSize = rectSize;
+
+    if(sizeIsChanged || !m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
+    {
+        QSize imageSize;
+        if(m_drawingData->getTextureSize(g_renderFromImageName, imageSize))
+        {
+            QMatrix4x4 imageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
+            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
+            m_drawingData->setRenderArgumentValue(
+                        g_renderFromImageMatrixName,
+                        mdata,
+                        mdata.size()
+                        );
+        }
+    }
+    if(sizeIsChanged || !m_drawingData->isArgumentInitialized(g_renderToImageMatrixName))
+    {
+        QSize imageSize;
+        if(m_drawingData->getTextureSize(g_renderToImageName, imageSize))
+        {
+            QMatrix4x4 imageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
+            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
+            m_drawingData->setRenderArgumentValue(
+                        g_renderToImageMatrixName,
+                        mdata,
+                        mdata.size()
+                        );
+        }
+    }
+
+    if(minimal_ && !sizeIsChanged) { return; }
 
     const int vertexTupleSize = m_drawingData->getTupleSize(
                 g_renderVertexAttributeName
@@ -514,7 +550,8 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
     const int textureTupleSize = m_drawingData->getTupleSize(
                 g_renderTextureAttributeName
                 );
-    if(!m_drawingData->isArgumentInitialized(g_renderVertexAttributeName) ||
+    if(sizeIsChanged ||
+            !m_drawingData->isArgumentInitialized(g_renderVertexAttributeName) ||
             (!m_drawingData->isArgumentInitialized(g_renderTextureAttributeName) &&
              textureTupleSize > 0
              )
@@ -564,36 +601,5 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                     indexesData,
                     indexesData.size()
                     );
-    }
-    QSize rectSize(m_width, m_height);
-    if(!m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
-    {
-        QSize imageSize;
-        if(m_drawingData->getTextureSize(g_renderFromImageName, imageSize))
-        {
-            QMatrix4x4 imageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
-            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
-            m_drawingData->setRenderArgumentValue(
-                        g_renderFromImageMatrixName,
-                        mdata,
-                        mdata.size()
-                        );
-        }
-    }
-    if(!m_drawingData->isArgumentInitialized(g_renderToImageMatrixName))
-    {
-        QSize imageSize;
-        if(m_drawingData->getTextureSize(g_renderToImageName, imageSize))
-        {
-            QMatrix4x4 imageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
-            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
-            m_drawingData->setRenderArgumentValue(
-                        g_renderToImageMatrixName,
-                        mdata,
-                        mdata.size()
-                        );
-        }
     }
 }
