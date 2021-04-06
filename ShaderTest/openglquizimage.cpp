@@ -61,22 +61,22 @@ void ArgumentInfo::setType(const QString &type_)
     else { m_valueInt.resize(m_size); }
 }
 
-static bool set_value(const QString &valStr_, GLint& val_)
+/*bool set_value(const QString &valStr_, GLint& val_)
 {
     bool ok = false;
     val_ = QVariant::fromValue(valStr_).toInt(&ok);
     return ok;
 }
 
-static bool set_value(const QString &valStr_, GLfloat& val_)
+bool set_value(const QString &valStr_, GLfloat& val_)
 {
     bool ok = false;
     val_ = QVariant::fromValue(valStr_).toDouble(&ok);
     return ok;
-}
+}*/
 
 template<typename Type_>
-static void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_)
+void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_)
 {
     int pos = 0;
     for(const QVariant &val_ : values_)
@@ -91,7 +91,7 @@ static void extractValues(const QVariantList &values_, QVector<Type_> &valuesArr
 }
 
 template<typename Type_>
-static void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
+void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_)
 {
     QString value = valuesStr_;
     value.replace(QString("("), QString(", "));
@@ -109,7 +109,7 @@ static void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray
     extractValues(valuesVar, valuesArray_);
 }
 
-static void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
+void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfloat> &valuesArray_)
 {
     if(args_.size() < 2) { return; }
     std::random_device rd;  //Will be used to obtain a seed for the random number engine
@@ -121,7 +121,7 @@ static void generateUniformRealRands(const QVector<GLfloat> &args_, QVector<GLfl
     }
 }
 
-static void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_)
+void generateUniformIntRands(const QVector<GLint> &args_, QVector<GLint> &valuesArray_)
 {
     if(args_.size() < 2) { return; }
     std::random_device rd;  //Will be used to obtain a seed for the random number engine

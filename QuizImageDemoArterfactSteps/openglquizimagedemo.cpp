@@ -103,6 +103,9 @@ void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
     f_->glEnable(GL_DEPTH_TEST);
     f_->glEnable(GL_CULL_FACE);
 
+    qDebug() << "glEnable(GL_DEPTH_TEST)";
+    qDebug() << "glEnable(GL_CULL_FACE)";
+
     m_programBuildLog.clear();
 
     for(int i = 0; i < m_drawingData->stepCount(); i++)
@@ -271,27 +274,36 @@ void OpenGlQuizImageDemo::paintGL(QOpenGLFunctions *f_, const RenderState *state
         // important to us.
 
         f_->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        qDebug() << "glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)";
 
         f_->glEnable(GL_BLEND);
         f_->glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        qDebug() << "glEnable(GL_BLEND)";
+        qDebug() << "glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)";
 
         // Clip support.
         if (state_->scissorEnabled())
         {
             f_->glEnable(GL_SCISSOR_TEST);
+            qDebug() << "glEnable(GL_SCISSOR_TEST)";
             const QRect r = state_->scissorRect(); // already bottom-up
             f_->glScissor(r.x(), r.y(), r.width(), r.height());
+            qDebug() << "glScissor(" << r.x() << r.y() << r.width() << r.height() << ")";
         }
         if (state_->stencilEnabled())
         {
             f_->glEnable(GL_STENCIL_TEST);
+            qDebug() << "glEnable(GL_STENCIL_TEST)";
             f_->glStencilFunc(GL_EQUAL, state_->stencilValue(), 0xFF);
+            qDebug() << "glStencilFunc(GL_EQUAL " << state_->stencilValue() << " 0xFF)";
             f_->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            qDebug() << "glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP)";
         }
 
         //f_->glEnable(GL_CULL_FACE);
         //f_->glCullFace(GL_FRONT_AND_BACK);
         f_->glFrontFace(GL_CCW);
+        qDebug() << "glFrontFace(GL_CCW)";
 
         /*f_->glActiveTexture(GL_TEXTURE1);
         m_toTexture->bind();
@@ -477,6 +489,7 @@ void calculatePreserveAspectFitTextureMatrix(
 void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
 {
     if(nullptr == m_drawingData) { return; }
+
     const int screeRectTupleSize = m_drawingData->getTupleSize(
                 g_renderScreenRectName
                 );
@@ -494,7 +507,43 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                 -1
                 );
 
-    if(minimal_) { return; }
+    QSize rectSize(m_width, m_height);
+    bool sizeIsChanged = m_oldRectSize.width() != rectSize.width() ||
+            m_oldRectSize.height() != rectSize.height();
+    m_oldRectSize = rectSize;
+
+    if(sizeIsChanged || !m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
+    {
+        QSize imageSize;
+        if(m_drawingData->getTextureSize(g_renderFromImageName, imageSize))
+        {
+            QMatrix4x4 imageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
+            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
+            m_drawingData->setRenderArgumentValue(
+                        g_renderFromImageMatrixName,
+                        mdata,
+                        mdata.size()
+                        );
+        }
+    }
+    if(sizeIsChanged || !m_drawingData->isArgumentInitialized(g_renderToImageMatrixName))
+    {
+        QSize imageSize;
+        if(m_drawingData->getTextureSize(g_renderToImageName, imageSize))
+        {
+            QMatrix4x4 imageTextureMatrix;
+            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
+            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
+            m_drawingData->setRenderArgumentValue(
+                        g_renderToImageMatrixName,
+                        mdata,
+                        mdata.size()
+                        );
+        }
+    }
+
+    if(minimal_ && !sizeIsChanged) { return; }
 
     const int vertexTupleSize = m_drawingData->getTupleSize(
                 g_renderVertexAttributeName
@@ -502,7 +551,8 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
     const int textureTupleSize = m_drawingData->getTupleSize(
                 g_renderTextureAttributeName
                 );
-    if(!m_drawingData->isArgumentInitialized(g_renderVertexAttributeName) ||
+    if(sizeIsChanged ||
+            !m_drawingData->isArgumentInitialized(g_renderVertexAttributeName) ||
             (!m_drawingData->isArgumentInitialized(g_renderTextureAttributeName) &&
              textureTupleSize > 0
              )
@@ -552,36 +602,5 @@ void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
                     indexesData,
                     indexesData.size()
                     );
-    }
-    QSize rectSize(m_width, m_height);
-    if(!m_drawingData->isArgumentInitialized(g_renderFromImageMatrixName))
-    {
-        QSize imageSize;
-        if(m_drawingData->getTextureSize(g_renderFromImageName, imageSize))
-        {
-            QMatrix4x4 imageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
-            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
-            m_drawingData->setRenderArgumentValue(
-                        g_renderFromImageMatrixName,
-                        mdata,
-                        mdata.size()
-                        );
-        }
-    }
-    if(!m_drawingData->isArgumentInitialized(g_renderToImageMatrixName))
-    {
-        QSize imageSize;
-        if(m_drawingData->getTextureSize(g_renderToImageName, imageSize))
-        {
-            QMatrix4x4 imageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, rectSize);
-            QVector<GLfloat> mdata = matrixToVector(imageTextureMatrix);
-            m_drawingData->setRenderArgumentValue(
-                        g_renderToImageMatrixName,
-                        mdata,
-                        mdata.size()
-                        );
-        }
     }
 }

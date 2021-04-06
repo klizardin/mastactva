@@ -6,6 +6,7 @@
 #include "../MastactvaBase/netappconsts.h"
 //#include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 
 
 void switchTranslator(QGuiApplication &app, QTranslator& translator, const QString& filename)

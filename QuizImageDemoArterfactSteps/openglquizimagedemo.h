@@ -48,6 +48,7 @@ private:
     int m_width = 1;
     int m_height = 1;
     qreal m_t = 0.0;
+    QSize m_oldRectSize{1,1};
     QString m_programBuildLog;
 };
 

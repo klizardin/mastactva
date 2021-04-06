@@ -414,6 +414,8 @@ QString loadTextFile(const QString &filename_)
     return getTextFromBinaryData(fd);
 }
 
+#if defined(QMLOBJECTS_CPP) && defined(SERVERFILES_CPP)
+
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
 {
     if(useServerFiles_)
@@ -432,6 +434,8 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
     }
 }
 
+#endif
+
 QByteArray loadBinaryFile(const QString &filename_)
 {
     QFile file(filename_);
@@ -439,6 +443,8 @@ QByteArray loadBinaryFile(const QString &filename_)
     QByteArray fd = file.readAll();
     return fd;
 }
+
+#if defined(QMLOBJECTS_CPP) && defined(SERVERFILES_CPP)
 
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
 {
@@ -457,6 +463,8 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
         return loadBinaryFile(url.toLocalFile());
     }
 }
+
+#endif
 
 QString getTextFromBinaryData(const QByteArray &data_)
 {

@@ -1203,6 +1203,11 @@ void OpenGLArgumentValueBase::setMaxIndex(int maxIndex_)
     Q_UNUSED(maxIndex_);
 }
 
+void OpenGLArgumentValueBase::use2(QOpenGLShaderProgram *program_) const
+{
+    Q_UNUSED(program_);
+}
+
 void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_) const
 {
     Q_UNUSED(f_);
@@ -1213,6 +1218,7 @@ void OpenGLArgumentValueBase::initAttribureValueId(QOpenGLShaderProgram *program
     if(nullptr == program_) { return; }
     m_id = program_->attributeLocation(name_);
     //bindAttribureValueId(program_, name_);
+    qDebug() << "program_->attributeLocation(" << name_ << " ) = " << m_id;
 }
 
 void OpenGLArgumentValueBase::bindAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_)
@@ -1221,6 +1227,7 @@ void OpenGLArgumentValueBase::bindAttribureValueId(QOpenGLShaderProgram *program
             m_id < 0 ||
             name_.isEmpty()) { return; }
     program_->bindAttributeLocation(name_, m_id);
+    qDebug() << "program_->bindAttributeLocation(" << name_  << m_id << " )";
 }
 
 void OpenGLArgumentValueBase::useAttributeValue(
@@ -1234,6 +1241,8 @@ void OpenGLArgumentValueBase::useAttributeValue(
             ) { return; }
     program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
     program_->enableAttributeArray(m_id);
+    qDebug() << "program_->setAttributeBuffer(" << m_id << type_ << offset_ << tupleSize_ << 0 << " )";
+    qDebug() << "program_->enableAttributeArray(" << m_id << " )";
 }
 
 void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const
@@ -1249,6 +1258,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
                     reinterpret_cast<const void*>(&values_[0]),
                     partSize_
                     );
+        qDebug() << "vbo_->write(" << offset_ << "QVector<GLint>" << partSize_ << ")";
     }
 }
 
@@ -1265,6 +1275,7 @@ void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offse
                    reinterpret_cast<const void*>(&values_[0]),
                    partSize_
                    );
+        qDebug() << "vbo_->write(" << offset_ << "QVector<GLfloat>" << partSize_ << ")";
     }
 }
 
@@ -1284,12 +1295,14 @@ void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *progra
             m_id < 0
             ) { return; }
     program_->disableAttributeArray(m_id);
+    qDebug() << "program_->disableAttributeArray(" << m_id << " )";
 }
 
 void OpenGLArgumentValueBase::initUniformValueId(QOpenGLShaderProgram *program_, const QString &name_)
 {
     if(nullptr == program_) { return; }
     m_id = program_->uniformLocation(name_);
+    qDebug() << "program_->uniformLocation(" << name_ << " ) = " << m_id;
 }
 
 void OpenGLArgumentValueBase::setUniformValue(
@@ -1305,6 +1318,7 @@ void OpenGLArgumentValueBase::setUniformValue(
     if(arraySize_ >= 1 && values_.size() >= 1)
     {
         program_->setUniformValue(m_id, values_[0]);
+        qDebug() << "program_->setUniformValue(" << m_id << values_[0] << " )";
     }
 }
 
@@ -1322,6 +1336,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         if(values_.size() >= 1)
         {
             program_->setUniformValue(m_id, values_[0]);
+            qDebug() << "program_->setUniformValue(" << m_id << values_[0] << " )";
         }
     }
     else if(2 == arraySize_)
@@ -1330,6 +1345,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             program_->setUniformValue(m_id, values_[0],
                     values_[1]);
+            qDebug() << "program_->setUniformValue(" << m_id << values_[0] << values_[1] << " )";
         }
     }
     else if(3 == arraySize_)
@@ -1338,6 +1354,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             program_->setUniformValue(m_id, values_[0],
                     values_[1], values_[2]);
+            qDebug() << "program_->setUniformValue(" << m_id << values_[0] << values_[1] << values_[2] << " )";
         }
     }
     else if(4 == arraySize_ && !isMatrixType)
@@ -1346,6 +1363,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             program_->setUniformValue(m_id, values_[0],
                     values_[1], values_[2], values_[3]);
+            qDebug() << "program_->setUniformValue(" << m_id << values_[0] << values_[1] << values_[2] << values_[3] << " )";
         }
     }
     else if(4 == arraySize_ && isMatrixType)
@@ -1354,6 +1372,7 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             QMatrix2x2 m(&values_[0]);
             program_->setUniformValue(m_id, m);
+            qDebug() << "program_->setUniformValue(" << m_id << values_[0] << values_[1] << values_[2] << values_[3] << " )";
         }
     }
     else if(9 == arraySize_ && isMatrixType)
@@ -1362,6 +1381,11 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             QMatrix3x3 m(&values_[0]);
             program_->setUniformValue(m_id, m);
+            qDebug() << "program_->setUniformValue(" << m_id
+                     << values_[0] << values_[1] << values_[2]
+                     << values_[3] << values_[4] << values_[5]
+                     << values_[6] << values_[7] << values_[8]
+                     << " )";
         }
     }
     else if(16 == arraySize_ && isMatrixType)
@@ -1370,6 +1394,12 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             QMatrix4x4 m(&values_[0]);
             program_->setUniformValue(m_id, m);
+            qDebug() << "program_->setUniformValue(" << m_id
+                     << values_[0] << values_[1] << values_[2] << values_[3]
+                     << values_[4] << values_[5] << values_[6] << values_[7]
+                     << values_[8] << values_[9] << values_[10] << values_[11]
+                     << values_[12] << values_[13] << values_[14] << values_[15]
+                     << " )";
         }
     }
     else
@@ -1397,6 +1427,7 @@ void OpenGLArgumentValueBase::drawTrianlesArray(QOpenGLFunctions *f_, int offset
             offset_ < 0
             ) { return; }
     f_->glDrawArrays(GL_TRIANGLES, (offset_ / 3) * 3, (size_ / 3) * 3);
+    qDebug() << "glDrawArrays( GL_TRIANGLES, " << (offset_ / 3) * 3 << (size_ / 3) * 3 << ")";
 }
 
 void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, const QImage &image_)
@@ -1408,6 +1439,7 @@ void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, 
     }
     if(image_.isNull()) { return; }
     texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps);
+    qDebug() << "texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps) " << texture_ << image_.size().width() << image_.size().height();
     texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
     texture_->setBorderColor(1, 1, 1, 0);
@@ -1419,6 +1451,8 @@ void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *
     if(textureIndex_ < 0) { return; }
     f_->glActiveTexture(GL_TEXTURE0 + textureIndex_);
     texture_->bind();
+    qDebug() << "glActiveTexture ( GL_TEXTURE0 + " << textureIndex_ << ")";
+    qDebug() << "texture_->bind() " << texture_;
 }
 
 
@@ -2185,9 +2219,13 @@ bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
         }
     }
     m_program = new QOpenGLShaderProgram();
+    qDebug() << "m_program = new QOpenGLShaderProgram()";
     m_program->addShader(m_vertexShader);
+    qDebug() << "m_program->addShader(m_vertexShader)";
     m_program->addShader(m_fragmentShader);
+    qDebug() << "m_program->addShader(m_fragmentShader)";
     m_program->link();
+    qDebug() << "m_program->link()";
     if(!m_program->isLinked())
     {
         errorLog_ += m_program->log();
@@ -2277,11 +2315,16 @@ void OpenGLDrawingStepImageData::buildVBO()
     }
     m_vboData.resize(vboDataSize);
     m_vbo = new QOpenGLBuffer();
+    qDebug() << "m_vbo = new QOpenGLBuffer()";
     m_vbo->create();
+    qDebug() << "m_vbo->create()";
     m_vbo->bind();
+    qDebug() << "m_vbo->bind()";
     m_vbo->allocate(m_vboData.count() * sizeof(GLfloat));
+    qDebug() << "m_vbo->allocate(" << m_vboData.count() * sizeof(GLfloat) << ")";
     writeVBO();
     m_vbo->release();
+    qDebug() << "m_vbo->release()";
 }
 
 void OpenGLDrawingStepImageData::writeVBO()
@@ -2312,6 +2355,8 @@ void OpenGLDrawingStepImageData::bindProgramAndVBO()
             nullptr == m_vbo) { return; }
     m_program->bind();
     m_vbo->bind();
+    qDebug() << "m_program->bind()";
+    qDebug() << "m_vbo->bind()";
 }
 
 void OpenGLDrawingStepImageData::useArguments() const
@@ -2320,6 +2365,11 @@ void OpenGLDrawingStepImageData::useArguments() const
     {
         if(nullptr == argument_) { continue; }
         argument_->use(m_program);
+    }
+    for(const auto *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->use2(m_program);
     }
 }
 
@@ -2349,8 +2399,13 @@ void OpenGLDrawingStepImageData::release() const
         if(nullptr == argument_) { continue; }
         argument_->release(m_program);
     }
-    if(nullptr != m_vbo) { m_vbo->release(); }
+    if(nullptr != m_vbo)
+    {
+        m_vbo->release();
+        qDebug() << "m_vbo->release()";
+    }
     m_program->release();
+    qDebug() << "m_program->release()";
 }
 
 void OpenGLDrawingStepImageData::free()

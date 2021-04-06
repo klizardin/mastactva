@@ -481,6 +481,7 @@ public:
     virtual void setVBOPartOffset(int offset_) = 0; // set offset of vbo data (data follows in chain)
     virtual void writeVBOPart(QOpenGLBuffer *vbo_, int offset_, int sizeItems_) const = 0;  // write vbo part to draing buffer
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
+    virtual void use2(QOpenGLShaderProgram *program_) const;
     virtual void bindTexture(QOpenGLFunctions *f_) const;
     virtual void draw(QOpenGLFunctions *f_) const = 0;
     virtual void release(QOpenGLShaderProgram *program_) const = 0;
@@ -839,6 +840,11 @@ public:
 
     virtual void use(QOpenGLShaderProgram *program_) const override
     {
+        Q_UNUSED(program_);
+    }
+
+    virtual void use2(QOpenGLShaderProgram *program_) const override
+    {
         OpenGLArgumentValueBase::useAttributeValue(
                     program_,
                     TypeToGLTypeEnum<ItemType>::value,
@@ -957,7 +963,7 @@ public:
             OpenGLArgumentValueBase::drawTrianlesArray(
                         f_,
                         (m_maxIndex * (i + 0)) / elements,
-                        (m_maxIndex * (i + 1)) / elements
+                        m_maxIndex / elements
                         );
         }
     }
