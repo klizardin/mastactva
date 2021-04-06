@@ -489,6 +489,7 @@ void calculatePreserveAspectFitTextureMatrix(
 void OpenGlQuizImageDemo::updateRenderArguments(bool minimal_)
 {
     if(nullptr == m_drawingData) { return; }
+
     const int screeRectTupleSize = m_drawingData->getTupleSize(
                 g_renderScreenRectName
                 );
