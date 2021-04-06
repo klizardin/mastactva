@@ -6,9 +6,7 @@
 #include <QtQuick/QQuickFramebufferObject>
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/effectargset.h"
-
-
-static const QString g_noImage = ":/resources/no-image.png";
+#include "../MastactvaBase/names.h"
 
 
 class QuizImage : public QQuickItem
