@@ -130,7 +130,7 @@ RequestData * ListModelBaseData::findRequest(const QString &requestName_)
 {
     const auto fit = std::find_if(std::begin(m_requests),
                                   std::end(m_requests),
-                                  [&requestName_](RequestData *request_)->bool
+                                  [&requestName_](const auto *request_)->bool
     {
         return nullptr != request_ && request_->getRequestName() == requestName_;
     });
@@ -142,7 +142,7 @@ bool ListModelBaseData::findRequest(RequestData *request_) const
     if(nullptr == request_) { return false; }
     const auto fit = std::find_if(std::begin(m_requests),
                                   std::end(m_requests),
-                                  [request_](RequestData *requestItem_)->bool
+                                  [request_](const auto *requestItem_)->bool
     {
         return nullptr != requestItem_ && requestItem_ == request_;
     });
@@ -154,7 +154,7 @@ void ListModelBaseData::removeRequest(RequestData *request_)
     if(nullptr == request_) { return; }
     const auto fit = std::find_if(std::begin(m_requests),
                                   std::end(m_requests),
-                                  [request_](RequestData *requestItem_)->bool
+                                  [request_](const auto *requestItem_)->bool
     {
         return nullptr != requestItem_ && requestItem_ == request_;
     });
@@ -287,8 +287,8 @@ void ListModelBaseData::addExtraFieldRenameImpl(const QString &oldName_, const Q
 QHash<QString, QVariant> ListModelBaseData::renameFields(const QHash<QString, QVariant> &src_)
 {
     QHash<QString, QVariant> res;
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(src_));
-        it != std::end(qAsConst(src_));
+    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(src_));
+        it != std::cend(qAsConst(src_));
         ++it)
     {
         if(m_renames.contains(it.key()))

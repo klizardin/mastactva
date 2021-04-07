@@ -301,8 +301,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::begin(qAsConst(extraFields));
-        it != std::end(qAsConst(extraFields))
+    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
+        it != std::cend(qAsConst(extraFields))
         ; ++it
         )
     {
@@ -320,15 +320,15 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QString idFieldJsonName;
     QString idFieldSqlName;
     QString idFieldSQlBindName;
-    const auto fitId = std::find_if(std::begin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::end(qAsConst(r_->getTableFieldsInfo())),
+    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
+                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
     {
         return bindInfo.idField;
     });
     const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
     QStringList conditionsList;
-    if(std::end(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
         idFieldJsonName = fitId->jsonName;
         idFieldSqlName = fitId->sqlName;

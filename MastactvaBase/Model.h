@@ -275,15 +275,15 @@ public:
 
     const DataType_ *findDataItemByIdImpl(const QVariant &id_) const
     {
-        const auto fit = std::find_if(std::begin(m_data),
-                                      std::end(m_data),
+        const auto fit = std::find_if(std::cbegin(m_data),
+                                      std::cend(m_data),
                                       [&id_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
             const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
             return id == id_;
         });
-        return std::end(m_data) == fit ? nullptr : *fit;
+        return std::cend(m_data) == fit ? nullptr : *fit;
     }
 
     DataType_ *findDataItemByIdImpl(const QVariant &id_)
@@ -305,8 +305,8 @@ public:
         {
             appId1 = getCurrentIndexAppId();
         }
-        const auto fit = std::find_if(std::begin(m_data),
-                                      std::end(m_data),
+        const auto fit = std::find_if(std::cbegin(m_data),
+                                      std::cend(m_data),
                                       [&appId1](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
@@ -315,14 +315,14 @@ public:
                         item);
             return appId1.isValid() && appId1 == appId;
         });
-        return std::end(m_data) == fit ? nullptr : *fit;
+        return std::cend(m_data) == fit ? nullptr : *fit;
     }
 
     bool selectDataItemByAppIdImpl(const QVariant &appId_)
     {
         if(!appId_.isValid() || appId_.isNull()) { return false; }
-        const auto fit = std::find_if(std::begin(m_data),
-                                      std::end(m_data),
+        const auto fit = std::find_if(std::cbegin(m_data),
+                                      std::cend(m_data),
                                       [&appId_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
@@ -331,8 +331,8 @@ public:
                         item);
             return appId_.isValid() && appId_ == appId;
         });
-        if(std::end(m_data) == fit) { return false; }
-        const int ni = std::distance(std::begin(m_data), fit);
+        if(std::cend(m_data) == fit) { return false; }
+        const int ni = std::distance(std::cbegin(m_data), fit);
         if(ni == getCurrentIndexImpl()) { return false; }
         setCurrentIndexImpl(ni);
         autoLoadDataItem();
@@ -342,16 +342,16 @@ public:
     bool selectDataItemByIdImpl(const QVariant &id_)
     {
         if(!id_.isValid() || id_.isNull()) { return false; }
-        const auto fit = std::find_if(std::begin(m_data),
-                                      std::end(m_data),
+        const auto fit = std::find_if(std::cbegin(m_data),
+                                      std::cend(m_data),
                                       [&id_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
             const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
             return id_.isValid() && id_ == id;
         });
-        if(std::end(m_data) == fit) { return false; }
-        const int ni = std::distance(std::begin(m_data), fit);
+        if(std::cend(m_data) == fit) { return false; }
+        const int ni = std::distance(std::cbegin(m_data), fit);
         if(ni == getCurrentIndexImpl()) { return false; }
         setCurrentIndexImpl(ni);
         autoLoadDataItem();
@@ -954,8 +954,8 @@ protected:
 
     void setCurrentIndexByAppIdImpl(const QVariant &appId_)
     {
-        const auto fit = std::find_if(std::begin(m_data),
-                                      std::end(m_data),
+        const auto fit = std::find_if(std::cbegin(m_data),
+                                      std::cend(m_data),
                                       [&appId_](const DataType_ *item)->bool
         {
             if(nullptr == item) { return false; }
@@ -964,14 +964,14 @@ protected:
                         item);
             return appId_.isValid() && appId_ == appId;
         });
-        if(std::end(m_data) == fit)
+        if(std::cend(m_data) == fit)
         {
             setCurrentIndexImpl(m_data.isEmpty()? -1: 0);
             autoLoadDataItem();
         }
         else
         {
-            setCurrentIndexImpl(std::distance(std::begin(m_data), fit));
+            setCurrentIndexImpl(std::distance(std::cbegin(m_data), fit));
             autoLoadDataItem();
         }
     }
@@ -996,7 +996,7 @@ protected:
         filterItemsIf([&ids_](const DataType_ *i)->bool
         {
             return nullptr != i &&
-                    std::end(ids_) != std::find_if(std::begin(ids_), std::end(ids_),
+                    std::cend(ids_) != std::find_if(std::cbegin(ids_), std::cend(ids_),
                                                 [&i](const QVariant &id_)
             {
                 const QVariant id = getDataLayout<DataType_>().getIdJsonValue(i);
@@ -1018,7 +1018,7 @@ protected:
         filterItemsIf([&ids_](const DataType_ *i)->bool
         {
             return nullptr != i &&
-                    std::end(ids_) == std::find_if(std::begin(ids_), std::end(ids_),
+                    std::cend(ids_) == std::find_if(std::cbegin(ids_), std::cend(ids_),
                                                 [&i](const QVariant &id_)
             {
                 const QVariant id = getDataLayout<DataType_>().getIdJsonValue(i);
@@ -1259,7 +1259,7 @@ protected:
                     layout::SpecialFieldEn::appId,
                     item_);
         if(!appId0.isValid() || appId0.isNull()) { return; }
-        const auto fit = std::find_if(std::begin(m_data), std::end(m_data),
+        auto fit = std::find_if(std::begin(m_data), std::end(m_data),
                                       [&appId0](const DataType_ *i_) -> bool
         {
             QVariant appId1 = getDataLayout<DataType_>().getSpecialFieldValue(
@@ -1306,8 +1306,8 @@ protected:
         beginRemoveRows(QModelIndex(), 0, std::max(0, m_data.size() - 1));
         for(auto *&p: m_data)
         {
-            const auto fit = std::find(std::begin(waitingToUpdate), std::end(waitingToUpdate), p);
-            if(std::end(waitingToUpdate) == fit)
+            const auto fit = std::find(std::cbegin(waitingToUpdate), std::cend(waitingToUpdate), p);
+            if(std::cend(waitingToUpdate) == fit)
             {
                 delete p;
                 p = nullptr;

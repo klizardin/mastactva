@@ -40,7 +40,7 @@ const QVector<ILocalDataAPI *> &QMLObjectsBase::getLocalDataAPIViews()
 
 IListModel *QMLObjectsBase::findListModel(const QString &layoutName_) const
 {
-    const auto fit = std::find_if(std::begin(m_models), std::end(m_models),
+    auto fit = std::find_if(std::begin(m_models), std::end(m_models),
                                   [&layoutName_](IListModel *model_)->bool
     {
         return nullptr != model_ && model_->getQMLLayoutName() == layoutName_;
@@ -82,7 +82,7 @@ void QMLObjectsBase::registerModel(const QString &layoutName_, IListModel *m_)
 
 void QMLObjectsBase::unregisterModel(const QString &layoutName_)
 {
-    const auto fit = std::find_if(std::begin(m_models), std::end(m_models),
+    auto fit = std::find_if(std::begin(m_models), std::end(m_models),
                                   [&layoutName_](IListModel *model_)->bool
     {
         return nullptr != model_ && model_->getQMLLayoutName() == layoutName_;

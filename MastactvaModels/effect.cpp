@@ -352,7 +352,7 @@ void Effect::cancelRefreshArguments()
 
 void Effect::refreshArgumentsArtefactDownloadedSlot(const QString &url_)
 {
-    const auto fit = std::find_if(std::begin(m_artefactInfos), std::end(m_artefactInfos),
+    auto fit = std::find_if(std::begin(m_artefactInfos), std::end(m_artefactInfos),
                                   [&url_](const ArtefactInfo &ai_)->bool
     {
         return ai_.filename == url_;
@@ -544,8 +544,8 @@ void Effect::applyRefreshArguments()
     {
         const EffectArg *existingArg = m_effectArgModel->dataItemAtImpl(i);
         const auto fitni = std::find_if(
-                    std::begin(newArguments),
-                    std::end(newArguments),
+                    std::cbegin(newArguments),
+                    std::cend(newArguments),
                     [&existingArg] (EffectArg *effectArg) -> bool
                     {
                         return nullptr != effectArg &&
@@ -554,7 +554,7 @@ void Effect::applyRefreshArguments()
                             effectArg->objectArtefactId() == existingArg->objectArtefactId()
                             ;
                     });
-        const bool newItemFounded = std::end(newArguments) == fitni;
+        const bool newItemFounded = std::cend(newArguments) == fitni;
         if(!newItemFounded)
         {
             m_itemsToDel.push_back(m_effectArgModel->dataItemAtImpl(i));
