@@ -1210,7 +1210,17 @@ void OpenGLArgumentValueBase::setMaxIndex(int maxIndex_)
     Q_UNUSED(maxIndex_);
 }
 
-void OpenGLArgumentValueBase::use2(QOpenGLShaderProgram *program_) const
+void OpenGLArgumentValueBase::setVBOPartStide(int stride_)
+{
+    Q_UNUSED(stride_);
+}
+
+void OpenGLArgumentValueBase::writeVBOPart(QVector<GLfloat> &vboData_) const
+{
+    Q_UNUSED(vboData_);
+}
+
+void OpenGLArgumentValueBase::useAttributes(QOpenGLShaderProgram *program_) const
 {
     Q_UNUSED(program_);
 }
@@ -1241,59 +1251,75 @@ void OpenGLArgumentValueBase::useAttributeValue(
         QOpenGLShaderProgram *program_,
         GLenum type_,
         int offset_,
-        int tupleSize_) const
+        int tupleSize_,
+        int stride_) const
 {
     if(nullptr == program_ ||
             m_id < 0
             ) { return; }
-    program_->setAttributeBuffer(m_id, type_, offset_, tupleSize_, 0);
     program_->enableAttributeArray(m_id);
-    qDebug() << "program_->setAttributeBuffer(" << m_id << type_ << offset_ << tupleSize_ << 0 << " )";
+    program_->setAttributeBuffer(m_id, type_, offset_ * sizeof(GLfloat), tupleSize_, stride_ * sizeof(GLfloat));
     qDebug() << "program_->enableAttributeArray(" << m_id << " )";
+    qDebug() << "program_->setAttributeBuffer(" << m_id << type_ << offset_ * sizeof(GLfloat) << tupleSize_ << stride_ * sizeof(GLfloat) << " )";
 }
 
-void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLint> &values_, int partSize_, int tupleSize_) const
+void OpenGLArgumentValueBase::writeAttributeValue(
+        QVector<GLfloat> &vboData_,
+        int offset_,
+        const QVector<GLint> &values_,
+        int tupleSize_,
+        int stride_) const
 {
-    if(nullptr == vbo_) { return; }
-    if(values_.size() > 0 &&
-            values_.size() >= sizeItems_ * tupleSize_ &&
-            partSize_ <= (int)(tupleSize_ * sizeItems_ * sizeof(GLint))
-            )
-    {
-        vbo_->write(
-                    offset_,
-                    reinterpret_cast<const void*>(&values_[0]),
-                    partSize_
-                    );
-        qDebug() << "vbo_->write(" << offset_ << "QVector<GLint>" << partSize_ << ")";
-    }
-}
-
-void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<GLfloat> &values_, int partSize_, int tupleSize_) const
-{
-    if(nullptr == vbo_) { return; }
-    if(values_.size() > 0 &&
-            values_.size() >= sizeItems_ * tupleSize_  &&
-            partSize_ <= (int)(tupleSize_ * sizeItems_ * sizeof(GLfloat))
-            )
-    {
-        vbo_->write(
-                   offset_,
-                   reinterpret_cast<const void*>(&values_[0]),
-                   partSize_
-                   );
-        qDebug() << "vbo_->write(" << offset_ << "QVector<GLfloat>" << partSize_ << ")";
-    }
-}
-
-void OpenGLArgumentValueBase::writeAttributeValue(QOpenGLBuffer *vbo_, int offset_, int sizeItems_, const QVector<QString> &values_, int partSize_, int tupleSize_) const
-{
-    Q_UNUSED(vbo_);
+    Q_UNUSED(vboData_);
     Q_UNUSED(offset_);
-    Q_UNUSED(sizeItems_);
     Q_UNUSED(values_);
-    Q_UNUSED(partSize_);
     Q_UNUSED(tupleSize_);
+    Q_UNUSED(stride_);
+}
+
+void OpenGLArgumentValueBase::writeAttributeValue(
+        QVector<GLfloat> &vboData_,
+        int offset_,
+        const QVector<GLfloat> &values_,
+        int tupleSize_,
+        int stride_) const
+{
+    if(values_.size() == 0 ||
+            stride_ == 0 ||
+            tupleSize_ == 0
+            ) { return; }
+
+    const int sizeItems = values_.size() / tupleSize_;
+    const int cnt = std::min(sizeItems, (vboData_.size() - offset_) / stride_);
+    int offsetSrc = 0;
+    int offsetDest = offset_;
+    for(int i = 0; i < cnt; ++i)
+    {
+        for(int j = 0;
+            j < tupleSize_ &&
+                offsetSrc < values_.size() &&
+                offsetDest + j < vboData_.size();
+            ++j, ++offsetSrc)
+        {
+            vboData_[offsetDest + j] = values_[offsetSrc];
+        }
+        offsetDest += stride_;
+    }
+    qDebug() << "vboData_->write(" << offset_ << stride_ << "QVector<GLfloat>" << ")";
+}
+
+void OpenGLArgumentValueBase::writeAttributeValue(
+        QVector<GLfloat> &vboData_,
+        int offset_,
+        const QVector<QString> &values_,
+        int tupleSize_,
+        int stride_) const
+{
+    Q_UNUSED(vboData_);
+    Q_UNUSED(offset_);
+    Q_UNUSED(values_);
+    Q_UNUSED(tupleSize_);
+    Q_UNUSED(stride_);
 }
 
 void OpenGLArgumentValueBase::releaseAttributeValue(QOpenGLShaderProgram *program_) const
@@ -1388,9 +1414,9 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             QMatrix3x3 m(&values_[0]);
             program_->setUniformValue(m_id, m);
-            qDebug() << "program_->setUniformValue(" << m_id
-                     << values_[0] << values_[1] << values_[2]
-                     << values_[3] << values_[4] << values_[5]
+            qDebug() << "program_->setUniformValue(" << m_id << "\n"
+                     << values_[0] << values_[1] << values_[2] << "\n"
+                     << values_[3] << values_[4] << values_[5] << "\n"
                      << values_[6] << values_[7] << values_[8]
                      << " )";
         }
@@ -1401,10 +1427,10 @@ void OpenGLArgumentValueBase::setUniformValue(
         {
             QMatrix4x4 m(&values_[0]);
             program_->setUniformValue(m_id, m);
-            qDebug() << "program_->setUniformValue(" << m_id
-                     << values_[0] << values_[1] << values_[2] << values_[3]
-                     << values_[4] << values_[5] << values_[6] << values_[7]
-                     << values_[8] << values_[9] << values_[10] << values_[11]
+            qDebug() << "program_->setUniformValue(" << m_id << "\n"
+                     << values_[0] << values_[1] << values_[2] << values_[3] << "\n"
+                     << values_[4] << values_[5] << values_[6] << values_[7] << "\n"
+                     << values_[8] << values_[9] << values_[10] << values_[11] << "\n"
                      << values_[12] << values_[13] << values_[14] << values_[15]
                      << " )";
         }
@@ -1446,7 +1472,7 @@ void OpenGLArgumentValueBase::createTextureFromImage(QOpenGLTexture *&texture_, 
     }
     if(image_.isNull()) { return; }
     texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps);
-    qDebug() << "texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps) " << texture_ << image_.size().width() << image_.size().height();
+    qDebug() << "texture_ = new QOpenGLTexture(image_.mirrored(), QOpenGLTexture::GenerateMipMaps) " << static_cast<void*>(texture_) << image_.size().width() << image_.size().height();
     texture_->setMagnificationFilter(QOpenGLTexture::Filter::LinearMipMapLinear);
     texture_->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
     texture_->setBorderColor(1, 1, 1, 0);
@@ -1459,7 +1485,7 @@ void OpenGLArgumentValueBase::bindTexture(QOpenGLFunctions *f_, QOpenGLTexture *
     f_->glActiveTexture(GL_TEXTURE0 + textureIndex_);
     texture_->bind();
     qDebug() << "glActiveTexture ( GL_TEXTURE0 + " << textureIndex_ << ")";
-    qDebug() << "texture_->bind() " << texture_;
+    qDebug() << "texture_->bind() " << static_cast<void*>(texture_);
 }
 
 
@@ -2309,19 +2335,27 @@ void OpenGLDrawingStepImageData::buildVBO()
         argument_->setMaxIndex(maxIndex);
     }
     int vboDataSize = 0;
+    int strideOffset = 0;
     for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
         if(0 < argument_->getVBOPartSize() &&
                 0 < argument_->getMaxIndex())
         {
-            const int offset = vboDataSize;
+            const int offset = strideOffset;
+            strideOffset += argument_->getTupleSize();
             vboDataSize += (argument_->getVBOPartSize() * maxIndex) / argument_->getMaxIndex();
-            argument_->setVBOPartOffset(offset * sizeof(GLfloat));
+            argument_->setVBOPartOffset(offset);
         }
     }
+    for(auto *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->setVBOPartStide(strideOffset);
+    }
     m_vboData.resize(vboDataSize);
-    m_vbo = new QOpenGLBuffer();
+    m_vbo = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+    m_vbo->setUsagePattern(QOpenGLBuffer::StaticDraw);
     qDebug() << "m_vbo = new QOpenGLBuffer()";
     m_vbo->create();
     qDebug() << "m_vbo->create()";
@@ -2337,23 +2371,13 @@ void OpenGLDrawingStepImageData::buildVBO()
 void OpenGLDrawingStepImageData::writeVBO()
 {
     if(nullptr == m_vbo) { return; }
-    int maxIndex = 0;
     for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        maxIndex = std::max(maxIndex, argument_->getMaxIndex());
+        argument_->writeVBOPart(m_vboData);
     }
-    int vboPartOffset = 0;
-    for(auto *argument_: m_programArguments)
-    {
-        if(nullptr == argument_) { continue; }
-        if(0 >= argument_->getVBOPartSize() ||
-                0 >= argument_->getMaxIndex()
-                ) { continue; }
-        const int size = (argument_->getVBOPartSize() * maxIndex) / argument_->getMaxIndex();
-        argument_->writeVBOPart(m_vbo, vboPartOffset, argument_->getMaxIndex());
-        vboPartOffset += size * sizeof(GLfloat);
-    }
+    m_vbo->write(0, m_vboData.constData(), m_vboData.count() * sizeof(GLfloat));
+    qDebug() << "m_vbo->write(0, m_vboData.constData(), m_vboData.count() * sizeof(GLfloat))";
 }
 
 void OpenGLDrawingStepImageData::bindProgramAndVBO()
@@ -2371,12 +2395,12 @@ void OpenGLDrawingStepImageData::useArguments() const
     for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        argument_->use(m_program);
+        argument_->useAttributes(m_program);
     }
     for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        argument_->use2(m_program);
+        argument_->use(m_program);
     }
 }
 
@@ -2710,7 +2734,7 @@ void OpenGLDrawingImageData::writeStepVBO(int stepIndex_) const
             stepIndex_ >= stepCount() ||
             nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_]->writeVBO();
+    //m_steps[stepIndex_]->writeVBO();
 }
 
 void OpenGLDrawingImageData::useStepArguments(int stepIndex_) const
