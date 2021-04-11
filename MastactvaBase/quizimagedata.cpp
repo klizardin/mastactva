@@ -2080,6 +2080,7 @@ void DrawingArgument::setValues(const QVector<GLfloat> &values_, int size_)
             break;
         }
     }
+    qDebug() << "setValues()" << m_valueDataArray->floatValues();
 }
 
 void DrawingArgument::setValues(const QVector<GLint> &values_, int size_)
@@ -2104,6 +2105,7 @@ void DrawingArgument::setValues(const QVector<GLint> &values_, int size_)
             break;
         }
     }
+    qDebug() << "setValues()" << m_valueDataArray->intValues();
 }
 
 void DrawingArgument::getValues(QVector<GLfloat> &values_) const
@@ -2499,6 +2501,7 @@ void OpenGLDrawingImageData::setRenderArgumentValue(
         int size_
         )
 {
+    qDebug() << "setRenderArgumentValue (" << argumentName_ << "values = " << values_ << ")";
     auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
@@ -2515,6 +2518,7 @@ void OpenGLDrawingImageData::setRenderArgumentValue(
         int size_
         )
 {
+    qDebug() << "setRenderArgumentValue (" << argumentName_ << "values = " << values_ << ")";
     auto itb = std::end(m_arguments);
     findArgumentsRange(argumentName_, itb);
     for(auto it = itb; it != std::end(m_arguments); ++it)
