@@ -2380,6 +2380,7 @@ void OpenGLDrawingStepImageData::writeVBO()
     }
     m_vbo->write(0, m_vboData.constData(), m_vboData.count() * sizeof(GLfloat));
     qDebug() << "m_vbo->write(0, m_vboData.constData(), m_vboData.count() * sizeof(GLfloat))";
+    qDebug() << "m_vboData =" << m_vboData;
 }
 
 void OpenGLDrawingStepImageData::bindProgramAndVBO()
