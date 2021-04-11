@@ -2234,6 +2234,8 @@ bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
     if(nullptr == m_vertexShader &&
             nullptr != m_vertexArtefact)
     {
+        qDebug() << m_vertexArtefact->getShaderCode();
+
         m_vertexShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
         m_vertexDataBA = m_vertexArtefact->getShaderCode().toUtf8();
         m_vertexShader->compileSourceCode(m_vertexDataBA.constData());
@@ -2245,6 +2247,8 @@ bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
     if(nullptr == m_fragmentShader &&
             nullptr != m_fragmentArtefact)
     {
+        qDebug() << m_fragmentArtefact->getShaderCode();
+
         m_fragmentShader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr);
         m_fragmentDataBA = m_fragmentArtefact->getShaderCode().toUtf8();
         m_fragmentShader->compileSourceCode(m_fragmentDataBA.constData());
@@ -2739,7 +2743,7 @@ void OpenGLDrawingImageData::writeStepVBO(int stepIndex_) const
             stepIndex_ >= stepCount() ||
             nullptr == m_steps[stepIndex_]
             ) { return; }
-    //m_steps[stepIndex_]->writeVBO();
+    m_steps[stepIndex_]->writeVBO();
 }
 
 void OpenGLDrawingImageData::useStepArguments(int stepIndex_) const
