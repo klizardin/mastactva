@@ -568,3 +568,41 @@ QString setDefaultImageIfEmpty(const QString &imageURLStr_)
         return imageURLStr_;
     }
 }
+
+#if QT_CONFIG(opengl)
+
+QStringList getOpenGLErrors()
+{
+    QStringList res;
+    using ErrorInfoType = std::tuple<GLenum, const char*>;
+    static const ErrorInfoType errors[] = {
+        {GL_NO_ERROR, "GL_NO_ERROR"},
+        {GL_INVALID_ENUM, "GL_INVALID_ENUM"},
+        {GL_INVALID_VALUE, "GL_INVALID_VALUE"},
+        {GL_INVALID_OPERATION, "GL_INVALID_OPERATION"},
+        {GL_INVALID_FRAMEBUFFER_OPERATION, "GL_INVALID_FRAMEBUFFER_OPERATION"},
+        {GL_OUT_OF_MEMORY, "GL_OUT_OF_MEMORY"},
+    };
+
+    GLenum error = GL_NO_ERROR;
+    do {
+        error = glGetError();
+        if (error != GL_NO_ERROR)
+        {
+            const auto fit = std::find_if(
+                        std::begin(errors),
+                        std::end(errors),
+                        [&error](const ErrorInfoType &errorInfo_)->bool
+            {
+               return error == std::get<0>(errorInfo_);
+            });
+            if(std::end(errors) != fit)
+            {
+                res.append(std::get<1>(*fit));
+            }
+        }
+    } while (error != GL_NO_ERROR);
+    return res;
+}
+
+#endif  // #if QT_CONFIG(opengl)
