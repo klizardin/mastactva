@@ -1334,7 +1334,7 @@ public:
     //void clearArgumentIds();
     bool buildProgram(QString &errorLog_);
     bool isProgramBuilded() const;
-    void createArguments();
+    void createArguments(QOpenGLFunctions *f_);
     void createTextures();
     void bind();
     void buildVBO();
@@ -1389,7 +1389,7 @@ public:
     //void clearStepArgumentIds(int stepIndex_);
     bool buildStepProgram(int stepIndex_, QString &errorLog_);
     bool isStepProgramBuilded(int stepIndex_) const;
-    void createStepArgument(int stepIndex_);
+    void createStepArgument(int stepIndex_, QOpenGLFunctions *f_);
     void createStepTextures(int stepIndex_);
     void bindStep(int stepIndex_);
     void buildStepVBO(int stepIndex_);

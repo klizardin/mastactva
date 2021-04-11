@@ -2241,8 +2241,10 @@ bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
         qDebug() << m_vertexArtefact->getShaderCode();
 
         m_vertexShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr);
+        qDebug() << "m_vertexShader = new QOpenGLShader(QOpenGLShader::Vertex, nullptr)" << getOpenGLErrors();
         m_vertexDataBA = m_vertexArtefact->getShaderCode().toUtf8();
         m_vertexShader->compileSourceCode(m_vertexDataBA.constData());
+        qDebug() << "m_vertexShader->compileSourceCode(m_vertexDataBA.constData())" << getOpenGLErrors();
         if(!m_vertexShader->isCompiled())
         {
             errorLog_ += m_vertexShader->log();
@@ -2254,22 +2256,23 @@ bool OpenGLDrawingStepImageData::buildProgram(QString &errorLog_)
         qDebug() << m_fragmentArtefact->getShaderCode();
 
         m_fragmentShader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr);
+        qDebug() << "m_fragmentShader = new QOpenGLShader(QOpenGLShader::Fragment, nullptr)" << getOpenGLErrors();
         m_fragmentDataBA = m_fragmentArtefact->getShaderCode().toUtf8();
         m_fragmentShader->compileSourceCode(m_fragmentDataBA.constData());
+        qDebug() << "m_fragmentShader->compileSourceCode(m_fragmentDataBA.constData())" << getOpenGLErrors();
         if(!m_fragmentShader->isCompiled())
         {
             errorLog_ += m_fragmentShader->log();
         }
     }
     m_program = new QOpenGLShaderProgram();
-    qDebug() << "m_program = new QOpenGLShaderProgram()";
+    qDebug() << "m_program = new QOpenGLShaderProgram()" << getOpenGLErrors();
     m_program->addShader(m_vertexShader);
-    qDebug() << "m_program->addShader(m_vertexShader)";
+    qDebug() << "m_program->addShader(m_vertexShader)" << getOpenGLErrors();
     m_program->addShader(m_fragmentShader);
-    qDebug() << "m_program->addShader(m_fragmentShader)";
+    qDebug() << "m_program->addShader(m_fragmentShader)" << getOpenGLErrors();
     m_program->link();
-    qDebug() << "m_program->link()";
-    qDebug() << getOpenGLErrors();
+    qDebug() << "m_program->link()" << getOpenGLErrors();
     qDebug() << "error log" << errorLog_;
     if(!m_program->isLinked())
     {
@@ -2285,9 +2288,39 @@ bool OpenGLDrawingStepImageData::isProgramBuilded() const
     return nullptr != m_program;
 }
 
-void OpenGLDrawingStepImageData::createArguments()
+void OpenGLDrawingStepImageData::createArguments(QOpenGLFunctions *f_)
 {
     if(nullptr == m_program) { return; }
+    m_program->bind();
+    qDebug() << "m_program->bind()";
+
+    GLint uniformsCount = 0;
+    f_->glGetProgramiv(m_program->programId(), GL_ACTIVE_UNIFORMS, &uniformsCount);
+    GLsizei uniformsBufSize = 256;
+    f_->glGetProgramiv(m_program->programId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformsBufSize);
+    for(int i = 0; i < uniformsCount; ++i)
+    {
+        std::unique_ptr<GLchar[]> name(new GLchar[uniformsBufSize + 1]);
+        GLsizei length = 0;
+        GLint size = 0;
+        GLenum type = 0;
+        f_->glGetActiveUniform(m_program->programId(), i, uniformsBufSize, &length, &size, &type, &name[0]);
+        qDebug() << "glGetActiveUniform" << i << &name[0] << size << type;
+    }
+    GLint attrinutesCount = 0;
+    f_->glGetProgramiv(m_program->programId(), GL_ACTIVE_ATTRIBUTES, &attrinutesCount);
+    GLsizei attributeBufSize = 256;
+    f_->glGetProgramiv(m_program->programId(), GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &attributeBufSize);
+    for(int i = 0; i < attrinutesCount; ++i)
+    {
+        std::unique_ptr<GLchar[]> name(new GLchar[attributeBufSize + 1]);
+        GLsizei length = 0;
+        GLint size = 0;
+        GLenum type = 0;
+        f_->glGetActiveAttrib(m_program->programId(), i, attributeBufSize, &length, &size, &type, &name[0]);
+        qDebug() << "glGetActiveAttrib" << i << &name[0] << size << type;
+    }
+
     for(auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
@@ -2701,14 +2734,14 @@ bool OpenGLDrawingImageData::isStepProgramBuilded(int stepIndex_) const
     return m_steps[stepIndex_]->isProgramBuilded();
 }
 
-void OpenGLDrawingImageData::createStepArgument(int stepIndex_)
+void OpenGLDrawingImageData::createStepArgument(int stepIndex_, QOpenGLFunctions *f_)
 {
     if(!isStepProgramBuilded(stepIndex_) ||
             stepIndex_ < 0 ||
             stepIndex_ >= stepCount() ||
             nullptr == m_steps[stepIndex_]
             ) { return; }
-    m_steps[stepIndex_]->createArguments();
+    m_steps[stepIndex_]->createArguments(f_);
 }
 
 void OpenGLDrawingImageData::createStepTextures(int stepIndex_)
