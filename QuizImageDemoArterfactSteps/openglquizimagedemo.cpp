@@ -101,13 +101,10 @@ void OpenGlQuizImageDemo::init(QOpenGLFunctions *f_)
     for(int i = 0; i < m_drawingData->stepCount(); i++)
     {
         const bool isProgramCreated = m_drawingData->buildStepProgram(i, m_programBuildLog);
+        if(!isProgramCreated) { continue; }
 
-        if(isProgramCreated)
-        {
-            m_drawingData->createStepArgument(i);
-            m_drawingData->createStepTextures(i);
-        }
-
+        m_drawingData->createStepArgument(i);
+        m_drawingData->createStepTextures(i);
         m_drawingData->bindStep(i);
         m_drawingData->buildStepVBO(i);
     }
