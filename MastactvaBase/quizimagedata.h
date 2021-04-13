@@ -31,11 +31,6 @@ public:
     ArgumentBase() = default;
     virtual ~ArgumentBase() = default;
 
-    bool set(
-            const ArtefactArg *arg_,
-            ArtefactArgStorageModel* argStorageModel_ = nullptr,
-            ArtefactArgTypeModel *argTypeModel_ = nullptr
-            );
     const QString &getName() const;
     void setName(const QString &name_);
     const QString &getStorage() const;
@@ -70,6 +65,13 @@ private:
     QString m_defaultValue;
     bool m_isInput = false;
 };
+
+
+bool set(ArgumentBase& argument_,
+        const ArtefactArg *arg_,
+        ArtefactArgStorageModel* argStorageModel_ = nullptr,
+        ArtefactArgTypeModel *argTypeModel_ = nullptr
+        );
 
 
 class ArgumentList: public QList<ArgumentBase>
@@ -1334,7 +1336,7 @@ public:
     //void clearArgumentIds();
     bool buildProgram(QString &errorLog_);
     bool isProgramBuilded() const;
-    void createArguments();
+    void createArguments(QOpenGLFunctions *f_);
     void createTextures();
     void bind();
     void buildVBO();
@@ -1389,7 +1391,7 @@ public:
     //void clearStepArgumentIds(int stepIndex_);
     bool buildStepProgram(int stepIndex_, QString &errorLog_);
     bool isStepProgramBuilded(int stepIndex_) const;
-    void createStepArgument(int stepIndex_);
+    void createStepArgument(int stepIndex_, QOpenGLFunctions *f_);
     void createStepTextures(int stepIndex_);
     void bindStep(int stepIndex_);
     void buildStepVBO(int stepIndex_);
