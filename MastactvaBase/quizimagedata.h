@@ -485,6 +485,7 @@ public:
     virtual int getTupleSize() const = 0;
     virtual void writeVBOPart(QVector<GLfloat> &vboData_) const;  // write vbo part to draing buffer
     virtual void use(QOpenGLShaderProgram *program_) const = 0;
+    virtual void enableAttributes(QOpenGLShaderProgram *program_) const;
     virtual void useAttributes(QOpenGLShaderProgram *program_) const;
     virtual void bindTexture(QOpenGLFunctions *f_) const;
     virtual void draw(QOpenGLFunctions *f_) const = 0;
@@ -493,7 +494,10 @@ public:
 protected:
     void initAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
     void bindAttribureValueId(QOpenGLShaderProgram *program_, const QString &name_);
-    void useAttributeValue(QOpenGLShaderProgram *program_, GLenum type_, int offset_, int tupleSize_, int stride_) const;
+    void enableAttribute(QOpenGLShaderProgram *program_) const;
+    void useAttributeValue(QOpenGLShaderProgram *program_, int offset_, int tupleSize_, int stride_, const GLfloat*) const;
+    void useAttributeValue(QOpenGLShaderProgram *program_, int offset_, int tupleSize_, int stride_, const GLint*) const;
+    void useAttributeValue(QOpenGLShaderProgram *program_, int offset_, int tupleSize_, int stride_, const QString*) const;
     void writeAttributeValue(QVector<GLfloat> &vboData_, int offset_, const QVector<GLint> &values_, int tupleSize_, int stride_) const;
     void writeAttributeValue(QVector<GLfloat> &vboData_, int offset_, const QVector<GLfloat> &values_, int tupleSize_, int stride_) const;
     void writeAttributeValue(QVector<GLfloat> &vboData_, int offset_, const QVector<QString> &values_, int tupleSize_, int stride_) const;
@@ -862,14 +866,19 @@ public:
         Q_UNUSED(program_);
     }
 
+    virtual void enableAttributes(QOpenGLShaderProgram *program_) const override
+    {
+        OpenGLArgumentValueBase::enableAttribute(program_);
+    }
+
     virtual void useAttributes(QOpenGLShaderProgram *program_) const override
     {
         OpenGLArgumentValueBase::useAttributeValue(
                     program_,
-                    TypeToGLTypeEnum<ItemType>::value,
                     m_offset,
                     valueBase().getTupleSize(),
-                    m_stride);
+                    m_stride,
+                    static_cast<const ItemType *>(nullptr));
     }
 
     virtual void draw(QOpenGLFunctions *f_) const override

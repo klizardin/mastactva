@@ -1220,6 +1220,11 @@ void OpenGLArgumentValueBase::writeVBOPart(QVector<GLfloat> &vboData_) const
     Q_UNUSED(vboData_);
 }
 
+void OpenGLArgumentValueBase::enableAttributes(QOpenGLShaderProgram *program_) const
+{
+    Q_UNUSED(program_);
+}
+
 void OpenGLArgumentValueBase::useAttributes(QOpenGLShaderProgram *program_) const
 {
     Q_UNUSED(program_);
@@ -1247,20 +1252,53 @@ void OpenGLArgumentValueBase::bindAttribureValueId(QOpenGLShaderProgram *program
     qDebug() << "program_->bindAttributeLocation(" << name_  << m_id << " )" << getOpenGLErrors();
 }
 
-void OpenGLArgumentValueBase::useAttributeValue(
-        QOpenGLShaderProgram *program_,
-        GLenum type_,
-        int offset_,
-        int tupleSize_,
-        int stride_) const
+void OpenGLArgumentValueBase::enableAttribute(QOpenGLShaderProgram *program_) const
 {
     if(nullptr == program_ ||
             m_id < 0
             ) { return; }
     program_->enableAttributeArray(m_id);
-    program_->setAttributeBuffer(m_id, type_, offset_ * sizeof(GLfloat), tupleSize_, stride_ * sizeof(GLfloat));
     qDebug() << "program_->enableAttributeArray(" << m_id << " )" << getOpenGLErrors();
-    qDebug() << "program_->setAttributeBuffer(" << m_id << type_ << offset_ * sizeof(GLfloat) << tupleSize_ << stride_ * sizeof(GLfloat) << " )";
+}
+
+void OpenGLArgumentValueBase::useAttributeValue(
+        QOpenGLShaderProgram *program_,
+        int offset_,
+        int tupleSize_,
+        int stride_, const GLfloat *) const
+{
+    if(nullptr == program_ ||
+            m_id < 0
+            ) { return; }
+    const int type = TypeToGLTypeEnum<GLfloat>::value;
+    program_->setAttributeBuffer(m_id, type, offset_ * sizeof(GLfloat), tupleSize_, stride_ * sizeof(GLfloat));
+    qDebug() << "program_->setAttributeBuffer(" << m_id << "GLfloat" << offset_  << "* sizeof(GLfloat)" << tupleSize_ << stride_ << "* sizeof(GLfloat)" << " )";
+}
+
+void OpenGLArgumentValueBase::useAttributeValue(
+        QOpenGLShaderProgram *program_,
+        int offset_,
+        int tupleSize_,
+        int stride_, const GLint *) const
+{
+    if(nullptr == program_ ||
+            m_id < 0
+            ) { return; }
+    const int type = TypeToGLTypeEnum<GLint>::value;
+    program_->setAttributeBuffer(m_id, type, offset_ * sizeof(GLint), tupleSize_, stride_ * sizeof(GLint));
+    qDebug() << "program_->setAttributeBuffer(" << m_id << "GLint" << offset_  << "* sizeof(GLint)" << tupleSize_ << stride_ << "* sizeof(GLint)" << " )";
+}
+
+void OpenGLArgumentValueBase::useAttributeValue(
+        QOpenGLShaderProgram *program_,
+        int offset_,
+        int tupleSize_,
+        int stride_, const QString *) const
+{
+    Q_UNUSED(program_);
+    Q_UNUSED(offset_);
+    Q_UNUSED(tupleSize_);
+    Q_UNUSED(stride_);
 }
 
 void OpenGLArgumentValueBase::writeAttributeValue(
@@ -1616,7 +1654,7 @@ bool IQuizImageDataArtefact::setArguments(const ArtefactArgModel *args_)
         const ArtefactArg *artefactArg = args_->dataItemAtImpl(i);
         if(nullptr == artefactArg) { continue; }
         ArgumentBase arg;
-        if(!arg.set(artefactArg)) { continue; }
+        if(!set(arg, artefactArg)) { continue; }
         m_arguments.push_back(arg);
     }
     return true;
@@ -2448,12 +2486,17 @@ void OpenGLDrawingStepImageData::useArguments() const
     for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        argument_->useAttributes(m_program);
+        argument_->use(m_program);
     }
     for(const auto *argument_: m_programArguments)
     {
         if(nullptr == argument_) { continue; }
-        argument_->use(m_program);
+        argument_->enableAttributes(m_program);
+    }
+    for(const auto *argument_: m_programArguments)
+    {
+        if(nullptr == argument_) { continue; }
+        argument_->useAttributes(m_program);
     }
 }
 
