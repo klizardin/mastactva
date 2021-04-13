@@ -14,7 +14,7 @@
 static const int g_baseTableIndex = 1;
 
 
-bool ArgumentBase::set(
+bool set(ArgumentBase& argument_,
         const ArtefactArg *arg_,
         ArtefactArgStorageModel* argStorageModel_ /* = nullptr*/,
         ArtefactArgTypeModel *argTypeModel_ /* = nullptr*/
@@ -22,7 +22,7 @@ bool ArgumentBase::set(
 {
     if(nullptr == arg_) { return false; }
     if(arg_->name().isEmpty()) { return false; }
-    setName(arg_->name());
+    argument_.setName(arg_->name());
 
     if(nullptr == argStorageModel_)
     {
@@ -34,7 +34,7 @@ bool ArgumentBase::set(
     if(nullptr == argStorageModel_) { return false; }
     ArtefactArgStorage *storage = argStorageModel_->findDataItemByAppIdImpl(arg_->argStorageId());
     if(nullptr == storage) { return false; }
-    setStorage(storage->storage());
+    argument_.setStorage(storage->storage());
     if(nullptr == argTypeModel_)
     {
         argTypeModel_ =
@@ -45,8 +45,8 @@ bool ArgumentBase::set(
     if(nullptr == argTypeModel_) { return false; }
     ArtefactArgType *type = argTypeModel_->findDataItemByAppIdImpl(arg_->argTypeId());
     if(nullptr == type) { return false; }
-    setType(type->type());
-    setDefaultValue(arg_->defaultValue());
+    argument_.setType(type->type());
+    argument_.setDefaultValue(arg_->defaultValue());
     return true;
 }
 

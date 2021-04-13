@@ -31,11 +31,6 @@ public:
     ArgumentBase() = default;
     virtual ~ArgumentBase() = default;
 
-    bool set(
-            const ArtefactArg *arg_,
-            ArtefactArgStorageModel* argStorageModel_ = nullptr,
-            ArtefactArgTypeModel *argTypeModel_ = nullptr
-            );
     const QString &getName() const;
     void setName(const QString &name_);
     const QString &getStorage() const;
@@ -70,6 +65,13 @@ private:
     QString m_defaultValue;
     bool m_isInput = false;
 };
+
+
+bool set(ArgumentBase& argument_,
+        const ArtefactArg *arg_,
+        ArtefactArgStorageModel* argStorageModel_ = nullptr,
+        ArtefactArgTypeModel *argTypeModel_ = nullptr
+        );
 
 
 class ArgumentList: public QList<ArgumentBase>
