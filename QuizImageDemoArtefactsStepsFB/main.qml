@@ -2,12 +2,14 @@ import QtQuick 2.12
 import QtQuick.Controls 2.14
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.15
+import QuizImageDemoArtefactStepsFB 1.0
+import Mastactva 1.0
 
 
 ApplicationWindow {
     id: root
-    width: 640
-    height: 480
+    width: Constants.width
+    height: Constants.height
     visible: true
     title: qsTr("Quiz Image Demo")
 
