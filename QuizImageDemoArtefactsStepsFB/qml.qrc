@@ -2,4 +2,8 @@
     <qresource prefix="/">
         <file>main.qml</file>
     </qresource>
+    <qresource prefix="/Mastactva">
+        <file>Mastactva/Constants.qml</file>
+        <file>Mastactva/qmldir</file>
+    </qresource>
 </RCC>

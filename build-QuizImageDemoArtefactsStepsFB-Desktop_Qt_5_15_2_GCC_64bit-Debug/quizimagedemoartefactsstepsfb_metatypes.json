@@ -1,0 +1,136 @@
+[
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "QuizImageDemo"
+                    }
+                ],
+                "className": "QuizImage",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "updateState",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "updateProject",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "t",
+                        "notify": "tChanged",
+                        "read": "t",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "qreal",
+                        "user": false,
+                        "write": "setT"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "fromImage",
+                        "notify": "fromImageChanged",
+                        "read": "fromImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setFromImage"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "toImage",
+                        "notify": "toImageChanged",
+                        "read": "toImage",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setToImage"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "projectFilename",
+                        "notify": "projectChanged",
+                        "read": "project",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setProject"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "compilerLog",
+                        "notify": "logChanged",
+                        "read": "log",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLog"
+                    }
+                ],
+                "qualifiedClassName": "QuizImage",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "tChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "fromImageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "toImageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "projectChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "logChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickFramebufferObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "quizimage.h",
+        "outputRevision": 67
+    }
+]
