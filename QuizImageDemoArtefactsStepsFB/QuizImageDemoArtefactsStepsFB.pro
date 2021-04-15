@@ -71,14 +71,14 @@ SOURCES += \
         quizimage.cpp
 
 unix: SOURCES +=    \
-    ../MastactvaBase/quizimagedrawingdata.cpp \
+    quizimagedrawingdata.cpp
 
 
 HEADERS += \
     quizimage.h
 
 unix: HEADERS +=    \
-    ../MastactvaBase/quizimagedrawingdata.h \
+    quizimagedrawingdata.h
 
 
 RESOURCES += qml.qrc    \
