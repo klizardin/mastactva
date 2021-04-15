@@ -1,4 +1,5 @@
 #include "quizimagedrawingdata.h"
+#include "../MastactvaBase/utils.h"
 
 
 const QString &ArgumentBase::getName() const
@@ -6,19 +7,9 @@ const QString &ArgumentBase::getName() const
     return m_name;
 }
 
-void ArgumentBase::setName(QString name_)
-{
-    m_name = std::move(name_);
-}
-
 const QString &ArgumentBase::getStorage() const
 {
     return m_storage;
-}
-
-void ArgumentBase::setStorage(QString storage_)
-{
-    m_storage = std::move(storage_);
 }
 
 const QString &ArgumentBase::getType() const
@@ -26,19 +17,9 @@ const QString &ArgumentBase::getType() const
     return m_type;
 }
 
-void ArgumentBase::setType(QString type_)
-{
-    m_type = std::move(type_);
-}
-
 const QString &ArgumentBase::getValue() const
 {
     return m_value;
-}
-
-void ArgumentBase::setValue(QString value_)
-{
-    m_value = std::move(value_);
 }
 
 const QString &ArgumentBase::getDefaultValue() const
@@ -46,9 +27,12 @@ const QString &ArgumentBase::getDefaultValue() const
     return m_defaultValue;
 }
 
-void ArgumentBase::setDefaultValue(QString defaultValue_)
+bool ArgumentBase::isValid() const
 {
-    m_defaultValue = std::move(defaultValue_);
+    return !getName().trimmed().isEmpty()
+            && !getStorage().trimmed().isEmpty()
+            && !getType().trimmed().isEmpty()
+            ;
 }
 
 bool ArgumentBase::isInput() const
@@ -95,12 +79,13 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
         { g_sampler3DTypeName, 1,1,   false, false, false, true,  true  },
     };
 
+    QString type = getType().trimmed();
     const auto fit = std::find_if(
                 std::begin(typeInfos),
                 std::end(typeInfos),
-                [this] (const TypeInfo &ti_) -> bool
+                [type] (const TypeInfo &ti_) -> bool
     {
-        return std::get<toUnderlaying(Fields::name)>(ti_) == getType();
+        return std::get<toUnderlaying(Fields::name)>(ti_) == type;
     });
 
     Q_ASSERT(std::end(typeInfos) != fit);   // unknown type
@@ -133,34 +118,6 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
     return nullptr;
 }
 
-class JsonString : protected QJsonValue
-{
-public:
-    template<typename JsonType_,
-             typename std::enable_if<
-                 std::is_base_of<QJsonValue, JsonType_>::value
-                 || std::is_base_of<QJsonObject, JsonType_>::value
-                 || std::is_base_of<QJsonArray, JsonType_>::value
-                 || std::is_base_of<QJsonDocument, JsonType_>::value
-                 ,bool
-                 >::type = true>
-    JsonString(const JsonType_ &obj_, const QString &name_)
-    {
-        static_cast<QJsonValue&>(*this) = obj_[name_];
-    }
-    operator bool() const
-    {
-        return isUndefined() && isString();
-    }
-    bool operator ! () const
-    {
-        return !operator bool();
-    }
-    QString get() const
-    {
-        return toString();
-    }
-};
 
 template<class JsonType_>
 std::unique_ptr<ArgumentBase> fromJsonT(const JsonType_ &obj_, bool isInput_, const ArgumentBase *)
@@ -168,29 +125,50 @@ std::unique_ptr<ArgumentBase> fromJsonT(const JsonType_ &obj_, bool isInput_, co
     std::unique_ptr<ArgumentBase> result(new ArgumentBase());
     result->setInput(isInput_);
 
-    JsonString jsvName(obj_, g_argumentNameName);
-    if(!jsvName) { return nullptr; }
-    result->setName(jsvName.get());
-
-    JsonString jsvStorage(obj_, g_argumentStorageName);
-    if(!jsvStorage) { return nullptr; }
-    result->setStorage(jsvStorage.get());
-
-    JsonString jsvType(obj_, g_argumentTypeName);
-    if(!jsvType) { return nullptr; }
-    result->setType(jsvType.get());
-
-    JsonString jsvValue(obj_, g_argumentValueName);
-    bool hasValue = false;
-    if(jsvValue)
+    using FieldType = typename IJsonFieldInfo<JsonType_>::Type;
+    JsonFieldsInfo<JsonType_> jsonFieldsInfo;
+    jsonFieldsInfo.template add<QString>(
+                g_argumentNameName,
+                FieldType::Required,
+                [&result](QString name_)
     {
-        result->setValue(jsvValue.get());
-        hasValue = true;
-    }
+        result->setName(std::move(name_));
+    });
+    jsonFieldsInfo.template add<QString>(
+                g_argumentStorageName,
+                FieldType::Required,
+                [&result](QString storage_)
+    {
+        result->setStorage(std::move(storage_));
+    });
+    jsonFieldsInfo.template add<QString>(
+                g_argumentTypeName,
+                FieldType::Required,
+                [&result](QString type_)
+    {
+        result->setType(std::move(type_));
+    });
+    jsonFieldsInfo.template add<QString>(
+                g_argumentValueName,
+                FieldType::Optional,
+                [&result](QString value_)
+    {
+        result->setValue(std::move(value_));
+    });
+    jsonFieldsInfo.template add<QString>(
+                g_argumentDefaultValueName,
+                FieldType::Optional,
+                [&result](QString defaultValue_)
+    {
+        result->setDefaultValue(std::move(defaultValue_));
+    });
 
-    JsonString jsvDefaultValue(obj_, g_argumentDefaultValueName);
-    if(!jsvDefaultValue && !hasValue) { return nullptr; }
-    result->setDefaultValue(jsvDefaultValue.get());
+    if(!jsonFieldsInfo.get(obj_)
+            || !result->isValid()
+            )
+    {
+        return {nullptr};
+    }
 
     return result;
 }
