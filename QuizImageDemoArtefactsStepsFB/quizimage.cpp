@@ -10,6 +10,7 @@
 #include <QTime>
 #include <QVector>
 
+
 class LogoRenderer : protected QOpenGLFunctions
 {
 public:
