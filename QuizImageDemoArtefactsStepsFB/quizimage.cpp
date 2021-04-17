@@ -11,11 +11,11 @@
 #include <QVector>
 
 
-class LogoRenderer : protected QOpenGLFunctions
+class ObjectsRenderer : protected QOpenGLFunctions
 {
 public:
-    LogoRenderer();
-    ~LogoRenderer();
+    ObjectsRenderer();
+    ~ObjectsRenderer();
 
     void render();
     void initialize();
@@ -39,15 +39,15 @@ private:
 };
 
 
-LogoRenderer::LogoRenderer()
+ObjectsRenderer::ObjectsRenderer()
 {
 }
 
-LogoRenderer::~LogoRenderer()
+ObjectsRenderer::~ObjectsRenderer()
 {
 }
 
-void LogoRenderer::paintQtLogo()
+void ObjectsRenderer::paintQtLogo()
 {
     program1.enableAttributeArray(normalAttr1);
     program1.enableAttributeArray(vertexAttr1);
@@ -58,7 +58,7 @@ void LogoRenderer::paintQtLogo()
     program1.disableAttributeArray(vertexAttr1);
 }
 
-void LogoRenderer::initialize()
+void ObjectsRenderer::initialize()
 {
     initializeOpenGLFunctions();
 
@@ -102,7 +102,7 @@ void LogoRenderer::initialize()
     createGeometry();
 }
 
-void LogoRenderer::render()
+void ObjectsRenderer::render()
 {
     glDepthMask(true);
 
@@ -135,7 +135,7 @@ void LogoRenderer::render()
     m_fAngle += 1.0f;
 }
 
-void LogoRenderer::createGeometry()
+void ObjectsRenderer::createGeometry()
 {
     vertices.clear();
     normals.clear();
@@ -186,7 +186,7 @@ void LogoRenderer::createGeometry()
         vertices[i] *= 2.0f;
 }
 
-void LogoRenderer::quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4)
+void ObjectsRenderer::quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4)
 {
     vertices << QVector3D(x1, y1, -0.05f);
     vertices << QVector3D(x2, y2, -0.05f);
@@ -227,7 +227,7 @@ void LogoRenderer::quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal 
     normals << n;
 }
 
-void LogoRenderer::extrude(qreal x1, qreal y1, qreal x2, qreal y2)
+void ObjectsRenderer::extrude(qreal x1, qreal y1, qreal x2, qreal y2)
 {
     vertices << QVector3D(x1, y1, +0.05f);
     vertices << QVector3D(x2, y2, +0.05f);
@@ -272,7 +272,7 @@ public:
         return new QOpenGLFramebufferObject(size, format);
     }
 
-    LogoRenderer logo;
+    ObjectsRenderer logo;
 };
 
 
