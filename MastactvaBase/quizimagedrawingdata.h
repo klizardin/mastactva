@@ -88,6 +88,14 @@ private:
 };
 
 
+struct QuizImageDrawingData
+{
+    virtual ~QuizImageDrawingData() = default;
+    QByteArray vertexShader;
+    QByteArray fragmentShader;
+};
+
+
 
 #endif // #if QT_CONFIG(opengl)
 #endif // QUIZIMAGEDRAWINGDATA_H

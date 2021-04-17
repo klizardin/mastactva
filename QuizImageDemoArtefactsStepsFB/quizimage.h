@@ -4,9 +4,22 @@
 
 #include <memory>
 #include <QtQuick/QQuickFramebufferObject>
+#include "../MastactvaBase/quizimagedrawingdata.h"
 
 
-class OpenGLDrawingImageData {};
+class IDefaultData
+{
+public:
+    virtual ~IDefaultData() = default;
+    virtual void initialize() = 0;
+};
+
+
+class DefaultQuizImageDrawingData : public IDefaultData, public QuizImageDrawingData
+{
+public:
+    virtual void initialize() override;
+};
 
 
 class QuizImage : public QQuickFramebufferObject
@@ -31,8 +44,8 @@ public:
 public:
     qreal t() const;
     bool isImageDataUpdated() const;
-    OpenGLDrawingImageData *getData();
-    void retryData(OpenGLDrawingImageData *old_);
+    std::unique_ptr<QuizImageDrawingData> getData();
+    void setDataToFree(std::unique_ptr<QuizImageDrawingData> &&old_);
     void renderBuildError(const QString &compilerLog_);
 
 protected:
@@ -51,6 +64,9 @@ protected:
     void setProjectFromImage();
     void setProjectToImage();
 
+private:
+    void initDefaultDrawingData();
+
 signals:
     void tChanged();
     void fromImageChanged();
@@ -63,8 +79,8 @@ private:
     QString m_fromImage;
     QString m_toImage;
     QString m_project;
-    std::unique_ptr<OpenGLDrawingImageData> m_drawingData;
-    std::unique_ptr<OpenGLDrawingImageData> m_drawingOldData;
+    std::unique_ptr<QuizImageDrawingData> m_drawingData;
+    std::unique_ptr<QuizImageDrawingData> m_drawingOldData;
     QString m_compilerLog;
 };
 

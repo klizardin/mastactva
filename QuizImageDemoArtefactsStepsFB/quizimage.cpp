@@ -11,59 +11,8 @@
 #include <QVector>
 
 
-class ObjectsRenderer : protected QOpenGLFunctions
+void DefaultQuizImageDrawingData::initialize()
 {
-public:
-    ObjectsRenderer();
-    ~ObjectsRenderer();
-
-    void render();
-    void initialize();
-
-private:
-
-    qreal   m_fAngle;
-    qreal   m_fScale;
-
-    void paintQtLogo();
-    void createGeometry();
-    void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
-    void extrude(qreal x1, qreal y1, qreal x2, qreal y2);
-
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QOpenGLShaderProgram program1;
-    int vertexAttr1;
-    int normalAttr1;
-    int matrixUniform1;
-};
-
-
-ObjectsRenderer::ObjectsRenderer()
-{
-}
-
-ObjectsRenderer::~ObjectsRenderer()
-{
-}
-
-void ObjectsRenderer::paintQtLogo()
-{
-    program1.enableAttributeArray(normalAttr1);
-    program1.enableAttributeArray(vertexAttr1);
-    program1.setAttributeArray(vertexAttr1, vertices.constData());
-    program1.setAttributeArray(normalAttr1, normals.constData());
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    program1.disableAttributeArray(normalAttr1);
-    program1.disableAttributeArray(vertexAttr1);
-}
-
-void ObjectsRenderer::initialize()
-{
-    initializeOpenGLFunctions();
-
-    glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-
     const char *vsrc1 =
         "attribute highp vec4 vertex;\n"
         "attribute mediump vec3 normal;\n"
@@ -86,13 +35,89 @@ void ObjectsRenderer::initialize()
         "    gl_FragColor = color;\n"
         "}\n";
 
-    program1.addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vsrc1);
-    program1.addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fsrc1);
-    program1.link();
+    vertexShader = vsrc1;
+    fragmentShader = fsrc1;
+}
 
-    vertexAttr1 = program1.attributeLocation("vertex");
-    normalAttr1 = program1.attributeLocation("normal");
-    matrixUniform1 = program1.uniformLocation("matrix");
+
+class ObjectsRenderer : protected QOpenGLFunctions
+{
+public:
+    ObjectsRenderer();
+    ~ObjectsRenderer();
+
+    void render();
+    void release();
+    void initialize();
+    void setImageData(std::unique_ptr<QuizImageDrawingData> imageData_);
+    std::unique_ptr<QuizImageDrawingData> releaseImageData();
+
+private:
+
+    qreal   m_fAngle;
+    qreal   m_fScale;
+
+    void paintQtLogo();
+    void createGeometry();
+    void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
+    void extrude(qreal x1, qreal y1, qreal x2, qreal y2);
+
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> normals;
+    std::unique_ptr<QOpenGLShaderProgram> program1;
+    int vertexAttr1;
+    int normalAttr1;
+    int matrixUniform1;
+
+    std::unique_ptr<QuizImageDrawingData> m_imageData;
+};
+
+
+ObjectsRenderer::ObjectsRenderer()
+{
+}
+
+ObjectsRenderer::~ObjectsRenderer()
+{
+    release();
+}
+
+void ObjectsRenderer::paintQtLogo()
+{
+    if(!program1) { return; }
+    program1->enableAttributeArray(normalAttr1);
+    program1->enableAttributeArray(vertexAttr1);
+    program1->setAttributeArray(vertexAttr1, vertices.constData());
+    program1->setAttributeArray(normalAttr1, normals.constData());
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    program1->disableAttributeArray(normalAttr1);
+    program1->disableAttributeArray(vertexAttr1);
+}
+
+void ObjectsRenderer::release()
+{
+    program1.reset();
+}
+
+void ObjectsRenderer::initialize()
+{
+    initializeOpenGLFunctions();
+
+    if(!m_imageData.operator bool())
+    {
+        return;
+    }
+
+    glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+
+    program1.reset(new QOpenGLShaderProgram);
+    program1->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, m_imageData->vertexShader.constData());
+    program1->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, m_imageData->fragmentShader.constData());
+    program1->link();
+
+    vertexAttr1 = program1->attributeLocation("vertex");
+    normalAttr1 = program1->attributeLocation("normal");
+    matrixUniform1 = program1->uniformLocation("matrix");
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -100,6 +125,16 @@ void ObjectsRenderer::initialize()
     m_fAngle = 0;
     m_fScale = 1;
     createGeometry();
+}
+
+void ObjectsRenderer::setImageData(std::unique_ptr<QuizImageDrawingData> imageData_)
+{
+    m_imageData = std::move(imageData_);
+}
+
+std::unique_ptr<QuizImageDrawingData> ObjectsRenderer::releaseImageData()
+{
+    return std::move(m_imageData);
 }
 
 void ObjectsRenderer::render()
@@ -124,10 +159,10 @@ void ObjectsRenderer::render()
     modelview.scale(m_fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
-    program1.bind();
-    program1.setUniformValue(matrixUniform1, modelview);
+    program1->bind();
+    program1->setUniformValue(matrixUniform1, modelview);
     paintQtLogo();
-    program1.release();
+    program1->release();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -272,12 +307,26 @@ public:
         return new QOpenGLFramebufferObject(size, format);
     }
 
+    virtual void synchronize(QQuickFramebufferObject *frameBufferObject_) override
+    {
+        QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
+        if(nullptr == quizImage) { return; }
+        if(quizImage->isImageDataUpdated())
+        {
+            quizImage->setDataToFree(logo.releaseImageData());
+            logo.setImageData(quizImage->getData());
+            logo.release();
+            logo.initialize();
+        }
+    }
+
     ObjectsRenderer logo;
 };
 
 
 QuizImage::QuizImage()
 {
+    initDefaultDrawingData();
 }
 
 QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
@@ -374,6 +423,7 @@ void QuizImage::loadProject()
     if(!m_project.isEmpty())
     {
         QUrl url(project());
+        initDefaultDrawingData();
         //m_drawingData = OpenGLDrawingImageData::fromJson(
         //            QJsonDocument::fromJson(
         //                loadBinaryFile(url.toLocalFile())
@@ -406,21 +456,27 @@ void QuizImage::setProjectToImage()
 
 bool QuizImage::isImageDataUpdated() const
 {
-    return nullptr != m_drawingData;
+    return m_drawingData.operator bool();
 }
 
-OpenGLDrawingImageData *QuizImage::getData()
+std::unique_ptr<QuizImageDrawingData> QuizImage::getData()
 {
-    return m_drawingData.release();
+    return std::move(m_drawingData);
 }
 
-void QuizImage::retryData(OpenGLDrawingImageData *old_)
+void QuizImage::setDataToFree(std::unique_ptr<QuizImageDrawingData> &&old_)
 {
-    m_drawingData.reset(nullptr);
-    m_drawingOldData.reset(old_);
+    m_drawingOldData = std::move(old_);
 }
 
 void QuizImage::renderBuildError(const QString &compilerLog_)
 {
     setLog(compilerLog_);
+}
+
+void QuizImage::initDefaultDrawingData()
+{
+    std::unique_ptr<DefaultQuizImageDrawingData> defaultImageData(new DefaultQuizImageDrawingData());
+    defaultImageData->initialize();
+    m_drawingData.reset(defaultImageData.release());
 }
