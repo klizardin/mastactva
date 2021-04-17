@@ -293,11 +293,13 @@ public:
     ObjectsRenderer();
     ~ObjectsRenderer();
 
-    void render();
-    void release();
-    void initialize();
     void setImageData(std::unique_ptr<drawing_data::QuizImageObject> imageData_);
     std::unique_ptr<drawing_data::QuizImageObject> releaseImageData();
+
+    void release();
+    void initialize();
+
+    void render();
 
 private:
     qreal   m_fAngle;
