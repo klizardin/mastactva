@@ -219,6 +219,7 @@ void opengl_drawing::Object::enableAttributes()
 {
     for(const auto &attribute : attributes)
     {
+        if(attribute < 0) { continue; }
         program->enableAttributeArray(attribute);
     }
 }
@@ -227,6 +228,7 @@ void opengl_drawing::Object::disableAttributes()
 {
     for(const auto &attribute : attributes)
     {
+        if(attribute < 0) { continue; }
         program->disableAttributeArray(attribute);
     }
 }
@@ -237,7 +239,9 @@ void opengl_drawing::Object::setAttributeArray(
 {
     for(const auto &attribute : object_->attributes)
     {
-        program->setAttributeArray(attributes[attribute.name], attribute.data.constData());
+        const auto attributeId = attributes[attribute.name];
+        if(attributeId < 0) { continue; }
+        program->setAttributeArray(attributeId, attribute.data.constData());
     }
 }
 
@@ -280,8 +284,6 @@ private:
     void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
     void extrude(qreal x1, qreal y1, qreal x2, qreal y2);
 
-    //int vertexAttr1;
-    //int normalAttr1;
     int matrixUniform1;
 
     std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
@@ -329,7 +331,6 @@ void ObjectsRenderer::initialize()
     m_openglData->init(m_imageData);
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-
 
     matrixUniform1 = m_openglData->program->uniformLocation("matrix");
 
