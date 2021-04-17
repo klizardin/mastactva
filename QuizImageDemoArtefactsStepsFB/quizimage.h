@@ -21,6 +21,10 @@ namespace drawing_data
     {
     public:
         virtual void initialize() override;
+
+    private:
+        QVector<QVector3D> vertices;
+        QVector<QVector3D> normals;
     };
 }
 

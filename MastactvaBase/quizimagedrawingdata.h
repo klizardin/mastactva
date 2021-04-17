@@ -90,11 +90,19 @@ private:
 
 namespace drawing_data
 {
+    struct Attribute
+    {
+        QString name;
+        QVector<QVector3D> data;
+    };
+
     struct QuizImageObject
     {
         virtual ~QuizImageObject() = default;
         QByteArray vertexShader;
         QByteArray fragmentShader;
+
+        QList<Attribute> attributes;
     };
 }
 

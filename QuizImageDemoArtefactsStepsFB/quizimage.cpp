@@ -18,6 +18,128 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
 }
 
 
+void quad(
+        QVector<QVector3D> &vertices,
+        QVector<QVector3D> &normals,
+        qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4
+        )
+{
+    vertices << QVector3D(x1, y1, -0.05f);
+    vertices << QVector3D(x2, y2, -0.05f);
+    vertices << QVector3D(x4, y4, -0.05f);
+
+    vertices << QVector3D(x3, y3, -0.05f);
+    vertices << QVector3D(x4, y4, -0.05f);
+    vertices << QVector3D(x2, y2, -0.05f);
+
+    QVector3D n = QVector3D::normal
+        (QVector3D(x2 - x1, y2 - y1, 0.0f), QVector3D(x4 - x1, y4 - y1, 0.0f));
+
+    normals << n;
+    normals << n;
+    normals << n;
+
+    normals << n;
+    normals << n;
+    normals << n;
+
+    vertices << QVector3D(x4, y4, 0.05f);
+    vertices << QVector3D(x2, y2, 0.05f);
+    vertices << QVector3D(x1, y1, 0.05f);
+
+    vertices << QVector3D(x2, y2, 0.05f);
+    vertices << QVector3D(x4, y4, 0.05f);
+    vertices << QVector3D(x3, y3, 0.05f);
+
+    n = QVector3D::normal
+        (QVector3D(x2 - x4, y2 - y4, 0.0f), QVector3D(x1 - x4, y1 - y4, 0.0f));
+
+    normals << n;
+    normals << n;
+    normals << n;
+
+    normals << n;
+    normals << n;
+    normals << n;
+}
+
+void extrude(
+        QVector<QVector3D> &vertices,
+        QVector<QVector3D> &normals,
+        qreal x1, qreal y1, qreal x2, qreal y2
+        )
+{
+    vertices << QVector3D(x1, y1, +0.05f);
+    vertices << QVector3D(x2, y2, +0.05f);
+    vertices << QVector3D(x1, y1, -0.05f);
+
+    vertices << QVector3D(x2, y2, -0.05f);
+    vertices << QVector3D(x1, y1, -0.05f);
+    vertices << QVector3D(x2, y2, +0.05f);
+
+    QVector3D n = QVector3D::normal
+        (QVector3D(x2 - x1, y2 - y1, 0.0f), QVector3D(0.0f, 0.0f, -0.1f));
+
+    normals << n;
+    normals << n;
+    normals << n;
+
+    normals << n;
+    normals << n;
+    normals << n;
+}
+
+void createGeometry(
+        QVector<QVector3D> &vertices,
+        QVector<QVector3D> &normals
+        )
+{
+    qreal x1 = +0.06f;
+    qreal y1 = -0.14f;
+    qreal x2 = +0.14f;
+    qreal y2 = -0.06f;
+    qreal x3 = +0.08f;
+    qreal y3 = +0.00f;
+    qreal x4 = +0.30f;
+    qreal y4 = +0.22f;
+
+    quad(vertices, normals, x1, y1, x2, y2, y2, x2, y1, x1);
+    quad(vertices, normals, x3, y3, x4, y4, y4, x4, y3, x3);
+
+    extrude(vertices, normals, x1, y1, x2, y2);
+    extrude(vertices, normals, x2, y2, y2, x2);
+    extrude(vertices, normals, y2, x2, y1, x1);
+    extrude(vertices, normals, y1, x1, x1, y1);
+    extrude(vertices, normals, x3, y3, x4, y4);
+    extrude(vertices, normals, x4, y4, y4, x4);
+    extrude(vertices, normals, y4, x4, y3, x3);
+
+    const qreal Pi = M_PI;
+    const int NumSectors = 100;
+
+    for (int i = 0; i < NumSectors; ++i) {
+        qreal angle1 = (i * 2 * Pi) / NumSectors;
+        qreal x5 = 0.30 * sin(angle1);
+        qreal y5 = 0.30 * cos(angle1);
+        qreal x6 = 0.20 * sin(angle1);
+        qreal y6 = 0.20 * cos(angle1);
+
+        qreal angle2 = ((i + 1) * 2 * Pi) / NumSectors;
+        qreal x7 = 0.20 * sin(angle2);
+        qreal y7 = 0.20 * cos(angle2);
+        qreal x8 = 0.30 * sin(angle2);
+        qreal y8 = 0.30 * cos(angle2);
+
+        quad(vertices, normals, x5, y5, x6, y6, x7, y7, x8, y8);
+
+        extrude(vertices, normals, x6, y6, x7, y7);
+        extrude(vertices, normals, x8, y8, x5, y5);
+    }
+
+    for (int i = 0;i < vertices.size();i++)
+        vertices[i] *= 2.0f;
+}
+
 void drawing_data::DefaultQuizImageObject::initialize()
 {
     const char *vsrc1 =
@@ -44,6 +166,15 @@ void drawing_data::DefaultQuizImageObject::initialize()
 
     vertexShader = vsrc1;
     fragmentShader = fsrc1;
+
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> normals;
+    createGeometry(vertices, normals);
+
+    attributes.append(
+                {{"vertex", std::move(vertices) },
+                 {"normal", std::move(normals) }
+                });
 }
 
 
@@ -53,8 +184,18 @@ namespace opengl_drawing
     {
     public:
         void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void enableAttributes(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void disableAttributes(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void setAttributeArray(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void drawTriangles(
+                const std::unique_ptr<drawing_data::QuizImageObject> &object_,
+                QOpenGLFunctions *f_
+                );
 
         std::unique_ptr<QOpenGLShaderProgram> program;
+
+    private:
+        QHash<QString, int> attributes;
     };
 }
 
@@ -67,6 +208,57 @@ void opengl_drawing::Object::init(
     program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, object_->vertexShader.constData());
     program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, object_->fragmentShader.constData());
     program->link();
+
+    for(const auto &attribute : object_->attributes)
+    {
+        attributes[attribute.name] = program->attributeLocation(attribute.name);
+    }
+}
+
+void opengl_drawing::Object::enableAttributes(
+        const std::unique_ptr<drawing_data::QuizImageObject> &object_
+        )
+{
+    for(const auto &attribute : object_->attributes)
+    {
+        program->enableAttributeArray(attributes[attribute.name]);
+    }
+}
+
+void opengl_drawing::Object::disableAttributes(
+        const std::unique_ptr<drawing_data::QuizImageObject> &object_
+        )
+{
+    for(const auto &attribute : object_->attributes)
+    {
+        program->disableAttributeArray(attributes[attribute.name]);
+    }
+}
+
+void opengl_drawing::Object::setAttributeArray(
+        const std::unique_ptr<drawing_data::QuizImageObject> &object_
+        )
+{
+    for(const auto &attribute : object_->attributes)
+    {
+        program->setAttributeArray(attributes[attribute.name], attribute.data.constData());
+    }
+}
+
+void opengl_drawing::Object::drawTriangles(
+        const std::unique_ptr<drawing_data::QuizImageObject> &object_,
+        QOpenGLFunctions *f_
+        )
+{
+    if(object_->attributes.isEmpty()) { return; }
+    const auto fit = std::min_element(
+                std::begin(object_->attributes),
+                std::end(object_->attributes),
+                [](const drawing_data::Attribute &left_, const drawing_data::Attribute &right_)->bool
+    {
+       return  left_.data.size() < right_.data.size();
+    });
+    f_->glDrawArrays(GL_TRIANGLES, 0, fit->data.size());
 }
 
 
@@ -92,10 +284,8 @@ private:
     void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
     void extrude(qreal x1, qreal y1, qreal x2, qreal y2);
 
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    int vertexAttr1;
-    int normalAttr1;
+    //int vertexAttr1;
+    //int normalAttr1;
     int matrixUniform1;
 
     std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
@@ -115,13 +305,10 @@ ObjectsRenderer::~ObjectsRenderer()
 void ObjectsRenderer::paintQtLogo()
 {
     if(!m_openglData->program) { return; }
-    m_openglData->program->enableAttributeArray(normalAttr1);
-    m_openglData->program->enableAttributeArray(vertexAttr1);
-    m_openglData->program->setAttributeArray(vertexAttr1, vertices.constData());
-    m_openglData->program->setAttributeArray(normalAttr1, normals.constData());
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    m_openglData->program->disableAttributeArray(normalAttr1);
-    m_openglData->program->disableAttributeArray(vertexAttr1);
+    m_openglData->enableAttributes(m_imageData);
+    m_openglData->setAttributeArray(m_imageData);
+    m_openglData->drawTriangles(m_imageData, this);
+    m_openglData->disableAttributes(m_imageData);
 }
 
 void ObjectsRenderer::release()
@@ -148,8 +335,6 @@ void ObjectsRenderer::initialize()
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
 
-    vertexAttr1 = m_openglData->program->attributeLocation("vertex");
-    normalAttr1 = m_openglData->program->attributeLocation("normal");
     matrixUniform1 = m_openglData->program->uniformLocation("matrix");
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -157,7 +342,6 @@ void ObjectsRenderer::initialize()
 
     m_fAngle = 0;
     m_fScale = 1;
-    createGeometry();
 }
 
 void ObjectsRenderer::setImageData(
@@ -203,120 +387,6 @@ void ObjectsRenderer::render()
     glDisable(GL_CULL_FACE);
 
     m_fAngle += 1.0f;
-}
-
-void ObjectsRenderer::createGeometry()
-{
-    vertices.clear();
-    normals.clear();
-
-    qreal x1 = +0.06f;
-    qreal y1 = -0.14f;
-    qreal x2 = +0.14f;
-    qreal y2 = -0.06f;
-    qreal x3 = +0.08f;
-    qreal y3 = +0.00f;
-    qreal x4 = +0.30f;
-    qreal y4 = +0.22f;
-
-    quad(x1, y1, x2, y2, y2, x2, y1, x1);
-    quad(x3, y3, x4, y4, y4, x4, y3, x3);
-
-    extrude(x1, y1, x2, y2);
-    extrude(x2, y2, y2, x2);
-    extrude(y2, x2, y1, x1);
-    extrude(y1, x1, x1, y1);
-    extrude(x3, y3, x4, y4);
-    extrude(x4, y4, y4, x4);
-    extrude(y4, x4, y3, x3);
-
-    const qreal Pi = M_PI;
-    const int NumSectors = 100;
-
-    for (int i = 0; i < NumSectors; ++i) {
-        qreal angle1 = (i * 2 * Pi) / NumSectors;
-        qreal x5 = 0.30 * sin(angle1);
-        qreal y5 = 0.30 * cos(angle1);
-        qreal x6 = 0.20 * sin(angle1);
-        qreal y6 = 0.20 * cos(angle1);
-
-        qreal angle2 = ((i + 1) * 2 * Pi) / NumSectors;
-        qreal x7 = 0.20 * sin(angle2);
-        qreal y7 = 0.20 * cos(angle2);
-        qreal x8 = 0.30 * sin(angle2);
-        qreal y8 = 0.30 * cos(angle2);
-
-        quad(x5, y5, x6, y6, x7, y7, x8, y8);
-
-        extrude(x6, y6, x7, y7);
-        extrude(x8, y8, x5, y5);
-    }
-
-    for (int i = 0;i < vertices.size();i++)
-        vertices[i] *= 2.0f;
-}
-
-void ObjectsRenderer::quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4)
-{
-    vertices << QVector3D(x1, y1, -0.05f);
-    vertices << QVector3D(x2, y2, -0.05f);
-    vertices << QVector3D(x4, y4, -0.05f);
-
-    vertices << QVector3D(x3, y3, -0.05f);
-    vertices << QVector3D(x4, y4, -0.05f);
-    vertices << QVector3D(x2, y2, -0.05f);
-
-    QVector3D n = QVector3D::normal
-        (QVector3D(x2 - x1, y2 - y1, 0.0f), QVector3D(x4 - x1, y4 - y1, 0.0f));
-
-    normals << n;
-    normals << n;
-    normals << n;
-
-    normals << n;
-    normals << n;
-    normals << n;
-
-    vertices << QVector3D(x4, y4, 0.05f);
-    vertices << QVector3D(x2, y2, 0.05f);
-    vertices << QVector3D(x1, y1, 0.05f);
-
-    vertices << QVector3D(x2, y2, 0.05f);
-    vertices << QVector3D(x4, y4, 0.05f);
-    vertices << QVector3D(x3, y3, 0.05f);
-
-    n = QVector3D::normal
-        (QVector3D(x2 - x4, y2 - y4, 0.0f), QVector3D(x1 - x4, y1 - y4, 0.0f));
-
-    normals << n;
-    normals << n;
-    normals << n;
-
-    normals << n;
-    normals << n;
-    normals << n;
-}
-
-void ObjectsRenderer::extrude(qreal x1, qreal y1, qreal x2, qreal y2)
-{
-    vertices << QVector3D(x1, y1, +0.05f);
-    vertices << QVector3D(x2, y2, +0.05f);
-    vertices << QVector3D(x1, y1, -0.05f);
-
-    vertices << QVector3D(x2, y2, -0.05f);
-    vertices << QVector3D(x1, y1, -0.05f);
-    vertices << QVector3D(x2, y2, +0.05f);
-
-    QVector3D n = QVector3D::normal
-        (QVector3D(x2 - x1, y2 - y1, 0.0f), QVector3D(0.0f, 0.0f, -0.1f));
-
-    normals << n;
-    normals << n;
-    normals << n;
-
-    normals << n;
-    normals << n;
-    normals << n;
 }
 
 
