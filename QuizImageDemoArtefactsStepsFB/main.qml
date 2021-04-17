@@ -18,6 +18,7 @@ ApplicationWindow {
         id: renderer
         anchors.fill: parent
         anchors.margins: 10
+        t: 0.0
 
         // The transform is just to show something interesting..
         transform: [
