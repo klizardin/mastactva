@@ -17,6 +17,7 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
     return std::unique_ptr<TargetType_>{static_cast<TargetType_*>(ptr_.release())};
 }
 
+
 void drawing_data::DefaultQuizImageObject::initialize()
 {
     const char *vsrc1 =
@@ -44,6 +45,7 @@ void drawing_data::DefaultQuizImageObject::initialize()
     vertexShader = vsrc1;
     fragmentShader = fsrc1;
 }
+
 
 namespace opengl_drawing
 {
