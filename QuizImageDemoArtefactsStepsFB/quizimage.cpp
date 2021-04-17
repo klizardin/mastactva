@@ -7,6 +7,7 @@
 #include <QtGui/QOpenGLFramebufferObject>
 #include <QtQuick/QQuickWindow>
 #include <qsgsimpletexturenode.h>
+#include <QRandomGenerator>
 #include <QTime>
 #include <QVector>
 
@@ -175,6 +176,21 @@ void drawing_data::DefaultQuizImageObject::initialize()
                 {{"vertex", std::move(vertices) },
                  {"normal", std::move(normals) }
                 });
+
+    QRandomGenerator gen;
+    qreal fScale = 1;
+    qreal fAngle = gen.generateDouble() * 360.0;
+    QMatrix4x4 modelview;
+    modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
+    modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
+    modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
+    modelview.scale(fScale);
+    modelview.translate(0.0f, -0.2f, 0.0f);
+
+    uniforms.append(
+                {
+                   {"matrix", std::move(modelview)}
+                });
 }
 
 
@@ -186,6 +202,7 @@ namespace opengl_drawing
         void free();
         void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
         void bind();
+        void setUniforms(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
         void enableAttributes();
         void disableAttributes();
         void setAttributeArray(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
@@ -195,10 +212,10 @@ namespace opengl_drawing
                 );
         void release();
 
-        std::unique_ptr<QOpenGLShaderProgram> program;
-
     private:
+        std::unique_ptr<QOpenGLShaderProgram> program;
         QHash<QString, int> attributes;
+        QHash<QString, int> uniforms;
     };
 }
 
@@ -222,6 +239,11 @@ void opengl_drawing::Object::init(
     {
         attributes[attribute.name] = program->attributeLocation(attribute.name);
     }
+
+    for(const auto &uniform : object_->uniforms)
+    {
+        uniforms[uniform.name] = program->uniformLocation(uniform.name);
+    }
 }
 
 void opengl_drawing::Object::bind()
@@ -231,6 +253,22 @@ void opengl_drawing::Object::bind()
         return;
     }
     program->bind();
+}
+
+void opengl_drawing::Object::setUniforms(
+        const std::unique_ptr<drawing_data::QuizImageObject> &object_
+        )
+{
+    if(!program.operator bool())
+    {
+        return;
+    }
+    for(const auto &uniform : object_->uniforms)
+    {
+        const auto uniformId = uniforms[uniform.name];
+        if(uniformId < 0) { continue; }
+        program->setUniformValue(uniformId, uniform.data);
+    }
 }
 
 void opengl_drawing::Object::enableAttributes()
@@ -322,10 +360,6 @@ public:
     void render();
 
 private:
-    qreal   m_fAngle;
-    qreal   m_fScale;
-    int matrixUniform1;
-
     std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
     std::unique_ptr<opengl_drawing::Object> m_openglData;
 };
@@ -374,14 +408,8 @@ void ObjectsRenderer::initialize()
     m_openglData->init(m_imageData);
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-
-    matrixUniform1 = m_openglData->program->uniformLocation("matrix");
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-    m_fAngle = 0;
-    m_fScale = 1;
 }
 
 void ObjectsRenderer::render()
@@ -399,30 +427,19 @@ void ObjectsRenderer::render()
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    QMatrix4x4 modelview;
-    modelview.rotate(m_fAngle, 0.0f, 1.0f, 0.0f);
-    modelview.rotate(m_fAngle, 1.0f, 0.0f, 0.0f);
-    modelview.rotate(m_fAngle, 0.0f, 0.0f, 1.0f);
-    modelview.scale(m_fScale);
-    modelview.translate(0.0f, -0.2f, 0.0f);
-
     if(m_openglData.operator bool())
     {
         m_openglData->bind();
-        m_openglData->program->setUniformValue(matrixUniform1, modelview);
-
+        m_openglData->setUniforms(m_imageData);
         m_openglData->enableAttributes();
         m_openglData->setAttributeArray(m_imageData);
         m_openglData->drawTriangles(m_imageData, this);
         m_openglData->disableAttributes();
-
         m_openglData->release();
     }
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-
-    m_fAngle += 1.0f;
 }
 
 

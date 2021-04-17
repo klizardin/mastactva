@@ -96,6 +96,12 @@ namespace drawing_data
         QVector<QVector3D> data;
     };
 
+    struct Uniform
+    {
+        QString name;
+        QMatrix4x4 data;
+    };
+
     struct QuizImageObject
     {
         virtual ~QuizImageObject() = default;
@@ -103,6 +109,7 @@ namespace drawing_data
         QByteArray fragmentShader;
 
         QList<Attribute> attributes;
+        QList<Uniform> uniforms;
     };
 }
 
