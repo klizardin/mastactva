@@ -185,6 +185,7 @@ namespace opengl_drawing
     public:
         void free();
         void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void bind();
         void enableAttributes();
         void disableAttributes();
         void setAttributeArray(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
@@ -192,6 +193,7 @@ namespace opengl_drawing
                 const std::unique_ptr<drawing_data::QuizImageObject> &object_,
                 QOpenGLFunctions *f_
                 );
+        void release();
 
         std::unique_ptr<QOpenGLShaderProgram> program;
 
@@ -220,6 +222,15 @@ void opengl_drawing::Object::init(
     {
         attributes[attribute.name] = program->attributeLocation(attribute.name);
     }
+}
+
+void opengl_drawing::Object::bind()
+{
+    if(!program.operator bool())
+    {
+        return;
+    }
+    program->bind();
 }
 
 void opengl_drawing::Object::enableAttributes()
@@ -284,6 +295,15 @@ void opengl_drawing::Object::drawTriangles(
        return  left_.data.size() < right_.data.size();
     });
     f_->glDrawArrays(GL_TRIANGLES, 0, fit->data.size());
+}
+
+void opengl_drawing::Object::release()
+{
+    if(!program.operator bool())
+    {
+        return;
+    }
+    program->release();
 }
 
 
@@ -388,7 +408,7 @@ void ObjectsRenderer::render()
 
     if(m_openglData.operator bool())
     {
-        m_openglData->program->bind();
+        m_openglData->bind();
         m_openglData->program->setUniformValue(matrixUniform1, modelview);
 
         m_openglData->enableAttributes();
@@ -396,7 +416,7 @@ void ObjectsRenderer::render()
         m_openglData->drawTriangles(m_imageData, this);
         m_openglData->disableAttributes();
 
-        m_openglData->program->release();
+        m_openglData->release();
     }
 
     glDisable(GL_DEPTH_TEST);
