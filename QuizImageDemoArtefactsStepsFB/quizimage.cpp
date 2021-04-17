@@ -304,9 +304,6 @@ public:
 private:
     qreal   m_fAngle;
     qreal   m_fScale;
-
-    void paintQtLogo();
-
     int matrixUniform1;
 
     std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
@@ -367,19 +364,6 @@ void ObjectsRenderer::initialize()
     m_fScale = 1;
 }
 
-void ObjectsRenderer::paintQtLogo()
-{
-    if(!m_openglData.operator bool())
-    {
-        return;
-    }
-
-    m_openglData->enableAttributes();
-    m_openglData->setAttributeArray(m_imageData);
-    m_openglData->drawTriangles(m_imageData, this);
-    m_openglData->disableAttributes();
-}
-
 void ObjectsRenderer::render()
 {
     glDepthMask(true);
@@ -402,10 +386,18 @@ void ObjectsRenderer::render()
     modelview.scale(m_fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
-    m_openglData->program->bind();
-    m_openglData->program->setUniformValue(matrixUniform1, modelview);
-    paintQtLogo();
-    m_openglData->program->release();
+    if(m_openglData.operator bool())
+    {
+        m_openglData->program->bind();
+        m_openglData->program->setUniformValue(matrixUniform1, modelview);
+
+        m_openglData->enableAttributes();
+        m_openglData->setAttributeArray(m_imageData);
+        m_openglData->drawTriangles(m_imageData, this);
+        m_openglData->disableAttributes();
+
+        m_openglData->program->release();
+    }
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
