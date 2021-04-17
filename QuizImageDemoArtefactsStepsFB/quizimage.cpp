@@ -388,12 +388,12 @@ class QuizImageFboRenderer : public QQuickFramebufferObject::Renderer
 public:
     QuizImageFboRenderer()
     {
-        logo.initialize();
+        objectRenderer.initialize();
     }
 
     void render() override
     {
-        logo.render();
+        objectRenderer.render();
         update();
     }
 
@@ -411,14 +411,14 @@ public:
         if(nullptr == quizImage) { return; }
         if(quizImage->isImageDataUpdated())
         {
-            quizImage->setDataToFree(logo.releaseImageData());
-            logo.setImageData(quizImage->getData());
-            logo.release();
-            logo.initialize();
+            quizImage->setDataToFree(objectRenderer.releaseImageData());
+            objectRenderer.setImageData(quizImage->getData());
+            objectRenderer.release();
+            objectRenderer.initialize();
         }
     }
 
-    ObjectsRenderer logo;
+    ObjectsRenderer objectRenderer;
 };
 
 
