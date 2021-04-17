@@ -454,7 +454,7 @@ public:
     void render() override
     {
         objectRenderer.render();
-        update();
+        //update();
     }
 
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override
