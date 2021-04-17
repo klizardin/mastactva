@@ -275,14 +275,10 @@ public:
     std::unique_ptr<drawing_data::QuizImageObject> releaseImageData();
 
 private:
-
     qreal   m_fAngle;
     qreal   m_fScale;
 
     void paintQtLogo();
-    void createGeometry();
-    void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
-    void extrude(qreal x1, qreal y1, qreal x2, qreal y2);
 
     int matrixUniform1;
 
