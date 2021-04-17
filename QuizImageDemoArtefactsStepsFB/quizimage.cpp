@@ -296,13 +296,16 @@ ObjectsRenderer::~ObjectsRenderer()
     release();
 }
 
-void ObjectsRenderer::paintQtLogo()
+void ObjectsRenderer::setImageData(
+        std::unique_ptr<drawing_data::QuizImageObject> imageData_
+        )
 {
-    if(!m_openglData->program) { return; }
-    m_openglData->enableAttributes();
-    m_openglData->setAttributeArray(m_imageData);
-    m_openglData->drawTriangles(m_imageData, this);
-    m_openglData->disableAttributes();
+    m_imageData = std::move(imageData_);
+}
+
+std::unique_ptr<drawing_data::QuizImageObject> ObjectsRenderer::releaseImageData()
+{
+    return std::move(m_imageData);
 }
 
 void ObjectsRenderer::release()
@@ -337,16 +340,13 @@ void ObjectsRenderer::initialize()
     m_fScale = 1;
 }
 
-void ObjectsRenderer::setImageData(
-        std::unique_ptr<drawing_data::QuizImageObject> imageData_
-        )
+void ObjectsRenderer::paintQtLogo()
 {
-    m_imageData = std::move(imageData_);
-}
-
-std::unique_ptr<drawing_data::QuizImageObject> ObjectsRenderer::releaseImageData()
-{
-    return std::move(m_imageData);
+    if(!m_openglData->program) { return; }
+    m_openglData->enableAttributes();
+    m_openglData->setAttributeArray(m_imageData);
+    m_openglData->drawTriangles(m_imageData, this);
+    m_openglData->disableAttributes();
 }
 
 void ObjectsRenderer::render()
