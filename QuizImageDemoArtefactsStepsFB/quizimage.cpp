@@ -45,6 +45,13 @@ void drawing_data::DefaultQuizImageObject::initialize()
     fragmentShader = fsrc1;
 }
 
+namespace opengl_drawing
+{
+    struct Object
+    {
+        std::unique_ptr<QOpenGLShaderProgram> program;
+    };
+}
 
 class ObjectsRenderer : protected QOpenGLFunctions
 {
@@ -70,12 +77,12 @@ private:
 
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
-    std::unique_ptr<QOpenGLShaderProgram> program1;
     int vertexAttr1;
     int normalAttr1;
     int matrixUniform1;
 
     std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
+    std::unique_ptr<opengl_drawing::Object> m_openglData;
 };
 
 
@@ -90,19 +97,23 @@ ObjectsRenderer::~ObjectsRenderer()
 
 void ObjectsRenderer::paintQtLogo()
 {
-    if(!program1) { return; }
-    program1->enableAttributeArray(normalAttr1);
-    program1->enableAttributeArray(vertexAttr1);
-    program1->setAttributeArray(vertexAttr1, vertices.constData());
-    program1->setAttributeArray(normalAttr1, normals.constData());
+    if(!m_openglData->program) { return; }
+    m_openglData->program->enableAttributeArray(normalAttr1);
+    m_openglData->program->enableAttributeArray(vertexAttr1);
+    m_openglData->program->setAttributeArray(vertexAttr1, vertices.constData());
+    m_openglData->program->setAttributeArray(normalAttr1, normals.constData());
     glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-    program1->disableAttributeArray(normalAttr1);
-    program1->disableAttributeArray(vertexAttr1);
+    m_openglData->program->disableAttributeArray(normalAttr1);
+    m_openglData->program->disableAttributeArray(vertexAttr1);
 }
 
 void ObjectsRenderer::release()
 {
-    program1.reset();
+    if(!m_openglData.operator bool())
+    {
+        return;
+    }
+    m_openglData->program.reset();
 }
 
 void ObjectsRenderer::initialize()
@@ -113,17 +124,18 @@ void ObjectsRenderer::initialize()
     {
         return;
     }
+    m_openglData.reset(new opengl_drawing::Object());
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
-    program1.reset(new QOpenGLShaderProgram);
-    program1->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, m_imageData->vertexShader.constData());
-    program1->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, m_imageData->fragmentShader.constData());
-    program1->link();
+    m_openglData->program.reset(new QOpenGLShaderProgram);
+    m_openglData->program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, m_imageData->vertexShader.constData());
+    m_openglData->program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, m_imageData->fragmentShader.constData());
+    m_openglData->program->link();
 
-    vertexAttr1 = program1->attributeLocation("vertex");
-    normalAttr1 = program1->attributeLocation("normal");
-    matrixUniform1 = program1->uniformLocation("matrix");
+    vertexAttr1 = m_openglData->program->attributeLocation("vertex");
+    normalAttr1 = m_openglData->program->attributeLocation("normal");
+    matrixUniform1 = m_openglData->program->uniformLocation("matrix");
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -167,10 +179,10 @@ void ObjectsRenderer::render()
     modelview.scale(m_fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
-    program1->bind();
-    program1->setUniformValue(matrixUniform1, modelview);
+    m_openglData->program->bind();
+    m_openglData->program->setUniformValue(matrixUniform1, modelview);
     paintQtLogo();
-    program1->release();
+    m_openglData->program->release();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
