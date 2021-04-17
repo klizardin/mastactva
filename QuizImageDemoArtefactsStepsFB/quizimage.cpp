@@ -184,8 +184,8 @@ namespace opengl_drawing
     {
     public:
         void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
-        void enableAttributes(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
-        void disableAttributes(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void enableAttributes();
+        void disableAttributes();
         void setAttributeArray(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
         void drawTriangles(
                 const std::unique_ptr<drawing_data::QuizImageObject> &object_,
@@ -215,23 +215,19 @@ void opengl_drawing::Object::init(
     }
 }
 
-void opengl_drawing::Object::enableAttributes(
-        const std::unique_ptr<drawing_data::QuizImageObject> &object_
-        )
+void opengl_drawing::Object::enableAttributes()
 {
-    for(const auto &attribute : object_->attributes)
+    for(const auto &attribute : attributes)
     {
-        program->enableAttributeArray(attributes[attribute.name]);
+        program->enableAttributeArray(attribute);
     }
 }
 
-void opengl_drawing::Object::disableAttributes(
-        const std::unique_ptr<drawing_data::QuizImageObject> &object_
-        )
+void opengl_drawing::Object::disableAttributes()
 {
-    for(const auto &attribute : object_->attributes)
+    for(const auto &attribute : attributes)
     {
-        program->disableAttributeArray(attributes[attribute.name]);
+        program->disableAttributeArray(attribute);
     }
 }
 
@@ -305,10 +301,10 @@ ObjectsRenderer::~ObjectsRenderer()
 void ObjectsRenderer::paintQtLogo()
 {
     if(!m_openglData->program) { return; }
-    m_openglData->enableAttributes(m_imageData);
+    m_openglData->enableAttributes();
     m_openglData->setAttributeArray(m_imageData);
     m_openglData->drawTriangles(m_imageData, this);
-    m_openglData->disableAttributes(m_imageData);
+    m_openglData->disableAttributes();
 }
 
 void ObjectsRenderer::release()
