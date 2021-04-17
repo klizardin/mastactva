@@ -47,11 +47,26 @@ void drawing_data::DefaultQuizImageObject::initialize()
 
 namespace opengl_drawing
 {
-    struct Object
+    class Object
     {
+    public:
+        void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+
         std::unique_ptr<QOpenGLShaderProgram> program;
     };
 }
+
+
+void opengl_drawing::Object::init(
+        const std::unique_ptr<drawing_data::QuizImageObject> &object_
+        )
+{
+    program.reset(new QOpenGLShaderProgram);
+    program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, object_->vertexShader.constData());
+    program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, object_->fragmentShader.constData());
+    program->link();
+}
+
 
 class ObjectsRenderer : protected QOpenGLFunctions
 {
@@ -124,14 +139,12 @@ void ObjectsRenderer::initialize()
     {
         return;
     }
+
     m_openglData.reset(new opengl_drawing::Object());
+    m_openglData->init(m_imageData);
 
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
-    m_openglData->program.reset(new QOpenGLShaderProgram);
-    m_openglData->program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, m_imageData->vertexShader.constData());
-    m_openglData->program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, m_imageData->fragmentShader.constData());
-    m_openglData->program->link();
 
     vertexAttr1 = m_openglData->program->attributeLocation("vertex");
     normalAttr1 = m_openglData->program->attributeLocation("normal");
