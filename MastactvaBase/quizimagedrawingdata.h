@@ -31,15 +31,38 @@ public:
     virtual ~ArgumentBase() = default;
 
     const QString &getName() const;
-    void setName(QString name_);
     const QString &getStorage() const;
-    void setStorage(QString storage_);
     const QString &getType() const;
-    void setType(QString type_);
     const QString &getValue() const;
-    void setValue(QString value_);
     const QString &getDefaultValue() const;
-    void setDefaultValue(QString defaultValue_);
+
+    bool isValid() const;
+
+    template<class T_>
+    void setName(T_ &&name_)
+    {
+        m_name = std::forward<T_>(name_);
+    }
+    template<class T_>
+    void setStorage(T_ &&storage_)
+    {
+        m_storage = std::forward<T_>(storage_);
+    }
+    template<class T_>
+    void setType(T_ &&type_)
+    {
+        m_type = std::forward<T_>(type_);
+    }
+    template<class T_>
+    void setValue(T_ &&value_)
+    {
+        m_value = std::forward<T_>(value_);
+    }
+    template<class T_>
+    void setDefaultValue(T_ &&defaultValue_)
+    {
+        m_defaultValue = std::forward<T_>(defaultValue_);
+    }
 
     /* used for scripts arguments
      * isOutput() == true
@@ -64,6 +87,31 @@ private:
     bool m_isInput = false;
 };
 
+
+namespace drawing_data
+{
+    struct Attribute
+    {
+        QString name;
+        QVector<QVector3D> data;
+    };
+
+    struct Uniform
+    {
+        QString name;
+        QMatrix4x4 data;
+    };
+
+    struct QuizImageObject
+    {
+        virtual ~QuizImageObject() = default;
+        QByteArray vertexShader;
+        QByteArray fragmentShader;
+
+        QList<Attribute> attributes;
+        QList<Uniform> uniforms;
+    };
+}
 
 
 #endif // #if QT_CONFIG(opengl)
