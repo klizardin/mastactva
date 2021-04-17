@@ -183,6 +183,7 @@ namespace opengl_drawing
     class Object
     {
     public:
+        void free();
         void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
         void enableAttributes();
         void disableAttributes();
@@ -200,10 +201,16 @@ namespace opengl_drawing
 }
 
 
+void opengl_drawing::Object::free()
+{
+    program.reset();
+}
+
 void opengl_drawing::Object::init(
         const std::unique_ptr<drawing_data::QuizImageObject> &object_
         )
 {
+    free();
     program.reset(new QOpenGLShaderProgram);
     program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, object_->vertexShader.constData());
     program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, object_->fragmentShader.constData());
@@ -217,6 +224,10 @@ void opengl_drawing::Object::init(
 
 void opengl_drawing::Object::enableAttributes()
 {
+    if(!program.operator bool())
+    {
+        return;
+    }
     for(const auto &attribute : attributes)
     {
         if(attribute < 0) { continue; }
@@ -226,6 +237,10 @@ void opengl_drawing::Object::enableAttributes()
 
 void opengl_drawing::Object::disableAttributes()
 {
+    if(!program.operator bool())
+    {
+        return;
+    }
     for(const auto &attribute : attributes)
     {
         if(attribute < 0) { continue; }
@@ -237,6 +252,10 @@ void opengl_drawing::Object::setAttributeArray(
         const std::unique_ptr<drawing_data::QuizImageObject> &object_
         )
 {
+    if(!program.operator bool())
+    {
+        return;
+    }
     for(const auto &attribute : object_->attributes)
     {
         const auto attributeId = attributes[attribute.name];
@@ -250,7 +269,13 @@ void opengl_drawing::Object::drawTriangles(
         QOpenGLFunctions *f_
         )
 {
-    if(object_->attributes.isEmpty()) { return; }
+    if(!program.operator bool()
+            || object_->attributes.isEmpty()
+            || nullptr == f_
+            )
+    {
+        return;
+    }
     const auto fit = std::min_element(
                 std::begin(object_->attributes),
                 std::end(object_->attributes),
@@ -314,7 +339,7 @@ void ObjectsRenderer::release()
     {
         return;
     }
-    m_openglData->program.reset();
+    m_openglData->free();
 }
 
 void ObjectsRenderer::initialize()
@@ -342,7 +367,11 @@ void ObjectsRenderer::initialize()
 
 void ObjectsRenderer::paintQtLogo()
 {
-    if(!m_openglData->program) { return; }
+    if(!m_openglData.operator bool())
+    {
+        return;
+    }
+
     m_openglData->enableAttributes();
     m_openglData->setAttributeArray(m_imageData);
     m_openglData->drawTriangles(m_imageData, this);
