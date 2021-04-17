@@ -90,9 +90,9 @@ private:
 
 namespace drawing_data
 {
-    struct QuizImageDrawingData
+    struct QuizImageObject
     {
-        virtual ~QuizImageDrawingData() = default;
+        virtual ~QuizImageObject() = default;
         QByteArray vertexShader;
         QByteArray fragmentShader;
     };

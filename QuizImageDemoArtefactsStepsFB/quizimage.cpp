@@ -17,7 +17,7 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
     return std::unique_ptr<TargetType_>{static_cast<TargetType_*>(ptr_.release())};
 }
 
-void drawing_data::DefaultQuizImageDrawingData::initialize()
+void drawing_data::DefaultQuizImageObject::initialize()
 {
     const char *vsrc1 =
         "attribute highp vec4 vertex;\n"
@@ -55,8 +55,8 @@ public:
     void render();
     void release();
     void initialize();
-    void setImageData(std::unique_ptr<drawing_data::QuizImageDrawingData> imageData_);
-    std::unique_ptr<drawing_data::QuizImageDrawingData> releaseImageData();
+    void setImageData(std::unique_ptr<drawing_data::QuizImageObject> imageData_);
+    std::unique_ptr<drawing_data::QuizImageObject> releaseImageData();
 
 private:
 
@@ -75,7 +75,7 @@ private:
     int normalAttr1;
     int matrixUniform1;
 
-    std::unique_ptr<drawing_data::QuizImageDrawingData> m_imageData;
+    std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
 };
 
 
@@ -134,13 +134,13 @@ void ObjectsRenderer::initialize()
 }
 
 void ObjectsRenderer::setImageData(
-        std::unique_ptr<drawing_data::QuizImageDrawingData> imageData_
+        std::unique_ptr<drawing_data::QuizImageObject> imageData_
         )
 {
     m_imageData = std::move(imageData_);
 }
 
-std::unique_ptr<drawing_data::QuizImageDrawingData> ObjectsRenderer::releaseImageData()
+std::unique_ptr<drawing_data::QuizImageObject> ObjectsRenderer::releaseImageData()
 {
     return std::move(m_imageData);
 }
@@ -467,12 +467,12 @@ bool QuizImage::isImageDataUpdated() const
     return m_drawingData.operator bool();
 }
 
-std::unique_ptr<drawing_data::QuizImageDrawingData> QuizImage::getData()
+std::unique_ptr<drawing_data::QuizImageObject> QuizImage::getData()
 {
     return std::move(m_drawingData);
 }
 
-void QuizImage::setDataToFree(std::unique_ptr<drawing_data::QuizImageDrawingData> &&old_)
+void QuizImage::setDataToFree(std::unique_ptr<drawing_data::QuizImageObject> &&old_)
 {
     m_drawingOldData = std::move(old_);
 }
@@ -484,9 +484,9 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
 
 void QuizImage::initDefaultDrawingData()
 {
-    std::unique_ptr<drawing_data::DefaultQuizImageDrawingData> defaultImageData(
-                new drawing_data::DefaultQuizImageDrawingData()
+    std::unique_ptr<drawing_data::DefaultQuizImageObject> defaultImageData(
+                new drawing_data::DefaultQuizImageObject()
                 );
     defaultImageData->initialize();
-    m_drawingData = unique_ptr_static_cast<drawing_data::QuizImageDrawingData>(std::move(defaultImageData));
+    m_drawingData = unique_ptr_static_cast<drawing_data::QuizImageObject>(std::move(defaultImageData));
 }

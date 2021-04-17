@@ -17,7 +17,7 @@ public:
 
 namespace drawing_data
 {
-    class DefaultQuizImageDrawingData : public IDefaultData, public QuizImageDrawingData
+    class DefaultQuizImageObject : public IDefaultData, public QuizImageObject
     {
     public:
         virtual void initialize() override;
@@ -46,8 +46,8 @@ public:
 public:
     qreal t() const;
     bool isImageDataUpdated() const;
-    std::unique_ptr<drawing_data::QuizImageDrawingData> getData();
-    void setDataToFree(std::unique_ptr<drawing_data::QuizImageDrawingData> &&old_);
+    std::unique_ptr<drawing_data::QuizImageObject> getData();
+    void setDataToFree(std::unique_ptr<drawing_data::QuizImageObject> &&old_);
     void renderBuildError(const QString &compilerLog_);
 
 protected:
@@ -81,8 +81,8 @@ private:
     QString m_fromImage;
     QString m_toImage;
     QString m_project;
-    std::unique_ptr<drawing_data::QuizImageDrawingData> m_drawingData;
-    std::unique_ptr<drawing_data::QuizImageDrawingData> m_drawingOldData;
+    std::unique_ptr<drawing_data::QuizImageObject> m_drawingData;
+    std::unique_ptr<drawing_data::QuizImageObject> m_drawingOldData;
     QString m_compilerLog;
 };
 
