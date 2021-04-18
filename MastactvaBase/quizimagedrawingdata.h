@@ -91,16 +91,6 @@ private:
 
 namespace drawing_data
 {
-    class IAttribute
-    {
-    public:
-        virtual ~IAttribute() = default;
-        virtual const QString &name() const = 0;
-        virtual int tupleSize() const = 0;
-        virtual const GLfloat *constData() const = 0;
-        virtual int size() const = 0;
-    };
-
     template<typename AttributeItemType_>
     class ItemTypeTraits
     {
@@ -137,6 +127,17 @@ namespace drawing_data
     ITEM_TYPE_TRAITS(QMatrix4x2, 8)
     ITEM_TYPE_TRAITS(QMatrix4x3, 12)
     ITEM_TYPE_TRAITS(QMatrix4x4, 16)
+
+
+    class IAttribute
+    {
+    public:
+        virtual ~IAttribute() = default;
+        virtual const QString &name() const = 0;
+        virtual int tupleSize() const = 0;
+        virtual const GLfloat *constData() const = 0;
+        virtual int size() const = 0;
+    };
 
 
     template<class ItemType_ = QVector3D>
@@ -179,6 +180,7 @@ namespace drawing_data
         std::vector<ItemType_> m_data;
     };
 
+
     class IUniform
     {
     public:
@@ -186,6 +188,7 @@ namespace drawing_data
         virtual const QString &name() const = 0;
         virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
     };
+
 
     template<typename ItemType_>
     struct Uniform : public IUniform
@@ -216,6 +219,7 @@ namespace drawing_data
         ItemType_ m_data;
     };
 
+
     struct QuizImageObject
     {
         QByteArray vertexShader;
@@ -224,6 +228,7 @@ namespace drawing_data
         std::vector<std::unique_ptr<IAttribute>> attributes;
         std::vector<std::unique_ptr<IUniform>> uniforms;
     };
+
 
     struct QuizImageObjects
     {
