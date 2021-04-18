@@ -4,6 +4,7 @@
 
 #include <type_traits>
 #include <set>
+#include <vector>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QtGui/QOpenGLContext>
@@ -90,10 +91,75 @@ private:
 
 namespace drawing_data
 {
-    struct Attribute
+    class IAttribute
     {
-        QString name;
-        QVector<QVector3D> data;
+    public:
+        virtual ~IAttribute() = default;
+        virtual const QString &name() const = 0;
+        virtual int tupleSize() const = 0;
+        virtual const GLfloat *constData() const = 0;
+        virtual int size() const = 0;
+    };
+
+    template<typename AttributeItemType_>
+    class AttributeItemTraits
+    {
+    public:
+        constexpr static int tuppleSize = 0;
+    };
+
+#define ATTRIBUTE_ITEM_TRAITS(AttributeItemType_, value_)   \
+    template<>                                              \
+    class AttributeItemTraits<AttributeItemType_>           \
+    {                                                       \
+    public:                                                 \
+        constexpr static int tuppleSize = value_;           \
+    };                                                      \
+/*end traints macro*/
+
+    ATTRIBUTE_ITEM_TRAITS(QVector2D, 2)
+    ATTRIBUTE_ITEM_TRAITS(QVector3D, 3)
+    ATTRIBUTE_ITEM_TRAITS(QVector4D, 4)
+
+
+    template<class ItemType_ = QVector3D>
+    class Attribute : public IAttribute
+    {
+    public:
+        Attribute(const QString &name_, std::vector<ItemType_> &&data_)
+            : m_name(name_),
+              m_data(std::move(data_))
+        {
+        }
+
+    public:
+        virtual const QString &name() const override
+        {
+            return m_name;
+        }
+
+        virtual int tupleSize() const override
+        {
+            return AttributeItemTraits<ItemType_>::tuppleSize;
+        }
+
+        virtual const GLfloat *constData() const override
+        {
+            if(m_data.empty())
+            {
+                return nullptr;
+            }
+            return &(const_cast<Attribute<ItemType_> *>(this)->m_data[0][0]);
+        }
+
+        virtual int size() const override
+        {
+            return m_data.size();
+        }
+
+    private:
+        QString m_name;
+        std::vector<ItemType_> m_data;
     };
 
     struct Uniform
@@ -107,7 +173,7 @@ namespace drawing_data
         QByteArray vertexShader;
         QByteArray fragmentShader;
 
-        QList<Attribute> attributes;
+        std::vector<std::unique_ptr<IAttribute>> attributes;
         QList<Uniform> uniforms;
     };
 
