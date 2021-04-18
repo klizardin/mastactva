@@ -17,7 +17,7 @@ public:
 
 namespace drawing_data
 {
-    class DefaultQuizImageObject : public IDefaultData, public QuizImageObject
+    class TestMinimalDrawQuizImageObject : public IDefaultData, public QuizImageObject
     {
     public:
         virtual void initialize() override;

@@ -141,7 +141,7 @@ void createGeometry(
         vertices[i] *= 2.0f;
 }
 
-void drawing_data::DefaultQuizImageObject::initialize()
+void drawing_data::TestMinimalDrawQuizImageObject::initialize()
 {
     const char *vsrc1 =
         "attribute highp vec4 vertex;\n"
@@ -199,20 +199,18 @@ namespace opengl_drawing
     class Object
     {
     public:
-        void free();
-        void init(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        std::unique_ptr<drawing_data::QuizImageObject> free();
+        void init(std::unique_ptr<drawing_data::QuizImageObject> &&imageData_);
         void bind();
-        void setUniforms(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
+        void setUniforms();
         void enableAttributes();
         void disableAttributes();
-        void setAttributeArray(const std::unique_ptr<drawing_data::QuizImageObject> &object_);
-        void drawTriangles(
-                const std::unique_ptr<drawing_data::QuizImageObject> &object_,
-                QOpenGLFunctions *f_
-                );
+        void setAttributeArray();
+        void drawTriangles(QOpenGLFunctions *f_);
         void release();
 
     private:
+        std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
         std::unique_ptr<QOpenGLShaderProgram> program;
         QHash<QString, int> attributes;
         QHash<QString, int> uniforms;
@@ -220,27 +218,29 @@ namespace opengl_drawing
 }
 
 
-void opengl_drawing::Object::free()
+std::unique_ptr<drawing_data::QuizImageObject> opengl_drawing::Object::free()
 {
     program.reset();
+    return std::move(m_imageData);
 }
 
 void opengl_drawing::Object::init(
-        const std::unique_ptr<drawing_data::QuizImageObject> &object_
+        std::unique_ptr<drawing_data::QuizImageObject> &&imageData_
         )
 {
     free();
+    m_imageData = std::move(imageData_);
     program.reset(new QOpenGLShaderProgram);
-    program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, object_->vertexShader.constData());
-    program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, object_->fragmentShader.constData());
+    program->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, m_imageData->vertexShader.constData());
+    program->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, m_imageData->fragmentShader.constData());
     program->link();
 
-    for(const auto &attribute : object_->attributes)
+    for(const auto &attribute : m_imageData->attributes)
     {
         attributes[attribute.name] = program->attributeLocation(attribute.name);
     }
 
-    for(const auto &uniform : object_->uniforms)
+    for(const auto &uniform : m_imageData->uniforms)
     {
         uniforms[uniform.name] = program->uniformLocation(uniform.name);
     }
@@ -255,15 +255,13 @@ void opengl_drawing::Object::bind()
     program->bind();
 }
 
-void opengl_drawing::Object::setUniforms(
-        const std::unique_ptr<drawing_data::QuizImageObject> &object_
-        )
+void opengl_drawing::Object::setUniforms()
 {
     if(!program.operator bool())
     {
         return;
     }
-    for(const auto &uniform : object_->uniforms)
+    for(const auto &uniform : m_imageData->uniforms)
     {
         const auto uniformId = uniforms[uniform.name];
         if(uniformId < 0) { continue; }
@@ -297,15 +295,13 @@ void opengl_drawing::Object::disableAttributes()
     }
 }
 
-void opengl_drawing::Object::setAttributeArray(
-        const std::unique_ptr<drawing_data::QuizImageObject> &object_
-        )
+void opengl_drawing::Object::setAttributeArray()
 {
     if(!program.operator bool())
     {
         return;
     }
-    for(const auto &attribute : object_->attributes)
+    for(const auto &attribute : m_imageData->attributes)
     {
         const auto attributeId = attributes[attribute.name];
         if(attributeId < 0) { continue; }
@@ -313,21 +309,18 @@ void opengl_drawing::Object::setAttributeArray(
     }
 }
 
-void opengl_drawing::Object::drawTriangles(
-        const std::unique_ptr<drawing_data::QuizImageObject> &object_,
-        QOpenGLFunctions *f_
-        )
+void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
 {
     if(!program.operator bool()
-            || object_->attributes.isEmpty()
+            || m_imageData->attributes.isEmpty()
             || nullptr == f_
             )
     {
         return;
     }
     const auto fit = std::min_element(
-                std::begin(object_->attributes),
-                std::end(object_->attributes),
+                std::begin(m_imageData->attributes),
+                std::end(m_imageData->attributes),
                 [](const drawing_data::Attribute &left_, const drawing_data::Attribute &right_)->bool
     {
        return  left_.data.size() < right_.data.size();
@@ -353,14 +346,13 @@ public:
 
     void setImageData(std::unique_ptr<drawing_data::QuizImageObject> imageData_);
     std::unique_ptr<drawing_data::QuizImageObject> releaseImageData();
-
-    void release();
-    void initialize();
-
     void render();
 
+protected:
+    void initialize();
+
 private:
-    std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
+    //std::unique_ptr<drawing_data::QuizImageObject> m_imageData;
     std::unique_ptr<opengl_drawing::Object> m_openglData;
 };
 
@@ -371,42 +363,26 @@ ObjectsRenderer::ObjectsRenderer()
 
 ObjectsRenderer::~ObjectsRenderer()
 {
-    release();
 }
 
 void ObjectsRenderer::setImageData(
         std::unique_ptr<drawing_data::QuizImageObject> imageData_
         )
 {
-    m_imageData = std::move(imageData_);
+    m_openglData.reset(new opengl_drawing::Object());
+    m_openglData->init(std::move(imageData_));
+    initialize();
 }
 
 std::unique_ptr<drawing_data::QuizImageObject> ObjectsRenderer::releaseImageData()
 {
-    return std::move(m_imageData);
-}
-
-void ObjectsRenderer::release()
-{
-    if(!m_openglData.operator bool())
-    {
-        return;
-    }
-    m_openglData->free();
+    if(!m_openglData.operator bool()) { return {nullptr}; }
+    return m_openglData->free();
 }
 
 void ObjectsRenderer::initialize()
 {
     initializeOpenGLFunctions();
-
-    if(!m_imageData.operator bool())
-    {
-        return;
-    }
-
-    m_openglData.reset(new opengl_drawing::Object());
-    m_openglData->init(m_imageData);
-
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -430,10 +406,10 @@ void ObjectsRenderer::render()
     if(m_openglData.operator bool())
     {
         m_openglData->bind();
-        m_openglData->setUniforms(m_imageData);
+        m_openglData->setUniforms();
         m_openglData->enableAttributes();
-        m_openglData->setAttributeArray(m_imageData);
-        m_openglData->drawTriangles(m_imageData, this);
+        m_openglData->setAttributeArray();
+        m_openglData->drawTriangles(this);
         m_openglData->disableAttributes();
         m_openglData->release();
     }
@@ -448,7 +424,6 @@ class QuizImageFboRenderer : public QQuickFramebufferObject::Renderer
 public:
     QuizImageFboRenderer()
     {
-        objectRenderer.initialize();
     }
 
     void render() override
@@ -473,8 +448,6 @@ public:
         {
             quizImage->setDataToFree(objectRenderer.releaseImageData());
             objectRenderer.setImageData(quizImage->getData());
-            objectRenderer.release();
-            objectRenderer.initialize();
         }
     }
 
@@ -634,8 +607,8 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
 
 void QuizImage::initDefaultDrawingData()
 {
-    std::unique_ptr<drawing_data::DefaultQuizImageObject> defaultImageData(
-                new drawing_data::DefaultQuizImageObject()
+    std::unique_ptr<drawing_data::TestMinimalDrawQuizImageObject> defaultImageData(
+                new drawing_data::TestMinimalDrawQuizImageObject()
                 );
     defaultImageData->initialize();
     m_drawingData = unique_ptr_static_cast<drawing_data::QuizImageObject>(std::move(defaultImageData));
