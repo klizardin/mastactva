@@ -637,6 +637,10 @@ public:
     {
         QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
         if(nullptr == quizImage) { return; }
+
+        m_windowSize.setWidth(quizImage->width());
+        m_windowSize.setHeight(quizImage->height());
+
         if(quizImage->isImageDataUpdated())
         {
             quizImage->setDataToFree(objectRenderer.releaseImageData());
@@ -645,6 +649,7 @@ public:
     }
 
     ObjectsRenderer objectRenderer;
+    QSize m_windowSize;
 };
 
 
