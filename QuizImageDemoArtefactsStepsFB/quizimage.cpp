@@ -21,94 +21,94 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
 
 namespace drawing_data
 {
-    class TestMinimalDrawQuizImageObject : public IDefaultData, public QuizImageObjects
+    class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize() override;
+        virtual void initialize(QuizImageObjects &data_) const override;
     };
 
-    class TestMinimal2PassDrawQuizImageObject : public IDefaultData, public QuizImageObjects
+    class TestMinimal2PassDrawQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize() override;
+        virtual void initialize(QuizImageObjects &data_) const override;
     };
 }
 
 
 void quad(
-        QVector<QVector3D> &vertices,
-        QVector<QVector3D> &normals,
+        std::vector<QVector3D> &vertices,
+        std::vector<QVector3D> &normals,
         qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4
         )
 {
-    vertices << QVector3D(x1, y1, -0.05f);
-    vertices << QVector3D(x2, y2, -0.05f);
-    vertices << QVector3D(x4, y4, -0.05f);
+    vertices.push_back(QVector3D(x1, y1, -0.05f));
+    vertices.push_back(QVector3D(x2, y2, -0.05f));
+    vertices.push_back(QVector3D(x4, y4, -0.05f));
 
-    vertices << QVector3D(x3, y3, -0.05f);
-    vertices << QVector3D(x4, y4, -0.05f);
-    vertices << QVector3D(x2, y2, -0.05f);
+    vertices.push_back(QVector3D(x3, y3, -0.05f));
+    vertices.push_back(QVector3D(x4, y4, -0.05f));
+    vertices.push_back(QVector3D(x2, y2, -0.05f));
 
     QVector3D n = QVector3D::normal
         (QVector3D(x2 - x1, y2 - y1, 0.0f), QVector3D(x4 - x1, y4 - y1, 0.0f));
 
-    normals << n;
-    normals << n;
-    normals << n;
+    normals.push_back(n);
+    normals.push_back(n);
+    normals.push_back(n);
 
-    normals << n;
-    normals << n;
-    normals << n;
+    normals.push_back(n);
+    normals.push_back(n);
+    normals.push_back(n);
 
-    vertices << QVector3D(x4, y4, 0.05f);
-    vertices << QVector3D(x2, y2, 0.05f);
-    vertices << QVector3D(x1, y1, 0.05f);
+    vertices.push_back(QVector3D(x4, y4, 0.05f));
+    vertices.push_back(QVector3D(x2, y2, 0.05f));
+    vertices.push_back(QVector3D(x1, y1, 0.05f));
 
-    vertices << QVector3D(x2, y2, 0.05f);
-    vertices << QVector3D(x4, y4, 0.05f);
-    vertices << QVector3D(x3, y3, 0.05f);
+    vertices.push_back(QVector3D(x2, y2, 0.05f));
+    vertices.push_back(QVector3D(x4, y4, 0.05f));
+    vertices.push_back(QVector3D(x3, y3, 0.05f));
 
     n = QVector3D::normal
         (QVector3D(x2 - x4, y2 - y4, 0.0f), QVector3D(x1 - x4, y1 - y4, 0.0f));
 
-    normals << n;
-    normals << n;
-    normals << n;
+    normals.push_back(n);
+    normals.push_back(n);
+    normals.push_back(n);
 
-    normals << n;
-    normals << n;
-    normals << n;
+    normals.push_back(n);
+    normals.push_back(n);
+    normals.push_back(n);
 }
 
 void extrude(
-        QVector<QVector3D> &vertices,
-        QVector<QVector3D> &normals,
+        std::vector<QVector3D> &vertices,
+        std::vector<QVector3D> &normals,
         qreal x1, qreal y1, qreal x2, qreal y2
         )
 {
-    vertices << QVector3D(x1, y1, +0.05f);
-    vertices << QVector3D(x2, y2, +0.05f);
-    vertices << QVector3D(x1, y1, -0.05f);
+    vertices.push_back(QVector3D(x1, y1, +0.05f));
+    vertices.push_back(QVector3D(x2, y2, +0.05f));
+    vertices.push_back(QVector3D(x1, y1, -0.05f));
 
-    vertices << QVector3D(x2, y2, -0.05f);
-    vertices << QVector3D(x1, y1, -0.05f);
-    vertices << QVector3D(x2, y2, +0.05f);
+    vertices.push_back(QVector3D(x2, y2, -0.05f));
+    vertices.push_back(QVector3D(x1, y1, -0.05f));
+    vertices.push_back(QVector3D(x2, y2, +0.05f));
 
     QVector3D n = QVector3D::normal
         (QVector3D(x2 - x1, y2 - y1, 0.0f), QVector3D(0.0f, 0.0f, -0.1f));
 
-    normals << n;
-    normals << n;
-    normals << n;
+    normals.push_back(n);
+    normals.push_back(n);
+    normals.push_back(n);
 
-    normals << n;
-    normals << n;
-    normals << n;
+    normals.push_back(n);
+    normals.push_back(n);
+    normals.push_back(n);
 }
 
 void createGeometry(
-        QVector<QVector3D> &vertices,
-        QVector<QVector3D> &normals
+        std::vector<QVector3D> &vertices,
+        std::vector<QVector3D> &normals
         )
 {
     qreal x1 = +0.06f;
@@ -134,7 +134,8 @@ void createGeometry(
     const qreal Pi = M_PI;
     const int NumSectors = 100;
 
-    for (int i = 0; i < NumSectors; ++i) {
+    for (int i = 0; i < NumSectors; ++i)
+    {
         qreal angle1 = (i * 2 * Pi) / NumSectors;
         qreal x5 = 0.30 * sin(angle1);
         qreal y5 = 0.30 * cos(angle1);
@@ -153,11 +154,13 @@ void createGeometry(
         extrude(vertices, normals, x8, y8, x5, y5);
     }
 
-    for (int i = 0;i < vertices.size();i++)
+    for (int i = 0; i < (int)vertices.size();i++)
         vertices[i] *= 2.0f;
 }
 
-void drawing_data::TestMinimalDrawQuizImageObject::initialize()
+void drawing_data::TestMinimalDrawQuizImageObject::initialize(
+        QuizImageObjects &data_
+        ) const
 {
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
@@ -186,34 +189,42 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize()
     object->vertexShader = vsrc1;
     object->fragmentShader = fsrc1;
 
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    createGeometry(vertices, normals);
+    std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
+    std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
+    createGeometry(*vertices.get(), *normals.get());
 
-    object->attributes.append(
-                {{"vertex", std::move(vertices) },
-                 {"normal", std::move(normals) }
-                });
+    object->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
+                    )
+                );
+    object->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
+                    )
+                );
 
     QRandomGenerator gen;
     qreal fScale = 1;
     qreal fAngle = gen.generateDouble() * 360.0;
-    QMatrix4x4 modelview;
-    modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
-    modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
-    modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
-    modelview.scale(fScale);
-    modelview.translate(0.0f, -0.2f, 0.0f);
+    std::shared_ptr<QMatrix4x4> modelview(new QMatrix4x4);
+    modelview->rotate(fAngle, 0.0f, 1.0f, 0.0f);
+    modelview->rotate(fAngle, 1.0f, 0.0f, 0.0f);
+    modelview->rotate(fAngle, 0.0f, 0.0f, 1.0f);
+    modelview->scale(fScale);
+    modelview->translate(0.0f, -0.2f, 0.0f);
 
-    object->uniforms.append(
-                {
-                   {"matrix", std::move(modelview)}
-                });
-    objects.push_back(std::move(object));
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview }
+                ));
+    data_.objects.push_back(std::move(object));
 }
 
 
-void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize()
+void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
+        QuizImageObjects &data_
+        ) const
 {
     std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
     std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
@@ -247,49 +258,59 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize()
     object2->vertexShader = vsrc1;
     object2->fragmentShader = fsrc1;
 
-    QVector<QVector3D> vertices1;
-    QVector<QVector3D> normals1;
-    createGeometry(vertices1, normals1);
-    QVector<QVector3D> vertices2 = vertices1;
-    QVector<QVector3D> normals2 = normals1;
+    std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
+    std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
+    createGeometry(*vertices.get(), *normals.get());
 
-    object1->attributes.append(
-                {{"vertex", std::move(vertices1) },
-                 {"normal", std::move(normals1) }
-                });
-    object2->attributes.append(
-                {{"vertex", std::move(vertices2) },
-                 {"normal", std::move(normals2) }
-                });
+    object1->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
+                    )
+                );
+    object1->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
+                    )
+                );
+    object2->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
+                    )
+                );
+    object2->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
+                    )
+                );
 
     qreal fScale = 1;
     qreal fAngle1 = gen.generateDouble() * 360.0;
-    QMatrix4x4 modelview1;
-    modelview1.rotate(fAngle1, 0.0f, 1.0f, 0.0f);
-    modelview1.rotate(fAngle1, 1.0f, 0.0f, 0.0f);
-    modelview1.rotate(fAngle1, 0.0f, 0.0f, 1.0f);
-    modelview1.scale(fScale);
-    modelview1.translate(0.0f, -0.2f, 0.0f);
+    std::shared_ptr<QMatrix4x4> modelview1(new QMatrix4x4);
+    modelview1->rotate(fAngle1, 0.0f, 1.0f, 0.0f);
+    modelview1->rotate(fAngle1, 1.0f, 0.0f, 0.0f);
+    modelview1->rotate(fAngle1, 0.0f, 0.0f, 1.0f);
+    modelview1->scale(fScale);
+    modelview1->translate(0.0f, -0.2f, 0.0f);
 
     qreal fAngle2 = gen.generateDouble() * 360.0;
-    QMatrix4x4 modelview2;
-    modelview2.rotate(fAngle2, 0.0f, 1.0f, 0.0f);
-    modelview2.rotate(fAngle2, 1.0f, 0.0f, 0.0f);
-    modelview2.rotate(fAngle2, 0.0f, 0.0f, 1.0f);
-    modelview2.scale(fScale);
-    modelview2.translate(0.0f, -0.2f, 0.0f);
+    std::shared_ptr<QMatrix4x4> modelview2(new QMatrix4x4);
+    modelview2->rotate(fAngle2, 0.0f, 1.0f, 0.0f);
+    modelview2->rotate(fAngle2, 1.0f, 0.0f, 0.0f);
+    modelview2->rotate(fAngle2, 0.0f, 0.0f, 1.0f);
+    modelview2->scale(fScale);
+    modelview2->translate(0.0f, -0.2f, 0.0f);
 
-    object1->uniforms.append(
-                {
-                   {"matrix", std::move(modelview1)}
-                });
-    object2->uniforms.append(
-                {
-                   {"matrix", std::move(modelview2)}
-                });
+    object1->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview1 }
+                ));
+    object2->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview2 }
+                ));
 
-    objects.push_back(std::move(object1));
-    objects.push_back(std::move(object2));
+    data_.objects.push_back(std::move(object1));
+    data_.objects.push_back(std::move(object2));
 }
 
 
@@ -324,6 +345,26 @@ namespace opengl_drawing
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
         void draw(QOpenGLFunctions *f_);
 
+        template<typename ItemType_>
+        void setAttribute(const QString &name_, const std::vector<ItemType_> &value_)
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+            m_imageData->setAttribute(name_, value_);
+        }
+
+        template<typename ItemType_>
+        void setUniform(const QString &name_, const ItemType_ &value_)
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+            m_imageData->setUniform(name_, value_);
+        }
+
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
@@ -350,12 +391,20 @@ void opengl_drawing::Object::init(
 
     for(const auto &attribute : m_imageData->attributes)
     {
-        attributes[attribute.name] = program->attributeLocation(attribute.name);
+        if(!attribute.operator bool())
+        {
+            continue;
+        }
+        attributes[attribute->name()] = program->attributeLocation(attribute->name());
     }
 
     for(const auto &uniform : m_imageData->uniforms)
     {
-        uniforms[uniform.name] = program->uniformLocation(uniform.name);
+        if(!uniform.operator bool())
+        {
+            continue;
+        }
+        uniforms[uniform->name()] = program->uniformLocation(uniform->name());
     }
 }
 
@@ -376,9 +425,13 @@ void opengl_drawing::Object::setUniforms()
     }
     for(const auto &uniform : m_imageData->uniforms)
     {
-        const auto uniformId = uniforms[uniform.name];
+        if(!uniform.operator bool())
+        {
+            continue;
+        }
+        const auto uniformId = uniforms[uniform->name()];
         if(uniformId < 0) { continue; }
-        program->setUniformValue(uniformId, uniform.data);
+        uniform->set(program.get(), uniformId);
     }
 }
 
@@ -416,16 +469,20 @@ void opengl_drawing::Object::setAttributeArray()
     }
     for(const auto &attribute : m_imageData->attributes)
     {
-        const auto attributeId = attributes[attribute.name];
+        if(!attribute.operator bool())
+        {
+            continue;
+        }
+        const auto attributeId = attributes[attribute->name()];
         if(attributeId < 0) { continue; }
-        program->setAttributeArray(attributeId, attribute.data.constData());
+        program->setAttributeArray(attributeId, attribute->constData(), attribute->tupleSize());
     }
 }
 
 void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
 {
     if(!program.operator bool()
-            || m_imageData->attributes.isEmpty()
+            || m_imageData->attributes.empty()
             || nullptr == f_
             )
     {
@@ -434,11 +491,17 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
     const auto fit = std::min_element(
                 std::begin(m_imageData->attributes),
                 std::end(m_imageData->attributes),
-                [](const drawing_data::Attribute &left_, const drawing_data::Attribute &right_)->bool
+                [](
+                const std::unique_ptr<drawing_data::IAttribute> &left_,
+                const std::unique_ptr<drawing_data::IAttribute> &right_)->bool
     {
-       return  left_.data.size() < right_.data.size();
+       return left_.operator bool() && right_.operator bool() && left_->size() < right_->size();
     });
-    f_->glDrawArrays(GL_TRIANGLES, 0, fit->data.size());
+    if(std::end(m_imageData->attributes) == fit)
+    {
+        return;
+    }
+    f_->glDrawArrays(GL_TRIANGLES, 0, (*fit)->size());
 }
 
 void opengl_drawing::Object::release()
@@ -504,6 +567,26 @@ public:
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
     void render();
+
+    template<typename ItemType_>
+    void setAttribute(const QString &name_, const std::vector<ItemType_> &value_)
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+        m_openglData->setAttribute(name_, value_);
+    }
+
+    template<typename ItemType_>
+    void setUniform(const QString &name_, const ItemType_ &value_)
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+        m_openglData->setUniform(name_, value_);
+    }
 
 protected:
     void initialize();
@@ -593,15 +676,25 @@ public:
     virtual void synchronize(QQuickFramebufferObject *frameBufferObject_) override
     {
         QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
-        if(nullptr == quizImage) { return; }
+        if(nullptr == quizImage)
+        {
+            return;
+        }
+
+        m_windowSize.setX(quizImage->width());
+        m_windowSize.setY(quizImage->height());
+
         if(quizImage->isImageDataUpdated())
         {
             quizImage->setDataToFree(objectRenderer.releaseImageData());
             objectRenderer.setImageData(quizImage->getData());
         }
+
+        objectRenderer.setUniform("renderRect", m_windowSize);
     }
 
     ObjectsRenderer objectRenderer;
+    QVector2D m_windowSize;
 };
 
 
@@ -757,9 +850,8 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
 
 void QuizImage::initDefaultDrawingData()
 {
-    std::unique_ptr<drawing_data::TestMinimal2PassDrawQuizImageObject> defaultImageData(
-                new drawing_data::TestMinimal2PassDrawQuizImageObject()
-                );
-    defaultImageData->initialize();
-    m_drawingData = unique_ptr_static_cast<drawing_data::QuizImageObjects>(std::move(defaultImageData));
+    std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+    drawing_data::TestMinimal2PassDrawQuizImageObject defaultData;
+    defaultData.initialize(*data.get());
+    m_drawingData = std::move(data);
 }
