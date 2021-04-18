@@ -7,11 +7,12 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
+template<typename DataType_>
 class IDefaultData
 {
 public:
     virtual ~IDefaultData() = default;
-    virtual void initialize() = 0;
+    virtual void initialize(DataType_ &data_) const = 0;
 };
 
 

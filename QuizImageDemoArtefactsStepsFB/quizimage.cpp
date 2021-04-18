@@ -21,16 +21,16 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
 
 namespace drawing_data
 {
-    class TestMinimalDrawQuizImageObject : public IDefaultData, public QuizImageObjects
+    class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize() override;
+        virtual void initialize(QuizImageObjects &data_) const override;
     };
 
-    class TestMinimal2PassDrawQuizImageObject : public IDefaultData, public QuizImageObjects
+    class TestMinimal2PassDrawQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize() override;
+        virtual void initialize(QuizImageObjects &data_) const override;
     };
 }
 
@@ -157,7 +157,9 @@ void createGeometry(
         vertices[i] *= 2.0f;
 }
 
-void drawing_data::TestMinimalDrawQuizImageObject::initialize()
+void drawing_data::TestMinimalDrawQuizImageObject::initialize(
+        QuizImageObjects &data_
+        ) const
 {
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
@@ -209,11 +211,13 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize()
                 {
                    {"matrix", std::move(modelview)}
                 });
-    objects.push_back(std::move(object));
+    data_.objects.push_back(std::move(object));
 }
 
 
-void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize()
+void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
+        QuizImageObjects &data_
+        ) const
 {
     std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
     std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
@@ -288,8 +292,8 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize()
                    {"matrix", std::move(modelview2)}
                 });
 
-    objects.push_back(std::move(object1));
-    objects.push_back(std::move(object2));
+    data_.objects.push_back(std::move(object1));
+    data_.objects.push_back(std::move(object2));
 }
 
 
@@ -757,9 +761,8 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
 
 void QuizImage::initDefaultDrawingData()
 {
-    std::unique_ptr<drawing_data::TestMinimal2PassDrawQuizImageObject> defaultImageData(
-                new drawing_data::TestMinimal2PassDrawQuizImageObject()
-                );
-    defaultImageData->initialize();
-    m_drawingData = unique_ptr_static_cast<drawing_data::QuizImageObjects>(std::move(defaultImageData));
+    std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+    drawing_data::TestMinimal2PassDrawQuizImageObject defaultData;
+    defaultData.initialize(*data.get());
+    m_drawingData = std::move(data);
 }

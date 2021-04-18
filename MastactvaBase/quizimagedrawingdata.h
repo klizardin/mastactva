@@ -104,7 +104,6 @@ namespace drawing_data
 
     struct QuizImageObject
     {
-        virtual ~QuizImageObject() = default;
         QByteArray vertexShader;
         QByteArray fragmentShader;
 
@@ -114,7 +113,6 @@ namespace drawing_data
 
     struct QuizImageObjects
     {
-        virtual ~QuizImageObjects() = default;
         std::vector<std::shared_ptr<QuizImageObject>> objects;
     };
 }
