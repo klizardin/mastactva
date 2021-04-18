@@ -189,18 +189,18 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
     object->vertexShader = vsrc1;
     object->fragmentShader = fsrc1;
 
-    std::vector<QVector3D> vertices;
-    std::vector<QVector3D> normals;
-    createGeometry(vertices, normals);
+    std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
+    std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
+    createGeometry(*vertices.get(), *normals.get());
 
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"vertex", std::move(vertices) }
+                    new drawing_data::Attribute<QVector3D>{"vertex", vertices }
                     )
                 );
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"normal", std::move(normals) }
+                    new drawing_data::Attribute<QVector3D>{"normal", normals }
                     )
                 );
 
@@ -258,30 +258,28 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
     object2->vertexShader = vsrc1;
     object2->fragmentShader = fsrc1;
 
-    std::vector<QVector3D> vertices1;
-    std::vector<QVector3D> normals1;
-    createGeometry(vertices1, normals1);
-    std::vector<QVector3D> vertices2 = vertices1;
-    std::vector<QVector3D> normals2 = normals1;
+    std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
+    std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
+    createGeometry(*vertices.get(), *normals.get());
 
     object1->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"vertex", std::move(vertices1) }
+                    new drawing_data::Attribute<QVector3D>{"vertex", vertices }
                     )
                 );
     object1->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"normal", std::move(normals1) }
+                    new drawing_data::Attribute<QVector3D>{"normal", normals }
                     )
                 );
     object2->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"vertex", std::move(vertices2) }
+                    new drawing_data::Attribute<QVector3D>{"vertex", vertices }
                     )
                 );
     object2->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"normal", std::move(normals2) }
+                    new drawing_data::Attribute<QVector3D>{"normal", normals }
                     )
                 );
 
