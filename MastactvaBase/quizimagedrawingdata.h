@@ -162,12 +162,41 @@ namespace drawing_data
         std::vector<ItemType_> m_data;
     };
 
-    //class IUniform
-
-    struct Uniform
+    class IUniform
     {
-        QString name;
-        QMatrix4x4 data;
+    public:
+        virtual ~IUniform() = default;
+        virtual const QString &name() const = 0;
+        virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
+    };
+
+    template<typename ItemType_>
+    struct Uniform : public IUniform
+    {
+        Uniform(const QString &name_, ItemType_ &&data_)
+            : m_name(name_)
+            , m_data(std::move(data_))
+        {
+        }
+
+        virtual const QString &name() const
+        {
+            return m_name;
+        }
+
+        virtual void set(QOpenGLShaderProgram *program, int location_) const
+        {
+            if(nullptr == program
+                    || location_ < 0)
+            {
+                return;
+            }
+            program->setUniformValue(location_, m_data);
+        }
+
+    private:
+        QString m_name;
+        ItemType_ m_data;
     };
 
     struct QuizImageObject
@@ -176,7 +205,7 @@ namespace drawing_data
         QByteArray fragmentShader;
 
         std::vector<std::unique_ptr<IAttribute>> attributes;
-        std::vector<std::unique_ptr<Uniform>> uniforms;
+        std::vector<std::unique_ptr<IUniform>> uniforms;
     };
 
     struct QuizImageObjects

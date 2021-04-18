@@ -215,8 +215,8 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
     modelview.translate(0.0f, -0.2f, 0.0f);
 
     object->uniforms.push_back(
-                std::unique_ptr<drawing_data::Uniform>(
-                   new drawing_data::Uniform{"matrix", std::move(modelview)}
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{"matrix", std::move(modelview)}
                 ));
     data_.objects.push_back(std::move(object));
 }
@@ -303,12 +303,12 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
     modelview2.translate(0.0f, -0.2f, 0.0f);
 
     object1->uniforms.push_back(
-                std::unique_ptr<drawing_data::Uniform>(
-                   new drawing_data::Uniform{"matrix", std::move(modelview1)}
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{"matrix", std::move(modelview1)}
                 ));
     object2->uniforms.push_back(
-                std::unique_ptr<drawing_data::Uniform>(
-                   new drawing_data::Uniform{"matrix", std::move(modelview2)}
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{"matrix", std::move(modelview2)}
                 ));
 
     data_.objects.push_back(std::move(object1));
@@ -386,7 +386,7 @@ void opengl_drawing::Object::init(
         {
             continue;
         }
-        uniforms[uniform->name] = program->uniformLocation(uniform->name);
+        uniforms[uniform->name()] = program->uniformLocation(uniform->name());
     }
 }
 
@@ -411,9 +411,9 @@ void opengl_drawing::Object::setUniforms()
         {
             continue;
         }
-        const auto uniformId = uniforms[uniform->name];
+        const auto uniformId = uniforms[uniform->name()];
         if(uniformId < 0) { continue; }
-        program->setUniformValue(uniformId, uniform->data);
+        uniform->set(program.get(), uniformId);
     }
 }
 
