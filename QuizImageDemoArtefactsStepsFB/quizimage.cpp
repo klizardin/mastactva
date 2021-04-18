@@ -676,7 +676,10 @@ public:
     virtual void synchronize(QQuickFramebufferObject *frameBufferObject_) override
     {
         QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
-        if(nullptr == quizImage) { return; }
+        if(nullptr == quizImage)
+        {
+            return;
+        }
 
         m_windowSize.setX(quizImage->width());
         m_windowSize.setY(quizImage->height());
