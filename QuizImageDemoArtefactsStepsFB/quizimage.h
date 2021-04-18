@@ -15,19 +15,6 @@ public:
 };
 
 
-namespace drawing_data
-{
-    class DefaultQuizImageObject : public IDefaultData, public QuizImageObject
-    {
-    public:
-        virtual void initialize() override;
-
-    private:
-        QVector<QVector3D> vertices;
-        QVector<QVector3D> normals;
-    };
-}
-
 class QuizImage : public QQuickFramebufferObject
 {
     Q_OBJECT
@@ -50,8 +37,8 @@ public:
 public:
     qreal t() const;
     bool isImageDataUpdated() const;
-    std::unique_ptr<drawing_data::QuizImageObject> getData();
-    void setDataToFree(std::unique_ptr<drawing_data::QuizImageObject> &&old_);
+    std::unique_ptr<drawing_data::QuizImageObjects> getData();
+    void setDataToFree(std::unique_ptr<drawing_data::QuizImageObjects> &&old_);
     void renderBuildError(const QString &compilerLog_);
 
 protected:
@@ -85,8 +72,8 @@ private:
     QString m_fromImage;
     QString m_toImage;
     QString m_project;
-    std::unique_ptr<drawing_data::QuizImageObject> m_drawingData;
-    std::unique_ptr<drawing_data::QuizImageObject> m_drawingOldData;
+    std::unique_ptr<drawing_data::QuizImageObjects> m_drawingData;
+    std::unique_ptr<drawing_data::QuizImageObjects> m_drawingOldData;
     QString m_compilerLog;
 };
 

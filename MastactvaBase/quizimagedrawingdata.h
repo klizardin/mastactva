@@ -111,6 +111,12 @@ namespace drawing_data
         QList<Attribute> attributes;
         QList<Uniform> uniforms;
     };
+
+    struct QuizImageObjects
+    {
+        virtual ~QuizImageObjects() = default;
+        std::vector<std::shared_ptr<QuizImageObject>> objects;
+    };
 }
 
 
