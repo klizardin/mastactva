@@ -19,6 +19,20 @@ std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&
 }
 
 
+namespace drawing_data
+{
+    class TestMinimalDrawQuizImageObject : public IDefaultData, public QuizImageObject
+    {
+    public:
+        virtual void initialize() override;
+
+    private:
+        QVector<QVector3D> vertices;
+        QVector<QVector3D> normals;
+    };
+}
+
+
 void quad(
         QVector<QVector3D> &vertices,
         QVector<QVector3D> &normals,

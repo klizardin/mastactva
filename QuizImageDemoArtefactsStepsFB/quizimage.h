@@ -15,19 +15,6 @@ public:
 };
 
 
-namespace drawing_data
-{
-    class TestMinimalDrawQuizImageObject : public IDefaultData, public QuizImageObject
-    {
-    public:
-        virtual void initialize() override;
-
-    private:
-        QVector<QVector3D> vertices;
-        QVector<QVector3D> normals;
-    };
-}
-
 class QuizImage : public QQuickFramebufferObject
 {
     Q_OBJECT
