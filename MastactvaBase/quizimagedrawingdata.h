@@ -102,24 +102,41 @@ namespace drawing_data
     };
 
     template<typename AttributeItemType_>
-    class AttributeItemTraits
+    class ItemTypeTraits
     {
     public:
         constexpr static int tuppleSize = 0;
     };
 
-#define ATTRIBUTE_ITEM_TRAITS(AttributeItemType_, value_)   \
+#define ITEM_TYPE_TRAITS(AttributeItemType_, value_)   \
     template<>                                              \
-    class AttributeItemTraits<AttributeItemType_>           \
+    class ItemTypeTraits<AttributeItemType_>           \
     {                                                       \
     public:                                                 \
         constexpr static int tuppleSize = value_;           \
     };                                                      \
 /*end traints macro*/
 
-    ATTRIBUTE_ITEM_TRAITS(QVector2D, 2)
-    ATTRIBUTE_ITEM_TRAITS(QVector3D, 3)
-    ATTRIBUTE_ITEM_TRAITS(QVector4D, 4)
+    ITEM_TYPE_TRAITS(GLfloat, 1)
+    ITEM_TYPE_TRAITS(GLint, 1)
+    ITEM_TYPE_TRAITS(GLuint, 1)
+    ITEM_TYPE_TRAITS(QVector2D, 2)
+    ITEM_TYPE_TRAITS(QVector3D, 3)
+    ITEM_TYPE_TRAITS(QVector4D, 4)
+    ITEM_TYPE_TRAITS(QColor, 3)
+    ITEM_TYPE_TRAITS(QPoint, 2)
+    ITEM_TYPE_TRAITS(QPointF, 2)
+    ITEM_TYPE_TRAITS(QSize, 2)
+    ITEM_TYPE_TRAITS(QSizeF, 2)
+    ITEM_TYPE_TRAITS(QMatrix2x2, 4)
+    ITEM_TYPE_TRAITS(QMatrix2x3, 6)
+    ITEM_TYPE_TRAITS(QMatrix2x4, 8)
+    ITEM_TYPE_TRAITS(QMatrix3x2, 6)
+    ITEM_TYPE_TRAITS(QMatrix3x3, 9)
+    ITEM_TYPE_TRAITS(QMatrix3x4, 12)
+    ITEM_TYPE_TRAITS(QMatrix4x2, 8)
+    ITEM_TYPE_TRAITS(QMatrix4x3, 12)
+    ITEM_TYPE_TRAITS(QMatrix4x4, 16)
 
 
     template<class ItemType_ = QVector3D>
@@ -140,7 +157,7 @@ namespace drawing_data
 
         virtual int tupleSize() const override
         {
-            return AttributeItemTraits<ItemType_>::tuppleSize;
+            return ItemTypeTraits<ItemType_>::tuppleSize;
         }
 
         virtual const GLfloat *constData() const override
