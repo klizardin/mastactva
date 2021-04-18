@@ -345,6 +345,26 @@ namespace opengl_drawing
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
         void draw(QOpenGLFunctions *f_);
 
+        template<typename ItemType_>
+        void setAttribute(const QString &name_, const std::vector<ItemType_> &value_)
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+            m_imageData->setAttribute(name_, value_);
+        }
+
+        template<typename ItemType_>
+        void setUniform(const QString &name_, const ItemType_ &value_)
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+            m_imageData->setUniform(name_, value_);
+        }
+
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
@@ -548,6 +568,26 @@ public:
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
     void render();
 
+    template<typename ItemType_>
+    void setAttribute(const QString &name_, const std::vector<ItemType_> &value_)
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+        m_openglData->setAttribute(name_, value_);
+    }
+
+    template<typename ItemType_>
+    void setUniform(const QString &name_, const ItemType_ &value_)
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+        m_openglData->setUniform(name_, value_);
+    }
+
 protected:
     void initialize();
 
@@ -638,18 +678,20 @@ public:
         QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
         if(nullptr == quizImage) { return; }
 
-        m_windowSize.setWidth(quizImage->width());
-        m_windowSize.setHeight(quizImage->height());
+        m_windowSize.setX(quizImage->width());
+        m_windowSize.setY(quizImage->height());
 
         if(quizImage->isImageDataUpdated())
         {
             quizImage->setDataToFree(objectRenderer.releaseImageData());
             objectRenderer.setImageData(quizImage->getData());
         }
+
+        objectRenderer.setUniform("renderRect", m_windowSize);
     }
 
     ObjectsRenderer objectRenderer;
-    QSize m_windowSize;
+    QVector2D m_windowSize;
 };
 
 
