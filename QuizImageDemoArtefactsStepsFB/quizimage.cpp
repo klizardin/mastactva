@@ -26,6 +26,12 @@ namespace drawing_data
     public:
         virtual void initialize() override;
     };
+
+    class TestMinimal2PassDrawQuizImageObject : public IDefaultData, public QuizImageObjects
+    {
+    public:
+        virtual void initialize() override;
+    };
 }
 
 
@@ -204,6 +210,86 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize()
                    {"matrix", std::move(modelview)}
                 });
     objects.push_back(std::move(object));
+}
+
+
+void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize()
+{
+    std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
+    std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
+
+    const char *vsrc1 =
+        "attribute highp vec4 vertex;\n"
+        "attribute mediump vec3 normal;\n"
+        "uniform mediump mat4 matrix;\n"
+        "varying mediump vec4 color;\n"
+        "void main(void)\n"
+        "{\n"
+        "    vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
+        "    float angle = max(dot(normal, toLight), 0.0);\n"
+        "    vec3 col = vec3(0.40, 1.0, 0.0);\n"
+        "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
+        "    color = clamp(color, 0.0, 1.0);\n"
+        "    gl_Position = matrix * vertex;\n"
+        "}\n";
+
+    const char *fsrc1 =
+        "varying mediump vec4 color;\n"
+        "void main(void)\n"
+        "{\n"
+        "    gl_FragColor = color;\n"
+        "}\n";
+
+    QRandomGenerator gen;
+
+    object1->vertexShader = vsrc1;
+    object1->fragmentShader = fsrc1;
+    object2->vertexShader = vsrc1;
+    object2->fragmentShader = fsrc1;
+
+    QVector<QVector3D> vertices1;
+    QVector<QVector3D> normals1;
+    createGeometry(vertices1, normals1);
+    QVector<QVector3D> vertices2 = vertices1;
+    QVector<QVector3D> normals2 = normals1;
+
+    object1->attributes.append(
+                {{"vertex", std::move(vertices1) },
+                 {"normal", std::move(normals1) }
+                });
+    object2->attributes.append(
+                {{"vertex", std::move(vertices2) },
+                 {"normal", std::move(normals2) }
+                });
+
+    qreal fScale = 1;
+    qreal fAngle1 = gen.generateDouble() * 360.0;
+    QMatrix4x4 modelview1;
+    modelview1.rotate(fAngle1, 0.0f, 1.0f, 0.0f);
+    modelview1.rotate(fAngle1, 1.0f, 0.0f, 0.0f);
+    modelview1.rotate(fAngle1, 0.0f, 0.0f, 1.0f);
+    modelview1.scale(fScale);
+    modelview1.translate(0.0f, -0.2f, 0.0f);
+
+    qreal fAngle2 = gen.generateDouble() * 360.0;
+    QMatrix4x4 modelview2;
+    modelview2.rotate(fAngle2, 0.0f, 1.0f, 0.0f);
+    modelview2.rotate(fAngle2, 1.0f, 0.0f, 0.0f);
+    modelview2.rotate(fAngle2, 0.0f, 0.0f, 1.0f);
+    modelview2.scale(fScale);
+    modelview2.translate(0.0f, -0.2f, 0.0f);
+
+    object1->uniforms.append(
+                {
+                   {"matrix", std::move(modelview1)}
+                });
+    object2->uniforms.append(
+                {
+                   {"matrix", std::move(modelview2)}
+                });
+
+    objects.push_back(std::move(object1));
+    objects.push_back(std::move(object2));
 }
 
 
@@ -671,8 +757,8 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
 
 void QuizImage::initDefaultDrawingData()
 {
-    std::unique_ptr<drawing_data::TestMinimalDrawQuizImageObject> defaultImageData(
-                new drawing_data::TestMinimalDrawQuizImageObject()
+    std::unique_ptr<drawing_data::TestMinimal2PassDrawQuizImageObject> defaultImageData(
+                new drawing_data::TestMinimal2PassDrawQuizImageObject()
                 );
     defaultImageData->initialize();
     m_drawingData = unique_ptr_static_cast<drawing_data::QuizImageObjects>(std::move(defaultImageData));
