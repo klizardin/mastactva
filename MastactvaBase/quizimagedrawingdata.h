@@ -162,6 +162,8 @@ namespace drawing_data
         std::vector<ItemType_> m_data;
     };
 
+    //class IUniform
+
     struct Uniform
     {
         QString name;
@@ -174,7 +176,7 @@ namespace drawing_data
         QByteArray fragmentShader;
 
         std::vector<std::unique_ptr<IAttribute>> attributes;
-        QList<Uniform> uniforms;
+        std::vector<std::unique_ptr<Uniform>> uniforms;
     };
 
     struct QuizImageObjects

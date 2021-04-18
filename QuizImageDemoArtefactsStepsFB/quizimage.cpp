@@ -214,10 +214,10 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
     modelview.scale(fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
-    object->uniforms.append(
-                {
-                   {"matrix", std::move(modelview)}
-                });
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::Uniform>(
+                   new drawing_data::Uniform{"matrix", std::move(modelview)}
+                ));
     data_.objects.push_back(std::move(object));
 }
 
@@ -302,14 +302,14 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
     modelview2.scale(fScale);
     modelview2.translate(0.0f, -0.2f, 0.0f);
 
-    object1->uniforms.append(
-                {
-                   {"matrix", std::move(modelview1)}
-                });
-    object2->uniforms.append(
-                {
-                   {"matrix", std::move(modelview2)}
-                });
+    object1->uniforms.push_back(
+                std::unique_ptr<drawing_data::Uniform>(
+                   new drawing_data::Uniform{"matrix", std::move(modelview1)}
+                ));
+    object2->uniforms.push_back(
+                std::unique_ptr<drawing_data::Uniform>(
+                   new drawing_data::Uniform{"matrix", std::move(modelview2)}
+                ));
 
     data_.objects.push_back(std::move(object1));
     data_.objects.push_back(std::move(object2));
@@ -382,7 +382,11 @@ void opengl_drawing::Object::init(
 
     for(const auto &uniform : m_imageData->uniforms)
     {
-        uniforms[uniform.name] = program->uniformLocation(uniform.name);
+        if(!uniform.operator bool())
+        {
+            continue;
+        }
+        uniforms[uniform->name] = program->uniformLocation(uniform->name);
     }
 }
 
@@ -403,9 +407,13 @@ void opengl_drawing::Object::setUniforms()
     }
     for(const auto &uniform : m_imageData->uniforms)
     {
-        const auto uniformId = uniforms[uniform.name];
+        if(!uniform.operator bool())
+        {
+            continue;
+        }
+        const auto uniformId = uniforms[uniform->name];
         if(uniformId < 0) { continue; }
-        program->setUniformValue(uniformId, uniform.data);
+        program->setUniformValue(uniformId, uniform->data);
     }
 }
 
