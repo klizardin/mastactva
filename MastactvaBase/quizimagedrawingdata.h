@@ -194,9 +194,9 @@ namespace drawing_data
     template<typename ItemType_>
     struct Uniform : public IUniform
     {
-        Uniform(const QString &name_, ItemType_ &&data_)
+        Uniform(const QString &name_, std::shared_ptr<ItemType_> data_)
             : m_name(name_)
-            , m_data(std::move(data_))
+            , m_data(data_)
         {
         }
 
@@ -208,16 +208,18 @@ namespace drawing_data
         virtual void set(QOpenGLShaderProgram *program, int location_) const
         {
             if(nullptr == program
-                    || location_ < 0)
+                    || location_ < 0
+                    || !m_data.operator bool()
+                    )
             {
                 return;
             }
-            program->setUniformValue(location_, m_data);
+            program->setUniformValue(location_, *m_data.get());
         }
 
     private:
         QString m_name;
-        ItemType_ m_data;
+        std::shared_ptr<ItemType_> m_data;
     };
 
 

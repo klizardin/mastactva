@@ -195,28 +195,28 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
 
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"vertex", vertices }
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
                     )
                 );
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"normal", normals }
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
                     )
                 );
 
     QRandomGenerator gen;
     qreal fScale = 1;
     qreal fAngle = gen.generateDouble() * 360.0;
-    QMatrix4x4 modelview;
-    modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
-    modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
-    modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
-    modelview.scale(fScale);
-    modelview.translate(0.0f, -0.2f, 0.0f);
+    std::shared_ptr<QMatrix4x4> modelview(new QMatrix4x4);
+    modelview->rotate(fAngle, 0.0f, 1.0f, 0.0f);
+    modelview->rotate(fAngle, 1.0f, 0.0f, 0.0f);
+    modelview->rotate(fAngle, 0.0f, 0.0f, 1.0f);
+    modelview->scale(fScale);
+    modelview->translate(0.0f, -0.2f, 0.0f);
 
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
-                   new drawing_data::Uniform<QMatrix4x4>{"matrix", std::move(modelview)}
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview }
                 ));
     data_.objects.push_back(std::move(object));
 }
@@ -264,49 +264,49 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
 
     object1->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"vertex", vertices }
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
                     )
                 );
     object1->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"normal", normals }
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
                     )
                 );
     object2->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"vertex", vertices }
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
                     )
                 );
     object2->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
-                    new drawing_data::Attribute<QVector3D>{"normal", normals }
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
                     )
                 );
 
     qreal fScale = 1;
     qreal fAngle1 = gen.generateDouble() * 360.0;
-    QMatrix4x4 modelview1;
-    modelview1.rotate(fAngle1, 0.0f, 1.0f, 0.0f);
-    modelview1.rotate(fAngle1, 1.0f, 0.0f, 0.0f);
-    modelview1.rotate(fAngle1, 0.0f, 0.0f, 1.0f);
-    modelview1.scale(fScale);
-    modelview1.translate(0.0f, -0.2f, 0.0f);
+    std::shared_ptr<QMatrix4x4> modelview1(new QMatrix4x4);
+    modelview1->rotate(fAngle1, 0.0f, 1.0f, 0.0f);
+    modelview1->rotate(fAngle1, 1.0f, 0.0f, 0.0f);
+    modelview1->rotate(fAngle1, 0.0f, 0.0f, 1.0f);
+    modelview1->scale(fScale);
+    modelview1->translate(0.0f, -0.2f, 0.0f);
 
     qreal fAngle2 = gen.generateDouble() * 360.0;
-    QMatrix4x4 modelview2;
-    modelview2.rotate(fAngle2, 0.0f, 1.0f, 0.0f);
-    modelview2.rotate(fAngle2, 1.0f, 0.0f, 0.0f);
-    modelview2.rotate(fAngle2, 0.0f, 0.0f, 1.0f);
-    modelview2.scale(fScale);
-    modelview2.translate(0.0f, -0.2f, 0.0f);
+    std::shared_ptr<QMatrix4x4> modelview2(new QMatrix4x4);
+    modelview2->rotate(fAngle2, 0.0f, 1.0f, 0.0f);
+    modelview2->rotate(fAngle2, 1.0f, 0.0f, 0.0f);
+    modelview2->rotate(fAngle2, 0.0f, 0.0f, 1.0f);
+    modelview2->scale(fScale);
+    modelview2->translate(0.0f, -0.2f, 0.0f);
 
     object1->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
-                   new drawing_data::Uniform<QMatrix4x4>{"matrix", std::move(modelview1)}
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview1 }
                 ));
     object2->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
-                   new drawing_data::Uniform<QMatrix4x4>{"matrix", std::move(modelview2)}
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview2 }
                 ));
 
     data_.objects.push_back(std::move(object1));
