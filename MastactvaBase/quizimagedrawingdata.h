@@ -385,6 +385,13 @@ namespace drawing_data
     using ItemTypeBaseSet = ItemTypeBase<ItemTypeConvert::maxIndex>;
 
 
+    struct Texture
+    {
+        QString name;
+        QString filename;
+    };
+
+
     struct QuizImageObject
     {
         QByteArray vertexShader;
@@ -392,7 +399,7 @@ namespace drawing_data
 
         std::vector<std::unique_ptr<IAttribute>> attributes;
         std::vector<std::unique_ptr<IUniform>> uniforms;
-        std::vector<QString> textures;
+        std::vector<Texture> textures;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_)

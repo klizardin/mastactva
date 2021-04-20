@@ -337,6 +337,20 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
 
 namespace opengl_drawing
 {
+    class Texture
+    {
+    public:
+        bool setFilename(const QString &fileName_);
+        void setIndex(int index_);
+        void setUniform(QOpenGLShaderProgram *program_, const QString &name_) const;
+        void bind(QOpenGLFunctions *f_) const;
+
+    private:
+        int m_index = 0;
+        QImage m_image;
+        std::unique_ptr<QOpenGLTexture> m_texture;
+    };
+
     class Object
     {
     public:
@@ -349,14 +363,21 @@ namespace opengl_drawing
         void enableAttributes();
         void disableAttributes();
         void setAttributeArray();
+        void bindTextures(QOpenGLFunctions *f_);
         void drawTriangles(QOpenGLFunctions *f_);
         void release();
+
+        void setTexture(const QString &name_, const QString& newFilename_);
+
+    protected:
+        void setTextureIndexes();
 
     private:
         std::shared_ptr<drawing_data::QuizImageObject> m_imageData;
         std::unique_ptr<QOpenGLShaderProgram> program;
         QHash<QString, int> attributes;
         QHash<QString, int> uniforms;
+        std::map<QString, std::unique_ptr<Texture>> textures;
     };
 
     class Objects
@@ -386,10 +407,51 @@ namespace opengl_drawing
             m_imageData->setUniform(name_, value_);
         }
 
+        void setTexture(const QString &name_, const QString &newFilename_)
+        {
+            for(std::unique_ptr<Object> &object_ : m_objects)
+            {
+                object_->setTexture(name_, newFilename_);
+            }
+        }
+
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
     };
+}
+
+
+bool opengl_drawing::Texture::setFilename(const QString &fileName_)
+{
+    m_texture.reset();
+    m_image.load(fileName_);
+    if(m_image.isNull())
+    {
+        return false;
+    }
+    m_texture.reset(new QOpenGLTexture(m_image.mirrored()));
+    return true;
+}
+
+void opengl_drawing::Texture::setIndex(int index_)
+{
+    m_index = index_;
+}
+
+void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_, const QString &name_) const
+{
+    if(nullptr == program_)
+    {
+        return;
+    }
+    program_->setUniformValue(name_.toUtf8().constData(), m_index);
+}
+
+void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
+{
+    f_->glActiveTexture(GL_TEXTURE0 + m_index);
+    m_texture->bind();
 }
 
 
@@ -428,6 +490,21 @@ void opengl_drawing::Object::init(
         }
         uniforms[uniform->name()] = program->uniformLocation(uniform->name());
     }
+
+    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    {
+        if(texture_.name.trimmed().isEmpty())
+        {
+            continue;
+        }
+        std::unique_ptr<Texture> texture(new Texture());
+        if(!texture->setFilename(texture_.name))
+        {
+            continue;
+        }
+        textures[texture_.name] = std::move(texture);
+    }
+    setTextureIndexes();
 }
 
 void opengl_drawing::Object::bind()
@@ -454,6 +531,17 @@ void opengl_drawing::Object::setUniforms()
         const auto uniformId = uniforms[uniform->name()];
         if(uniformId < 0) { continue; }
         uniform->set(program.get(), uniformId);
+    }
+    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    {
+        if(texture_.name.trimmed().isEmpty()
+                || textures.find(texture_.name) == std::end(textures)
+                || !textures[texture_.name].operator bool()
+                )
+        {
+            continue;
+        }
+        textures[texture_.name]->setUniform(program.get(), texture_.name);
     }
 }
 
@@ -501,6 +589,21 @@ void opengl_drawing::Object::setAttributeArray()
     }
 }
 
+void opengl_drawing::Object::bindTextures(QOpenGLFunctions *f_)
+{
+    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    {
+        if(texture_.name.trimmed().isEmpty()
+                || textures.find(texture_.name) == std::end(textures)
+                || !textures[texture_.name].operator bool()
+                )
+        {
+            continue;
+        }
+        textures[texture_.name]->bind(f_);
+    }
+}
+
 void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
 {
     if(!program.operator bool()
@@ -533,6 +636,41 @@ void opengl_drawing::Object::release()
         return;
     }
     program->release();
+}
+
+void opengl_drawing::Object::setTexture(const QString &name_, const QString& newFilename_)
+{
+    if(textures.find(name_) == std::end(textures)
+            && textures[name_].operator bool()
+            )
+    {
+        textures[name_]->setFilename(newFilename_);
+        return;
+    }
+    std::unique_ptr<Texture> texture(new Texture());
+    if(!texture->setFilename(newFilename_))
+    {
+        return;
+    }
+    textures[name_] = std::move(texture);
+    setTextureIndexes();
+}
+
+void opengl_drawing::Object::setTextureIndexes()
+{
+    int textureIndex = 0;
+    for(const drawing_data::Texture &texture_ : m_imageData->textures)
+    {
+        if(texture_.name.trimmed().isEmpty()
+                || textures.find(texture_.name) == std::end(textures)
+                || !textures[texture_.name].operator bool()
+                )
+        {
+            continue;
+        }
+        ++textureIndex;
+        textures[texture_.name]->setIndex(textures.size() - textureIndex);
+    }
 }
 
 
@@ -573,6 +711,7 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
         object_->setUniforms();
         object_->enableAttributes();
         object_->setAttributeArray();
+        object_->bindTextures(f_);
         object_->drawTriangles(f_);
         object_->disableAttributes();
         object_->release();
