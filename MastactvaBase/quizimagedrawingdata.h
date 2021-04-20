@@ -206,6 +206,12 @@ namespace drawing_data
             *m_data.get() = value_;
         }
 
+        template<typename ItemType2_>
+        void set(const std::vector<ItemType2_> &value_)
+        {
+            Q_UNUSED(value_);
+        }
+
     private:
         QString m_name;
         std::shared_ptr<std::vector<ItemType_>> m_data;
@@ -254,6 +260,12 @@ namespace drawing_data
                 m_data.reset(new ItemType_());
             }
             *m_data.get() = value_;
+        }
+
+        template<typename ItemType2_>
+        void set(const ItemType2_ &value_)
+        {
+            Q_UNUSED(value_);
         }
 
     private:
