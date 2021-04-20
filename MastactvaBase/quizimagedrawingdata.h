@@ -322,8 +322,8 @@ namespace drawing_data
                 {
                     continue;
                 }
-                Uniform<ItemType_> *attr = static_cast<Uniform<ItemType_> *>(attribute_.get());
-                attr->set(value_);
+                Uniform<ItemType_> *uniform = static_cast<Uniform<ItemType_> *>(attribute_.get());
+                uniform->set(value_);
             }
         }
     };
