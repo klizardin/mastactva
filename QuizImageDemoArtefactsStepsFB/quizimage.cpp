@@ -34,11 +34,11 @@ namespace drawing_data
         virtual void initialize(QuizImageObjects &data_) const override;
     };
 
-    /*class Test1QuizImageObject : public IDefaultData<QuizImageObjects>
+    class Test1QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_) const override;
-    };*/
+    };
 }
 
 
@@ -320,7 +320,103 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
     data_.objects.push_back(std::move(object2));
 }
 
-/*void drawing_data::Test1QuizImageObject::initialize(
+
+static const int g_trianglesCount = 2;
+static const int g_triangleConers = 3;
+
+void makeGeometry(
+        int width_, int height_,
+        int geomertyPointsWidth_, int geometryPointsHeight_,
+        float facedGeometryXCoef_, float facedGeometryYCoef_,
+        int geometryVertexCoords_, int geometryTextureCoords_,
+        bool hasTextureCoords_,
+        bool isGeometrySolid_,
+        QVector<GLfloat> &vertexData_,
+        QVector<GLfloat> &textureData_,
+        QVector<GLint> &indexesData_
+        )
+{
+    static const int coords[g_trianglesCount][g_triangleConers][2] =
+    {
+        {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
+        {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
+    };
+
+    vertexData_.resize(geomertyPointsWidth_ * geometryPointsHeight_ *
+                      g_trianglesCount * g_triangleConers * geometryVertexCoords_);
+    textureData_.resize(geomertyPointsWidth_ * geometryPointsHeight_ *
+                        g_trianglesCount * g_triangleConers * geometryTextureCoords_);
+    for(int y = 0; y < geometryPointsHeight_; y++)
+    {
+        for(int x = 0; x < geomertyPointsWidth_; x++)
+        {
+            const int offsBase0 = (y * geomertyPointsWidth_ + x) *
+                    g_trianglesCount * g_triangleConers * geometryVertexCoords_;
+            const int offsBase1 = (y * geomertyPointsWidth_ + x) *
+                    g_trianglesCount * g_triangleConers * geometryTextureCoords_;
+            for (int j = 0; j < g_trianglesCount; ++j)
+            {
+                for(int k = 0; k < g_triangleConers; k++)
+                {
+                    // vertex position
+                    const int offs0 = offsBase0 + (j * g_triangleConers + k) * geometryVertexCoords_;
+                    const int offs1 = offsBase1 + (j * g_triangleConers + k) * geometryTextureCoords_;
+                    if(geometryVertexCoords_ >= 2)
+                    {
+                        if(isGeometrySolid_)
+                        {
+                                vertexData_[offs0 + 0] = (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_;
+                                vertexData_[offs0 + 1] = (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_;
+                        }
+                        else
+                        {
+                            vertexData_[offs0 + 0] = (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_
+                                    - (coords[j][k][0] * 2 - 1) * facedGeometryXCoef_
+                                    ;
+                            vertexData_[offs0 + 1] = (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_
+                                    - (coords[j][k][1] * 2 - 1) * facedGeometryYCoef_
+                                    ;
+                        }
+                    }
+                    if(geometryVertexCoords_ >= 3)
+                    {
+                        vertexData_[offs0 + 2] = 0.1;
+                    }
+                    if(geometryVertexCoords_ >= 4)
+                    {
+                        vertexData_[offs0 + 3] = 1.0;
+                    }
+
+                    // texture coordinate
+                    if(hasTextureCoords_)
+                    {
+                        textureData_[offs1 + 0] = (GLfloat)(x + coords[j][k][0])/(GLfloat)geomertyPointsWidth_;
+                        textureData_[offs1 + 1] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)geometryPointsHeight_;
+                        if(geometryTextureCoords_ >= 3)
+                        {
+                            textureData_[offs1 + 2] = 0.0;
+                        }
+                        if(geometryTextureCoords_ >= 4)
+                        {
+                            textureData_[offs1 + 3] = 1.0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    indexesData_.resize(1);
+    if(isGeometrySolid_)
+    {
+        indexesData_[0] = 1;
+    }
+    else
+    {
+        indexesData_[0] = geomertyPointsWidth_ * geometryPointsHeight_;
+    }
+}
+
+void drawing_data::Test1QuizImageObject::initialize(
         QuizImageObjects &data_
         ) const
 {
@@ -331,8 +427,13 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
     object->vertexShader = vertex.constData();
     object->fragmentShader = fragment.constData();
 
+    object->textures = {
+        {"renderFromImage", ":/Images/Images/test001/0001.png"},
+        {"renderToImage", ":/Images/Images/test001/0002.png"},
+    };
+
     data_.objects.push_back(std::move(object));
-}*/
+}
 
 
 namespace opengl_drawing
@@ -852,7 +953,7 @@ public:
             objectRenderer.setImageData(quizImage->getData());
         }
 
-        objectRenderer.setUniform("renderRect", m_windowSize);
+        objectRenderer.setUniform("renderScreenRect", m_windowSize);
         objectRenderer.setUniform("renderT", t);
     }
 
