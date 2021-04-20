@@ -281,6 +281,7 @@ namespace drawing_data
 
         std::vector<std::unique_ptr<IAttribute>> attributes;
         std::vector<std::unique_ptr<IUniform>> uniforms;
+        std::vector<QString> textures;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_)
