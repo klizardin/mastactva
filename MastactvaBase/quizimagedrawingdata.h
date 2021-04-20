@@ -91,6 +91,13 @@ private:
 
 namespace drawing_data
 {
+    class ItemTypeConvert
+    {
+    public:
+        constexpr static int minIndex = 0;
+        constexpr static int maxIndex = 19;
+    };
+
     template<typename ItemType_>
     class ItemTypeTraits
     {
@@ -218,6 +225,24 @@ namespace drawing_data
             *m_data.get() = value_;
         }
 
+        template<typename ItemType2_,
+                typename = typename std::enable_if<
+                     std::is_convertible<ItemType_,ItemType2_>::value
+                     , void>::type>
+        void set(const std::vector<ItemType2_> &value_)
+        {
+            if(!m_data.operator bool())
+            {
+                m_data.reset(new std::vector<ItemType_>());
+            }
+            m_data->reserve(value_.size());
+            m_data->clear();
+            for(const ItemType2_ &val_ : value_)
+            {
+                m_data.push_back(static_cast<ItemType_>(val_));
+            }
+        }
+
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_)
         {
@@ -274,6 +299,19 @@ namespace drawing_data
             *m_data.get() = value_;
         }
 
+        template<typename ItemType2_,
+                typename = typename std::enable_if<
+                     std::is_convertible<ItemType_,ItemType2_>::value
+                     , void>::type>
+        void set(const ItemType2_ &value_)
+        {
+            if(!m_data.operator bool())
+            {
+                m_data.reset(new ItemType_());
+            }
+            *m_data.get() = static_cast<ItemType_>(value_);
+        }
+
         template<typename ItemType2_>
         void set(const ItemType2_ &value_)
         {
@@ -284,6 +322,67 @@ namespace drawing_data
         QString m_name;
         std::shared_ptr<ItemType_> m_data;
     };
+
+
+    template<int index_>
+    class ItemTypeBase : public ItemTypeBase<index_ - 1>
+    {
+    public:
+        using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;
+        using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;
+
+        template<typename ItemType_>
+        static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_)
+        {
+            if(itemIndex_ != index_)
+            {
+                return;
+            }
+            AttributeType *attr = static_cast<AttributeType *>(interface_);
+            if(nullptr == attr)
+            {
+                return;
+            }
+            attr->set(value_);
+        }
+
+        template<typename ItemType_>
+        static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
+        {
+            if(itemIndex_ != index_)
+            {
+                return;
+            }
+            UniformType *uniform = static_cast<UniformType *>(interface_);
+            if(nullptr == uniform)
+            {
+                return;
+            }
+            uniform->set(value_);
+        }
+    };
+
+    template<>
+    class ItemTypeBase<ItemTypeConvert::maxIndex - 1>
+    {
+    public:
+        template<typename ItemType_>
+        static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_)
+        {
+            Q_UNUSED(interface_);
+            Q_UNUSED(itemIndex_);
+            Q_UNUSED(value_);
+        }
+        template<typename ItemType_>
+        static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
+        {
+            Q_UNUSED(interface_);
+            Q_UNUSED(itemIndex_);
+            Q_UNUSED(value_);
+        }
+    };
+
+    using ItemTypeBaseSet = ItemTypeBase<ItemTypeConvert::maxIndex>;
 
 
     struct QuizImageObject
@@ -306,24 +405,22 @@ namespace drawing_data
                 {
                     continue;
                 }
-                Attribute<ItemType_> *attr = static_cast<Attribute<ItemType_> *>(attribute_.get());
-                attr->set(value_);
+                ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), value_);
             }
         }
 
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
-            for(std::unique_ptr<IUniform> &attribute_ : uniforms)
+            for(std::unique_ptr<IUniform> &uniform_ : uniforms)
             {
-                if(!attribute_.operator bool()
-                        || attribute_->name() != name_
-                        || attribute_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                if(!uniform_.operator bool()
+                        || uniform_->name() != name_
+                        || uniform_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
                 {
                     continue;
                 }
-                Uniform<ItemType_> *uniform = static_cast<Uniform<ItemType_> *>(attribute_.get());
-                uniform->set(value_);
+                ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), value_);
             }
         }
     };
