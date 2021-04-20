@@ -683,6 +683,7 @@ public:
 
         m_windowSize.setX(quizImage->width());
         m_windowSize.setY(quizImage->height());
+        const qreal t = quizImage->t();
 
         if(quizImage->isImageDataUpdated())
         {
@@ -691,6 +692,7 @@ public:
         }
 
         objectRenderer.setUniform("renderRect", m_windowSize);
+        objectRenderer.setUniform("renderT", t);
     }
 
     ObjectsRenderer objectRenderer;
