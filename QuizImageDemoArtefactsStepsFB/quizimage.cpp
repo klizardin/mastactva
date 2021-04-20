@@ -10,6 +10,7 @@
 #include <QRandomGenerator>
 #include <QTime>
 #include <QVector>
+#include "../MastactvaBase/utils.h"
 
 
 template<typename TargetType_, typename SrcType_>
@@ -32,6 +33,12 @@ namespace drawing_data
     public:
         virtual void initialize(QuizImageObjects &data_) const override;
     };
+
+    /*class Test1QuizImageObject : public IDefaultData<QuizImageObjects>
+    {
+    public:
+        virtual void initialize(QuizImageObjects &data_) const override;
+    };*/
 }
 
 
@@ -312,6 +319,20 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
     data_.objects.push_back(std::move(object1));
     data_.objects.push_back(std::move(object2));
 }
+
+/*void drawing_data::Test1QuizImageObject::initialize(
+        QuizImageObjects &data_
+        ) const
+{
+    std::unique_ptr<QuizImageObject> object(new QuizImageObject());
+
+    static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test001/cube_rotation_horizontal_faced.vsh").toUtf8();
+    static QByteArray fragment = loadTextFile(":/Shaders/Shaders/test001/default_view_two_images_mix_both.fsh").toUtf8();
+    object->vertexShader = vertex.constData();
+    object->fragmentShader = fragment.constData();
+
+    data_.objects.push_back(std::move(object));
+}*/
 
 
 namespace opengl_drawing

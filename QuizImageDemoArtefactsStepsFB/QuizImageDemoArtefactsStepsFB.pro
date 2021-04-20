@@ -71,14 +71,16 @@ SOURCES += \
         quizimage.cpp
 
 unix: SOURCES +=    \
-    quizimagedrawingdata.cpp
+    quizimagedrawingdata.cpp    \
+    utils.cpp
 
 
 HEADERS += \
     quizimage.h
 
 unix: HEADERS +=    \
-    quizimagedrawingdata.h
+    quizimagedrawingdata.h  \
+    utils.h
 
 
 RESOURCES += qml.qrc    \
