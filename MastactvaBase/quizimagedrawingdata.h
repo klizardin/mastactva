@@ -91,21 +91,33 @@ private:
 
 namespace drawing_data
 {
-    template<typename AttributeItemType_>
+    template<typename ItemType_>
     class ItemTypeTraits
     {
     public:
         constexpr static int tupleSize = 0;
         constexpr static int typeIndex = -1;
     };
+    template<int TypeIndex_>
+    class ItemTypeIndexTraits
+    {
+    public:
+        using type = void;
+    };
 
-#define ITEM_TYPE_TRAITS(AttributeItemType_, tupleSize_, typeIndex_)    \
+#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, typeIndex_)             \
     template<>                                                          \
-    class ItemTypeTraits<AttributeItemType_>                            \
+    class ItemTypeTraits<ItemType_>                                     \
     {                                                                   \
     public:                                                             \
         constexpr static int tupleSize = tupleSize_;                    \
         constexpr static int typeIndex = typeIndex_;                    \
+    };                                                                  \
+    template<>                                                          \
+    class ItemTypeIndexTraits<typeIndex_>                               \
+    {                                                                   \
+    public:                                                             \
+        using type = ItemType_;                                         \
     };                                                                  \
 /*end traints macro*/
 
