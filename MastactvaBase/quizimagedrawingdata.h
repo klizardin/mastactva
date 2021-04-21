@@ -318,6 +318,37 @@ namespace drawing_data
             Q_UNUSED(value_);
         }
 
+        bool get(ItemType_ &value_) const
+        {
+            if(!m_data.operator bool())
+            {
+                m_data.reset(new ItemType_());
+            }
+            value_ = *m_data.get();
+            return true;
+        }
+
+        template<typename ItemType2_,
+                typename = typename std::enable_if<
+                     std::is_convertible<ItemType2_, ItemType_>::value
+                     , void>::type>
+        bool get(ItemType2_ &value_) const
+        {
+            if(!m_data.operator bool())
+            {
+                m_data.reset(new ItemType_());
+            }
+            value_ = static_cast<ItemType2_>(*m_data.get());
+            return true;
+        }
+
+        template<typename ItemType2_>
+        bool get(ItemType2_ &value_) const
+        {
+            Q_UNUSED(value_);
+            return false;
+        }
+
     private:
         QString m_name;
         std::shared_ptr<ItemType_> m_data;
@@ -360,6 +391,21 @@ namespace drawing_data
             }
             uniform->set(value_);
         }
+
+        template<typename ItemType_>
+        static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
+        {
+            if(itemIndex_ != index_)
+            {
+                return false;
+            }
+            const UniformType *uniform = static_cast<const UniformType *>(interface_);
+            if(nullptr == uniform)
+            {
+                return false;
+            }
+            return uniform->get(value_);
+        }
     };
 
     template<>
@@ -379,6 +425,15 @@ namespace drawing_data
             Q_UNUSED(interface_);
             Q_UNUSED(itemIndex_);
             Q_UNUSED(value_);
+        }
+
+        template<typename ItemType_>
+        static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
+        {
+            Q_UNUSED(interface_);
+            Q_UNUSED(itemIndex_);
+            Q_UNUSED(value_);
+            return false;
         }
     };
 
@@ -430,6 +485,21 @@ namespace drawing_data
                 ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), value_);
             }
         }
+
+        template<typename ItemType_>
+        bool getUniform(const QString &name_, ItemType_ &value_) const
+        {
+            for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+            {
+                if(!uniform_.operator bool()
+                        || uniform_->name() != name_
+                        || uniform_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                {
+                    continue;
+                }
+                return ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), value_);
+            }
+        }
     };
 
 
@@ -461,6 +531,26 @@ namespace drawing_data
                 }
                 object_->setUniform(name_, value_);
             }
+        }
+
+        template<typename ItemType_>
+        bool getUniform(const QString &name_, ItemType_ &value_) const
+        {
+            bool res = false;
+            for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+            {
+                if(!object_.operator bool())
+                {
+                    continue;
+                }
+                res |= object_->getUniform(name_, value_);
+                if(res)
+                {
+                    // return first value from list
+                    break;
+                }
+            }
+            return res;
         }
     };
 }

@@ -508,6 +508,16 @@ namespace opengl_drawing
             m_imageData->setUniform(name_, value_);
         }
 
+        template<typename ItemType_>
+        bool getUniform(const QString &name_, ItemType_ &value_) const
+        {
+            if(!m_imageData.operator bool())
+            {
+                return false;
+            }
+            return m_imageData->getUniform(name_, value_);
+        }
+
         void setTexture(const QString &name_, const QString &newFilename_)
         {
             for(std::unique_ptr<Object> &object_ : m_objects)
@@ -848,6 +858,16 @@ public:
             return;
         }
         m_openglData->setUniform(name_, value_);
+    }
+
+    template<typename ItemType_>
+    bool getUniform(const QString &name_, ItemType_ &value_) const
+    {
+        if(!m_openglData.operator bool())
+        {
+            return false;
+        }
+        return m_openglData->getUniform(name_, value_);
     }
 
 protected:
