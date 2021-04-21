@@ -443,6 +443,7 @@ void drawing_data::Test1QuizImageObject::initialize(
                 );
 
     std::shared_ptr<QMatrix4x4> renderMatrix(new QMatrix4x4);
+    renderMatrix->ortho(QRectF(0, 0, 1.0, 1.0));
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QMatrix4x4>{ "renderMatrix", renderMatrix }
@@ -478,6 +479,12 @@ void drawing_data::Test1QuizImageObject::initialize(
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<GLfloat>{ "renderT", renderT }
+                ));
+
+    std::shared_ptr<GLfloat> renderOpacity(new GLfloat{0.5});
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLfloat>{ "renderOpacity", renderOpacity }
                 ));
 
     std::shared_ptr<QVector2D> renderFacedGeometryCoefs(new QVector2D(0.0, 1.0e-3));
