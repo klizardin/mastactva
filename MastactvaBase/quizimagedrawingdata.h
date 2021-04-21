@@ -406,6 +406,7 @@ namespace drawing_data
         {
             if(itemIndex_ != index_)
             {
+                ItemTypeBase<index_ - 1>::set(interface_, itemIndex_, value_, tupleSize_);
                 return;
             }
             AttributeType *attr = static_cast<AttributeType *>(interface_);
@@ -421,6 +422,7 @@ namespace drawing_data
         {
             if(itemIndex_ != index_)
             {
+                ItemTypeBase<index_ - 1>::set(interface_, itemIndex_, value_);
                 return;
             }
             UniformType *uniform = static_cast<UniformType *>(interface_);
@@ -436,7 +438,7 @@ namespace drawing_data
         {
             if(itemIndex_ != index_)
             {
-                return false;
+                return ItemTypeBase<index_ - 1>::get(interface_, itemIndex_, value_);
             }
             const UniformType *uniform = static_cast<const UniformType *>(interface_);
             if(nullptr == uniform)
@@ -502,7 +504,7 @@ namespace drawing_data
             {
                 if(!attribute_.operator bool()
                         || attribute_->name() != name_
-                        || attribute_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                        )
                 {
                     continue;
                 }
@@ -533,7 +535,7 @@ namespace drawing_data
             {
                 if(!uniform_.operator bool()
                         || uniform_->name() != name_
-                        || uniform_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                        )
                 {
                     continue;
                 }
@@ -548,7 +550,7 @@ namespace drawing_data
             {
                 if(!uniform_.operator bool()
                         || uniform_->name() != name_
-                        || uniform_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                        )
                 {
                     continue;
                 }
