@@ -240,8 +240,7 @@ namespace drawing_data
                         >::type(),
                     typename std::integral_constant<
                         bool
-                        ,std::is_base_of<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
-                            && !std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, void>::value
+                        , std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
                         >::type()
                     );
         }
