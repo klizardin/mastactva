@@ -751,19 +751,39 @@ void opengl_drawing::Object::release()
 
 void opengl_drawing::Object::setTexture(const QString &name_, const QString& newFilename_)
 {
+    auto fit = std::find_if(
+                std::begin(m_imageData->textures),
+                std::end(m_imageData->textures),
+                [&name_](const drawing_data::Texture &texture_)->bool
+    {
+        return name_ == texture_.name;
+    });
+
     if(textures.find(name_) == std::end(textures)
             && textures[name_].operator bool()
             )
     {
         textures[name_]->setFilename(newFilename_);
+        fit->filename = newFilename_;
         return;
     }
+
     std::unique_ptr<Texture> texture(new Texture());
     if(!texture->setFilename(newFilename_))
     {
         return;
     }
+
+    if(std::end(m_imageData->textures) == fit)
+    {
+        m_imageData->textures.push_back({name_, newFilename_});
+    }
+    else
+    {
+        fit->filename = newFilename_;
+    }
     textures[name_] = std::move(texture);
+
     setTextureIndexes();
 }
 
