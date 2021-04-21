@@ -358,6 +358,7 @@ void drawing_data::Test0QuizImageObject::initialize(
                 );
 
     std::shared_ptr<QMatrix4x4> renderMatrix(new QMatrix4x4);
+    renderMatrix->ortho(QRectF(0, 0, 1.0, 1.0));
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QMatrix4x4>{ "renderMatrix", renderMatrix }
@@ -384,13 +385,19 @@ void drawing_data::Test0QuizImageObject::initialize(
                    new drawing_data::Uniform<GLfloat>{ "renderT", renderT }
                 ));
 
+    std::shared_ptr<GLfloat> renderOpacity(new GLfloat{0.5});
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLfloat>{ "renderOpacity", renderOpacity }
+                ));
+
     std::shared_ptr<QVector2D> renderFacedGeometryCoefs(new QVector2D(0.0, 0.0));
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QVector2D>{ "renderFacedGeometryCoefs", renderFacedGeometryCoefs }
                 ));
 
-    std::shared_ptr<QVector2D> renderGeomertySize(new QVector2D(1.0, 1.0));
+    std::shared_ptr<QVector2D> renderGeomertySize(new QVector2D(2.0, 2.0));
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QVector2D>{ "renderGeomertySize", renderGeomertySize }
@@ -502,13 +509,15 @@ namespace opengl_drawing
     {
     public:
         bool setFilename(const QString &fileName_);
+        void setLocation(int location_);
         void setIndex(int index_);
-        void setUniform(QOpenGLShaderProgram *program_, const QString &name_) const;
+        void setUniform(QOpenGLShaderProgram *program_) const; //, const QString &name_
         void bind(QOpenGLFunctions *f_) const;
         bool getSize(QSize &size_) const;
 
     private:
         int m_index = 0;
+        int m_location = -1;
         QImage m_image;
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
@@ -625,7 +634,15 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_)
         return false;
     }
     m_texture.reset(new QOpenGLTexture(m_image.mirrored()));
+    m_texture->setMagnificationFilter(QOpenGLTexture::Filter::Linear);
+    m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+    m_texture->setBorderColor(1, 1, 1, 0);
     return true;
+}
+
+void opengl_drawing::Texture::setLocation(int location_)
+{
+    m_location = location_;
 }
 
 void opengl_drawing::Texture::setIndex(int index_)
@@ -633,13 +650,14 @@ void opengl_drawing::Texture::setIndex(int index_)
     m_index = index_;
 }
 
-void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_, const QString &name_) const
+void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const //, const QString &name_
 {
-    if(nullptr == program_)
+    if(nullptr == program_
+            || m_location < 0)
     {
         return;
     }
-    program_->setUniformValue(name_.toUtf8().constData(), m_index);
+    program_->setUniformValue(m_location, m_index);
 }
 
 void opengl_drawing::Texture::bind(QOpenGLFunctions *f_) const
@@ -706,6 +724,7 @@ void opengl_drawing::Object::init(
         {
             continue;
         }
+        texture->setLocation(program->uniformLocation(texture_.name));
         textures[texture_.name] = std::move(texture);
     }
     setTextureIndexes();
@@ -745,7 +764,7 @@ void opengl_drawing::Object::setUniforms()
         {
             continue;
         }
-        textures[texture_.name]->setUniform(program.get(), texture_.name);
+        textures[texture_.name]->setUniform(program.get());
     }
 }
 
@@ -1056,7 +1075,7 @@ void ObjectsRenderer::render()
 {
     glDepthMask(true);
 
-    glClearColor(0.5f, 0.5f, 0.7f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -1081,7 +1100,7 @@ static const int g_trianglesCount = 2;
 static const int g_triangleConers = 3;
 
 void makeGeometry(
-        int width_, int height_,
+        float width_, float height_,
         int geomertyPointsWidth_, int geometryPointsHeight_,
         float facedGeometryXCoef_, float facedGeometryYCoef_,
         int geometryVertexCoords_, int geometryTextureCoords_,
@@ -1136,7 +1155,7 @@ void makeGeometry(
                     }
                     if(geometryVertexCoords_ >= 3)
                     {
-                        vertexData_[offs0 + 2] = 0.1;
+                        vertexData_[offs0 + 2] = -0.1;
                     }
                     if(geometryVertexCoords_ >= 4)
                     {
@@ -1147,7 +1166,7 @@ void makeGeometry(
                     if(hasTextureCoords_)
                     {
                         textureData_[offs1 + 0] = (GLfloat)(x + coords[j][k][0])/(GLfloat)geomertyPointsWidth_;
-                        textureData_[offs1 + 1] = 1.0 - (GLfloat)(y + coords[j][k][1])/(GLfloat)geometryPointsHeight_;
+                        textureData_[offs1 + 1] = (GLfloat)(y + coords[j][k][1])/(GLfloat)geometryPointsHeight_;
                         if(geometryTextureCoords_ >= 3)
                         {
                             textureData_[offs1 + 2] = 0.0;
@@ -1259,7 +1278,7 @@ public:
         std::vector<GLfloat> textureData;
         std::vector<GLint> indexesData;
 
-        makeGeometry((int)m_windowSize.x(), (int)m_windowSize.y(),
+        makeGeometry(1.0, 1.0, //m_windowSize.x(), m_windowSize.y(),
                      (int)geometrySize.x(), (int)geometrySize.y(),
                      geometryFacedCoef.x(), geometryFacedCoef.y(),
                      vertexAttributeTupleSize,
