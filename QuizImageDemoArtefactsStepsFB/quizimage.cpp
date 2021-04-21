@@ -702,7 +702,7 @@ void opengl_drawing::Object::init(
             continue;
         }
         std::unique_ptr<Texture> texture(new Texture());
-        if(!texture->setFilename(texture_.name))
+        if(!texture->setFilename(texture_.filename))
         {
             continue;
         }
