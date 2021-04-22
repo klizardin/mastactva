@@ -476,10 +476,10 @@ void drawing_data::Test1QuizImageObject::initialize(
 
     QRandomGenerator gen;
     std::shared_ptr<QVector4D> faceRotateDir = std::make_shared<QVector4D>();
-    faceRotateDir->setX(gen.generateDouble());
-    faceRotateDir->setY(gen.generateDouble());
-    faceRotateDir->setZ(gen.generateDouble());
-    faceRotateDir->setW(gen.generateDouble());
+    faceRotateDir->setX(gen.generateDouble() - 0.5);
+    faceRotateDir->setY(gen.generateDouble() - 0.5);
+    faceRotateDir->setZ(gen.generateDouble() - 0.5);
+    faceRotateDir->setW(gen.generateDouble() - 0.5);
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QVector4D>{ "faceRotateDir", faceRotateDir }
