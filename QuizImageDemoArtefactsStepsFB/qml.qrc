@@ -11,6 +11,9 @@
         <file>Shaders/test001/default_view_two_images_mix_both.fsh</file>
         <file>Shaders/test000/default.fsh</file>
         <file>Shaders/test000/default.vsh</file>
+        <file>Shaders/test002/mix_line_horizontal.vsh</file>
+        <file>Shaders/test002/mix_varying_t.fsh</file>
+        <file>Shaders/test003/mix_direction_faced4.vsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/test001/0001.png</file>
