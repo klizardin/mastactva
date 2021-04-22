@@ -481,7 +481,7 @@ void drawing_data::Test1QuizImageObject::initialize(
                    new drawing_data::Uniform<GLfloat>{ "renderT", renderT }
                 ));
 
-    std::shared_ptr<GLfloat> renderOpacity(new GLfloat{0.5});
+    std::shared_ptr<GLfloat> renderOpacity(new GLfloat{1.0});
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<GLfloat>{ "renderOpacity", renderOpacity }
