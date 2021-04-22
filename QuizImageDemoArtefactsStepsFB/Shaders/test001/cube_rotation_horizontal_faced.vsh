@@ -5,9 +5,9 @@ path: MastactvaShaders/MoveImages/Vertex/cube_rotation_horizontal_faced.vsh
 @facedGeometryCoef (0.0, 1e-3)
 */
 attribute highp vec4 renderVertexAttribute;
-attribute mediump vec4 renderTextureAttribute;
+attribute highp vec4 renderTextureAttribute;
 
-uniform mediump mat4 renderMatrix;
+uniform highp mat4 renderMatrix;
 uniform mediump mat4 renderFromImageMatrix;
 uniform mediump mat4 renderToImageMatrix;
 
@@ -35,7 +35,13 @@ void main(void)
 {
     highp vec4 pos0 = renderMatrix * renderVertexAttribute;
 
-    highp vec4 cubeVertex = vec4(renderVertexAttribute.x/renderVertexAttribute.w, renderVertexAttribute.y/renderVertexAttribute.w, 0.0, 1.0);
+    highp vec4 cubeVertex = vec4(
+                renderVertexAttribute.x / renderVertexAttribute.w,
+                renderVertexAttribute.y / renderVertexAttribute.w,
+                0.0,
+                1.0
+                );
+
     highp vec4 pos1 = cubeVertex;
     highp float a1 = -renderT * M_PI * 0.5;
     highp vec4 scale = vec4(1.0, 1.0, 1.0, 1.0);
@@ -49,7 +55,8 @@ void main(void)
                 ? faceRotateDir.y
                 : renderVertexAttribute.y < renderScreenRect.y * 0.75
                     ? faceRotateDir.z
-                    : faceRotateDir.w;
+                    : faceRotateDir.w
+                      ;
     highp float s = rotateDir >= 0.0 ? 1.0 : -1.0;
     scale.x = 2.0;
     cubeVertex.x *= 2.0;
