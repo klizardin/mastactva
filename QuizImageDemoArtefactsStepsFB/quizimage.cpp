@@ -660,6 +660,8 @@ namespace opengl_drawing
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
         void draw(QOpenGLFunctions *f_);
 
+        QColor clearColor() const;
+
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -1074,6 +1076,18 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
     }
 }
 
+QColor opengl_drawing::Objects::clearColor() const
+{
+    if(!m_imageData.operator bool())
+    {
+        return QColor(255, 255, 255);
+    }
+    else
+    {
+        return m_imageData->clearColor;
+    }
+}
+
 
 class ObjectsRenderer : protected QOpenGLFunctions
 {
@@ -1176,7 +1190,14 @@ void ObjectsRenderer::render()
 {
     glDepthMask(true);
 
-    glClearColor(0.5f, 1.0f, 1.0f, 1.0f);
+    if(m_openglData.operator bool())
+    {
+        glClearColor(m_openglData->clearColor().redF(),m_openglData->clearColor().greenF(), m_openglData->clearColor().blueF(), 1.0f);
+    }
+    else
+    {
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );

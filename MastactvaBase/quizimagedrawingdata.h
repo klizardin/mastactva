@@ -600,6 +600,7 @@ namespace drawing_data
 
     struct QuizImageObjects
     {
+        QColor clearColor = QColor(255, 255, 255);
         std::vector<std::shared_ptr<QuizImageObject>> objects;
 
         template<typename ItemType_>
