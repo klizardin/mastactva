@@ -1192,7 +1192,12 @@ void ObjectsRenderer::render()
 
     if(m_openglData.operator bool())
     {
-        glClearColor(m_openglData->clearColor().redF(),m_openglData->clearColor().greenF(), m_openglData->clearColor().blueF(), 1.0f);
+        glClearColor(
+                    m_openglData->clearColor().redF(),
+                    m_openglData->clearColor().greenF(),
+                    m_openglData->clearColor().blueF(),
+                    1.0f
+                    );
     }
     else
     {
