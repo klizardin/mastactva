@@ -1337,109 +1337,117 @@ void calculatePreserveAspectFitTextureMatrix(
 class QuizImageFboRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
-    QuizImageFboRenderer()
-    {
-    }
+    QuizImageFboRenderer();
 
-    void render() override
-    {
-        objectRenderer.render();
-        //update();
-    }
+    void render() override;
+    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size_) override;
+    void synchronize(QQuickFramebufferObject *frameBufferObject_) override;
 
-    QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override
-    {
-        QOpenGLFramebufferObjectFormat format;
-        format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-        format.setSamples(4);
-        return new QOpenGLFramebufferObject(size, format);
-    }
-
-    virtual void synchronize(QQuickFramebufferObject *frameBufferObject_) override
-    {
-        QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
-        if(nullptr == quizImage)
-        {
-            return;
-        }
-
-        const QVector2D rectSize(quizImage->width(), quizImage->height());
-        const bool sizeChanged = m_windowSize != rectSize;
-        m_windowSize = rectSize;
-        const qreal t = quizImage->t();
-
-        const bool imageDataChanged = quizImage->isImageDataUpdated();
-        if(imageDataChanged)
-        {
-            quizImage->setDataToFree(objectRenderer.releaseImageData());
-            objectRenderer.setImageData(quizImage->getData());
-        }
-
-        const float sm = std::max(std::max(rectSize.x(), rectSize.y()), 1.0f);
-        QVector2D rect(rectSize.x() / sm, rectSize.y() / sm);
-
-        objectRenderer.setUniform("renderScreenRect", rect);
-        objectRenderer.setUniform("renderT", t);
-        QMatrix4x4 renderMatrix;
-        renderMatrix.ortho(QRectF(0, 0, rect.x(), rect.y()));
-        objectRenderer.setUniform("renderMatrix", renderMatrix);
-
-        if(!(imageDataChanged || sizeChanged))
-        {
-            return;
-        }
-
-        GLint isSolid = 1;
-        objectRenderer.getUniform("renderIsGeomertySolid", isSolid);
-        QVector2D geometrySize(1.0, 1.0);
-        objectRenderer.getUniform("renderGeomertySize", geometrySize);
-        QVector2D geometryFacedCoef(0.0, 0.0);
-        objectRenderer.getUniform("renderFacedGeometryCoefs", geometryFacedCoef);
-
-        const int vertexAttributeTupleSize = objectRenderer.getAttributeTupleSize("renderVertexAttribute");
-        const int textureAttributeTupleSize = objectRenderer.getAttributeTupleSize("renderTextureAttribute");
-        if(vertexAttributeTupleSize <= 0)
-        {
-            return;
-        }
-
-        std::vector<GLfloat> vertexData;
-        std::vector<GLfloat> textureData;
-        std::vector<GLint> indexesData;
-
-        makeGeometry(rect.x(), rect.y(),
-                     (int)geometrySize.x(), (int)geometrySize.y(),
-                     geometryFacedCoef.x(), geometryFacedCoef.y(),
-                     vertexAttributeTupleSize,
-                     textureAttributeTupleSize, textureAttributeTupleSize > 0,
-                     0 != isSolid,
-                     vertexData, textureData, indexesData);
-
-        objectRenderer.setAttribute("renderVertexAttribute", vertexData, vertexAttributeTupleSize);
-        if(textureAttributeTupleSize > 0)
-        {
-            objectRenderer.setAttribute("renderTextureAttribute", textureData, textureAttributeTupleSize);
-        }
-
-        QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
-        QSize imageSize;
-        if(objectRenderer.getTextureSize("renderFromImage", imageSize))
-        {
-            QMatrix4x4 imageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, windowSize);
-            objectRenderer.setUniform("renderFromImageMatrix", imageTextureMatrix);
-        }
-        if(objectRenderer.getTextureSize("renderToImage", imageSize))
-        {
-            QMatrix4x4 imageTextureMatrix;
-            calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, windowSize);
-            objectRenderer.setUniform("renderToImageMatrix", imageTextureMatrix);
-        }
-    }
-
-    ObjectsRenderer objectRenderer;
+private:
+    ObjectsRenderer m_objectRenderer;
     QVector2D m_windowSize;
 };
+
+
+QuizImageFboRenderer::QuizImageFboRenderer()
+{
+}
+
+void QuizImageFboRenderer::render()
+{
+    m_objectRenderer.render();
+    //update();
+}
+
+QOpenGLFramebufferObject *QuizImageFboRenderer::createFramebufferObject(const QSize &size_)
+{
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+    format.setSamples(4);
+    return new QOpenGLFramebufferObject(size_, format);
+}
+
+void QuizImageFboRenderer::synchronize(QQuickFramebufferObject *frameBufferObject_)
+{
+    QuizImage *quizImage = static_cast<QuizImage *>(frameBufferObject_);
+    if(nullptr == quizImage)
+    {
+        return;
+    }
+
+    const QVector2D rectSize(quizImage->width(), quizImage->height());
+    const bool sizeChanged = m_windowSize != rectSize;
+    m_windowSize = rectSize;
+    const qreal t = quizImage->t();
+
+    const bool imageDataChanged = quizImage->isImageDataUpdated();
+    if(imageDataChanged)
+    {
+        quizImage->setDataToFree(m_objectRenderer.releaseImageData());
+        m_objectRenderer.setImageData(quizImage->getData());
+    }
+
+    const float sm = std::max(std::max(rectSize.x(), rectSize.y()), 1.0f);
+    QVector2D rect(rectSize.x() / sm, rectSize.y() / sm);
+
+    m_objectRenderer.setUniform("renderScreenRect", rect);
+    m_objectRenderer.setUniform("renderT", t);
+    QMatrix4x4 renderMatrix;
+    renderMatrix.ortho(QRectF(0, 0, rect.x(), rect.y()));
+    m_objectRenderer.setUniform("renderMatrix", renderMatrix);
+
+    if(!(imageDataChanged || sizeChanged))
+    {
+        return;
+    }
+
+    GLint isSolid = 1;
+    m_objectRenderer.getUniform("renderIsGeomertySolid", isSolid);
+    QVector2D geometrySize(1.0, 1.0);
+    m_objectRenderer.getUniform("renderGeomertySize", geometrySize);
+    QVector2D geometryFacedCoef(0.0, 0.0);
+    m_objectRenderer.getUniform("renderFacedGeometryCoefs", geometryFacedCoef);
+
+    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize("renderVertexAttribute");
+    const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize("renderTextureAttribute");
+    if(vertexAttributeTupleSize <= 0)
+    {
+        return;
+    }
+
+    std::vector<GLfloat> vertexData;
+    std::vector<GLfloat> textureData;
+    std::vector<GLint> indexesData;
+
+    makeGeometry(rect.x(), rect.y(),
+                 (int)geometrySize.x(), (int)geometrySize.y(),
+                 geometryFacedCoef.x(), geometryFacedCoef.y(),
+                 vertexAttributeTupleSize,
+                 textureAttributeTupleSize, textureAttributeTupleSize > 0,
+                 0 != isSolid,
+                 vertexData, textureData, indexesData);
+
+    m_objectRenderer.setAttribute("renderVertexAttribute", vertexData, vertexAttributeTupleSize);
+    if(textureAttributeTupleSize > 0)
+    {
+        m_objectRenderer.setAttribute("renderTextureAttribute", textureData, textureAttributeTupleSize);
+    }
+
+    QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
+    QSize imageSize;
+    if(m_objectRenderer.getTextureSize("renderFromImage", imageSize))
+    {
+        QMatrix4x4 imageTextureMatrix;
+        calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, windowSize);
+        m_objectRenderer.setUniform("renderFromImageMatrix", imageTextureMatrix);
+    }
+    if(m_objectRenderer.getTextureSize("renderToImage", imageSize))
+    {
+        QMatrix4x4 imageTextureMatrix;
+        calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, windowSize);
+        m_objectRenderer.setUniform("renderToImageMatrix", imageTextureMatrix);
+    }
+}
 
 
 QuizImage::QuizImage()
