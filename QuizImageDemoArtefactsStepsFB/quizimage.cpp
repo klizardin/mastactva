@@ -1229,8 +1229,7 @@ void makeGeometry(
         bool hasTextureCoords_,
         bool isGeometrySolid_,
         std::vector<GLfloat> &vertexData_,
-        std::vector<GLfloat> &textureData_,
-        std::vector<GLint> &indexesData_
+        std::vector<GLfloat> &textureData_
         )
 {
     static const int coords[g_trianglesCount][g_triangleConers][2] =
@@ -1301,15 +1300,6 @@ void makeGeometry(
                 }
             }
         }
-    }
-    indexesData_.resize(1);
-    if(isGeometrySolid_)
-    {
-        indexesData_[0] = 1;
-    }
-    else
-    {
-        indexesData_[0] = geomertyPointsWidth_ * geometryPointsHeight_;
     }
 }
 
@@ -1413,7 +1403,6 @@ void QuizImageFboRenderer::synchronize(QQuickFramebufferObject *frameBufferObjec
 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
-    std::vector<GLint> indexesData;
 
     makeGeometry(rect.x(), rect.y(),
                  (int)geometrySize.x(), (int)geometrySize.y(),
@@ -1421,7 +1410,7 @@ void QuizImageFboRenderer::synchronize(QQuickFramebufferObject *frameBufferObjec
                  vertexAttributeTupleSize,
                  textureAttributeTupleSize, textureAttributeTupleSize > 0,
                  0 != isSolid,
-                 vertexData, textureData, indexesData);
+                 vertexData, textureData);
 
     m_objectRenderer.setAttribute("renderVertexAttribute", vertexData, vertexAttributeTupleSize);
     if(textureAttributeTupleSize > 0)
