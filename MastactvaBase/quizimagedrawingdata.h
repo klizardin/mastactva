@@ -130,9 +130,9 @@ namespace drawing_data
     };                                                                          \
 /*end traints macro*/
 
-    ITEM_TYPE_TRAITS(GLfloat,       1,  0,  GLfloat)
-    ITEM_TYPE_TRAITS(GLint,         1,  1,  GLint)
-    ITEM_TYPE_TRAITS(GLuint,        1,  2,  GLuint)
+    ITEM_TYPE_TRAITS(GLfloat,       1,  0,  void)
+    ITEM_TYPE_TRAITS(GLint,         1,  1,  void)
+    ITEM_TYPE_TRAITS(GLuint,        1,  2,  void)
     ITEM_TYPE_TRAITS(QVector2D,     2,  3,  GLfloat)
     ITEM_TYPE_TRAITS(QVector3D,     3,  4,  GLfloat)
     ITEM_TYPE_TRAITS(QVector4D,     4,  5,  GLfloat)
@@ -222,38 +222,36 @@ namespace drawing_data
         {
             if(!m_data.operator bool())
             {
-                m_data.reset(new std::vector<ItemType_>());
+                m_data = std::make_shared<std::vector<ItemType_>>();
             }
             if(0 == tupleSize_)
             {
                 *m_data.get() = value_;
             }
-            else
-            {
-                m_data->resize(value_.size() / tupleSize_);
-                for(size_t i = 0; i < m_data->size(); ++i)
-                {
-                    for(size_t j = 0; j < tupleSize_; ++j)
-                    {
-                        (*m_data)[i][j] = value_[i*tupleSize_ + j];
-                    }
-                }
-            }
         }
 
-        template<typename ItemType2_,
-                typename = typename std::enable_if<
-                     std::is_convertible<ItemType2_, ItemType_>::value
-                     || (
-                        std::is_base_of<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
-                        && !std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, void>::value
-                     )
-                     , void>::type>
+        template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_, int tupleSize_)
+        {
+            setImpl(value_, tupleSize_,
+                    typename std::integral_constant<
+                        bool
+                        ,std::is_convertible<ItemType2_, ItemType_>::value
+                        >::type(),
+                    typename std::integral_constant<
+                        bool
+                        , std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
+                        >::type()
+                    );
+        }
+
+    private:
+        template<typename ItemType2_>
+        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::false_type)
         {
             if(!m_data.operator bool())
             {
-                m_data.reset(new std::vector<ItemType_>());
+                m_data = std::make_shared<std::vector<ItemType_>>();
             }
             if(0 == tupleSize_)
             {
@@ -261,15 +259,24 @@ namespace drawing_data
                 m_data->clear();
                 for(const ItemType2_ &val_ : value_)
                 {
-                    m_data.push_back(static_cast<ItemType_>(val_));
+                    m_data->push_back(static_cast<ItemType_>(val_));
                 }
             }
-            else
+        }
+
+        template<typename ItemType2_>
+        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::true_type)
+        {
+            if(!m_data.operator bool())
+            {
+                m_data.reset(new std::vector<ItemType_>());
+            }
+            if(0 < tupleSize_)
             {
                 m_data->resize(value_.size() / tupleSize_);
-                for(size_t i = 0; i < m_data->size(); ++i)
+                for(std::size_t i = 0; i < m_data->size(); ++i)
                 {
-                    for(size_t j = 0; (int)j < tupleSize_; ++j)
+                    for(std::size_t j = 0; j < std::size_t(tupleSize_); ++j)
                     {
                         (*m_data)[i][j] = static_cast<
                                 typename ItemTypeTraits<ItemType_>::underlayingType
@@ -282,7 +289,14 @@ namespace drawing_data
         }
 
         template<typename ItemType2_>
-        void set(const std::vector<ItemType2_> &value_, int tupleSize_)
+        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::false_type)
+        {
+            Q_UNUSED(value_);
+            Q_UNUSED(tupleSize_);
+        }
+
+        template<typename ItemType2_>
+        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::true_type)
         {
             Q_UNUSED(value_);
             Q_UNUSED(tupleSize_);
@@ -338,54 +352,75 @@ namespace drawing_data
             *m_data.get() = value_;
         }
 
-        template<typename ItemType2_,
-                typename = typename std::enable_if<
-                     std::is_convertible<ItemType_,ItemType2_>::value
-                     , void>::type>
-        void set(const ItemType2_ &value_)
-        {
-            if(!m_data.operator bool())
-            {
-                m_data.reset(new ItemType_());
-            }
-            *m_data.get() = static_cast<ItemType_>(value_);
-        }
-
         template<typename ItemType2_>
         void set(const ItemType2_ &value_)
         {
-            Q_UNUSED(value_);
+            return setImpl(value_,
+                            typename std::integral_constant<
+                                bool,
+                                std::is_convertible<
+                                    ItemType2_,
+                                    ItemType_
+                                    >::value
+                                >::type());
         }
 
         bool get(ItemType_ &value_) const
         {
             if(!m_data.operator bool())
             {
-                m_data.reset(new ItemType_());
+                return false;
             }
             value_ = *m_data.get();
-            return true;
-        }
-
-        template<typename ItemType2_,
-                typename = typename std::enable_if<
-                     std::is_convertible<ItemType2_, ItemType_>::value
-                     , void>::type>
-        bool get(ItemType2_ &value_) const
-        {
-            if(!m_data.operator bool())
-            {
-                m_data.reset(new ItemType_());
-            }
-            value_ = static_cast<ItemType2_>(*m_data.get());
             return true;
         }
 
         template<typename ItemType2_>
         bool get(ItemType2_ &value_) const
         {
+            return getImpl(value_,
+                            typename std::integral_constant<
+                                bool,
+                                std::is_convertible<
+                                    ItemType_,
+                                    ItemType2_
+                                    >::value
+                                >::type());
+        }
+
+    private:
+        template<typename ItemType2_>
+        bool getImpl(ItemType2_ &value_, std::true_type) const
+        {
+            if(!m_data.operator bool())
+            {
+                return false;
+            }
+            value_ = static_cast<ItemType2_>(*m_data.get());
+            return true;
+        }
+
+        template<typename ItemType2_>
+        bool getImpl(ItemType2_ &value_, std::false_type) const
+        {
             Q_UNUSED(value_);
             return false;
+        }
+
+        template<typename ItemType2_>
+        void setImpl(const ItemType2_ &value_, std::true_type)
+        {
+            if(!m_data.operator bool())
+            {
+                m_data = std::make_shared<ItemType_>();
+            }
+            *m_data.get() = static_cast<ItemType_>(value_);
+        }
+
+        template<typename ItemType2_>
+        void setImpl(const ItemType2_ &value_, std::false_type)
+        {
+            Q_UNUSED(value_);
         }
 
     private:
@@ -400,12 +435,14 @@ namespace drawing_data
     public:
         using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;
         using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;
+        using base = ItemTypeBase<index_ - 1>;
 
         template<typename ItemType_>
         static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
         {
             if(itemIndex_ != index_)
             {
+                base::set(interface_, itemIndex_, value_, tupleSize_);
                 return;
             }
             AttributeType *attr = static_cast<AttributeType *>(interface_);
@@ -421,6 +458,7 @@ namespace drawing_data
         {
             if(itemIndex_ != index_)
             {
+                base::set(interface_, itemIndex_, value_);
                 return;
             }
             UniformType *uniform = static_cast<UniformType *>(interface_);
@@ -436,7 +474,7 @@ namespace drawing_data
         {
             if(itemIndex_ != index_)
             {
-                return false;
+                return base::get(interface_, itemIndex_, value_);
             }
             const UniformType *uniform = static_cast<const UniformType *>(interface_);
             if(nullptr == uniform)
@@ -448,7 +486,7 @@ namespace drawing_data
     };
 
     template<>
-    class ItemTypeBase<ItemTypeConvert::maxIndex - 1>
+    class ItemTypeBase<ItemTypeConvert::minIndex - 1>
     {
     public:
         template<typename ItemType_>
@@ -457,6 +495,7 @@ namespace drawing_data
             Q_UNUSED(interface_);
             Q_UNUSED(itemIndex_);
             Q_UNUSED(value_);
+            Q_UNUSED(tupleSize_);
         }
         template<typename ItemType_>
         static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
@@ -502,7 +541,7 @@ namespace drawing_data
             {
                 if(!attribute_.operator bool()
                         || attribute_->name() != name_
-                        || attribute_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                        )
                 {
                     continue;
                 }
@@ -533,7 +572,7 @@ namespace drawing_data
             {
                 if(!uniform_.operator bool()
                         || uniform_->name() != name_
-                        || uniform_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                        )
                 {
                     continue;
                 }
@@ -548,12 +587,13 @@ namespace drawing_data
             {
                 if(!uniform_.operator bool()
                         || uniform_->name() != name_
-                        || uniform_->typeIndex() != ItemTypeTraits<ItemType_>::typeIndex)
+                        )
                 {
                     continue;
                 }
                 return ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), value_);
             }
+            return false;
         }
     };
 
