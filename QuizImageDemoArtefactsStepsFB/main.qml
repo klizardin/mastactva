@@ -32,6 +32,8 @@ ApplicationWindow {
     // Just to show something interesting
     SequentialAnimation {
         PauseAnimation { duration: 5000 }
+        NumberAnimation { target: renderer; property: "t"; to: 1.0; duration: 1000; easing.type: Easing.Linear }
+        NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 1000; easing.type: Easing.Linear }
         ParallelAnimation {
             NumberAnimation { target: scale; property: "xScale"; to: 0.6; duration: 1000; easing.type: Easing.InOutBack }
             NumberAnimation { target: scale; property: "yScale"; to: 0.6; duration: 1000; easing.type: Easing.InOutBack }
