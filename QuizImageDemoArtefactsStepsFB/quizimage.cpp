@@ -1337,7 +1337,7 @@ void calculatePreserveAspectFitTextureMatrix(
 class QuizImageFboRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
-    QuizImageFboRenderer();
+    QuizImageFboRenderer() = default;
 
     void render() override;
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size_) override;
@@ -1348,10 +1348,6 @@ private:
     QVector2D m_windowSize;
 };
 
-
-QuizImageFboRenderer::QuizImageFboRenderer()
-{
-}
 
 void QuizImageFboRenderer::render()
 {
