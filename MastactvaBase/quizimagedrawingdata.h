@@ -98,6 +98,7 @@ namespace drawing_data
         constexpr static int maxIndex = 19;
     };
 
+
     template<typename ItemType_>
     class ItemTypeTraits
     {
@@ -106,12 +107,15 @@ namespace drawing_data
         constexpr static int typeIndex = -1;
         using underlayingType = void;
     };
+
+
     template<int TypeIndex_>
     class ItemTypeIndexTraits
     {
     public:
         using type = void;
     };
+
 
 #define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, typeIndex_, underlayingType_)   \
     template<>                                                                  \
@@ -129,6 +133,7 @@ namespace drawing_data
         using type = ItemType_;                                                 \
     };                                                                          \
 /*end traints macro*/
+
 
     ITEM_TYPE_TRAITS(GLfloat,       1,  0,  void)
     ITEM_TYPE_TRAITS(GLint,         1,  1,  void)
@@ -150,6 +155,7 @@ namespace drawing_data
     ITEM_TYPE_TRAITS(QMatrix4x2,    8,  17, void)
     ITEM_TYPE_TRAITS(QMatrix4x3,    12, 18, void)
     ITEM_TYPE_TRAITS(QMatrix4x4,    16, 19, void)
+
 
     class ITypeInfo
     {
@@ -485,6 +491,7 @@ namespace drawing_data
         }
     };
 
+
     template<>
     class ItemTypeBase<ItemTypeConvert::minIndex - 1>
     {
@@ -514,6 +521,7 @@ namespace drawing_data
             return false;
         }
     };
+
 
     using ItemTypeBaseSet = ItemTypeBase<ItemTypeConvert::maxIndex>;
 
