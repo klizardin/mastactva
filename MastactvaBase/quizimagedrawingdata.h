@@ -547,6 +547,7 @@ namespace drawing_data
 
     struct QuizImageObject
     {
+    public:
         QByteArray vertexShader;
         QByteArray fragmentShader;
 
@@ -554,6 +555,7 @@ namespace drawing_data
         std::vector<std::unique_ptr<IUniform>> uniforms;
         std::vector<Texture> textures;
 
+    public:
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -628,9 +630,11 @@ namespace drawing_data
 
     struct QuizImageObjects
     {
+    public:
         QColor clearColor = QColor(255, 255, 255);
         std::vector<std::shared_ptr<QuizImageObject>> objects;
 
+    public:
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -640,6 +644,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 object_->setAttribute(name_, value_, tupleSize_);
             }
         }
@@ -652,6 +657,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 int res = object_->getAttributeTupleSize(name_);
                 if(res >= 0)
                 {
@@ -660,7 +666,6 @@ namespace drawing_data
             }
             return 0;
         }
-
 
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
@@ -671,6 +676,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 object_->setUniform(name_, value_);
             }
         }
@@ -685,6 +691,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 res |= object_->getUniform(name_, value_);
                 if(res)
                 {
