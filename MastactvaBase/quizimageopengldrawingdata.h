@@ -67,8 +67,6 @@ namespace opengl_drawing
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
         void draw(QOpenGLFunctions *f_);
 
-        QColor clearColor() const;
-
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -78,16 +76,6 @@ namespace opengl_drawing
             }
 
             m_imageData->setAttribute(name_, value_, tupleSize_);
-        }
-
-        int getAttributeTupleSize(const QString &name_) const
-        {
-            if(!m_imageData.operator bool())
-            {
-                return 0;
-            }
-
-            return m_imageData->getAttributeTupleSize(name_);
         }
 
         template<typename ItemType_>
@@ -112,25 +100,10 @@ namespace opengl_drawing
             return m_imageData->getUniform(name_, value_);
         }
 
-        bool getTextureSize(const QString &name_, QSize &size_) const
-        {
-            for(const std::unique_ptr<Object> &object_ : m_objects)
-            {
-                if(object_->getTextureSize(name_, size_))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        void setTexture(const QString &name_, const QString &newFilename_)
-        {
-            for(std::unique_ptr<Object> &object_ : m_objects)
-            {
-                object_->setTexture(name_, newFilename_);
-            }
-        }
+        QColor clearColor() const;
+        int getAttributeTupleSize(const QString &name_) const;
+        bool getTextureSize(const QString &name_, QSize &size_) const;
+        void setTexture(const QString &name_, const QString &newFilename_);
 
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
@@ -159,15 +132,6 @@ public:
         m_openglData->setAttribute(name_, value_, tupleSize_);
     }
 
-    int getAttributeTupleSize(const QString &name_) const
-    {
-        if(!m_openglData.operator bool())
-        {
-            return 0;
-        }
-        return m_openglData->getAttributeTupleSize(name_);
-    }
-
     template<typename ItemType_>
     void setUniform(const QString &name_, const ItemType_ &value_)
     {
@@ -188,14 +152,8 @@ public:
         return m_openglData->getUniform(name_, value_);
     }
 
-    bool getTextureSize(const QString &name_, QSize &size_) const
-    {
-        if(!m_openglData.operator bool())
-        {
-            return false;
-        }
-        return m_openglData->getTextureSize(name_, size_);
-    }
+    int getAttributeTupleSize(const QString &name_) const;
+    bool getTextureSize(const QString &name_, QSize &size_) const;
 
 protected:
     void initialize();

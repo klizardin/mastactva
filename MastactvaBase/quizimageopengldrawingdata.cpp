@@ -361,6 +361,36 @@ QColor opengl_drawing::Objects::clearColor() const
     }
 }
 
+int opengl_drawing::Objects::getAttributeTupleSize(const QString &name_) const
+{
+    if(!m_imageData.operator bool())
+    {
+        return 0;
+    }
+
+    return m_imageData->getAttributeTupleSize(name_);
+}
+
+bool opengl_drawing::Objects::getTextureSize(const QString &name_, QSize &size_) const
+{
+    for(const std::unique_ptr<Object> &object_ : m_objects)
+    {
+        if(object_->getTextureSize(name_, size_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void opengl_drawing::Objects::setTexture(const QString &name_, const QString &newFilename_)
+{
+    for(std::unique_ptr<Object> &object_ : m_objects)
+    {
+        object_->setTexture(name_, newFilename_);
+    }
+}
+
 
 ObjectsRenderer::ObjectsRenderer()
 {
@@ -383,6 +413,24 @@ std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageDat
 {
     if(!m_openglData.operator bool()) { return {nullptr}; }
     return m_openglData->free();
+}
+
+int ObjectsRenderer::getAttributeTupleSize(const QString &name_) const
+{
+    if(!m_openglData.operator bool())
+    {
+        return 0;
+    }
+    return m_openglData->getAttributeTupleSize(name_);
+}
+
+bool ObjectsRenderer::getTextureSize(const QString &name_, QSize &size_) const
+{
+    if(!m_openglData.operator bool())
+    {
+        return false;
+    }
+    return m_openglData->getTextureSize(name_, size_);
 }
 
 void ObjectsRenderer::initialize()
