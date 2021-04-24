@@ -234,7 +234,7 @@ namespace drawing_data
                 return;
             }
 
-            *m_data.get() = value_;
+            *m_data = value_;
         }
 
         template<typename ItemType2_>
