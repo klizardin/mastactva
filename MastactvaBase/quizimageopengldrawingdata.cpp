@@ -27,7 +27,7 @@ void opengl_drawing::Texture::setIndex(int index_)
     m_index = index_;
 }
 
-void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const //, const QString &name_
+void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const
 {
     if(nullptr == program_
             || m_location < 0)

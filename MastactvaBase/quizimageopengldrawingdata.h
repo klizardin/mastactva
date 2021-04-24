@@ -19,7 +19,7 @@ namespace opengl_drawing
         bool setFilename(const QString &fileName_);
         void setLocation(int location_);
         void setIndex(int index_);
-        void setUniform(QOpenGLShaderProgram *program_) const; //, const QString &name_
+        void setUniform(QOpenGLShaderProgram *program_) const;
         void bind(QOpenGLFunctions *f_) const;
         bool getSize(QSize &size_) const;
 
