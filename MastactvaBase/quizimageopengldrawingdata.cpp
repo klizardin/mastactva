@@ -9,6 +9,7 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_)
     {
         return false;
     }
+
     m_texture.reset(new QOpenGLTexture(m_image.mirrored()));
     m_texture->setMagnificationFilter(QOpenGLTexture::Filter::Linear);
     m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
@@ -33,6 +34,7 @@ void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const /
     {
         return;
     }
+
     program_->setUniformValue(m_location, m_index);
 }
 
@@ -48,6 +50,7 @@ bool opengl_drawing::Texture::getSize(QSize &size_) const
     {
         return false;
     }
+
     size_ = m_image.size();
     return true;
 }
@@ -77,6 +80,7 @@ void opengl_drawing::Object::init(
         {
             continue;
         }
+
         attributes[attribute->name()] = program->attributeLocation(attribute->name());
     }
 
@@ -86,6 +90,7 @@ void opengl_drawing::Object::init(
         {
             continue;
         }
+
         uniforms[uniform->name()] = program->uniformLocation(uniform->name());
     }
 
@@ -95,11 +100,13 @@ void opengl_drawing::Object::init(
         {
             continue;
         }
+
         std::unique_ptr<Texture> texture(new Texture());
         if(!texture->setFilename(texture_.filename))
         {
             continue;
         }
+
         texture->setLocation(program->uniformLocation(texture_.name));
         textures[texture_.name] = std::move(texture);
     }
@@ -112,6 +119,7 @@ void opengl_drawing::Object::bind()
     {
         return;
     }
+
     program->bind();
 }
 
@@ -121,12 +129,14 @@ void opengl_drawing::Object::setUniforms()
     {
         return;
     }
+
     for(const auto &uniform : m_imageData->uniforms)
     {
         if(!uniform.operator bool())
         {
             continue;
         }
+
         const auto uniformId = uniforms[uniform->name()];
         if(uniformId < 0) { continue; }
         uniform->set(program.get(), uniformId);
@@ -140,6 +150,7 @@ void opengl_drawing::Object::setUniforms()
         {
             continue;
         }
+
         textures[texture_.name]->setUniform(program.get());
     }
 }
@@ -150,9 +161,14 @@ void opengl_drawing::Object::enableAttributes()
     {
         return;
     }
+
     for(const auto &attribute : attributes)
     {
-        if(attribute < 0) { continue; }
+        if(attribute < 0)
+        {
+            continue;
+        }
+
         program->enableAttributeArray(attribute);
     }
 }
@@ -163,9 +179,14 @@ void opengl_drawing::Object::disableAttributes()
     {
         return;
     }
+
     for(const auto &attribute : attributes)
     {
-        if(attribute < 0) { continue; }
+        if(attribute < 0)
+        {
+            continue;
+        }
+
         program->disableAttributeArray(attribute);
     }
 }
@@ -176,14 +197,20 @@ void opengl_drawing::Object::setAttributeArray()
     {
         return;
     }
+
     for(const auto &attribute : m_imageData->attributes)
     {
         if(!attribute.operator bool())
         {
             continue;
         }
+
         const auto attributeId = attributes[attribute->name()];
-        if(attributeId < 0) { continue; }
+        if(attributeId < 0)
+        {
+            continue;
+        }
+
         program->setAttributeArray(attributeId, attribute->constData(), attribute->tupleSize());
     }
 }
@@ -199,6 +226,7 @@ void opengl_drawing::Object::bindTextures(QOpenGLFunctions *f_)
         {
             continue;
         }
+
         textures[texture_.name]->bind(f_);
     }
 }
@@ -212,6 +240,7 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
     {
         return;
     }
+
     const auto fit = std::min_element(
                 std::begin(m_imageData->attributes),
                 std::end(m_imageData->attributes),
@@ -225,6 +254,7 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
     {
         return;
     }
+
     f_->glDrawArrays(GL_TRIANGLES, 0, (*fit)->size());
 }
 
@@ -234,6 +264,7 @@ void opengl_drawing::Object::release()
     {
         return;
     }
+
     program->release();
 }
 
@@ -284,6 +315,7 @@ bool opengl_drawing::Object::getTextureSize(const QString &name_, QSize &imageSi
     {
         return false;
     }
+
     return fit->second->getSize(imageSize_);
 }
 
@@ -299,6 +331,7 @@ void opengl_drawing::Object::setTextureIndexes()
         {
             continue;
         }
+
         ++textureIndex;
         textures[texture_.name]->setIndex(textures.size() - textureIndex);
     }
@@ -313,6 +346,7 @@ std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
         {
             continue;
         }
+
         object_->free();
     }
     m_objects.clear();
@@ -338,6 +372,7 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
         {
             continue;
         }
+
         object_->bind();
         object_->setUniforms();
         object_->enableAttributes();
@@ -411,7 +446,11 @@ void ObjectsRenderer::setImageData(
 
 std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageData()
 {
-    if(!m_openglData.operator bool()) { return {nullptr}; }
+    if(!m_openglData.operator bool())
+    {
+        return {nullptr};
+    }
+
     return m_openglData->free();
 }
 
@@ -421,6 +460,7 @@ int ObjectsRenderer::getAttributeTupleSize(const QString &name_) const
     {
         return 0;
     }
+
     return m_openglData->getAttributeTupleSize(name_);
 }
 
@@ -430,6 +470,7 @@ bool ObjectsRenderer::getTextureSize(const QString &name_, QSize &size_) const
     {
         return false;
     }
+
     return m_openglData->getTextureSize(name_, size_);
 }
 
