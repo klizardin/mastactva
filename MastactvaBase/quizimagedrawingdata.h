@@ -356,14 +356,14 @@ namespace drawing_data
             {
                 return;
             }
-            program->setUniformValue(location_, *m_data.get());
+            program->setUniformValue(location_, *m_data);
         }
 
         void set(const ItemType_ &value_)
         {
             createData();
 
-            *m_data.get() = value_;
+            *m_data = value_;
         }
 
         template<typename ItemType2_>
@@ -385,7 +385,7 @@ namespace drawing_data
             {
                 return false;
             }
-            value_ = *m_data.get();
+            value_ = *m_data;
             return true;
         }
 
@@ -420,7 +420,7 @@ namespace drawing_data
             {
                 return false;
             }
-            value_ = static_cast<ItemType2_>(*m_data.get());
+            value_ = static_cast<ItemType2_>(*m_data);
             return true;
         }
 
@@ -436,7 +436,7 @@ namespace drawing_data
         {
             createData();
 
-            *m_data.get() = static_cast<ItemType_>(value_);
+            *m_data = static_cast<ItemType_>(value_);
         }
 
         template<typename ItemType2_>
