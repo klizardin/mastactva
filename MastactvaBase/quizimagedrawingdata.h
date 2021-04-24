@@ -361,10 +361,8 @@ namespace drawing_data
 
         void set(const ItemType_ &value_)
         {
-            if(!m_data.operator bool())
-            {
-                m_data.reset(new ItemType_());
-            }
+            createData();
+
             *m_data.get() = value_;
         }
 
@@ -405,6 +403,16 @@ namespace drawing_data
         }
 
     private:
+        void createData()
+        {
+            if(m_data.operator bool())
+            {
+                return;
+            }
+
+            m_data = std::make_shared<ItemType_>();
+        }
+
         template<typename ItemType2_>
         bool getImpl(ItemType2_ &value_, std::true_type) const
         {
@@ -426,10 +434,8 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const ItemType2_ &value_, std::true_type)
         {
-            if(!m_data.operator bool())
-            {
-                m_data = std::make_shared<ItemType_>();
-            }
+            createData();
+
             *m_data.get() = static_cast<ItemType_>(value_);
         }
 
