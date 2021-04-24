@@ -200,16 +200,15 @@ namespace drawing_data
         Attribute(const QString &name_, std::shared_ptr<std::vector<ItemType_>> data_)
             : m_name(name_),
               m_data(data_)
-        {
-        }
+        {}
 
     public:
-        virtual const QString &name() const override
+        const QString &name() const override
         {
             return m_name;
         }
 
-        virtual const GLfloat *constData() const override
+        const GLfloat *constData() const override
         {
             if(!m_data.operator bool()
                     || m_data->empty())
@@ -219,7 +218,7 @@ namespace drawing_data
             return &(const_cast<Attribute<ItemType_> *>(this)->m_data.get()->at(0)[0]);
         }
 
-        virtual int size() const override
+        int size() const override
         {
             return m_data.operator bool() ? m_data->size() : 0;
         }
