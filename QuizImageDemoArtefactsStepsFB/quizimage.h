@@ -7,15 +7,6 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
-template<typename DataType_>
-class IDefaultData
-{
-public:
-    virtual ~IDefaultData() = default;
-    virtual void initialize(DataType_ &data_) const = 0;
-};
-
-
 class QuizImage : public QQuickFramebufferObject
 {
     Q_OBJECT

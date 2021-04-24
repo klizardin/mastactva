@@ -72,6 +72,7 @@ SOURCES += \
 
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
+    quizimageopengldrawingdata.cpp \
     utils.cpp
 
 
@@ -80,6 +81,7 @@ HEADERS += \
 
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
+    quizimageopengldrawingdata.h \
     utils.h
 
 

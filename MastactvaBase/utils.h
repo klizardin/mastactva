@@ -153,6 +153,14 @@ SameType_ &valueOrFish(SameType_ &value_, const SameType_ *)
     return value_;
 }
 
+
+template<typename TargetType_, typename SrcType_> inline
+std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&ptr_)
+{
+    return std::unique_ptr<TargetType_>{static_cast<TargetType_*>(ptr_.release())};
+}
+
+
 class JsonValue : protected QJsonValue
 {
 public:
@@ -354,6 +362,15 @@ public:
 
 private:
     std::vector<std::unique_ptr<IJsonFieldInfo<JsonObjectType_>>> m_fields;
+};
+
+
+template<typename DataType_>
+class IDefaultData
+{
+public:
+    virtual ~IDefaultData() = default;
+    virtual void initialize(DataType_ &data_) const = 0;
 };
 
 

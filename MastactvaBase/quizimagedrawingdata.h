@@ -98,6 +98,7 @@ namespace drawing_data
         constexpr static int maxIndex = 19;
     };
 
+
     template<typename ItemType_>
     class ItemTypeTraits
     {
@@ -106,12 +107,15 @@ namespace drawing_data
         constexpr static int typeIndex = -1;
         using underlayingType = void;
     };
+
+
     template<int TypeIndex_>
     class ItemTypeIndexTraits
     {
     public:
         using type = void;
     };
+
 
 #define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, typeIndex_, underlayingType_)   \
     template<>                                                                  \
@@ -129,6 +133,7 @@ namespace drawing_data
         using type = ItemType_;                                                 \
     };                                                                          \
 /*end traints macro*/
+
 
     ITEM_TYPE_TRAITS(GLfloat,       1,  0,  void)
     ITEM_TYPE_TRAITS(GLint,         1,  1,  void)
@@ -150,6 +155,7 @@ namespace drawing_data
     ITEM_TYPE_TRAITS(QMatrix4x2,    8,  17, void)
     ITEM_TYPE_TRAITS(QMatrix4x3,    12, 18, void)
     ITEM_TYPE_TRAITS(QMatrix4x4,    16, 19, void)
+
 
     class ITypeInfo
     {
@@ -173,7 +179,6 @@ namespace drawing_data
         {
             return ItemTypeTraits<ItemType_>::tupleSize;
         }
-
     };
 
 
@@ -194,16 +199,15 @@ namespace drawing_data
         Attribute(const QString &name_, std::shared_ptr<std::vector<ItemType_>> data_)
             : m_name(name_),
               m_data(data_)
-        {
-        }
+        {}
 
     public:
-        virtual const QString &name() const override
+        const QString &name() const override
         {
             return m_name;
         }
 
-        virtual const GLfloat *constData() const override
+        const GLfloat *constData() const override
         {
             if(!m_data.operator bool()
                     || m_data->empty())
@@ -213,21 +217,23 @@ namespace drawing_data
             return &(const_cast<Attribute<ItemType_> *>(this)->m_data.get()->at(0)[0]);
         }
 
-        virtual int size() const override
+        int size() const override
         {
             return m_data.operator bool() ? m_data->size() : 0;
         }
 
         void set(const std::vector<ItemType_> &value_, int tupleSize_)
         {
-            if(!m_data.operator bool())
+            createData();
+
+            const bool cond = 0 == tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
             {
-                m_data = std::make_shared<std::vector<ItemType_>>();
+                return;
             }
-            if(0 == tupleSize_)
-            {
-                *m_data.get() = value_;
-            }
+
+            *m_data = value_;
         }
 
         template<typename ItemType2_>
@@ -246,60 +252,70 @@ namespace drawing_data
         }
 
     private:
+        void createData()
+        {
+            if(m_data.operator bool())
+            {
+                return;
+            }
+
+            m_data.reset(new std::vector<ItemType_>());
+        }
+
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::false_type)
         {
-            if(!m_data.operator bool())
+            createData();
+
+            const bool cond = 0 == tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
             {
-                m_data = std::make_shared<std::vector<ItemType_>>();
+                return;
             }
-            if(0 == tupleSize_)
+
+            m_data->reserve(value_.size());
+            m_data->clear();
+            for(const ItemType2_ &val_ : value_)
             {
-                m_data->reserve(value_.size());
-                m_data->clear();
-                for(const ItemType2_ &val_ : value_)
-                {
-                    m_data->push_back(static_cast<ItemType_>(val_));
-                }
+                m_data->push_back(static_cast<ItemType_>(val_));
             }
         }
 
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::true_type)
         {
-            if(!m_data.operator bool())
+            createData();
+
+            const bool cond = 0 < tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
             {
-                m_data.reset(new std::vector<ItemType_>());
+                return;
             }
-            if(0 < tupleSize_)
+
+            m_data->resize(value_.size() / tupleSize_);
+            for(std::size_t i = 0; i < m_data->size(); ++i)
             {
-                m_data->resize(value_.size() / tupleSize_);
-                for(std::size_t i = 0; i < m_data->size(); ++i)
+                for(std::size_t j = 0; j < std::size_t(tupleSize_); ++j)
                 {
-                    for(std::size_t j = 0; j < std::size_t(tupleSize_); ++j)
-                    {
-                        (*m_data)[i][j] = static_cast<
-                                typename ItemTypeTraits<ItemType_>::underlayingType
-                                >(
-                                    value_[i*tupleSize_ + j]
-                                );
-                    }
+                    (*m_data)[i][j] = static_cast<
+                            typename ItemTypeTraits<ItemType_>::underlayingType
+                            >(
+                                value_[i*tupleSize_ + j]
+                            );
                 }
             }
         }
 
         template<typename ItemType2_>
-        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::false_type)
+        void setImpl(const std::vector<ItemType2_> &, int, std::false_type, std::false_type)
         {
-            Q_UNUSED(value_);
-            Q_UNUSED(tupleSize_);
         }
 
         template<typename ItemType2_>
-        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::true_type)
+        void setImpl(const std::vector<ItemType2_> &, int, std::true_type, std::true_type)
         {
-            Q_UNUSED(value_);
-            Q_UNUSED(tupleSize_);
         }
 
     private:
@@ -314,6 +330,7 @@ namespace drawing_data
         virtual ~IUniform() = default;
         virtual const QString &name() const = 0;
         virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
+        // break SOLID - not a simple data
     };
 
 
@@ -340,16 +357,15 @@ namespace drawing_data
             {
                 return;
             }
-            program->setUniformValue(location_, *m_data.get());
+
+            program->setUniformValue(location_, *m_data);
         }
 
         void set(const ItemType_ &value_)
         {
-            if(!m_data.operator bool())
-            {
-                m_data.reset(new ItemType_());
-            }
-            *m_data.get() = value_;
+            createData();
+
+            *m_data = value_;
         }
 
         template<typename ItemType2_>
@@ -371,7 +387,8 @@ namespace drawing_data
             {
                 return false;
             }
-            value_ = *m_data.get();
+
+            value_ = *m_data;
             return true;
         }
 
@@ -389,6 +406,16 @@ namespace drawing_data
         }
 
     private:
+        void createData()
+        {
+            if(m_data.operator bool())
+            {
+                return;
+            }
+
+            m_data = std::make_shared<ItemType_>();
+        }
+
         template<typename ItemType2_>
         bool getImpl(ItemType2_ &value_, std::true_type) const
         {
@@ -396,31 +423,28 @@ namespace drawing_data
             {
                 return false;
             }
-            value_ = static_cast<ItemType2_>(*m_data.get());
+
+            value_ = static_cast<ItemType2_>(*m_data);
             return true;
         }
 
         template<typename ItemType2_>
-        bool getImpl(ItemType2_ &value_, std::false_type) const
+        bool getImpl(ItemType2_ &, std::false_type) const
         {
-            Q_UNUSED(value_);
             return false;
         }
 
         template<typename ItemType2_>
         void setImpl(const ItemType2_ &value_, std::true_type)
         {
-            if(!m_data.operator bool())
-            {
-                m_data = std::make_shared<ItemType_>();
-            }
-            *m_data.get() = static_cast<ItemType_>(value_);
+            createData();
+
+            *m_data = static_cast<ItemType_>(value_);
         }
 
         template<typename ItemType2_>
-        void setImpl(const ItemType2_ &value_, std::false_type)
+        void setImpl(const ItemType2_ &, std::false_type)
         {
-            Q_UNUSED(value_);
         }
 
     private:
@@ -445,6 +469,7 @@ namespace drawing_data
                 base::set(interface_, itemIndex_, value_, tupleSize_);
                 return;
             }
+
             AttributeType *attr = static_cast<AttributeType *>(interface_);
             if(nullptr == attr)
             {
@@ -461,6 +486,7 @@ namespace drawing_data
                 base::set(interface_, itemIndex_, value_);
                 return;
             }
+
             UniformType *uniform = static_cast<UniformType *>(interface_);
             if(nullptr == uniform)
             {
@@ -476,6 +502,7 @@ namespace drawing_data
             {
                 return base::get(interface_, itemIndex_, value_);
             }
+
             const UniformType *uniform = static_cast<const UniformType *>(interface_);
             if(nullptr == uniform)
             {
@@ -485,35 +512,28 @@ namespace drawing_data
         }
     };
 
+
     template<>
     class ItemTypeBase<ItemTypeConvert::minIndex - 1>
     {
     public:
         template<typename ItemType_>
-        static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
+        static void set(IAttribute *, int , const std::vector<ItemType_> &, int )
         {
-            Q_UNUSED(interface_);
-            Q_UNUSED(itemIndex_);
-            Q_UNUSED(value_);
-            Q_UNUSED(tupleSize_);
-        }
-        template<typename ItemType_>
-        static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
-        {
-            Q_UNUSED(interface_);
-            Q_UNUSED(itemIndex_);
-            Q_UNUSED(value_);
         }
 
         template<typename ItemType_>
-        static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
+        static void set(IUniform *, int , const ItemType_ &)
         {
-            Q_UNUSED(interface_);
-            Q_UNUSED(itemIndex_);
-            Q_UNUSED(value_);
+        }
+
+        template<typename ItemType_>
+        static bool get(const IUniform *, int , ItemType_ &)
+        {
             return false;
         }
     };
+
 
     using ItemTypeBaseSet = ItemTypeBase<ItemTypeConvert::maxIndex>;
 
@@ -527,6 +547,7 @@ namespace drawing_data
 
     struct QuizImageObject
     {
+    public:
         QByteArray vertexShader;
         QByteArray fragmentShader;
 
@@ -534,6 +555,7 @@ namespace drawing_data
         std::vector<std::unique_ptr<IUniform>> uniforms;
         std::vector<Texture> textures;
 
+    public:
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -545,7 +567,9 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), value_, tupleSize_);
+                // set all attributes with this name
             }
         }
 
@@ -559,6 +583,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 // return first attribute
                 return attribute_->tupleSize();
             }
@@ -576,7 +601,10 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), value_);
+                // set all uniforms with this name
+                // TODO: ptimize for std::shared_ptr data use
             }
         }
 
@@ -591,6 +619,8 @@ namespace drawing_data
                 {
                     continue;
                 }
+
+                // return first value
                 return ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), value_);
             }
             return false;
@@ -600,9 +630,11 @@ namespace drawing_data
 
     struct QuizImageObjects
     {
+    public:
         QColor clearColor = QColor(255, 255, 255);
         std::vector<std::shared_ptr<QuizImageObject>> objects;
 
+    public:
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -612,6 +644,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 object_->setAttribute(name_, value_, tupleSize_);
             }
         }
@@ -624,6 +657,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 int res = object_->getAttributeTupleSize(name_);
                 if(res >= 0)
                 {
@@ -632,7 +666,6 @@ namespace drawing_data
             }
             return 0;
         }
-
 
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
@@ -643,6 +676,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 object_->setUniform(name_, value_);
             }
         }
@@ -657,6 +691,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 res |= object_->getUniform(name_, value_);
                 if(res)
                 {
