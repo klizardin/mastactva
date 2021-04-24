@@ -356,6 +356,7 @@ namespace drawing_data
             {
                 return;
             }
+
             program->setUniformValue(location_, *m_data);
         }
 
@@ -385,6 +386,7 @@ namespace drawing_data
             {
                 return false;
             }
+
             value_ = *m_data;
             return true;
         }
@@ -420,6 +422,7 @@ namespace drawing_data
             {
                 return false;
             }
+
             value_ = static_cast<ItemType2_>(*m_data);
             return true;
         }
