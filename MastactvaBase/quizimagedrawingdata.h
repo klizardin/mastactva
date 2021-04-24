@@ -567,6 +567,7 @@ namespace drawing_data
                 }
 
                 ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), value_, tupleSize_);
+                // set all attributes with this name
             }
         }
 
@@ -600,6 +601,8 @@ namespace drawing_data
                 }
 
                 ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), value_);
+                // set all uniforms with this name
+                // TODO: ptimize for std::shared_ptr data use
             }
         }
 
@@ -615,6 +618,7 @@ namespace drawing_data
                     continue;
                 }
 
+                // return first value
                 return ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), value_);
             }
             return false;
