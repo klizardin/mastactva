@@ -365,4 +365,13 @@ private:
 };
 
 
+template<typename DataType_>
+class IDefaultData
+{
+public:
+    virtual ~IDefaultData() = default;
+    virtual void initialize(DataType_ &data_) const = 0;
+};
+
+
 #endif // UTILS_H

@@ -290,4 +290,14 @@ private:
 };
 
 
+namespace drawing_data
+{
+    class DefaultQuizImageObject : public IDefaultData<QuizImageObjects>
+    {
+    public:
+        virtual void initialize(QuizImageObjects &data_) const override;
+    };
+}
+
+
 #endif // QUIZIMAGEOPENGLDRAWINGDATA_H

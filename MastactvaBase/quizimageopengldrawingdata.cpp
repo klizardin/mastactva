@@ -673,3 +673,88 @@ void calculatePreserveAspectFitTextureMatrix(
         textureMatrix_.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
     }
 }
+
+
+void drawing_data::DefaultQuizImageObject::initialize(
+        QuizImageObjects &data_
+        ) const
+{
+    std::unique_ptr<QuizImageObject> object(new QuizImageObject());
+
+    static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test000/default.vsh").toUtf8(); // TODO: fix resources
+    static QByteArray fragment = loadTextFile(":/Shaders/Shaders/test000/default.fsh").toUtf8(); // TODO: fix resources
+    object->vertexShader = vertex.constData();
+    object->fragmentShader = fragment.constData();
+
+    object->textures = {
+        {"renderFromImage", ":/Images/Images/test001/0001.png"}, // TODO: fix resources
+        {"renderToImage", ":/Images/Images/test001/0002.png"}, // TODO: fix resources
+    };
+
+    std::shared_ptr<std::vector<QVector4D>> vertices(new std::vector<QVector4D>());
+    std::shared_ptr<std::vector<QVector4D>> textures(new std::vector<QVector4D>());
+
+    object->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector4D>{ "renderVertexAttribute", vertices }
+                    )
+                );
+    object->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector4D>{ "renderTextureAttribute", textures }
+                    )
+                );
+
+    std::shared_ptr<QMatrix4x4> renderMatrix(new QMatrix4x4);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "renderMatrix", renderMatrix }
+                ));
+    std::shared_ptr<QMatrix4x4> renderFromImageMatrix(new QMatrix4x4);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "renderFromImageMatrix", renderFromImageMatrix }
+                ));
+    std::shared_ptr<QMatrix4x4> renderToImageMatrix(new QMatrix4x4);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "renderToImageMatrix", renderToImageMatrix }
+                ));
+    std::shared_ptr<QVector2D> renderScreenRect(new QVector2D());
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ "renderScreenRect", renderScreenRect }
+                ));
+
+    std::shared_ptr<GLfloat> renderT(new GLfloat{0.5});
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLfloat>{ "renderT", renderT }
+                ));
+
+    std::shared_ptr<GLfloat> renderOpacity(new GLfloat{1.0});
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLfloat>{ "renderOpacity", renderOpacity }
+                ));
+
+    std::shared_ptr<QVector2D> renderFacedGeometryCoefs(new QVector2D(0.0, 0.0));
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ "renderFacedGeometryCoefs", renderFacedGeometryCoefs }
+                ));
+
+    std::shared_ptr<QVector2D> renderGeomertySize(new QVector2D(2.0, 2.0));
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ "renderGeomertySize", renderGeomertySize }
+                ));
+
+    std::shared_ptr<GLint> renderIsGeomertySolid(new GLint{1});
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLint>{ "renderIsGeomertySolid", renderIsGeomertySolid }
+                ));
+
+    data_.objects.push_back(std::move(object));
+}
