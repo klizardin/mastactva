@@ -129,6 +129,7 @@ public:
         {
             return;
         }
+
         m_openglData->setAttribute(name_, value_, tupleSize_);
     }
 
@@ -139,6 +140,7 @@ public:
         {
             return;
         }
+
         m_openglData->setUniform(name_, value_);
     }
 
@@ -149,6 +151,7 @@ public:
         {
             return false;
         }
+
         return m_openglData->getUniform(name_, value_);
     }
 
