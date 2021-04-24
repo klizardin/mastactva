@@ -518,27 +518,18 @@ namespace drawing_data
     {
     public:
         template<typename ItemType_>
-        static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
+        static void set(IAttribute *, int , const std::vector<ItemType_> &, int )
         {
-            Q_UNUSED(interface_);
-            Q_UNUSED(itemIndex_);
-            Q_UNUSED(value_);
-            Q_UNUSED(tupleSize_);
-        }
-        template<typename ItemType_>
-        static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
-        {
-            Q_UNUSED(interface_);
-            Q_UNUSED(itemIndex_);
-            Q_UNUSED(value_);
         }
 
         template<typename ItemType_>
-        static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
+        static void set(IUniform *, int , const ItemType_ &)
         {
-            Q_UNUSED(interface_);
-            Q_UNUSED(itemIndex_);
-            Q_UNUSED(value_);
+        }
+
+        template<typename ItemType_>
+        static bool get(const IUniform *, int , ItemType_ &)
+        {
             return false;
         }
     };
