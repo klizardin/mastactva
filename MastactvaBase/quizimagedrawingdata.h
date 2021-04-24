@@ -565,6 +565,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), value_, tupleSize_);
             }
         }
@@ -579,6 +580,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 // return first attribute
                 return attribute_->tupleSize();
             }
@@ -596,6 +598,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), value_);
             }
         }
@@ -611,6 +614,7 @@ namespace drawing_data
                 {
                     continue;
                 }
+
                 return ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), value_);
             }
             return false;
