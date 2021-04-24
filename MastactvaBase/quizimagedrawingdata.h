@@ -179,7 +179,6 @@ namespace drawing_data
         {
             return ItemTypeTraits<ItemType_>::tupleSize;
         }
-
     };
 
 
