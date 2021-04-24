@@ -330,6 +330,7 @@ namespace drawing_data
         virtual ~IUniform() = default;
         virtual const QString &name() const = 0;
         virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
+        // break SOLID - not a simple data
     };
 
 
