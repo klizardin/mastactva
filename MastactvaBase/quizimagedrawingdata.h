@@ -428,9 +428,8 @@ namespace drawing_data
         }
 
         template<typename ItemType2_>
-        bool getImpl(ItemType2_ &value_, std::false_type) const
+        bool getImpl(ItemType2_ &, std::false_type) const
         {
-            Q_UNUSED(value_);
             return false;
         }
 
@@ -443,9 +442,8 @@ namespace drawing_data
         }
 
         template<typename ItemType2_>
-        void setImpl(const ItemType2_ &value_, std::false_type)
+        void setImpl(const ItemType2_ &, std::false_type)
         {
-            Q_UNUSED(value_);
         }
 
     private:
