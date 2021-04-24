@@ -76,6 +76,7 @@ namespace opengl_drawing
             {
                 return;
             }
+
             m_imageData->setAttribute(name_, value_, tupleSize_);
         }
 
@@ -85,6 +86,7 @@ namespace opengl_drawing
             {
                 return 0;
             }
+
             return m_imageData->getAttributeTupleSize(name_);
         }
 
@@ -95,6 +97,7 @@ namespace opengl_drawing
             {
                 return;
             }
+
             m_imageData->setUniform(name_, value_);
         }
 
@@ -105,6 +108,7 @@ namespace opengl_drawing
             {
                 return false;
             }
+
             return m_imageData->getUniform(name_, value_);
         }
 
