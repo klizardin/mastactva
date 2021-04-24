@@ -227,12 +227,14 @@ namespace drawing_data
         {
             createData();
 
-            Q_ASSERT(0 == tupleSize_);
-
-            if(0 == tupleSize_)
+            const bool cond = 0 == tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
             {
-                *m_data.get() = value_;
+                return;
             }
+
+            *m_data.get() = value_;
         }
 
         template<typename ItemType2_>
@@ -256,16 +258,18 @@ namespace drawing_data
         {
             createData();
 
-            Q_ASSERT(0 == tupleSize_);
-
-            if(0 == tupleSize_)
+            const bool cond = 0 == tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
             {
-                m_data->reserve(value_.size());
-                m_data->clear();
-                for(const ItemType2_ &val_ : value_)
-                {
-                    m_data->push_back(static_cast<ItemType_>(val_));
-                }
+                return;
+            }
+
+            m_data->reserve(value_.size());
+            m_data->clear();
+            for(const ItemType2_ &val_ : value_)
+            {
+                m_data->push_back(static_cast<ItemType_>(val_));
             }
         }
 
@@ -274,21 +278,23 @@ namespace drawing_data
         {
             createData();
 
-            Q_ASSERT(0 < tupleSize_);
-
-            if(0 < tupleSize_)
+            const bool cond = 0 < tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
             {
-                m_data->resize(value_.size() / tupleSize_);
-                for(std::size_t i = 0; i < m_data->size(); ++i)
+                return;
+            }
+
+            m_data->resize(value_.size() / tupleSize_);
+            for(std::size_t i = 0; i < m_data->size(); ++i)
+            {
+                for(std::size_t j = 0; j < std::size_t(tupleSize_); ++j)
                 {
-                    for(std::size_t j = 0; j < std::size_t(tupleSize_); ++j)
-                    {
-                        (*m_data)[i][j] = static_cast<
-                                typename ItemTypeTraits<ItemType_>::underlayingType
-                                >(
-                                    value_[i*tupleSize_ + j]
-                                );
-                    }
+                    (*m_data)[i][j] = static_cast<
+                            typename ItemTypeTraits<ItemType_>::underlayingType
+                            >(
+                                value_[i*tupleSize_ + j]
+                            );
                 }
             }
         }
