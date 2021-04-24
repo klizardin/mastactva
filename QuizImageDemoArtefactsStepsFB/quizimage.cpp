@@ -13,13 +13,6 @@
 #include "../MastactvaBase/utils.h"
 
 
-template<typename TargetType_, typename SrcType_>
-std::unique_ptr<TargetType_> unique_ptr_static_cast(std::unique_ptr<SrcType_> &&ptr_)
-{
-    return std::unique_ptr<TargetType_>{static_cast<TargetType_*>(ptr_.release())};
-}
-
-
 namespace drawing_data
 {
     class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>
