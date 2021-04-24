@@ -225,10 +225,7 @@ namespace drawing_data
 
         void set(const std::vector<ItemType_> &value_, int tupleSize_)
         {
-            if(!m_data.operator bool())
-            {
-                m_data = std::make_shared<std::vector<ItemType_>>();
-            }
+            createData();
 
             Q_ASSERT(0 == tupleSize_);
 
@@ -257,10 +254,7 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::false_type)
         {
-            if(!m_data.operator bool())
-            {
-                m_data = std::make_shared<std::vector<ItemType_>>();
-            }
+            createData();
 
             Q_ASSERT(0 == tupleSize_);
 
@@ -278,10 +272,7 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::true_type)
         {
-            if(!m_data.operator bool())
-            {
-                m_data.reset(new std::vector<ItemType_>());
-            }
+            createData();
 
             Q_ASSERT(0 < tupleSize_);
 
@@ -314,6 +305,17 @@ namespace drawing_data
         {
             Q_UNUSED(value_);
             Q_UNUSED(tupleSize_);
+        }
+
+    private:
+        void createData()
+        {
+            if(m_data.operator bool())
+            {
+                return;
+            }
+
+            m_data.reset(new std::vector<ItemType_>());
         }
 
     private:
