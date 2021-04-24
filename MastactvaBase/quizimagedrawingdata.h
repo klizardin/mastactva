@@ -469,6 +469,7 @@ namespace drawing_data
                 base::set(interface_, itemIndex_, value_, tupleSize_);
                 return;
             }
+
             AttributeType *attr = static_cast<AttributeType *>(interface_);
             if(nullptr == attr)
             {
@@ -485,6 +486,7 @@ namespace drawing_data
                 base::set(interface_, itemIndex_, value_);
                 return;
             }
+
             UniformType *uniform = static_cast<UniformType *>(interface_);
             if(nullptr == uniform)
             {
@@ -500,6 +502,7 @@ namespace drawing_data
             {
                 return base::get(interface_, itemIndex_, value_);
             }
+
             const UniformType *uniform = static_cast<const UniformType *>(interface_);
             if(nullptr == uniform)
             {
