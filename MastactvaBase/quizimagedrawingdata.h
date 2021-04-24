@@ -229,6 +229,9 @@ namespace drawing_data
             {
                 m_data = std::make_shared<std::vector<ItemType_>>();
             }
+
+            Q_ASSERT(0 == tupleSize_);
+
             if(0 == tupleSize_)
             {
                 *m_data.get() = value_;
@@ -258,6 +261,9 @@ namespace drawing_data
             {
                 m_data = std::make_shared<std::vector<ItemType_>>();
             }
+
+            Q_ASSERT(0 == tupleSize_);
+
             if(0 == tupleSize_)
             {
                 m_data->reserve(value_.size());
@@ -276,6 +282,9 @@ namespace drawing_data
             {
                 m_data.reset(new std::vector<ItemType_>());
             }
+
+            Q_ASSERT(0 < tupleSize_);
+
             if(0 < tupleSize_)
             {
                 m_data->resize(value_.size() / tupleSize_);
