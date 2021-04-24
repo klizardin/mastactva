@@ -519,10 +519,9 @@ void ObjectsRenderer::render()
 }
 
 
-
-
 static const int g_trianglesCount = 2;
 static const int g_triangleConers = 3;
+
 
 void makeGeometry(
         float width_, float height_,
@@ -625,5 +624,3 @@ void calculatePreserveAspectFitTextureMatrix(
         textureMatrix_.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
     }
 }
-
-
