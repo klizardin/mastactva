@@ -300,17 +300,13 @@ namespace drawing_data
         }
 
         template<typename ItemType2_>
-        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::false_type)
+        void setImpl(const std::vector<ItemType2_> &, int, std::false_type, std::false_type)
         {
-            Q_UNUSED(value_);
-            Q_UNUSED(tupleSize_);
         }
 
         template<typename ItemType2_>
-        void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::true_type)
+        void setImpl(const std::vector<ItemType2_> &, int, std::true_type, std::true_type)
         {
-            Q_UNUSED(value_);
-            Q_UNUSED(tupleSize_);
         }
 
     private:
