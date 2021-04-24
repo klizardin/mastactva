@@ -253,6 +253,16 @@ namespace drawing_data
         }
 
     private:
+        void createData()
+        {
+            if(m_data.operator bool())
+            {
+                return;
+            }
+
+            m_data.reset(new std::vector<ItemType_>());
+        }
+
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::false_type)
         {
@@ -307,17 +317,6 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const std::vector<ItemType2_> &, int, std::true_type, std::true_type)
         {
-        }
-
-    private:
-        void createData()
-        {
-            if(m_data.operator bool())
-            {
-                return;
-            }
-
-            m_data.reset(new std::vector<ItemType_>());
         }
 
     private:
