@@ -100,7 +100,7 @@ namespace opengl_drawing
             return m_imageData->getUniform(name_, value_);
         }
 
-        QColor clearColor() const;
+        QColor getClearColor() const;
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;
         void setTexture(const QString &name_, const QString &newFilename_);

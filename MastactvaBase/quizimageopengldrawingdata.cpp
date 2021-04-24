@@ -349,7 +349,7 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
     }
 }
 
-QColor opengl_drawing::Objects::clearColor() const
+QColor opengl_drawing::Objects::getClearColor() const
 {
     if(!m_imageData.operator bool())
     {
@@ -448,9 +448,9 @@ void ObjectsRenderer::render()
     if(m_openglData.operator bool())
     {
         glClearColor(
-                    m_openglData->clearColor().redF(),
-                    m_openglData->clearColor().greenF(),
-                    m_openglData->clearColor().blueF(),
+                    m_openglData->getClearColor().redF(),
+                    m_openglData->getClearColor().greenF(),
+                    m_openglData->getClearColor().blueF(),
                     1.0f
                     );
     }
