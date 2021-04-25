@@ -705,11 +705,11 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     const float sm = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
     QVector2D rect(rectSize_.x() / sm, rectSize_.y() / sm);
 
-    m_objectRenderer.setUniform(g_renderScreenRectName, rect);
-    m_objectRenderer.setUniform(g_renderTName, t_);
+    m_objectRenderer.setUniform( g_renderScreenRectName, rect );
+    m_objectRenderer.setUniform( g_renderTName, t_ );
     QMatrix4x4 renderMatrix;
     renderMatrix.ortho(QRectF(0, 0, rect.x(), rect.y()));
-    m_objectRenderer.setUniform(g_renderMatrixName, renderMatrix);
+    m_objectRenderer.setUniform( g_renderMatrixName, renderMatrix );
 
     if(!(imageDataChanged_ || sizeChanged_))
     {
@@ -717,14 +717,14 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     }
 
     GLint isSolid = 1;
-    m_objectRenderer.getUniform(g_renderIsGeomertySolidName, isSolid);
+    m_objectRenderer.getUniform( g_renderIsGeomertySolidName, isSolid );
     QVector2D geometrySize(1.0, 1.0);
-    m_objectRenderer.getUniform(g_renderGeomertySizeName, geometrySize);
+    m_objectRenderer.getUniform( g_renderGeomertySizeName, geometrySize );
     QVector2D geometryFacedCoef(0.0, 0.0);
-    m_objectRenderer.getUniform(g_renderFacedGeometryCoefsName, geometryFacedCoef);
+    m_objectRenderer.getUniform( g_renderFacedGeometryCoefsName, geometryFacedCoef );
 
-    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(g_renderVertexAttributeName);
-    const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(g_renderTextureAttributeName);
+    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderVertexAttributeName );
+    const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderTextureAttributeName );
     if(vertexAttributeTupleSize <= 0)
     {
         return;
@@ -741,25 +741,25 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
                  0 != isSolid,
                  vertexData, textureData);
 
-    m_objectRenderer.setAttribute(g_renderVertexAttributeName, vertexData, vertexAttributeTupleSize);
+    m_objectRenderer.setAttribute( g_renderVertexAttributeName, vertexData, vertexAttributeTupleSize );
     if(textureAttributeTupleSize > 0)
     {
-        m_objectRenderer.setAttribute(g_renderTextureAttributeName, textureData, textureAttributeTupleSize);
+        m_objectRenderer.setAttribute( g_renderTextureAttributeName, textureData, textureAttributeTupleSize );
     }
 
     QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
     QSize imageSize;
-    if(m_objectRenderer.getTextureSize(g_renderFromImageName, imageSize))
+    if(m_objectRenderer.getTextureSize( g_renderFromImageName, imageSize ))
     {
         QMatrix4x4 imageTextureMatrix;
         calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, windowSize);
-        m_objectRenderer.setUniform(g_renderFromImageMatrixName, imageTextureMatrix);
+        m_objectRenderer.setUniform( g_renderFromImageMatrixName, imageTextureMatrix );
     }
-    if(m_objectRenderer.getTextureSize(g_renderToImageName, imageSize))
+    if(m_objectRenderer.getTextureSize( g_renderToImageName, imageSize ))
     {
         QMatrix4x4 imageTextureMatrix;
         calculatePreserveAspectFitTextureMatrix(imageTextureMatrix, imageSize, windowSize);
-        m_objectRenderer.setUniform(g_renderToImageMatrixName, imageTextureMatrix);
+        m_objectRenderer.setUniform( g_renderToImageMatrixName, imageTextureMatrix );
     }
 }
 
@@ -780,14 +780,14 @@ void drawing_data::DefaultQuizImageObject::initialize(
 {
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
-    static QByteArray vertex = loadTextFile(g_defaultVertexShaderName).toUtf8();
-    static QByteArray fragment = loadTextFile(g_defaultFragmentShaderName).toUtf8();
+    static QByteArray vertex = loadTextFile( g_defaultVertexShaderName ).toUtf8();
+    static QByteArray fragment = loadTextFile( g_defaultFragmentShaderName ).toUtf8();
     object->vertexShader = vertex.constData();
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        {g_renderFromImageName, g_noImage001Name },
-        {g_renderToImageName, g_noImage002Name },
+        { g_renderFromImageName, g_noImage001Name },
+        { g_renderToImageName, g_noImage002Name },
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices(new std::vector<QVector4D>());
