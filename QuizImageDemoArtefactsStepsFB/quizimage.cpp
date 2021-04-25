@@ -345,8 +345,8 @@ void drawing_data::Test0QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        {"renderFromImage", ":/Images/Images/test001/0001.png"},
-        {"renderToImage", ":/Images/Images/test001/0002.png"},
+        {"renderFromImage", ":/Images/Images/no-image-001.png"},
+        {"renderToImage", ":/Images/Images/no-image-002.png"},
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices(new std::vector<QVector4D>());
@@ -429,8 +429,8 @@ void drawing_data::Test1QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { "renderFromImage", ":/Images/Images/test001/0001.png" },
-        { "renderToImage", ":/Images/Images/test001/0002.png" },
+        {"renderFromImage", ":/Images/Images/no-image-001.png"},
+        {"renderToImage", ":/Images/Images/no-image-002.png"},
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices = std::make_shared<std::vector<QVector4D>>();
@@ -524,8 +524,8 @@ void drawing_data::Test2QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { "renderFromImage", ":/Images/Images/test001/0001.png" },
-        { "renderToImage", ":/Images/Images/test001/0002.png" },
+        {"renderFromImage", ":/Images/Images/no-image-001.png"},
+        {"renderToImage", ":/Images/Images/no-image-002.png"},
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices = std::make_shared<std::vector<QVector4D>>();
@@ -615,8 +615,8 @@ void drawing_data::Test3QuizImageObject::initialize(
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        { "renderFromImage", ":/Images/Images/test001/0001.png" },
-        { "renderToImage", ":/Images/Images/test001/0002.png" },
+        {"renderFromImage", ":/Images/Images/no-image-001.png"},
+        {"renderToImage", ":/Images/Images/no-image-002.png"},
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices = std::make_shared<std::vector<QVector4D>>();
