@@ -625,6 +625,8 @@ namespace drawing_data
             }
             return false;
         }
+
+        void setTexture(const QString &name_, const QString &newFilename_);
     };
 
 
@@ -701,6 +703,8 @@ namespace drawing_data
             }
             return res;
         }
+
+        void setTexture(const QString &name_, const QString &newFilename_);
     };
 }
 

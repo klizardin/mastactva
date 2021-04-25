@@ -32,6 +32,10 @@ public:
     std::unique_ptr<drawing_data::QuizImageObjects> getData();
     void setDataToFree(std::unique_ptr<drawing_data::QuizImageObjects> &&old_);
     void renderBuildError(const QString &compilerLog_);
+    bool isFromImageReady() const;
+    bool isToImageReady() const;
+    const QString &getFromImageUrl() const;
+    const QString &getToImageUrl() const;
 
 protected:
     void setT(const qreal &t_);

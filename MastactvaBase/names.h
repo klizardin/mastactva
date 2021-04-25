@@ -142,4 +142,15 @@ static const char *g_textureArtefactForStepName = "texture";
 static const char *g_stepsName = "steps";
 
 
+// images
+static const char *g_noImageName = ":/Images/Images/no-image.png";
+static const char *g_noImage001Name = ":/Images/Images/no-image-001.png";
+static const char *g_noImage002Name = ":/Images/Images/no-image-002.png";
+
+
+// shaders
+static const char *g_defaultVertexShaderName = ":/Shaders/Shaders/default.vsh";
+static const char *g_defaultFragmentShaderName = ":/Shaders/Shaders/default.fsh";
+
+
 #endif // NAMES_H

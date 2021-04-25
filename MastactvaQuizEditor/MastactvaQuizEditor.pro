@@ -90,7 +90,6 @@ unix: HEADERS += \
         Model.h \
         serverfiles.h   \
         quizimage.h \
-        openglquizimage.h   \
         imagepointeffect.h  \
         gallery.h   \
         image.h \
@@ -109,7 +108,6 @@ unix: HEADERS += \
         localdataapiviews.h \
         quizuser.h  \
         defines.h   \
-        quizimagedata.h \
         artefact.h    \
         artefacttype.h    \
         artefactargtype.h \
@@ -121,7 +119,9 @@ unix: HEADERS += \
         effectobjects.h \
         modelhelpers.h  \
         names.h \
-        wavefrontobj.h
+        wavefrontobj.h  \
+        quizimagedrawingdata.h  \
+        quizimageopengldrawingdata.h    \
 
 
 SOURCES += \
@@ -148,7 +148,6 @@ unix: SOURCES += \
         Model.cpp   \
         serverfiles.cpp \
         quizimage.cpp   \
-        openglquizimage.cpp \
         imagepointeffect.cpp    \
         gallery.cpp   \
         image.cpp   \
@@ -166,7 +165,6 @@ unix: SOURCES += \
         dbrequestinfo.cpp   \
         localdataapiviews.cpp   \
         quizuser.cpp    \
-        quizimagedata.cpp   \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
@@ -177,7 +175,9 @@ unix: SOURCES += \
         objectartefact.cpp  \
         effectobjects.cpp   \
         modelhelpers.cpp    \
-        wavefrontobj.cpp
+        wavefrontobj.cpp    \
+        quizimagedrawingdata.cpp    \
+        quizimageopengldrawingdata.cpp  \
 
 
 RESOURCES += qml.qrc    \
