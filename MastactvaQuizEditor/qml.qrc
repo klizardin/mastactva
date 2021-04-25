@@ -34,4 +34,13 @@
         <file>Mastactva/Constants.qml</file>
         <file>Mastactva/qmldir</file>
     </qresource>
+    <qresource prefix="/Images">
+        <file>Images/no-image.png</file>
+        <file>Images/no-image-001.png</file>
+        <file>Images/no-image-002.png</file>
+    </qresource>
+    <qresource prefix="/Shaders">
+        <file>Shaders/default.fsh</file>
+        <file>Shaders/default.vsh</file>
+    </qresource>
 </RCC>

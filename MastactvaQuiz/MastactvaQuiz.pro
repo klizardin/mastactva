@@ -89,8 +89,9 @@ unix: SOURCES += \
         modelhelpers.cpp    \
         wavefrontobj.cpp    \
         \
-        quizimagedata.cpp   \
-        openglquizimage.cpp \
+        quizimage.cpp   \
+        quizimagedrawingdata.cpp    \
+        quizimageopengldrawingdata.cpp  \
         \
         question.cpp \
         questionanswer.cpp \
@@ -102,7 +103,6 @@ unix: SOURCES += \
         gallery.cpp \
         quizuser.cpp \
         userstep.cpp  \
-        quizimage.cpp   \
         easingtype.cpp    \
         effectarg.cpp \
         effectargset.cpp  \
@@ -168,6 +168,30 @@ HEADERS += \
     quizqmlobjects.h \
 
 unix: HEADERS += \
+    IModel.h \
+    Model.h \
+    imagesource.h \
+    Layout.h \
+    netapi.h \
+    netappconsts.h \
+    qmlobjects.h \
+    utils.h    \
+    serverfiles.h   \
+    localdata.h \
+    requestdata.h   \
+    localdataapinocache.h   \
+    localdataapicache.h \
+    dbrequestinfo.h \
+    localdataapiviews.h \
+    modelhelpers.h  \
+    names.h \
+    wavefrontobj.h  \
+    defines.h   \
+    \
+    quizimage.h \
+    quizimagedrawingdata.h  \
+    quizimageopengldrawingdata.h    \
+    \
     answer.h \
     gallery.h \
     gallerystatistics.h \
@@ -178,33 +202,14 @@ unix: HEADERS += \
     questionanswer.h \
     quizuser.h \
     userstep.h  \
-    IModel.h \
-    Layout.h \
-    Model.h \
-    imagesource.h \
-    netapi.h \
-    netappconsts.h \
-    qmlobjects.h \
-    utils.h    \
-    serverfiles.h   \
-    quizimage.h \
-    openglquizimage.h   \
     easingtype.h    \
     effectarg.h \
     effectargset.h  \
     effectargvalue.h    \
     effect.h    \
     imagepointeffect.h  \
-    localdata.h \
-    requestdata.h   \
-    localdataapinocache.h   \
-    localdataapicache.h \
-    dbrequestinfo.h \
-    localdataapiviews.h \
     gallerymodelview.h  \
-    defines.h   \
     questionanswermodelview.h   \
-    quizimagedata.h \
     artefact.h  \
     artefacttype.h    \
     artefactargtype.h \
@@ -214,9 +219,6 @@ unix: HEADERS += \
     objectinfo.h  \
     objectartefact.h    \
     effectobjects.h \
-    modelhelpers.h  \
-    names.h \
-    wavefrontobj.h
 
 
 DISTFILES += \

@@ -1,23 +1,36 @@
 #include "quizimage.h"
+//#include <QtGui/QOpenGLFramebufferObject>
+//#include <QtGui/QOpenGLContext>
+//#include <QtGui/QOpenGLFunctions>
+//#include <QtGui/QOpenGLTexture>
+//#include <QtGui/QOpenGLShaderProgram>
+//#include <QtGui/QOpenGLBuffer>
+//#include <QtGui/QOpenGLShader>
+//#include <QtCore/QDebug>
+//#include <QQuickWindow>
+//#include <QSGRendererInterface>
+//#include <QSGRenderNode>
+//#include "../MastactvaBase/openglquizimage.h"
+//#include "../MastactvaBase/utils.h"
+#include <math.h>
+#include <QtGui/qvector3d.h>
+#include <QtGui/qmatrix4x4.h>
+#include <QtGui/qopenglshaderprogram.h>
+#include <QtGui/qopenglfunctions.h>
 #include <QtGui/QOpenGLFramebufferObject>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOpenGLTexture>
-#include <QtGui/QOpenGLShaderProgram>
-#include <QtGui/QOpenGLBuffer>
-#include <QtGui/QOpenGLShader>
-#include <QtCore/QDebug>
-#include <QQuickWindow>
-#include <QSGRendererInterface>
-#include <QSGRenderNode>
-#include "../MastactvaBase/openglquizimage.h"
-#include "../MastactvaBase/qmlobjects.h"
+#include <QtQuick/QQuickWindow>
+#include <qsgsimpletexturenode.h>
+#include <QRandomGenerator>
+#include <QTime>
+#include <QVector>
+#include "../MastactvaBase/quizimageopengldrawingdata.h"
 #include "../MastactvaBase/serverfiles.h"
+#include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/defines.h"
 
 
-QuizImage::QuizImage(QQuickItem *parent_ /*= nullptr*/)
+/*QuizImage::QuizImage(QQuickItem *parent_)
     : QQuickItem(parent_)
 {
 #if defined(TRACE_THREADS)
@@ -509,4 +522,251 @@ void QuizImage::formImageData()
         m_effectUpdated = true;
         m_data.prepareDrawingData();
     }
+}*/
+
+
+namespace std
+{
+    void swap(QuizImage::Image &i1_, QuizImage::Image &i2_) noexcept
+    {
+        std::swap(i1_.name, i2_.name);
+        std::swap(i1_.hash, i2_.hash);
+        std::swap(i1_.loaded, i2_.loaded);
+    }
+}
+
+
+QuizImage::QuizImage()
+{
+    initDefaultDrawingData();
+
+    const QString hash = calculateFileURLHash(g_noImageName);
+    m_fromImage = { g_noImageName, hash, true };
+    m_toImage = { g_noImageName, hash, true };
+}
+
+QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
+{
+    return new QuizImageFboRenderer<QuizImage>();
+}
+
+void QuizImage::updateState()
+{
+    update();
+}
+
+void QuizImage::updateEffects()
+{
+    // TODO: implement
+}
+
+void QuizImage::swapImages()
+{
+#if defined(TRACE_THREADS_QUIZIMAGE)
+    qDebug() << "QuizImage::swapImages()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
+    std::swap(m_fromImage, m_toImage);
+    m_t = 1.0 - m_t;
+
+    updateStateIfDataIsReady();
+}
+
+qreal QuizImage::t() const
+{
+    return m_t;
+}
+
+void QuizImage::setT(const qreal &t_)
+{
+    m_t = t_;
+
+    updateState();
+    emit tChanged();
+}
+
+QVariantList QuizImage::fromImage() const
+{
+    QVariantList res;
+    res.push_back(QVariant::fromValue(m_fromImage.name));
+    res.push_back(QVariant::fromValue(m_fromImage.hash));
+    return res;
+}
+
+void QuizImage::setFromImage(const QVariantList &fromImage_)
+{
+    if(fromImage_.size() < 2) { return; }
+
+#if defined(TRACE_THREADS_QUIZIMAGE)
+    qDebug() << "QuizImage::setFromImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
+    const QString imageUrl = fromImage_.at(0).toString();
+    const QString imageHash = fromImage_.at(1).toString();
+
+    if(imageUrl == m_fromImage.name || imageHash.isEmpty()) { return; }
+
+    m_fromImage = { imageUrl, imageHash, false };
+
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        QObject::connect(
+                    sf, SIGNAL(downloaded(const QString &)), this,
+                    SLOT(imageDownloadedSlot(const QString &)));
+        sf->add(m_fromImage.name, m_fromImage.hash, g_imagesRelPath);
+    }
+
+    emit fromImageChanged();
+}
+
+QVariantList QuizImage::toImage() const
+{
+    QVariantList res;
+    res.push_back(QVariant::fromValue(m_toImage.name));
+    res.push_back(QVariant::fromValue(m_toImage.hash));
+    return res;
+}
+
+void QuizImage::setToImage(const QVariantList &toImage_)
+{
+    if(toImage_.size() < 2) { return; }
+
+#if defined(TRACE_THREADS_QUIZIMAGE)
+    qDebug() << "QuizImage::setFromImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
+    const QString imageUrl = toImage_.at(0).toString();
+    const QString imageHash = toImage_.at(1).toString();
+
+    if(imageUrl == m_toImage.name || imageHash.isEmpty()) { return; }
+
+    m_toImage = { imageUrl, imageHash, false };
+
+    ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        QObject::connect(
+                    sf, SIGNAL(downloaded(const QString &)), this,
+                    SLOT(imageDownloadedSlot(const QString &)));
+        sf->add(m_toImage.name, m_toImage.hash, g_imagesRelPath);
+    }
+
+    emit toImageChanged();
+}
+
+QString QuizImage::log() const
+{
+    return m_compilerLog;
+}
+
+void QuizImage::setLog(const QString &log_)
+{
+    m_compilerLog = log_;
+
+    emit logChanged();
+}
+
+QVariant QuizImage::effect() const
+{
+    return m_effect;
+}
+
+void QuizImage::setEffect(const QVariant &effect_)
+{
+    m_effect = effect_;
+
+    emit effectChanged();
+}
+
+QVariant QuizImage::argumentSet() const
+{
+    return m_argumentSet;
+}
+
+void QuizImage::setArgumentSet(const QVariant &argumentSet_)
+{
+    m_argumentSet = argumentSet_;
+
+    emit argumentSetChanged();
+}
+
+int QuizImage::paintedWidth() const
+{
+    return m_paintedSize.width();
+}
+
+int QuizImage::paintedHeight() const
+{
+    return m_paintedSize.height();
+}
+
+void QuizImage::freeProject()
+{
+    m_drawingData.reset(nullptr);
+    m_drawingOldData.reset(nullptr);
+}
+
+bool QuizImage::isImageDataUpdated() const
+{
+    return m_drawingData.operator bool();
+}
+
+std::unique_ptr<drawing_data::QuizImageObjects> QuizImage::getData()
+{
+    return std::move(m_drawingData);
+}
+
+void QuizImage::setDataToFree(std::unique_ptr<drawing_data::QuizImageObjects> &&old_)
+{
+    m_drawingOldData = std::move(old_);
+}
+
+void QuizImage::renderBuildError(const QString &compilerLog_)
+{
+    setLog(compilerLog_);
+}
+
+void QuizImage::initDefaultDrawingData()
+{
+    std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+    drawing_data::DefaultQuizImageObject defaultData;
+    defaultData.initialize(*data.get());
+    m_drawingData = std::move(data);
+}
+
+void QuizImage::imageDownloadedSlot(const QString &url_)
+{
+    m_fromImage.loaded = url_ == m_fromImage.name ? true : m_fromImage.loaded;
+    m_toImage.loaded = url_ == m_toImage.name ? true : m_toImage.loaded;
+
+    updateStateIfDataIsReady();
+}
+
+void QuizImage::updateStateIfDataIsReady()
+{
+    if(m_fromImage.loaded && m_toImage.loaded)
+    {
+        updateState();
+    }
+}
+
+bool QuizImage::isFromImageReady() const
+{
+    return m_fromImage.loaded;
+}
+
+bool QuizImage::isToImageReady() const
+{
+    return m_toImage.loaded;
+}
+
+const QString &QuizImage::getFromImageUrl() const
+{
+    return m_fromImage.name;
+}
+
+const QString &QuizImage::getToImageUrl() const
+{
+    return m_toImage.name;
 }
