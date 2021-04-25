@@ -780,14 +780,14 @@ void drawing_data::DefaultQuizImageObject::initialize(
 {
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
-    static QByteArray vertex = loadTextFile(":/Shaders/Shaders/default.vsh").toUtf8(); // TODO: fix resources
-    static QByteArray fragment = loadTextFile(":/Shaders/Shaders/default.fsh").toUtf8(); // TODO: fix resources
+    static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test000/default.vsh").toUtf8(); // TODO: fix resources
+    static QByteArray fragment = loadTextFile(":/Shaders/Shaders/test000/default.fsh").toUtf8(); // TODO: fix resources
     object->vertexShader = vertex.constData();
     object->fragmentShader = fragment.constData();
 
     object->textures = {
-        {g_renderFromImageName, ":/Images/Images/no-image-001.png"}, // TODO: fix resources
-        {g_renderToImageName, ":/Images/Images/no-image-002.png"}, // TODO: fix resources
+        {g_renderFromImageName, ":/Images/Images/test001/0001.png"}, // TODO: fix resources
+        {g_renderToImageName, ":/Images/Images/test001/0002.png"}, // TODO: fix resources
     };
 
     std::shared_ptr<std::vector<QVector4D>> vertices(new std::vector<QVector4D>());

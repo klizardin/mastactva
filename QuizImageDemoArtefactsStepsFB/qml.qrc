@@ -14,14 +14,9 @@
         <file>Shaders/test002/mix_line_horizontal.vsh</file>
         <file>Shaders/test002/mix_varying_t.fsh</file>
         <file>Shaders/test003/mix_direction_faced4.vsh</file>
-        <file>Shaders/default.fsh</file>
-        <file>Shaders/default.vsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/test001/0001.png</file>
         <file>Images/test001/0002.png</file>
-        <file>Images/no-image.png</file>
-        <file>Images/no-image-001.png</file>
-        <file>Images/no-image-002.png</file>
     </qresource>
 </RCC>
