@@ -870,3 +870,23 @@ void QuizImage::initDefaultDrawingData()
     defaultData.initialize(*data.get());
     m_drawingData = std::move(data);
 }
+
+bool QuizImage::isFromImageReady() const
+{
+    return true;
+}
+
+bool QuizImage::isToImageReady() const
+{
+    return true;
+}
+
+const QString &QuizImage::getFromImageUrl() const
+{
+    return m_fromImage;
+}
+
+const QString &QuizImage::getToImageUrl() const
+{
+    return m_toImage;
+}

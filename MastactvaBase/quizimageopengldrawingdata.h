@@ -104,6 +104,8 @@ namespace opengl_drawing
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;
         void setTexture(const QString &name_, const QString &newFilename_);
+        void setFromImage(const QString &url_);
+        void setToImage(const QString &url_);
 
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
@@ -121,6 +123,8 @@ public:
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
     void render();
+    void setFromImage(const QString &url_);
+    void setToImage(const QString &url_);
 
     template<typename ItemType_>
     void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
@@ -197,6 +201,8 @@ protected:
     void synchronizeImpl(const QVector2D &rectSize_, bool imageDataChanged_, bool sizeChanged_, qreal t_);
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
+    void setFromImage(const QString &url_);
+    void setToImage(const QString &url_);
 
 private:
     ObjectsRenderer m_objectRenderer;
@@ -242,6 +248,14 @@ public:
             setImageData(quizImage->getData());
         }
         synchronizeImpl(rectSize, imageDataChanged, sizeChanged, t);
+        if(quizImage->isFromImageReady() && !quizImage->getFromImageUrl().isEmpty())
+        {
+            setFromImage(quizImage->getFromImageUrl());
+        }
+        if(quizImage->isToImageReady() && !quizImage->getToImageUrl().isEmpty())
+        {
+            setToImage(quizImage->getToImageUrl());
+        }
     }
 };
 

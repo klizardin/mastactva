@@ -311,6 +311,11 @@ void opengl_drawing::Object::setTexture(
         return;
     }
 
+    if(newFilename_ == fit->filename)
+    {
+        return;
+    }
+
     std::unique_ptr<Texture> texture(new Texture());
     if(!texture->setFilename(newFilename_))
     {
@@ -467,6 +472,16 @@ void opengl_drawing::Objects::setTexture(
     }
 }
 
+void opengl_drawing::Objects::setFromImage(const QString &url_)
+{
+    setTexture(g_renderFromImageName, url_);
+}
+
+void opengl_drawing::Objects::setToImage(const QString &url_)
+{
+    setTexture(g_renderToImageName, url_);
+}
+
 
 ObjectsRenderer::ObjectsRenderer()
 {
@@ -557,6 +572,26 @@ void ObjectsRenderer::render()
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
+}
+
+void ObjectsRenderer::setFromImage(const QString &url_)
+{
+    if(!m_openglData.operator bool())
+    {
+        return;
+    }
+
+    m_openglData->setFromImage(url_);
+}
+
+void ObjectsRenderer::setToImage(const QString &url_)
+{
+    if(!m_openglData.operator bool())
+    {
+        return;
+    }
+
+    m_openglData->setToImage(url_);
 }
 
 
@@ -771,6 +806,16 @@ std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releas
 void QuizImageFboRendererImpl::setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_)
 {
     m_objectRenderer.setImageData(std::move(imageData_));
+}
+
+void QuizImageFboRendererImpl::setFromImage(const QString &url_)
+{
+    m_objectRenderer.setFromImage(url_);
+}
+
+void QuizImageFboRendererImpl::setToImage(const QString &url_)
+{
+    m_objectRenderer.setToImage(url_);
 }
 
 
