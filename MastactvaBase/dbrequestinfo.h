@@ -49,12 +49,13 @@ namespace db
                       bool idField_);
 
         QString getSqlType() const;
-        static QString toBindName(const QString &sqlName_);
         QString getBindName() const;
         QString sqlValueName() const;
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
         void bind(QSqlQuery &query_, const QVariant &val_) const;
         QJsonValue jsonValue(const QVariant &val_) const;
+
+        static QString toBindName(const QString &sqlName_);
         static QString toString(const QJsonValue &jv_, layout::JsonTypesEn type_);
         static int toInt(const QJsonValue &jv_, layout::JsonTypesEn type_);
     };
