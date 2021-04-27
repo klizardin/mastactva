@@ -6,6 +6,10 @@
 #include <QStringList>
 #include <QVariant>
 #include <QList>
+#include <QSqlQuery>
+#include <QJsonValue>
+#include "../MastactvaBase/layout_enums.h"
+
 
 namespace db
 {
@@ -25,6 +29,34 @@ namespace db
     QString tableName(const QString &jsonLayoutName_, const QString &refName_);
 
     const QSet<QString> &sqlKeywords();
+
+    struct JsonSqlField
+    {
+        JsonSqlField(
+                const QString &jsonName_,
+                const QString &sqlName_,
+                const layout::JsonTypesEn type_,
+                bool idField_
+                );
+
+        const QString &getJsonName() const;
+        const QString &getSqlName() const;
+        QString getSqlType() const;
+        QString getBindName() const;
+        QString sqlValueName() const;
+        layout::JsonTypesEn getType() const;
+        bool isIdField() const;
+        QJsonValue jsonValue(const QVariant &val_) const;
+
+    private:
+        QString jsonName;
+        QString sqlName;
+        layout::JsonTypesEn type;
+        bool idField = false;
+    };
+
+    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
+    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_);
 }
 
 #endif // DBUTILS_H

@@ -12,7 +12,6 @@
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
-//#include "../MastactvaBase/netapi.h"
 
 
 class LocalDBRequest;
@@ -33,37 +32,6 @@ public:
                              DBRequestInfo *r_) = 0;
     virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) = 0;
 };
-
-namespace db
-{
-    struct JsonSqlField
-    {
-        JsonSqlField(
-                const QString &jsonName_,
-                const QString &sqlName_,
-                const layout::JsonTypesEn type_,
-                bool idField_
-                );
-
-        const QString &getJsonName() const;
-        const QString &getSqlName() const;
-        QString getSqlType() const;
-        QString getBindName() const;
-        QString sqlValueName() const;
-        layout::JsonTypesEn getType() const;
-        bool isIdField() const;
-        QJsonValue jsonValue(const QVariant &val_) const;
-
-    private:
-        QString jsonName;
-        QString sqlName;
-        layout::JsonTypesEn type;
-        bool idField = false;
-    };
-
-    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
-    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_);
-}
 
 
 class DBRequestInfo
