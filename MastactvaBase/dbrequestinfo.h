@@ -55,9 +55,6 @@ namespace db
         void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
         void bind(QSqlQuery &query_, const QVariant &val_) const;
         QJsonValue jsonValue(const QVariant &val_) const;
-
-        static QString toString(const QJsonValue &jv_, layout::JsonTypesEn type_);
-        static int toInt(const QJsonValue &jv_, layout::JsonTypesEn type_);
     };
 }
 

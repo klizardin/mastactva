@@ -5,6 +5,7 @@
 #include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/dbutils.h"
+#include "../MastactvaBase/jsonutils.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
@@ -315,7 +316,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             if(!idFieldJsonName.isEmpty())
             {
                 const QJsonValue valueJV = itemJV[idFieldJsonName];
-                const int v = db::JsonSqlField::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
+                const int v = json::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
                 findQuery.bindValue(idFieldSQlBindName, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
                 qDebug() << "bind find" << idFieldSQlBindName << v;
