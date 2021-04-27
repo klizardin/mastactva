@@ -7,7 +7,8 @@ namespace db
 {
 
 static const QChar g_quote = QChar('\"');
-static const char *g_bindStart= ":";
+static const char *g_bindStart = ":";
+static const char *g_space = " ";
 
 
 bool isQuotedName(const QString &name_)
@@ -137,6 +138,16 @@ QStringList applyFunction(const QStringList &sqlNames_, const QString &function_
     for(const QString &name: qAsConst(sqlNames_))
     {
         res.push_back(QString("%1(%2)").arg(function_, name));
+    }
+    return res;
+}
+
+QStringList textTypes(const QStringList &names_)
+{
+    QStringList res;
+    for(const auto &name_ : qAsConst(names_))
+    {
+        res.push_back(name_ + QString(g_space) + QString(g_sqlText));
     }
     return res;
 }

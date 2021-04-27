@@ -62,21 +62,9 @@ QString JsonSqlField::getSqlType() const
     return QString(g_sqlText);
 }
 
-QString JsonSqlField::toBindName(const QString &sqlName_)
-{
-    if(sqlName_.at(0)==QChar('"'))
-    {
-        return QString(":") + sqlName_.mid(1, sqlName_.length() - 2);
-    }
-    else
-    {
-        return QString(":") + sqlName_;
-    }
-}
-
 QString JsonSqlField::getBindName() const
 {
-    return toBindName(sqlName);
+    return db::toBindName(sqlName);
 }
 
 QString JsonSqlField::sqlValueName() const

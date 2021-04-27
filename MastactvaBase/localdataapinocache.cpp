@@ -4,35 +4,10 @@
 #include <QDirIterator>
 #include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
-
-
-inline QString refName(const QString &ref_)
-{
-    return QString(g_refPrefix) + ref_;
-}
-
-inline QStringList refsNames(const QStringList &refs_)
-{
-    QStringList res;
-    for(const auto &s : qAsConst(refs_))
-    {
-        res.push_back(refName(s));
-    }
-    return res;
-}
-
-inline QStringList textTypes(const QStringList &names_)
-{
-    QStringList res;
-    for(const auto &s : qAsConst(names_))
-    {
-        res.push_back(s + QString(" ") + QString(g_sqlText));
-    }
-    return res;
-}
 
 
 bool LocalDataAPINoCacheImpl::canProcess(const DBRequestInfo *r_) const
@@ -62,8 +37,8 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldsRequests = (QStringList()
-                                    << textTypes(refsNames(refs))
-                                    << textTypes(refsNames(extraFields.keys()))
+                                    << db::textTypes(db::refNames(refs))
+                                    << db::textTypes(db::refNames(extraFields.keys()))
                                     << tableFieldsNameTypePairs
                                     ).join(g_insertFieldSpliter)
             ;
@@ -258,19 +233,6 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
     return !m_savePath.isEmpty();
 }
 
-
-QStringList conditionsFromSqlNamesames(const QStringList &refs_)
-{
-    QStringList res;
-    for(const QString &sqlName : qAsConst(refs_))
-    {
-        const QString ref = refName(sqlName);
-        res.push_back(QString("%1=%2").arg(ref, db::JsonSqlField::toBindName(ref)));
-    }
-    return res;
-}
-
-
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
@@ -289,15 +251,15 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldNames = (QStringList()
-                                << refsNames(refs)
-                                << refsNames(extraFields.keys())
+                                << db::refNames(refs)
+                                << db::refNames(extraFields.keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs))
     {
-        const QString refBindName = QString(":") + refName(ref);
+        const QString refBindName = db::toBindName(db::refName(ref));
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
@@ -306,7 +268,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         ; ++it
         )
     {
-        const QString refBindName = QString(":") + refName(it.key());
+        const QString refBindName = db::toBindName(db::refName(it.key()));
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
@@ -336,8 +298,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
     const QString conditionStr = (conditionsList
-                            << conditionsFromSqlNamesames(refs)
-                            << conditionsFromSqlNamesames(extraFields.keys())
+                            << db::equalToValueConditionListFromSqlNameList(refs)
+                            << db::equalToValueConditionListFromSqlNameList(extraFields.keys())
                             ).join(" AND ");
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1 ;")
             .arg(tableName, conditionStr);

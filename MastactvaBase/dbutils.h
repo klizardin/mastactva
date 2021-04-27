@@ -20,6 +20,7 @@ namespace db
     QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_);
     QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_);
     QStringList applyFunction(const QStringList &sqlNames_, const QString &function_);
+    QStringList textTypes(const QStringList &names_);
 
     const QSet<QString> &sqlKeywords();
 }
