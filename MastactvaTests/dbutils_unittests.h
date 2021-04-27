@@ -66,4 +66,16 @@ TEST(DBUtils, filterNames)
     ASSERT_EQ(2, leftInListAfterFilter(names, filterList2));
 }
 
+TEST(DBUtils, applyFunction)
+{
+    const QStringList res = db::applyFunction(
+                QStringList({"some_name", "another_name", "\"quoted\""}),
+                QString("SUM")
+                );
+    ASSERT_STRCASEEQ("SUM(some_name)", res[0].toUtf8().constData());
+    ASSERT_STRCASEEQ("SUM(another_name)", res[1].toUtf8().constData());
+    ASSERT_STRCASEEQ("SUM(\"quoted\")", res[2].toUtf8().constData());
+}
+
+
 #endif
