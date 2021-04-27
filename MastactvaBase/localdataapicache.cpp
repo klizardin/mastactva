@@ -2,65 +2,9 @@
 #include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
-
-
-inline QString refName(const QString &ref_)
-{
-    return QString(g_refPrefix) + ref_;
-}
-
-inline QStringList refsNames(const QStringList &refs_)
-{
-    QStringList res;
-    for(const auto &s : qAsConst(refs_))
-    {
-        res.push_back(refName(s));
-    }
-    return res;
-}
-
-QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &names_)
-{
-    QStringList res;
-    for(const QString &sqlName : qAsConst(names_))
-    {
-        const QString ref = refName(sqlName);
-        res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
-    }
-    return res;
-}
-
-QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_)
-{
-    if(leftNames_.isEmpty()) { return sqlNames_; }
-    QStringList res;
-    for(const QString &name: qAsConst(sqlNames_))
-    {
-        const auto fit = std::find_if(std::cbegin(leftNames_), std::cend(leftNames_),
-                                      [&name](const QVariant &val)->bool
-        {
-           return val.isValid() && val.toString() == name;
-        });
-        if(std::cend(leftNames_) != fit)
-        {
-            res.push_back(name);
-        }
-    }
-    return res;
-}
-
-QStringList applyFunction(const QStringList &sqlNames_, const QString &function_)
-{
-    if(function_.isEmpty()) { return sqlNames_; }
-    QStringList res;
-    for(const QString &name: qAsConst(sqlNames_))
-    {
-        res.push_back(QString("%1(%2)").arg(function_, name));
-    }
-    return res;
-}
 
 
 bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
@@ -71,7 +15,10 @@ bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
 
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -79,11 +26,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
+
     const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
     const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
             ? procedureFields.value(g_procedureSelectFunctionName).toString()
@@ -99,8 +43,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ;
     const QString fieldsOfRequest = QString("%1 %2").arg(
                 procedureSelectFunction,
-                applyFunction(
-                    filterNames(r_->getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
+                db::applyFunction(
+                    db::filterNames(db::getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
                     , procedureArgFunction
                     ).join(g_insertFieldSpliter)
                 );
@@ -109,7 +53,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     const QStringList refs = r_->getRefs();
     for(const QString &ref : qAsConst(refs))
     {
-        const QString refBindName = QString(":") + refName(ref);
+        const QString refBindName = QString(":") + db::refName(ref);
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
@@ -119,7 +63,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         ; ++it
         )
     {
-        const QString refBindName = QString(":") + refName(it.key());
+        const QString refBindName = QString(":") + db::refName(it.key());
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
@@ -145,11 +89,11 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ;
     const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
-                            << equalToValueConditionsFromSqlNamesFromSqlNames(
-                                        filterNames(refs,procedureFilterConditions)
+                            << db::equalToValueConditionListFromSqlNameList(
+                                        db::filterNames(refs,procedureFilterConditions)
                                         )
-                            << equalToValueConditionsFromSqlNamesFromSqlNames(
-                                        filterNames(extraFields.keys(),procedureFilterConditions)
+                            << db::equalToValueConditionListFromSqlNameList(
+                                        db::filterNames(extraFields.keys(),procedureFilterConditions)
                                         )
                             ).join(" AND ");
     const QString conditionStr = hasCondition
@@ -224,18 +168,18 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         do
         {
             QJsonObject jsonObj;
-            for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
+            for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
             {
                 const auto fitFld = std::find_if(std::cbegin(procedureFilterFields), std::cend(procedureFilterFields),
                                                  [&fi](const QVariant &v)->bool
                 {
-                    return v.isValid() && fi.sqlName == v.toString();
+                    return v.isValid() && fi.getSqlName() == v.toString();
                 });
                 if(!procedureFilterFields.isEmpty() && std::cend(procedureFilterFields) == fitFld) { continue; }
                 const QVariant val = query.value(fi.sqlValueName());
                 if(val.isValid())
                 {
-                    jsonObj.insert(fi.jsonName, fi.jsonValue(val));
+                    jsonObj.insert(fi.getJsonName(), fi.jsonValue(val));
                 }
             }
             jsonArray.push_back(jsonObj);
@@ -256,7 +200,10 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -268,23 +215,20 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
+
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
-                                << refsNames(refs)
-                                << refsNames(extraFields.keys())
-                                << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
+                                << db::refNames(refs)
+                                << db::refNames(extraFields.keys())
+                                << db::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs))
     {
-        const QString refBindName = QString(":") + refName(ref);
+        const QString refBindName = QString(":") + db::refName(ref);
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
@@ -293,7 +237,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         ; ++it
         )
     {
-        const QString refBindName = QString(":") + refName(it.key());
+        const QString refBindName = QString(":") + db::refName(it.key());
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
@@ -308,14 +252,14 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QString idFieldSqlName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
     }
     const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
             .arg(idFieldSqlName, tableName);
@@ -332,9 +276,9 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         query.bindValue(bind, v);
     }
     int nextId = 1;
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
-        if(bindInfo.idField)
+        if(bindInfo.isIdField())
         {
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
@@ -352,13 +296,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
             {
                 nextId = findQuery.value(0).toInt() + 1;
             }
-            bindInfo.bind(query, QVariant::fromValue(nextId));
+            db::bind(bindInfo, query, QVariant::fromValue(nextId));
             findQuery.finish();
         }
         else
         {
-            const QVariant val = values_.value(bindInfo.jsonName);
-            bindInfo.bind(query, val);
+            const QVariant val = values_.value(bindInfo.getJsonName());
+            db::bind(bindInfo, query, val);
         }
     }
 
@@ -383,11 +327,11 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     else
     {
         QHash<QString, QVariant> values = values_;
-        for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
-            if(bindInfo.idField)
+            if(bindInfo.isIdField())
             {
-                values.insert(bindInfo.jsonName, QVariant::fromValue(nextId));
+                values.insert(bindInfo.getJsonName(), QVariant::fromValue(nextId));
             }
         }
         r->addJsonResult(values);
@@ -407,7 +351,10 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -418,26 +365,22 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     QString idFieldJsonName;
     QString idFieldSqlName;
     QString idFieldSqlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
-        idFieldSqlBindName = fitId->getBindName();
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSqlBindName = fitId->getBindSqlName();
     }
     else
     {
@@ -455,10 +398,10 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #endif
 
     query.prepare(sqlRequest);
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
-        const QVariant val = values_.value(bindInfo.jsonName);
-        bindInfo.bind(query, val);
+        const QVariant val = values_.value(bindInfo.getJsonName());
+        db::bind(bindInfo, query, val);
     }
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
@@ -495,7 +438,8 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    { return false; }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -506,26 +450,22 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     QString idFieldJsonName;
     QString idFieldSqlName;
     QString idFieldSqlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
-        idFieldSqlBindName = fitId->getBindName();
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSqlBindName = fitId->getBindSqlName();
     }
     else
     {
@@ -541,7 +481,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
 #endif
 
     query.prepare(sqlRequest);
-    fitId->bind(query, id_);
+    db::bind(*fitId, query, id_);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "delete sql bound" << query.boundValues();

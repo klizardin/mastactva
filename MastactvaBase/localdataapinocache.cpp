@@ -4,35 +4,12 @@
 #include <QDirIterator>
 #include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/timeutils.h"
+#include "../MastactvaBase/dbutils.h"
+#include "../MastactvaBase/jsonutils.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
-
-
-inline QString refName(const QString &ref_)
-{
-    return QString(g_refPrefix) + ref_;
-}
-
-inline QStringList refsNames(const QStringList &refs_)
-{
-    QStringList res;
-    for(const auto &s : qAsConst(refs_))
-    {
-        res.push_back(refName(s));
-    }
-    return res;
-}
-
-inline QStringList textTypes(const QStringList &names_)
-{
-    QStringList res;
-    for(const auto &s : qAsConst(names_))
-    {
-        res.push_back(s + QString(" ") + QString(g_sqlText));
-    }
-    return res;
-}
 
 
 bool LocalDataAPINoCacheImpl::canProcess(const DBRequestInfo *r_) const
@@ -49,21 +26,17 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
 #endif
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
     QStringList tableFieldsNameTypePairs;
-    for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
+    for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
     {
-        tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
+        tableFieldsNameTypePairs.push_back(fi.getSqlName() + QString(" ") + fi.getSqlType());
     }
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldsRequests = (QStringList()
-                                    << textTypes(refsNames(refs))
-                                    << textTypes(refsNames(extraFields.keys()))
+                                    << db::textTypes(db::refNames(refs))
+                                    << db::textTypes(db::refNames(extraFields.keys()))
                                     << tableFieldsNameTypePairs
                                     ).join(g_insertFieldSpliter)
             ;
@@ -198,7 +171,7 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
 void LocalDataAPINoCache::startSave(const QString &savePath_)
 {
     m_savePath = savePath_;
-    QString dateStr = dateTimeToJsonString(QDateTime::currentDateTime());
+    QString dateStr = date_time::dateTimeToJsonString(QDateTime::currentDateTime());
     dateStr.replace(":", "_");
     dateStr.replace("-", "_");
     dateStr.replace(".", "_");
@@ -258,19 +231,6 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
     return !m_savePath.isEmpty();
 }
 
-
-QStringList conditionsFromSqlNamesames(const QStringList &refs_)
-{
-    QStringList res;
-    for(const QString &sqlName : qAsConst(refs_))
-    {
-        const QString ref = refName(sqlName);
-        res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
-    }
-    return res;
-}
-
-
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
@@ -281,23 +241,20 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
+
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldNames = (QStringList()
-                                << refsNames(refs)
-                                << refsNames(extraFields.keys())
-                                << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
+                                << db::refNames(refs)
+                                << db::refNames(extraFields.keys())
+                                << db::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs))
     {
-        const QString refBindName = QString(":") + refName(ref);
+        const QString refBindName = db::toBindName(db::refName(ref));
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
@@ -306,7 +263,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         ; ++it
         )
     {
-        const QString refBindName = QString(":") + refName(it.key());
+        const QString refBindName = db::toBindName(db::refName(it.key()));
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
@@ -322,22 +279,22 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QString idFieldSQlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
     QStringList conditionsList;
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
-        idFieldSQlBindName = fitId->getBindName();
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSQlBindName = fitId->getBindSqlName();
         conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
     const QString conditionStr = (conditionsList
-                            << conditionsFromSqlNamesames(refs)
-                            << conditionsFromSqlNamesames(extraFields.keys())
+                            << db::equalToValueConditionListFromSqlNameList(refs)
+                            << db::equalToValueConditionListFromSqlNameList(extraFields.keys())
                             ).join(" AND ");
     const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1 ;")
             .arg(tableName, conditionStr);
@@ -360,7 +317,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             if(!idFieldJsonName.isEmpty())
             {
                 const QJsonValue valueJV = itemJV[idFieldJsonName];
-                const int v = DBRequestInfo::JsonFieldInfo::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
+                const int v = json::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
                 findQuery.bindValue(idFieldSQlBindName, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
                 qDebug() << "bind find" << idFieldSQlBindName << v;
@@ -398,10 +355,10 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << "bind" << bind << v;
 #endif
         }
-        for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
-            const QJsonValue valueJV = itemJV[bindInfo.jsonName];
-            bindInfo.bind(query, valueJV);
+            const QJsonValue valueJV = itemJV[bindInfo.getJsonName()];
+            db::bind(bindInfo, query, valueJV);
         }
         if(!query.exec())
         {

@@ -19,6 +19,7 @@
 #include "qmlmainobjects.h"
 #include "mastactvaapi.h"
 #include "appconsts.h"
+#include "../MastactvaBase/timeutils.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -544,7 +545,7 @@ GalleryItemData* GalleryItemData_fromJsonT(QObject *parent_, const JsonType &jso
     QJsonValue createdVal = jsonValue_["created"];
     if(QJsonValue::Undefined != createdVal.type() && createdVal.isString())
     {
-        created = dateTimeFromJsonString(createdVal.toString());
+        created = date_time::dateTimeFromJsonString(createdVal.toString());
     }
     else
     {
@@ -1341,7 +1342,7 @@ QuestionData *QuestionData_fromJsonT(QObject *parent_, const JsonObject &jsonVal
 
     QDateTime created;
     QJsonValue createdJV = jsonValue_["created"];
-    if(!createdJV.isUndefined() && createdJV.isString()) { created = dateTimeFromJsonString(createdJV.toString()); }
+    if(!createdJV.isUndefined() && createdJV.isString()) { created = date_time::dateTimeFromJsonString(createdJV.toString()); }
     else { error_ = true; }
 
     return new QuestionData(parent_, id, questionText, pointsToPass, created);
@@ -1811,7 +1812,7 @@ ImagePointData *ImagePointData::fromJson(QObject *parent_, int sourceImageId_, c
     QJsonValue createdJV = jsonObject_["created"];
     if(!createdJV.isUndefined() && createdJV.isString())
     {
-        created = dateTimeFromJsonString(createdJV.toString());
+        created = date_time::dateTimeFromJsonString(createdJV.toString());
     }
     else
     {
@@ -1866,7 +1867,7 @@ void ImagePointData::createData(bool pointToNextImage_)
     rec.insert("x", QJsonValue::fromVariant(xCoord()));
     rec.insert("y", QJsonValue::fromVariant(yCoord()));
     rec.insert("weight", QJsonValue::fromVariant(weight()));
-    rec.insert("created", QJsonValue::fromVariant(dateTimeToJsonString(QDateTime::currentDateTime())));
+    rec.insert("created", QJsonValue::fromVariant(date_time::dateTimeToJsonString(QDateTime::currentDateTime())));
     QJsonDocument doc(rec);
 
     m_createDataRequest->setDocument(doc);
@@ -1943,7 +1944,7 @@ void ImagePointData::cretateTemplQuestionData()
     QJsonObject rec;
     rec.insert("question", QJsonValue::fromVariant("?"));           // template data
     rec.insert("points_to_pass", QJsonValue::fromVariant(1.0));     // template data
-    rec.insert("created", QJsonValue::fromVariant(dateTimeToJsonString(QDateTime::currentDateTime())));     // template data
+    rec.insert("created", QJsonValue::fromVariant(date_time::dateTimeToJsonString(QDateTime::currentDateTime())));     // template data
     QJsonDocument doc(rec);
 
     m_createQuestionRequest->setDocument(doc);
@@ -2881,7 +2882,7 @@ DescriptionData* DescriptionData::fromJson(QObject *parent_, int imageId_, const
 
     // fromDateTime
     QJsonValue fromDateTimeJV = value_["from_field"];
-    if(!fromDateTimeJV.isUndefined()) { fromDateTime = dateTimeFromJsonString(fromDateTimeJV.toString()); }
+    if(!fromDateTimeJV.isUndefined()) { fromDateTime = date_time::dateTimeFromJsonString(fromDateTimeJV.toString()); }
     else { error_ |= true; }
 
     // descriptionStr

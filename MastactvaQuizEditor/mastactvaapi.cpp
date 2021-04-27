@@ -226,7 +226,7 @@ void MastactvaAPI::addImage(int galleryId_, const QString &fileURL_, bool topIma
     m_addImageRequest->addPart(QString("form-data; name=\"filename\"; filename=\"%1\"").arg(fileInfo.fileName().replace("\"", "")), file);
     m_addImageRequest->addPart("form-data; name=\"hash\"", hash.toUtf8());
     m_addImageRequest->addPart("form-data; name=\"use_in_gallery_view\"", (topImage_ || galleryEmpty)?"True":"False");
-    m_addImageRequest->addPart("form-data; name=\"created\"", dateTimeToJsonString(QDateTime::currentDateTime()).toUtf8());
+    m_addImageRequest->addPart("form-data; name=\"created\"", date_time::dateTimeToJsonString(QDateTime::currentDateTime()).toUtf8());
 
     netAPI->post("image/", m_addImageRequest);
 }
@@ -411,7 +411,7 @@ void MastactvaAPI::onDescriptionDeletedSlot(int errorCode_, RequestDataV0 *reque
 
 QString MastactvaAPI::nowJsonStr()
 {
-    QDateTime dt = nowTz();
+    QDateTime dt = date_time::nowTz();
     return dt.toString(Qt::ISODate);
 }
 

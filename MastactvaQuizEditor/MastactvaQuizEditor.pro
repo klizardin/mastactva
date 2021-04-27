@@ -122,6 +122,14 @@ unix: HEADERS += \
         wavefrontobj.h  \
         quizimagedrawingdata.h  \
         quizimageopengldrawingdata.h    \
+        dbutils.h \
+        jsonutils.h \
+        layout_enums.h  \
+        layout_json.h   \
+        layout_type.h   \
+        layout_variant.h    \
+        sqlutils.h  \
+        timeutils.h \
 
 
 SOURCES += \
@@ -178,6 +186,10 @@ unix: SOURCES += \
         wavefrontobj.cpp    \
         quizimagedrawingdata.cpp    \
         quizimageopengldrawingdata.cpp  \
+        dbutils.cpp \
+        jsonutils.cpp \
+        sqlutils.cpp    \
+        timeutils.cpp   \
 
 
 RESOURCES += qml.qrc    \

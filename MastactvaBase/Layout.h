@@ -13,6 +13,10 @@
 #include <QJsonObject>
 #include <QTimeZone>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/layout_enums.h"
+#include "../MastactvaBase/layout_variant.h"
+#include "../MastactvaBase/layout_type.h"
+#include "../MastactvaBase/layout_json.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -22,128 +26,30 @@ class Layout;
 
 namespace layout
 {
-    enum class JsonTypesEn : int
-    {
-        jt_null,
-        jt_bool,
-        jt_int,
-        jt_double,
-        jt_string,
-        jt_datetime,
-        jt_array,
-        jt_object,
-        jt_undefined
-    };
-
-    enum class SpecialFieldEn : int
-    {
-        none,
-        appId,
-        modelInfo,
-        objectModelInfo
-    };
-
-    template<typename T_>
-    inline QVariant getValue(const T_ &val_, bool toQML_ = true)
-    {
-        Q_UNUSED(toQML_);
-        return QVariant::fromValue(val_);
-    }
-
-    inline QVariant getValue(const bool &val_, bool toQML_ = true)
-    {
-        Q_UNUSED(toQML_);
-        return QVariant::fromValue((val_?1:0));
-    }
-
-    inline QVariant getValue(const QDateTime &val_, bool toQML_ = true)
-    {
-        Q_UNUSED(toQML_);
-        return QVariant::fromValue(dateTimeToJsonString(val_));
-    }
-
-    template<typename T_>
-    inline int compareValues(const T_ &val1_, const T_ &val2_, bool toQML_ = true)
-    {
-        Q_UNUSED(toQML_);
-        return val1_ < val2_ ? -1 : val2_ < val1_  ? 1 : 0;
-    }
-
-    template<typename T_>
-    inline void setValue(const QVariant &var_, T_ &dta_)
-    {
-        dta_ = qvariant_cast<T_>(var_);
-    }
-
-    // TODO: add more types
-    inline void setValue(const QJsonValue &var_, int &dta_)
-    {
-        if(var_.isNull() || !var_.isDouble()) { dta_ = 0; }
-        else { dta_ = var_.toInt(dta_); }
-    }
-
-    inline void setValue(const QJsonValue &var_, bool &dta_)
-    {
-        if(var_.isNull() || !var_.isDouble()) { dta_ = false; }
-        else { dta_ = var_.toInt(dta_) != 0; }
-    }
-
-    inline void setValue(const QJsonValue &var_, qreal &dta_)
-    {
-        if(var_.isNull() || !var_.isDouble()) { dta_ = 0.0; }
-        else { dta_ = var_.toDouble(dta_); }
-    }
-
-    inline void setValue(const QJsonValue &var_, QString &dta_)
-    {
-        if(var_.isNull() || !var_.isString()) { dta_ = QString(); }
-        else { dta_ = var_.toString(); }
-    }
-
-    inline void setValue(const QJsonValue &var_, QDateTime &dta_)
-    {
-        if(var_.isNull() || !var_.isString()) { dta_ = dateTimeFromJsonString(QString()); }
-        else { dta_ = dateTimeFromJsonString(var_.toString()); }
-    }
-
-    template<typename T_>
-    inline JsonTypesEn getJsonType(const T_ *)
-    {
-        return JsonTypesEn::jt_undefined;
-    }
-
-    inline JsonTypesEn getJsonType(const bool *)
-    {
-        return JsonTypesEn::jt_bool;
-    }
-
-    inline JsonTypesEn getJsonType(const int *)
-    {
-        return JsonTypesEn::jt_int;
-    }
-
-    inline JsonTypesEn getJsonType(const qreal *)
-    {
-        return JsonTypesEn::jt_double;
-    }
-
-    inline JsonTypesEn getJsonType(const QString *)
-    {
-        return JsonTypesEn::jt_string;
-    }
-
-    inline JsonTypesEn getJsonType(const QDateTime *)
-    {
-        return JsonTypesEn::jt_datetime;
-    }
-
     namespace Private
     {
         template<typename DataType_>
         class ILayoutItem
         {
         public:
-            ILayoutItem(int index_,
+            virtual ~ILayoutItem() = default;
+            virtual int getModelIndex() const = 0;
+            virtual bool isJsonItem() const = 0;
+            virtual bool isQMLItem() const = 0;
+            virtual QString getJsonName() const = 0;
+            virtual QString getQMLName() const = 0;
+            virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) const = 0;
+            virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
+            virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
+            virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const = 0;
+            virtual JsonTypesEn getJsonType() const = 0;
+        };
+
+        template<typename DataType_>
+        class ILayoutItemBase : public ILayoutItem<DataType_>
+        {
+        public:
+            ILayoutItemBase(int index_,
                         const QString &jsonName_,
                         const QString &qmlName_,
                         SpecialFieldEn type_ = SpecialFieldEn::none
@@ -154,8 +60,6 @@ namespace layout
                   m_type(type_)
             {
             }
-
-            virtual ~ILayoutItem() = default;
 
             virtual int getModelIndex() const
             {
@@ -181,12 +85,6 @@ namespace layout
             {
                 return getType()==SpecialFieldEn::none ? m_qmlName : QString();
             }
-
-            virtual QVariant getValue(const DataType_ *obj_m, bool toQML_) const = 0;
-            virtual void setValue(DataType_ *obj_, const QVariant& value_) const = 0;
-            virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const = 0;
-            virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const = 0;
-            virtual JsonTypesEn getJsonType() const = 0;
 
             bool isIdField() const
             {
@@ -224,7 +122,7 @@ namespace layout
 
 
         template<typename DataType_, typename ItemType_>
-        class LayoutField : public ILayoutItem<DataType_>
+        class LayoutField : public ILayoutItemBase<DataType_>
         {
         public:
             using getFuncPtr = ItemType_ (DataType_::*)() const;
@@ -236,7 +134,7 @@ namespace layout
                         getFuncPtr getFunc_,
                         setFuncPtr setFunc_
                         )
-                : ILayoutItem<DataType_>(index_, jsonName_, qmlName_),
+                : ILayoutItemBase<DataType_>(index_, jsonName_, qmlName_),
                   m_getFunc(getFunc_),
                   m_setFunc(setFunc_)
             {
@@ -285,7 +183,7 @@ namespace layout
         };
 
         template<typename DataType_, typename ModelType_>
-        class LayoutModelField : public ILayoutItem<DataType_>
+        class LayoutModelField : public ILayoutItemBase<DataType_>
         {
         public:
             using ModelTypePtr = ModelType_ *;
@@ -297,11 +195,11 @@ namespace layout
                              ModelTypeFieldPtr modelPtr_,
                              createModelFuncPtr createFuncPtr_
                              )
-                : ILayoutItem<DataType_>(index_, QString(), qmlName_),
+                : ILayoutItemBase<DataType_>(index_, QString(), qmlName_),
                   m_modelPtr(modelPtr_),
                   m_createFuncPtr(createFuncPtr_)
             {
-                ILayoutItem<DataType_>::setAutoCreated(true);
+                ILayoutItemBase<DataType_>::setAutoCreated(true);
             }
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
@@ -364,7 +262,7 @@ namespace layout
         };
 
         template<typename DataType_, typename ItemType_>
-        class LayoutSpecialField : public ILayoutItem<DataType_>
+        class LayoutSpecialField : public ILayoutItemBase<DataType_>
         {
         public:
             using itemMemberPtr = ItemType_ DataType_::*;
@@ -373,7 +271,7 @@ namespace layout
                              itemMemberPtr itemPtr,
                              SpecialFieldEn type_
                              )
-                : ILayoutItem<DataType_>(index_, QString(), QString(), type_),
+                : ILayoutItemBase<DataType_>(index_, QString(), QString(), type_),
                   m_itemPtr(itemPtr)
             {
             }
@@ -427,6 +325,10 @@ public:
     {
         clearData();
     }
+    LayoutBase(const LayoutBase &) = delete;
+    LayoutBase(const LayoutBase &&) = delete;
+    LayoutBase &operator = (const LayoutBase &) = delete;
+    LayoutBase &operator = (const LayoutBase &&) = delete;
 
     template<typename ItemType_>
     void addField(const QString &jsonName_,
@@ -584,7 +486,7 @@ public:
 
     QString getIdFieldJsonName() const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
             if(item->isIdField() && item->isJsonItem())
             {
@@ -596,7 +498,7 @@ public:
 
     QVariant getIdJsonValue(const DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
             if(item->isIdField() && item->isJsonItem())
             {
@@ -620,7 +522,7 @@ public:
 
     QVariant getSpecialFieldValue(layout::SpecialFieldEn type_, const DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(item->getType() == type_)
@@ -633,7 +535,7 @@ public:
 
     bool setSpecialFieldValue(layout::SpecialFieldEn type_, const QVariant &value_, DataType_ *obj_) const
     {
-        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(item->getType() == type_)
@@ -657,7 +559,7 @@ public:
 
     void setIdField(const QString &fieldJsonName_)
     {
-        layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
+        layout::Private::ILayoutItemBase<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
         Q_ASSERT(nullptr != layoutItem); // field not founded
         if(nullptr == layoutItem) { return; }
         layoutItem->setFieldId(true);
@@ -666,7 +568,7 @@ public:
     bool copyQMLFields(const DataType_ *from_, DataType_ *to_) const
     {
         bool ret = false;
-        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
             if(nullptr == item) { continue; }
             if(item->autoCreated())
@@ -700,7 +602,7 @@ protected:
         return ret;
     }
 
-    const layout::Private::ILayoutItem<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
+    const layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
     {
         const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
                      [&fieldJsonName_](layout::Private::ILayoutItem<DataType_> *item_)->bool
@@ -711,9 +613,9 @@ protected:
         return *fit;
     }
 
-    layout::Private::ILayoutItem<DataType_> *findItemByJsonName(const QString &fieldJsonName_)
+    layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_)
     {
-        return const_cast<layout::Private::ILayoutItem<DataType_> *>
+        return const_cast<layout::Private::ILayoutItemBase<DataType_> *>
                 (const_cast<const LayoutBase<DataType_> *>
                    (this)->findItemByJsonName(fieldJsonName_)
                 );
@@ -783,7 +685,7 @@ protected:
 private:
     QString m_layoutJsonName;
     int m_lastQMLIndex = 0;
-    QVector<layout::Private::ILayoutItem<DataType_> *> m_fields;
+    QVector<layout::Private::ILayoutItemBase<DataType_> *> m_fields;
     bool m_storeAfterSave = true;
 };
 
