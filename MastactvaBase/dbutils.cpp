@@ -397,14 +397,7 @@ QString JsonSqlField::getBindName() const
 
 QString JsonSqlField::sqlValueName() const
 {
-    if(sqlName.at(0)==QChar('"'))
-    {
-        return sqlName.mid(1, sqlName.length() - 2);
-    }
-    else
-    {
-        return sqlName;
-    }
+    return unquotName(sqlName);
 }
 
 layout::JsonTypesEn JsonSqlField::getType() const
