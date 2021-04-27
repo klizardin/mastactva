@@ -26,10 +26,8 @@ TEST(DBUtils, refNames)
 
 TEST(DBUtils, toBindName)
 {
-    const QString simple = db::toBindName("simple");
-    ASSERT_STRCASEEQ(":simple", simple.toUtf8().constData());
-    const QString quoted = db::toBindName("\"quoted\"");
-    ASSERT_STRCASEEQ(":quoted", quoted.toUtf8().constData());
+    ASSERT_STRCASEEQ(":simple", db::toBindName("simple").toUtf8().constData());
+    ASSERT_STRCASEEQ(":quoted", db::toBindName("\"quoted\"").toUtf8().constData());
 }
 
 #endif
