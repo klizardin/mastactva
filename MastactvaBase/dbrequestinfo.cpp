@@ -474,8 +474,8 @@ QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant
     QJsonObject obj;
     for(const db::JsonSqlField &fi : qAsConst(m_tableFieldsInfo))
     {
-        if(!values_.contains(fi.jsonName)) { continue; }
-        obj.insert(fi.jsonName, fi.jsonValue(values_.value(fi.jsonName)));
+        if(!values_.contains(fi.getJsonName())) { continue; }
+        obj.insert(fi.getJsonName(), fi.jsonValue(values_.value(fi.getJsonName())));
     }
     return obj;
 }
@@ -493,7 +493,7 @@ QStringList DBRequestInfo::getSqlNames(const QList<db::JsonSqlField> &tableField
     QStringList res;
     for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
     {
-        res.push_back(fi.sqlName);
+        res.push_back(fi.getSqlName());
     }
     return res;
 }
@@ -513,9 +513,9 @@ QStringList DBRequestInfo::getSetNames(const QList<db::JsonSqlField> &tableField
     QStringList res;
     for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
     {
-        if(!fi.idField)
+        if(!fi.isIdField())
         {
-            res.push_back(QString("%1=%2").arg(fi.sqlName, fi.getBindName()));
+            res.push_back(QString("%1=%2").arg(fi.getSqlName(), fi.getBindName()));
         }
     }
     return res;
@@ -563,8 +563,8 @@ void LocalDBRequest::addJsonResult(const QHash<QString, QVariant> &values_)
     QJsonObject obj;
     for(const db::JsonSqlField &bindInfo : qAsConst(getTableFieldsInfo()))
     {
-        const QVariant val = values_.contains(bindInfo.jsonName) ? values_.value(bindInfo.jsonName) : QVariant();
-        obj.insert(bindInfo.jsonName, bindInfo.jsonValue(val));
+        const QVariant val = values_.contains(bindInfo.getJsonName()) ? values_.value(bindInfo.getJsonName()) : QVariant();
+        obj.insert(bindInfo.getJsonName(), bindInfo.jsonValue(val));
     }
     array.push_back(obj);
     m_doc = QJsonDocument(array);

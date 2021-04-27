@@ -29,7 +29,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
     QStringList tableFieldsNameTypePairs;
     for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
     {
-        tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
+        tableFieldsNameTypePairs.push_back(fi.getSqlName() + QString(" ") + fi.getSqlType());
     }
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
@@ -280,14 +280,14 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
     QStringList conditionsList;
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
         idFieldSQlBindName = fitId->getBindName();
         conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
@@ -356,7 +356,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         }
         for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
-            const QJsonValue valueJV = itemJV[bindInfo.jsonName];
+            const QJsonValue valueJV = itemJV[bindInfo.getJsonName()];
             db::bind(bindInfo, query, valueJV);
         }
         if(!query.exec())

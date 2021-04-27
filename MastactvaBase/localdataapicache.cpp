@@ -173,13 +173,13 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
                 const auto fitFld = std::find_if(std::cbegin(procedureFilterFields), std::cend(procedureFilterFields),
                                                  [&fi](const QVariant &v)->bool
                 {
-                    return v.isValid() && fi.sqlName == v.toString();
+                    return v.isValid() && fi.getSqlName() == v.toString();
                 });
                 if(!procedureFilterFields.isEmpty() && std::cend(procedureFilterFields) == fitFld) { continue; }
                 const QVariant val = query.value(fi.sqlValueName());
                 if(val.isValid())
                 {
-                    jsonObj.insert(fi.jsonName, fi.jsonValue(val));
+                    jsonObj.insert(fi.getJsonName(), fi.jsonValue(val));
                 }
             }
             jsonArray.push_back(jsonObj);
@@ -254,12 +254,12 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
     }
     const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
             .arg(idFieldSqlName, tableName);
@@ -278,7 +278,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     int nextId = 1;
     for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
-        if(bindInfo.idField)
+        if(bindInfo.isIdField())
         {
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
@@ -301,7 +301,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         }
         else
         {
-            const QVariant val = values_.value(bindInfo.jsonName);
+            const QVariant val = values_.value(bindInfo.getJsonName());
             db::bind(bindInfo, query, val);
         }
     }
@@ -329,9 +329,9 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         QHash<QString, QVariant> values = values_;
         for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
-            if(bindInfo.idField)
+            if(bindInfo.isIdField())
             {
-                values.insert(bindInfo.jsonName, QVariant::fromValue(nextId));
+                values.insert(bindInfo.getJsonName(), QVariant::fromValue(nextId));
             }
         }
         r->addJsonResult(values);
@@ -374,12 +374,12 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
         idFieldSqlBindName = fitId->getBindName();
     }
     else
@@ -400,7 +400,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     query.prepare(sqlRequest);
     for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
-        const QVariant val = values_.value(bindInfo.jsonName);
+        const QVariant val = values_.value(bindInfo.getJsonName());
         db::bind(bindInfo, query, val);
     }
 
@@ -459,12 +459,12 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const db::JsonSqlField &bindInfo)->bool
     {
-        return bindInfo.idField;
+        return bindInfo.isIdField();
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->jsonName;
-        idFieldSqlName = fitId->sqlName;
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
         idFieldSqlBindName = fitId->getBindName();
     }
     else

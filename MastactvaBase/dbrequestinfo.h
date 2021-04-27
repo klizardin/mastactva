@@ -38,15 +38,12 @@ namespace db
 {
     struct JsonSqlField
     {
-        QString jsonName;
-        QString sqlName;
-        layout::JsonTypesEn type;
-        bool idField = false;
-
-        JsonSqlField(const QString &jsonName_,
-                      const QString &sqlName_,
-                      const layout::JsonTypesEn type_,
-                      bool idField_);
+        JsonSqlField(
+                const QString &jsonName_,
+                const QString &sqlName_,
+                const layout::JsonTypesEn type_,
+                bool idField_
+                );
 
         const QString &getJsonName() const;
         const QString &getSqlName() const;
@@ -57,6 +54,11 @@ namespace db
         bool isIdField() const;
         QJsonValue jsonValue(const QVariant &val_) const;
 
+    private:
+        QString jsonName;
+        QString sqlName;
+        layout::JsonTypesEn type;
+        bool idField = false;
     };
 
     void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
