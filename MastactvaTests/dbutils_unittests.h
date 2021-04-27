@@ -17,4 +17,11 @@ TEST(DBUtils, refName)
     ASSERT_STRCASEEQ("ref_some_name", res.toUtf8().constData());
 }
 
+TEST(DBUtils, refNames)
+{
+    const QStringList res = db::refsNames(QStringList({"some_name", "another_name"}));
+    ASSERT_STRCASEEQ("ref_some_name", res[0].toUtf8().constData());
+    ASSERT_STRCASEEQ("ref_another_name", res[1].toUtf8().constData());
+}
+
 #endif
