@@ -13,7 +13,7 @@ using namespace testing;
 
 TEST(DBUtils, refName)
 {
-    const QString res = refName("some_name");
+    const QString res = db::refName("some_name");
     ASSERT_STRCASEEQ("ref_some_name", res.toUtf8().constData());
 }
 

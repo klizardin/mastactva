@@ -2,6 +2,9 @@
 #include "../MastactvaBase/names.h"
 
 
+namespace db
+{
+
 QString refName(const QString &ref_)
 {
     return QString(g_refPrefix) + ref_;
@@ -70,3 +73,4 @@ QStringList applyFunction(const QStringList &sqlNames_, const QString &function_
     return res;
 }
 
+}

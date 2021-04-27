@@ -2,6 +2,7 @@
 #include <QNetworkReply>
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
@@ -42,8 +43,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ;
     const QString fieldsOfRequest = QString("%1 %2").arg(
                 procedureSelectFunction,
-                applyFunction(
-                    filterNames(r_->getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
+                db::applyFunction(
+                    db::filterNames(r_->getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
                     , procedureArgFunction
                     ).join(g_insertFieldSpliter)
                 );
@@ -52,7 +53,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     const QStringList refs = r_->getRefs();
     for(const QString &ref : qAsConst(refs))
     {
-        const QString refBindName = QString(":") + refName(ref);
+        const QString refBindName = QString(":") + db::refName(ref);
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
@@ -62,7 +63,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         ; ++it
         )
     {
-        const QString refBindName = QString(":") + refName(it.key());
+        const QString refBindName = QString(":") + db::refName(it.key());
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
@@ -88,11 +89,11 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ;
     const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
-                            << equalToValueConditionsFromSqlNamesFromSqlNames(
-                                        filterNames(refs,procedureFilterConditions)
+                            << db::equalToValueConditionsFromSqlNamesFromSqlNames(
+                                        db::filterNames(refs,procedureFilterConditions)
                                         )
-                            << equalToValueConditionsFromSqlNamesFromSqlNames(
-                                        filterNames(extraFields.keys(),procedureFilterConditions)
+                            << db::equalToValueConditionsFromSqlNamesFromSqlNames(
+                                        db::filterNames(extraFields.keys(),procedureFilterConditions)
                                         )
                             ).join(" AND ");
     const QString conditionStr = hasCondition
@@ -219,15 +220,15 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
-                                << refsNames(refs)
-                                << refsNames(extraFields.keys())
+                                << db::refsNames(refs)
+                                << db::refsNames(extraFields.keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs))
     {
-        const QString refBindName = QString(":") + refName(ref);
+        const QString refBindName = QString(":") + db::refName(ref);
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
@@ -236,7 +237,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         ; ++it
         )
     {
-        const QString refBindName = QString(":") + refName(it.key());
+        const QString refBindName = QString(":") + db::refName(it.key());
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
