@@ -128,6 +128,7 @@ unix: HEADERS += \
         layout_json.h   \
         layout_type.h   \
         layout_variant.h    \
+        sqlutils.h  \
 
 
 SOURCES += \
@@ -186,6 +187,7 @@ unix: SOURCES += \
         quizimageopengldrawingdata.cpp  \
         dbutils.cpp \
         jsonutils.cpp \
+        sqlutils.cpp    \
 
 
 RESOURCES += qml.qrc    \

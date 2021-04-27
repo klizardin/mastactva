@@ -90,6 +90,7 @@ unix: SOURCES += \
         wavefrontobj.cpp    \
         dbutils.cpp \
         jsonutils.cpp   \
+        sqlutils.cpp    \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -194,6 +195,7 @@ unix: HEADERS += \
     layout_json.h   \
     layout_type.h   \
     layout_variant.h    \
+    sqlutils.h  \
     defines.h   \
     \
     quizimage.h \
