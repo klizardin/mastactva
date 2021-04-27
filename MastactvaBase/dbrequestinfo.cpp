@@ -151,13 +151,6 @@ QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant
     return obj;
 }
 
-//QString DBRequestInfo::namingConversion(const QString &name_)
-//{
-//    QString res = name_;
-//    res.replace("-", "_");
-//    return res;
-//}
-
 QStringList DBRequestInfo::getSqlNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
 {
 
