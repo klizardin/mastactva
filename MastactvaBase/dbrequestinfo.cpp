@@ -107,21 +107,21 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         if(layout::JsonTypesEn::jt_bool == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_int == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << int(v);
+            qDebug() << "bind" << field_.getBindName() << int(v);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << double(v);
+            qDebug() << "bind" << field_.getBindName() << double(v);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(double(v)));
         }
@@ -129,14 +129,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << QString::number(v?1:0);
+            qDebug() << "bind" << field_.getBindName() << QString::number(v?1:0);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(QString::number(v?1:0)));
         }
@@ -147,21 +147,21 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         if(field_.isIdField())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << int(v);
+            qDebug() << "bind" << field_.getBindName() << int(v);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(int(v)));
         }
         else if(layout::JsonTypesEn::jt_int == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << int(v);
+            qDebug() << "bind" << field_.getBindName() << int(v);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(int(v)));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
@@ -169,14 +169,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << QString::number(v);
+            qDebug() << "bind" << field_.getBindName() << QString::number(v);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(QString::number(v)));
         }
@@ -187,7 +187,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const int v = QVariant::fromValue(jv_.toString()).toInt();
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
@@ -195,7 +195,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const double v = QVariant::fromValue(jv_.toString()).toDouble();
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
@@ -203,14 +203,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << jv_.toString();
+            qDebug() << "bind" << field_.getBindName() << jv_.toString();
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(jv_.toString()));
         }
@@ -220,14 +220,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         if(field_.isIdField() || layout::JsonTypesEn::jt_int == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << (int)0;
+            qDebug() << "bind" << field_.getBindName() << (int)0;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue((int)0));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << double(0);
+            qDebug() << "bind" << field_.getBindName() << double(0);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(double(0)));
         }
@@ -235,14 +235,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << QString();
+            qDebug() << "bind" << field_.getBindName() << QString();
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(QString()));
         }
@@ -252,14 +252,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         if(field_.isIdField() || layout::JsonTypesEn::jt_int == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << (int)0;
+            qDebug() << "bind" << field_.getBindName() << (int)0;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue((int)0));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << double(0);
+            qDebug() << "bind" << field_.getBindName() << double(0);
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(double(0)));
         }
@@ -267,14 +267,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
         {
             const QString v = dateTimeToJsonString(dateTimeFromJsonString(jv_.toString()));
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << v;
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << QString();
+            qDebug() << "bind" << field_.getBindName() << QString();
 #endif
             query_.bindValue(field_.getBindName(), QVariant::fromValue(QString()));
         }
@@ -284,7 +284,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_)
 {
 #if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << getBindName() << val_;
+            qDebug() << "bind" << field_.getBindName() << val_;
 #endif
     query_.bindValue(field_.getBindName(), val_);
 }
