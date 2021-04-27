@@ -77,5 +77,38 @@ TEST(DBUtils, applyFunction)
     ASSERT_STRCASEEQ("SUM(\"quoted\")", res[2].toUtf8().constData());
 }
 
+TEST(DBUtils, isQuotedName)
+{
+    ASSERT_FALSE(db::isQuotedName("name"));
+    ASSERT_TRUE(db::isQuotedName("\"name\""));
+}
+
+TEST(DBUtils, isRefName)
+{
+    ASSERT_FALSE(db::isRefName("name"));
+    ASSERT_TRUE(db::isRefName("ref_name"));
+}
+
+TEST(DBUtils, isBindName)
+{
+    ASSERT_FALSE(db::isBindName("name"));
+    ASSERT_TRUE(db::isBindName(":name"));
+}
+
+TEST(DBUtils, quotName)
+{
+    ASSERT_STRCASEEQ("\"name\"", db::quotName("name").toUtf8().constData());
+    ASSERT_STRCASEEQ("\"name\"", db::quotName("\"name\"").toUtf8().constData());
+    ASSERT_STRCASEEQ("ref_name", db::quotName("ref_name").toUtf8().constData());
+    ASSERT_STRCASEEQ(":name", db::quotName(":name").toUtf8().constData());
+}
+
+TEST(DBUtils, unquotName)
+{
+    ASSERT_STRCASEEQ("name", db::unquotName("\"name\"").toUtf8().constData());
+    ASSERT_STRCASEEQ("name", db::unquotName("name").toUtf8().constData());
+}
+
+
 
 #endif
