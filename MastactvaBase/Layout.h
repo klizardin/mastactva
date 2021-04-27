@@ -316,6 +316,10 @@ public:
     {
         clearData();
     }
+    LayoutBase(const LayoutBase &) = delete;
+    LayoutBase(const LayoutBase &&) = delete;
+    LayoutBase &operator = (const LayoutBase &) = delete;
+    LayoutBase &operator = (const LayoutBase &&) = delete;
 
     template<typename ItemType_>
     void addField(const QString &jsonName_,
