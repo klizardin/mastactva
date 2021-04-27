@@ -19,7 +19,7 @@ JsonSqlField::JsonSqlField(
       type(type_),
       idField(idField_)
 {
-    if(keywords().contains(sqlName.toUpper()))
+    if(sqlKeywords().contains(sqlName.toUpper()))
     {
         sqlName = QString("\"%1\"").arg(sqlName);
     }
@@ -611,7 +611,7 @@ QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString
     }
 }
 
-const QSet<QString> &keywords()
+const QSet<QString> &sqlKeywords()
 {
     static const QSet<QString> keys = {
         "USER",

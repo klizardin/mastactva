@@ -201,7 +201,7 @@ private:
 };
 
 
-const QSet<QString> &keywords();
+const QSet<QString> &sqlKeywords();
 
 
 class LocalDBRequest :
