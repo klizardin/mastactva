@@ -104,7 +104,11 @@ QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
 
 QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_)
 {
-    if(leftNames_.isEmpty()) { return sqlNames_; }
+    if(leftNames_.isEmpty())
+    {
+        return sqlNames_;
+    }
+
     QStringList res;
     for(const QString &name: qAsConst(sqlNames_))
     {
