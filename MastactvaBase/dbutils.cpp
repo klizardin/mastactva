@@ -127,7 +127,11 @@ QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &lef
 
 QStringList applyFunction(const QStringList &sqlNames_, const QString &function_)
 {
-    if(function_.isEmpty()) { return sqlNames_; }
+    if(function_.isEmpty())
+    {
+        return sqlNames_;
+    }
+
     QStringList res;
     for(const QString &name: qAsConst(sqlNames_))
     {
