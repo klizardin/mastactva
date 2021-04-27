@@ -88,6 +88,7 @@ unix: SOURCES += \
         localdataapiviews.cpp   \
         modelhelpers.cpp    \
         wavefrontobj.cpp    \
+        dbutils.cpp \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -186,6 +187,7 @@ unix: HEADERS += \
     modelhelpers.h  \
     names.h \
     wavefrontobj.h  \
+    dbutils.h   \
     defines.h   \
     \
     quizimage.h \
