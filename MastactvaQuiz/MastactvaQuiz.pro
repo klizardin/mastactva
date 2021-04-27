@@ -190,6 +190,7 @@ unix: HEADERS += \
     wavefrontobj.h  \
     dbutils.h   \
     jsonutils.h \
+    layout_enums.h  \
     defines.h   \
     \
     quizimage.h \

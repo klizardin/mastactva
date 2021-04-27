@@ -124,6 +124,7 @@ unix: HEADERS += \
         quizimageopengldrawingdata.h    \
         dbutils.h \
         jsonutils.h \
+        layout_enums.h  \
 
 
 SOURCES += \
