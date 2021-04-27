@@ -7,7 +7,14 @@ namespace db
 
 QString refName(const QString &ref_)
 {
-    return QString(g_refPrefix) + ref_;
+    if(ref_.at(0)==QChar('\"'))
+    {
+        return QString(g_refPrefix) + ref_.mid(1, ref_.length() - 2);;
+    }
+    else
+    {
+        return QString(g_refPrefix) + ref_;
+    }
 }
 
 QStringList refNames(const QStringList &refs_)
