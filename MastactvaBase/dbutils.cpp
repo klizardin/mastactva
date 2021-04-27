@@ -7,7 +7,6 @@ namespace db
 {
 
 static const QChar g_quote = QChar('\"');
-static const char *g_bindStart = ":";
 static const char *g_space = " ";
 
 
@@ -58,7 +57,7 @@ bool isRefName(const QString &name_)
 
 bool isBindName(const QString &name_)
 {
-    return name_.indexOf(QString(g_bindStart)) == 0;
+    return name_.indexOf(QString(g_bindPrefix)) == 0;
 }
 
 static inline QString addPrefixToName(const QString &prefix_, const QString &name_)
@@ -90,7 +89,7 @@ QStringList refNames(const QStringList &refs_)
 
 QString toBindName(const QString &sqlName_)
 {
-    return addPrefixToName(g_bindStart, sqlName_);
+    return addPrefixToName(g_bindPrefix, sqlName_);
 }
 
 QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
