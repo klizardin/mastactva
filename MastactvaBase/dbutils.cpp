@@ -10,7 +10,7 @@ QString refName(const QString &ref_)
     return QString(g_refPrefix) + ref_;
 }
 
-QStringList refsNames(const QStringList &refs_)
+QStringList refNames(const QStringList &refs_)
 {
     QStringList res;
     for(const auto &s : qAsConst(refs_))

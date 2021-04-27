@@ -10,7 +10,7 @@
 namespace db
 {
     QString refName(const QString &ref_);
-    QStringList refsNames(const QStringList &refs_);
+    QStringList refNames(const QStringList &refs_);
     QString toBindName(const QString &sqlName_);
     QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &names_);
     QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_);

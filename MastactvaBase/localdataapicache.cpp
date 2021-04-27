@@ -220,8 +220,8 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
-                                << db::refsNames(refs)
-                                << db::refsNames(extraFields.keys())
+                                << db::refNames(refs)
+                                << db::refNames(extraFields.keys())
                                 << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
