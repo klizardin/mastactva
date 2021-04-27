@@ -53,7 +53,7 @@ GalleryModelView::~GalleryModelView()
 bool GalleryModelView::canProcess(const DBRequestInfo *r_) const
 {
     if(nullptr == r_) { return false; }
-    const QString tableName = DBRequestInfo::namingConversion(
+    const QString tableName = db::jsonToSql(
                 getDataLayout<typename GalleryModel::DataType>().getLayoutJsonName()
                 );
     if(r_->getTableName() != tableName) { return false; }

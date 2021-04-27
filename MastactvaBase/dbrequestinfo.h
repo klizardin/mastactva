@@ -10,6 +10,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
 //#include "../MastactvaBase/netapi.h"
 
@@ -109,14 +110,14 @@ public:
 
 
         const QString jsonLayoutName = layoutName_;
-        tableName = namingConversion(jsonLayoutName);
+        tableName = db::jsonToSql(jsonLayoutName);
         const QString idFieldName = getDataLayout<DataType_>().getIdFieldJsonName();
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         tableFieldsInfo.clear();
         for(const auto &jsonFieldName: qAsConst(fieldsInfo))
         {
-            const QString sqlFieldName = namingConversion(jsonFieldName.first);
+            const QString sqlFieldName = db::jsonToSql(jsonFieldName.first);
             tableFieldsInfo.push_back(
                         db::JsonSqlField(jsonFieldName.first,
                                       sqlFieldName,
@@ -167,7 +168,7 @@ public:
 
     QJsonObject getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const;
 
-    static QString namingConversion(const QString &name_);
+    //static QString namingConversion(const QString &name_);
     static QStringList getSqlNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QStringList getSqlBindNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QStringList getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_);

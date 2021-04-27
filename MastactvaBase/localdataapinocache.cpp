@@ -24,7 +24,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
 #endif
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
     QStringList tableFieldsNameTypePairs;
     for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
     {
@@ -239,11 +239,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
+
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QString fieldNames = (QStringList()

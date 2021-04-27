@@ -26,11 +26,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
     const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
@@ -219,11 +215,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
@@ -373,11 +365,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     QString idFieldJsonName;
     QString idFieldSqlName;
@@ -462,11 +450,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    QString tableName = r_->getTableName();
-    if(!r_->getCurrentRef().isEmpty())
-    {
-        tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
-    }
+    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     QString idFieldJsonName;
     QString idFieldSqlName;
