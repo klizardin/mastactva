@@ -151,6 +151,25 @@ QStringList textTypes(const QStringList &names_)
     return res;
 }
 
+QString jsonToSql(const QString &jsonName_)
+{
+    QString res = jsonName_;
+    res.replace("-", "_");
+    return res;
+}
+
+QString tableName(const QString &jsonLayoutName_, const QString &refName_)
+{
+    if(refName_.trimmed().isEmpty())
+    {
+        return jsonToSql(jsonLayoutName_);
+    }
+    else
+    {
+        return jsonToSql(jsonLayoutName_) + QString(g_splitTableRef) + jsonToSql(refName_);
+    }
+}
+
 
 const QSet<QString> &sqlKeywords()
 {

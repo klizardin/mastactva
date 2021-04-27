@@ -21,6 +21,8 @@ namespace db
     QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_);
     QStringList applyFunction(const QStringList &sqlNames_, const QString &function_);
     QStringList textTypes(const QStringList &names_);
+    QString jsonToSql(const QString &jsonName_);
+    QString tableName(const QString &jsonLayoutName_, const QString &refName_);
 
     const QSet<QString> &sqlKeywords();
 }

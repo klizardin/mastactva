@@ -148,5 +148,35 @@ TEST(DBUtils, unquotName)
     ASSERT_STRCASEEQ("name", db::unquotName("name").toUtf8().constData());
 }
 
+TEST(DBUtils, jsonToSqlNaming)
+{
+    ASSERT_STRCASEEQ("name", db::jsonToSql("name").toUtf8().constData());
+    ASSERT_STRCASEEQ("name_1", db::jsonToSql("name-1").toUtf8().constData());
+}
+
+TEST(DBUtils, tableName)
+{
+    ASSERT_TRUE(compareResultAndStringsSum(
+                    db::tableName("table_name", ""),
+                    "table_name"
+                    )
+                );
+    ASSERT_TRUE(compareResultAndStringsSum(
+                    db::tableName("table_name", "reference_name"),
+                    "table_name", g_splitTableRef, "reference_name"
+                    )
+                );
+    ASSERT_TRUE(compareResultAndStringsSum(
+                    db::tableName("table-name", ""),
+                    "table_name"
+                    )
+                );
+    ASSERT_TRUE(compareResultAndStringsSum(
+                    db::tableName("table-name", "reference-name"),
+                    "table_name", g_splitTableRef, "reference_name"
+                    )
+                );
+}
+
 
 #endif
