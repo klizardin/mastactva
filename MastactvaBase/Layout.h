@@ -13,6 +13,7 @@
 #include <QJsonObject>
 #include <QTimeZone>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/layout_enums.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -22,27 +23,6 @@ class Layout;
 
 namespace layout
 {
-    enum class JsonTypesEn : int
-    {
-        jt_null,
-        jt_bool,
-        jt_int,
-        jt_double,
-        jt_string,
-        jt_datetime,
-        jt_array,
-        jt_object,
-        jt_undefined
-    };
-
-    enum class SpecialFieldEn : int
-    {
-        none,
-        appId,
-        modelInfo,
-        objectModelInfo
-    };
-
     template<typename T_>
     inline QVariant getValue(const T_ &val_, bool toQML_ = true)
     {
