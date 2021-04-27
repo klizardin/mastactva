@@ -13,31 +13,70 @@
 using namespace testing;
 
 
+bool comparePrefixedStringAndResult(
+        const char *prefix_,
+        const char *str_,
+        const QString &result_
+        )
+{
+    return QString(prefix_) + QString(str_) == result_;
+}
+
+template<typename Arg_>
+QString sumStrings(Arg_ arg_)
+{
+    return QString(arg_);
+}
+
+template<typename Arg_, typename ... Args_>
+QString sumStrings(Arg_ arg_, Args_ ... args_)
+{
+    return QString(arg_) + sumStrings(args_ ...);
+}
+
+template<typename ... Args_>
+bool compareResultAndStringsSum(const QString &result_, Args_ ... args_)
+{
+    return result_ == sumStrings(args_ ...);
+}
+
 TEST(DBUtils, refName)
 {
-    ASSERT_STRCASEEQ("ref_some_name", db::refName("some_name").toUtf8().constData());
-    ASSERT_STRCASEEQ("ref_some_name", db::refName("\"some_name\"").toUtf8().constData());
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "some_name", db::refName("some_name")));
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "some_name", db::refName("\"some_name\"")));
 }
 
 TEST(DBUtils, refNames)
 {
     const QStringList res = db::refNames(QStringList({"some_name", "another_name", "\"quoted\""}));
-    ASSERT_STRCASEEQ("ref_some_name", res[0].toUtf8().constData());
-    ASSERT_STRCASEEQ("ref_another_name", res[1].toUtf8().constData());
-    ASSERT_STRCASEEQ("ref_quoted", res[2].toUtf8().constData());
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "some_name", res[0]));
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "another_name", res[1]));
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "quoted", res[2]));
 }
 
 TEST(DBUtils, toBindName)
 {
-    ASSERT_STRCASEEQ(":simple", db::toBindName("simple").toUtf8().constData());
-    ASSERT_STRCASEEQ(":quoted", db::toBindName("\"quoted\"").toUtf8().constData());
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_bindPrefix, "simple", db::toBindName("simple")));
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_bindPrefix, "quoted", db::toBindName("\"quoted\"")));
 }
 
 TEST(DBUtils, equalToValueConditionListFromSqlNameList)
 {
-    const QStringList res = db::equalToValueConditionListFromSqlNameList(QStringList({"some_name", "\"another_name\""}));
-    ASSERT_STRCASEEQ("ref_some_name=:ref_some_name", res[0].toUtf8().constData());
-    ASSERT_STRCASEEQ("ref_another_name=:ref_another_name", res[1].toUtf8().constData());
+    const QStringList res = db::equalToValueConditionListFromSqlNameList(
+                QStringList({"some_name", "\"another_name\""})
+                );
+    ASSERT_TRUE(
+                compareResultAndStringsSum(
+                    res[0],
+                    g_refPrefix, "some_name", "=", g_bindPrefix, g_refPrefix, "some_name"
+                )
+            );
+    ASSERT_TRUE(
+                compareResultAndStringsSum(
+                    res[1],
+                    g_refPrefix, "another_name", "=", g_bindPrefix, g_refPrefix, "another_name"
+                )
+            );
 }
 
 static int leftInListAfterFilter(const QStringList &names_, const QVariantList &filterList_)
@@ -86,21 +125,21 @@ TEST(DBUtils, isQuotedName)
 TEST(DBUtils, isRefName)
 {
     ASSERT_FALSE(db::isRefName("name"));
-    ASSERT_TRUE(db::isRefName("ref_name"));
+    ASSERT_TRUE(db::isRefName(QString(g_refPrefix) + "name"));
 }
 
 TEST(DBUtils, isBindName)
 {
     ASSERT_FALSE(db::isBindName("name"));
-    ASSERT_TRUE(db::isBindName(":name"));
+    ASSERT_TRUE(db::isBindName(QString(g_bindPrefix) + "name"));
 }
 
 TEST(DBUtils, quotName)
 {
     ASSERT_STRCASEEQ("\"name\"", db::quotName("name").toUtf8().constData());
     ASSERT_STRCASEEQ("\"name\"", db::quotName("\"name\"").toUtf8().constData());
-    ASSERT_STRCASEEQ("ref_name", db::quotName("ref_name").toUtf8().constData());
-    ASSERT_STRCASEEQ(":name", db::quotName(":name").toUtf8().constData());
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "name", db::quotName(QString(g_refPrefix) + "name")));
+    ASSERT_TRUE(comparePrefixedStringAndResult(g_bindPrefix, "name", db::quotName(QString(g_bindPrefix) + "name")));
 }
 
 TEST(DBUtils, unquotName)
@@ -108,7 +147,6 @@ TEST(DBUtils, unquotName)
     ASSERT_STRCASEEQ("name", db::unquotName("\"name\"").toUtf8().constData());
     ASSERT_STRCASEEQ("name", db::unquotName("name").toUtf8().constData());
 }
-
 
 
 #endif

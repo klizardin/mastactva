@@ -37,6 +37,7 @@ static const char *g_dbNameExt = ".db3";
 static const char *g_splitTableRef = "_by_";
 static const char *g_insertFieldSpliter = " , ";
 static const char *g_refPrefix = "ref_";
+static const char *g_bindPrefix = ":";
 static const char *g_errorDetailTag = "detail";
 static const char *g_noImage = ":/resources/no-image.png";
 static const char *g_noImageQRC = "qrc:///resources/no-image.png";
