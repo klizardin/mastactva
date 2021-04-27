@@ -5,8 +5,16 @@
 #include "../MastactvaBase/defines.h"
 
 
-DBRequestInfo::JsonFieldInfo::JsonFieldInfo(const QString &jsonName_,const QString &sqlName_, const layout::JsonTypesEn type_,bool idField_)
-    :jsonName(jsonName_), sqlName(sqlName_), type(type_), idField(idField_)
+DBRequestInfo::JsonFieldInfo::JsonFieldInfo(
+        const QString &jsonName_,
+        const QString &sqlName_,
+        const layout::JsonTypesEn type_,
+        bool idField_
+        )
+    : jsonName(jsonName_),
+      sqlName(sqlName_),
+      type(type_),
+      idField(idField_)
 {
     if(DBRequestInfo::keywords().contains(sqlName.toUpper()))
     {
@@ -16,21 +24,29 @@ DBRequestInfo::JsonFieldInfo::JsonFieldInfo(const QString &jsonName_,const QStri
 
 QString DBRequestInfo::JsonFieldInfo::getSqlType() const
 {
-    if(idField) { return QString(g_sqlInt); }
+    if(idField)
+    {
+        return QString(g_sqlInt);
+    }
 
     switch (type) {
+
     case layout::JsonTypesEn::jt_bool:
         return QString(g_sqlInt);
         break;
+
     case layout::JsonTypesEn::jt_int:
         return QString(g_sqlInt);
         break;
+
     case layout::JsonTypesEn::jt_double:
         return QString(g_sqlDouble);
         break;
+
     case layout::JsonTypesEn::jt_datetime:
         return QString(g_sqlText);
         break;
+
     case layout::JsonTypesEn::jt_string:
     case layout::JsonTypesEn::jt_array:
     case layout::JsonTypesEn::jt_object:
@@ -39,6 +55,7 @@ QString DBRequestInfo::JsonFieldInfo::getSqlType() const
         return QString(g_sqlText);
         break;
     }
+
     return QString(g_sqlText);
 }
 
@@ -263,23 +280,35 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QVariant &val_)
 
 QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
 {
-    switch (type) {
+    switch (type)
+    {
     case layout::JsonTypesEn::jt_bool:
         return QJsonValue(val_.toInt() != 0);
         break;
+
     case layout::JsonTypesEn::jt_int:
         return QJsonValue(val_.toInt());
         break;
+
     case layout::JsonTypesEn::jt_double:
-        if(idField) { return QJsonValue(val_.toInt()); }
-        else { return QJsonValue(val_.toDouble()); }
+        if(idField)
+        {
+            return QJsonValue(val_.toInt());
+        }
+        else
+        {
+            return QJsonValue(val_.toDouble());
+        }
         break;
+
     case layout::JsonTypesEn::jt_string:
         return QJsonValue(val_.toString());
         break;
+
     case layout::JsonTypesEn::jt_datetime:
         return QJsonValue(dateTimeToJsonString(dateTimeFromJsonString(val_.toString())));
         break;
+
     case layout::JsonTypesEn::jt_array:
     case layout::JsonTypesEn::jt_object:
     case layout::JsonTypesEn::jt_null:
@@ -287,6 +316,7 @@ QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
         return QJsonValue(val_.toString());
         break;
     }
+
     return QJsonValue(val_.toString());
 }
 
@@ -339,6 +369,7 @@ QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_, layout::Js
 int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_, layout::JsonTypesEn type_)
 {
     Q_UNUSED(type_);
+
     if(jv_.isBool())
     {
         bool v = jv_.toBool();
