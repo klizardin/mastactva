@@ -642,4 +642,15 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
+QStringList getSqlNames(const JsonSqlFieldsList &fields_)
+{
+    QStringList res;
+    for(const db::JsonSqlField &fi : qAsConst(fields_))
+    {
+        res.push_back(fi.getSqlName());
+    }
+    return res;
+}
+
+
 }

@@ -178,5 +178,16 @@ TEST(DBUtils, tableName)
                 );
 }
 
+TEST(DBUtils, JsonSqlFieldsList_sqlNames)
+{
+    db::JsonSqlFieldsList fields = {
+        {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
+        {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
+    };
+    const QStringList sqlNames = db::getSqlNames(fields);
+    ASSERT_STRCASEEQ("sql_name", sqlNames[0].toUtf8().constData());
+    ASSERT_STRCASEEQ("\"user\"", sqlNames[1].toUtf8().constData());
+}
+
 
 #endif

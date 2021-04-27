@@ -57,6 +57,10 @@ namespace db
 
     void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
     void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_);
+
+    using JsonSqlFieldsList = QList<JsonSqlField>;
+
+    QStringList getSqlNames(const JsonSqlFieldsList &fields_);
 }
 
 #endif // DBUTILS_H
