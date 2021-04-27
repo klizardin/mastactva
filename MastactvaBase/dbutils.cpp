@@ -32,7 +32,7 @@ QString toBindName(const QString &sqlName_)
     }
 }
 
-QStringList equalToValueConditionsFromSqlNamesFromSqlNames(const QStringList &names_)
+QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
 {
     QStringList res;
     for(const QString &sqlName : qAsConst(names_))

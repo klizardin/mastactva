@@ -89,10 +89,10 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
             ;
     const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
     const QString conditionCases = (QStringList()
-                            << db::equalToValueConditionsFromSqlNamesFromSqlNames(
+                            << db::equalToValueConditionListFromSqlNameList(
                                         db::filterNames(refs,procedureFilterConditions)
                                         )
-                            << db::equalToValueConditionsFromSqlNamesFromSqlNames(
+                            << db::equalToValueConditionListFromSqlNameList(
                                         db::filterNames(extraFields.keys(),procedureFilterConditions)
                                         )
                             ).join(" AND ");
