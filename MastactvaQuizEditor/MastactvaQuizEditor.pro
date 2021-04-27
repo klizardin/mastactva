@@ -123,6 +123,7 @@ unix: HEADERS += \
         quizimagedrawingdata.h  \
         quizimageopengldrawingdata.h    \
         dbutils.h \
+        jsonutils.h \
 
 
 SOURCES += \
@@ -180,6 +181,7 @@ unix: SOURCES += \
         quizimagedrawingdata.cpp    \
         quizimageopengldrawingdata.cpp  \
         dbutils.cpp \
+        jsonutils.cpp \
 
 
 RESOURCES += qml.qrc    \

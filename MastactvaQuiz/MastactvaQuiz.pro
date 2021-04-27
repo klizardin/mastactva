@@ -89,6 +89,7 @@ unix: SOURCES += \
         modelhelpers.cpp    \
         wavefrontobj.cpp    \
         dbutils.cpp \
+        jsonutils.cpp   \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -188,6 +189,7 @@ unix: HEADERS += \
     names.h \
     wavefrontobj.h  \
     dbutils.h   \
+    jsonutils.h \
     defines.h   \
     \
     quizimage.h \
