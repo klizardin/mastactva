@@ -140,7 +140,6 @@ public:
 
     QJsonObject getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const;
 
-    static QStringList getSqlNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QStringList getSqlBindNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QStringList getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QHash<QString, QVariant> apiExtraFields(const QHash<QString, QVariant> &extraFields_);

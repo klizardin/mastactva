@@ -44,7 +44,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     const QString fieldsOfRequest = QString("%1 %2").arg(
                 procedureSelectFunction,
                 db::applyFunction(
-                    db::filterNames(r_->getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
+                    db::filterNames(db::getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
                     , procedureArgFunction
                     ).join(g_insertFieldSpliter)
                 );
@@ -222,7 +222,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     const QString fieldNames = (QStringList()
                                 << db::refNames(refs)
                                 << db::refNames(extraFields.keys())
-                                << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
+                                << db::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;

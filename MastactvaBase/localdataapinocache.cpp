@@ -248,7 +248,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QString fieldNames = (QStringList()
                                 << db::refNames(refs)
                                 << db::refNames(extraFields.keys())
-                                << DBRequestInfo::getSqlNames(r_->getTableFieldsInfo())
+                                << db::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
