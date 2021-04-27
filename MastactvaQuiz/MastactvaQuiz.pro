@@ -91,6 +91,7 @@ unix: SOURCES += \
         dbutils.cpp \
         jsonutils.cpp   \
         sqlutils.cpp    \
+        timeutils.cpp   \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -196,6 +197,7 @@ unix: HEADERS += \
     layout_type.h   \
     layout_variant.h    \
     sqlutils.h  \
+    timeutils.h \
     defines.h   \
     \
     quizimage.h \

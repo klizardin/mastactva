@@ -706,7 +706,7 @@ void Effect::addDefaultObject()
                      {g_defaultObjectInfoDescriptionName,
                       QVariant::fromValue(tr("This is the default effect object"))},
                      {g_defaultObjectInfoCreatedName,
-                      QVariant::fromValue(dateTimeToJsonString(QDateTime::currentDateTime()))}
+                      QVariant::fromValue(date_time::dateTimeToJsonString(QDateTime::currentDateTime()))}
                  }));
 }
 

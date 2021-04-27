@@ -129,6 +129,7 @@ unix: HEADERS += \
         layout_type.h   \
         layout_variant.h    \
         sqlutils.h  \
+        timeutils.h \
 
 
 SOURCES += \
@@ -188,6 +189,7 @@ unix: SOURCES += \
         dbutils.cpp \
         jsonutils.cpp \
         sqlutils.cpp    \
+        timeutils.cpp   \
 
 
 RESOURCES += qml.qrc    \

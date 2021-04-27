@@ -1,5 +1,6 @@
 #include "mastactvaapi.h"
 #include <QTimeZone>
+#include "../MastactvaBase/timeutils.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
@@ -25,7 +26,7 @@ QString MastactvaAPI::readMore(const QString &str_,
 
 QDateTime MastactvaAPI::now() const
 {
-    return nowTz();
+    return date_time::nowTz();
 }
 
 void MastactvaAPI::setInitialized()
@@ -48,7 +49,7 @@ QString MastactvaAPI::calculateHash(const QString &fileUrl_)
 
 QString MastactvaAPI::dateTimeToISOStr(const QDateTime &dt_)
 {
-    return dateTimeToJsonString(dt_);
+    return date_time::dateTimeToJsonString(dt_);
 }
 
 bool MastactvaAPI::isLocalDataAPI()

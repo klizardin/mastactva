@@ -42,7 +42,7 @@ namespace db
         const QString &getJsonName() const;
         const QString &getSqlName() const;
         QString getSqlType() const;
-        QString getBindName() const;
+        QString getBindSqlName() const;
         QString sqlValueName() const;
         layout::JsonTypesEn getType() const;
         bool isIdField() const;

@@ -3,7 +3,7 @@
 
 
 #include "QVariant"
-#include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/timeutils.h"
 
 
 namespace layout
@@ -24,7 +24,7 @@ namespace layout
     inline QVariant getValue(const QDateTime &val_, bool toQML_ = true)
     {
         Q_UNUSED(toQML_);
-        return QVariant::fromValue(dateTimeToJsonString(val_));
+        return QVariant::fromValue(date_time::dateTimeToJsonString(val_));
     }
 
     template<typename T_>

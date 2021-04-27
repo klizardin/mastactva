@@ -380,7 +380,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     {
         idFieldJsonName = fitId->getJsonName();
         idFieldSqlName = fitId->getSqlName();
-        idFieldSqlBindName = fitId->getBindName();
+        idFieldSqlBindName = fitId->getBindSqlName();
     }
     else
     {
@@ -465,7 +465,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     {
         idFieldJsonName = fitId->getJsonName();
         idFieldSqlName = fitId->getSqlName();
-        idFieldSqlBindName = fitId->getBindName();
+        idFieldSqlBindName = fitId->getBindSqlName();
     }
     else
     {

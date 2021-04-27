@@ -4,6 +4,7 @@
 #include <QDirIterator>
 #include <QSqlError>
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/timeutils.h"
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/jsonutils.h"
 #include "../MastactvaBase/utils.h"
@@ -170,7 +171,7 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
 void LocalDataAPINoCache::startSave(const QString &savePath_)
 {
     m_savePath = savePath_;
-    QString dateStr = dateTimeToJsonString(QDateTime::currentDateTime());
+    QString dateStr = date_time::dateTimeToJsonString(QDateTime::currentDateTime());
     dateStr.replace(":", "_");
     dateStr.replace("-", "_");
     dateStr.replace(".", "_");
@@ -288,7 +289,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         idFieldJsonName = fitId->getJsonName();
         idFieldSqlName = fitId->getSqlName();
-        idFieldSQlBindName = fitId->getBindName();
+        idFieldSQlBindName = fitId->getBindSqlName();
         conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
     }
     const QString conditionStr = (conditionsList

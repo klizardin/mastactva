@@ -69,11 +69,13 @@ HEADERS += \
 
 unix: HEADERS += \
         dbutils.h   \
-        dbutils_unittests.h
+        dbutils_unittests.h \
+        timeutils.h \
 
 
 SOURCES += \
         main.cpp
 
 unix: SOURCES += \
-        dbutils.cpp
+        dbutils.cpp \
+        timeutils.cpp   \

@@ -4,7 +4,7 @@
 
 #include <QJsonValue>
 #include "../MastactvaBase/layout_enums.h"
-#include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/timeutils.h"
 
 
 
@@ -37,8 +37,8 @@ namespace layout
 
     inline void setValue(const QJsonValue &var_, QDateTime &dta_)
     {
-        if(var_.isNull() || !var_.isString()) { dta_ = dateTimeFromJsonString(QString()); }
-        else { dta_ = dateTimeFromJsonString(var_.toString()); }
+        if(var_.isNull() || !var_.isString()) { dta_ = date_time::dateTimeFromJsonString(QString()); }
+        else { dta_ = date_time::dateTimeFromJsonString(var_.toString()); }
     }
 
     template<typename T_>
