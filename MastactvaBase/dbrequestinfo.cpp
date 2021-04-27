@@ -25,6 +25,16 @@ JsonSqlField::JsonSqlField(
     }
 }
 
+const QString &JsonSqlField::getJsonName() const
+{
+    return jsonName;
+}
+
+const QString &JsonSqlField::getSqlName() const
+{
+    return sqlName;
+}
+
 QString JsonSqlField::getSqlType() const
 {
     if(idField)
