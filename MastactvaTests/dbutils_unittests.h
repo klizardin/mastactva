@@ -40,30 +40,30 @@ TEST(DBUtils, equalToValueConditionListFromSqlNameList)
     ASSERT_STRCASEEQ("ref_another_name=:ref_another_name", res[1].toUtf8().constData());
 }
 
+static int leftInListAfterFilter(const QStringList &names_, const QVariantList &filterList_)
+{
+    const QStringList res = db::filterNames(
+                names_,
+                filterList_
+                );
+    return res.size();
+}
+
 TEST(DBUtils, filterNames)
 {
-    QVariantList filterEmptyList;
     QStringList names({"some_name", "\"another_name\"", "1"});
-    const QStringList res1 = db::filterNames(
-                names,
-                filterEmptyList
-                );
-    ASSERT_EQ(res1.size(), 3);
+
+    QVariantList filterEmptyList;
+    ASSERT_EQ(3, leftInListAfterFilter(names, filterEmptyList));
+
     QVariantList filterList1;
     filterList1.push_back(QVariant::fromValue(1));
-    const QStringList res2 = db::filterNames(
-                names,
-                filterList1
-                );
-    ASSERT_EQ(res2.size(), 1);
+    ASSERT_EQ(1, leftInListAfterFilter(names, filterList1));
+
     QVariantList filterList2;
     filterList2.push_back(QVariant::fromValue(1));
     filterList2.push_back(QVariant::fromValue(QString("some_name")));
-    const QStringList res3 = db::filterNames(
-                names,
-                filterList2
-                );
-    ASSERT_EQ(res3.size(), 2);
+    ASSERT_EQ(2, leftInListAfterFilter(names, filterList2));
 }
 
 #endif
