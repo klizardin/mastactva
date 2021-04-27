@@ -125,6 +125,9 @@ unix: HEADERS += \
         dbutils.h \
         jsonutils.h \
         layout_enums.h  \
+        layout_json.h   \
+        layout_type.h   \
+        layout_variant.h    \
 
 
 SOURCES += \
