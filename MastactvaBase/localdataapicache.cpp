@@ -15,7 +15,10 @@ bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
 
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -28,6 +31,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     {
         tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
     }
+
     const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
     const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
             ? procedureFields.value(g_procedureSelectFunctionName).toString()
@@ -200,7 +204,10 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -217,6 +224,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     {
         tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
     }
+
     const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
@@ -351,7 +359,10 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -439,7 +450,10 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
