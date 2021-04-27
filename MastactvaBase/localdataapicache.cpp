@@ -172,7 +172,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         do
         {
             QJsonObject jsonObj;
-            for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
+            for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
             {
                 const auto fitFld = std::find_if(std::cbegin(procedureFilterFields), std::cend(procedureFilterFields),
                                                  [&fi](const QVariant &v)->bool
@@ -260,7 +260,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QString idFieldSqlName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
         return bindInfo.idField;
     });
@@ -284,7 +284,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         query.bindValue(bind, v);
     }
     int nextId = 1;
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
         if(bindInfo.idField)
         {
@@ -335,7 +335,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     else
     {
         QHash<QString, QVariant> values = values_;
-        for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
             if(bindInfo.idField)
             {
@@ -384,7 +384,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     QString idFieldSqlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
         return bindInfo.idField;
     });
@@ -410,7 +410,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #endif
 
     query.prepare(sqlRequest);
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
         const QVariant val = values_.value(bindInfo.jsonName);
         bindInfo.bind(query, val);
@@ -451,9 +451,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
 {
     if(nullptr == r_)
-    {
-        return false;
-    }
+    { return false; }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "readonly " << r_->getReadonly();
@@ -475,7 +473,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
     QString idFieldSqlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
         return bindInfo.idField;
     });

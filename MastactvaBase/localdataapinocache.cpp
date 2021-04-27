@@ -55,7 +55,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
         tableName += QString(g_splitTableRef) + DBRequestInfo::namingConversion(r_->getCurrentRef());
     }
     QStringList tableFieldsNameTypePairs;
-    for(const DBRequestInfo::JsonFieldInfo &fi : qAsConst(r_->getTableFieldsInfo()))
+    for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
     {
         tableFieldsNameTypePairs.push_back(fi.sqlName + QString(" ") + fi.getSqlType());
     }
@@ -265,7 +265,7 @@ QStringList conditionsFromSqlNamesames(const QStringList &refs_)
     for(const QString &sqlName : qAsConst(refs_))
     {
         const QString ref = refName(sqlName);
-        res.push_back(QString("%1=%2").arg(ref, DBRequestInfo::JsonFieldInfo::toBindName(ref)));
+        res.push_back(QString("%1=%2").arg(ref, db::JsonSqlField::toBindName(ref)));
     }
     return res;
 }
@@ -322,7 +322,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QString idFieldSQlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const DBRequestInfo::JsonFieldInfo &bindInfo)->bool
+                                    [](const db::JsonSqlField &bindInfo)->bool
     {
         return bindInfo.idField;
     });
@@ -360,7 +360,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             if(!idFieldJsonName.isEmpty())
             {
                 const QJsonValue valueJV = itemJV[idFieldJsonName];
-                const int v = DBRequestInfo::JsonFieldInfo::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
+                const int v = db::JsonSqlField::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
                 findQuery.bindValue(idFieldSQlBindName, v);
 #if defined(TRACE_DB_DATA_BINDINGS)
                 qDebug() << "bind find" << idFieldSQlBindName << v;
@@ -398,7 +398,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << "bind" << bind << v;
 #endif
         }
-        for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
             const QJsonValue valueJV = itemJV[bindInfo.jsonName];
             bindInfo.bind(query, valueJV);

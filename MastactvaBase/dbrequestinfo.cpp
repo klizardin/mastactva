@@ -5,7 +5,10 @@
 #include "../MastactvaBase/defines.h"
 
 
-DBRequestInfo::JsonFieldInfo::JsonFieldInfo(
+namespace db
+{
+
+JsonSqlField::JsonSqlField(
         const QString &jsonName_,
         const QString &sqlName_,
         const layout::JsonTypesEn type_,
@@ -16,13 +19,13 @@ DBRequestInfo::JsonFieldInfo::JsonFieldInfo(
       type(type_),
       idField(idField_)
 {
-    if(DBRequestInfo::keywords().contains(sqlName.toUpper()))
+    if(keywords().contains(sqlName.toUpper()))
     {
         sqlName = QString("\"%1\"").arg(sqlName);
     }
 }
 
-QString DBRequestInfo::JsonFieldInfo::getSqlType() const
+QString JsonSqlField::getSqlType() const
 {
     if(idField)
     {
@@ -59,7 +62,7 @@ QString DBRequestInfo::JsonFieldInfo::getSqlType() const
     return QString(g_sqlText);
 }
 
-QString DBRequestInfo::JsonFieldInfo::toBindName(const QString &sqlName_)
+QString JsonSqlField::toBindName(const QString &sqlName_)
 {
     if(sqlName_.at(0)==QChar('"'))
     {
@@ -71,12 +74,12 @@ QString DBRequestInfo::JsonFieldInfo::toBindName(const QString &sqlName_)
     }
 }
 
-QString DBRequestInfo::JsonFieldInfo::getBindName() const
+QString JsonSqlField::getBindName() const
 {
     return toBindName(sqlName);
 }
 
-QString DBRequestInfo::JsonFieldInfo::sqlValueName() const
+QString JsonSqlField::sqlValueName() const
 {
     if(sqlName.at(0)==QChar('"'))
     {
@@ -88,7 +91,7 @@ QString DBRequestInfo::JsonFieldInfo::sqlValueName() const
     }
 }
 
-void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_) const
+void JsonSqlField::bind(QSqlQuery &query_, const QJsonValue &jv_) const
 {
     if(jv_.isBool())
     {
@@ -270,7 +273,7 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QJsonValue &jv_
     }
 }
 
-void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QVariant &val_) const
+void JsonSqlField::bind(QSqlQuery &query_, const QVariant &val_) const
 {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << getBindName() << val_;
@@ -278,7 +281,7 @@ void DBRequestInfo::JsonFieldInfo::bind(QSqlQuery &query_, const QVariant &val_)
     query_.bindValue(getBindName(), val_);
 }
 
-QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
+QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
 {
     switch (type)
     {
@@ -320,7 +323,7 @@ QJsonValue DBRequestInfo::JsonFieldInfo::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
-QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_, layout::JsonTypesEn type_)
+QString JsonSqlField::toString(const QJsonValue &jv_, layout::JsonTypesEn type_)
 {
     if(jv_.isBool())
     {
@@ -366,7 +369,7 @@ QString DBRequestInfo::JsonFieldInfo::toString(const QJsonValue &jv_, layout::Js
     }
 }
 
-int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_, layout::JsonTypesEn type_)
+int JsonSqlField::toInt(const QJsonValue &jv_, layout::JsonTypesEn type_)
 {
     Q_UNUSED(type_);
 
@@ -394,6 +397,8 @@ int DBRequestInfo::JsonFieldInfo::toInt(const QJsonValue &jv_, layout::JsonTypes
     }
 }
 
+}
+
 
 DBRequestInfo::DBRequestInfo(const QString &apiName_)
     :m_apiName(apiName_)
@@ -410,12 +415,12 @@ void DBRequestInfo::setTableName(const QString &tableName_)
     m_tableName = tableName_;
 }
 
-const QList<DBRequestInfo::JsonFieldInfo> &DBRequestInfo::getTableFieldsInfo() const
+const QList<db::JsonSqlField> &DBRequestInfo::getTableFieldsInfo() const
 {
     return m_tableFieldsInfo;
 }
 
-void DBRequestInfo::setTableFieldsInfo(const QList<DBRequestInfo::JsonFieldInfo> &jsonFieldInfo_)
+void DBRequestInfo::setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_)
 {
     m_tableFieldsInfo = jsonFieldInfo_;
 }
@@ -533,7 +538,7 @@ const QString &DBRequestInfo::getAPIName() const
 QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const
 {
     QJsonObject obj;
-    for(const JsonFieldInfo &fi : qAsConst(m_tableFieldsInfo))
+    for(const db::JsonSqlField &fi : qAsConst(m_tableFieldsInfo))
     {
         if(!values_.contains(fi.jsonName)) { continue; }
         obj.insert(fi.jsonName, fi.jsonValue(values_.value(fi.jsonName)));
@@ -548,31 +553,31 @@ QString DBRequestInfo::namingConversion(const QString &name_)
     return res;
 }
 
-QStringList DBRequestInfo::getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
+QStringList DBRequestInfo::getSqlNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
 {
 
     QStringList res;
-    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
     {
         res.push_back(fi.sqlName);
     }
     return res;
 }
 
-QStringList DBRequestInfo::getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
+QStringList DBRequestInfo::getSqlBindNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
 {
     QStringList res;
-    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
     {
         res.push_back(fi.getBindName());
     }
     return res;
 }
 
-QStringList DBRequestInfo::getSetNames(const QList<JsonFieldInfo> &tableFieldsInfo_)
+QStringList DBRequestInfo::getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
 {
     QStringList res;
-    for(const JsonFieldInfo &fi : qAsConst(tableFieldsInfo_))
+    for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
     {
         if(!fi.idField)
         {
@@ -606,7 +611,7 @@ QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString
     }
 }
 
-const QSet<QString> &DBRequestInfo::keywords()
+const QSet<QString> &keywords()
 {
     static const QSet<QString> keys = {
         "USER",
@@ -775,7 +780,7 @@ void LocalDBRequest::addJsonResult(const QHash<QString, QVariant> &values_)
     QJsonArray array;
 
     QJsonObject obj;
-    for(const DBRequestInfo::JsonFieldInfo &bindInfo : qAsConst(getTableFieldsInfo()))
+    for(const db::JsonSqlField &bindInfo : qAsConst(getTableFieldsInfo()))
     {
         const QVariant val = values_.contains(bindInfo.jsonName) ? values_.value(bindInfo.jsonName) : QVariant();
         obj.insert(bindInfo.jsonName, bindInfo.jsonValue(val));

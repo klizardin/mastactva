@@ -33,11 +33,9 @@ public:
     virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) = 0;
 };
 
-
-class DBRequestInfo
+namespace db
 {
-public:
-    struct JsonFieldInfo
+    struct JsonSqlField
     {
         QString jsonName;
         QString sqlName;
@@ -45,7 +43,7 @@ public:
         layout::JsonTypesEn type;
         bool idField = false;
 
-        JsonFieldInfo(const QString &jsonName_,
+        JsonSqlField(const QString &jsonName_,
                       const QString &sqlName_,
                       const layout::JsonTypesEn type_,
                       bool idField_);
@@ -60,7 +58,11 @@ public:
         static QString toString(const QJsonValue &jv_, layout::JsonTypesEn type_);
         static int toInt(const QJsonValue &jv_, layout::JsonTypesEn type_);
     };
+}
 
+
+class DBRequestInfo
+{
 public:
     DBRequestInfo(const QString &apiName_);
 
@@ -102,7 +104,7 @@ public:
             )
     {
         QString tableName;
-        QList<JsonFieldInfo> tableFieldsInfo;
+        QList<db::JsonSqlField> tableFieldsInfo;
         QVariant idField;
 
 
@@ -116,7 +118,7 @@ public:
         {
             const QString sqlFieldName = namingConversion(jsonFieldName.first);
             tableFieldsInfo.push_back(
-                        JsonFieldInfo(jsonFieldName.first,
+                        db::JsonSqlField(jsonFieldName.first,
                                       sqlFieldName,
                                       jsonFieldName.second,
                                       idFieldName == jsonFieldName.first)
@@ -148,7 +150,7 @@ public:
 
     const QString &getTableName() const;
     const QString &getProcedureName() const;
-    const QList<JsonFieldInfo> &getTableFieldsInfo() const;
+    const QList<db::JsonSqlField> &getTableFieldsInfo() const;
     QStringList getRefs(bool transparent_ = false) const;
     QString getCurrentRef(bool transparent_ = false) const;
     QVariant getIdField(bool transparent_ = false) const;
@@ -166,15 +168,15 @@ public:
     QJsonObject getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const;
 
     static QString namingConversion(const QString &name_);
-    static QStringList getSqlNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
-    static QStringList getSqlBindNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
-    static QStringList getSetNames(const QList<JsonFieldInfo> &tableFieldsInfo_);
+    static QStringList getSqlNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
+    static QStringList getSqlBindNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
+    static QStringList getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QHash<QString, QVariant> apiExtraFields(const QHash<QString, QVariant> &extraFields_);
     static QHash<QString, QVariant> procedureExtraFields(const QHash<QString, QVariant> &extraFields_);
 
 protected:
     void setTableName(const QString &tableName_);
-    void setTableFieldsInfo(const QList<JsonFieldInfo> &jsonFieldInfo_);
+    void setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_);
     void setRefs(const QStringList &refs_);
     void setCurrentRef(const QString &currentRef_);
     void setIdField(const QVariant &idField_);
@@ -182,14 +184,13 @@ protected:
     void setExtraFields(const QHash<QString, QVariant> &extraFields_);
     void setProcedureName(const QString &procedureName_);
     void setDBRequestName(const QString &requestName_);
-    static const QSet<QString> &keywords();
 
 private:
     QString m_apiName;
     QString m_requestName;
     QString m_tableName;
     QString m_procedureName;
-    QList<JsonFieldInfo> m_tableFieldsInfo;
+    QList<db::JsonSqlField> m_tableFieldsInfo;
     QStringList m_refs;
     QString m_currentRef;
     QVariant m_idField;
@@ -198,6 +199,9 @@ private:
     ILocalDataAPI *m_defaultAPI = nullptr;
     bool m_processed = false;
 };
+
+
+const QSet<QString> &keywords();
 
 
 class LocalDBRequest :
