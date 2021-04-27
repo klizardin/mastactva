@@ -5,9 +5,13 @@
 namespace db
 {
 
+static const QChar g_quote = QChar('\"');
+static const char *g_bindStart= ":";
+
+
 QString refName(const QString &ref_)
 {
-    if(ref_.at(0)==QChar('\"'))
+    if(ref_.at(0) == g_quote)
     {
         return QString(g_refPrefix) + ref_.mid(1, ref_.length() - 2);;
     }
@@ -29,13 +33,13 @@ QStringList refNames(const QStringList &refs_)
 
 QString toBindName(const QString &sqlName_)
 {
-    if(sqlName_.at(0)==QChar('"'))
+    if(sqlName_.at(0) == g_quote)
     {
-        return QString(":") + sqlName_.mid(1, sqlName_.length() - 2);
+        return QString(g_bindStart) + sqlName_.mid(1, sqlName_.length() - 2);
     }
     else
     {
-        return QString(":") + sqlName_;
+        return QString(g_bindStart) + sqlName_;
     }
 }
 
