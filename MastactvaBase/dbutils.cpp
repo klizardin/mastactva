@@ -9,16 +9,71 @@ static const QChar g_quote = QChar('\"');
 static const char *g_bindStart= ":";
 
 
-QString refName(const QString &ref_)
+bool isQuotedName(const QString &name_)
 {
-    if(ref_.at(0) == g_quote)
+    const int findIndex1 = name_.indexOf(g_quote);
+    if(findIndex1 < 0)
     {
-        return QString(g_refPrefix) + ref_.mid(1, ref_.length() - 2);;
+        return false;
+    }
+
+    const int findIndex2 = name_.indexOf(g_quote, findIndex1 + 1);
+    Q_ASSERT(findIndex1 == 0 && findIndex2 == name_.length() - 1);
+    return true;
+}
+
+QString quotName(const QString &name_)
+{
+    if(isQuotedName(name_)
+            || isRefName(name_)
+            || isBindName(name_))
+    {
+        return name_;
     }
     else
     {
-        return QString(g_refPrefix) + ref_;
+        return QString(g_quote) + name_ + QString(g_quote);
     }
+}
+
+QString unquotName(const QString &name_)
+{
+    if(isQuotedName(name_))
+    {
+        // remove first and last symbols
+        return name_.mid(1, name_.length() - 2);
+    }
+    else
+    {
+        return name_;
+    }
+}
+
+bool isRefName(const QString &name_)
+{
+    return name_.indexOf(QString(g_refPrefix)) == 0;
+}
+
+bool isBindName(const QString &name_)
+{
+    return name_.indexOf(QString(g_bindStart)) == 0;
+}
+
+static inline QString addPrefixToName(const QString &prefix_, const QString &name_)
+{
+    if(isQuotedName(name_))
+    {
+        return prefix_ + unquotName(name_);
+    }
+    else
+    {
+        return prefix_ + name_;
+    }
+}
+
+QString refName(const QString &ref_)
+{
+    return addPrefixToName(g_refPrefix, ref_);
 }
 
 QStringList refNames(const QStringList &refs_)
@@ -33,14 +88,7 @@ QStringList refNames(const QStringList &refs_)
 
 QString toBindName(const QString &sqlName_)
 {
-    if(sqlName_.at(0) == g_quote)
-    {
-        return QString(g_bindStart) + sqlName_.mid(1, sqlName_.length() - 2);
-    }
-    else
-    {
-        return QString(g_bindStart) + sqlName_;
-    }
+    return addPrefixToName(g_bindStart, sqlName_);
 }
 
 QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)

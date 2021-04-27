@@ -9,6 +9,11 @@
 
 namespace db
 {
+    bool isQuotedName(const QString &name_);
+    QString quotName(const QString &name_);
+    QString unquotName(const QString &name_);
+    bool isRefName(const QString &name_);
+    bool isBindName(const QString &name_);
     QString refName(const QString &ref_);
     QStringList refNames(const QStringList &refs_);
     QString toBindName(const QString &sqlName_);
