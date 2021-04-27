@@ -40,7 +40,6 @@ namespace db
     {
         QString jsonName;
         QString sqlName;
-        QString sqlBindName;
         layout::JsonTypesEn type;
         bool idField = false;
 
