@@ -1,4 +1,5 @@
 #include "tst_testcanasserttrue.h"
+#include "dbutils_unittests.h"
 
 #include <gtest/gtest.h>
 
