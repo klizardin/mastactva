@@ -52,10 +52,14 @@ namespace db
         QString getSqlType() const;
         QString getBindName() const;
         QString sqlValueName() const;
-        void bind(QSqlQuery &query_, const QJsonValue &jv_) const;
-        void bind(QSqlQuery &query_, const QVariant &val_) const;
+        layout::JsonTypesEn getType() const;
+        bool isIdField() const;
         QJsonValue jsonValue(const QVariant &val_) const;
+
     };
+
+    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
+    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_);
 }
 
 

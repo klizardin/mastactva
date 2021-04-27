@@ -296,13 +296,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
             {
                 nextId = findQuery.value(0).toInt() + 1;
             }
-            bindInfo.bind(query, QVariant::fromValue(nextId));
+            db::bind(bindInfo, query, QVariant::fromValue(nextId));
             findQuery.finish();
         }
         else
         {
             const QVariant val = values_.value(bindInfo.jsonName);
-            bindInfo.bind(query, val);
+            db::bind(bindInfo, query, val);
         }
     }
 
@@ -401,7 +401,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
         const QVariant val = values_.value(bindInfo.jsonName);
-        bindInfo.bind(query, val);
+        db::bind(bindInfo, query, val);
     }
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
@@ -481,7 +481,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInf
 #endif
 
     query.prepare(sqlRequest);
-    fitId->bind(query, id_);
+    db::bind(*fitId, query, id_);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "delete sql bound" << query.boundValues();

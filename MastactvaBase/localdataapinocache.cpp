@@ -357,7 +357,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
         {
             const QJsonValue valueJV = itemJV[bindInfo.jsonName];
-            bindInfo.bind(query, valueJV);
+            db::bind(bindInfo, query, valueJV);
         }
         if(!query.exec())
         {
