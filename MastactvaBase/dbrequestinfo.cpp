@@ -21,7 +21,7 @@ JsonSqlField::JsonSqlField(
 {
     if(db::sqlKeywords().contains(sqlName.toUpper()))
     {
-        sqlName = QString("\"%1\"").arg(sqlName);
+        sqlName = quotName(sqlName);
     }
 }
 
