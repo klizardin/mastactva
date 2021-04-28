@@ -67,4 +67,94 @@ namespace db
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
 }
 
+
+class LocalDBRequest;
+class DBRequestInfo;
+
+
+class ILocalDataAPI
+{
+public:
+    virtual ~ILocalDataAPI() = default;
+    virtual bool canProcess(const DBRequestInfo *r_) const = 0;
+    virtual bool getListImpl(DBRequestInfo *r_) = 0;
+    virtual bool addItemImpl(const QVariant &appId_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) = 0;
+    virtual bool setItemImpl(const QVariant &id_,
+                             const QHash<QString, QVariant> &values_,
+                             DBRequestInfo *r_) = 0;
+    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) = 0;
+};
+
+
+class DBRequestInfo
+{
+public:
+    DBRequestInfo(const QString &apiName_);
+
+    const QString &getTableName() const;
+    const QString &getProcedureName() const;
+    const QList<db::JsonSqlField> &getTableFieldsInfo() const;
+    QStringList getRefs(bool transparent_ = false) const;
+    QString getCurrentRef(bool transparent_ = false) const;
+    QVariant getIdField(bool transparent_ = false) const;
+    bool getReadonly() const;
+    const QHash<QString, QVariant> &getExtraFields() const;
+    void insertExtraField(const QString &key_, const QVariant &value_);
+    const QString &getDBRequestName() const;
+    void clearReferences();
+    void setDefaultAPI(ILocalDataAPI *defaultAPI_);
+    ILocalDataAPI *getDefaultAPI();
+    bool isProcessed() const;
+    void setProcessed(bool processed_);
+    const QString &getAPIName() const;
+
+    static QHash<QString, QVariant> apiExtraFields(const QHash<QString, QVariant> &extraFields_);
+    static QHash<QString, QVariant> procedureExtraFields(const QHash<QString, QVariant> &extraFields_);
+
+private:
+    void setTableName(const QString &tableName_);
+    void setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_);
+    void setRefs(const QStringList &refs_);
+    void setCurrentRef(const QString &currentRef_);
+    void setIdField(const QVariant &idField_);
+    void setReadonly(bool readonly_);
+    void setExtraFields(const QHash<QString, QVariant> &extraFields_);
+    void setProcedureName(const QString &procedureName_);
+    void setDBRequestName(const QString &requestName_);
+
+private:
+    QString m_apiName;
+    QString m_requestName;
+    QString m_tableName;
+    QString m_procedureName;
+    QList<db::JsonSqlField> m_tableFieldsInfo;
+    QStringList m_refs;
+    QString m_currentRef;
+    QVariant m_idField;
+    QHash<QString, QVariant> m_extraFields;
+    bool m_readonly = true;
+    ILocalDataAPI *m_defaultAPI = nullptr;
+    bool m_processed = false;
+
+
+    template<typename DataType_>
+    friend void init(
+            DBRequestInfo &requestInfo_,
+            const QString &requestName_,
+            const QString &layoutName_,
+            const QString &procedureName_,
+            const QStringList &refs_,
+            const QString &currentRef_,
+            const QString &parentModel_,
+            const QString &parentModelJsonFieldName_,
+            const QVariant &refAppId_,
+            const QVariant &refValue_,
+            bool readonly_,
+            const QHash<QString, QVariant> &extraFields_
+            );
+};
+
+
 #endif // DBUTILS_H
