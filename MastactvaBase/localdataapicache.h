@@ -63,7 +63,7 @@ public:
     {
         Q_UNUSED(jsonParams_);
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(RequestData::getListRequestName<DataType_>(),
+        init<DataType_>(*r, RequestData::getListRequestName<DataType_>(),
                            layoutName_,
                            procedureName_,
                            refs_, currentRef_,
@@ -105,7 +105,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(
+        init<DataType_>(*r,
                     RequestData::addItemRequestName<DataType_>(),
                     layoutName_,
                     false,
@@ -141,7 +141,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(
+        init<DataType_>(*r,
                     RequestData::setItemRequestName<DataType_>(),
                     layoutName_,
                     false,
@@ -173,7 +173,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(
+        init<DataType_>(*r,
                     RequestData::delItemRequestName<DataType_>(),
                     layoutName_,
                     false,

@@ -85,7 +85,7 @@ public:
         if(isSaveToDBMode())
         {
             r = new SaveDBRequest();
-            r->init<DataType_>(RequestData::getListRequestName<DataType_>(),
+            init<DataType_>(*r, RequestData::getListRequestName<DataType_>(),
                                layoutName_,
                                procedureName_,
                                refs_, currentRef_,
