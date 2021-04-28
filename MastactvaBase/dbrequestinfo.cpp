@@ -151,16 +151,6 @@ QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant
     return obj;
 }
 
-QStringList DBRequestInfo::getSqlBindNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
-{
-    QStringList res;
-    for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
-    {
-        res.push_back(fi.getBindSqlName());
-    }
-    return res;
-}
-
 QStringList DBRequestInfo::getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
 {
     QStringList res;

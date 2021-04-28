@@ -269,7 +269,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs
-                                        << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
+                                        << db::getBindSqlNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
