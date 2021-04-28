@@ -642,14 +642,37 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
-QStringList getSqlNames(const JsonSqlFieldsList &fields_)
+QStringList getFieldListValues(
+        const JsonSqlFieldsList &fields_,
+        std::function<QString(const db::JsonSqlField &)> getter_)
 {
     QStringList res;
     for(const db::JsonSqlField &fi : qAsConst(fields_))
     {
-        res.push_back(fi.getSqlName());
+        res.push_back(getter_(fi));
     }
     return res;
+}
+
+
+QStringList getSqlNames(const JsonSqlFieldsList &fields_)
+{
+    return getFieldListValues(
+                fields_,
+                [](const db::JsonSqlField &fi_)->QString
+    {
+        return fi_.getSqlName();
+    });
+}
+
+QStringList getBindSqlNames(const JsonSqlFieldsList &fields_)
+{
+    return getFieldListValues(
+                fields_,
+                [](const db::JsonSqlField &fi_)->QString
+    {
+        return fi_.getBindSqlName();
+    });
 }
 
 

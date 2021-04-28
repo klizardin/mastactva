@@ -178,7 +178,7 @@ TEST(DBUtils, tableName)
                 );
 }
 
-TEST(DBUtils, JsonSqlFieldsList_sqlNames)
+TEST(DBUtils, JsonSqlFieldsList_getSqlNames)
 {
     db::JsonSqlFieldsList fields = {
         {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
@@ -187,6 +187,25 @@ TEST(DBUtils, JsonSqlFieldsList_sqlNames)
     const QStringList sqlNames = db::getSqlNames(fields);
     ASSERT_STRCASEEQ("sql_name", sqlNames[0].toUtf8().constData());
     ASSERT_STRCASEEQ("\"user\"", sqlNames[1].toUtf8().constData());
+}
+
+TEST(DBUtils, JsonSqlFieldsList_getBindSqlNames)
+{
+    db::JsonSqlFieldsList fields = {
+        {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
+        {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
+    };
+    const QStringList sqlNames = db::getBindSqlNames(fields);
+    ASSERT_TRUE(compareResultAndStringsSum(
+                    sqlNames[0],
+                    g_bindPrefix, "sql_name"
+                    )
+                );
+    ASSERT_TRUE(compareResultAndStringsSum(
+                    sqlNames[1],
+                    g_bindPrefix, "user"
+                    )
+                );
 }
 
 
