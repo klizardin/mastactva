@@ -316,4 +316,41 @@ TEST(DBUtils, JsonSqlFieldsList_getSqlNameEqualBindSqlNameList)
                 );
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getSqlNameAndTypeList)
+{
+    db::JsonSqlFieldsList fields = {
+        {"json-name-1", "bool_name", layout::JsonTypesEn::jt_bool, false},
+        {"json-name-2", "int_name", layout::JsonTypesEn::jt_int, false},
+        {"json-name-3", "double_name", layout::JsonTypesEn::jt_double, false},
+        {"json-name-4", "string_name", layout::JsonTypesEn::jt_string, false},
+        {"json-name-5", "datetime_name", layout::JsonTypesEn::jt_datetime, false},
+    };
+    const QStringList res = db::getSqlNameAndTypeList(fields);
+    ASSERT_TRUE(equal(
+                    res[0],
+                    sum("bool_name", g_spaceName, g_sqlInt)
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    res[1],
+                    sum("int_name", g_spaceName, g_sqlInt)
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    res[2],
+                    sum("double_name", g_spaceName, g_sqlDouble)
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    res[3],
+                    sum("string_name", g_spaceName, g_sqlText)
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    res[4],
+                    sum("datetime_name", g_spaceName, g_sqlText)
+                    )
+                );
+}
+
 #endif

@@ -36,6 +36,7 @@ static const char *g_dbNameRO = "mastactva_ro";
 static const char *g_dbNameExt = ".db3";
 static const char *g_splitTableRef = "_by_";
 static const char *g_insertFieldSpliter = " , ";
+static const char *g_spaceName = " ";
 static const char *g_refPrefix = "ref_";
 static const char *g_bindPrefix = ":";
 static const char *g_errorDetailTag = "detail";
