@@ -140,19 +140,6 @@ const QString &DBRequestInfo::getAPIName() const
     return m_apiName;
 }
 
-QStringList DBRequestInfo::getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
-{
-    QStringList res;
-    for(const db::JsonSqlField &fi : qAsConst(tableFieldsInfo_))
-    {
-        if(!fi.isIdField())
-        {
-            res.push_back(QString("%1=%2").arg(fi.getSqlName(), fi.getBindSqlName()));
-        }
-    }
-    return res;
-}
-
 QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVariant> &extraFields_)
 {
     QHash<QString, QVariant> res;

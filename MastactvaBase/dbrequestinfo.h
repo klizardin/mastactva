@@ -138,7 +138,6 @@ public:
     void setProcessed(bool processed_);
     const QString &getAPIName() const;
 
-    static QStringList getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_);
     static QHash<QString, QVariant> apiExtraFields(const QHash<QString, QVariant> &extraFields_);
     static QHash<QString, QVariant> procedureExtraFields(const QHash<QString, QVariant> &extraFields_);
 

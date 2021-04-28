@@ -387,7 +387,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
         Q_ASSERT(false);
         return false;
     }
-    const QStringList setNames = DBRequestInfo::getSetNames(r_->getTableFieldsInfo());
+    const QStringList setNames = db::getSqlNameEqualBindSqlNameList(r_->getTableFieldsInfo());
     const QString setStr = setNames.join(g_insertFieldSpliter);
 
     const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
