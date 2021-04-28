@@ -297,4 +297,23 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
     ASSERT_TRUE(res == res0);
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getSqlNameEqualBindSqlNameList)
+{
+    db::JsonSqlFieldsList fields = {
+        {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
+        {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
+    };
+    const QStringList sqlNames = db::getSqlNameEqualBindSqlNameList(fields);
+    ASSERT_TRUE(equal(
+                    sqlNames[0],
+                    sum("sql_name", "=", g_bindPrefix, "sql_name")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    sqlNames[1],
+                    sum("\"user\"", "=", g_bindPrefix, "user")
+                    )
+                );
+}
+
 #endif

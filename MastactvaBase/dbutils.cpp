@@ -675,6 +675,21 @@ QStringList getBindSqlNames(const JsonSqlFieldsList &fields_)
     });
 }
 
+QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_)
+{
+    QStringList res;
+    for(const db::JsonSqlField &fi : fields_)
+    {
+        if(fi.isIdField())
+        {
+            continue;
+        }
+
+        res.push_back(QString("%1=%2").arg(fi.getSqlName(), fi.getBindSqlName()));
+    }
+    return res;
+}
+
 QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_)
 {
     QJsonObject obj;

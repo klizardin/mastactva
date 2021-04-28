@@ -63,6 +63,7 @@ namespace db
 
     QStringList getSqlNames(const JsonSqlFieldsList &fields_);
     QStringList getBindSqlNames(const JsonSqlFieldsList &fields_);
+    QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
 }
 
