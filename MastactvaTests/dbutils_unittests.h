@@ -260,6 +260,8 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
         {"json-name-bool-7", "user", layout::JsonTypesEn::jt_bool, false},
         {"json-name-bool-8", "user", layout::JsonTypesEn::jt_bool, false},
         {"json-name-bool-9", "user", layout::JsonTypesEn::jt_bool, false},
+
+        {"json-none-name-10", "user", layout::JsonTypesEn::jt_string, false},
     };
     QHash<QString, QVariant> values = {
         {"json-name-int-1", QVariant::fromValue(QString("1.0"))},
@@ -273,6 +275,8 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
         {"json-name-bool-7", QVariant::fromValue(0.5)},
         {"json-name-bool-8", QVariant::fromValue(QString("true"))},
         {"json-name-bool-9", QVariant::fromValue(QString("false"))},
+
+        {"json-none-name-11", QVariant::fromValue(QString("some string"))},
     };
     QJsonObject res0 = QJsonObject::fromVariantHash(
     {
