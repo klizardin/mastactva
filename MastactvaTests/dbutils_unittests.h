@@ -13,51 +13,44 @@
 using namespace testing;
 
 
-bool comparePrefixedStringAndResult(
-        const char *prefix_,
-        const char *str_,
-        const QString &result_
+bool equal(
+        const QString &result_,
+        const QString &stringsSum_
         )
 {
-    return QString(prefix_) + QString(str_) == result_;
+    return result_ == stringsSum_;
 }
 
 template<typename Arg_>
-QString sumStrings(Arg_ arg_)
+QString sum(Arg_ arg_)
 {
     return QString(arg_);
 }
 
 template<typename Arg_, typename ... Args_>
-QString sumStrings(Arg_ arg_, Args_ ... args_)
+QString sum(Arg_ arg_, Args_ ... args_)
 {
-    return QString(arg_) + sumStrings(args_ ...);
-}
-
-template<typename ... Args_>
-bool compareResultAndStringsSum(const QString &result_, Args_ ... args_)
-{
-    return result_ == sumStrings(args_ ...);
+    return QString(arg_) + sum(args_ ...);
 }
 
 TEST(DBUtils, refName)
 {
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "some_name", db::refName("some_name")));
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "some_name", db::refName("\"some_name\"")));
+    ASSERT_TRUE(equal(db::refName("some_name"), sum(g_refPrefix, "some_name")));
+    ASSERT_TRUE(equal(db::refName("\"some_name\""), sum(g_refPrefix, "some_name")));
 }
 
 TEST(DBUtils, refNames)
 {
     const QStringList res = db::refNames(QStringList({"some_name", "another_name", "\"quoted\""}));
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "some_name", res[0]));
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "another_name", res[1]));
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "quoted", res[2]));
+    ASSERT_TRUE(equal(res[0], sum(g_refPrefix, "some_name")));
+    ASSERT_TRUE(equal(res[1], sum(g_refPrefix, "another_name")));
+    ASSERT_TRUE(equal(res[2], sum(g_refPrefix, "quoted")));
 }
 
 TEST(DBUtils, toBindName)
 {
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_bindPrefix, "simple", db::toBindName("simple")));
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_bindPrefix, "quoted", db::toBindName("\"quoted\"")));
+    ASSERT_TRUE(equal(db::toBindName("simple"), sum(g_bindPrefix, "simple")));
+    ASSERT_TRUE(equal(db::toBindName("\"quoted\""), sum(g_bindPrefix, "quoted")));
 }
 
 TEST(DBUtils, equalToValueConditionListFromSqlNameList)
@@ -66,15 +59,15 @@ TEST(DBUtils, equalToValueConditionListFromSqlNameList)
                 QStringList({"some_name", "\"another_name\""})
                 );
     ASSERT_TRUE(
-                compareResultAndStringsSum(
+                equal(
                     res[0],
-                    g_refPrefix, "some_name", "=", g_bindPrefix, g_refPrefix, "some_name"
+                    sum(g_refPrefix, "some_name", "=", g_bindPrefix, g_refPrefix, "some_name")
                 )
             );
     ASSERT_TRUE(
-                compareResultAndStringsSum(
+                equal(
                     res[1],
-                    g_refPrefix, "another_name", "=", g_bindPrefix, g_refPrefix, "another_name"
+                    sum(g_refPrefix, "another_name", "=", g_bindPrefix, g_refPrefix, "another_name")
                 )
             );
 }
@@ -138,8 +131,8 @@ TEST(DBUtils, quotName)
 {
     ASSERT_STRCASEEQ("\"name\"", db::quotName("name").toUtf8().constData());
     ASSERT_STRCASEEQ("\"name\"", db::quotName("\"name\"").toUtf8().constData());
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_refPrefix, "name", db::quotName(QString(g_refPrefix) + "name")));
-    ASSERT_TRUE(comparePrefixedStringAndResult(g_bindPrefix, "name", db::quotName(QString(g_bindPrefix) + "name")));
+    ASSERT_TRUE(equal(db::quotName(sum(g_refPrefix, "name")), sum(g_refPrefix, "name")));
+    ASSERT_TRUE(equal(db::quotName(sum(g_bindPrefix, "name")), sum(g_bindPrefix, "name")));
 }
 
 TEST(DBUtils, unquotName)
@@ -156,24 +149,24 @@ TEST(DBUtils, jsonToSqlNaming)
 
 TEST(DBUtils, tableName)
 {
-    ASSERT_TRUE(compareResultAndStringsSum(
+    ASSERT_TRUE(equal(
                     db::tableName("table_name", ""),
-                    "table_name"
+                    sum("table_name")
                     )
                 );
-    ASSERT_TRUE(compareResultAndStringsSum(
+    ASSERT_TRUE(equal(
                     db::tableName("table_name", "reference_name"),
-                    "table_name", g_splitTableRef, "reference_name"
+                    sum("table_name", g_splitTableRef, "reference_name")
                     )
                 );
-    ASSERT_TRUE(compareResultAndStringsSum(
+    ASSERT_TRUE(equal(
                     db::tableName("table-name", ""),
-                    "table_name"
+                    sum("table_name")
                     )
                 );
-    ASSERT_TRUE(compareResultAndStringsSum(
+    ASSERT_TRUE(equal(
                     db::tableName("table-name", "reference-name"),
-                    "table_name", g_splitTableRef, "reference_name"
+                    sum("table_name", g_splitTableRef, "reference_name")
                     )
                 );
 }
@@ -196,14 +189,14 @@ TEST(DBUtils, JsonSqlFieldsList_getBindSqlNames)
         {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
     };
     const QStringList sqlNames = db::getBindSqlNames(fields);
-    ASSERT_TRUE(compareResultAndStringsSum(
+    ASSERT_TRUE(equal(
                     sqlNames[0],
-                    g_bindPrefix, "sql_name"
+                    sum(g_bindPrefix, "sql_name")
                     )
                 );
-    ASSERT_TRUE(compareResultAndStringsSum(
+    ASSERT_TRUE(equal(
                     sqlNames[1],
-                    g_bindPrefix, "user"
+                    sum(g_bindPrefix, "user")
                     )
                 );
 }
