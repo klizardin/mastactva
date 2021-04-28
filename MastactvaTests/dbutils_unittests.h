@@ -251,9 +251,11 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
     db::JsonSqlFieldsList fields = {
         {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
         {"json-name-2", "sql_name", layout::JsonTypesEn::jt_int, false},
+
         {"json-name-3", "user", layout::JsonTypesEn::jt_double, false},
         {"json-name-4", "user", layout::JsonTypesEn::jt_double, false},
         {"json-name-5", "user", layout::JsonTypesEn::jt_double, false},
+
         {"json-name-6", "user", layout::JsonTypesEn::jt_bool, false},
         {"json-name-7", "user", layout::JsonTypesEn::jt_bool, false},
         {"json-name-8", "user", layout::JsonTypesEn::jt_bool, false},
@@ -262,9 +264,11 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
     QHash<QString, QVariant> values = {
         {"json-name-1", QVariant::fromValue(QString("1.0"))},
         {"json-name-2", QVariant::fromValue(QString("1"))},
+
         {"json-name-3", QVariant::fromValue(2)},
         {"json-name-4", QVariant::fromValue(2.5)},
         {"json-name-5", QVariant::fromValue(QString("1.5"))},
+
         {"json-name-6", QVariant::fromValue(QString("1"))},
         {"json-name-7", QVariant::fromValue(0.5)},
         {"json-name-8", QVariant::fromValue(QString("true"))},
@@ -274,9 +278,11 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
     {
         {"json-name-1", QVariant::fromValue(1)},
         {"json-name-2", QVariant::fromValue(1)},
+
         {"json-name-3", QVariant::fromValue(2)},
         {"json-name-4", QVariant::fromValue(2.5)},
         {"json-name-5", QVariant::fromValue(1.5)},
+
         {"json-name-6", QVariant::fromValue(true)},
         {"json-name-7", QVariant::fromValue(true)},
         {"json-name-8", QVariant::fromValue(true)},
