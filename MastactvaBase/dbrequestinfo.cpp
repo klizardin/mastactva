@@ -18,17 +18,7 @@ void LocalDBRequest::addJsonResult(const QJsonDocument &doc_)
 void LocalDBRequest::addJsonResult(const QHash<QString, QVariant> &values_)
 {
     QJsonArray array;
-
-    QJsonObject obj;
-    for(const db::JsonSqlField &bindInfo : qAsConst(getTableFieldsInfo()))
-    {
-        const QVariant val = values_.contains(bindInfo.getJsonName())
-                ? values_.value(bindInfo.getJsonName())
-                : QVariant()
-                ;
-
-        obj.insert(bindInfo.getJsonName(), bindInfo.jsonValue(val));
-    }
+    QJsonObject obj = db::getJsonObject(values_, getTableFieldsInfo());
     array.push_back(obj);
     m_doc = QJsonDocument(array);
 }
