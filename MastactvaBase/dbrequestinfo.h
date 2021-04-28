@@ -102,7 +102,7 @@ private:
             );
 };
 
-template<typename DataType_>
+template<typename DataType_> inline
 void init(
         DBRequestInfo &requestInfo_,
         const QString &requestName_,
@@ -126,7 +126,7 @@ void init(
                     );
 }
 
-template<typename DataType_>
+template<typename DataType_> inline
 void init(
         DBRequestInfo &requestInfo_,
         const QString &requestName_,
