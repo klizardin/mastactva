@@ -32,8 +32,14 @@ void DBRequestInfo::setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldI
 
 QStringList DBRequestInfo::getRefs(bool transparent_ /*= false*/) const
 {
-    if(transparent_ || (!transparent_ && m_procedureName.isEmpty())) { return m_refs; }
-    else { return QStringList(); }
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
+    {
+        return m_refs;
+    }
+    else
+    {
+        return QStringList();
+    }
 }
 
 void DBRequestInfo::setRefs(const QStringList &refs_)
@@ -43,8 +49,14 @@ void DBRequestInfo::setRefs(const QStringList &refs_)
 
 QString DBRequestInfo::getCurrentRef(bool transparent_ /*= false*/) const
 {
-    if(transparent_ || (!transparent_ && m_procedureName.isEmpty())) { return m_currentRef; }
-    else { return QString(); }
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
+    {
+        return m_currentRef;
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 void DBRequestInfo::setCurrentRef(const QString &currentRef_)
@@ -54,8 +66,14 @@ void DBRequestInfo::setCurrentRef(const QString &currentRef_)
 
 QVariant DBRequestInfo::getIdField(bool transparent_ /*= false*/) const
 {
-    if(transparent_ || (!transparent_ && m_procedureName.isEmpty())) { return m_idField; }
-    else { return QVariant(); }
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
+    {
+        return m_idField;
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
 void DBRequestInfo::setIdField(const QVariant &idField_)
@@ -146,7 +164,11 @@ QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVar
     const QList<QString> keys = extraFields_.keys();
     for(const QString &key : qAsConst(keys))
     {
-        if(QString(g_procedureExtraFieldName) == key) { continue; } // skip procedure params
+        if(QString(g_procedureExtraFieldName) == key)
+        {
+            continue;
+        } // skip procedure params
+
         res.insert(key, extraFields_.value(key));
     }
     return res;
@@ -182,7 +204,11 @@ void LocalDBRequest::addJsonResult(const QHash<QString, QVariant> &values_)
     QJsonObject obj;
     for(const db::JsonSqlField &bindInfo : qAsConst(getTableFieldsInfo()))
     {
-        const QVariant val = values_.contains(bindInfo.getJsonName()) ? values_.value(bindInfo.getJsonName()) : QVariant();
+        const QVariant val = values_.contains(bindInfo.getJsonName())
+                ? values_.value(bindInfo.getJsonName())
+                : QVariant()
+                ;
+
         obj.insert(bindInfo.getJsonName(), bindInfo.jsonValue(val));
     }
     array.push_back(obj);
