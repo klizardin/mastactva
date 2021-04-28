@@ -141,7 +141,7 @@ public:
     static QHash<QString, QVariant> apiExtraFields(const QHash<QString, QVariant> &extraFields_);
     static QHash<QString, QVariant> procedureExtraFields(const QHash<QString, QVariant> &extraFields_);
 
-protected:
+private:
     void setTableName(const QString &tableName_);
     void setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_);
     void setRefs(const QStringList &refs_);
