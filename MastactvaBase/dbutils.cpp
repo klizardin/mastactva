@@ -158,6 +158,17 @@ QString jsonToSql(const QString &jsonName_)
     return res;
 }
 
+QStringList jsonToSql(const QStringList &jsonNames_)
+{
+    QStringList res;
+    res.reserve(jsonNames_.size());
+    for(const auto &name_ : jsonNames_)
+    {
+        res.push_back(db::jsonToSql(name_));
+    }
+    return res;
+}
+
 QString tableName(const QString &jsonLayoutName_, const QString &refName_)
 {
     if(refName_.trimmed().isEmpty())
@@ -716,6 +727,28 @@ QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
     });
 }
 
+QString getCreateTableSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraRefs_
+        )
+{
+    const QString tableName = db::tableName(jsonLayoutName_, jsonRefName_);
+    QStringList nameAndTypeList = getSqlNameAndTypeList(fields_);
+    nameAndTypeList << db::textTypes(
+                           db::refNames(db::jsonToSql(refs_))
+                           );
+    nameAndTypeList << db::textTypes(
+                           db::refNames(db::jsonToSql(extraRefs_))
+                           );
+    const QString fieldsRequests = nameAndTypeList.join(g_insertFieldSpliter);
+    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
+            .arg(tableName, fieldsRequests)
+            ;
+    return sqlRequest;
+}
 
 } // namespace db
 

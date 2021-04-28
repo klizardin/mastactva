@@ -27,6 +27,7 @@ namespace db
     QStringList applyFunction(const QStringList &sqlNames_, const QString &function_);
     QStringList textTypes(const QStringList &names_);
     QString jsonToSql(const QString &jsonName_);
+    QStringList jsonToSql(const QStringList &jsonNames_);
     QString tableName(const QString &jsonLayoutName_, const QString &refName_);
 
     const QSet<QString> &sqlKeywords();
@@ -66,6 +67,13 @@ namespace db
     QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
     QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_);
+    QString getCreateTableSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const JsonSqlFieldsList &fields_,
+            const QStringList &refs_,
+            const QStringList &extraRefs_
+            );
 }
 
 

@@ -353,4 +353,39 @@ TEST(DBUtils, JsonSqlFieldsList_getSqlNameAndTypeList)
                 );
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getCreateTableSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        {"id-field", "id", layout::JsonTypesEn::jt_int, true},
+        {"user-id", "user", layout::JsonTypesEn::jt_int, false},
+        {"user-name", "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+    const QStringList refs({"user", "name"});
+    const QStringList extraRefs({"age-years",});
+
+    const QString res0 = sum(
+                "CREATE TABLE IF NOT EXISTS ",
+                "user_list", g_splitTableRef, "user_id",
+                " ( ", "id", g_spaceName, g_sqlInt, g_insertFieldSpliter,
+                      "\"user\"", g_spaceName, g_sqlInt, g_insertFieldSpliter,
+                      "name", g_spaceName, g_sqlText, g_insertFieldSpliter,
+                      g_refPrefix, "user", g_spaceName, g_sqlText, g_insertFieldSpliter,
+                      g_refPrefix, "name", g_spaceName, g_sqlText, g_insertFieldSpliter,
+                      g_refPrefix, "age_years", g_spaceName, g_sqlText, " ) ;"
+                );
+    ASSERT_TRUE(
+                equal(db::getCreateTableSqlRequest(
+                          jsonLayoutName,
+                          jsonRefName,
+                          fields,
+                          refs,
+                          extraRefs
+                          ),
+                        res0
+                    )
+                );
+}
+
 #endif

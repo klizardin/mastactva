@@ -26,19 +26,14 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 #endif
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
-    QStringList tableFieldsNameTypePairs = getSqlNameAndTypeList(r_->getTableFieldsInfo());
-    const QStringList refs = r_->getRefs();
-    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
-    const QString fieldsRequests = (QStringList()
-                                    << db::textTypes(db::refNames(refs))
-                                    << db::textTypes(db::refNames(extraFields.keys()))
-                                    << tableFieldsNameTypePairs
-                                    ).join(g_insertFieldSpliter)
-            ;
-    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
-            .arg(tableName, fieldsRequests)
-            ;
+
+    const QString sqlRequest = db::getCreateTableSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                r_->getRefs(),
+                DBRequestBase::apiExtraFields(r_->getExtraFields()).keys()
+                );
 #if defined(TRACE_DB_CREATION)
     qDebug() << "create sql" << sqlRequest;
 #endif
