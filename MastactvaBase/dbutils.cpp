@@ -10,6 +10,33 @@ namespace db
 static const QChar g_quote = QChar('\"');
 
 
+template<layout::JsonTypesEn jsonTypeValue_>
+class LayoutJsonTypesTraits
+{
+public:
+    static const char *sql_type_str()
+    {
+        return g_sqlText;
+    }
+};
+
+#define LAYOUT_JSON_TYPES_TRAITS(jsonTypeValue_, sqlTypeStr_)   \
+template<>                                                      \
+class LayoutJsonTypesTraits<jsonTypeValue_>                     \
+{                                                               \
+public:                                                         \
+    static const char *sql_type_str()                           \
+    {                                                           \
+        return sqlTypeStr_;                                     \
+    }                                                           \
+};                                                              \
+/*end macro LAYOUT_JSON_TYPES_TRAITS*/
+
+LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_bool, g_sqlInt);
+LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_int, g_sqlInt);
+LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_double, g_sqlDouble);
+
+
 bool isQuotedName(const QString &name_)
 {
     const int findIndex1 = name_.indexOf(g_quote);
@@ -146,7 +173,15 @@ QStringList textTypes(const QStringList &names_)
     QStringList res;
     for(const auto &name_ : qAsConst(names_))
     {
-        res.push_back(name_ + QString(g_spaceName) + QString(g_sqlText));
+        res.push_back(
+                    name_ +
+                    QString(g_spaceName) +
+                    QString(
+                        LayoutJsonTypesTraits<
+                            layout::JsonTypesEn::jt_string
+                            >::sql_type_str()
+                        )
+                    );
     }
     return res;
 }
@@ -367,37 +402,71 @@ QString JsonSqlField::getSqlType() const
 {
     if(idField)
     {
-        return QString(g_sqlInt);
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_int
+            >::sql_type_str();
     }
 
-    switch (type) {
-
+    switch (type)
+    {
     case layout::JsonTypesEn::jt_bool:
-        return QString(g_sqlInt);
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_int
+            >::sql_type_str();
         break;
 
     case layout::JsonTypesEn::jt_int:
-        return QString(g_sqlInt);
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_int
+            >::sql_type_str();
         break;
 
     case layout::JsonTypesEn::jt_double:
-        return QString(g_sqlDouble);
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_double
+            >::sql_type_str();
         break;
 
     case layout::JsonTypesEn::jt_datetime:
-        return QString(g_sqlText);
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_datetime
+            >::sql_type_str();
         break;
 
     case layout::JsonTypesEn::jt_string:
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_string
+            >::sql_type_str();
+        break;
+
     case layout::JsonTypesEn::jt_array:
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_array
+            >::sql_type_str();
+        break;
+
     case layout::JsonTypesEn::jt_object:
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_object
+            >::sql_type_str();
+        break;
+
     case layout::JsonTypesEn::jt_null:
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_null
+            >::sql_type_str();
+        break;
+
     case layout::JsonTypesEn::jt_undefined:
-        return QString(g_sqlText);
+        return LayoutJsonTypesTraits<
+            layout::JsonTypesEn::jt_undefined
+            >::sql_type_str();
         break;
     }
 
-    return QString(g_sqlText);
+    return LayoutJsonTypesTraits<
+        layout::JsonTypesEn::jt_undefined
+        >::sql_type_str();
 }
 
 QString JsonSqlField::getBindSqlName() const
