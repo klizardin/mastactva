@@ -8,7 +8,6 @@ namespace db
 {
 
 static const QChar g_quote = QChar('\"');
-static const char *g_space = " ";
 
 
 bool isQuotedName(const QString &name_)
@@ -147,7 +146,7 @@ QStringList textTypes(const QStringList &names_)
     QStringList res;
     for(const auto &name_ : qAsConst(names_))
     {
-        res.push_back(name_ + QString(g_space) + QString(g_sqlText));
+        res.push_back(name_ + QString(g_spaceName) + QString(g_sqlText));
     }
     return res;
 }
@@ -156,6 +155,17 @@ QString jsonToSql(const QString &jsonName_)
 {
     QString res = jsonName_;
     res.replace("-", "_");
+    return res;
+}
+
+QStringList jsonToSql(const QStringList &jsonNames_)
+{
+    QStringList res;
+    res.reserve(jsonNames_.size());
+    for(const auto &name_ : jsonNames_)
+    {
+        res.push_back(db::jsonToSql(name_));
+    }
     return res;
 }
 
@@ -605,17 +615,17 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     switch (type)
     {
     case layout::JsonTypesEn::jt_bool:
-        return QJsonValue(val_.toInt() != 0);
+        return QJsonValue(val_.toDouble() != 0 || val_.toString().toUpper() == "TRUE");
         break;
 
     case layout::JsonTypesEn::jt_int:
-        return QJsonValue(val_.toInt());
+        return QJsonValue(int(val_.toDouble()));
         break;
 
     case layout::JsonTypesEn::jt_double:
         if(idField)
         {
-            return QJsonValue(val_.toInt());
+            return QJsonValue(int(val_.toDouble()));
         }
         else
         {
@@ -642,15 +652,286 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
-QStringList getSqlNames(const JsonSqlFieldsList &fields_)
+QStringList getFieldListValues(
+        const JsonSqlFieldsList &fields_,
+        std::function<QString(const db::JsonSqlField &)> getter_)
 {
     QStringList res;
     for(const db::JsonSqlField &fi : qAsConst(fields_))
     {
-        res.push_back(fi.getSqlName());
+        res.push_back(getter_(fi));
     }
     return res;
 }
 
 
+QStringList getSqlNames(const JsonSqlFieldsList &fields_)
+{
+    return getFieldListValues(
+                fields_,
+                [](const db::JsonSqlField &fi_)->QString
+    {
+        return fi_.getSqlName();
+    });
 }
+
+QStringList getBindSqlNames(const JsonSqlFieldsList &fields_)
+{
+    return getFieldListValues(
+                fields_,
+                [](const db::JsonSqlField &fi_)->QString
+    {
+        return fi_.getBindSqlName();
+    });
+}
+
+QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_)
+{
+    QStringList res;
+    for(const db::JsonSqlField &fi : fields_)
+    {
+        if(fi.isIdField())
+        {
+            continue;
+        }
+
+        res.push_back(QString("%1=%2").arg(fi.getSqlName(), fi.getBindSqlName()));
+    }
+    return res;
+}
+
+QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_)
+{
+    QJsonObject obj;
+    for(const db::JsonSqlField &fi : fields_)
+    {
+        if(!values_.contains(fi.getJsonName()))
+        {
+            continue;
+        }
+
+        const QVariant val = values_.value(fi.getJsonName());
+        const QJsonValue jsonVal = fi.jsonValue(val);
+        obj.insert(fi.getJsonName(), jsonVal);
+    }
+    return obj;
+}
+
+QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
+{
+    return getFieldListValues(
+                fields_,
+                [](const db::JsonSqlField &fi_)->QString
+    {
+        return fi_.getSqlName() + QString(g_spaceName) + fi_.getSqlType();
+    });
+}
+
+QString getCreateTableSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraRefs_
+        )
+{
+    const QString tableName = db::tableName(jsonLayoutName_, jsonRefName_);
+    QStringList nameAndTypeList = getSqlNameAndTypeList(fields_);
+    nameAndTypeList << db::textTypes(
+                           db::refNames(db::jsonToSql(refs_))
+                           );
+    nameAndTypeList << db::textTypes(
+                           db::refNames(db::jsonToSql(extraRefs_))
+                           );
+    const QString fieldsRequests = nameAndTypeList.join(g_insertFieldSpliter);
+    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
+            .arg(tableName, fieldsRequests)
+            ;
+    return sqlRequest;
+}
+
+} // namespace db
+
+
+DBRequestBase::DBRequestBase(const QString &apiName_)
+    :m_apiName(apiName_)
+{
+}
+
+const QString &DBRequestBase::getTableName() const
+{
+    return m_tableName;
+}
+
+void DBRequestBase::setTableName(const QString &tableName_)
+{
+    m_tableName = tableName_;
+}
+
+const QList<db::JsonSqlField> &DBRequestBase::getTableFieldsInfo() const
+{
+    return m_tableFieldsInfo;
+}
+
+void DBRequestBase::setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_)
+{
+    m_tableFieldsInfo = jsonFieldInfo_;
+}
+
+QStringList DBRequestBase::getRefs(bool transparent_ /*= false*/) const
+{
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
+    {
+        return m_refs;
+    }
+    else
+    {
+        return QStringList();
+    }
+}
+
+void DBRequestBase::setRefs(const QStringList &refs_)
+{
+    m_refs = refs_;
+}
+
+QString DBRequestBase::getCurrentRef(bool transparent_ /*= false*/) const
+{
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
+    {
+        return m_currentRef;
+    }
+    else
+    {
+        return QString();
+    }
+}
+
+void DBRequestBase::setCurrentRef(const QString &currentRef_)
+{
+    m_currentRef = currentRef_;
+}
+
+QVariant DBRequestBase::getIdField(bool transparent_ /*= false*/) const
+{
+    if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
+    {
+        return m_idField;
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+void DBRequestBase::setIdField(const QVariant &idField_)
+{
+    m_idField = idField_;
+}
+
+bool DBRequestBase::getReadonly() const
+{
+    return m_readonly;
+}
+
+void DBRequestBase::setReadonly(bool readonly_)
+{
+    m_readonly = readonly_;
+}
+
+const QHash<QString, QVariant> &DBRequestBase::getExtraFields() const
+{
+    return m_extraFields;
+}
+
+void DBRequestBase::setExtraFields(const QHash<QString, QVariant> &extraFields_)
+{
+    m_extraFields = extraFields_;
+}
+
+void DBRequestBase::insertExtraField(const QString &key_, const QVariant &value_)
+{
+    m_extraFields.insert(key_, value_);
+}
+
+const QString &DBRequestBase::getProcedureName() const
+{
+    return m_procedureName;
+}
+
+void DBRequestBase::setProcedureName(const QString &procedureName_)
+{
+    m_procedureName = procedureName_;
+}
+
+const QString &DBRequestBase::getDBRequestName() const
+{
+    return m_requestName;
+}
+
+void DBRequestBase::setDBRequestName(const QString &requestName_)
+{
+    m_requestName = requestName_;
+}
+
+void DBRequestBase::clearReferences()
+{
+    setCurrentRef(QString());
+    setRefs(QStringList());
+    setIdField(QVariant());
+}
+
+void DBRequestBase::setDefaultAPI(ILocalDataAPI *defaultAPI_)
+{
+    m_defaultAPI = defaultAPI_;
+}
+
+ILocalDataAPI *DBRequestBase::getDefaultAPI()
+{
+    return m_defaultAPI;
+}
+
+bool DBRequestBase::isProcessed() const
+{
+    return m_processed;
+}
+
+void DBRequestBase::setProcessed(bool processed_)
+{
+    m_processed = processed_;
+}
+
+const QString &DBRequestBase::getAPIName() const
+{
+    return m_apiName;
+}
+
+QHash<QString, QVariant> DBRequestBase::apiExtraFields(const QHash<QString, QVariant> &extraFields_)
+{
+    QHash<QString, QVariant> res;
+    const QList<QString> keys = extraFields_.keys();
+    for(const QString &key : qAsConst(keys))
+    {
+        if(QString(g_procedureExtraFieldName) == key)
+        {
+            continue;
+        } // skip procedure params
+
+        res.insert(key, extraFields_.value(key));
+    }
+    return res;
+}
+
+QHash<QString, QVariant> DBRequestBase::procedureExtraFields(const QHash<QString, QVariant> &extraFields_)
+{
+    if(extraFields_.contains(g_procedureExtraFieldName))
+    {
+        return extraFields_.value(g_procedureExtraFieldName).toHash();
+    }
+    else
+    {
+        return QHash<QString, QVariant>();
+    }
+}
+
+

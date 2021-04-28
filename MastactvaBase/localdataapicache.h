@@ -19,16 +19,16 @@ public:
     LocalDataAPIDefaultCacheImpl() = default;
     virtual ~LocalDataAPIDefaultCacheImpl() = default;
 
-    virtual bool canProcess(const DBRequestInfo *r_) const override;
-    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool canProcess(const DBRequestBase *r_) const override;
+    virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool delItemImpl(const QVariant &id_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
 };
 
 
@@ -63,7 +63,7 @@ public:
     {
         Q_UNUSED(jsonParams_);
         LocalDBRequest *r = new LocalDBRequest();
-        r->init<DataType_>(RequestData::getListRequestName<DataType_>(),
+        init<DataType_>(*r, RequestData::getListRequestName<DataType_>(),
                            layoutName_,
                            procedureName_,
                            refs_, currentRef_,
@@ -105,7 +105,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(
+        init<DataType_>(*r,
                     RequestData::addItemRequestName<DataType_>(),
                     layoutName_,
                     false,
@@ -141,7 +141,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(
+        init<DataType_>(*r,
                     RequestData::setItemRequestName<DataType_>(),
                     layoutName_,
                     false,
@@ -173,7 +173,7 @@ public:
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
         const QHash<QString, QVariant> extraFields = removeFields(extraFields_, fieldsInfo);
-        r->init<DataType_>(
+        init<DataType_>(*r,
                     RequestData::delItemRequestName<DataType_>(),
                     layoutName_,
                     false,
@@ -213,7 +213,7 @@ protected:
     void openDB();
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
-    ILocalDataAPI *chooseView(DBRequestInfo *r_);
+    ILocalDataAPI *chooseView(DBRequestBase *r_);
     static QHash<QString, QVariant> removeFields(
             const QHash<QString, QVariant> &extraFields_,
             const QList<QPair<QString, layout::JsonTypesEn>> &fieldsInfo_);

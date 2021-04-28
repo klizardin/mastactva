@@ -7,13 +7,13 @@
 #include "../MastactvaBase/defines.h"
 
 
-bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestInfo *r_) const
+bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestBase *r_) const
 {
     Q_UNUSED(r_);
     return true;
 }
 
-bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
+bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 {
     if(nullptr == r_)
     {
@@ -28,7 +28,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
     QSqlQuery query(db);
     const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
-    const QHash<QString, QVariant> procedureFields = DBRequestInfo::procedureExtraFields(r_->getExtraFields());
+    const QHash<QString, QVariant> procedureFields = DBRequestBase::procedureExtraFields(r_->getExtraFields());
     const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
             ? procedureFields.value(g_procedureSelectFunctionName).toString()
             : QString()
@@ -57,7 +57,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
-    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
+    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
         it != std::cend(qAsConst(extraFields))
         ; ++it
@@ -198,7 +198,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestInfo *r_)
 
 bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
-                                               DBRequestInfo *r_)
+                                               DBRequestBase *r_)
 {
     if(nullptr == r_)
     {
@@ -217,7 +217,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QSqlQuery findQuery(db);
     const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
-    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
+    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
     const QString fieldNames = (QStringList()
                                 << db::refNames(refs)
@@ -243,7 +243,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs
-                                        << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
+                                        << db::getBindSqlNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
@@ -349,7 +349,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
 bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                                const QHash<QString, QVariant> &values_,
-                                               DBRequestInfo *r_)
+                                               DBRequestBase *r_)
 {
     if(nullptr == r_)
     {
@@ -387,7 +387,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
         Q_ASSERT(false);
         return false;
     }
-    const QStringList setNames = DBRequestInfo::getSetNames(r_->getTableFieldsInfo());
+    const QStringList setNames = db::getSqlNameEqualBindSqlNameList(r_->getTableFieldsInfo());
     const QString setStr = setNames.join(g_insertFieldSpliter);
 
     const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
@@ -436,7 +436,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     return true;
 }
 
-bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
+bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
     if(nullptr == r_)
     { return false; }
@@ -683,7 +683,7 @@ void LocalDataAPICache::makeResponses()
     }
 }
 
-ILocalDataAPI *LocalDataAPICache::chooseView(DBRequestInfo *r_)
+ILocalDataAPI *LocalDataAPICache::chooseView(DBRequestBase *r_)
 {
     if(nullptr == r_) { return nullptr; }
     r_->setDefaultAPI(&m_defaultAPIImpl);

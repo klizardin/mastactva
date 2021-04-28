@@ -50,7 +50,7 @@ GalleryModelView::~GalleryModelView()
     m_userStepPlayedGalleriesModel = nullptr;
 }
 
-bool GalleryModelView::canProcess(const DBRequestInfo *r_) const
+bool GalleryModelView::canProcess(const DBRequestBase *r_) const
 {
     if(nullptr == r_) { return false; }
     const QString tableName = db::jsonToSql(
@@ -64,7 +64,7 @@ bool GalleryModelView::canProcess(const DBRequestInfo *r_) const
     return true;
 }
 
-bool GalleryModelView::getListImpl(DBRequestInfo *r_)
+bool GalleryModelView::getListImpl(DBRequestBase *r_)
 {
     if(nullptr == r_) { return false; }
     bool startLoad = m_requests.isEmpty();
@@ -75,7 +75,7 @@ bool GalleryModelView::getListImpl(DBRequestInfo *r_)
 
 bool GalleryModelView::addItemImpl(const QVariant &appId_,
                                    const QHash<QString, QVariant> &values_,
-                                   DBRequestInfo *r_)
+                                   DBRequestBase *r_)
 {
     Q_UNUSED(appId_);
     Q_UNUSED(values_);
@@ -85,7 +85,7 @@ bool GalleryModelView::addItemImpl(const QVariant &appId_,
 
 bool GalleryModelView::setItemImpl(const QVariant &id_,
                                    const QHash<QString, QVariant> &values_,
-                                   DBRequestInfo *r_)
+                                   DBRequestBase *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(values_);
@@ -93,7 +93,7 @@ bool GalleryModelView::setItemImpl(const QVariant &id_,
     return false;
 }
 
-bool GalleryModelView::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
+bool GalleryModelView::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(r_);
@@ -203,7 +203,7 @@ void GalleryModelView::galleryModelListReloaded()
         return w1 - w2;
     }, false);
 
-    DBRequestInfo *currentRequest = m_requests.front();
+    DBRequestBase *currentRequest = m_requests.front();
     if(nullptr != currentRequest)
     {
         setData(currentRequest);
@@ -213,7 +213,7 @@ void GalleryModelView::galleryModelListReloaded()
     if(!m_requests.isEmpty()) { loadSteps(); }
 }
 
-void GalleryModelView::setData(DBRequestInfo *request_)
+void GalleryModelView::setData(DBRequestBase *request_)
 {
     Q_ASSERT(nullptr != request_ && request_->getAPIName() == g_cachAPI);
     QJsonArray array;
@@ -222,7 +222,7 @@ void GalleryModelView::setData(DBRequestInfo *request_)
         const Gallery *item = m_galleryModel->dataItemAtImpl(i);
         QHash<QString, QVariant> values;
         getDataLayout<Gallery>().getJsonValues(item, values);
-        array.push_back(request_->getJsonObjectFromValues(values));
+        array.push_back(db::getJsonObject(values, request_->getTableFieldsInfo()));
     }
     LocalDBRequest *r = static_cast<LocalDBRequest *>(request_);
     r->addJsonResult(QJsonDocument(array));

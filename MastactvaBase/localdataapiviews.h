@@ -17,7 +17,7 @@ public:
     LocalDataAPIGelListByRefImpl() = default;
     virtual ~LocalDataAPIGelListByRefImpl() = default;
 
-    virtual bool canProcess(const DBRequestInfo *r_) const
+    virtual bool canProcess(const DBRequestBase *r_) const
     {
         if(nullptr == r_) { return false; }
         const QString tableName = db::jsonToSql(
@@ -30,7 +30,7 @@ public:
         return true;
     }
 
-    virtual bool getListImpl(DBRequestInfo *r_) override
+    virtual bool getListImpl(DBRequestBase *r_) override
     {
         if(nullptr == r_) { return false; }
         LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
@@ -60,7 +60,7 @@ public:
 
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override
+                             DBRequestBase *r_) override
     {
         Q_UNUSED(appId_);
         Q_UNUSED(values_);
@@ -70,7 +70,7 @@ public:
 
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override
+                             DBRequestBase *r_) override
     {
         Q_UNUSED(id_);
         Q_UNUSED(values_);
@@ -78,7 +78,7 @@ public:
         return false;
     }
 
-    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override
+    virtual bool delItemImpl(const QVariant &id_, DBRequestBase *r_) override
     {
         Q_UNUSED(id_);
         Q_UNUSED(r_);

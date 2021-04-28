@@ -12,13 +12,13 @@
 #include "../MastactvaBase/defines.h"
 
 
-bool LocalDataAPINoCacheImpl::canProcess(const DBRequestInfo *r_) const
+bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
 {
     Q_UNUSED(r_);
     return true;
 }
 
-bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
+bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 {
     if(nullptr == r_) { return false; }
 #if defined(TRACE_DB_CREATION)
@@ -26,23 +26,14 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
 #endif
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
-    QStringList tableFieldsNameTypePairs;
-    for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
-    {
-        tableFieldsNameTypePairs.push_back(fi.getSqlName() + QString(" ") + fi.getSqlType());
-    }
-    const QStringList refs = r_->getRefs();
-    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
-    const QString fieldsRequests = (QStringList()
-                                    << db::textTypes(db::refNames(refs))
-                                    << db::textTypes(db::refNames(extraFields.keys()))
-                                    << tableFieldsNameTypePairs
-                                    ).join(g_insertFieldSpliter)
-            ;
-    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
-            .arg(tableName, fieldsRequests)
-            ;
+
+    const QString sqlRequest = db::getCreateTableSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                r_->getRefs(),
+                DBRequestBase::apiExtraFields(r_->getExtraFields()).keys()
+                );
 #if defined(TRACE_DB_CREATION)
     qDebug() << "create sql" << sqlRequest;
 #endif
@@ -58,7 +49,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestInfo *r_)
 
 bool LocalDataAPINoCacheImpl::addItemImpl(const QVariant &appId_,
                                           const QHash<QString, QVariant> &values_,
-                                          DBRequestInfo *r_)
+                                          DBRequestBase *r_)
 {
     Q_UNUSED(appId_);
     Q_UNUSED(values_);
@@ -68,7 +59,7 @@ bool LocalDataAPINoCacheImpl::addItemImpl(const QVariant &appId_,
 
 bool LocalDataAPINoCacheImpl::setItemImpl(const QVariant &id_,
                                           const QHash<QString, QVariant> &values_,
-                                          DBRequestInfo *r_)
+                                          DBRequestBase *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(values_);
@@ -76,7 +67,7 @@ bool LocalDataAPINoCacheImpl::setItemImpl(const QVariant &id_,
     return false;
 }
 
-bool LocalDataAPINoCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
+bool LocalDataAPINoCacheImpl::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(r_);
@@ -84,7 +75,7 @@ bool LocalDataAPINoCacheImpl::delItemImpl(const QVariant &id_, DBRequestInfo *r_
 }
 
 LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
-    :DBRequestInfo(g_noCachAPI)
+    :DBRequestBase(g_noCachAPI)
 {
 }
 
@@ -244,7 +235,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
 
     const QStringList refs = r_->getRefs();
-    const QHash<QString, QVariant> extraFields = DBRequestInfo::apiExtraFields(r_->getExtraFields());
+    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QString fieldNames = (QStringList()
                                 << db::refNames(refs)
                                 << db::refNames(extraFields.keys())
@@ -269,7 +260,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs
-                                        << DBRequestInfo::getSqlBindNames(r_->getTableFieldsInfo())
+                                        << db::getBindSqlNames(r_->getTableFieldsInfo())
                                         ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
@@ -373,7 +364,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     }
 }
 
-ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestInfo * r_)
+ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestBase * r_)
 {
     if(nullptr == r_) { return nullptr; }
     r_->setDefaultAPI(&m_defaultAPIImpl);

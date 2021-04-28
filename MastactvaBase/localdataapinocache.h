@@ -17,16 +17,16 @@ class LocalDataAPINoCacheImpl : public ILocalDataAPI
 public:
     LocalDataAPINoCacheImpl() = default;
     virtual ~LocalDataAPINoCacheImpl() = default;
-    virtual bool canProcess(const DBRequestInfo *r_) const override;
-    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool canProcess(const DBRequestBase *r_) const override;
+    virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool delItemImpl(const QVariant &id_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
 };
 
 
@@ -35,7 +35,7 @@ class LocalDataAPINoCache : public QObject
     Q_OBJECT
 
 private:
-    class SaveDBRequest : public DBRequestInfo
+    class SaveDBRequest : public DBRequestBase
     {
     public:
         SaveDBRequest();
@@ -85,7 +85,7 @@ public:
         if(isSaveToDBMode())
         {
             r = new SaveDBRequest();
-            r->init<DataType_>(RequestData::getListRequestName<DataType_>(),
+            init<DataType_>(*r, RequestData::getListRequestName<DataType_>(),
                                layoutName_,
                                procedureName_,
                                refs_, currentRef_,
@@ -178,7 +178,7 @@ protected:
     void createDB();
     bool isSaveToDBMode() const;
     void fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_);
-    ILocalDataAPI *chooseAPI(DBRequestInfo *r_);
+    ILocalDataAPI *chooseAPI(DBRequestBase *r_);
 
 private:
     NetAPI *m_netAPI = nullptr;
