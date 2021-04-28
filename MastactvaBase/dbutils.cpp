@@ -684,7 +684,7 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     switch (type)
     {
     case layout::JsonTypesEn::jt_bool:
-        return QJsonValue(val_.toDouble() != 0 || val_.toString().toUpper() == "TRUE");
+        return QJsonValue(val_.toDouble() != 0 || val_.toString().toUpper() == g_trueName);
         break;
 
     case layout::JsonTypesEn::jt_int:

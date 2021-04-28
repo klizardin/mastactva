@@ -31,6 +31,7 @@ static const char *g_allImagesOfGalleryModel = "AllImagesOfGallery";
 static const char *g_sqlText = "TEXT";
 static const char *g_sqlInt = "INTEGER";
 static const char *g_sqlDouble = "REAL";
+static const char *g_trueName = "TRUE";
 static const char *g_dbNameRW = "mastactva_rw";
 static const char *g_dbNameRO = "mastactva_ro";
 static const char *g_dbNameExt = ".db3";
