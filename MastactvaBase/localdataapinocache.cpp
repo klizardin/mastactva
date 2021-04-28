@@ -27,11 +27,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     const QString tableName = db::tableName(r_->getTableName(), r_->getCurrentRef());
-    QStringList tableFieldsNameTypePairs;
-    for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
-    {
-        tableFieldsNameTypePairs.push_back(fi.getSqlName() + QString(" ") + fi.getSqlType());
-    }
+    QStringList tableFieldsNameTypePairs = getSqlNameAndTypeList(r_->getTableFieldsInfo());
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QString fieldsRequests = (QStringList()
