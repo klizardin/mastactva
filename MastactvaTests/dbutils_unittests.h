@@ -35,22 +35,57 @@ QString sum(Arg_ arg_, Args_ ... args_)
 
 TEST(DBUtils, refName)
 {
-    ASSERT_TRUE(equal(db::refName("some_name"), sum(g_refPrefix, "some_name")));
-    ASSERT_TRUE(equal(db::refName("\"some_name\""), sum(g_refPrefix, "some_name")));
+    ASSERT_TRUE(
+                equal(
+                    db::refName("some_name"),
+                    sum(g_refPrefix, "some_name")
+                    )
+                );
+    ASSERT_TRUE(
+                equal(
+                    db::refName("\"some_name\""),
+                    sum(g_refPrefix, "some_name")
+                    )
+                );
 }
 
 TEST(DBUtils, refNames)
 {
     const QStringList res = db::refNames(QStringList({"some_name", "another_name", "\"quoted\""}));
-    ASSERT_TRUE(equal(res[0], sum(g_refPrefix, "some_name")));
-    ASSERT_TRUE(equal(res[1], sum(g_refPrefix, "another_name")));
-    ASSERT_TRUE(equal(res[2], sum(g_refPrefix, "quoted")));
+    ASSERT_TRUE(
+                equal(
+                    res[0],
+                    sum(g_refPrefix, "some_name")
+                    )
+                );
+    ASSERT_TRUE(
+                equal(
+                    res[1],
+                    sum(g_refPrefix, "another_name")
+                    )
+                );
+    ASSERT_TRUE(
+                equal(
+                    res[2],
+                    sum(g_refPrefix, "quoted")
+                )
+            );
 }
 
 TEST(DBUtils, toBindName)
 {
-    ASSERT_TRUE(equal(db::toBindName("simple"), sum(g_bindPrefix, "simple")));
-    ASSERT_TRUE(equal(db::toBindName("\"quoted\""), sum(g_bindPrefix, "quoted")));
+    ASSERT_TRUE(
+                equal(
+                    db::toBindName("simple"),
+                    sum(g_bindPrefix, "simple")
+                    )
+                );
+    ASSERT_TRUE(
+                equal(
+                    db::toBindName("\"quoted\""),
+                    sum(g_bindPrefix, "quoted")
+                    )
+                );
 }
 
 TEST(DBUtils, equalToValueConditionListFromSqlNameList)
@@ -131,8 +166,18 @@ TEST(DBUtils, quotName)
 {
     ASSERT_STRCASEEQ("\"name\"", db::quotName("name").toUtf8().constData());
     ASSERT_STRCASEEQ("\"name\"", db::quotName("\"name\"").toUtf8().constData());
-    ASSERT_TRUE(equal(db::quotName(sum(g_refPrefix, "name")), sum(g_refPrefix, "name")));
-    ASSERT_TRUE(equal(db::quotName(sum(g_bindPrefix, "name")), sum(g_bindPrefix, "name")));
+    ASSERT_TRUE(
+                equal(
+                    db::quotName(sum(g_refPrefix, "name")),
+                    sum(g_refPrefix, "name")
+                    )
+                );
+    ASSERT_TRUE(
+                equal(
+                    db::quotName(sum(g_bindPrefix, "name")),
+                    sum(g_bindPrefix, "name")
+                    )
+                );
 }
 
 TEST(DBUtils, unquotName)
