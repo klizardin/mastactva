@@ -16,31 +16,7 @@
 
 template<typename DataType_> inline
 void init(
-        DBRequestInfo &requestInfo_,
-        const QString &requestName_,
-        const QString &layoutName_,
-        bool readonly_,
-        const QHash<QString, QVariant> &extraFields_
-        )
-{
-    init<DataType_>(requestInfo_,
-                    requestName_,
-                    layoutName_,
-                    QString(),
-                    QStringList(),
-                    QString(),
-                    QString(),
-                    QString(),
-                    QVariant(),
-                    QVariant(),
-                    readonly_,
-                    extraFields_
-                    );
-}
-
-template<typename DataType_> inline
-void init(
-        DBRequestInfo &requestInfo_,
+        DBRequestBase &requestInfo_,
         const QString &requestName_,
         const QString &layoutName_,
         const QString &procedureName_,
@@ -99,9 +75,33 @@ void init(
     requestInfo_.setDBRequestName(requestName_);
 }
 
+template<typename DataType_> inline
+void init(
+        DBRequestBase &requestInfo_,
+        const QString &requestName_,
+        const QString &layoutName_,
+        bool readonly_,
+        const QHash<QString, QVariant> &extraFields_
+        )
+{
+    init<DataType_>(requestInfo_,
+                    requestName_,
+                    layoutName_,
+                    QString(),
+                    QStringList(),
+                    QString(),
+                    QString(),
+                    QString(),
+                    QVariant(),
+                    QVariant(),
+                    readonly_,
+                    extraFields_
+                    );
+}
+
 
 class LocalDBRequest :
-        public DBRequestInfo,
+        public DBRequestBase,
         public RequestData
 {
 public:

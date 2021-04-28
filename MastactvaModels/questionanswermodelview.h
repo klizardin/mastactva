@@ -21,16 +21,16 @@ public:
     QuestionAnswerModelView(QObject * parent_ = nullptr);
     virtual ~QuestionAnswerModelView() override;
 
-    virtual bool canProcess(const DBRequestInfo *r_) const override;
-    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool canProcess(const DBRequestBase *r_) const override;
+    virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool delItemImpl(const QVariant &id_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
 
 protected:
     void addUserQuestionAnswer();
@@ -46,7 +46,7 @@ protected slots:
 private:
     UserQuestionAnswerModel *m_userQuestionAnswerModel = nullptr;
     GalleryStatisticsModel *m_galleryStatisticsModel = nullptr;
-    QList<QPair<DBRequestInfo *, UserQuestionAnswer *>> m_requests;
+    QList<QPair<DBRequestBase *, UserQuestionAnswer *>> m_requests;
     GalleryStatistics *m_galleryStatistics = nullptr;
 };
 

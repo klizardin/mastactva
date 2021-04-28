@@ -19,19 +19,19 @@ public:
     GalleryModelView(QObject * parent_ = nullptr);
     virtual ~GalleryModelView() override;
 
-    virtual bool canProcess(const DBRequestInfo *r_) const override;
-    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool canProcess(const DBRequestBase *r_) const override;
+    virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
-    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
+    virtual bool delItemImpl(const QVariant &id_, DBRequestBase *r_) override;
 
 protected:
     void loadSteps();
-    void setData(DBRequestInfo *request_);
+    void setData(DBRequestBase *request_);
 
 protected slots:
     void userStepModelListReloaded();
@@ -39,7 +39,7 @@ protected slots:
     void galleryModelListReloaded();
 
 private:
-    QList<DBRequestInfo *> m_requests;
+    QList<DBRequestBase *> m_requests;
     const UserStep *m_lastUserStep = nullptr;
     UserStepModel *m_userStepModel;
     UserStepModel *m_userStepPlayedGalleriesModel;

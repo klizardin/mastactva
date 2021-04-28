@@ -6,7 +6,7 @@
 
 
 LocalDBRequest::LocalDBRequest()
-    :DBRequestInfo(g_cachAPI)
+    :DBRequestBase(g_cachAPI)
 {
 }
 

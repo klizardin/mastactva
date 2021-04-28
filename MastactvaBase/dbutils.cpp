@@ -711,32 +711,32 @@ QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSql
 } // namespace db
 
 
-DBRequestInfo::DBRequestInfo(const QString &apiName_)
+DBRequestBase::DBRequestBase(const QString &apiName_)
     :m_apiName(apiName_)
 {
 }
 
-const QString &DBRequestInfo::getTableName() const
+const QString &DBRequestBase::getTableName() const
 {
     return m_tableName;
 }
 
-void DBRequestInfo::setTableName(const QString &tableName_)
+void DBRequestBase::setTableName(const QString &tableName_)
 {
     m_tableName = tableName_;
 }
 
-const QList<db::JsonSqlField> &DBRequestInfo::getTableFieldsInfo() const
+const QList<db::JsonSqlField> &DBRequestBase::getTableFieldsInfo() const
 {
     return m_tableFieldsInfo;
 }
 
-void DBRequestInfo::setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_)
+void DBRequestBase::setTableFieldsInfo(const QList<db::JsonSqlField> &jsonFieldInfo_)
 {
     m_tableFieldsInfo = jsonFieldInfo_;
 }
 
-QStringList DBRequestInfo::getRefs(bool transparent_ /*= false*/) const
+QStringList DBRequestBase::getRefs(bool transparent_ /*= false*/) const
 {
     if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
     {
@@ -748,12 +748,12 @@ QStringList DBRequestInfo::getRefs(bool transparent_ /*= false*/) const
     }
 }
 
-void DBRequestInfo::setRefs(const QStringList &refs_)
+void DBRequestBase::setRefs(const QStringList &refs_)
 {
     m_refs = refs_;
 }
 
-QString DBRequestInfo::getCurrentRef(bool transparent_ /*= false*/) const
+QString DBRequestBase::getCurrentRef(bool transparent_ /*= false*/) const
 {
     if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
     {
@@ -765,12 +765,12 @@ QString DBRequestInfo::getCurrentRef(bool transparent_ /*= false*/) const
     }
 }
 
-void DBRequestInfo::setCurrentRef(const QString &currentRef_)
+void DBRequestBase::setCurrentRef(const QString &currentRef_)
 {
     m_currentRef = currentRef_;
 }
 
-QVariant DBRequestInfo::getIdField(bool transparent_ /*= false*/) const
+QVariant DBRequestBase::getIdField(bool transparent_ /*= false*/) const
 {
     if(transparent_ || (!transparent_ && m_procedureName.isEmpty()))
     {
@@ -782,89 +782,89 @@ QVariant DBRequestInfo::getIdField(bool transparent_ /*= false*/) const
     }
 }
 
-void DBRequestInfo::setIdField(const QVariant &idField_)
+void DBRequestBase::setIdField(const QVariant &idField_)
 {
     m_idField = idField_;
 }
 
-bool DBRequestInfo::getReadonly() const
+bool DBRequestBase::getReadonly() const
 {
     return m_readonly;
 }
 
-void DBRequestInfo::setReadonly(bool readonly_)
+void DBRequestBase::setReadonly(bool readonly_)
 {
     m_readonly = readonly_;
 }
 
-const QHash<QString, QVariant> &DBRequestInfo::getExtraFields() const
+const QHash<QString, QVariant> &DBRequestBase::getExtraFields() const
 {
     return m_extraFields;
 }
 
-void DBRequestInfo::setExtraFields(const QHash<QString, QVariant> &extraFields_)
+void DBRequestBase::setExtraFields(const QHash<QString, QVariant> &extraFields_)
 {
     m_extraFields = extraFields_;
 }
 
-void DBRequestInfo::insertExtraField(const QString &key_, const QVariant &value_)
+void DBRequestBase::insertExtraField(const QString &key_, const QVariant &value_)
 {
     m_extraFields.insert(key_, value_);
 }
 
-const QString &DBRequestInfo::getProcedureName() const
+const QString &DBRequestBase::getProcedureName() const
 {
     return m_procedureName;
 }
 
-void DBRequestInfo::setProcedureName(const QString &procedureName_)
+void DBRequestBase::setProcedureName(const QString &procedureName_)
 {
     m_procedureName = procedureName_;
 }
 
-const QString &DBRequestInfo::getDBRequestName() const
+const QString &DBRequestBase::getDBRequestName() const
 {
     return m_requestName;
 }
 
-void DBRequestInfo::setDBRequestName(const QString &requestName_)
+void DBRequestBase::setDBRequestName(const QString &requestName_)
 {
     m_requestName = requestName_;
 }
 
-void DBRequestInfo::clearReferences()
+void DBRequestBase::clearReferences()
 {
     setCurrentRef(QString());
     setRefs(QStringList());
     setIdField(QVariant());
 }
 
-void DBRequestInfo::setDefaultAPI(ILocalDataAPI *defaultAPI_)
+void DBRequestBase::setDefaultAPI(ILocalDataAPI *defaultAPI_)
 {
     m_defaultAPI = defaultAPI_;
 }
 
-ILocalDataAPI *DBRequestInfo::getDefaultAPI()
+ILocalDataAPI *DBRequestBase::getDefaultAPI()
 {
     return m_defaultAPI;
 }
 
-bool DBRequestInfo::isProcessed() const
+bool DBRequestBase::isProcessed() const
 {
     return m_processed;
 }
 
-void DBRequestInfo::setProcessed(bool processed_)
+void DBRequestBase::setProcessed(bool processed_)
 {
     m_processed = processed_;
 }
 
-const QString &DBRequestInfo::getAPIName() const
+const QString &DBRequestBase::getAPIName() const
 {
     return m_apiName;
 }
 
-QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVariant> &extraFields_)
+QHash<QString, QVariant> DBRequestBase::apiExtraFields(const QHash<QString, QVariant> &extraFields_)
 {
     QHash<QString, QVariant> res;
     const QList<QString> keys = extraFields_.keys();
@@ -880,7 +880,7 @@ QHash<QString, QVariant> DBRequestInfo::apiExtraFields(const QHash<QString, QVar
     return res;
 }
 
-QHash<QString, QVariant> DBRequestInfo::procedureExtraFields(const QHash<QString, QVariant> &extraFields_)
+QHash<QString, QVariant> DBRequestBase::procedureExtraFields(const QHash<QString, QVariant> &extraFields_)
 {
     if(extraFields_.contains(g_procedureExtraFieldName))
     {

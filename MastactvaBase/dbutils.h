@@ -69,29 +69,29 @@ namespace db
 
 
 class LocalDBRequest;
-class DBRequestInfo;
+class DBRequestBase;
 
 
 class ILocalDataAPI
 {
 public:
     virtual ~ILocalDataAPI() = default;
-    virtual bool canProcess(const DBRequestInfo *r_) const = 0;
-    virtual bool getListImpl(DBRequestInfo *r_) = 0;
+    virtual bool canProcess(const DBRequestBase *r_) const = 0;
+    virtual bool getListImpl(DBRequestBase *r_) = 0;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) = 0;
+                             DBRequestBase *r_) = 0;
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) = 0;
-    virtual bool delItemImpl(const QVariant &id_, DBRequestInfo *r_) = 0;
+                             DBRequestBase *r_) = 0;
+    virtual bool delItemImpl(const QVariant &id_, DBRequestBase *r_) = 0;
 };
 
 
-class DBRequestInfo
+class DBRequestBase
 {
 public:
-    DBRequestInfo(const QString &apiName_);
+    DBRequestBase(const QString &apiName_);
 
     const QString &getTableName() const;
     const QString &getProcedureName() const;
@@ -141,7 +141,7 @@ private:
 
     template<typename DataType_>
     friend void init(
-            DBRequestInfo &requestInfo_,
+            DBRequestBase &requestInfo_,
             const QString &requestName_,
             const QString &layoutName_,
             const QString &procedureName_,

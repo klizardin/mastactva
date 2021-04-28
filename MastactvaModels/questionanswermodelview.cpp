@@ -48,7 +48,7 @@ QuestionAnswerModelView::~QuestionAnswerModelView()
     m_galleryStatisticsModel = nullptr;
 }
 
-bool QuestionAnswerModelView::canProcess(const DBRequestInfo *r_) const
+bool QuestionAnswerModelView::canProcess(const DBRequestBase *r_) const
 {
     if(nullptr == r_) { return false; }
     const QString tableName = db::jsonToSql(
@@ -63,7 +63,7 @@ bool QuestionAnswerModelView::canProcess(const DBRequestInfo *r_) const
     return true;
 }
 
-bool QuestionAnswerModelView::getListImpl(DBRequestInfo *r_)
+bool QuestionAnswerModelView::getListImpl(DBRequestBase *r_)
 {
     Q_UNUSED(r_);
     return false;
@@ -71,7 +71,7 @@ bool QuestionAnswerModelView::getListImpl(DBRequestInfo *r_)
 
 bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_,
                                           const QHash<QString, QVariant> &values_,
-                                          DBRequestInfo *r_)
+                                          DBRequestBase *r_)
 {
     if(nullptr == r_ || r_->getAPIName() != g_cachAPI) { return false; }
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
@@ -89,7 +89,7 @@ bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_,
 
 bool QuestionAnswerModelView::setItemImpl(const QVariant &id_,
                                           const QHash<QString, QVariant> &values_,
-                                          DBRequestInfo *r_)
+                                          DBRequestBase *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(values_);
@@ -97,7 +97,7 @@ bool QuestionAnswerModelView::setItemImpl(const QVariant &id_,
     return false;
 }
 
-bool QuestionAnswerModelView::delItemImpl(const QVariant &id_, DBRequestInfo *r_)
+bool QuestionAnswerModelView::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
     Q_UNUSED(id_);
     Q_UNUSED(r_);
@@ -126,7 +126,7 @@ void QuestionAnswerModelView::error()
         return;
     }
 
-    DBRequestInfo *request = m_requests.front().first;
+    DBRequestBase *request = m_requests.front().first;
     if(nullptr != request && request->getAPIName() == g_cachAPI)
     {
         LocalDBRequest *r = static_cast<LocalDBRequest *>(request);
@@ -282,7 +282,7 @@ void QuestionAnswerModelView::addUserQuestionAnswerItem()
     QHash<QString, QVariant> values;
     getDataLayout<UserQuestionAnswer>().getJsonValues(userQuestionAnswer, values);
 
-    DBRequestInfo *request = m_requests.front().first;
+    DBRequestBase *request = m_requests.front().first;
     if(nullptr == request || request->getAPIName() != g_cachAPI)
     {
         error();

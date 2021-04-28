@@ -19,16 +19,16 @@ public:
     LocalDataAPIDefaultCacheImpl() = default;
     virtual ~LocalDataAPIDefaultCacheImpl() = default;
 
-    virtual bool canProcess(const DBRequestInfo *r_) const override;
-    virtual bool getListImpl(DBRequestInfo *r_) override;
+    virtual bool canProcess(const DBRequestBase *r_) const override;
+    virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
     virtual bool delItemImpl(const QVariant &id_,
-                             DBRequestInfo *r_) override;
+                             DBRequestBase *r_) override;
 };
 
 
@@ -213,7 +213,7 @@ protected:
     void openDB();
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
-    ILocalDataAPI *chooseView(DBRequestInfo *r_);
+    ILocalDataAPI *chooseView(DBRequestBase *r_);
     static QHash<QString, QVariant> removeFields(
             const QHash<QString, QVariant> &extraFields_,
             const QList<QPair<QString, layout::JsonTypesEn>> &fieldsInfo_);
