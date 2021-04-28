@@ -605,17 +605,17 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     switch (type)
     {
     case layout::JsonTypesEn::jt_bool:
-        return QJsonValue(val_.toInt() != 0);
+        return QJsonValue(val_.toDouble() != 0 || val_.toString().toUpper() == "TRUE");
         break;
 
     case layout::JsonTypesEn::jt_int:
-        return QJsonValue(val_.toInt());
+        return QJsonValue(int(val_.toDouble()));
         break;
 
     case layout::JsonTypesEn::jt_double:
         if(idField)
         {
-            return QJsonValue(val_.toInt());
+            return QJsonValue(int(val_.toDouble()));
         }
         else
         {
@@ -675,5 +675,21 @@ QStringList getBindSqlNames(const JsonSqlFieldsList &fields_)
     });
 }
 
+QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_)
+{
+    QJsonObject obj;
+    for(const db::JsonSqlField &fi : fields_)
+    {
+        if(!values_.contains(fi.getJsonName()))
+        {
+            continue;
+        }
+
+        const QVariant val = values_.value(fi.getJsonName());
+        const QJsonValue jsonVal = fi.jsonValue(val);
+        obj.insert(fi.getJsonName(), jsonVal);
+    }
+    return obj;
+}
 
 }
