@@ -222,7 +222,7 @@ void GalleryModelView::setData(DBRequestInfo *request_)
         const Gallery *item = m_galleryModel->dataItemAtImpl(i);
         QHash<QString, QVariant> values;
         getDataLayout<Gallery>().getJsonValues(item, values);
-        array.push_back(request_->getJsonObjectFromValues(values));
+        array.push_back(db::getJsonObject(values, request_->getTableFieldsInfo()));
     }
     LocalDBRequest *r = static_cast<LocalDBRequest *>(request_);
     r->addJsonResult(QJsonDocument(array));

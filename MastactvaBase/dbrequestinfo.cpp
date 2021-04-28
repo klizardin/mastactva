@@ -140,17 +140,6 @@ const QString &DBRequestInfo::getAPIName() const
     return m_apiName;
 }
 
-QJsonObject DBRequestInfo::getJsonObjectFromValues(const QHash<QString, QVariant> &values_) const
-{
-    QJsonObject obj;
-    for(const db::JsonSqlField &fi : qAsConst(m_tableFieldsInfo))
-    {
-        if(!values_.contains(fi.getJsonName())) { continue; }
-        obj.insert(fi.getJsonName(), fi.jsonValue(values_.value(fi.getJsonName())));
-    }
-    return obj;
-}
-
 QStringList DBRequestInfo::getSetNames(const QList<db::JsonSqlField> &tableFieldsInfo_)
 {
     QStringList res;
