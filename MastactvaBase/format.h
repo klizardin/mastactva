@@ -12,19 +12,19 @@ namespace fmt
 namespace Private
 {
 
-template<typename Type_>
+template<typename Type_> inline
 QString intergralTypes(const Type_ &val_)
 {
     return QVariant::fromValue(val_).toString();
 }
 
-template<typename Type_>
+template<typename Type_> inline
 QString convertableToStringTypes(const Type_ &val_)
 {
     return QString(val_);
 }
 
-template<class Type_>
+template<class Type_> inline
 QString compoundTypes(const Type_ &val_)
 {
     return val_.toString();
