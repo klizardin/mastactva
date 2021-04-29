@@ -60,6 +60,20 @@ QString toString(const Type_ &val_, std::false_type, std::true_type)
     return compoundTypes(val_);
 }
 
+class Format
+{
+public:
+    Format(const QString &format_) : m_format(format_){}
+
+    QString toString() const
+    {
+        return m_format;
+    }
+
+private:
+    QString m_format;
+};
+
 }  // namespace Private
 
 
@@ -79,24 +93,10 @@ QString toString(const Type_ &val_)
                 );
 }
 
-class Format
-{
-public:
-    Format(const QString &format_) : m_format(format_){}
-
-    QString toString() const
-    {
-        return m_format;
-    }
-
-private:
-    QString m_format;
-};
-
 inline
-Format format(const QString &format_)
+Private::Format format(const QString &format_)
 {
-    return Format(format_);
+    return Private::Format(format_);
 }
 
 }  // namespace fmt

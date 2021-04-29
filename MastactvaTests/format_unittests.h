@@ -58,7 +58,7 @@ TEST(Format, toString_compoundWithQStringConversion)
 
 TEST(Format, classFormat)
 {
-    ASSERT_TRUE(equal(fmt::toString(fmt::Format("str")), sum("str")));
+    ASSERT_TRUE(equal(fmt::toString(fmt::Private::Format("str")), sum("str")));
     ASSERT_TRUE(equal(fmt::toString(fmt::format("str1")), sum("str1")));
 }
 
