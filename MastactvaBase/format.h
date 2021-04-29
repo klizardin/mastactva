@@ -27,6 +27,7 @@ QString toString(Type_ val_, std::true_type, std::false_type)
 template<typename Type_> inline
 QString toString(Type_ val_, std::true_type, std::true_type)
 {
+    // prefer convertible to string
     return toString(val_, std::true_type(), std::false_type());
 }
 
