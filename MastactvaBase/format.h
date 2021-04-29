@@ -12,36 +12,54 @@ namespace fmt
 namespace Private
 {
 
-template<typename Type_> inline
-QString toString(Type_ val_, std::false_type, std::false_type)
+template<typename Type_>
+QString intergralTypes(const Type_ &val_)
 {
     return QVariant::fromValue(val_).toString();
 }
 
-template<typename Type_> inline
-QString toString(Type_ val_, std::true_type, std::false_type)
+template<typename Type_>
+QString convertableToStringTypes(const Type_ &val_)
 {
     return QString(val_);
 }
 
-template<typename Type_> inline
-QString toString(Type_ val_, std::true_type, std::true_type)
+template<class Type_>
+QString compoundTypes(const Type_ &val_)
 {
-    // prefer convertible to string
-    return toString(val_, std::true_type(), std::false_type());
+    return val_.toString();
 }
 
 template<typename Type_> inline
-QString toString(Type_ val_, std::false_type, std::true_type)
+QString toString(const Type_ &val_, std::false_type, std::false_type)
 {
-    return val_.toString();
+    return intergralTypes(val_);
+}
+
+template<typename Type_> inline
+QString toString(const Type_ &val_, std::true_type, std::false_type)
+{
+    return convertableToStringTypes(val_);
+}
+
+template<typename Type_> inline
+QString toString(const Type_ &val_, std::true_type, std::true_type)
+{
+    // prefer convertable to QString from this two alternatives
+    return convertableToStringTypes(val_);
+}
+
+template<typename Type_> inline
+QString toString(const Type_ &val_, std::false_type, std::true_type)
+{
+    return compoundTypes(val_);
 }
 
 }  // namespace Private
 
 
 template<typename Type_> inline
-QString toString(Type_ val_)
+QString toString(const Type_ &val_)
 {
     return Private::toString(
                 val_,

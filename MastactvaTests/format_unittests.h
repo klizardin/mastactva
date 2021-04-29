@@ -34,7 +34,7 @@ class Name : protected QString
 public:
     using QString::QString;
 
-    QString toString()
+    QString toString() const
     {
         return *this;
     }
