@@ -58,9 +58,14 @@ TEST(Format, toString_compoundWithQStringConversion)
 
 TEST(Format, classFormat)
 {
-    ASSERT_TRUE(equal(fmt::toString(fmt::Private::Format("str")), sum("str")));
+    ASSERT_TRUE(equal(fmt::toString(fmt::Private::Format<>("str")), sum("str")));
     ASSERT_TRUE(equal(fmt::toString(fmt::format("str1")), sum("str1")));
 }
 
+TEST(Format, formatArguments)
+{
+    const QString res = fmt::toString(fmt::format("%1=%2", 1, "1"));
+    ASSERT_TRUE(equal(res, sum("1", "=" "1")));
+}
 
 #endif // FORMAT_UNITTESTS_H

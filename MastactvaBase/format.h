@@ -9,6 +9,11 @@
 
 namespace fmt
 {
+
+template<typename Type_> inline
+QString toString(const Type_ &val_);
+
+
 namespace Private
 {
 
@@ -60,18 +65,76 @@ QString toString(const Type_ &val_, std::false_type, std::true_type)
     return compoundTypes(val_);
 }
 
+template<typename...>
+class FormatArgs
+{
+};
+
+template<>
+class FormatArgs<>
+{
+public:
+    FormatArgs() = default;
+
+    template<typename ... StrArgs_>
+    QString toString(const QString &fmt_, StrArgs_ ...) const
+    {
+        return fmt_;
+    }
+};
+
+template<typename Arg_>
+class FormatArgs<Arg_>
+{
+public:
+    FormatArgs(Arg_ arg_) : m_arg(arg_) {}
+
+    template<typename ... StrArgs_>
+    QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
+    {
+        return fmt_.arg(strArgs_ ..., fmt::toString(m_arg));
+    }
+private:
+    Arg_ m_arg;
+};
+
+template<typename Arg_, typename ... Args_>
+class FormatArgs<Arg_, Args_ ...> : public FormatArgs<Args_ ...>
+{
+public:
+    FormatArgs(Arg_ arg_, Args_ ... args_)
+        : FormatArgs<Args_ ...>(args_ ...), m_arg(arg_)
+    {
+    }
+
+    template<typename ... StrArgs_>
+    QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
+    {
+        return FormatArgs<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg));
+    }
+
+private:
+    Arg_ m_arg;
+};
+
+
+template<typename ... Args_>
 class Format
 {
 public:
-    Format(const QString &format_) : m_format(format_){}
+    Format(const QString &format_, Args_ ... args_)
+        : m_format(format_),
+          m_args(args_ ...)
+    {}
 
     QString toString() const
     {
-        return m_format;
+        return m_args.toString(m_format);
     }
 
 private:
     QString m_format;
+    FormatArgs<Args_ ...> m_args;
 };
 
 }  // namespace Private
@@ -93,10 +156,11 @@ QString toString(const Type_ &val_)
                 );
 }
 
+template<typename ... Args_>
 inline
-Private::Format format(const QString &format_)
+Private::Format<Args_...> format(const QString &format_, Args_ ... args_)
 {
-    return Private::Format(format_);
+    return Private::Format<Args_ ...>(format_, args_ ...);
 }
 
 }  // namespace fmt
