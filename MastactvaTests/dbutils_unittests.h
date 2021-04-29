@@ -8,30 +8,11 @@
 #include <QVariantList>
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
+#include "test_utils.h"
 
 
 using namespace testing;
 
-
-bool equal(
-        const QString &result_,
-        const QString &stringsSum_
-        )
-{
-    return result_ == stringsSum_;
-}
-
-template<typename Arg_>
-QString sum(Arg_ arg_)
-{
-    return QString(arg_);
-}
-
-template<typename Arg_, typename ... Args_>
-QString sum(Arg_ arg_, Args_ ... args_)
-{
-    return QString(arg_) + sum(args_ ...);
-}
 
 TEST(DBUtils, refName)
 {
