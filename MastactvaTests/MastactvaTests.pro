@@ -72,6 +72,7 @@ unix: HEADERS += \
         dbutils.h   \
         dbutils_unittests.h \
         timeutils.h \
+        format.h    \
 
 
 SOURCES += \
@@ -80,3 +81,4 @@ SOURCES += \
 unix: SOURCES += \
         dbutils.cpp \
         timeutils.cpp   \
+        format.cpp  \

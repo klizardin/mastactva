@@ -2,8 +2,19 @@
 #define FORMAT_H
 
 
+#include <QString>
+#include <QVariant>
+
+
 namespace fmt
 {
+
+inline
+QString toString(int val_)
+{
+    return "0";
+}
+
 }
 
 

@@ -17,7 +17,7 @@ using namespace testing;
 
 TEST(Format, test0)
 {
-    ASSERT_TRUE(true);
+    ASSERT_STRCASEEQ(fmt::toString(0).toUtf8().constData(), "0");
 }
 
 
