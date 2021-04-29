@@ -29,9 +29,20 @@ TEST(Format, toString_stringConverteble)
     ASSERT_TRUE(equal(fmt::toString("2"), sum("2")));
 }
 
-TEST(Format, toString_string)
+class Name : protected QString
 {
-    ASSERT_TRUE(equal(fmt::toString("2"), sum("2")));
+public:
+    using QString::QString;
+
+    QString toString()
+    {
+        return *this;
+    }
+};
+
+TEST(Format, toString_compound)
+{
+    ASSERT_TRUE(equal(fmt::toString(Name("str")), sum("str")));
 }
 
 #endif // FORMAT_UNITTESTS_H
