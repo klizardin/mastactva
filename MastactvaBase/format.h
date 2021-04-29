@@ -93,6 +93,12 @@ private:
     QString m_format;
 };
 
+inline
+Format format(const QString &format_)
+{
+    return Format(format_);
+}
+
 }  // namespace fmt
 
 
