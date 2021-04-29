@@ -79,6 +79,20 @@ QString toString(const Type_ &val_)
                 );
 }
 
+class Format
+{
+public:
+    Format(const QString &format_) : m_format(format_){}
+
+    QString toString() const
+    {
+        return m_format;
+    }
+
+private:
+    QString m_format;
+};
+
 }  // namespace fmt
 
 
