@@ -65,6 +65,7 @@ unix: QMAKE_CXXFLAGS_WARN_OFF += -Wunused-variable
 
 
 HEADERS += \
+        format_unittests.h \
         tst_testcanasserttrue.h
 
 unix: HEADERS += \
