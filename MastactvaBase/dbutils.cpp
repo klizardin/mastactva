@@ -32,9 +32,9 @@ public:                                                         \
 };                                                              \
 /*end macro LAYOUT_JSON_TYPES_TRAITS*/
 
-LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_bool, g_sqlInt);
-LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_int, g_sqlInt);
-LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_double, g_sqlDouble);
+LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_bool, g_sqlInt)
+LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_int, g_sqlInt)
+LAYOUT_JSON_TYPES_TRAITS(layout::JsonTypesEn::jt_double, g_sqlDouble)
 
 
 bool isQuotedName(const QString &name_)
