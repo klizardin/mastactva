@@ -50,7 +50,7 @@ QString toString(const Type_ &val_, std::true_type, std::true_type)
     //          operator QString() const
     // and
     //          toString() const
-    // method
+    // method, just one is enough
     return convertableToStringTypes(val_);
 }
 
