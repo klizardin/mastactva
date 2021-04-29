@@ -45,4 +45,16 @@ TEST(Format, toString_compound)
     ASSERT_TRUE(equal(fmt::toString(Name("str")), sum("str")));
 }
 
+class NameQString : public QString
+{
+public:
+    using QString::QString;
+};
+
+TEST(Format, toString_compoundWithQStringConversion)
+{
+    ASSERT_TRUE(equal(fmt::toString(NameQString("str")), sum("str")));
+}
+
+
 #endif // FORMAT_UNITTESTS_H
