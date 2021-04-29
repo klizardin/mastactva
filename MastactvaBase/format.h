@@ -46,6 +46,11 @@ template<typename Type_> inline
 QString toString(const Type_ &val_, std::true_type, std::true_type)
 {
     // prefer convertable to QString from this two alternatives
+    // to not have to define both
+    //          operator QString() const
+    // and
+    //          toString() const
+    // method
     return convertableToStringTypes(val_);
 }
 
