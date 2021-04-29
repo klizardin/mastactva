@@ -29,5 +29,9 @@ TEST(Format, toString_stringConverteble)
     ASSERT_TRUE(equal(fmt::toString("2"), sum("2")));
 }
 
+TEST(Format, toString_string)
+{
+    ASSERT_TRUE(equal(fmt::toString("2"), sum("2")));
+}
 
 #endif // FORMAT_UNITTESTS_H
