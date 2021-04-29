@@ -75,53 +75,21 @@ HEADERS += \
         qmlmainobjects.h \
 
 unix: HEADERS += \
-        easingtype.h \
-        effect.h \
-        effectarg.h \
-        effectargset.h \
-        effectargvalue.h \
-        utils.h \
-        netappconsts.h \
         IModel.h   \
-        qmlobjects.h   \
+        Model.h \
         imagesource.h  \
         Layout.h   \
+        qmlobjects.h   \
         netapi.h   \
-        Model.h \
-        serverfiles.h   \
-        quizimage.h \
-        imagepointeffect.h  \
-        gallery.h   \
-        image.h \
-        imagepoint.h    \
-        imagedescription.h  \
-        gallerystatistics.h \
-        question.h  \
-        answer.h    \
-        questionanswer.h    \
         localdata.h \
         requestdata.h   \
         localdataapinocache.h   \
         localdataapicache.h \
-        userstep.h  \
+        netappconsts.h \
         dbrequestinfo.h \
         localdataapiviews.h \
-        quizuser.h  \
-        defines.h   \
-        artefact.h    \
-        artefacttype.h    \
-        artefactargtype.h \
-        artefactargstorage.h    \
-        artefactarg.h \
-        translation.h   \
-        objectinfo.h  \
-        objectartefact.h    \
-        effectobjects.h \
         modelhelpers.h  \
-        names.h \
         wavefrontobj.h  \
-        quizimagedrawingdata.h  \
-        quizimageopengldrawingdata.h    \
         dbutils.h \
         jsonutils.h \
         layout_enums.h  \
@@ -131,6 +99,40 @@ unix: HEADERS += \
         sqlutils.h  \
         timeutils.h \
         format.h    \
+        serverfiles.h   \
+        utils.h \
+        names.h \
+        defines.h   \
+        \
+        quizimage.h \
+        quizimagedrawingdata.h  \
+        quizimageopengldrawingdata.h    \
+        \
+        easingtype.h \
+        effect.h \
+        effectarg.h \
+        effectargset.h \
+        effectargvalue.h \
+        imagepointeffect.h  \
+        gallery.h   \
+        image.h \
+        imagepoint.h    \
+        imagedescription.h  \
+        gallerystatistics.h \
+        question.h  \
+        answer.h    \
+        questionanswer.h    \
+        userstep.h  \
+        quizuser.h  \
+        artefact.h    \
+        artefacttype.h    \
+        artefactargtype.h \
+        artefactargstorage.h    \
+        artefactarg.h \
+        translation.h   \
+        objectinfo.h  \
+        objectartefact.h    \
+        effectobjects.h \
 
 
 SOURCES += \
@@ -143,20 +145,38 @@ SOURCES += \
         qmlmainobjects.cpp  \
 
 unix: SOURCES += \
+        IModel.cpp \
+        Model.cpp   \
+        imagesource.cpp    \
+        netapi.cpp \
+        serverfiles.cpp \
+        netappconsts.cpp  \
+        qmlobjects.cpp \
+        localdata.cpp   \
+        requestdata.cpp \
+        localdataapinocache.cpp \
+        localdataapicache.cpp   \
+        userstep.cpp    \
+        dbrequestinfo.cpp   \
+        localdataapiviews.cpp   \
+        modelhelpers.cpp    \
+        wavefrontobj.cpp    \
+        dbutils.cpp \
+        jsonutils.cpp \
+        sqlutils.cpp    \
+        format.cpp  \
+        timeutils.cpp   \
+        utils.cpp  \
+        \
+        quizimage.cpp   \
+        quizimagedrawingdata.cpp    \
+        quizimageopengldrawingdata.cpp  \
+        \
         easingtype.cpp \
         effect.cpp \
         effectarg.cpp \
         effectargset.cpp \
         effectargvalue.cpp \
-        utils.cpp  \
-        netappconsts.cpp  \
-        IModel.cpp \
-        qmlobjects.cpp \
-        imagesource.cpp    \
-        netapi.cpp \
-        Model.cpp   \
-        serverfiles.cpp \
-        quizimage.cpp   \
         imagepointeffect.cpp    \
         gallery.cpp   \
         image.cpp   \
@@ -166,13 +186,6 @@ unix: SOURCES += \
         question.cpp    \
         answer.cpp  \
         questionanswer.cpp  \
-        localdata.cpp   \
-        requestdata.cpp \
-        localdataapinocache.cpp \
-        localdataapicache.cpp   \
-        userstep.cpp    \
-        dbrequestinfo.cpp   \
-        localdataapiviews.cpp   \
         quizuser.cpp    \
         artefact.cpp    \
         artefacttype.cpp    \
@@ -183,15 +196,6 @@ unix: SOURCES += \
         objectinfo.cpp    \
         objectartefact.cpp  \
         effectobjects.cpp   \
-        modelhelpers.cpp    \
-        wavefrontobj.cpp    \
-        quizimagedrawingdata.cpp    \
-        quizimageopengldrawingdata.cpp  \
-        dbutils.cpp \
-        jsonutils.cpp \
-        sqlutils.cpp    \
-        timeutils.cpp   \
-        format.cpp  \
 
 
 RESOURCES += qml.qrc    \
