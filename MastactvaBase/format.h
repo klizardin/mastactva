@@ -177,7 +177,7 @@ public:
     {
         QStringList strs;
         strs.reserve(m_data.size());
-        for(const int &val_ : m_data)
+        for(const Type_ &val_ : m_data)
         {
             strs.push_back(fmt::toString(val_));
         }
