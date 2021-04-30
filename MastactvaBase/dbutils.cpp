@@ -12,6 +12,18 @@ db::SqlNameOrigin fmt::toType(const JsonName &jsonName_, const db::SqlNameOrigin
 }
 
 template<> inline
+db::SqlName fmt::toType(const db::JsonSqlField &field_, const db::SqlName &)
+{
+    return db::SqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
+}
+
+template<> inline
+db::SqlType fmt::toType(const db::JsonSqlField &field_, const db::SqlType &)
+{
+    return db::SqlType(field_.getType(), field_.isIdField());
+}
+
+template<> inline
 QString fmt::toString(const db::SqlName &name_)
 {
     return name_.quoted()
@@ -36,6 +48,12 @@ template<> inline
 QString fmt::toString(const db::BindRefSqlName &name_)
 {
     return db::refName(db::toBindName(name_.toString()));
+}
+
+template<> inline
+QString fmt::toString(const db::SqlType &type_)
+{
+    return db::getSqlType(type_.type(), type_.isIdField());
 }
 
 template<typename DestType_>
@@ -425,12 +443,29 @@ const QString &SqlNameOrigin::toString() const
 SqlName::SqlName(const SqlNameOrigin &name_)
     : SqlNameOrigin(name_)
 {
-    m_quoted = sqlKeywords().contains(static_cast<const QString &>(*this));
+    m_quoted = sqlKeywords().contains(static_cast<const QString &>(*this).toUpper());
 }
 
 bool SqlName::quoted() const
 {
     return m_quoted;
+}
+
+
+SqlType::SqlType(const layout::JsonTypesEn type_, bool isIdField_)
+    : m_type(type_),
+      m_isIdField(isIdField_)
+{
+}
+
+layout::JsonTypesEn SqlType::type() const
+{
+    return m_type;
+}
+
+bool SqlType::isIdField() const
+{
+    return m_isIdField;
 }
 
 
@@ -480,7 +515,7 @@ const QString &JsonSqlField::getSqlName() const
     return sqlName;
 }
 
-QString JsonSqlField::getSqlType() const
+QString getSqlType(layout::JsonTypesEn type, bool idField)
 {
     if(idField)
     {
@@ -549,6 +584,11 @@ QString JsonSqlField::getSqlType() const
     return LayoutJsonTypesTraits<
         layout::JsonTypesEn::jt_undefined
         >::sql_type_str();
+}
+
+QString JsonSqlField::getSqlType() const
+{
+    return db::getSqlType(getType(), isIdField());
 }
 
 QString JsonSqlField::getBindSqlName() const
@@ -886,7 +926,7 @@ QString getCreateTableSqlRequest(
         const QStringList &extraRefs_
         )
 {
-    const QString tableName = db::tableName(jsonLayoutName_, jsonRefName_);
+    /*const QString tableName = db::tableName(jsonLayoutName_, jsonRefName_);
     QStringList nameAndTypeList = getSqlNameAndTypeList(fields_);
     nameAndTypeList << db::textTypes(
                            db::refNames(db::jsonToSql(refs_))
@@ -898,7 +938,35 @@ QString getCreateTableSqlRequest(
     const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
             .arg(tableName, fieldsRequests)
             ;
-    return sqlRequest;
+    return sqlRequest;*/
+
+    return fmt::toString(
+                fmt::format(
+                    "CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;",
+                    db::tableName(jsonLayoutName_, jsonRefName_),
+                    fmt::list(
+                        fmt::merge(
+                            fmt::toTypeList(QString{}, fmt::list(
+                                fmt::format(QString("%1 %2"), db::SqlName{}, db::SqlType{}),
+                                fields_,
+                                ""
+                                ).toStringList()),
+                            fmt::toTypeList(QString{}, fmt::list(
+                                fmt::format(QString("%1 ") + g_sqlText, db::RefSqlName{}),
+                                fmt::toTypeList(
+                                                    db::SqlNameOrigin{},
+                                                    fmt::toTypeList(
+                                                        JsonName{},
+                                                        fmt::merge(refs_, extraRefs_)
+                                                        )
+                                                    ),
+                                ""
+                                ).toStringList())
+                            ),
+                        g_insertFieldSpliter
+                        )
+                    )
+                );
 }
 
 } // namespace db

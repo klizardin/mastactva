@@ -31,6 +31,7 @@ namespace db
     QString jsonToSql(const QString &jsonName_);
     QStringList jsonToSql(const QStringList &jsonNames_);
     QString tableName(const QString &jsonLayoutName_, const QString &refName_);
+    QString getSqlType(layout::JsonTypesEn type, bool idField);
 
     const QSet<QString> &sqlKeywords();
 
@@ -51,6 +52,19 @@ namespace db
 
     private:
         bool m_quoted;
+    };
+
+    class SqlType
+    {
+    public:
+        SqlType() = default;
+        SqlType(const layout::JsonTypesEn type_, bool isIdField_);
+        layout::JsonTypesEn type() const;
+        bool isIdField() const;
+
+    private:
+        layout::JsonTypesEn m_type = layout::JsonTypesEn::jt_undefined;
+        bool m_isIdField = false;
     };
 
     class BindSqlName : public SqlNameOrigin
