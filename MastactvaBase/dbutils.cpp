@@ -935,10 +935,8 @@ QString getCreateTableSqlRequest(
         );
 
     const auto ref_fields = fmt::list(
-        fmt::format(QString("%1 ") +
-                LayoutJsonTypesTraits<
-                    layout::JsonTypesEn::jt_string
-                    >::sql_type_str()
+        fmt::format(
+            QString("%1 ") + db::getSqlType(layout::JsonTypesEn::jt_string, false)
             , db::RefSqlName{}
             ),
         fmt::toTypeList(
