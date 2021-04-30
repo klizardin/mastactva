@@ -14,7 +14,7 @@ template<typename Type_> inline
 QString toString(const Type_ &val_);
 
 template<typename DestType_, typename SrcType_>
-DestType_ toType(const SrcType_ &val_, DestType_ *);
+DestType_ toType(const SrcType_ &val_, const DestType_ &defaultValue_);
 
 namespace Private
 {
@@ -105,7 +105,7 @@ public:
     template<typename SetType_>
     void set(const SetType_ &val_)
     {
-        m_arg = fmt::toType(val_, static_cast<Arg_*>(nullptr));
+        m_arg = fmt::toType(val_, m_arg);
     }
 
 private:
@@ -130,7 +130,7 @@ public:
     template<typename SetType_>
     void set(const SetType_ &val_)
     {
-        m_arg = fmt::toType(val_, static_cast<Arg_*>(nullptr));
+        m_arg = fmt::toType(val_, m_arg);
         FormatArgs<Args_ ...>::set(val_);
     }
 

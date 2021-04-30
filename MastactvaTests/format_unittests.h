@@ -79,22 +79,30 @@ namespace fmt
 {
 
 template<>
-int toType(const Name &val_, int *)
+int toType(const Name &val_, const int &)
 {
     return int(QVariant::fromValue(val_.toString()).toDouble());
 }
 
 template<>
-float toType(const Name &val_, float *)
+float toType(const Name &val_, const float &defaultValue_)
 {
-    return QVariant::fromValue(val_.toString()).toDouble();
+    const float conv = QVariant::fromValue(val_.toString()).toDouble();
+    if(conv < 0)
+    {
+        return defaultValue_;
+    }
+    else
+    {
+        return conv;
+    }
 }
 
 }
 
 TEST(Format, toType)
 {
-    ASSERT_EQ(fmt::toType(Name("1"), static_cast<int *>(nullptr)), 1);
+    ASSERT_EQ(fmt::toType(Name("1"), int{2}), 1);
 }
 
 TEST(Format, formatList)
@@ -102,12 +110,24 @@ TEST(Format, formatList)
     ASSERT_TRUE(equal(
                     fmt::toString(
                         fmt::list(
-                            fmt::format("%1=int(%2)", int{}, float{}),
+                            fmt::format("%1=int(%2)", int{1}, float{2.1}),
                             QVector<Name>({ "2.0", "12.5", "1.5" }),
                             " , "
                         )
                     ),
                     sum("2=int(2)", " , " "12=int(12.5)", " , ", "1=int(1.5)")
+                    )
+                );
+
+    ASSERT_TRUE(equal(
+                    fmt::toString(
+                        fmt::list(
+                            fmt::format("%1=int(%2)", int{2}, float{3.5}),
+                            QVector<Name>({ "2.0", "-12.5", "1.5" }),
+                            " , "
+                        )
+                    ),
+                    sum("2=int(2)", " , " "-12=int(3.5)", " , ", "1=int(1.5)")
                     )
                 );
 }
