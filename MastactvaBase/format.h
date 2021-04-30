@@ -206,11 +206,11 @@ public:
 
     QString toString() const
     {
-        Private::Format<Args_...> format = m_format;
         QStringList strs;
         strs.reserve(m_data.size());
         for(const Type_ &val_ : m_data)
         {
+            Private::Format<Args_...> format = m_format;
             format.set(val_);
             strs.push_back(fmt::toString(format));
         }
