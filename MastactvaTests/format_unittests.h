@@ -58,21 +58,49 @@ TEST(Format, toString_compoundWithQStringConversion)
 
 TEST(Format, classFormat)
 {
-    ASSERT_TRUE(equal(fmt::toString(fmt::Private::Format<>("str")), sum("str")));
-    ASSERT_TRUE(equal(fmt::toString(fmt::format("str1")), sum("str1")));
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::Private::Format<>("str")),
+                    sum("str")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::format("str1")),
+                    sum("str1")
+                    )
+                );
 }
 
 TEST(Format, formatArguments)
 {
-    ASSERT_TRUE(equal(fmt::toString(fmt::format("%1=%2", 1, "1")), sum("1", "=" "1")));
-    ASSERT_TRUE(equal(fmt::toString(fmt::format("%1=%2", Name("a"), NameQString("2"))), sum("a", "=" "2")));
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::format("%1=%2", 1, "1")),
+                    sum("1", "=" "1")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::format("%1=%2", Name("a"), NameQString("2"))),
+                    sum("a", "=" "2")
+                    )
+                );
 }
 
 TEST(Format, classList)
 {
-    ASSERT_TRUE(equal(fmt::toString(fmt::Private::List<int, QVector>({1,2,3}, ",")), sum("1", "," "2", ",", "3")));
-    ASSERT_TRUE(equal(fmt::toString(fmt::list(QVector<int>({1,2,3}), " , ")), sum("1", " , " "2", " , ", "3")));
-    ASSERT_TRUE(equal(fmt::toString(fmt::list(QVector<float>({1.0,2.5,3.5}), " , ")), sum("1", " , " "2.5", " , ", "3.5")));
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::Private::List<int, QVector>({1,2,3}, ",")),
+                    sum("1", "," "2", ",", "3")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::list(QVector<int>({1,2,3}), " , ")),
+                    sum("1", " , " "2", " , ", "3")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmt::list(QVector<float>({1.0,2.5,3.5}), " , ")),
+                    sum("1", " , " "2.5", " , ", "3.5")
+                    )
+                );
 }
 
 namespace fmt
