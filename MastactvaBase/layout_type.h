@@ -19,6 +19,7 @@ namespace layout
 class JsonName : protected QString
 {
 public:
+    JsonName() = default;
     JsonName(const QString &name_)
         : QString(name_)
     {}
