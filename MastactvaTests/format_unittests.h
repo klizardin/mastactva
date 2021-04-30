@@ -78,13 +78,13 @@ TEST(Format, classList)
 namespace fmt
 {
 
-template<>
+template<> inline
 int toType(const Name &val_, const int &)
 {
     return int(QVariant::fromValue(val_.toString()).toDouble());
 }
 
-template<>
+template<> inline
 float toType(const Name &val_, const float &defaultValue_)
 {
     const float conv = QVariant::fromValue(val_.toString()).toDouble();
@@ -130,6 +130,35 @@ TEST(Format, formatList)
                     sum("2=f(2)", " , " "-12=f(3.5)", " , ", "1=f(1.5)")
                     )
                 );
+}
+
+using IntAndFloatPair = QPair<int, float>;
+
+namespace fmt
+{
+
+template<> inline
+IntAndFloatPair toType(const Name &val_, const IntAndFloatPair &)
+{
+    const float v = QVariant::fromValue(val_.toString()).toDouble();
+    return IntAndFloatPair{int(v), v};
+}
+
+}
+
+TEST(Format, toTypeList)
+{
+    const QList<Name> values({{"1"}, {"2"}});
+    const QList<int> result({1, 2});
+    ASSERT_EQ(fmt::toType(values, int{2}), result);
+
+    const QVector<Name> values1({{"3"}, {"4"}});
+    const QVector<int> result1({3, 4});
+    ASSERT_EQ(fmt::toType(values1, int{2}), result1);
+
+    const QList<Name> values2({{"1.5"}, {"2.1"}});
+    const QList<IntAndFloatPair> result2({{1, 1.5}, {2, 2.1}});
+    ASSERT_EQ(fmt::toType(values2, IntAndFloatPair{0, 0.0}), result2);
 }
 
 

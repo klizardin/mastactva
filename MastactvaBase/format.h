@@ -13,8 +13,33 @@ namespace fmt
 template<typename Type_> inline
 QString toString(const Type_ &val_);
 
-template<typename DestType_, typename SrcType_>
+template<typename DestType_, typename SrcType_> inline
 DestType_ toType(const SrcType_ &val_, const DestType_ &defaultValue_);
+
+template<typename DestType_, typename SrcType_>
+QList<DestType_> toType(const QList<SrcType_> &vals_, const DestType_ &defaultValue_)
+{
+    QList<DestType_> result;
+    result.reserve(vals_.size());
+    for(const SrcType_ &valItem_ : vals_)
+    {
+        result.push_back(toType(valItem_, defaultValue_));
+    }
+    return result;
+}
+
+template<typename DestType_, typename SrcType_>
+QVector<DestType_> toType(const QVector<SrcType_> &vals_, const DestType_ &defaultValue_)
+{
+    QVector<DestType_> result;
+    result.reserve(vals_.size());
+    for(const SrcType_ &valItem_ : vals_)
+    {
+        result.push_back(toType(valItem_, defaultValue_));
+    }
+    return result;
+}
+
 
 namespace Private
 {
