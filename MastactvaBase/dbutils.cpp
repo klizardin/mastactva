@@ -941,21 +941,21 @@ QString getCreateTableSqlRequest(
                                 ).toStringList()),
                             fmt::toTypeList(QString{}, fmt::list(
                                 fmt::format(QString("%1 ") +
-                                                LayoutJsonTypesTraits<
-                                                    layout::JsonTypesEn::jt_string
-                                                    >::sql_type_str()
-                                            , db::RefSqlName{}
-                                            ),
+                                        LayoutJsonTypesTraits<
+                                            layout::JsonTypesEn::jt_string
+                                            >::sql_type_str()
+                                    , db::RefSqlName{}
+                                ),
                                 fmt::toTypeList(
-                                                    db::SqlNameOrigin{},
-                                                    fmt::toTypeList(
-                                                        JsonName{},
-                                                        fmt::merge(refs_, extraRefs_)
-                                                        )
-                                                    ),
+                                    db::SqlNameOrigin{},
+                                    fmt::toTypeList(
+                                        JsonName{},
+                                        fmt::merge(refs_, extraRefs_)
+                                        )
+                                ),
                                 ""
                                 ).toStringList())
-                            ),
+                        ),
                         g_insertFieldSpliter
                         )
                     )
