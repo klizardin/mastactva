@@ -211,7 +211,7 @@ public:
     {
     }
 
-    QString toString() const
+    QStringList toStringList() const
     {
         QStringList strs;
         strs.reserve(m_data.size());
@@ -219,7 +219,12 @@ public:
         {
             strs.push_back(fmt::toString(val_));
         }
-        return strs.join(m_seporator);
+        return strs;
+    }
+
+    QString toString() const
+    {
+        return toStringList().join(m_seporator);
     }
 
 private:
@@ -242,7 +247,7 @@ public:
     {
     }
 
-    QString toString() const
+    QStringList toStringList() const
     {
         QStringList strs;
         strs.reserve(m_data.size());
@@ -252,7 +257,12 @@ public:
             format.set(val_);
             strs.push_back(fmt::toString(format));
         }
-        return strs.join(m_seporator);
+        return strs;
+    }
+
+    QString toString() const
+    {
+        return toStringList().join(m_seporator);
     }
 
 private:
