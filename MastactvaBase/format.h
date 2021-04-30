@@ -193,8 +193,14 @@ template<typename Type_, typename ... Args_>
 class FormatList
 {
 public:
-    FormatList(Format<Args_...> format_, const QVector<Type_> &data_, const QString &separator_)
-        : m_format(format_), m_data(data_), m_seporator(separator_)
+    FormatList(
+            Format<Args_...> format_,
+            const QVector<Type_> &data_,
+            const QString &separator_
+            )
+        : m_format(format_),
+          m_data(data_),
+          m_seporator(separator_)
     {
     }
 
@@ -245,7 +251,10 @@ Private::Format<Args_...> format(const QString &format_, Args_ ... args_)
 
 template<typename ListType_>
 inline
-Private::List<ListType_> list(const QVector<ListType_> &data_, const QString &separator_)
+Private::List<ListType_> list(
+        const QVector<ListType_> &data_,
+        const QString &separator_
+        )
 {
     return Private::List<ListType_>(data_, separator_);
 }
