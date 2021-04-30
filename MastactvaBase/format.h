@@ -83,6 +83,11 @@ public:
     {
         return fmt_;
     }
+
+    template<typename SetType_>
+    void set(const SetType_ &)
+    {
+    }
 };
 
 template<typename Arg_>
@@ -96,6 +101,13 @@ public:
     {
         return fmt_.arg(strArgs_ ..., fmt::toString(m_arg));
     }
+
+    template<typename SetType_>
+    void set(const SetType_ &val_)
+    {
+        m_arg = fmt::toType(val_, static_cast<Arg_*>(nullptr));
+    }
+
 private:
     Arg_ m_arg;
 };
@@ -115,6 +127,13 @@ public:
         return FormatArgs<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg));
     }
 
+    template<typename SetType_>
+    void set(const SetType_ &val_)
+    {
+        m_arg = fmt::toType(val_, static_cast<Arg_*>(nullptr));
+        FormatArgs<Args_ ...>::set(val_);
+    }
+
 private:
     Arg_ m_arg;
 };
@@ -132,6 +151,12 @@ public:
     QString toString() const
     {
         return m_args.toString(m_format);
+    }
+
+    template<typename SetType_>
+    void set(const SetType_ &val_)
+    {
+        m_args.set(val_);
     }
 
 private:
@@ -160,6 +185,34 @@ public:
     }
 
 private:
+    QVector<Type_> m_data;
+    QString m_seporator;
+};
+
+template<typename Type_, typename ... Args_>
+class FormatList
+{
+public:
+    FormatList(Format<Args_...> format_, const QVector<Type_> &data_, const QString &separator_)
+        : m_format(format_), m_data(data_), m_seporator(separator_)
+    {
+    }
+
+    QString toString() const
+    {
+        Private::Format<Args_...> format = m_format;
+        QStringList strs;
+        strs.reserve(m_data.size());
+        for(const Type_ &val_ : m_data)
+        {
+            format.set(val_);
+            strs.push_back(fmt::toString(format));
+        }
+        return strs.join(m_seporator);
+    }
+
+private:
+    Private::Format<Args_...> m_format;
     QVector<Type_> m_data;
     QString m_seporator;
 };
@@ -195,6 +248,17 @@ inline
 Private::List<ListType_> list(const QVector<ListType_> &data_, const QString &separator_)
 {
     return Private::List<ListType_>(data_, separator_);
+}
+
+template<typename ListType_, typename ... Args_>
+inline
+Private::FormatList<ListType_, Args_ ...> list(
+        Private::Format<Args_...> format_,
+        const QVector<ListType_> &data_,
+        const QString &separator_
+        )
+{
+    return Private::FormatList<ListType_, Args_ ...>(format_, data_, separator_);
 }
 
 }  // namespace fmt

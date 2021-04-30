@@ -77,9 +77,16 @@ TEST(Format, classList)
 namespace fmt
 {
 
+template<>
 int toType(const Name &val_, int *)
 {
-    return QVariant::fromValue(val_.toString()).toInt();
+    return int(QVariant::fromValue(val_.toString()).toDouble());
+}
+
+template<>
+float toType(const Name &val_, float *)
+{
+    return QVariant::fromValue(val_.toString()).toDouble();
 }
 
 }
@@ -88,5 +95,21 @@ TEST(Format, toType)
 {
     ASSERT_EQ(fmt::toType(Name("1"), static_cast<int *>(nullptr)), 1);
 }
+
+TEST(Format, formatList)
+{
+    ASSERT_TRUE(equal(
+                    fmt::toString(
+                        fmt::list(
+                            fmt::format("%1=int(%2)", int{}, float{}),
+                            QVector<Name>({ "2.0", "12.5", "1.5" }),
+                            " , "
+                        )
+                    ),
+                    sum("2=int(2)", " , " "12=int(12.5)", " , ", "1=int(1.5)")
+                    )
+                );
+}
+
 
 #endif // FORMAT_UNITTESTS_H
