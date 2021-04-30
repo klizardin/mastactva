@@ -64,8 +64,8 @@ TEST(Format, classFormat)
 
 TEST(Format, formatArguments)
 {
-    const QString res = fmt::toString(fmt::format("%1=%2", 1, "1"));
-    ASSERT_TRUE(equal(res, sum("1", "=" "1")));
+    ASSERT_TRUE(equal(fmt::toString(fmt::format("%1=%2", 1, "1")), sum("1", "=" "1")));
+    ASSERT_TRUE(equal(fmt::toString(fmt::format("%1=%2", Name("a"), NameQString("2"))), sum("a", "=" "2")));
 }
 
 #endif // FORMAT_UNITTESTS_H
