@@ -23,6 +23,13 @@ db::SqlType fmt::toType(const db::JsonSqlField &field_, const db::SqlType &)
     return db::SqlType(field_.getType(), field_.isIdField());
 }
 
+template<typename DestType_> inline
+DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
+{
+    return DestType_(src_);
+}
+
+
 template<> inline
 QString fmt::toString(const db::SqlName &name_)
 {
@@ -56,11 +63,6 @@ QString fmt::toString(const db::SqlType &type_)
     return db::getSqlType(type_.type(), type_.isIdField());
 }
 
-template<typename DestType_>
-DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
-{
-    return DestType_(src_);
-}
 
 namespace db
 {
@@ -926,20 +928,6 @@ QString getCreateTableSqlRequest(
         const QStringList &extraRefs_
         )
 {
-    /*const QString tableName = db::tableName(jsonLayoutName_, jsonRefName_);
-    QStringList nameAndTypeList = getSqlNameAndTypeList(fields_);
-    nameAndTypeList << db::textTypes(
-                           db::refNames(db::jsonToSql(refs_))
-                           );
-    nameAndTypeList << db::textTypes(
-                           db::refNames(db::jsonToSql(extraRefs_))
-                           );
-    const QString fieldsRequests = nameAndTypeList.join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
-            .arg(tableName, fieldsRequests)
-            ;
-    return sqlRequest;*/
-
     return fmt::toString(
                 fmt::format(
                     "CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;",
@@ -952,7 +940,12 @@ QString getCreateTableSqlRequest(
                                 ""
                                 ).toStringList()),
                             fmt::toTypeList(QString{}, fmt::list(
-                                fmt::format(QString("%1 ") + g_sqlText, db::RefSqlName{}),
+                                fmt::format(QString("%1 ") +
+                                                LayoutJsonTypesTraits<
+                                                    layout::JsonTypesEn::jt_string
+                                                    >::sql_type_str()
+                                            , db::RefSqlName{}
+                                            ),
                                 fmt::toTypeList(
                                                     db::SqlNameOrigin{},
                                                     fmt::toTypeList(
