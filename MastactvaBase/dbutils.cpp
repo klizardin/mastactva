@@ -952,7 +952,7 @@ QString getCreateTableSqlRequest(
         );
 
     const auto request = fmt::format(
-        "CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;",
+        "CREATE TABLE IF NOT EXISTS %1 ( %2 );",
         db::tableName(jsonLayoutName_, jsonRefName_),
         fmt::list(
             fmt::merge(

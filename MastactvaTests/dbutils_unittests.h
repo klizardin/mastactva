@@ -354,7 +354,7 @@ TEST(DBUtils, JsonSqlFieldsList_getCreateTableSqlRequest)
                       "name", g_spaceName, g_sqlText, g_insertFieldSpliter,
                       g_refPrefix, "user", g_spaceName, g_sqlText, g_insertFieldSpliter,
                       g_refPrefix, "name", g_spaceName, g_sqlText, g_insertFieldSpliter,
-                      g_refPrefix, "age_years", g_spaceName, g_sqlText, " ) ;"
+                      g_refPrefix, "age_years", g_spaceName, g_sqlText, " );"
                 );
     ASSERT_TRUE(
                 equal(db::getCreateTableSqlRequest(
