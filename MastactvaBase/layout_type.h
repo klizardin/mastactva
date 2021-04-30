@@ -20,6 +20,11 @@ class JsonName : protected QString
 public:
     using QString::QString;
 
+    bool isEmpty() const
+    {
+        return static_cast<const QString &>(*this).isEmpty();
+    }
+
     friend bool operator == (const JsonName &left_, JsonName &right_);
     friend bool operator < (const JsonName &left_, JsonName &right_);
 };
