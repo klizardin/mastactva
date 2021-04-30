@@ -36,7 +36,6 @@ namespace db
     {
         JsonSqlField(
                 const QString &jsonName_,
-                const QString &sqlName_,
                 const layout::JsonTypesEn type_,
                 bool idField_
                 );

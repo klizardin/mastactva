@@ -43,10 +43,8 @@ void init(
     tableFieldsInfo.clear();
     for(const auto &jsonFieldName: qAsConst(fieldsInfo))
     {
-        const QString sqlFieldName = db::jsonToSql(jsonFieldName.first);
         tableFieldsInfo.push_back(
                     db::JsonSqlField(jsonFieldName.first,
-                                  sqlFieldName,
                                   jsonFieldName.second,
                                   idFieldName == jsonFieldName.first)
                     );

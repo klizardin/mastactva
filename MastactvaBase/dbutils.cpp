@@ -373,15 +373,14 @@ const QSet<QString> &sqlKeywords()
 
 JsonSqlField::JsonSqlField(
         const QString &jsonName_,
-        const QString &sqlName_,
         const layout::JsonTypesEn type_,
         bool idField_
         )
     : jsonName(jsonName_),
-      sqlName(sqlName_),
       type(type_),
       idField(idField_)
 {
+    sqlName = jsonToSql(jsonName);
     if(db::sqlKeywords().contains(sqlName.toUpper()))
     {
         sqlName = quotName(sqlName);

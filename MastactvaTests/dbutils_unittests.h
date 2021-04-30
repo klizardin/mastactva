@@ -200,8 +200,8 @@ TEST(DBUtils, tableName)
 TEST(DBUtils, JsonSqlFieldsList_getSqlNames)
 {
     db::JsonSqlFieldsList fields = {
-        {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
-        {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
+        { "sql-name", layout::JsonTypesEn::jt_int, false},
+        { "user", layout::JsonTypesEn::jt_int, false},
     };
     const QStringList sqlNames = db::getSqlNames(fields);
     ASSERT_STRCASEEQ("sql_name", sqlNames[0].toUtf8().constData());
@@ -211,8 +211,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSqlNames)
 TEST(DBUtils, JsonSqlFieldsList_getBindSqlNames)
 {
     db::JsonSqlFieldsList fields = {
-        {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
-        {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
+        { "sql-name", layout::JsonTypesEn::jt_int, false},
+        { "user", layout::JsonTypesEn::jt_int, false},
     };
     const QStringList sqlNames = db::getBindSqlNames(fields);
     ASSERT_TRUE(equal(
@@ -230,19 +230,19 @@ TEST(DBUtils, JsonSqlFieldsList_getBindSqlNames)
 TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
 {
     db::JsonSqlFieldsList fields = {
-        {"json-name-int-1", "sql_name", layout::JsonTypesEn::jt_int, false},
-        {"json-name-int-2", "sql_name", layout::JsonTypesEn::jt_int, false},
+        {"json-name-int-1", layout::JsonTypesEn::jt_int, false},
+        {"json-name-int-2", layout::JsonTypesEn::jt_int, false},
 
-        {"json-name-double-3", "user", layout::JsonTypesEn::jt_double, false},
-        {"json-name-double-4", "user", layout::JsonTypesEn::jt_double, false},
-        {"json-name-double-5", "user", layout::JsonTypesEn::jt_double, false},
+        {"json-name-double-3", layout::JsonTypesEn::jt_double, false},
+        {"json-name-double-4", layout::JsonTypesEn::jt_double, false},
+        {"json-name-double-5", layout::JsonTypesEn::jt_double, false},
 
-        {"json-name-bool-6", "user", layout::JsonTypesEn::jt_bool, false},
-        {"json-name-bool-7", "user", layout::JsonTypesEn::jt_bool, false},
-        {"json-name-bool-8", "user", layout::JsonTypesEn::jt_bool, false},
-        {"json-name-bool-9", "user", layout::JsonTypesEn::jt_bool, false},
+        {"json-name-bool-6", layout::JsonTypesEn::jt_bool, false},
+        {"json-name-bool-7", layout::JsonTypesEn::jt_bool, false},
+        {"json-name-bool-8", layout::JsonTypesEn::jt_bool, false},
+        {"json-name-bool-9", layout::JsonTypesEn::jt_bool, false},
 
-        {"json-none-name-10", "user", layout::JsonTypesEn::jt_string, false},
+        {"json-none-name-10", layout::JsonTypesEn::jt_string, false},
     };
     QHash<QString, QVariant> values = {
         {"json-name-int-1", QVariant::fromValue(QString("1.0"))},
@@ -281,8 +281,8 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
 TEST(DBUtils, JsonSqlFieldsList_getSqlNameEqualBindSqlNameList)
 {
     db::JsonSqlFieldsList fields = {
-        {"json-name-1", "sql_name", layout::JsonTypesEn::jt_int, false},
-        {"json-name-2", "user", layout::JsonTypesEn::jt_int, false},
+        { "sql-name", layout::JsonTypesEn::jt_int, false},
+        { "user", layout::JsonTypesEn::jt_int, false},
     };
     const QStringList sqlNames = db::getSqlNameEqualBindSqlNameList(fields);
     ASSERT_TRUE(equal(
@@ -300,11 +300,11 @@ TEST(DBUtils, JsonSqlFieldsList_getSqlNameEqualBindSqlNameList)
 TEST(DBUtils, JsonSqlFieldsList_getSqlNameAndTypeList)
 {
     db::JsonSqlFieldsList fields = {
-        {"json-name-1", "bool_name", layout::JsonTypesEn::jt_bool, false},
-        {"json-name-2", "int_name", layout::JsonTypesEn::jt_int, false},
-        {"json-name-3", "double_name", layout::JsonTypesEn::jt_double, false},
-        {"json-name-4", "string_name", layout::JsonTypesEn::jt_string, false},
-        {"json-name-5", "datetime_name", layout::JsonTypesEn::jt_datetime, false},
+        { "bool-name", layout::JsonTypesEn::jt_bool, false},
+        { "int-name", layout::JsonTypesEn::jt_int, false},
+        { "double-name", layout::JsonTypesEn::jt_double, false},
+        { "string-name", layout::JsonTypesEn::jt_string, false},
+        { "datetime-name", layout::JsonTypesEn::jt_datetime, false},
     };
     const QStringList res = db::getSqlNameAndTypeList(fields);
     ASSERT_TRUE(equal(
@@ -337,9 +337,9 @@ TEST(DBUtils, JsonSqlFieldsList_getSqlNameAndTypeList)
 TEST(DBUtils, JsonSqlFieldsList_getCreateTableSqlRequest)
 {
     db::JsonSqlFieldsList fields = {
-        {"id-field", "id", layout::JsonTypesEn::jt_int, true},
-        {"user-id", "user", layout::JsonTypesEn::jt_int, false},
-        {"user-name", "name", layout::JsonTypesEn::jt_string, false},
+        { "id", layout::JsonTypesEn::jt_int, true},
+        { "user", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
     };
     const QString jsonLayoutName{"user-list"};
     const QString jsonRefName{"user-id"};
