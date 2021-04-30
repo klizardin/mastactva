@@ -10,6 +10,8 @@
 #include <QJsonValue>
 #include <QJsonObject>
 #include "../MastactvaBase/layout_enums.h"
+#include "../MastactvaBase/layout_type.h"
+#include "../MastactvaBase/format_type.h"
 
 
 namespace db
@@ -31,6 +33,46 @@ namespace db
     QString tableName(const QString &jsonLayoutName_, const QString &refName_);
 
     const QSet<QString> &sqlKeywords();
+
+    class SqlNameOrigin : protected QString
+    {
+    public:
+        SqlNameOrigin() = default;
+        SqlNameOrigin(const QString &name_);
+        const QString &toString() const;
+    };
+
+    class SqlName : public SqlNameOrigin
+    {
+    public:
+        SqlName() = default;
+        SqlName(const SqlNameOrigin &name_);
+        bool quoted() const;
+
+    private:
+        bool m_quoted;
+    };
+
+    class BindSqlName : public SqlNameOrigin
+    {
+    public:
+        BindSqlName() = default;
+        BindSqlName(const SqlNameOrigin &name_);
+    };
+
+    class RefSqlName : public SqlNameOrigin
+    {
+    public:
+        RefSqlName() = default;
+        RefSqlName(const SqlNameOrigin &name_);
+    };
+
+    class BindRefSqlName : public SqlNameOrigin
+    {
+    public:
+        BindRefSqlName() = default;
+        BindRefSqlName(const SqlNameOrigin &name_);
+    };
 
     struct JsonSqlField
     {

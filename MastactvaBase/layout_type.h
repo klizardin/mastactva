@@ -15,15 +15,19 @@ namespace layout
     }
 }
 
+
 class JsonName : protected QString
 {
 public:
-    using QString::QString;
+    JsonName(const QString &name_)
+        : QString(name_)
+    {}
 
     bool isEmpty() const
     {
         return static_cast<const QString &>(*this).isEmpty();
     }
+    const QString &toString() const { return *this; }
 
     friend bool operator == (const JsonName &left_, JsonName &right_);
     friend bool operator < (const JsonName &left_, JsonName &right_);

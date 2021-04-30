@@ -201,6 +201,7 @@ unix: HEADERS += \
     timeutils.h \
     defines.h   \
     format.h    \
+    format_type.h   \
     \
     quizimage.h \
     quizimagedrawingdata.h  \

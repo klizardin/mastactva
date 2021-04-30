@@ -5,16 +5,11 @@
 #include <type_traits>
 #include <QString>
 #include <QVariant>
+#include "../MastactvaBase/format_type.h"
 
 
 namespace fmt
 {
-
-template<typename Type_> inline
-QString toString(const Type_ &val_);
-
-template<typename DestType_, typename SrcType_> inline
-DestType_ toType(const SrcType_ &val_, const DestType_ &defaultValue_);
 
 template<typename DestType_, typename SrcType_>
 QList<DestType_> toType(const QList<SrcType_> &vals_, const DestType_ &defaultValue_)

@@ -2,7 +2,47 @@
 #include <QSet>
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/timeutils.h"
+#include "../MastactvaBase/format.h"
 
+
+template<> inline
+db::SqlNameOrigin fmt::toType(const JsonName &jsonName_, const db::SqlNameOrigin &)
+{
+    return db::SqlNameOrigin(db::jsonToSql(jsonName_.toString()));
+}
+
+template<> inline
+QString fmt::toString(const db::SqlName &name_)
+{
+    return name_.quoted()
+            ? db::quotName(name_.toString())
+            : name_.toString()
+            ;
+}
+
+template<> inline
+QString fmt::toString(const db::BindSqlName &name_)
+{
+    return db::toBindName(name_.toString());
+}
+
+template<> inline
+QString fmt::toString(const db::RefSqlName &name_)
+{
+    return db::refName(name_.toString());
+}
+
+template<> inline
+QString fmt::toString(const db::BindRefSqlName &name_)
+{
+    return db::refName(db::toBindName(name_.toString()));
+}
+
+template<typename DestType_>
+DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
+{
+    return DestType_(src_);
+}
 
 namespace db
 {
@@ -371,12 +411,55 @@ const QSet<QString> &sqlKeywords()
 }
 
 
+SqlNameOrigin::SqlNameOrigin(const QString &name_)
+    : QString(name_)
+{
+}
+
+const QString &SqlNameOrigin::toString() const
+{
+    return static_cast<const QString &>(*this);
+}
+
+
+SqlName::SqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+    m_quoted = sqlKeywords().contains(static_cast<const QString &>(*this));
+}
+
+bool SqlName::quoted() const
+{
+    return m_quoted;
+}
+
+
+BindSqlName::BindSqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+}
+
+
+RefSqlName::RefSqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+}
+
+
+BindRefSqlName::BindRefSqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+}
+
+
 JsonSqlField::JsonSqlField(
         const QString &jsonName_,
+        //const QString &sqlName_,
         const layout::JsonTypesEn type_,
         bool idField_
         )
     : jsonName(jsonName_),
+      //sqlName(sqlName_),
       type(type_),
       idField(idField_)
 {
