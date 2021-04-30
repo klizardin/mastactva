@@ -98,6 +98,7 @@ unix: HEADERS += \
         layout_variant.h    \
         sqlutils.h  \
         timeutils.h \
+        format_type.h   \
         format.h    \
         serverfiles.h   \
         utils.h \

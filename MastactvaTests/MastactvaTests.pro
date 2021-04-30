@@ -74,6 +74,7 @@ unix: HEADERS += \
         dbutils_unittests.h \
         timeutils.h \
         format.h    \
+        format_type.h   \
 
 
 SOURCES += \

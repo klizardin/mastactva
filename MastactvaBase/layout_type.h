@@ -16,4 +16,35 @@ namespace layout
 }
 
 
+class JsonName : protected QString
+{
+public:
+    JsonName() = default;
+    JsonName(const QString &name_)
+        : QString(name_)
+    {}
+
+    bool isEmpty() const
+    {
+        return static_cast<const QString &>(*this).isEmpty();
+    }
+    const QString &toString() const { return *this; }
+
+    friend bool operator == (const JsonName &left_, JsonName &right_);
+    friend bool operator < (const JsonName &left_, JsonName &right_);
+};
+
+inline
+bool operator == (const JsonName &left_, JsonName &right_)
+{
+    return static_cast<const QString &>(left_) == static_cast<const QString &>(right_);
+}
+
+inline
+bool operator < (const JsonName &left_, JsonName &right_)
+{
+    return static_cast<const QString &>(left_) < static_cast<const QString &>(right_);
+}
+
+
 #endif // LAYOUT_TYPE_H

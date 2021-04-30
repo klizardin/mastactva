@@ -2,6 +2,66 @@
 #include <QSet>
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/timeutils.h"
+#include "../MastactvaBase/format.h"
+
+
+template<> inline
+db::SqlNameOrigin fmt::toType(const JsonName &jsonName_, const db::SqlNameOrigin &)
+{
+    return db::SqlNameOrigin(db::jsonToSql(jsonName_.toString()));
+}
+
+template<> inline
+db::SqlName fmt::toType(const db::JsonSqlField &field_, const db::SqlName &)
+{
+    return db::SqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
+}
+
+template<> inline
+db::SqlType fmt::toType(const db::JsonSqlField &field_, const db::SqlType &)
+{
+    return db::SqlType(field_.getType(), field_.isIdField());
+}
+
+template<typename DestType_> inline
+DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
+{
+    return DestType_(src_);
+}
+
+
+template<> inline
+QString fmt::toString(const db::SqlName &name_)
+{
+    return name_.quoted()
+            ? db::quotName(name_.toString())
+            : name_.toString()
+            ;
+}
+
+template<> inline
+QString fmt::toString(const db::BindSqlName &name_)
+{
+    return db::toBindName(name_.toString());
+}
+
+template<> inline
+QString fmt::toString(const db::RefSqlName &name_)
+{
+    return db::refName(name_.toString());
+}
+
+template<> inline
+QString fmt::toString(const db::BindRefSqlName &name_)
+{
+    return db::refName(db::toBindName(name_.toString()));
+}
+
+template<> inline
+QString fmt::toString(const db::SqlType &type_)
+{
+    return db::getSqlType(type_.type(), type_.isIdField());
+}
 
 
 namespace db
@@ -371,17 +431,76 @@ const QSet<QString> &sqlKeywords()
 }
 
 
+SqlNameOrigin::SqlNameOrigin(const QString &name_)
+    : QString(name_)
+{
+}
+
+const QString &SqlNameOrigin::toString() const
+{
+    return static_cast<const QString &>(*this);
+}
+
+
+SqlName::SqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+    m_quoted = sqlKeywords().contains(static_cast<const QString &>(*this).toUpper());
+}
+
+bool SqlName::quoted() const
+{
+    return m_quoted;
+}
+
+
+SqlType::SqlType(const layout::JsonTypesEn type_, bool isIdField_)
+    : m_type(type_),
+      m_isIdField(isIdField_)
+{
+}
+
+layout::JsonTypesEn SqlType::type() const
+{
+    return m_type;
+}
+
+bool SqlType::isIdField() const
+{
+    return m_isIdField;
+}
+
+
+BindSqlName::BindSqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+}
+
+
+RefSqlName::RefSqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+}
+
+
+BindRefSqlName::BindRefSqlName(const SqlNameOrigin &name_)
+    : SqlNameOrigin(name_)
+{
+}
+
+
 JsonSqlField::JsonSqlField(
         const QString &jsonName_,
-        const QString &sqlName_,
+        //const QString &sqlName_,
         const layout::JsonTypesEn type_,
         bool idField_
         )
     : jsonName(jsonName_),
-      sqlName(sqlName_),
+      //sqlName(sqlName_),
       type(type_),
       idField(idField_)
 {
+    sqlName = jsonToSql(jsonName);
     if(db::sqlKeywords().contains(sqlName.toUpper()))
     {
         sqlName = quotName(sqlName);
@@ -398,7 +517,7 @@ const QString &JsonSqlField::getSqlName() const
     return sqlName;
 }
 
-QString JsonSqlField::getSqlType() const
+QString getSqlType(layout::JsonTypesEn type, bool idField)
 {
     if(idField)
     {
@@ -467,6 +586,11 @@ QString JsonSqlField::getSqlType() const
     return LayoutJsonTypesTraits<
         layout::JsonTypesEn::jt_undefined
         >::sql_type_str();
+}
+
+QString JsonSqlField::getSqlType() const
+{
+    return db::getSqlType(getType(), isIdField());
 }
 
 QString JsonSqlField::getBindSqlName() const
@@ -804,19 +928,39 @@ QString getCreateTableSqlRequest(
         const QStringList &extraRefs_
         )
 {
-    const QString tableName = db::tableName(jsonLayoutName_, jsonRefName_);
-    QStringList nameAndTypeList = getSqlNameAndTypeList(fields_);
-    nameAndTypeList << db::textTypes(
-                           db::refNames(db::jsonToSql(refs_))
-                           );
-    nameAndTypeList << db::textTypes(
-                           db::refNames(db::jsonToSql(extraRefs_))
-                           );
-    const QString fieldsRequests = nameAndTypeList.join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;")
-            .arg(tableName, fieldsRequests)
-            ;
-    return sqlRequest;
+    const auto main_fields = fmt::list(
+        fmt::format(QString("%1 %2"), db::SqlName{}, db::SqlType{}),
+        fields_,
+        ""
+        );
+
+    const auto ref_fields = fmt::list(
+        fmt::format(
+            QString("%1 ") + db::getSqlType(layout::JsonTypesEn::jt_string, false)
+            , db::RefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        ""
+        );
+
+    const auto request = fmt::format(
+        "CREATE TABLE IF NOT EXISTS %1 ( %2 );",
+        db::tableName(jsonLayoutName_, jsonRefName_),
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, main_fields.toStringList()),
+                fmt::toTypeList(QString{}, ref_fields.toStringList())
+            ),
+            g_insertFieldSpliter
+            )
+        );
+    return fmt::toString(request);
 }
 
 } // namespace db
