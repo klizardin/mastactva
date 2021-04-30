@@ -11,22 +11,10 @@
 namespace fmt
 {
 
-template<typename DestType_, typename SrcType_>
-QList<DestType_> toType(const QList<SrcType_> &vals_, const DestType_ &defaultValue_)
+template<typename DestType_, template<typename> class ContainerType_, typename SrcType_> inline
+ContainerType_<DestType_> toType(const ContainerType_<SrcType_> &vals_, const DestType_ &defaultValue_)
 {
-    QList<DestType_> result;
-    result.reserve(vals_.size());
-    for(const SrcType_ &valItem_ : vals_)
-    {
-        result.push_back(toType(valItem_, defaultValue_));
-    }
-    return result;
-}
-
-template<typename DestType_, typename SrcType_>
-QVector<DestType_> toType(const QVector<SrcType_> &vals_, const DestType_ &defaultValue_)
-{
-    QVector<DestType_> result;
+    ContainerType_<DestType_> result;
     result.reserve(vals_.size());
     for(const SrcType_ &valItem_ : vals_)
     {
