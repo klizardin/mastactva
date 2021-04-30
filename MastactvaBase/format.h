@@ -188,6 +188,13 @@ Private::Format<Args_...> format(const QString &format_, Args_ ... args_)
     return Private::Format<Args_ ...>(format_, args_ ...);
 }
 
+template<typename ListType_>
+inline
+Private::List<ListType_> list(const QVector<ListType_> &data_, const QString &separator_)
+{
+    return Private::List<ListType_>(data_, separator_);
+}
+
 }  // namespace fmt
 
 
