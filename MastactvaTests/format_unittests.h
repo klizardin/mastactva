@@ -189,5 +189,31 @@ TEST(Format, toTypeList)
     ASSERT_EQ(fmt::toType(values2, IntAndFloatPair{0, 0.0}), result2);
 }
 
+namespace fmt
+{
+
+template<> inline
+Name toType(const QString &val_, const Name &)
+{
+    return Name(val_.toUtf8());
+}
+
+}
+
+
+TEST(Format, formatListToType)
+{
+    ASSERT_TRUE(equal(
+                    fmt::toString(
+                        fmt::list(
+                            fmt::format("%1=f(%2)", int{2}, float{3.5}),
+                            fmt::toType(QStringList({ "2.0", "-12.5", "1.5" }), Name{}),
+                            " , "
+                        )
+                    ),
+                    sum("2=f(2)", " , " "-12=f(3.5)", " , ", "1=f(1.5)")
+                    )
+                );
+}
 
 #endif // FORMAT_UNITTESTS_H

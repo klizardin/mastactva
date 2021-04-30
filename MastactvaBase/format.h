@@ -23,6 +23,17 @@ ContainerType_<DestType_> toType(const ContainerType_<SrcType_> &vals_, const De
     return result;
 }
 
+template<typename DestType_> inline
+QList<DestType_> toType(const QStringList &vals_, const DestType_ &defaultValue_)
+{
+    QList<DestType_> result;
+    result.reserve(vals_.size());
+    for(const QString &valItem_ : vals_)
+    {
+        result.push_back(toType(valItem_, defaultValue_));
+    }
+    return result;
+}
 
 namespace Private
 {
@@ -73,6 +84,12 @@ template<typename Type_> inline
 QString toString(const Type_ &val_, std::false_type, std::true_type)
 {
     return compoundTypes(val_);
+}
+
+template<typename DestType_, typename SrcType_> inline
+DestType_ toType(const SrcType_ &val_, const DestType_ &)
+{
+    return DestType_(val_);
 }
 
 template<typename...>
@@ -176,7 +193,7 @@ template<typename Type_, template<typename> class ContainerType_>
 class List
 {
 public:
-    List(const QVector<Type_> &data_, const QString &separator_)
+    List(const ContainerType_<Type_> &data_, const QString &separator_)
         : m_data(data_), m_seporator(separator_)
     {
     }
@@ -203,7 +220,7 @@ class FormatList
 public:
     FormatList(
             Format<Args_...> format_,
-            const QVector<Type_> &data_,
+            const ContainerType_<Type_> &data_,
             const QString &separator_
             )
         : m_format(format_),
