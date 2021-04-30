@@ -137,11 +137,11 @@ private:
     FormatArgs<Args_ ...> m_args;
 };
 
-
+template<typename Type_>
 class List
 {
 public:
-    List(const QVector<int> &data_, const QString &separator_)
+    List(const QVector<Type_> &data_, const QString &separator_)
         : m_data(data_), m_seporator(separator_)
     {
     }
@@ -158,7 +158,7 @@ public:
     }
 
 private:
-    QVector<int> m_data;
+    QVector<Type_> m_data;
     QString m_seporator;
 };
 
