@@ -184,7 +184,7 @@ private:
     FormatArgs<Args_ ...> m_args;
 };
 
-template<typename Type_>
+template<typename Type_, template<typename> class ContainerType_>
 class List
 {
 public:
@@ -205,11 +205,11 @@ public:
     }
 
 private:
-    QVector<Type_> m_data;
+    ContainerType_<Type_> m_data;
     QString m_seporator;
 };
 
-template<typename Type_, typename ... Args_>
+template<typename Type_, template<typename> class ContainerType_, typename ... Args_>
 class FormatList
 {
 public:
@@ -239,7 +239,7 @@ public:
 
 private:
     Private::Format<Args_...> m_format;
-    QVector<Type_> m_data;
+    ContainerType_<Type_> m_data;
     QString m_seporator;
 };
 
@@ -269,25 +269,25 @@ Private::Format<Args_...> format(const QString &format_, Args_ ... args_)
     return Private::Format<Args_ ...>(format_, args_ ...);
 }
 
-template<typename ListType_>
+template<typename ListType_, template<typename> class ContainerType_>
 inline
-Private::List<ListType_> list(
-        const QVector<ListType_> &data_,
+Private::List<ListType_, ContainerType_> list(
+        const ContainerType_<ListType_> &data_,
         const QString &separator_
         )
 {
-    return Private::List<ListType_>(data_, separator_);
+    return Private::List<ListType_, ContainerType_>(data_, separator_);
 }
 
-template<typename ListType_, typename ... Args_>
+template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
 inline
-Private::FormatList<ListType_, Args_ ...> list(
+Private::FormatList<ListType_, ContainerType_, Args_ ...> list(
         Private::Format<Args_...> format_,
-        const QVector<ListType_> &data_,
+        const ContainerType_<ListType_> &data_,
         const QString &separator_
         )
 {
-    return Private::FormatList<ListType_, Args_ ...>(format_, data_, separator_);
+    return Private::FormatList<ListType_, ContainerType_, Args_ ...>(format_, data_, separator_);
 }
 
 }  // namespace fmt

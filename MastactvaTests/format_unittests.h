@@ -70,7 +70,7 @@ TEST(Format, formatArguments)
 
 TEST(Format, classList)
 {
-    ASSERT_TRUE(equal(fmt::toString(fmt::Private::List<int>({1,2,3}, ",")), sum("1", "," "2", ",", "3")));
+    ASSERT_TRUE(equal(fmt::toString(fmt::Private::List<int, QVector>({1,2,3}, ",")), sum("1", "," "2", ",", "3")));
     ASSERT_TRUE(equal(fmt::toString(fmt::list(QVector<int>({1,2,3}), " , ")), sum("1", " , " "2", " , ", "3")));
     ASSERT_TRUE(equal(fmt::toString(fmt::list(QVector<float>({1.0,2.5,3.5}), " , ")), sum("1", " , " "2.5", " , ", "3.5")));
 }
