@@ -324,6 +324,20 @@ Private::FormatList<ListType_, ContainerType_, Args_ ...> list(
     return Private::FormatList<ListType_, ContainerType_, Args_ ...>(format_, data_, separator_);
 }
 
+template<typename ItemType_, template<typename> class Container_>
+Container_<ItemType_> merge(const Container_<ItemType_> &c_)
+{
+    return c_;
+}
+
+template<typename ItemType_, template<typename> class Container_, typename ... ItemTypes_>
+Container_<ItemType_> merge(const Container_<ItemType_> &c_, const Container_<ItemTypes_> ... nexts_)
+{
+    Container_<ItemType_> result = c_;
+    result.append(merge(nexts_ ...));
+    return result;
+}
+
 }  // namespace fmt
 
 
