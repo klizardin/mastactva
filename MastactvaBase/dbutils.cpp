@@ -928,38 +928,41 @@ QString getCreateTableSqlRequest(
         const QStringList &extraRefs_
         )
 {
-    return fmt::toString(
-                fmt::format(
-                    "CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;",
-                    db::tableName(jsonLayoutName_, jsonRefName_),
-                    fmt::list(
-                        fmt::merge(
-                            fmt::toTypeList(QString{}, fmt::list(
-                                fmt::format(QString("%1 %2"), db::SqlName{}, db::SqlType{}),
-                                fields_,
-                                ""
-                                ).toStringList()),
-                            fmt::toTypeList(QString{}, fmt::list(
-                                fmt::format(QString("%1 ") +
-                                        LayoutJsonTypesTraits<
-                                            layout::JsonTypesEn::jt_string
-                                            >::sql_type_str()
-                                    , db::RefSqlName{}
-                                ),
-                                fmt::toTypeList(
-                                    db::SqlNameOrigin{},
-                                    fmt::toTypeList(
-                                        JsonName{},
-                                        fmt::merge(refs_, extraRefs_)
-                                        )
-                                ),
-                                ""
-                                ).toStringList())
-                        ),
-                        g_insertFieldSpliter
-                        )
-                    )
-                );
+    const auto main_fields = fmt::list(
+        fmt::format(QString("%1 %2"), db::SqlName{}, db::SqlType{}),
+        fields_,
+        ""
+        );
+
+    const auto ref_fields = fmt::list(
+        fmt::format(QString("%1 ") +
+                LayoutJsonTypesTraits<
+                    layout::JsonTypesEn::jt_string
+                    >::sql_type_str()
+            , db::RefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        ""
+        );
+
+    const auto request = fmt::format(
+        "CREATE TABLE IF NOT EXISTS %1 ( %2 ) ;",
+        db::tableName(jsonLayoutName_, jsonRefName_),
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, main_fields.toStringList()),
+                fmt::toTypeList(QString{}, ref_fields.toStringList())
+            ),
+            g_insertFieldSpliter
+            )
+        );
+    return fmt::toString(request);
 }
 
 } // namespace db
