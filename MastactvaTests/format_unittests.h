@@ -122,12 +122,12 @@ TEST(Format, formatList)
     ASSERT_TRUE(equal(
                     fmt::toString(
                         fmt::list(
-                            fmt::format("%1=int(%2)", int{2}, float{3.5}),
+                            fmt::format("%1=f(%2)", int{2}, float{3.5}),
                             QVector<Name>({ "2.0", "-12.5", "1.5" }),
                             " , "
                         )
                     ),
-                    sum("2=int(2)", " , " "-12=int(3.5)", " , ", "1=int(1.5)")
+                    sum("2=f(2)", " , " "-12=f(3.5)", " , ", "1=f(1.5)")
                     )
                 );
 }
