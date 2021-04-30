@@ -99,12 +99,6 @@ QString toString(const Type_ &val_, std::false_type, std::true_type)
     return compoundTypes(val_);
 }
 
-template<typename DestType_, typename SrcType_> inline
-DestType_ toType(const SrcType_ &val_, const DestType_ &)
-{
-    return DestType_(val_);
-}
-
 template<typename...>
 class FormatArgs
 {
@@ -288,6 +282,18 @@ QString toString(const Type_ &val_)
                     std::is_compound<Type_>::value
                 >::type()
                 );
+}
+
+template<typename DestType_, typename SrcType_> inline
+DestType_ toType(const SrcType_ &val_, const DestType_ &)
+{
+    return DestType_(val_);
+}
+
+template<typename Type_> inline
+Type_ toType(const Type_ &val_, const Type_ &)
+{
+    return val_;
 }
 
 template<typename ... Args_>

@@ -238,6 +238,16 @@ TEST(Format, formatListToStringList)
                 ).toStringList(),
                 QStringList({"2=f(2)", "-12=f(3.5)", "1=f(1.5)"})
                 );
+    ASSERT_EQ(fmt::toTypeList(
+                    QString{},
+                    fmt::list(
+                        fmt::format("%1=f(%2)", int{2}, float{3.5}),
+                        fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
+                        QString()
+                    ).toStringList()
+                ),
+                QList<QString>({"2=f(2)", "-12=f(3.5)", "1=f(1.5)"})
+                );
 }
 
 #endif // FORMAT_UNITTESTS_H
