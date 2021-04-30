@@ -15,5 +15,26 @@ namespace layout
     }
 }
 
+class JsonName : protected QString
+{
+public:
+    using QString::QString;
+
+    friend bool operator == (const JsonName &left_, JsonName &right_);
+    friend bool operator < (const JsonName &left_, JsonName &right_);
+};
+
+inline
+bool operator == (const JsonName &left_, JsonName &right_)
+{
+    return static_cast<const QString &>(left_) == static_cast<const QString &>(right_);
+}
+
+inline
+bool operator < (const JsonName &left_, JsonName &right_)
+{
+    return static_cast<const QString &>(left_) < static_cast<const QString &>(right_);
+}
+
 
 #endif // LAYOUT_TYPE_H
