@@ -74,4 +74,19 @@ TEST(Format, classList)
     ASSERT_TRUE(equal(fmt::toString(fmt::list(QVector<int>({1,2,3}), " , ")), sum("1", " , " "2", " , ", "3")));
 }
 
+namespace fmt
+{
+
+int toType(const Name &val_, int *)
+{
+    return QVariant::fromValue(val_.toString()).toInt();
+}
+
+}
+
+TEST(Format, toType)
+{
+    ASSERT_EQ(fmt::toType(Name("1"), static_cast<int *>(nullptr)), 1);
+}
+
 #endif // FORMAT_UNITTESTS_H

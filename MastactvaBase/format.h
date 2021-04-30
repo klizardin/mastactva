@@ -13,6 +13,8 @@ namespace fmt
 template<typename Type_> inline
 QString toString(const Type_ &val_);
 
+template<typename DestType_, typename SrcType_>
+DestType_ toType(const SrcType_ &val_, DestType_ *);
 
 namespace Private
 {
