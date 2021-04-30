@@ -137,6 +137,31 @@ private:
     FormatArgs<Args_ ...> m_args;
 };
 
+
+class List
+{
+public:
+    List(const QVector<int> &data_, const QString &separator_)
+        : m_data(data_), m_seporator(separator_)
+    {
+    }
+
+    QString toString() const
+    {
+        QStringList strs;
+        strs.reserve(m_data.size());
+        for(const int &val_ : m_data)
+        {
+            strs.push_back(fmt::toString(val_));
+        }
+        return strs.join(m_seporator);
+    }
+
+private:
+    QVector<int> m_data;
+    QString m_seporator;
+};
+
 }  // namespace Private
 
 

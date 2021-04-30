@@ -68,4 +68,9 @@ TEST(Format, formatArguments)
     ASSERT_TRUE(equal(fmt::toString(fmt::format("%1=%2", Name("a"), NameQString("2"))), sum("a", "=" "2")));
 }
 
+TEST(Format, classList)
+{
+    ASSERT_TRUE(equal(fmt::toString(fmt::Private::List({1,2,3}, ",")), sum("1", "," "2", ",", "3")));
+}
+
 #endif // FORMAT_UNITTESTS_H
