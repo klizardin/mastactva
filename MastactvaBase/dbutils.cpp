@@ -518,12 +518,10 @@ BindRefSqlName::BindRefSqlName(const SqlNameOrigin &name_)
 
 JsonSqlField::JsonSqlField(
         const QString &jsonName_,
-        //const QString &sqlName_,
         const layout::JsonTypesEn type_,
         bool idField_
         )
     : jsonName(jsonName_),
-      //sqlName(sqlName_),
       type(type_),
       idField(idField_)
 {
@@ -544,16 +542,16 @@ const QString &JsonSqlField::getSqlName() const
     return sqlName;
 }
 
-QString getSqlType(layout::JsonTypesEn type, bool idField)
+QString getSqlType(layout::JsonTypesEn type_, bool idField_)
 {
-    if(idField)
+    if(idField_)
     {
         return LayoutJsonTypesTraits<
             layout::JsonTypesEn::jt_int
             >::sql_type_str();
     }
 
-    switch (type)
+    switch (type_)
     {
     case layout::JsonTypesEn::jt_bool:
         return LayoutJsonTypesTraits<
