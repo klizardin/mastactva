@@ -400,21 +400,21 @@ TEST(DBUtils, findIdFields)
 TEST(DBUtils, JsonSqlFieldsList_getFindSqlRequest)
 {
     db::JsonSqlFieldsList fields = {
-        { "id", layout::JsonTypesEn::jt_int, true},
-        { "user", layout::JsonTypesEn::jt_int, false},
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "user-id", layout::JsonTypesEn::jt_int, false},
         { "name", layout::JsonTypesEn::jt_string, false},
     };
     const QString jsonLayoutName{"user-list"};
     const QString jsonRefName{"user-id"};
-    const QStringList refs({"user", "name"});
+    const QStringList refs({"user-id", "name"});
     const QStringList extraRefs({"age-years",});
 
     const QString res0 = sum(
                 "SELECT * FROM ",
                 "user_list", g_splitTableRef, "user_id",
                 " WHERE ",
-                "id", "=", g_bindPrefix, "id", " AND ",
-                g_refPrefix, "user", "=", g_bindPrefix, g_refPrefix, "user", " AND ",
+                "\"user\"", "=", g_bindPrefix, "user", " AND ",
+                g_refPrefix, "user_id", "=", g_bindPrefix, g_refPrefix, "user_id", " AND ",
                 g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name", " AND ",
                 g_refPrefix, "age_years", "=", g_bindPrefix, g_refPrefix, "age_years",
                 " LIMIT 1 ;"
