@@ -101,6 +101,11 @@ TEST(Format, classList)
                     sum("1", " , " "2.5", " , ", "3.5")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    fmt::list(QVector<float>({1.0,2.5,3.5}), " , "),
+                    sum("1", " , " "2.5", " , ", "3.5")
+                    )
+                );
 }
 
 namespace fmt

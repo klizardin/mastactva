@@ -307,6 +307,11 @@ public:
         return toStringList().join(m_seporator);
     }
 
+    operator QString () const
+    {
+        return toString();
+    }
+
 private:
     ContainerType_<Type_> m_data;
     QString m_seporator;
