@@ -23,6 +23,18 @@ db::SqlType fmt::toType(const db::JsonSqlField &field_, const db::SqlType &)
     return db::SqlType(field_.getType(), field_.isIdField());
 }
 
+template<> inline
+db::RefSqlName fmt::toType(const db::JsonSqlField &field_, const db::RefSqlName &)
+{
+    return db::RefSqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
+}
+
+template<> inline
+db::BindSqlName fmt::toType(const db::JsonSqlField &field_, const db::BindSqlName &)
+{
+    return db::BindSqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
+}
+
 template<typename DestType_> inline
 DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
 {
@@ -56,7 +68,7 @@ QString fmt::toString(const db::RefSqlName &name_)
 template<> inline
 QString fmt::toString(const db::BindRefSqlName &name_)
 {
-    return db::refName(db::toBindName(name_.toString()));
+    return db::toBindName(db::refName(name_.toString()));
 }
 
 template<> inline
@@ -196,7 +208,7 @@ QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
     QStringList res;
     for(const QString &sqlName : qAsConst(names_))
     {
-        const QString ref = refName(sqlName);
+        const QString ref = refName(db::jsonToSql(sqlName));
         res.push_back(QString("%1=%2").arg(ref, toBindName(ref)));
     }
     return res;
@@ -946,6 +958,22 @@ QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
     });
 }
 
+JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_)
+{
+    return std::find_if(
+                std::begin(fields_),
+                std::end(fields_),
+                [](const JsonSqlField &field_)->bool
+    {
+        return field_.isIdField();
+    });
+}
+
+bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_)
+{
+    return it_ != std::end(fields_);
+}
+
 QString getCreateTableSqlRequest(
         const QString &jsonLayoutName_,
         const QString &jsonRefName_,
@@ -957,7 +985,7 @@ QString getCreateTableSqlRequest(
     static const char* s_SqlNameAndTypeFmt = "%1%2%3";
     static const char* s_noSeparator = "";
 
-    const auto main_fields = fmt::list(
+    const auto mainFields = fmt::list(
         fmt::format(
             QString(s_SqlNameAndTypeFmt),
             db::SqlName{},
@@ -968,7 +996,7 @@ QString getCreateTableSqlRequest(
         s_noSeparator
         );
 
-    const auto ref_fields = fmt::list(
+    const auto refFields = fmt::list(
         fmt::format(
             QString(s_SqlNameAndTypeFmt),
             db::RefSqlName{},
@@ -990,10 +1018,64 @@ QString getCreateTableSqlRequest(
         db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
-                fmt::toTypeList(QString{}, main_fields),
-                fmt::toTypeList(QString{}, ref_fields)
+                fmt::toTypeList(QString{}, mainFields),
+                fmt::toTypeList(QString{}, refFields)
             ),
             g_insertFieldSpliter
+            )
+        );
+
+    return request;
+}
+
+QString getFindSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraRefs_
+        )
+{
+    static const char* s_SqlNameAndTypeFmt = "%1=%2";
+    static const char* s_noSeparator = "";
+
+    const auto fit = db::findIdField(fields_);
+
+    const auto idField = fmt::list(
+        fmt::format(
+            QString(s_SqlNameAndTypeFmt),
+            db::SqlName{},
+            db::BindSqlName{}
+            ),
+        db::idFieldExist(fit, fields_) ? JsonSqlFieldsList({*fit, }) : JsonSqlFieldsList{},
+        s_noSeparator
+        );
+
+    const auto refFields = fmt::list(
+        fmt::format(
+            QString(s_SqlNameAndTypeFmt),
+            db::RefSqlName{},
+            db::BindRefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        s_noSeparator
+        );
+
+    const auto request = fmt::format(
+        "SELECT * FROM %1 WHERE %2 LIMIT 1 ;",
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, idField),
+                fmt::toTypeList(QString{}, refFields)
+            ),
+            " AND "
             )
         );
 

@@ -131,10 +131,19 @@ namespace db
     QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
     QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_);
+    JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
+    bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
     QString getCreateTableSqlRequest(
             const QString &jsonLayoutName_,
             const QString &jsonRefName_,
             const JsonSqlFieldsList &fields_,
+            const QStringList &refs_,
+            const QStringList &extraRefs_
+            );
+    QString getFindSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const db::JsonSqlFieldsList &fields_,
             const QStringList &refs_,
             const QStringList &extraRefs_
             );
