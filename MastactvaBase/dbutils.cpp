@@ -63,6 +63,12 @@ QString fmt::toString(const db::SqlType &type_)
     return db::getSqlType(type_.type(), type_.isIdField());
 }
 
+template<> inline
+QString fmt::toString(const db::SqlTableName &name_)
+{
+    return db::tableName(name_.m_tableName.toString(), name_.m_refName.toString());
+}
+
 
 namespace db
 {
@@ -266,13 +272,34 @@ QStringList jsonToSql(const QStringList &jsonNames_)
 
 QString tableName(const QString &jsonLayoutName_, const QString &refName_)
 {
-    if(refName_.trimmed().isEmpty())
+    return db::tableName(JsonName(jsonLayoutName_), JsonName(refName_));
+}
+
+QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
+{
+    const QString firstPart = fmt::toString(
+        fmt::toTypeValue(
+            db::SqlName{},
+            fmt::toTypeValue(
+                db::SqlNameOrigin{},
+                jsonLayoutName_)
+            )
+        );
+    if(refName_.isEmpty())
     {
-        return jsonToSql(jsonLayoutName_);
+        return firstPart;
     }
     else
     {
-        return jsonToSql(jsonLayoutName_) + QString(g_splitTableRef) + jsonToSql(refName_);
+        const QString secondPart = fmt::toString(
+            fmt::toTypeValue(
+                db::SqlName{},
+                fmt::toTypeValue(
+                    db::SqlNameOrigin{},
+                    refName_)
+                )
+            );
+        return firstPart + QString(g_splitTableRef) + secondPart;
     }
 }
 
@@ -491,12 +518,10 @@ BindRefSqlName::BindRefSqlName(const SqlNameOrigin &name_)
 
 JsonSqlField::JsonSqlField(
         const QString &jsonName_,
-        //const QString &sqlName_,
         const layout::JsonTypesEn type_,
         bool idField_
         )
     : jsonName(jsonName_),
-      //sqlName(sqlName_),
       type(type_),
       idField(idField_)
 {
@@ -517,16 +542,16 @@ const QString &JsonSqlField::getSqlName() const
     return sqlName;
 }
 
-QString getSqlType(layout::JsonTypesEn type, bool idField)
+QString getSqlType(layout::JsonTypesEn type_, bool idField_)
 {
-    if(idField)
+    if(idField_)
     {
         return LayoutJsonTypesTraits<
             layout::JsonTypesEn::jt_int
             >::sql_type_str();
     }
 
-    switch (type)
+    switch (type_)
     {
     case layout::JsonTypesEn::jt_bool:
         return LayoutJsonTypesTraits<
@@ -928,16 +953,26 @@ QString getCreateTableSqlRequest(
         const QStringList &extraRefs_
         )
 {
+    static const char* s_SqlNameAndTypeFmt = "%1%2%3";
+    static const char* s_noSeparator = "";
+
     const auto main_fields = fmt::list(
-        fmt::format(QString("%1 %2"), db::SqlName{}, db::SqlType{}),
+        fmt::format(
+            QString(s_SqlNameAndTypeFmt),
+            db::SqlName{},
+            fmt::constant(g_spaceName),
+            db::SqlType{}
+            ),
         fields_,
-        ""
+        s_noSeparator
         );
 
     const auto ref_fields = fmt::list(
         fmt::format(
-            QString("%1 ") + db::getSqlType(layout::JsonTypesEn::jt_string, false)
-            , db::RefSqlName{}
+            QString(s_SqlNameAndTypeFmt),
+            db::RefSqlName{},
+            fmt::constant(g_spaceName),
+            fmt::constant(db::getSqlType(layout::JsonTypesEn::jt_string, false))
             ),
         fmt::toTypeList(
             db::SqlNameOrigin{},
@@ -946,12 +981,12 @@ QString getCreateTableSqlRequest(
                 fmt::merge(refs_, extraRefs_)
                 )
             ),
-        ""
+        s_noSeparator
         );
 
     const auto request = fmt::format(
         "CREATE TABLE IF NOT EXISTS %1 ( %2 );",
-        db::tableName(jsonLayoutName_, jsonRefName_),
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
                 fmt::toTypeList(QString{}, main_fields.toStringList()),
@@ -960,6 +995,7 @@ QString getCreateTableSqlRequest(
             g_insertFieldSpliter
             )
         );
+
     return fmt::toString(request);
 }
 
@@ -1146,5 +1182,3 @@ QHash<QString, QVariant> DBRequestBase::procedureExtraFields(const QHash<QString
         return QHash<QString, QVariant>();
     }
 }
-
-

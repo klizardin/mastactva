@@ -31,6 +31,7 @@ namespace db
     QString jsonToSql(const QString &jsonName_);
     QStringList jsonToSql(const QStringList &jsonNames_);
     QString tableName(const QString &jsonLayoutName_, const QString &refName_);
+    QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_);
     QString getSqlType(layout::JsonTypesEn type, bool idField);
 
     const QSet<QString> &sqlKeywords();
@@ -41,6 +42,13 @@ namespace db
         SqlNameOrigin() = default;
         SqlNameOrigin(const QString &name_);
         const QString &toString() const;
+    };
+
+    class SqlTableName
+    {
+    public:
+        JsonName m_tableName;
+        JsonName m_refName;
     };
 
     class SqlName : public SqlNameOrigin
