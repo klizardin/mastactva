@@ -195,6 +195,16 @@ TEST(DBUtils, tableName)
                     sum("table_name", g_splitTableRef, "reference_name")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    db::tableName(JsonName("user"), JsonName("")),
+                    sum("\"user\"")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    db::tableName(JsonName("user"), JsonName("reference-name")),
+                    sum("user", g_splitTableRef, "reference_name")
+                    )
+                );
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSqlNames)

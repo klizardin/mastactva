@@ -280,7 +280,8 @@ QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
     const auto firstPart = fmt::toTypeValue(db::SqlNameOrigin{}, jsonLayoutName_);
     if(refName_.isEmpty())
     {
-        return fmt::sum(firstPart);
+        const auto simpleFirstPart = fmt::toTypeValue(db::SqlName{}, firstPart);
+        return fmt::sum(simpleFirstPart);
     }
     else
     {
