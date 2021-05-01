@@ -287,6 +287,11 @@ TEST(Format, formatListConstant)
                     sum("2=f(2) 10", " , " "-12=f(3.5) 10", " , ", "1=f(1.5) 10")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    fmtlist,
+                    sum("2=f(2) 10", " , " "-12=f(3.5) 10", " , ", "1=f(1.5) 10")
+                    )
+                );
 }
 
 TEST(Format, sum)

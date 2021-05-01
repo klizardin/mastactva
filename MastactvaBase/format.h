@@ -345,6 +345,11 @@ public:
         return toStringList().join(m_seporator);
     }
 
+    operator QString () const
+    {
+        return toString();
+    }
+
 private:
     Private::Format<Args_...> m_format;
     ContainerType_<Type_> m_data;
