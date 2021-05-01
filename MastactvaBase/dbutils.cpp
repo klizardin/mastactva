@@ -928,16 +928,24 @@ QString getCreateTableSqlRequest(
         const QStringList &extraRefs_
         )
 {
+    static const char* s_SqlNameAndTypeFmt = "%1%2%3";
+
     const auto main_fields = fmt::list(
-        fmt::format(QString("%1 %2"), db::SqlName{}, db::SqlType{}),
+        fmt::format(
+            QString(s_SqlNameAndTypeFmt),
+            db::SqlName{},
+            fmt::constant(g_spaceName),
+            db::SqlType{}
+            ),
         fields_,
         ""
         );
 
     const auto ref_fields = fmt::list(
         fmt::format(
-            QString("%1 %2"),
+            QString(s_SqlNameAndTypeFmt),
             db::RefSqlName{},
+            fmt::constant(g_spaceName),
             fmt::constant(db::getSqlType(layout::JsonTypesEn::jt_string, false))
             ),
         fmt::toTypeList(
