@@ -30,7 +30,7 @@ namespace db
     QStringList textTypes(const QStringList &names_);
     QString jsonToSql(const QString &jsonName_);
     QStringList jsonToSql(const QStringList &jsonNames_);
-    QString tableName(const QString &jsonLayoutName_, const QString &refName_);
+    [[deprecated]] QString tableName(const QString &jsonLayoutName_, const QString &refName_);
     QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_);
     QString getSqlType(layout::JsonTypesEn type, bool idField);
 
