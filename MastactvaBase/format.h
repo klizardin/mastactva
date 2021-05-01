@@ -115,15 +115,15 @@ public:
 
 
 template<typename...>
-class FormatArgs
+class ArgsList
 {
 };
 
 template<>
-class FormatArgs<>
+class ArgsList<>
 {
 public:
-    FormatArgs() = default;
+    ArgsList() = default;
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ...) const
@@ -143,10 +143,10 @@ public:
 };
 
 template<typename Arg_>
-class FormatArgs<Arg_>
+class ArgsList<Arg_>
 {
 public:
-    FormatArgs(Arg_ arg_) : m_arg(arg_) {}
+    ArgsList(Arg_ arg_) : m_arg(arg_) {}
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
@@ -170,10 +170,10 @@ private:
 };
 
 template<typename Arg_>
-class FormatArgs<Constant<Arg_>>
+class ArgsList<Constant<Arg_>>
 {
 public:
-    FormatArgs(Constant<Arg_> arg_) : m_arg(arg_) {}
+    ArgsList(Constant<Arg_> arg_) : m_arg(arg_) {}
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
@@ -196,30 +196,30 @@ private:
 };
 
 template<typename Arg_, typename ... Args_>
-class FormatArgs<Arg_, Args_ ...> : public FormatArgs<Args_ ...>
+class ArgsList<Arg_, Args_ ...> : public ArgsList<Args_ ...>
 {
 public:
-    FormatArgs(Arg_ arg_, Args_ ... args_)
-        : FormatArgs<Args_ ...>(args_ ...), m_arg(arg_)
+    ArgsList(Arg_ arg_, Args_ ... args_)
+        : ArgsList<Args_ ...>(args_ ...), m_arg(arg_)
     {
     }
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
     {
-        return FormatArgs<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg));
+        return ArgsList<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg));
     }
 
     template<typename SetType_>
     void set(const SetType_ &val_)
     {
         m_arg = fmt::toType(val_, m_arg);
-        FormatArgs<Args_ ...>::set(val_);
+        ArgsList<Args_ ...>::set(val_);
     }
 
     QString sum() const
     {
-        return fmt::toString(m_arg) + FormatArgs<Args_ ...>::sum();
+        return fmt::toString(m_arg) + ArgsList<Args_ ...>::sum();
     }
 
 private:
@@ -227,29 +227,29 @@ private:
 };
 
 template<typename Arg_, typename ... Args_>
-class FormatArgs<Constant<Arg_>, Args_ ...> : public FormatArgs<Args_ ...>
+class ArgsList<Constant<Arg_>, Args_ ...> : public ArgsList<Args_ ...>
 {
 public:
-    FormatArgs(Constant<Arg_> arg_, Args_ ... args_)
-        : FormatArgs<Args_ ...>(args_ ...), m_arg(arg_)
+    ArgsList(Constant<Arg_> arg_, Args_ ... args_)
+        : ArgsList<Args_ ...>(args_ ...), m_arg(arg_)
     {
     }
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
     {
-        return FormatArgs<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg.value));
+        return ArgsList<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg.value));
     }
 
     template<typename SetType_>
     void set(const SetType_ &val_)
     {
-        FormatArgs<Args_ ...>::set(val_);
+        ArgsList<Args_ ...>::set(val_);
     }
 
     QString sum() const
     {
-        return fmt::toString(m_arg.value) + FormatArgs<Args_ ...>::sum();
+        return fmt::toString(m_arg.value) + ArgsList<Args_ ...>::sum();
     }
 
 private:
@@ -279,7 +279,7 @@ public:
 
 private:
     QString m_format;
-    FormatArgs<Args_ ...> m_args;
+    ArgsList<Args_ ...> m_args;
 };
 
 template<typename Type_, template<typename> class ContainerType_>
@@ -366,7 +366,7 @@ public:
     }
 
 private:
-    Private::FormatArgs<Args_...> m_args;
+    Private::ArgsList<Args_...> m_args;
 };
 
 }  // namespace Private
