@@ -312,6 +312,11 @@ public:
         return toString();
     }
 
+    operator QStringList () const
+    {
+        return toStringList();
+    }
+
 private:
     ContainerType_<Type_> m_data;
     QString m_seporator;

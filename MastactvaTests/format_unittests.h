@@ -106,6 +106,10 @@ TEST(Format, classList)
                     sum("1", " , " "2.5", " , ", "3.5")
                     )
                 );
+    ASSERT_EQ(
+                static_cast<const QStringList &>(fmt::list(QVector<float>({1.0, 2.5, 3.5}), " , ")),
+                QStringList({"1", "2.5", "3.5"})
+                );
 }
 
 namespace fmt
