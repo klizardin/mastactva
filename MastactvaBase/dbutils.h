@@ -138,6 +138,8 @@ namespace db
             const QStringList &refs_,
             const QStringList &extraRefs_
             );
+    JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
+    bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
 }
 
 

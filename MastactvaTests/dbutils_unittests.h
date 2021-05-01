@@ -379,4 +379,22 @@ TEST(DBUtils, JsonSqlFieldsList_getCreateTableSqlRequest)
                 );
 }
 
+TEST(DBUtils, findIdFields)
+{
+    const db::JsonSqlFieldsList fields1 = {
+        { "id", layout::JsonTypesEn::jt_int, true},
+        { "user", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const auto idField1 = db::findIdField(fields1);
+    ASSERT_TRUE(db::idFieldExist(idField1, fields1));
+    ASSERT_EQ(idField1->getJsonName(),"id");
+
+    const db::JsonSqlFieldsList fields2 = {
+        { "id", layout::JsonTypesEn::jt_int, false},
+    };
+    const auto idField2 = db::findIdField(fields2);
+    ASSERT_FALSE(db::idFieldExist(idField2, fields2));
+}
+
 #endif
