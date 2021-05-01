@@ -9,6 +9,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/netapi.h"
+#include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/dbrequestinfo.h"
 
 

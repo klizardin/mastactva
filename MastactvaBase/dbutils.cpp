@@ -1016,6 +1016,43 @@ bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList
     return it_ != std::end(fields_);
 }
 
+QString getFindSqlRequest(
+        const QString &tableName_,
+        const QString &ref_,
+        const db::JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraRefs_
+        )
+{
+    const QString tableName = db::tableName(tableName_, ref_);
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    QString idFieldSQlBindName;
+    const auto fitId = std::find_if(std::cbegin(qAsConst(fields_)),
+                                    std::cend(qAsConst(fields_)),
+                                    [](const db::JsonSqlField &bindInfo)->bool
+    {
+        return bindInfo.isIdField();
+    });
+
+    QStringList conditionsList;
+    if(std::cend(qAsConst(fields_)) != fitId)
+    {
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSQlBindName = fitId->getBindSqlName();
+        conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
+    }
+    const QString conditionStr = (conditionsList
+                            << db::equalToValueConditionListFromSqlNameList(refs_)
+                            << db::equalToValueConditionListFromSqlNameList(extraRefs_)
+                            ).join(" AND ");
+    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1 ;")
+            .arg(tableName, conditionStr);
+    return sqlExistsRequest;
+}
+
 } // namespace db
 
 

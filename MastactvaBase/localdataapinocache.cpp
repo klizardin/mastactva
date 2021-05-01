@@ -275,20 +275,13 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         return bindInfo.isIdField();
     });
     const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
-    QStringList conditionsList;
-    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-        idFieldSQlBindName = fitId->getBindSqlName();
-        conditionsList << QString("%1=%2").arg(idFieldSqlName, idFieldSQlBindName);
-    }
-    const QString conditionStr = (conditionsList
-                            << db::equalToValueConditionListFromSqlNameList(refs)
-                            << db::equalToValueConditionListFromSqlNameList(extraFields.keys())
-                            ).join(" AND ");
-    const QString sqlExistsRequest = QString("SELECT * FROM %1 WHERE %2 LIMIT 1 ;")
-            .arg(tableName, conditionStr);
+    const QString sqlExistsRequest = db::getFindSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                refs,
+                extraFields.keys()
+                );
 #if defined(TRACE_DB_CREATION)
     qDebug() << "insert sql" << sqlRequest;
     qDebug() << "find sql" << sqlExistsRequest;
