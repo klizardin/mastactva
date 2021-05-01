@@ -397,4 +397,38 @@ TEST(DBUtils, findIdFields)
     ASSERT_FALSE(db::idFieldExist(idField2, fields2));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getFindSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "id", layout::JsonTypesEn::jt_int, true},
+        { "user", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+    const QStringList refs({"user", "name"});
+    const QStringList extraRefs({"age-years",});
+
+    const QString res0 = sum(
+                "SELECT * FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " WHERE ",
+                "id", "=", g_bindPrefix, "id", " AND ",
+                g_refPrefix, "user", "=", g_bindPrefix, g_refPrefix, "user", " AND ",
+                g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name", " AND ",
+                g_refPrefix, "age-years", "=", g_bindPrefix, g_refPrefix, "age-years",
+                " LIMIT 1 ;"
+                );
+    const QString request = db::getFindSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields,
+                refs,
+                extraRefs
+                );
+    ASSERT_TRUE(equal(request, res0));
+}
+
+
+
 #endif
