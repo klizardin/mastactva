@@ -272,13 +272,36 @@ QStringList jsonToSql(const QStringList &jsonNames_)
 
 QString tableName(const QString &jsonLayoutName_, const QString &refName_)
 {
-    if(refName_.trimmed().isEmpty())
+    return db::tableName(JsonName(jsonLayoutName_), JsonName(refName_));
+}
+
+QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
+{
+    if(refName_.toString().trimmed().isEmpty())
     {
-        return jsonToSql(jsonLayoutName_);
+        return fmt::toString(
+                    fmt::toType(
+                        fmt::toType(jsonLayoutName_, db::SqlNameOrigin{}),
+                        db::SqlName{}
+                        )
+                    );
     }
     else
     {
-        return jsonToSql(jsonLayoutName_) + QString(g_splitTableRef) + jsonToSql(refName_);
+        return fmt::toString(
+                    fmt::toType(
+                        fmt::toType(jsonLayoutName_, db::SqlNameOrigin{}),
+                        db::SqlName{}
+                        )
+                    )
+                + QString(g_splitTableRef)
+                + fmt::toString(
+                    fmt::toType(
+                        fmt::toType(refName_, db::SqlNameOrigin{}),
+                        db::SqlName{}
+                        )
+                    );
+                ;
     }
 }
 
