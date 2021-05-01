@@ -280,25 +280,25 @@ QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
     if(refName_.toString().trimmed().isEmpty())
     {
         return fmt::toString(
-                    fmt::toType(
-                        fmt::toType(jsonLayoutName_, db::SqlNameOrigin{}),
-                        db::SqlName{}
+                    fmt::toTypeValue(
+                        db::SqlName{},
+                        fmt::toTypeValue(db::SqlNameOrigin{}, jsonLayoutName_)
                         )
                     );
     }
     else
     {
         return fmt::toString(
-                    fmt::toType(
-                        fmt::toType(jsonLayoutName_, db::SqlNameOrigin{}),
-                        db::SqlName{}
+                    fmt::toTypeValue(
+                        db::SqlName{},
+                        fmt::toTypeValue(db::SqlNameOrigin{}, jsonLayoutName_)
                         )
                     )
                 + QString(g_splitTableRef)
                 + fmt::toString(
-                    fmt::toType(
-                        fmt::toType(refName_, db::SqlNameOrigin{}),
-                        db::SqlName{}
+                    fmt::toTypeValue(
+                        db::SqlName{},
+                        fmt::toTypeValue(db::SqlNameOrigin{}, refName_)
                         )
                     );
                 ;

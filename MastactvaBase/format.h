@@ -47,6 +47,13 @@ QList<DestType_> toTypeList(const DestType_ &defaultValue_, const QStringList &v
     return toType(vals_, defaultValue_);
 }
 
+template<typename DestType_, typename SrcType_> inline
+DestType_ toTypeValue(const DestType_ &defaultValue_, const SrcType_ &val_)
+{
+    return toType(val_, defaultValue_);
+}
+
+
 
 namespace Private
 {
