@@ -277,14 +277,13 @@ TEST(Format, formatListToMerge)
 
 TEST(Format, formatListConstant)
 {
+    const auto fmtlist = fmt::list(
+        fmt::format("%1=f(%3) %2", int{2}, fmt::constant(int{10}), float{3.5}),
+        fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
+        " , "
+    );
     ASSERT_TRUE(equal(
-                    fmt::toString(
-                        fmt::list(
-                            fmt::format("%1=f(%3) %2", int{2}, fmt::constant(int{10}), float{3.5}),
-                            fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
-                            " , "
-                        )
-                    ),
+                    fmt::toString(fmtlist),
                     sum("2=f(2) 10", " , " "-12=f(3.5) 10", " , ", "1=f(1.5) 10")
                     )
                 );
