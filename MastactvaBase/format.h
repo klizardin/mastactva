@@ -135,6 +135,11 @@ public:
     void set(const SetType_ &)
     {
     }
+
+    QString sum() const
+    {
+        return QString();
+    }
 };
 
 template<typename Arg_>
@@ -153,6 +158,11 @@ public:
     void set(const SetType_ &val_)
     {
         m_arg = fmt::toType(val_, m_arg);
+    }
+
+    QString sum() const
+    {
+        return fmt::toString(m_arg);
     }
 
 private:
@@ -174,6 +184,11 @@ public:
     template<typename SetType_>
     void set(const SetType_ &)
     {
+    }
+
+    QString sum() const
+    {
+        return fmt::toString(m_arg.value);
     }
 
 private:
@@ -202,6 +217,11 @@ public:
         FormatArgs<Args_ ...>::set(val_);
     }
 
+    QString sum() const
+    {
+        return fmt::toString(m_arg) + FormatArgs<Args_ ...>::sum();
+    }
+
 private:
     Arg_ m_arg;
 };
@@ -225,6 +245,11 @@ public:
     void set(const SetType_ &val_)
     {
         FormatArgs<Args_ ...>::set(val_);
+    }
+
+    QString sum() const
+    {
+        return fmt::toString(m_arg.value) + FormatArgs<Args_ ...>::sum();
     }
 
 private:
@@ -326,6 +351,24 @@ private:
     QString m_seporator;
 };
 
+template<typename ... Args_>
+class Sum
+{
+public:
+    Sum(Args_... args_)
+        : m_args(args_ ...)
+    {
+    }
+
+    QString toString() const
+    {
+        return m_args.sum();
+    }
+
+private:
+    Private::FormatArgs<Args_...> m_args;
+};
+
 }  // namespace Private
 
 
@@ -417,6 +460,12 @@ template<typename Type_>
 Private::Constant<Type_> constant(const Type_ &value_)
 {
     return Private::Constant<Type_>{value_};
+}
+
+template<typename ... Args_> inline
+Private::Sum<Args_ ...> sum(Args_ ... args_)
+{
+    return Private::Sum<Args_ ...>(args_ ...);
 }
 
 }  // namespace fmt

@@ -290,5 +290,19 @@ TEST(Format, formatListConstant)
                 );
 }
 
+TEST(Format, sum)
+{
+    const auto fmtsum = fmt::sum(
+                Name{"2.0"},
+                fmt::constant(int{10}),
+                float{3.5}
+            );
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmtsum),
+                    sum("2.0", "10", "3.5")
+                    )
+                );
+}
+
 
 #endif // FORMAT_UNITTESTS_H
