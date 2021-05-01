@@ -929,6 +929,7 @@ QString getCreateTableSqlRequest(
         )
 {
     static const char* s_SqlNameAndTypeFmt = "%1%2%3";
+    static const char* s_noSeparator = "";
 
     const auto main_fields = fmt::list(
         fmt::format(
@@ -938,7 +939,7 @@ QString getCreateTableSqlRequest(
             db::SqlType{}
             ),
         fields_,
-        ""
+        s_noSeparator
         );
 
     const auto ref_fields = fmt::list(
@@ -955,7 +956,7 @@ QString getCreateTableSqlRequest(
                 fmt::merge(refs_, extraRefs_)
                 )
             ),
-        ""
+        s_noSeparator
         );
 
     const auto request = fmt::format(
@@ -1155,5 +1156,3 @@ QHash<QString, QVariant> DBRequestBase::procedureExtraFields(const QHash<QString
         return QHash<QString, QVariant>();
     }
 }
-
-
