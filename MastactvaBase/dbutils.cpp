@@ -936,8 +936,9 @@ QString getCreateTableSqlRequest(
 
     const auto ref_fields = fmt::list(
         fmt::format(
-            QString("%1 ") + db::getSqlType(layout::JsonTypesEn::jt_string, false)
-            , db::RefSqlName{}
+            QString("%1 %2"),
+            db::RefSqlName{},
+            fmt::constant(db::getSqlType(layout::JsonTypesEn::jt_string, false))
             ),
         fmt::toTypeList(
             db::SqlNameOrigin{},
