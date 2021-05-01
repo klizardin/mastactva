@@ -141,8 +141,8 @@ namespace db
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
     QString getFindSqlRequest(
-            const QString &tableName_,
-            const QString &ref_,
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
             const db::JsonSqlFieldsList &fields_,
             const QStringList &refs_,
             const QStringList &extraRefs_
