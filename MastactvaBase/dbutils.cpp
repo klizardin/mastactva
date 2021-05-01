@@ -989,14 +989,14 @@ QString getCreateTableSqlRequest(
         db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
-                fmt::toTypeList(QString{}, main_fields.toStringList()),
-                fmt::toTypeList(QString{}, ref_fields.toStringList())
+                fmt::toTypeList(QString{}, main_fields),
+                fmt::toTypeList(QString{}, ref_fields)
             ),
             g_insertFieldSpliter
             )
         );
 
-    return fmt::toString(request);
+    return request;
 }
 
 } // namespace db
