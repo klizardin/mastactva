@@ -350,6 +350,11 @@ public:
         return toString();
     }
 
+    operator QStringList () const
+    {
+        return toStringList();
+    }
+
 private:
     Private::Format<Args_...> m_format;
     ContainerType_<Type_> m_data;
