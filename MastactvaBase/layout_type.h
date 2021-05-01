@@ -26,7 +26,7 @@ public:
 
     bool isEmpty() const
     {
-        return static_cast<const QString &>(*this).isEmpty();
+        return static_cast<const QString &>(*this).trimmed().isEmpty();
     }
     const QString &toString() const { return *this; }
 
