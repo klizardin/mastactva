@@ -99,6 +99,14 @@ QString toString(const Type_ &val_, std::false_type, std::true_type)
     return compoundTypes(val_);
 }
 
+template<typename Type_>
+class Constant
+{
+public:
+    Type_ value;
+};
+
+
 template<typename...>
 class FormatArgs
 {
@@ -144,6 +152,27 @@ private:
     Arg_ m_arg;
 };
 
+template<typename Arg_>
+class FormatArgs<Constant<Arg_>>
+{
+public:
+    FormatArgs(Constant<Arg_> arg_) : m_arg(arg_) {}
+
+    template<typename ... StrArgs_>
+    QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
+    {
+        return fmt_.arg(strArgs_ ..., fmt::toString(m_arg.value));
+    }
+
+    template<typename SetType_>
+    void set(const SetType_ &)
+    {
+    }
+
+private:
+    Constant<Arg_> m_arg;
+};
+
 template<typename Arg_, typename ... Args_>
 class FormatArgs<Arg_, Args_ ...> : public FormatArgs<Args_ ...>
 {
@@ -168,6 +197,31 @@ public:
 
 private:
     Arg_ m_arg;
+};
+
+template<typename Arg_, typename ... Args_>
+class FormatArgs<Constant<Arg_>, Args_ ...> : public FormatArgs<Args_ ...>
+{
+public:
+    FormatArgs(Constant<Arg_> arg_, Args_ ... args_)
+        : FormatArgs<Args_ ...>(args_ ...), m_arg(arg_)
+    {
+    }
+
+    template<typename ... StrArgs_>
+    QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
+    {
+        return FormatArgs<Args_ ...>::toString(fmt_, strArgs_ ..., fmt::toString(m_arg.value));
+    }
+
+    template<typename SetType_>
+    void set(const SetType_ &val_)
+    {
+        FormatArgs<Args_ ...>::set(val_);
+    }
+
+private:
+    Constant<Arg_> m_arg;
 };
 
 
@@ -350,6 +404,12 @@ QStringList merge(const QStringList &c_, const ItemTypes_ ... nexts_)
     QStringList result = c_;
     result.append(merge(nexts_ ...));
     return result;
+}
+
+template<typename Type_>
+Private::Constant<Type_> constant(const Type_ &value_)
+{
+    return Private::Constant<Type_>{value_};
 }
 
 }  // namespace fmt
