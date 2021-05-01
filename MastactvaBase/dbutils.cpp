@@ -63,6 +63,12 @@ QString fmt::toString(const db::SqlType &type_)
     return db::getSqlType(type_.type(), type_.isIdField());
 }
 
+template<> inline
+QString fmt::toString(const db::SqlTableName &name_)
+{
+    return db::tableName(name_.m_tableName.toString(), name_.m_refName.toString());
+}
+
 
 namespace db
 {
@@ -961,7 +967,7 @@ QString getCreateTableSqlRequest(
 
     const auto request = fmt::format(
         "CREATE TABLE IF NOT EXISTS %1 ( %2 );",
-        db::tableName(jsonLayoutName_, jsonRefName_),
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
                 fmt::toTypeList(QString{}, main_fields.toStringList()),
@@ -970,6 +976,7 @@ QString getCreateTableSqlRequest(
             g_insertFieldSpliter
             )
         );
+
     return fmt::toString(request);
 }
 

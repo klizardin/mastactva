@@ -43,6 +43,13 @@ namespace db
         const QString &toString() const;
     };
 
+    class SqlTableName
+    {
+    public:
+        JsonName m_tableName;
+        JsonName m_refName;
+    };
+
     class SqlName : public SqlNameOrigin
     {
     public:
