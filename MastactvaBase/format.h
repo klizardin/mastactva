@@ -277,6 +277,11 @@ public:
         m_args.set(val_);
     }
 
+    operator QString () const
+    {
+        return toString();
+    }
+
 private:
     QString m_format;
     ArgsList<Args_ ...> m_args;

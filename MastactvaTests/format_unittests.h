@@ -82,6 +82,11 @@ TEST(Format, formatArguments)
                     sum("a", "=" "2")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    fmt::format("%1=%2", Name("a"), NameQString("2")),
+                    sum("a", "=" "2")
+                    )
+                );
 }
 
 TEST(Format, classList)
