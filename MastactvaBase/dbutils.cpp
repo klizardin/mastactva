@@ -985,7 +985,7 @@ QString getCreateTableSqlRequest(
     static const char* s_SqlNameAndTypeFmt = "%1%2%3";
     static const char* s_noSeparator = "";
 
-    const auto main_fields = fmt::list(
+    const auto mainFields = fmt::list(
         fmt::format(
             QString(s_SqlNameAndTypeFmt),
             db::SqlName{},
@@ -996,7 +996,7 @@ QString getCreateTableSqlRequest(
         s_noSeparator
         );
 
-    const auto ref_fields = fmt::list(
+    const auto refFields = fmt::list(
         fmt::format(
             QString(s_SqlNameAndTypeFmt),
             db::RefSqlName{},
@@ -1018,8 +1018,8 @@ QString getCreateTableSqlRequest(
         db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
-                fmt::toTypeList(QString{}, main_fields),
-                fmt::toTypeList(QString{}, ref_fields)
+                fmt::toTypeList(QString{}, mainFields),
+                fmt::toTypeList(QString{}, refFields)
             ),
             g_insertFieldSpliter
             )
@@ -1039,19 +1039,19 @@ QString getFindSqlRequest(
     static const char* s_SqlNameAndTypeFmt = "%1=%2";
     static const char* s_noSeparator = "";
 
-    const auto idField = db::findIdField(fields_);
+    const auto fit = db::findIdField(fields_);
 
-    const auto id_field = fmt::list(
+    const auto idField = fmt::list(
         fmt::format(
             QString(s_SqlNameAndTypeFmt),
             db::SqlName{},
             db::BindSqlName{}
             ),
-        db::idFieldExist(idField, fields_) ? JsonSqlFieldsList({*idField, }) : JsonSqlFieldsList{},
+        db::idFieldExist(fit, fields_) ? JsonSqlFieldsList({*fit, }) : JsonSqlFieldsList{},
         s_noSeparator
         );
 
-    const auto ref_fields = fmt::list(
+    const auto refFields = fmt::list(
         fmt::format(
             QString(s_SqlNameAndTypeFmt),
             db::RefSqlName{},
@@ -1072,8 +1072,8 @@ QString getFindSqlRequest(
         db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
-                fmt::toTypeList(QString{}, id_field),
-                fmt::toTypeList(QString{}, ref_fields)
+                fmt::toTypeList(QString{}, idField),
+                fmt::toTypeList(QString{}, refFields)
             ),
             " AND "
             )
