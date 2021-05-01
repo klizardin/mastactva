@@ -277,29 +277,15 @@ QString tableName(const QString &jsonLayoutName_, const QString &refName_)
 
 QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
 {
-    const QString firstPart = fmt::toString(
-        fmt::toTypeValue(
-            db::SqlName{},
-            fmt::toTypeValue(
-                db::SqlNameOrigin{},
-                jsonLayoutName_)
-            )
-        );
+    const auto firstPart = fmt::toTypeValue(db::SqlNameOrigin{}, jsonLayoutName_);
     if(refName_.isEmpty())
     {
-        return firstPart;
+        return fmt::sum(firstPart);
     }
     else
     {
-        const QString secondPart = fmt::toString(
-            fmt::toTypeValue(
-                db::SqlName{},
-                fmt::toTypeValue(
-                    db::SqlNameOrigin{},
-                    refName_)
-                )
-            );
-        return firstPart + QString(g_splitTableRef) + secondPart;
+        const auto secondPart = fmt::toTypeValue(db::SqlNameOrigin{}, refName_);
+        return fmt::sum(firstPart, QString(g_splitTableRef), secondPart);
     }
 }
 
