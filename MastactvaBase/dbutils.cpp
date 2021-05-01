@@ -66,7 +66,7 @@ QString fmt::toString(const db::SqlType &type_)
 template<> inline
 QString fmt::toString(const db::SqlTableName &name_)
 {
-    return db::tableName(name_.m_tableName.toString(), name_.m_refName.toString());
+    return db::tableName(name_.m_tableName, name_.m_refName);
 }
 
 
