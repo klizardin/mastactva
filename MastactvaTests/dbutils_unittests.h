@@ -176,22 +176,22 @@ TEST(DBUtils, jsonToSqlNaming)
 TEST(DBUtils, tableName)
 {
     ASSERT_TRUE(equal(
-                    db::tableName("table_name", ""),
+                    db::tableName(JsonName("table_name"), JsonName("")),
                     sum("table_name")
                     )
                 );
     ASSERT_TRUE(equal(
-                    db::tableName("table_name", "reference_name"),
+                    db::tableName(JsonName("table_name"), JsonName("reference_name")),
                     sum("table_name", g_splitTableRef, "reference_name")
                     )
                 );
     ASSERT_TRUE(equal(
-                    db::tableName("table-name", ""),
+                    db::tableName(JsonName("table-name"), JsonName("")),
                     sum("table_name")
                     )
                 );
     ASSERT_TRUE(equal(
-                    db::tableName("table-name", "reference-name"),
+                    db::tableName(JsonName("table-name"), JsonName("reference-name")),
                     sum("table_name", g_splitTableRef, "reference_name")
                     )
                 );
