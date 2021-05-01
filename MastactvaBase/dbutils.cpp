@@ -958,6 +958,22 @@ QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
     });
 }
 
+JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_)
+{
+    return std::find_if(
+                std::begin(fields_),
+                std::end(fields_),
+                [](const JsonSqlField &field_)->bool
+    {
+        return field_.isIdField();
+    });
+}
+
+bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_)
+{
+    return it_ != std::end(fields_);
+}
+
 QString getCreateTableSqlRequest(
         const QString &jsonLayoutName_,
         const QString &jsonRefName_,
@@ -1010,22 +1026,6 @@ QString getCreateTableSqlRequest(
         );
 
     return request;
-}
-
-JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_)
-{
-    return std::find_if(
-                std::begin(fields_),
-                std::end(fields_),
-                [](const JsonSqlField &field_)->bool
-    {
-        return field_.isIdField();
-    });
-}
-
-bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_)
-{
-    return it_ != std::end(fields_);
 }
 
 QString getFindSqlRequest(
