@@ -228,6 +228,9 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
+    // function fill table but not add duplicates
+    // to find duplicates is used db::getFindSqlRequest
+
     if(!r_->getReadonly()) { return; } // don't save data for RW tables
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
@@ -274,6 +277,12 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     {
         return bindInfo.isIdField();
     });
+    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    {
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSQlBindName = fitId->getBindSqlName();
+    }
     const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
     const QString sqlExistsRequest = db::getFindSqlRequest(
                 r_->getTableName(),
