@@ -416,7 +416,7 @@ TEST(DBUtils, JsonSqlFieldsList_getFindSqlRequest)
                 "id", "=", g_bindPrefix, "id", " AND ",
                 g_refPrefix, "user", "=", g_bindPrefix, g_refPrefix, "user", " AND ",
                 g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name", " AND ",
-                g_refPrefix, "age-years", "=", g_bindPrefix, g_refPrefix, "age-years",
+                g_refPrefix, "age_years", "=", g_bindPrefix, g_refPrefix, "age_years",
                 " LIMIT 1 ;"
                 );
     const QString request = db::getFindSqlRequest(

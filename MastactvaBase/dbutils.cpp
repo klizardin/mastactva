@@ -196,7 +196,7 @@ QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
     QStringList res;
     for(const QString &sqlName : qAsConst(names_))
     {
-        const QString ref = refName(sqlName);
+        const QString ref = refName(db::jsonToSql(sqlName));
         res.push_back(QString("%1=%2").arg(ref, toBindName(ref)));
     }
     return res;
