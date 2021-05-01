@@ -33,6 +33,7 @@ namespace db
     [[deprecated]] QString tableName(const QString &jsonLayoutName_, const QString &refName_);
     QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_);
     QString getSqlType(layout::JsonTypesEn type, bool idField);
+    void checkSqlName(const QString &sqlName_);
 
     const QSet<QString> &sqlKeywords();
 

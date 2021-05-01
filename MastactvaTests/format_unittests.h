@@ -82,6 +82,11 @@ TEST(Format, formatArguments)
                     sum("a", "=" "2")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    fmt::format("%1=%2", Name("a"), NameQString("2")),
+                    sum("a", "=" "2")
+                    )
+                );
 }
 
 TEST(Format, classList)
@@ -100,6 +105,15 @@ TEST(Format, classList)
                     fmt::toString(fmt::list(QVector<float>({1.0,2.5,3.5}), " , ")),
                     sum("1", " , " "2.5", " , ", "3.5")
                     )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::list(QVector<float>({1.0,2.5,3.5}), " , "),
+                    sum("1", " , " "2.5", " , ", "3.5")
+                    )
+                );
+    ASSERT_EQ(
+                static_cast<const QStringList &>(fmt::list(QVector<float>({1.0, 2.5, 3.5}), " , ")),
+                QStringList({"1", "2.5", "3.5"})
                 );
 }
 
@@ -273,19 +287,63 @@ TEST(Format, formatListToMerge)
                 ),
               QList<QString>({"2=f(2)", "-12=f(3.5)", "1=f(1.5)", "2=f(2)", "-12=f(3.5)", "1=f(1.5)"})
         );
+    ASSERT_EQ(
+                fmt::merge(
+                    fmt::toTypeList(
+                        QString{},
+                        fmt::list(
+                            fmt::format("%1=f(%2)", int{2}, float{3.5}),
+                            fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
+                            QString()
+                        )
+                    ),
+                    fmt::toTypeList(
+                        QString{},
+                        fmt::list(
+                            fmt::format("%1=f(%2)", int{2}, float{3.5}),
+                            fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
+                            QString()
+                        )
+                    )
+                ),
+              QList<QString>({"2=f(2)", "-12=f(3.5)", "1=f(1.5)", "2=f(2)", "-12=f(3.5)", "1=f(1.5)"})
+        );
 }
 
 TEST(Format, formatListConstant)
 {
+    const auto fmtlist = fmt::list(
+        fmt::format("%1=f(%3) %2", int{2}, fmt::constant(int{10}), float{3.5}),
+        fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
+        " , "
+    );
     ASSERT_TRUE(equal(
-                    fmt::toString(
-                        fmt::list(
-                            fmt::format("%1=f(%3) %2", int{2}, fmt::constant(int{10}), float{3.5}),
-                            fmt::toTypeList(Name{}, QStringList({ "2.0", "-12.5", "1.5" })),
-                            " , "
-                        )
-                    ),
+                    fmt::toString(fmtlist),
                     sum("2=f(2) 10", " , " "-12=f(3.5) 10", " , ", "1=f(1.5) 10")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmtlist,
+                    sum("2=f(2) 10", " , " "-12=f(3.5) 10", " , ", "1=f(1.5) 10")
+                    )
+                );
+}
+
+TEST(Format, sum)
+{
+    const auto fmtsum = fmt::sum(
+                Name{"2.0"},
+                fmt::constant(int{10}),
+                float{3.5}
+            );
+    ASSERT_TRUE(equal(
+                    fmt::toString(fmtsum),
+                    sum("2.0", "10", "3.5")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmtsum,
+                    sum("2.0", "10", "3.5")
                     )
                 );
 }

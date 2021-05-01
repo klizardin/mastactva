@@ -33,10 +33,12 @@ DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
 template<> inline
 QString fmt::toString(const db::SqlName &name_)
 {
-    return name_.quoted()
+    const QString result = name_.quoted()
             ? db::quotName(name_.toString())
             : name_.toString()
             ;
+    db::checkSqlName(result);
+    return result;
 }
 
 template<> inline
@@ -167,7 +169,9 @@ static inline QString addPrefixToName(const QString &prefix_, const QString &nam
 
 QString refName(const QString &ref_)
 {
-    return addPrefixToName(g_refPrefix, ref_);
+    const QString result = addPrefixToName(g_refPrefix, ref_);
+    checkSqlName(result);
+    return result;
 }
 
 QStringList refNames(const QStringList &refs_)
@@ -182,7 +186,9 @@ QStringList refNames(const QStringList &refs_)
 
 QString toBindName(const QString &sqlName_)
 {
-    return addPrefixToName(g_bindPrefix, sqlName_);
+    const QString result = addPrefixToName(g_bindPrefix, sqlName_);
+    checkSqlName(result);
+    return result;
 }
 
 QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
@@ -277,30 +283,20 @@ QString tableName(const QString &jsonLayoutName_, const QString &refName_)
 
 QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
 {
-    const QString firstPart = fmt::toString(
-        fmt::toTypeValue(
-            db::SqlName{},
-            fmt::toTypeValue(
-                db::SqlNameOrigin{},
-                jsonLayoutName_)
-            )
-        );
+    const auto firstPart = fmt::toTypeValue(db::SqlNameOrigin{}, jsonLayoutName_);
+    QString result;
     if(refName_.isEmpty())
     {
-        return firstPart;
+        const auto singleFirstPart = fmt::toTypeValue(db::SqlName{}, firstPart);
+        result = fmt::sum(singleFirstPart);
     }
     else
     {
-        const QString secondPart = fmt::toString(
-            fmt::toTypeValue(
-                db::SqlName{},
-                fmt::toTypeValue(
-                    db::SqlNameOrigin{},
-                    refName_)
-                )
-            );
-        return firstPart + QString(g_splitTableRef) + secondPart;
+        const auto secondPart = fmt::toTypeValue(db::SqlNameOrigin{}, refName_);
+        result = fmt::sum(firstPart, QString(g_splitTableRef), secondPart);
     }
+    checkSqlName(result);
+    return result;
 }
 
 
@@ -611,6 +607,11 @@ QString getSqlType(layout::JsonTypesEn type_, bool idField_)
     return LayoutJsonTypesTraits<
         layout::JsonTypesEn::jt_undefined
         >::sql_type_str();
+}
+
+void checkSqlName(const QString &sqlName_)
+{
+    Q_ASSERT(!sqlKeywords().contains(sqlName_.toUpper()));
 }
 
 QString JsonSqlField::getSqlType() const
@@ -989,14 +990,14 @@ QString getCreateTableSqlRequest(
         db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
         fmt::list(
             fmt::merge(
-                fmt::toTypeList(QString{}, main_fields.toStringList()),
-                fmt::toTypeList(QString{}, ref_fields.toStringList())
+                fmt::toTypeList(QString{}, main_fields),
+                fmt::toTypeList(QString{}, ref_fields)
             ),
             g_insertFieldSpliter
             )
         );
 
-    return fmt::toString(request);
+    return request;
 }
 
 } // namespace db
