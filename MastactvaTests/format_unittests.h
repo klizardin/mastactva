@@ -302,6 +302,11 @@ TEST(Format, sum)
                     sum("2.0", "10", "3.5")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    fmtsum,
+                    sum("2.0", "10", "3.5")
+                    )
+                );
 }
 
 

@@ -365,6 +365,11 @@ public:
         return m_args.sum();
     }
 
+    operator QString () const
+    {
+        return toString();
+    }
+
 private:
     Private::ArgsList<Args_...> m_args;
 };
