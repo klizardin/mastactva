@@ -158,9 +158,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
         qDebug() << "select sql" << sqlRequest;
         qDebug() << "bound" << query.boundValues();
         qDebug() << "sql error" << err.text();
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        jsonArray = buildErrorDocument(err);
         r->setError(true);
     }
     else if(query.first())
@@ -415,10 +413,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
         qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
-        QJsonArray jsonArray;
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        QJsonArray jsonArray = buildErrorDocument(err);
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
@@ -494,10 +489,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
         qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
-        QJsonArray jsonArray;
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        QJsonArray jsonArray = buildErrorDocument(err);
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
