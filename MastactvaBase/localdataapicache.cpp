@@ -295,12 +295,14 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         if(!query.exec() && query.lastError().type() != QSqlError::NoError)
         {
             const QSqlError err = query.lastError();
+            query.finish();
             throw err;
         }
         else
         {
             r->addJsonResult(values);
         }
+        query.finish();
 
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "insert sql result" << r->reply();
@@ -317,7 +319,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         r->addJsonResult(QJsonDocument(jsonArray));
     }
 
-    query.finish();
     r->setProcessed(true);
     return true;
 }
