@@ -493,4 +493,26 @@ TEST(DBUtils, JsonSqlFieldsList_setIdField)
     ASSERT_EQ(values1["name"], QVariant::fromValue(5));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getNextIdSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+
+    const QString res0 = sum(
+                "SELECT MAX(", "\"user\"", ") FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " ;"
+                );
+    const QString request = db::getNextIdSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields
+                );
+    ASSERT_TRUE(equal(request, res0));
+}
+
 #endif
