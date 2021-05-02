@@ -34,6 +34,7 @@ private:
             QSqlQuery &findQuery,
             const QString &sqlNextIdRequest
             );
+    static QJsonArray buildErrorDocument(const QSqlError &err);
 };
 
 

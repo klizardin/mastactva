@@ -225,6 +225,15 @@ int LocalDataAPIDefaultCacheImpl::getNextIdValue(
     return nextId;
 }
 
+QJsonArray LocalDataAPIDefaultCacheImpl::buildErrorDocument(const QSqlError &err_)
+{
+    QJsonArray jsonArray;
+    QJsonObject jsonObj;
+    jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err_.text()));
+    jsonArray.push_back(jsonObj);
+    return jsonArray;
+}
+
 bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
@@ -328,10 +337,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         qDebug() << "select max sql" << sqlNextIdRequest;
         qDebug() << "sql error " << err.text();
 
-        QJsonArray jsonArray;
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        QJsonArray jsonArray = buildErrorDocument(err);
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
