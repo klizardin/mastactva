@@ -196,6 +196,36 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     return true;
 }
 
+int LocalDataAPIDefaultCacheImpl::getNextIdValue(
+        QSqlQuery &findQuery,
+        const QString &sqlNextIdRequest
+        )
+{
+    int nextId = -1;
+    if(sqlNextIdRequest.isEmpty())
+    {
+        return nextId;
+    }
+
+    if(!findQuery.exec(sqlNextIdRequest)
+            && findQuery.lastError().type() != QSqlError::NoError
+            )
+    {
+        const QSqlError err = findQuery.lastError();
+        qDebug() << "sql request " << sqlNextIdRequest;
+        qDebug() << "bound " << findQuery.boundValues();
+        qDebug() << "sql error " << err.text();
+    }
+    else if(findQuery.first())
+    {
+        nextId = findQuery.value(0).toInt() + 1;
+    }
+
+    findQuery.finish();
+
+    return nextId;
+}
+
 bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
@@ -265,29 +295,12 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         const QString v = defValues.value(bind);
         query.bindValue(bind, v);
     }
-    int nextId = 1;
+    const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
     for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
         if(bindInfo.isIdField())
         {
-
-#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "select max sql bound" << findQuery.boundValues();
-#endif
-
-            if(!findQuery.exec(sqlNextIdRequest) && findQuery.lastError().type() != QSqlError::NoError)
-            {
-                const QSqlError err = findQuery.lastError();
-                qDebug() << "sql request " << sqlNextIdRequest;
-                qDebug() << "bound " << findQuery.boundValues();
-                qDebug() << "sql error " << err.text();
-            }
-            else if(findQuery.first())
-            {
-                nextId = findQuery.value(0).toInt() + 1;
-            }
             db::bind(bindInfo, query, QVariant::fromValue(nextId));
-            findQuery.finish();
         }
         else
         {

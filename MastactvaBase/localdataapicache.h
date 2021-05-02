@@ -29,6 +29,11 @@ public:
                              DBRequestBase *r_) override;
     virtual bool delItemImpl(const QVariant &id_,
                              DBRequestBase *r_) override;
+private:
+    static int getNextIdValue(
+            QSqlQuery &findQuery,
+            const QString &sqlNextIdRequest
+            );
 };
 
 
