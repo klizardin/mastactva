@@ -20,7 +20,11 @@ bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
 
 bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(nullptr == r_)
+    {
+        return false;
+    }
+
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
@@ -37,12 +41,14 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 #if defined(TRACE_DB_CREATION)
     qDebug() << "create sql" << createSqlRequest;
 #endif
+
     if(!query.exec(createSqlRequest))
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql error "  << err.text();
     }
     query.finish();
+
     r_->setProcessed(true);
     return true;
 }
@@ -149,7 +155,11 @@ LocalDataAPINoCache *LocalDataAPINoCache::g_localDataAPI = nullptr;
 
 void LocalDataAPINoCache::createInstance(QObject *parent_, NetAPI *netAPI_)
 {
-    if(nullptr != g_localDataAPI) { return; }
+    if(nullptr != g_localDataAPI)
+    {
+        return;
+    }
+
     g_localDataAPI = new LocalDataAPINoCache(parent_);
     g_localDataAPI->m_netAPI = netAPI_;
 }
@@ -267,7 +277,11 @@ void LocalDataAPINoCache::insertItem(
 
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
-    if(nullptr == r_ || reply_.isEmpty()) { return; }
+    if(nullptr == r_ || reply_.isEmpty())
+    {
+        return;
+    }
+
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
@@ -321,6 +335,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         QJsonValue replayItem = reply_[i];
         if(replayItem.isUndefined())
         {
+            // no (more) data, exit
             break;
         }
 
@@ -366,12 +381,19 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 
 ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestBase * r_)
 {
-    if(nullptr == r_) { return nullptr; }
+    if(nullptr == r_)
+    {
+        return nullptr;
+    }
+
     r_->setDefaultAPI(&m_defaultAPIImpl);
 
     for(ILocalDataAPI *api : qAsConst(QMLObjectsBase::getInstance().getLocalDataAPIViews()))
     {
-        if(nullptr != api && api->canProcess(r_)) { return api; }
+        if(nullptr != api && api->canProcess(r_))
+        {
+            return api;
+        }
     }
 
     return nullptr;
