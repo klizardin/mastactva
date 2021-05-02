@@ -284,18 +284,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     try
     {
-        query.prepare(sqlRequest);
-        db::bind(refsValues, query);
-
-        const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
         QHash<QString, QVariant> values = values_;
+        const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
         db::setIdField(r_->getTableFieldsInfo(), values, nextId);
 
-        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-        {
-            const QVariant val = values.value(bindInfo.getJsonName());
-            db::bind(bindInfo, query, val);
-        }
+        query.prepare(sqlRequest);
+        db::bind(refsValues, query);
+        db::bind(r_->getTableFieldsInfo(), values, query);
 
         if(!query.exec() && query.lastError().type() != QSqlError::NoError)
         {

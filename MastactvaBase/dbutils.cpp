@@ -994,6 +994,15 @@ void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &
     }
 }
 
+void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QSqlQuery &query_)
+{
+    for(const db::JsonSqlField &fi_ : fields_)
+    {
+        const QVariant val = values_.value(fi_.getJsonName());
+        db::bind(fi_, query_, val);
+    }
+}
+
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)
