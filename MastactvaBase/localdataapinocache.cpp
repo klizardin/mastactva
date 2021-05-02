@@ -294,9 +294,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             if(db::idFieldExist(idField, r_->getTableFieldsInfo()))
             {
                 db::bind(*idField, findQuery, itemJV[idField->getJsonName()]);
-#if defined(TRACE_DB_DATA_BINDINGS)
-                qDebug() << "bind find" << idField->getJsonName() << v;
-#endif
             }
 
             for(const QString &ref : qAsConst(bindRefs))
