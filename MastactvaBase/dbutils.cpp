@@ -1002,6 +1002,16 @@ void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
     }
 }
 
+void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_)
+{
+    const auto fit = findIdField(fields_);
+    if(!idFieldExist(fit, fields_))
+    {
+        return;
+    }
+    values_[fit->getJsonName()] = QVariant::fromValue(newIdValue_);
+}
+
 JsonSqlFieldAndValuesList createRefValuesList(
         const QStringList &refs_,
         const QStringList &extraRefs_,

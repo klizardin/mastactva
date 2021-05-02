@@ -150,6 +150,7 @@ namespace db
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
     void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
     void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_);
+    void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_);
     JsonSqlFieldAndValuesList createRefValuesList(
             const QStringList &refs_,
             const QStringList &extraRefs_,

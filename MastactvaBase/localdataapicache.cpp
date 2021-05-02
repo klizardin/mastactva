@@ -327,13 +327,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     else
     {
         QHash<QString, QVariant> values = values_;
-        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-        {
-            if(bindInfo.isIdField())
-            {
-                values.insert(bindInfo.getJsonName(), QVariant::fromValue(nextId));
-            }
-        }
+        db::setIdField(r_->getTableFieldsInfo(), values, nextId);
         r->addJsonResult(values);
 
     }
