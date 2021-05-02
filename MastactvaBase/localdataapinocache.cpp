@@ -293,9 +293,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         {
             if(db::idFieldExist(idField, r_->getTableFieldsInfo()))
             {
-                const QJsonValue valueJV = itemJV[idField->getJsonName()];
-                const int v = json::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
-                findQuery.bindValue(idField->getJsonName(), v);
+                db::bind(*idField, findQuery, itemJV[idField->getJsonName()]);
 #if defined(TRACE_DB_DATA_BINDINGS)
                 qDebug() << "bind find" << idField->getJsonName() << v;
 #endif
