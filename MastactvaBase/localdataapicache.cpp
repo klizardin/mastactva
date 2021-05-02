@@ -215,6 +215,7 @@ int LocalDataAPIDefaultCacheImpl::getNextIdValue(
         qDebug() << "sql request " << sqlNextIdRequest;
         qDebug() << "bound " << findQuery.boundValues();
         qDebug() << "sql error " << err.text();
+        // TODO: add exception for error to not insert -1 id value
     }
     else if(findQuery.first())
     {
@@ -295,18 +296,15 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         const QString v = defValues.value(bind);
         query.bindValue(bind, v);
     }
+
     const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
+    QHash<QString, QVariant> values = values_;
+    db::setIdField(r_->getTableFieldsInfo(), values, nextId);
+
     for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
     {
-        if(bindInfo.isIdField())
-        {
-            db::bind(bindInfo, query, QVariant::fromValue(nextId));
-        }
-        else
-        {
-            const QVariant val = values_.value(bindInfo.getJsonName());
-            db::bind(bindInfo, query, val);
-        }
+        const QVariant val = values.value(bindInfo.getJsonName());
+        db::bind(bindInfo, query, val);
     }
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
@@ -329,8 +327,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     }
     else
     {
-        QHash<QString, QVariant> values = values_;
-        db::setIdField(r_->getTableFieldsInfo(), values, nextId);
         r->addJsonResult(values);
     }
 
