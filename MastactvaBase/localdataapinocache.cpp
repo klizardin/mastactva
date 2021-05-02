@@ -283,7 +283,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                 );
 
     const auto idField = db::findIdField(r_->getTableFieldsInfo());
-    const bool anyIdFields = !(refs.empty()) || db::idFieldExist(idField, r_->getTableFieldsInfo());
+    const bool anyIdFields = !refs.empty() || db::idFieldExist(idField, r_->getTableFieldsInfo());
 
     const QString sqlExistsRequest = db::getFindSqlRequest(
                 r_->getTableName(),
