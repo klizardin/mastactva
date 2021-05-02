@@ -105,8 +105,8 @@ namespace db
                 bool idField_
                 );
 
-        const QString &getJsonName() const;
-        const QString &getSqlName() const;
+        QString getJsonName() const;
+        QString getSqlName() const;
         QString getSqlType() const;
         QString getBindSqlName() const;
         QString sqlValueName() const;
@@ -115,16 +115,31 @@ namespace db
         QJsonValue jsonValue(const QVariant &val_) const;
 
     private:
-        QString jsonName;
-        QString sqlName;
+        JsonName jsonName;
+        SqlNameOrigin sqlNameOrigin;
         layout::JsonTypesEn type;
         bool idField = false;
+    };
+
+    struct JsonSqlFieldAndValue : public JsonSqlField
+    {
+        JsonSqlFieldAndValue(
+                const QString &jsonName_,
+                const layout::JsonTypesEn type_,
+                bool idField_,
+                const QVariant &value_
+                );
+        QJsonValue jsonValue() const;
+
+    private:
+        QVariant m_value;
     };
 
     void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
     void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_);
 
     using JsonSqlFieldsList = QList<JsonSqlField>;
+    using JsonSqlFieldAndValuesList = QList<JsonSqlFieldAndValue>;
 
     QStringList getSqlNames(const JsonSqlFieldsList &fields_);
     QStringList getBindSqlNames(const JsonSqlFieldsList &fields_);
@@ -133,6 +148,15 @@ namespace db
     QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
+    void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
+    void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_);
+    JsonSqlFieldAndValuesList createRefValuesList(
+            const QStringList &refs_,
+            const QStringList &extraRefs_,
+            const QHash<QString, QVariant> &extraFields_,
+            const QString &currentRef_,
+            const QVariant &idValue_
+            );
     QString getCreateTableSqlRequest(
             const QString &jsonLayoutName_,
             const QString &jsonRefName_,
@@ -141,6 +165,13 @@ namespace db
             const QStringList &extraRefs_
             );
     QString getFindSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const db::JsonSqlFieldsList &fields_,
+            const QStringList &refs_,
+            const QStringList &extraRefs_
+            );
+    QString getInsertSqlRequest(
             const QString &jsonLayoutName_,
             const QString &jsonRefName_,
             const db::JsonSqlFieldsList &fields_,

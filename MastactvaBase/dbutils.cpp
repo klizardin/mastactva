@@ -32,7 +32,13 @@ db::RefSqlName fmt::toType(const db::JsonSqlField &field_, const db::RefSqlName 
 template<> inline
 db::BindSqlName fmt::toType(const db::JsonSqlField &field_, const db::BindSqlName &)
 {
-    return db::BindSqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
+    return db::BindSqlName(fmt::toType(field_.getJsonName(), db::SqlNameOrigin{}));
+}
+
+template<> inline
+db::BindRefSqlName fmt::toType(const db::JsonSqlField &field_, const db::BindRefSqlName &)
+{
+    return db::BindRefSqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
 }
 
 template<typename DestType_> inline
@@ -467,8 +473,8 @@ const QSet<QString> &sqlKeywords()
 
 
 SqlNameOrigin::SqlNameOrigin(const QString &name_)
-    : QString(name_)
 {
+    static_cast<QString &>(*this) = jsonToSql(name_);
 }
 
 const QString &SqlNameOrigin::toString() const
@@ -533,21 +539,17 @@ JsonSqlField::JsonSqlField(
       type(type_),
       idField(idField_)
 {
-    sqlName = jsonToSql(jsonName);
-    if(db::sqlKeywords().contains(sqlName.toUpper()))
-    {
-        sqlName = quotName(sqlName);
-    }
+    sqlNameOrigin = fmt::toTypeValue(db::SqlNameOrigin{}, jsonName);
 }
 
-const QString &JsonSqlField::getJsonName() const
+QString JsonSqlField::getJsonName() const
 {
-    return jsonName;
+    return  jsonName.toString();
 }
 
-const QString &JsonSqlField::getSqlName() const
+QString JsonSqlField::getSqlName() const
 {
-    return sqlName;
+    return fmt::toString(fmt::toTypeValue(SqlName{}, sqlNameOrigin));
 }
 
 QString getSqlType(layout::JsonTypesEn type_, bool idField_)
@@ -633,12 +635,12 @@ QString JsonSqlField::getSqlType() const
 
 QString JsonSqlField::getBindSqlName() const
 {
-    return db::toBindName(sqlName);
+    return fmt::toString(fmt::toTypeValue(BindSqlName{}, sqlNameOrigin));
 }
 
 QString JsonSqlField::sqlValueName() const
 {
-    return unquotName(sqlName);
+    return fmt::toString(sqlNameOrigin);
 }
 
 layout::JsonTypesEn JsonSqlField::getType() const
@@ -656,17 +658,17 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
     if(jv_.isBool())
     {
         const int v = jv_.toBool() ? 1 : 0;
-        if(layout::JsonTypesEn::jt_bool == field_.getType())
-        {
-#if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << field_.getBindName() << v;
-#endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
-        }
-        else if(layout::JsonTypesEn::jt_int == field_.getType())
+        if(field_.isIdField() || layout::JsonTypesEn::jt_int == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << int(v);
+#endif
+            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+        }
+        else if(layout::JsonTypesEn::jt_bool == field_.getType())
+        {
+#if defined(TRACE_DB_DATA_BINDINGS)
+            qDebug() << "bind" << field_.getBindName() << v;
 #endif
             query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
@@ -696,14 +698,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
     else if(jv_.isDouble())
     {
         const double v = jv_.toDouble();
-        if(field_.isIdField())
-        {
-#if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << field_.getBindName() << int(v);
-#endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(int(v)));
-        }
-        else if(layout::JsonTypesEn::jt_int == field_.getType())
+        if(field_.isIdField() || layout::JsonTypesEn::jt_int == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << int(v);
@@ -737,7 +732,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
     {
         if(field_.isIdField() || layout::JsonTypesEn::jt_int == field_.getType())
         {
-            const int v = QVariant::fromValue(jv_.toString()).toInt();
+            const int v = int(QVariant::fromValue(jv_.toString()).toDouble());
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
@@ -883,6 +878,22 @@ QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
     return QJsonValue(val_.toString());
 }
 
+JsonSqlFieldAndValue::JsonSqlFieldAndValue(
+        const QString &jsonName_,
+        const layout::JsonTypesEn type_,
+        bool idField_,
+        const QVariant &value_
+        )
+    : JsonSqlField(jsonName_, type_, idField_)
+    , m_value(value_)
+{
+}
+
+QJsonValue JsonSqlFieldAndValue::jsonValue() const
+{
+    return JsonSqlField::jsonValue(m_value);
+}
+
 QStringList getFieldListValues(
         const JsonSqlFieldsList &fields_,
         std::function<QString(const db::JsonSqlField &)> getter_)
@@ -974,6 +985,61 @@ bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList
     return it_ != std::end(fields_);
 }
 
+void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_)
+{
+    for(const db::JsonSqlField &fi_ : fields_)
+    {
+        const QJsonValue valueJV = item_[fi_.getJsonName()];
+        db::bind(fi_, query_, valueJV);
+    }
+}
+
+void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
+{
+    for(const db::JsonSqlFieldAndValue &fi_ : fields_)
+    {
+        db::bind(fi_, query_, fi_.jsonValue());
+    }
+}
+
+JsonSqlFieldAndValuesList createRefValuesList(
+        const QStringList &refs_,
+        const QStringList &extraRefs_,
+        const QHash<QString, QVariant> &extraFields_,
+        const QString &currentRef_,
+        const QVariant &idValue_
+        )
+{
+    JsonSqlFieldAndValuesList result;
+
+    result.reserve(refs_.size() + extraRefs_.size());
+    for(const QString &ref_ : refs_)
+    {
+        result.push_back(
+                    JsonSqlFieldAndValue(
+                        ref_,
+                        layout::JsonTypesEn::jt_string, // ref type is tring
+                        false,
+                        ref_ == currentRef_ ? idValue_ : QVariant() // use only current ref value
+                                              // others are empty strings ("")
+                        )
+                    );
+    }
+    for(const QString &extraRef_ : extraRefs_)
+    {
+        result.push_back(
+                    JsonSqlFieldAndValue(
+                        extraRef_,
+                        layout::JsonTypesEn::jt_string, // ref type is tring
+                        false,
+                        extraFields_.contains(extraRef_) ? extraFields_.value(extraRef_) : QVariant()
+                        )
+                    );
+    }
+
+    return result;
+}
+
 QString getCreateTableSqlRequest(
         const QString &jsonLayoutName_,
         const QString &jsonRefName_,
@@ -1001,7 +1067,7 @@ QString getCreateTableSqlRequest(
             QString(s_SqlNameAndTypeFmt),
             db::RefSqlName{},
             fmt::constant(g_spaceName),
-            fmt::constant(db::getSqlType(layout::JsonTypesEn::jt_string, false))
+            fmt::constant(db::getSqlType(layout::JsonTypesEn::jt_string, false))  // ref type is tring
             ),
         fmt::toTypeList(
             db::SqlNameOrigin{},
@@ -1076,6 +1142,86 @@ QString getFindSqlRequest(
                 fmt::toTypeList(QString{}, refFields)
             ),
             " AND "
+            )
+        );
+
+    return request;
+}
+
+QString getInsertSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraRefs_
+        )
+{
+    static const char* s_noSeparator = "";
+
+    const auto refFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::RefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        s_noSeparator
+        );
+
+    const auto mainFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::SqlName{}
+            ),
+        fields_,
+        s_noSeparator
+        );
+
+    const auto bindRefFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::BindRefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        s_noSeparator
+        );
+
+    const auto bindMainFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::BindSqlName{}
+            ),
+        fields_,
+        s_noSeparator
+        );
+
+    const auto request = fmt::format(
+        "INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;",
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, refFields),
+                fmt::toTypeList(QString{}, mainFields)
+            ),
+            g_insertFieldSpliter
+            ),
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, bindRefFields),
+                fmt::toTypeList(QString{}, bindMainFields)
+            ),
+            g_insertFieldSpliter
             )
         );
 

@@ -429,6 +429,48 @@ TEST(DBUtils, JsonSqlFieldsList_getFindSqlRequest)
     ASSERT_TRUE(equal(request, res0));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getInsertSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "user-id", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+    const QStringList refs({"user-id", "name"});
+    const QStringList extraRefs({"age-years",});
+
+    const QString res0 = sum(
+                "INSERT INTO ",
+                "user_list", g_splitTableRef, "user_id",
+                " ( ",
+                g_refPrefix, "user_id", g_insertFieldSpliter,
+                g_refPrefix, "name", g_insertFieldSpliter,
+                g_refPrefix, "age_years", g_insertFieldSpliter,
+                "\"user\"", g_insertFieldSpliter,
+                "user_id", g_insertFieldSpliter,
+                "name"
+                " ) VALUES ( ",
+                g_bindPrefix, g_refPrefix, "user_id", g_insertFieldSpliter,
+                g_bindPrefix, g_refPrefix, "name", g_insertFieldSpliter,
+                g_bindPrefix, g_refPrefix, "age_years", g_insertFieldSpliter,
+                g_bindPrefix, "user", g_insertFieldSpliter,
+                g_bindPrefix, "user_id", g_insertFieldSpliter,
+                g_bindPrefix, "name"
+                " ) ;"
+                );
+    const QString request = db::getInsertSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields,
+                refs,
+                extraRefs
+                );
+    qDebug() << request;
+    qDebug() << res0;
+    ASSERT_TRUE(equal(request, res0));
+}
 
 
 #endif
