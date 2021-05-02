@@ -147,6 +147,13 @@ namespace db
             const QStringList &refs_,
             const QStringList &extraRefs_
             );
+    QString getInsertSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const db::JsonSqlFieldsList &fields_,
+            const QStringList &refs_,
+            const QStringList &extraRefs_
+            );
 }
 
 

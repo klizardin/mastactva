@@ -239,11 +239,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
-    const QString fieldNames = (QStringList()
-                                << db::refNames(refs)
-                                << db::refNames(extraFields.keys())
-                                << db::getSqlNames(r_->getTableFieldsInfo())
-                                ).join(g_insertFieldSpliter);
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs))
@@ -261,12 +256,13 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         bindRefs.push_back(refBindName);
         defValues.insert(refBindName, it.value().toString());
     }
-    const QString fieldNamesBindings = (QStringList()
-                                        << bindRefs
-                                        << db::getBindSqlNames(r_->getTableFieldsInfo())
-                                        ).join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
-            .arg(tableName, fieldNames, fieldNamesBindings);
+    const QString sqlRequest = db::getInsertSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                refs,
+                extraFields.keys()
+                );
 
     const auto idField = db::findIdField(r_->getTableFieldsInfo());
     const bool anyIdFields = !(refs.empty()) || db::idFieldExist(idField, r_->getTableFieldsInfo());
@@ -292,6 +288,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             query.prepare(sqlRequest);
             findQuery.prepare(sqlExistsRequest);
         }
+
         if(anyIdFields)
         {
             if(db::idFieldExist(idField, r_->getTableFieldsInfo()))
@@ -300,7 +297,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                 const int v = json::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
                 findQuery.bindValue(idField->getJsonName(), v);
 #if defined(TRACE_DB_DATA_BINDINGS)
-                qDebug() << "bind find" << idFieldSQlBindName << v;
+                qDebug() << "bind find" << idField->getJsonName() << v;
 #endif
             }
 

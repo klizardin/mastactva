@@ -1084,6 +1084,42 @@ QString getFindSqlRequest(
     return request;
 }
 
+QString getInsertSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraRefs_
+        )
+{
+    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+
+    const QString fieldNames = (QStringList()
+                                << db::refNames(refs_)
+                                << db::refNames(extraRefs_)
+                                << db::getSqlNames(fields_)
+                                ).join(g_insertFieldSpliter);
+    QStringList bindRefs;
+    for(const QString &ref : qAsConst(refs_))
+    {
+        const QString refBindName = db::toBindName(db::refName(ref));
+        bindRefs.push_back(refBindName);
+    }
+    for(const QString &extraRef_ : extraRefs_)
+    {
+        const QString refBindName = db::toBindName(db::refName(extraRef_));
+        bindRefs.push_back(refBindName);
+    }
+    const QString fieldNamesBindings = (QStringList()
+                                        << bindRefs
+                                        << db::getBindSqlNames(fields_)
+                                        ).join(g_insertFieldSpliter);
+    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
+            .arg(tableName, fieldNames, fieldNamesBindings);
+
+    return sqlRequest;
+}
+
 } // namespace db
 
 
