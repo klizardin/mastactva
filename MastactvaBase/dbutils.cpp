@@ -533,23 +533,17 @@ JsonSqlField::JsonSqlField(
       type(type_),
       idField(idField_)
 {
-    sqlName = fmt::toTypeValue(
-                db::SqlName{},
-                fmt::toTypeValue(
-                    db::SqlNameOrigin{},
-                    jsonName
-                    )
-                );
+    sqlNameOrigin = fmt::toTypeValue(db::SqlNameOrigin{}, jsonName);
 }
 
-const QString &JsonSqlField::getJsonName() const
+QString JsonSqlField::getJsonName() const
 {
-    return jsonName.toString();
+    return  jsonName.toString();
 }
 
-const QString &JsonSqlField::getSqlName() const
+QString JsonSqlField::getSqlName() const
 {
-    return sqlName.toString();
+    return fmt::toString(fmt::toTypeValue(SqlName{}, sqlNameOrigin));
 }
 
 QString getSqlType(layout::JsonTypesEn type_, bool idField_)
@@ -635,12 +629,12 @@ QString JsonSqlField::getSqlType() const
 
 QString JsonSqlField::getBindSqlName() const
 {
-    return fmt::toTypeValue(BindSqlName{},sqlName).toString();
+    return fmt::toString(fmt::toTypeValue(BindSqlName{}, sqlNameOrigin));
 }
 
 QString JsonSqlField::sqlValueName() const
 {
-    return fmt::toTypeValue(SqlNameOrigin{}, sqlName).toString();
+    return fmt::toString(sqlNameOrigin);
 }
 
 layout::JsonTypesEn JsonSqlField::getType() const

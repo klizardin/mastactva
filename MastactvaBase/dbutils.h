@@ -105,8 +105,8 @@ namespace db
                 bool idField_
                 );
 
-        const QString &getJsonName() const;
-        const QString &getSqlName() const;
+        QString getJsonName() const;
+        QString getSqlName() const;
         QString getSqlType() const;
         QString getBindSqlName() const;
         QString sqlValueName() const;
@@ -116,7 +116,7 @@ namespace db
 
     private:
         JsonName jsonName;
-        SqlName sqlName;
+        SqlNameOrigin sqlNameOrigin;
         layout::JsonTypesEn type;
         bool idField = false;
     };
