@@ -115,8 +115,8 @@ namespace db
         QJsonValue jsonValue(const QVariant &val_) const;
 
     private:
-        QString jsonName;
-        QString sqlName;
+        JsonName jsonName;
+        SqlName sqlName;
         layout::JsonTypesEn type;
         bool idField = false;
     };

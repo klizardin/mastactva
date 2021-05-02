@@ -533,21 +533,23 @@ JsonSqlField::JsonSqlField(
       type(type_),
       idField(idField_)
 {
-    sqlName = jsonToSql(jsonName);
-    if(db::sqlKeywords().contains(sqlName.toUpper()))
-    {
-        sqlName = quotName(sqlName);
-    }
+    sqlName = fmt::toTypeValue(
+                db::SqlName{},
+                fmt::toTypeValue(
+                    db::SqlNameOrigin{},
+                    jsonName
+                    )
+                );
 }
 
 const QString &JsonSqlField::getJsonName() const
 {
-    return jsonName;
+    return jsonName.toString();
 }
 
 const QString &JsonSqlField::getSqlName() const
 {
-    return sqlName;
+    return sqlName.toString();
 }
 
 QString getSqlType(layout::JsonTypesEn type_, bool idField_)
@@ -633,12 +635,12 @@ QString JsonSqlField::getSqlType() const
 
 QString JsonSqlField::getBindSqlName() const
 {
-    return db::toBindName(sqlName);
+    return fmt::toTypeValue(BindSqlName{},sqlName).toString();
 }
 
 QString JsonSqlField::sqlValueName() const
 {
-    return unquotName(sqlName);
+    return fmt::toTypeValue(SqlNameOrigin{}, sqlName).toString();
 }
 
 layout::JsonTypesEn JsonSqlField::getType() const
