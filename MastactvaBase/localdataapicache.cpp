@@ -212,10 +212,8 @@ int LocalDataAPIDefaultCacheImpl::getNextIdValue(
             )
     {
         const QSqlError err = findQuery.lastError();
-        qDebug() << "sql request " << sqlNextIdRequest;
-        qDebug() << "bound " << findQuery.boundValues();
-        qDebug() << "sql error " << err.text();
-        // TODO: add exception for error to not insert -1 id value
+        findQuery.finish();
+        throw err;
     }
     else if(findQuery.first())
     {
@@ -295,28 +293,39 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     qDebug() << "select max sql" << sqlNextIdRequest;
 #endif
 
-    query.prepare(sqlRequest);
-    db::bind(refsValues, query);
-
-    const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
-    QHash<QString, QVariant> values = values_;
-    db::setIdField(r_->getTableFieldsInfo(), values, nextId);
-
-    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+    try
     {
-        const QVariant val = values.value(bindInfo.getJsonName());
-        db::bind(bindInfo, query, val);
-    }
+        query.prepare(sqlRequest);
+        db::bind(refsValues, query);
 
-#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "insert sql bound" << query.boundValues();
+        const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
+        QHash<QString, QVariant> values = values_;
+        db::setIdField(r_->getTableFieldsInfo(), values, nextId);
+
+        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
+        {
+            const QVariant val = values.value(bindInfo.getJsonName());
+            db::bind(bindInfo, query, val);
+        }
+
+        if(!query.exec() && query.lastError().type() != QSqlError::NoError)
+        {
+            const QSqlError err = query.lastError();
+            throw err;
+        }
+        else
+        {
+            r->addJsonResult(values);
+        }
+
+#if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "insert sql result" << r->reply();
 #endif
-
-    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
+    }
+    catch(const QSqlError &err)
     {
-        const QSqlError err = query.lastError();
         qDebug() << "sql request " << sqlRequest;
-        qDebug() << "bound " << query.boundValues();
+        qDebug() << "select max sql" << sqlNextIdRequest;
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray;
@@ -326,14 +335,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
-    else
-    {
-        r->addJsonResult(values);
-    }
-
-#if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "insert sql result" << r->reply();
-#endif
 
     query.finish();
     r->setProcessed(true);
