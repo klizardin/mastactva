@@ -251,35 +251,17 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    const QString tableName = db::tableName(JsonName(r_->getTableName()), JsonName(r_->getCurrentRef()));
 
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
-    const QString fieldNames = (QStringList()
-                                << db::refNames(refs)
-                                << db::refNames(extraFields.keys())
-                                << db::getSqlNames(r_->getTableFieldsInfo())
-                                ).join(g_insertFieldSpliter);
-    QStringList bindRefs;
-    for(const QString &ref : qAsConst(refs))
-    {
-        const QString refBindName = QString(":") + db::refName(ref);
-        bindRefs.push_back(refBindName);
-    }
-    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
-        it != std::cend(qAsConst(extraFields))
-        ; ++it
-        )
-    {
-        const QString refBindName = QString(":") + db::refName(it.key());
-        bindRefs.push_back(refBindName);
-    }
-    const QString fieldNamesBindings = (QStringList()
-                                        << bindRefs
-                                        << db::getBindSqlNames(r_->getTableFieldsInfo())
-                                        ).join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
-            .arg(tableName, fieldNames, fieldNamesBindings);
+
+    const QString sqlRequest = db::getInsertSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                refs,
+                extraFields.keys()
+                );
 
     const db::JsonSqlFieldAndValuesList refsValues = db::createRefValuesList(
                 refs,
