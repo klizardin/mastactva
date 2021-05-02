@@ -32,7 +32,13 @@ db::RefSqlName fmt::toType(const db::JsonSqlField &field_, const db::RefSqlName 
 template<> inline
 db::BindSqlName fmt::toType(const db::JsonSqlField &field_, const db::BindSqlName &)
 {
-    return db::BindSqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
+    return db::BindSqlName(fmt::toType(field_.getJsonName(), db::SqlNameOrigin{}));
+}
+
+template<> inline
+db::BindRefSqlName fmt::toType(const db::JsonSqlField &field_, const db::BindRefSqlName &)
+{
+    return db::BindRefSqlName(fmt::toType(field_.getJsonName(),db::SqlNameOrigin{}));
 }
 
 template<typename DestType_> inline
@@ -467,8 +473,8 @@ const QSet<QString> &sqlKeywords()
 
 
 SqlNameOrigin::SqlNameOrigin(const QString &name_)
-    : QString(name_)
 {
+    static_cast<QString &>(*this) = jsonToSql(name_);
 }
 
 const QString &SqlNameOrigin::toString() const
@@ -1086,32 +1092,76 @@ QString getInsertSqlRequest(
         const QStringList &extraRefs_
         )
 {
-    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+    static const char* s_noSeparator = "";
 
-    const QString fieldNames = (QStringList()
-                                << db::refNames(db::jsonToSql(refs_))
-                                << db::refNames(db::jsonToSql(extraRefs_))
-                                << db::getSqlNames(fields_)
-                                ).join(g_insertFieldSpliter);
-    QStringList bindRefs;
-    for(const QString &ref : qAsConst(refs_))
-    {
-        const QString refBindName = db::toBindName(db::refName(db::jsonToSql(ref)));
-        bindRefs.push_back(refBindName);
-    }
-    for(const QString &extraRef_ : extraRefs_)
-    {
-        const QString refBindName = db::toBindName(db::refName(db::jsonToSql(extraRef_)));
-        bindRefs.push_back(refBindName);
-    }
-    const QString fieldNamesBindings = (QStringList()
-                                        << bindRefs
-                                        << db::getBindSqlNames(fields_)
-                                        ).join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
-            .arg(tableName, fieldNames, fieldNamesBindings);
+    const auto refFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::RefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        s_noSeparator
+        );
 
-    return sqlRequest;
+    const auto mainFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::SqlName{}
+            ),
+        fields_,
+        s_noSeparator
+        );
+
+    const auto bindRefFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::BindRefSqlName{}
+            ),
+        fmt::toTypeList(
+            db::SqlNameOrigin{},
+            fmt::toTypeList(
+                JsonName{},
+                fmt::merge(refs_, extraRefs_)
+                )
+            ),
+        s_noSeparator
+        );
+
+    const auto bindMainFields = fmt::list(
+        fmt::format(
+            QString("%1"),
+            db::BindSqlName{}
+            ),
+        fields_,
+        s_noSeparator
+        );
+
+    const auto request = fmt::format(
+        "INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;",
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, refFields),
+                fmt::toTypeList(QString{}, mainFields)
+            ),
+            g_insertFieldSpliter
+            ),
+        fmt::list(
+            fmt::merge(
+                fmt::toTypeList(QString{}, bindRefFields),
+                fmt::toTypeList(QString{}, bindMainFields)
+            ),
+            g_insertFieldSpliter
+            )
+        );
+
+    return request;
 }
 
 } // namespace db
