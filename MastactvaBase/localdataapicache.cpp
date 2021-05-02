@@ -331,13 +331,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     qDebug() << "insert sql result" << r->reply();
 #endif
     }
-    catch(const QSqlError &err)
+    catch(const QSqlError &err_)
     {
         qDebug() << "sql request " << sqlRequest;
         qDebug() << "select max sql" << sqlNextIdRequest;
-        qDebug() << "sql error " << err.text();
+        qDebug() << "sql error " << err_.text();
 
-        QJsonArray jsonArray = buildErrorDocument(err);
+        QJsonArray jsonArray = buildErrorDocument(err_);
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
