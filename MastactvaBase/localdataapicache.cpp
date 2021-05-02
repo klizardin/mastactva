@@ -248,21 +248,24 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const db::JsonSqlField &bindInfo)->bool
-    {
-        return bindInfo.isIdField();
-    });
-    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-    }
-    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
-            .arg(idFieldSqlName, tableName);
+    //QString idFieldJsonName;
+    //QString idFieldSqlName;
+    //const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
+    //                                std::cend(qAsConst(r_->getTableFieldsInfo())),
+    //                                [](const db::JsonSqlField &bindInfo)->bool
+    //{
+    //    return bindInfo.isIdField();
+    //});
+    //if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
+    //{
+    //    idFieldJsonName = fitId->getJsonName();
+    //    idFieldSqlName = fitId->getSqlName();
+    //}
+    const QString sqlNextIdRequest = getNextIdSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo()
+                );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "insert sql" << sqlRequest;
@@ -329,7 +332,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         QHash<QString, QVariant> values = values_;
         db::setIdField(r_->getTableFieldsInfo(), values, nextId);
         r->addJsonResult(values);
-
     }
 
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)

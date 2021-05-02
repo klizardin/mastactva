@@ -179,6 +179,11 @@ namespace db
             const QStringList &refs_,
             const QStringList &extraRefs_
             );
+    QString getNextIdSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const db::JsonSqlFieldsList &fields_
+            );
 }
 
 

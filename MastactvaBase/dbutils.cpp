@@ -1238,6 +1238,33 @@ QString getInsertSqlRequest(
     return request;
 }
 
+QString getNextIdSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_
+        )
+{
+    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    const auto fitId = std::find_if(std::cbegin(qAsConst(fields_)),
+                                    std::cend(qAsConst(fields_)),
+                                    [](const db::JsonSqlField &bindInfo)->bool
+    {
+        return bindInfo.isIdField();
+    });
+    if(std::cend(qAsConst(fields_)) != fitId)
+    {
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+    }
+    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
+            .arg(idFieldSqlName, tableName);
+
+    return sqlNextIdRequest;
+}
+
 } // namespace db
 
 
