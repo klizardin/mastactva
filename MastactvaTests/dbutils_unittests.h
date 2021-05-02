@@ -6,6 +6,7 @@
 #include <QString>
 #include <QVariant>
 #include <QVariantList>
+#include <QHash>
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
 #include "test_utils.h"
@@ -467,10 +468,61 @@ TEST(DBUtils, JsonSqlFieldsList_getInsertSqlRequest)
                 refs,
                 extraRefs
                 );
-    qDebug() << request;
-    qDebug() << res0;
     ASSERT_TRUE(equal(request, res0));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_setIdField)
+{
+    db::JsonSqlFieldsList fields1 = {
+        { "id", layout::JsonTypesEn::jt_int, true},
+    };
+    QHash<QString, QVariant> values1(
+                {
+                    {"id", QVariant::fromValue(1)},
+                    {"name", QVariant::fromValue(5)}
+                });
+    db::setIdField(fields1, values1, 2);
+    ASSERT_EQ(values1["id"], QVariant::fromValue(2));
+
+    db::JsonSqlFieldsList fields2 = {
+        { "name", layout::JsonTypesEn::jt_int, false},
+    };
+    db::setIdField(fields2, values1, 3);
+    ASSERT_EQ(values1["name"], QVariant::fromValue(5));
+}
+
+TEST(DBUtils, JsonSqlFieldsList_getNextIdSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+
+    const QString res0 = sum(
+                "SELECT MAX(", "\"user\"", ") FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " ;"
+                );
+    const QString request = db::getNextIdSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields
+                );
+    ASSERT_TRUE(equal(request, res0));
+
+    // return empty request string if no id field
+    db::JsonSqlFieldsList fields1 = {
+        { "no-id", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString request1 = db::getNextIdSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields1
+                );
+    ASSERT_TRUE(equal(request1, QString{}));
+}
 
 #endif

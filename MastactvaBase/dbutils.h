@@ -149,7 +149,9 @@ namespace db
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
     void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
+    void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QSqlQuery &query_);
     void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_);
+    void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_);
     JsonSqlFieldAndValuesList createRefValuesList(
             const QStringList &refs_,
             const QStringList &extraRefs_,
@@ -177,6 +179,11 @@ namespace db
             const db::JsonSqlFieldsList &fields_,
             const QStringList &refs_,
             const QStringList &extraRefs_
+            );
+    QString getNextIdSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const db::JsonSqlFieldsList &fields_
             );
 }
 

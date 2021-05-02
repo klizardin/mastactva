@@ -182,13 +182,19 @@ protected:
     ILocalDataAPI *chooseAPI(DBRequestBase *r_);
 
 private:
-    bool hasDuplicate(
+    static bool hasDuplicate(
             QSqlQuery &findQuery_,
             QJsonValue &replayItem_,
             const db::JsonSqlFieldsList &fields_,
             const db::JsonSqlFieldAndValuesList refsValues_,
             const db::JsonSqlFieldsList::const_iterator &idField_
-            ) const;
+            );
+    static void insertItem(
+            QSqlQuery &insertQuery_,
+            QJsonValue &replayItem_,
+            const db::JsonSqlFieldsList &fields_,
+            const db::JsonSqlFieldAndValuesList &refsValues_
+            );
 
 private:
     NetAPI *m_netAPI = nullptr;

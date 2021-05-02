@@ -994,12 +994,31 @@ void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &
     }
 }
 
+void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QSqlQuery &query_)
+{
+    for(const db::JsonSqlField &fi_ : fields_)
+    {
+        const QVariant val = values_.value(fi_.getJsonName());
+        db::bind(fi_, query_, val);
+    }
+}
+
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)
     {
         db::bind(fi_, query_, fi_.jsonValue());
     }
+}
+
+void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_)
+{
+    const auto fit = findIdField(fields_);
+    if(!idFieldExist(fit, fields_))
+    {
+        return;
+    }
+    values_[fit->getJsonName()] = QVariant::fromValue(newIdValue_);
 }
 
 JsonSqlFieldAndValuesList createRefValuesList(
@@ -1223,6 +1242,28 @@ QString getInsertSqlRequest(
             ),
             g_insertFieldSpliter
             )
+        );
+
+    return request;
+}
+
+QString getNextIdSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_
+        )
+{
+    const auto fit = db::findIdField(fields_);
+
+    if(!db::idFieldExist(fit, fields_))
+    {
+        return QString{};
+    }
+
+    const auto request = fmt::format(
+        "SELECT MAX(%1) FROM %2 ;",
+        fit->getSqlName(),
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)}
         );
 
     return request;

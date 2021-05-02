@@ -158,9 +158,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
         qDebug() << "select sql" << sqlRequest;
         qDebug() << "bound" << query.boundValues();
         qDebug() << "sql error" << err.text();
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        jsonArray = buildErrorDocument(err);
         r->setError(true);
     }
     else if(query.first())
@@ -196,6 +194,44 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     return true;
 }
 
+int LocalDataAPIDefaultCacheImpl::getNextIdValue(
+        QSqlQuery &findQuery,
+        const QString &sqlNextIdRequest
+        )
+{
+    int nextId = -1;
+    if(sqlNextIdRequest.isEmpty())
+    {
+        return nextId;
+    }
+
+    if(!findQuery.exec(sqlNextIdRequest)
+            && findQuery.lastError().type() != QSqlError::NoError
+            )
+    {
+        const QSqlError err = findQuery.lastError();
+        findQuery.finish();
+        throw err;
+    }
+    else if(findQuery.first())
+    {
+        nextId = findQuery.value(0).toInt() + 1;
+    }
+
+    findQuery.finish();
+
+    return nextId;
+}
+
+QJsonArray LocalDataAPIDefaultCacheImpl::buildErrorDocument(const QSqlError &err_)
+{
+    QJsonArray jsonArray;
+    QJsonObject jsonObj;
+    jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err_.text()));
+    jsonArray.push_back(jsonObj);
+    return jsonArray;
+}
+
 bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
@@ -215,134 +251,74 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    const QString tableName = db::tableName(JsonName(r_->getTableName()), JsonName(r_->getCurrentRef()));
 
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
-    const QString fieldNames = (QStringList()
-                                << db::refNames(refs)
-                                << db::refNames(extraFields.keys())
-                                << db::getSqlNames(r_->getTableFieldsInfo())
-                                ).join(g_insertFieldSpliter);
-    QHash<QString, QString> defValues;
-    QStringList bindRefs;
-    for(const QString &ref : qAsConst(refs))
-    {
-        const QString refBindName = QString(":") + db::refName(ref);
-        bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
-    }
-    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
-        it != std::cend(qAsConst(extraFields))
-        ; ++it
-        )
-    {
-        const QString refBindName = QString(":") + db::refName(it.key());
-        bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, it.value().toString());
-    }
-    const QString fieldNamesBindings = (QStringList()
-                                        << bindRefs
-                                        << db::getBindSqlNames(r_->getTableFieldsInfo())
-                                        ).join(g_insertFieldSpliter);
-    const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
-            .arg(tableName, fieldNames, fieldNamesBindings);
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const db::JsonSqlField &bindInfo)->bool
-    {
-        return bindInfo.isIdField();
-    });
-    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-    }
-    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
-            .arg(idFieldSqlName, tableName);
+    const QString sqlRequest = db::getInsertSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                refs,
+                extraFields.keys()
+                );
+
+    const db::JsonSqlFieldAndValuesList refsValues = db::createRefValuesList(
+                refs,
+                extraFields.keys(),
+                extraFields,
+                r_->getCurrentRef(),
+                r_->getIdField()
+                );
+
+    const QString sqlNextIdRequest = getNextIdSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo()
+                );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "insert sql" << sqlRequest;
     qDebug() << "select max sql" << sqlNextIdRequest;
 #endif
 
-    query.prepare(sqlRequest);
-    for(const QString &bind : qAsConst(bindRefs))
+    try
     {
-        const QString v = defValues.value(bind);
-        query.bindValue(bind, v);
-    }
-    int nextId = 1;
-    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-    {
-        if(bindInfo.isIdField())
+        QHash<QString, QVariant> values = values_;
+        const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
+        db::setIdField(r_->getTableFieldsInfo(), values, nextId);
+
+        query.prepare(sqlRequest);
+        db::bind(refsValues, query);
+        db::bind(r_->getTableFieldsInfo(), values, query);
+
+        if(!query.exec() && query.lastError().type() != QSqlError::NoError)
         {
-
-#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "select max sql bound" << findQuery.boundValues();
-#endif
-
-            if(!findQuery.exec(sqlNextIdRequest) && findQuery.lastError().type() != QSqlError::NoError)
-            {
-                const QSqlError err = findQuery.lastError();
-                qDebug() << "sql request " << sqlNextIdRequest;
-                qDebug() << "bound " << findQuery.boundValues();
-                qDebug() << "sql error " << err.text();
-            }
-            else if(findQuery.first())
-            {
-                nextId = findQuery.value(0).toInt() + 1;
-            }
-            db::bind(bindInfo, query, QVariant::fromValue(nextId));
-            findQuery.finish();
+            const QSqlError err = query.lastError();
+            query.finish();
+            throw err;
         }
         else
         {
-            const QVariant val = values_.value(bindInfo.getJsonName());
-            db::bind(bindInfo, query, val);
+            r->addJsonResult(values);
         }
-    }
-
-#if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "insert sql bound" << query.boundValues();
-#endif
-
-    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
-    {
-        const QSqlError err = query.lastError();
-        qDebug() << "sql request " << sqlRequest;
-        qDebug() << "bound " << query.boundValues();
-        qDebug() << "sql error " << err.text();
-
-        QJsonArray jsonArray;
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
-        r->setError(true);
-        r->addJsonResult(QJsonDocument(jsonArray));
-    }
-    else
-    {
-        QHash<QString, QVariant> values = values_;
-        for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-        {
-            if(bindInfo.isIdField())
-            {
-                values.insert(bindInfo.getJsonName(), QVariant::fromValue(nextId));
-            }
-        }
-        r->addJsonResult(values);
-
-    }
+        query.finish();
 
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "insert sql result" << r->reply();
 #endif
+    }
+    catch(const QSqlError &err_)
+    {
+        qDebug() << "sql request " << sqlRequest;
+        qDebug() << "select max sql" << sqlNextIdRequest;
+        qDebug() << "sql error " << err_.text();
 
-    query.finish();
+        QJsonArray jsonArray = buildErrorDocument(err_);
+        r->setError(true);
+        r->addJsonResult(QJsonDocument(jsonArray));
+    }
+
     r->setProcessed(true);
     return true;
 }
@@ -398,11 +374,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #endif
 
     query.prepare(sqlRequest);
-    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-    {
-        const QVariant val = values_.value(bindInfo.getJsonName());
-        db::bind(bindInfo, query, val);
-    }
+    db::bind(r_->getTableFieldsInfo(), values_, query);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql bound" << query.boundValues();
@@ -415,10 +387,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
         qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
-        QJsonArray jsonArray;
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        QJsonArray jsonArray = buildErrorDocument(err);
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
@@ -494,10 +463,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
         qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
-        QJsonArray jsonArray;
-        QJsonObject jsonObj;
-        jsonObj.insert(QString(g_errorDetailTag), QJsonValue(err.text()));
-        jsonArray.push_back(jsonObj);
+        QJsonArray jsonArray = buildErrorDocument(err);
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
