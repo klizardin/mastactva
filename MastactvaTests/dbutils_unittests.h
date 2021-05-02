@@ -468,8 +468,6 @@ TEST(DBUtils, JsonSqlFieldsList_getInsertSqlRequest)
                 refs,
                 extraRefs
                 );
-    qDebug() << request;
-    qDebug() << res0;
     ASSERT_TRUE(equal(request, res0));
 }
 
