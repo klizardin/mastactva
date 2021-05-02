@@ -511,6 +511,18 @@ TEST(DBUtils, JsonSqlFieldsList_getNextIdSqlRequest)
                 fields
                 );
     ASSERT_TRUE(equal(request, res0));
+
+    // return empty request string if no id field
+    db::JsonSqlFieldsList fields1 = {
+        { "no-id", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString request1 = db::getNextIdSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields1
+                );
+    ASSERT_TRUE(equal(request1, QString{}));
 }
 
 #endif

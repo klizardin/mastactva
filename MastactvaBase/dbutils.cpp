@@ -1244,25 +1244,20 @@ QString getNextIdSqlRequest(
         const db::JsonSqlFieldsList &fields_
         )
 {
-    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+    const auto fit = db::findIdField(fields_);
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    const auto fitId = std::find_if(std::cbegin(qAsConst(fields_)),
-                                    std::cend(qAsConst(fields_)),
-                                    [](const db::JsonSqlField &bindInfo)->bool
+    if(!db::idFieldExist(fit, fields_))
     {
-        return bindInfo.isIdField();
-    });
-    if(std::cend(qAsConst(fields_)) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
+        return QString{};
     }
-    const QString sqlNextIdRequest = QString("SELECT MAX(%1) FROM %2 ;")
-            .arg(idFieldSqlName, tableName);
 
-    return sqlNextIdRequest;
+    const auto request = fmt::format(
+        "SELECT MAX(%1) FROM %2 ;",
+        fit->getSqlName(),
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)}
+        );
+
+    return request;
 }
 
 } // namespace db
