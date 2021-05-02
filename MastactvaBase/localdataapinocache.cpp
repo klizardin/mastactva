@@ -268,22 +268,9 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    QString idFieldSQlBindName;
-    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const db::JsonSqlField &bindInfo)->bool
-    {
-        return bindInfo.isIdField();
-    });
-    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-        idFieldSQlBindName = fitId->getBindSqlName();
-    }
-    const bool anyIdFields = !(refs.empty()) || std::end(qAsConst(r_->getTableFieldsInfo())) != fitId;
+    const auto idField = db::findIdField(r_->getTableFieldsInfo());
+    const bool anyIdFields = !(refs.empty()) || db::idFieldExist(idField, r_->getTableFieldsInfo());
+
     const QString sqlExistsRequest = db::getFindSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
@@ -307,11 +294,11 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         }
         if(anyIdFields)
         {
-            if(!idFieldJsonName.isEmpty())
+            if(db::idFieldExist(idField, r_->getTableFieldsInfo()))
             {
-                const QJsonValue valueJV = itemJV[idFieldJsonName];
+                const QJsonValue valueJV = itemJV[idField->getJsonName()];
                 const int v = json::toInt(valueJV, layout::JsonTypesEn::jt_undefined);
-                findQuery.bindValue(idFieldSQlBindName, v);
+                findQuery.bindValue(idField->getJsonName(), v);
 #if defined(TRACE_DB_DATA_BINDINGS)
                 qDebug() << "bind find" << idFieldSQlBindName << v;
 #endif
