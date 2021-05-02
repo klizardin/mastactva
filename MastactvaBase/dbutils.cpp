@@ -1089,19 +1089,19 @@ QString getInsertSqlRequest(
     const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
 
     const QString fieldNames = (QStringList()
-                                << db::refNames(refs_)
-                                << db::refNames(extraRefs_)
+                                << db::refNames(db::jsonToSql(refs_))
+                                << db::refNames(db::jsonToSql(extraRefs_))
                                 << db::getSqlNames(fields_)
                                 ).join(g_insertFieldSpliter);
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs_))
     {
-        const QString refBindName = db::toBindName(db::refName(ref));
+        const QString refBindName = db::toBindName(db::refName(db::jsonToSql(ref)));
         bindRefs.push_back(refBindName);
     }
     for(const QString &extraRef_ : extraRefs_)
     {
-        const QString refBindName = db::toBindName(db::refName(extraRef_));
+        const QString refBindName = db::toBindName(db::refName(db::jsonToSql(extraRef_)));
         bindRefs.push_back(refBindName);
     }
     const QString fieldNamesBindings = (QStringList()

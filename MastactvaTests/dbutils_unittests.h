@@ -445,16 +445,16 @@ TEST(DBUtils, JsonSqlFieldsList_getInsertSqlRequest)
                 "INSERT INTO ",
                 "user_list", g_splitTableRef, "user_id",
                 " ( ",
-                g_refPrefix, "user-id", g_insertFieldSpliter,
+                g_refPrefix, "user_id", g_insertFieldSpliter,
                 g_refPrefix, "name", g_insertFieldSpliter,
-                g_refPrefix, "age-years", g_insertFieldSpliter,
+                g_refPrefix, "age_years", g_insertFieldSpliter,
                 "\"user\"", g_insertFieldSpliter,
                 "user_id", g_insertFieldSpliter,
                 "name"
                 " ) VALUES ( ",
-                g_bindPrefix, g_refPrefix, "user-id", g_insertFieldSpliter,
+                g_bindPrefix, g_refPrefix, "user_id", g_insertFieldSpliter,
                 g_bindPrefix, g_refPrefix, "name", g_insertFieldSpliter,
-                g_bindPrefix, g_refPrefix, "age-years", g_insertFieldSpliter,
+                g_bindPrefix, g_refPrefix, "age_years", g_insertFieldSpliter,
                 g_bindPrefix, "user", g_insertFieldSpliter,
                 g_bindPrefix, "user_id", g_insertFieldSpliter,
                 g_bindPrefix, "name"
@@ -467,8 +467,6 @@ TEST(DBUtils, JsonSqlFieldsList_getInsertSqlRequest)
                 refs,
                 extraRefs
                 );
-    qDebug() << request;
-    qDebug() << res0;
     ASSERT_TRUE(equal(request, res0));
 }
 
