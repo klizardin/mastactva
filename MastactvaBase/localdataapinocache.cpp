@@ -235,7 +235,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
     QSqlQuery findQuery(db);
-    const QString tableName = db::tableName(JsonName(r_->getTableName()), JsonName(r_->getCurrentRef()));
 
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
