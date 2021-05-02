@@ -976,6 +976,15 @@ bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList
     return it_ != std::end(fields_);
 }
 
+void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_)
+{
+    for(const db::JsonSqlField &fi_ : fields_)
+    {
+        const QJsonValue valueJV = item_[fi_.getJsonName()];
+        db::bind(fi_, query_, valueJV);
+    }
+}
+
 QString getCreateTableSqlRequest(
         const QString &jsonLayoutName_,
         const QString &jsonRefName_,

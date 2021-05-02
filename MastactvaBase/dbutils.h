@@ -133,6 +133,7 @@ namespace db
     QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
+    void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
     QString getCreateTableSqlRequest(
             const QString &jsonLayoutName_,
             const QString &jsonRefName_,
