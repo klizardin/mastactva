@@ -280,8 +280,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     int i = 0;
     for(i = 0; ; i++)
     {
-        QJsonValue itemJV = reply_[i];
-        if(itemJV.isUndefined()) { break; }
+        QJsonValue replayItem = reply_[i];
+        if(replayItem.isUndefined()) { break; }
         if(0 == i)
         {
             query.prepare(sqlRequest);
@@ -292,7 +292,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         {
             if(db::idFieldExist(idField, r_->getTableFieldsInfo()))
             {
-                db::bind(*idField, findQuery, itemJV[idField->getJsonName()]);
+                db::bind(*idField, findQuery, replayItem[idField->getJsonName()]);
             }
 
             for(const QString &ref : qAsConst(bindRefs))
@@ -326,7 +326,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             qDebug() << "bind" << bind << v;
 #endif
         }
-        db::bind(r_->getTableFieldsInfo(), itemJV, query);
+        db::bind(r_->getTableFieldsInfo(), replayItem, query);
         if(!query.exec())
         {
             const QSqlError err = query.lastError();
