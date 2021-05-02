@@ -222,39 +222,58 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
     return !m_savePath.isEmpty();
 }
 
+bool LocalDataAPINoCache::hasDuplicate(
+        QSqlQuery &findQuery_,
+        QJsonValue &replayItem_,
+        const db::JsonSqlFieldsList &fields_,
+        const db::JsonSqlFieldAndValuesList refsValues_,
+        const db::JsonSqlFieldsList::const_iterator &idField_
+        ) const
+{
+    if(db::idFieldExist(idField_, fields_))
+    {
+        db::bind(*idField_, findQuery_, replayItem_[idField_->getJsonName()]);
+    }
+    db::bind(refsValues_, findQuery_);
+
+    if(!findQuery_.exec() && findQuery_.lastError().type() != QSqlError::NoError)
+    {
+        const QSqlError err = findQuery_.lastError();
+        qDebug() << "sql error " << err.text();
+        return false;
+    }
+    else
+    {
+        return findQuery_.first();
+    }
+}
+
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
     if(nullptr == r_ || reply_.isEmpty()) { return; }
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    // function fill table but not add duplicates
+    // function fill table with replay datas but not add duplicates
     // to find duplicates is used db::getFindSqlRequest
+    // duplicates are searched by ref fields and id field
 
     if(!r_->getReadonly()) { return; } // don't save data for RW tables
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
+    QSqlQuery insertQuery(db);
     QSqlQuery findQuery(db);
 
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
-    QHash<QString, QString> defValues;
-    QStringList bindRefs;
-    for(const QString &ref : qAsConst(refs))
-    {
-        const QString refBindName = db::toBindName(db::refName(ref));
-        bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
-    }
-    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
-        it != std::cend(qAsConst(extraFields))
-        ; ++it
-        )
-    {
-        const QString refBindName = db::toBindName(db::refName(it.key()));
-        bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, it.value().toString());
-    }
+
+    const db::JsonSqlFieldAndValuesList refsValues = db::createRefValuesList(
+                refs,
+                extraFields.keys(),
+                extraFields,
+                r_->getCurrentRef(),
+                r_->getIdField()
+                );
+
     const QString sqlRequest = db::getInsertSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
@@ -269,46 +288,42 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const QString sqlExistsRequest = db::getFindSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
-                r_->getTableFieldsInfo(),
+                r_->getTableFieldsInfo(),   // use only id field
                 refs,
                 extraFields.keys()
                 );
+
 #if defined(TRACE_DB_CREATION)
     qDebug() << "insert sql" << sqlRequest;
     qDebug() << "find sql" << sqlExistsRequest;
 #endif
+
     int i = 0;
     for(i = 0; ; i++)
     {
         QJsonValue replayItem = reply_[i];
-        if(replayItem.isUndefined()) { break; }
+        if(replayItem.isUndefined())
+        {
+            break;
+        }
+
         if(0 == i)
         {
-            query.prepare(sqlRequest);
+            // create if any data exists
+            insertQuery.prepare(sqlRequest);
             findQuery.prepare(sqlExistsRequest);
         }
 
         if(anyIdFields)
         {
-            if(db::idFieldExist(idField, r_->getTableFieldsInfo()))
-            {
-                db::bind(*idField, findQuery, replayItem[idField->getJsonName()]);
-            }
-
-            for(const QString &ref : qAsConst(bindRefs))
-            {
-                const QString v = defValues.value(ref);
-                findQuery.bindValue(ref, v);
-#if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind find" << ref << v;
-#endif
-            }
-            if(!findQuery.exec() && query.lastError().type() != QSqlError::NoError)
-            {
-                const QSqlError err = query.lastError();
-                qDebug() << "sql error " << err.text();
-            }
-            else if(findQuery.first())
+            if(hasDuplicate(
+                        findQuery,
+                        replayItem,
+                        r_->getTableFieldsInfo(),
+                        refsValues,
+                        idField
+                        )
+                    )
             {
 #if defined(TRACE_DB_DATA_BINDINGS)
                 qDebug() << "skip row";
@@ -318,25 +333,20 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             }
         }
 
-        for(const QString &bind : qAsConst(bindRefs))
+        // fill insert query
+        db::bind(refsValues, insertQuery);
+        db::bind(r_->getTableFieldsInfo(), replayItem, insertQuery);
+
+        if(!insertQuery.exec())
         {
-            const QString v = defValues.value(bind);
-            query.bindValue(bind, v);
-#if defined(TRACE_DB_DATA_BINDINGS)
-            qDebug() << "bind" << bind << v;
-#endif
-        }
-        db::bind(r_->getTableFieldsInfo(), replayItem, query);
-        if(!query.exec())
-        {
-            const QSqlError err = query.lastError();
+            const QSqlError err = insertQuery.lastError();
             qDebug() << "sql error " << err.text();
         }
     }
     if(i > 0)
     {
         findQuery.finish();
-        query.finish();
+        insertQuery.finish();
     }
 }
 
