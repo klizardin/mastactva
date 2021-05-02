@@ -27,7 +27,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
 
-    const QString sqlRequest = db::getCreateTableSqlRequest(
+    const QString createSqlRequest = db::getCreateTableSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
                 r_->getTableFieldsInfo(),
@@ -35,9 +35,9 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
                 DBRequestBase::apiExtraFields(r_->getExtraFields()).keys()
                 );
 #if defined(TRACE_DB_CREATION)
-    qDebug() << "create sql" << sqlRequest;
+    qDebug() << "create sql" << createSqlRequest;
 #endif
-    if(!query.exec(sqlRequest))
+    if(!query.exec(createSqlRequest))
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql error "  << err.text();
@@ -291,7 +291,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                 r_->getIdField()
                 );
 
-    const QString sqlRequest = db::getInsertSqlRequest(
+    const QString insertSqlRequest = db::getInsertSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
                 r_->getTableFieldsInfo(),
@@ -302,7 +302,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     const auto idField = db::findIdField(r_->getTableFieldsInfo());
     const bool anyIdFields = !refs.empty() || db::idFieldExist(idField, r_->getTableFieldsInfo());
 
-    const QString sqlExistsRequest = db::getFindSqlRequest(
+    const QString findSqlRequest = db::getFindSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
                 r_->getTableFieldsInfo(),   // use only id field
@@ -311,8 +311,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                 );
 
 #if defined(TRACE_DB_CREATION)
-    qDebug() << "insert sql" << sqlRequest;
-    qDebug() << "find sql" << sqlExistsRequest;
+    qDebug() << "insert sql" << insertSqlRequest;
+    qDebug() << "find sql" << findSqlRequest;
 #endif
 
     int i = 0;
@@ -327,8 +327,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         if(0 == i)
         {
             // create if any data exists
-            insertQuery.prepare(sqlRequest);
-            findQuery.prepare(sqlExistsRequest);
+            insertQuery.prepare(insertSqlRequest);
+            findQuery.prepare(findSqlRequest);
         }
 
         if(anyIdFields)
