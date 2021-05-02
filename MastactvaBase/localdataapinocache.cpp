@@ -228,7 +228,7 @@ bool LocalDataAPINoCache::hasDuplicate(
         const db::JsonSqlFieldsList &fields_,
         const db::JsonSqlFieldAndValuesList refsValues_,
         const db::JsonSqlFieldsList::const_iterator &idField_
-        ) const
+        )
 {
     if(db::idFieldExist(idField_, fields_))
     {
@@ -245,6 +245,23 @@ bool LocalDataAPINoCache::hasDuplicate(
     else
     {
         return findQuery_.first();
+    }
+}
+
+void LocalDataAPINoCache::insertItem(
+        QSqlQuery &insertQuery_,
+        QJsonValue &replayItem_,
+        const db::JsonSqlFieldsList &fields_,
+        const db::JsonSqlFieldAndValuesList &refsValues_
+        )
+{
+    db::bind(refsValues_, insertQuery_);
+    db::bind(fields_, replayItem_, insertQuery_);
+
+    if(!insertQuery_.exec())
+    {
+        const QSqlError err = insertQuery_.lastError();
+        qDebug() << "sql error " << err.text();
     }
 }
 
@@ -333,15 +350,12 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             }
         }
 
-        // fill insert query
-        db::bind(refsValues, insertQuery);
-        db::bind(r_->getTableFieldsInfo(), replayItem, insertQuery);
-
-        if(!insertQuery.exec())
-        {
-            const QSqlError err = insertQuery.lastError();
-            qDebug() << "sql error " << err.text();
-        }
+        insertItem(
+                    insertQuery,
+                    replayItem,
+                    r_->getTableFieldsInfo(),
+                    refsValues
+                    );
     }
     if(i > 0)
     {
