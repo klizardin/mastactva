@@ -255,13 +255,11 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                 << db::refNames(extraFields.keys())
                                 << db::getSqlNames(r_->getTableFieldsInfo())
                                 ).join(g_insertFieldSpliter);
-    QHash<QString, QString> defValues;
     QStringList bindRefs;
     for(const QString &ref : qAsConst(refs))
     {
         const QString refBindName = QString(":") + db::refName(ref);
         bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
     }
     for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
         it != std::cend(qAsConst(extraFields))
@@ -270,7 +268,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     {
         const QString refBindName = QString(":") + db::refName(it.key());
         bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, it.value().toString());
     }
     const QString fieldNamesBindings = (QStringList()
                                         << bindRefs
@@ -278,6 +275,14 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                         ).join(g_insertFieldSpliter);
     const QString sqlRequest = QString("INSERT INTO %1 ( %2 ) VALUES ( %3 ) ;")
             .arg(tableName, fieldNames, fieldNamesBindings);
+
+    const db::JsonSqlFieldAndValuesList refsValues = db::createRefValuesList(
+                refs,
+                extraFields.keys(),
+                extraFields,
+                r_->getCurrentRef(),
+                r_->getIdField()
+                );
 
     const QString sqlNextIdRequest = getNextIdSqlRequest(
                 r_->getTableName(),
@@ -291,11 +296,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 #endif
 
     query.prepare(sqlRequest);
-    for(const QString &bind : qAsConst(bindRefs))
-    {
-        const QString v = defValues.value(bind);
-        query.bindValue(bind, v);
-    }
+    db::bind(refsValues, query);
 
     const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
     QHash<QString, QVariant> values = values_;
