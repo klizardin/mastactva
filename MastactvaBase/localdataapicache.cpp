@@ -374,11 +374,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #endif
 
     query.prepare(sqlRequest);
-    for(const db::JsonSqlField &bindInfo : qAsConst(r_->getTableFieldsInfo()))
-    {
-        const QVariant val = values_.value(bindInfo.getJsonName());
-        db::bind(bindInfo, query, val);
-    }
+    db::bind(r_->getTableFieldsInfo(), values_, query);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql bound" << query.boundValues();
