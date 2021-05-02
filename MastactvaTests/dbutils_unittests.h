@@ -6,6 +6,7 @@
 #include <QString>
 #include <QVariant>
 #include <QVariantList>
+#include <QHash>
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/names.h"
 #include "test_utils.h"
@@ -472,5 +473,24 @@ TEST(DBUtils, JsonSqlFieldsList_getInsertSqlRequest)
     ASSERT_TRUE(equal(request, res0));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_setIdField)
+{
+    db::JsonSqlFieldsList fields1 = {
+        { "id", layout::JsonTypesEn::jt_int, true},
+    };
+    QHash<QString, QVariant> values1(
+                {
+                    {"id", QVariant::fromValue(1)},
+                    {"name", QVariant::fromValue(5)}
+                });
+    db::setIdField(fields1, values1, 2);
+    ASSERT_EQ(values1["id"], QVariant::fromValue(2));
+
+    db::JsonSqlFieldsList fields2 = {
+        { "name", layout::JsonTypesEn::jt_int, false},
+    };
+    db::setIdField(fields2, values1, 3);
+    ASSERT_EQ(values1["name"], QVariant::fromValue(5));
+}
 
 #endif
