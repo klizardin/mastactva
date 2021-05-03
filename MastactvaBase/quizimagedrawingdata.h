@@ -470,7 +470,7 @@ namespace drawing_data
                 return;
             }
 
-            AttributeType *attr = static_cast<AttributeType *>(interface_);
+            AttributeType *attr = dynamic_cast<AttributeType *>(interface_);
             if(nullptr == attr)
             {
                 return;
@@ -487,7 +487,7 @@ namespace drawing_data
                 return;
             }
 
-            UniformType *uniform = static_cast<UniformType *>(interface_);
+            UniformType *uniform = dynamic_cast<UniformType *>(interface_);
             if(nullptr == uniform)
             {
                 return;
@@ -503,7 +503,7 @@ namespace drawing_data
                 return base::get(interface_, itemIndex_, value_);
             }
 
-            const UniformType *uniform = static_cast<const UniformType *>(interface_);
+            const UniformType *uniform = dynamic_cast<const UniformType *>(interface_);
             if(nullptr == uniform)
             {
                 return false;
