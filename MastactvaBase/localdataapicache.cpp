@@ -343,16 +343,8 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
 
-    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const db::JsonSqlField &bindInfo)->bool
-    {
-        return bindInfo.isIdField();
-    });
-    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
-    {
-    }
-    else
+    const auto fitId = db::findIdField(r_->getTableFieldsInfo());
+    if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
     {
         Q_ASSERT(false);
         return false;
