@@ -150,6 +150,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
         sqlRes = query.exec(sqlRequest);
     }
 
+    // TODO: use dynamic cast
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     QJsonArray jsonArray;
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
@@ -341,33 +342,19 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    const QString tableName = db::tableName(JsonName(r_->getTableName()), JsonName(r_->getCurrentRef()));
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    QString idFieldSqlBindName;
-    const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
-                                    std::cend(qAsConst(r_->getTableFieldsInfo())),
-                                    [](const db::JsonSqlField &bindInfo)->bool
-    {
-        return bindInfo.isIdField();
-    });
-    if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-        idFieldSqlBindName = fitId->getBindSqlName();
-    }
-    else
+    const auto fitId = db::findIdField(r_->getTableFieldsInfo());
+    if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
     {
         Q_ASSERT(false);
         return false;
     }
-    const QStringList setNames = db::getSqlNameEqualBindSqlNameList(r_->getTableFieldsInfo());
-    const QString setStr = setNames.join(g_insertFieldSpliter);
 
-    const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
-            .arg(tableName, setStr, idFieldSqlName, idFieldSqlBindName);
+    const QString sqlRequest = getUpdateSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo()
+                );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql" << sqlRequest;
@@ -539,6 +526,7 @@ void LocalDataAPICache::freeRequests()
     m_requests.clear();
 }
 
+// TODO: move to utils code
 QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant> &v1_,
                                                   const QHash<QString, QVariant> &v2_)
 {
@@ -600,6 +588,7 @@ void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 
 void LocalDataAPICache::makeResponses()
 {
+    // TODO: move code to utils code
     QList<LocalDBRequest *> res;
     for(LocalDBRequest *r : qAsConst(m_requests))
     {

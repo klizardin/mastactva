@@ -13,6 +13,9 @@
 #include "../MastactvaBase/dbrequestinfo.h"
 
 
+// TODO: add pinup/unit tests
+// TODO: split interface, dependency inversion to write unit test with mocks
+// TODO: use dynamic_cast
 class LocalDataAPIDefaultCacheImpl : public ILocalDataAPI
 {
 public:
@@ -48,11 +51,14 @@ public:
     static void createInstance(QObject *parent_, NetAPI * netAPI_);
     static LocalDataAPICache *getInstance();
 
+    // TODO: maybe extract to facade class?
+    // TODO: use of std::shared_ptr
     RequestData *emptyRequest(const QString &requestName_,
                               const QVariant &itemAppId_,
                               const QVariant &itemId_);
     void freeRequest(RequestData *&r_);
 
+    // TODO: use of std::shared_ptr as we can use pointer in several places
     template<class DataType_>
     RequestData *getList(const QString &layoutName_,
                          const QString &procedureName_,
@@ -212,6 +218,7 @@ signals:
                const QString &errorCodeStr_,
                const QJsonDocument &reply_);
 
+// TODO : private access writes
 protected:
     void freeRequests();
     static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_,
@@ -230,8 +237,9 @@ private slots:
 private:
     QSqlDatabase m_databaseRW;
     QSqlDatabase m_databaseRO;
+    // TODO: use std::shared_ptr
     QList<LocalDBRequest *> m_requests;
-    static LocalDataAPICache *g_localDataAPI;
+    static LocalDataAPICache *g_localDataAPI;       // TODO: do i really need a singelton?
     LocalDataAPIDefaultCacheImpl m_defaultAPIImpl;
 };
 

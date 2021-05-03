@@ -1003,6 +1003,20 @@ void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QS
     }
 }
 
+JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(const JsonSqlField &)> func_)
+{
+    JsonSqlFieldsList result;
+    result.reserve(fields_.size());
+    for(const JsonSqlField &fi_ : fields_)
+    {
+        if(func_(fi_))
+        {
+            result.push_back(fi_);
+        }
+    }
+    return result;
+}
+
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)
@@ -1285,6 +1299,41 @@ QString getDeleteSqlRequest(
     const auto request = fmt::format(
         "DELETE FROM %1 WHERE %3=%4 ;",
         db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fit->getSqlName(),
+        fit->getBindSqlName()
+        );
+
+    return request;
+}
+
+QString getUpdateSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_
+        )
+{
+    const auto fit = db::findIdField(fields_);
+
+    if(!db::idFieldExist(fit, fields_))
+    {
+        return QString{};
+    }
+
+    const auto fieldsWithoutId = filter(
+                fields_,
+                [](const JsonSqlField &fi_)->bool
+    {
+        return !fi_.isIdField();
+    });
+
+    const auto request = fmt::format(
+        "UPDATE %1 SET %2 WHERE %3=%4 ;",
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fmt::list(
+            fmt::format("%1=%2", SqlName{}, BindSqlName{}),
+            fieldsWithoutId,
+            g_insertFieldSpliter
+        ),
         fit->getSqlName(),
         fit->getBindSqlName()
         );

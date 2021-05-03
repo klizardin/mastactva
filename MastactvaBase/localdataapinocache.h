@@ -13,6 +13,8 @@
 #include "../MastactvaBase/dbrequestinfo.h"
 
 
+// TODO : add pinup test for implamentation
+// TODO : split to 2 interfaces ILocalDataReadAPI ILocalDataWriteAPI
 class LocalDataAPINoCacheImpl : public ILocalDataAPI
 {
 public:

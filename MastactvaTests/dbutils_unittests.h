@@ -561,4 +561,44 @@ TEST(DBUtils, JsonSqlFieldsList_getDeleteSqlRequest)
     ASSERT_TRUE(equal(request1, QString{}));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getUpdateSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "user-id", layout::JsonTypesEn::jt_int, false},
+        { "all", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+
+    const QString res0 = sum(
+                "UPDATE ",
+                "user_list", g_splitTableRef, "user_id",
+                " SET ",
+                "user_id", "=", g_bindPrefix, "user_id", g_insertFieldSpliter,
+                "\"all\"", "=", g_bindPrefix, "all",
+                " WHERE ",
+                "\"user\"", "=", g_bindPrefix, "user",
+                " ;"
+                );
+    const QString request = db::getUpdateSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields
+                );
+    ASSERT_TRUE(equal(request, res0));
+
+    db::JsonSqlFieldsList fields2 = {
+        { "user-id", layout::JsonTypesEn::jt_int, false},
+        { "all", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString request2 = db::getUpdateSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields2
+                );
+    ASSERT_TRUE(request2.isEmpty());
+}
+
+
 #endif

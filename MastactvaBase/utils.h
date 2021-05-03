@@ -64,6 +64,7 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);
 QString loadTextFile(const QString &filename_);
+// TODO: separate utils. it is serverfiles utils
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QByteArray loadBinaryFile(const QString &filename_);
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
@@ -280,6 +281,7 @@ public:
     virtual bool get(const JsonObjectType_ &obj_) const = 0;
 };
 
+// TODO: add pinup tests
 template<class JsonObjectType_, class ValueType_>
 class IJsonFieldInfoImpl : public IJsonFieldInfo<JsonObjectType_>
 {
