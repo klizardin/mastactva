@@ -1003,6 +1003,20 @@ void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QS
     }
 }
 
+JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(const JsonSqlField &)> func_)
+{
+    JsonSqlFieldsList result;
+    result.reserve(fields_.size());
+    for(const JsonSqlField &fi_ : fields_)
+    {
+        if(func_(fi_))
+        {
+            result.push_back(fi_);
+        }
+    }
+    return result;
+}
+
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)
@@ -1298,35 +1312,33 @@ QString getUpdateSqlRequest(
         const db::JsonSqlFieldsList &fields_
         )
 {
-    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+    const auto fit = db::findIdField(fields_);
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    QString idFieldSqlBindName;
-    const auto fitId = std::find_if(std::cbegin(qAsConst(fields_)),
-                                    std::cend(qAsConst(fields_)),
-                                    [](const db::JsonSqlField &bindInfo)->bool
+    if(!db::idFieldExist(fit, fields_))
     {
-        return bindInfo.isIdField();
+        return QString{};
+    }
+
+    const auto fieldsWithoutId = filter(
+                fields_,
+                [](const JsonSqlField &fi_)->bool
+    {
+        return !fi_.isIdField();
     });
-    if(std::cend(qAsConst(fields_)) != fitId)
-    {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-        idFieldSqlBindName = fitId->getBindSqlName();
-    }
-    else
-    {
-        Q_ASSERT(false);
-        return {};
-    }
-    const QStringList setNames = db::getSqlNameEqualBindSqlNameList(fields_);
-    const QString setStr = setNames.join(g_insertFieldSpliter);
 
-    const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
-            .arg(tableName, setStr, idFieldSqlName, idFieldSqlBindName);
+    const auto request = fmt::format(
+        "UPDATE %1 SET %2 WHERE %3=%4 ;",
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fmt::list(
+            fmt::format("%1=%2", SqlName{}, BindSqlName{}),
+            fieldsWithoutId,
+            g_insertFieldSpliter
+        ),
+        fit->getSqlName(),
+        fit->getBindSqlName()
+        );
 
-    return sqlRequest;
+    return request;
 }
 
 } // namespace db
