@@ -136,7 +136,7 @@ namespace drawing_data
     };
 
 
-    template<int TypeIndex_>
+    template<std::underlying_type_t<ItemTypesEn> TypeIndex_>
     class ItemTypeIndexTraits
     {
     public:
@@ -144,21 +144,22 @@ namespace drawing_data
     };
 
 
-#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)   \
-    template<>                                                                  \
-    class ItemTypeTraits<ItemType_>                                             \
-    {                                                                           \
-    public:                                                                     \
-        constexpr static int tupleSize = tupleSize_;                            \
-        constexpr static int typeIndex = to_underlying(ItemTypesEn::ItemType_); \
-        using underlayingType = underlayingType_;                               \
-    };                                                                          \
-    template<>                                                                  \
-    class ItemTypeIndexTraits<to_underlying(ItemTypesEn::ItemType_)>            \
-    {                                                                           \
-    public:                                                                     \
-        using type = ItemType_;                                                 \
-    };                                                                          \
+#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)                   \
+    template<>                                                                      \
+    class ItemTypeTraits<ItemType_>                                                 \
+    {                                                                               \
+    public:                                                                         \
+        constexpr static int tupleSize = tupleSize_;                                \
+        constexpr static std::underlying_type_t<ItemTypesEn> typeIndex              \
+                                        = to_underlying(ItemTypesEn::ItemType_);    \
+        using underlayingType = underlayingType_;                                   \
+    };                                                                              \
+    template<>                                                                      \
+    class ItemTypeIndexTraits<to_underlying(ItemTypesEn::ItemType_)>                \
+    {                                                                               \
+    public:                                                                         \
+        using type = ItemType_;                                                     \
+    };                                                                              \
 /*end traints macro*/
 
 
@@ -199,6 +200,10 @@ namespace drawing_data
     public:
         virtual int typeIndex() const
         {
+            static_assert(
+                sizeof(decltype(ItemTypeTraits<ItemType_>::typeIndex)) <= sizeof(int),
+                "underlying type greater then int"
+                );
             return ItemTypeTraits<ItemType_>::typeIndex;
         }
 
