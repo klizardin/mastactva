@@ -280,6 +280,7 @@ public:
     virtual bool get(const JsonObjectType_ &obj_) const = 0;
 };
 
+// TODO: add pinup tests
 template<class JsonObjectType_, class ValueType_>
 class IJsonFieldInfoImpl : public IJsonFieldInfo<JsonObjectType_>
 {
