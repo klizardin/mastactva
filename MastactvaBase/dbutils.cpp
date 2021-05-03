@@ -1269,6 +1269,29 @@ QString getNextIdSqlRequest(
     return request;
 }
 
+QString getDeleteSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_
+        )
+{
+    const auto fit = db::findIdField(fields_);
+
+    if(!db::idFieldExist(fit, fields_))
+    {
+        return QString{};
+    }
+
+    const auto request = fmt::format(
+        "DELETE FROM %1 WHERE %3=%4 ;",
+        db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+        fit->getSqlName(),
+        fit->getBindSqlName()
+        );
+
+    return request;
+}
+
 } // namespace db
 
 
