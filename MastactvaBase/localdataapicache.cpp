@@ -342,11 +342,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    const QString tableName = db::tableName(JsonName(r_->getTableName()), JsonName(r_->getCurrentRef()));
 
-    QString idFieldJsonName;
-    QString idFieldSqlName;
-    QString idFieldSqlBindName;
     const auto fitId = std::find_if(std::cbegin(qAsConst(r_->getTableFieldsInfo())),
                                     std::cend(qAsConst(r_->getTableFieldsInfo())),
                                     [](const db::JsonSqlField &bindInfo)->bool
@@ -355,20 +351,18 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     });
     if(std::cend(qAsConst(r_->getTableFieldsInfo())) != fitId)
     {
-        idFieldJsonName = fitId->getJsonName();
-        idFieldSqlName = fitId->getSqlName();
-        idFieldSqlBindName = fitId->getBindSqlName();
     }
     else
     {
         Q_ASSERT(false);
         return false;
     }
-    const QStringList setNames = db::getSqlNameEqualBindSqlNameList(r_->getTableFieldsInfo());
-    const QString setStr = setNames.join(g_insertFieldSpliter);
 
-    const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
-            .arg(tableName, setStr, idFieldSqlName, idFieldSqlBindName);
+    const QString sqlRequest = getUpdateSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo()
+                );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql" << sqlRequest;

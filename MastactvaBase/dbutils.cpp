@@ -1292,6 +1292,43 @@ QString getDeleteSqlRequest(
     return request;
 }
 
+QString getUpdateSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_
+        )
+{
+    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    QString idFieldSqlBindName;
+    const auto fitId = std::find_if(std::cbegin(qAsConst(fields_)),
+                                    std::cend(qAsConst(fields_)),
+                                    [](const db::JsonSqlField &bindInfo)->bool
+    {
+        return bindInfo.isIdField();
+    });
+    if(std::cend(qAsConst(fields_)) != fitId)
+    {
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSqlBindName = fitId->getBindSqlName();
+    }
+    else
+    {
+        Q_ASSERT(false);
+        return {};
+    }
+    const QStringList setNames = db::getSqlNameEqualBindSqlNameList(fields_);
+    const QString setStr = setNames.join(g_insertFieldSpliter);
+
+    const QString sqlRequest = QString("UPDATE %1 SET %2 WHERE %3=%4 ;")
+            .arg(tableName, setStr, idFieldSqlName, idFieldSqlBindName);
+
+    return sqlRequest;
+}
+
 } // namespace db
 
 
