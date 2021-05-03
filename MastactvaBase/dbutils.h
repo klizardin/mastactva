@@ -185,6 +185,11 @@ namespace db
             const QString &jsonRefName_,
             const db::JsonSqlFieldsList &fields_
             );
+    QString getDeleteSqlRequest(
+            const QString &jsonLayoutName_,
+            const QString &jsonRefName_,
+            const db::JsonSqlFieldsList &fields_
+            );
 }
 
 

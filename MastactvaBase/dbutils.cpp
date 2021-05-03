@@ -1269,6 +1269,41 @@ QString getNextIdSqlRequest(
     return request;
 }
 
+QString getDeleteSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_
+        )
+{
+    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+
+    QString idFieldJsonName;
+    QString idFieldSqlName;
+    QString idFieldSqlBindName;
+    const auto fitId = std::find_if(std::cbegin(qAsConst(fields_)),
+                                    std::cend(qAsConst(fields_)),
+                                    [](const db::JsonSqlField &bindInfo)->bool
+    {
+        return bindInfo.isIdField();
+    });
+    if(std::cend(qAsConst(fields_)) != fitId)
+    {
+        idFieldJsonName = fitId->getJsonName();
+        idFieldSqlName = fitId->getSqlName();
+        idFieldSqlBindName = fitId->getBindSqlName();
+    }
+    else
+    {
+        Q_ASSERT(false);
+        return {};
+    }
+
+    const QString sqlRequest = QString("DELETE FROM %1 WHERE %3=%4 ;")
+            .arg(tableName, idFieldSqlName, idFieldSqlBindName);
+
+    return sqlRequest;
+}
+
 } // namespace db
 
 
