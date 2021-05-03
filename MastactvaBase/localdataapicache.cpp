@@ -150,6 +150,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
         sqlRes = query.exec(sqlRequest);
     }
 
+    // TODO: use dynamic cast
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     QJsonArray jsonArray;
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
@@ -539,6 +540,7 @@ void LocalDataAPICache::freeRequests()
     m_requests.clear();
 }
 
+// TODO: move to utils code
 QHash<QString, QVariant> LocalDataAPICache::merge(const QHash<QString, QVariant> &v1_,
                                                   const QHash<QString, QVariant> &v2_)
 {
@@ -600,6 +602,7 @@ void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 
 void LocalDataAPICache::makeResponses()
 {
+    // TODO: move code to utils code
     QList<LocalDBRequest *> res;
     for(LocalDBRequest *r : qAsConst(m_requests))
     {
