@@ -525,4 +525,40 @@ TEST(DBUtils, JsonSqlFieldsList_getNextIdSqlRequest)
     ASSERT_TRUE(equal(request1, QString{}));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getDeleteSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+
+    const QString res0 = sum(
+                "DELETE FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " WHERE ",
+                "\"user\"", "=", g_bindPrefix, "user"
+                " ;"
+                );
+    const QString request = db::getDeleteSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields
+                );
+    ASSERT_TRUE(equal(request, res0));
+
+    // return empty request string if no id field
+    db::JsonSqlFieldsList fields1 = {
+        { "no-id", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString request1 = db::getNextIdSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields1
+                );
+    ASSERT_TRUE(equal(request1, QString{}));
+}
+
 #endif
