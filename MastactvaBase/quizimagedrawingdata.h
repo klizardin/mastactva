@@ -91,11 +91,38 @@ private:
 
 namespace drawing_data
 {
+    enum class ItemTypesEn
+    {
+        none,
+        first,
+        GLfloat = first,
+        GLint,
+        GLuint,
+        QVector2D,
+        QVector3D,
+        QVector4D,
+        QColor,
+        QPoint,
+        QPointF,
+        QSize,
+        QSizeF,
+        QMatrix2x2,
+        QMatrix2x3,
+        QMatrix2x4,
+        QMatrix3x2,
+        QMatrix3x3,
+        QMatrix3x4,
+        QMatrix4x2,
+        QMatrix4x3,
+        QMatrix4x4,
+        maxItem
+    };
+
     class ItemTypeConvert
     {
     public:
-        constexpr static int minIndex = 0;
-        constexpr static int maxIndex = 19;
+        constexpr static int minIndex = to_underlying(ItemTypesEn::first);
+        constexpr static int maxIndex = to_underlying(ItemTypesEn::maxItem) - 1;
     };
 
 
@@ -117,17 +144,17 @@ namespace drawing_data
     };
 
 
-#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, typeIndex_, underlayingType_)   \
+#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)   \
     template<>                                                                  \
     class ItemTypeTraits<ItemType_>                                             \
     {                                                                           \
     public:                                                                     \
         constexpr static int tupleSize = tupleSize_;                            \
-        constexpr static int typeIndex = typeIndex_;                            \
+        constexpr static int typeIndex = to_underlying(ItemTypesEn::ItemType_); \
         using underlayingType = underlayingType_;                               \
     };                                                                          \
     template<>                                                                  \
-    class ItemTypeIndexTraits<typeIndex_>                                       \
+    class ItemTypeIndexTraits<to_underlying(ItemTypesEn::ItemType_)>            \
     {                                                                           \
     public:                                                                     \
         using type = ItemType_;                                                 \
@@ -135,26 +162,26 @@ namespace drawing_data
 /*end traints macro*/
 
 
-    ITEM_TYPE_TRAITS(GLfloat,       1,  0,  void)
-    ITEM_TYPE_TRAITS(GLint,         1,  1,  void)
-    ITEM_TYPE_TRAITS(GLuint,        1,  2,  void)
-    ITEM_TYPE_TRAITS(QVector2D,     2,  3,  GLfloat)
-    ITEM_TYPE_TRAITS(QVector3D,     3,  4,  GLfloat)
-    ITEM_TYPE_TRAITS(QVector4D,     4,  5,  GLfloat)
-    ITEM_TYPE_TRAITS(QColor,        3,  6,  void)
-    ITEM_TYPE_TRAITS(QPoint,        2,  7,  void)
-    ITEM_TYPE_TRAITS(QPointF,       2,  8,  void)
-    ITEM_TYPE_TRAITS(QSize,         2,  9,  void)
-    ITEM_TYPE_TRAITS(QSizeF,        2,  10, void)
-    ITEM_TYPE_TRAITS(QMatrix2x2,    4,  11, void)
-    ITEM_TYPE_TRAITS(QMatrix2x3,    6,  12, void)
-    ITEM_TYPE_TRAITS(QMatrix2x4,    8,  13, void)
-    ITEM_TYPE_TRAITS(QMatrix3x2,    6,  14, void)
-    ITEM_TYPE_TRAITS(QMatrix3x3,    9,  15, void)
-    ITEM_TYPE_TRAITS(QMatrix3x4,    12, 16, void)
-    ITEM_TYPE_TRAITS(QMatrix4x2,    8,  17, void)
-    ITEM_TYPE_TRAITS(QMatrix4x3,    12, 18, void)
-    ITEM_TYPE_TRAITS(QMatrix4x4,    16, 19, void)
+    ITEM_TYPE_TRAITS(GLfloat,       1,  void)
+    ITEM_TYPE_TRAITS(GLint,         1,  void)
+    ITEM_TYPE_TRAITS(GLuint,        1,  void)
+    ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
+    ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
+    ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
+    ITEM_TYPE_TRAITS(QColor,        3,  void)
+    ITEM_TYPE_TRAITS(QPoint,        2,  void)
+    ITEM_TYPE_TRAITS(QPointF,       2,  void)
+    ITEM_TYPE_TRAITS(QSize,         2,  void)
+    ITEM_TYPE_TRAITS(QSizeF,        2,  void)
+    ITEM_TYPE_TRAITS(QMatrix2x2,    4,  void)
+    ITEM_TYPE_TRAITS(QMatrix2x3,    6,  void)
+    ITEM_TYPE_TRAITS(QMatrix2x4,    8,  void)
+    ITEM_TYPE_TRAITS(QMatrix3x2,    6,  void)
+    ITEM_TYPE_TRAITS(QMatrix3x3,    9,  void)
+    ITEM_TYPE_TRAITS(QMatrix3x4,    12, void)
+    ITEM_TYPE_TRAITS(QMatrix4x2,    8,  void)
+    ITEM_TYPE_TRAITS(QMatrix4x3,    12, void)
+    ITEM_TYPE_TRAITS(QMatrix4x4,    16, void)
 
 
     class ITypeInfo
