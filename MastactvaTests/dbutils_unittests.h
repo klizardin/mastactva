@@ -587,6 +587,17 @@ TEST(DBUtils, JsonSqlFieldsList_getUpdateSqlRequest)
                 fields
                 );
     ASSERT_TRUE(equal(request, res0));
+
+    db::JsonSqlFieldsList fields2 = {
+        { "user-id", layout::JsonTypesEn::jt_int, false},
+        { "all", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString request2 = db::getUpdateSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields2
+                );
+    ASSERT_TRUE(request2.isEmpty());
 }
 
 
