@@ -182,6 +182,7 @@ public:
 
     int getAttributeTupleSize(const QString &name_) const;
     bool getTextureSize(const QString &name_, QSize &size_) const;
+    QSize getTextureSize(const QString &name_, const QSize &size_) const;
 
 private:
     void initialize();
