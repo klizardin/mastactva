@@ -804,6 +804,15 @@ void QuizImageFboRendererImpl::synchronizeImpl(
         return;
     }
 
+    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
+                g_renderVertexAttributeName
+                );
+    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
+    if(!vertextAttributeExist)
+    {
+        return;
+    }
+
     const GLint isSolidGeometry = m_objectRenderer.getUniform(
                 g_renderIsGeomertySolidName,
                 GLint{1}
@@ -816,19 +825,9 @@ void QuizImageFboRendererImpl::synchronizeImpl(
                 g_renderGeomertySizeName,
                 QVector2D{0.0, 0.0}
                 );
-
-    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
-                g_renderVertexAttributeName
-                );
     const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
                 g_renderTextureAttributeName
                 );
-
-    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
-    if(!vertextAttributeExist)
-    {
-        return;
-    }
 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
