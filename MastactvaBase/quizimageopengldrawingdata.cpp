@@ -759,13 +759,13 @@ void QuizImageFboRendererImpl::setWindowSize(const QVector2D &windowSize_)
 
 void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool imageDataChanged_, bool sizeChanged_, qreal t_)
 {
-    const float sm = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
-    QVector2D rect(rectSize_.x() / sm, rectSize_.y() / sm);
+    const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
+    QVector2D proportinalRect(rectSize_.x() / maxCxCy, rectSize_.y() / maxCxCy);
 
-    m_objectRenderer.setUniform( g_renderScreenRectName, rect );
+    m_objectRenderer.setUniform( g_renderScreenRectName, proportinalRect );
     m_objectRenderer.setUniform( g_renderTName, t_ );
     QMatrix4x4 renderMatrix;
-    renderMatrix.ortho(QRectF(0, 0, rect.x(), rect.y()));
+    renderMatrix.ortho(QRectF(0, 0, proportinalRect.x(), proportinalRect.y()));
     m_objectRenderer.setUniform( g_renderMatrixName, renderMatrix );
 
     if(!(imageDataChanged_ || sizeChanged_))
@@ -790,7 +790,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    makeGeometry(rect.x(), rect.y(),
+    makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometrySize.x(), (int)geometrySize.y(),
                  geometryFacedCoef.x(), geometryFacedCoef.y(),
                  vertexAttributeTupleSize,
