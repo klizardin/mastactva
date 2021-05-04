@@ -802,7 +802,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
                  vertexData, textureData);
 
     m_objectRenderer.setAttribute( g_renderVertexAttributeName, vertexData, vertexAttributeTupleSize );
-    if(textureAttributeTupleSize > 0)
+    if(textureAttributeExist)
     {
         m_objectRenderer.setAttribute( g_renderTextureAttributeName, textureData, textureAttributeTupleSize );
     }
