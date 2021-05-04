@@ -24,9 +24,12 @@ namespace opengl_drawing
         bool getSize(QSize &size_) const;
 
     private:
-        constexpr static int locationWrong{-1};
+        bool isValidLocation() const;
+
+    private:
+        constexpr static int locationWrongValue{-1};
         int m_index{0};
-        int m_location{locationWrong};
+        int m_location{locationWrongValue};
         QImage m_image;
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
