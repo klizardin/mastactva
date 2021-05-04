@@ -169,7 +169,7 @@ public:
     int getAttributeTupleSize(const QString &name_) const;
     bool getTextureSize(const QString &name_, QSize &size_) const;
 
-protected:
+private:
     void initialize();
 
 private:

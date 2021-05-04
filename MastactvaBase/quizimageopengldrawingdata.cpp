@@ -512,7 +512,7 @@ void ObjectsRenderer::setImageData(
         std::unique_ptr<drawing_data::QuizImageObjects> imageData_
         )
 {
-   m_openglData = std::make_unique<opengl_drawing::Objects>();
+    m_openglData = std::make_unique<opengl_drawing::Objects>();
     m_openglData->init(std::move(imageData_));
     initialize();
 }
