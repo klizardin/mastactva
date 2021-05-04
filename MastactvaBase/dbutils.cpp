@@ -959,6 +959,20 @@ QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSql
     return obj;
 }
 
+QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_)
+{
+    QJsonObject jsonObj;
+    for(const db::JsonSqlField &fi : qAsConst(fields_))
+    {
+        const QVariant val = query_.value(fi.sqlValueName());
+        if(val.isValid())
+        {
+            jsonObj.insert(fi.getJsonName(), fi.jsonValue(val));
+        }
+    }
+    return jsonObj;
+}
+
 QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
 {
     return getFieldListValues(

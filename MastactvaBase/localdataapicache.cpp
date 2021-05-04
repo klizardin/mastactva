@@ -170,15 +170,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
                     );
         do
         {
-            QJsonObject jsonObj;
-            for(const db::JsonSqlField &fi : qAsConst(filteredFields))
-            {
-                const QVariant val = query.value(fi.sqlValueName());
-                if(val.isValid())
-                {
-                    jsonObj.insert(fi.getJsonName(), fi.jsonValue(val));
-                }
-            }
+            QJsonObject jsonObj = db::getJsonObject(filteredFields, query);
             jsonArray.push_back(jsonObj);
         } while(query.next());
     }

@@ -160,6 +160,7 @@ namespace db
     // TODO: mark [[deprecated]]
     QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
+    QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_);
     // TODO: mark [[deprecated]]
     QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
