@@ -519,7 +519,7 @@ void ObjectsRenderer::setImageData(
 
 std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageData()
 {
-    if(!m_openglData.operator bool())
+    if(!isValidData())
     {
         return {nullptr};
     }
@@ -529,7 +529,7 @@ std::unique_ptr<drawing_data::QuizImageObjects> ObjectsRenderer::releaseImageDat
 
 int ObjectsRenderer::getAttributeTupleSize(const QString &name_) const
 {
-    if(!m_openglData.operator bool())
+    if(!isValidData())
     {
         return 0;
     }
@@ -539,7 +539,7 @@ int ObjectsRenderer::getAttributeTupleSize(const QString &name_) const
 
 bool ObjectsRenderer::getTextureSize(const QString &name_, QSize &size_) const
 {
-    if(!m_openglData.operator bool())
+    if(!isValidData())
     {
         return false;
     }
@@ -555,11 +555,16 @@ void ObjectsRenderer::initialize()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 }
 
+bool ObjectsRenderer::isValidData() const
+{
+    return m_openglData.operator bool();
+}
+
 void ObjectsRenderer::render()
 {
     glDepthMask(true);
 
-    if(m_openglData.operator bool())
+    if(isValidData())
     {
         glClearColor(
                     m_openglData->getClearColor().redF(),
@@ -582,7 +587,7 @@ void ObjectsRenderer::render()
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    if(m_openglData.operator bool())
+    if(isValidData())
     {
         m_openglData->draw(this);
     }
@@ -593,7 +598,7 @@ void ObjectsRenderer::render()
 
 void ObjectsRenderer::setFromImage(const QString &url_)
 {
-    if(!m_openglData.operator bool())
+    if(!isValidData())
     {
         return;
     }
@@ -603,7 +608,7 @@ void ObjectsRenderer::setFromImage(const QString &url_)
 
 void ObjectsRenderer::setToImage(const QString &url_)
 {
-    if(!m_openglData.operator bool())
+    if(!isValidData())
     {
         return;
     }

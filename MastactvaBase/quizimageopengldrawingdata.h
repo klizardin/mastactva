@@ -171,6 +171,7 @@ public:
 
 private:
     void initialize();
+    bool isValidData() const;
 
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;
