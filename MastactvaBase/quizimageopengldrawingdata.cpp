@@ -768,7 +768,8 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     renderMatrix.ortho(QRectF(0, 0, proportinalRect.x(), proportinalRect.y()));
     m_objectRenderer.setUniform( g_renderMatrixName, renderMatrix );
 
-    if(!(imageDataChanged_ || sizeChanged_))
+    const bool requireGeometryUpdate = imageDataChanged_ || sizeChanged_;
+    if(!requireGeometryUpdate)
     {
         return;
     }
