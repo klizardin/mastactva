@@ -689,7 +689,7 @@ private:
         });
         if(std::end(layout_.m_fields) == fit)
         {
-            using PtrType = decltype (*fit);
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
             return static_cast<PtrType>(nullptr);
         }
         return *fit;
@@ -720,7 +720,7 @@ private:
         });
         if(std::end(layout_.m_fields) == fit)
         {
-            using PtrType = decltype (*fit);
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
             return static_cast<PtrType>(nullptr);
         }
         return *fit;
@@ -754,7 +754,7 @@ private:
         });
         if(std::end(layout_.m_fields) == fit)
         {
-            using PtrType = decltype (*fit);
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
             return static_cast<PtrType>(nullptr);
         }
         return *fit;
