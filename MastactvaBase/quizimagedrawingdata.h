@@ -94,8 +94,8 @@ namespace drawing_data
     enum class ItemTypesEn
     {
         none,
-        first,
-        GLfloat = first,
+        fromItem,
+        GLfloat,
         GLint,
         GLuint,
         QVector2D,
@@ -115,14 +115,14 @@ namespace drawing_data
         QMatrix4x2,
         QMatrix4x3,
         QMatrix4x4,
-        maxItem
+        toItem
     };
 
     class ItemTypeConvert
     {
     public:
-        constexpr static int minIndex = to_underlying(ItemTypesEn::first);
-        constexpr static int maxIndex = to_underlying(ItemTypesEn::maxItem) - 1;
+        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };
+        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };
     };
 
 
@@ -130,8 +130,8 @@ namespace drawing_data
     class ItemTypeTraits
     {
     public:
-        constexpr static int tupleSize = 0;
-        constexpr static int typeIndex = -1;
+        constexpr static int tupleSize{ 0 };
+        constexpr static int typeIndex{ to_underlying(ItemTypesEn::none) };
         using underlayingType = void;
     };
 
@@ -149,9 +149,9 @@ namespace drawing_data
     class ItemTypeTraits<ItemType_>                                                 \
     {                                                                               \
     public:                                                                         \
-        constexpr static int tupleSize = tupleSize_;                                \
-        constexpr static std::underlying_type_t<ItemTypesEn> typeIndex              \
-                                        = to_underlying(ItemTypesEn::ItemType_);    \
+        constexpr static int tupleSize{tupleSize_};                                 \
+        constexpr static std::underlying_type_t<ItemTypesEn> typeIndex{             \
+                                        to_underlying(ItemTypesEn::ItemType_)};     \
         using underlayingType = underlayingType_;                                   \
     };                                                                              \
     template<>                                                                      \
