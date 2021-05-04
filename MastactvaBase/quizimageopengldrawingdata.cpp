@@ -776,8 +776,8 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
 
     GLint isSolidGeometry = 1;
     m_objectRenderer.getUniform( g_renderIsGeomertySolidName, isSolidGeometry );
-    QVector2D geometrySize(1.0, 1.0);
-    m_objectRenderer.getUniform( g_renderGeomertySizeName, geometrySize );
+    QVector2D geometryFacedSize(1.0, 1.0);
+    m_objectRenderer.getUniform( g_renderGeomertySizeName, geometryFacedSize );
     QVector2D geometryFacedCoef(0.0, 0.0);
     m_objectRenderer.getUniform( g_renderFacedGeometryCoefsName, geometryFacedCoef );
 
@@ -792,7 +792,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     std::vector<GLfloat> textureData;
 
     makeGeometry(proportinalRect.x(), proportinalRect.y(),
-                 (int)geometrySize.x(), (int)geometrySize.y(),
+                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedCoef.x(), geometryFacedCoef.y(),
                  vertexAttributeTupleSize,
                  textureAttributeTupleSize, textureAttributeTupleSize > 0,
