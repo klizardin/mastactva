@@ -343,7 +343,10 @@ public:
                     new layout::Private::LayoutField<DataType_,ItemType_>(
                         m_lastQMLIndex, jsonName_, qmlName_, getFunc_, setFunc_)
                     );
-        if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
+        if(m_fields.back()->isQMLItem())
+        {
+            m_lastQMLIndex++;
+        }
     }
 
     template<typename ModelType_>
@@ -355,7 +358,10 @@ public:
                     new layout::Private::LayoutModelField<DataType_,ModelType_>(
                         m_lastQMLIndex, qmlName_, varPtr_, createFunc_)
                     );
-        if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
+        if(m_fields.back()->isQMLItem())
+        {
+            m_lastQMLIndex++;
+        }
     }
 
     template<typename ItemType_>
@@ -373,7 +379,12 @@ public:
     {
         for(const layout::Private::ILayoutItem<DataType_> *layoutItem: qAsConst(m_fields))
         {
-            if(nullptr == layoutItem || !layoutItem->isQMLItem()) { continue; }
+            if(nullptr == layoutItem
+                    || !layoutItem->isQMLItem())
+            {
+                continue;
+            }
+
             QString name = layoutItem->getQMLName();
             roleNames_[Qt::UserRole + layoutItem->getModelIndex()] = name.toLocal8Bit();
         }
@@ -382,14 +393,22 @@ public:
     QVariant getModelValue(const DataType_ *obj_, int role_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByModelRole(role_);
-        if(nullptr == layoutItem) { return QVariant(); }
+        if(nullptr == layoutItem)
+        {
+            return QVariant();
+        }
+
         return layoutItem->getValue(obj_, true);
     }
 
     bool setModelValue(DataType_ *obj_, int role_, const QVariant &val_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByModelRole(role_);
-        if(nullptr == layoutItem) { return false; }
+        if(nullptr == layoutItem)
+        {
+            return false;
+        }
+
         layoutItem->setValue(obj_, val_);
         return true;
     }
@@ -408,21 +427,33 @@ public:
     QVariant getJsonValue(const DataType_ *obj_, const QString &jsonFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
-        if(nullptr == layoutItem) { return QVariant(); }
+        if(nullptr == layoutItem)
+        {
+            return QVariant();
+        }
+
         return layoutItem->getValue(obj_, false);
     }
 
     int compareJsonValues(const DataType_ *obj1_, const DataType_ *obj2_, const QString &jsonFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
-        if(nullptr == layoutItem) { return 0; }
+        if(nullptr == layoutItem)
+        {
+            return 0;
+        }
+
         return layoutItem->compareValues(obj1_, obj2_, false);
     }
 
     QVariant getQMLValue(const DataType_ *obj_, const QString &qmlFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByQMLName(qmlFieldName_);
-        if(nullptr == layoutItem) { return QVariant(); }
+        if(nullptr == layoutItem)
+        {
+            return QVariant();
+        }
+
         return layoutItem->getValue(obj_, true);
     }
 
@@ -431,7 +462,11 @@ public:
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(!item->isJsonItem()) { continue; }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+
             values_[item->getJsonName()] = item->getValue(obj_, false);
             ret = true;
         }
@@ -443,8 +478,15 @@ public:
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(!item->isJsonItem()) { continue; }
-            if(!values_.contains(item->getJsonName())) { continue; }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+            if(!values_.contains(item->getJsonName()))
+            {
+                continue;
+            }
+
             item->setValue(obj_, values_.value(item->getJsonName()));
             ret = true;
         }
@@ -457,7 +499,11 @@ public:
         if(jsonObj_.isArray())
         {
             QJsonValue jv = jsonObj_[index_];
-            if(jv.isUndefined()) { return false; }
+            if(jv.isUndefined())
+            {
+                return false;
+            }
+
             ret |= setJsonValuesTempl(obj_, jv);
         }
         else if(jsonObj_.isObject())
@@ -527,7 +573,11 @@ public:
     {
         for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
+            if(nullptr == item)
+            {
+                continue;
+            }
+
             if(item->getType() == type_)
             {
                 return item->getValue(obj_, true);
@@ -540,7 +590,11 @@ public:
     {
         for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
+            if(nullptr == item)
+            {
+                continue;
+            }
+
             if(item->getType() == type_)
             {
                 item->setValue(obj_, value_);
@@ -564,7 +618,11 @@ public:
     {
         layout::Private::ILayoutItemBase<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
         Q_ASSERT(nullptr != layoutItem); // field not founded
-        if(nullptr == layoutItem) { return; }
+        if(nullptr == layoutItem)
+        {
+            return;
+        }
+
         layoutItem->setFieldId(true);
     }
 
@@ -595,10 +653,21 @@ private:
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
-            if(!item->isJsonItem()) { continue; }
+            if(nullptr == item)
+            {
+                continue;
+            }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+
             QJsonValue jv = jsonObj_[item->getJsonName()];
-            if(jv.isUndefined()) { continue ; }
+            if(jv.isUndefined())
+            {
+                continue ;
+            }
+
             item->setValue(obj_, jv);
             ret = true;
         }
@@ -706,9 +775,17 @@ private:
     {
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(!item->isJsonItem()) { continue; }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+
             QJsonValue jv = jsonObj_[item->getJsonName()];
-            if(jv.isUndefined()) { continue; }
+            if(jv.isUndefined())
+            {
+                continue;
+            }
+
             item->setValue(obj_, jv);
         }
     }
