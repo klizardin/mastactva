@@ -798,16 +798,23 @@ void QuizImageFboRendererImpl::synchronizeImpl(
     m_objectRenderer.setUniform( g_renderTName, t_ );
     m_objectRenderer.setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
 
-    const bool requireGeometryUpdate = imageDataChanged_ || sizeChanged_;
-    if(!requireGeometryUpdate)
+    const bool requireGeometryOrSizeUpdate = imageDataChanged_ || sizeChanged_;
+    if(!requireGeometryOrSizeUpdate)
     {
         return;
     }
 
+    updateGeometry(proportinalRect);
+    updateSize();
+}
+
+void QuizImageFboRendererImpl::updateGeometry(const QVector2D &proportinalRect_)
+{
     const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
                 g_renderVertexAttributeName
                 );
     const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
+
     if(!vertextAttributeExist)
     {
         return;
@@ -833,7 +840,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(
     std::vector<GLfloat> textureData;
 
     const bool textureAttributeExist = textureAttributeTupleSize > 0;
-    makeGeometry(proportinalRect.x(), proportinalRect.y(),
+    makeGeometry(proportinalRect_.x(), proportinalRect_.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
@@ -854,7 +861,10 @@ void QuizImageFboRendererImpl::synchronizeImpl(
                     textureAttributeTupleSize
                     );
     }
+}
 
+void QuizImageFboRendererImpl::updateSize()
+{
     const QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
     m_objectRenderer.setUniform(
                 g_renderFromImageMatrixName,

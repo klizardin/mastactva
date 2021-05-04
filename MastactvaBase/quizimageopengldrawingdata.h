@@ -230,6 +230,8 @@ protected:
 private:
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
     QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
+    void updateGeometry(const QVector2D &proportinalRect_);
+    void updateSize();
 
 private:
     ObjectsRenderer m_objectRenderer;
