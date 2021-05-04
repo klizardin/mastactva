@@ -491,12 +491,12 @@ void opengl_drawing::Objects::setTexture(
 
 void opengl_drawing::Objects::setFromImage(const QString &url_)
 {
-    setTexture(g_renderFromImageName, url_);
+    setTexture(g_renderFromImageName, url_);    // TODO: dependency inversion
 }
 
 void opengl_drawing::Objects::setToImage(const QString &url_)
 {
-    setTexture(g_renderToImageName, url_);
+    setTexture(g_renderToImageName, url_);  // TODO: dependency inversion
 }
 
 
