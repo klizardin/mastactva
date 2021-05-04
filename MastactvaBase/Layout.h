@@ -552,7 +552,7 @@ public:
         bool ret = false;
         if(jsonObj_.isArray())
         {
-            QJsonValue jv = jsonObj_[index_];
+            const QJsonValue jv = jsonObj_[index_];
             if(jv.isUndefined())
             {
                 return false;
@@ -723,7 +723,7 @@ private:
                 continue;
             }
 
-            QJsonValue jv = jsonObj_[item->getJsonName()];
+            const QJsonValue jv = jsonObj_[item->getJsonName()];
             if(jv.isUndefined())
             {
                 continue ;
@@ -841,7 +841,7 @@ private:
                 continue;
             }
 
-            QJsonValue jv = jsonObj_[item->getJsonName()];
+            const QJsonValue jv = jsonObj_[item->getJsonName()];
             if(jv.isUndefined())
             {
                 continue;
