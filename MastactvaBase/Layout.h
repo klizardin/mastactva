@@ -667,23 +667,38 @@ private:
         return findItemByQMLNameImpl(*this, fieldQMLName_);
     }
 
+    template<typename LayoutType_>
+    static auto *findItemByModelRoleImpl(
+            LayoutType_ &layout_,
+            int role_
+            )
+    {
+        auto fit = std::find_if(
+                    std::begin(layout_.m_fields),
+                    std::end(layout_.m_fields),
+                    [&role_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return nullptr != item_
+                    && item_->isQMLItem()
+                    && item_->getModelIndex() + Qt::UserRole == role_
+                    ;
+        });
+        if(std::end(layout_.m_fields) == fit)
+        {
+            using PtrType = decltype (*fit);
+            return static_cast<PtrType>(nullptr);
+        }
+        return *fit;
+    }
+
     const layout::Private::ILayoutItem<DataType_> *findItemByModelRole(int role_) const
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                     [&role_](layout::Private::ILayoutItem<DataType_> *item_)->bool
-        {
-            return nullptr != item_ && item_->isQMLItem() && item_->getModelIndex() + Qt::UserRole == role_;
-        });
-        if(std::end(m_fields) == fit) { return nullptr; }
-        return *fit;
+        return findItemByModelRoleImpl(*this, role_);
     }
 
     layout::Private::ILayoutItem<DataType_> *findItemByModelRole(int role_)
     {
-        return const_cast<layout::Private::ILayoutItem<DataType_> *>
-                (const_cast<const LayoutBase<DataType_> *>
-                   (this)->findItemByModelRole(role_)
-                );
+        return findItemByModelRoleImpl(*this, role_);
     }
 
     template<typename JsonType_>
