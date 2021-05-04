@@ -792,11 +792,12 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
+    const bool textureAttributeExist = textureAttributeTupleSize > 0;
     makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
-                 textureAttributeTupleSize, textureAttributeTupleSize > 0,
+                 textureAttributeTupleSize, textureAttributeExist,
                  0 != isSolidGeometry,
                  vertexData, textureData);
 
