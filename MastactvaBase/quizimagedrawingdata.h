@@ -371,7 +371,7 @@ namespace drawing_data
     {
         Uniform(const QString &name_, std::shared_ptr<ItemType_> data_)
             : m_name(name_)
-            , m_data(data_)
+            , m_data(std::move(data_))
         {
         }
 
