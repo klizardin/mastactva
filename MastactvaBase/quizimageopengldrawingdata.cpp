@@ -152,7 +152,11 @@ void opengl_drawing::Object::setUniforms()
         }
 
         const auto uniformId = uniforms[uniform->name()];
-        if(uniformId < 0) { continue; }
+        if(uniformId < 0)
+        {
+            continue;
+        }
+
         uniform->set(program.get(), uniformId);
     }
     for(const drawing_data::Texture &texture_ : m_imageData->textures)
