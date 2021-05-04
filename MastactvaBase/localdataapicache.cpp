@@ -174,7 +174,11 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
                 {
                     return v.isValid() && fi.getSqlName() == v.toString();
                 });
-                if(!procedureFilterFields.isEmpty() && std::cend(procedureFilterFields) == fitFld) { continue; }
+                if(!procedureFilterFields.isEmpty() && std::cend(procedureFilterFields) == fitFld)
+                {
+                    continue;
+                }
+
                 const QVariant val = query.value(fi.sqlValueName());
                 if(val.isValid())
                 {
