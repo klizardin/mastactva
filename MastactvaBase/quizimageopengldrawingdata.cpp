@@ -798,7 +798,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
                  textureAttributeTupleSize, textureAttributeExist,
-                 0 != isSolidGeometry,
+                 isSolidGeometry,
                  vertexData, textureData);
 
     m_objectRenderer.setAttribute( g_renderVertexAttributeName, vertexData, vertexAttributeTupleSize );
