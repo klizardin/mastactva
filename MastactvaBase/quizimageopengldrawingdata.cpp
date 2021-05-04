@@ -774,21 +774,21 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
         return;
     }
 
-    const GLint isSolidGeometry = [this]() -> GLint
+    const GLint isSolidGeometry = [this]() -> auto
     {
-        GLint res = 0;
+        GLint res{0};
         if(m_objectRenderer.getUniform( g_renderIsGeomertySolidName, res ))
         {
             return res;
         }
         else
         {
-            return 1;
+            return GLint{1};
         }
     }();
-    const QVector2D geometryFacedSize = [this]() -> QVector2D
+    const QVector2D geometryFacedSize = [this]() -> auto
     {
-        QVector2D res;
+        QVector2D res{};
         if(m_objectRenderer.getUniform( g_renderGeomertySizeName, res))
         {
             return res;
@@ -798,9 +798,9 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
             return QVector2D{2.0, 2.0};
         }
     }();
-    const QVector2D geometryFacedInterval = [this]() -> QVector2D
+    const QVector2D geometryFacedInterval = [this]() -> auto
     {
-        QVector2D res;
+        QVector2D res{};
         if(m_objectRenderer.getUniform( g_renderFacedGeometryCoefsName, res ))
         {
             return res;
