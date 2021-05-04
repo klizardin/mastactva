@@ -778,8 +778,8 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     m_objectRenderer.getUniform( g_renderIsGeomertySolidName, isSolidGeometry );
     QVector2D geometryFacedSize(1.0, 1.0);
     m_objectRenderer.getUniform( g_renderGeomertySizeName, geometryFacedSize );
-    QVector2D geometryFacedCoef(0.0, 0.0);
-    m_objectRenderer.getUniform( g_renderFacedGeometryCoefsName, geometryFacedCoef );
+    QVector2D geometryFacedInterval(0.0, 0.0);
+    m_objectRenderer.getUniform( g_renderFacedGeometryCoefsName, geometryFacedInterval );
 
     const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderVertexAttributeName );
     const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderTextureAttributeName );
@@ -793,7 +793,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
 
     makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
-                 geometryFacedCoef.x(), geometryFacedCoef.y(),
+                 geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
                  textureAttributeTupleSize, textureAttributeTupleSize > 0,
                  0 != isSolidGeometry,
