@@ -164,21 +164,27 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     }
     else if(query.first())
     {
+        const db::JsonSqlFieldsList filteredFields =
+                procedureFilterFields.isEmpty()
+                ? r_->getTableFieldsInfo()
+                : db::filter(r_->getTableFieldsInfo(), [&procedureFilterFields](const db::JsonSqlField &fi_)->bool
+        {
+            const auto fit = std::find_if(
+                        std::cbegin(procedureFilterFields),
+                        std::cend(procedureFilterFields),
+                        [&fi_](const QVariant &v_)->bool
+            {
+                return v_.isValid() && fi_.getSqlName() == v_.toString();
+            });
+            return std::cend(procedureFilterFields) != fit;
+        });
+
+
         do
         {
             QJsonObject jsonObj;
-            for(const db::JsonSqlField &fi : qAsConst(r_->getTableFieldsInfo()))
+            for(const db::JsonSqlField &fi : qAsConst(filteredFields))
             {
-                const auto fitFld = std::find_if(std::cbegin(procedureFilterFields), std::cend(procedureFilterFields),
-                                                 [&fi](const QVariant &v)->bool
-                {
-                    return v.isValid() && fi.getSqlName() == v.toString();
-                });
-                if(!procedureFilterFields.isEmpty() && std::cend(procedureFilterFields) == fitFld)
-                {
-                    continue;
-                }
-
                 const QVariant val = query.value(fi.sqlValueName());
                 if(val.isValid())
                 {
