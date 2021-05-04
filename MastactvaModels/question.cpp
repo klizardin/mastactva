@@ -14,12 +14,12 @@ Question::Question(QuestionModel *parent_)
 
 Question::~Question()
 {
-    if(nullptr != m_answerModel)
+    if(m_answerModel)
     {
         m_answerModel->deleteLater();
     }
     m_answerModel = nullptr;
-    if(nullptr != m_userQuestionAnswerModel)
+    if(m_userQuestionAnswerModel)
     {
         m_userQuestionAnswerModel->deleteLater();
     }
@@ -76,7 +76,7 @@ void Question::setCreated(const QDateTime &created_)
 
 QVariant Question::answers() const
 {
-    if(nullptr == m_answerModel)
+    if(!m_answerModel)
     {
         const_cast<Question *>(this)->m_answerModel = const_cast<Question *>(this)
                 ->createAnswerModel();
@@ -90,7 +90,7 @@ QVariant Question::answers() const
 
 void Question::setAnswers(const QVariant &answers_)
 {
-    if(answers_.isNull() && nullptr != m_answerModel)
+    if(answers_.isNull() && m_answerModel)
     {
         delete m_answerModel;
         m_answerModel = nullptr;
@@ -101,7 +101,7 @@ void Question::setAnswers(const QVariant &answers_)
 
 QVariant Question::userQuestionAnswer() const
 {
-    if(nullptr == m_userQuestionAnswerModel)
+    if(!m_userQuestionAnswerModel)
     {
         const_cast<Question *>(this)->m_userQuestionAnswerModel = const_cast<Question *>(this)
                 ->createUserQuestionAnswerModel();

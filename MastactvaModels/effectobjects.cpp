@@ -14,12 +14,12 @@ EffectObjects::EffectObjects(EffectObjectsModel *parent_ /*= nullptr*/)
 
 EffectObjects::~EffectObjects()
 {
-    if(nullptr != m_objectInfoModel)
+    if(m_objectInfoModel)
     {
         m_objectInfoModel->deleteLater();
     }
     m_objectInfoModel = nullptr;
-    if(nullptr != m_objectArtefactModel)
+    if(m_objectArtefactModel)
     {
         m_objectArtefactModel->deleteLater();
     }
@@ -64,7 +64,7 @@ void EffectObjects::setObjectInfoId(const int &effectObjectInfoId_)
 
 QVariant EffectObjects::objectInfo() const
 {
-    if(nullptr == m_objectInfoModel)
+    if(!m_objectInfoModel)
     {
         const_cast<EffectObjects *>(this)->m_objectInfoModel = const_cast<EffectObjects *>(this)
                 ->createObjectInfoModel();
@@ -78,7 +78,7 @@ QVariant EffectObjects::objectInfo() const
 
 void EffectObjects::setObjectInfo(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_objectInfoModel)
+    if(obj_.isNull() && m_objectInfoModel)
     {
         delete m_objectInfoModel;
         m_objectInfoModel = nullptr;
@@ -101,7 +101,7 @@ void EffectObjects::setStepIndex(const int &stepIndex_)
 
 QVariant EffectObjects::objectArtefacts() const
 {
-    if(nullptr == m_objectArtefactModel)
+    if(!m_objectArtefactModel)
     {
         const_cast<EffectObjects *>(this)->m_objectArtefactModel = const_cast<EffectObjects *>(this)
                 ->createObjectArtefactModel();
@@ -115,7 +115,7 @@ QVariant EffectObjects::objectArtefacts() const
 
 void EffectObjects::setObjectArtefacts(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_objectArtefactModel)
+    if(obj_.isNull() && m_objectArtefactModel)
     {
         delete m_objectArtefactModel;
         m_objectArtefactModel = nullptr;
@@ -192,12 +192,12 @@ EffectObjectsModel::EffectObjectsModel(QObject *parent_ /*= nullptr*/)
 
 bool EffectObjectsModel::compareModelItems(const EffectObjects *i1_, const EffectObjects *i2_) const
 {
-    if(nullptr == i1_->getObjectInfoModel() ||
+    if(!i1_->getObjectInfoModel() ||
             !i1_->getObjectInfoModel()->isListLoadedImpl() ||
-            nullptr == i1_->getObjectInfoModel()->getCurrentDataItem() ||
-            nullptr == i2_->getObjectInfoModel() ||
+            !i1_->getObjectInfoModel()->getCurrentDataItem() ||
+            !i2_->getObjectInfoModel() ||
             !i2_->getObjectInfoModel()->isListLoadedImpl() ||
-            nullptr == i2_->getObjectInfoModel()->getCurrentDataItem())
+            !i2_->getObjectInfoModel()->getCurrentDataItem())
     {
         // unable correctly sort
         return i1_->stepIndex() < i2_->stepIndex();

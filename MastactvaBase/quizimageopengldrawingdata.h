@@ -24,8 +24,12 @@ namespace opengl_drawing
         bool getSize(QSize &size_) const;
 
     private:
-        int m_index = 0;
-        int m_location = -1;
+        bool isValidLocation() const;
+
+    private:
+        constexpr static int locationWrongValue{-1};
+        int m_index{0};
+        int m_location{locationWrongValue};
         QImage m_image;
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
@@ -49,8 +53,11 @@ namespace opengl_drawing
         void setTexture(const QString &name_, const QString& newFilename_);
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
-    protected:
+        bool isUsable() const;
+
+    private:
         void setTextureIndexes();
+        static bool isIdValid(int idValue_);
 
     private:
         std::shared_ptr<drawing_data::QuizImageObject> m_imageData;
@@ -159,11 +166,27 @@ public:
         return m_openglData->getUniform(name_, value_);
     }
 
+    template<typename ItemType_>
+    ItemType_ getUniform(const QString &name_, const ItemType_ &defaultValue_) const
+    {
+        ItemType_ result{};
+        if(getUniform(name_, result))
+        {
+            return result;
+        }
+        else
+        {
+            return defaultValue_;
+        }
+    }
+
     int getAttributeTupleSize(const QString &name_) const;
     bool getTextureSize(const QString &name_, QSize &size_) const;
+    QSize getTextureSize(const QString &name_, const QSize &size_) const;
 
-protected:
+private:
     void initialize();
+    bool isValidData() const;
 
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;
@@ -205,6 +228,12 @@ protected:
     void setToImage(const QString &url_);
 
 private:
+    static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
+    QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
+    void updateGeometry(const QVector2D &proportinalRect_);
+    void updateSize();
+
+private:
     ObjectsRenderer m_objectRenderer;
     QVector2D m_windowSize;
 };
@@ -231,7 +260,7 @@ public:
     void synchronize(QQuickFramebufferObject *frameBufferObject_) override
     {
         QuizImageType_ *quizImage = static_cast<QuizImageType_ *>(frameBufferObject_);
-        if(nullptr == quizImage)
+        if(!quizImage)
         {
             return;
         }

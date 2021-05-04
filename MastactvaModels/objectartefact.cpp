@@ -13,7 +13,7 @@ ObjectArtefact::ObjectArtefact(ObjectArtefactModel *parent_ /* = nullptr*/)
 
 ObjectArtefact::~ObjectArtefact()
 {
-    if(nullptr != m_artefactModel)
+    if(m_artefactModel)
     {
         m_artefactModel->deleteLater();
     }
@@ -52,7 +52,7 @@ int ObjectArtefact::artefactId() const
 void ObjectArtefact::setArtefactId(const int &artefactId_)
 {
     m_artefactId = artefactId_;
-    if(nullptr != m_artefactModel)
+    if(m_artefactModel)
     {
         m_artefactModel->parentItemChanged();
     }
@@ -62,7 +62,7 @@ void ObjectArtefact::setArtefactId(const int &artefactId_)
 
 QVariant ObjectArtefact::artefact() const
 {
-    if(nullptr == m_artefactModel)
+    if(!m_artefactModel)
     {
         const_cast<ObjectArtefact *>(this)->m_artefactModel = const_cast<ObjectArtefact *>(this)
                 ->createArtefactModel();
@@ -76,7 +76,7 @@ QVariant ObjectArtefact::artefact() const
 
 void ObjectArtefact::setArtefact(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_artefactModel)
+    if(obj_.isNull() && m_artefactModel)
     {
         delete m_artefactModel;
         m_artefactModel = nullptr;

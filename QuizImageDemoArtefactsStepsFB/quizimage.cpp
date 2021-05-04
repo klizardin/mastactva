@@ -824,7 +824,7 @@ void QuizImage::loadProject()
 
 void QuizImage::setProjectFromImage()
 {
-    if(nullptr == m_drawingData ||
+    if(!m_drawingData ||
             fromImage().isEmpty()
             ) { return; }
     // do not remove prev image
@@ -834,7 +834,7 @@ void QuizImage::setProjectFromImage()
 
 void QuizImage::setProjectToImage()
 {
-    if(nullptr == m_drawingData ||
+    if(!m_drawingData ||
             toImage().isEmpty()
             ) { return; }
     // do not remove prev image

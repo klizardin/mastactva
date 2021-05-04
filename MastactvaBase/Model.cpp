@@ -24,7 +24,7 @@ void ListModelBaseData::setLayoutRefImpl(const QString &fieldJsonName_,
     m_refs.insert(fieldJsonName_, {fieldJsonName_, parentModel_, parentModelRefJsonName_});
     if(!notify_) { return; }
     IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
-    if(nullptr != parentModelPtr && nullptr != parentModelPtr->getModel())
+    if(parentModelPtr && parentModelPtr->getModel())
     {
         QObject::connect(parentModelPtr->getModel(), SIGNAL(refreshChildren(QString)),
                          m_modelObj, SLOT(refreshChildrenSlot(QString)));
@@ -121,7 +121,7 @@ void ListModelBaseData::setJsonParamsGetImpl(bool jsonParamsGet_)
 
 bool ListModelBaseData::addRequest(RequestData *rd_)
 {
-    if(nullptr == rd_) { return false; }
+    if(!rd_) { return false; }
     m_requests.push_back(rd_);
     return true;
 }
@@ -132,31 +132,31 @@ RequestData * ListModelBaseData::findRequest(const QString &requestName_)
                                   std::end(m_requests),
                                   [&requestName_](const auto *request_)->bool
     {
-        return nullptr != request_ && request_->getRequestName() == requestName_;
+        return request_ && request_->getRequestName() == requestName_;
     });
     return std::end(m_requests) == fit ? nullptr : *fit;
 }
 
 bool ListModelBaseData::findRequest(RequestData *request_) const
 {
-    if(nullptr == request_) { return false; }
+    if(!request_) { return false; }
     const auto fit = std::find_if(std::begin(m_requests),
                                   std::end(m_requests),
                                   [request_](const auto *requestItem_)->bool
     {
-        return nullptr != requestItem_ && requestItem_ == request_;
+        return requestItem_ && requestItem_ == request_;
     });
     return std::end(m_requests) != fit;
 }
 
 void ListModelBaseData::removeRequest(RequestData *request_)
 {
-    if(nullptr == request_) { return; }
+    if(!request_) { return; }
     const auto fit = std::find_if(std::begin(m_requests),
                                   std::end(m_requests),
                                   [request_](const auto *requestItem_)->bool
     {
-        return nullptr != requestItem_ && requestItem_ == request_;
+        return requestItem_ && requestItem_ == request_;
     });
     if(std::end(m_requests) != fit)
     {
@@ -227,7 +227,7 @@ bool ListModelBaseData::isListLoadedImpl() const
 
 void ListModelBaseData::listLoadedVF()
 {
-    if(nullptr != m_setModelChangeNotify)
+    if(m_setModelChangeNotify)
     {
         m_setModelChangeNotify->listLoadedVF();
     }
@@ -235,7 +235,7 @@ void ListModelBaseData::listLoadedVF()
 
 void ListModelBaseData::itemAddedVF()
 {
-    if(nullptr != m_setModelChangeNotify)
+    if(m_setModelChangeNotify)
     {
         m_setModelChangeNotify->itemAddedVF();
     }
@@ -243,7 +243,7 @@ void ListModelBaseData::itemAddedVF()
 
 void ListModelBaseData::itemSetVF()
 {
-    if(nullptr != m_setModelChangeNotify)
+    if(m_setModelChangeNotify)
     {
         m_setModelChangeNotify->itemSetVF();
     }
@@ -251,7 +251,7 @@ void ListModelBaseData::itemSetVF()
 
 void ListModelBaseData::itemDeletedVF()
 {
-    if(nullptr != m_setModelChangeNotify)
+    if(m_setModelChangeNotify)
     {
         m_setModelChangeNotify->itemDeletedVF();
     }
@@ -259,7 +259,7 @@ void ListModelBaseData::itemDeletedVF()
 
 void ListModelBaseData::errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
 {
-    if(nullptr != m_setModelChangeNotify)
+    if(m_setModelChangeNotify)
     {
         m_setModelChangeNotify->errorVF(errorCode_, errorCodeStr_, reply_);
     }
@@ -273,7 +273,7 @@ void ListModelBaseData::loadChildrenVF()
 
 void ListModelBaseData::objectLoadedVF()
 {
-    if(nullptr != m_setModelChangeNotify)
+    if(m_setModelChangeNotify)
     {
         m_setModelChangeNotify->objectLoadedVF();
     }
@@ -356,7 +356,7 @@ void ListModelBaseData::startListLoad()
 
     m_listLoading = true;
 
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
     }
@@ -379,7 +379,7 @@ void ListModelBaseData::reverseListLoading()
 
     m_listLoading = false;
 
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
     }
@@ -394,7 +394,7 @@ void ListModelBaseData::setListLoaded()
     m_listLoading = false;
     m_listLoaded = true;
 
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
     }
@@ -425,7 +425,7 @@ void ListModelBaseData::startLoadChildModel()
 #endif
 
     ++m_loadingChildenModels;
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
     }
@@ -446,7 +446,7 @@ void ListModelBaseData::endLoadChildModel()
     }
 #endif
 
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
     }

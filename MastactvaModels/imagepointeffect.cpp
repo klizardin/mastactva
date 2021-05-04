@@ -13,12 +13,12 @@ ImagePointEffect::ImagePointEffect(ImagePointEffectModel *parent_ /*=nullptr*/)
 
 ImagePointEffect::~ImagePointEffect()
 {
-    if(nullptr != m_effectModel)
+    if(m_effectModel)
     {
         m_effectModel->deleteLater();
     }
     m_effectModel = nullptr;
-    if(nullptr != m_effectArgSetModel)
+    if(m_effectArgSetModel)
     {
         m_effectArgSetModel->deleteLater();
     }
@@ -59,7 +59,7 @@ void ImagePointEffect::setEffectId(const int &effectId_)
     if(effectId_ == m_effectId) { return; }
 
     m_effectId = effectId_;
-    if(nullptr != m_effectModel)
+    if(m_effectModel)
     {
         m_effectModel->parentItemChanged();
     }
@@ -69,7 +69,7 @@ void ImagePointEffect::setEffectId(const int &effectId_)
 
 QVariant ImagePointEffect::effect() const
 {
-    if(nullptr == m_effectModel)
+    if(!m_effectModel)
     {
         const_cast<ImagePointEffect *>(this)->m_effectModel = const_cast<ImagePointEffect *>(this)
                 ->createEffectModel();
@@ -83,7 +83,7 @@ QVariant ImagePointEffect::effect() const
 
 void ImagePointEffect::setEffect(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectModel)
+    if(obj_.isNull() && m_effectModel)
     {
         delete m_effectModel;
         m_effectModel = nullptr;
@@ -103,7 +103,7 @@ void ImagePointEffect::setArgSetId(const int &argSetId_)
 
     m_effectArgSetId = argSetId_;
 
-    if(nullptr != m_effectArgSetModel)
+    if(m_effectArgSetModel)
     {
         m_effectArgSetModel->parentItemChanged();
     }
@@ -113,7 +113,7 @@ void ImagePointEffect::setArgSetId(const int &argSetId_)
 
 QVariant ImagePointEffect::argSet() const
 {
-    if(nullptr == m_effectArgSetModel)
+    if(!m_effectArgSetModel)
     {
         const_cast<ImagePointEffect *>(this)->m_effectArgSetModel = const_cast<ImagePointEffect *>(this)
                 ->createEffectArgSetModel();
@@ -127,7 +127,7 @@ QVariant ImagePointEffect::argSet() const
 
 void ImagePointEffect::setArgSet(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectArgSetModel)
+    if(obj_.isNull() && m_effectArgSetModel)
     {
         delete m_effectArgSetModel;
         m_effectArgSetModel = nullptr;

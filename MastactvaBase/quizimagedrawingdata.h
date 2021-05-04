@@ -94,8 +94,8 @@ namespace drawing_data
     enum class ItemTypesEn
     {
         none,
-        first,
-        GLfloat = first,
+        fromItem,
+        GLfloat,
         GLint,
         GLuint,
         QVector2D,
@@ -115,14 +115,14 @@ namespace drawing_data
         QMatrix4x2,
         QMatrix4x3,
         QMatrix4x4,
-        maxItem
+        toItem
     };
 
     class ItemTypeConvert
     {
     public:
-        constexpr static int minIndex = to_underlying(ItemTypesEn::first);
-        constexpr static int maxIndex = to_underlying(ItemTypesEn::maxItem) - 1;
+        constexpr static int minIndex{ to_underlying(ItemTypesEn::fromItem) + 1 };
+        constexpr static int maxIndex{ to_underlying(ItemTypesEn::toItem) - 1 };
     };
 
 
@@ -130,8 +130,8 @@ namespace drawing_data
     class ItemTypeTraits
     {
     public:
-        constexpr static int tupleSize = 0;
-        constexpr static int typeIndex = -1;
+        constexpr static int tupleSize{ 0 };
+        constexpr static int typeIndex{ to_underlying(ItemTypesEn::none) };
         using underlayingType = void;
     };
 
@@ -144,14 +144,14 @@ namespace drawing_data
     };
 
 
-#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)                   \
+#define DRAWING_DATA_ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)      \
     template<>                                                                      \
     class ItemTypeTraits<ItemType_>                                                 \
     {                                                                               \
     public:                                                                         \
-        constexpr static int tupleSize = tupleSize_;                                \
-        constexpr static std::underlying_type_t<ItemTypesEn> typeIndex              \
-                                        = to_underlying(ItemTypesEn::ItemType_);    \
+        constexpr static int tupleSize{tupleSize_};                                 \
+        constexpr static std::underlying_type_t<ItemTypesEn> typeIndex{             \
+                                        to_underlying(ItemTypesEn::ItemType_)};     \
         using underlayingType = underlayingType_;                                   \
     };                                                                              \
     template<>                                                                      \
@@ -163,27 +163,28 @@ namespace drawing_data
 /*end traints macro*/
 
 
-    ITEM_TYPE_TRAITS(GLfloat,       1,  void)
-    ITEM_TYPE_TRAITS(GLint,         1,  void)
-    ITEM_TYPE_TRAITS(GLuint,        1,  void)
-    ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
-    ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
-    ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
-    ITEM_TYPE_TRAITS(QColor,        3,  void)
-    ITEM_TYPE_TRAITS(QPoint,        2,  void)
-    ITEM_TYPE_TRAITS(QPointF,       2,  void)
-    ITEM_TYPE_TRAITS(QSize,         2,  void)
-    ITEM_TYPE_TRAITS(QSizeF,        2,  void)
-    ITEM_TYPE_TRAITS(QMatrix2x2,    4,  void)
-    ITEM_TYPE_TRAITS(QMatrix2x3,    6,  void)
-    ITEM_TYPE_TRAITS(QMatrix2x4,    8,  void)
-    ITEM_TYPE_TRAITS(QMatrix3x2,    6,  void)
-    ITEM_TYPE_TRAITS(QMatrix3x3,    9,  void)
-    ITEM_TYPE_TRAITS(QMatrix3x4,    12, void)
-    ITEM_TYPE_TRAITS(QMatrix4x2,    8,  void)
-    ITEM_TYPE_TRAITS(QMatrix4x3,    12, void)
-    ITEM_TYPE_TRAITS(QMatrix4x4,    16, void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(GLfloat,       1,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(GLint,         1,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(GLuint,        1,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QColor,        3,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QPoint,        2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QPointF,       2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QSize,         2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QSizeF,        2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix2x2,    4,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix2x3,    6,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix2x4,    8,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix3x2,    6,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix3x3,    9,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix3x4,    12, void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix4x2,    8,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix4x3,    12, void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix4x4,    16, void)
 
+#undef DRAWING_DATA_ITEM_TYPE_TRAITS
 
     class ITypeInfo
     {
@@ -230,7 +231,7 @@ namespace drawing_data
     public:
         Attribute(const QString &name_, std::shared_ptr<std::vector<ItemType_>> data_)
             : m_name(name_),
-              m_data(data_)
+              m_data(std::move(data_))
         {}
 
     public:
@@ -291,7 +292,7 @@ namespace drawing_data
                 return;
             }
 
-            m_data.reset(new std::vector<ItemType_>());
+            m_data = std::make_shared<std::vector<ItemType_>>();
         }
 
         template<typename ItemType2_>
@@ -371,7 +372,7 @@ namespace drawing_data
     {
         Uniform(const QString &name_, std::shared_ptr<ItemType_> data_)
             : m_name(name_)
-            , m_data(data_)
+            , m_data(std::move(data_))
         {
         }
 
@@ -382,7 +383,7 @@ namespace drawing_data
 
         virtual void set(QOpenGLShaderProgram *program, int location_) const
         {
-            if(nullptr == program
+            if(!program
                     || location_ < 0
                     || !m_data.operator bool()
                     )
@@ -503,7 +504,7 @@ namespace drawing_data
             }
 
             AttributeType *attr = dynamic_cast<AttributeType *>(interface_);
-            if(nullptr == attr)
+            if(!attr)
             {
                 return;
             }
@@ -520,7 +521,7 @@ namespace drawing_data
             }
 
             UniformType *uniform = dynamic_cast<UniformType *>(interface_);
-            if(nullptr == uniform)
+            if(!uniform)
             {
                 return;
             }
@@ -536,7 +537,7 @@ namespace drawing_data
             }
 
             const UniformType *uniform = dynamic_cast<const UniformType *>(interface_);
-            if(nullptr == uniform)
+            if(!uniform)
             {
                 return false;
             }
@@ -665,7 +666,7 @@ namespace drawing_data
     struct QuizImageObjects
     {
     public:
-        QColor clearColor = QColor(255, 255, 255);
+        QColor clearColor{255, 255, 255};
         std::vector<std::shared_ptr<QuizImageObject>> objects;
 
     public:

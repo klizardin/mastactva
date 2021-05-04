@@ -122,7 +122,7 @@ ArgumentValueDataArray *ArgumentBase::createValueDataArray() const
 template<class JsonType_>
 std::unique_ptr<ArgumentBase> fromJsonT(const JsonType_ &obj_, bool isInput_, const ArgumentBase *)
 {
-    std::unique_ptr<ArgumentBase> result(new ArgumentBase());
+    std::unique_ptr<ArgumentBase> result = std::make_unique<ArgumentBase>();
     result->setInput(isInput_);
 
     using FieldType = typename IJsonFieldInfo<JsonType_>::Type;

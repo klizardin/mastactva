@@ -52,7 +52,7 @@ GalleryModelView::~GalleryModelView()
 
 bool GalleryModelView::canProcess(const DBRequestBase *r_) const
 {
-    if(nullptr == r_) { return false; }
+    if(!r_) { return false; }
     const QString tableName = db::jsonToSql(
                 getDataLayout<typename GalleryModel::DataType>().getLayoutJsonName()
                 );
@@ -66,7 +66,7 @@ bool GalleryModelView::canProcess(const DBRequestBase *r_) const
 
 bool GalleryModelView::getListImpl(DBRequestBase *r_)
 {
-    if(nullptr == r_) { return false; }
+    if(!r_) { return false; }
     bool startLoad = m_requests.isEmpty();
     m_requests.push_back(r_);
     if(startLoad) { loadSteps(); }
@@ -185,7 +185,7 @@ void GalleryModelView::galleryModelListReloaded()
         int w1 = -1;
         int w2 = -1;
 
-        if(nullptr != m_lastUserStep)
+        if(m_lastUserStep)
         {
             if(w1 < 0 && i1_->id() == m_lastUserStep->galleryId()) { w1 = 0; }
             if(w2 < 0 && i2_->id() == m_lastUserStep->galleryId()) { w2 = 0; }
@@ -204,7 +204,7 @@ void GalleryModelView::galleryModelListReloaded()
     }, false);
 
     DBRequestBase *currentRequest = m_requests.front();
-    if(nullptr != currentRequest)
+    if(currentRequest)
     {
         setData(currentRequest);
         currentRequest->setProcessed(true);
@@ -215,7 +215,7 @@ void GalleryModelView::galleryModelListReloaded()
 
 void GalleryModelView::setData(DBRequestBase *request_)
 {
-    Q_ASSERT(nullptr != request_ && request_->getAPIName() == g_cachAPI);
+    Q_ASSERT(request_ && request_->getAPIName() == g_cachAPI);
     QJsonArray array;
     for(int i = 0; i < m_galleryModel->sizeImpl(); i++)
     {

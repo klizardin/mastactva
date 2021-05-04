@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
     {
         if(url == objUrl)
         {
-            if (nullptr == obj)
+            if (!obj)
             {
                 QCoreApplication::exit(-1);
             }

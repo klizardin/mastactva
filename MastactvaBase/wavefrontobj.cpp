@@ -702,7 +702,7 @@ QJsonDocument graphicsOBJtoJson(const QString &objData_)
 {
     WavefrontOBJ *obj = parseGraphicsOBJ(objData_);
     QJsonDocument resultDocument;
-    if(nullptr != obj)
+    if(obj)
     {
         resultDocument = obj->toJsonData();
     }

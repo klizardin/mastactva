@@ -81,7 +81,7 @@ void ServerFiles::add(const QString &url_,
     const auto fitd = std::find_if(std::begin(m_downloads), std::end(m_downloads),
                  [&url_](ServerFileDownload *sfd_)->bool
     {
-        return nullptr != sfd_ && sfd_->getUrl() == url_;
+        return sfd_ && sfd_->getUrl() == url_;
     });
     if(std::end(m_downloads) != fitd)
     {
@@ -147,9 +147,9 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
     const bool done = std::all_of(std::begin(m_downloads), std::end(m_downloads),
                                   [&urls_](const ServerFileDownload *download_)->bool
     {
-        return nullptr == download_  ||
+        return !download_  ||
                 (
-                    nullptr != download_ &&
+                    download_ &&
                     std::end(urls_)
                         == std::find(
                             std::begin(urls_),
@@ -167,7 +167,7 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
         return val_ +
             (
                 (
-                    nullptr != download_
+                    download_
                     && std::end(urls_)
                         != std::find(
                                 std::begin(urls_),
@@ -185,7 +185,7 @@ qreal ServerFiles::getProgressRate(const QStringList &urls_) const
         return val_ +
             (
                 (
-                    nullptr != download_
+                    download_
                     && std::end(urls_)
                         != std::find(
                                 std::begin(urls_),
@@ -207,7 +207,7 @@ void ServerFiles::cancel(const QStringList &urls_)
     QList<ServerFileDownload *> toRemove;
     for(ServerFileDownload *download: qAsConst(m_downloads))
     {
-        if(nullptr == download) { continue; }
+        if(!download) { continue; }
         const auto fit = std::find(std::begin(urls_), std::end(urls_), download->getUrl());
         if(std::end(urls_) == fit) { continue; }
         download->cancel();
@@ -231,7 +231,7 @@ void ServerFiles::reset()
     QList<ServerFileDownload *> toRemove;
     for(ServerFileDownload *download: qAsConst(m_downloads))
     {
-        if(nullptr == download) { continue; }
+        if(!download) { continue; }
         toRemove.push_back(download);
     }
     for(ServerFileDownload *download: qAsConst(toRemove))
@@ -250,7 +250,7 @@ void ServerFiles::reset()
 
 void ServerFiles::finished(ServerFileDownload *download_)
 {
-    if(nullptr == download_) { return; }
+    if(!download_) { return; }
     QObject::disconnect(download_, SIGNAL(finished(ServerFileDownload *)),
                         this, SLOT(finished(ServerFileDownload *)));
     QObject::disconnect(download_, SIGNAL(progress()),

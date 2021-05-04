@@ -50,7 +50,7 @@ QuestionAnswerModelView::~QuestionAnswerModelView()
 
 bool QuestionAnswerModelView::canProcess(const DBRequestBase *r_) const
 {
-    if(nullptr == r_) { return false; }
+    if(!r_) { return false; }
     const QString tableName = db::jsonToSql(
                 getDataLayout<typename UserQuestionAnswerModel::DataType>().getLayoutJsonName()
                 );
@@ -73,7 +73,7 @@ bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_,
                                           const QHash<QString, QVariant> &values_,
                                           DBRequestBase *r_)
 {
-    if(nullptr == r_ || r_->getAPIName() != g_cachAPI) { return false; }
+    if(!r_ || r_->getAPIName() != g_cachAPI) { return false; }
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemAppId(appId_);
 
@@ -111,7 +111,7 @@ void QuestionAnswerModelView::addUserQuestionAnswer()
         return;
     }
 
-    Q_ASSERT(nullptr != m_userQuestionAnswerModel);
+    Q_ASSERT(m_userQuestionAnswerModel);
 
     QObject::connect(m_galleryStatisticsModel, SIGNAL(listReloaded()),
                      this, SLOT(galleryStatisticsModelListReloaded()));
@@ -127,7 +127,7 @@ void QuestionAnswerModelView::error()
     }
 
     DBRequestBase *request = m_requests.front().first;
-    if(nullptr != request && request->getAPIName() == g_cachAPI)
+    if(request && request->getAPIName() == g_cachAPI)
     {
         LocalDBRequest *r = static_cast<LocalDBRequest *>(request);
 
@@ -146,8 +146,8 @@ void QuestionAnswerModelView::error()
 
 void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
 {
-    Q_ASSERT(nullptr != m_userQuestionAnswerModel);
-    Q_ASSERT(nullptr != m_galleryStatisticsModel);
+    Q_ASSERT(m_userQuestionAnswerModel);
+    Q_ASSERT(m_galleryStatisticsModel);
 
     QObject::disconnect(m_galleryStatisticsModel, SIGNAL(listReloaded()),
                         this, SLOT(galleryStatisticsModelListReloaded()));
@@ -159,14 +159,14 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
     }
 
     UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
-    if(nullptr == userQuestionAnswer)
+    if(!userQuestionAnswer)
     {
         error();
         return;
     }
 
     m_galleryStatistics = m_galleryStatisticsModel->getCurrentDataItem();
-    if(nullptr == m_galleryStatistics)
+    if(!m_galleryStatistics)
     {
         m_galleryStatistics = m_galleryStatisticsModel->createDataItemImpl();
 
@@ -174,13 +174,13 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
                     QMLObjectsBase::getInstance().getListModel(g_galleryModel)
                     );
         Gallery *gallery = galleryModel->getCurrentDataItem();
-        if(nullptr == gallery)
+        if(!gallery)
         {
             error();
             return;
         }
 
-        m_galleryStatistics->setGalleryId(nullptr != gallery ? gallery->id() : -1 );
+        m_galleryStatistics->setGalleryId(gallery ? gallery->id() : -1 );
         m_galleryStatistics->setUserId(g_userId);
         m_galleryStatistics->setPoints(userQuestionAnswer->points());
 
@@ -217,7 +217,7 @@ void QuestionAnswerModelView::galleryStatisticsModelListReloaded()
 
 void QuestionAnswerModelView::userQuestionAnswerModelListReloaded()
 {
-    Q_ASSERT(nullptr != m_userQuestionAnswerModel);
+    Q_ASSERT(m_userQuestionAnswerModel);
     QObject::disconnect(m_userQuestionAnswerModel, SIGNAL(listReloaded()),
                         this, SLOT(userQuestionAnswerModelListReloaded()));
 
@@ -228,14 +228,14 @@ void QuestionAnswerModelView::userQuestionAnswerModelListReloaded()
     }
 
     UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
-    if(nullptr == userQuestionAnswer)
+    if(!userQuestionAnswer)
     {
         error();
         return;
     }
 
     UserQuestionAnswer *oldUserQuestionAnswer = m_userQuestionAnswerModel->getCurrentDataItem();
-    if(nullptr == oldUserQuestionAnswer)
+    if(!oldUserQuestionAnswer)
     {
         m_galleryStatistics->setPoints(m_galleryStatistics->points()
                                        + userQuestionAnswer->points());
@@ -273,7 +273,7 @@ void QuestionAnswerModelView::addUserQuestionAnswerItem()
     }
 
     UserQuestionAnswer *userQuestionAnswer = m_requests.front().second;
-    if(nullptr == userQuestionAnswer)
+    if(!userQuestionAnswer)
     {
         error();
         return;
@@ -283,7 +283,7 @@ void QuestionAnswerModelView::addUserQuestionAnswerItem()
     getDataLayout<UserQuestionAnswer>().getJsonValues(userQuestionAnswer, values);
 
     DBRequestBase *request = m_requests.front().first;
-    if(nullptr == request || request->getAPIName() != g_cachAPI)
+    if(!request || request->getAPIName() != g_cachAPI)
     {
         error();
         return;

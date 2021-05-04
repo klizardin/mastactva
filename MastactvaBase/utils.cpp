@@ -386,7 +386,7 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
     if(useServerFiles_)
     {
         ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-        if(nullptr == sf ||
+        if(!sf ||
                 !sf->isUrlDownloaded(filenameUrl_)
                 ) { return QString(); }
         QUrl url(sf->get(filenameUrl_));
@@ -416,7 +416,7 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
     if(useServerFiles_)
     {
         ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-        if(nullptr == sf ||
+        if(!sf ||
                 !sf->isUrlDownloaded(filenameUrl_)
                 ) { return QByteArray(); }
         QUrl url(sf->get(filenameUrl_));
@@ -434,7 +434,7 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
 QString getTextFromBinaryData(const QByteArray &data_)
 {
     QTextCodec *codec = QTextCodec::codecForUtfText(data_);
-    if(nullptr == codec) { return QString(); }
+    if(!codec) { return QString(); }
     return codec->toUnicode(data_);
 }
 

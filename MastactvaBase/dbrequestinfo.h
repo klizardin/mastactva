@@ -51,7 +51,7 @@ void init(
     }
 
     IListModel *parentModelPtr = QMLObjectsBase::getInstance().getListModel(parentModel_);
-    if(nullptr != parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
+    if(parentModelPtr || (!refAppId_.isValid() && refValue_.isValid()))
     {
         idField =
             refValue_.isValid()

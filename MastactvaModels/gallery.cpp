@@ -14,12 +14,12 @@ Gallery::Gallery(GalleryModel *parent_)
 
 Gallery::~Gallery()
 {
-    if(nullptr != m_imagesModel)
+    if(m_imagesModel)
     {
         m_imagesModel->deleteLater();
     }
     m_imagesModel = nullptr;
-    if(nullptr != m_galleryStatisticsModel)
+    if(m_galleryStatisticsModel)
     {
         m_galleryStatisticsModel->deleteLater();
     }
@@ -126,7 +126,7 @@ ImageModel *Gallery::createImages()
 
 QVariant Gallery::images()
 {
-    if(nullptr == m_imagesModel)
+    if(!m_imagesModel)
     {
         m_imagesModel = createImages();
     }
@@ -135,7 +135,7 @@ QVariant Gallery::images()
 
 QVariant Gallery::statistics() const
 {
-    if(nullptr == m_galleryStatisticsModel)
+    if(!m_galleryStatisticsModel)
     {
         const_cast<Gallery *>(this)->m_galleryStatisticsModel = const_cast<Gallery *>(this)
                 ->createGalleryStatistics();
@@ -149,7 +149,7 @@ QVariant Gallery::statistics() const
 
 void Gallery::setStatistics(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_galleryStatisticsModel)
+    if(obj_.isNull() && m_galleryStatisticsModel)
     {
         delete m_galleryStatisticsModel;
         m_galleryStatisticsModel = nullptr;

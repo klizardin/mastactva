@@ -959,6 +959,20 @@ QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSql
     return obj;
 }
 
+QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_)
+{
+    QJsonObject jsonObj;
+    for(const db::JsonSqlField &fi : qAsConst(fields_))
+    {
+        const QVariant val = query_.value(fi.sqlValueName());
+        if(val.isValid())
+        {
+            jsonObj.insert(fi.getJsonName(), fi.jsonValue(val));
+        }
+    }
+    return jsonObj;
+}
+
 QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
 {
     return getFieldListValues(
@@ -1015,6 +1029,26 @@ JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(co
         }
     }
     return result;
+}
+
+JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant> &leftFields_)
+{
+    if(leftFields_.isEmpty())
+    {
+        return fields_;
+    }
+
+    return db::filter(fields_, [&leftFields_](const db::JsonSqlField &fi_)->bool
+    {
+        const auto fit = std::find_if(
+                    std::cbegin(leftFields_),
+                    std::cend(leftFields_),
+                    [&fi_](const QVariant &v_)->bool
+        {
+            return v_.isValid() && fi_.getSqlName() == v_.toString();
+        });
+        return std::cend(leftFields_) != fit;
+    });
 }
 
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)

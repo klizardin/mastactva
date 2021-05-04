@@ -142,13 +142,21 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                if(nullptr == obj_) { return QVariant(); }
+                if(!obj_)
+                {
+                    return QVariant();
+                }
+
                 return layout::getValue((obj_->*m_getFunc)(), toQML_);
             }
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(!obj_)
+                {
+                    return;
+                }
+
                 ItemType_ val;
                 layout::setValue(value_, val);
                 (obj_->*m_setFunc)(val);
@@ -156,7 +164,11 @@ namespace layout
 
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(!obj_)
+                {
+                    return;
+                }
+
                 ItemType_ val;
                 layout::setValue(value_, val);
                 (obj_->*m_setFunc)(val);
@@ -164,7 +176,11 @@ namespace layout
 
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
             {
-                if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
+                if(!obj1_ || !obj2_)
+                {
+                    return 0;
+                }
+
                 return layout::compareValues((obj1_->*m_getFunc)(), (obj2_->*m_getFunc)(), toQML_);
             }
 
@@ -204,9 +220,16 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                if(nullptr == obj_) { return QVariant(); }
-                if(!toQML_) { return QVariant(); }
-                if(nullptr == obj_->*m_modelPtr)
+                if(!obj_)
+                {
+                    return QVariant();
+                }
+                if(!toQML_)
+                {
+                    return QVariant();
+                }
+
+                if(!(obj_->*m_modelPtr))
                 {
                     const_cast<DataType_ *>(obj_)->*m_modelPtr
                             = (const_cast<DataType_ *>(obj_)->*m_createFuncPtr)();
@@ -216,13 +239,18 @@ namespace layout
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(!obj_)
+                {
+                    return;
+                }
+
                 if(value_.isNull())
                 {
                     delete (obj_->*m_modelPtr);
                     obj_->*m_modelPtr = nullptr;
                     return;
                 }
+
                 Q_ASSERT(false); // illegal use
             }
 
@@ -235,7 +263,11 @@ namespace layout
 
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
             {
-                if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
+                if(!obj1_ || !obj2_)
+                {
+                    return 0;
+                }
+
                 if(nullptr == obj1_->*m_modelPtr)
                 {
                     const_cast<DataType_ *>(obj1_)->*m_modelPtr
@@ -278,25 +310,41 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                if(nullptr == obj_) { return QVariant(); }
+                if(!obj_)
+                {
+                    return QVariant();
+                }
+
                 return layout::getValue(obj_->*m_itemPtr, toQML_);
             }
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(!obj_)
+                {
+                    return;
+                }
+
                 layout::setValue(value_, obj_->*m_itemPtr);
             }
 
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(!obj_)
+                {
+                    return;
+                }
+
                 layout::setValue(value_, obj_->*m_itemPtr);
             }
 
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
             {
-                if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
+                if(!obj1_ || !obj2_)
+                {
+                    return 0;
+                }
+
                 return layout::compareValues(obj1_->*m_itemPtr, obj2_->*m_itemPtr, toQML_);
             }
 
@@ -319,6 +367,9 @@ namespace layout
 template<typename DataType_>
 class LayoutBase
 {
+private:
+    using LayoutItemBase = layout::Private::ILayoutItemBase<DataType_>;
+
 public:
     LayoutBase() = default;
     ~LayoutBase()
@@ -340,7 +391,10 @@ public:
                     new layout::Private::LayoutField<DataType_,ItemType_>(
                         m_lastQMLIndex, jsonName_, qmlName_, getFunc_, setFunc_)
                     );
-        if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
+        if(m_fields.back()->isQMLItem())
+        {
+            m_lastQMLIndex++;
+        }
     }
 
     template<typename ModelType_>
@@ -352,7 +406,10 @@ public:
                     new layout::Private::LayoutModelField<DataType_,ModelType_>(
                         m_lastQMLIndex, qmlName_, varPtr_, createFunc_)
                     );
-        if(m_fields.back()->isQMLItem()) { m_lastQMLIndex++; }
+        if(m_fields.back()->isQMLItem())
+        {
+            m_lastQMLIndex++;
+        }
     }
 
     template<typename ItemType_>
@@ -370,7 +427,11 @@ public:
     {
         for(const layout::Private::ILayoutItem<DataType_> *layoutItem: qAsConst(m_fields))
         {
-            if(nullptr == layoutItem || !layoutItem->isQMLItem()) { continue; }
+            if(!layoutItem || !layoutItem->isQMLItem())
+            {
+                continue;
+            }
+
             QString name = layoutItem->getQMLName();
             roleNames_[Qt::UserRole + layoutItem->getModelIndex()] = name.toLocal8Bit();
         }
@@ -379,14 +440,22 @@ public:
     QVariant getModelValue(const DataType_ *obj_, int role_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByModelRole(role_);
-        if(nullptr == layoutItem) { return QVariant(); }
+        if(!layoutItem)
+        {
+            return QVariant();
+        }
+
         return layoutItem->getValue(obj_, true);
     }
 
     bool setModelValue(DataType_ *obj_, int role_, const QVariant &val_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByModelRole(role_);
-        if(nullptr == layoutItem) { return false; }
+        if(!layoutItem)
+        {
+            return false;
+        }
+
         layoutItem->setValue(obj_, val_);
         return true;
     }
@@ -405,21 +474,33 @@ public:
     QVariant getJsonValue(const DataType_ *obj_, const QString &jsonFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
-        if(nullptr == layoutItem) { return QVariant(); }
+        if(!layoutItem)
+        {
+            return QVariant();
+        }
+
         return layoutItem->getValue(obj_, false);
     }
 
     int compareJsonValues(const DataType_ *obj1_, const DataType_ *obj2_, const QString &jsonFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByJsonName(jsonFieldName_);
-        if(nullptr == layoutItem) { return 0; }
+        if(!layoutItem)
+        {
+            return 0;
+        }
+
         return layoutItem->compareValues(obj1_, obj2_, false);
     }
 
     QVariant getQMLValue(const DataType_ *obj_, const QString &qmlFieldName_) const
     {
         const layout::Private::ILayoutItem<DataType_> *layoutItem = findItemByQMLName(qmlFieldName_);
-        if(nullptr == layoutItem) { return QVariant(); }
+        if(!layoutItem)
+        {
+            return QVariant();
+        }
+
         return layoutItem->getValue(obj_, true);
     }
 
@@ -428,7 +509,11 @@ public:
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(!item->isJsonItem()) { continue; }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+
             values_[item->getJsonName()] = item->getValue(obj_, false);
             ret = true;
         }
@@ -440,8 +525,15 @@ public:
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(!item->isJsonItem()) { continue; }
-            if(!values_.contains(item->getJsonName())) { continue; }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+            if(!values_.contains(item->getJsonName()))
+            {
+                continue;
+            }
+
             item->setValue(obj_, values_.value(item->getJsonName()));
             ret = true;
         }
@@ -453,8 +545,12 @@ public:
         bool ret = false;
         if(jsonObj_.isArray())
         {
-            QJsonValue jv = jsonObj_[index_];
-            if(jv.isUndefined()) { return false; }
+            const QJsonValue jv = jsonObj_[index_];
+            if(jv.isUndefined())
+            {
+                return false;
+            }
+
             ret |= setJsonValuesTempl(obj_, jv);
         }
         else if(jsonObj_.isObject())
@@ -524,7 +620,11 @@ public:
     {
         for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
+            if(!item)
+            {
+                continue;
+            }
+
             if(item->getType() == type_)
             {
                 return item->getValue(obj_, true);
@@ -537,7 +637,11 @@ public:
     {
         for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
+            if(!item)
+            {
+                continue;
+            }
+
             if(item->getType() == type_)
             {
                 item->setValue(obj_, value_);
@@ -560,8 +664,12 @@ public:
     void setIdField(const QString &fieldJsonName_)
     {
         layout::Private::ILayoutItemBase<DataType_> *layoutItem = findItemByJsonName(fieldJsonName_);
-        Q_ASSERT(nullptr != layoutItem); // field not founded
-        if(nullptr == layoutItem) { return; }
+        Q_ASSERT(layoutItem); // field not founded
+        if(!layoutItem)
+        {
+            return;
+        }
+
         layoutItem->setFieldId(true);
     }
 
@@ -570,13 +678,20 @@ public:
         bool ret = false;
         for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
+            if(!item)
+            {
+                continue;
+            }
+
             if(item->autoCreated())
             {
                 item->setValue(to_, QVariant::fromValue(static_cast<QObject *>(nullptr)));
                 continue;
             }
-            if(item->isQMLItem() || item->getType() != layout::SpecialFieldEn::none)
+
+            if(item->isQMLItem()
+                    || item->getType() != layout::SpecialFieldEn::none
+                    )
             {
                 item->setValue(to_, item->getValue(from_, true));
                 ret = true;
@@ -585,78 +700,128 @@ public:
         return ret;
     }
 
-protected:
+private:
     template<typename JsonType_>
     bool setJsonValuesTempl(DataType_ *obj_, const JsonType_ &jsonObj_) const
     {
         bool ret = false;
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
-            if(!item->isJsonItem()) { continue; }
-            QJsonValue jv = jsonObj_[item->getJsonName()];
-            if(jv.isUndefined()) { continue ; }
+            if(!item)
+            {
+                continue;
+            }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+
+            const QJsonValue jv = jsonObj_[item->getJsonName()];
+            if(jv.isUndefined())
+            {
+                continue ;
+            }
+
             item->setValue(obj_, jv);
             ret = true;
         }
         return ret;
     }
 
+    template<typename LayoutType_>
+    static auto *findItemByJsonNameImpl(
+            LayoutType_ &layout_,
+            const QString &fieldJsonName_
+            )
+    {
+        auto fit = std::find_if(
+                    std::begin(layout_.m_fields),
+                    std::end(layout_.m_fields),
+                    [&fieldJsonName_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return item_ && item_->getJsonName() == fieldJsonName_;
+        });
+        if(std::end(layout_.m_fields) == fit)
+        {
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
+            return static_cast<PtrType>(nullptr);
+        }
+        return *fit;
+    }
+
     const layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                     [&fieldJsonName_](layout::Private::ILayoutItem<DataType_> *item_)->bool
-        {
-            return nullptr != item_ && item_->getJsonName() == fieldJsonName_;
-        });
-        if(std::end(m_fields) == fit) { return nullptr; }
-        return *fit;
+        return findItemByJsonNameImpl(*this, fieldJsonName_);
     }
 
     layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_)
     {
-        return const_cast<layout::Private::ILayoutItemBase<DataType_> *>
-                (const_cast<const LayoutBase<DataType_> *>
-                   (this)->findItemByJsonName(fieldJsonName_)
-                );
+        return findItemByJsonNameImpl(*this, fieldJsonName_);
+    }
+
+    template<typename LayoutType_>
+    static auto *findItemByQMLNameImpl(
+            LayoutType_ &layout_,
+            const QString &fieldQMLName_
+            )
+    {
+        auto fit = std::find_if(
+                    std::begin(layout_.m_fields),
+                    std::end(layout_.m_fields),
+                    [&fieldQMLName_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return item_ && item_->getQMLName() == fieldQMLName_;
+        });
+        if(std::end(layout_.m_fields) == fit)
+        {
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
+            return static_cast<PtrType>(nullptr);
+        }
+        return *fit;
     }
 
     const layout::Private::ILayoutItem<DataType_> *findItemByQMLName(const QString &fieldQMLName_) const
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                     [&fieldQMLName_](layout::Private::ILayoutItem<DataType_> *item_)->bool
-        {
-            return nullptr != item_ && item_->getQMLName() == fieldQMLName_;
-        });
-        if(std::end(m_fields) == fit) { return nullptr; }
-        return *fit;
+        return findItemByQMLNameImpl(*this, fieldQMLName_);
     }
 
     layout::Private::ILayoutItem<DataType_> *findItemByQMLName(const QString &fieldQMLName_)
     {
-        return const_cast<layout::Private::ILayoutItem<DataType_> *>
-                (const_cast<const LayoutBase<DataType_> *>
-                   (this)->findItemByQMLName(fieldQMLName_)
-                );
+        return findItemByQMLNameImpl(*this, fieldQMLName_);
+    }
+
+    template<typename LayoutType_>
+    static auto *findItemByModelRoleImpl(
+            LayoutType_ &layout_,
+            int role_
+            )
+    {
+        auto fit = std::find_if(
+                    std::begin(layout_.m_fields),
+                    std::end(layout_.m_fields),
+                    [&role_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
+        {
+            return item_
+                    && item_->isQMLItem()
+                    && item_->getModelIndex() + Qt::UserRole == role_
+                    ;
+        });
+        if(std::end(layout_.m_fields) == fit)
+        {
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
+            return static_cast<PtrType>(nullptr);
+        }
+        return *fit;
     }
 
     const layout::Private::ILayoutItem<DataType_> *findItemByModelRole(int role_) const
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                     [&role_](layout::Private::ILayoutItem<DataType_> *item_)->bool
-        {
-            return nullptr != item_ && item_->isQMLItem() && item_->getModelIndex() + Qt::UserRole == role_;
-        });
-        if(std::end(m_fields) == fit) { return nullptr; }
-        return *fit;
+        return findItemByModelRoleImpl(*this, role_);
     }
 
     layout::Private::ILayoutItem<DataType_> *findItemByModelRole(int role_)
     {
-        return const_cast<layout::Private::ILayoutItem<DataType_> *>
-                (const_cast<const LayoutBase<DataType_> *>
-                   (this)->findItemByModelRole(role_)
-                );
+        return findItemByModelRoleImpl(*this, role_);
     }
 
     template<typename JsonType_>
@@ -664,9 +829,17 @@ protected:
     {
         for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
         {
-            if(!item->isJsonItem()) { continue; }
-            QJsonValue jv = jsonObj_[item->getJsonName()];
-            if(jv.isUndefined()) { continue; }
+            if(!item->isJsonItem())
+            {
+                continue;
+            }
+
+            const QJsonValue jv = jsonObj_[item->getJsonName()];
+            if(jv.isUndefined())
+            {
+                continue;
+            }
+
             item->setValue(obj_, jv);
         }
     }

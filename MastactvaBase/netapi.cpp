@@ -16,7 +16,7 @@
 
 NetRequestData::~NetRequestData()
 {
-    if(nullptr != m_reply)
+    if(m_reply)
     {
         m_reply->deleteLater();
     }
@@ -35,7 +35,7 @@ void NetRequestData::setReply(QNetworkReply *reply_)
 
 bool NetRequestData::compare(QNetworkReply *reply_) const
 {
-    return nullptr != m_reply && m_reply == reply_;
+    return m_reply && m_reply == reply_;
 }
 
 
@@ -105,7 +105,7 @@ void NetAPI::setBasicAuthentification(QNetworkRequest* netRequest_)
 
 void NetAPI::clearData()
 {
-    if(nullptr != m_networkManager)
+    if(m_networkManager)
     {
         QObject::disconnect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
                             this, SLOT(replayFinished(QNetworkReply *)));
@@ -150,7 +150,7 @@ QHash<QString, QVariant> NetAPI::merge(const QHash<QString, QVariant> &v1_,
 
 bool NetAPI::init()
 {
-    if(nullptr != m_networkManager) { return true; }
+    if(m_networkManager) { return true; }
     m_networkManager = new QNetworkAccessManager();
     QObject::connect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
                      this, SLOT(replayFinished(QNetworkReply *)));
@@ -361,7 +361,7 @@ static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
     {
         QObject * obj = qvariant_cast<QObject *>(v);
         QFile *f = qobject_cast<QFile*>(obj);
-        if(nullptr != f) { return true; }
+        if(f) { return true; }
     }
     return false;
 }
@@ -376,7 +376,7 @@ MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &value
     {
         QObject * obj = qvariant_cast<QObject *>(it.value());
         QFile *f = qobject_cast<QFile*>(obj);
-        if(nullptr != f)
+        if(f)
         {
             QFileInfo fileInfo(f->fileName());
             addPart(QString("form-data; name=\"%1\"; filename=\"%2\"")
@@ -415,8 +415,8 @@ void MultipartRequestData::addPart(const QString &header_, QFile *data_, bool ta
     m_httpParts.back().setBodyDevice(data_);
     if(takeOwnship_)
     {
-        Q_ASSERT(nullptr != m_multiPart);
-        if(nullptr == m_multiPart)
+        Q_ASSERT(m_multiPart);
+        if(!m_multiPart)
         {
             return;
         }
@@ -426,8 +426,8 @@ void MultipartRequestData::addPart(const QString &header_, QFile *data_, bool ta
 
 void MultipartRequestData::appendParts()
 {
-    Q_ASSERT(nullptr != m_multiPart);
-    if(nullptr == m_multiPart) { return; }
+    Q_ASSERT(m_multiPart);
+    if(!m_multiPart) { return; }
     for(const QHttpPart& part : qAsConst(m_httpParts))
     {
         m_multiPart->append(part);
@@ -590,7 +590,7 @@ static NetAPI *s_netAPI = nullptr;
 
 void NetAPI::createInstance(QObject *parent_)
 {
-    if(nullptr == s_netAPI)
+    if(!s_netAPI)
     {
         s_netAPI = new NetAPI(parent_);
     }

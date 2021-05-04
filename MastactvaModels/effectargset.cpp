@@ -14,7 +14,7 @@ EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
 
 EffectArgSet::~EffectArgSet()
 {
-    if(nullptr != m_affectArgValueModel)
+    if(m_affectArgValueModel)
     {
         m_affectArgValueModel->deleteLater();
     }
@@ -23,14 +23,14 @@ EffectArgSet::~EffectArgSet()
 
 QVariantList EffectArgSet::argValuesOfSetIdList()
 {
-    if(nullptr == m_affectArgValueModel
+    if(!m_affectArgValueModel
             || !m_affectArgValueModel->isListLoaded()
             ) { return QVariantList(); }
     for(int i = 0; i < m_affectArgValueModel->size(); i++)
     {
         EffectArgValue *effectArgValue = m_affectArgValueModel->dataItemAtImpl(i);
-        if(nullptr == effectArgValue ||
-                nullptr == effectArgValue->getArg() ||
+        if(!effectArgValue ||
+                !effectArgValue->getArg() ||
                 !effectArgValue->getArg()->isListLoaded()
                 ) { return QVariantList(); }
     }
@@ -39,9 +39,9 @@ QVariantList EffectArgSet::argValuesOfSetIdList()
     for(int i = 0; i < m_affectArgValueModel->size(); i++)
     {
         EffectArgValue *effectArgValue = m_affectArgValueModel->dataItemAtImpl(i);
-        if(nullptr == effectArgValue) { continue; }
+        if(!effectArgValue) { continue; }
         EffectArg *effectArg = effectArgValue->getArg()->getCurrentDataItem();
-        if(nullptr == effectArg) { continue; }
+        if(!effectArg) { continue; }
         res.push_back(QVariant::fromValue(effectArg->id()));
     }
 
@@ -102,7 +102,7 @@ void EffectArgSet::setDescription(const QString &description_)
 
 QVariant EffectArgSet::values() const
 {
-    if(nullptr == m_affectArgValueModel)
+    if(!m_affectArgValueModel)
     {
         const_cast<EffectArgSet *>(this)->m_affectArgValueModel = const_cast<EffectArgSet *>(this)
                 ->createAffectArgValueModel();
@@ -116,7 +116,7 @@ QVariant EffectArgSet::values() const
 
 void EffectArgSet::setValues(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_affectArgValueModel)
+    if(obj_.isNull() && m_affectArgValueModel)
     {
         delete m_affectArgValueModel;
         m_affectArgValueModel = nullptr;

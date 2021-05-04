@@ -13,7 +13,7 @@ EffectArg::EffectArg(EffectArgModel *parent_ /*= nullptr*/)
 
 EffectArg::~EffectArg()
 {
-    if(nullptr != m_objectArtefactModel)
+    if(m_objectArtefactModel)
     {
         m_objectArtefactModel->deleteLater();
     }
@@ -130,7 +130,7 @@ void EffectArg::setCreated(const QDateTime &created_)
 
 QVariant EffectArg::objectArtefact() const
 {
-    if(nullptr == m_objectArtefactModel)
+    if(!m_objectArtefactModel)
     {
         const_cast<EffectArg *>(this)->m_objectArtefactModel = const_cast<EffectArg *>(this)
                 ->createObjectArtefactModel();
@@ -144,7 +144,7 @@ QVariant EffectArg::objectArtefact() const
 
 void EffectArg::setObjectArtefact(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_objectArtefactModel)
+    if(obj_.isNull() && m_objectArtefactModel)
     {
         delete m_objectArtefactModel;
         m_objectArtefactModel = nullptr;

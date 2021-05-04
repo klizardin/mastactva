@@ -19,7 +19,7 @@ public:
 
     virtual bool canProcess(const DBRequestBase *r_) const
     {
-        if(nullptr == r_) { return false; }
+        if(!r_) { return false; }
         const QString tableName = db::jsonToSql(
                     getDataLayout<typename ModelType_::DataType>().getLayoutJsonName()
                     );
@@ -32,11 +32,11 @@ public:
 
     virtual bool getListImpl(DBRequestBase *r_) override
     {
-        if(nullptr == r_) { return false; }
+        if(!r_) { return false; }
         LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(nullptr == localDataAPI) { return false; }
+        if(!localDataAPI) { return false; }
         ILocalDataAPI *defaultAPI = r_->getDefaultAPI();
-        if(nullptr == defaultAPI) { return false; }
+        if(!defaultAPI) { return false; }
 
         r_->insertExtraField(g_procedureExtraFieldName,
                              QVariant::fromValue(QHash<QString, QVariant>(

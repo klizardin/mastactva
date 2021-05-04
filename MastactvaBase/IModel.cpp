@@ -11,7 +11,7 @@ void IListModelInfoObjectImpl::startLoadChildModel()
 #endif
 
     ++m_loadingChildenModels;
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
     }
@@ -33,7 +33,7 @@ void IListModelInfoObjectImpl::endLoadChildModel()
 #endif
 
     Q_ASSERT(m_loadingChildenModels >= 0);
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
     }
@@ -99,7 +99,7 @@ void IListModelInfoObjectImpl::loadChildrenVF()
 #endif
 
     m_childrenLoading = true;
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->startLoadChildModel();
     }
@@ -113,7 +113,7 @@ void IListModelInfoObjectImpl::objectLoadedVF()
 
     m_childrenLoading = false;
     m_childrenLoaded = true;
-    if(nullptr != m_parentListModelInfo)
+    if(m_parentListModelInfo)
     {
         m_parentListModelInfo->endLoadChildModel();
     }

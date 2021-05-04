@@ -609,7 +609,7 @@ void QuizImage::setFromImage(const QVariantList &fromImage_)
     m_fromImage = { imageUrl, imageHash, false };
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf)
+    if(sf)
     {
         QObject::connect(
                     sf, SIGNAL(downloaded(const QString &)), this,
@@ -644,7 +644,7 @@ void QuizImage::setToImage(const QVariantList &toImage_)
     m_toImage = { imageUrl, imageHash, false };
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf)
+    if(sf)
     {
         QObject::connect(
                     sf, SIGNAL(downloaded(const QString &)), this,
