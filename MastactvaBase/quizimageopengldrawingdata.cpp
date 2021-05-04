@@ -784,7 +784,12 @@ QMatrix4x4 QuizImageFboRendererImpl::getImageMatrix(const QString &imageName_, c
     return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
-void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool imageDataChanged_, bool sizeChanged_, qreal t_)
+void QuizImageFboRendererImpl::synchronizeImpl(
+        const QVector2D &rectSize_,
+        bool imageDataChanged_,
+        bool sizeChanged_,
+        qreal t_
+        )
 {
     const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
     const QVector2D proportinalRect(rectSize_.x() / maxCxCy, rectSize_.y() / maxCxCy);
@@ -799,12 +804,26 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
         return;
     }
 
-    const GLint isSolidGeometry = m_objectRenderer.getUniform(g_renderIsGeomertySolidName, GLint{1});
-    const QVector2D geometryFacedSize = m_objectRenderer.getUniform(g_renderGeomertySizeName, QVector2D{2.0, 2.0});
-    const QVector2D geometryFacedInterval = m_objectRenderer.getUniform(g_renderGeomertySizeName, QVector2D{0.0, 0.0});
+    const GLint isSolidGeometry = m_objectRenderer.getUniform(
+                g_renderIsGeomertySolidName,
+                GLint{1}
+                );
+    const QVector2D geometryFacedSize = m_objectRenderer.getUniform(
+                g_renderGeomertySizeName,
+                QVector2D{2.0, 2.0}
+                );
+    const QVector2D geometryFacedInterval = m_objectRenderer.getUniform(
+                g_renderGeomertySizeName,
+                QVector2D{0.0, 0.0}
+                );
 
-    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderVertexAttributeName );
-    const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderTextureAttributeName );
+    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
+                g_renderVertexAttributeName
+                );
+    const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
+                g_renderTextureAttributeName
+                );
+
     const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
     if(!vertextAttributeExist)
     {
@@ -823,15 +842,29 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
                  isSolidGeometry,
                  vertexData, textureData);
 
-    m_objectRenderer.setAttribute( g_renderVertexAttributeName, vertexData, vertexAttributeTupleSize );
+    m_objectRenderer.setAttribute(
+                g_renderVertexAttributeName,
+                vertexData,
+                vertexAttributeTupleSize
+                );
     if(textureAttributeExist)
     {
-        m_objectRenderer.setAttribute( g_renderTextureAttributeName, textureData, textureAttributeTupleSize );
+        m_objectRenderer.setAttribute(
+                    g_renderTextureAttributeName,
+                    textureData,
+                    textureAttributeTupleSize
+                    );
     }
 
     const QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
-    m_objectRenderer.setUniform(g_renderFromImageMatrixName, getImageMatrix(g_renderFromImageName, windowSize));
-    m_objectRenderer.setUniform(g_renderToImageMatrixName, getImageMatrix(g_renderToImageName, windowSize));
+    m_objectRenderer.setUniform(
+                g_renderFromImageMatrixName,
+                getImageMatrix(g_renderFromImageName, windowSize)
+                );
+    m_objectRenderer.setUniform(
+                g_renderToImageMatrixName,
+                getImageMatrix(g_renderToImageName, windowSize)
+                );
 }
 
 std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()
