@@ -230,7 +230,7 @@ namespace drawing_data
     public:
         Attribute(const QString &name_, std::shared_ptr<std::vector<ItemType_>> data_)
             : m_name(name_),
-              m_data(data_)
+              m_data(std::move(data_))
         {}
 
     public:
