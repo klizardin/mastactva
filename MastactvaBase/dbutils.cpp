@@ -1017,6 +1017,26 @@ JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(co
     return result;
 }
 
+JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant> &leftFields_)
+{
+    if(leftFields_.isEmpty())
+    {
+        return fields_;
+    }
+
+    return db::filter(fields_, [&leftFields_](const db::JsonSqlField &fi_)->bool
+    {
+        const auto fit = std::find_if(
+                    std::cbegin(leftFields_),
+                    std::cend(leftFields_),
+                    [&fi_](const QVariant &v_)->bool
+        {
+            return v_.isValid() && fi_.getSqlName() == v_.toString();
+        });
+        return std::cend(leftFields_) != fit;
+    });
+}
+
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)

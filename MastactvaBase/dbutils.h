@@ -167,6 +167,7 @@ namespace db
     void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
     void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QSqlQuery &query_);
     JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(const JsonSqlField &)> func_);
+    JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant> &leftFields_);
     void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_);
     void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_);
     JsonSqlFieldAndValuesList createRefValuesList(
