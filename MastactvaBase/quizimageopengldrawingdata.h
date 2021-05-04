@@ -166,6 +166,20 @@ public:
         return m_openglData->getUniform(name_, value_);
     }
 
+    template<typename ItemType_>
+    ItemType_ getUniform(const QString &name_, const ItemType_ &defaultValue_) const
+    {
+        ItemType_ result{};
+        if(getUniform(name_, result))
+        {
+            return result;
+        }
+        else
+        {
+            return defaultValue_;
+        }
+    }
+
     int getAttributeTupleSize(const QString &name_) const;
     bool getTextureSize(const QString &name_, QSize &size_) const;
 

@@ -774,22 +774,9 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
         return;
     }
 
-    auto getUniform = [this](const QString &name_, auto defaultValue_) -> auto
-    {
-        decltype (defaultValue_) res;
-        if(m_objectRenderer.getUniform( name_, res ))
-        {
-            return res;
-        }
-        else
-        {
-            return defaultValue_;
-        }
-    };
-
-    const GLint isSolidGeometry = getUniform(g_renderIsGeomertySolidName, GLint{1});
-    const QVector2D geometryFacedSize = getUniform(g_renderGeomertySizeName, QVector2D{2.0, 2.0});
-    const QVector2D geometryFacedInterval = getUniform(g_renderGeomertySizeName, QVector2D{0.0, 0.0});
+    const GLint isSolidGeometry = m_objectRenderer.getUniform(g_renderIsGeomertySolidName, GLint{1});
+    const QVector2D geometryFacedSize = m_objectRenderer.getUniform(g_renderGeomertySizeName, QVector2D{2.0, 2.0});
+    const QVector2D geometryFacedInterval = m_objectRenderer.getUniform(g_renderGeomertySizeName, QVector2D{0.0, 0.0});
 
     const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderVertexAttributeName );
     const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderTextureAttributeName );
