@@ -228,6 +228,10 @@ protected:
     void setToImage(const QString &url_);
 
 private:
+    static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
+    QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
+
+private:
     ObjectsRenderer m_objectRenderer;
     QVector2D m_windowSize;
 };

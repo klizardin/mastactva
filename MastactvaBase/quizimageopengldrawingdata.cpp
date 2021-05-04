@@ -771,6 +771,19 @@ void QuizImageFboRendererImpl::setWindowSize(const QVector2D &windowSize_)
     m_windowSize = windowSize_;
 }
 
+QMatrix4x4 QuizImageFboRendererImpl::getScreenMatrix(const QVector2D &proportinalRect_)
+{
+    QMatrix4x4 renderMatrix;
+    renderMatrix.ortho(QRectF(0, 0, proportinalRect_.x(), proportinalRect_.y()));
+    return renderMatrix;
+}
+
+QMatrix4x4 QuizImageFboRendererImpl::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
+{
+    const QSize imageSize = m_objectRenderer.getTextureSize(imageName_ , windowSize_);
+    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+}
+
 void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool imageDataChanged_, bool sizeChanged_, qreal t_)
 {
     const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
@@ -778,9 +791,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
 
     m_objectRenderer.setUniform( g_renderScreenRectName, proportinalRect );
     m_objectRenderer.setUniform( g_renderTName, t_ );
-    QMatrix4x4 renderMatrix;
-    renderMatrix.ortho(QRectF(0, 0, proportinalRect.x(), proportinalRect.y()));
-    m_objectRenderer.setUniform( g_renderMatrixName, renderMatrix );
+    m_objectRenderer.setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
 
     const bool requireGeometryUpdate = imageDataChanged_ || sizeChanged_;
     if(!requireGeometryUpdate)
@@ -819,14 +830,8 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
     }
 
     const QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
-    auto getImageMatrix = [this, &windowSize](const QString &imageName_) -> QMatrix4x4
-    {
-        const QSize imageSize = m_objectRenderer.getTextureSize(imageName_ , windowSize);
-        return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize);
-    };
-
-    m_objectRenderer.setUniform(g_renderFromImageMatrixName, getImageMatrix(g_renderFromImageName));
-    m_objectRenderer.setUniform(g_renderToImageMatrixName, getImageMatrix(g_renderToImageName));
+    m_objectRenderer.setUniform(g_renderFromImageMatrixName, getImageMatrix(g_renderFromImageName, windowSize));
+    m_objectRenderer.setUniform(g_renderToImageMatrixName, getImageMatrix(g_renderToImageName, windowSize));
 }
 
 std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()
