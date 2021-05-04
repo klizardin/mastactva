@@ -242,7 +242,7 @@ void opengl_drawing::Object::bindTextures(QOpenGLFunctions *f_)
     for(const drawing_data::Texture &texture_ : m_imageData->textures)
     {
         if(texture_.name.trimmed().isEmpty()
-                || textures.find(texture_.name) == std::end(textures)
+                || textures.find(texture_.name) == std::cend(textures)
                 || !textures[texture_.name].operator bool()
                 )
         {
@@ -264,8 +264,8 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
     }
 
     const auto fit = std::min_element(
-                std::begin(m_imageData->attributes),
-                std::end(m_imageData->attributes),
+                std::cbegin(m_imageData->attributes),
+                std::cend(m_imageData->attributes),
                 [](
                 const std::unique_ptr<drawing_data::IAttribute> &left_,
                 const std::unique_ptr<drawing_data::IAttribute> &right_)->bool
@@ -275,7 +275,7 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
                && left_->size() < right_->size()
                ;
     });
-    if(std::end(m_imageData->attributes) == fit)
+    if(std::cend(m_imageData->attributes) == fit)
     {
         return;
     }
@@ -345,7 +345,7 @@ bool opengl_drawing::Object::getTextureSize(
         ) const
 {
     const auto fit = textures.find(name_);
-    if(fit == std::end(textures)
+    if(fit == std::cend(textures)
             || !fit->second.operator bool()
             )
     {
