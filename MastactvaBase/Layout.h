@@ -319,6 +319,9 @@ namespace layout
 template<typename DataType_>
 class LayoutBase
 {
+private:
+    using LayoutItemBase = layout::Private::ILayoutItemBase<DataType_>;
+
 public:
     LayoutBase() = default;
     ~LayoutBase()
@@ -602,23 +605,35 @@ private:
         return ret;
     }
 
-    const layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
+    template<typename LayoutType_>
+    static auto *findItemByJsonNameImpl(
+            LayoutType_ &layout_,
+            const QString &fieldJsonName_
+            )
     {
-        const auto fit = std::find_if(std::begin(m_fields), std::end(m_fields),
-                     [&fieldJsonName_](layout::Private::ILayoutItem<DataType_> *item_)->bool
+        auto fit = std::find_if(
+                    std::begin(layout_.m_fields),
+                    std::end(layout_.m_fields),
+                    [&fieldJsonName_](const layout::Private::ILayoutItem<DataType_> *item_)->bool
         {
             return nullptr != item_ && item_->getJsonName() == fieldJsonName_;
         });
-        if(std::end(m_fields) == fit) { return nullptr; }
+        if(std::end(layout_.m_fields) == fit)
+        {
+            using PtrType = std::remove_reference_t<decltype (*fit)>;
+            return static_cast<PtrType>(nullptr);
+        }
         return *fit;
+    }
+
+    const layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_) const
+    {
+        return findItemByJsonNameImpl(*this, fieldJsonName_);
     }
 
     layout::Private::ILayoutItemBase<DataType_> *findItemByJsonName(const QString &fieldJsonName_)
     {
-        return const_cast<layout::Private::ILayoutItemBase<DataType_> *>
-                (const_cast<const LayoutBase<DataType_> *>
-                   (this)->findItemByJsonName(fieldJsonName_)
-                );
+        return findItemByJsonNameImpl(*this, fieldJsonName_);
     }
 
     const layout::Private::ILayoutItem<DataType_> *findItemByQMLName(const QString &fieldQMLName_) const
