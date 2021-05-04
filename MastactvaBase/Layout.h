@@ -142,13 +142,21 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                if(nullptr == obj_) { return QVariant(); }
+                if(nullptr == obj_)
+                {
+                    return QVariant();
+                }
+
                 return layout::getValue((obj_->*m_getFunc)(), toQML_);
             }
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(nullptr == obj_)
+                {
+                    return;
+                }
+
                 ItemType_ val;
                 layout::setValue(value_, val);
                 (obj_->*m_setFunc)(val);
@@ -156,7 +164,11 @@ namespace layout
 
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(nullptr == obj_)
+                {
+                    return;
+                }
+
                 ItemType_ val;
                 layout::setValue(value_, val);
                 (obj_->*m_setFunc)(val);
@@ -164,7 +176,13 @@ namespace layout
 
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
             {
-                if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
+                if(nullptr == obj1_
+                        || nullptr == obj2_
+                        )
+                {
+                    return 0;
+                }
+
                 return layout::compareValues((obj1_->*m_getFunc)(), (obj2_->*m_getFunc)(), toQML_);
             }
 
@@ -204,8 +222,15 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                if(nullptr == obj_) { return QVariant(); }
-                if(!toQML_) { return QVariant(); }
+                if(nullptr == obj_)
+                {
+                    return QVariant();
+                }
+                if(!toQML_)
+                {
+                    return QVariant();
+                }
+
                 if(nullptr == obj_->*m_modelPtr)
                 {
                     const_cast<DataType_ *>(obj_)->*m_modelPtr
@@ -216,13 +241,18 @@ namespace layout
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(nullptr == obj_)
+                {
+                    return;
+                }
+
                 if(value_.isNull())
                 {
                     delete (obj_->*m_modelPtr);
                     obj_->*m_modelPtr = nullptr;
                     return;
                 }
+
                 Q_ASSERT(false); // illegal use
             }
 
@@ -235,7 +265,13 @@ namespace layout
 
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
             {
-                if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
+                if(nullptr == obj1_
+                        || nullptr == obj2_
+                        )
+                {
+                    return 0;
+                }
+
                 if(nullptr == obj1_->*m_modelPtr)
                 {
                     const_cast<DataType_ *>(obj1_)->*m_modelPtr
@@ -278,25 +314,43 @@ namespace layout
 
             virtual QVariant getValue(const DataType_ *obj_, bool toQML_) const override
             {
-                if(nullptr == obj_) { return QVariant(); }
+                if(nullptr == obj_)
+                {
+                    return QVariant();
+                }
+
                 return layout::getValue(obj_->*m_itemPtr, toQML_);
             }
 
             virtual void setValue(DataType_ *obj_, const QVariant& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(nullptr == obj_)
+                {
+                    return;
+                }
+
                 layout::setValue(value_, obj_->*m_itemPtr);
             }
 
             virtual void setValue(DataType_ *obj_, const QJsonValue& value_) const override
             {
-                if(nullptr == obj_) { return; }
+                if(nullptr == obj_)
+                {
+                    return;
+                }
+
                 layout::setValue(value_, obj_->*m_itemPtr);
             }
 
             virtual int compareValues(const DataType_ *obj1_, const DataType_ *obj2_, bool toQML_) const override
             {
-                if(nullptr == obj1_ || nullptr == obj2_) { return 0; }
+                if(nullptr == obj1_
+                        || nullptr == obj2_
+                        )
+                {
+                    return 0;
+                }
+
                 return layout::compareValues(obj1_->*m_itemPtr, obj2_->*m_itemPtr, toQML_);
             }
 
@@ -631,13 +685,20 @@ public:
         bool ret = false;
         for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
         {
-            if(nullptr == item) { continue; }
+            if(nullptr == item)
+            {
+                continue;
+            }
+
             if(item->autoCreated())
             {
                 item->setValue(to_, QVariant::fromValue(static_cast<QObject *>(nullptr)));
                 continue;
             }
-            if(item->isQMLItem() || item->getType() != layout::SpecialFieldEn::none)
+
+            if(item->isQMLItem()
+                    || item->getType() != layout::SpecialFieldEn::none
+                    )
             {
                 item->setValue(to_, item->getValue(from_, true));
                 ret = true;
