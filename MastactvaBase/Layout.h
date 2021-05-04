@@ -585,7 +585,7 @@ public:
         return ret;
     }
 
-protected:
+private:
     template<typename JsonType_>
     bool setJsonValuesTempl(DataType_ *obj_, const JsonType_ &jsonObj_) const
     {
