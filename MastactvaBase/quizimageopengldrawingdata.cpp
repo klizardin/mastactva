@@ -76,7 +76,7 @@ void opengl_drawing::Object::init(
     free();
 
     m_imageData = imageData_;
-    program.reset(new QOpenGLShaderProgram);
+    program = std::make_unique<QOpenGLShaderProgram>();
     program->addCacheableShaderFromSourceCode(
                 QOpenGLShader::Vertex,
                 m_imageData->vertexShader.constData()
