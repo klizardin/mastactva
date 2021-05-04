@@ -152,7 +152,7 @@ void opengl_drawing::Object::setUniforms()
         }
 
         const auto uniformId = uniforms[uniform->name()];
-        if(uniformId < 0)
+        if(!isIdValid(uniformId))
         {
             continue;
         }
@@ -182,7 +182,7 @@ void opengl_drawing::Object::enableAttributes()
 
     for(const auto &attribute : attributes)
     {
-        if(attribute < 0)
+        if(!isIdValid(attribute))
         {
             continue;
         }
@@ -200,7 +200,7 @@ void opengl_drawing::Object::disableAttributes()
 
     for(const auto &attribute : attributes)
     {
-        if(attribute < 0)
+        if(!isIdValid(attribute))
         {
             continue;
         }
@@ -224,7 +224,7 @@ void opengl_drawing::Object::setAttributeArray()
         }
 
         const auto attributeId = attributes[attribute->name()];
-        if(attributeId < 0)
+        if(!isIdValid(attributeId))
         {
             continue;
         }
@@ -255,7 +255,7 @@ void opengl_drawing::Object::bindTextures(QOpenGLFunctions *f_)
 
 void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
 {
-    if(!program.operator bool()
+    if(!isUsable()
             || m_imageData->attributes.empty()
             || nullptr == f_
             )
@@ -376,6 +376,11 @@ void opengl_drawing::Object::setTextureIndexes()
         ++textureIndex;
         textures[texture_.name]->setIndex(textures.size() - textureIndex);
     }
+}
+
+bool opengl_drawing::Object::isIdValid(int idValue_)
+{
+    return idValue_ >= 0;
 }
 
 

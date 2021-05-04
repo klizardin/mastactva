@@ -54,6 +54,7 @@ namespace opengl_drawing
 
     private:
         void setTextureIndexes();
+        static bool isIdValid(int idValue_);
 
     private:
         std::shared_ptr<drawing_data::QuizImageObject> m_imageData;
