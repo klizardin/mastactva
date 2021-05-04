@@ -443,7 +443,7 @@ QColor opengl_drawing::Objects::getClearColor() const
 {
     if(!m_imageData.operator bool())
     {
-        return QColor(255, 255, 255);
+        return QColor{255, 255, 255};
     }
     else
     {
