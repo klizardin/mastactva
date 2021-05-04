@@ -52,7 +52,7 @@ namespace opengl_drawing
 
         bool isUsable() const;
 
-    protected:
+    private:
         void setTextureIndexes();
 
     private:
