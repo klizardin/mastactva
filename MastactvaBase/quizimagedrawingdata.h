@@ -291,7 +291,7 @@ namespace drawing_data
                 return;
             }
 
-            m_data.reset(new std::vector<ItemType_>());
+            m_data = std::make_shared<std::vector<ItemType_>>();
         }
 
         template<typename ItemType2_>
