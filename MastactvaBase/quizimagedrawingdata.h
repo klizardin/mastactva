@@ -665,7 +665,7 @@ namespace drawing_data
     struct QuizImageObjects
     {
     public:
-        QColor clearColor = QColor(255, 255, 255);
+        QColor clearColor{255, 255, 255};
         std::vector<std::shared_ptr<QuizImageObject>> objects;
 
     public:

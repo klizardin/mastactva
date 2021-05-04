@@ -129,7 +129,7 @@ void opengl_drawing::Object::init(
 
 void opengl_drawing::Object::bind()
 {
-    if(!program.operator bool())
+    if(!isUsable())
     {
         return;
     }
@@ -139,7 +139,7 @@ void opengl_drawing::Object::bind()
 
 void opengl_drawing::Object::setUniforms()
 {
-    if(!program.operator bool())
+    if(!isUsable())
     {
         return;
     }
@@ -171,7 +171,7 @@ void opengl_drawing::Object::setUniforms()
 
 void opengl_drawing::Object::enableAttributes()
 {
-    if(!program.operator bool())
+    if(!isUsable())
     {
         return;
     }
@@ -189,7 +189,7 @@ void opengl_drawing::Object::enableAttributes()
 
 void opengl_drawing::Object::disableAttributes()
 {
-    if(!program.operator bool())
+    if(!isUsable())
     {
         return;
     }
@@ -207,7 +207,7 @@ void opengl_drawing::Object::disableAttributes()
 
 void opengl_drawing::Object::setAttributeArray()
 {
-    if(!program.operator bool())
+    if(!isUsable())
     {
         return;
     }
@@ -281,7 +281,7 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
 
 void opengl_drawing::Object::release()
 {
-    if(!program.operator bool())
+    if(!isUsable())
     {
         return;
     }
@@ -349,6 +349,11 @@ bool opengl_drawing::Object::getTextureSize(
     }
 
     return fit->second->getSize(imageSize_);
+}
+
+bool opengl_drawing::Object::isUsable() const
+{
+    return program.operator bool();
 }
 
 void opengl_drawing::Object::setTextureIndexes()

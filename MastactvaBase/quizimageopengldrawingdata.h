@@ -24,8 +24,9 @@ namespace opengl_drawing
         bool getSize(QSize &size_) const;
 
     private:
-        int m_index = 0;
-        int m_location = -1;
+        constexpr static int locationWrong{-1};
+        int m_index{0};
+        int m_location{locationWrong};
         QImage m_image;
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
@@ -48,6 +49,8 @@ namespace opengl_drawing
 
         void setTexture(const QString &name_, const QString& newFilename_);
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
+
+        bool isUsable() const;
 
     protected:
         void setTextureIndexes();
