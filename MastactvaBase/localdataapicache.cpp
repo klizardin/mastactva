@@ -15,7 +15,7 @@ bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestBase *r_) const
 
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    if(nullptr == r_)
+    if(!r_)
     {
         return false;
     }
@@ -227,7 +227,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
 {
-    if(nullptr == r_)
+    if(!r_)
     {
         return false;
     }
@@ -318,7 +318,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
 {
-    if(nullptr == r_)
+    if(!r_)
     {
         return false;
     }
@@ -384,7 +384,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
-    if(nullptr == r_)
+    if(!r_)
     { return false; }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
@@ -470,7 +470,7 @@ LocalDataAPICache *LocalDataAPICache::g_localDataAPI = nullptr;
 void LocalDataAPICache::createInstance(QObject *parent_, NetAPI *netAPI_)
 {
     Q_UNUSED(netAPI_);
-    if(nullptr == g_localDataAPI)
+    if(!g_localDataAPI)
     {
         g_localDataAPI = new LocalDataAPICache(parent_);
     }
@@ -498,7 +498,7 @@ void LocalDataAPICache::freeRequest(RequestData *&r_)
     auto fit = std::find_if(std::begin(m_requests), std::end(m_requests),
                                   [&r_](const LocalDBRequest *r)->bool
     {
-        return nullptr != r_ && nullptr != r && static_cast<const RequestData *>(r) == r_;
+        return r_ && r && static_cast<const RequestData *>(r) == r_;
     });
     if(std::end(m_requests) == fit) { return; }
     m_requests.erase(fit);
@@ -564,7 +564,7 @@ void LocalDataAPICache::closeDB()
 
 void LocalDataAPICache::pushRequest(LocalDBRequest *r_)
 {
-    if(nullptr == r_) { return; }
+    if(!r_) { return; }
 
     r_->setRequestName(r_->getDBRequestName());
     const bool startNotify = m_requests.isEmpty();
@@ -619,12 +619,12 @@ void LocalDataAPICache::makeResponses()
 
 ILocalDataAPI *LocalDataAPICache::chooseView(DBRequestBase *r_)
 {
-    if(nullptr == r_) { return nullptr; }
+    if(!r_) { return nullptr; }
     r_->setDefaultAPI(&m_defaultAPIImpl);
 
     for(ILocalDataAPI *api : qAsConst(QMLObjectsBase::getInstance().getLocalDataAPIViews()))
     {
-        if(nullptr != api && api->canProcess(r_)) { return api; }
+        if(api && api->canProcess(r_)) { return api; }
     }
 
     return nullptr;

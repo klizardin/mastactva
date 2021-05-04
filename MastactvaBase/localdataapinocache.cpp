@@ -20,7 +20,7 @@ bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
 
 bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    if(nullptr == r_)
+    if(!r_)
     {
         return false;
     }
@@ -87,7 +87,7 @@ LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
 
 bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
 {
-    return nullptr != m_request && nullptr != request_ && m_request == request_;
+    return m_request && request_ && m_request == request_;
 }
 
 void LocalDataAPINoCache::SaveDBRequest::setRequest(const RequestData *request_)
@@ -127,7 +127,7 @@ void LocalDataAPINoCache::responseFromStartegySlot(
         const auto fit = std::find_if(std::begin(m_requests), std::end(m_requests),
                                       [request_](const SaveDBRequest *r_)->bool
         {
-            return nullptr != request_ && nullptr != r_ && *r_ == request_;
+            return request_ && r_ && *r_ == request_;
         });
         if(std::end(m_requests) != fit)
         {
@@ -155,7 +155,7 @@ LocalDataAPINoCache *LocalDataAPINoCache::g_localDataAPI = nullptr;
 
 void LocalDataAPINoCache::createInstance(QObject *parent_, NetAPI *netAPI_)
 {
-    if(nullptr != g_localDataAPI)
+    if(g_localDataAPI)
     {
         return;
     }
@@ -277,7 +277,7 @@ void LocalDataAPINoCache::insertItem(
 
 void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_)
 {
-    if(nullptr == r_ || reply_.isEmpty())
+    if(!r_ || reply_.isEmpty())
     {
         return;
     }
@@ -381,7 +381,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 
 ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestBase * r_)
 {
-    if(nullptr == r_)
+    if(!r_)
     {
         return nullptr;
     }
@@ -390,7 +390,7 @@ ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestBase * r_)
 
     for(ILocalDataAPI *api : qAsConst(QMLObjectsBase::getInstance().getLocalDataAPIViews()))
     {
-        if(nullptr != api && api->canProcess(r_))
+        if(api && api->canProcess(r_))
         {
             return api;
         }

@@ -18,7 +18,7 @@ Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
 
 Artefact::~Artefact()
 {
-    if(nullptr != m_artefactArgModel)
+    if(m_artefactArgModel)
     {
         m_artefactArgModel->deleteLater();
     }
@@ -122,7 +122,7 @@ void Artefact::setCreated(const QDateTime &created_)
 
 QVariant Artefact::artefactArg() const
 {
-    if(nullptr == m_artefactArgModel)
+    if(!m_artefactArgModel)
     {
         const_cast<Artefact *>(this)->m_artefactArgModel = const_cast<Artefact *>(this)
                 ->createArtefactArgModel();
@@ -136,7 +136,7 @@ QVariant Artefact::artefactArg() const
 
 void Artefact::setArtefactArg(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_artefactArgModel)
+    if(obj_.isNull() && m_artefactArgModel)
     {
         delete m_artefactArgModel;
         m_artefactArgModel = nullptr;
@@ -172,10 +172,10 @@ void Artefact::objectLoadedVF()
 {
     IListModelInfoObjectImpl::objectLoadedVF();
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf)
+    if(sf)
     {
         QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
-        if(nullptr != m_objectModelInfo)
+        if(m_objectModelInfo)
         {
             m_objectModelInfo->startLoadChildModel();
         }
@@ -187,10 +187,10 @@ void Artefact::artefactFileDownloaded(const QString &url_)
 {
     if(url_ != filename()) { return; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf)
+    if(sf)
     {
         QObject::disconnect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
-        if(nullptr != m_objectModelInfo)
+        if(m_objectModelInfo)
         {
             m_objectModelInfo->endLoadChildModel();
         }

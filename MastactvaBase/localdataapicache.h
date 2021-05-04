@@ -84,7 +84,7 @@ public:
                            readonly_,
                            extraFields_);
         ILocalDataAPI *view = chooseView(r);
-        bool res = nullptr == view
+        bool res = !view
                 ? m_defaultAPIImpl.getListImpl(r)
                 : view->getListImpl(r)
                 ;
@@ -123,7 +123,7 @@ public:
                     false,
                     extraFields);
         ILocalDataAPI *view = chooseView(r);
-        bool res = nullptr == view
+        bool res = !view
                 ? m_defaultAPIImpl.addItemImpl(appId, values, r)
                 : view->addItemImpl(appId, values, r)
                 ;
@@ -160,7 +160,7 @@ public:
                     extraFields);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
-        bool res = nullptr == view
+        bool res = !view
                 ? m_defaultAPIImpl.setItemImpl(id, values, r)
                 : view->setItemImpl(id, values, r)
                 ;
@@ -193,7 +193,7 @@ public:
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
         ILocalDataAPI *view = chooseView(r);
-        bool res = nullptr == view
+        bool res = !view
                 ? m_defaultAPIImpl.delItemImpl(id, r)
                 : view->delItemImpl(id, r)
                 ;

@@ -23,12 +23,12 @@ void QMLObjects::searchObjects()
     qDebug() << "QMLObjects::searchObjects()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
 
-    if(nullptr == m_netAPI)
+    if(!m_netAPI)
     {
         NetAPI::createInstance(m_root);
         m_netAPI = NetAPI::getInstance();
     }
-    if(nullptr == m_dataAPI && nullptr != m_netAPI)
+    if(!m_dataAPI && m_netAPI)
     {
         LocalDataAPI::createInstance(m_root, m_netAPI);
         m_dataAPI = LocalDataAPI::getInstance();
@@ -42,55 +42,55 @@ void QMLObjects::searchObjects()
     }
     IListModel *m = nullptr;
     m = findListModel(g_quizUserModel);
-    if(nullptr == m)
+    if(!m)
     {
         QuizUserModel *m1 = m_root->findChild<QuizUserModel *>(g_quizUserModel);
         registerModel(g_quizUserModel, m1);
     }
     m = findListModel(g_galleryModel);
-    if(nullptr == m)
+    if(!m)
     {
         GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
         registerModel(g_galleryModel, m1);
     }
     m = findListModel(g_allImagesOfGalleryModel);
-    if(nullptr == m)
+    if(!m)
     {
         ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
         registerModel(g_allImagesOfGalleryModel, m1);
     }
     m = findListModel(g_artefactTypeModel);
-    if(nullptr == m)
+    if(!m)
     {
         ArtefactTypeModel *m1 = m_root->findChild<ArtefactTypeModel *>(g_artefactTypeModel);
         registerModel(g_artefactTypeModel, m1);
     }
     m = findListModel(g_artefactArgTypeModel);
-    if(nullptr == m)
+    if(!m)
     {
         ArtefactArgTypeModel *m1 = m_root->findChild<ArtefactArgTypeModel *>(g_artefactArgTypeModel);
         registerModel(g_artefactArgTypeModel, m1);
     }
     m = findListModel(g_artefactArgStorageModel);
-    if(nullptr == m)
+    if(!m)
     {
         ArtefactArgStorageModel *m1 = m_root->findChild<ArtefactArgStorageModel *>(g_artefactArgStorageModel);
         registerModel(g_artefactArgStorageModel, m1);
     }
     m = findListModel(g_easingTypeModel);
-    if(nullptr == m)
+    if(!m)
     {
         EasingTypeModel *m1 = m_root->findChild<EasingTypeModel *>(g_easingTypeModel);
         registerModel(g_easingTypeModel, m1);
     }
-    if(nullptr == m_mastactvaAPI)
+    if(!m_mastactvaAPI)
     {
         MastactvaAPI *m1 = m_root->findChild<MastactvaAPI *>(g_mastactvaAPI);
         m_mastactvaAPI = m1;
     }
     for(IListModel *m : qAsConst(m_models))
     {
-        if(nullptr == m) { continue; }
+        if(!m) { continue; }
         m->initResponse();
     }
 }
@@ -103,12 +103,12 @@ QMLObjectsBase &QMLObjectsBase::getInstance()
 
 void QMLObjects::setInitialized()
 {
-    if(nullptr == m_mastactvaAPI) { return; }
+    if(!m_mastactvaAPI) { return; }
     m_mastactvaAPI->setInitialized();
 }
 
 void QMLObjects::modelError(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_)
 {
-    if(nullptr == m_mastactvaAPI) { return; }
+    if(!m_mastactvaAPI) { return; }
     m_mastactvaAPI->showModelError(errorCode_, errorCodeStr_, reply_.toJson(QJsonDocument::Indented));
 }

@@ -13,7 +13,7 @@ EffectArgValue::EffectArgValue(EffectArgValueModel *parent_ /*= nullptr*/)
 
 EffectArgValue::~EffectArgValue()
 {
-    if(nullptr != m_effectArgModel)
+    if(m_effectArgModel)
     {
         m_effectArgModel->deleteLater();
     }
@@ -55,7 +55,7 @@ void EffectArgValue::setArgId(const int &argId_)
 
     m_argId = argId_;
 
-    if(nullptr != m_effectArgModel)
+    if(m_effectArgModel)
     {
         m_effectArgModel->parentItemChanged();
     }
@@ -69,7 +69,7 @@ void EffectArgValue::setArgId(const int &argId_)
 
 QVariant EffectArgValue::arg() const
 {
-    if(nullptr == m_effectArgModel)
+    if(!m_effectArgModel)
     {
         const_cast<EffectArgValue *>(this)->m_effectArgModel = const_cast<EffectArgValue *>(this)
                 ->createEffectArgModel();
@@ -79,7 +79,7 @@ QVariant EffectArgValue::arg() const
 
 void EffectArgValue::setArg(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectArgModel)
+    if(obj_.isNull() && m_effectArgModel)
     {
         delete m_effectArgModel;
         m_effectArgModel = nullptr;

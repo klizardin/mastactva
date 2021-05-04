@@ -16,7 +16,7 @@ ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*
 
 ImagePointToQuestion::~ImagePointToQuestion()
 {
-    if(nullptr != m_questionModel)
+    if(m_questionModel)
     {
         m_questionModel->deleteLater();
     }
@@ -61,7 +61,7 @@ void ImagePointToQuestion::setQuestionId(const int &questionId_)
 
 QVariant ImagePointToQuestion::questionObj() const
 {
-    if(nullptr == m_questionModel)
+    if(!m_questionModel)
     {
         const_cast<ImagePointToQuestion *>(this)->m_questionModel = const_cast<ImagePointToQuestion *>(this)
                 ->createQuestionModel();
@@ -75,7 +75,7 @@ QVariant ImagePointToQuestion::questionObj() const
 
 void ImagePointToQuestion::setQuestionObj(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_questionModel)
+    if(obj_.isNull() && m_questionModel)
     {
         delete m_questionModel;
         m_questionModel = nullptr;
@@ -174,10 +174,10 @@ void ImagePointToNextImage::loadChildrenVF()
 void ImagePointToNextImage::objectLoadedVF()
 {
     ImageModel *images = m_parentModel->getImageModel();
-    if(nullptr != images)
+    if(images)
     {
         Image *image = images->findDataItemByIdImpl(QVariant::fromValue(nextImage()));
-        if(nullptr != image)
+        if(image)
         {
             image->downloadImage();
         }
@@ -223,17 +223,17 @@ ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
 
 ImagePoint::~ImagePoint()
 {
-    if(nullptr != m_imagePointToNextImageModel)
+    if(m_imagePointToNextImageModel)
     {
         m_imagePointToNextImageModel->deleteLater();
     }
     m_imagePointToNextImageModel = nullptr;
-    if(nullptr != m_imagePointToQuestionModel)
+    if(m_imagePointToQuestionModel)
     {
         m_imagePointToQuestionModel->deleteLater();
     }
     m_imagePointToQuestionModel = nullptr;
-    if(nullptr != m_imagePointEffectModel)
+    if(m_imagePointEffectModel)
     {
         m_imagePointEffectModel->deleteLater();
     }
@@ -314,7 +314,7 @@ void ImagePoint::setCreated(const QDateTime &created_)
 
 QVariant ImagePoint::nextImage() const
 {
-    if(nullptr == m_imagePointToNextImageModel)
+    if(!m_imagePointToNextImageModel)
     {
         const_cast<ImagePoint *>(this)->m_imagePointToNextImageModel = const_cast<ImagePoint *>(this)
                 ->createImagePointToNextImage();
@@ -328,7 +328,7 @@ QVariant ImagePoint::nextImage() const
 
 void ImagePoint::setNextImage(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePointToNextImageModel)
+    if(obj_.isNull() && m_imagePointToNextImageModel)
     {
         delete m_imagePointToNextImageModel;
         m_imagePointToNextImageModel = nullptr;
@@ -339,7 +339,7 @@ void ImagePoint::setNextImage(const QVariant &obj_)
 
 QVariant ImagePoint::nextQuestion() const
 {
-    if(nullptr == m_imagePointToQuestionModel)
+    if(!m_imagePointToQuestionModel)
     {
         const_cast<ImagePoint *>(this)->m_imagePointToQuestionModel = const_cast<ImagePoint *>(this)
                 ->createImagePointToQuestionModel();
@@ -353,7 +353,7 @@ QVariant ImagePoint::nextQuestion() const
 
 void ImagePoint::setNextQuestion(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePointToQuestionModel)
+    if(obj_.isNull() && m_imagePointToQuestionModel)
     {
         delete m_imagePointToQuestionModel;
         m_imagePointToQuestionModel = nullptr;
@@ -364,7 +364,7 @@ void ImagePoint::setNextQuestion(const QVariant &obj_)
 
 QVariant ImagePoint::effect() const
 {
-    if(nullptr == m_imagePointToQuestionModel)
+    if(!m_imagePointToQuestionModel)
     {
         const_cast<ImagePoint *>(this)->m_imagePointEffectModel = const_cast<ImagePoint *>(this)
                 ->createImagePointEffectModel();
@@ -378,7 +378,7 @@ QVariant ImagePoint::effect() const
 
 void ImagePoint::setEffect(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePointEffectModel)
+    if(obj_.isNull() && m_imagePointEffectModel)
     {
         delete m_imagePointEffectModel;
         m_imagePointEffectModel = nullptr;
@@ -468,7 +468,7 @@ void ImagePointModel::modelListLoaded(const QJsonDocument &reply_)
     base::modelListLoaded(reply_);
     for(const ImagePoint *ip: qAsConst(m_data))
     {
-        if(nullptr == ip) { continue; }
+        if(!ip) { continue; }
         ip->nextImage();
     }
 }
@@ -491,11 +491,11 @@ const ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_) co
     qreal mind = 0.0;
     for(const ImagePoint *ip: qAsConst(m_data))
     {
-        if(nullptr == ip) { continue; }
+        if(!ip) { continue; }
         ImagePointToNextImageModel *m = ip->getNextImage();
-        if(nullptr == m) { continue; }
+        if(!m) { continue; }
         qreal d = ip->distanceCoef(x_, y_);
-        if(nullptr == minIp || d < mind)
+        if(!minIp || d < mind)
         {
             mind = d;
             minIp = ip;
@@ -517,7 +517,7 @@ bool ImagePointModel::isNextObjImageByCoords(qreal x_, qreal y_)
     if(!isListLoadedImpl()) { return false; }
 
     const ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
-    if(nullptr == nearIp) { return false; }
+    if(!nearIp) { return false; }
     return !nearIp->getNextImage()->isEmpty();
 }
 
@@ -526,8 +526,8 @@ bool ImagePointModel::isNextObjQuestionByCoords(qreal x_, qreal y_)
     if(!isListLoadedImpl()) { return false; }
 
     const ImagePoint *nearIp = nextImagePointByCoords(x_, y_);
-    if(nullptr == nearIp) { return false; }
+    if(!nearIp) { return false; }
     ImagePointToQuestion* iptq = nearIp->getNextQuestion()->getCurrentDataItem();
-    return nullptr != iptq && !iptq->getQuestions()->isEmpty();
+    return iptq && !iptq->getQuestions()->isEmpty();
 }
 

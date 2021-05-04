@@ -260,7 +260,7 @@ public:
     void synchronize(QQuickFramebufferObject *frameBufferObject_) override
     {
         QuizImageType_ *quizImage = static_cast<QuizImageType_ *>(frameBufferObject_);
-        if(nullptr == quizImage)
+        if(!quizImage)
         {
             return;
         }

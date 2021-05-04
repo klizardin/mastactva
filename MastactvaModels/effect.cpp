@@ -27,17 +27,17 @@ Effect::~Effect()
     clear(m_itemsToAdd);
     m_artefactInfos.clear();
 
-    if(nullptr != m_effectObjectsModel)
+    if(m_effectObjectsModel)
     {
         m_effectObjectsModel->deleteLater();
     }
     m_effectObjectsModel = nullptr;
-    if(nullptr != m_effectArgModel)
+    if(m_effectArgModel)
     {
         m_effectArgModel->deleteLater();
     }
     m_effectArgModel = nullptr;
-    if(nullptr != m_effectArgSetModel)
+    if(m_effectArgSetModel)
     {
         m_effectArgSetModel->deleteLater();
     }
@@ -94,7 +94,7 @@ void Effect::setCreated(const QDateTime &created_)
 
 QVariant Effect::effectObjects() const
 {
-    if(nullptr == m_effectObjectsModel)
+    if(!m_effectObjectsModel)
     {
         const_cast<Effect *>(this)
                 ->m_effectObjectsModel =
@@ -112,7 +112,7 @@ QVariant Effect::effectObjects() const
 
 void Effect::setEffectObjectss(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectObjectsModel)
+    if(obj_.isNull() && m_effectObjectsModel)
     {
         delete m_effectObjectsModel;
         m_effectObjectsModel = nullptr;
@@ -123,7 +123,7 @@ void Effect::setEffectObjectss(const QVariant &obj_)
 
 QVariant Effect::args() const
 {
-    if(nullptr == m_effectArgModel)
+    if(!m_effectArgModel)
     {
         const_cast<Effect *>(this)->m_effectArgModel = const_cast<Effect *>(this)->createEffectArgModel();
     }
@@ -132,7 +132,7 @@ QVariant Effect::args() const
 
 void Effect::setArgs(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectArgModel)
+    if(obj_.isNull() && m_effectArgModel)
     {
         delete m_effectArgModel;
         m_effectArgModel = nullptr;
@@ -143,7 +143,7 @@ void Effect::setArgs(const QVariant &obj_)
 
 QVariant Effect::argSets() const
 {
-    if(nullptr == m_effectArgSetModel)
+    if(!m_effectArgSetModel)
     {
         const_cast<Effect *>(this)->m_effectArgSetModel = const_cast<Effect *>(this)->createEffectArgSetModel();
     }
@@ -152,7 +152,7 @@ QVariant Effect::argSets() const
 
 void Effect::setArgSets(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_effectArgSetModel)
+    if(obj_.isNull() && m_effectArgSetModel)
     {
         delete m_effectArgSetModel;
         m_effectArgSetModel = nullptr;
@@ -223,7 +223,7 @@ void Effect::clear(QList<EffectArg *> &artefactArgs_)
 {
     for(EffectArg *&arg_ : artefactArgs_)
     {
-        const bool founded = nullptr != m_effectArgModel->findDataItemByAppIdImpl(
+        const bool founded = m_effectArgModel->findDataItemByAppIdImpl(
                     getDataLayout<EffectArg>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
                         arg_
@@ -241,19 +241,19 @@ void Effect::clear(QList<EffectArg *> &artefactArgs_)
 bool Effect::startRefreshArguments()
 {
     qDebug() << "Effect::startRefreshArguments()";
-    if(nullptr == m_effectObjectsModel
+    if(!m_effectObjectsModel
             || !m_effectObjectsModel->isListLoadedImpl()
-            || nullptr == m_effectArgModel
+            || !m_effectArgModel
             || !m_effectArgModel->isListLoadedImpl()
             ) { return false; }
 
     ArtefactTypeModel *artefactTypeModel = static_cast<ArtefactTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_artefactTypeModel)
                 );
-    Q_ASSERT(nullptr != artefactTypeModel && artefactTypeModel->sizeImpl() > 0);
+    Q_ASSERT(artefactTypeModel && artefactTypeModel->sizeImpl() > 0);
 
 
-    if(nullptr == m_effectObjectsModel || !m_effectObjectsModel->isListLoadedImpl()) { return false; }
+    if(!m_effectObjectsModel || !m_effectObjectsModel->isListLoadedImpl()) { return false; }
 
     // get all artefacts urls
     const int objecsCnt = m_effectObjectsModel->size();
@@ -263,43 +263,43 @@ bool Effect::startRefreshArguments()
     for(int i = 0; i < objecsCnt; i++)
     {
         EffectObjects *effectObjects = m_effectObjectsModel->dataItemAtImpl(i);
-        if(nullptr == effectObjects) { return false; }
+        if(!effectObjects) { return false; }
 
         ObjectArtefactModel *effectObjectArtefactsModel = effectObjects->getObjectArtefacts();
-        if(nullptr == effectObjectArtefactsModel ||
+        if(!effectObjectArtefactsModel ||
                 !effectObjectArtefactsModel->isListLoadedImpl()) { return false; }
 
         for(int j = 0; j < effectObjectArtefactsModel->sizeImpl(); j++)
         {
             ObjectArtefact *effectObjectArtefact = effectObjectArtefactsModel->dataItemAtImpl(j);
-            if(nullptr == effectObjectArtefact) { return false; }
+            if(!effectObjectArtefact) { return false; }
 
             ArtefactModel *artefactsModel = effectObjectArtefact->getArtefact();
-            if(nullptr == artefactsModel ||
+            if(!artefactsModel ||
                     !artefactsModel->isListLoadedImpl()) { return false; }
             Q_ASSERT(1 == artefactsModel->sizeImpl());
 
             for(int k = 0; k < artefactsModel->sizeImpl(); k++)
             {
                 Artefact *artefact = artefactsModel->dataItemAtImpl(k);
-                if(nullptr == artefact) { return false; }
+                if(!artefact) { return false; }
 
                 // get default arguments from artefacts
                 ArtefactArgModel *artefactArgModel = artefact->getArtefactArg();
-                if(nullptr == artefactArgModel
+                if(!artefactArgModel
                         || !artefactArgModel->isListLoadedImpl()) { return false; }
 
                 for(int m = 0; m < artefactArgModel->sizeImpl(); ++m)
                 {
                     ArtefactArg *artefactArg = artefactArgModel->dataItemAtImpl(m);
-                    if(nullptr == artefactArg) { return false; }
+                    if(!artefactArg) { return false; }
 
                     EffectArg *newArg = m_effectArgModel->createDataItemImpl();
                     newArg->copyFrom(artefactArg, this->id(), effectObjectArtefact->id());
                 }
 
                 ArtefactType *artefactType = artefactTypeModel->findDataItemByIdImpl(artefact->type());
-                if(nullptr == artefactType) { return false; }
+                if(!artefactType) { return false; }
 
                 if(g_artefactTypeVertex == artefactType->type() ||
                         g_artefactTypeFragment == artefactType->type())
@@ -401,11 +401,11 @@ void Effect::applyRefreshArguments()
     ArtefactArgTypeModel *argTypesModel = static_cast<ArtefactArgTypeModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
                 );
-    Q_ASSERT(nullptr != argTypesModel);
+    Q_ASSERT(argTypesModel);
     ArtefactArgStorageModel *argStoragesModel = static_cast<ArtefactArgStorageModel *>(
                 QMLObjectsBase::getInstance().getListModel(g_artefactArgStorageModel)
                 );
-    Q_ASSERT(nullptr != argStoragesModel);
+    Q_ASSERT(argStoragesModel);
 
     // read comments from artefacts files
     // get file, form commens list
@@ -440,14 +440,14 @@ void Effect::applyRefreshArguments()
                         "artefactArgTypeType",
                         QVariant::fromValue(argTypeStr)
                         );
-            Q_ASSERT(nullptr != artefactArgType);
+            Q_ASSERT(artefactArgType);
             const int argTypeId = artefactArgType->id();
 
             const ArtefactArgStorage *artefactArgStorage = argStoragesModel->findDataItemByFieldValueImpl(
                         "artefactArgStorageStorage",
                         QVariant::fromValue(argStorageStr)
                         );
-            Q_ASSERT(nullptr != artefactArgType);
+            Q_ASSERT(artefactArgType);
             const int argStorageId = artefactArgStorage->id();
 
             auto fitni = std::find_if(
@@ -455,14 +455,14 @@ void Effect::applyRefreshArguments()
                         std::end(newArguments),
                         [&argName, &ai_] (EffectArg *effectArg) -> bool
                         {
-                            return nullptr != effectArg &&
+                            return effectArg &&
                                     effectArg->name() == argName &&
                                     ai_.objectArtefactId == effectArg->objectArtefactId()
                                     ;
                         });
             EffectArg *newArg = nullptr;
             const bool newArgCreated = std::end(newArguments) != fitni;
-            if(newArgCreated && nullptr != *fitni)
+            if(newArgCreated && *fitni)
             {
                 newArg = *fitni;
             }
@@ -481,13 +481,13 @@ void Effect::applyRefreshArguments()
             const EffectArg *existingArg = m_effectArgModel->dataItemFindIf
                     ([&newArg] (const EffectArg *arg_) -> bool
                     {
-                        return nullptr != arg_ &&
-                                nullptr != newArg &&
+                        return arg_ &&
+                                newArg &&
                                 arg_->name() == newArg->name() &&
                                 arg_->objectArtefactId() == newArg->objectArtefactId()
                                 ;
                     });
-            if(nullptr != existingArg)
+            if(existingArg)
             {
                 if(existingArg->argTypeId() == argTypeId &&
                         existingArg->defaultValue() == argDefaultValue &&
@@ -500,14 +500,14 @@ void Effect::applyRefreshArguments()
 
             if(!newArgCreated)
             {
-                if(nullptr != newArg)
+                if(newArg)
                 {
                     newArguments.push_back(newArg);
                 }
             }
             else
             {
-                if(nullptr == newArg)
+                if(!newArg)
                 {
                     newArguments.erase(fitni);
                 }
@@ -522,11 +522,11 @@ void Effect::applyRefreshArguments()
 
     for(EffectArg *newArg: qAsConst(newArguments))
     {
-        const bool existingItemFounded = nullptr != m_effectArgModel->dataItemFindIf
+        const bool existingItemFounded = m_effectArgModel->dataItemFindIf
                 ([&newArg] (const EffectArg *arg_) -> bool
                 {
-                    return nullptr != arg_ &&
-                            nullptr != newArg &&
+                    return arg_ &&
+                            newArg &&
                             arg_->name() == newArg->name() &&
                             arg_->objectArtefactId() == newArg->objectArtefactId()
                             ;
@@ -548,8 +548,8 @@ void Effect::applyRefreshArguments()
                     std::cend(newArguments),
                     [&existingArg] (EffectArg *effectArg) -> bool
                     {
-                        return nullptr != effectArg &&
-                            nullptr != existingArg &&
+                        return effectArg &&
+                            existingArg &&
                             effectArg->name() == existingArg->name() &&
                             effectArg->objectArtefactId() == existingArg->objectArtefactId()
                             ;
@@ -622,7 +622,7 @@ void Effect::applyRefreshArgumentsStep()
                     "effectArgName",
                     QVariant::fromValue(arg->name())
                     );
-        Q_ASSERT(nullptr != existingArg);
+        Q_ASSERT(existingArg);
         m_effectArgModel->setDataItemImpl(m_effectArgModel->indexOfDataItemImpl(existingArg), arg);
         return;
     }
@@ -674,26 +674,26 @@ bool Effect::isChildrenLoaded() const
 
 void Effect::addDefaultObject()
 {
-    if(nullptr == m_effectObjectsModel ||
+    if(!m_effectObjectsModel ||
             !m_effectObjectsModel->isListLoadedImpl()) { return; }
 
     const EffectObjects *existingDefaultObject = m_effectObjectsModel->dataItemFindIf(
                 [](const EffectObjects *effectObj_)->bool
     {
-        if(nullptr == effectObj_) { return false; }
+        if(!effectObj_) { return false; }
         const ObjectInfoModel *objectInfoModel = effectObj_->getObjectInfoModel();
-        if(nullptr == objectInfoModel) { return false; }
+        if(!objectInfoModel) { return false; }
 
         for(int i = 0; i < objectInfoModel->sizeImpl(); i++)
         {
             const ObjectInfo *objectInfo = objectInfoModel->dataItemAtImpl(i);
-            if(nullptr == objectInfo) { continue; }
+            if(!objectInfo) { continue; }
             if(const_cast<ObjectInfo *>(objectInfo)->isInitializeObject()) { return true; }
         }
         return false;
     });
 
-    if(nullptr != existingDefaultObject) { return; }
+    if(existingDefaultObject) { return; }
 
     m_effectObjectsModel->procedureImpl(
                 g_createDefaultEffectObjectProcedureName,

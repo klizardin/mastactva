@@ -31,7 +31,7 @@ void opengl_drawing::Texture::setIndex(int index_)
 
 void opengl_drawing::Texture::setUniform(QOpenGLShaderProgram *program_) const
 {
-    if(nullptr == program_
+    if(!program_
             || !isValidLocation())
     {
         return;
@@ -262,7 +262,7 @@ void opengl_drawing::Object::drawTriangles(QOpenGLFunctions *f_)
 {
     if(!isUsable()
             || m_imageData->attributes.empty()
-            || nullptr == f_
+            || !f_
             )
     {
         return;

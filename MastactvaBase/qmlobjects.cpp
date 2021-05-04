@@ -24,7 +24,7 @@ void QMLObjectsBase::setRoot(QObject *root_)
 IListModel *QMLObjectsBase::getListModel(const QString &layoutName_)
 {
     IListModel *model = findListModel(layoutName_);
-    if(nullptr != model) { return model; }
+    if(model) { return model; }
     searchObjects();
     return findListModel(layoutName_);
 }
@@ -57,26 +57,26 @@ void QMLObjectsBase::clearDependedFromRoot()
 
 NetAPI *QMLObjectsBase::getNetAPI()
 {
-    if(nullptr == m_netAPI) { searchObjects(); }
+    if(!m_netAPI) { searchObjects(); }
     return m_netAPI;
 }
 
 LocalDataAPI *QMLObjectsBase::getDataAPI()
 {
-    if(nullptr == m_dataAPI) { searchObjects(); }
+    if(!m_dataAPI) { searchObjects(); }
     return m_dataAPI;
 }
 
 ServerFiles *QMLObjectsBase::getServerFiles()
 {
-    if(nullptr == m_serverFiles) { m_serverFiles = new ServerFiles(m_root); }
+    if(!m_serverFiles) { m_serverFiles = new ServerFiles(m_root); }
     return m_serverFiles;
 }
 
 void QMLObjectsBase::registerModel(const QString &layoutName_, IListModel *m_)
 {
     IListModel *m1 = findListModel(layoutName_);
-    Q_ASSERT(nullptr == m1);
+    Q_ASSERT(!m1);
     m_models.push_back(static_cast<IListModel *>(m_));
 }
 
@@ -85,7 +85,7 @@ void QMLObjectsBase::unregisterModel(const QString &layoutName_)
     auto fit = std::find_if(std::begin(m_models), std::end(m_models),
                                   [&layoutName_](IListModel *model_)->bool
     {
-        return nullptr != model_ && model_->getQMLLayoutName() == layoutName_;
+        return model_ && model_->getQMLLayoutName() == layoutName_;
     });
     if(std::end(m_models) == fit) { return; }
     m_models.erase(fit);

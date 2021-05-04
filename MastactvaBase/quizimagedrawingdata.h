@@ -383,7 +383,7 @@ namespace drawing_data
 
         virtual void set(QOpenGLShaderProgram *program, int location_) const
         {
-            if(nullptr == program
+            if(!program
                     || location_ < 0
                     || !m_data.operator bool()
                     )
@@ -504,7 +504,7 @@ namespace drawing_data
             }
 
             AttributeType *attr = dynamic_cast<AttributeType *>(interface_);
-            if(nullptr == attr)
+            if(!attr)
             {
                 return;
             }
@@ -521,7 +521,7 @@ namespace drawing_data
             }
 
             UniformType *uniform = dynamic_cast<UniformType *>(interface_);
-            if(nullptr == uniform)
+            if(!uniform)
             {
                 return;
             }
@@ -537,7 +537,7 @@ namespace drawing_data
             }
 
             const UniformType *uniform = dynamic_cast<const UniformType *>(interface_);
-            if(nullptr == uniform)
+            if(!uniform)
             {
                 return false;
             }

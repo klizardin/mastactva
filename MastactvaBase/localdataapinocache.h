@@ -60,13 +60,13 @@ public:
                               const QVariant &itemAppId_,
                               const QVariant &itemId_)
     {
-        if(nullptr == m_netAPI) { return nullptr; }
+        if(!m_netAPI) { return nullptr; }
         return m_netAPI->emptyRequest(requestName_, itemAppId_, itemId_);
     }
 
     void freeRequest(RequestData *&r_)
     {
-        if(nullptr == m_netAPI) { return; }
+        if(!m_netAPI) { return; }
         m_netAPI->freeRequest(r_);
     }
 
@@ -98,10 +98,10 @@ public:
                                extraFields_
                                );
             ILocalDataAPI *view = chooseAPI(r);
-            if(nullptr == view) { m_defaultAPIImpl.getListImpl(r); }
+            if(!view) { m_defaultAPIImpl.getListImpl(r); }
             else { view->getListImpl(r); }
         }
-        if(nullptr == m_netAPI) { return nullptr; }
+        if(!m_netAPI) { return nullptr; }
         RequestData *resRequest = m_netAPI->getList<DataType_>(layoutName_,
                                              procedureName_,
                                              refs_,
@@ -114,7 +114,7 @@ public:
                                              extraFields_,
                                              readonly_
                                              );
-        if(nullptr != resRequest && isSaveToDBMode())
+        if(resRequest && isSaveToDBMode())
         {
             r->setRequest(resRequest);
             m_requests.push_back(r);
@@ -132,7 +132,7 @@ public:
                          const DataType_ *item_,
                          const QHash<QString, QVariant> &extraFields_)
     {
-        if(nullptr == m_netAPI) { return nullptr; }
+        if(!m_netAPI) { return nullptr; }
         return m_netAPI->addItem(layoutName_, item_, extraFields_);
     }
 
@@ -141,7 +141,7 @@ public:
                          const DataType_ *item_,
                          const QHash<QString, QVariant> &extraFields_)
     {
-        if(nullptr == m_netAPI) { return nullptr; }
+        if(!m_netAPI) { return nullptr; }
         return m_netAPI->setItem(layoutName_, item_, extraFields_);
     }
 
@@ -150,7 +150,7 @@ public:
                          const DataType_ *item_,
                          const QHash<QString, QVariant> &extraFields_)
     {
-        if(nullptr == m_netAPI) { return nullptr; }
+        if(!m_netAPI) { return nullptr; }
         return m_netAPI->delItem(layoutName_, item_, extraFields_);
     }
 

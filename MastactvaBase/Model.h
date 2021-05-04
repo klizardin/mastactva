@@ -207,7 +207,7 @@ public:
     virtual void initResponse() override
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        Q_ASSERT(nullptr != dataAPI);
+        Q_ASSERT(dataAPI);
         QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)),
                          m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
     }
@@ -229,7 +229,7 @@ public:
 
     virtual bool containsAppId(const QVariant &appId_) const override
     {
-        return nullptr != findDataItemByAppIdImpl(appId_);
+        return findDataItemByAppIdImpl(appId_);
     }
 
     virtual QVariant getCurrentIndexAppId() const override
@@ -243,7 +243,7 @@ public:
     virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const override
     {
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
-        if(nullptr == item)
+        if(!item)
         {
             if(!isCurrentIndexValid(m_data.size())) { return false; }
             item = m_data[getCurrentIndexImpl()];
@@ -254,7 +254,7 @@ public:
     virtual QVariant getIdFieldValueForAppId(const QVariant &appId_) const override
     {
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
-        if(nullptr == item)
+        if(!item)
         {
             if(!isCurrentIndexValid(m_data.size())) { return QVariant(); }
             item = m_data[getCurrentIndexImpl()];
@@ -265,7 +265,7 @@ public:
     virtual QVariant getFieldValueForAppId(const QVariant &appId_, const QString &jsonFieldName) const override
     {
         const DataType_ *item = appId_.isValid() ? findDataItemByAppIdImpl(appId_) : nullptr;
-        if(nullptr == item)
+        if(!item)
         {
             if(!isCurrentIndexValid(m_data.size())) { return QVariant(); }
             item = m_data[getCurrentIndexImpl()];
@@ -279,7 +279,7 @@ public:
                                       std::cend(m_data),
                                       [&id_](const DataType_ *item)->bool
         {
-            if(nullptr == item) { return false; }
+            if(!item) { return false; }
             const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
             return id == id_;
         });
@@ -309,7 +309,7 @@ public:
                                       std::cend(m_data),
                                       [&appId1](const DataType_ *item)->bool
         {
-            if(nullptr == item) { return false; }
+            if(!item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
                         item);
@@ -325,7 +325,7 @@ public:
                                       std::cend(m_data),
                                       [&appId_](const DataType_ *item)->bool
         {
-            if(nullptr == item) { return false; }
+            if(!item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
                         item);
@@ -346,7 +346,7 @@ public:
                                       std::cend(m_data),
                                       [&id_](const DataType_ *item)->bool
         {
-            if(nullptr == item) { return false; }
+            if(!item) { return false; }
             const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
             return id_.isValid() && id_ == id;
         });
@@ -523,7 +523,7 @@ public:
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(nullptr == dataAPI) { return false; }
+        if(!dataAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
@@ -550,7 +550,7 @@ public:
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
-                if(nullptr != m)
+                if(m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
                 }
@@ -567,7 +567,7 @@ public:
                          )
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(nullptr == dataAPI) { return false; }
+        if(!dataAPI) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
@@ -580,7 +580,7 @@ public:
                         RequestData::addItemRequestName<DataType_>(),
                         itemAppId,
                         itemId);
-            if(nullptr != request)
+            if(request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
                 request->setSetCurrentItemIndex(setCurrentIndex_);
@@ -599,14 +599,14 @@ public:
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
-                if(nullptr != m)
+                if(m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
                 }
             }
             extraFields = renameFields(extraFields);
             RequestData *request = dataAPI->addItem(getJsonLayoutName(), item_, extraFields);
-            if(nullptr != request)
+            if(request)
             {
                 request->setItemData(reinterpret_cast<void *>(item_));
                 request->setSetCurrentItemIndex(setCurrentIndex_);
@@ -629,7 +629,7 @@ public:
                          )
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(nullptr == dataAPI) { return false; }
+        if(!dataAPI) { return false; }
 
         QVariant itemId = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!itemId.isValid() || itemId.isNull()) { return false; }
@@ -645,7 +645,7 @@ public:
 
     void autoLoadDataItemImpl(const DataType_ *item_)
     {
-        if(nullptr == item_) { return; }
+        if(!item_) { return; }
 #if defined(TRACE_MODEL_LOADING)
         qDebug() << "-start autoLoadDataItemImpl() item =" << item_ << getQMLLayoutName();
 #endif
@@ -654,12 +654,12 @@ public:
                     item_);
         IListModelInfo *modelInfo = nullptr;
         layout::setValue(modelInfoVar, modelInfo);
-        if(nullptr != modelInfo)
+        if(modelInfo)
         {
             modelInfo->loadChildrenVF();
         }
         getDataLayout<DataType_>().createQMLValues(item_);
-        if(nullptr != modelInfo)
+        if(modelInfo)
         {
             modelInfo->objectLoadedVF();
         }
@@ -672,7 +672,7 @@ public:
     bool sortIf(Op_ op_, bool saveSelection_, bool stableSort_ = false)
     {
         const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
-        const QVariant currentAppId = saveSelection_ && nullptr != item
+        const QVariant currentAppId = saveSelection_ && item
                 ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item)
                 : QVariant();
         if(stableSort_) { std::stable_sort(std::begin(m_data), std::end(m_data), op_); }
@@ -687,7 +687,7 @@ public:
     bool randOrderImpl(bool saveSelection_)
     {
         const DataType_ *item = saveSelection_ ? getCurrentDataItem() : nullptr;
-        const QVariant currentAppId = saveSelection_ && nullptr != item
+        const QVariant currentAppId = saveSelection_ && item
                 ? getDataLayout<DataType_>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item)
                 : QVariant();
         std::random_device rd;
@@ -759,9 +759,9 @@ public:
                       )
     {
         LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(nullptr == dataAPI) { return; }
+        if(!dataAPI) { return; }
         RequestData *request = findRequest(RequestData::getListRequestName<DataType_>());
-        if(nullptr != request)
+        if(request)
         {
             reloadList = true;
             return;
@@ -802,7 +802,7 @@ public:
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
                 IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
-                if(nullptr != m)
+                if(m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
                 }
@@ -848,7 +848,7 @@ protected:
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
-        if(nullptr == dataItem) { return false; }
+        if(!dataItem) { return false; }
         return setDataItemImpl(index_, dataItem);
     }
 
@@ -856,7 +856,7 @@ protected:
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
-        if(nullptr == dataItem) { return false; }
+        if(!dataItem) { return false; }
         return addDataItemImpl(dataItem);
     }
 
@@ -869,7 +869,7 @@ protected:
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
-        if(nullptr == dataItem) { return false; }
+        if(!dataItem) { return false; }
         return delDataItemImpl(dataItem);
     }
 
@@ -877,7 +877,7 @@ protected:
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
-        if(nullptr == dataItem) { return -1; }
+        if(!dataItem) { return -1; }
         return indexOfDataItemImpl(dataItem);
     }
 
@@ -939,7 +939,7 @@ protected:
         }
         removeRequest(request_);
         clearTempData();
-        if(nullptr != m_model)
+        if(m_model)
         {
             m_model->startRefreshChildren(getQMLLayoutName());
         }
@@ -958,7 +958,7 @@ protected:
                                       std::cend(m_data),
                                       [&appId_](const DataType_ *item)->bool
         {
-            if(nullptr == item) { return false; }
+            if(!item) { return false; }
             const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
                         item);
@@ -995,7 +995,7 @@ protected:
     {
         filterItemsIf([&ids_](const DataType_ *i)->bool
         {
-            return nullptr != i &&
+            return i &&
                     std::cend(ids_) != std::find_if(std::cbegin(ids_), std::cend(ids_),
                                                 [&i](const QVariant &id_)
             {
@@ -1017,7 +1017,7 @@ protected:
     {
         filterItemsIf([&ids_](const DataType_ *i)->bool
         {
-            return nullptr != i &&
+            return i &&
                     std::cend(ids_) == std::find_if(std::cbegin(ids_), std::cend(ids_),
                                                 [&i](const QVariant &id_)
             {
@@ -1071,7 +1071,7 @@ protected:
                 }
                 const QVariant id = getDataLayout<DataType_>().getIdJsonValue(item);
                 DataType_ *oldItem = findDataItemByIdImpl(id);
-                if(nullptr != oldItem)
+                if(oldItem)
                 {
                     const QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
                                 layout::SpecialFieldEn::appId,
@@ -1096,7 +1096,7 @@ protected:
                   std::inserter(m_data, std::end(m_data)));
         endInsertRows();
         DataType_ *oldIdItem = findDataItemByIdImpl(oldCurrentId);
-        if(nullptr == oldIdItem)
+        if(!oldIdItem)
         {
             setCurrentIndexImpl(0);
             autoLoadDataItem();
@@ -1127,7 +1127,7 @@ protected:
 
     virtual void modelItemAdded(RequestData *request_, const QJsonDocument &reply_)
     {
-        if(nullptr == request_->getItemData()) { return; }
+        if(!request_->getItemData()) { return; }
         const QVariant appId = request_->getItemAppId();
 
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
@@ -1140,7 +1140,7 @@ protected:
         request_->setItemData(nullptr);
 
         DataType_ *item = findDataItemByAppIdImpl(appId);
-        if(nullptr == item) { return; }
+        if(!item) { return; }
 
         getDataLayout<DataType_>().setJsonValues(item, reply_);
         autoLoadDataItem(item);
@@ -1156,7 +1156,7 @@ protected:
     {
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
-        if(nullptr == item) { return; }
+        if(!item) { return; }
         getDataLayout<DataType_>().setJsonValues(item, reply_);
         autoLoadDataItem(item);
         sortByFieldsImpl(getSortFieldsImpl(), true);
@@ -1172,7 +1172,7 @@ protected:
         Q_UNUSED(reply_);
         const QVariant id = request_->getItemId();
         DataType_ *item = findDataItemByIdImpl(id);
-        if(nullptr == item) { return; }
+        if(!item) { return; }
         removeItem(item);
         itemDeletedVF();
     }
@@ -1212,17 +1212,17 @@ protected:
     {
         if(
             (
-                nullptr != item_ &&
+                item_ &&
                 autoCreateChildrenModelsImpl()
             ) ||
             (
-                nullptr == item_ &&
+                !item_ &&
                 autoCreateChildrenModelsOnSelectImpl() &&
                 getCurrentIndexImpl() >= 0 &&
                 isIndexValid(getCurrentIndexImpl(), m_data.size())
              ))
         {
-            if(nullptr == item_)
+            if(!item_)
             {
                 item_ = m_data[getCurrentIndexImpl()];
             }
@@ -1234,7 +1234,7 @@ protected:
     {
         QObject *obj = qvariant_cast<QObject *>(item_);
         DataType_ *dataItem = qobject_cast<DataType_ *>(obj);
-        if(nullptr == dataItem) { return; }
+        if(!dataItem) { return; }
         autoLoadDataItemImpl(dataItem);
     }
 
@@ -1297,7 +1297,7 @@ protected:
                 const QVariant id = r->getItemId();
                 item = findDataItemByIdImpl(id);
             }
-            if(nullptr != item) { waitingToUpdate.push_back(item); }
+            if(item) { waitingToUpdate.push_back(item); }
         }
         if(waitingToUpdate.size() == m_data.size()) { return; }
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)

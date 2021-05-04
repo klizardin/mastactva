@@ -18,12 +18,12 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
 
 Image::~Image()
 {
-    if(nullptr != m_imagePointsModel)
+    if(m_imagePointsModel)
     {
         m_imagePointsModel->deleteLater();
     }
     m_imagePointsModel = nullptr;
-    if(nullptr != m_imageDescriptionModel)
+    if(m_imageDescriptionModel)
     {
         m_imageDescriptionModel->deleteLater();
     }
@@ -53,7 +53,7 @@ void Image::downloadImage()
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     QObject::connect(sf, SIGNAL(downloaded(const QString &)),
                      this, SLOT(imageDownloaded(const QString &)));
-    if(nullptr != sf)
+    if(sf)
     {
         //IListModelInfoObjectImpl::startLoadChildModel();
         sf->add(getFilename(), hash(), g_imagesRelPath);
@@ -68,7 +68,7 @@ void Image::imageDownloaded(const QString &url_)
     QObject::disconnect(sf, SIGNAL(downloaded(const QString &)),
                         this, SLOT(imageDownloaded(const QString &)));
 
-    if(nullptr != sf)
+    if(sf)
     {
         //IListModelInfoObjectImpl::endLoadChildModel();
         if(sf->isUrlDownloaded(getFilename()))
@@ -174,7 +174,7 @@ void Image::setCreated(const QDateTime &created_)
 
 QVariant Image::imagePoints() const
 {
-    if(nullptr == m_imagePointsModel)
+    if(!m_imagePointsModel)
     {
         const_cast<Image *>(this)->m_imagePointsModel = const_cast<Image *>(this)
                 ->createImagePoints();
@@ -188,7 +188,7 @@ QVariant Image::imagePoints() const
 
 void Image::setImagePoints(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imagePointsModel)
+    if(obj_.isNull() && m_imagePointsModel)
     {
         delete m_imagePointsModel;
         m_imagePointsModel = nullptr;
@@ -198,7 +198,7 @@ void Image::setImagePoints(const QVariant &obj_)
 
 QVariant Image::imageDescription() const
 {
-    if(nullptr == m_imageDescriptionModel)
+    if(!m_imageDescriptionModel)
     {
         const_cast<Image *>(this)->m_imageDescriptionModel = const_cast<Image *>(this)
                 ->createImageDescriptionModel();
@@ -212,7 +212,7 @@ QVariant Image::imageDescription() const
 
 void Image::setImageDescription(const QVariant &obj_)
 {
-    if(obj_.isNull() && nullptr != m_imageDescriptionModel)
+    if(obj_.isNull() && m_imageDescriptionModel)
     {
         delete m_imageDescriptionModel;
         m_imageDescriptionModel = nullptr;
