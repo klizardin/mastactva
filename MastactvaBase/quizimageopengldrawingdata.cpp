@@ -860,56 +860,77 @@ void drawing_data::DefaultQuizImageObject::initialize(
         { g_renderToImageName, g_noImage002Name },
     };
 
-    std::shared_ptr<std::vector<QVector4D>> vertices = std::make_shared<std::vector<QVector4D>>();
-    std::shared_ptr<std::vector<QVector4D>> textures = std::make_shared<std::vector<QVector4D>>();
-
     object->attributes.push_back(
-                std::make_unique<drawing_data::Attribute<QVector4D>>(g_renderVertexAttributeName, vertices)
+                std::make_unique<drawing_data::Attribute<QVector4D>>(
+                    g_renderVertexAttributeName,
+                    std::make_shared<std::vector<QVector4D>>()
+                    )
                 );
     object->attributes.push_back(
-                std::make_unique<drawing_data::Attribute<QVector4D>>( g_renderTextureAttributeName, textures )
+                std::make_unique<drawing_data::Attribute<QVector4D>>(
+                    g_renderTextureAttributeName,
+                    std::make_shared<std::vector<QVector4D>>()
+                    )
                 );
 
-    std::shared_ptr<QMatrix4x4> renderMatrix = std::make_shared<QMatrix4x4>();
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<QMatrix4x4>>(g_renderMatrixName, renderMatrix )
+                std::make_unique<drawing_data::Uniform<QMatrix4x4>>(
+                    g_renderMatrixName,
+                    std::make_shared<QMatrix4x4>()
+                    )
                 );
-    std::shared_ptr<QMatrix4x4> renderFromImageMatrix = std::make_shared<QMatrix4x4>();
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<QMatrix4x4>>( g_renderFromImageMatrixName, renderFromImageMatrix )
+                std::make_unique<drawing_data::Uniform<QMatrix4x4>>(
+                    g_renderFromImageMatrixName,
+                    std::make_shared<QMatrix4x4>()
+                    )
                 );
-    std::shared_ptr<QMatrix4x4> renderToImageMatrix = std::make_shared<QMatrix4x4>();
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<QMatrix4x4>>( g_renderToImageMatrixName, renderToImageMatrix )
+                std::make_unique<drawing_data::Uniform<QMatrix4x4>>(
+                    g_renderToImageMatrixName,
+                    std::make_shared<QMatrix4x4>()
+                    )
                 );
-    std::shared_ptr<QVector2D> renderScreenRect = std::make_shared<QVector2D>();
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<QVector2D>>( g_renderScreenRectName, renderScreenRect )
-                );
-
-    std::shared_ptr<GLfloat> renderT = std::make_shared<GLfloat>(0.5);
-    object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<GLfloat>>( g_renderTName, renderT )
-                );
-
-    std::shared_ptr<GLfloat> renderOpacity = std::make_shared<GLfloat>(1.0);
-    object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<GLfloat>>( g_renderOpacityName, renderOpacity )
+                std::make_unique<drawing_data::Uniform<QVector2D>>(
+                    g_renderScreenRectName,
+                    std::make_shared<QVector2D>()
+                    )
                 );
 
-    std::shared_ptr<QVector2D> renderFacedGeometryCoefs = std::make_shared<QVector2D>(0.0, 0.0);
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<QVector2D>>( g_renderFacedGeometryCoefsName, renderFacedGeometryCoefs )
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    g_renderTName,
+                    std::make_shared<GLfloat>(0.5)
+                    )
                 );
 
-    std::shared_ptr<QVector2D> renderGeomertySize = std::make_shared<QVector2D>(2.0, 2.0);
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<QVector2D>>( g_renderGeomertySizeName, renderGeomertySize )
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    g_renderOpacityName,
+                    std::make_shared<GLfloat>(1.0)
+                    )
                 );
 
-    std::shared_ptr<GLint> renderIsGeomertySolid = std::make_shared<GLint>(1);
     object->uniforms.push_back(
-                std::make_unique<drawing_data::Uniform<GLint>>( g_renderIsGeomertySolidName, renderIsGeomertySolid )
+                std::make_unique<drawing_data::Uniform<QVector2D>>(
+                    g_renderFacedGeometryCoefsName,
+                    std::make_shared<QVector2D>(0.0, 0.0)
+                    )
+                );
+
+    object->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<QVector2D>>(
+                    g_renderGeomertySizeName,
+                    std::make_shared<QVector2D>(2.0, 2.0)
+                    )
+                );
+
+    object->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<GLint>>(
+                    g_renderIsGeomertySolidName,
+                    std::make_shared<GLint>(1)
+                    )
                 );
 
     data_.objects.push_back(std::move(object));
