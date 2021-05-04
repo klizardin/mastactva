@@ -774,42 +774,22 @@ void QuizImageFboRendererImpl::synchronizeImpl(const QVector2D &rectSize_, bool 
         return;
     }
 
-    const GLint isSolidGeometry = [this]() -> auto
+    auto getUniform = [this](const QString &name_, auto defaultValue_) -> auto
     {
-        GLint res{0};
-        if(m_objectRenderer.getUniform( g_renderIsGeomertySolidName, res ))
+        decltype (defaultValue_) res;
+        if(m_objectRenderer.getUniform( name_, res ))
         {
             return res;
         }
         else
         {
-            return GLint{1};
+            return defaultValue_;
         }
-    }();
-    const QVector2D geometryFacedSize = [this]() -> auto
-    {
-        QVector2D res{};
-        if(m_objectRenderer.getUniform( g_renderGeomertySizeName, res))
-        {
-            return res;
-        }
-        else
-        {
-            return QVector2D{2.0, 2.0};
-        }
-    }();
-    const QVector2D geometryFacedInterval = [this]() -> auto
-    {
-        QVector2D res{};
-        if(m_objectRenderer.getUniform( g_renderFacedGeometryCoefsName, res ))
-        {
-            return res;
-        }
-        else
-        {
-            return QVector2D{0.0, 0.0};
-        }
-    }();
+    };
+
+    const GLint isSolidGeometry = getUniform(g_renderIsGeomertySolidName, GLint{1});
+    const QVector2D geometryFacedSize = getUniform(g_renderGeomertySizeName, QVector2D{2.0, 2.0});
+    const QVector2D geometryFacedInterval = getUniform(g_renderGeomertySizeName, QVector2D{0.0, 0.0});
 
     const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderVertexAttributeName );
     const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize( g_renderTextureAttributeName );
