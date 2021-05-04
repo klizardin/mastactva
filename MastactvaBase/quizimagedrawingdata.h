@@ -144,7 +144,7 @@ namespace drawing_data
     };
 
 
-#define ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)                   \
+#define DRAWING_DATA_ITEM_TYPE_TRAITS(ItemType_, tupleSize_, underlayingType_)      \
     template<>                                                                      \
     class ItemTypeTraits<ItemType_>                                                 \
     {                                                                               \
@@ -163,27 +163,28 @@ namespace drawing_data
 /*end traints macro*/
 
 
-    ITEM_TYPE_TRAITS(GLfloat,       1,  void)
-    ITEM_TYPE_TRAITS(GLint,         1,  void)
-    ITEM_TYPE_TRAITS(GLuint,        1,  void)
-    ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
-    ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
-    ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
-    ITEM_TYPE_TRAITS(QColor,        3,  void)
-    ITEM_TYPE_TRAITS(QPoint,        2,  void)
-    ITEM_TYPE_TRAITS(QPointF,       2,  void)
-    ITEM_TYPE_TRAITS(QSize,         2,  void)
-    ITEM_TYPE_TRAITS(QSizeF,        2,  void)
-    ITEM_TYPE_TRAITS(QMatrix2x2,    4,  void)
-    ITEM_TYPE_TRAITS(QMatrix2x3,    6,  void)
-    ITEM_TYPE_TRAITS(QMatrix2x4,    8,  void)
-    ITEM_TYPE_TRAITS(QMatrix3x2,    6,  void)
-    ITEM_TYPE_TRAITS(QMatrix3x3,    9,  void)
-    ITEM_TYPE_TRAITS(QMatrix3x4,    12, void)
-    ITEM_TYPE_TRAITS(QMatrix4x2,    8,  void)
-    ITEM_TYPE_TRAITS(QMatrix4x3,    12, void)
-    ITEM_TYPE_TRAITS(QMatrix4x4,    16, void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(GLfloat,       1,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(GLint,         1,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(GLuint,        1,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector2D,     2,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector3D,     3,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QVector4D,     4,  GLfloat)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QColor,        3,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QPoint,        2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QPointF,       2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QSize,         2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QSizeF,        2,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix2x2,    4,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix2x3,    6,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix2x4,    8,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix3x2,    6,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix3x3,    9,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix3x4,    12, void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix4x2,    8,  void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix4x3,    12, void)
+    DRAWING_DATA_ITEM_TYPE_TRAITS(QMatrix4x4,    16, void)
 
+#undef DRAWING_DATA_ITEM_TYPE_TRAITS
 
     class ITypeInfo
     {
