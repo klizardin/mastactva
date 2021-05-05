@@ -59,7 +59,7 @@ TEST(Format, toString_compoundWithQStringConversion)
 TEST(Format, classFormat)
 {
     ASSERT_TRUE(equal(
-                    fmt::toString(fmt::Private::Format<>("str")),
+                    fmt::toString(fmt::details::Format<>("str")),
                     sum("str")
                     )
                 );
@@ -92,7 +92,7 @@ TEST(Format, formatArguments)
 TEST(Format, classList)
 {
     ASSERT_TRUE(equal(
-                    fmt::toString(fmt::Private::List<int, QVector>({1,2,3}, ",")),
+                    fmt::toString(fmt::details::List<int, QVector>({1,2,3}, ",")),
                     sum("1", "," "2", ",", "3")
                     )
                 );
