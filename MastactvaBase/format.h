@@ -55,7 +55,7 @@ DestType_ toTypeValue(const DestType_ &defaultValue_, const SrcType_ &val_)
 
 
 
-namespace Private
+namespace details
 {
 
 template<typename Type_> inline
@@ -348,7 +348,7 @@ public:
         strs.reserve(m_data.size());
         for(const Type_ &val_ : m_data)
         {
-            Private::Format<Args_...> format = m_format;
+            details::Format<Args_...> format = m_format;
             format.set(val_);
             strs.push_back(fmt::toString(format));
         }
@@ -371,7 +371,7 @@ public:
     }
 
 private:
-    Private::Format<Args_...> m_format;
+    details::Format<Args_...> m_format;
     ContainerType_<Type_> m_data;
     QString m_seporator;
 };
@@ -396,7 +396,7 @@ public:
     }
 
 private:
-    Private::ArgsList<Args_...> m_args;
+    details::ArgsList<Args_...> m_args;
 };
 
 }  // namespace Private
@@ -405,7 +405,7 @@ private:
 template<typename Type_> inline
 QString toString(const Type_ &val_)
 {
-    return Private::toString(
+    return details::toString(
                 val_,
                 typename std::integral_constant<
                     bool,
@@ -432,30 +432,30 @@ Type_ toType(const Type_ &val_, const Type_ &)
 
 template<typename ... Args_>
 inline
-Private::Format<Args_...> format(const QString &format_, Args_ ... args_)
+details::Format<Args_...> format(const QString &format_, Args_ ... args_)
 {
-    return Private::Format<Args_ ...>(format_, args_ ...);
+    return details::Format<Args_ ...>(format_, args_ ...);
 }
 
 template<typename ListType_, template<typename> class ContainerType_>
 inline
-Private::List<ListType_, ContainerType_> list(
+details::List<ListType_, ContainerType_> list(
         const ContainerType_<ListType_> &data_,
         const QString &separator_
         )
 {
-    return Private::List<ListType_, ContainerType_>(data_, separator_);
+    return details::List<ListType_, ContainerType_>(data_, separator_);
 }
 
 template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
 inline
-Private::FormatList<ListType_, ContainerType_, Args_ ...> list(
-        Private::Format<Args_...> format_,
+details::FormatList<ListType_, ContainerType_, Args_ ...> list(
+        details::Format<Args_...> format_,
         const ContainerType_<ListType_> &data_,
         const QString &separator_
         )
 {
-    return Private::FormatList<ListType_, ContainerType_, Args_ ...>(format_, data_, separator_);
+    return details::FormatList<ListType_, ContainerType_, Args_ ...>(format_, data_, separator_);
 }
 
 template<typename ItemType_, template<typename> class Container_> inline
@@ -487,15 +487,15 @@ QStringList merge(const QStringList &c_, const ItemTypes_ ... nexts_)
 }
 
 template<typename Type_>
-Private::Constant<Type_> constant(const Type_ &value_)
+details::Constant<Type_> constant(const Type_ &value_)
 {
-    return Private::Constant<Type_>{value_};
+    return details::Constant<Type_>{value_};
 }
 
 template<typename ... Args_> inline
-Private::Sum<Args_ ...> sum(Args_ ... args_)
+details::Sum<Args_ ...> sum(Args_ ... args_)
 {
-    return Private::Sum<Args_ ...>(args_ ...);
+    return details::Sum<Args_ ...>(args_ ...);
 }
 
 }  // namespace fmt
