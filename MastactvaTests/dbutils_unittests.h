@@ -777,7 +777,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
         { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
         { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) },
         { g_procedureLimitName, QVariant::fromValue(QString{"1"}) },
-        { g_procedureFilterConditionsName, QVariant::fromValue(QStringList({"user-id", "name"})) },
+        { g_procedureFilterConditionsName, QVariant::fromValue(QList<QVariant>(
+          {QVariant::fromValue(QString("user-id")), QVariant::fromValue(QString("name"))})) },
     };
     const QString res = sum(
                 "SELECT  ",
