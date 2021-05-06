@@ -1380,7 +1380,7 @@ QString getSelectSqlRequest(
         const QString &jsonRefName_,
         const db::JsonSqlFieldsList &fields_,
         const QStringList &refs_,
-        const QHash<QString, QVariant> &extraFields_,
+        const QStringList &extraFields_,
         const QHash<QString, QVariant> &procedureFields_
         )
 {
@@ -1411,12 +1411,9 @@ QString getSelectSqlRequest(
         const QString refBindName = QString(":") + db::refName(ref);
         bindRefs.push_back(refBindName);
     }
-    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields_));
-        it != std::cend(qAsConst(extraFields_))
-        ; ++it
-        )
+    for(const QString &extraRef : qAsConst(extraFields_))
     {
-        const QString refBindName = QString(":") + db::refName(it.key());
+        const QString refBindName = QString(":") + db::refName(extraRef);
         bindRefs.push_back(refBindName);
     }
     const QString procedureConditions = procedureFields_.contains(g_procedureConditionName)
@@ -1441,7 +1438,7 @@ QString getSelectSqlRequest(
                                         db::filterNames(refs_,procedureFilterConditions)
                                         )
                             << db::equalToValueConditionListFromSqlNameList(
-                                        db::filterNames(extraFields_.keys(),procedureFilterConditions)
+                                        db::filterNames(extraFields_,procedureFilterConditions)
                                         )
                             ).join(" AND ");
     const QString conditionStr = hasCondition

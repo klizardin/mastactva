@@ -219,7 +219,7 @@ namespace db
             const QString &jsonRefName_,
             const db::JsonSqlFieldsList &fields_,
             const QStringList &refs_,
-            const QHash<QString, QVariant> &extraFields_,
+            const QStringList &extraFields_,
             const QHash<QString, QVariant> &procedureFields_
             );
 }
