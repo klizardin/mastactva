@@ -600,7 +600,7 @@ TEST(DBUtils, JsonSqlFieldsList_getUpdateSqlRequest)
     ASSERT_TRUE(request2.isEmpty());
 }
 
-TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
+QString runGetSelectSqlRequestFoParams(const QHash<QString, QVariant> &params_)
 {
     db::JsonSqlFieldsList fields = {
         { "user", layout::JsonTypesEn::jt_int, true},
@@ -612,7 +612,20 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
     const QStringList refs({"user-id", "name"});
     const QStringList extraRefs({"age-years",});
 
-    const QString res0 = sum(
+    QString request = db::getSelectSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields,
+                refs,
+                extraRefs,
+                params_
+                );
+    return request;
+}
+
+TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
+{
+    const QString res = sum(
                 "SELECT  ",
                 "\"user\"", g_insertFieldSpliter,
                 "user_id", g_insertFieldSpliter,
@@ -625,15 +638,33 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
                 g_refPrefix, "age_years", "=", g_bindPrefix, g_refPrefix, "age_years",
                 "   ;"
                 );
-    const QString request = db::getSelectSqlRequest(
-                jsonLayoutName,
-                jsonRefName,
-                fields,
-                refs,
-                extraRefs,
+    const QString request = runGetSelectSqlRequestFoParams(
                 QHash<QString, QVariant>{}
                 );
-    ASSERT_TRUE(equal(request, res0));
+    ASSERT_TRUE(equal(request, res));
+}
+
+TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields)
+{
+    const QHash<QString, QVariant> paramsFilterFields = {
+        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""}))}
+    };
+    const QString res = sum(
+                "SELECT  ",
+                "user_id", g_insertFieldSpliter,
+                "\"all\"",
+                " FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " WHERE ",
+                g_refPrefix, "user_id", "=", g_bindPrefix, g_refPrefix, "user_id", " AND ",
+                g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name", " AND ",
+                g_refPrefix, "age_years", "=", g_bindPrefix, g_refPrefix, "age_years",
+                "   ;"
+                );
+    const QString request = runGetSelectSqlRequestFoParams(
+                paramsFilterFields
+                );
+    ASSERT_TRUE(equal(request, res));
 }
 
 #endif
