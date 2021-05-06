@@ -771,4 +771,35 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     ASSERT_TRUE(equal(request, res));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimitProcFilterCond)
+{
+    const QHash<QString, QVariant> paramsFilterFields = {
+        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
+        { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) },
+        { g_procedureLimitName, QVariant::fromValue(QString{"1"}) },
+        { g_procedureFilterConditionsName, QVariant::fromValue(QStringList({"user-id", "name"})) },
+    };
+    const QString res = sum(
+                "SELECT  ",
+                "user_id", g_insertFieldSpliter,
+                "\"all\"",
+                " FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " WHERE ",
+                g_refPrefix, "user_id", "=", g_bindPrefix, g_refPrefix, "user_id", " AND ",
+                g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name",
+                " ",
+                g_procedureOrderByName, " ", "\"all\"",
+                " ",
+                g_procedureLimitName, " ", "1",
+                " ;"
+                );
+    const QString request = runGetSelectSqlRequestFoParams(
+                paramsFilterFields
+                );
+    qDebug() << res;
+    qDebug() << request;
+    ASSERT_TRUE(equal(request, res));
+}
+
 #endif
