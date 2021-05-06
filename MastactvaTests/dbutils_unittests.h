@@ -716,4 +716,30 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_selectFunction)
     ASSERT_TRUE(equal(request, res));
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderBy)
+{
+    const QHash<QString, QVariant> paramsFilterFields = {
+        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
+        { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) }
+    };
+    const QString res = sum(
+                "SELECT  ",
+                "user_id", g_insertFieldSpliter,
+                "\"all\"",
+                " FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " WHERE ",
+                g_refPrefix, "user_id", "=", g_bindPrefix, g_refPrefix, "user_id", " AND ",
+                g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name", " AND ",
+                g_refPrefix, "age_years", "=", g_bindPrefix, g_refPrefix, "age_years",
+                " ",
+                g_procedureOrderByName, " ", "\"all\"",
+                "  ;"
+                );
+    const QString request = runGetSelectSqlRequestFoParams(
+                paramsFilterFields
+                );
+    ASSERT_TRUE(equal(request, res));
+}
+
 #endif
