@@ -1375,6 +1375,93 @@ QString getUpdateSqlRequest(
     return request;
 }
 
+QString getSelectSqlRequest(
+        const QString &jsonLayoutName_,
+        const QString &jsonRefName_,
+        const db::JsonSqlFieldsList &fields_,
+        const QStringList &refs_,
+        const QStringList &extraFields_,
+        const QHash<QString, QVariant> &procedureFields_
+        )
+{
+    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
+
+    const QString procedureSelectFunction = procedureFields_.contains(g_procedureSelectFunctionName)
+            ? procedureFields_.value(g_procedureSelectFunctionName).toString()
+            : QString()
+            ;
+    const QString procedureArgFunction = procedureFields_.contains(g_procedureArgFunctionName)
+            ? procedureFields_.value(g_procedureArgFunctionName).toString()
+            : QString()
+            ;
+    const QList<QVariant> procedureFilterFields = procedureFields_.contains(g_procedureFilterNamesName)
+            ? procedureFields_.value(g_procedureFilterNamesName).toList()
+            : QList<QVariant>()
+            ;
+    const QString fieldsOfRequest = QString("%1 %2").arg(
+                procedureSelectFunction,
+                db::applyFunction(
+                    db::filterNames(db::getSqlNames(fields_), procedureFilterFields)
+                    , procedureArgFunction
+                    ).join(g_insertFieldSpliter)
+                );
+    QStringList bindRefs;
+    for(const QString &ref : qAsConst(refs_))
+    {
+        const QString refBindName = QString(":") + db::refName(ref);
+        bindRefs.push_back(refBindName);
+    }
+    for(const QString &extraRef : qAsConst(extraFields_))
+    {
+        const QString refBindName = QString(":") + db::refName(extraRef);
+        bindRefs.push_back(refBindName);
+    }
+    const QString procedureConditions = procedureFields_.contains(g_procedureConditionName)
+            ? procedureFields_.value(g_procedureConditionName).toString()
+            : QString()
+            ;
+    const QList<QVariant> procedureFilterConditions = procedureFields_.contains(g_procedureFilterConditionsName)
+            ? procedureFields_.value(g_procedureFilterConditionsName).toList()
+            : QList<QVariant>()
+            ;
+    const QString procedureOrderBy = procedureFields_.contains(g_procedureOrderByName)
+            ? QString("%1 %2").arg(g_procedureOrderByName, procedureFields_.value(g_procedureOrderByName).toString())
+            : QString()
+            ;
+    const QString procedureLimit = procedureFields_.contains(g_procedureLimitName)
+            ? QString("%1 %2").arg(g_procedureLimitName, procedureFields_.value(g_procedureLimitName).toString())
+            : QString()
+            ;
+    const bool hasCondition = !(refs_.isEmpty()) || !(extraFields_.isEmpty()) || !(procedureConditions.isEmpty());
+    const QString conditionCases = (QStringList()
+                            << db::equalToValueConditionListFromSqlNameList(
+                                        db::filterNames(refs_,procedureFilterConditions)
+                                        )
+                            << db::equalToValueConditionListFromSqlNameList(
+                                        db::filterNames(extraFields_,procedureFilterConditions)
+                                        )
+                            ).join(" AND ");
+    const QString conditionStr = hasCondition
+            ? QString("WHERE %1")
+              .arg(conditionCases.isEmpty()
+                   ? procedureConditions
+                   : procedureConditions.isEmpty()
+                     ? conditionCases
+                     : QString("%1 AND ( %2 )").arg(conditionCases, procedureConditions)
+                   )
+            : QString()
+            ;
+    const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5 ;")
+            .arg(fieldsOfRequest,
+                 tableName,
+                 conditionStr,
+                 procedureOrderBy,
+                 procedureLimit
+                 )
+            ;
+    return sqlRequest;
+}
+
 } // namespace db
 
 

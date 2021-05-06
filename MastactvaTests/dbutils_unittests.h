@@ -600,5 +600,40 @@ TEST(DBUtils, JsonSqlFieldsList_getUpdateSqlRequest)
     ASSERT_TRUE(request2.isEmpty());
 }
 
+TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
+{
+    db::JsonSqlFieldsList fields = {
+        { "user", layout::JsonTypesEn::jt_int, true},
+        { "user-id", layout::JsonTypesEn::jt_int, false},
+        { "all", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+    const QStringList refs({"user-id", "name"});
+    const QStringList extraRefs({"age-years",});
+
+    const QString res0 = sum(
+                "SELECT  ",
+                "\"user\"", g_insertFieldSpliter,
+                "user_id", g_insertFieldSpliter,
+                "\"all\"",
+                " FROM ",
+                "user_list", g_splitTableRef, "user_id",
+                " WHERE ",
+                g_refPrefix, "user_id", "=", g_bindPrefix, g_refPrefix, "user_id", " AND ",
+                g_refPrefix, "name", "=", g_bindPrefix, g_refPrefix, "name", " AND ",
+                g_refPrefix, "age_years", "=", g_bindPrefix, g_refPrefix, "age_years",
+                "   ;"
+                );
+    const QString request = db::getSelectSqlRequest(
+                jsonLayoutName,
+                jsonRefName,
+                fields,
+                refs,
+                extraRefs,
+                QHash<QString, QVariant>{}
+                );
+    ASSERT_TRUE(equal(request, res0));
+}
 
 #endif
