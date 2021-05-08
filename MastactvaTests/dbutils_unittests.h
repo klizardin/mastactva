@@ -641,13 +641,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
     const QString request = runGetSelectSqlRequestFoParams(
                 QHash<QString, QVariant>{}
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""}))}
+        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"}))}
     };
     const QString res = sum(
                 "SELECT  ",
@@ -664,13 +666,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_fieldsFunction)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""}))},
+        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"}))},
         {g_procedureArgFunctionName, QVariant::fromValue(QString("SUM"))},
     };
     const QString res = sum(
@@ -688,13 +692,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_fieldsFunction)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_selectFunction)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""}))},
+        {g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"}))},
         {g_procedureSelectFunctionName, QVariant::fromValue(QString("DISTINCT"))},
     };
     const QString res = sum(
@@ -713,13 +719,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_selectFunction)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderBy)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
+        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"})) },
         { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) }
     };
     const QString res = sum(
@@ -739,13 +747,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderBy)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
+        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"})) },
         { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) },
         { g_procedureLimitName, QVariant::fromValue(QString{"1"}) },
     };
@@ -768,13 +778,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimitProcFilterCond)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
+        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"})) },
         { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) },
         { g_procedureLimitName, QVariant::fromValue(QString{"1"}) },
         { g_procedureFilterConditionsName, QVariant::fromValue(QList<QVariant>(
@@ -798,13 +810,15 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimitProcFilterCondUseCond)
 {
     const QHash<QString, QVariant> paramsFilterFields = {
-        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user_id", "\"all\""})) },
+        { g_procedureFilterNamesName, QVariant::fromValue(QStringList({"user-id", "all"})) },
         { g_procedureOrderByName, QVariant::fromValue(QString{"\"all\""}) },
         { g_procedureLimitName, QVariant::fromValue(QString{"1"}) },
         { g_procedureFilterConditionsName, QVariant::fromValue(QList<QVariant>(
@@ -830,6 +844,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
+    qDebug() << request;
+    qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 

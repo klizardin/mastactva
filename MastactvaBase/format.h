@@ -399,6 +399,41 @@ private:
     details::ArgsList<Args_...> m_args;
 };
 
+template<typename OkType_, typename FailType_>
+class Choose
+{
+public:
+    Choose(bool condition_, OkType_ ok_, FailType_ fail_)
+        : m_condition(condition_),
+          m_ok(ok_),
+          m_fail(fail_)
+    {}
+
+    QString toString() const
+    {
+        if(m_condition)
+        {
+            return fmt::toString(m_ok);
+        }
+        else
+        {
+            return fmt::toString(m_fail);
+        }
+    }
+
+    operator QString () const
+    {
+        return toString();
+    }
+
+private:
+    bool m_condition;
+    OkType_ m_ok;
+    FailType_ m_fail;
+};
+
+using Null = Sum<>;
+
 }  // namespace Private
 
 
@@ -434,7 +469,7 @@ template<typename ... Args_>
 inline
 details::Format<Args_...> format(const QString &format_, Args_ ... args_)
 {
-    return details::Format<Args_ ...>(format_, args_ ...);
+    return details::Format<Args_ ...>{format_, args_ ...};
 }
 
 template<typename ListType_, template<typename> class ContainerType_>
@@ -444,7 +479,7 @@ details::List<ListType_, ContainerType_> list(
         const QString &separator_
         )
 {
-    return details::List<ListType_, ContainerType_>(data_, separator_);
+    return details::List<ListType_, ContainerType_>{data_, separator_};
 }
 
 template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
@@ -455,7 +490,7 @@ details::FormatList<ListType_, ContainerType_, Args_ ...> list(
         const QString &separator_
         )
 {
-    return details::FormatList<ListType_, ContainerType_, Args_ ...>(format_, data_, separator_);
+    return details::FormatList<ListType_, ContainerType_, Args_ ...>{format_, data_, separator_};
 }
 
 template<typename ItemType_, template<typename> class Container_> inline
@@ -495,7 +530,23 @@ details::Constant<Type_> constant(const Type_ &value_)
 template<typename ... Args_> inline
 details::Sum<Args_ ...> sum(Args_ ... args_)
 {
-    return details::Sum<Args_ ...>(args_ ...);
+    return details::Sum<Args_ ...>{args_ ...};
+}
+
+template<typename OkType_, typename FailType_> inline
+details::Choose<OkType_, FailType_> choose(bool condition_, OkType_ &&ok_, FailType_ &&fail_)
+{
+    return details::Choose<OkType_, FailType_>(
+                condition_,
+                std::forward<OkType_>(ok_),
+                std::forward<FailType_>(fail_)
+                );
+}
+
+inline
+details::Null null()
+{
+    return details::Null{};
 }
 
 }  // namespace fmt

@@ -231,10 +231,29 @@ QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &lef
     for(const QString &name: qAsConst(sqlNames_))
     {
         const auto fit = std::find_if(std::cbegin(leftNames_), std::cend(leftNames_),
-                                      [&name](const QVariant &val)->bool
+                                      [&name](const QVariant &val_)->bool
         {
-           return val.isValid() && val.toString() == name;
+            return val_.isValid() && val_.toString() == name;
         });
+        if(std::cend(leftNames_) != fit)
+        {
+            res.push_back(name);
+        }
+    }
+    return res;
+}
+
+QStringList filterNames(const QStringList &sqlNames_, const QStringList &leftNames_)
+{
+    if(leftNames_.isEmpty())
+    {
+        return sqlNames_;
+    }
+
+    QStringList res;
+    for(const QString &name: qAsConst(sqlNames_))
+    {
+        const auto fit = std::find(std::cbegin(leftNames_), std::cend(leftNames_), name);
         if(std::cend(leftNames_) != fit)
         {
             res.push_back(name);
@@ -917,6 +936,30 @@ QStringList getSqlNames(const JsonSqlFieldsList &fields_)
     });
 }
 
+QStringList getJsonNames(const JsonSqlFieldsList &fields_)
+{
+    return getFieldListValues(
+                fields_,
+                [](const db::JsonSqlField &fi_)->QString
+    {
+        return fi_.getJsonName();
+    });
+}
+
+QStringList getJsonNames(const QList<QVariant> &fields_)
+{
+    QStringList result;
+    result.reserve(fields_.size());
+    for(const QVariant &fld_ : fields_)
+    {
+        if(fld_.isValid())
+        {
+            result.push_back(fld_.toString());
+        }
+    }
+    return result;
+}
+
 QStringList getBindSqlNames(const JsonSqlFieldsList &fields_)
 {
     return getFieldListValues(
@@ -1380,12 +1423,10 @@ QString getSelectSqlRequest(
         const QString &jsonRefName_,
         const db::JsonSqlFieldsList &fields_,
         const QStringList &refs_,
-        const QStringList &extraFields_,
+        const QStringList &extraRefs_,
         const QHash<QString, QVariant> &procedureFields_
         )
 {
-    const QString tableName = db::tableName(JsonName(jsonLayoutName_), JsonName(jsonRefName_));
-
     const QString procedureSelectFunction = procedureFields_.contains(g_procedureSelectFunctionName)
             ? procedureFields_.value(g_procedureSelectFunctionName).toString()
             : QString()
@@ -1398,24 +1439,6 @@ QString getSelectSqlRequest(
             ? procedureFields_.value(g_procedureFilterNamesName).toList()
             : QList<QVariant>()
             ;
-    const QString fieldsOfRequest = QString("%1 %2").arg(
-                procedureSelectFunction,
-                db::applyFunction(
-                    db::filterNames(db::getSqlNames(fields_), procedureFilterFields)
-                    , procedureArgFunction
-                    ).join(g_insertFieldSpliter)
-                );
-    QStringList bindRefs;
-    for(const QString &ref : qAsConst(refs_))
-    {
-        const QString refBindName = QString(":") + db::refName(ref);
-        bindRefs.push_back(refBindName);
-    }
-    for(const QString &extraRef : qAsConst(extraFields_))
-    {
-        const QString refBindName = QString(":") + db::refName(extraRef);
-        bindRefs.push_back(refBindName);
-    }
     const QString procedureConditions = procedureFields_.contains(g_procedureConditionName)
             ? procedureFields_.value(g_procedureConditionName).toString()
             : QString()
@@ -1432,34 +1455,85 @@ QString getSelectSqlRequest(
             ? QString("%1 %2").arg(g_procedureLimitName, procedureFields_.value(g_procedureLimitName).toString())
             : QString()
             ;
-    const bool hasCondition = !(refs_.isEmpty()) || !(extraFields_.isEmpty()) || !(procedureConditions.isEmpty());
-    const QString conditionCases = (QStringList()
-                            << db::equalToValueConditionListFromSqlNameList(
-                                        db::filterNames(refs_,procedureFilterConditions)
-                                        )
-                            << db::equalToValueConditionListFromSqlNameList(
-                                        db::filterNames(extraFields_,procedureFilterConditions)
-                                        )
-                            ).join(" AND ");
-    const QString conditionStr = hasCondition
-            ? QString("WHERE %1")
-              .arg(conditionCases.isEmpty()
-                   ? procedureConditions
-                   : procedureConditions.isEmpty()
-                     ? conditionCases
-                     : QString("%1 AND ( %2 )").arg(conditionCases, procedureConditions)
-                   )
-            : QString()
-            ;
-    const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5 ;")
-            .arg(fieldsOfRequest,
-                 tableName,
-                 conditionStr,
-                 procedureOrderBy,
-                 procedureLimit
-                 )
-            ;
-    return sqlRequest;
+    const bool hasRefConditions = !(refs_.isEmpty()) || !(extraRefs_.isEmpty());
+    const bool hasProcedureConditions = !(procedureConditions.isEmpty());
+
+    const auto fieldsFiltered =
+            db::filterNames(
+                db::getJsonNames(fields_),
+                db::getJsonNames(procedureFilterFields)
+                );
+
+    const auto refsFiltered =
+            db::filterNames(
+                refs_,
+                db::getJsonNames(procedureFilterConditions)
+                );
+
+    const auto extraRefsFiltered =
+            db::filterNames(
+                extraRefs_,
+                db::getJsonNames(procedureFilterConditions)
+                );
+
+    const auto refCondition = fmt::list(
+                fmt::format("%1=%2", db::RefSqlName{}, db::BindRefSqlName{}),
+                fmt::toTypeList(db::SqlNameOrigin{},
+                    fmt::toTypeList(
+                        QString{},
+                        fmt::merge(refsFiltered, extraRefsFiltered)
+                        )
+                    ),
+                " AND "
+                );
+
+    const auto condition = fmt::choose(
+                hasRefConditions && hasProcedureConditions,
+                fmt::format("WHERE %1 AND ( %2 )",
+                    refCondition,
+                    procedureConditions
+                    ),
+                fmt::choose(hasRefConditions,
+                    fmt::format("WHERE %1", refCondition),
+                    fmt::choose(hasProcedureConditions,
+                        fmt::format("WHERE %1", procedureConditions),
+                        fmt::null()
+                        )
+                    )
+                );
+
+    const auto fields = fmt::format(
+                "%1 %2",
+                procedureSelectFunction,
+                fmt::choose(!procedureArgFunction.isEmpty(),
+                    fmt::list(
+                        fmt::format(procedureArgFunction + "(%1)", db::SqlName()),
+                        fmt::toTypeList(
+                            db::SqlNameOrigin{},
+                            fieldsFiltered
+                            ),
+                        g_insertFieldSpliter
+                        ),
+                    fmt::list(
+                        fmt::format("%1", db::SqlName()),
+                        fmt::toTypeList(
+                            db::SqlNameOrigin{},
+                            fieldsFiltered
+                            ),
+                        g_insertFieldSpliter
+                    )
+                ));
+
+    const auto request = fmt::format(
+                "SELECT %1 FROM %2 %3 %4 %5 ;" ,
+                fields,
+                db::SqlTableName{JsonName(jsonLayoutName_), JsonName(jsonRefName_)},
+                condition,
+                procedureOrderBy,
+                procedureLimit
+                );
+
+    return request;
 }
 
 } // namespace db

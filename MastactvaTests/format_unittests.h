@@ -348,5 +348,17 @@ TEST(Format, sum)
                 );
 }
 
+TEST(Format, null)
+{
+    ASSERT_TRUE(equal(fmt::null(), QString{}));
+    ASSERT_TRUE(equal(fmt::toString(fmt::null()), QString{}));
+}
+
+TEST(Format, choose)
+{
+    ASSERT_TRUE(equal(fmt::choose(true, 1, QString("23")), QString{"1"}));
+    ASSERT_TRUE(equal(fmt::toString(fmt::choose(false, 1, QString("23"))), QString{"23"}));
+}
+
 
 #endif // FORMAT_UNITTESTS_H
