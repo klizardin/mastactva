@@ -29,6 +29,7 @@ namespace db
     QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_);
     // TODO: mark [[deprecated]]
     QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_);
+    QStringList filterNames(const QStringList &sqlNames_, const QStringList &leftNames_);
     // TODO: mark [[deprecated]]
     QStringList applyFunction(const QStringList &sqlNames_, const QString &function_);
     // TODO: mark [[deprecated]]
@@ -155,6 +156,9 @@ namespace db
 
     // TODO: mark [[deprecated]]
     QStringList getSqlNames(const JsonSqlFieldsList &fields_);
+    // TODO: mark [[deprecated]]
+    QStringList getJsonNames(const JsonSqlFieldsList &fields_);
+    QStringList getJsonNames(const QList<QVariant> &fields_);
     // TODO: mark [[deprecated]]
     QStringList getBindSqlNames(const JsonSqlFieldsList &fields_);
     // TODO: mark [[deprecated]]
