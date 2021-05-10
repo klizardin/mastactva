@@ -3705,7 +3705,7 @@ ApplicationWindow {
                                 text: qsTr("Info")
                             }
                             TabButton {
-                                text: qsTr("Shaders")
+                                text: qsTr("Objects/Artefacts/Args")
                             }
                             TabButton {
                                 text: qsTr("Arguments")
@@ -3752,7 +3752,34 @@ ApplicationWindow {
                                 }
                             }
                             Item {
-                                id: effectInfoShaders
+                                id: effectInfoObjectsArtefactsAndArguments
+                                SplitView {
+                                    id: slitEffectInfoObjectsArtefactsAndArguments
+                                    anchors.fill: parent
+                                    orientation: Qt.Vertical
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+                                    }
+
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+                                    }
+
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+                                    }
+                                }
+
+                                /*id: effectInfoShaders
                                 ListView {
                                     id: effectShadersList
 
@@ -3772,7 +3799,7 @@ ApplicationWindow {
                                         running: false
                                         z: 1.0
                                     }
-                                }
+                                }*/
                             }
                             Item {
                                 id: effectInfoArguments
