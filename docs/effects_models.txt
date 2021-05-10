@@ -1,0 +1,143 @@
+////////////////////////////////////////////////////////////////////////////
+class Effect
+
+int effectId
+QString effectName
+QString effectDescription
+QDateTime effectCreated
+QVariant effectObjects      /* 1:N */       EffectObjectsModel
+QVariant effectArgs         /* 1:N */       EffectArgModel
+QVariant effectArgSets      /* 1:N */       EffectArgSetModel
+
+
+////////////////////////////////////////////////////////////////////////////
+class EffectObjects
+
+int effectObjectsId
+int effectObjectsEffectId
+QVariant effectObjectsObjectInfo        /* 1:1 */   ObjectInfoModel
+int effectObjectsStepIndex
+QVariant effectObjectsObjectArtefacts   /* 1:N */   ObjectArtefactModel
+
+
+////////////////////////////////////////////////////////////////////////////
+class ObjectInfo
+
+int effectObjectInfoId
+QString effectObjectInfoName
+QString effectObjectInfoProgrammerName
+QString effectObjectInfoDescription
+QDateTime effectObjectInfoCreated
+
+
+////////////////////////////////////////////////////////////////////////////
+class ObjectArtefact
+
+int objectArtefactId
+int objectArtefactObjectInfoId
+QVariant objectArtefactArtefact     /* 1:1 */   ArtefactModel
+int objectArtefactStepIndex
+
+
+////////////////////////////////////////////////////////////////////////////
+class Artefact
+
+int artefactId
+QString artefactName
+QString artefactFilename            // artefact can be downloaded by file name
+QString artefactHash
+int artefactTypeId
+QString artefactDescription
+QDateTime artefactCreated
+QVariant artefactArtefactArg        /* 1:N */   ArtefactArgModel
+
+
+////////////////////////////////////////////////////////////////////////////
+class ArtefactArg
+
+int artefactArgId
+int artefactArgArtefactId
+int artefactArgArgTypeId
+int artefactArgArgStorageId
+QString artefactArgName
+QString artefactArgDefaultValue
+QString artefactArgDescription
+QDateTime artefactArgCreated
+
+
+////////////////////////////////////////////////////////////////////////////
+class EffectArg
+
+int effectArgId
+int effectArgEffectId
+int effectArgObjectArtefactId
+int effectArgArgTypeId
+int effectArgArgStorageId
+QString effectArgName
+QString effectArgDefaultValue
+QString effectArgDescription
+QDateTime effectArgCreated
+QVariant effectArgObjectArtefact        /* 1:1 */   ObjectArtefactModel      // where is it from
+
+
+////////////////////////////////////////////////////////////////////////////
+class EffectArgSet
+
+int effectArgSetId
+int effectArgSetEffectId
+QString effectArgSetDescription
+QVariant effectArgSetValues             /* 1:N */   EffectArgValueModel
+int effectArgSetEasingId
+QDateTime effectArgSetCreated
+
+
+////////////////////////////////////////////////////////////////////////////
+class EffectArgValue
+
+int effectArgValueId
+int effectArgValueArgSetId
+QString effectArgValueValue
+QString effectArgValueDescription
+QDateTime effectArgValueCreated
+QVariant effectArgValueArg              /* 1:1 */   EffectArgModel
+
+
+////////////////////////////////////////////////////////////////////////////
+
+
+Effect
+    * effectObjects/EffectObjectsModel(1:N)
+        EffectObjects:
+        * int effectObjectsStepIndex
+        * effectObjectsObjectInfo/ObjectInfoModel(1:1)
+        * effectObjectsObjectArtefacts/ObjectArtefactModel(1:N)
+            ObjectArtefact:
+            * int objectArtefactStepIndex
+            * objectArtefactArtefact/ArtefactModel(1:1)
+                Artefact:
+                * QString artefactName
+                * QString artefactFilename
+                * artefactArtefactArg/ArtefactArgModel(1:N)
+                    ArtefactArg:
+                        QString artefactArgName
+                        QString artefactArgDefaultValue
+
+    * effectArgs/EffectArgModel(1:N)
+        EffectArg:
+        * QString effectArgName
+        * QString effectArgDefaultValue
+        * effectArgObjectArtefact/ObjectArtefactModel(1:1)
+
+    * effectArgSets/EffectArgSetModel(1:N)
+        EffectArgSet:
+        * effectArgSetValues/EffectArgValueModel(1:N)
+            EffectArgValue:
+            * QString effectArgValueValue
+            * effectArgValueArg/EffectArgModel
+
+
+
+
+
+
+
