@@ -3759,9 +3759,60 @@ ApplicationWindow {
                                     orientation: Qt.Vertical
                                     Rectangle {
                                         width: effectInfoObjectsArtefactsAndArguments.width
+
                                         SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
                                         SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
                                         SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+
+                                        /*ListView {
+                                            id: effectObjectsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.smallListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectObjecstItem
+                                            highlight: effectObjectsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectObjectsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
+                                        }*/
+                                    }
+
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+
+                                        /*ListView {
+                                            id: effectObjectArtefactsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.smallListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectObjectArtefactsItem
+                                            highlight: effectObjectArtefactsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectObjectArtefactsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
+                                        }*/
                                     }
 
                                     Rectangle {
@@ -3769,13 +3820,27 @@ ApplicationWindow {
                                         SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
                                         SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
                                         SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
-                                    }
 
-                                    Rectangle {
-                                        width: effectInfoObjectsArtefactsAndArguments.width
-                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
-                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
-                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+                                        /*ListView {
+                                            id: effectObjectArtefactArgsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.smallListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectObjectArtefactArgsItem
+                                            highlight: effectObjectArtefactArgsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectObjectArtefactArgsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
+                                        }*/
                                     }
                                 }
 
@@ -4547,7 +4612,7 @@ ApplicationWindow {
         }
     }
 
-    Component {
+    /*Component {
         id: effectShaderItem
 
         MouseArea {
@@ -4660,9 +4725,9 @@ ApplicationWindow {
                 }
             }
         }
-    }
+    }*/
 
-    Component {
+    /*Component {
         id: effectShaderItemHighlight
 
         Rectangle {
@@ -4679,7 +4744,7 @@ ApplicationWindow {
             width: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.width : 0
             height: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.height : 0
         }
-    }
+    }*/
 
     Component {
         id: effectArgumentsItem
