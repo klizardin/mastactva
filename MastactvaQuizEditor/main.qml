@@ -3705,7 +3705,7 @@ ApplicationWindow {
                                 text: qsTr("Info")
                             }
                             TabButton {
-                                text: qsTr("Shaders")
+                                text: qsTr("Objects/Artefacts/Args")
                             }
                             TabButton {
                                 text: qsTr("Arguments")
@@ -3752,7 +3752,99 @@ ApplicationWindow {
                                 }
                             }
                             Item {
-                                id: effectInfoShaders
+                                id: effectInfoObjectsArtefactsAndArguments
+                                SplitView {
+                                    id: slitEffectInfoObjectsArtefactsAndArguments
+                                    anchors.fill: parent
+                                    orientation: Qt.Vertical
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+
+                                        ListView {
+                                            id: effectObjectsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.smallListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectObjecstItem
+                                            highlight: effectObjectsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectObjectsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+
+                                        /*ListView {
+                                            id: effectObjectArtefactsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.smallListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectObjectArtefactsItem
+                                            highlight: effectObjectArtefactsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectObjectArtefactsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
+                                        }*/
+                                    }
+
+                                    Rectangle {
+                                        width: effectInfoObjectsArtefactsAndArguments.width
+                                        SplitView.minimumHeight: effectInfoObjectsArtefactsAndArguments.height / 5
+                                        SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
+                                        SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
+
+                                        /*ListView {
+                                            id: effectObjectArtefactArgsList
+
+                                            anchors.fill: parent
+                                            spacing: Constants.smallListViewSpacing
+                                            clip: true
+                                            model: 0
+                                            delegate: effectObjectArtefactArgsItem
+                                            highlight: effectObjectArtefactArgsItemHighlight
+                                            highlightFollowsCurrentItem: false
+                                            z: 0.0
+
+                                            BusyIndicator {
+                                                id: effectObjectArtefactArgsListBusyIndicator
+                                                anchors.centerIn: parent
+                                                visible: false
+                                                running: false
+                                                z: 1.0
+                                            }
+                                        }*/
+                                    }
+                                }
+
+                                /*id: effectInfoShaders
                                 ListView {
                                     id: effectShadersList
 
@@ -3772,7 +3864,7 @@ ApplicationWindow {
                                         running: false
                                         z: 1.0
                                     }
-                                }
+                                }*/
                             }
                             Item {
                                 id: effectInfoArguments
@@ -4521,6 +4613,153 @@ ApplicationWindow {
     }
 
     Component {
+        id: effectObjecstItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property var objecInfo: effectObjectsObjectInfo.currentItem
+            property bool showFullDescription: false
+
+            Connections {
+                target: effectObjectsObjectInfo
+
+                function onListReloaded()
+                {
+                    objecInfo = effectObjectsObjectInfo.currentItem
+                }
+            }
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectObjectsItemMenu.popup()
+                }
+                else
+                {
+                    effectObjectsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                {
+                    effectObjectsItemMenu.popup()
+                }
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectObjectsItemMenu
+                MenuItem { action: refreshEffectObjects }
+                MenuItem { action: addNewEffectObject }
+                MenuItem { action: addExistingEffectObject }
+                MenuItem { action: editEffectObjectInfo }
+                MenuItem { action: removeEffectObject }
+            }
+
+            Column {
+                id: effectObjectItemRect
+                width: effectObjectsList.width
+
+                FontMetrics{
+                    id: effectObjectItemFontMetrics
+                    font: effectObjectItemType.font
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectItemStepIndexLabel
+                        text: qsTr("Step : ")
+                    }
+                    Text {
+                        id: effectObjectItemStepIndex
+                        width: effectObjectsList.width - effectObjectItemStepIndexLabel.width
+                        text: effectObjectsStepIndex
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectItemNameLabel
+                        text: qsTr("Object name : ")
+                    }
+                    Text {
+                        id: effectObjectItemName
+                        width: effectObjectsList.width - effectObjectItemNameLabel.width
+                        text: objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoName : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectItemProgrammerNameLabel
+                        text: qsTr("Object programmer name : ")
+                    }
+                    Text {
+                        id: effectObjectItemProgrammerName
+                        width: effectObjectsList.width - effectObjectItemProgrammerNameLabel.width
+                        text: objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoProgrammerName : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectItemCreatedLabel
+                        text: qsTr("Created : ")
+                    }
+                    Text {
+                        id: effectObjectItemCreated
+                        width: effectObjectsList.width - effectObjectItemCreatedLabel.width
+                        text: objecInfo !== undefined && objecInfo !== null ? mastactva.dateTimeToUserStr(objecInfo.effectObjectInfoCreated) : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectObjectItemDescriptionText
+                    width: effectShadersList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoDescription : "" ) : mastactva.readMore(objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoDescription : "", Constants.smallListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+    Component {
+        id: effectObjectsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectObjectItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectObjectItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.y : 0
+            x: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.x : 0
+            width: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.width : 0
+            height: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.height : 0
+        }
+    }
+
+    /*Component {
         id: effectShaderItem
 
         MouseArea {
@@ -4633,9 +4872,9 @@ ApplicationWindow {
                 }
             }
         }
-    }
+    }*/
 
-    Component {
+    /*Component {
         id: effectShaderItemHighlight
 
         Rectangle {
@@ -4652,7 +4891,7 @@ ApplicationWindow {
             width: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.width : 0
             height: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.height : 0
         }
-    }
+    }*/
 
     Component {
         id: effectArgumentsItem
