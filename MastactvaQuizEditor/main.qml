@@ -3793,7 +3793,7 @@ ApplicationWindow {
                                         SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
                                         SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
 
-                                        /*ListView {
+                                        ListView {
                                             id: effectObjectArtefactsList
 
                                             anchors.fill: parent
@@ -3812,7 +3812,7 @@ ApplicationWindow {
                                                 running: false
                                                 z: 1.0
                                             }
-                                        }*/
+                                        }
                                     }
 
                                     Rectangle {
@@ -4740,6 +4740,7 @@ ApplicationWindow {
             }
         }
     }
+
     Component {
         id: effectObjectsItemHighlight
 
@@ -4758,140 +4759,6 @@ ApplicationWindow {
             height: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.height : 0
         }
     }
-
-    /*Component {
-        id: effectShaderItem
-
-        MouseArea {
-            width: childrenRect.width
-            height: childrenRect.height
-
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-            property var shaderItem: effectArtefactArtefact.currentItem
-            property bool showFullDescription: false
-
-            Connections {
-                target: effectArtefactArtefact
-
-                function onListReloaded()
-                {
-                    shaderItem = effectArtefactArtefact.currentItem
-                }
-            }
-
-            onClicked:
-            {
-                if (mouse.button === Qt.RightButton)
-                {
-                    effectShaderItemMenu.popup()
-                }
-                else
-                {
-                    effectObjectsCurrentIndex = index
-                    mouse.accepted = false
-                }
-            }
-
-            onPressAndHold: {
-                if (mouse.source === Qt.MouseEventNotSynthesized)
-                    effectShaderItemMenu.popup()
-            }
-
-            onDoubleClicked: {
-                showFullDescription = !showFullDescription
-            }
-
-            AutoSizeMenu {
-                id: effectShaderItemMenu
-                MenuItem { action: refreshShaders }
-                MenuItem { action: addNewShader }
-                MenuItem { action: addExistingShader }
-                MenuItem { action: editShaderInfo }
-                MenuItem { action: removeShader }
-            }
-
-            Column {
-                id: effectShaderItemRect
-                width: effectShadersList.width
-
-                FontMetrics{
-                    id: effectShaderItemFontMetrics
-                    font: effectShaderItemType.font
-                }
-
-                Row {
-                    padding: Constants.smallListHeaderPadding
-                    Label {
-                        id: effectShaderItemTypeLabel
-                        text: qsTr("Type : ")
-                    }
-                    Text {
-                        id: effectShaderItemType
-                        width: effectShadersList.width - effectShaderItemTypeLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  && artefactTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? artefactTypeModel.findItemById(shaderItem.artefactTypeId).artefactTypeType : ""
-                        wrapMode: Text.Wrap
-                    }
-                }
-
-                Row {
-                    padding: Constants.smallListHeaderPadding
-                    Label {
-                        id: effectShaderItemFilenameLabel
-                        text: qsTr("Filename : ")
-                    }
-
-                    Text {
-                        id: effectShaderItemFilename
-                        width: effectShadersList.width - effectShaderItemFilenameLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null ? shaderItem.artefactFilename : ""
-                        wrapMode: Text.Wrap
-                    }
-                }
-
-                Row {
-                    padding: Constants.smallListHeaderPadding
-                    Label {
-                        id: effectShaderItemHashLabel
-                        text: qsTr("Hash : ")
-                    }
-
-                    Text {
-                        id: effectShaderItemHash
-                        width: effectShadersList.width - effectShaderItemHashLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.artefactHash : ""
-                        wrapMode: Text.Wrap
-                    }
-                }
-
-                Text {
-                    id: effectShaderItemDescriptionText
-                    width: effectShadersList.width
-                    wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.smallListReadMoreLength, qsTr(" ..."))
-                }
-            }
-        }
-    }*/
-
-    /*Component {
-        id: effectShaderItemHighlight
-
-        Rectangle {
-            SystemPalette {
-                id: effectShaderItemHighlightPallete
-                colorGroup: SystemPalette.Active
-            }
-
-            border.color: effectShaderItemHighlightPallete.highlight
-            border.width: 2
-            radius: 5
-            y: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.y : 0
-            x: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.x : 0
-            width: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.width : 0
-            height: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.height : 0
-        }
-    }*/
 
     Component {
         id: effectArgumentsItem
