@@ -32,25 +32,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
             ? procedureFields.value(g_procedureFilterNamesName).toList()
             : QList<QVariant>()
             ;
-    QHash<QString, QString> defValues;
-    QStringList bindRefs;
     const QStringList refs = r_->getRefs();
-    for(const QString &ref : qAsConst(refs))
-    {
-        const QString refBindName = QString(":") + db::refName(ref);
-        bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, ref == r_->getCurrentRef() ? r_->getIdField().toString() : QString());
-    }
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
-    for(QHash<QString, QVariant>::const_iterator it = std::cbegin(qAsConst(extraFields));
-        it != std::cend(qAsConst(extraFields))
-        ; ++it
-        )
-    {
-        const QString refBindName = QString(":") + db::refName(it.key());
-        bindRefs.push_back(refBindName);
-        defValues.insert(refBindName, it.value().toString());
-    }
     const QString procedureConditions = procedureFields.contains(g_procedureConditionName)
             ? procedureFields.value(g_procedureConditionName).toString()
             : QString()
@@ -63,9 +46,23 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
             ? procedureFields.value(g_procedureArguments).toHash()
             : QHash<QString, QVariant>()
             ;
+
     const bool hasRefConditions = !(refs.isEmpty()) || !(extraFields.isEmpty());
     const bool hasProcedureConditions = !(procedureConditions.isEmpty());
     const bool hasCondition = hasRefConditions || hasProcedureConditions;
+
+    const db::JsonSqlFieldAndValuesList refsValues =
+            db::filter(
+                db::createRefValuesList(
+                    refs,
+                    extraFields.keys(),
+                    extraFields,
+                    r_->getCurrentRef(),
+                    r_->getIdField()
+                    )
+                , procedureFilterConditions
+                );
+
     const QString sqlRequest = db::getSelectSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
@@ -83,15 +80,8 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     if(hasCondition || !procedureArgs.isEmpty())
     {
         query.prepare(sqlRequest);
+        db::bind(refsValues, query);
 
-        for(const QString &ref : qAsConst(bindRefs))
-        {
-            if(!procedureFilterConditions.isEmpty()
-                    && !procedureFilterConditions.contains(QVariant::fromValue(ref))
-                    ) { continue; }
-            const QString v = defValues.value(ref);
-            query.bindValue(ref, v);
-        }
         const QList<QString> procedureArgsKeys = procedureArgs.keys();
         for(const QString &key : qAsConst(procedureArgsKeys))
         {
