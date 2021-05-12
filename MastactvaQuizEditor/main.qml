@@ -3771,7 +3771,7 @@ ApplicationWindow {
                                             spacing: Constants.smallListViewSpacing
                                             clip: true
                                             model: 0
-                                            delegate: effectObjecstItem
+                                            delegate: effectObjectsItem
                                             highlight: effectObjectsItemHighlight
                                             highlightFollowsCurrentItem: false
                                             z: 0.0
@@ -3793,7 +3793,7 @@ ApplicationWindow {
                                         SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
                                         SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
 
-                                        /*ListView {
+                                        ListView {
                                             id: effectObjectArtefactsList
 
                                             anchors.fill: parent
@@ -3812,7 +3812,7 @@ ApplicationWindow {
                                                 running: false
                                                 z: 1.0
                                             }
-                                        }*/
+                                        }
                                     }
 
                                     Rectangle {
@@ -4613,7 +4613,7 @@ ApplicationWindow {
     }
 
     Component {
-        id: effectObjecstItem
+        id: effectObjectsItem
 
         MouseArea {
             width: childrenRect.width
@@ -4672,7 +4672,7 @@ ApplicationWindow {
 
                 FontMetrics{
                     id: effectObjectItemFontMetrics
-                    font: effectObjectItemType.font
+                    font: effectObjectItemStepIndex.font
                 }
 
                 Row {
@@ -4693,7 +4693,7 @@ ApplicationWindow {
                     padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectObjectItemNameLabel
-                        text: qsTr("Object name : ")
+                        text: qsTr("Name : ")
                     }
                     Text {
                         id: effectObjectItemName
@@ -4707,7 +4707,7 @@ ApplicationWindow {
                     padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectObjectItemProgrammerNameLabel
-                        text: qsTr("Object programmer name : ")
+                        text: qsTr("Programmer name : ")
                     }
                     Text {
                         id: effectObjectItemProgrammerName
@@ -4733,13 +4733,14 @@ ApplicationWindow {
 
                 Text {
                     id: effectObjectItemDescriptionText
-                    width: effectShadersList.width
+                    width: effectObjectsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoDescription : "" ) : mastactva.readMore(objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoDescription : "", Constants.smallListReadMoreLength, qsTr(" ..."))
+                    text: objecInfo !== undefined && objecInfo !== null ? showFullDescription ? mastactva.leftDoubleCR(objecInfo.effectObjectInfoDescription ) : mastactva.readMore(objecInfo.effectObjectInfoDescription, Constants.smallListReadMoreLength, qsTr(" ..."))  : ""
                 }
             }
         }
     }
+
     Component {
         id: effectObjectsItemHighlight
 
@@ -4759,8 +4760,8 @@ ApplicationWindow {
         }
     }
 
-    /*Component {
-        id: effectShaderItem
+    Component {
+        id: effectObjectArtefactsItem
 
         MouseArea {
             width: childrenRect.width
@@ -4768,15 +4769,15 @@ ApplicationWindow {
 
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-            property var shaderItem: effectArtefactArtefact.currentItem
+            property var objecArtefact: objectArtefactArtefact.currentItem
             property bool showFullDescription: false
 
             Connections {
-                target: effectArtefactArtefact
+                target: objectArtefactArtefact
 
                 function onListReloaded()
                 {
-                    shaderItem = effectArtefactArtefact.currentItem
+                    objecArtefact = objectArtefactArtefact.currentItem
                 }
             }
 
@@ -4784,7 +4785,7 @@ ApplicationWindow {
             {
                 if (mouse.button === Qt.RightButton)
                 {
-                    effectShaderItemMenu.popup()
+                    effectObjectArtefactsItemMenu.popup()
                 }
                 else
                 {
@@ -4795,7 +4796,9 @@ ApplicationWindow {
 
             onPressAndHold: {
                 if (mouse.source === Qt.MouseEventNotSynthesized)
-                    effectShaderItemMenu.popup()
+                {
+                    effectObjectArtefactsItemMenu.popup()
+                }
             }
 
             onDoubleClicked: {
@@ -4803,33 +4806,47 @@ ApplicationWindow {
             }
 
             AutoSizeMenu {
-                id: effectShaderItemMenu
-                MenuItem { action: refreshShaders }
-                MenuItem { action: addNewShader }
-                MenuItem { action: addExistingShader }
-                MenuItem { action: editShaderInfo }
-                MenuItem { action: removeShader }
+                id: effectObjectArtefactsItemMenu
+                MenuItem { action: refreshEffectObjectArtefacts }
+                MenuItem { action: addNewEffectObjectArtefact }
+                MenuItem { action: addExistingEffectObjectArtefact }
+                MenuItem { action: editEffectObjectArtefact }
+                MenuItem { action: removeEffectObjectArtefact }
             }
 
             Column {
-                id: effectShaderItemRect
-                width: effectShadersList.width
+                id: effectObjectArtefactItemRect
+                width: effectObjectArtefactsList.width
 
                 FontMetrics{
-                    id: effectShaderItemFontMetrics
-                    font: effectShaderItemType.font
+                    id: effectObjectArtefactItemFontMetrics
+                    font: effectObjectArtefactItemStepIndex.font
                 }
 
                 Row {
                     padding: Constants.smallListHeaderPadding
                     Label {
-                        id: effectShaderItemTypeLabel
+                        id: effectObjectArtefactItemStepIndexLabel
+                        text: qsTr("Step : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemStepIndex
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemStepIndexLabel.width
+                        text: objectArtefactStepIndex
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemTypeLabel
                         text: qsTr("Type : ")
                     }
                     Text {
-                        id: effectShaderItemType
-                        width: effectShadersList.width - effectShaderItemTypeLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  && artefactTypeModel.findItemById(shaderItem.artefactTypeId) !== null ? artefactTypeModel.findItemById(shaderItem.artefactTypeId).artefactTypeType : ""
+                        id: effectObjectArtefactItemType
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemTypeLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null && artefactTypeModel.findItemById(objecArtefact.artefactTypeId) !== null ? artefactTypeModel.findItemById(objecArtefact.artefactTypeId).artefactTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4837,14 +4854,13 @@ ApplicationWindow {
                 Row {
                     padding: Constants.smallListHeaderPadding
                     Label {
-                        id: effectShaderItemFilenameLabel
-                        text: qsTr("Filename : ")
+                        id: effectObjectArtefactItemNameLabel
+                        text: qsTr("Name : ")
                     }
-
                     Text {
-                        id: effectShaderItemFilename
-                        width: effectShadersList.width - effectShaderItemFilenameLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null ? shaderItem.artefactFilename : ""
+                        id: effectObjectArtefactItemName
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemNameLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? objecArtefact.artefactName : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -4852,46 +4868,73 @@ ApplicationWindow {
                 Row {
                     padding: Constants.smallListHeaderPadding
                     Label {
-                        id: effectShaderItemHashLabel
+                        id: effectObjectArtefactItemFileNameLabel
+                        text: qsTr("File name : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemFileName
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemFileNameLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? objecArtefact.artefactFilename : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemHashLabel
                         text: qsTr("Hash : ")
                     }
-
                     Text {
-                        id: effectShaderItemHash
-                        width: effectShadersList.width - effectShaderItemHashLabel.width
-                        text: shaderItem !== undefined && shaderItem !== null  ? shaderItem.artefactHash : ""
+                        id: effectObjectArtefactItemHash
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemHashLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? objecArtefact.artefactHash : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemCreatedLabel
+                        text: qsTr("Create : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemCreated
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemCreatedLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? mastactva.dateTimeToUserStr(objecArtefact.artefactCreated) : ""
                         wrapMode: Text.Wrap
                     }
                 }
 
                 Text {
-                    id: effectShaderItemDescriptionText
-                    width: effectShadersList.width
+                    id: effectObjectArtefactItemDescriptionText
+                    width: effectObjectArtefactsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "") : mastactva.readMore(shaderItem !== undefined && shaderItem !== null  ? shaderItem.shaderDescription : "", Constants.smallListReadMoreLength, qsTr(" ..."))
+                    text: objecArtefact !== undefined && objecArtefact !== null ? showFullDescription ? mastactva.leftDoubleCR(objecArtefact.artefactDescription ) : mastactva.readMore(objecArtefact.artefactDescription, Constants.smallListReadMoreLength, qsTr(" ..."))  : ""
                 }
             }
         }
-    }*/
+    }
 
-    /*Component {
-        id: effectShaderItemHighlight
+    Component {
+        id: effectObjectArtefactsItemHighlight
 
         Rectangle {
             SystemPalette {
-                id: effectShaderItemHighlightPallete
+                id: effectObjectArtefactItemHighlightPallete
                 colorGroup: SystemPalette.Active
             }
 
-            border.color: effectShaderItemHighlightPallete.highlight
+            border.color: effectObjectArtefactItemHighlightPallete.highlight
             border.width: 2
             radius: 5
-            y: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.y : 0
-            x: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.x : 0
-            width: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.width : 0
-            height: (effectShadersList.currentItem !== undefined && effectShadersList.currentItem !== null) ? effectShadersList.currentItem.height : 0
+            y: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.y : 0
+            x: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.x : 0
+            width: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.width : 0
+            height: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.height : 0
         }
-    }*/
+    }
 
     Component {
         id: effectArgumentsItem
