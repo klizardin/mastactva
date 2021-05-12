@@ -26,28 +26,12 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
     QSqlQuery query(db);
-    const QString tableName = db::tableName(JsonName(r_->getTableName()), JsonName(r_->getCurrentRef()));
 
     const QHash<QString, QVariant> procedureFields = DBRequestBase::procedureExtraFields(r_->getExtraFields());
-    const QString procedureSelectFunction = procedureFields.contains(g_procedureSelectFunctionName)
-            ? procedureFields.value(g_procedureSelectFunctionName).toString()
-            : QString()
-            ;
-    const QString procedureArgFunction = procedureFields.contains(g_procedureArgFunctionName)
-            ? procedureFields.value(g_procedureArgFunctionName).toString()
-            : QString()
-            ;
     const QList<QVariant> procedureFilterFields = procedureFields.contains(g_procedureFilterNamesName)
             ? procedureFields.value(g_procedureFilterNamesName).toList()
             : QList<QVariant>()
             ;
-    const QString fieldsOfRequest = QString("%1 %2").arg(
-                procedureSelectFunction,
-                db::applyFunction(
-                    db::filterNames(db::getSqlNames(r_->getTableFieldsInfo()), procedureFilterFields)
-                    , procedureArgFunction
-                    ).join(g_insertFieldSpliter)
-                );
     QHash<QString, QString> defValues;
     QStringList bindRefs;
     const QStringList refs = r_->getRefs();
@@ -75,45 +59,21 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
             ? procedureFields.value(g_procedureFilterConditionsName).toList()
             : QList<QVariant>()
             ;
-    const QString procedureOrderBy = procedureFields.contains(g_procedureOrderByName)
-            ? QString("%1 %2").arg(g_procedureOrderByName, procedureFields.value(g_procedureOrderByName).toString())
-            : QString()
-            ;
-    const QString procedureLimit = procedureFields.contains(g_procedureLimitName)
-            ? QString("%1 %2").arg(g_procedureLimitName, procedureFields.value(g_procedureLimitName).toString())
-            : QString()
-            ;
     const QHash<QString, QVariant> procedureArgs = procedureFields.contains(g_procedureArguments)
             ? procedureFields.value(g_procedureArguments).toHash()
             : QHash<QString, QVariant>()
             ;
-    const bool hasCondition = !(refs.isEmpty()) || !(extraFields.isEmpty()) || !(procedureConditions.isEmpty());
-    const QString conditionCases = (QStringList()
-                            << db::equalToValueConditionListFromSqlNameList(
-                                        db::filterNames(refs,procedureFilterConditions)
-                                        )
-                            << db::equalToValueConditionListFromSqlNameList(
-                                        db::filterNames(extraFields.keys(),procedureFilterConditions)
-                                        )
-                            ).join(" AND ");
-    const QString conditionStr = hasCondition
-            ? QString("WHERE %1")
-              .arg(conditionCases.isEmpty()
-                   ? procedureConditions
-                   : procedureConditions.isEmpty()
-                     ? conditionCases
-                     : QString("%1 AND ( %2 )").arg(conditionCases, procedureConditions)
-                   )
-            : QString()
-            ;
-    const QString sqlRequest = QString("SELECT %1 FROM %2 %3 %4 %5 ;")
-            .arg(fieldsOfRequest,
-                 tableName,
-                 conditionStr,
-                 procedureOrderBy,
-                 procedureLimit
-                 )
-            ;
+    const bool hasRefConditions = !(refs.isEmpty()) || !(extraFields.isEmpty());
+    const bool hasProcedureConditions = !(procedureConditions.isEmpty());
+    const bool hasCondition = hasRefConditions || hasProcedureConditions;
+    const QString sqlRequest = db::getSelectSqlRequest(
+                r_->getTableName(),
+                r_->getCurrentRef(),
+                r_->getTableFieldsInfo(),
+                r_->getRefs(),
+                extraFields.keys(),
+                procedureFields
+                );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "select sql" << sqlRequest;
