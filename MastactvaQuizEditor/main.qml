@@ -3771,7 +3771,7 @@ ApplicationWindow {
                                             spacing: Constants.smallListViewSpacing
                                             clip: true
                                             model: 0
-                                            delegate: effectObjecstItem
+                                            delegate: effectObjectsItem
                                             highlight: effectObjectsItemHighlight
                                             highlightFollowsCurrentItem: false
                                             z: 0.0
@@ -4613,7 +4613,7 @@ ApplicationWindow {
     }
 
     Component {
-        id: effectObjecstItem
+        id: effectObjectsItem
 
         MouseArea {
             width: childrenRect.width
@@ -4672,7 +4672,7 @@ ApplicationWindow {
 
                 FontMetrics{
                     id: effectObjectItemFontMetrics
-                    font: effectObjectItemType.font
+                    font: effectObjectItemStepIndex.font
                 }
 
                 Row {
@@ -4693,7 +4693,7 @@ ApplicationWindow {
                     padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectObjectItemNameLabel
-                        text: qsTr("Object name : ")
+                        text: qsTr("Name : ")
                     }
                     Text {
                         id: effectObjectItemName
@@ -4707,7 +4707,7 @@ ApplicationWindow {
                     padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectObjectItemProgrammerNameLabel
-                        text: qsTr("Object programmer name : ")
+                        text: qsTr("Programmer name : ")
                     }
                     Text {
                         id: effectObjectItemProgrammerName
@@ -4733,9 +4733,9 @@ ApplicationWindow {
 
                 Text {
                     id: effectObjectItemDescriptionText
-                    width: effectShadersList.width
+                    width: effectObjectsList.width
                     wrapMode: Text.WordWrap
-                    text: showFullDescription ? mastactva.leftDoubleCR(objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoDescription : "" ) : mastactva.readMore(objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoDescription : "", Constants.smallListReadMoreLength, qsTr(" ..."))
+                    text: objecInfo !== undefined && objecInfo !== null ? showFullDescription ? mastactva.leftDoubleCR(objecInfo.effectObjectInfoDescription ) : mastactva.readMore(objecInfo.effectObjectInfoDescription, Constants.smallListReadMoreLength, qsTr(" ..."))  : ""
                 }
             }
         }
@@ -4757,6 +4757,182 @@ ApplicationWindow {
             x: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.x : 0
             width: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.width : 0
             height: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: effectObjectArtefactsItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property var objecArtefact: objectArtefactArtefact.currentItem
+            property bool showFullDescription: false
+
+            Connections {
+                target: objectArtefactArtefact
+
+                function onListReloaded()
+                {
+                    objecArtefact = objectArtefactArtefact.currentItem
+                }
+            }
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectObjectArtefactsItemMenu.popup()
+                }
+                else
+                {
+                    effectObjectsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                {
+                    effectObjectArtefactsItemMenu.popup()
+                }
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectObjectArtefactsItemMenu
+                MenuItem { action: refreshEffectObjectArtefacts }
+                MenuItem { action: addNewEffectObjectArtefact }
+                MenuItem { action: addExistingEffectObjectArtefact }
+                MenuItem { action: editEffectObjectArtefact }
+                MenuItem { action: removeEffectObjectArtefact }
+            }
+
+            Column {
+                id: effectObjectArtefactItemRect
+                width: effectObjectArtefactsList.width
+
+                FontMetrics{
+                    id: effectObjectArtefactItemFontMetrics
+                    font: effectObjectArtefactItemStepIndex.font
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemStepIndexLabel
+                        text: qsTr("Step : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemStepIndex
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemStepIndexLabel.width
+                        text: objectArtefactStepIndex
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemTypeLabel
+                        text: qsTr("Type : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemType
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemTypeLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null && artefactTypeModel.findItemById(objecArtefact.artefactTypeId) !== null ? artefactTypeModel.findItemById(objecArtefact.artefactTypeId).artefactTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemName
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemNameLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? objecArtefact.artefactName : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemFileNameLabel
+                        text: qsTr("File name : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemFileName
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemFileNameLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? objecArtefact.artefactFilename : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemHashLabel
+                        text: qsTr("Hash : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemHash
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemHashLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? objecArtefact.artefactHash : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactItemCreatedLabel
+                        text: qsTr("Create : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactItemCreated
+                        width: effectObjectArtefactsList.width - effectObjectArtefactItemCreatedLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null ? mastactva.dateTimeToUserStr(objecArtefact.artefactCreated) : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectObjectArtefactItemDescriptionText
+                    width: effectObjectArtefactsList.width
+                    wrapMode: Text.WordWrap
+                    text: objecArtefact !== undefined && objecArtefact !== null ? showFullDescription ? mastactva.leftDoubleCR(objecArtefact.artefactDescription ) : mastactva.readMore(objecArtefact.artefactDescription, Constants.smallListReadMoreLength, qsTr(" ..."))  : ""
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectObjectArtefactsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectObjectArtefactItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectObjectArtefactItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.y : 0
+            x: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.x : 0
+            width: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.width : 0
+            height: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.height : 0
         }
     }
 
