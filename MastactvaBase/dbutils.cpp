@@ -1094,6 +1094,43 @@ JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant>
     });
 }
 
+JsonSqlFieldAndValuesList filter(
+        const JsonSqlFieldAndValuesList &fields_,
+        std::function<bool(const JsonSqlFieldAndValue &)> func_
+        )
+{
+    JsonSqlFieldAndValuesList result;
+    result.reserve(fields_.size());
+    for(const JsonSqlFieldAndValue &fi_ : fields_)
+    {
+        if(func_(fi_))
+        {
+            result.push_back(fi_);
+        }
+    }
+    return result;
+}
+
+JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, const QList<QVariant> &leftFields_)
+{
+    if(leftFields_.isEmpty())
+    {
+        return fields_;
+    }
+
+    return db::filter(fields_, [&leftFields_](const db::JsonSqlFieldAndValue &fi_)->bool
+    {
+        const auto fit = std::find_if(
+                    std::cbegin(leftFields_),
+                    std::cend(leftFields_),
+                    [&fi_](const QVariant &v_)->bool
+        {
+            return v_.isValid() && fi_.getSqlName() == v_.toString();
+        });
+        return std::cend(leftFields_) != fit;
+    });
+}
+
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)
