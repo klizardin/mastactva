@@ -280,21 +280,21 @@ ApplicationWindow {
                 var effect = effectModel.getCurrentItem()
                 effectInfoCommonName.text = effect.effectName
                 effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
-                var shadersModel = effect.effectArtefacts
-                if(shadersModel.isListLoaded())
+                var effectObjectsModel = effect.effectObjects
+                if(effectObjectsModel.isListLoaded())
                 {
-                    effectShadersListBusyIndicator.visible = false
-                    effectShadersListBusyIndicator.running = false
-                    effectObjectsCurrentModel = shadersModel
-                    effectShadersList.model = shadersModel
+                    effectObjectsListBusyIndicator.visible = false
+                    effectObjectsListBusyIndicator.running = false
+                    effectObjectsCurrentModel = effectObjectsModel
+                    effectObjectsList.model = effectObjectsModel
                     effectObjectsCurrentIndex = effectObjectsCurrentModel.size() > 0 ? effectObjectsCurrentModel.currentIndex : -1
                 }
                 else
                 {
-                    effectShadersListBusyIndicator.visible = true
-                    effectShadersListBusyIndicator.running = true
-                    effectShadersList.model = 0
-                    shadersModel.listReloaded.connect(shadersListReloaded)
+                    effectObjectsListBusyIndicator.visible = true
+                    effectObjectsListBusyIndicator.running = true
+                    effectObjectsList.model = 0
+                    effectObjectsModel.listReloaded.connect(effectObjectsListReloaded)
                 }
                 var effectArgumentsModel = effect.effectArgs
                 if(effectArgumentsModel.isListLoaded())
@@ -331,7 +331,7 @@ ApplicationWindow {
                 effectInfoCommonName.text = qsTr("Please, select effect item")
                 effectInfoCommonDescription.text = qsTr("")
                 effectObjectsCurrentModel = undefined
-                effectShadersList.model = 0
+                effectObjectsList.model = 0
                 effectObjectsCurrentIndex = -1
                 effectArgumentsCurrentModel = undefined
                 effectArgumentsList.model = 0
@@ -345,23 +345,23 @@ ApplicationWindow {
             }
         }
 
-        function shadersListReloaded()
+        function effectObjectsListReloaded()
         {
-            effectShadersListBusyIndicator.visible = false
-            effectShadersListBusyIndicator.running = false
+            effectObjectsListBusyIndicator.visible = false
+            effectObjectsListBusyIndicator.running = false
 
             var effect = effectModel.getCurrentItem()
-            var shadersModel = effect.effectArtefacts
-            shadersModel.listReloaded.disconnect(shadersListReloaded)
-            if(shadersModel.isListLoaded())
+            var effectObjectsModel = effect.effectObjects
+            effectObjectsModel.listReloaded.disconnect(effectObjectsListReloaded)
+            if(effectObjectsModel.isListLoaded())
             {
-                effectShadersList.model = shadersModel
-                effectObjectsCurrentModel = shadersModel
-                effectShadersList.currentIndex = effectObjectsCurrentModel.currentIndex
+                effectObjectsList.model = effectObjectsModel
+                effectObjectsCurrentModel = effectObjectsModel
+                effectObjectsList.currentIndex = effectObjectsCurrentModel.currentIndex
             }
             else
             {
-                effectShadersList.model = 0
+                effectObjectsList.model = 0
                 effectObjectsCurrentModel = undefined
             }
         }
@@ -434,9 +434,9 @@ ApplicationWindow {
             }
         }
 
-        function onEffectShaderCurrentIndexChanged()
+        function onEffectObjectCurrentIndexChanged()
         {
-            effectShadersList.currentIndex = effectObjectsCurrentIndex
+            effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
@@ -2705,10 +2705,32 @@ ApplicationWindow {
         }
     }
 
+    function isEffectObjectsListValid()
+    {
+        return effectObjectsCurrentModel !== null;
+    }
+
     Action {
         id: refreshEffectObjects
         text: qsTr("&Refresh")
         onTriggered: {
+            if(isEffectObjectsListValid()) {
+                effectObjectsCurrentIndex = -1
+                effectObjectsCurrentModel.listReloaded.connect(onEffectObjectsListLoaded)
+                effectObjectsListBusyIndicator.visible = true
+                effectObjectsListBusyIndicator.running = true
+                effectObjectsCurrentModel.loadList()
+            }
+        }
+
+        function onEffectObjectsListLoaded()
+        {
+            if(isEffectObjectsListValid()) {
+                effectObjectsCurrentModel.listReloaded.disconnect(onEffectObjectsListLoaded)
+                effectObjectsListBusyIndicator.visible = false
+                effectObjectsListBusyIndicator.running = false
+                effectObjectsCurrentIndex = effectObjectsCurrentModel.currentIndex
+            }
         }
     }
 
