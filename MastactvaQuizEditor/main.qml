@@ -2705,10 +2705,32 @@ ApplicationWindow {
         }
     }
 
+    function isEffectObjectsListValid()
+    {
+        return effectObjectsCurrentModel !== null;
+    }
+
     Action {
         id: refreshEffectObjects
         text: qsTr("&Refresh")
         onTriggered: {
+            if(isEffectObjectsListValid()) {
+                effectObjectsCurrentIndex = -1
+                effectObjectsCurrentModel.listReloaded.connect(onEffectObjectsListLoaded)
+                effectObjectsListBusyIndicator.visible = true
+                effectObjectsListBusyIndicator.running = true
+                effectObjectsCurrentModel.loadList()
+            }
+        }
+
+        function onEffectObjectsListLoaded()
+        {
+            if(isEffectObjectsListValid()) {
+                effectObjectsCurrentModel.listReloaded.disconnect(onEffectObjectsListLoaded)
+                effectObjectsListBusyIndicator.visible = false
+                effectObjectsListBusyIndicator.running = false
+                effectObjectsCurrentIndex = effectObjectsCurrentModel.currentIndex
+            }
         }
     }
 
