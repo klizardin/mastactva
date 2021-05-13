@@ -280,21 +280,21 @@ ApplicationWindow {
                 var effect = effectModel.getCurrentItem()
                 effectInfoCommonName.text = effect.effectName
                 effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
-                var shadersModel = effect.effectObjects
-                if(shadersModel.isListLoaded())
+                var effectObjectsModel = effect.effectObjects
+                if(effectObjectsModel.isListLoaded())
                 {
-                    effectShadersListBusyIndicator.visible = false
-                    effectShadersListBusyIndicator.running = false
-                    effectObjectsCurrentModel = shadersModel
-                    effectObjectsList.model = shadersModel
+                    effectObjectsListBusyIndicator.visible = false
+                    effectObjectsListBusyIndicator.running = false
+                    effectObjectsCurrentModel = effectObjectsModel
+                    effectObjectsList.model = effectObjectsModel
                     effectObjectsCurrentIndex = effectObjectsCurrentModel.size() > 0 ? effectObjectsCurrentModel.currentIndex : -1
                 }
                 else
                 {
-                    effectShadersListBusyIndicator.visible = true
-                    effectShadersListBusyIndicator.running = true
+                    effectObjectsListBusyIndicator.visible = true
+                    effectObjectsListBusyIndicator.running = true
                     effectObjectsList.model = 0
-                    shadersModel.listReloaded.connect(shadersListReloaded)
+                    effectObjectsModel.listReloaded.connect(effectObjectsListReloaded)
                 }
                 var effectArgumentsModel = effect.effectArgs
                 if(effectArgumentsModel.isListLoaded())
@@ -345,18 +345,18 @@ ApplicationWindow {
             }
         }
 
-        function shadersListReloaded()
+        function effectObjectsListReloaded()
         {
-            effectShadersListBusyIndicator.visible = false
-            effectShadersListBusyIndicator.running = false
+            effectObjectsListBusyIndicator.visible = false
+            effectObjectsListBusyIndicator.running = false
 
             var effect = effectModel.getCurrentItem()
-            var shadersModel = effect.effectObjects
-            shadersModel.listReloaded.disconnect(shadersListReloaded)
-            if(shadersModel.isListLoaded())
+            var effectObjectsModel = effect.effectObjects
+            effectObjectsModel.listReloaded.disconnect(effectObjectsListReloaded)
+            if(effectObjectsModel.isListLoaded())
             {
-                effectObjectsList.model = shadersModel
-                effectObjectsCurrentModel = shadersModel
+                effectObjectsList.model = effectObjectsModel
+                effectObjectsCurrentModel = effectObjectsModel
                 effectObjectsList.currentIndex = effectObjectsCurrentModel.currentIndex
             }
             else
@@ -434,7 +434,7 @@ ApplicationWindow {
             }
         }
 
-        function onEffectShaderCurrentIndexChanged()
+        function onEffectObjectCurrentIndexChanged()
         {
             effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
