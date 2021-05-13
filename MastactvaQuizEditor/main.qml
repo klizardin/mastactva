@@ -3821,7 +3821,7 @@ ApplicationWindow {
                                         SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
                                         SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
 
-                                        /*ListView {
+                                        ListView {
                                             id: effectObjectArtefactArgsList
 
                                             anchors.fill: parent
@@ -3840,31 +3840,9 @@ ApplicationWindow {
                                                 running: false
                                                 z: 1.0
                                             }
-                                        }*/
+                                        }
                                     }
                                 }
-
-                                /*id: effectInfoShaders
-                                ListView {
-                                    id: effectShadersList
-
-                                    anchors.fill: parent
-                                    spacing: Constants.smallListViewSpacing
-                                    clip: true
-                                    model: 0
-                                    delegate: effectShaderItem
-                                    highlight: effectShaderItemHighlight
-                                    highlightFollowsCurrentItem: false
-                                    z: 0.0
-
-                                    BusyIndicator {
-                                        id: effectShadersListBusyIndicator
-                                        anchors.centerIn: parent
-                                        visible: false
-                                        running: false
-                                        z: 1.0
-                                    }
-                                }*/
                             }
                             Item {
                                 id: effectInfoArguments
@@ -4933,6 +4911,158 @@ ApplicationWindow {
             x: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.x : 0
             width: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.width : 0
             height: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: effectObjectArtefactArgsItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectObjectArtefactArgsItemMenu.popup()
+                }
+                else
+                {
+                    effectObjectsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                {
+                    effectObjectArtefactArgsItemMenu.popup()
+                }
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectObjectArtefactArgsItemMenu
+                MenuItem { action: refreshEffectObjectArtefactArgs }
+                MenuItem { action: addNewEffectObjectArtefactArg }
+                MenuItem { action: addExistingEffectObjectArtefactArg }
+                MenuItem { action: editEffectObjectArtefactArg }
+                MenuItem { action: removeEffectObjectArtefactArg }
+            }
+
+            Column {
+                id: effectObjectArtefactArgItemRect
+                width: effectObjectArtefactArgsList.width
+
+                FontMetrics{
+                    id: effectObjectArtefactItemFontMetrics
+                    font: effectObjectArtefactItemStepIndex.font
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgNameIndex
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemNameLabel.width
+                        text: artefactArgName
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemTypeLabel
+                        text: qsTr("Type : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgItemType
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemTypeLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgTypeModel.findItemById(artefactArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(artefactArgArgTypeId).artefactArgTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemStorageLabel
+                        text: qsTr("Storage : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgItemStorage
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemStorageLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgStorageModel.findItemById(artefactArgArgStorageId) !== null ? artefactArgStorageModel.findItemById(artefactArgArgStorageId).artefactArgStorageStorage : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemDefaultValueLabel
+                        text: qsTr("Default value : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgDefaultValueIndex
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemDefaultValueLabel.width
+                        text: artefactArgDefaultValue
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemCreatedLabel
+                        text: qsTr("Created : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgCreatedIndex
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemCreatedLabel.width
+                        text: mastactva.dateTimeToUserStr(artefactArgCreated)
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectObjectArtefactArgItemDescriptionText
+                    width: effectObjectArtefactArgsList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(artefactArgDescription) : mastactva.readMore(artefactArgDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectObjectArtefactArgsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectObjectArtefactArgItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectObjectArtefactArgItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.y : 0
+            x: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.x : 0
+            width: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.width : 0
+            height: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.height : 0
         }
     }
 
