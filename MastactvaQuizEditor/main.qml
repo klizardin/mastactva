@@ -286,14 +286,14 @@ ApplicationWindow {
                     effectShadersListBusyIndicator.visible = false
                     effectShadersListBusyIndicator.running = false
                     effectObjectsCurrentModel = shadersModel
-                    effectShadersList.model = shadersModel
+                    effectObjectsList.model = shadersModel
                     effectObjectsCurrentIndex = effectObjectsCurrentModel.size() > 0 ? effectObjectsCurrentModel.currentIndex : -1
                 }
                 else
                 {
                     effectShadersListBusyIndicator.visible = true
                     effectShadersListBusyIndicator.running = true
-                    effectShadersList.model = 0
+                    effectObjectsList.model = 0
                     shadersModel.listReloaded.connect(shadersListReloaded)
                 }
                 var effectArgumentsModel = effect.effectArgs
@@ -331,7 +331,7 @@ ApplicationWindow {
                 effectInfoCommonName.text = qsTr("Please, select effect item")
                 effectInfoCommonDescription.text = qsTr("")
                 effectObjectsCurrentModel = undefined
-                effectShadersList.model = 0
+                effectObjectsList.model = 0
                 effectObjectsCurrentIndex = -1
                 effectArgumentsCurrentModel = undefined
                 effectArgumentsList.model = 0
@@ -355,13 +355,13 @@ ApplicationWindow {
             shadersModel.listReloaded.disconnect(shadersListReloaded)
             if(shadersModel.isListLoaded())
             {
-                effectShadersList.model = shadersModel
+                effectObjectsList.model = shadersModel
                 effectObjectsCurrentModel = shadersModel
-                effectShadersList.currentIndex = effectObjectsCurrentModel.currentIndex
+                effectObjectsList.currentIndex = effectObjectsCurrentModel.currentIndex
             }
             else
             {
-                effectShadersList.model = 0
+                effectObjectsList.model = 0
                 effectObjectsCurrentModel = undefined
             }
         }
@@ -436,7 +436,7 @@ ApplicationWindow {
 
         function onEffectShaderCurrentIndexChanged()
         {
-            effectShadersList.currentIndex = effectObjectsCurrentIndex
+            effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
