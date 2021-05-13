@@ -2706,136 +2706,107 @@ ApplicationWindow {
     }
 
     Action {
-        id: refreshShaders
-        text: qsTr("Re&fresh shaders")
+        id: refreshEffectObjects
+        text: qsTr("&Refresh")
         onTriggered: {
-            //shaderEditDialog
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentIndex = -1
-                effectObjectsCurrentModel.listReloaded.connect(effectObjectsCurrentModelListReloaded)
-                effectObjectsCurrentModel.loadList()
-            }
-        }
-
-        function effectObjectsCurrentModelListReloaded()
-        {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentModel.listReloaded.disconnect(effectObjectsCurrentModelListReloaded)
-                effectObjectsCurrentIndex = effectObjectsCurrentModel.currentIndex
-            }
         }
     }
 
     Action {
-        id: addNewShader
-        text: qsTr("&Add new shader")
+        id: addNewEffectObject
+        text: qsTr("Add &new")
         onTriggered: {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                var newEffectShader = effectObjectsCurrentModel.createItem()
-                var newShader = newEffectShader.effectArtefactArtefact.createItem()
-
-                shaderEditDialog.fieldEffectShader = newEffectShader
-                shaderEditDialog.fieldShader = newShader
-                shaderEditDialog.fieldNewItem = true
-                shaderEditDialog.open()
-            }
         }
     }
 
     Action {
-        id: addExistingShader
-        text: qsTr("Add &existing shader")
+        id: addExistingEffectObject
+        text: qsTr("Add &existing")
         onTriggered: {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                chooseShaderDialog.open()
-            }
         }
     }
 
     Action {
-        id: editShaderInfo
-        text: qsTr("Edit shader &info")
+        id: editEffectObjectInfo
+        text: qsTr("Edit &info")
         onTriggered: {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                if(effectObjectsCurrentModel.effectArtefacts.size() > 0 && effectObjectsCurrentIndex >= 0)
-                {
-                    var effectShader = effectObjectsCurrentModel
-                    var shader = effectObjectsCurrentModel.effectArtefacts.getCurrentItem()
-                    shaderEditDialog.fieldEffectShader = effectShader
-                    shaderEditDialog.fieldShader = shader
-                    shaderEditDialog.fieldNewItem = false
-                    shaderEditDialog.open()
-                }
-            }
         }
     }
 
     Action {
-        id: removeShader
-        text: qsTr("&Remove shader")
+        id: removeEffectObject
+        text: qsTr("Remove")
         onTriggered: {
-            promptBeforeRemove()
         }
+    }
 
-        function promptBeforeRemove()
-        {
-            if(effectObjectsCurrentIndex >= 0 && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                var effectShader = effectObjectsCurrentModel.itemAt(effectObjectsCurrentIndex).effectArtefactArtefact.currentItem
-                if(effectShader !== undefined && effectShader !== null)
-                {
-                    confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.artefactFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
-                    confirmDialog.showImage = false
-                    connectConfirmDialog()
-                    confirmDialog.open()
-                }
-            }
+    Action {
+        id: refreshEffectObjectArtefacts
+        text: qsTr("&Refresh")
+        onTriggered: {
         }
+    }
 
-        function connectConfirmDialog()
-        {
-            confirmDialog.onSkip.connect(onCancelConfirm)
-            confirmDialog.onConfirm.connect(onConfirmed)
+    Action {
+        id: addNewEffectObjectArtefact
+        text: qsTr("Add &new")
+        onTriggered: {
         }
+    }
 
-        function disconnectConfirmDialog()
-        {
-            confirmDialog.onSkip.disconnect(onCancelConfirm)
-            confirmDialog.onConfirm.disconnect(onConfirmed)
+    Action {
+        id: addExistingEffectObjectArtefact
+        text: qsTr("Add &existing")
+        onTriggered: {
         }
+    }
 
-        function onCancelConfirm()
-        {
-            disconnectConfirmDialog()
+    Action {
+        id: editEffectObjectArtefact
+        text: qsTr("&Edit")
+        onTriggered: {
         }
+    }
 
-        function onConfirmed()
-        {
-            disconnectConfirmDialog()
-            remove()
+    Action {
+        id: removeEffectObjectArtefact
+        text: qsTr("Remove")
+        onTriggered: {
         }
+    }
 
-        function remove()
-        {
-            if(effectObjectsCurrentIndex >= 0 && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentModel.itemDeleted.connect(itemDeleted)
-                effectObjectsCurrentModel.delItem(effectObjectsCurrentIndex)
-            }
+    Action {
+        id: refreshEffectObjectArtefactArgs
+        text: qsTr("&Refresh")
+        onTriggered: {
         }
+    }
 
-        function itemDeleted()
-        {
-            effectObjectsCurrentIndex = -1
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentModel.itemDeleted.disconnect(itemDeleted)
-            }
+    Action {
+        id: addNewEffectObjectArtefactArg
+        text: qsTr("Add &new")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: addExistingEffectObjectArtefactArg
+        text: qsTr("Add &existing")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: editEffectObjectArtefactArg
+        text: qsTr("&Edit")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: removeEffectObjectArtefactArg
+        text: qsTr("Remove")
+        onTriggered: {
         }
     }
 
@@ -3323,12 +3294,28 @@ ApplicationWindow {
             MenuItem { action: removeEffect }
         }
         AutoSizeMenu {
-            title: qsTr("&Shaders")
-            MenuItem { action: refreshShaders }
-            MenuItem { action: addNewShader }
-            MenuItem { action: addExistingShader }
-            MenuItem { action: editShaderInfo }
-            MenuItem { action: removeShader }
+            title: qsTr("&Objects")
+            MenuItem { action: refreshEffectObjects }
+            MenuItem { action: addNewEffectObject }
+            MenuItem { action: addExistingEffectObject }
+            MenuItem { action: editEffectObjectInfo }
+            MenuItem { action: removeEffectObject }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Object's Artefacts")
+            MenuItem { action: refreshEffectObjectArtefacts }
+            MenuItem { action: addNewEffectObjectArtefact }
+            MenuItem { action: addExistingEffectObjectArtefact }
+            MenuItem { action: editEffectObjectArtefact }
+            MenuItem { action: removeEffectObjectArtefact }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Object's Artefact's Args")
+            MenuItem { action: refreshEffectObjectArtefactArgs }
+            MenuItem { action: addNewEffectObjectArtefactArg }
+            MenuItem { action: addExistingEffectObjectArtefactArg }
+            MenuItem { action: editEffectObjectArtefactArg }
+            MenuItem { action: removeEffectObjectArtefactArg }
         }
         AutoSizeMenu {
             title: qsTr("&Arguments")
