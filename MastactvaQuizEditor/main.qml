@@ -280,7 +280,7 @@ ApplicationWindow {
                 var effect = effectModel.getCurrentItem()
                 effectInfoCommonName.text = effect.effectName
                 effectInfoCommonDescription.text = mastactva.leftDoubleCR(effect.effectDescription)
-                var shadersModel = effect.effectArtefacts
+                var shadersModel = effect.effectObjects
                 if(shadersModel.isListLoaded())
                 {
                     effectShadersListBusyIndicator.visible = false
@@ -351,7 +351,7 @@ ApplicationWindow {
             effectShadersListBusyIndicator.running = false
 
             var effect = effectModel.getCurrentItem()
-            var shadersModel = effect.effectArtefacts
+            var shadersModel = effect.effectObjects
             shadersModel.listReloaded.disconnect(shadersListReloaded)
             if(shadersModel.isListLoaded())
             {
