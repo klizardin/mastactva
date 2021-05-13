@@ -2706,136 +2706,107 @@ ApplicationWindow {
     }
 
     Action {
-        id: refreshShaders
-        text: qsTr("Re&fresh shaders")
+        id: refreshEffectObjects
+        text: qsTr("&Refresh")
         onTriggered: {
-            //shaderEditDialog
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentIndex = -1
-                effectObjectsCurrentModel.listReloaded.connect(effectObjectsCurrentModelListReloaded)
-                effectObjectsCurrentModel.loadList()
-            }
-        }
-
-        function effectObjectsCurrentModelListReloaded()
-        {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentModel.listReloaded.disconnect(effectObjectsCurrentModelListReloaded)
-                effectObjectsCurrentIndex = effectObjectsCurrentModel.currentIndex
-            }
         }
     }
 
     Action {
-        id: addNewShader
-        text: qsTr("&Add new shader")
+        id: addNewEffectObject
+        text: qsTr("Add &new")
         onTriggered: {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                var newEffectShader = effectObjectsCurrentModel.createItem()
-                var newShader = newEffectShader.effectArtefactArtefact.createItem()
-
-                shaderEditDialog.fieldEffectShader = newEffectShader
-                shaderEditDialog.fieldShader = newShader
-                shaderEditDialog.fieldNewItem = true
-                shaderEditDialog.open()
-            }
         }
     }
 
     Action {
-        id: addExistingShader
-        text: qsTr("Add &existing shader")
+        id: addExistingEffectObject
+        text: qsTr("Add &existing")
         onTriggered: {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                chooseShaderDialog.open()
-            }
         }
     }
 
     Action {
-        id: editShaderInfo
-        text: qsTr("Edit shader &info")
+        id: editEffectObjectInfo
+        text: qsTr("Edit &info")
         onTriggered: {
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                if(effectObjectsCurrentModel.effectArtefacts.size() > 0 && effectObjectsCurrentIndex >= 0)
-                {
-                    var effectShader = effectObjectsCurrentModel
-                    var shader = effectObjectsCurrentModel.effectArtefacts.getCurrentItem()
-                    shaderEditDialog.fieldEffectShader = effectShader
-                    shaderEditDialog.fieldShader = shader
-                    shaderEditDialog.fieldNewItem = false
-                    shaderEditDialog.open()
-                }
-            }
         }
     }
 
     Action {
-        id: removeShader
-        text: qsTr("&Remove shader")
+        id: removeEffectObject
+        text: qsTr("Remove")
         onTriggered: {
-            promptBeforeRemove()
         }
+    }
 
-        function promptBeforeRemove()
-        {
-            if(effectObjectsCurrentIndex >= 0 && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                var effectShader = effectObjectsCurrentModel.itemAt(effectObjectsCurrentIndex).effectArtefactArtefact.currentItem
-                if(effectShader !== undefined && effectShader !== null)
-                {
-                    confirmDialog.confirmText = qsTr("Do you really want to remove shader?") + qsTr("<br/>") + qsTr("<br/>") + qsTr("Shader filename : ") + effectShader.artefactFilename + qsTr("<br/>") + qsTr("Shader description : ") + effectShader.shaderDescription + qsTr("<br/>");
-                    confirmDialog.showImage = false
-                    connectConfirmDialog()
-                    confirmDialog.open()
-                }
-            }
+    Action {
+        id: refreshEffectObjectArtefacts
+        text: qsTr("&Refresh")
+        onTriggered: {
         }
+    }
 
-        function connectConfirmDialog()
-        {
-            confirmDialog.onSkip.connect(onCancelConfirm)
-            confirmDialog.onConfirm.connect(onConfirmed)
+    Action {
+        id: addNewEffectObjectArtefact
+        text: qsTr("Add &new")
+        onTriggered: {
         }
+    }
 
-        function disconnectConfirmDialog()
-        {
-            confirmDialog.onSkip.disconnect(onCancelConfirm)
-            confirmDialog.onConfirm.disconnect(onConfirmed)
+    Action {
+        id: addExistingEffectObjectArtefact
+        text: qsTr("Add &existing")
+        onTriggered: {
         }
+    }
 
-        function onCancelConfirm()
-        {
-            disconnectConfirmDialog()
+    Action {
+        id: editEffectObjectArtefact
+        text: qsTr("&Edit")
+        onTriggered: {
         }
+    }
 
-        function onConfirmed()
-        {
-            disconnectConfirmDialog()
-            remove()
+    Action {
+        id: removeEffectObjectArtefact
+        text: qsTr("Remove")
+        onTriggered: {
         }
+    }
 
-        function remove()
-        {
-            if(effectObjectsCurrentIndex >= 0 && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentModel.itemDeleted.connect(itemDeleted)
-                effectObjectsCurrentModel.delItem(effectObjectsCurrentIndex)
-            }
+    Action {
+        id: refreshEffectObjectArtefactArgs
+        text: qsTr("&Refresh")
+        onTriggered: {
         }
+    }
 
-        function itemDeleted()
-        {
-            effectObjectsCurrentIndex = -1
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
-            {
-                effectObjectsCurrentModel.itemDeleted.disconnect(itemDeleted)
-            }
+    Action {
+        id: addNewEffectObjectArtefactArg
+        text: qsTr("Add &new")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: addExistingEffectObjectArtefactArg
+        text: qsTr("Add &existing")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: editEffectObjectArtefactArg
+        text: qsTr("&Edit")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: removeEffectObjectArtefactArg
+        text: qsTr("Remove")
+        onTriggered: {
         }
     }
 
@@ -3323,12 +3294,28 @@ ApplicationWindow {
             MenuItem { action: removeEffect }
         }
         AutoSizeMenu {
-            title: qsTr("&Shaders")
-            MenuItem { action: refreshShaders }
-            MenuItem { action: addNewShader }
-            MenuItem { action: addExistingShader }
-            MenuItem { action: editShaderInfo }
-            MenuItem { action: removeShader }
+            title: qsTr("&Objects")
+            MenuItem { action: refreshEffectObjects }
+            MenuItem { action: addNewEffectObject }
+            MenuItem { action: addExistingEffectObject }
+            MenuItem { action: editEffectObjectInfo }
+            MenuItem { action: removeEffectObject }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Object's Artefacts")
+            MenuItem { action: refreshEffectObjectArtefacts }
+            MenuItem { action: addNewEffectObjectArtefact }
+            MenuItem { action: addExistingEffectObjectArtefact }
+            MenuItem { action: editEffectObjectArtefact }
+            MenuItem { action: removeEffectObjectArtefact }
+        }
+        AutoSizeMenu {
+            title: qsTr("&Object's Artefact's Args")
+            MenuItem { action: refreshEffectObjectArtefactArgs }
+            MenuItem { action: addNewEffectObjectArtefactArg }
+            MenuItem { action: addExistingEffectObjectArtefactArg }
+            MenuItem { action: editEffectObjectArtefactArg }
+            MenuItem { action: removeEffectObjectArtefactArg }
         }
         AutoSizeMenu {
             title: qsTr("&Arguments")
@@ -3821,7 +3808,7 @@ ApplicationWindow {
                                         SplitView.maximumHeight: effectInfoObjectsArtefactsAndArguments.height * 2 / 3
                                         SplitView.preferredHeight: effectInfoObjectsArtefactsAndArguments.height / 3
 
-                                        /*ListView {
+                                        ListView {
                                             id: effectObjectArtefactArgsList
 
                                             anchors.fill: parent
@@ -3840,31 +3827,9 @@ ApplicationWindow {
                                                 running: false
                                                 z: 1.0
                                             }
-                                        }*/
+                                        }
                                     }
                                 }
-
-                                /*id: effectInfoShaders
-                                ListView {
-                                    id: effectShadersList
-
-                                    anchors.fill: parent
-                                    spacing: Constants.smallListViewSpacing
-                                    clip: true
-                                    model: 0
-                                    delegate: effectShaderItem
-                                    highlight: effectShaderItemHighlight
-                                    highlightFollowsCurrentItem: false
-                                    z: 0.0
-
-                                    BusyIndicator {
-                                        id: effectShadersListBusyIndicator
-                                        anchors.centerIn: parent
-                                        visible: false
-                                        running: false
-                                        z: 1.0
-                                    }
-                                }*/
                             }
                             Item {
                                 id: effectInfoArguments
@@ -4933,6 +4898,158 @@ ApplicationWindow {
             x: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.x : 0
             width: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.width : 0
             height: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: effectObjectArtefactArgsItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    effectObjectArtefactArgsItemMenu.popup()
+                }
+                else
+                {
+                    effectObjectsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                {
+                    effectObjectArtefactArgsItemMenu.popup()
+                }
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            AutoSizeMenu {
+                id: effectObjectArtefactArgsItemMenu
+                MenuItem { action: refreshEffectObjectArtefactArgs }
+                MenuItem { action: addNewEffectObjectArtefactArg }
+                MenuItem { action: addExistingEffectObjectArtefactArg }
+                MenuItem { action: editEffectObjectArtefactArg }
+                MenuItem { action: removeEffectObjectArtefactArg }
+            }
+
+            Column {
+                id: effectObjectArtefactArgItemRect
+                width: effectObjectArtefactArgsList.width
+
+                FontMetrics{
+                    id: effectObjectArtefactItemFontMetrics
+                    font: effectObjectArtefactItemStepIndex.font
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgNameIndex
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemNameLabel.width
+                        text: artefactArgName
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemTypeLabel
+                        text: qsTr("Type : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgItemType
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemTypeLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgTypeModel.findItemById(artefactArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(artefactArgArgTypeId).artefactArgTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemStorageLabel
+                        text: qsTr("Storage : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgItemStorage
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemStorageLabel.width
+                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgStorageModel.findItemById(artefactArgArgStorageId) !== null ? artefactArgStorageModel.findItemById(artefactArgArgStorageId).artefactArgStorageStorage : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemDefaultValueLabel
+                        text: qsTr("Default value : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgDefaultValueIndex
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemDefaultValueLabel.width
+                        text: artefactArgDefaultValue
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectArtefactArgItemCreatedLabel
+                        text: qsTr("Created : ")
+                    }
+                    Text {
+                        id: effectObjectArtefactArgCreatedIndex
+                        width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemCreatedLabel.width
+                        text: mastactva.dateTimeToUserStr(artefactArgCreated)
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: effectObjectArtefactArgItemDescriptionText
+                    width: effectObjectArtefactArgsList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(artefactArgDescription) : mastactva.readMore(artefactArgDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+
+    Component {
+        id: effectObjectArtefactArgsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: effectObjectArtefactArgItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: effectObjectArtefactArgItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.y : 0
+            x: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.x : 0
+            width: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.width : 0
+            height: (effectObjectArtefactArgsList.currentItem !== undefined && effectObjectArtefactArgsList.currentItem !== null) ? effectObjectArtefactArgsList.currentItem.height : 0
         }
     }
 
