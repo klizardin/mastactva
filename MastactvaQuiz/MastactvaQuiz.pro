@@ -92,6 +92,7 @@ unix: SOURCES += \
         jsonutils.cpp   \
         sqlutils.cpp    \
         timeutils.cpp   \
+        containerutils.cpp  \
         format.cpp  \
         \
         quizimage.cpp   \
@@ -202,6 +203,7 @@ unix: HEADERS += \
     defines.h   \
     format.h    \
     format_type.h   \
+    containerutils.h    \
     \
     quizimage.h \
     quizimagedrawingdata.h  \
