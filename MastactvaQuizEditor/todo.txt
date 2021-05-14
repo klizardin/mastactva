@@ -156,7 +156,7 @@ LUA:
 94. test for con
 95. restore effects
 
-
+96. fix list actions
 
 
 
