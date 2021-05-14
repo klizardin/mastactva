@@ -101,6 +101,7 @@ unix: HEADERS += \
         format_type.h   \
         format.h    \
         serverfiles.h   \
+        containerutils.h    \
         utils.h \
         names.h \
         defines.h   \
@@ -167,6 +168,7 @@ unix: SOURCES += \
         sqlutils.cpp    \
         format.cpp  \
         timeutils.cpp   \
+        containerutils.cpp  \
         utils.cpp  \
         \
         quizimage.cpp   \

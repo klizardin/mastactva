@@ -11,6 +11,7 @@
 #include "../MastactvaBase/requestdata.h"
 #include "../MastactvaBase/netapi.h"
 #include "../MastactvaBase/dbrequestinfo.h"
+#include "../MastactvaBase/containerutils.h"
 
 
 // TODO: add pinup/unit tests
@@ -109,7 +110,7 @@ public:
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
-        values = merge(extraFields_, values);
+        values = mergePrefareFirst(extraFields_, values);
         QVariant appId = getDataLayout<DataType_>().getSpecialFieldValue(
                     layout::SpecialFieldEn::appId,
                     item_);
@@ -148,7 +149,7 @@ public:
         QHash<QString, QVariant> values;
         bool ok = getDataLayout<DataType_>().getJsonValues(item_, values);
         if(!ok) { return nullptr; }
-        values = merge(extraFields_, values);
+        values = mergePrefareFirst(extraFields_, values);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         QList<QPair<QString, layout::JsonTypesEn>> fieldsInfo;
         getDataLayout<DataType_>().getJsonFieldsInfo(fieldsInfo);
@@ -221,8 +222,6 @@ signals:
 // TODO : private access writes
 protected:
     void freeRequests();
-    static QHash<QString, QVariant> merge(const QHash<QString, QVariant> &v1_,
-                                          const QHash<QString, QVariant> &v2_);
     void openDB();
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
