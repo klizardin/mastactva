@@ -287,20 +287,22 @@ private:
     ArgsList<Args_ ...> m_args;
 };
 
-template<typename Type_, template<typename> class ContainerType_>
+template<typename DataType_>
 class List
 {
 public:
-    List(ContainerType_<Type_> &&data_, const QString &separator_)
-        : m_data(std::forward<ContainerType_<Type_>>(data_)), m_seporator(separator_)
+    List(DataType_ &&data_, const QString &separator_)
+        : m_data(std::forward<DataType_>(data_)), m_seporator(separator_)
     {
     }
 
     QStringList toStringList() const
     {
+        using Type = decltype(*std::begin(DataType_{}));
+
         QStringList strs;
         strs.reserve(m_data.size());
-        for(const Type_ &val_ : m_data)
+        for(const Type &val_ : m_data)
         {
             strs.push_back(fmt::toString(val_));
         }
@@ -323,32 +325,34 @@ public:
     }
 
 private:
-    ContainerType_<Type_> m_data;
+    DataType_ m_data;
     QString m_seporator;
 };
 
-template<typename Type_, template<typename> class ContainerType_, typename ... Args_>
+template<typename DataType_, typename FormatType_>
 class FormatList
 {
 public:
     FormatList(
-            Format<Args_...> format_,
-            const ContainerType_<Type_> &data_,
+            FormatType_ &&format_,
+            DataType_ &&data_,
             const QString &separator_
             )
-        : m_format(format_),
-          m_data(data_),
+        : m_format(std::forward<FormatType_>(format_)),
+          m_data(std::forward<DataType_>(data_)),
           m_seporator(separator_)
     {
     }
 
     QStringList toStringList() const
     {
+        using Type = decltype(*std::begin(DataType_{}));
+
         QStringList strs;
         strs.reserve(m_data.size());
-        for(const Type_ &val_ : m_data)
+        for(const Type &val_ : m_data)
         {
-            details::Format<Args_...> format = m_format;
+            FormatType_ format = m_format;
             format.set(val_);
             strs.push_back(fmt::toString(format));
         }
@@ -371,8 +375,8 @@ public:
     }
 
 private:
-    details::Format<Args_...> m_format;
-    ContainerType_<Type_> m_data;
+    FormatType_ m_format;
+    DataType_ m_data;
     QString m_seporator;
 };
 
@@ -472,30 +476,30 @@ details::Format<Args_...> format(const QString &format_, Args_ &&... args_)
     return details::Format<Args_ ...>{format_, std::forward<Args_>(args_) ...};
 }
 
-template<typename ListType_, template<typename> class ContainerType_>
+template<typename ListType_>
 inline
-details::List<ListType_, ContainerType_> list(
-        ContainerType_<ListType_> &&data_,
+details::List<ListType_> list(
+        ListType_ &&data_,
         const QString &separator_
         )
 {
-    return details::List<ListType_, ContainerType_>{
-        std::forward<ContainerType_<ListType_>>(data_),
+    return details::List<ListType_>{
+        std::forward<ListType_>(data_),
         separator_
     };
 }
 
-template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
+template<typename ListType_, typename FormatType_>
 inline
-details::FormatList<ListType_, ContainerType_, Args_ ...> list(
-        details::Format<Args_...> format_,
-        const ContainerType_<ListType_> &data_,
+details::FormatList<ListType_, FormatType_> list(
+        FormatType_ &&format_,
+        ListType_ &&data_,
         const QString &separator_
         )
 {
-    return details::FormatList<ListType_, ContainerType_, Args_ ...>{
-        format_,
-        data_,
+    return details::FormatList<ListType_, FormatType_>{
+        std::forward<FormatType_>(format_),
+        std::forward<ListType_>(data_),
         separator_
     };
 }

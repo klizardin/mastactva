@@ -92,7 +92,7 @@ TEST(Format, formatArguments)
 TEST(Format, classList)
 {
     ASSERT_TRUE(equal(
-                    fmt::toString(fmt::details::List<int, QVector>({1,2,3}, ",")),
+                    fmt::toString(fmt::details::List<QVector<int>>({1,2,3}, ",")),
                     sum("1", "," "2", ",", "3")
                     )
                 );
