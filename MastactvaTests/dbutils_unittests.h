@@ -31,29 +31,6 @@ TEST(DBUtils, refName)
                 );
 }
 
-TEST(DBUtils, refNames)
-{
-    const QStringList res = db::refNames(QStringList({"some_name", "another_name", "\"quoted\""}));
-    ASSERT_TRUE(
-                equal(
-                    res[0],
-                    sum(g_refPrefix, "some_name")
-                    )
-                );
-    ASSERT_TRUE(
-                equal(
-                    res[1],
-                    sum(g_refPrefix, "another_name")
-                    )
-                );
-    ASSERT_TRUE(
-                equal(
-                    res[2],
-                    sum(g_refPrefix, "quoted")
-                )
-            );
-}
-
 TEST(DBUtils, toBindName)
 {
     ASSERT_TRUE(
@@ -68,62 +45,6 @@ TEST(DBUtils, toBindName)
                     sum(g_bindPrefix, "quoted")
                     )
                 );
-}
-
-TEST(DBUtils, equalToValueConditionListFromSqlNameList)
-{
-    const QStringList res = db::equalToValueConditionListFromSqlNameList(
-                QStringList({"some_name", "\"another_name\""})
-                );
-    ASSERT_TRUE(
-                equal(
-                    res[0],
-                    sum(g_refPrefix, "some_name", "=", g_bindPrefix, g_refPrefix, "some_name")
-                )
-            );
-    ASSERT_TRUE(
-                equal(
-                    res[1],
-                    sum(g_refPrefix, "another_name", "=", g_bindPrefix, g_refPrefix, "another_name")
-                )
-            );
-}
-
-static int leftInListAfterFilter(const QStringList &names_, const QVariantList &filterList_)
-{
-    const QStringList res = db::filterNames(
-                names_,
-                filterList_
-                );
-    return res.size();
-}
-
-TEST(DBUtils, filterNames)
-{
-    QStringList names({"some_name", "\"another_name\"", "1"});
-
-    QVariantList filterEmptyList;
-    ASSERT_EQ(3, leftInListAfterFilter(names, filterEmptyList));
-
-    QVariantList filterList1;
-    filterList1.push_back(QVariant::fromValue(1));
-    ASSERT_EQ(1, leftInListAfterFilter(names, filterList1));
-
-    QVariantList filterList2;
-    filterList2.push_back(QVariant::fromValue(1));
-    filterList2.push_back(QVariant::fromValue(QString("some_name")));
-    ASSERT_EQ(2, leftInListAfterFilter(names, filterList2));
-}
-
-TEST(DBUtils, applyFunction)
-{
-    const QStringList res = db::applyFunction(
-                QStringList({"some_name", "another_name", "\"quoted\""}),
-                QString("SUM")
-                );
-    ASSERT_STRCASEEQ("SUM(some_name)", res[0].toUtf8().constData());
-    ASSERT_STRCASEEQ("SUM(another_name)", res[1].toUtf8().constData());
-    ASSERT_STRCASEEQ("SUM(\"quoted\")", res[2].toUtf8().constData());
 }
 
 TEST(DBUtils, isQuotedName)
@@ -208,36 +129,6 @@ TEST(DBUtils, tableName)
                 );
 }
 
-TEST(DBUtils, JsonSqlFieldsList_getSqlNames)
-{
-    db::JsonSqlFieldsList fields = {
-        { "sql-name", layout::JsonTypesEn::jt_int, false},
-        { "user", layout::JsonTypesEn::jt_int, false},
-    };
-    const QStringList sqlNames = db::getSqlNames(fields);
-    ASSERT_STRCASEEQ("sql_name", sqlNames[0].toUtf8().constData());
-    ASSERT_STRCASEEQ("\"user\"", sqlNames[1].toUtf8().constData());
-}
-
-TEST(DBUtils, JsonSqlFieldsList_getBindSqlNames)
-{
-    db::JsonSqlFieldsList fields = {
-        { "sql-name", layout::JsonTypesEn::jt_int, false},
-        { "user", layout::JsonTypesEn::jt_int, false},
-    };
-    const QStringList sqlNames = db::getBindSqlNames(fields);
-    ASSERT_TRUE(equal(
-                    sqlNames[0],
-                    sum(g_bindPrefix, "sql_name")
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    sqlNames[1],
-                    sum(g_bindPrefix, "user")
-                    )
-                );
-}
-
 TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
 {
     db::JsonSqlFieldsList fields = {
@@ -287,62 +178,6 @@ TEST(DBUtils, JsonSqlFieldsList_getJsonObject)
 
     QJsonObject res = db::getJsonObject(values, fields);
     ASSERT_TRUE(res == res0);
-}
-
-TEST(DBUtils, JsonSqlFieldsList_getSqlNameEqualBindSqlNameList)
-{
-    db::JsonSqlFieldsList fields = {
-        { "sql-name", layout::JsonTypesEn::jt_int, false},
-        { "user", layout::JsonTypesEn::jt_int, false},
-    };
-    const QStringList sqlNames = db::getSqlNameEqualBindSqlNameList(fields);
-    ASSERT_TRUE(equal(
-                    sqlNames[0],
-                    sum("sql_name", "=", g_bindPrefix, "sql_name")
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    sqlNames[1],
-                    sum("\"user\"", "=", g_bindPrefix, "user")
-                    )
-                );
-}
-
-TEST(DBUtils, JsonSqlFieldsList_getSqlNameAndTypeList)
-{
-    db::JsonSqlFieldsList fields = {
-        { "bool-name", layout::JsonTypesEn::jt_bool, false},
-        { "int-name", layout::JsonTypesEn::jt_int, false},
-        { "double-name", layout::JsonTypesEn::jt_double, false},
-        { "string-name", layout::JsonTypesEn::jt_string, false},
-        { "datetime-name", layout::JsonTypesEn::jt_datetime, false},
-    };
-    const QStringList res = db::getSqlNameAndTypeList(fields);
-    ASSERT_TRUE(equal(
-                    res[0],
-                    sum("bool_name", g_spaceName, g_sqlInt)
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    res[1],
-                    sum("int_name", g_spaceName, g_sqlInt)
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    res[2],
-                    sum("double_name", g_spaceName, g_sqlDouble)
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    res[3],
-                    sum("string_name", g_spaceName, g_sqlText)
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    res[4],
-                    sum("datetime_name", g_spaceName, g_sqlText)
-                    )
-                );
 }
 
 TEST(DBUtils, JsonSqlFieldsList_getCreateTableSqlRequest)

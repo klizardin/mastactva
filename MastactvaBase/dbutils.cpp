@@ -192,55 +192,11 @@ QString refName(const QString &ref_)
     return result;
 }
 
-QStringList refNames(const QStringList &refs_)
-{
-    QStringList res;
-    for(const auto &s : qAsConst(refs_))
-    {
-        res.push_back(refName(s));
-    }
-    return res;
-}
-
 QString toBindName(const QString &sqlName_)
 {
     const QString result = addPrefixToName(g_bindPrefix, sqlName_);
     checkSqlName(result);
     return result;
-}
-
-QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_)
-{
-    QStringList res;
-    for(const QString &sqlName : qAsConst(names_))
-    {
-        const QString ref = refName(db::jsonToSql(sqlName));
-        res.push_back(QString("%1=%2").arg(ref, toBindName(ref)));
-    }
-    return res;
-}
-
-QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_)
-{
-    if(leftNames_.isEmpty())
-    {
-        return sqlNames_;
-    }
-
-    QStringList res;
-    for(const QString &name: qAsConst(sqlNames_))
-    {
-        const auto fit = std::find_if(std::cbegin(leftNames_), std::cend(leftNames_),
-                                      [&name](const QVariant &val_)->bool
-        {
-            return val_.isValid() && val_.toString() == name;
-        });
-        if(std::cend(leftNames_) != fit)
-        {
-            res.push_back(name);
-        }
-    }
-    return res;
 }
 
 QStringList filterNames(const QStringList &sqlNames_, const QStringList &leftNames_)
@@ -262,39 +218,6 @@ QStringList filterNames(const QStringList &sqlNames_, const QStringList &leftNam
     return res;
 }
 
-QStringList applyFunction(const QStringList &sqlNames_, const QString &function_)
-{
-    if(function_.isEmpty())
-    {
-        return sqlNames_;
-    }
-
-    QStringList res;
-    for(const QString &name: qAsConst(sqlNames_))
-    {
-        res.push_back(QString("%1(%2)").arg(function_, name));
-    }
-    return res;
-}
-
-QStringList textTypes(const QStringList &names_)
-{
-    QStringList res;
-    for(const auto &name_ : qAsConst(names_))
-    {
-        res.push_back(
-                    name_ +
-                    QString(g_spaceName) +
-                    QString(
-                        LayoutJsonTypesTraits<
-                            layout::JsonTypesEn::jt_string
-                            >::sql_type_str()
-                        )
-                    );
-    }
-    return res;
-}
-
 QString jsonToSql(const QString &jsonName_)
 {
     QString res = jsonName_;
@@ -311,11 +234,6 @@ QStringList jsonToSql(const QStringList &jsonNames_)
         res.push_back(db::jsonToSql(name_));
     }
     return res;
-}
-
-QString tableName(const QString &jsonLayoutName_, const QString &refName_)
-{
-    return db::tableName(JsonName(jsonLayoutName_), JsonName(refName_));
 }
 
 QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_)
@@ -925,17 +843,6 @@ QStringList getFieldListValues(
     return res;
 }
 
-
-QStringList getSqlNames(const JsonSqlFieldsList &fields_)
-{
-    return getFieldListValues(
-                fields_,
-                [](const db::JsonSqlField &fi_)->QString
-    {
-        return fi_.getSqlName();
-    });
-}
-
 QStringList getJsonNames(const JsonSqlFieldsList &fields_)
 {
     return getFieldListValues(
@@ -958,31 +865,6 @@ QStringList getJsonNames(const QList<QVariant> &fields_)
         }
     }
     return result;
-}
-
-QStringList getBindSqlNames(const JsonSqlFieldsList &fields_)
-{
-    return getFieldListValues(
-                fields_,
-                [](const db::JsonSqlField &fi_)->QString
-    {
-        return fi_.getBindSqlName();
-    });
-}
-
-QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_)
-{
-    QStringList res;
-    for(const db::JsonSqlField &fi : fields_)
-    {
-        if(fi.isIdField())
-        {
-            continue;
-        }
-
-        res.push_back(QString("%1=%2").arg(fi.getSqlName(), fi.getBindSqlName()));
-    }
-    return res;
 }
 
 QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_)
@@ -1014,16 +896,6 @@ QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_)
         }
     }
     return jsonObj;
-}
-
-QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_)
-{
-    return getFieldListValues(
-                fields_,
-                [](const db::JsonSqlField &fi_)->QString
-    {
-        return fi_.getSqlName() + QString(g_spaceName) + fi_.getSqlType();
-    });
 }
 
 JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_)

@@ -22,22 +22,10 @@ namespace db
     bool isRefName(const QString &name_);
     bool isBindName(const QString &name_);
     QString refName(const QString &ref_);
-    // TODO: mark [[deprecated]]
-    QStringList refNames(const QStringList &refs_);
     QString toBindName(const QString &sqlName_);
-    // TODO: mark [[deprecated]]
-    QStringList equalToValueConditionListFromSqlNameList(const QStringList &names_);
-    // TODO: mark [[deprecated]]
-    QStringList filterNames(const QStringList &sqlNames_, const QList<QVariant> &leftNames_);
     QStringList filterNames(const QStringList &sqlNames_, const QStringList &leftNames_);
-    // TODO: mark [[deprecated]]
-    QStringList applyFunction(const QStringList &sqlNames_, const QString &function_);
-    // TODO: mark [[deprecated]]
-    QStringList textTypes(const QStringList &names_);
     QString jsonToSql(const QString &jsonName_);
-    // TODO: mark [[deprecated]]
     QStringList jsonToSql(const QStringList &jsonNames_);
-    [[deprecated]] QString tableName(const QString &jsonLayoutName_, const QString &refName_);
     QString tableName(const JsonName &jsonLayoutName_, const JsonName &refName_);
     QString getSqlType(layout::JsonTypesEn type, bool idField);
     void checkSqlName(const QString &sqlName_);
@@ -154,19 +142,10 @@ namespace db
     using JsonSqlFieldsList = QList<JsonSqlField>;
     using JsonSqlFieldAndValuesList = QList<JsonSqlFieldAndValue>;
 
-    // TODO: mark [[deprecated]]
-    QStringList getSqlNames(const JsonSqlFieldsList &fields_);
-    // TODO: mark [[deprecated]]
     QStringList getJsonNames(const JsonSqlFieldsList &fields_);
     QStringList getJsonNames(const QList<QVariant> &fields_);
-    // TODO: mark [[deprecated]]
-    QStringList getBindSqlNames(const JsonSqlFieldsList &fields_);
-    // TODO: mark [[deprecated]]
-    QStringList getSqlNameEqualBindSqlNameList(const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_);
-    // TODO: mark [[deprecated]]
-    QStringList getSqlNameAndTypeList(const JsonSqlFieldsList &fields_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
     void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
