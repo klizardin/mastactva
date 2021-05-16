@@ -291,8 +291,8 @@ template<typename Type_, template<typename> class ContainerType_>
 class List
 {
 public:
-    List(const ContainerType_<Type_> &data_, const QString &separator_)
-        : m_data(data_), m_seporator(separator_)
+    List(ContainerType_<Type_> &&data_, const QString &separator_)
+        : m_data(std::forward<ContainerType_<Type_>>(data_)), m_seporator(separator_)
     {
     }
 
@@ -475,11 +475,11 @@ details::Format<Args_...> format(const QString &format_, Args_ &&... args_)
 template<typename ListType_, template<typename> class ContainerType_>
 inline
 details::List<ListType_, ContainerType_> list(
-        const ContainerType_<ListType_> &data_,
+        ContainerType_<ListType_> &&data_,
         const QString &separator_
         )
 {
-    return details::List<ListType_, ContainerType_>{data_, separator_};
+    return details::List<ListType_, ContainerType_>{std::forward<ContainerType_<ListType_>>(data_), separator_};
 }
 
 template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
