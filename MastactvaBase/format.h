@@ -146,7 +146,7 @@ template<typename Arg_>
 class ArgsList<Arg_>
 {
 public:
-    ArgsList(Arg_ arg_) : m_arg(arg_) {}
+    ArgsList(Arg_ &&arg_) : m_arg(std::forward<Arg_>(arg_)) {}
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
@@ -173,7 +173,7 @@ template<typename Arg_>
 class ArgsList<Constant<Arg_>>
 {
 public:
-    ArgsList(Constant<Arg_> arg_) : m_arg(arg_) {}
+    ArgsList(Constant<Arg_>  &&arg_) : m_arg(std::forward<Constant<Arg_>>(arg_)) {}
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
@@ -199,8 +199,8 @@ template<typename Arg_, typename ... Args_>
 class ArgsList<Arg_, Args_ ...> : public ArgsList<Args_ ...>
 {
 public:
-    ArgsList(Arg_ arg_, Args_ ... args_)
-        : ArgsList<Args_ ...>(args_ ...), m_arg(arg_)
+    ArgsList(Arg_ &&arg_, Args_ &&... args_)
+        : ArgsList<Args_ ...>(std::forward<Args_>(args_) ...), m_arg(std::forward<Arg_>(arg_))
     {
     }
 
@@ -230,8 +230,8 @@ template<typename Arg_, typename ... Args_>
 class ArgsList<Constant<Arg_>, Args_ ...> : public ArgsList<Args_ ...>
 {
 public:
-    ArgsList(Constant<Arg_> arg_, Args_ ... args_)
-        : ArgsList<Args_ ...>(args_ ...), m_arg(arg_)
+    ArgsList(Constant<Arg_> &&arg_, Args_ &&... args_)
+        : ArgsList<Args_ ...>(std::forward<Args_>(args_) ...), m_arg(std::forward<Constant<Arg_>>(arg_))
     {
     }
 
@@ -261,9 +261,9 @@ template<typename ... Args_>
 class Format
 {
 public:
-    Format(const QString &format_, Args_ ... args_)
+    Format(const QString &format_, Args_ &&... args_)
         : m_format(format_),
-          m_args(args_ ...)
+          m_args(std::forward<Args_>(args_) ...)
     {}
 
     QString toString() const
@@ -380,8 +380,8 @@ template<typename ... Args_>
 class Sum
 {
 public:
-    Sum(Args_... args_)
-        : m_args(args_ ...)
+    Sum(Args_ &&... args_)
+        : m_args(std::forward<Args_>(args_) ...)
     {
     }
 
@@ -467,9 +467,9 @@ Type_ toType(const Type_ &val_, const Type_ &)
 
 template<typename ... Args_>
 inline
-details::Format<Args_...> format(const QString &format_, Args_ ... args_)
+details::Format<Args_...> format(const QString &format_, Args_ &&... args_)
 {
-    return details::Format<Args_ ...>{format_, args_ ...};
+    return details::Format<Args_ ...>{format_, std::forward<Args_>(args_) ...};
 }
 
 template<typename ListType_, template<typename> class ContainerType_>
@@ -528,9 +528,9 @@ details::Constant<Type_> constant(Type_ &&value_)
 }
 
 template<typename ... Args_> inline
-details::Sum<Args_ ...> sum(Args_ ... args_)
+details::Sum<Args_ ...> sum(Args_ &&... args_)
 {
-    return details::Sum<Args_ ...>{args_ ...};
+    return details::Sum<Args_ ...>{std::forward<Args_>(args_) ...};
 }
 
 template<typename OkType_, typename FailType_> inline
