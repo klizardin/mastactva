@@ -403,10 +403,10 @@ template<typename OkType_, typename FailType_>
 class Choose
 {
 public:
-    Choose(bool condition_, OkType_ ok_, FailType_ fail_)
+    Choose(bool condition_, OkType_ &&ok_, FailType_ &&fail_)
         : m_condition(condition_),
-          m_ok(ok_),
-          m_fail(fail_)
+          m_ok(std::forward<OkType_>(ok_)),
+          m_fail(std::forward<FailType_>(fail_))
     {}
 
     QString toString() const
