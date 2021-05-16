@@ -146,7 +146,7 @@ template<typename Arg_>
 class ArgsList<Arg_>
 {
 public:
-    ArgsList(Arg_ arg_) : m_arg(arg_) {}
+    ArgsList(Arg_ &&arg_) : m_arg(std::forward<Arg_>(arg_)) {}
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
@@ -173,7 +173,7 @@ template<typename Arg_>
 class ArgsList<Constant<Arg_>>
 {
 public:
-    ArgsList(Constant<Arg_> arg_) : m_arg(arg_) {}
+    ArgsList(Constant<Arg_>  &&arg_) : m_arg(std::forward<Constant<Arg_>>(arg_)) {}
 
     template<typename ... StrArgs_>
     QString toString(const QString &fmt_, StrArgs_ ... strArgs_) const
@@ -199,8 +199,8 @@ template<typename Arg_, typename ... Args_>
 class ArgsList<Arg_, Args_ ...> : public ArgsList<Args_ ...>
 {
 public:
-    ArgsList(Arg_ arg_, Args_ ... args_)
-        : ArgsList<Args_ ...>(args_ ...), m_arg(arg_)
+    ArgsList(Arg_ &&arg_, Args_ &&... args_)
+        : ArgsList<Args_ ...>(std::forward<Args_>(args_) ...), m_arg(std::forward<Arg_>(arg_))
     {
     }
 
@@ -230,8 +230,8 @@ template<typename Arg_, typename ... Args_>
 class ArgsList<Constant<Arg_>, Args_ ...> : public ArgsList<Args_ ...>
 {
 public:
-    ArgsList(Constant<Arg_> arg_, Args_ ... args_)
-        : ArgsList<Args_ ...>(args_ ...), m_arg(arg_)
+    ArgsList(Constant<Arg_> &&arg_, Args_ &&... args_)
+        : ArgsList<Args_ ...>(std::forward<Args_>(args_) ...), m_arg(std::forward<Constant<Arg_>>(arg_))
     {
     }
 
@@ -261,9 +261,9 @@ template<typename ... Args_>
 class Format
 {
 public:
-    Format(const QString &format_, Args_ ... args_)
+    Format(const QString &format_, Args_ &&... args_)
         : m_format(format_),
-          m_args(args_ ...)
+          m_args(std::forward<Args_>(args_) ...)
     {}
 
     QString toString() const
@@ -287,20 +287,22 @@ private:
     ArgsList<Args_ ...> m_args;
 };
 
-template<typename Type_, template<typename> class ContainerType_>
+template<typename DataType_>
 class List
 {
 public:
-    List(const ContainerType_<Type_> &data_, const QString &separator_)
-        : m_data(data_), m_seporator(separator_)
+    List(DataType_ &&data_, const QString &separator_)
+        : m_data(std::forward<DataType_>(data_)), m_seporator(separator_)
     {
     }
 
     QStringList toStringList() const
     {
+        using Type = decltype(*std::begin(DataType_{}));
+
         QStringList strs;
         strs.reserve(m_data.size());
-        for(const Type_ &val_ : m_data)
+        for(const Type &val_ : m_data)
         {
             strs.push_back(fmt::toString(val_));
         }
@@ -323,32 +325,34 @@ public:
     }
 
 private:
-    ContainerType_<Type_> m_data;
+    DataType_ m_data;
     QString m_seporator;
 };
 
-template<typename Type_, template<typename> class ContainerType_, typename ... Args_>
+template<typename DataType_, typename FormatType_>
 class FormatList
 {
 public:
     FormatList(
-            Format<Args_...> format_,
-            const ContainerType_<Type_> &data_,
+            FormatType_ &&format_,
+            DataType_ &&data_,
             const QString &separator_
             )
-        : m_format(format_),
-          m_data(data_),
+        : m_format(std::forward<FormatType_>(format_)),
+          m_data(std::forward<DataType_>(data_)),
           m_seporator(separator_)
     {
     }
 
     QStringList toStringList() const
     {
+        using Type = decltype(*std::begin(DataType_{}));
+
         QStringList strs;
         strs.reserve(m_data.size());
-        for(const Type_ &val_ : m_data)
+        for(const Type &val_ : m_data)
         {
-            details::Format<Args_...> format = m_format;
+            FormatType_ format = m_format;
             format.set(val_);
             strs.push_back(fmt::toString(format));
         }
@@ -371,8 +375,8 @@ public:
     }
 
 private:
-    details::Format<Args_...> m_format;
-    ContainerType_<Type_> m_data;
+    FormatType_ m_format;
+    DataType_ m_data;
     QString m_seporator;
 };
 
@@ -380,8 +384,8 @@ template<typename ... Args_>
 class Sum
 {
 public:
-    Sum(Args_... args_)
-        : m_args(args_ ...)
+    Sum(Args_ &&... args_)
+        : m_args(std::forward<Args_>(args_) ...)
     {
     }
 
@@ -403,10 +407,10 @@ template<typename OkType_, typename FailType_>
 class Choose
 {
 public:
-    Choose(bool condition_, OkType_ ok_, FailType_ fail_)
+    Choose(bool condition_, OkType_ &&ok_, FailType_ &&fail_)
         : m_condition(condition_),
-          m_ok(ok_),
-          m_fail(fail_)
+          m_ok(std::forward<OkType_>(ok_)),
+          m_fail(std::forward<FailType_>(fail_))
     {}
 
     QString toString() const
@@ -467,30 +471,37 @@ Type_ toType(const Type_ &val_, const Type_ &)
 
 template<typename ... Args_>
 inline
-details::Format<Args_...> format(const QString &format_, Args_ ... args_)
+details::Format<Args_...> format(const QString &format_, Args_ &&... args_)
 {
-    return details::Format<Args_ ...>{format_, args_ ...};
+    return details::Format<Args_ ...>{format_, std::forward<Args_>(args_) ...};
 }
 
-template<typename ListType_, template<typename> class ContainerType_>
+template<typename ListType_>
 inline
-details::List<ListType_, ContainerType_> list(
-        const ContainerType_<ListType_> &data_,
+details::List<ListType_> list(
+        ListType_ &&data_,
         const QString &separator_
         )
 {
-    return details::List<ListType_, ContainerType_>{data_, separator_};
+    return details::List<ListType_>{
+        std::forward<ListType_>(data_),
+        separator_
+    };
 }
 
-template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
+template<typename ListType_, typename FormatType_>
 inline
-details::FormatList<ListType_, ContainerType_, Args_ ...> list(
-        details::Format<Args_...> format_,
-        const ContainerType_<ListType_> &data_,
+details::FormatList<ListType_, FormatType_> list(
+        FormatType_ &&format_,
+        ListType_ &&data_,
         const QString &separator_
         )
 {
-    return details::FormatList<ListType_, ContainerType_, Args_ ...>{format_, data_, separator_};
+    return details::FormatList<ListType_, FormatType_>{
+        std::forward<FormatType_>(format_),
+        std::forward<ListType_>(data_),
+        separator_
+    };
 }
 
 template<typename ItemType_, template<typename> class Container_> inline
@@ -499,11 +510,25 @@ Container_<ItemType_> merge(const Container_<ItemType_> &c_)
     return c_;
 }
 
-template<typename ItemType_, template<typename> class Container_, typename ... ItemTypes_> inline
-Container_<ItemType_> merge(const Container_<ItemType_> &c_, const Container_<ItemTypes_> ... nexts_)
+template<typename ItemType_, template<typename> class Container_> inline
+Container_<ItemType_> merge(Container_<ItemType_> &&c_)
 {
-    Container_<ItemType_> result = c_;
-    result.append(merge(nexts_ ...));
+    return std::move(c_);
+}
+
+template<typename ItemType_, template<typename> class Container_, typename ... ItemTypes_> inline
+Container_<ItemType_> merge(const Container_<ItemType_> &c_, ItemTypes_ &&... nexts_)
+{
+    Container_<ItemType_> result{c_};
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
+    return result;
+}
+
+template<typename ItemType_, template<typename> class Container_, typename ... ItemTypes_> inline
+Container_<ItemType_> merge(Container_<ItemType_> &&c_, ItemTypes_ &&... nexts_)
+{
+    Container_<ItemType_> result{std::move(c_)};
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
     return result;
 }
 
@@ -513,24 +538,38 @@ QStringList merge(const QStringList &c_)
     return c_;
 }
 
-template<typename ... ItemTypes_> inline
-QStringList merge(const QStringList &c_, const ItemTypes_ ... nexts_)
+inline
+QStringList merge(QStringList &&c_)
 {
-    QStringList result = c_;
-    result.append(merge(nexts_ ...));
+    return std::move(c_);
+}
+
+template<typename ... ItemTypes_> inline
+QStringList merge(const QStringList &c_, ItemTypes_ &&... nexts_)
+{
+    QStringList result{c_};
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
+    return result;
+}
+
+template<typename ... ItemTypes_> inline
+QStringList merge(QStringList &&c_, ItemTypes_ &&... nexts_)
+{
+    QStringList result{std::move(c_)};
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
     return result;
 }
 
 template<typename Type_>
-details::Constant<Type_> constant(const Type_ &value_)
+details::Constant<Type_> constant(Type_ &&value_)
 {
-    return details::Constant<Type_>{value_};
+    return details::Constant<Type_>{std::forward<Type_>(value_)};
 }
 
 template<typename ... Args_> inline
-details::Sum<Args_ ...> sum(Args_ ... args_)
+details::Sum<Args_ ...> sum(Args_ &&... args_)
 {
-    return details::Sum<Args_ ...>{args_ ...};
+    return details::Sum<Args_ ...>{std::forward<Args_>(args_) ...};
 }
 
 template<typename OkType_, typename FailType_> inline
