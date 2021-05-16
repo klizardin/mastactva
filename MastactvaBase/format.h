@@ -517,18 +517,18 @@ Container_<ItemType_> merge(Container_<ItemType_> &&c_)
 }
 
 template<typename ItemType_, template<typename> class Container_, typename ... ItemTypes_> inline
-Container_<ItemType_> merge(const Container_<ItemType_> &c_, const Container_<ItemTypes_> &... nexts_)
+Container_<ItemType_> merge(const Container_<ItemType_> &c_, ItemTypes_ &&... nexts_)
 {
     Container_<ItemType_> result{c_};
-    result.append(merge(nexts_ ...));
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
     return result;
 }
 
 template<typename ItemType_, template<typename> class Container_, typename ... ItemTypes_> inline
-Container_<ItemType_> merge(Container_<ItemType_> &&c_, const Container_<ItemTypes_> &... nexts_)
+Container_<ItemType_> merge(Container_<ItemType_> &&c_, ItemTypes_ &&... nexts_)
 {
     Container_<ItemType_> result{std::move(c_)};
-    result.append(merge(nexts_ ...));
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
     return result;
 }
 
@@ -545,18 +545,18 @@ QStringList merge(QStringList &&c_)
 }
 
 template<typename ... ItemTypes_> inline
-QStringList merge(const QStringList &c_, const ItemTypes_ &... nexts_)
+QStringList merge(const QStringList &c_, ItemTypes_ &&... nexts_)
 {
     QStringList result{c_};
-    result.append(merge(nexts_ ...));
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
     return result;
 }
 
 template<typename ... ItemTypes_> inline
-QStringList merge(QStringList &&c_, const ItemTypes_ &... nexts_)
+QStringList merge(QStringList &&c_, ItemTypes_ &&... nexts_)
 {
     QStringList result{std::move(c_)};
-    result.append(merge(nexts_ ...));
+    result.append(merge(std::forward<ItemTypes_>(nexts_) ...));
     return result;
 }
 
