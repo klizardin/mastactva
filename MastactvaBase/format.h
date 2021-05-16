@@ -479,7 +479,10 @@ details::List<ListType_, ContainerType_> list(
         const QString &separator_
         )
 {
-    return details::List<ListType_, ContainerType_>{std::forward<ContainerType_<ListType_>>(data_), separator_};
+    return details::List<ListType_, ContainerType_>{
+        std::forward<ContainerType_<ListType_>>(data_),
+        separator_
+    };
 }
 
 template<typename ListType_, template<typename> class ContainerType_, typename ... Args_>
@@ -490,7 +493,11 @@ details::FormatList<ListType_, ContainerType_, Args_ ...> list(
         const QString &separator_
         )
 {
-    return details::FormatList<ListType_, ContainerType_, Args_ ...>{format_, data_, separator_};
+    return details::FormatList<ListType_, ContainerType_, Args_ ...>{
+        format_,
+        data_,
+        separator_
+    };
 }
 
 template<typename ItemType_, template<typename> class Container_> inline
