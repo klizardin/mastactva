@@ -522,9 +522,9 @@ QStringList merge(const QStringList &c_, const ItemTypes_ ... nexts_)
 }
 
 template<typename Type_>
-details::Constant<Type_> constant(const Type_ &value_)
+details::Constant<Type_> constant(Type_ &&value_)
 {
-    return details::Constant<Type_>{value_};
+    return details::Constant<Type_>{std::forward<Type_>(value_)};
 }
 
 template<typename ... Args_> inline
