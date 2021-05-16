@@ -49,11 +49,17 @@ DestType_ toType(const db::SqlNameOrigin &src_, const DestType_ &)
 
 
 template<> inline
+QString fmt::toString(const db::SqlNameOrigin &name_)
+{
+    return name_.sqlNameOriginToString();
+}
+
+template<> inline
 QString fmt::toString(const db::SqlName &name_)
 {
     const QString result = name_.quoted()
-            ? db::quotName(name_.toString())
-            : name_.toString()
+            ? db::quotName(name_.sqlNameOriginToString())
+            : name_.sqlNameOriginToString()
             ;
     db::checkSqlName(result);
     return result;
@@ -62,19 +68,19 @@ QString fmt::toString(const db::SqlName &name_)
 template<> inline
 QString fmt::toString(const db::BindSqlName &name_)
 {
-    return db::toBindName(name_.toString());
+    return db::toBindName(name_.sqlNameOriginToString());
 }
 
 template<> inline
 QString fmt::toString(const db::RefSqlName &name_)
 {
-    return db::refName(name_.toString());
+    return db::refName(name_.sqlNameOriginToString());
 }
 
 template<> inline
 QString fmt::toString(const db::BindRefSqlName &name_)
 {
-    return db::toBindName(db::refName(name_.toString()));
+    return db::toBindName(db::refName(name_.sqlNameOriginToString()));
 }
 
 template<> inline
@@ -414,7 +420,7 @@ SqlNameOrigin::SqlNameOrigin(const QString &name_)
     static_cast<QString &>(*this) = jsonToSql(name_);
 }
 
-const QString &SqlNameOrigin::toString() const
+const QString &SqlNameOrigin::sqlNameOriginToString() const
 {
     return static_cast<const QString &>(*this);
 }

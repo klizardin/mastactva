@@ -37,8 +37,7 @@ namespace db
     public:
         SqlNameOrigin() = default;
         SqlNameOrigin(const QString &name_);
-        // TODO: mark [[deprecated]]
-        const QString &toString() const;
+        const QString &sqlNameOriginToString() const;
     };
 
     class SqlTableName
