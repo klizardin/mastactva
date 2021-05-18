@@ -1017,6 +1017,16 @@ void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
     }
 }
 
+void bind(const QHash<QString, QVariant> procedureArgs_, QSqlQuery &query_)
+{
+    auto keys = procedureArgs_.keys();
+    for(const auto &key_ : keys)
+    {
+        const QVariant v = procedureArgs_.value(key_);
+        query_.bindValue(key_, v);
+    }
+}
+
 void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_)
 {
     const auto fit = findIdField(fields_);

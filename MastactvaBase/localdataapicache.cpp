@@ -81,13 +81,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     {
         query.prepare(sqlRequest);
         db::bind(refsValues, query);
-
-        const QList<QString> procedureArgsKeys = procedureArgs.keys();
-        for(const QString &key : qAsConst(procedureArgsKeys))
-        {
-            const QVariant v = procedureArgs.value(key);
-            query.bindValue(key, v);
-        }
+        db::bind(procedureArgs, query);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
         qDebug() << "bound" << query.boundValues();
