@@ -1017,6 +1017,16 @@ void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
     }
 }
 
+void bind(const QHash<QString, QVariant> procedureArgs_, QSqlQuery &query_)
+{
+    auto keys = procedureArgs_.keys();
+    for(const auto &key_ : keys)
+    {
+        const QVariant v = procedureArgs_.value(key_);
+        query_.bindValue(key_, v);
+    }
+}
+
 void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_)
 {
     const auto fit = findIdField(fields_);
@@ -1449,6 +1459,58 @@ QString getSelectSqlRequest(
                 );
 
     return request;
+}
+
+SqlQueryRAII::SqlQueryRAII(const QSqlDatabase &db_)
+    : m_query(db_)
+{
+}
+
+SqlQueryRAII::~SqlQueryRAII()
+{
+    if(m_prepared)
+    {
+        m_query.finish();
+    }
+}
+
+bool SqlQueryRAII::prepare(const QString &request_)
+{
+    const bool result = m_query.prepare(request_);
+    m_prepared = true;
+    return result;
+}
+
+bool SqlQueryRAII::exec(const QString &request_)
+{
+    const bool result = m_query.exec(request_);
+    m_prepared = true;
+    return result;
+}
+
+bool SqlQueryRAII::exec()
+{
+    return m_query.exec();
+}
+
+bool SqlQueryRAII::first()
+{
+    return m_query.first();
+}
+
+bool SqlQueryRAII::next()
+{
+    return m_query.next();
+}
+
+QSqlError SqlQueryRAII::lastError() const
+{
+    return m_query.lastError();
+}
+
+SqlQueryRAII::operator QSqlQuery &()
+{
+    return m_query;
 }
 
 } // namespace db

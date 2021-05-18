@@ -24,9 +24,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-
     const QHash<QString, QVariant> procedureFields = DBRequestBase::procedureExtraFields(r_->getExtraFields());
     const QList<QVariant> procedureFilterFields = procedureFields.contains(g_procedureFilterNamesName)
             ? procedureFields.value(g_procedureFilterNamesName).toList()
@@ -48,7 +45,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
             ;
 
     const bool hasRefConditions = !(refs.isEmpty()) || !(extraFields.isEmpty());
-    const bool hasProcedureConditions = !(procedureConditions.isEmpty());
+    const bool hasProcedureConditions = !(procedureConditions.isEmpty()) && !procedureArgs.isEmpty();
     const bool hasCondition = hasRefConditions || hasProcedureConditions;
 
     const db::JsonSqlFieldAndValuesList refsValues =
@@ -76,18 +73,15 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql" << sqlRequest;
 #endif
 
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    db::SqlQueryRAII query(base);
+
     bool sqlRes = true;
-    if(hasCondition || !procedureArgs.isEmpty())
+    if(hasCondition)
     {
         query.prepare(sqlRequest);
         db::bind(refsValues, query);
-
-        const QList<QString> procedureArgsKeys = procedureArgs.keys();
-        for(const QString &key : qAsConst(procedureArgsKeys))
-        {
-            const QVariant v = procedureArgs.value(key);
-            query.bindValue(key, v);
-        }
+        db::bind(procedureArgs, query);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
         qDebug() << "bound" << query.boundValues();
@@ -101,13 +95,17 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     }
 
     // TODO: use dynamic cast
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
+
     QJsonArray jsonArray;
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
         const QSqlError err = query.lastError();
         qDebug() << "select sql" << sqlRequest;
-        qDebug() << "bound" << query.boundValues();
         qDebug() << "sql error" << err.text();
         jsonArray = buildErrorDocument(err);
         r->setError(true);
@@ -131,7 +129,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql result" << r->reply();
 #endif
 
-    r->setProcessed(true);
     return true;
 }
 
@@ -151,15 +148,12 @@ int LocalDataAPIDefaultCacheImpl::getNextIdValue(
             )
     {
         const QSqlError err = findQuery.lastError();
-        findQuery.finish();
         throw err;
     }
     else if(findQuery.first())
     {
         nextId = findQuery.value(0).toInt() + 1;
     }
-
-    findQuery.finish();
 
     return nextId;
 }
@@ -186,12 +180,12 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
     r->setItemAppId(appId_);
-
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-    QSqlQuery findQuery(db);
 
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
@@ -225,10 +219,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     try
     {
+        QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+        db::SqlQueryRAII findQuery(base);
         QHash<QString, QVariant> values = values_;
         const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
         db::setIdField(r_->getTableFieldsInfo(), values, nextId);
 
+        db::SqlQueryRAII query(base);
         query.prepare(sqlRequest);
         db::bind(refsValues, query);
         db::bind(r_->getTableFieldsInfo(), values, query);
@@ -236,14 +233,12 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         if(!query.exec() && query.lastError().type() != QSqlError::NoError)
         {
             const QSqlError err = query.lastError();
-            query.finish();
             throw err;
         }
         else
         {
             r->addJsonResult(values);
         }
-        query.finish();
 
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "insert sql result" << r->reply();
@@ -259,8 +254,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
-
-    r->setProcessed(true);
     return true;
 }
 
@@ -277,11 +270,12 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
     r->setItemId(id_);
-
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
 
     const auto fitId = db::findIdField(r_->getTableFieldsInfo());
     if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
@@ -300,6 +294,8 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "update sql" << sqlRequest;
 #endif
 
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(r_->getTableFieldsInfo(), values_, query);
 
@@ -311,7 +307,6 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql request " << sqlRequest;
-        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray = buildErrorDocument(err);
@@ -326,9 +321,6 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql result" << r->reply();
 #endif
-
-    query.finish();
-    r->setProcessed(true);
     return true;
 }
 
@@ -341,11 +333,12 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
     r->setItemId(id_);
-
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
 
     const auto fitId = db::findIdField(r_->getTableFieldsInfo());
     if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
@@ -365,6 +358,8 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql" << sqlRequest;
 #endif
 
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(*fitId, query, id_);
 
@@ -376,7 +371,6 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql request " << sqlRequest;
-        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray = buildErrorDocument(err);
@@ -391,9 +385,6 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "delete sql result" << r->reply();
 #endif
-
-    query.finish();
-    r->setProcessed(true);
     return true;
 }
 

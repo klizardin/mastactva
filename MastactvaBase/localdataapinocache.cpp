@@ -28,9 +28,6 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-
     const QString createSqlRequest = db::getCreateTableSqlRequest(
                 r_->getTableName(),
                 r_->getCurrentRef(),
@@ -42,12 +39,13 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "create sql" << createSqlRequest;
 #endif
 
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    db::SqlQueryRAII query(base);
     if(!query.exec(createSqlRequest))
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql error "  << err.text();
     }
-    query.finish();
 
     r_->setProcessed(true);
     return true;
@@ -290,9 +288,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     // duplicates are searched by ref fields and id field
 
     if(!r_->getReadonly()) { return; } // don't save data for RW tables
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery insertQuery(db);
-    QSqlQuery findQuery(db);
 
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
@@ -329,8 +324,10 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     qDebug() << "find sql" << findSqlRequest;
 #endif
 
-    int i = 0;
-    for(i = 0; ; i++)
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    db::SqlQueryRAII insertQuery(base);
+    db::SqlQueryRAII findQuery(base);
+    for(int i = 0; ; i++)
     {
         QJsonValue replayItem = reply_[i];
         if(replayItem.isUndefined())
@@ -371,11 +368,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                     r_->getTableFieldsInfo(),
                     refsValues
                     );
-    }
-    if(i > 0)
-    {
-        findQuery.finish();
-        insertQuery.finish();
     }
 }
 

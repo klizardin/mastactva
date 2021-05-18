@@ -2,11 +2,13 @@
 #define DBUTILS_H
 
 
+#include <type_traits>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
 #include <QList>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QJsonValue>
 #include <QJsonObject>
 #include "../MastactvaBase/layout_enums.h"
@@ -154,6 +156,7 @@ namespace db
     JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, std::function<bool(const JsonSqlFieldAndValue &)> func_);
     JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, const QList<QVariant> &leftFields_);
     void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_);
+    void bind(const QHash<QString, QVariant> procedureArgs_, QSqlQuery &query_);
     void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_);
     JsonSqlFieldAndValuesList createRefValuesList(
             const QStringList &refs_,
@@ -206,6 +209,24 @@ namespace db
             const QStringList &extraFields_,
             const QHash<QString, QVariant> &procedureFields_
             );
+
+    class SqlQueryRAII
+    {
+    public:
+        SqlQueryRAII(const QSqlDatabase &db_);
+        ~SqlQueryRAII();
+        bool prepare(const QString &request_);
+        bool exec(const QString &request_);
+        bool exec();
+        bool first();
+        bool next();
+        QSqlError lastError() const;
+        operator QSqlQuery &();
+
+    private:
+        bool m_prepared = false;
+        QSqlQuery m_query;
+    };
 }
 
 
@@ -233,6 +254,7 @@ class DBRequestBase
 {
 public:
     DBRequestBase(const QString &apiName_);
+    virtual ~DBRequestBase() = default;
 
     const QString &getTableName() const;
     const QString &getProcedureName() const;
@@ -295,6 +317,39 @@ private:
             bool readonly_,
             const QHash<QString, QVariant> &extraFields_
             );
+};
+
+template<typename DBRequestType_,
+        typename std::enable_if<std::is_base_of<DBRequestBase, DBRequestType_>::value, void*>::type = nullptr
+        >
+class DBRequestPtr
+{
+public:
+    DBRequestPtr(DBRequestBase *ptr_)
+    {
+        m_ptr = dynamic_cast<DBRequestType_ *>(ptr_);
+    }
+
+    ~DBRequestPtr()
+    {
+        if(operator bool())
+        {
+            static_cast<DBRequestBase *>(m_ptr)->setProcessed(true);
+        }
+    }
+
+    explicit operator bool () const
+    {
+        return nullptr != m_ptr;
+    }
+
+    DBRequestType_ * operator -> ()
+    {
+        return m_ptr;
+    }
+
+private:
+    DBRequestType_ *m_ptr = nullptr;
 };
 
 
