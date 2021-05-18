@@ -2,6 +2,7 @@
 #define DBUTILS_H
 
 
+#include <type_traits>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
@@ -253,6 +254,7 @@ class DBRequestBase
 {
 public:
     DBRequestBase(const QString &apiName_);
+    virtual ~DBRequestBase() = default;
 
     const QString &getTableName() const;
     const QString &getProcedureName() const;
@@ -315,6 +317,39 @@ private:
             bool readonly_,
             const QHash<QString, QVariant> &extraFields_
             );
+};
+
+template<typename DBRequestType_,
+        typename std::enable_if<std::is_base_of<DBRequestBase, DBRequestType_>::value, void*>::type = nullptr
+        >
+class DBRequestPtr
+{
+public:
+    DBRequestPtr(DBRequestBase *ptr_)
+    {
+        m_ptr = dynamic_cast<DBRequestType_ *>(ptr_);
+    }
+
+    ~DBRequestPtr()
+    {
+        if(operator bool())
+        {
+            static_cast<DBRequestBase *>(m_ptr)->setProcessed(true);
+        }
+    }
+
+    explicit operator bool () const
+    {
+        return nullptr != m_ptr;
+    }
+
+    DBRequestType_ * operator -> ()
+    {
+        return m_ptr;
+    }
+
+private:
+    DBRequestType_ *m_ptr = nullptr;
 };
 
 

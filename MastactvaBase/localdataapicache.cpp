@@ -95,7 +95,12 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     }
 
     // TODO: use dynamic cast
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
+
     QJsonArray jsonArray;
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
@@ -124,7 +129,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql result" << r->reply();
 #endif
 
-    r->setProcessed(true);
     return true;
 }
 
@@ -176,7 +180,11 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
     r->setItemAppId(appId_);
 
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
@@ -246,8 +254,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         r->setError(true);
         r->addJsonResult(QJsonDocument(jsonArray));
     }
-
-    r->setProcessed(true);
     return true;
 }
 
@@ -264,7 +270,11 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
     r->setItemId(id_);
 
     const auto fitId = db::findIdField(r_->getTableFieldsInfo());
@@ -311,8 +321,6 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql result" << r->reply();
 #endif
-
-    r->setProcessed(true);
     return true;
 }
 
@@ -325,7 +333,11 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
+    DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r.operator bool())
+    {
+        return false;
+    }
     r->setItemId(id_);
 
     const auto fitId = db::findIdField(r_->getTableFieldsInfo());
@@ -373,8 +385,6 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "delete sql result" << r->reply();
 #endif
-
-    r->setProcessed(true);
     return true;
 }
 
