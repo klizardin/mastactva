@@ -151,15 +151,12 @@ int LocalDataAPIDefaultCacheImpl::getNextIdValue(
             )
     {
         const QSqlError err = findQuery.lastError();
-        findQuery.finish();
         throw err;
     }
     else if(findQuery.first())
     {
         nextId = findQuery.value(0).toInt() + 1;
     }
-
-    findQuery.finish();
 
     return nextId;
 }
@@ -188,10 +185,6 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemAppId(appId_);
-
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-    QSqlQuery findQuery(db);
 
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
     const QStringList refs = r_->getRefs();
@@ -225,10 +218,13 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     try
     {
+        QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+        db::SqlQueryRAII findQuery(base);
         QHash<QString, QVariant> values = values_;
         const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
         db::setIdField(r_->getTableFieldsInfo(), values, nextId);
 
+        db::SqlQueryRAII query(base);
         query.prepare(sqlRequest);
         db::bind(refsValues, query);
         db::bind(r_->getTableFieldsInfo(), values, query);
@@ -236,14 +232,12 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
         if(!query.exec() && query.lastError().type() != QSqlError::NoError)
         {
             const QSqlError err = query.lastError();
-            query.finish();
             throw err;
         }
         else
         {
             r->addJsonResult(values);
         }
-        query.finish();
 
 #if defined(TRACE_DB_DATA_RETURN) || defined(TRACE_DB_REQUESTS)
     qDebug() << "insert sql result" << r->reply();

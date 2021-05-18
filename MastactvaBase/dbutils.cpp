@@ -1478,6 +1478,11 @@ bool SqlQueryRAII::exec(const QString &request_)
     return result;
 }
 
+bool SqlQueryRAII::exec()
+{
+    return m_query.exec();
+}
+
 QSqlError SqlQueryRAII::lastError() const
 {
     return m_query.lastError();

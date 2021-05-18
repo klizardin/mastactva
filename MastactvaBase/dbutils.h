@@ -215,6 +215,7 @@ namespace db
         ~SqlQueryRAII();
         bool prepare(const QString &request_);
         bool exec(const QString &request_);
+        bool exec();
         QSqlError lastError() const;
         operator QSqlQuery &();
 
