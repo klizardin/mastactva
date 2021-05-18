@@ -45,7 +45,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
             ;
 
     const bool hasRefConditions = !(refs.isEmpty()) || !(extraFields.isEmpty());
-    const bool hasProcedureConditions = !(procedureConditions.isEmpty());
+    const bool hasProcedureConditions = !(procedureConditions.isEmpty()) && !procedureArgs.isEmpty();
     const bool hasCondition = hasRefConditions || hasProcedureConditions;
 
     const db::JsonSqlFieldAndValuesList refsValues =
@@ -77,7 +77,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     db::SqlQueryRAII query(base);
 
     bool sqlRes = true;
-    if(hasCondition || !procedureArgs.isEmpty())
+    if(hasCondition)
     {
         query.prepare(sqlRequest);
         db::bind(refsValues, query);
