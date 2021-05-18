@@ -292,7 +292,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 #endif
 
     QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(base);
+    db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(r_->getTableFieldsInfo(), values_, query);
 
@@ -304,7 +304,6 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql request " << sqlRequest;
-        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray = buildErrorDocument(err);
@@ -320,7 +319,6 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "update sql result" << r->reply();
 #endif
 
-    query.finish();
     r->setProcessed(true);
     return true;
 }
@@ -356,7 +354,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
 #endif
 
     QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(base);
+    db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(*fitId, query, id_);
 
@@ -368,7 +366,6 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql request " << sqlRequest;
-        qDebug() << "bound " << query.boundValues();
         qDebug() << "sql error " << err.text();
 
         QJsonArray jsonArray = buildErrorDocument(err);
@@ -384,7 +381,6 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql result" << r->reply();
 #endif
 
-    query.finish();
     r->setProcessed(true);
     return true;
 }
