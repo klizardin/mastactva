@@ -1493,6 +1493,16 @@ bool SqlQueryRAII::exec()
     return m_query.exec();
 }
 
+bool SqlQueryRAII::first()
+{
+    return m_query.first();
+}
+
+bool SqlQueryRAII::next()
+{
+    return m_query.next();
+}
+
 QSqlError SqlQueryRAII::lastError() const
 {
     return m_query.lastError();

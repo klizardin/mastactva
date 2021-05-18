@@ -217,6 +217,8 @@ namespace db
         bool prepare(const QString &request_);
         bool exec(const QString &request_);
         bool exec();
+        bool first();
+        bool next();
         QSqlError lastError() const;
         operator QSqlQuery &();
 

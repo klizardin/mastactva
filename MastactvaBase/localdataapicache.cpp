@@ -74,7 +74,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 #endif
 
     QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(base);
+    db::SqlQueryRAII query(base);
 
     bool sqlRes = true;
     if(hasCondition || !procedureArgs.isEmpty())
@@ -101,7 +101,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     {
         const QSqlError err = query.lastError();
         qDebug() << "select sql" << sqlRequest;
-        qDebug() << "bound" << query.boundValues();
         qDebug() << "sql error" << err.text();
         jsonArray = buildErrorDocument(err);
         r->setError(true);
