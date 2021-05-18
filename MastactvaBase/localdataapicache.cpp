@@ -24,9 +24,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
 
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-
     const QHash<QString, QVariant> procedureFields = DBRequestBase::procedureExtraFields(r_->getExtraFields());
     const QList<QVariant> procedureFilterFields = procedureFields.contains(g_procedureFilterNamesName)
             ? procedureFields.value(g_procedureFilterNamesName).toList()
@@ -75,6 +72,9 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "select sql" << sqlRequest;
 #endif
+
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(base);
 
     bool sqlRes = true;
     if(hasCondition || !procedureArgs.isEmpty())
@@ -274,9 +274,6 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemId(id_);
 
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-
     const auto fitId = db::findIdField(r_->getTableFieldsInfo());
     if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
     {
@@ -294,6 +291,8 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "update sql" << sqlRequest;
 #endif
 
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(base);
     query.prepare(sqlRequest);
     db::bind(r_->getTableFieldsInfo(), values_, query);
 
@@ -338,9 +337,6 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     LocalDBRequest *r = static_cast<LocalDBRequest *>(r_);
     r->setItemId(id_);
 
-    QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
-
     const auto fitId = db::findIdField(r_->getTableFieldsInfo());
     if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
     {
@@ -359,6 +355,8 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql" << sqlRequest;
 #endif
 
+    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlQuery query(base);
     query.prepare(sqlRequest);
     db::bind(*fitId, query, id_);
 
