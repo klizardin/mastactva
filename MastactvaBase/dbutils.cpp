@@ -1451,6 +1451,43 @@ QString getSelectSqlRequest(
     return request;
 }
 
+SqlQueryRAII::SqlQueryRAII(const QSqlDatabase &db_)
+    : m_query(db_)
+{
+}
+
+SqlQueryRAII::~SqlQueryRAII()
+{
+    if(m_prepared)
+    {
+        m_query.finish();
+    }
+}
+
+bool SqlQueryRAII::prepare(const QString &request_)
+{
+    const bool result = m_query.prepare(request_);
+    m_prepared = true;
+    return result;
+}
+
+bool SqlQueryRAII::exec(const QString &request_)
+{
+    const bool result = m_query.exec(request_);
+    m_prepared = true;
+    return result;
+}
+
+QSqlError SqlQueryRAII::lastError() const
+{
+    return m_query.lastError();
+}
+
+SqlQueryRAII::operator QSqlQuery &()
+{
+    return m_query;
+}
+
 } // namespace db
 
 

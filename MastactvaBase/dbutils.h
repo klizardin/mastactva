@@ -7,6 +7,7 @@
 #include <QVariant>
 #include <QList>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QJsonValue>
 #include <QJsonObject>
 #include "../MastactvaBase/layout_enums.h"
@@ -206,6 +207,21 @@ namespace db
             const QStringList &extraFields_,
             const QHash<QString, QVariant> &procedureFields_
             );
+
+    class SqlQueryRAII
+    {
+    public:
+        SqlQueryRAII(const QSqlDatabase &db_);
+        ~SqlQueryRAII();
+        bool prepare(const QString &request_);
+        bool exec(const QString &request_);
+        QSqlError lastError() const;
+        operator QSqlQuery &();
+
+    private:
+        bool m_prepared = false;
+        QSqlQuery m_query;
+    };
 }
 
 

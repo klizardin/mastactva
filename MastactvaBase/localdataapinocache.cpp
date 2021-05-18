@@ -29,7 +29,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "readonly " << r_->getReadonly();
 #endif
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery query(db);
+    db::SqlQueryRAII query(db);
 
     const QString createSqlRequest = db::getCreateTableSqlRequest(
                 r_->getTableName(),
@@ -47,7 +47,6 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
         const QSqlError err = query.lastError();
         qDebug() << "sql error "  << err.text();
     }
-    query.finish();
 
     r_->setProcessed(true);
     return true;
@@ -291,8 +290,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
 
     if(!r_->getReadonly()) { return; } // don't save data for RW tables
     QSqlDatabase db = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    QSqlQuery insertQuery(db);
-    QSqlQuery findQuery(db);
+    db::SqlQueryRAII insertQuery(db);
+    db::SqlQueryRAII findQuery(db);
 
     const QStringList refs = r_->getRefs();
     const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
@@ -329,7 +328,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     qDebug() << "find sql" << findSqlRequest;
 #endif
 
-    bool requestCreated = false;
     for(int i = 0; ; i++)
     {
         QJsonValue replayItem = reply_[i];
@@ -344,7 +342,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             // create if any data exists
             insertQuery.prepare(insertSqlRequest);
             findQuery.prepare(findSqlRequest);
-            requestCreated = true;
         }
 
         if(anyIdFields)
@@ -372,11 +369,6 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                     r_->getTableFieldsInfo(),
                     refsValues
                     );
-    }
-    if(requestCreated)
-    {
-        findQuery.finish();
-        insertQuery.finish();
     }
 }
 
