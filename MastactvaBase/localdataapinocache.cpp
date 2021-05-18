@@ -329,8 +329,8 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     qDebug() << "find sql" << findSqlRequest;
 #endif
 
-    int i = 0;
-    for(i = 0; ; i++)
+    bool requestCreated = false;
+    for(int i = 0; ; i++)
     {
         QJsonValue replayItem = reply_[i];
         if(replayItem.isUndefined())
@@ -344,6 +344,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
             // create if any data exists
             insertQuery.prepare(insertSqlRequest);
             findQuery.prepare(findSqlRequest);
+            requestCreated = true;
         }
 
         if(anyIdFields)
@@ -372,7 +373,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
                     refsValues
                     );
     }
-    if(i > 0)
+    if(requestCreated)
     {
         findQuery.finish();
         insertQuery.finish();
