@@ -238,8 +238,22 @@ class ILocalDataAPI
 {
 public:
     virtual ~ILocalDataAPI() = default;
-    virtual bool canProcess(const DBRequestBase *r_) const = 0;
+    virtual bool canProcess(const DBRequestBase *r_) const;
+
+    static QSqlDatabase getBase(const DBRequestBase *r_);
+};
+
+
+class ILocalDataGetAPI : public virtual ILocalDataAPI
+{
+public:
     virtual bool getListImpl(DBRequestBase *r_) = 0;
+};
+
+
+class ILocalDataUpdateAPI : public virtual ILocalDataAPI
+{
+public:
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
                              DBRequestBase *r_) = 0;
@@ -247,6 +261,11 @@ public:
                              const QHash<QString, QVariant> &values_,
                              DBRequestBase *r_) = 0;
     virtual bool delItemImpl(const QVariant &id_, DBRequestBase *r_) = 0;
+};
+
+
+class ILocalDataGetUpdateAPI : public ILocalDataGetAPI, public ILocalDataUpdateAPI
+{
 };
 
 
@@ -345,6 +364,7 @@ public:
 
     DBRequestType_ * operator -> ()
     {
+        Q_ASSERT(operator bool());
         return m_ptr;
     }
 

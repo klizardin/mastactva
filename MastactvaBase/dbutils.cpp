@@ -1516,6 +1516,17 @@ SqlQueryRAII::operator QSqlQuery &()
 } // namespace db
 
 
+bool ILocalDataAPI::canProcess(const DBRequestBase *r_) const
+{
+    Q_UNUSED(r_);
+    return true;
+}
+
+QSqlDatabase ILocalDataAPI::getBase(const DBRequestBase *r_)
+{
+    return QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+}
+
 DBRequestBase::DBRequestBase(const QString &apiName_)
     :m_apiName(apiName_)
 {

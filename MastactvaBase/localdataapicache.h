@@ -17,13 +17,12 @@
 // TODO: add pinup/unit tests
 // TODO: split interface, dependency inversion to write unit test with mocks
 // TODO: use dynamic_cast
-class LocalDataAPIDefaultCacheImpl : public ILocalDataAPI
+class LocalDataAPIDefaultCacheImpl : public ILocalDataGetUpdateAPI
 {
 public:
     LocalDataAPIDefaultCacheImpl() = default;
     virtual ~LocalDataAPIDefaultCacheImpl() = default;
 
-    virtual bool canProcess(const DBRequestBase *r_) const override;
     virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
@@ -84,7 +83,7 @@ public:
                            refAppId_, refValue_,
                            readonly_,
                            extraFields_);
-        ILocalDataAPI *view = chooseView(r);
+        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.getListImpl(r)
                 : view->getListImpl(r)
@@ -123,7 +122,7 @@ public:
                     layoutName_,
                     false,
                     extraFields);
-        ILocalDataAPI *view = chooseView(r);
+        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.addItemImpl(appId, values, r)
                 : view->addItemImpl(appId, values, r)
@@ -160,7 +159,7 @@ public:
                     false,
                     extraFields);
         if(!id.isValid()) { return nullptr; }
-        ILocalDataAPI *view = chooseView(r);
+        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.setItemImpl(id, values, r)
                 : view->setItemImpl(id, values, r)
@@ -193,7 +192,7 @@ public:
                     extraFields);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        ILocalDataAPI *view = chooseView(r);
+        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.delItemImpl(id, r)
                 : view->delItemImpl(id, r)

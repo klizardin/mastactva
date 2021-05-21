@@ -15866,7 +15866,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "ILocalDataAPI"
+                        "name": "ILocalDataGetUpdateAPI"
                     }
                 ]
             }
@@ -15909,7 +15909,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "ILocalDataAPI"
+                        "name": "ILocalDataUpdateAPI"
                     }
                 ]
             }

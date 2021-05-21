@@ -14,7 +14,7 @@
 #include "../MastactvaModels/image.h"
 
 
-class QuestionAnswerModelView : public QObject, public ILocalDataAPI
+class QuestionAnswerModelView : public QObject, public ILocalDataUpdateAPI
 {
     Q_OBJECT
 public:
@@ -22,7 +22,6 @@ public:
     virtual ~QuestionAnswerModelView() override;
 
     virtual bool canProcess(const DBRequestBase *r_) const override;
-    virtual bool getListImpl(DBRequestBase *r_) override;
     virtual bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
                              DBRequestBase *r_) override;
