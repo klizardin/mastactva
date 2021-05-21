@@ -2719,6 +2719,7 @@ ApplicationWindow {
                 effectObjectsCurrentModel.listReloaded.connect(onEffectObjectsListLoaded)
                 effectObjectsListBusyIndicator.visible = true
                 effectObjectsListBusyIndicator.running = true
+                effectObjectsList.model = 0
                 effectObjectsCurrentModel.loadList()
             }
         }
@@ -2729,6 +2730,7 @@ ApplicationWindow {
                 effectObjectsCurrentModel.listReloaded.disconnect(onEffectObjectsListLoaded)
                 effectObjectsListBusyIndicator.visible = false
                 effectObjectsListBusyIndicator.running = false
+                effectObjectsList.model = effectObjectsCurrentModel
                 effectObjectsCurrentIndex = effectObjectsCurrentModel.currentIndex
             }
         }
