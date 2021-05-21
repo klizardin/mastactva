@@ -377,7 +377,7 @@ template<typename ConcreteType_, typename BaseType_>
 class ConcretePtr
 {
 public:
-    ConcretePtr(BaseType_ *ptr_)
+    explicit ConcretePtr(BaseType_ *ptr_)
     {
         m_ptr = dynamic_cast<ConcreteType_*>(ptr_);
     }
@@ -385,6 +385,11 @@ public:
     operator bool () const
     {
         return nullptr != m_ptr;
+    }
+
+    bool operator ! () const
+    {
+        return !operator bool();
     }
 
     ConcreteType_ * operator -> () const
