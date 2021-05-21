@@ -63,12 +63,6 @@ bool QuestionAnswerModelView::canProcess(const DBRequestBase *r_) const
     return true;
 }
 
-bool QuestionAnswerModelView::getListImpl(DBRequestBase *r_)
-{
-    Q_UNUSED(r_);
-    return false;
-}
-
 bool QuestionAnswerModelView::addItemImpl(const QVariant &appId_,
                                           const QHash<QString, QVariant> &values_,
                                           DBRequestBase *r_)
@@ -290,7 +284,11 @@ void QuestionAnswerModelView::addUserQuestionAnswerItem()
     }
 
     LocalDBRequest *r = static_cast<LocalDBRequest *>(request);
-    request->getDefaultAPI()->addItemImpl(r->getItemAppId(), values, request);
+    ConcretePtr<ILocalDataUpdateAPI, ILocalDataAPI> defaultHandler(request->getDefaultAPI());
+    if(defaultHandler.operator bool())
+    {
+        defaultHandler->addItemImpl(r->getItemAppId(), values, request);
+    }
 
     m_requests.pop_front();
     addUserQuestionAnswer();

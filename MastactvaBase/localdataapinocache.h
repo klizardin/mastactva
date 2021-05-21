@@ -15,21 +15,13 @@
 
 // TODO : add pinup test for implamentation
 // TODO : split to 2 interfaces ILocalDataReadAPI ILocalDataWriteAPI
-class LocalDataAPINoCacheImpl : public ILocalDataAPI
+class LocalDataAPINoCacheImpl : public ILocalDataGetAPI
 {
 public:
     LocalDataAPINoCacheImpl() = default;
     virtual ~LocalDataAPINoCacheImpl() = default;
     virtual bool canProcess(const DBRequestBase *r_) const override;
     virtual bool getListImpl(DBRequestBase *r_) override;
-    virtual bool addItemImpl(const QVariant &appId_,
-                             const QHash<QString, QVariant> &values_,
-                             DBRequestBase *r_) override;
-    virtual bool setItemImpl(const QVariant &id_,
-                             const QHash<QString, QVariant> &values_,
-                             DBRequestBase *r_) override;
-    virtual bool delItemImpl(const QVariant &id_,
-                             DBRequestBase *r_) override;
 };
 
 
@@ -97,9 +89,15 @@ public:
                                readonly_,
                                extraFields_
                                );
-            ILocalDataAPI *view = chooseAPI(r);
-            if(!view) { m_defaultAPIImpl.getListImpl(r); }
-            else { view->getListImpl(r); }
+            ConcretePtr<LocalDataAPINoCacheImpl,ILocalDataAPI> view(chooseAPI(r));
+            if(!view)
+            {
+                m_defaultAPIImpl.getListImpl(r);
+            }
+            else
+            {
+                view->getListImpl(r);
+            }
         }
         if(!m_netAPI) { return nullptr; }
         RequestData *resRequest = m_netAPI->getList<DataType_>(layoutName_,

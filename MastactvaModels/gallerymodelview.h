@@ -12,7 +12,7 @@
 #include "../MastactvaModels/userstep.h"
 
 
-class GalleryModelView : public QObject, public ILocalDataAPI
+class GalleryModelView : public QObject, public ILocalDataGetUpdateAPI
 {
     Q_OBJECT
 public:

@@ -39,7 +39,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "create sql" << createSqlRequest;
 #endif
 
-    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlDatabase base = getBase(r_);
     db::SqlQueryRAII query(base);
     if(!query.exec(createSqlRequest))
     {
@@ -51,32 +51,6 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     return true;
 }
 
-bool LocalDataAPINoCacheImpl::addItemImpl(const QVariant &appId_,
-                                          const QHash<QString, QVariant> &values_,
-                                          DBRequestBase *r_)
-{
-    Q_UNUSED(appId_);
-    Q_UNUSED(values_);
-    Q_UNUSED(r_);
-    return false;
-}
-
-bool LocalDataAPINoCacheImpl::setItemImpl(const QVariant &id_,
-                                          const QHash<QString, QVariant> &values_,
-                                          DBRequestBase *r_)
-{
-    Q_UNUSED(id_);
-    Q_UNUSED(values_);
-    Q_UNUSED(r_);
-    return false;
-}
-
-bool LocalDataAPINoCacheImpl::delItemImpl(const QVariant &id_, DBRequestBase *r_)
-{
-    Q_UNUSED(id_);
-    Q_UNUSED(r_);
-    return false;
-}
 
 LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
     :DBRequestBase(g_noCachAPI)

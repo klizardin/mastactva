@@ -7,12 +7,6 @@
 #include "../MastactvaBase/defines.h"
 
 
-bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestBase *r_) const
-{
-    Q_UNUSED(r_);
-    return true;
-}
-
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 {
     if(!r_)
@@ -73,7 +67,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlDatabase base = getBase(r_);
     db::SqlQueryRAII query(base);
 
     bool sqlRes = true;
@@ -219,7 +213,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     try
     {
-        QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+        QSqlDatabase base = getBase(r_);
         db::SqlQueryRAII findQuery(base);
         QHash<QString, QVariant> values = values_;
         const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
@@ -294,7 +288,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "update sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlDatabase base = getBase(r_);
     db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(r_->getTableFieldsInfo(), values_, query);
@@ -358,7 +352,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    QSqlDatabase base = getBase(r_);
     db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(*fitId, query, id_);

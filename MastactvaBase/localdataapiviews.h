@@ -11,7 +11,7 @@
 
 
 template<class ModelType_>
-class LocalDataAPIGelListByRefImpl : public ILocalDataAPI
+class LocalDataAPIGelListByRefImpl : public ILocalDataGetAPI
 {
 public:
     LocalDataAPIGelListByRefImpl() = default;
@@ -55,34 +55,15 @@ public:
                              );
         r_->clearReferences();
 
-        return defaultAPI->getListImpl(r_);
-    }
-
-    virtual bool addItemImpl(const QVariant &appId_,
-                             const QHash<QString, QVariant> &values_,
-                             DBRequestBase *r_) override
-    {
-        Q_UNUSED(appId_);
-        Q_UNUSED(values_);
-        Q_UNUSED(r_);
-        return false;
-    }
-
-    virtual bool setItemImpl(const QVariant &id_,
-                             const QHash<QString, QVariant> &values_,
-                             DBRequestBase *r_) override
-    {
-        Q_UNUSED(id_);
-        Q_UNUSED(values_);
-        Q_UNUSED(r_);
-        return false;
-    }
-
-    virtual bool delItemImpl(const QVariant &id_, DBRequestBase *r_) override
-    {
-        Q_UNUSED(id_);
-        Q_UNUSED(r_);
-        return false;
+        ConcretePtr<ILocalDataGetAPI, ILocalDataAPI> defaultHandler(defaultAPI);
+        if(!defaultHandler)
+        {
+            return false;
+        }
+        else
+        {
+            return defaultHandler->getListImpl(r_);
+        }
     }
 };
 

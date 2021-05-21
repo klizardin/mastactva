@@ -373,4 +373,34 @@ public:
 };
 
 
+template<typename ConcreteType_, typename BaseType_>
+class ConcretePtr
+{
+public:
+    explicit ConcretePtr(BaseType_ *ptr_)
+    {
+        m_ptr = dynamic_cast<ConcreteType_*>(ptr_);
+    }
+
+    operator bool () const
+    {
+        return nullptr != m_ptr;
+    }
+
+    bool operator ! () const
+    {
+        return !operator bool();
+    }
+
+    ConcreteType_ * operator -> () const
+    {
+        Q_ASSERT(operator bool());
+        return m_ptr;
+    }
+
+private:
+    ConcreteType_ *m_ptr = nullptr;
+};
+
+
 #endif // UTILS_H
