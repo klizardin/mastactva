@@ -1234,7 +1234,7 @@ ApplicationWindow {
         }
     }
 
-    ShaderEditDialog {
+    /*ShaderEditDialog {
         id: shaderEditDialog
 
         onOpened: {
@@ -1315,7 +1315,7 @@ ApplicationWindow {
             effectObjectsCurrentModel.itemAdded.disconnect(effectShaderAdded)
             fieldShader = undefined
         }
-    }
+    }*/
 
     RefreshEffectArgumentsDialog {
         id: refreshEffectsArgumentsDialog
