@@ -19,7 +19,7 @@
         <file>WarningDialog.qml</file>
         <file>AutoSizeMenu.qml</file>
         <file>EffectEditDialog.qml</file>
-        <file>ShaderEditDialog.qml</file>
+        <file>EffectObjectEditDialog.qml</file>
         <file>ChooseShaderDialog.qml</file>
         <file>RefreshEffectArgumentsDialog.qml</file>
         <file>EffectArgumentSetEditDialog.qml</file>

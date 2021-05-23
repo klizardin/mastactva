@@ -8,44 +8,24 @@ import Mastactva 1.0
 
 
 Dialog {
-    id : shaderEditDialog
+    id : effectObjectEditDialog
     modal: true
 
     property bool fieldNewItem: false
-    property var fieldEffectShader: undefined
-    property var fieldShader: undefined
+    property var fieldEffectObject: undefined
+    property var fieldEffectObjectInfo: undefined
     property var mastactva: undefined
-    property var artefactTypeModel: undefined
 
-    title: fieldNewItem ? qsTr("Add new shader") : qsTr("Edit shader info")
+
+    title: fieldNewItem ? qsTr("Add new effect object") : qsTr("Edit effect object")
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
-
-    FileDialog {
-        id: openShaderDialog
-        title: qsTr("Please choose a shader file to upload to the server")
-        folder: shortcuts.pictures
-        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh *.*)" ]
-        selectExisting: true
-        selectMultiple: false
-
-        onAccepted: {
-            editArtefactFilename.text = fileUrl
-            editArtefactHash.text = mastactva.calculateHash(fileUrl)
-            editShaderDescription.text = mastactva.getShaderDescription(fileUrl)
-        }
-
-        onRejected: {
-            // TODO: add no image upload reaction
-        }
-    }
 
     FontMetrics{
         id: editArtafactFilenameFontMetrics
         font: editArtefactFilename.font
     }
-
 
     ScrollView {
         anchors.fill: parent
@@ -55,152 +35,136 @@ Dialog {
 
         Column {
             id: column
+
             Row {
                 Label {
                     text: qsTr("Id : ")
                 }
                 Text {
-                    id: editArtefactId
+                    id: editEffectObjectId
                 }
             }
-            Label {
-                text: qsTr("Type  : ")
-            }
-            Rectangle{
-                id: editShaderTypeListRect
-                width: Constants.minConstValueWidth
-                height: Constants.minConstValueHeight
 
-                ListView {
-                    id: editShaderTypeList
-                    anchors.fill: parent
-                    clip: true
-                    spacing: Constants.smallListSmallSpacing
-                    model: artefactTypeModel
-                    delegate: shaderTypeItem
-                    highlight: shaderTypeItemHighlight
-                    highlightFollowsCurrentItem: false
-                }
-            }
-            Label {
-                text: qsTr("Filename  : ")
-            }
             Row {
-                TextField {
-                    id: editArtefactFilename
-                    placeholderText: qsTr("Enter shader filename")
-                    readOnly: true
-                    focus: true
-                    KeyNavigation.priority: KeyNavigation.BeforeItem
-                    KeyNavigation.tab: editShaderBrowse
+                Label {
+                    text: qsTr("Object Info id : ")
                 }
-                Button {
-                    id: editShaderBrowse
-                    text: qsTr("Browse")
-                    onClicked: {
-                        openShaderDialog.open()
-                    }
+                Text {
+                    id: editEffectObjectInfoId
                 }
             }
+
             Label {
-                text: qsTr("Hash  : ")
+                text: qsTr("Effect object step : ")
             }
             TextField {
-                id: editArtefactHash
-                placeholderText: qsTr("Shader hash value")
-                readOnly: true
+                id: editEffectObjectStep
+                placeholderText: qsTr("Effect object step")
                 focus: true
                 KeyNavigation.priority: KeyNavigation.BeforeItem
-                KeyNavigation.backtab: editShaderBrowse
+                KeyNavigation.tab: editEffectObjectInfoName
             }
+
             Label {
-                text: qsTr("Description  : ")
+                text: qsTr("Effect object info name : ")
+            }
+            TextField {
+                id: editEffectObjectInfoName
+                placeholderText: qsTr("Effect object info name")
+                focus: true
+                KeyNavigation.priority: KeyNavigation.BeforeItem
+                KeyNavigation.backtab: editEffectObjectStep
+                KeyNavigation.tab: editEffectObjectInfoProgrammerName
+            }
+
+            Label {
+                text: qsTr("Effect object info programmer name : ")
+            }
+            TextField {
+                id: editEffectObjectInfoProgrammerName
+                placeholderText: qsTr("Effect object info programmer name")
+                focus: true
+                KeyNavigation.priority: KeyNavigation.BeforeItem
+                KeyNavigation.backtab: editEffectObjectInfoName
+                KeyNavigation.tab: editEffectObjectInfoDescription
+            }
+
+            Row {
+                Label {
+                    text: qsTr("Object Info created : ")
+                }
+                Text {
+                    id: editEffectObjectInfoCreated
+                }
+            }
+
+            Label {
+                text: qsTr("Effect object info description : ")
             }
             TextArea {
-                id: editShaderDescription
-                placeholderText: qsTr("Enter shader description")
+                id: editEffectObjectInfoDescription
+                placeholderText: qsTr("Effect object info description")
                 focus: true
                 KeyNavigation.priority: KeyNavigation.BeforeItem
-                KeyNavigation.backtab: editArtefactHash
+                KeyNavigation.backtab: editEffectObjectInfoProgrammerName
             }
         }
     }
 
     function init()
     {
-        var w = 0
-        for(var i = 0; i < artefactTypeModel.size(); i++)
+
+        if(fieldEffectObject !== null && fieldEffectObject !== undefined)
         {
-            w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(artefactTypeModel.itemAt(i).artefactTypeType).width)
-        }
-        editShaderTypeListRect.width = w
-        editShaderTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.smallListSmallSpacing) * artefactTypeModel.size() * 1.1
-        editArtefactId.text = fieldShader.artefactId
-        if(!editShaderTypeList.model.selectItemById(fieldShader.artefactTypeId))
-        {
-            editShaderTypeList.currentIndex = 0
-            editShaderTypeList.model.currentIndex = 0
-            fieldShader.artefactTypeId = editShaderTypeList.model.getCurrentItem().artefactTypeId
+            editEffectObjectId.text = fieldEffectObject.editEffectObjectsId
+            editEffectObjectStep.text = fieldEffectObject.effectObjectsStepIndex
         }
         else
         {
-            editShaderTypeList.currentIndex = editShaderTypeList.model.currentIndex
+            editEffectObjectId.text = qsTr("New")
+            editEffectObjectStep.text = qsTr("")
         }
-        editArtefactFilename.text = fieldShader.artefactFilename
-        editArtefactHash.text = fieldShader.artefactHash
-        editShaderDescription.text = fieldShader.artefactDescription
+
+        if(fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined)
+        {
+            editEffectObjectInfoId.text = fieldEffectObjectInfo.effectObjectInfoId
+            editEffectObjectInfoName.text = fieldEffectObjectInfo.effectObjectInfoName
+            editEffectObjectInfoProgrammerName.text = fieldEffectObjectInfo.effectObjectInfoProgrammerName
+            editEffectObjectInfoCreated.text = mastactva.dateTimeToUserStr(fieldEffectObjectInfo.effectObjectInfoCreated)
+            editEffectObjectInfoDescription.text = objecInfo.effectObjectInfoDescription
+        }
+        else
+        {
+            editEffectObjectInfoId.text = qsTr("New")
+            editEffectObjectInfoName.text = qsTr("")
+            editEffectObjectInfoProgrammerName.text = qsTr("")
+            editEffectObjectInfoCreated.text = qsTr("")
+            editEffectObjectInfoDescription.text = qsTr("")
+
+            if(!fieldNewItem)
+            {
+                editEffectObjectInfoName.readOnly = true
+                editEffectObjectInfoProgrammerName.readOnly = true
+                editEffectObjectInfoCreated.text = qsTr("")
+                editEffectObjectInfoDescription.readOnly = true
+            }
+        }
     }
 
     function update()
     {
-        //fieldShader.artefactTypeId = editShaderTypeList.currentItem.artefactTypeId
-        fieldShader.artefactFilename = editArtefactFilename.text
-        fieldShader.artefactHash = editArtefactHash.text
-        fieldShader.artefactDescription = editShaderDescription.text
+        if(fieldEffectObject !== null && fieldEffectObject !== undefined)
+        {
+            fieldEffectObject.effectObjectsStepIndex = editEffectObjectStep.text
+        }
+
+        if(fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined)
+        {
+            fieldEffectObjectInfo.effectObjectInfoName = editEffectObjectInfoName.text
+            fieldEffectObjectInfo.effectObjectInfoProgrammerName = editEffectObjectInfoProgrammerName.text
+            objecInfo.effectObjectInfoDescription = editEffectObjectInfoDescription.text
+        }
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
-
-    Component {
-        id: shaderTypeItem
-
-        Text {
-            id: shaderTypeItemType
-            width: editShaderTypeListRect.width
-            text: artefactTypeType
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                onClicked:
-                {
-                    editShaderTypeList.currentIndex = index
-                    fieldShader.artefactTypeId = artefactTypeId
-                    mouse.accepted = false
-                }
-            }
-        }
-    }
-
-    Component {
-        id: shaderTypeItemHighlight
-
-        Rectangle {
-
-            SystemPalette {
-                id: shaderTypeItemHighlightPallete
-                colorGroup: SystemPalette.Active
-            }
-
-            border.color: shaderTypeItemHighlightPallete.highlight
-            border.width: 1
-            radius: 2
-
-            y: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.y : 0
-            x: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.x : 0
-            width: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.width : 0
-            height: (editShaderTypeList.currentItem !== undefined && editShaderTypeList.currentItem !== null) ? editShaderTypeList.currentItem.height : 0
-        }
-    }
 }
