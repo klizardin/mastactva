@@ -16,7 +16,6 @@ Dialog {
     property var fieldEffectObjectInfo: undefined
     property var mastactva: undefined
 
-
     title: fieldNewItem ? qsTr("Add new effect object") : qsTr("Edit effect object")
 
     x: (parent.width - width) / 2
