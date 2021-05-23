@@ -1095,3 +1095,8 @@ QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
     }
     return QString();
 }
+
+QDateTime MastactvaAPI::now() const
+{
+    return date_time::nowTz();
+}

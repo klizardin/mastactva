@@ -1234,63 +1234,135 @@ ApplicationWindow {
         }
     }
 
-    /*ShaderEditDialog {
-        id: shaderEditDialog
+    EffectObjectEditDialog {
+        id: effectObjectEditDialog
 
         onOpened: {
-            if(fieldEffectShader !== undefined && fieldEffectShader !== null)
-            {
-                fieldEffectShader.effectArtefactEffectId = effectModel.getCurrentItem().effectId
-            }
             init()
         }
 
         onAccepted: {
             update()
-            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
+            if(validState())
             {
                 if(fieldNewItem)
                 {
-                    fieldEffectShader.effectArtefactArtefact.itemAdded.connect(shaderAdded)
-                    fieldEffectShader.effectArtefactArtefact.addItem(fieldShader)
+                    fieldEffectObject.effectObjectsObjectInfo.itemAdded.connect(effectObjectInfoAdded)
+                    fieldEffectObject.effectObjectsObjectInfo.addItem(fieldEffectObjectInfo)
                 }
                 else
                 {
-                    fieldEffectShader.effectArtefactArtefact.itemSet.connect(shaderItemSet)
-                    fieldEffectShader.effectArtefactArtefact.setItem(effectObjectsCurrentIndex, fieldShader)
+                    var itemIndex = fieldEffectObject.effectObjectsObjectInfo.indexOfItem(fieldEffectObjectInfo)
+                    if(itemIndex >= 0)
+                    {
+                        fieldEffectObject.effectObjectsObjectInfo.itemSet.connect(effectObjectInfoSet)
+                        fieldEffectObject.effectObjectsObjectInfo.setItem(itemIndex, fieldEffectObjectInfo)
+                    }
+                    else
+                    {
+                        clear()
+                    }
                 }
+            }
+            else
+            {
+                clear()
             }
         }
 
         onRejected: {
-            fieldShader = undefined
-            fieldEffectShader = undefined
+            clear()
         }
 
-        function shaderItemSet()
+        function validState()
         {
-            fieldEffectShader.effectArtefactArtefact.itemSet.disconnect(shaderItemSet)
-            fieldShader = undefined
-            fieldEffectShader = undefined
+            var validEffectObject = fieldEffectObject !== null && fieldEffectObject !== undefined
+            var validEffectObjectInfo = fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined
+            var validArgs = validEffectObject && validEffectObjectInfo
+            var validModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
+            return validArgs && validModel
         }
 
-        function shaderAdded()
+        function clear()
         {
-            fieldEffectShader.effectArtefactArtefact.itemAdded.disconnect(shaderAdded)
-            fieldEffectShader.setArtefactId(fieldShader.artefactId)
-            fieldShader = undefined
-            effectObjectsCurrentModel.itemAdded.connect(effectShaderAdded)
-            effectObjectsCurrentModel.addItem(fieldEffectShader)
+            fieldEffectObject = undefined
+            fieldEffectObjectInfo = undefined
+            fieldNewItem = false
         }
 
-        function effectShaderAdded()
+        function effectObjectProcess()
         {
-            effectObjectsCurrentModel.itemAdded.disconnect(effectShaderAdded)
-            fieldEffectShader = undefined
+            if(validState())
+            {
+                if(fieldNewItem)
+                {
+                    effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
+                    effectObjectsCurrentModel.addItem(fieldEffectObject);
+                }
+                else
+                {
+                    var itemIndex = effectObjectsCurrentModel.indexOfItem(fieldEffectObject)
+                    if(itemIndex >= 0)
+                    {
+                        effectObjectsCurrentModel.itemSet.connect(effectObjectSet)
+                        effectObjectsCurrentModel.setItem(fieldEffectObject);
+                    }
+                    else
+                    {
+                        clear();
+                    }
+                }
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function effectObjectInfoAdded()
+        {
+            if(validState())
+            {
+                fieldEffectObject.effectObjectsObjectInfo.itemAdded.disconnect(effectObjectInfoAdded)
+                effectObjectProcess()
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function effectObjectAdded()
+        {
+            if(validState())
+            {
+                effectObjectsCurrentModel.itemAdded.disconnect(effectObjectAdded)
+                var itemIndex = effectObjectsCurrentModel.indexOfItem(fieldEffectObject)
+                effectObjectsCurrentIndex = itemIndex
+            }
+            clear();
+        }
+
+        function effectObjectInfoSet()
+        {
+            if(validState())
+            {
+                fieldEffectObject.effectObjectsObjectInfo.itemSet.disconnect(effectObjectInfoSet)
+                effectObjectProcess()
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function effectObjectSet()
+        {
+            clear();
         }
     }
 
-    ChooseShaderDialog {
+    /*ChooseShaderDialog {
         id: chooseShaderDialog
 
         onOpened: {
