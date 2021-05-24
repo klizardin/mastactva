@@ -8,10 +8,10 @@ import Mastactva 1.0
 
 
 Dialog {
-    id : chooseShaderDialog
+    id : chooseEffectObjectDialog
     modal: true
 
-    title: qsTr("Choose shader")
+    title: qsTr("Choose effect object")
 
     property var fieldShader: undefined
     property var artefactTypeModel: undefined

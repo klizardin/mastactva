@@ -639,6 +639,16 @@ ApplicationWindow {
         autoCreateChildrenModels: true
     }
 
+    ObjectInfoModel {
+        id: objectInfoModel
+        objectName: "ObjectInfoModel"
+        layoutQMLName: "ObjectInfoModel"
+        layoutIdField: "id"
+        currentRef: ""
+        jsonParamsGet: false
+        autoCreateChildrenModels: true
+    }
+
     function initGalleryModel()
     {
     }
@@ -1274,13 +1284,54 @@ ApplicationWindow {
             clear()
         }
 
+        function validModel()
+        {
+            return effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
+        }
+
+        function validModelAndPosition()
+        {
+            return validModel() && effectObjectsCurrentIndex >= 0
+        }
+
         function validState()
         {
             var validEffectObject = fieldEffectObject !== null && fieldEffectObject !== undefined
             var validEffectObjectInfo = fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined
             var validArgs = validEffectObject && validEffectObjectInfo
-            var validModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
-            return validArgs && validModel
+            return validArgs && validModel()
+        }
+
+        function createNew()
+        {
+            clear()
+            if(!validModel())
+            {
+                return
+            }
+            fieldNewItem = true
+            fieldEffectObject = effectObjectsCurrentModel.createItem()
+            fieldEffectObjectInfo = objectInfoModel.createItem()
+            if(validState())
+            {
+                open()
+            }
+        }
+
+        function editCurrent()
+        {
+            clear()
+            if(!validModelAndPosition())
+            {
+                return;
+            }
+            fieldNewItem = false
+            fieldEffectObject = effectObjectsCurrentModel.currentItem
+            fieldEffectObjectInfo = fieldEffectObject.effectObjectsObjectInfo.currentItem
+            if(validState())
+            {
+                open()
+            }
         }
 
         function clear()
@@ -2812,6 +2863,7 @@ ApplicationWindow {
         id: addNewEffectObject
         text: qsTr("Add &new")
         onTriggered: {
+            effectObjectEditDialog.createNew()
         }
     }
 
@@ -2826,6 +2878,7 @@ ApplicationWindow {
         id: editEffectObjectInfo
         text: qsTr("Edit &info")
         onTriggered: {
+            effectObjectEditDialog.editCurrent()
         }
     }
 
