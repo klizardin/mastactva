@@ -476,8 +476,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest)
     const QString request = runGetSelectSqlRequestFoParams(
                 QHash<QString, QVariant>{}
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -501,8 +501,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -527,8 +527,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_fieldsFunction)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -554,8 +554,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_selectFunction)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -582,8 +582,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderBy)
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -613,8 +613,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -645,8 +645,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 
@@ -679,8 +679,8 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     const QString request = runGetSelectSqlRequestFoParams(
                 paramsFilterFields
                 );
-    qDebug() << request;
-    qDebug() << res;
+    //qDebug() << request;
+    //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
 }
 

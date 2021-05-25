@@ -287,9 +287,71 @@ private:
     ArgsList<Args_ ...> m_args;
 };
 
+
+template<typename DataType_>
+class RefOfValue
+{
+private:
+    using DataType = typename std::remove_cv<typename std::remove_reference<DataType_>::type>::type;
+
+public:
+    RefOfValue(const DataType &refValue_)
+        : contains(false)
+        , dataRef(std::cref(refValue_))
+    {
+    }
+
+    RefOfValue(DataType &&value_)
+        : contains(true)
+        , dataValue(std::move(value_))
+        , dataRef(std::cref(dataValue))
+    {
+    }
+
+    RefOfValue(RefOfValue &&value_)
+        : dataRef(std::cref(dataValue))
+    {
+        operator=(std::move(value_));
+    }
+
+    RefOfValue & operator = (RefOfValue &&value_)
+    {
+        if(value_.contains)
+        {
+            dataValue = std::move(value_.dataValue);
+            dataRef = std::cref(dataValue);
+            contains = true;
+        }
+        else
+        {
+            dataValue = DataType{};
+            dataRef = std::move(value_.dataRef);
+            contains = false;
+        }
+        return *this;
+    }
+
+    const DataType &get() const
+    {
+        return dataRef.get();
+    }
+
+    RefOfValue(const RefOfValue &) = delete;
+    RefOfValue & operator = (const RefOfValue &) = delete;
+
+private:
+    bool contains = false;
+    DataType dataValue;
+    std::reference_wrapper<const DataType> dataRef;
+};
+
+
 template<typename DataType_>
 class List
 {
+private:
+    using DataType = typename std::remove_cv<typename std::remove_reference<DataType_>::type>::type;
+
 public:
     List(DataType_ &&data_, const QString &separator_)
         : m_data(std::forward<DataType_>(data_)), m_seporator(separator_)
@@ -298,11 +360,11 @@ public:
 
     QStringList toStringList() const
     {
-        using Type = decltype(*std::begin(DataType_{}));
+        using Type = decltype(*std::begin(DataType{}));
 
         QStringList strs;
-        strs.reserve(m_data.size());
-        for(const Type &val_ : m_data)
+        strs.reserve(m_data.get().size());
+        for(const Type &val_ : m_data.get())
         {
             strs.push_back(fmt::toString(val_));
         }
@@ -325,13 +387,16 @@ public:
     }
 
 private:
-    DataType_ m_data;
+    RefOfValue<DataType_> m_data;
     QString m_seporator;
 };
 
 template<typename DataType_, typename FormatType_>
 class FormatList
 {
+private:
+    using DataType = typename std::remove_cv<typename std::remove_reference<DataType_>::type>::type;
+
 public:
     FormatList(
             FormatType_ &&format_,
@@ -346,11 +411,11 @@ public:
 
     QStringList toStringList() const
     {
-        using Type = decltype(*std::begin(DataType_{}));
+        using Type = decltype(*std::begin(DataType{}));
 
         QStringList strs;
-        strs.reserve(m_data.size());
-        for(const Type &val_ : m_data)
+        strs.reserve(m_data.get().size());
+        for(const Type &val_ : m_data.get())
         {
             FormatType_ format = m_format;
             format.set(val_);
@@ -376,7 +441,7 @@ public:
 
 private:
     FormatType_ m_format;
-    DataType_ m_data;
+    RefOfValue<DataType_> m_data;
     QString m_seporator;
 };
 

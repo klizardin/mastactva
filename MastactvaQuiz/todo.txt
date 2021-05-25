@@ -66,6 +66,7 @@
 43. base unit tests
 44. base precalculations
 45. test opengl drawing
+46. add no image view if can't download image from a server
 
 
 

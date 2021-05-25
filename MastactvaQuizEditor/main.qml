@@ -639,10 +639,10 @@ ApplicationWindow {
         autoCreateChildrenModels: true
     }
 
-    ObjectInfoModel {
-        id: objectInfoModel
-        objectName: "ObjectInfoModel"
-        layoutQMLName: "ObjectInfoModel"
+    EffectObjectsModel {
+        id: effectObjectsModel
+        objectName: "EffectObjectsModel"
+        layoutQMLName: "EffectObjectsModel"
         layoutIdField: "id"
         currentRef: ""
         jsonParamsGet: false
@@ -693,8 +693,7 @@ ApplicationWindow {
             easingTypeModel.loadList()
             shaderEditDialog.mastactva = mastactva
             shaderEditDialog.artefactTypeModel = artefactTypeModel
-            chooseShaderDialog.artefactTypeModel = artefactTypeModel
-            chooseShaderDialog.artefactModel = artefactModel
+            chooseEffectObjectDialog.effectObjectModel = effectObjectsModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
             effectArgumentValueEditDialog.artefactArgTypeModel = artefactArgTypeModel
             chooseEffectArgumentDialog.artefactArgTypeModel = artefactArgTypeModel
@@ -1413,32 +1412,62 @@ ApplicationWindow {
         }
     }
 
-    /*ChooseShaderDialog {
-        id: chooseShaderDialog
+    ChooseEffectObjectDialog {
+        id: chooseEffectObjectDialog
+
+        // private:
+        property var newEffectObject: undefined
 
         onOpened: {
-            fieldShader = undefined
+            clear()
             init()
         }
 
         onAccepted: {
-            if(fieldShader !== undefined && fieldShader !== null && effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
+            if(isValid())
             {
-                var newEffectShader = effectObjectsCurrentModel.createItem()
-                newEffectShader.setArtefactId(fieldShader.artefactId)
-                newEffectShader.effectArtefactEffectId = effectModel.getCurrentItem().effectId
-                fieldShader = undefined
-                effectObjectsCurrentModel.itemAdded.connect(effectShaderAdded)
-                effectObjectsCurrentModel.addItem(newEffectShader)
+                newEffectObject = effectObjectsCurrentModel.createItem()
+                newEffectObject.effectObjectsStepIndex = fieldEffectObject.effectObjectsStepIndex
+                // TODO: call procedure to create copy of effectObjectsObjectArtefacts
+                // TODO: set effectObjectsObjectInfo id
+                effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
+                effectObjectsCurrentModel.addItem(newEffectObject)
             }
         }
 
-        function effectShaderAdded()
+        // public:
+        function choose()
         {
-            effectObjectsCurrentModel.itemAdded.disconnect(effectShaderAdded)
-            fieldShader = undefined
+            open()
         }
-    }*/
+
+        // private:
+        function isValid()
+        {
+            var validEffectObject = fieldEffectObject !== null && fieldEffectObject !== undefined
+            var validModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
+            return validEffectObject && validModel;
+        }
+
+        function clear()
+        {
+            fieldEffectObject = undefined
+            newEffectObject = undefined
+        }
+
+        function effectObjectAdded()
+        {
+            if(isValid())
+            {
+                effectObjectsCurrentModel.itemAdded.disconnect(effectObjectAdded)
+                var index = effectObjectsCurrentModel.indexOfItem(newEffectObject)
+                if(index >= 0)
+                {
+                    effectObjectsCurrentIndex = index
+                }
+            }
+        }
+    }
 
     RefreshEffectArgumentsDialog {
         id: refreshEffectsArgumentsDialog
@@ -2871,6 +2900,7 @@ ApplicationWindow {
         id: addExistingEffectObject
         text: qsTr("Add &existing")
         onTriggered: {
+            chooseEffectObjectDialog.choose()
         }
     }
 
