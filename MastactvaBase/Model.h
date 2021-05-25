@@ -1351,6 +1351,7 @@ public:                                                                         
     Q_PROPERTY(bool outputModel READ outputModel WRITE setOutputModel NOTIFY outputModelChanged)                \
     Q_PROPERTY(QStringList sortFields READ sortFields WRITE setSortFields NOTIFY sortFieldsChanged)             \
     Q_PROPERTY(bool readonly READ readonly WRITE setReadonly NOTIFY readonlyChanged)                            \
+    Q_PROPERTY(QString objectName READ getObjectName WRITE setObjectName NOTIFY objectNameDerivedChanged)       \
     /*Q_INVOKABLEs*/                                                                                            \
     Q_INVOKABLE void setLayoutRef(const QString &fieldJsonName_, const QString &parentModel_, const QString &parentModelRefJsonName_)   \
     {                                                                                                           \
@@ -1617,6 +1618,15 @@ public:                                                                         
     {                                                                                                           \
         setReadonlyImpl(readonly_);                                                                             \
         emit readonlyChanged();                                                                                 \
+    }                                                                                                           \
+    QString getObjectName()                                                                                     \
+    {                                                                                                           \
+        return QObject::objectName();                                                                           \
+    }                                                                                                           \
+    void setObjectName(const QString &objectName_)                                                              \
+    {                                                                                                           \
+        QObject::setObjectName(objectName_);                                                                    \
+        emit objectNameDerivedChanged();                                                                        \
     }                                                                                                           \
     virtual void listLoadedVF() override                                                                        \
     {                                                                                                           \

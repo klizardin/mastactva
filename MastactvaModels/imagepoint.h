@@ -127,6 +127,7 @@ signals:
     void outputModelChanged();
     void sortFieldsChanged();
     void readonlyChanged();
+    void objectNameDerivedChanged();
     void error(const QString &errorCode_, const QString &description_);
 };
 
@@ -244,6 +245,7 @@ signals:
     void outputModelChanged();
     void sortFieldsChanged();
     void readonlyChanged();
+    void objectNameDerivedChanged();
     void error(const QString &errorCode_, const QString &description_);
 
 private:
@@ -412,6 +414,7 @@ signals:
     void outputModelChanged();
     void sortFieldsChanged();
     void readonlyChanged();
+    void objectNameDerivedChanged();
     void error(const QString &errorCode_, const QString &description_);
 
 private:

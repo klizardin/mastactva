@@ -1410,6 +1410,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "AnswerModel",
@@ -1512,6 +1526,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -2270,6 +2289,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "GalleryModel",
@@ -2372,6 +2405,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -3055,6 +3093,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "GalleryStatisticsModel",
@@ -3157,6 +3209,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -3984,6 +4041,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ImageModel",
@@ -4086,6 +4157,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -4769,6 +4845,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ImageDescriptionModel",
@@ -4871,6 +4961,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -5554,6 +5649,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToQuestionModel",
@@ -5656,6 +5765,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -6318,6 +6432,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ImagePointToNextImageModel",
@@ -6420,6 +6548,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -7237,6 +7370,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ImagePointModel",
@@ -7339,6 +7486,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -8070,6 +8222,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "QuestionModel",
@@ -8172,6 +8338,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -8893,6 +9064,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "UserQuestionAnswerModel",
@@ -8995,6 +9180,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -9636,6 +9826,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "QuizUserModel",
@@ -9738,6 +9942,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -10516,6 +10725,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "UserStepModel",
@@ -10618,6 +10841,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -11263,6 +11491,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "EasingTypeModel",
@@ -11365,6 +11607,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -12162,6 +12409,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "EffectArgModel",
@@ -12264,6 +12525,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -13006,6 +13272,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSetModel",
@@ -13108,6 +13388,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -13863,6 +14148,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValueModel",
@@ -13965,6 +14264,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -14804,6 +15108,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "EffectModel",
@@ -14906,6 +15224,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -15669,6 +15992,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ImagePointEffectModel",
@@ -15771,6 +16108,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -16628,6 +16970,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ArtefactModel",
@@ -16730,6 +17086,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -17394,6 +17755,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ArtefactTypeModel",
@@ -17496,6 +17871,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -18141,6 +18521,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ArtefactArgTypeModel",
@@ -18243,6 +18637,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -18888,6 +19287,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ArtefactArgStorageModel",
@@ -18990,6 +19403,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -19749,6 +20167,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ArtefactArgModel",
@@ -19851,6 +20283,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -20648,6 +21085,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "TranslationModel",
@@ -20750,6 +21201,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -21459,6 +21915,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ObjectInfoModel",
@@ -21561,6 +22031,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -22262,6 +22737,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "ObjectArtefactModel",
@@ -22364,6 +22853,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
@@ -23066,6 +23560,20 @@
                         "type": "bool",
                         "user": false,
                         "write": "setReadonly"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "objectName",
+                        "notify": "objectNameDerivedChanged",
+                        "read": "getObjectName",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setObjectName"
                     }
                 ],
                 "qualifiedClassName": "EffectObjectsModel",
@@ -23168,6 +23676,11 @@
                     {
                         "access": "public",
                         "name": "readonlyChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "objectNameDerivedChanged",
                         "returnType": "void"
                     },
                     {
