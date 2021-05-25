@@ -336,6 +336,9 @@ public:
         return dataRef.get();
     }
 
+    RefOfValue(const RefOfValue &) = delete;
+    RefOfValue & operator = (const RefOfValue &) = delete;
+
 private:
     bool contains = false;
     DataType dataValue;
