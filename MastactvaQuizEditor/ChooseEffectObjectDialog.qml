@@ -13,9 +13,29 @@ Dialog {
 
     title: qsTr("Choose effect object")
 
-    property var fieldShader: undefined
-    property var artefactTypeModel: undefined
-    property var artefactModel: undefined
+    // public:
+    property var fieldEffectObject: undefined
+    property var effectObjectModel: undefined
+
+    // private:
+    property int effectObjectModelIndex: -1
+
+    Connections {
+        target: chooseEffectObjectDialog
+
+        function onEffectObjectModelIndexChanged()
+        {
+            if(effectObjectModelIndex >= 0 && isValid())
+            {
+                effectObjectModel.currentIndex = effectObjectModelIndex
+                fieldEffectObject = effectObjectModel.currentItem
+            }
+            else
+            {
+                fieldEffectObject = null
+            }
+        }
+    }
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
@@ -23,45 +43,98 @@ Dialog {
     Column
     {
         Rectangle {
-            id: shadersListRect
+            id: effectObjectsListRect
             width: Constants.smallDialogWidth
             height: Constants.smallDialogHeight
 
             ListView {
-                id: shadersList
+                id: effectObjectsList
+
                 anchors.fill: parent
+                spacing: Constants.smallListViewSpacing
                 clip: true
-                spacing: Constants.smallListSmallSpacing
-                model: artefactModel
-                delegate: shaderItem
-                highlight: shaderItemHighlight
+                model: 0
+                delegate: effectObjectsItem
+                highlight: effectObjectsItemHighlight
                 highlightFollowsCurrentItem: false
+                z: 0.0
+
+                BusyIndicator {
+                    id: effectObjectsListBusyIndicator
+                    anchors.centerIn: parent
+                    visible: false
+                    running: false
+                    z: 1.0
+                }
             }
         }
     }
 
+    // public:
     function init()
     {
-        artefactModel.loadList()
+        effectObjectModelIndex = -1
+        if(isValid())
+        {
+            effectObjectsListBusyIndicator.visible = true
+            effectObjectsListBusyIndicator.running = true
+            effectObjectsList.model = 0
+            effectObjectModel.listReloaded.connect(onEffectObjectModelListLoaded)
+            effectObjectModel.loadList()
+        }
+    }
+
+    // private:
+    function isValid()
+    {
+        var isValidModel = effectObjectModel !== undefined && effectObjectModel !== null
+        return isValidModel;
+    }
+
+    function onEffectObjectModelListLoaded()
+    {
+        if(isValid())
+        {
+            effectObjectModel.listReloaded.disconnect(onEffectObjectModelListLoaded)
+            effectObjectsList.model = effectObjectModel
+            if(fieldEffectObject === null || fieldEffectObject === undefined)
+            {
+                effectObjectModelIndex = effectObjectModel.currentIndex
+            }
+            else
+            {
+                effectObjectModelIndex = effectObjectModel.indexOfItem(fieldEffectObject)
+            }
+        }
+        effectObjectsList.currentIndex = effectObjectModelIndex
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
 
     Component {
-        id: shaderItem
+        id: effectObjectsItem
 
         MouseArea {
-            width: Constants.smallDialogWidth
+            width: childrenRect.width
             height: childrenRect.height
+
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
+            property var objecInfo: effectObjectsObjectInfo.currentItem
             property bool showFullDescription: false
+
+            Connections {
+                target: effectObjectsObjectInfo
+
+                function onListReloaded()
+                {
+                    objecInfo = effectObjectsObjectInfo.currentItem
+                }
+            }
 
             onClicked:
             {
-                shadersList.currentIndex = index
-                fieldShader = artefactModel.itemAt(index)
-                mouse.accepted = false
+                effectObjectModelIndex = index
             }
 
             onDoubleClicked: {
@@ -69,81 +142,96 @@ Dialog {
             }
 
             Column {
-                width: Constants.smallDialogWidth
+                id: effectObjectItemRect
+                width: effectObjectsList.width
 
                 FontMetrics{
-                    id: shaderItemFontMetrics
-                    font: shaderItemType.font
+                    id: effectObjectItemFontMetrics
+                    font: effectObjectItemStepIndex.font
                 }
 
                 Row {
+                    padding: Constants.smallListHeaderPadding
                     Label {
-                        id: shaderItemTypeLabel
-                        text: qsTr("Type : ")
+                        id: effectObjectItemStepIndexLabel
+                        text: qsTr("Step : ")
                     }
-
                     Text {
-                        id: shaderItemType
-                        width: Constants.smallDialogWidth - shaderItemTypeLabel
-                        text: artefactTypeModel.findItemById(artefactTypeId) !== null ? artefactTypeModel.findItemById(artefactTypeId).artefactTypeType : ""
+                        id: effectObjectItemStepIndex
+                        width: effectObjectsList.width - effectObjectItemStepIndexLabel.width
+                        text: effectObjectsStepIndex
                         wrapMode: Text.Wrap
                     }
                 }
 
                 Row {
+                    padding: Constants.smallListHeaderPadding
                     Label {
-                        id: shaderItemFilenameLabel
-                        text: qsTr("Filename : ")
+                        id: effectObjectItemNameLabel
+                        text: qsTr("Name : ")
                     }
-
                     Text {
-                        id: shaderItemFilename
-                        width: Constants.smallDialogWidth - shaderItemFilenameLabel.width
-                        text: artefactFilename
+                        id: effectObjectItemName
+                        width: effectObjectsList.width - effectObjectItemNameLabel.width
+                        text: objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoName : ""
                         wrapMode: Text.Wrap
                     }
                 }
 
                 Row {
+                    padding: Constants.smallListHeaderPadding
                     Label {
-                        id: shaderItemHashLabel
-                        text: qsTr("Hash : ")
+                        id: effectObjectItemProgrammerNameLabel
+                        text: qsTr("Programmer name : ")
                     }
-
                     Text {
-                        id: shaderItemHash
-                        width: Constants.smallDialogWidth - shaderItemHashLabel.width
-                        text: artefactHash
+                        id: effectObjectItemProgrammerName
+                        width: effectObjectsList.width - effectObjectItemProgrammerNameLabel.width
+                        text: objecInfo !== undefined && objecInfo !== null ? objecInfo.effectObjectInfoProgrammerName : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: effectObjectItemCreatedLabel
+                        text: qsTr("Created : ")
+                    }
+                    Text {
+                        id: effectObjectItemCreated
+                        width: effectObjectsList.width - effectObjectItemCreatedLabel.width
+                        text: objecInfo !== undefined && objecInfo !== null ? mastactva.dateTimeToUserStr(objecInfo.effectObjectInfoCreated) : ""
                         wrapMode: Text.Wrap
                     }
                 }
 
                 Text {
-                    id: shaderItemDescriptionText
-                    width: Constants.smallDialogWidth
-                    text: showFullDescription ? mastactva.leftDoubleCR(artefactDescription) : mastactva.readMore(artefactDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
+                    id: effectObjectItemDescriptionText
+                    width: effectObjectsList.width
                     wrapMode: Text.WordWrap
+                    text: objecInfo !== undefined && objecInfo !== null ? showFullDescription ? mastactva.leftDoubleCR(objecInfo.effectObjectInfoDescription ) : mastactva.readMore(objecInfo.effectObjectInfoDescription, Constants.smallListReadMoreLength, qsTr(" ..."))  : ""
                 }
             }
         }
     }
 
     Component {
-        id: shaderItemHighlight
+        id: effectObjectsItemHighlight
 
         Rectangle {
             SystemPalette {
-                id: shaderItemHighlightPallete
+                id: effectObjectItemHighlightPallete
                 colorGroup: SystemPalette.Active
             }
 
-            border.color: shaderItemHighlightPallete.highlight
+            border.color: effectObjectItemHighlightPallete.highlight
             border.width: 2
             radius: 5
-            y: (shadersList.currentItem !== undefined && shadersList.currentItem !== null) ? shadersList.currentItem.y : 0
-            x: (shadersList.currentItem !== undefined && shadersList.currentItem !== null) ? shadersList.currentItem.x : 0
-            width: (shadersList.currentItem !== undefined && shadersList.currentItem !== null) ? shadersList.currentItem.width : 0
-            height: (shadersList.currentItem !== undefined && shadersList.currentItem !== null) ? shadersList.currentItem.height : 0
+            y: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.y : 0
+            x: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.x : 0
+            width: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.width : 0
+            height: (effectObjectsList.currentItem !== undefined && effectObjectsList.currentItem !== null) ? effectObjectsList.currentItem.height : 0
         }
     }
 }
