@@ -9,6 +9,7 @@
 #include <QStringList>
 #include <QList>
 #include <QVector>
+#include <QDebug>
 #include "../MastactvaBase/format.h"
 #include "test_utils.h"
 
@@ -360,5 +361,59 @@ TEST(Format, choose)
     ASSERT_TRUE(equal(fmt::toString(fmt::choose(false, 1, QString("23"))), QString{"23"}));
 }
 
+
+class IterableData
+{
+public:
+    IterableData() = default;
+    IterableData(std::initializer_list<int> values_)
+        : data{values_}
+    {
+    }
+
+    std::vector<int>::const_iterator begin() const
+    {
+        return data.begin();
+    }
+
+    std::vector<int>::const_iterator end() const
+    {
+        return data.end();
+    }
+
+    IterableData & operator = (const IterableData &) = delete;
+    IterableData(const IterableData &) = delete;
+    IterableData(IterableData &&) = default;
+    IterableData & operator = (IterableData &&) = default;
+
+private:
+    std::vector<int> data;
+};
+
+TEST(Format, detailsRefOrValue)
+{
+    std::initializer_list<int> i1 = {1,2,3,};
+    std::initializer_list<int> i2 = {3,2,1,};
+    std::vector<int> d01(i1);
+    std::vector<int> d02(i2);
+    IterableData d{i1};
+
+    fmt::details::RefOfValue<IterableData> r1(d);
+    fmt::details::RefOfValue<IterableData> r2(IterableData{i2});
+
+    int index = 0;
+    for(int value : r1.get())
+    {
+        ASSERT_EQ(value, d01[index]);
+        ++index;
+    }
+
+    index = 0;
+    for(int value : r2.get())
+    {
+        ASSERT_EQ(value, d02[index]);
+        ++index;
+    }
+}
 
 #endif // FORMAT_UNITTESTS_H

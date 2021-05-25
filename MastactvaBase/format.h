@@ -287,6 +287,33 @@ private:
     ArgsList<Args_ ...> m_args;
 };
 
+
+template<typename DataType_>
+class RefOfValue
+{
+public:
+    RefOfValue(const DataType_ &refValue_)
+        : dataRef(std::cref(refValue_))
+    {
+    }
+
+    RefOfValue(DataType_ &&value_)
+        : dataValue(std::move(value_))
+        , dataRef(std::cref(dataValue))
+    {
+    }
+
+    const DataType_ &get() const
+    {
+        return dataRef.get();
+    }
+
+private:
+    DataType_ dataValue;
+    std::reference_wrapper<const DataType_> dataRef;
+};
+
+
 template<typename DataType_>
 class List
 {
