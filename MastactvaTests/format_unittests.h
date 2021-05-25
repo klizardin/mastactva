@@ -366,6 +366,8 @@ class IterableData
 {
 public:
     IterableData() = default;
+    IterableData(IterableData &&) = default;
+    IterableData & operator = (IterableData &&) = default;
     IterableData(std::initializer_list<int> values_)
         : data{values_}
     {
@@ -386,10 +388,8 @@ public:
         return data.size();
     }
 
-    IterableData & operator = (const IterableData &) = delete;
     IterableData(const IterableData &) = delete;
-    IterableData(IterableData &&) = default;
-    IterableData & operator = (IterableData &&) = default;
+    IterableData & operator = (const IterableData &) = delete;
 
 private:
     std::vector<int> data;
