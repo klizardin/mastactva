@@ -381,6 +381,11 @@ public:
         return data.end();
     }
 
+    std::size_t size() const
+    {
+        return data.size();
+    }
+
     IterableData & operator = (const IterableData &) = delete;
     IterableData(const IterableData &) = delete;
     IterableData(IterableData &&) = default;
@@ -414,6 +419,22 @@ TEST(Format, detailsRefOrValue)
         ASSERT_EQ(value, d02[index]);
         ++index;
     }
+}
+
+TEST(Format, listRefOrValue)
+{
+    std::initializer_list<int> i1 = {1,2,3,};
+    IterableData ref{i1};
+    ASSERT_TRUE(equal(
+                    fmt::list(ref, " , "),
+                    sum("1", " , " "2", " , ", "3")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::list(IterableData{i1}, " , "),
+                    sum("1", " , " "2", " , ", "3")
+                    )
+                );
 }
 
 #endif // FORMAT_UNITTESTS_H
