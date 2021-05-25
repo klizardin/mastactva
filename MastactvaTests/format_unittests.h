@@ -427,26 +427,10 @@ TEST(Format, listRefOrValue)
     const QString sep = " , ";
     const QString res = sum("1", sep, "2", sep, "3");
     IterableData ref{i1};
-    ASSERT_TRUE(equal(
-                    fmt::list(ref, sep),
-                    res
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    fmt::list(IterableData{i1}, sep),
-                    res
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    fmt::list(fmt::format("%1", int{}), ref, sep),
-                    res
-                    )
-                );
-    ASSERT_TRUE(equal(
-                    fmt::list(fmt::format("%1", int{}), IterableData{i1}, sep),
-                    res
-                    )
-                );
+    ASSERT_TRUE(equal(fmt::list(ref, sep), res));
+    ASSERT_TRUE(equal(fmt::list(IterableData{i1}, sep), res));
+    ASSERT_TRUE(equal(fmt::list(fmt::format("%1", int{}), ref, sep), res));
+    ASSERT_TRUE(equal(fmt::list(fmt::format("%1", int{}), IterableData{i1}, sep), res));
 }
 
 #endif // FORMAT_UNITTESTS_H
