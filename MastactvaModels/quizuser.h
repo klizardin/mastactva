@@ -94,6 +94,7 @@ signals:
     void outputModelChanged();
     void sortFieldsChanged();
     void readonlyChanged();
+    void objectNameDerivedChanged();
     void error(const QString &errorCode_, const QString &description_);
 
 public:
