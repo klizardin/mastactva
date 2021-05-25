@@ -435,6 +435,16 @@ TEST(Format, listRefOrValue)
                     sum("1", " , " "2", " , ", "3")
                     )
                 );
+    ASSERT_TRUE(equal(
+                    fmt::list(fmt::format("%1", int{}), ref, " , "),
+                    sum("1", " , " "2", " , ", "3")
+                    )
+                );
+    ASSERT_TRUE(equal(
+                    fmt::list(fmt::format("%1", int{}), IterableData{i1}, " , "),
+                    sum("1", " , " "2", " , ", "3")
+                    )
+                );
 }
 
 #endif // FORMAT_UNITTESTS_H
