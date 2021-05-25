@@ -424,25 +424,27 @@ TEST(Format, detailsRefOrValue)
 TEST(Format, listRefOrValue)
 {
     std::initializer_list<int> i1 = {1,2,3,};
+    const QString sep = " , ";
+    const QString res = sum("1", sep, "2", sep, "3");
     IterableData ref{i1};
     ASSERT_TRUE(equal(
-                    fmt::list(ref, " , "),
-                    sum("1", " , " "2", " , ", "3")
+                    fmt::list(ref, sep),
+                    res
                     )
                 );
     ASSERT_TRUE(equal(
-                    fmt::list(IterableData{i1}, " , "),
-                    sum("1", " , " "2", " , ", "3")
+                    fmt::list(IterableData{i1}, sep),
+                    res
                     )
                 );
     ASSERT_TRUE(equal(
-                    fmt::list(fmt::format("%1", int{}), ref, " , "),
-                    sum("1", " , " "2", " , ", "3")
+                    fmt::list(fmt::format("%1", int{}), ref, sep),
+                    res
                     )
                 );
     ASSERT_TRUE(equal(
-                    fmt::list(fmt::format("%1", int{}), IterableData{i1}, " , "),
-                    sum("1", " , " "2", " , ", "3")
+                    fmt::list(fmt::format("%1", int{}), IterableData{i1}, sep),
+                    res
                     )
                 );
 }
