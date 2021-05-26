@@ -1427,11 +1427,13 @@ ApplicationWindow {
             if(isValid())
             {
                 newEffectObject = effectObjectsCurrentModel.createItem()
-                newEffectObject.effectObjectsStepIndex = fieldEffectObject.effectObjectsStepIndex
-                // TODO: call procedure to create copy of effectObjectsObjectArtefacts
-                // TODO: set effectObjectsObjectInfo id
+                newEffectObject.effectObjectsStepIndex = fieldEditEffectObjectStepValue
                 effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
                 effectObjectsCurrentModel.addItem(newEffectObject)
+            }
+            else
+            {
+                clear()
             }
         }
 
@@ -1453,6 +1455,7 @@ ApplicationWindow {
         {
             fieldEffectObject = undefined
             newEffectObject = undefined
+            fieldEditEffectObjectStepValue = -1
         }
 
         function effectObjectAdded()
@@ -1464,8 +1467,24 @@ ApplicationWindow {
                 if(index >= 0)
                 {
                     effectObjectsCurrentIndex = index
+                    var item = effectObjectsCurrentModel.currentItem
+                    effectObjectsCurrentModel.procedure("copy", {"dest": item.effectObjectsId, "src" : fieldEffectObject.effectObjectsId})
+                    effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
                 }
             }
+            else
+            {
+                clear()
+            }
+        }
+
+        function effectObjectCopied()
+        {
+            if(isValid())
+            {
+                effectObjectsCurrentModel.listReloaded.disconnect(effectObjectCopied)
+            }
+            clear()
         }
     }
 
