@@ -16,6 +16,7 @@ Dialog {
     // public:
     property var fieldEffectObject: undefined
     property var effectObjectModel: undefined
+    property int fieldEditEffectObjectStepValue: -1
 
     // private:
     property int effectObjectModelIndex: -1
@@ -42,10 +43,24 @@ Dialog {
 
     Column
     {
+        Row {
+            id: stepRow
+            Label {
+                text: qsTr("Effect object step : ")
+            }
+            TextField {
+                id: editEffectObjectStep
+                placeholderText: qsTr("Effect object step")
+                focus: true
+                KeyNavigation.priority: KeyNavigation.BeforeItem
+                KeyNavigation.tab: effectObjectsList
+            }
+        }
+
         Rectangle {
             id: effectObjectsListRect
             width: Constants.smallDialogWidth
-            height: Constants.smallDialogHeight
+            height: Constants.smallDialogHeight - stepRow.height
 
             ListView {
                 id: effectObjectsList
@@ -73,6 +88,7 @@ Dialog {
     // public:
     function init()
     {
+        editEffectObjectStep.text = fieldEditEffectObjectStepValue
         effectObjectModelIndex = -1
         if(isValid())
         {
@@ -82,6 +98,11 @@ Dialog {
             effectObjectModel.listReloaded.connect(onEffectObjectModelListLoaded)
             effectObjectModel.loadList()
         }
+    }
+
+    function update()
+    {
+        fieldEditEffectObjectStepValue = editEffectObjectStep.text
     }
 
     // private:

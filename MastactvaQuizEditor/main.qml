@@ -1427,7 +1427,7 @@ ApplicationWindow {
             if(isValid())
             {
                 newEffectObject = effectObjectsCurrentModel.createItem()
-                newEffectObject.effectObjectsStepIndex = fieldEffectObject.effectObjectsStepIndex
+                newEffectObject.effectObjectsStepIndex = fieldEditEffectObjectStepValue
                 // TODO: call procedure to create copy of effectObjectsObjectArtefacts
                 // TODO: set effectObjectsObjectInfo id
                 effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
@@ -1453,6 +1453,7 @@ ApplicationWindow {
         {
             fieldEffectObject = undefined
             newEffectObject = undefined
+            fieldEditEffectObjectStepValue = -1
         }
 
         function effectObjectAdded()
