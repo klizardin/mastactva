@@ -2935,6 +2935,33 @@ ApplicationWindow {
         id: removeEffectObject
         text: qsTr("Remove")
         onTriggered: {
+            if(isValidPos())
+            {
+                effectObjectsCurrentModel.itemDeleted.connect(effectObjectsItemDeleted)
+                effectObjectsCurrentModel.delItem(effectObjectsCurrentIndex)
+                effectObjectsCurrentIndex = -1
+            }
+        }
+
+        // private:
+        function isValidModel()
+        {
+            var validModel = effectObjectsCurrentModel !== unddefined && effectObjectsCurrentModel !== null
+            return validModel
+        }
+
+        function isValidPos()
+        {
+            var validIndex = effectObjectsCurrentIndex >= 0
+            return isValidModel() && validIndex
+        }
+
+        function effectObjectsItemDeleted()
+        {
+            if(isValidModel())
+            {
+                effectObjectsCurrentModel.itemDeleted.disconnect(effectObjectsItemDeleted)
+            }
         }
     }
 
