@@ -14,40 +14,38 @@
 
 bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
 {
-    Q_UNUSED(r_);
-    return true;
+    DBRequestPtr<const LocalDataAPINoCache::SaveDBRequest> r(r_);
+    return r.operator bool();
 }
 
 bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    if(!r_)
+    DBRequestPtr<LocalDataAPINoCache::SaveDBRequest> r(r_);
+    if(!r)
     {
         return false;
     }
-
 #if defined(TRACE_DB_CREATION)
-    qDebug() << "readonly " << r_->getReadonly();
+    qDebug() << "readonly " << r->getReadonly();
 #endif
     const QString createSqlRequest = db::getCreateTableSqlRequest(
-                r_->getTableName(),
-                r_->getCurrentRef(),
-                r_->getTableFieldsInfo(),
-                r_->getRefs(),
+                r->getTableName(),
+                r->getCurrentRef(),
+                r->getTableFieldsInfo(),
+                r->getRefs(),
                 DBRequestBase::apiExtraFields(r_->getExtraFields()).keys()
                 );
 #if defined(TRACE_DB_CREATION)
     qDebug() << "create sql" << createSqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r_);
+    QSqlDatabase base = getBase(r);
     db::SqlQueryRAII query(base);
     if(!query.exec(createSqlRequest))
     {
         const QSqlError err = query.lastError();
         qDebug() << "sql error "  << err.text();
     }
-
-    r_->setProcessed(true);
     return true;
 }
 

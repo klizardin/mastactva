@@ -206,6 +206,8 @@ private:
     QList<SaveDBRequest *> m_requests;
     LocalDataAPINoCacheImpl m_defaultAPIImpl;
     static LocalDataAPINoCache *g_localDataAPI;
+
+    friend class LocalDataAPINoCacheImpl;
 };
 
 
