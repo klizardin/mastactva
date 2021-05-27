@@ -357,22 +357,39 @@ private:
 };
 
 template<typename DBRequestType_,
-        typename std::enable_if<std::is_base_of<DBRequestBase, DBRequestType_>::value, void*>::type = nullptr
+        typename std::enable_if<
+             std::is_base_of<
+                 DBRequestBase,
+                 typename std::remove_cv<DBRequestType_>::type
+                 >::value,
+             void*>::type = nullptr
         >
 class DBRequestPtr
 {
+private:
+    using DBRequestType = typename std::remove_cv<DBRequestType_>::type;
+    using DBRequestBaseType =
+        typename std::conditional<
+            std::is_const<DBRequestType_>::value,
+            typename std::add_const<DBRequestBase>::type,
+            DBRequestBase
+            >::type;
+
 public:
-    DBRequestPtr(DBRequestBase *ptr_)
+    template<typename DBRequestBaseType_,
+            typename std::enable_if<
+                 (std::is_const<DBRequestType_>::value == std::is_const<DBRequestBaseType_>::value)
+                 && std::is_same<DBRequestBase,typename std::remove_cv<DBRequestBaseType_>::type>::value,
+                 void*>::type = nullptr
+            >
+    DBRequestPtr(DBRequestBaseType_ *ptr_)
     {
         m_ptr = dynamic_cast<DBRequestType_ *>(ptr_);
     }
 
     ~DBRequestPtr()
     {
-        if(operator bool())
-        {
-            static_cast<DBRequestBase *>(m_ptr)->setProcessed(true);
-        }
+        post(std::is_const<DBRequestType_>());
     }
 
     explicit operator bool () const
@@ -380,10 +397,37 @@ public:
         return nullptr != m_ptr;
     }
 
-    DBRequestType_ * operator -> ()
+    bool operator ! () const
+    {
+        return !operator bool();
+    }
+
+    DBRequestType_ * operator -> () const
     {
         Q_ASSERT(operator bool());
         return m_ptr;
+    }
+
+    operator DBRequestType_ * () const
+    {
+        Q_ASSERT(operator bool());
+        return m_ptr;
+    }
+
+    operator DBRequestBaseType * () const
+    {
+        Q_ASSERT(operator bool());
+        return static_cast<DBRequestBaseType *>(m_ptr);
+    }
+
+private:
+    void post(std::false_type) const
+    {
+        static_cast<DBRequestBase *>(m_ptr)->setProcessed(true);
+    }
+
+    void post(std::true_type) const
+    {
     }
 
 private:
