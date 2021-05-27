@@ -399,6 +399,7 @@ private:
             DBRequestBase &requestInfo_,
             const QString &jsonLayoutName_,
             const QString &jsonReferenceName_,
+            const QList<db::JsonSqlField> &jsonFieldInfo_,
             const QStringList &refs_,
             const QStringList &extraRefKeys_
             );
