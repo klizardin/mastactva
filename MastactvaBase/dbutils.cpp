@@ -95,6 +95,12 @@ QString fmt::toString(const db::SqlTableName &name_)
     return db::tableName(name_.m_tableName, name_.m_refName);
 }
 
+template<> inline
+QString fmt::toString(const db::JsonSqlField &jsonSqlField_)
+{
+    return jsonSqlField_.getJsonName();
+}
+
 
 namespace db
 {
@@ -849,17 +855,7 @@ QStringList getFieldListValues(
     return res;
 }
 
-QStringList getJsonNames(const JsonSqlFieldsList &fields_)
-{
-    return getFieldListValues(
-                fields_,
-                [](const db::JsonSqlField &fi_)->QString
-    {
-        return fi_.getJsonName();
-    });
-}
-
-QStringList getJsonNames(const QList<QVariant> &fields_)
+QStringList toStringList(const QList<QVariant> &fields_)
 {
     QStringList result;
     result.reserve(fields_.size());
@@ -938,11 +934,12 @@ void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QS
     }
 }
 
-JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(const JsonSqlField &)> func_)
+template<typename JsonSqlFieldType_> inline
+QList<JsonSqlFieldType_> filter(const QList<JsonSqlFieldType_> &fields_, std::function<bool(const JsonSqlFieldType_ &)> func_)
 {
-    JsonSqlFieldsList result;
+    QList<JsonSqlFieldType_> result;
     result.reserve(fields_.size());
-    for(const JsonSqlField &fi_ : fields_)
+    for(const JsonSqlFieldType_ &fi_ : fields_)
     {
         if(func_(fi_))
         {
@@ -952,24 +949,36 @@ JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(co
     return result;
 }
 
-JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant> &leftFields_)
+template<typename JsonSqlFieldType_> inline
+QList<JsonSqlFieldType_> filter(const QList<JsonSqlFieldType_> &fields_, const QList<QVariant> &leftFields_)
 {
     if(leftFields_.isEmpty())
     {
         return fields_;
     }
 
-    return db::filter(fields_, [&leftFields_](const db::JsonSqlField &fi_)->bool
+    const QStringList jsonFields = fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(leftFields_), "");
+    return db::filter(fields_, [&jsonFields](const JsonSqlFieldType_ &fi_)->bool
     {
         const auto fit = std::find_if(
-                    std::cbegin(leftFields_),
-                    std::cend(leftFields_),
-                    [&fi_](const QVariant &v_)->bool
+                    std::cbegin(jsonFields),
+                    std::cend(jsonFields),
+                    [&fi_](const QString &v_)->bool
         {
-            return v_.isValid() && fi_.getSqlName() == v_.toString();
+            return fi_.getSqlName() == v_;
         });
-        return std::cend(leftFields_) != fit;
+        return std::cend(jsonFields) != fit;
     });
+}
+
+JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(const JsonSqlField &)> func_)
+{
+    return filter<JsonSqlField>(fields_, func_);
+}
+
+JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant> &leftFields_)
+{
+    return filter<JsonSqlField>(fields_, leftFields_);
 }
 
 JsonSqlFieldAndValuesList filter(
@@ -977,36 +986,12 @@ JsonSqlFieldAndValuesList filter(
         std::function<bool(const JsonSqlFieldAndValue &)> func_
         )
 {
-    JsonSqlFieldAndValuesList result;
-    result.reserve(fields_.size());
-    for(const JsonSqlFieldAndValue &fi_ : fields_)
-    {
-        if(func_(fi_))
-        {
-            result.push_back(fi_);
-        }
-    }
-    return result;
+    return filter<JsonSqlFieldAndValue>(fields_, func_);
 }
 
 JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, const QList<QVariant> &leftFields_)
 {
-    if(leftFields_.isEmpty())
-    {
-        return fields_;
-    }
-
-    return db::filter(fields_, [&leftFields_](const db::JsonSqlFieldAndValue &fi_)->bool
-    {
-        const auto fit = std::find_if(
-                    std::cbegin(leftFields_),
-                    std::cend(leftFields_),
-                    [&fi_](const QVariant &v_)->bool
-        {
-            return v_.isValid() && fi_.getSqlName() == v_.toString();
-        });
-        return std::cend(leftFields_) != fit;
-    });
+    return filter<JsonSqlFieldAndValue>(fields_, leftFields_);
 }
 
 void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
@@ -1368,7 +1353,7 @@ QString getSelectSqlRequest(
             ? procedureFields_.value(g_procedureConditionName).toString()
             : QString()
             ;
-    const QList<QVariant> procedureFilterConditions = procedureFields_.contains(g_procedureFilterConditionsName)
+    const QList<QVariant> procedureFilterConditionNames = procedureFields_.contains(g_procedureFilterConditionsName)
             ? procedureFields_.value(g_procedureFilterConditionsName).toList()
             : QList<QVariant>()
             ;
@@ -1385,20 +1370,23 @@ QString getSelectSqlRequest(
 
     const auto fieldsFiltered =
             db::filterNames(
-                db::getJsonNames(fields_),
-                db::getJsonNames(procedureFilterFields)
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), fields_, ""),
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterFields), "")
                 );
+
+    const auto procedureFilterConditionNamesList =
+            fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterConditionNames), "");
 
     const auto refsFiltered =
             db::filterNames(
-                refs_,
-                db::getJsonNames(procedureFilterConditions)
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), refs_, ""),
+                procedureFilterConditionNamesList
                 );
 
     const auto extraRefsFiltered =
             db::filterNames(
-                extraRefs_,
-                db::getJsonNames(procedureFilterConditions)
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), extraRefs_, ""),
+                procedureFilterConditionNamesList
                 );
 
     const auto refCondition = fmt::list(

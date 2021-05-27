@@ -7,24 +7,31 @@
 #include "../MastactvaBase/defines.h"
 
 
+bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestBase *r_) const
+{
+    const DBRequestPtr<const LocalDBRequest> r(r_);
+    return r.operator bool();
+}
+
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    if(!r_)
+    const DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r)
     {
         return false;
     }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "readonly " << r_->getReadonly();
+    qDebug() << "readonly " << r->getReadonly();
 #endif
 
-    const QHash<QString, QVariant> procedureFields = DBRequestBase::procedureExtraFields(r_->getExtraFields());
+    const QHash<QString, QVariant> procedureFields = DBRequestBase::procedureExtraFields(r->getExtraFields());
     const QList<QVariant> procedureFilterFields = procedureFields.contains(g_procedureFilterNamesName)
             ? procedureFields.value(g_procedureFilterNamesName).toList()
             : QList<QVariant>()
             ;
-    const QStringList refs = r_->getRefs();
-    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
+    const QStringList refs = r->getRefs();
+    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r->getExtraFields());
     const QString procedureConditions = procedureFields.contains(g_procedureConditionName)
             ? procedureFields.value(g_procedureConditionName).toString()
             : QString()
@@ -48,17 +55,17 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
                     refs,
                     extraFields.keys(),
                     extraFields,
-                    r_->getCurrentRef(),
-                    r_->getIdField()
+                    r->getCurrentRef(),
+                    r->getIdField()
                     )
                 , procedureFilterConditions
                 );
 
     const QString sqlRequest = db::getSelectSqlRequest(
-                r_->getTableName(),
-                r_->getCurrentRef(),
-                r_->getTableFieldsInfo(),
-                r_->getRefs(),
+                r->getTableName(),
+                r->getCurrentRef(),
+                r->getTableFieldsInfo(),
+                r->getRefs(),
                 extraFields.keys(),
                 procedureFields
                 );
@@ -67,7 +74,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r_);
+    QSqlDatabase base = getBase(r);
     db::SqlQueryRAII query(base);
 
     bool sqlRes = true;
@@ -88,13 +95,6 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
         sqlRes = query.exec(sqlRequest);
     }
 
-    // TODO: use dynamic cast
-    DBRequestPtr<LocalDBRequest> r(r_);
-    if(!r.operator bool())
-    {
-        return false;
-    }
-
     QJsonArray jsonArray;
     if(!sqlRes && query.lastError().type() != QSqlError::NoError)
     {
@@ -107,7 +107,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     else if(query.first())
     {
         const db::JsonSqlFieldsList filteredFields = db::filter(
-                    r_->getTableFieldsInfo(),
+                    r->getTableFieldsInfo(),
                     procedureFilterFields
                     );
         do
@@ -165,29 +165,25 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
 {
-    if(!r_)
+    const DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r)
     {
         return false;
     }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "readonly " << r_->getReadonly();
+    qDebug() << "readonly " << r->getReadonly();
 #endif
 
-    DBRequestPtr<LocalDBRequest> r(r_);
-    if(!r.operator bool())
-    {
-        return false;
-    }
     r->setItemAppId(appId_);
 
-    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r_->getExtraFields());
-    const QStringList refs = r_->getRefs();
+    const QHash<QString, QVariant> extraFields = DBRequestBase::apiExtraFields(r->getExtraFields());
+    const QStringList refs = r->getRefs();
 
     const QString sqlRequest = db::getInsertSqlRequest(
-                r_->getTableName(),
-                r_->getCurrentRef(),
-                r_->getTableFieldsInfo(),
+                r->getTableName(),
+                r->getCurrentRef(),
+                r->getTableFieldsInfo(),
                 refs,
                 extraFields.keys()
                 );
@@ -196,14 +192,14 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                 refs,
                 extraFields.keys(),
                 extraFields,
-                r_->getCurrentRef(),
-                r_->getIdField()
+                r->getCurrentRef(),
+                r->getIdField()
                 );
 
     const QString sqlNextIdRequest = getNextIdSqlRequest(
-                r_->getTableName(),
-                r_->getCurrentRef(),
-                r_->getTableFieldsInfo()
+                r->getTableName(),
+                r->getCurrentRef(),
+                r->getTableFieldsInfo()
                 );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
@@ -213,16 +209,16 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     try
     {
-        QSqlDatabase base = getBase(r_);
+        QSqlDatabase base = getBase(r);
         db::SqlQueryRAII findQuery(base);
         QHash<QString, QVariant> values = values_;
         const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
-        db::setIdField(r_->getTableFieldsInfo(), values, nextId);
+        db::setIdField(r->getTableFieldsInfo(), values, nextId);
 
         db::SqlQueryRAII query(base);
         query.prepare(sqlRequest);
         db::bind(refsValues, query);
-        db::bind(r_->getTableFieldsInfo(), values, query);
+        db::bind(r->getTableFieldsInfo(), values, query);
 
         if(!query.exec() && query.lastError().type() != QSqlError::NoError)
         {
@@ -255,43 +251,39 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
 {
-    if(!r_)
+    const DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r)
     {
         return false;
     }
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "readonly " << r_->getReadonly();
+    qDebug() << "readonly " << r->getReadonly();
 #endif
 
-    DBRequestPtr<LocalDBRequest> r(r_);
-    if(!r.operator bool())
-    {
-        return false;
-    }
     r->setItemId(id_);
 
-    const auto fitId = db::findIdField(r_->getTableFieldsInfo());
-    if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
+    const auto fitId = db::findIdField(r->getTableFieldsInfo());
+    if(!db::idFieldExist(fitId, r->getTableFieldsInfo()))
     {
         Q_ASSERT(false);
         return false;
     }
 
     const QString sqlRequest = getUpdateSqlRequest(
-                r_->getTableName(),
-                r_->getCurrentRef(),
-                r_->getTableFieldsInfo()
+                r->getTableName(),
+                r->getCurrentRef(),
+                r->getTableFieldsInfo()
                 );
 
 #if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r_);
+    QSqlDatabase base = getBase(r);
     db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
-    db::bind(r_->getTableFieldsInfo(), values_, query);
+    db::bind(r->getTableFieldsInfo(), values_, query);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql bound" << query.boundValues();
@@ -320,31 +312,29 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
-    if(!r_)
-    { return false; }
-
-#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "readonly " << r_->getReadonly();
-#endif
-
-    DBRequestPtr<LocalDBRequest> r(r_);
-    if(!r.operator bool())
+    const DBRequestPtr<LocalDBRequest> r(r_);
+    if(!r)
     {
         return false;
     }
+
+#if defined(TRACE_DB_USE) || defined(TRACE_DB_REQUESTS)
+    qDebug() << "readonly " << r->getReadonly();
+#endif
+
     r->setItemId(id_);
 
-    const auto fitId = db::findIdField(r_->getTableFieldsInfo());
-    if(!db::idFieldExist(fitId, r_->getTableFieldsInfo()))
+    const auto fitId = db::findIdField(r->getTableFieldsInfo());
+    if(!db::idFieldExist(fitId, r->getTableFieldsInfo()))
     {
         Q_ASSERT(false);
         return false;
     }
 
     const QString sqlRequest = db::getDeleteSqlRequest(
-                r_->getTableName(),
-                r_->getCurrentRef(),
-                r_->getTableFieldsInfo()
+                r->getTableName(),
+                r->getCurrentRef(),
+                r->getTableFieldsInfo()
                 );
     Q_ASSERT(!sqlRequest.trimmed().isEmpty());
 
@@ -352,7 +342,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r_);
+    QSqlDatabase base = getBase(r);
     db::SqlQueryRAII query(base);
     query.prepare(sqlRequest);
     db::bind(*fitId, query, id_);

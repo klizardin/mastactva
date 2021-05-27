@@ -28,8 +28,8 @@ public:
     Q_PROPERTY(int effectObjectsStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(QVariant effectObjectsObjectArtefacts READ objectArtefacts WRITE setObjectArtefacts NOTIFY objectArtefactsChanged)
 
-    Q_INVOKABLE void setObjectInfo(int );
-    Q_INVOKABLE void setObjectArtefactsId(int objectArtefactId_);
+    //Q_INVOKABLE void setObjectInfo(int );
+    //Q_INVOKABLE void setObjectArtefactsId(int objectArtefactId_);
 
     class DefaultLayout : public LayoutBase<EffectObjects>
     {

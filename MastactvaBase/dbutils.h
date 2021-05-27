@@ -97,9 +97,9 @@ namespace db
     struct JsonSqlField
     {
         JsonSqlField(
-                const QString &jsonName_,
-                const layout::JsonTypesEn type_,
-                bool idField_
+                const QString &jsonName_ = QString(),
+                const layout::JsonTypesEn type_ = layout::JsonTypesEn::jt_undefined,
+                bool idField_ = false
                 );
 
         // TODO: return JsonName
@@ -143,8 +143,7 @@ namespace db
     using JsonSqlFieldsList = QList<JsonSqlField>;
     using JsonSqlFieldAndValuesList = QList<JsonSqlFieldAndValue>;
 
-    QStringList getJsonNames(const JsonSqlFieldsList &fields_);
-    QStringList getJsonNames(const QList<QVariant> &fields_);
+    QStringList toStringList(const QList<QVariant> &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
@@ -234,16 +233,30 @@ class LocalDBRequest;
 class DBRequestBase;
 
 
+///////////////////////////////////////////////////////////////////////////////
+///
+/// interfaces for getting/setting data from/to storage
+///
+
+// base interface. check request structure to process
 class ILocalDataAPI
 {
 public:
     virtual ~ILocalDataAPI() = default;
     virtual bool canProcess(const DBRequestBase *r_) const;
 
+    // helper method to get base class for the request
     static QSqlDatabase getBase(const DBRequestBase *r_);
 };
 
 
+/// interface to get list of data items
+/// result returns to the request itself
+///
+/// CHECK:
+///  * maybe result may delayed ?
+///  -- No data can be delayed as it is a local data
+///  * But we can get answer on next cycle to deal with asynch signals?
 class ILocalDataGetAPI : public virtual ILocalDataAPI
 {
 public:
@@ -251,6 +264,7 @@ public:
 };
 
 
+/// interface to add/set/delete data from the list of data at the storage
 class ILocalDataUpdateAPI : public virtual ILocalDataAPI
 {
 public:
@@ -264,11 +278,15 @@ public:
 };
 
 
+/// interface for get/add/set/delete of data item of the data list
 class ILocalDataGetUpdateAPI : public ILocalDataGetAPI, public ILocalDataUpdateAPI
 {
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief The DBRequestBase class
+/// structure to hold request datas
 class DBRequestBase
 {
 public:
@@ -278,9 +296,9 @@ public:
     const QString &getTableName() const;
     const QString &getProcedureName() const;
     const QList<db::JsonSqlField> &getTableFieldsInfo() const;
-    QStringList getRefs(bool transparent_ = false) const;
-    QString getCurrentRef(bool transparent_ = false) const;
-    QVariant getIdField(bool transparent_ = false) const;
+    QStringList getRefs(bool transparent_ = false) const;           /// TODO: transparent_ unused ?
+    QString getCurrentRef(bool transparent_ = false) const;         /// TODO: transparent_ unused ?
+    QVariant getIdField(bool transparent_ = false) const;           /// TODO: transparent_ unused ?
     bool getReadonly() const;
     const QHash<QString, QVariant> &getExtraFields() const;
     void insertExtraField(const QString &key_, const QVariant &value_);
@@ -339,22 +357,39 @@ private:
 };
 
 template<typename DBRequestType_,
-        typename std::enable_if<std::is_base_of<DBRequestBase, DBRequestType_>::value, void*>::type = nullptr
+        typename std::enable_if<
+             std::is_base_of<
+                 DBRequestBase,
+                 typename std::remove_cv<DBRequestType_>::type
+                 >::value,
+             void*>::type = nullptr
         >
 class DBRequestPtr
 {
+private:
+    using DBRequestType = typename std::remove_cv<DBRequestType_>::type;
+    using DBRequestBaseType =
+        typename std::conditional<
+            std::is_const<DBRequestType_>::value,
+            typename std::add_const<DBRequestBase>::type,
+            DBRequestBase
+            >::type;
+
 public:
-    DBRequestPtr(DBRequestBase *ptr_)
+    template<typename DBRequestBaseType_,
+            typename std::enable_if<
+                 (std::is_const<DBRequestType_>::value == std::is_const<DBRequestBaseType_>::value)
+                 && std::is_same<DBRequestBase,typename std::remove_cv<DBRequestBaseType_>::type>::value,
+                 void*>::type = nullptr
+            >
+    DBRequestPtr(DBRequestBaseType_ *ptr_)
     {
         m_ptr = dynamic_cast<DBRequestType_ *>(ptr_);
     }
 
     ~DBRequestPtr()
     {
-        if(operator bool())
-        {
-            static_cast<DBRequestBase *>(m_ptr)->setProcessed(true);
-        }
+        post(std::is_const<DBRequestType_>());
     }
 
     explicit operator bool () const
@@ -362,10 +397,37 @@ public:
         return nullptr != m_ptr;
     }
 
-    DBRequestType_ * operator -> ()
+    bool operator ! () const
+    {
+        return !operator bool();
+    }
+
+    DBRequestType_ * operator -> () const
     {
         Q_ASSERT(operator bool());
         return m_ptr;
+    }
+
+    operator DBRequestType_ * () const
+    {
+        Q_ASSERT(operator bool());
+        return m_ptr;
+    }
+
+    operator DBRequestBaseType * () const
+    {
+        Q_ASSERT(operator bool());
+        return static_cast<DBRequestBaseType *>(m_ptr);
+    }
+
+private:
+    void post(std::false_type) const
+    {
+        static_cast<DBRequestBase *>(m_ptr)->setProcessed(true);
+    }
+
+    void post(std::true_type) const
+    {
     }
 
 private:
