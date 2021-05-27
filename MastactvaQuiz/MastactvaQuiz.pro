@@ -83,6 +83,7 @@ unix: SOURCES += \
         localdata.cpp   \
         requestdata.cpp \
         localdataapinocache.cpp \
+        localdataapinocache_default.cpp \
         localdataapicache.cpp   \
         dbrequestinfo.cpp   \
         localdataapiviews.cpp   \
@@ -186,6 +187,7 @@ unix: HEADERS += \
     localdata.h \
     requestdata.h   \
     localdataapinocache.h   \
+    localdataapinocache_default.h   \
     localdataapicache.h \
     dbrequestinfo.h \
     localdataapiviews.h \

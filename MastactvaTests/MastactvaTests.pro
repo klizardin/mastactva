@@ -71,6 +71,7 @@ HEADERS += \
 
 unix: HEADERS += \
         dbutils.h   \
+        localdataapinocache_default.h   \
         dbutils_unittests.h \
         timeutils.h \
         format.h    \
@@ -82,5 +83,6 @@ SOURCES += \
 
 unix: SOURCES += \
         dbutils.cpp \
+        localdataapinocache_default.cpp \
         timeutils.cpp   \
         format.cpp  \

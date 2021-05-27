@@ -84,6 +84,7 @@ unix: HEADERS += \
         localdata.h \
         requestdata.h   \
         localdataapinocache.h   \
+        localdataapinocache_default.h   \
         localdataapicache.h \
         netappconsts.h \
         dbrequestinfo.h \
@@ -157,6 +158,7 @@ unix: SOURCES += \
         localdata.cpp   \
         requestdata.cpp \
         localdataapinocache.cpp \
+        localdataapinocache_default.cpp \
         localdataapicache.cpp   \
         userstep.cpp    \
         dbrequestinfo.cpp   \

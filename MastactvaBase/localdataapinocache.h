@@ -11,33 +11,14 @@
 #include "../MastactvaBase/netapi.h"
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/dbrequestinfo.h"
+#include "../MastactvaBase/localdataapinocache_default.h"
 
 
 // TODO : add pinup test for implamentation
 // TODO : split to 2 interfaces ILocalDataReadAPI ILocalDataWriteAPI
-class LocalDataAPINoCacheImpl : public ILocalDataGetAPI
-{
-public:
-    bool canProcess(const DBRequestBase *r_) const override;
-    bool getListImpl(DBRequestBase *r_) override;
-};
-
-
 class LocalDataAPINoCache : public QObject
 {
     Q_OBJECT
-
-private:
-    class SaveDBRequest : public DBRequestBase
-    {
-    public:
-        SaveDBRequest();
-        bool operator == (const RequestData *request_) const;
-        void setRequest(const RequestData *request_);
-
-    private:
-        const RequestData *m_request = nullptr;
-    };
 
 public:
     explicit LocalDataAPINoCache(QObject *parent_ = nullptr);
