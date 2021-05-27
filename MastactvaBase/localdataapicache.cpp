@@ -7,6 +7,12 @@
 #include "../MastactvaBase/defines.h"
 
 
+bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestBase *r_) const
+{
+    DBRequestPtr<const LocalDBRequest> r(r_);
+    return r.operator bool();
+}
+
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 {
     if(!r_)
