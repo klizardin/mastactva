@@ -1468,7 +1468,7 @@ ApplicationWindow {
                 {
                     effectObjectsCurrentIndex = index
                     var item = effectObjectsCurrentModel.currentItem
-                    effectObjectsCurrentModel.procedure("copy", {"dest": item.effectObjectsId, "src" : fieldEffectObject.effectObjectsId})
+                    effectObjectsCurrentModel.procedure("copy", {"destination": item.effectObjectsId, "source" : fieldEffectObject.effectObjectsId})
                     effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
                 }
             }
