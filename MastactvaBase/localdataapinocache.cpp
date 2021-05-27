@@ -12,64 +12,6 @@
 #include "../MastactvaBase/defines.h"
 
 
-bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
-{
-    const DBRequestPtr<const LocalDataAPINoCache::SaveDBRequest> r(r_);
-    return r.operator bool();
-}
-
-/// HOW_TO_TEST: test of the method by testing db::getCreateTableSqlRequest() function
-bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
-{
-    const DBRequestPtr<LocalDataAPINoCache::SaveDBRequest> r(r_);
-    if(!r)
-    {
-        return false;
-    }
-
-#if defined(TRACE_DB_CREATION)
-    qDebug() << "readonly " << r->getReadonly();
-#endif
-
-    const QString createSqlRequest = db::getCreateTableSqlRequest(
-                r->getTableName(),
-                r->getCurrentRef(),
-                r->getTableFieldsInfo(),
-                r->getRefs(),
-                DBRequestBase::apiExtraFields(r_->getExtraFields()).keys()
-                );
-
-#if defined(TRACE_DB_CREATION)
-    qDebug() << "create sql" << createSqlRequest;
-#endif
-
-    QSqlDatabase base = getBase(r);
-    db::SqlQueryRAII query(base);
-    if(!query.exec(createSqlRequest))
-    {
-        const QSqlError err = query.lastError();
-        qDebug() << "sql error "  << err.text();
-    }
-    return true;
-}
-
-
-LocalDataAPINoCache::SaveDBRequest::SaveDBRequest()
-    :DBRequestBase(g_noCachAPI)
-{
-}
-
-bool LocalDataAPINoCache::SaveDBRequest::operator == (const RequestData *request_) const
-{
-    return m_request && request_ && m_request == request_;
-}
-
-void LocalDataAPINoCache::SaveDBRequest::setRequest(const RequestData *request_)
-{
-    m_request = request_;
-}
-
-
 LocalDataAPINoCache::LocalDataAPINoCache(QObject *parent_ /* = nullptr*/)
     : QObject(parent_)
 {
@@ -207,33 +149,38 @@ bool LocalDataAPINoCache::isSaveToDBMode() const
 }
 
 bool LocalDataAPINoCache::hasDuplicate(
-        QSqlQuery &findQuery_,
+        db::ISqlQuery *findQuery_,
         QJsonValue &replayItem_,
         const db::JsonSqlFieldsList &fields_,
         const db::JsonSqlFieldAndValuesList refsValues_,
         const db::JsonSqlFieldsList::const_iterator &idField_
         )
 {
+    if(!findQuery_)
+    {
+        return false;
+    }
+
     if(db::idFieldExist(idField_, fields_))
     {
         db::bind(*idField_, findQuery_, replayItem_[idField_->getJsonName()]);
     }
     db::bind(refsValues_, findQuery_);
 
-    if(!findQuery_.exec() && findQuery_.lastError().type() != QSqlError::NoError)
+    if(!findQuery_->exec() && findQuery_->lastError().type() != QSqlError::NoError)
     {
-        const QSqlError err = findQuery_.lastError();
+        const QSqlError err = findQuery_->lastError();
         qDebug() << "sql error " << err.text();
         return false;
     }
     else
     {
-        return findQuery_.first();
+        return findQuery_->first();
     }
 }
 
 void LocalDataAPINoCache::insertItem(
-        QSqlQuery &insertQuery_,
+        db::ISqlQuery *insertQuery_,
         QJsonValue &replayItem_,
         const db::JsonSqlFieldsList &fields_,
         const db::JsonSqlFieldAndValuesList &refsValues_
@@ -242,9 +189,9 @@ void LocalDataAPINoCache::insertItem(
     db::bind(refsValues_, insertQuery_);
     db::bind(fields_, replayItem_, insertQuery_);
 
-    if(!insertQuery_.exec())
+    if(!insertQuery_->exec())
     {
-        const QSqlError err = insertQuery_.lastError();
+        const QSqlError err = insertQuery_->lastError();
         qDebug() << "sql error " << err.text();
     }
 }
@@ -300,9 +247,9 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     qDebug() << "find sql" << findSqlRequest;
 #endif
 
-    QSqlDatabase base = QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
-    db::SqlQueryRAII insertQuery(base);
-    db::SqlQueryRAII findQuery(base);
+    auto queriesPair = m_defaultAPIImpl.getRequestsPair(r_);
+    auto insertQuery(std::move(queriesPair.first));
+    auto findQuery(std::move(queriesPair.second));
     for(int i = 0; ; i++)
     {
         QJsonValue replayItem = reply_[i];
@@ -315,14 +262,14 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         if(0 == i)
         {
             // create if any data exists
-            insertQuery.prepare(insertSqlRequest);
-            findQuery.prepare(findSqlRequest);
+            insertQuery->prepare(insertSqlRequest);
+            findQuery->prepare(findSqlRequest);
         }
 
         if(anyIdFields)
         {
             if(hasDuplicate(
-                        findQuery,
+                        findQuery.get(),
                         replayItem,
                         r_->getTableFieldsInfo(),
                         refsValues,
@@ -339,7 +286,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
         }
 
         insertItem(
-                    insertQuery,
+                    insertQuery.get(),
                     replayItem,
                     r_->getTableFieldsInfo(),
                     refsValues

@@ -74,37 +74,36 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r);
-    db::SqlQueryRAII query(base);
+    auto query = getRequest(r);
 
     bool sqlRes = true;
     if(hasCondition)
     {
-        query.prepare(sqlRequest);
-        db::bind(refsValues, query);
-        db::bind(procedureArgs, query);
+        query->prepare(sqlRequest);
+        db::bind(refsValues, query.get());
+        db::bind(procedureArgs, query.get());
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
         qDebug() << "bound" << query.boundValues();
 #endif
 
-        sqlRes = query.exec();
+        sqlRes = query->exec();
     }
     else
     {
-        sqlRes = query.exec(sqlRequest);
+        sqlRes = query->exec(sqlRequest);
     }
 
     QJsonArray jsonArray;
-    if(!sqlRes && query.lastError().type() != QSqlError::NoError)
+    if(!sqlRes && query->lastError().type() != QSqlError::NoError)
     {
-        const QSqlError err = query.lastError();
+        const QSqlError err = query->lastError();
         qDebug() << "select sql" << sqlRequest;
         qDebug() << "sql error" << err.text();
         jsonArray = buildErrorDocument(err);
         r->setError(true);
     }
-    else if(query.first())
+    else if(query->first())
     {
         const db::JsonSqlFieldsList filteredFields = db::filter(
                     r->getTableFieldsInfo(),
@@ -112,9 +111,9 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
                     );
         do
         {
-            QJsonObject jsonObj = db::getJsonObject(filteredFields, query);
+            QJsonObject jsonObj = db::getJsonObject(filteredFields, query.get());
             jsonArray.push_back(jsonObj);
-        } while(query.next());
+        } while(query->next());
     }
 
     r->addJsonResult(QJsonDocument(jsonArray));
@@ -127,26 +126,27 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 }
 
 int LocalDataAPIDefaultCacheImpl::getNextIdValue(
-        QSqlQuery &findQuery,
+        db::ISqlQuery *findQuery,
         const QString &sqlNextIdRequest
         )
 {
     int nextId = -1;
-    if(sqlNextIdRequest.isEmpty())
+    if(sqlNextIdRequest.isEmpty()
+            || !findQuery)
     {
         return nextId;
     }
 
-    if(!findQuery.exec(sqlNextIdRequest)
-            && findQuery.lastError().type() != QSqlError::NoError
+    if(!findQuery->exec(sqlNextIdRequest)
+            && findQuery->lastError().type() != QSqlError::NoError
             )
     {
-        const QSqlError err = findQuery.lastError();
+        const QSqlError err = findQuery->lastError();
         throw err;
     }
-    else if(findQuery.first())
+    else if(findQuery->first())
     {
-        nextId = findQuery.value(0).toInt() + 1;
+        nextId = findQuery->value(0).toInt() + 1;
     }
 
     return nextId;
@@ -209,20 +209,20 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
 
     try
     {
-        QSqlDatabase base = getBase(r);
-        db::SqlQueryRAII findQuery(base);
+        auto requestPair = getRequestsPair(r);
+        auto findQuery{std::move(requestPair.first)};
         QHash<QString, QVariant> values = values_;
-        const int nextId = getNextIdValue(findQuery, sqlNextIdRequest);
+        const int nextId = getNextIdValue(findQuery.get(), sqlNextIdRequest);
         db::setIdField(r->getTableFieldsInfo(), values, nextId);
 
-        db::SqlQueryRAII query(base);
-        query.prepare(sqlRequest);
-        db::bind(refsValues, query);
-        db::bind(r->getTableFieldsInfo(), values, query);
+        auto query{std::move(requestPair.second)};
+        query->prepare(sqlRequest);
+        db::bind(refsValues, query.get());
+        db::bind(r->getTableFieldsInfo(), values, query.get());
 
-        if(!query.exec() && query.lastError().type() != QSqlError::NoError)
+        if(!query->exec() && query->lastError().type() != QSqlError::NoError)
         {
-            const QSqlError err = query.lastError();
+            const QSqlError err = query->lastError();
             throw err;
         }
         else
@@ -280,18 +280,17 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "update sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r);
-    db::SqlQueryRAII query(base);
-    query.prepare(sqlRequest);
-    db::bind(r->getTableFieldsInfo(), values_, query);
+    auto query = getRequest(r);
+    query->prepare(sqlRequest);
+    db::bind(r->getTableFieldsInfo(), values_, query.get());
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "update sql bound" << query.boundValues();
 #endif
 
-    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
+    if(!query->exec() && query->lastError().type() != QSqlError::NoError)
     {
-        const QSqlError err = query.lastError();
+        const QSqlError err = query->lastError();
         qDebug() << "sql request " << sqlRequest;
         qDebug() << "sql error " << err.text();
 
@@ -342,18 +341,17 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql" << sqlRequest;
 #endif
 
-    QSqlDatabase base = getBase(r);
-    db::SqlQueryRAII query(base);
-    query.prepare(sqlRequest);
-    db::bind(*fitId, query, id_);
+    auto query = getRequest(r);
+    query->prepare(sqlRequest);
+    db::bind(*fitId, query.get(), id_);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
     qDebug() << "delete sql bound" << query.boundValues();
 #endif
 
-    if(!query.exec() && query.lastError().type() != QSqlError::NoError)
+    if(!query->exec() && query->lastError().type() != QSqlError::NoError)
     {
-        const QSqlError err = query.lastError();
+        const QSqlError err = query->lastError();
         qDebug() << "sql request " << sqlRequest;
         qDebug() << "sql error " << err.text();
 

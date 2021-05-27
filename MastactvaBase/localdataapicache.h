@@ -20,22 +20,19 @@
 class LocalDataAPIDefaultCacheImpl : public ILocalDataGetUpdateAPI
 {
 public:
-    LocalDataAPIDefaultCacheImpl() = default;
-    virtual ~LocalDataAPIDefaultCacheImpl() = default;
-
-    virtual bool canProcess(const DBRequestBase *r_) const override;
-    virtual bool getListImpl(DBRequestBase *r_) override;
-    virtual bool addItemImpl(const QVariant &appId_,
+    bool canProcess(const DBRequestBase *r_) const override;
+    bool getListImpl(DBRequestBase *r_) override;
+    bool addItemImpl(const QVariant &appId_,
                              const QHash<QString, QVariant> &values_,
                              DBRequestBase *r_) override;
-    virtual bool setItemImpl(const QVariant &id_,
+    bool setItemImpl(const QVariant &id_,
                              const QHash<QString, QVariant> &values_,
                              DBRequestBase *r_) override;
-    virtual bool delItemImpl(const QVariant &id_,
+    bool delItemImpl(const QVariant &id_,
                              DBRequestBase *r_) override;
 private:
     static int getNextIdValue(
-            QSqlQuery &findQuery,
+            db::ISqlQuery *findQuery,
             const QString &sqlNextIdRequest
             );
     static QJsonArray buildErrorDocument(const QSqlError &err);

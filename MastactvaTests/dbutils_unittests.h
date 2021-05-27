@@ -2,12 +2,15 @@
 #define DBUTILS_UNITTESTS
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <gmock/gmock-matchers.h>
+#include <memory>
 #include <QString>
 #include <QVariant>
 #include <QVariantList>
 #include <QHash>
 #include "../MastactvaBase/dbutils.h"
+#include "../MastactvaBase/localdataapinocache_default.h"
 #include "../MastactvaBase/names.h"
 #include "test_utils.h"
 
@@ -682,6 +685,107 @@ TEST(DBUtils, JsonSqlFieldsList_getSelectSqlRequest_filterFields_orderByAndLimit
     //qDebug() << request;
     //qDebug() << res;
     ASSERT_TRUE(equal(request, res));
+}
+
+QHash<QString, QVariant> keysToKeyEmptyValue(const QStringList &keys_)
+{
+    QHash<QString, QVariant> result;
+    for(const QString &key_ : keys_)
+    {
+        result.insert(key_, QVariant::fromValue(QString()));
+    }
+    return result;
+}
+
+void initForTest(
+        DBRequestBase &requestInfo_,
+        const QString &jsonLayoutName_,
+        const QString &jsonReferenceName_,
+        const QList<db::JsonSqlField> &jsonFieldInfo_,
+        const QStringList &refs_,
+        const QStringList &extraRefKeys_
+        )
+{
+    requestInfo_.setTableName(jsonLayoutName_);
+    requestInfo_.setCurrentRef(jsonReferenceName_);
+    requestInfo_.setTableFieldsInfo(jsonFieldInfo_);
+    requestInfo_.setRefs(refs_);
+    requestInfo_.setExtraFields(keysToKeyEmptyValue(extraRefKeys_));
+}
+
+class SqlQueryMock : public db::ISqlQuery
+{
+public:
+    MOCK_METHOD(bool, prepare, (const QString &), (override));
+    MOCK_METHOD(bool, exec, (const QString &), (override));
+    MOCK_METHOD(bool, exec, (), (override));
+    MOCK_METHOD(bool, first, (), (override));
+    MOCK_METHOD(bool, next, (), (override));
+    MOCK_METHOD(QSqlError, lastError, (), (const, override));
+    MOCK_METHOD(void, bindValue, (const QString &, const QVariant &), (override));
+    MOCK_METHOD(QVariant, value, (const QString &), (const, override));
+};
+
+template<typename SqlQueryMockType_>
+class MockSingeltonSqlFactory : public ISqlQueryFactory
+{
+public:
+    SqlQueryMockType_ mock;
+
+    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> getRequest(const DBRequestBase *r_) override
+    {
+        Q_UNUSED(r_);
+        return std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(&mock, [](db::ISqlQuery*){});
+    }
+
+    std::pair<std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
+        std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>> getRequestsPair(const DBRequestBase *r_) override
+    {
+        Q_UNUSED(r_);
+        return std::make_pair(
+            std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(&mock, [](db::ISqlQuery*){}),
+            std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(&mock, [](db::ISqlQuery*){})
+            );
+    }
+};
+
+TEST(LocalDataApiNoCache, getList)
+{
+    db::JsonSqlFieldsList fields = {
+        { "id", layout::JsonTypesEn::jt_int, true},
+        { "user", layout::JsonTypesEn::jt_int, false},
+        { "name", layout::JsonTypesEn::jt_string, false},
+    };
+    const QString jsonLayoutName{"user-list"};
+    const QString jsonRefName{"user-id"};
+    const QStringList refs({"user", "name"});
+    const QStringList extraRefs({"age-years",});
+
+    const QString res0 = sum(
+                "CREATE TABLE IF NOT EXISTS ",
+                "user_list", g_splitTableRef, "user_id",
+                " ( ", "id", g_spaceName, g_sqlInt, g_insertFieldSpliter,
+                      "\"user\"", g_spaceName, g_sqlInt, g_insertFieldSpliter,
+                      "name", g_spaceName, g_sqlText, g_insertFieldSpliter,
+                      g_refPrefix, "user", g_spaceName, g_sqlText, g_insertFieldSpliter,
+                      g_refPrefix, "name", g_spaceName, g_sqlText, g_insertFieldSpliter,
+                      g_refPrefix, "age_years", g_spaceName, g_sqlText, " );"
+                );
+    SaveDBRequest dbrequest;
+    initForTest(dbrequest,
+                jsonLayoutName,
+                jsonRefName,
+                fields,
+                refs,
+                extraRefs
+                );
+
+    auto mockFactory = std::make_shared<MockSingeltonSqlFactory<SqlQueryMock>>();
+    LocalDataAPINoCacheImpl impl;
+    impl.setQueryFactory(mockFactory);
+
+    EXPECT_CALL(mockFactory->mock, exec(res0));
+    impl.getListImpl(&dbrequest);
 }
 
 #endif
