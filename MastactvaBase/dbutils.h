@@ -391,6 +391,14 @@ private:
             bool readonly_,
             const QHash<QString, QVariant> &extraFields_
             );
+
+    friend void initForTest(
+            DBRequestBase &requestInfo_,
+            const QString &jsonLayoutName_,
+            const QString &jsonReferenceName_,
+            const QStringList &refs_,
+            const QStringList &extraRefKeys_
+            );
 };
 
 template<typename DBRequestType_,
