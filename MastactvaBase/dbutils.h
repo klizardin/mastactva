@@ -140,6 +140,7 @@ namespace db
     class ISqlQuery
     {
     public:
+        virtual ~ISqlQuery() = default;
         virtual bool prepare(const QString &request_) = 0;
         virtual bool exec(const QString &request_) = 0;
         virtual bool exec() = 0;
