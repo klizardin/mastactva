@@ -9,13 +9,13 @@
 
 bool LocalDataAPIDefaultCacheImpl::canProcess(const DBRequestBase *r_) const
 {
-    DBRequestPtr<const LocalDBRequest> r(r_);
+    const DBRequestPtr<const LocalDBRequest> r(r_);
     return r.operator bool();
 }
 
 bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    DBRequestPtr<LocalDBRequest> r(r_);
+    const DBRequestPtr<LocalDBRequest> r(r_);
     if(!r)
     {
         return false;
@@ -165,7 +165,7 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
 {
-    DBRequestPtr<LocalDBRequest> r(r_);
+    const DBRequestPtr<LocalDBRequest> r(r_);
     if(!r)
     {
         return false;
@@ -251,7 +251,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
                                                const QHash<QString, QVariant> &values_,
                                                DBRequestBase *r_)
 {
-    DBRequestPtr<LocalDBRequest> r(r_);
+    const DBRequestPtr<LocalDBRequest> r(r_);
     if(!r)
     {
         return false;
@@ -312,7 +312,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
 
 bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBase *r_)
 {
-    DBRequestPtr<LocalDBRequest> r(r_);
+    const DBRequestPtr<LocalDBRequest> r(r_);
     if(!r)
     {
         return false;
