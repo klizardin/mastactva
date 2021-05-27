@@ -14,13 +14,13 @@
 
 bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
 {
-    DBRequestPtr<const LocalDataAPINoCache::SaveDBRequest> r(r_);
+    const DBRequestPtr<const LocalDataAPINoCache::SaveDBRequest> r(r_);
     return r.operator bool();
 }
 
 bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 {
-    DBRequestPtr<LocalDataAPINoCache::SaveDBRequest> r(r_);
+    const DBRequestPtr<LocalDataAPINoCache::SaveDBRequest> r(r_);
     if(!r)
     {
         return false;
