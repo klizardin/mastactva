@@ -18,6 +18,7 @@ bool LocalDataAPINoCacheImpl::canProcess(const DBRequestBase *r_) const
     return r.operator bool();
 }
 
+/// HOW_TO_TEST: test of the method by testing db::getCreateTableSqlRequest() function
 bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
 {
     const DBRequestPtr<LocalDataAPINoCache::SaveDBRequest> r(r_);
