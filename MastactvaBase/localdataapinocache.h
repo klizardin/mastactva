@@ -18,10 +18,8 @@
 class LocalDataAPINoCacheImpl : public ILocalDataGetAPI
 {
 public:
-    LocalDataAPINoCacheImpl() = default;
-    virtual ~LocalDataAPINoCacheImpl() = default;
-    virtual bool canProcess(const DBRequestBase *r_) const override;
-    virtual bool getListImpl(DBRequestBase *r_) override;
+    bool canProcess(const DBRequestBase *r_) const override;
+    bool getListImpl(DBRequestBase *r_) override;
 };
 
 

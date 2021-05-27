@@ -304,7 +304,7 @@ void LocalDataAPINoCache::fillTable(const SaveDBRequest * r_, const QJsonDocumen
     qDebug() << "find sql" << findSqlRequest;
 #endif
 
-    auto queriesPair = ILocalDataAPI::getRequestsPair(r_);
+    auto queriesPair = m_defaultAPIImpl.getRequestsPair(r_);
     std::unique_ptr<db::ISqlQuery> insertQuery(std::move(queriesPair.first));
     std::unique_ptr<db::ISqlQuery> findQuery(std::move(queriesPair.second));
     for(int i = 0; ; i++)

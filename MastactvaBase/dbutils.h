@@ -249,6 +249,21 @@ class LocalDBRequest;
 class DBRequestBase;
 
 
+class ISqlQueryFactory
+{
+public:
+    virtual ~ISqlQueryFactory() = default;
+    virtual std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_) = 0;
+    virtual std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_) = 0;
+};
+
+class DBSqlQueryFactory : public ISqlQueryFactory
+{
+public:
+    std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_) override;
+    std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_) override;
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 ///
 /// interfaces for getting/setting data from/to storage
@@ -257,13 +272,18 @@ class DBRequestBase;
 // base interface. check request structure to process
 class ILocalDataAPI
 {
+private:
+    std::shared_ptr<ISqlQueryFactory> m_queryFactory;
+
 public:
+    ILocalDataAPI();
     virtual ~ILocalDataAPI() = default;
     virtual bool canProcess(const DBRequestBase *r_) const;
 
+    void setQueryFactory(std::shared_ptr<ISqlQueryFactory> queryFactory_);
     // helper method to get base class for the request
-    static std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_);
-    static std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_);
+    std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_);
+    std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_);
 };
 
 

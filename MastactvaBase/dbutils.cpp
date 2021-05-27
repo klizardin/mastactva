@@ -1524,13 +1524,7 @@ QVariant SqlQueryRAII::value(const QString& name_) const
 } // namespace db
 
 
-bool ILocalDataAPI::canProcess(const DBRequestBase *r_) const
-{
-    Q_UNUSED(r_);
-    return true;
-}
-
-std::unique_ptr<db::ISqlQuery> ILocalDataAPI::getRequest(const DBRequestBase *r_)
+std::unique_ptr<db::ISqlQuery> DBSqlQueryFactory::getRequest(const DBRequestBase *r_)
 {
     return std::make_unique<db::SqlQueryRAII>(
                 QSqlDatabase::database(
@@ -1544,7 +1538,7 @@ std::unique_ptr<db::ISqlQuery> ILocalDataAPI::getRequest(const DBRequestBase *r_
 std::pair<
     std::unique_ptr<db::ISqlQuery>,
     std::unique_ptr<db::ISqlQuery>>
-    ILocalDataAPI::getRequestsPair(const DBRequestBase *r_)
+    DBSqlQueryFactory::getRequestsPair(const DBRequestBase *r_)
 {
     QSqlDatabase db = QSqlDatabase::database(
         r_->getReadonly()
@@ -1552,6 +1546,49 @@ std::pair<
         : g_dbNameRW
         );
     return std::make_pair(std::make_unique<db::SqlQueryRAII>(db), std::make_unique<db::SqlQueryRAII>(db));
+}
+
+
+ILocalDataAPI::ILocalDataAPI()
+{
+    setQueryFactory(std::make_unique<DBSqlQueryFactory>());
+}
+
+bool ILocalDataAPI::canProcess(const DBRequestBase *r_) const
+{
+    Q_UNUSED(r_);
+    return true;
+}
+
+void ILocalDataAPI::setQueryFactory(std::shared_ptr<ISqlQueryFactory> queryFactory_)
+{
+    m_queryFactory = std::move(queryFactory_);
+}
+
+std::unique_ptr<db::ISqlQuery> ILocalDataAPI::getRequest(const DBRequestBase *r_)
+{
+    Q_ASSERT(m_queryFactory);
+    if(m_queryFactory)
+    {
+        return m_queryFactory->getRequest(r_);
+    }
+    else
+    {
+        return {nullptr};
+    }
+}
+
+std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> ILocalDataAPI::getRequestsPair(const DBRequestBase *r_)
+{
+    Q_ASSERT(m_queryFactory);
+    if(m_queryFactory)
+    {
+        return m_queryFactory->getRequestsPair(r_);
+    }
+    else
+    {
+        return {std::unique_ptr<db::ISqlQuery>{nullptr}, std::unique_ptr<db::ISqlQuery>{nullptr}};
+    }
 }
 
 
