@@ -234,16 +234,30 @@ class LocalDBRequest;
 class DBRequestBase;
 
 
+///////////////////////////////////////////////////////////////////////////////
+///
+/// interfaces for getting/setting data from/to storage
+///
+
+// base interface. check request structure to process
 class ILocalDataAPI
 {
 public:
     virtual ~ILocalDataAPI() = default;
     virtual bool canProcess(const DBRequestBase *r_) const;
 
+    // helper method to get base class for the request
     static QSqlDatabase getBase(const DBRequestBase *r_);
 };
 
 
+/// interface to get list of data items
+/// result returns to the request itself
+///
+/// CHECK:
+///  * maybe result may delayed ?
+///  -- No data can be delayed as it is a local data
+///  * But we can get answer on next cycle to deal with asynch signals?
 class ILocalDataGetAPI : public virtual ILocalDataAPI
 {
 public:
@@ -251,6 +265,7 @@ public:
 };
 
 
+/// interface to add/set/delete data from the list of data at the storage
 class ILocalDataUpdateAPI : public virtual ILocalDataAPI
 {
 public:
@@ -264,11 +279,15 @@ public:
 };
 
 
+/// interface for get/add/set/delete of data item of the data list
 class ILocalDataGetUpdateAPI : public ILocalDataGetAPI, public ILocalDataUpdateAPI
 {
 };
 
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief The DBRequestBase class
+/// structure to hold request datas
 class DBRequestBase
 {
 public:
@@ -278,9 +297,9 @@ public:
     const QString &getTableName() const;
     const QString &getProcedureName() const;
     const QList<db::JsonSqlField> &getTableFieldsInfo() const;
-    QStringList getRefs(bool transparent_ = false) const;
-    QString getCurrentRef(bool transparent_ = false) const;
-    QVariant getIdField(bool transparent_ = false) const;
+    QStringList getRefs(bool transparent_ = false) const;           /// TODO: transparent_ unused ?
+    QString getCurrentRef(bool transparent_ = false) const;         /// TODO: transparent_ unused ?
+    QVariant getIdField(bool transparent_ = false) const;           /// TODO: transparent_ unused ?
     bool getReadonly() const;
     const QHash<QString, QVariant> &getExtraFields() const;
     void insertExtraField(const QString &key_, const QVariant &value_);
