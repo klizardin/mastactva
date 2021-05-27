@@ -602,8 +602,13 @@ bool JsonSqlField::isIdField() const
     return idField;
 }
 
-void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
+void bind(const JsonSqlField &field_, ISqlQuery *query_, const QJsonValue &jv_)
 {
+    if(nullptr == query_)
+    {
+        return;
+    }
+
     if(jv_.isBool())
     {
         const int v = jv_.toBool() ? 1 : 0;
@@ -612,21 +617,21 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << int(v);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_bool == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << double(v);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(double(v)));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(double(v)));
         }
         else if(layout::JsonTypesEn::jt_datetime == field_.getType())
         {
@@ -634,14 +639,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << QString::number(v?1:0);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(QString::number(v?1:0)));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(QString::number(v?1:0)));
         }
     }
     else if(jv_.isDouble())
@@ -652,14 +657,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << int(v);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(int(v)));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(int(v)));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_datetime == field_.getType())
         {
@@ -667,14 +672,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << QString::number(v);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(QString::number(v)));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(QString::number(v)));
         }
     }
     else if(jv_.isString())
@@ -685,7 +690,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
@@ -693,7 +698,7 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else if(layout::JsonTypesEn::jt_datetime == field_.getType())
         {
@@ -701,14 +706,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << jv_.toString();
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(jv_.toString()));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(jv_.toString()));
         }
     }
     else if(jv_.isNull())
@@ -718,14 +723,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << (int)0;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue((int)0));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue((int)0));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << double(0);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(double(0)));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(double(0)));
         }
         else if(layout::JsonTypesEn::jt_datetime == field_.getType())
         {
@@ -733,14 +738,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << QString();
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(QString()));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(QString()));
         }
     }
     else
@@ -750,14 +755,14 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << (int)0;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue((int)0));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue((int)0));
         }
         else if(layout::JsonTypesEn::jt_double == field_.getType())
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << double(0);
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(double(0)));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(double(0)));
         }
         else if(layout::JsonTypesEn::jt_datetime == field_.getType())
         {
@@ -765,24 +770,24 @@ void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_)
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << v;
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(v));
         }
         else
         {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << QString();
 #endif
-            query_.bindValue(field_.getBindSqlName(), QVariant::fromValue(QString()));
+            query_->bindValue(field_.getBindSqlName(), QVariant::fromValue(QString()));
         }
     }
 }
 
-void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_)
+void bind(const JsonSqlField &field_, ISqlQuery *query_, const QVariant &val_)
 {
 #if defined(TRACE_DB_DATA_BINDINGS)
             qDebug() << "bind" << field_.getBindName() << val_;
 #endif
-    query_.bindValue(field_.getBindSqlName(), val_);
+    query_->bindValue(field_.getBindSqlName(), val_);
 }
 
 QJsonValue JsonSqlField::jsonValue(const QVariant &val_) const
@@ -886,12 +891,17 @@ QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSql
     return obj;
 }
 
-QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_)
+QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, ISqlQuery *query_)
 {
     QJsonObject jsonObj;
+    if(nullptr == query_)
+    {
+        return jsonObj;
+    }
+
     for(const db::JsonSqlField &fi : qAsConst(fields_))
     {
-        const QVariant val = query_.value(fi.sqlValueName());
+        const QVariant val = query_->value(fi.sqlValueName());
         if(val.isValid())
         {
             jsonObj.insert(fi.getJsonName(), fi.jsonValue(val));
@@ -916,7 +926,7 @@ bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList
     return it_ != std::end(fields_);
 }
 
-void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_)
+void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, ISqlQuery *query_)
 {
     for(const db::JsonSqlField &fi_ : fields_)
     {
@@ -925,7 +935,7 @@ void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &
     }
 }
 
-void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QSqlQuery &query_)
+void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, ISqlQuery *query_)
 {
     for(const db::JsonSqlField &fi_ : fields_)
     {
@@ -994,7 +1004,7 @@ JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, const
     return filter<JsonSqlFieldAndValue>(fields_, leftFields_);
 }
 
-void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
+void bind(const JsonSqlFieldAndValuesList &fields_, ISqlQuery *query_)
 {
     for(const db::JsonSqlFieldAndValue &fi_ : fields_)
     {
@@ -1002,13 +1012,18 @@ void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_)
     }
 }
 
-void bind(const QHash<QString, QVariant> procedureArgs_, QSqlQuery &query_)
+void bind(const QHash<QString, QVariant> procedureArgs_, ISqlQuery *query_)
 {
+    if(!query_)
+    {
+        return;
+    }
+
     auto keys = procedureArgs_.keys();
     for(const auto &key_ : keys)
     {
         const QVariant v = procedureArgs_.value(key_);
-        query_.bindValue(key_, v);
+        query_->bindValue(key_, v);
     }
 }
 
@@ -1496,9 +1511,14 @@ QSqlError SqlQueryRAII::lastError() const
     return m_query.lastError();
 }
 
-SqlQueryRAII::operator QSqlQuery &()
+void SqlQueryRAII::bindValue(const QString& placeholder_, const QVariant& val_)
 {
-    return m_query;
+    m_query.bindValue(placeholder_, val_);
+}
+
+QVariant SqlQueryRAII::value(const QString& name_) const
+{
+    return m_query.value(name_);
 }
 
 } // namespace db
@@ -1510,10 +1530,30 @@ bool ILocalDataAPI::canProcess(const DBRequestBase *r_) const
     return true;
 }
 
-QSqlDatabase ILocalDataAPI::getBase(const DBRequestBase *r_)
+std::unique_ptr<db::ISqlQuery> ILocalDataAPI::getRequest(const DBRequestBase *r_)
 {
-    return QSqlDatabase::database(r_->getReadonly() ? g_dbNameRO : g_dbNameRW);
+    return std::make_unique<db::SqlQueryRAII>(
+                QSqlDatabase::database(
+                    r_->getReadonly()
+                    ? g_dbNameRO
+                    : g_dbNameRW
+                    )
+                );
 }
+
+std::pair<
+    std::unique_ptr<db::ISqlQuery>,
+    std::unique_ptr<db::ISqlQuery>>
+    ILocalDataAPI::getRequestsPair(const DBRequestBase *r_)
+{
+    QSqlDatabase db = QSqlDatabase::database(
+        r_->getReadonly()
+        ? g_dbNameRO
+        : g_dbNameRW
+        );
+    return std::make_pair(std::make_unique<db::SqlQueryRAII>(db), std::make_unique<db::SqlQueryRAII>(db));
+}
+
 
 DBRequestBase::DBRequestBase(const QString &apiName_)
     :m_apiName(apiName_)

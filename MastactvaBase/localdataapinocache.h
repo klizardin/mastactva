@@ -183,14 +183,14 @@ protected:
 
 private:
     static bool hasDuplicate(
-            QSqlQuery &findQuery_,
+            db::ISqlQuery *findQuery_,
             QJsonValue &replayItem_,
             const db::JsonSqlFieldsList &fields_,
             const db::JsonSqlFieldAndValuesList refsValues_,
             const db::JsonSqlFieldsList::const_iterator &idField_
             );
     static void insertItem(
-            QSqlQuery &insertQuery_,
+            db::ISqlQuery *insertQuery_,
             QJsonValue &replayItem_,
             const db::JsonSqlFieldsList &fields_,
             const db::JsonSqlFieldAndValuesList &refsValues_

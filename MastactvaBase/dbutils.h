@@ -137,25 +137,38 @@ namespace db
         QVariant m_value;
     };
 
-    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QJsonValue &jv_);
-    void bind(const JsonSqlField &field_, QSqlQuery &query_, const QVariant &val_);
+    class ISqlQuery
+    {
+    public:
+        virtual bool prepare(const QString &request_) = 0;
+        virtual bool exec(const QString &request_) = 0;
+        virtual bool exec() = 0;
+        virtual bool first() = 0;
+        virtual bool next() = 0;
+        virtual QSqlError lastError() const = 0;
+        virtual void bindValue(const QString& placeholder_, const QVariant& val_) = 0;
+        virtual QVariant value(const QString& name_) const = 0;
+    };
+
+    void bind(const JsonSqlField &field_, ISqlQuery *query_, const QJsonValue &jv_);
+    void bind(const JsonSqlField &field_, ISqlQuery *query_, const QVariant &val_);
 
     using JsonSqlFieldsList = QList<JsonSqlField>;
     using JsonSqlFieldAndValuesList = QList<JsonSqlFieldAndValue>;
 
     QStringList toStringList(const QList<QVariant> &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
-    QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_);
+    QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, ISqlQuery *query_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
     bool idFieldExist(JsonSqlFieldsList::const_iterator it_, const JsonSqlFieldsList &fields_);
-    void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, QSqlQuery &query_);
-    void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, QSqlQuery &query_);
+    void bind(const JsonSqlFieldsList &fields_, const QJsonValue &item_, ISqlQuery *query_);
+    void bind(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> values_, ISqlQuery *query_);
     JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, std::function<bool(const JsonSqlField &)> func_);
     JsonSqlFieldsList filter(const JsonSqlFieldsList &fields_, const QList<QVariant> &leftFields_);
     JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, std::function<bool(const JsonSqlFieldAndValue &)> func_);
     JsonSqlFieldAndValuesList filter(const JsonSqlFieldAndValuesList &fields_, const QList<QVariant> &leftFields_);
-    void bind(const JsonSqlFieldAndValuesList &fields_, QSqlQuery &query_);
-    void bind(const QHash<QString, QVariant> procedureArgs_, QSqlQuery &query_);
+    void bind(const JsonSqlFieldAndValuesList &fields_, ISqlQuery *query_);
+    void bind(const QHash<QString, QVariant> procedureArgs_, ISqlQuery *query_);
     void setIdField(const JsonSqlFieldsList &fields_, QHash<QString, QVariant> &values_, int newIdValue_);
     JsonSqlFieldAndValuesList createRefValuesList(
             const QStringList &refs_,
@@ -209,18 +222,20 @@ namespace db
             const QHash<QString, QVariant> &procedureFields_
             );
 
-    class SqlQueryRAII
+    class SqlQueryRAII : public ISqlQuery
     {
     public:
         SqlQueryRAII(const QSqlDatabase &db_);
         ~SqlQueryRAII();
-        bool prepare(const QString &request_);
-        bool exec(const QString &request_);
-        bool exec();
-        bool first();
-        bool next();
-        QSqlError lastError() const;
-        operator QSqlQuery &();
+
+        bool prepare(const QString &request_) override;
+        bool exec(const QString &request_) override;
+        bool exec() override;
+        bool first() override;
+        bool next() override;
+        QSqlError lastError() const override;
+        void bindValue(const QString& placeholder_, const QVariant& val_) override;
+        QVariant value(const QString& name_) const override;
 
     private:
         bool m_prepared = false;
@@ -246,7 +261,8 @@ public:
     virtual bool canProcess(const DBRequestBase *r_) const;
 
     // helper method to get base class for the request
-    static QSqlDatabase getBase(const DBRequestBase *r_);
+    static std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_);
+    static std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_);
 };
 
 
