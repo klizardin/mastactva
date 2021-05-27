@@ -1353,7 +1353,7 @@ QString getSelectSqlRequest(
             ? procedureFields_.value(g_procedureConditionName).toString()
             : QString()
             ;
-    const QList<QVariant> procedureFilterConditions = procedureFields_.contains(g_procedureFilterConditionsName)
+    const QList<QVariant> procedureFilterConditionNames = procedureFields_.contains(g_procedureFilterConditionsName)
             ? procedureFields_.value(g_procedureFilterConditionsName).toList()
             : QList<QVariant>()
             ;
@@ -1374,19 +1374,19 @@ QString getSelectSqlRequest(
                 fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterFields), "")
                 );
 
-    const auto procedureFilterConditionsList =
-            fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterConditions), "");
+    const auto procedureFilterConditionNamesList =
+            fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterConditionNames), "");
 
     const auto refsFiltered =
             db::filterNames(
-                refs_,
-                procedureFilterConditionsList
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), refs_, ""),
+                procedureFilterConditionNamesList
                 );
 
     const auto extraRefsFiltered =
             db::filterNames(
-                extraRefs_,
-                procedureFilterConditionsList
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), extraRefs_, ""),
+                procedureFilterConditionNamesList
                 );
 
     const auto refCondition = fmt::list(
