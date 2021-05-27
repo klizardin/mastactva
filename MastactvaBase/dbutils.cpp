@@ -95,6 +95,12 @@ QString fmt::toString(const db::SqlTableName &name_)
     return db::tableName(name_.m_tableName, name_.m_refName);
 }
 
+template<> inline
+QString fmt::toString(const db::JsonSqlField &jsonSqlField_)
+{
+    return jsonSqlField_.getJsonName();
+}
+
 
 namespace db
 {
@@ -849,17 +855,7 @@ QStringList getFieldListValues(
     return res;
 }
 
-QStringList getJsonNames(const JsonSqlFieldsList &fields_)
-{
-    return getFieldListValues(
-                fields_,
-                [](const db::JsonSqlField &fi_)->QString
-    {
-        return fi_.getJsonName();
-    });
-}
-
-QStringList getJsonNames(const QList<QVariant> &fields_)
+QStringList toStringList(const QList<QVariant> &fields_)
 {
     QStringList result;
     result.reserve(fields_.size());
@@ -1385,20 +1381,23 @@ QString getSelectSqlRequest(
 
     const auto fieldsFiltered =
             db::filterNames(
-                db::getJsonNames(fields_),
-                db::getJsonNames(procedureFilterFields)
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), fields_, ""),
+                fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterFields), "")
                 );
+
+    const auto procedureFilterConditionsList =
+            fmt::list(fmt::format("%1", db::JsonSqlField{}), db::toStringList(procedureFilterConditions), "");
 
     const auto refsFiltered =
             db::filterNames(
                 refs_,
-                db::getJsonNames(procedureFilterConditions)
+                procedureFilterConditionsList
                 );
 
     const auto extraRefsFiltered =
             db::filterNames(
                 extraRefs_,
-                db::getJsonNames(procedureFilterConditions)
+                procedureFilterConditionsList
                 );
 
     const auto refCondition = fmt::list(

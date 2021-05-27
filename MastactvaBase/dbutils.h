@@ -97,9 +97,9 @@ namespace db
     struct JsonSqlField
     {
         JsonSqlField(
-                const QString &jsonName_,
-                const layout::JsonTypesEn type_,
-                bool idField_
+                const QString &jsonName_ = QString(),
+                const layout::JsonTypesEn type_ = layout::JsonTypesEn::jt_undefined,
+                bool idField_ = false
                 );
 
         // TODO: return JsonName
@@ -143,8 +143,7 @@ namespace db
     using JsonSqlFieldsList = QList<JsonSqlField>;
     using JsonSqlFieldAndValuesList = QList<JsonSqlFieldAndValue>;
 
-    QStringList getJsonNames(const JsonSqlFieldsList &fields_);
-    QStringList getJsonNames(const QList<QVariant> &fields_);
+    QStringList toStringList(const QList<QVariant> &fields_);
     QJsonObject getJsonObject(const QHash<QString, QVariant> &values_, const JsonSqlFieldsList &fields_);
     QJsonObject getJsonObject(const JsonSqlFieldsList &fields_, QSqlQuery &query_);
     JsonSqlFieldsList::const_iterator findIdField(const JsonSqlFieldsList &fields_);
