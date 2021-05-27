@@ -26,9 +26,11 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     {
         return false;
     }
+
 #if defined(TRACE_DB_CREATION)
     qDebug() << "readonly " << r->getReadonly();
 #endif
+
     const QString createSqlRequest = db::getCreateTableSqlRequest(
                 r->getTableName(),
                 r->getCurrentRef(),
@@ -36,6 +38,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
                 r->getRefs(),
                 DBRequestBase::apiExtraFields(r_->getExtraFields()).keys()
                 );
+
 #if defined(TRACE_DB_CREATION)
     qDebug() << "create sql" << createSqlRequest;
 #endif
