@@ -50,7 +50,7 @@ bool LocalDataAPINoCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "create sql" << createSqlRequest;
 #endif
 
-    std::unique_ptr<db::ISqlQuery> query = getRequest(r);
+    auto query = getRequest(r);
     if(!query->exec(createSqlRequest))
     {
         const QSqlError err = query->lastError();

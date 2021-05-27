@@ -1524,20 +1524,22 @@ QVariant SqlQueryRAII::value(const QString& name_) const
 } // namespace db
 
 
-std::unique_ptr<db::ISqlQuery> DBSqlQueryFactory::getRequest(const DBRequestBase *r_)
+std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> DBSqlQueryFactory::getRequest(const DBRequestBase *r_)
 {
-    return std::make_unique<db::SqlQueryRAII>(
-                QSqlDatabase::database(
-                    r_->getReadonly()
-                    ? g_dbNameRO
-                    : g_dbNameRW
-                    )
+    return std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(
+                new db::SqlQueryRAII(
+                    QSqlDatabase::database(
+                        r_->getReadonly()
+                        ? g_dbNameRO
+                        : g_dbNameRW
+                        )),
+                std::default_delete<db::ISqlQuery>()
                 );
 }
 
 std::pair<
-    std::unique_ptr<db::ISqlQuery>,
-    std::unique_ptr<db::ISqlQuery>>
+    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
+    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>>
     DBSqlQueryFactory::getRequestsPair(const DBRequestBase *r_)
 {
     QSqlDatabase db = QSqlDatabase::database(
@@ -1545,7 +1547,13 @@ std::pair<
         ? g_dbNameRO
         : g_dbNameRW
         );
-    return std::make_pair(std::make_unique<db::SqlQueryRAII>(db), std::make_unique<db::SqlQueryRAII>(db));
+    return std::make_pair(std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(
+                              new db::SqlQueryRAII(db),
+                              std::default_delete<db::ISqlQuery>()
+                              ), std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(
+                              new db::SqlQueryRAII(db),
+                              std::default_delete<db::ISqlQuery>()
+                              ));
 }
 
 
@@ -1565,7 +1573,7 @@ void ILocalDataAPI::setQueryFactory(std::shared_ptr<ISqlQueryFactory> queryFacto
     m_queryFactory = std::move(queryFactory_);
 }
 
-std::unique_ptr<db::ISqlQuery> ILocalDataAPI::getRequest(const DBRequestBase *r_)
+std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> ILocalDataAPI::getRequest(const DBRequestBase *r_)
 {
     Q_ASSERT(m_queryFactory);
     if(m_queryFactory)
@@ -1578,7 +1586,8 @@ std::unique_ptr<db::ISqlQuery> ILocalDataAPI::getRequest(const DBRequestBase *r_
     }
 }
 
-std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> ILocalDataAPI::getRequestsPair(const DBRequestBase *r_)
+std::pair<std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
+    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>> ILocalDataAPI::getRequestsPair(const DBRequestBase *r_)
 {
     Q_ASSERT(m_queryFactory);
     if(m_queryFactory)
@@ -1587,7 +1596,10 @@ std::pair<std::unique_ptr<db::ISqlQuery>,std::unique_ptr<db::ISqlQuery>> ILocalD
     }
     else
     {
-        return {std::unique_ptr<db::ISqlQuery>{nullptr}, std::unique_ptr<db::ISqlQuery>{nullptr}};
+        return {
+            std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>{nullptr},
+            std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>{nullptr}
+        };
     }
 }
 

@@ -74,7 +74,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
     qDebug() << "select sql" << sqlRequest;
 #endif
 
-    std::unique_ptr<db::ISqlQuery> query = getRequest(r);
+    auto query = getRequest(r);
 
     bool sqlRes = true;
     if(hasCondition)
@@ -210,12 +210,12 @@ bool LocalDataAPIDefaultCacheImpl::addItemImpl(const QVariant &appId_,
     try
     {
         auto requestPair = getRequestsPair(r);
-        std::unique_ptr<db::ISqlQuery> findQuery(std::move(requestPair.first));
+        auto findQuery{std::move(requestPair.first)};
         QHash<QString, QVariant> values = values_;
         const int nextId = getNextIdValue(findQuery.get(), sqlNextIdRequest);
         db::setIdField(r->getTableFieldsInfo(), values, nextId);
 
-        std::unique_ptr<db::ISqlQuery> query(std::move(requestPair.second));
+        auto query{std::move(requestPair.second)};
         query->prepare(sqlRequest);
         db::bind(refsValues, query.get());
         db::bind(r->getTableFieldsInfo(), values, query.get());
@@ -280,7 +280,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     qDebug() << "update sql" << sqlRequest;
 #endif
 
-    std::unique_ptr<db::ISqlQuery> query = getRequest(r);
+    auto query = getRequest(r);
     query->prepare(sqlRequest);
     db::bind(r->getTableFieldsInfo(), values_, query.get());
 
@@ -341,7 +341,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     qDebug() << "delete sql" << sqlRequest;
 #endif
 
-    std::unique_ptr<db::ISqlQuery> query = getRequest(r);
+    auto query = getRequest(r);
     query->prepare(sqlRequest);
     db::bind(*fitId, query.get(), id_);
 
