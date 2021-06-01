@@ -15,7 +15,17 @@
 class EffectObjectsModel;
 
 
-class EffectObjects : public QObject
+struct EffectObjectsData
+{
+    virtual ~EffectObjectsData() = default;
+    int m_id = -1;
+    int m_effectId = -1;
+    int m_objectInfoId = -1;
+    int m_stepIndex = -1;
+};
+
+
+class EffectObjects : public QObject, private EffectObjectsData
 {
     Q_OBJECT
 public:
@@ -28,9 +38,7 @@ public:
     Q_PROPERTY(int effectObjectsStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(QVariant effectObjectsObjectArtefacts READ objectArtefacts WRITE setObjectArtefacts NOTIFY objectArtefactsChanged)
 
-    //Q_INVOKABLE void setObjectInfo(int );
-    //Q_INVOKABLE void setObjectArtefactsId(int objectArtefactId_);
-
+public:
     class DefaultLayout : public LayoutBase<EffectObjects>
     {
     public:
@@ -51,6 +59,9 @@ public:
             setIdField("id");
         }
     };
+
+    //Q_INVOKABLE void setObjectInfo(int );
+    //Q_INVOKABLE void setObjectArtefactsId(int objectArtefactId_);
 
 public:
     int id() const;
@@ -86,25 +97,25 @@ private:
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_objectInfoId = -1;
-    int m_stepIndex = -1;
     ObjectInfoModel *m_objectInfoModel = nullptr;
     ObjectArtefactModel *m_objectArtefactModel = nullptr;
+
+    friend class ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>;
+    friend class SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
+    friend class EffectObjectsModel;
 };
 
 
 class EffectObjectsModel :
-        public ListModelBaseOfData<EffectObjects, EffectObjectsModel> ,
-        public SortModelAfterChangeImpl<EffectObjects, EffectObjectsModel>
+        public ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
+        public SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectObjects, EffectObjectsModel>;
-    using sortModelAfterChange = SortModelAfterChangeImpl<EffectObjects, EffectObjectsModel>;
+    using base = ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>;
+    using sortModelAfterChange = SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
 
 public:
     explicit EffectObjectsModel(QObject *parent_ = nullptr);
@@ -152,7 +163,7 @@ signals:
     void objectNameDerivedChanged();
     void error(const QString &errorCode_, const QString &description_);
 
-    friend class SortModelAfterChangeImpl<EffectObjects, EffectObjectsModel>;
+    friend class SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
 };
 
 

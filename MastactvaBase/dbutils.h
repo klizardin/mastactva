@@ -253,17 +253,17 @@ class ISqlQueryFactory
 {
 public:
     virtual ~ISqlQueryFactory() = default;
-    virtual std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> getRequest(const DBRequestBase *r_) = 0;
-    virtual std::pair<std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
-        std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>> getRequestsPair(const DBRequestBase *r_) = 0;
+    virtual std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_) = 0;
+    virtual std::pair<std::unique_ptr<db::ISqlQuery>,
+        std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_) = 0;
 };
 
 class DBSqlQueryFactory : public ISqlQueryFactory
 {
 public:
-    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> getRequest(const DBRequestBase *r_) override;
-    std::pair<std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
-        std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>> getRequestsPair(const DBRequestBase *r_) override;
+    std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_) override;
+    std::pair<std::unique_ptr<db::ISqlQuery>,
+        std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_) override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -284,9 +284,9 @@ public:
 
     void setQueryFactory(std::shared_ptr<ISqlQueryFactory> queryFactory_);
     // helper method to get base class for the request
-    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> getRequest(const DBRequestBase *r_);
-    std::pair<std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
-        std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>> getRequestsPair(const DBRequestBase *r_);
+    std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_);
+    std::pair<std::unique_ptr<db::ISqlQuery>,
+        std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_);
 };
 
 

@@ -9,7 +9,7 @@
 #include "../MastactvaBase/Model.h"
 
 
-template<class ModelDataType_, class ModelType_>
+template<class ModelDataType_, class ModelType_, class ModelDataObjectType_ = ModelDataType_>
 class SortModelAfterChangeImpl : public IListModelChangeNotify
 {
     /*
@@ -75,8 +75,8 @@ protected:
     void init()
     {
         ModelType_* model = static_cast<ModelType_*>(this);
-        ListModelBaseOfData<ModelDataType_, ModelType_>* listModel
-                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_>*>(model);
+        ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>* listModel
+                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(model);
         listModel->setModelChangeNotify(this);
     }
 
@@ -84,12 +84,14 @@ private:
     bool sortItems()
     {
         ModelType_* model = static_cast<ModelType_*>(this);
-        ListModelBaseOfData<ModelDataType_, ModelType_>* listModel
-                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_>*>(model);
+        ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>* listModel
+                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(model);
         return listModel->sortIf(
                     [&model](const ModelDataType_ *i1_, const ModelDataType_ *i2_)->bool
                     {
-                        return model->compareModelItems(i1_, i2_);
+                        const ModelDataObjectType_ *i1 = static_cast<const ModelDataObjectType_ *>(i1_);
+                        const ModelDataObjectType_ *i2 = static_cast<const ModelDataObjectType_ *>(i2_);
+                        return model->compareModelItems(i1, i2);
                     },
                     true,false);
     }
