@@ -726,25 +726,65 @@ public:
     MOCK_METHOD(QVariant, value, (const QString &), (const, override));
 };
 
+class SqlQueryOnMock: public db::ISqlQuery
+{
+public:
+    SqlQueryOnMock(db::ISqlQuery *mock_):m_mock(mock_){}
+    bool prepare(const QString &request_) override
+    {
+        return m_mock->prepare(request_);
+    }
+    bool exec(const QString &request_) override
+    {
+        return m_mock->exec(request_);
+    }
+    bool exec() override
+    {
+        return m_mock->exec();
+    }
+    bool first() override
+    {
+        return m_mock->first();
+    }
+    bool next() override
+    {
+        return m_mock->next();
+    }
+    QSqlError lastError() const override
+    {
+        return m_mock->lastError();
+    }
+    void bindValue(const QString& placeholder_, const QVariant& val_) override
+    {
+        m_mock->bindValue(placeholder_, val_);
+    }
+    QVariant value(const QString& name_) const override
+    {
+        return m_mock->value(name_);
+    }
+private:
+    db::ISqlQuery *m_mock = nullptr;
+};
+
 template<typename SqlQueryMockType_>
 class MockSingeltonSqlFactory : public ISqlQueryFactory
 {
 public:
     SqlQueryMockType_ mock;
 
-    std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>> getRequest(const DBRequestBase *r_) override
+    std::unique_ptr<db::ISqlQuery> getRequest(const DBRequestBase *r_) override
     {
         Q_UNUSED(r_);
-        return std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(&mock, [](db::ISqlQuery*){});
+        return std::make_unique<SqlQueryOnMock>(&mock);
     }
 
-    std::pair<std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>,
-        std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>> getRequestsPair(const DBRequestBase *r_) override
+    std::pair<std::unique_ptr<db::ISqlQuery>,
+        std::unique_ptr<db::ISqlQuery>> getRequestsPair(const DBRequestBase *r_) override
     {
         Q_UNUSED(r_);
         return std::make_pair(
-            std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(&mock, [](db::ISqlQuery*){}),
-            std::unique_ptr<db::ISqlQuery, std::function<void(db::ISqlQuery*)>>(&mock, [](db::ISqlQuery*){})
+            std::make_unique<SqlQueryOnMock>(&mock),
+            std::make_unique<SqlQueryOnMock>(&mock)
             );
     }
 };
