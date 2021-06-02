@@ -12,6 +12,11 @@ EffectObjects::EffectObjects(EffectObjectsModel *parent_ /*= nullptr*/)
     m_effectObjectsModel = parent_;
 }
 
+EffectObjects::EffectObjects(EffectObjectsData &&dataBase_)
+    : EffectObjectsData(std::move(dataBase_))
+{
+}
+
 EffectObjects::~EffectObjects()
 {
     if(m_objectInfoModel)
