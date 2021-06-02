@@ -11,6 +11,7 @@
 class IListModel
 {
 public:
+    virtual ~IListModel() = default;
     virtual QObject* getModel() const = 0;
     virtual void initResponse() = 0;
     virtual const QString &getQMLLayoutName() const = 0;
@@ -29,6 +30,7 @@ public:
 class IListModelChangeNotify
 {
 public:
+    virtual ~IListModelChangeNotify() = default;
     virtual void listLoadedVF() = 0;
     virtual void itemAddedVF() = 0;
     virtual void itemSetVF() = 0;
