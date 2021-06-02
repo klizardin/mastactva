@@ -11,7 +11,7 @@
 QString getAndroidUuid();
 
 
-class QuizUser : public QObject
+class QuizUser : public QObject, public IListModelItem
 {
     Q_OBJECT
 

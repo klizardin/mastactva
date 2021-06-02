@@ -12,7 +12,7 @@
 class ObjectInfoModel;
 
 
-class ObjectInfo : public QObject
+class ObjectInfo : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

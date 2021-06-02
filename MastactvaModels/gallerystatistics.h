@@ -10,7 +10,7 @@
 #include "../MastactvaBase/localdataapiviews.h"
 
 
-class GalleryStatistics : public QObject
+class GalleryStatistics : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

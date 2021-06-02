@@ -13,7 +13,7 @@
 class EffectArgValueModel;
 
 
-class EffectArgValue : public QObject
+class EffectArgValue : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

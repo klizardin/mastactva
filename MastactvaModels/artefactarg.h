@@ -12,7 +12,7 @@
 class ArtefactArgModel;
 
 
-class ArtefactArg : public QObject
+class ArtefactArg : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

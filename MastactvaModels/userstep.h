@@ -9,7 +9,7 @@
 #include "../MastactvaBase/Model.h"
 
 
-class UserStep : public QObject
+class UserStep : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

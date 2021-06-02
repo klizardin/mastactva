@@ -17,7 +17,7 @@
 class GalleryModel;
 
 
-class Gallery : public QObject
+class Gallery : public QObject, public IListModelItem
 {
     Q_OBJECT
 

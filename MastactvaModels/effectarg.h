@@ -15,7 +15,7 @@
 class EffectArgModel;
 
 
-class EffectArg : public QObject
+class EffectArg : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

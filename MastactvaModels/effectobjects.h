@@ -26,7 +26,7 @@ struct EffectObjectsData
 };
 
 
-class EffectObjects : public QObject, private EffectObjectsData
+class EffectObjects : public QObject, private EffectObjectsData, public IListModelItem
 {
     Q_OBJECT
 public:

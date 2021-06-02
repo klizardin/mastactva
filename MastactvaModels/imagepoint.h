@@ -16,7 +16,7 @@ class ImagePointToQuestionModel;
 class ImageModel;
 
 
-class ImagePointToQuestion : public QObject
+class ImagePointToQuestion : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:
@@ -135,7 +135,7 @@ signals:
 class ImagePointToNextImageModel;
 
 
-class ImagePointToNextImage : public QObject, protected IListModelInfoObjectImpl
+class ImagePointToNextImage : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 
@@ -256,7 +256,7 @@ private:
 class ImagePointModel;
 
 
-class ImagePoint : public QObject
+class ImagePoint : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

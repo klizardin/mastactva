@@ -12,7 +12,7 @@
 class TranslationModel;
 
 
-class Translation : public QObject
+class Translation : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

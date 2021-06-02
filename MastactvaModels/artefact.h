@@ -14,7 +14,7 @@
 class ArtefactModel;
 
 
-class Artefact : public QObject, protected IListModelInfoObjectImpl
+class Artefact : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 public:

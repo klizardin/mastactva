@@ -14,7 +14,7 @@
 class EffectArgSetModel;
 
 
-class EffectArgSet : public QObject, protected IListModelInfoObjectImpl
+class EffectArgSet : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 public:
