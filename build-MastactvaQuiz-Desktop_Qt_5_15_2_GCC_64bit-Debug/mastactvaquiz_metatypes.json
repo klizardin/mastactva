@@ -23032,6 +23032,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "private",
+                        "name": "EffectObjectsData"
                     }
                 ]
             },
@@ -23738,11 +23742,11 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectObjects,EffectObjectsModel>"
+                        "name": "ListModelBaseOfData<EffectObjectsData,EffectObjectsModel,EffectObjects>"
                     },
                     {
                         "access": "public",
-                        "name": "SortModelAfterChangeImpl<EffectObjects,EffectObjectsModel>"
+                        "name": "SortModelAfterChangeImpl<EffectObjectsData,EffectObjectsModel,EffectObjects>"
                     }
                 ]
             }
