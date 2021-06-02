@@ -7,6 +7,13 @@
 #include <QHash>
 
 
+class IListModelItem
+{
+public:
+    virtual ~IListModelItem() = default;
+};
+
+
 // TODO: review methods use, remove extra methods
 class IListModel
 {
