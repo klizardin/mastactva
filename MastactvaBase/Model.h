@@ -676,7 +676,7 @@ public:
                         itemId);
             if(request)
             {
-                request->setItemData(reinterpret_cast<void *>(item_));
+                request->setItemData(dynamic_cast<IListModelItem *>(item_));
                 request->setSetCurrentItemIndex(setCurrentIndex_);
             }
             if(addRequest(request))
@@ -702,7 +702,7 @@ public:
             RequestData *request = dataAPI->addItem(getJsonLayoutName(), item_, extraFields);
             if(request)
             {
-                request->setItemData(reinterpret_cast<void *>(item_));
+                request->setItemData(dynamic_cast<IListModelItem *>(item_));
                 request->setSetCurrentItemIndex(setCurrentIndex_);
             }
             return addRequest(request);
@@ -1021,7 +1021,7 @@ protected:
         if(0 != errorCode_ && (200 > errorCode_ || 300 <= errorCode_))
         {
             modelError(errorCode_, errorCodeStr_, reply_);
-            DataObjectType *itemToDel = reinterpret_cast<DataObjectType *>(request_->getItemData());
+            DataObjectType *itemToDel = dynamic_cast<DataObjectType *>(request_->getItemData());
             delete itemToDel;
             itemToDel = nullptr;
             request_->setItemData(nullptr);
@@ -1266,14 +1266,14 @@ protected:
         {
             return;
         }
-        if(!request_->getItemData()) { return; }
+        if(!dynamic_cast<DataObjectType *>(request_->getItemData())) { return; }
         const QVariant appId = request_->getItemAppId();
 
 #if defined(TRACE_LIST_DATA_ITEMS_CRUD)
         qDebug() << "modelItemAdded() beginInsertRows(" << m_data->size() << "," << m_data->size() << ")";
 #endif
         beginInsertRows(QModelIndex(), m_data->size(), m_data->size());
-        m_data->push_back(reinterpret_cast<DataObjectType *>(request_->getItemData()));
+        m_data->push_back(dynamic_cast<DataObjectType *>(request_->getItemData()));
         endInsertRows();
 
         request_->setItemData(nullptr);

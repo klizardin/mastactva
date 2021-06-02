@@ -11,6 +11,7 @@ class NetAPI;
 class LocalDataAPICache;
 class LocalDataAPIDefaultCacheImpl;
 class QuestionAnswerModelView;
+class IListModelItem;
 
 
 class RequestData
@@ -23,8 +24,8 @@ public:
     QVariant getItemId() const;
     QVariant getItemAppId() const;
     void allowModelProccessError();
-    void setItemData(void *itemData_);
-    void *getItemData();
+    void setItemData(IListModelItem *itemData_);
+    IListModelItem *getItemData();
     void setSetCurrentItemIndex(bool setCurrentItemIndex_);
     bool getSetCurrentItemIndex() const;
     bool isRetried() const;
@@ -65,7 +66,7 @@ private:
     QString m_requestName;
     QVariant m_itemId = QVariant::fromValue(-1);
     QVariant m_itemAppId = QVariant::fromValue(-1);
-    void *m_itemData = nullptr;
+    IListModelItem *m_itemData = nullptr;
     bool m_setCurrentItemIndex = false;
     bool m_retry = false;
 

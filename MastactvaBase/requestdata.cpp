@@ -22,12 +22,12 @@ void RequestData::allowModelProccessError()
     m_processErrorInNetAPI = false;
 }
 
-void RequestData::setItemData(void *itemData_)
+void RequestData::setItemData(IListModelItem *itemData_)
 {
     m_itemData = itemData_;
 }
 
-void *RequestData::getItemData()
+IListModelItem *RequestData::getItemData()
 {
     return m_itemData;
 }

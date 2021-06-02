@@ -882,6 +882,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -1761,6 +1765,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -2565,6 +2573,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -3513,6 +3525,10 @@
                     {
                         "access": "protected",
                         "name": "IListModelInfoObjectImpl"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -4317,6 +4333,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -5121,6 +5141,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -5904,6 +5928,10 @@
                     {
                         "access": "protected",
                         "name": "IListModelInfoObjectImpl"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -6797,6 +6825,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -7694,6 +7726,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -8536,6 +8572,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -9298,6 +9338,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -10197,6 +10241,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -10963,6 +11011,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -11881,6 +11933,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -12744,6 +12800,10 @@
                     {
                         "access": "protected",
                         "name": "IListModelInfoObjectImpl"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -13620,6 +13680,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -14580,6 +14644,10 @@
                     {
                         "access": "protected",
                         "name": "IListModelInfoObjectImpl"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -15464,6 +15532,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -16442,6 +16514,10 @@
                     {
                         "access": "protected",
                         "name": "IListModelInfoObjectImpl"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -17227,6 +17303,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -17993,6 +18073,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -18759,6 +18843,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -19639,6 +19727,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -20557,6 +20649,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -21387,6 +21483,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -22209,6 +22309,10 @@
                     {
                         "access": "public",
                         "name": "QObject"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
@@ -23036,6 +23140,10 @@
                     {
                         "access": "private",
                         "name": "EffectObjectsData"
+                    },
+                    {
+                        "access": "public",
+                        "name": "IListModelItem"
                     }
                 ]
             },
