@@ -575,11 +575,12 @@ public:
         return -1;
     }
 
-    int indexOfDataItemImpl(const DataType_ *item_) const
+    int indexOfDataItemImpl(const DataObjectType *item_) const
     {
         const QVariant appId = getDataLayout<DataObjectType>().getSpecialFieldValue(
                     layout::SpecialFieldEn::appId,
-                    static_cast<const DataObjectType *>(item_));
+                    item_
+                    );
         return indexFindIf([&appId](const DataType_ *i)->bool
         {
             const QVariant iAppId = getDataLayout<DataObjectType>().getSpecialFieldValue(
