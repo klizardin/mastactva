@@ -174,6 +174,7 @@ public:
         {
             m_data = std::make_shared<QVector<DataType_ *>>();
         }
+        updateDataType();
         getDataLayout<DataObjectType>().initQMLModelRoleNames(m_roleNames);
         setStoreAfterSaveBase(getDataLayout<DataObjectType_>().storeAfterSave());
     }
@@ -1480,6 +1481,34 @@ protected:
         std::copy(std::begin(waitingToUpdate), std::end(waitingToUpdate),
                   std::inserter(*m_data, std::end(*m_data)));
         endInsertRows();
+    }
+
+private:
+    void updateDataType()
+    {
+        updateDataType(std::is_same<DataType_, DataObjectType_>());
+    }
+
+    void updateDataType(std::true_type)
+    {
+    }
+
+    void updateDataType(std::false_type)
+    {
+        for(DataType_ *& p_: *m_data)
+        {
+            if(!p_)
+            {
+                continue;
+            }
+            DataObjectType_ *p1 = dynamic_cast<DataObjectType_ *>(p_);
+            if(p1)
+            {
+                continue;
+            }
+            std::unique_ptr<DataObjectType_> pn = std::make_unique<DataObjectType_>(std::move(*p_));
+            p_ = pn.release();
+        }
     }
 
 protected:
