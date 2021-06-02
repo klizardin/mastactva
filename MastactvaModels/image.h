@@ -17,7 +17,7 @@
 class ImageModel;
 
 
-class Image : public QObject, protected IListModelInfoObjectImpl
+class Image : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 public:

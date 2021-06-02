@@ -13,7 +13,7 @@
 class ObjectArtefactModel;
 
 
-class ObjectArtefact : public QObject
+class ObjectArtefact : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

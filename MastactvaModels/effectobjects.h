@@ -18,6 +18,7 @@ class EffectObjectsModel;
 struct EffectObjectsData
 {
     virtual ~EffectObjectsData() = default;
+
     int m_id = -1;
     int m_effectId = -1;
     int m_objectInfoId = -1;
@@ -25,11 +26,13 @@ struct EffectObjectsData
 };
 
 
-class EffectObjects : public QObject, private EffectObjectsData
+class EffectObjects : public QObject, private EffectObjectsData, public IListModelItem
 {
     Q_OBJECT
 public:
     explicit EffectObjects(EffectObjectsModel *parent_ = nullptr);
+    explicit EffectObjects(EffectObjectsData &&dataBase_);
+
     virtual ~EffectObjects() override;
 
     Q_PROPERTY(int effectObjectsId READ id WRITE setId NOTIFY idChanged)

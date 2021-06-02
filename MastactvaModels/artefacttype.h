@@ -23,7 +23,7 @@ enum class ArtefactTypeEn : int
 };
 
 
-class ArtefactType : public QObject
+class ArtefactType : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

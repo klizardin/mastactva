@@ -15,7 +15,7 @@
 class QuestionModel;
 
 
-class Question : public QObject
+class Question : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

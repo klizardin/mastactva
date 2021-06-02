@@ -9,7 +9,7 @@
 #include "../MastactvaBase/Model.h"
 
 
-class ImageDescription : public QObject
+class ImageDescription : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

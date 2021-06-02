@@ -14,7 +14,7 @@
 class ImagePointEffectModel;
 
 
-class ImagePointEffect : public QObject
+class ImagePointEffect : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

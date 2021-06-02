@@ -9,7 +9,7 @@
 #include "../MastactvaBase/Model.h"
 
 
-class Answer : public QObject
+class Answer : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

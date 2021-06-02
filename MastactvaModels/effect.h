@@ -16,7 +16,7 @@
 class EffectModel;
 
 
-class Effect : public QObject, protected IListModelInfoObjectImpl
+class Effect : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 

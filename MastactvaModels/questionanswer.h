@@ -11,7 +11,7 @@
 #include "../MastactvaBase/localdataapiviews.h"
 
 
-class UserQuestionAnswer : public QObject
+class UserQuestionAnswer : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

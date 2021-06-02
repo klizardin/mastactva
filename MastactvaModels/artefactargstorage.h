@@ -9,7 +9,7 @@
 #include "../MastactvaBase/Model.h"
 
 
-class ArtefactArgStorage : public QObject
+class ArtefactArgStorage : public QObject, public IListModelItem
 {
     Q_OBJECT
 public:

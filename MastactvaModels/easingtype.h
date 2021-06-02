@@ -12,7 +12,7 @@
 class EasingTypeModel;
 
 
-class EasingType : public QObject
+class EasingType : public QObject, public IListModelItem
 {
     Q_OBJECT
 
