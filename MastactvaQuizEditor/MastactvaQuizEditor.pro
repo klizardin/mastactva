@@ -136,6 +136,7 @@ unix: HEADERS += \
         objectinfo.h  \
         objectartefact.h    \
         effectobjects.h \
+        effectobjects_data.h    \
 
 
 SOURCES += \
@@ -201,6 +202,7 @@ unix: SOURCES += \
         objectinfo.cpp    \
         objectartefact.cpp  \
         effectobjects.cpp   \
+        effectobjects_data.cpp  \
 
 
 RESOURCES += qml.qrc    \

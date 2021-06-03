@@ -7,23 +7,13 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaBase/modelhelpers.h"
+#include "../MastactvaModels/effectobjects_data.h"
 #include "../MastactvaModels/objectinfo.h"
 #include "../MastactvaModels/objectartefact.h"
-#include "../MastactvaBase/modelhelpers.h"
 
 
 class EffectObjectsModel;
-
-
-struct EffectObjectsData
-{
-    virtual ~EffectObjectsData() = default;
-
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_objectInfoId = -1;
-    int m_stepIndex = -1;
-};
 
 
 class EffectObjects : public QObject, private EffectObjectsData, public IListModelItem

@@ -127,6 +127,7 @@ unix: SOURCES += \
         effectobjects.cpp   \
         gallerymodelview.cpp    \
         questionanswermodelview.cpp \
+        effectobjects_data.cpp  \
 
 
 RESOURCES += qml.qrc \
@@ -238,6 +239,7 @@ unix: HEADERS += \
     objectinfo.h  \
     objectartefact.h    \
     effectobjects.h \
+    effectobjects_data.h    \
 
 
 DISTFILES += \
