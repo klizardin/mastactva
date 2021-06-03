@@ -7,21 +7,10 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaModels/objectinfo_data.h"
 
 
 class ObjectInfoModel;
-
-
-struct ObjectInfoData
-{
-    virtual ~ObjectInfoData() = default;
-
-    int m_id = -1;
-    QString m_name;
-    QString m_programmerName;
-    QString m_description;
-    QDateTime m_created;
-};
 
 
 class ObjectInfo : public QObject, public IListModelItem, private ObjectInfoData

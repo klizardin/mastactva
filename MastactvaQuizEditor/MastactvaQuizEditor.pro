@@ -133,10 +133,11 @@ unix: HEADERS += \
         artefactargstorage.h    \
         artefactarg.h \
         translation.h   \
+        objectinfo_data.h   \
         objectinfo.h  \
         objectartefact.h    \
-        effectobjects.h \
         effectobjects_data.h    \
+        effectobjects.h \
 
 
 SOURCES += \
@@ -199,10 +200,11 @@ unix: SOURCES += \
         artefactargstorage.cpp  \
         artefactarg.cpp \
         translation.cpp \
+        objectinfo_data.cpp \
         objectinfo.cpp    \
         objectartefact.cpp  \
-        effectobjects.cpp   \
         effectobjects_data.cpp  \
+        effectobjects.cpp   \
 
 
 RESOURCES += qml.qrc    \

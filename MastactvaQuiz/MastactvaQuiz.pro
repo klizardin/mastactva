@@ -122,12 +122,13 @@ unix: SOURCES += \
         artefactargstorage.cpp  \
         artefactarg.cpp \
         translation.cpp \
+        objectinfo_data.cpp \
         objectinfo.cpp    \
         objectartefact.cpp  \
+        effectobjects_data.cpp  \
         effectobjects.cpp   \
         gallerymodelview.cpp    \
         questionanswermodelview.cpp \
-        effectobjects_data.cpp  \
 
 
 RESOURCES += qml.qrc \
@@ -236,10 +237,11 @@ unix: HEADERS += \
     artefactargstorage.h    \
     artefactarg.h \
     translation.h   \
+    objectinfo_data.h   \
     objectinfo.h  \
     objectartefact.h    \
-    effectobjects.h \
     effectobjects_data.h    \
+    effectobjects.h \
 
 
 DISTFILES += \
