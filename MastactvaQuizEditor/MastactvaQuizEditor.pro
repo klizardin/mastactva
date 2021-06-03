@@ -133,8 +133,10 @@ unix: HEADERS += \
         artefactargstorage.h    \
         artefactarg.h \
         translation.h   \
+        objectinfo_data.h   \
         objectinfo.h  \
         objectartefact.h    \
+        effectobjects_data.h    \
         effectobjects.h \
 
 
@@ -198,8 +200,10 @@ unix: SOURCES += \
         artefactargstorage.cpp  \
         artefactarg.cpp \
         translation.cpp \
+        objectinfo_data.cpp \
         objectinfo.cpp    \
         objectartefact.cpp  \
+        effectobjects_data.cpp  \
         effectobjects.cpp   \
 
 

@@ -151,7 +151,7 @@ const ObjectArtefactModel *EffectObjects::getObjectArtefacts() const
 
 ObjectInfoModel *EffectObjects::createObjectInfoModel()
 {
-    ObjectInfoModel *m = new ObjectInfoModel(this);
+    ObjectInfoModel *m = new ObjectInfoModel(this, m_objectInfoData);
     m->initResponse();
     m->setLayoutRefImpl("id", m_effectObjectsModel->getQMLLayoutName(), "effect_object_info", false);
     m->setCurrentRef("id");
@@ -162,7 +162,10 @@ ObjectInfoModel *EffectObjects::createObjectInfoModel()
     m->setParentListModelInfo(m_parentModelInfo);
     m->setAutoCreateChildrenModels(true);
     m->setReadonlyImpl(true);
-    m->loadList();
+    if(m->sizeImpl() == 0)
+    {
+        m->loadList();
+    }
     return m;
 }
 

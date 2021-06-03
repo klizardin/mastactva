@@ -11,6 +11,14 @@ ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
     m_effectObjectInfoModel = parent_;
 }
 
+ObjectInfo::ObjectInfo(ObjectInfoData &&data_)
+    : ObjectInfoData(std::move(data_))
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "ObjectInfo::ObjectInfo()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+}
+
 bool ObjectInfo::isInitializeObject() const
 {
     return programmerName().isEmpty();
@@ -77,8 +85,12 @@ void ObjectInfo::setCreated(const QDateTime &created_)
 }
 
 
-ObjectInfoModel::ObjectInfoModel(QObject *parent_ /*= nullptr*/)
-    :base(parent_)
+ObjectInfoModel::ObjectInfoModel(
+        QObject *parent_ /*= nullptr*/,
+        std::shared_ptr<QVector<ObjectInfoData *>> data_
+            /*= std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}*/
+        )
+    :base(parent_, data_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectInfoModel::ObjectInfoModel()" << QThread::currentThread() << QThread::currentThreadId();
