@@ -95,7 +95,6 @@ private:
 
     friend class ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>;
     friend class SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
-    friend class EffectObjectsModel;
 };
 
 
