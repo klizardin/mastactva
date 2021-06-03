@@ -12,11 +12,24 @@
 class ObjectInfoModel;
 
 
-class ObjectInfo : public QObject, public IListModelItem
+struct ObjectInfoData
+{
+    virtual ~ObjectInfoData() = default;
+
+    int m_id = -1;
+    QString m_name;
+    QString m_programmerName;
+    QString m_description;
+    QDateTime m_created;
+};
+
+
+class ObjectInfo : public QObject, public IListModelItem, private ObjectInfoData
 {
     Q_OBJECT
 public:
     explicit ObjectInfo(ObjectInfoModel *parent_ = nullptr);
+    explicit ObjectInfo(ObjectInfoData &&data_);
 
     Q_PROPERTY(int effectObjectInfoId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectObjectInfoName READ name WRITE setName NOTIFY nameChanged)
@@ -69,21 +82,18 @@ private:
     IListModelInfo *m_objectModelInfo = nullptr;
     ObjectInfoModel *m_effectObjectInfoModel = nullptr;
     int m_appId = 0;
-    int m_id = -1;
-    QString m_name;
-    QString m_programmerName;
-    QString m_description;
-    QDateTime m_created;
+
+    friend class ListModelBaseOfData<ObjectInfoData, ObjectInfoModel, ObjectInfo>;
 };
 
 
-class ObjectInfoModel : public ListModelBaseOfData<ObjectInfo, ObjectInfoModel>
+class ObjectInfoModel : public ListModelBaseOfData<ObjectInfoData, ObjectInfoModel, ObjectInfo>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<ObjectInfo, ObjectInfoModel>;
+    using base = ListModelBaseOfData<ObjectInfoData, ObjectInfoModel, ObjectInfo>;
 
 public:
     explicit ObjectInfoModel(QObject *parent_ = nullptr);

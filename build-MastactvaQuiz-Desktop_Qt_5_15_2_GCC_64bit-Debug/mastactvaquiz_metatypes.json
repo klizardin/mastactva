@@ -21487,6 +21487,10 @@
                     {
                         "access": "public",
                         "name": "IListModelItem"
+                    },
+                    {
+                        "access": "private",
+                        "name": "ObjectInfoData"
                     }
                 ]
             },
@@ -22193,7 +22197,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<ObjectInfo,ObjectInfoModel>"
+                        "name": "ListModelBaseOfData<ObjectInfoData,ObjectInfoModel,ObjectInfo>"
                     }
                 ]
             }
