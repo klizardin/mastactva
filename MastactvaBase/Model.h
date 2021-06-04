@@ -1507,7 +1507,11 @@ private:
             {
                 continue;
             }
-            std::unique_ptr<DataObjectType_> pn = std::make_unique<DataObjectType_>(std::move(*p_));
+            std::unique_ptr<DataObjectType_> pn
+                    = std::make_unique<DataObjectType_>(
+                        std::move(*p_),
+                        static_cast<ModelType_ *>(this)
+                        );
             p_ = pn.release();
         }
     }
