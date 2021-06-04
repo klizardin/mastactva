@@ -11,12 +11,14 @@ ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
     m_effectObjectInfoModel = parent_;
 }
 
-ObjectInfo::ObjectInfo(ObjectInfoData &&data_)
-    : ObjectInfoData(std::move(data_))
+ObjectInfo::ObjectInfo(ObjectInfoData &&data_, ObjectInfoModel *parent_ /*= nullptr*/)
+    : QObject(parent_)
+    , ObjectInfoData(std::move(data_))
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectInfo::ObjectInfo()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+    m_effectObjectInfoModel = parent_;
 }
 
 bool ObjectInfo::isInitializeObject() const

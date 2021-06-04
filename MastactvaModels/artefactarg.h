@@ -9,14 +9,30 @@
 #include "../MastactvaBase/Model.h"
 
 
+struct ArtefactArgData
+{
+    virtual ~ArtefactArgData() = default;
+
+    int m_id = -1;
+    int m_artefactId = -1;
+    int m_argTypeId = -1;
+    int m_argStorageId = -1;
+    QString m_name;
+    QString m_defaultValue;
+    QString m_description;
+    QDateTime m_created;
+};
+
+
 class ArtefactArgModel;
 
 
-class ArtefactArg : public QObject, public IListModelItem
+class ArtefactArg : public QObject, public IListModelItem, private ArtefactArgData
 {
     Q_OBJECT
 public:
     explicit ArtefactArg(ArtefactArgModel *parent_ = nullptr);
+    explicit ArtefactArg(ArtefactArgData &&data_, ArtefactArgModel *parent_ = nullptr);
 
     Q_PROPERTY(int artefactArgId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int artefactArgArtefactId READ artefactId WRITE setArtefactId NOTIFY artefactIdChanged)
@@ -81,28 +97,27 @@ private:
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    int m_artefactId = -1;
-    int m_argTypeId = -1;
-    int m_argStorageId = -1;
-    QString m_name;
-    QString m_defaultValue;
-    QString m_description;
-    QDateTime m_created;
     ArtefactArgModel *m_artefactArgModel = nullptr;
+
+
+    friend class ListModelBaseOfData<ArtefactArgData, ArtefactArgModel, ArtefactArg>;
 };
 
 
-class ArtefactArgModel : public ListModelBaseOfData<ArtefactArg, ArtefactArgModel>
+class ArtefactArgModel : public ListModelBaseOfData<ArtefactArgData, ArtefactArgModel, ArtefactArg>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<ArtefactArg, ArtefactArgModel>;
+    using base = ListModelBaseOfData<ArtefactArgData, ArtefactArgModel, ArtefactArg>;
 
 public:
-    explicit ArtefactArgModel(QObject *parent_ = nullptr);
+    explicit ArtefactArgModel(
+            QObject *parent_ = nullptr,
+            std::shared_ptr<QVector<ArtefactArgData *>> data_
+                = std::shared_ptr<QVector<ArtefactArgData *>>{nullptr}
+            );
 
     LAYOUT_MODEL_IMPL();
 

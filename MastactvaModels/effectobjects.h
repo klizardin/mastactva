@@ -21,7 +21,7 @@ class EffectObjects : public QObject, private EffectObjectsData, public IListMod
     Q_OBJECT
 public:
     explicit EffectObjects(EffectObjectsModel *parent_ = nullptr);
-    explicit EffectObjects(EffectObjectsData &&dataBase_);
+    explicit EffectObjects(EffectObjectsData &&dataBase_, EffectObjectsModel *parent_ = nullptr);
 
     virtual ~EffectObjects() override;
 

@@ -16518,6 +16518,10 @@
                     {
                         "access": "public",
                         "name": "IListModelItem"
+                    },
+                    {
+                        "access": "private",
+                        "name": "ArtefactData"
                     }
                 ]
             },
@@ -17224,7 +17228,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<Artefact,ArtefactModel>"
+                        "name": "ListModelBaseOfData<ArtefactData,ArtefactModel,Artefact>"
                     }
                 ]
             }
@@ -19731,6 +19735,10 @@
                     {
                         "access": "public",
                         "name": "IListModelItem"
+                    },
+                    {
+                        "access": "private",
+                        "name": "ArtefactArgData"
                     }
                 ]
             },
@@ -20437,7 +20445,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<ArtefactArg,ArtefactArgModel>"
+                        "name": "ListModelBaseOfData<ArtefactArgData,ArtefactArgModel,ArtefactArg>"
                     }
                 ]
             }
@@ -22317,6 +22325,10 @@
                     {
                         "access": "public",
                         "name": "IListModelItem"
+                    },
+                    {
+                        "access": "private",
+                        "name": "ObjectArtefactData"
                     }
                 ]
             },
@@ -23023,7 +23035,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<ObjectArtefact,ObjectArtefactModel>"
+                        "name": "ListModelBaseOfData<ObjectArtefactData,ObjectArtefactModel,ObjectArtefact>"
                     }
                 ]
             }
