@@ -16,6 +16,17 @@ Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
     m_objectModelInfo = this;
 }
 
+Artefact::Artefact(ArtefactData &&data_, ArtefactModel *parent_ /* = nullptr*/)
+    : QObject(parent_)
+    , ArtefactData(std::move(data_))
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "Artefact::Artefact()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+    m_artefactModel = parent_;
+    m_objectModelInfo = this;
+}
+
 Artefact::~Artefact()
 {
     if(m_artefactArgModel)
@@ -220,8 +231,12 @@ ArtefactArgModel *Artefact::createArtefactArgModel()
 }
 
 
-ArtefactModel::ArtefactModel(QObject *parent_ /*= nullptr*/)
-    : base(parent_)
+ArtefactModel::ArtefactModel(
+        QObject *parent_ /*= nullptr*/,
+        std::shared_ptr<QVector<ArtefactData *>> data_
+            /*= std::shared_ptr<QVector<ArtefactData *>>{nullptr}*/
+        )
+    : base(parent_, data_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactModel::ArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();

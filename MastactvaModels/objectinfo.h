@@ -18,7 +18,7 @@ class ObjectInfo : public QObject, public IListModelItem, private ObjectInfoData
     Q_OBJECT
 public:
     explicit ObjectInfo(ObjectInfoModel *parent_ = nullptr);
-    explicit ObjectInfo(ObjectInfoData &&data_);
+    explicit ObjectInfo(ObjectInfoData &&data_, ObjectInfoModel *parent_ = nullptr);
 
     Q_PROPERTY(int effectObjectInfoId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString effectObjectInfoName READ name WRITE setName NOTIFY nameChanged)

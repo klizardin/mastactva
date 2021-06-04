@@ -10,14 +10,26 @@
 #include "../MastactvaModels/artefact.h"
 
 
+struct ObjectArtefactData
+{
+    virtual ~ObjectArtefactData() = default;
+
+    int m_id = -1;
+    int m_effectId = -1;
+    int m_artefactId = -1;
+    int m_stepIndex = -1;
+};
+
+
 class ObjectArtefactModel;
 
 
-class ObjectArtefact : public QObject, public IListModelItem
+class ObjectArtefact : public QObject, public IListModelItem, private ObjectArtefactData
 {
     Q_OBJECT
 public:
     explicit ObjectArtefact(ObjectArtefactModel *parent_ = nullptr);
+    explicit ObjectArtefact(ObjectArtefactData &&data_, ObjectArtefactModel *parent_ = nullptr);
     virtual ~ObjectArtefact() override;
 
     Q_PROPERTY(int objectArtefactId READ id WRITE setId NOTIFY idChanged)
@@ -71,24 +83,26 @@ private:
     ObjectArtefactModel *m_effectArtefactModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_artefactId = -1;
-    int m_stepIndex = -1;
     ArtefactModel *m_artefactModel = nullptr;
+
+    friend class ListModelBaseOfData<ObjectArtefactData, ObjectArtefactModel, ObjectArtefact>;
 };
 
 
-class ObjectArtefactModel : public ListModelBaseOfData<ObjectArtefact, ObjectArtefactModel>
+class ObjectArtefactModel : public ListModelBaseOfData<ObjectArtefactData, ObjectArtefactModel, ObjectArtefact>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<ObjectArtefact, ObjectArtefactModel>;
+    using base = ListModelBaseOfData<ObjectArtefactData, ObjectArtefactModel, ObjectArtefact>;
 
 public:
-    explicit ObjectArtefactModel(QObject *parent_ = nullptr);
+    explicit ObjectArtefactModel(
+            QObject *parent_ = nullptr,
+            std::shared_ptr<QVector<ObjectArtefactData *>> data_
+                = std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}
+            );
 
     LAYOUT_MODEL_IMPL();
 

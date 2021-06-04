@@ -12,9 +12,15 @@ EffectObjects::EffectObjects(EffectObjectsModel *parent_ /*= nullptr*/)
     m_effectObjectsModel = parent_;
 }
 
-EffectObjects::EffectObjects(EffectObjectsData &&dataBase_)
-    : EffectObjectsData(std::move(dataBase_))
+EffectObjects::EffectObjects(EffectObjectsData &&dataBase_, EffectObjectsModel *parent_ /*= nullptr*/)
+    : QObject(parent_),
+      EffectObjectsData(std::move(dataBase_))
 {
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectObjects::EffectObjects()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+
+    m_effectObjectsModel = parent_;
 }
 
 EffectObjects::~EffectObjects()

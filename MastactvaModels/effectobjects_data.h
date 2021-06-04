@@ -5,6 +5,7 @@
 #include <memory>
 #include <QVector>
 #include "../MastactvaModels/objectinfo_data.h"
+//#include "../MastactvaModels/objectartefact_data.h"
 
 
 struct EffectObjectsData
