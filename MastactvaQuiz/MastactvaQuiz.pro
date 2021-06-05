@@ -116,6 +116,7 @@ unix: SOURCES += \
         effectargvalue.cpp    \
         effect.cpp    \
         imagepointeffect.cpp    \
+        artefact_data.cpp   \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
@@ -232,6 +233,7 @@ unix: HEADERS += \
     imagepointeffect.h  \
     gallerymodelview.h  \
     questionanswermodelview.h   \
+    artefact_data.h \
     artefact.h  \
     artefacttype.h    \
     artefactargtype.h \

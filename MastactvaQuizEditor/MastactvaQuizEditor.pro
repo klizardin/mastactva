@@ -127,6 +127,7 @@ unix: HEADERS += \
         questionanswer.h    \
         userstep.h  \
         quizuser.h  \
+        artefact_data.h \
         artefact.h    \
         artefacttype.h    \
         artefactargtype.h \
@@ -195,6 +196,7 @@ unix: SOURCES += \
         answer.cpp  \
         questionanswer.cpp  \
         quizuser.cpp    \
+        artefact_data.cpp   \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
