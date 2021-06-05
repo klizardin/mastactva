@@ -132,6 +132,7 @@ unix: HEADERS += \
         artefacttype.h    \
         artefactargtype.h \
         artefactargstorage.h    \
+        artefactarg_data.h  \
         artefactarg.h \
         translation.h   \
         objectinfo_data.h   \
@@ -201,6 +202,7 @@ unix: SOURCES += \
         artefacttype.cpp    \
         artefactargtype.cpp \
         artefactargstorage.cpp  \
+        artefactarg_data.cpp    \
         artefactarg.cpp \
         translation.cpp \
         objectinfo_data.cpp \
