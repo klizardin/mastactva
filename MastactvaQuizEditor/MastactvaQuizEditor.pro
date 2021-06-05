@@ -135,6 +135,7 @@ unix: HEADERS += \
         translation.h   \
         objectinfo_data.h   \
         objectinfo.h  \
+        objectartefact_data.h   \
         objectartefact.h    \
         effectobjects_data.h    \
         effectobjects.h \
@@ -202,6 +203,7 @@ unix: SOURCES += \
         translation.cpp \
         objectinfo_data.cpp \
         objectinfo.cpp    \
+        objectartefact_data.cpp \
         objectartefact.cpp  \
         effectobjects_data.cpp  \
         effectobjects.cpp   \
