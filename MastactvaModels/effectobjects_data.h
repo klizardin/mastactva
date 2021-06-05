@@ -5,7 +5,7 @@
 #include <memory>
 #include <QVector>
 #include "../MastactvaModels/objectinfo_data.h"
-//#include "../MastactvaModels/objectartefact_data.h"
+#include "../MastactvaModels/objectartefact_data.h"
 
 
 struct EffectObjectsData
@@ -22,6 +22,7 @@ struct EffectObjectsData
     int m_stepIndex = -1;
 
     std::shared_ptr<QVector<ObjectInfoData *>> m_objectInfoData;
+    std::shared_ptr<QVector<ObjectArtefactData *>> m_objectArtefactData;
 
     EffectObjectsData(const EffectObjectsData &data_) = delete;
     EffectObjectsData & operator = (const EffectObjectsData &data_) = delete;

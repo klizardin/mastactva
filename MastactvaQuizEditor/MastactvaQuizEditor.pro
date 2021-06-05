@@ -127,14 +127,17 @@ unix: HEADERS += \
         questionanswer.h    \
         userstep.h  \
         quizuser.h  \
+        artefact_data.h \
         artefact.h    \
         artefacttype.h    \
         artefactargtype.h \
         artefactargstorage.h    \
+        artefactarg_data.h  \
         artefactarg.h \
         translation.h   \
         objectinfo_data.h   \
         objectinfo.h  \
+        objectartefact_data.h   \
         objectartefact.h    \
         effectobjects_data.h    \
         effectobjects.h \
@@ -194,14 +197,17 @@ unix: SOURCES += \
         answer.cpp  \
         questionanswer.cpp  \
         quizuser.cpp    \
+        artefact_data.cpp   \
         artefact.cpp    \
         artefacttype.cpp    \
         artefactargtype.cpp \
         artefactargstorage.cpp  \
+        artefactarg_data.cpp    \
         artefactarg.cpp \
         translation.cpp \
         objectinfo_data.cpp \
         objectinfo.cpp    \
+        objectartefact_data.cpp \
         objectartefact.cpp  \
         effectobjects_data.cpp  \
         effectobjects.cpp   \

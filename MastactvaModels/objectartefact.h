@@ -7,18 +7,8 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaModels/objectartefact_data.h"
 #include "../MastactvaModels/artefact.h"
-
-
-struct ObjectArtefactData
-{
-    virtual ~ObjectArtefactData() = default;
-
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_artefactId = -1;
-    int m_stepIndex = -1;
-};
 
 
 class ObjectArtefactModel;

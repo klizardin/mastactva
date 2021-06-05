@@ -177,7 +177,7 @@ ObjectInfoModel *EffectObjects::createObjectInfoModel()
 
 ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 {
-    ObjectArtefactModel *m = new ObjectArtefactModel(this);
+    ObjectArtefactModel *m = new ObjectArtefactModel(this, m_objectArtefactData);
     m->initResponse();
     m->setLayoutRefImpl("object_info", m_effectObjectsModel->getQMLLayoutName(), "effect_object_info", false);
     m->setCurrentRef("object_info");

@@ -7,22 +7,9 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
+#include "../MastactvaModels/artefact_data.h"
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/artefactarg.h"
-
-
-struct ArtefactData
-{
-    virtual ~ArtefactData() = default;
-
-    int m_id = -1;
-    QString m_name;
-    FileSource m_filename;
-    QString m_hash;
-    int m_typeId = -1;
-    QString m_description;
-    QDateTime m_created;
-};
 
 
 class ArtefactModel;
