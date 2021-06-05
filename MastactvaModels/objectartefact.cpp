@@ -119,7 +119,7 @@ void ObjectArtefact::setStepIndex(const int &stepIndex_)
 
 ArtefactModel *ObjectArtefact::createArtefactModel()
 {
-    ArtefactModel *m = new ArtefactModel(this);
+    ArtefactModel *m = new ArtefactModel(this, m_artefactData);
     m->initResponse();
     m->setLayoutRefImpl("id", m_effectArtefactModel->getQMLLayoutName(), "artefact");
     m->setCurrentRef("id");

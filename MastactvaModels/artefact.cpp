@@ -216,7 +216,7 @@ QString Artefact::getObjectName() const
 
 ArtefactArgModel *Artefact::createArtefactArgModel()
 {
-    ArtefactArgModel *m = new ArtefactArgModel(this);
+    ArtefactArgModel *m = new ArtefactArgModel(this, m_artefactArgData);
     m->initResponse();
     m->setLayoutRefImpl("artefact", m_artefactModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("artefact");
