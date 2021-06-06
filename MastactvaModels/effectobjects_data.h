@@ -16,6 +16,8 @@ public:
     virtual ~EffectObjectsData() = default;
 
     EffectObjectsData & operator = (EffectObjectsData &&data_);
+
+    // to extract data from model object
     std::unique_ptr<EffectObjectsData> copy() const;
 
 public:
