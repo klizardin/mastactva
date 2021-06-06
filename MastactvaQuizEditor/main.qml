@@ -499,6 +499,10 @@ ApplicationWindow {
         function onEffectObjectArtefacsCurrentIndexChanged()
         {
             effectObjectArtefactsList.currentIndex = effectObjectArtefactsCurrentIndex
+            if(effectObjectArtefactsCurrentModel !== null && effectObjectArtefactsCurrentModel !== undefined)
+            {
+                effectObjectArtefactsCurrentModel.currentIndex = effectObjectArtefactsCurrentIndex
+            }
         }
 
         function onEffectArgumentsCurrentIndexChanged()
