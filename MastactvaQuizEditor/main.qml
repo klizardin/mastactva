@@ -459,13 +459,12 @@ ApplicationWindow {
                         {
                             effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
+                            return;
                         }
                         else
                         {
                             effectObjectArtefacsModel.listReloaded.connect(effectObjectArtefacsModelRelistLoaded)
-                            clearEffectObjectArtefacsCurrent()
                         }
-                        return;
                     }
                 }
             }
@@ -483,6 +482,7 @@ ApplicationWindow {
                     var effectObjectArtefacsModel = effectObjectItem.effectObjectsObjectArtefacts
                     if(effectObjectArtefacsModel !== null && effectObjectArtefacsModel !== undefined)
                     {
+                        effectObjectArtefacsModel.listReloaded.disconnect(effectObjectArtefacsModelRelistLoaded)
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
                             effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
