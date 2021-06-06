@@ -24,3 +24,28 @@ ArtefactData &ArtefactData::operator = (ArtefactData &&data_)
 
     return *this;
 }
+
+std::unique_ptr<ArtefactData> ArtefactData::copy() const
+{
+    std::unique_ptr<ArtefactData> result = std::make_unique<ArtefactData>();
+    result->m_id = m_id;
+    result->m_name = m_name;
+    result->m_filename = m_filename;
+    result->m_hash = m_hash;
+    result->m_typeId = m_typeId;
+    result->m_description = m_description;
+    result->m_created = m_created;
+    Q_ASSERT(result->m_artefactArgData.operator bool());
+    if(m_artefactArgData.operator bool())
+    {
+        for(const ArtefactArgData *elem_: *m_artefactArgData)
+        {
+            if(nullptr == elem_)
+            {
+                continue;
+            }
+            result->m_artefactArgData->push_back(elem_->copy().release());
+        }
+    }
+    return result;
+}

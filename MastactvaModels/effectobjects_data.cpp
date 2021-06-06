@@ -23,3 +23,36 @@ EffectObjectsData & EffectObjectsData::operator = (EffectObjectsData &&data_)
     return *this;
 }
 
+std::unique_ptr<EffectObjectsData> EffectObjectsData::copy() const
+{
+    std::unique_ptr<EffectObjectsData> result = std::make_unique<EffectObjectsData>();
+    result->m_id = m_id;
+    result->m_effectId = m_effectId;
+    result->m_objectInfoId = m_objectInfoId;
+    result->m_stepIndex = m_stepIndex;
+    Q_ASSERT(result->m_objectInfoData.operator bool());
+    Q_ASSERT(result->m_objectArtefactData.operator bool());
+    if(m_objectInfoData.operator bool())
+    {
+        for(const ObjectInfoData *elem_ : *m_objectInfoData)
+        {
+            if(nullptr == elem_)
+            {
+                continue;
+            }
+            result->m_objectInfoData->push_back(elem_->copy().release());
+        }
+    }
+    if(m_objectArtefactData.operator bool())
+    {
+        for(const ObjectArtefactData *elem_ : *m_objectArtefactData)
+        {
+            if(nullptr == elem_)
+            {
+                continue;
+            }
+            result->m_objectArtefactData->push_back(elem_->copy().release());
+        }
+    }
+    return result;
+}

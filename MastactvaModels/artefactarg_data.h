@@ -2,14 +2,20 @@
 #define ARTEFACTARG_DATA_H
 
 
+#include <memory>
 #include <QString>
 #include <QDateTime>
 
 
 struct ArtefactArgData
 {
+public:
+    ArtefactArgData() = default;
     virtual ~ArtefactArgData() = default;
 
+    std::unique_ptr<ArtefactArgData> copy() const;
+
+public:
     int m_id = -1;
     int m_artefactId = -1;
     int m_argTypeId = -1;

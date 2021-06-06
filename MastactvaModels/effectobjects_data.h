@@ -10,12 +10,15 @@
 
 struct EffectObjectsData
 {
+public:
     EffectObjectsData();
     EffectObjectsData(EffectObjectsData &&data_);
     virtual ~EffectObjectsData() = default;
 
     EffectObjectsData & operator = (EffectObjectsData &&data_);
+    std::unique_ptr<EffectObjectsData> copy() const;
 
+public:
     int m_id = -1;
     int m_effectId = -1;
     int m_objectInfoId = -1;

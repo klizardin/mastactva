@@ -9,12 +9,15 @@
 
 struct ObjectArtefactData
 {
+public:
     ObjectArtefactData();
     ObjectArtefactData(ObjectArtefactData &&data_);
     virtual ~ObjectArtefactData() = default;
 
     ObjectArtefactData &operator = (ObjectArtefactData &&data_);
+    std::unique_ptr<ObjectArtefactData> copy() const;
 
+public:
     int m_id = -1;
     int m_effectId = -1;
     int m_artefactId = -1;

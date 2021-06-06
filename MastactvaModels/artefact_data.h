@@ -12,12 +12,15 @@
 
 struct ArtefactData
 {
+public:
     ArtefactData();
     ArtefactData(ArtefactData &&data_);
     virtual ~ArtefactData() = default;
 
     ArtefactData &operator = (ArtefactData &&data_);
+    std::unique_ptr<ArtefactData> copy() const;
 
+public:
     int m_id = -1;
     QString m_name;
     FileSource m_filename;
