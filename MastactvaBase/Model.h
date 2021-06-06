@@ -205,7 +205,7 @@ public:
         }
         const int row = index_.row();
         if(row < 0 || row >= m_data->size()) { return QVariant(); }
-        const DataObjectType *item = static_cast<const DataObjectType *>((*m_data)[row]);
+        const DataObjectType *item = dynamic_cast<const DataObjectType *>((*m_data)[row]);
         return getDataLayout<DataObjectType>().getModelValue(item, role_);
     }
 
@@ -217,7 +217,7 @@ public:
         }
         const int row = index_.row();
         if(row < 0 || row >= m_data->size()) { return false; }
-        DataObjectType *item = static_cast<DataObjectType *>((*m_data)[row]);
+        DataObjectType *item = dynamic_cast<DataObjectType *>((*m_data)[row]);
         return getDataLayout<DataObjectType>().setModelValue(item, role_, value_);
     }
 
@@ -263,7 +263,7 @@ public:
         if(!isCurrentIndexValid(m_data->size())) { return QVariant::fromValue(-1); }
         return getDataLayout<DataObjectType>().getSpecialFieldValue(
                     layout::SpecialFieldEn::appId,
-                    static_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]));
+                    dynamic_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]));
     }
 
     virtual bool getValuesForAppId(const QVariant &appId_, QHash<QString, QVariant> &values_) const override
@@ -276,7 +276,11 @@ public:
         if(!item)
         {
             if(!isCurrentIndexValid(m_data->size())) { return false; }
-            item = static_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+            item = dynamic_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+        }
+        if(!item)
+        {
+            return false;
         }
         return getDataLayout<DataObjectType>().getJsonValues(item, values_);
     }
@@ -291,7 +295,11 @@ public:
         if(!item)
         {
             if(!isCurrentIndexValid(m_data->size())) { return QVariant(); }
-            item = static_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+            item = dynamic_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+        }
+        if(!item)
+        {
+            return false;
         }
         return getDataLayout<DataObjectType>().getIdJsonValue(item);
     }
@@ -306,7 +314,11 @@ public:
         if(!item)
         {
             if(!isCurrentIndexValid(m_data->size())) { return QVariant(); }
-            item = static_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+            item = dynamic_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+        }
+        if(!item)
+        {
+            return false;
         }
         return getDataLayout<DataObjectType>().getJsonValue(item, jsonFieldName);
     }
@@ -323,11 +335,11 @@ public:
         {
             if(!item) { return false; }
             const QVariant id = getDataLayout<DataObjectType>().getIdJsonValue(
-                        static_cast<const DataObjectType *>(item)
+                        dynamic_cast<const DataObjectType *>(item)
                         );
-            return id == id_;
+            return id.isValid() && id == id_;
         });
-        return std::cend(*m_data) == fit ? nullptr : static_cast<const DataObjectType *>(*fit);
+        return std::cend(*m_data) == fit ? nullptr : dynamic_cast<const DataObjectType *>(*fit);
     }
 
     DataObjectType *findDataItemByIdImpl(const QVariant &id_)
@@ -339,7 +351,7 @@ public:
 
     QVariant findItemByIdImpl(const QVariant &id_)
     {
-        return QVariant::fromValue(static_cast<QObject *>(findDataItemByIdImpl(id_)));
+        return QVariant::fromValue(dynamic_cast<QObject *>(findDataItemByIdImpl(id_)));
     }
 
     const DataObjectType *findDataItemByAppIdImpl(const QVariant &appId_) const
@@ -360,10 +372,10 @@ public:
             if(!item) { return false; }
             const QVariant appId = getDataLayout<DataObjectType>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
-                        static_cast<const DataObjectType *>(item));
-            return appId1.isValid() && appId1 == appId;
+                        dynamic_cast<const DataObjectType *>(item));
+            return appId.isValid() && appId1.isValid() && appId1 == appId;
         });
-        return std::cend(*m_data) == fit ? nullptr : static_cast<const DataObjectType*>(*fit);
+        return std::cend(*m_data) == fit ? nullptr : dynamic_cast<const DataObjectType*>(*fit);
     }
 
     bool selectDataItemByAppIdImpl(const QVariant &appId_)
@@ -380,8 +392,8 @@ public:
             if(!item) { return false; }
             const QVariant appId = getDataLayout<DataObjectType>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
-                        static_cast<const DataObjectType *>(item));
-            return appId_.isValid() && appId_ == appId;
+                        dynamic_cast<const DataObjectType *>(item));
+            return appId.isValid() && appId_.isValid() && appId_ == appId;
         });
         if(std::cend(*m_data) == fit) { return false; }
         const int ni = std::distance(std::cbegin(*m_data), fit);
@@ -404,9 +416,9 @@ public:
         {
             if(!item) { return false; }
             const QVariant id = getDataLayout<DataObjectType>().getIdJsonValue(
-                        static_cast<const DataObjectType *>(item)
+                        dynamic_cast<const DataObjectType *>(item)
                         );
-            return id_.isValid() && id_ == id;
+            return id.isValid() && id_.isValid() && id_ == id;
         });
         if(std::cend(*m_data) == fit) { return false; }
         const int ni = std::distance(std::cbegin(*m_data), fit);
@@ -423,7 +435,7 @@ public:
             return nullptr;
         }
         if(!isIndexValid(index_, m_data->size())) { return nullptr; }
-        return static_cast<const DataObjectType *>((*m_data)[index_]);
+        return dynamic_cast<const DataObjectType *>((*m_data)[index_]);
     }
 
     DataObjectType *dataItemAtImpl(int index_)
@@ -442,7 +454,7 @@ public:
 
     QVariant findItemByAppIdImpl(const QVariant &appId_)
     {
-        return QVariant::fromValue(static_cast<QObject *>(
+        return QVariant::fromValue(dynamic_cast<QObject *>(
                                        findDataItemByAppIdImpl(appId_))
                                    );
     }
@@ -487,7 +499,7 @@ public:
             return QVariant();
         }
         if(!isIndexValid(index_, m_data->size())) { return QVariant(); }
-        const DataObjectType* item = static_cast<const DataObjectType* >(m_data->at(index_));
+        const DataObjectType* item = dynamic_cast<const DataObjectType* >(m_data->at(index_));
         return getDataLayout<DataObjectType>().getIdJsonValue(item);
     }
 
@@ -498,14 +510,14 @@ public:
             return QVariant();
         }
         if(!isIndexValid(index_, m_data->size())) { return QVariant(); }
-        const DataObjectType* item = static_cast<const DataObjectType* >(m_data->at(index_));
+        const DataObjectType* item = dynamic_cast<const DataObjectType* >(m_data->at(index_));
         return getDataLayout<DataObjectType>().getSpecialFieldValue(layout::SpecialFieldEn::appId, item);
     }
 
     QVariant itemAtImpl(int index_) const
     {
         return QVariant::fromValue(
-                    static_cast<QObject *>(
+                    dynamic_cast<QObject *>(
                         const_cast<ListModelBaseOfData<DataType_, ModelType_, DataObjectType_> *>(this)
                         ->dataItemAtImpl(index_)
                         )
@@ -531,9 +543,13 @@ public:
         const int count = sizeImpl();
         for(int i = 0; i < count; i++)
         {
-            if(op_(static_cast<DataObjectType *>((*m_data)[i])))
+            if(nullptr == dynamic_cast<DataObjectType *>((*m_data)[i]))
             {
-                return static_cast<DataObjectType *>((*m_data)[i]);
+                continue;
+            }
+            if(op_(dynamic_cast<DataObjectType *>((*m_data)[i])))
+            {
+                return dynamic_cast<DataObjectType *>((*m_data)[i]);
             }
         }
         return nullptr;
@@ -544,7 +560,7 @@ public:
         return dataItemFindIf([&qmlFieldName_, &value_](const DataType_ *item_)->bool
         {
             return getDataLayout<DataObjectType>().getQMLValue(
-                        static_cast<const DataObjectType *>(item_),
+                        dynamic_cast<const DataObjectType *>(item_),
                         qmlFieldName_
                         ) == value_;
         });
@@ -553,7 +569,7 @@ public:
     QVariant findItemByFieldValueImpl(const QString &qmlFieldName_, const QVariant &value_) const
     {
         return QVariant::fromValue(
-                    static_cast<QObject *>(
+                    dynamic_cast<QObject *>(
                         const_cast<ListModelBaseOfData<DataType_, ModelType_, DataObjectType_> *>(this)
                         ->findDataItemByFieldValueImpl(qmlFieldName_,value_)
                         )
@@ -570,7 +586,11 @@ public:
         const int count = sizeImpl();
         for(int i = 0; i < count; i++)
         {
-            if(op_(static_cast<DataObjectType *>((*m_data)[i]))) { return i; }
+            if(nullptr == dynamic_cast<DataObjectType *>((*m_data)[i]))
+            {
+                continue;
+            }
+            if(op_(dynamic_cast<DataObjectType *>((*m_data)[i]))) { return i; }
         }
         return -1;
     }
@@ -585,7 +605,7 @@ public:
         {
             const QVariant iAppId = getDataLayout<DataObjectType>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
-                        static_cast<const DataObjectType *>(i)
+                        dynamic_cast<const DataObjectType *>(i)
                         );
             return appId.isValid() && iAppId.isValid() && appId == iAppId;
         });
@@ -600,7 +620,7 @@ public:
                     dta);
         getDataLayout<DataObjectType>().setSpecialFieldValue(
                     layout::SpecialFieldEn::modelInfo,
-                    QVariant::fromValue(static_cast<IListModelInfo *>(this)),
+                    QVariant::fromValue(dynamic_cast<IListModelInfo *>(this)),
                     dta);
         return dta;
     }
@@ -676,6 +696,7 @@ public:
                         itemId);
             if(request)
             {
+                Q_ASSERT(nullptr != dynamic_cast<IListModelItem *>(item_));
                 request->setItemData(dynamic_cast<IListModelItem *>(item_));
                 request->setSetCurrentItemIndex(setCurrentIndex_);
             }
@@ -702,6 +723,7 @@ public:
             RequestData *request = dataAPI->addItem(getJsonLayoutName(), item_, extraFields);
             if(request)
             {
+                Q_ASSERT(nullptr != dynamic_cast<IListModelItem *>(item_));
                 request->setItemData(dynamic_cast<IListModelItem *>(item_));
                 request->setSetCurrentItemIndex(setCurrentIndex_);
             }
@@ -718,7 +740,11 @@ public:
             return false;
         }
         if(!isIndexValid(index_, m_data->size())) { return false; }
-        return delDataItemImpl(static_cast<DataObjectType *>(m_data->at(index_)), extraFields_);
+        if(nullptr == dynamic_cast<DataObjectType *>(m_data->at(index_)))
+        {
+            return false;
+        }
+        return delDataItemImpl(dynamic_cast<DataObjectType *>(m_data->at(index_)), extraFields_);
 
     }
 
@@ -823,8 +849,8 @@ public:
                     fld = field.mid(1);
                     res |= sortIf([&fld](const DataType_ *i1_, const DataType_ *i2_)->bool
                     {
-                        const DataObjectType * i1 = static_cast<const DataObjectType *>(i1_);
-                        const DataObjectType * i2 = static_cast<const DataObjectType *>(i2_);
+                        const DataObjectType * i1 = dynamic_cast<const DataObjectType *>(i1_);
+                        const DataObjectType * i2 = dynamic_cast<const DataObjectType *>(i2_);
                         return getDataLayout<DataObjectType>().compareJsonValues(i1, i2, fld) > 0;
                     }, saveSelection_, true);
                 }
@@ -832,8 +858,8 @@ public:
                 {
                     res |= sortIf([&field](const DataType_ *i1_, const DataType_ *i2_)->bool
                     {
-                        const DataObjectType * i1 = static_cast<const DataObjectType *>(i1_);
-                        const DataObjectType * i2 = static_cast<const DataObjectType *>(i2_);
+                        const DataObjectType * i1 = dynamic_cast<const DataObjectType *>(i1_);
+                        const DataObjectType * i2 = dynamic_cast<const DataObjectType *>(i2_);
                         return getDataLayout<DataObjectType>().compareJsonValues(i1, i2, field) < 0;
                     }, saveSelection_, true);
                 }
@@ -1075,9 +1101,9 @@ protected:
             if(!item) { return false; }
             const QVariant appId = getDataLayout<DataObjectType>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
-                        static_cast<const DataObjectType *>(item)
+                        dynamic_cast<const DataObjectType *>(item)
                         );
-            return appId_.isValid() && appId_ == appId;
+            return appId.isValid() && appId_.isValid() && appId_ == appId;
         });
         if(std::cend(*m_data) == fit)
         {
@@ -1106,7 +1132,11 @@ protected:
         }
         for(const DataType_ * item: qAsConst(toRemove))
         {
-            removeItem(static_cast<const DataObjectType *>(item));
+            if(nullptr == dynamic_cast<const DataObjectType *>(item))
+            {
+                continue;
+            }
+            removeItem(dynamic_cast<const DataObjectType *>(item));
         }
     }
 
@@ -1123,7 +1153,7 @@ protected:
                                                 [&i](const QVariant &id_)
             {
                 const QVariant id = getDataLayout<DataObjectType>().getIdJsonValue(
-                            static_cast<const DataObjectType *>(i)
+                            dynamic_cast<const DataObjectType *>(i)
                             );
                 return id_.isValid() && id.isValid() && id_ == id;
             });
@@ -1151,7 +1181,7 @@ protected:
                                                 [&i](const QVariant &id_)
             {
                 const QVariant id = getDataLayout<DataObjectType>().getIdJsonValue(
-                            static_cast<const DataObjectType *>(i)
+                            dynamic_cast<const DataObjectType *>(i)
                             );
                 return id_.isValid() && id.isValid() && id_ == id;
             });
@@ -1244,7 +1274,11 @@ protected:
         loaded.clear();
         for(const DataType_ *item : qAsConst(*m_data))
         {
-            autoLoadDataItem(static_cast<const DataObjectType *>(item));
+            if(nullptr == dynamic_cast<const DataObjectType *>(item))
+            {
+                continue;
+            }
+            autoLoadDataItem(dynamic_cast<const DataObjectType *>(item));
         }
         sortByFieldsImpl(getSortFieldsImpl(), true);
         setListLoaded();
@@ -1367,9 +1401,12 @@ protected:
         {
             if(!item_)
             {
-                item_ = static_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
+                item_ = dynamic_cast<const DataObjectType *>((*m_data)[getCurrentIndexImpl()]);
             }
-            autoLoadDataItemImpl(item_);
+            if(item_)
+            {
+                autoLoadDataItemImpl(item_);
+            }
         }
     }
 
@@ -1415,7 +1452,7 @@ protected:
         {
             QVariant appId1 = getDataLayout<DataObjectType>().getSpecialFieldValue(
                         layout::SpecialFieldEn::appId,
-                        static_cast<const DataObjectType *>(i_)
+                        dynamic_cast<const DataObjectType *>(i_)
                         );
             return appId0 == appId1;
         });
@@ -1510,7 +1547,7 @@ private:
             std::unique_ptr<DataObjectType_> pn
                     = std::make_unique<DataObjectType_>(
                         std::move(*p_),
-                        static_cast<ModelType_ *>(this)
+                        dynamic_cast<ModelType_ *>(this)
                         );
             p_ = pn.release();
         }
