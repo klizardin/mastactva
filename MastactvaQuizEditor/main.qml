@@ -33,6 +33,8 @@ ApplicationWindow {
     property int effectCurrentIndex: -1
     property var effectObjectsCurrentModel: undefined
     property int effectObjectsCurrentIndex: -1
+    property var effectObjectArtefactsCurrentModel: undefined
+    property int effectObjectArtefactsCurrentIndex: -1
     property var effectArgumentsCurrentModel: undefined
     property int effectArgumentsCurrentIndex: -1
     property var effectArgumentSetsCurrentModel: undefined
@@ -434,19 +436,69 @@ ApplicationWindow {
             }
         }
 
+        function clearEffectObjectArtefacsCurrent()
+        {
+            effectObjectArtefactsList.model = 0
+            effectObjectArtefactsCurrentModel = undefined
+            effectObjectArtefactsCurrentIndex = -1
+        }
+
         function onEffectObjectCurrentIndexChanged()
         {
             effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
+                var effectObjectItem = effectObjectsCurrentModel.currentItem
+                if(effectObjectItem !== null && effectObjectItem !== undefined)
+                {
+                    var effectObjectArtefacsModel = effectObjectItem.effectObjectsObjectArtefacts
+                    if(effectObjectArtefacsModel !== null && effectObjectArtefacsModel !== undefined)
+                    {
+                        if(effectObjectArtefacsModel.isListLoaded())
+                        {
+                            effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
+                            effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
+                        }
+                        else
+                        {
+                            effectObjectArtefacsModel.listReloaded.connect(effectObjectArtefacsModelRelistLoaded)
+                            clearEffectObjectArtefacsCurrent()
+                        }
+                        return;
+                    }
+                }
             }
-            else
+            clearEffectObjectArtefacsCurrent()
+        }
+
+        function effectObjectArtefacsModelRelistLoaded()
+        {
+            if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectArgumentSetValuesCurrentModel = undefined
-                effectArgumentSetValuesList.model = 0
-                effectArgumentSetValuesCurrentIndex = -1
+                effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
+                var effectObjectItem = effectObjectsCurrentModel.currentItem
+                if(effectObjectItem !== null && effectObjectItem !== undefined)
+                {
+                    var effectObjectArtefacsModel = effectObjectItem.effectObjectsObjectArtefacts
+                    if(effectObjectArtefacsModel !== null && effectObjectArtefacsModel !== undefined)
+                    {
+                        if(effectObjectArtefacsModel.isListLoaded())
+                        {
+                            effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
+                            effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
+                            effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
+                            return
+                        }
+                    }
+                }
             }
+            clearEffectObjectArtefacsCurrent()
+        }
+
+        function onEffectObjectArtefacsCurrentIndexChanged()
+        {
+            effectObjectArtefactsList.currentIndex = effectObjectArtefactsCurrentIndex
         }
 
         function onEffectArgumentsCurrentIndexChanged()
