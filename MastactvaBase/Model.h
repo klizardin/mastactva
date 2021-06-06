@@ -351,7 +351,7 @@ public:
 
     QVariant findItemByIdImpl(const QVariant &id_)
     {
-        return QVariant::fromValue(static_cast<QObject *>(findDataItemByIdImpl(id_)));
+        return QVariant::fromValue(dynamic_cast<QObject *>(findDataItemByIdImpl(id_)));
     }
 
     const DataObjectType *findDataItemByAppIdImpl(const QVariant &appId_) const
@@ -454,7 +454,7 @@ public:
 
     QVariant findItemByAppIdImpl(const QVariant &appId_)
     {
-        return QVariant::fromValue(static_cast<QObject *>(
+        return QVariant::fromValue(dynamic_cast<QObject *>(
                                        findDataItemByAppIdImpl(appId_))
                                    );
     }
@@ -517,7 +517,7 @@ public:
     QVariant itemAtImpl(int index_) const
     {
         return QVariant::fromValue(
-                    static_cast<QObject *>(
+                    dynamic_cast<QObject *>(
                         const_cast<ListModelBaseOfData<DataType_, ModelType_, DataObjectType_> *>(this)
                         ->dataItemAtImpl(index_)
                         )
@@ -569,7 +569,7 @@ public:
     QVariant findItemByFieldValueImpl(const QString &qmlFieldName_, const QVariant &value_) const
     {
         return QVariant::fromValue(
-                    static_cast<QObject *>(
+                    dynamic_cast<QObject *>(
                         const_cast<ListModelBaseOfData<DataType_, ModelType_, DataObjectType_> *>(this)
                         ->findDataItemByFieldValueImpl(qmlFieldName_,value_)
                         )
@@ -620,7 +620,7 @@ public:
                     dta);
         getDataLayout<DataObjectType>().setSpecialFieldValue(
                     layout::SpecialFieldEn::modelInfo,
-                    QVariant::fromValue(static_cast<IListModelInfo *>(this)),
+                    QVariant::fromValue(dynamic_cast<IListModelInfo *>(this)),
                     dta);
         return dta;
     }
@@ -1547,7 +1547,7 @@ private:
             std::unique_ptr<DataObjectType_> pn
                     = std::make_unique<DataObjectType_>(
                         std::move(*p_),
-                        static_cast<ModelType_ *>(this)
+                        dynamic_cast<ModelType_ *>(this)
                         );
             p_ = pn.release();
         }
