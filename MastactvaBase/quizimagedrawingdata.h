@@ -417,89 +417,92 @@ namespace drawing_data
     };
 
 
-    template<int index_>
-    class ItemTypeBase : public ItemTypeBase<index_ - 1>
+    namespace detail
     {
-    public:
-        using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;
-        using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;
-        using base = ItemTypeBase<index_ - 1>;
-
-        template<typename ItemType_>
-        static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
+        template<int index_>
+        class ItemTypeBase : public ItemTypeBase<index_ - 1>
         {
-            if(itemIndex_ != index_)
+        public:
+            using AttributeType = Attribute<typename ItemTypeIndexTraits<index_>::type>;
+            using UniformType = Uniform<typename ItemTypeIndexTraits<index_>::type>;
+            using base = ItemTypeBase<index_ - 1>;
+
+            template<typename ItemType_>
+            static void set(IAttribute *interface_, int itemIndex_, const std::vector<ItemType_> &value_, int tupleSize_)
             {
-                base::set(interface_, itemIndex_, value_, tupleSize_);
-                return;
+                if(itemIndex_ != index_)
+                {
+                    base::set(interface_, itemIndex_, value_, tupleSize_);
+                    return;
+                }
+
+                AttributeType *attr = dynamic_cast<AttributeType *>(interface_);
+                if(!attr)
+                {
+                    return;
+                }
+                attr->set(value_, tupleSize_);
             }
 
-            AttributeType *attr = dynamic_cast<AttributeType *>(interface_);
-            if(!attr)
+            template<typename ItemType_>
+            static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
             {
-                return;
-            }
-            attr->set(value_, tupleSize_);
-        }
+                if(itemIndex_ != index_)
+                {
+                    base::set(interface_, itemIndex_, value_);
+                    return;
+                }
 
-        template<typename ItemType_>
-        static void set(IUniform *interface_, int itemIndex_, const ItemType_ &value_)
+                UniformType *uniform = dynamic_cast<UniformType *>(interface_);
+                if(!uniform)
+                {
+                    return;
+                }
+                uniform->set(value_);
+            }
+
+            template<typename ItemType_>
+            static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
+            {
+                if(itemIndex_ != index_)
+                {
+                    return base::get(interface_, itemIndex_, value_);
+                }
+
+                const UniformType *uniform = dynamic_cast<const UniformType *>(interface_);
+                if(!uniform)
+                {
+                    return false;
+                }
+                return uniform->get(value_);
+            }
+        };
+
+
+        template<>
+        class ItemTypeBase<ItemTypeConvert::minIndex - 1>
         {
-            if(itemIndex_ != index_)
+        public:
+            template<typename ItemType_>
+            static void set(IAttribute *, int , const std::vector<ItemType_> &, int )
             {
-                base::set(interface_, itemIndex_, value_);
-                return;
             }
 
-            UniformType *uniform = dynamic_cast<UniformType *>(interface_);
-            if(!uniform)
+            template<typename ItemType_>
+            static void set(IUniform *, int , const ItemType_ &)
             {
-                return;
-            }
-            uniform->set(value_);
-        }
-
-        template<typename ItemType_>
-        static bool get(const IUniform *interface_, int itemIndex_, ItemType_ &value_)
-        {
-            if(itemIndex_ != index_)
-            {
-                return base::get(interface_, itemIndex_, value_);
             }
 
-            const UniformType *uniform = dynamic_cast<const UniformType *>(interface_);
-            if(!uniform)
+            template<typename ItemType_>
+            static bool get(const IUniform *, int , ItemType_ &)
             {
                 return false;
             }
-            return uniform->get(value_);
-        }
-    };
+        };
+    } // namespace detail
 
 
-    template<>
-    class ItemTypeBase<ItemTypeConvert::minIndex - 1>
-    {
-    public:
-        template<typename ItemType_>
-        static void set(IAttribute *, int , const std::vector<ItemType_> &, int )
-        {
-        }
-
-        template<typename ItemType_>
-        static void set(IUniform *, int , const ItemType_ &)
-        {
-        }
-
-        template<typename ItemType_>
-        static bool get(const IUniform *, int , ItemType_ &)
-        {
-            return false;
-        }
-    };
-
-
-    using ItemTypeBaseSet = ItemTypeBase<ItemTypeConvert::maxIndex>;
+    using ItemTypeBaseSet = detail::ItemTypeBase<ItemTypeConvert::maxIndex>;
 
 
     struct Texture
