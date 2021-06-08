@@ -17,6 +17,7 @@ ArtefactData::ArtefactData()
             p_ = nullptr;
         }
         ptr_->clear();
+        delete ptr_;
     });
 }
 

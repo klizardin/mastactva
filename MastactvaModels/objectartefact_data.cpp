@@ -17,6 +17,7 @@ ObjectArtefactData::ObjectArtefactData()
             p_ = nullptr;
         }
         ptr_->clear();
+        delete ptr_;
     });
 }
 

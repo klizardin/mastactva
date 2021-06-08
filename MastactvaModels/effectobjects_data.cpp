@@ -17,6 +17,7 @@ EffectObjectsData::EffectObjectsData()
             p_ = nullptr;
         }
         ptr_->clear();
+        delete ptr_;
     });
     m_objectArtefactData = std::shared_ptr<QVector<ObjectArtefactData *>>(
             new QVector<ObjectArtefactData *>(),
@@ -32,6 +33,7 @@ EffectObjectsData::EffectObjectsData()
             p_ = nullptr;
         }
         ptr_->clear();
+        delete ptr_;
     });
 }
 
