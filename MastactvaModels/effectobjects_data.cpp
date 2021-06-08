@@ -3,8 +3,36 @@
 
 EffectObjectsData::EffectObjectsData()
 {
-    m_objectInfoData = std::make_shared<QVector<ObjectInfoData *>>();
-    m_objectArtefactData = std::make_shared<QVector<ObjectArtefactData *>>();
+    m_objectInfoData = std::shared_ptr<QVector<ObjectInfoData *>>(
+            new QVector<ObjectInfoData *>(),
+            [](QVector<ObjectInfoData *> *ptr_)->void
+    {
+        if(nullptr == ptr_)
+        {
+            return;
+        }
+        for(ObjectInfoData *& p_: *ptr_)
+        {
+            delete p_;
+            p_ = nullptr;
+        }
+        ptr_->clear();
+    });
+    m_objectArtefactData = std::shared_ptr<QVector<ObjectArtefactData *>>(
+            new QVector<ObjectArtefactData *>(),
+            [](QVector<ObjectArtefactData *> *ptr_)->void
+    {
+        if(nullptr == ptr_)
+        {
+            return;
+        }
+        for(ObjectArtefactData *& p_: *ptr_)
+        {
+            delete p_;
+            p_ = nullptr;
+        }
+        ptr_->clear();
+    });
 }
 
 EffectObjectsData::EffectObjectsData(EffectObjectsData &&data_)
