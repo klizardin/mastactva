@@ -747,8 +747,8 @@ ApplicationWindow {
             artefactTypeModel.loadList()
             artefactArgTypeModel.loadList()
             easingTypeModel.loadList()
-            shaderEditDialog.mastactva = mastactva
-            shaderEditDialog.artefactTypeModel = artefactTypeModel
+            artefactEditDialog.mastactva = mastactva
+            artefactEditDialog.artefactTypeModel = artefactTypeModel
             chooseEffectObjectDialog.effectObjectModel = effectObjectsModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
             effectArgumentValueEditDialog.artefactArgTypeModel = artefactArgTypeModel
@@ -1539,6 +1539,178 @@ ApplicationWindow {
             if(isValid())
             {
                 effectObjectsCurrentModel.listReloaded.disconnect(effectObjectCopied)
+            }
+            clear()
+        }
+    }
+
+    ArtefactEditDialog {
+        id: artefactEditDialog
+
+        onOpened: {
+            init()
+        }
+
+        onAccepted: {
+            update()
+            if(validState())
+            {
+                if(fieldNewItem)
+                {
+                    artefactModel.itemAdded.connect(artefactAdded)
+                    artefactModel.addItem(fieldArtefact)
+                }
+                else
+                {
+                    var itemIndex = fieldObjectArtefact.objectArtefactArtefact.indexOfItem(fieldArtefact)
+                    if(itemIndex >= 0)
+                    {
+                        fieldObjectArtefact.objectArtefactArtefact.itemSet.connect(artefactSet)
+                        fieldObjectArtefact.objectArtefactArtefact.setItem(itemIndex, fieldArtefact)
+                    }
+                    else
+                    {
+                        clear()
+                    }
+                }
+            }
+            else
+            {
+                clear()
+            }
+        }
+
+        onRejected: {
+            clear()
+        }
+
+        function validModel()
+        {
+            return effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
+        }
+
+        function validModelAndPosition()
+        {
+            return validModel() && effectObjectArtefactsCurrentInedx >= 0
+        }
+
+        function validState()
+        {
+            var validEffectObjectArtefact = fieldObjectArtefact !== null && fieldObjectArtefact !== undefined
+            var validArtefact = fieldArtefact !== null && fieldArtefact !== undefined
+            var validArgs = validEffectObjectArtefact && validArtefact
+            return validArgs && validModel()
+        }
+
+        function createNew()
+        {
+            clear()
+            if(!validModel())
+            {
+                return
+            }
+            fieldNewItem = true
+            fieldObjectArtefact = effectObjectArtefactsCurrentModel.createItem()
+            fieldArtefact = artefactModel.createItem()
+            if(validState())
+            {
+                open()
+            }
+        }
+
+        function editCurrent()
+        {
+            clear()
+            if(!validModelAndPosition())
+            {
+                return;
+            }
+            fieldNewItem = false
+            fieldObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
+            fieldArtefact = fieldObjectArtefact.objectArtefactArtefact.currentItem
+            if(validState())
+            {
+                open()
+            }
+        }
+
+        function clear()
+        {
+            fieldObjectArtefact = undefined
+            fieldArtefact = undefined
+            fieldNewItem = false
+        }
+
+        function artefactAdded()
+        {
+            if(validState())
+            {
+                artefactModel.itemAdded.connect(artefactAdded)
+                objectArtefactProcess()
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function artefactSet()
+        {
+            if(validState())
+            {
+                fieldObjectArtefact.objectArtefactArtefact.itemSet.disconnect(effectObjectArtefactSet)
+                objectArtefactProcess()
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function objectArtefactProcess()
+        {
+            if(validState())
+            {
+                if(fieldNewItem)
+                {
+                    effectObjectArtefactAdded.setArtefactId(fieldArtefact.artefactId)
+                    effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
+                    effectObjectArtefactsCurrentModel.addItem(effectObjectArtefact)
+                }
+                else
+                {
+                    var itemIndex = effectObjectArtefactsCurrentModel.indexOfItem(effectObjectArtefact)
+                    if(itemIndex >= 0)
+                    {
+                        effectObjectArtefactsCurrentModel.itemSet.connect(effectObjectArtefactSet)
+                        effectObjectArtefactsCurrentModel.setItem(itemIndex, effectObjectArtefact)
+                    }
+                    else
+                    {
+                        clear()
+                    }
+                }
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function effectObjectArtefactAdded()
+        {
+            if(validState())
+            {
+                effectObjectArtefactsCurrentModel.itemAdded.disconnect(effectObjectArtefactAdded)
+            }
+            clear()
+        }
+
+        function effectObjectArtefactSet()
+        {
+            if(validState())
+            {
+                effectObjectArtefactsCurrentModel.itemSet.disconnect(effectObjectArtefactSet)
             }
             clear()
         }
