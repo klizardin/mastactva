@@ -3,6 +3,22 @@
 
 ObjectArtefactData::ObjectArtefactData()
 {
+    m_artefactData = std::shared_ptr<QVector<ArtefactData *>>(
+            new QVector<ArtefactData *>(),
+            [](QVector<ArtefactData *> *ptr_)->void
+    {
+        if(nullptr == ptr_)
+        {
+            return;
+        }
+        for(ArtefactData *& p_: *ptr_)
+        {
+            delete p_;
+            p_ = nullptr;
+        }
+        ptr_->clear();
+        delete ptr_;
+    });
 }
 
 ObjectArtefactData::ObjectArtefactData(ObjectArtefactData &&data_)
