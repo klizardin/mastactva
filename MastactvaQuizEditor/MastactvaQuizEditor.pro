@@ -135,8 +135,11 @@ unix: HEADERS += \
         quizuser.h  \
         artefact_data.h \
         artefact.h    \
+        artefacttype_data.h \
         artefacttype.h    \
+        artefactargtype_data.h  \
         artefactargtype.h \
+        artefactargstorage_data.h   \
         artefactargstorage.h    \
         artefactarg_data.h  \
         artefactarg.h \
@@ -211,8 +214,11 @@ unix: SOURCES += \
         quizuser.cpp    \
         artefact_data.cpp   \
         artefact.cpp    \
+        artefacttype_data.cpp   \
         artefacttype.cpp    \
+        artefactargtype_data.cpp    \
         artefactargtype.cpp \
+        artefactargstorage_data.cpp \
         artefactargstorage.cpp  \
         artefactarg_data.cpp    \
         artefactarg.cpp \
