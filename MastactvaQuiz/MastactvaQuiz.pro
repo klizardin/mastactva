@@ -99,6 +99,7 @@ unix: SOURCES += \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
         quizimageopengldrawingdata.cpp  \
+        drawingdata_utils.cpp   \
         drawingdata_artefact.cpp    \
         drawingdata_artefactarg.cpp \
         drawingdata_effectobjects.cpp   \
@@ -220,6 +221,7 @@ unix: HEADERS += \
     quizimage.h \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h    \
+    drawingdata_utils.h \
     drawingdata_artefact.h  \
     drawingdata_artefactarg.h   \
     drawingdata_effectobjects.h \

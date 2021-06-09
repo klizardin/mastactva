@@ -67,7 +67,9 @@ unix: QMAKE_CXXFLAGS_WARN_OFF += -Wunused-variable
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        drawing_tests.cpp \
         main.cpp \
+        object_tests.cpp \
         quizimage.cpp
 
 unix: SOURCES +=    \
@@ -78,6 +80,7 @@ unix: SOURCES +=    \
     objectartefact_data.cpp \
     artefact_data.cpp    \
     artefactarg_data.cpp    \
+    drawingdata_utils.cpp   \
     drawingdata_artefact.cpp    \
     drawingdata_artefactarg.cpp \
     drawingdata_effectobjects.cpp   \
@@ -87,6 +90,8 @@ unix: SOURCES +=    \
 
 
 HEADERS += \
+    drawing_tests.h \
+    object_tests.h \
     quizimage.h
 
 unix: HEADERS +=    \
@@ -97,6 +102,7 @@ unix: HEADERS +=    \
     objectartefact_data.h   \
     artefact_data.h  \
     artefactarg_data.h  \
+    drawingdata_utils.h \
     drawingdata_artefact.h  \
     drawingdata_artefactarg.h   \
     drawingdata_effectobjects.h \

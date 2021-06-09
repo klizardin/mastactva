@@ -5,4 +5,14 @@
 #include "../MastactvaModels/objectartefact_data.h"
 
 
+class DrawingDataObjectArtefact : private ObjectArtefactData
+{
+public:
+    DrawingDataObjectArtefact() = default;
+    DrawingDataObjectArtefact(ObjectArtefactData &&data_);
+
+    ObjectArtefactData * getData();
+};
+
+
 #endif // DRAWINGDATA_OBJECTARTEFACT_H
