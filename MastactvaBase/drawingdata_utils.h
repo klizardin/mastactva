@@ -43,8 +43,8 @@ class IFileSource
 {
 public:
     virtual ~IFileSource() = default;
-    virtual QString getText(const FileSource &filename_) const;
-    virtual QImage getImage(const FileSource &filename_) const;
+    virtual QString getText(const FileSource &filename_) const = 0;
+    virtual QImage getImage(const FileSource &filename_) const = 0;
 };
 
 }
