@@ -3,6 +3,8 @@
 
 
 #include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/utils.h"
 
 
 class MapFileSource : public drawingdata::IFileSource
@@ -21,6 +23,19 @@ private:
     QHash<QString, QString> m_texts;
     QHash<QString, QImage> m_images;
 };
+
+
+namespace drawing_objects
+{
+    class BaseTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_) const override;
+    };
+}
+
+
+//using TestCaseInitializer = drawing_objects::BaseTest;
 
 
 #endif // OBJECT_TESTS_H

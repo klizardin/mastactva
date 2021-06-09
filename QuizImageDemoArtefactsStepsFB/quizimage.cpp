@@ -12,6 +12,7 @@
 #include <QVector>
 #include "../MastactvaBase/quizimageopengldrawingdata.h"
 #include "drawing_tests.h"
+#include "object_tests.h"
 #include "../MastactvaBase/utils.h"
 
 
