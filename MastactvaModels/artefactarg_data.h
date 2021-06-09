@@ -5,6 +5,8 @@
 #include <memory>
 #include <QString>
 #include <QDateTime>
+#include "../MastactvaModels/artefactargtype_data.h"
+#include "../MastactvaModels/artefactargstorage_data.h"
 
 
 struct ArtefactArgData
@@ -14,8 +16,8 @@ public:
     ArtefactArgData(
             int id_,
             int artefactId_,
-            int argTypeId_,
-            int argStorageId_,
+            ArtefactArgTypeEn argTypeId_,
+            ArtefactArgStorageEn argStorageId_,
             const QString &name_,
             const QString &defaultValue_,
             const QString &description_,

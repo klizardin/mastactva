@@ -1,4 +1,5 @@
 #include "artefact_data.h"
+#include "../MastactvaBase/utils.h"
 
 
 inline
@@ -33,7 +34,7 @@ ArtefactData::ArtefactData(
         const QString &name_,
         const FileSource &filename_,
         const QString &hash_,
-        int typeId_,
+        ArtefactTypeEn typeId_,
         const QString &description_,
         const QDateTime &created_
         )
@@ -41,7 +42,7 @@ ArtefactData::ArtefactData(
       m_name(name_),
       m_filename(filename_),
       m_hash(hash_),
-      m_typeId(typeId_),
+      m_typeId(to_underlying(typeId_)),
       m_description(description_),
       m_created(created_)
 {

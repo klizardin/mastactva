@@ -8,6 +8,7 @@
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaModels/artefactarg_data.h"
+#include "../MastactvaModels/artefacttype_data.h"
 
 
 struct ArtefactData
@@ -19,7 +20,7 @@ public:
             const QString &name_,
             const FileSource &filename_,
             const QString &hash_,
-            int typeId_,
+            ArtefactTypeEn typeId_,
             const QString &description_,
             const QDateTime &created_
             );
