@@ -9,11 +9,10 @@
 namespace drawingdata
 {
 
-class utils
+namespace utils
 {
-public:
-    template<class DataType_, class DrawingDataType_>
-    static void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
+    template<class DataType_, class DrawingDataType_> inline
+    void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
     {
         if(data_.operator bool())
         {
@@ -29,7 +28,7 @@ public:
             }
         }
     }
-};
+}
 
 }
 
