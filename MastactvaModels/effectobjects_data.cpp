@@ -1,11 +1,12 @@
 #include "effectobjects_data.h"
 
 
-EffectObjectsData::EffectObjectsData()
+inline
+std::shared_ptr<QVector<ObjectInfoData *>> createObjectInfoData()
 {
-    m_objectInfoData = std::shared_ptr<QVector<ObjectInfoData *>>(
-            new QVector<ObjectInfoData *>(),
-            [](QVector<ObjectInfoData *> *ptr_)->void
+    return std::shared_ptr<QVector<ObjectInfoData *>>(
+         new QVector<ObjectInfoData *>(),
+         [](QVector<ObjectInfoData *> *ptr_)->void
     {
         if(nullptr == ptr_)
         {
@@ -19,9 +20,14 @@ EffectObjectsData::EffectObjectsData()
         ptr_->clear();
         delete ptr_;
     });
-    m_objectArtefactData = std::shared_ptr<QVector<ObjectArtefactData *>>(
-            new QVector<ObjectArtefactData *>(),
-            [](QVector<ObjectArtefactData *> *ptr_)->void
+}
+
+inline
+std::shared_ptr<QVector<ObjectArtefactData *>> createObjectArtefactData()
+{
+    return std::shared_ptr<QVector<ObjectArtefactData *>>(
+        new QVector<ObjectArtefactData *>(),
+        [](QVector<ObjectArtefactData *> *ptr_)->void
     {
         if(nullptr == ptr_)
         {
@@ -35,6 +41,27 @@ EffectObjectsData::EffectObjectsData()
         ptr_->clear();
         delete ptr_;
     });
+}
+
+EffectObjectsData::EffectObjectsData()
+{
+    m_objectInfoData = createObjectInfoData();
+    m_objectArtefactData = createObjectArtefactData();
+}
+
+EffectObjectsData::EffectObjectsData(
+        int id_,
+        int effectId_,
+        int objectInfoId_,
+        int stepIndex_
+        )
+    : m_id(id_),
+      m_effectId(effectId_),
+      m_objectInfoId(objectInfoId_),
+      m_stepIndex(stepIndex_)
+{
+    m_objectInfoData = createObjectInfoData();
+    m_objectArtefactData = createObjectArtefactData();
 }
 
 EffectObjectsData::EffectObjectsData(EffectObjectsData &&data_)

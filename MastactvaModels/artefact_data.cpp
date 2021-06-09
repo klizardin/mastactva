@@ -1,11 +1,13 @@
 #include "artefact_data.h"
+#include "../MastactvaBase/utils.h"
 
 
-ArtefactData::ArtefactData()
+inline
+std::shared_ptr<QVector<ArtefactArgData *>> createArtefactArgData()
 {
-    m_artefactArgData = std::shared_ptr<QVector<ArtefactArgData *>>(
-            new QVector<ArtefactArgData *>(),
-            [](QVector<ArtefactArgData *> *ptr_)->void
+    return std::shared_ptr<QVector<ArtefactArgData *>>(
+        new QVector<ArtefactArgData *>(),
+        [](QVector<ArtefactArgData *> *ptr_)->void
     {
         if(nullptr == ptr_)
         {
@@ -19,6 +21,32 @@ ArtefactData::ArtefactData()
         ptr_->clear();
         delete ptr_;
     });
+}
+
+
+ArtefactData::ArtefactData()
+{
+    m_artefactArgData = createArtefactArgData();
+}
+
+ArtefactData::ArtefactData(
+        int id_,
+        const QString &name_,
+        const FileSource &filename_,
+        const QString &hash_,
+        ArtefactTypeEn typeId_,
+        const QString &description_,
+        const QDateTime &created_
+        )
+    : m_id(id_),
+      m_name(name_),
+      m_filename(filename_),
+      m_hash(hash_),
+      m_typeId(to_underlying(typeId_)),
+      m_description(description_),
+      m_created(created_)
+{
+    m_artefactArgData = createArtefactArgData();
 }
 
 ArtefactData::ArtefactData(ArtefactData &&data_)

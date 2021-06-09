@@ -1,24 +1,50 @@
 #include "objectartefact_data.h"
 
 
+inline
+std::shared_ptr<QVector<ArtefactData *>> createArtefactData()
+{
+    return std::shared_ptr<QVector<ArtefactData *>>(
+                new QVector<ArtefactData *>(),
+                [](QVector<ArtefactData *> *ptr_)->void
+        {
+            if(nullptr == ptr_)
+            {
+                return;
+            }
+            for(ArtefactData *& p_: *ptr_)
+            {
+                delete p_;
+                p_ = nullptr;
+            }
+            ptr_->clear();
+            delete ptr_;
+        });
+}
+
+
 ObjectArtefactData::ObjectArtefactData()
 {
-    m_artefactData = std::shared_ptr<QVector<ArtefactData *>>(
-            new QVector<ArtefactData *>(),
-            [](QVector<ArtefactData *> *ptr_)->void
+    m_artefactData = createArtefactData();
+}
+
+ObjectArtefactData::ObjectArtefactData(
+        int id_,
+        int effectId_,
+        int artefactId_,
+        int stepIndex_,
+        ArtefactData *artefact_
+        )
+    : m_id(id_),
+     m_effectId(effectId_),
+     m_artefactId(artefactId_),
+     m_stepIndex(stepIndex_)
+{
+    m_artefactData = createArtefactData();
+    if(m_artefactData.operator bool())
     {
-        if(nullptr == ptr_)
-        {
-            return;
-        }
-        for(ArtefactData *& p_: *ptr_)
-        {
-            delete p_;
-            p_ = nullptr;
-        }
-        ptr_->clear();
-        delete ptr_;
-    });
+        m_artefactData->push_back(artefact_);
+    }
 }
 
 ObjectArtefactData::ObjectArtefactData(ObjectArtefactData &&data_)

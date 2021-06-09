@@ -8,12 +8,22 @@
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaModels/artefactarg_data.h"
+#include "../MastactvaModels/artefacttype_data.h"
 
 
 struct ArtefactData
 {
 public:
     ArtefactData();
+    ArtefactData(
+            int id_,
+            const QString &name_,
+            const FileSource &filename_,
+            const QString &hash_,
+            ArtefactTypeEn typeId_,
+            const QString &description_,
+            const QDateTime &created_
+            );
     ArtefactData(ArtefactData &&data_);
     virtual ~ArtefactData() = default;
 
