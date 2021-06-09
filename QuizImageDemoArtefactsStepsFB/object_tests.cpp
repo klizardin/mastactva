@@ -216,6 +216,8 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData();
+    // TODO: use QVector<::DrawingDataEffectObjects>
+    // TODO: may be wrong name -- rename ::DrawingDataEffectObjects
     ::DrawingDataEffectObjects drawingDataEffectObjects(std::move(*effectObjectsData));
     drawingDataEffectObjects.init(filesource);
     drawingDataEffectObjects.initialize(data_);
