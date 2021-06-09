@@ -78,6 +78,11 @@ unix: SOURCES +=    \
     objectartefact_data.cpp \
     artefact_data.cpp    \
     artefactarg_data.cpp    \
+    drawingdata_artefact.cpp    \
+    drawingdata_artefactarg.cpp \
+    drawingdata_effectobjects.cpp   \
+    drawingdata_objectartefact.cpp  \
+    drawingdata_objectinfo.cpp  \
     utils.cpp
 
 
@@ -92,6 +97,11 @@ unix: HEADERS +=    \
     objectartefact_data.h   \
     artefact_data.h  \
     artefactarg_data.h  \
+    drawingdata_artefact.h  \
+    drawingdata_artefactarg.h   \
+    drawingdata_effectobjects.h \
+    drawingdata_objectartefact.h    \
+    drawingdata_objectinfo.h    \
     utils.h
 
 
