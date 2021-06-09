@@ -23,8 +23,14 @@ namespace utils
                     continue;
                 }
                 auto ptr = std::make_unique<DrawingDataType_>(std::move(*ptr_));
-                ptr_ = ptr->getBase();
-                (void)ptr.release();
+                if(ptr.operator bool())
+                {
+                    ptr_ = ptr.release()->getBase();
+                }
+                else
+                {
+                    ptr_ = nullptr;
+                }
             }
         }
     }
