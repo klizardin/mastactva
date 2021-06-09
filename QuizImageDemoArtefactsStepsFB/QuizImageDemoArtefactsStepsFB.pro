@@ -69,6 +69,7 @@ unix: QMAKE_CXXFLAGS_WARN_OFF += -Wunused-variable
 SOURCES += \
         drawing_tests.cpp \
         main.cpp \
+        object_tests.cpp \
         quizimage.cpp
 
 unix: SOURCES +=    \
@@ -90,6 +91,7 @@ unix: SOURCES +=    \
 
 HEADERS += \
     drawing_tests.h \
+    object_tests.h \
     quizimage.h
 
 unix: HEADERS +=    \
