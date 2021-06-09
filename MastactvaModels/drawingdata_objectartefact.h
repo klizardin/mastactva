@@ -11,7 +11,7 @@ public:
     DrawingDataObjectArtefact() = default;
     DrawingDataObjectArtefact(ObjectArtefactData &&data_);
 
-    ObjectArtefactData * getBase();
+    ObjectArtefactData * getData();
 };
 
 

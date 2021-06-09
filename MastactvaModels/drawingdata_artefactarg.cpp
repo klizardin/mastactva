@@ -6,7 +6,7 @@ DrawingDataArtefactArg::DrawingDataArtefactArg(ArtefactArgData &&data_)
 {
 }
 
-ArtefactArgData * DrawingDataArtefactArg::getBase()
+ArtefactArgData * DrawingDataArtefactArg::getData()
 {
     return this;
 }

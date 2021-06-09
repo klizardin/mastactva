@@ -11,7 +11,7 @@ public:
     DrawingDataEffectObjects() = default;
     DrawingDataEffectObjects(EffectObjectsData &&data_);
 
-    EffectObjectsData * getBase();
+    EffectObjectsData * getData();
 };
 
 

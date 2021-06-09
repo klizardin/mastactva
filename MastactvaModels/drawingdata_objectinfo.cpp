@@ -6,7 +6,7 @@ DrawingDataObjectInfo::DrawingDataObjectInfo(ObjectInfoData &&data_)
 {
 }
 
-ObjectInfoData * DrawingDataObjectInfo::getBase()
+ObjectInfoData * DrawingDataObjectInfo::getData()
 {
     return this;
 }

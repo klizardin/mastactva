@@ -11,7 +11,7 @@ DrawingDataArtefact::DrawingDataArtefact(ArtefactData &&data_)
     drawingdata::utils::rebuild(m_artefactArgData, static_cast<DrawingDataArtefactArg *>(nullptr));
 }
 
-ArtefactData * DrawingDataArtefact::getBase()
+ArtefactData * DrawingDataArtefact::getData()
 {
     return this;
 }

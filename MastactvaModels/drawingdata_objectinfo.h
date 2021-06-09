@@ -11,7 +11,7 @@ public:
     DrawingDataObjectInfo() = default;
     DrawingDataObjectInfo(ObjectInfoData &&data_);
 
-    ObjectInfoData * getBase();
+    ObjectInfoData * getData();
 };
 
 
