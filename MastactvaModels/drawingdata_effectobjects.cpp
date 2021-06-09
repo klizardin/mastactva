@@ -17,3 +17,8 @@ EffectObjectsData * DrawingDataEffectObjects::getData()
 {
     return this;
 }
+
+void DrawingDataEffectObjects::init(std::shared_ptr<drawingdata::IFileSource> filesources_)
+{
+    m_filesources = std::move(filesources_);
+}
