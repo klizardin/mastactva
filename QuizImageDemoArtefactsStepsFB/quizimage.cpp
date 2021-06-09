@@ -168,8 +168,7 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
 void QuizImage::initDefaultDrawingData()
 {
     std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
-    drawing_data::Test3QuizImageObject defaultData;
-    //drawing_data::DefaultQuizImageObject defaultData;
+    TestCaseInitializer defaultData;
     defaultData.initialize(*data.get());
     m_drawingData = std::move(data);
 }
