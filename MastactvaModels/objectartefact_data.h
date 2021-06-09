@@ -11,6 +11,13 @@ struct ObjectArtefactData
 {
 public:
     ObjectArtefactData();
+    ObjectArtefactData(
+            int id_,
+            int effectId_,
+            int artefactId_,
+            int stepIndex_,
+            ArtefactData *artefact_
+            );
     ObjectArtefactData(ObjectArtefactData &&data_);
     virtual ~ObjectArtefactData() = default;
 

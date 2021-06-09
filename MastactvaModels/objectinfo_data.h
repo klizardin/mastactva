@@ -11,6 +11,12 @@ struct ObjectInfoData
 {
 public:
     ObjectInfoData() = default;
+    ObjectInfoData(
+            int id_,
+            const QString &name_,
+            const QString &programmerName_,
+            const QDateTime &created_
+            );
     virtual ~ObjectInfoData() = default;
 
     std::unique_ptr<ObjectInfoData> copy() const;

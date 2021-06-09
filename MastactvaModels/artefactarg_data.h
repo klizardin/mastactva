@@ -11,6 +11,16 @@ struct ArtefactArgData
 {
 public:
     ArtefactArgData() = default;
+    ArtefactArgData(
+            int id_,
+            int artefactId_,
+            int argTypeId_,
+            int argStorageId_,
+            const QString &name_,
+            const QString &defaultValue_,
+            const QString &description_,
+            const QDateTime &created_
+            );
     virtual ~ArtefactArgData() = default;
 
     std::unique_ptr<ArtefactArgData> copy() const;

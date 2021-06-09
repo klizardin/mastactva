@@ -1,6 +1,27 @@
 #include "artefactarg_data.h"
 
 
+ArtefactArgData::ArtefactArgData(
+        int id_,
+        int artefactId_,
+        int argTypeId_,
+        int argStorageId_,
+        const QString &name_,
+        const QString &defaultValue_,
+        const QString &description_,
+        const QDateTime &created_
+        )
+    : m_id(id_),
+      m_artefactId(artefactId_),
+      m_argTypeId(argTypeId_),
+      m_argStorageId(argStorageId_),
+      m_name(name_),
+      m_defaultValue(defaultValue_),
+      m_description(description_),
+      m_created(created_)
+{
+}
+
 std::unique_ptr<ArtefactArgData> ArtefactArgData::copy() const
 {
     std::unique_ptr<ArtefactArgData> result = std::make_unique<ArtefactArgData>();

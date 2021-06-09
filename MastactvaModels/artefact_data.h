@@ -14,6 +14,15 @@ struct ArtefactData
 {
 public:
     ArtefactData();
+    ArtefactData(
+            int id_,
+            const QString &name_,
+            const FileSource &filename_,
+            const QString &hash_,
+            int typeId_,
+            const QString &description_,
+            const QDateTime &created_
+            );
     ArtefactData(ArtefactData &&data_);
     virtual ~ArtefactData() = default;
 

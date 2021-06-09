@@ -12,6 +12,12 @@ struct EffectObjectsData
 {
 public:
     EffectObjectsData();
+    EffectObjectsData(
+            int id_,
+            int effectId_,
+            int objectInfoId_,
+            int stepIndex_
+            );
     EffectObjectsData(EffectObjectsData &&data_);
     virtual ~EffectObjectsData() = default;
 
