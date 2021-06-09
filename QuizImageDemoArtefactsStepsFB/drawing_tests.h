@@ -5,6 +5,14 @@
 #include "../MastactvaBase/quizimageopengldrawingdata.h"
 
 
+namespace test
+{
+void createGeometry(
+        std::vector<QVector3D> &vertices,
+        std::vector<QVector3D> &normals
+        );
+}
+
 namespace drawing_data
 {
     class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>

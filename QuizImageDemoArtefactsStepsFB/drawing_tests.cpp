@@ -74,6 +74,9 @@ void extrude(
     normals.push_back(n);
 }
 
+namespace test
+{
+
 void createGeometry(
         std::vector<QVector3D> &vertices,
         std::vector<QVector3D> &normals
@@ -126,6 +129,8 @@ void createGeometry(
         vertices[i] *= 2.0f;
 }
 
+}
+
 void drawing_data::TestMinimalDrawQuizImageObject::initialize(
         QuizImageObjects &data_
         ) const
@@ -159,7 +164,7 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
 
     std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
     std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
-    createGeometry(*vertices.get(), *normals.get());
+    test::createGeometry(*vertices.get(), *normals.get());
 
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
@@ -228,7 +233,7 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
 
     std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
     std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
-    createGeometry(*vertices.get(), *normals.get());
+    test::createGeometry(*vertices.get(), *normals.get());
 
     object1->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
