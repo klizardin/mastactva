@@ -4,6 +4,9 @@
 
 #include <memory>
 #include <QVector>
+#include <QImage>
+#include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/imagesource.h"
 
 
 namespace drawingdata
@@ -35,6 +38,14 @@ namespace utils
         }
     }
 }
+
+class IFileSource
+{
+public:
+    virtual ~IFileSource() = default;
+    virtual QString getText(const FileSource &filename_) const;
+    virtual QImage getImage(const FileSource &filename_) const;
+};
 
 }
 
