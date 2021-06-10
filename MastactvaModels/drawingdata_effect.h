@@ -8,14 +8,12 @@
 
 
 class DrawingDataEffect :
-        private EffectData,
+        public EffectData,
         public IDefaultData<drawing_data::QuizImageObjects>
 {
 public:
     DrawingDataEffect() = default;
     DrawingDataEffect(EffectData &&data_);
-
-    EffectData * getData();
 
     // DIP initializer
     void init(std::shared_ptr<drawingdata::IFileSource> filesources_);

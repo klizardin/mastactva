@@ -13,11 +13,6 @@ DrawingDataEffectObjects::DrawingDataEffectObjects(EffectObjectsData &&data_)
     drawingdata::utils::rebuild(m_objectArtefactData, static_cast<DrawingDataObjectArtefact *>(nullptr));
 }
 
-EffectObjectsData * DrawingDataEffectObjects::getData()
-{
-    return this;
-}
-
 
 class ObjectArtefacts
 {

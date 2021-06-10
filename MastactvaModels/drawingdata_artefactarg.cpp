@@ -7,11 +7,6 @@ DrawingDataArtefactArg::DrawingDataArtefactArg(ArtefactArgData &&data_)
 {
 }
 
-ArtefactArgData * DrawingDataArtefactArg::getData()
-{
-    return this;
-}
-
 void DrawingDataArtefactArg::addArgument(drawing_data::QuizImageObject &object_) const
 {
     if(to_enum<ArtefactArgStorageEn>(m_argStorageId) == ArtefactArgStorageEn::attributeStorage)

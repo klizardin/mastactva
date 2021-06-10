@@ -26,14 +26,12 @@ public:
 
 
 class DrawingDataArtefact :
-        private ArtefactData,
+        public ArtefactData,
         public IDrawingDataArtefact
 {
 public:
     DrawingDataArtefact() = default;
     DrawingDataArtefact(ArtefactData &&data_);
-
-    ArtefactData * getData();
 
     bool setVertexShader(
             drawing_data::QuizImageObject &object_,

@@ -10,11 +10,6 @@ DrawingDataEffect::DrawingDataEffect(EffectData &&data_)
     drawingdata::utils::rebuild(m_effectObjectsData, static_cast<DrawingDataEffectObjects *>(nullptr));
 }
 
-EffectData * DrawingDataEffect::getData()
-{
-    return this;
-}
-
 void DrawingDataEffect::init(std::shared_ptr<drawingdata::IFileSource> filesources_)
 {
     m_filesources = std::move(filesources_);

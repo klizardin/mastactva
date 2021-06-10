@@ -7,14 +7,13 @@
 
 
 class DrawingDataObjectArtefact :
-        private ObjectArtefactData,
+        public ObjectArtefactData,
         public IDrawingDataArtefact
 {
 public:
     DrawingDataObjectArtefact() = default;
     DrawingDataObjectArtefact(ObjectArtefactData &&data_);
 
-    ObjectArtefactData * getData();
     int getStepIndex() const;
 
     bool setVertexShader(

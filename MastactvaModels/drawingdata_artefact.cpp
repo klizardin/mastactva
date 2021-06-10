@@ -10,11 +10,6 @@ DrawingDataArtefact::DrawingDataArtefact(ArtefactData &&data_)
     drawingdata::utils::rebuild(m_artefactArgData, static_cast<DrawingDataArtefactArg *>(nullptr));
 }
 
-ArtefactData * DrawingDataArtefact::getData()
-{
-    return this;
-}
-
 bool DrawingDataArtefact::setVertexShader(
         drawing_data::QuizImageObject &object_,
         drawingdata::IFileSource *filesource_
