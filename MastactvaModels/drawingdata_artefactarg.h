@@ -25,6 +25,10 @@ public:
     ArtefactArgData * getData();
 
     void addArgument(drawing_data::QuizImageObject &object_) const override;
+
+private:
+    void addAttribute(drawing_data::QuizImageObject &object_) const;
+    void addUniform(drawing_data::QuizImageObject &object_) const;
 };
 
 
