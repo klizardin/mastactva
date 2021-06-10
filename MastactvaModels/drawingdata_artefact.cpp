@@ -15,3 +15,30 @@ ArtefactData * DrawingDataArtefact::getData()
 {
     return this;
 }
+
+bool DrawingDataArtefact::setVertexShader(
+        drawing_data::QuizImageObject &object_,
+        drawingdata::IFileSource *filesource_
+        ) const
+{
+    Q_UNUSED(object_);
+    Q_UNUSED(filesource_);
+    return false;
+}
+
+bool DrawingDataArtefact::setFragmentShader(
+        drawing_data::QuizImageObject &object_,
+        drawingdata::IFileSource *filesource_
+        ) const
+{
+    Q_UNUSED(object_);
+    Q_UNUSED(filesource_);
+    return false;
+}
+
+void DrawingDataArtefact::addArguments(
+        drawing_data::QuizImageObject &object_
+        ) const
+{
+    Q_UNUSED(object_);
+}
