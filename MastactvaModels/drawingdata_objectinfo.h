@@ -5,13 +5,11 @@
 #include "../MastactvaModels/objectinfo_data.h"
 
 
-class DrawingDataObjectInfo : private ObjectInfoData
+class DrawingDataObjectInfo : public ObjectInfoData
 {
 public:
     DrawingDataObjectInfo() = default;
     DrawingDataObjectInfo(ObjectInfoData &&data_);
-
-    ObjectInfoData * getData();
 };
 
 

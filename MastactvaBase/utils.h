@@ -133,6 +133,12 @@ constexpr auto to_underlying(EnumType_ enumValue_) noexcept
     return static_cast<std::underlying_type_t<EnumType_>>(enumValue_);
 }
 
+template <typename EnumType_>
+constexpr auto to_enum(const std::underlying_type_t<EnumType_> &val_) noexcept
+{
+    return static_cast<EnumType_>(val_);
+}
+
 bool isDefaultImage(const QString &imageURLStr_);
 bool isDefaultImage(const QUrl &imageUrl_);
 QString setDefaultImageIfEmpty(const QString &imageURLStr_);

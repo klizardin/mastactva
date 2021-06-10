@@ -8,14 +8,13 @@
 
 
 class DrawingDataEffectObjects :
-        private EffectObjectsData
+        public EffectObjectsData
 {
 public:
     DrawingDataEffectObjects() = default;
     DrawingDataEffectObjects(EffectObjectsData &&data_);
 
-    // for util code
-    EffectObjectsData * getData();
+    void addObjects(drawing_data::QuizImageObjects &data_, drawingdata::IFileSource *filesource_) const;
 };
 
 

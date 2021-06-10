@@ -1,4 +1,6 @@
 #include "effectobjects_data.h"
+#include <map>
+#include "../MastactvaModels/objectartefact_data.h"
 #include "../MastactvaBase/data_utils.h"
 
 

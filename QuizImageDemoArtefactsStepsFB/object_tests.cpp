@@ -2,6 +2,7 @@
 #include <QRandomGenerator>
 #include "drawingdata_effect.h"
 #include "../MastactvaModels/objectinfo_data.h"
+#include "../MastactvaBase/format.h"
 #include "drawing_tests.h"
 
 
@@ -64,7 +65,11 @@ QString toString(const std::vector<QVector3D> &data_)
     QString result;
     for(const QVector3D &vec_ : data_)
     {
-        result += QString("%1 %2 %3 ").arg(vec_.x(), vec_.y(), vec_.z());
+        result += QString("%1 %2 %3 ").arg(
+                    fmt::toString(vec_.x()),
+                    fmt::toString(vec_.y()),
+                    fmt::toString(vec_.z())
+                    );
     }
     return result;
 }
@@ -165,8 +170,8 @@ std::unique_ptr<EffectData> createTestData()
                 artefactArgType2,
                 artefactArgStorage2,
                 artefactArgName2,
-                emptyStr,
                 toString(normalData),
+                emptyStr,
                 now
                 );
     artefact1->m_artefactArgData->push_back(normalArg.release());
@@ -176,8 +181,8 @@ std::unique_ptr<EffectData> createTestData()
                 artefactArgType3,
                 artefactArgStorage3,
                 artefactArgName3,
-                emptyStr,
                 toString(modelview),
+                emptyStr,
                 now
                 );
     artefact1->m_artefactArgData->push_back(matrixArg.release());

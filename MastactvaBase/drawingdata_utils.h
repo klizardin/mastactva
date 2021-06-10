@@ -26,9 +26,9 @@ namespace utils
                     continue;
                 }
                 auto ptr = std::make_unique<DrawingDataType_>(std::move(*ptr_));
-                if(ptr.operator bool())
+                if(dynamic_cast<DataType_ *>(ptr.get()))
                 {
-                    ptr_ = ptr.release()->getData();
+                    ptr_ = dynamic_cast<DataType_ *>(ptr.release());
                 }
                 else
                 {

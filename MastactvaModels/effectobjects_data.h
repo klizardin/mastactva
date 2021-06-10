@@ -6,6 +6,8 @@
 #include <QVector>
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaModels/objectartefact_data.h"
+#include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/quizimagedrawingdata.h"
 
 
 struct EffectObjectsData
