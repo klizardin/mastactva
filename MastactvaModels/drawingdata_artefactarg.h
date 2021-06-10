@@ -3,6 +3,15 @@
 
 
 #include "../MastactvaModels/artefactarg_data.h"
+#include "../MastactvaBase/quizimagedrawingdata.h"
+
+
+class IDrawingDataArtefactArg
+{
+public:
+    virtual ~IDrawingDataArtefactArg() = default;
+    virtual void addArgument(drawing_data::QuizImageObject &object_) const = 0;
+};
 
 
 class DrawingDataArtefactArg : private ArtefactArgData
