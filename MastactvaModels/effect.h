@@ -13,10 +13,43 @@
 #include "../MastactvaModels/effectobjects.h"
 
 
+struct EffectData
+{
+public:
+    EffectData();
+    EffectData(
+            int id_,
+            const QString &name_,
+            const QString &description_,
+            const QDateTime &created_
+            );
+    EffectData(EffectData &&data_);
+    virtual ~EffectData() = default;
+
+    EffectData &operator = (EffectData &&data_);
+
+    // to extract data from model object
+    std::unique_ptr<EffectData> copy() const;
+
+public:
+    int m_id = -1;
+    QString m_name;
+    QString m_description;
+    QDateTime m_created;
+
+    std::shared_ptr<QVector<EffectObjectsData *>> m_effectObjectsData;
+    //std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
+    //std::shared_ptr<QVector<EffectArgSetData *>> m_effectArgSetsData;
+
+    EffectData(const EffectData &data_) = delete;
+    EffectData &operator = (const EffectData &data_) = delete;
+};
+
+
 class EffectModel;
 
 
-class Effect : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
+class Effect : public QObject, private EffectData, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 
@@ -33,6 +66,7 @@ private:
 
 public:
     explicit Effect(EffectModel *parent_ = nullptr);
+    explicit Effect(EffectData &&data_, EffectModel *parent_ = nullptr);
     virtual ~Effect() override;
 
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
@@ -133,10 +167,6 @@ private:
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    QString m_name;
-    QString m_description;
-    QDateTime m_created;
     EffectObjectsModel *m_effectObjectsModel = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;
