@@ -1,4 +1,5 @@
 #include "drawingdata_effect.h"
+#include <map>
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_effectobjects.h"
 
@@ -21,5 +22,27 @@ void DrawingDataEffect::init(std::shared_ptr<drawingdata::IFileSource> filesourc
 
 void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
 {
-    Q_UNUSED(data_);
+    if(!m_effectObjectsData.operator bool()
+            || !m_filesources.operator bool())
+    {
+        return;
+    }
+    using SortedEffectObjects = std::multimap<int, const EffectObjectsData *>;
+    SortedEffectObjects sortedEffectObjects;
+    for(const EffectObjectsData *effectObject_ : *m_effectObjectsData)
+    {
+        if(!effectObject_)
+        {
+            continue;
+        }
+        sortedEffectObjects.insert({effectObject_->m_stepIndex, effectObject_});
+    }
+    for(const SortedEffectObjects::value_type &v_ : sortedEffectObjects)
+    {
+        if(!v_.second)
+        {
+            continue;
+        }
+        v_.second->addObjects(data_, m_filesources.get());
+    }
 }

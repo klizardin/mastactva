@@ -6,6 +6,8 @@
 #include <QVector>
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaModels/objectartefact_data.h"
+#include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/quizimagedrawingdata.h"
 
 
 struct EffectObjectsData
@@ -25,6 +27,8 @@ public:
 
     // to extract data from model object
     std::unique_ptr<EffectObjectsData> copy() const;
+
+    void addObjects(drawing_data::QuizImageObjects &data_, drawingdata::IFileSource *filesource_) const;
 
 public:
     int m_id = -1;
