@@ -27,15 +27,16 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
     {
         return;
     }
-    using SortedEffectObjects = std::multimap<int, const EffectObjectsData *>;
+    using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;
     SortedEffectObjects sortedEffectObjects;
     for(const EffectObjectsData *effectObject_ : *m_effectObjectsData)
     {
-        if(!effectObject_)
+        const DrawingDataEffectObjects *effectObject = dynamic_cast<const DrawingDataEffectObjects *>(effectObject_);
+        if(!effectObject)
         {
             continue;
         }
-        sortedEffectObjects.insert({effectObject_->m_stepIndex, effectObject_});
+        sortedEffectObjects.insert({effectObject_->m_stepIndex, effectObject});
     }
     for(const SortedEffectObjects::value_type &v_ : sortedEffectObjects)
     {

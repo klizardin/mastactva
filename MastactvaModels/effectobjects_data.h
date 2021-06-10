@@ -28,8 +28,6 @@ public:
     // to extract data from model object
     std::unique_ptr<EffectObjectsData> copy() const;
 
-    void addObjects(drawing_data::QuizImageObjects &data_, drawingdata::IFileSource *filesource_) const;
-
 public:
     int m_id = -1;
     int m_effectId = -1;

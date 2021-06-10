@@ -16,6 +16,8 @@ public:
 
     // for util code
     EffectObjectsData * getData();
+
+    void addObjects(drawing_data::QuizImageObjects &data_, drawingdata::IFileSource *filesource_) const;
 };
 
 
