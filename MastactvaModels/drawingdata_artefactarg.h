@@ -14,13 +14,17 @@ public:
 };
 
 
-class DrawingDataArtefactArg : private ArtefactArgData
+class DrawingDataArtefactArg :
+        private ArtefactArgData,
+        public IDrawingDataArtefactArg
 {
 public:
     DrawingDataArtefactArg() = default;
     DrawingDataArtefactArg(ArtefactArgData &&data_);
 
     ArtefactArgData * getData();
+
+    void addArgument(drawing_data::QuizImageObject &object_) const override;
 };
 
 

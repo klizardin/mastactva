@@ -47,5 +47,17 @@ void DrawingDataArtefact::addArguments(
         drawing_data::QuizImageObject &object_
         ) const
 {
-    Q_UNUSED(object_);
+    if(!m_artefactArgData.operator bool())
+    {
+        return;
+    }
+    for(const ArtefactArgData *arg_ : *m_artefactArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        arg->addArgument(object_);
+    }
 }

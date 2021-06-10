@@ -10,3 +10,8 @@ ArtefactArgData * DrawingDataArtefactArg::getData()
 {
     return this;
 }
+
+void DrawingDataArtefactArg::addArgument(drawing_data::QuizImageObject &object_) const
+{
+    Q_UNUSED(object_);
+}
