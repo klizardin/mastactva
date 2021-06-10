@@ -6,53 +6,13 @@
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/artefact.h"
 #include "../MastactvaModels/artefactargstorage.h"
+#include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/defines.h"
-
-
-template<class DataType_>
-inline
-std::shared_ptr<QVector<DataType_ *>> createObjectData(const DataType_ *)
-{
-    return std::shared_ptr<QVector<DataType_ *>>(
-         new QVector<DataType_ *>(),
-         [](QVector<DataType_ *> *ptr_)->void
-    {
-        if(nullptr == ptr_)
-        {
-            return;
-        }
-        for(DataType_ *& p_: *ptr_)
-        {
-            delete p_;
-            p_ = nullptr;
-        }
-        ptr_->clear();
-        delete ptr_;
-    });
-}
-
-template<typename DataType_> inline
-void copy(const QVector<DataType_ *> *src_, QVector<DataType_ *> *dest_)
-{
-    Q_ASSERT(nullptr != dest_);
-    if(nullptr == src_ || nullptr == dest_)
-    {
-        return;
-    }
-    for(const DataType_ *elem_ : *src_)
-    {
-        if(nullptr == elem_)
-        {
-            continue;
-        }
-        dest_->push_back(elem_->copy().release());
-    }
-}
 
 
 EffectData::EffectData()
 {
-    m_effectObjectsData = createObjectData(static_cast<const EffectObjectsData *>(nullptr));
+    m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
 }
 
 EffectData::EffectData(
@@ -66,7 +26,7 @@ EffectData::EffectData(
       m_description(description_),
       m_created(created_)
 {
-    m_effectObjectsData = createObjectData(static_cast<const EffectObjectsData *>(nullptr));
+    m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
 }
 
 EffectData::EffectData(EffectData &&data_)
@@ -91,7 +51,7 @@ std::unique_ptr<EffectData> EffectData::copy() const
     result->m_name = m_name;
     result->m_description = m_description;
     result->m_created = m_created;
-    ::copy(m_effectObjectsData.get(), result->m_effectObjectsData.get());
+    ::data_object::utils::copyDataVector(m_effectObjectsData.get(), result->m_effectObjectsData.get());
     return result;
 }
 

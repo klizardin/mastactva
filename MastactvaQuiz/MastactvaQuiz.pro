@@ -95,6 +95,7 @@ unix: SOURCES += \
         timeutils.cpp   \
         containerutils.cpp  \
         format.cpp  \
+        data_utils.cpp  \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -220,6 +221,7 @@ unix: HEADERS += \
     format.h    \
     format_type.h   \
     containerutils.h    \
+    data_utils.h    \
     \
     quizimage.h \
     quizimagedrawingdata.h  \

@@ -89,7 +89,8 @@ unix: SOURCES +=    \
     drawingdata_effectobjects.cpp   \
     drawingdata_objectartefact.cpp  \
     drawingdata_objectinfo.cpp  \
-    utils.cpp
+    data_utils.cpp  \
+    utils.cpp   \
 
 
 HEADERS += \
@@ -114,7 +115,8 @@ unix: HEADERS +=    \
     drawingdata_effectobjects.h \
     drawingdata_objectartefact.h    \
     drawingdata_objectinfo.h    \
-    utils.h
+    data_utils.h    \
+    utils.h \
 
 
 RESOURCES += qml.qrc    \
