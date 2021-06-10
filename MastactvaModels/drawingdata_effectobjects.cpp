@@ -17,13 +17,3 @@ EffectObjectsData * DrawingDataEffectObjects::getData()
 {
     return this;
 }
-
-void DrawingDataEffectObjects::init(std::shared_ptr<drawingdata::IFileSource> filesources_)
-{
-    m_filesources = std::move(filesources_);
-}
-
-void DrawingDataEffectObjects::initialize(drawing_data::QuizImageObjects &data_) const
-{
-    Q_UNUSED(data_);
-}
