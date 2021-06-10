@@ -1,8 +1,7 @@
 #include "drawingdata_artefact.h"
-
-
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_artefactarg.h"
+#include "../MastactvaBase/utils.h"
 
 
 DrawingDataArtefact::DrawingDataArtefact(ArtefactData &&data_)
@@ -21,9 +20,13 @@ bool DrawingDataArtefact::setVertexShader(
         drawingdata::IFileSource *filesource_
         ) const
 {
-    Q_UNUSED(object_);
-    Q_UNUSED(filesource_);
-    return false;
+    if(!filesource_
+            || to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::shaderVertex)
+    {
+        return false;
+    }
+    object_.vertexShader = filesource_->getText(m_filename).toUtf8();
+    return true;
 }
 
 bool DrawingDataArtefact::setFragmentShader(
@@ -31,9 +34,13 @@ bool DrawingDataArtefact::setFragmentShader(
         drawingdata::IFileSource *filesource_
         ) const
 {
-    Q_UNUSED(object_);
-    Q_UNUSED(filesource_);
-    return false;
+    if(!filesource_
+            || to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::shaderFragmet)
+    {
+        return false;
+    }
+    object_.fragmentShader = filesource_->getText(m_filename).toUtf8();
+    return true;
 }
 
 void DrawingDataArtefact::addArguments(
