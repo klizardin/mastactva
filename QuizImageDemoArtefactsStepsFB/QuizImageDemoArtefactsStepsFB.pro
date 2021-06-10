@@ -90,6 +90,7 @@ unix: SOURCES +=    \
     drawingdata_effectobjects.cpp   \
     drawingdata_objectartefact.cpp  \
     drawingdata_objectinfo.cpp  \
+    drawingdata_effect.cpp  \
     data_utils.cpp  \
     utils.cpp   \
 
@@ -117,6 +118,7 @@ unix: HEADERS +=    \
     drawingdata_effectobjects.h \
     drawingdata_objectartefact.h    \
     drawingdata_objectinfo.h    \
+    drawingdata_effect.h    \
     data_utils.h    \
     utils.h \
 
