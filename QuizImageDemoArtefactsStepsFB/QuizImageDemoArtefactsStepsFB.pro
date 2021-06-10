@@ -75,6 +75,7 @@ SOURCES += \
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
     quizimageopengldrawingdata.cpp \
+    effect_data.cpp \
     effectobjects_data.cpp  \
     objectinfo_data.cpp \
     objectartefact_data.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h \
+    effect_data.h   \
     effectobjects_data.h    \
     objectinfo_data.h   \
     objectartefact_data.h   \

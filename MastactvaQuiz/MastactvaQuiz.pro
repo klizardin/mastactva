@@ -121,6 +121,7 @@ unix: SOURCES += \
         effectarg.cpp \
         effectargset.cpp  \
         effectargvalue.cpp    \
+        effect_data.cpp \
         effect.cpp    \
         imagepointeffect.cpp    \
         artefact_data.cpp   \
@@ -247,6 +248,7 @@ unix: HEADERS += \
     effectarg.h \
     effectargset.h  \
     effectargvalue.h    \
+    effect_data.h   \
     effect.h    \
     imagepointeffect.h  \
     gallerymodelview.h  \
