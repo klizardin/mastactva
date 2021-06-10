@@ -1,52 +1,11 @@
 #include "effectobjects_data.h"
+#include "../MastactvaBase/data_utils.h"
 
-
-inline
-std::shared_ptr<QVector<ObjectInfoData *>> createObjectInfoData()
-{
-    return std::shared_ptr<QVector<ObjectInfoData *>>(
-         new QVector<ObjectInfoData *>(),
-         [](QVector<ObjectInfoData *> *ptr_)->void
-    {
-        if(nullptr == ptr_)
-        {
-            return;
-        }
-        for(ObjectInfoData *& p_: *ptr_)
-        {
-            delete p_;
-            p_ = nullptr;
-        }
-        ptr_->clear();
-        delete ptr_;
-    });
-}
-
-inline
-std::shared_ptr<QVector<ObjectArtefactData *>> createObjectArtefactData()
-{
-    return std::shared_ptr<QVector<ObjectArtefactData *>>(
-        new QVector<ObjectArtefactData *>(),
-        [](QVector<ObjectArtefactData *> *ptr_)->void
-    {
-        if(nullptr == ptr_)
-        {
-            return;
-        }
-        for(ObjectArtefactData *& p_: *ptr_)
-        {
-            delete p_;
-            p_ = nullptr;
-        }
-        ptr_->clear();
-        delete ptr_;
-    });
-}
 
 EffectObjectsData::EffectObjectsData()
 {
-    m_objectInfoData = createObjectInfoData();
-    m_objectArtefactData = createObjectArtefactData();
+    m_objectInfoData = data_object::utils::createDataVector(static_cast<const ObjectInfoData *>(nullptr));
+    m_objectArtefactData = data_object::utils::createDataVector(static_cast<const ObjectArtefactData *>(nullptr));
 }
 
 EffectObjectsData::EffectObjectsData(
@@ -60,8 +19,8 @@ EffectObjectsData::EffectObjectsData(
       m_objectInfoId(objectInfoId_),
       m_stepIndex(stepIndex_)
 {
-    m_objectInfoData = createObjectInfoData();
-    m_objectArtefactData = createObjectArtefactData();
+    m_objectInfoData = data_object::utils::createDataVector(static_cast<const ObjectInfoData *>(nullptr));
+    m_objectArtefactData = data_object::utils::createDataVector(static_cast<const ObjectArtefactData *>(nullptr));
 }
 
 EffectObjectsData::EffectObjectsData(EffectObjectsData &&data_)
@@ -87,29 +46,7 @@ std::unique_ptr<EffectObjectsData> EffectObjectsData::copy() const
     result->m_effectId = m_effectId;
     result->m_objectInfoId = m_objectInfoId;
     result->m_stepIndex = m_stepIndex;
-    Q_ASSERT(result->m_objectInfoData.operator bool());
-    Q_ASSERT(result->m_objectArtefactData.operator bool());
-    if(m_objectInfoData.operator bool())
-    {
-        for(const ObjectInfoData *elem_ : *m_objectInfoData)
-        {
-            if(nullptr == elem_)
-            {
-                continue;
-            }
-            result->m_objectInfoData->push_back(elem_->copy().release());
-        }
-    }
-    if(m_objectArtefactData.operator bool())
-    {
-        for(const ObjectArtefactData *elem_ : *m_objectArtefactData)
-        {
-            if(nullptr == elem_)
-            {
-                continue;
-            }
-            result->m_objectArtefactData->push_back(elem_->copy().release());
-        }
-    }
+    data_object::utils::copyDataVector(m_objectInfoData.get(), result->m_objectInfoData.get());
+    data_object::utils::copyDataVector(m_objectArtefactData.get(), result->m_objectArtefactData.get());
     return result;
 }
