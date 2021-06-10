@@ -93,19 +93,19 @@ void ObjectArtefacts::build(
 {
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        //if((*it)->setVertexShader(object_, filesource_))
-        //{
-        //    (*it)->addArguments(object_);
-        //    break;
-        //}
+        if((*it)->setVertexShader(object_, filesource_))
+        {
+            (*it)->addArguments(object_);
+            break;
+        }
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        //if((*it)->setFragmentShader(object_, filesource_))
-        //{
-        //    (*it)->addArguments(object_);
-        //    break;
-        //}
+        if((*it)->setFragmentShader(object_, filesource_))
+        {
+            (*it)->addArguments(object_);
+            break;
+        }
     }
 }
 
