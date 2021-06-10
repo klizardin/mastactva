@@ -165,8 +165,8 @@ std::unique_ptr<EffectData> createTestData()
                 artefactArgType2,
                 artefactArgStorage2,
                 artefactArgName2,
-                emptyStr,
                 toString(normalData),
+                emptyStr,
                 now
                 );
     artefact1->m_artefactArgData->push_back(normalArg.release());
@@ -176,8 +176,8 @@ std::unique_ptr<EffectData> createTestData()
                 artefactArgType3,
                 artefactArgStorage3,
                 artefactArgName3,
-                emptyStr,
                 toString(modelview),
+                emptyStr,
                 now
                 );
     artefact1->m_artefactArgData->push_back(matrixArg.release());
