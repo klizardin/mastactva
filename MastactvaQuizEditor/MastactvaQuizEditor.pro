@@ -103,6 +103,7 @@ unix: HEADERS += \
         format.h    \
         serverfiles.h   \
         containerutils.h    \
+        data_utils.h    \
         utils.h \
         names.h \
         defines.h   \
@@ -116,8 +117,10 @@ unix: HEADERS += \
         drawingdata_effectobjects.h \
         drawingdata_objectartefact.h    \
         drawingdata_objectinfo.h    \
+        drawingdata_effect.h    \
         \
         easingtype.h \
+        effect_data.h   \
         effect.h \
         effectarg.h \
         effectargset.h \
@@ -185,6 +188,7 @@ unix: SOURCES += \
         format.cpp  \
         timeutils.cpp   \
         containerutils.cpp  \
+        data_utils.cpp  \
         utils.cpp  \
         \
         quizimage.cpp   \
@@ -196,8 +200,10 @@ unix: SOURCES += \
         drawingdata_effectobjects.cpp   \
         drawingdata_objectartefact.cpp  \
         drawingdata_objectinfo.cpp  \
+        drawingdata_effect.cpp  \
         \
         easingtype.cpp \
+        effect_data.cpp \
         effect.cpp \
         effectarg.cpp \
         effectargset.cpp \

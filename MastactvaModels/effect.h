@@ -8,6 +8,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 //#include "../MastactvaModels/effectartefact.h"
+#include "../MastactvaModels/effect_data.h"
 #include "../MastactvaModels/effectarg.h"
 #include "../MastactvaModels/effectargset.h"
 #include "../MastactvaModels/effectobjects.h"
@@ -16,7 +17,7 @@
 class EffectModel;
 
 
-class Effect : public QObject, protected IListModelInfoObjectImpl, public IListModelItem
+class Effect : public QObject, private EffectData, protected IListModelInfoObjectImpl, public IListModelItem
 {
     Q_OBJECT
 
@@ -33,6 +34,7 @@ private:
 
 public:
     explicit Effect(EffectModel *parent_ = nullptr);
+    explicit Effect(EffectData &&data_, EffectModel *parent_ = nullptr);
     virtual ~Effect() override;
 
     Q_PROPERTY(int effectId READ id WRITE setId NOTIFY idChanged)
@@ -133,10 +135,6 @@ private:
     IListModelInfo *m_parentModelInfo = nullptr;
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    QString m_name;
-    QString m_description;
-    QDateTime m_created;
     EffectObjectsModel *m_effectObjectsModel = nullptr;
     EffectArgModel *m_effectArgModel = nullptr;
     EffectArgSetModel *m_effectArgSetModel = nullptr;

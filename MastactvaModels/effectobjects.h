@@ -110,7 +110,11 @@ protected:
     using sortModelAfterChange = SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
 
 public:
-    explicit EffectObjectsModel(QObject *parent_ = nullptr);
+    explicit EffectObjectsModel(
+            QObject *parent_ = nullptr,
+            std::shared_ptr<QVector<EffectObjectsData *>> data_
+                =  std::make_shared<QVector<EffectObjectsData *>>()
+            );
 
     LAYOUT_MODEL_IMPL();
 

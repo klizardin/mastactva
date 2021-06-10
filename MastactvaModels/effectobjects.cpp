@@ -193,8 +193,11 @@ ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 }
 
 
-EffectObjectsModel::EffectObjectsModel(QObject *parent_ /*= nullptr*/)
-    :base(parent_)
+EffectObjectsModel::EffectObjectsModel(
+        QObject *parent_ /*= nullptr*/,
+        std::shared_ptr<QVector<EffectObjectsData *>> data_ /*=  std::make_shared<QVector<EffectObjectsData *>>()*/
+        )
+    :base(parent_, data_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectObjectsModel::EffectObjectsModel()" << QThread::currentThread() << QThread::currentThreadId();

@@ -1,6 +1,6 @@
 #include "object_tests.h"
 #include <QRandomGenerator>
-#include "drawingdata_effectobjects.h"
+#include "drawingdata_effect.h"
 #include "../MastactvaModels/objectinfo_data.h"
 #include "drawing_tests.h"
 
@@ -79,7 +79,7 @@ QString toString(const QMatrix4x4 &mat4_)
     return result;
 }
 
-std::unique_ptr<EffectObjectsData> createTestData()
+std::unique_ptr<EffectData> createTestData()
 {
     static const int effectObjectId = 1;
     static const int effectId = 1;
@@ -111,7 +111,7 @@ std::unique_ptr<EffectObjectsData> createTestData()
     static const ArtefactArgStorageEn artefactArgStorage3 = ArtefactArgStorageEn::uniformStorage;
     static const char *artefactArgName3 = "matrix";
 
-    std::unique_ptr<EffectObjectsData> result = std::make_unique<EffectObjectsData>(
+    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
                 effectId,
                 objectInfoId,
@@ -123,7 +123,7 @@ std::unique_ptr<EffectObjectsData> createTestData()
                 effectProgrammerName,
                 now
                 );
-    result->m_objectInfoData->push_back(objectInfoData.release());
+    effectObject->m_objectInfoData->push_back(objectInfoData.release());
     auto artefact1 = std::make_unique<ArtefactData>(
                 artefactId1,
                 artefactName1,
@@ -188,7 +188,7 @@ std::unique_ptr<EffectObjectsData> createTestData()
                 objectArtefactStep0,
                 artefact1.release()
                 );
-    result->m_objectArtefactData->push_back(objectArtefactData1.release());
+    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
     auto artefact2 = std::make_unique<ArtefactData>(
                 artefactId2,
                 artefactName2,
@@ -205,8 +205,15 @@ std::unique_ptr<EffectObjectsData> createTestData()
                 objectArtefactStep0,
                 artefact2.release()
                 );
-    result->m_objectArtefactData->push_back(objectArtefactData2.release());
-    return result;
+    effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject.release());
+    return effect;
 }
 
 namespace drawing_objects
@@ -216,11 +223,9 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData();
-    // TODO: use QVector<::DrawingDataEffectObjects>
-    // TODO: may be wrong name -- rename ::DrawingDataEffectObjects
-    ::DrawingDataEffectObjects drawingDataEffectObjects(std::move(*effectObjectsData));
-    drawingDataEffectObjects.init(filesource);
-    drawingDataEffectObjects.initialize(data_);
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
 }
 
 }

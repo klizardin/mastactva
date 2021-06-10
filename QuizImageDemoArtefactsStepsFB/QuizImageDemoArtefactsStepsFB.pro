@@ -75,6 +75,7 @@ SOURCES += \
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
     quizimageopengldrawingdata.cpp \
+    effect_data.cpp \
     effectobjects_data.cpp  \
     objectinfo_data.cpp \
     objectartefact_data.cpp \
@@ -89,7 +90,9 @@ unix: SOURCES +=    \
     drawingdata_effectobjects.cpp   \
     drawingdata_objectartefact.cpp  \
     drawingdata_objectinfo.cpp  \
-    utils.cpp
+    drawingdata_effect.cpp  \
+    data_utils.cpp  \
+    utils.cpp   \
 
 
 HEADERS += \
@@ -100,6 +103,7 @@ HEADERS += \
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h \
+    effect_data.h   \
     effectobjects_data.h    \
     objectinfo_data.h   \
     objectartefact_data.h   \
@@ -114,7 +118,9 @@ unix: HEADERS +=    \
     drawingdata_effectobjects.h \
     drawingdata_objectartefact.h    \
     drawingdata_objectinfo.h    \
-    utils.h
+    drawingdata_effect.h    \
+    data_utils.h    \
+    utils.h \
 
 
 RESOURCES += qml.qrc    \

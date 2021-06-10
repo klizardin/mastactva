@@ -95,6 +95,7 @@ unix: SOURCES += \
         timeutils.cpp   \
         containerutils.cpp  \
         format.cpp  \
+        data_utils.cpp  \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -105,6 +106,7 @@ unix: SOURCES += \
         drawingdata_effectobjects.cpp   \
         drawingdata_objectartefact.cpp  \
         drawingdata_objectinfo.cpp  \
+        drawingdata_effect.cpp  \
         \
         question.cpp \
         questionanswer.cpp \
@@ -120,6 +122,7 @@ unix: SOURCES += \
         effectarg.cpp \
         effectargset.cpp  \
         effectargvalue.cpp    \
+        effect_data.cpp \
         effect.cpp    \
         imagepointeffect.cpp    \
         artefact_data.cpp   \
@@ -220,6 +223,7 @@ unix: HEADERS += \
     format.h    \
     format_type.h   \
     containerutils.h    \
+    data_utils.h    \
     \
     quizimage.h \
     quizimagedrawingdata.h  \
@@ -230,6 +234,7 @@ unix: HEADERS += \
     drawingdata_effectobjects.h \
     drawingdata_objectartefact.h    \
     drawingdata_objectinfo.h    \
+    drawingdata_effect.h    \
     \
     answer.h \
     gallery.h \
@@ -245,6 +250,7 @@ unix: HEADERS += \
     effectarg.h \
     effectargset.h  \
     effectargvalue.h    \
+    effect_data.h   \
     effect.h    \
     imagepointeffect.h  \
     gallerymodelview.h  \

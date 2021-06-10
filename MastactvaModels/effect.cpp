@@ -19,6 +19,17 @@ Effect::Effect(EffectModel *parent_)
     m_objectModelInfo = this;
 }
 
+Effect::Effect(EffectData &&data_, EffectModel *parent_ /*= nullptr*/)
+    : QObject(parent_)
+    , EffectData(std::move(data_))
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "Effect::Effect()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+    m_effectModel = parent_;
+    m_objectModelInfo = this;
+}
+
 Effect::~Effect()
 {
     clear(m_artefactArgs);
@@ -166,7 +177,7 @@ EffectObjectsModel *Effect::createEffectObjectsModel()
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
-    EffectObjectsModel *m = new EffectObjectsModel(this);
+    EffectObjectsModel *m = new EffectObjectsModel(this, m_effectObjectsData);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");

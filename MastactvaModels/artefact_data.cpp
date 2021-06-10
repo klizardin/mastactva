@@ -1,32 +1,11 @@
 #include "artefact_data.h"
+#include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/utils.h"
-
-
-inline
-std::shared_ptr<QVector<ArtefactArgData *>> createArtefactArgData()
-{
-    return std::shared_ptr<QVector<ArtefactArgData *>>(
-        new QVector<ArtefactArgData *>(),
-        [](QVector<ArtefactArgData *> *ptr_)->void
-    {
-        if(nullptr == ptr_)
-        {
-            return;
-        }
-        for(ArtefactArgData *& p_: *ptr_)
-        {
-            delete p_;
-            p_ = nullptr;
-        }
-        ptr_->clear();
-        delete ptr_;
-    });
-}
 
 
 ArtefactData::ArtefactData()
 {
-    m_artefactArgData = createArtefactArgData();
+    m_artefactArgData = data_object::utils::createDataVector(static_cast<const ArtefactArgData *>(nullptr));
 }
 
 ArtefactData::ArtefactData(
@@ -46,7 +25,7 @@ ArtefactData::ArtefactData(
       m_description(description_),
       m_created(created_)
 {
-    m_artefactArgData = createArtefactArgData();
+    m_artefactArgData = data_object::utils::createDataVector(static_cast<const ArtefactArgData *>(nullptr));
 }
 
 ArtefactData::ArtefactData(ArtefactData &&data_)
@@ -78,17 +57,6 @@ std::unique_ptr<ArtefactData> ArtefactData::copy() const
     result->m_typeId = m_typeId;
     result->m_description = m_description;
     result->m_created = m_created;
-    Q_ASSERT(result->m_artefactArgData.operator bool());
-    if(m_artefactArgData.operator bool())
-    {
-        for(const ArtefactArgData *elem_: *m_artefactArgData)
-        {
-            if(nullptr == elem_)
-            {
-                continue;
-            }
-            result->m_artefactArgData->push_back(elem_->copy().release());
-        }
-    }
+    data_object::utils::copyDataVector(m_artefactArgData.get(), result->m_artefactArgData.get());
     return result;
 }

@@ -5049,6 +5049,10 @@
                         "name": "QObject"
                     },
                     {
+                        "access": "private",
+                        "name": "EffectData"
+                    },
+                    {
                         "access": "protected",
                         "name": "IListModelInfoObjectImpl"
                     },

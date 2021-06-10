@@ -3,15 +3,12 @@
 
 
 #include <memory>
-#include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/effectobjects_data.h"
-#include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/utils.h"
 
 
 class DrawingDataEffectObjects :
-        private EffectObjectsData,
-        public IDefaultData<drawing_data::QuizImageObjects>
+        private EffectObjectsData
 {
 public:
     DrawingDataEffectObjects() = default;
@@ -19,15 +16,6 @@ public:
 
     // for util code
     EffectObjectsData * getData();
-
-    // DIP initializer
-    void init(std::shared_ptr<drawingdata::IFileSource> filesources_);
-
-    // method to form QuizImageObjects data
-    void initialize(drawing_data::QuizImageObjects &data_) const override;
-
-private:
-    std::shared_ptr<drawingdata::IFileSource> m_filesources;
 };
 
 
