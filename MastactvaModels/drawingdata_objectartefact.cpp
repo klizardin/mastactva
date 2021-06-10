@@ -15,3 +15,8 @@ ObjectArtefactData * DrawingDataObjectArtefact::getData()
 {
     return this;
 }
+
+int DrawingDataObjectArtefact::getStepIndex() const
+{
+    return m_stepIndex;
+}
