@@ -78,43 +78,34 @@ namespace utils
         return i >= array_.size();
     }
 
-    template<> inline
-    void toUniform(const QString &str_, QMatrix2x2 &mat_)
+    template<std::size_t size_, typename MatrixType_> inline
+    void toMatrix(const QString &str_, MatrixType_ &mat_)
     {
-        const std::size_t size = 2*2;
         std::vector<float> vec;
-        vec.resize(size);
+        vec.resize(size_);
         (void)getArray(str_, vec);
-        for(std::size_t i = 0; i < vec.size() && i < size; ++i)
+        for(std::size_t i = 0; i < vec.size() && i < size_; ++i)
         {
             mat_.data()[i] = vec.at(i);
         }
+    }
+
+    template<> inline
+    void toUniform(const QString &str_, QMatrix2x2 &mat_)
+    {
+        toMatrix<2*2, QMatrix2x2>(str_, mat_);
     }
 
     template<> inline
     void toUniform(const QString &str_, QMatrix3x3 &mat_)
     {
-        const std::size_t size = 3*3;
-        std::vector<float> vec;
-        vec.resize(size);
-        (void)getArray(str_, vec);
-        for(std::size_t i = 0; i < vec.size() && i < size; ++i)
-        {
-            mat_.data()[i] = vec.at(i);
-        }
+        toMatrix<3*3, QMatrix3x3>(str_, mat_);
     }
 
     template<> inline
     void toUniform(const QString &str_, QMatrix4x4 &mat_)
     {
-        const std::size_t size = 16;
-        std::vector<float> vec;
-        vec.resize(size);
-        (void)getArray(str_, vec);
-        for(std::size_t i = 0; i < vec.size() && i < size; ++i)
-        {
-            mat_.data()[i] = vec.at(i);
-        }
+        toMatrix<4*4, QMatrix4x4>(str_, mat_);
     }
 
     template<> inline
