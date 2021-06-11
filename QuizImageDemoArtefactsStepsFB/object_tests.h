@@ -38,6 +38,12 @@ namespace drawing_objects
     public:
         void initialize(drawing_data::QuizImageObjects &data_) const override;
     };
+
+    class DefaultTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_) const override;
+    };
 }
 
 
