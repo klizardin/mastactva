@@ -212,6 +212,16 @@ namespace utils
     }
 
     template<> inline
+    void toAttribute(const QString &str_, std::vector<QVector2D> &data_)
+    {
+        std::vector<float> vec = details::getFullArray<float>(str_);
+        for(std::size_t i = 0; i + 2 <= vec.size(); i += 2)
+        {
+            data_.push_back(details::toType<QVector2D, float>(vec, i));
+        }
+    }
+
+    template<> inline
     void toAttribute(const QString &str_, std::vector<QVector3D> &data_)
     {
         std::vector<float> vec = details::getFullArray<float>(str_);
