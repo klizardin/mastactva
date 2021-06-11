@@ -14,6 +14,13 @@ namespace drawingdata
 
 namespace utils
 {
+    template<class DrawingDataType_, class DataType_> inline
+    std::unique_ptr<DrawingDataType_> factory(DataType_ &&data_, const DrawingDataType_ *)
+    {
+        return std::make_unique<DrawingDataType_>(std::move(data_));
+    }
+
+
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
     {
@@ -25,7 +32,7 @@ namespace utils
                 {
                     continue;
                 }
-                auto ptr = std::make_unique<DrawingDataType_>(std::move(*ptr_));
+                auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
                 if(dynamic_cast<DataType_ *>(ptr.get()))
                 {
                     ptr_ = dynamic_cast<DataType_ *>(ptr.release());
