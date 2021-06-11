@@ -32,10 +32,16 @@ namespace drawing_objects
     public:
         void initialize(drawing_data::QuizImageObjects &data_) const override;
     };
+
+    class MultipleObjectsTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_) const override;
+    };
 }
 
 
-using TestCaseInitializer = drawing_objects::BaseTest;
+using TestCaseInitializer = drawing_objects::MultipleObjectsTest;
 
 
 #endif // OBJECT_TESTS_H

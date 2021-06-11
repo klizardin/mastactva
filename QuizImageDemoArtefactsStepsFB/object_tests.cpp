@@ -84,19 +84,24 @@ QString toString(const QMatrix4x4 &mat4_)
     return result;
 }
 
-std::unique_ptr<EffectData> createTestData()
+
+static const char *emptyStr = "";
+
+
+std::unique_ptr<EffectObjectsData> createTestObject(
+        int effectId,
+        const char *effectName,
+        const QDateTime &now,
+        int effectObjectStep,
+        QRandomGenerator &gen
+        )
 {
     static const int effectObjectId = 1;
-    static const int effectId = 1;
     static const int objectInfoId = 1;
-    static const int effectObjectStep0 = 0;
-    static const char *effectName = "effect #1";
     static const char *effectProgrammerName = "effect1";
     static const int artefactId1 = 1;
     static const char *artefactName1 = "vertext shader";
-    static const char *emptyStr = "";
     static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
-    const QDateTime now = QDateTime::currentDateTime();
     static const int objectArtefactId1 = 1;
     static const int objectArtefactStep0 = 0;
     static const int artefactId2 = 2;
@@ -120,7 +125,7 @@ std::unique_ptr<EffectData> createTestData()
                 effectObjectId,
                 effectId,
                 objectInfoId,
-                effectObjectStep0
+                effectObjectStep
                 );
     auto objectInfoData = std::make_unique<ObjectInfoData>(
                 objectInfoId,
@@ -143,7 +148,6 @@ std::unique_ptr<EffectData> createTestData()
     std::vector<QVector3D> normalData;
     test::createGeometry(vertexData, normalData);
 
-    QRandomGenerator gen;
     qreal fScale = 1;
     qreal fAngle = gen.generateDouble() * 360.0;
     QMatrix4x4 modelview;
@@ -211,13 +215,65 @@ std::unique_ptr<EffectData> createTestData()
                 artefact2.release()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+    return effectObject;
+}
+
+std::unique_ptr<EffectData> createTestData1()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+
+    auto effectObject1 = createTestObject(
+                effectId,
+                effectName,
+                now,
+                effectObjectStep0,
+                gen
+                );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
                 emptyStr,
                 now
                 );
-    effect->m_effectObjectsData->push_back(effectObject.release());
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    return effect;
+}
+
+std::unique_ptr<EffectData> createTestData2()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+
+    auto effectObject1 = createTestObject(
+                effectId,
+                effectName,
+                now,
+                effectObjectStep0,
+                gen
+                );
+    auto effectObject2 = createTestObject(
+                effectId,
+                effectName,
+                now,
+                effectObjectStep1,
+                gen
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
     return effect;
 }
 
@@ -227,7 +283,16 @@ namespace drawing_objects
 void BaseTest::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createTestData();
+    auto effectObjectsData = createTestData1();
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData2();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
