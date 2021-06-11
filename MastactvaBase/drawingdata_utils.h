@@ -161,6 +161,16 @@ namespace utils
             return {vec_.at(i0_ + 0), vec_.at(i0_ + 1), vec_.at(i0_ + 2), vec_.at(i0_ + 3)};
         }
 
+        template<std::size_t size_, typename Type_> inline
+        void toAttribute(const QString &str_, std::vector<Type_> &data_)
+        {
+            std::vector<float> vec = details::getFullArray<float>(str_);
+            for(std::size_t i = 0; i + size_ <= vec.size(); i += size_)
+            {
+                data_.push_back(details::toType<Type_, float>(vec, i));
+            }
+        }
+
     }
 
     template<> inline
@@ -214,21 +224,13 @@ namespace utils
     template<> inline
     void toAttribute(const QString &str_, std::vector<QVector2D> &data_)
     {
-        std::vector<float> vec = details::getFullArray<float>(str_);
-        for(std::size_t i = 0; i + 2 <= vec.size(); i += 2)
-        {
-            data_.push_back(details::toType<QVector2D, float>(vec, i));
-        }
+        details::toAttribute<2, QVector2D>(str_, data_);
     }
 
     template<> inline
     void toAttribute(const QString &str_, std::vector<QVector3D> &data_)
     {
-        std::vector<float> vec = details::getFullArray<float>(str_);
-        for(std::size_t i = 0; i + 3 <= vec.size(); i += 3)
-        {
-            data_.push_back(details::toType<QVector3D, float>(vec, i));
-        }
+        details::toAttribute<3, QVector3D>(str_, data_);
     }
 }
 
