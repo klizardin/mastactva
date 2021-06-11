@@ -22,7 +22,7 @@ public:
     void initialize(drawing_data::QuizImageObjects &data_) const override;
 
 private:
-    std::shared_ptr<drawingdata::IFileSource> m_filesources;
+    drawingdata::Details m_details;
 };
 
 

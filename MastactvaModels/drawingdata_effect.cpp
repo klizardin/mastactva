@@ -12,13 +12,13 @@ DrawingDataEffect::DrawingDataEffect(EffectData &&data_)
 
 void DrawingDataEffect::init(std::shared_ptr<drawingdata::IFileSource> filesources_)
 {
-    m_filesources = std::move(filesources_);
+    m_details.filesource = std::move(filesources_);
 }
 
 void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
 {
     if(!m_effectObjectsData.operator bool()
-            || !m_filesources.operator bool())
+            || !m_details.filesource.operator bool())
     {
         return;
     }
@@ -39,6 +39,6 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
         {
             continue;
         }
-        v_.second->addObjects(data_, m_filesources.get());
+        v_.second->addObjects(data_, m_details);
     }
 }

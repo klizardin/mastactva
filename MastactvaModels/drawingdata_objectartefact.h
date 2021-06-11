@@ -18,11 +18,11 @@ public:
 
     bool setVertexShader(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const override;
     bool setFragmentShader(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const override;
     void addArguments(
             drawing_data::QuizImageObject &object_

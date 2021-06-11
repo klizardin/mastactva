@@ -12,29 +12,29 @@ DrawingDataArtefact::DrawingDataArtefact(ArtefactData &&data_)
 
 bool DrawingDataArtefact::setVertexShader(
         drawing_data::QuizImageObject &object_,
-        drawingdata::IFileSource *filesource_
+        const drawingdata::Details &details_
         ) const
 {
-    if(!filesource_
+    if(!details_.filesource
             || to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::shaderVertex)
     {
         return false;
     }
-    object_.vertexShader = filesource_->getText(m_filename).toUtf8();
+    object_.vertexShader = details_.filesource->getText(m_filename).toUtf8();
     return true;
 }
 
 bool DrawingDataArtefact::setFragmentShader(
         drawing_data::QuizImageObject &object_,
-        drawingdata::IFileSource *filesource_
+        const drawingdata::Details &details_
         ) const
 {
-    if(!filesource_
+    if(!details_.filesource
             || to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::shaderFragmet)
     {
         return false;
     }
-    object_.fragmentShader = filesource_->getText(m_filename).toUtf8();
+    object_.fragmentShader = details_.filesource->getText(m_filename).toUtf8();
     return true;
 }
 
