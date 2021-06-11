@@ -76,9 +76,18 @@ namespace utils
             QString str(str_);
             QTextStream s(&str);
             std::size_t i = 0;
-            for(i = 0; i < array_.size() && !s.atEnd(); ++i)
+            for(i = 0; i <= array_.size() && !s.atEnd(); ++i)
             {
-                s >> array_.at(i);
+                if(i == array_.size())
+                {
+                    Type_ v{};
+                    s >> v;
+                    array_.push_back(v);
+                }
+                else
+                {
+                    s >> array_.at(i);
+                }
             }
             return i >= array_.size();
         }
@@ -104,42 +113,52 @@ namespace utils
             return vec;
         }
 
+        template<typename Type_> inline
+        std::vector<Type_> getFullArray(const QString &str_)
+        {
+            std::vector<Type_> vec;
+            vec.resize(0);
+            (void)details::getArray(str_, vec);
+            return vec;
+        }
+
         template<typename Type_, typename ItemType_> inline
-        Type_ toType(const std::vector<ItemType_> &vec_)
+        Type_ toType(const std::vector<ItemType_> &vec_, std::size_t i0_)
         {
             Q_UNUSED(vec_);
+            Q_UNUSED(i0_);
             Q_ASSERT(false); // not implemented
             return Type_{};
         }
 
         template<> inline
-        int toType(const std::vector<int> &vec_)
+        int toType(const std::vector<int> &vec_, std::size_t i0_)
         {
-            return vec_.at(0);
+            return vec_.at(i0_ + 0);
         }
 
         template<> inline
-        float toType(const std::vector<float> &vec_)
+        float toType(const std::vector<float> &vec_, std::size_t i0_)
         {
-            return vec_.at(0);
+            return vec_.at(i0_ + 0);
         }
 
         template<> inline
-        QVector2D toType(const std::vector<float> &vec_)
+        QVector2D toType(const std::vector<float> &vec_, std::size_t i0_)
         {
-            return {vec_.at(0), vec_.at(1)};
+            return {vec_.at(i0_ + 0), vec_.at(i0_ + 1)};
         }
 
         template<> inline
-        QVector3D toType(const std::vector<float> &vec_)
+        QVector3D toType(const std::vector<float> &vec_, std::size_t i0_)
         {
-            return {vec_.at(0), vec_.at(1), vec_.at(2)};
+            return {vec_.at(i0_ + 0), vec_.at(i0_ + 1), vec_.at(i0_ + 2)};
         }
 
         template<> inline
-        QVector4D toType(const std::vector<float> &vec_)
+        QVector4D toType(const std::vector<float> &vec_, std::size_t i0_)
         {
-            return {vec_.at(0), vec_.at(1), vec_.at(2), vec_.at(3)};
+            return {vec_.at(i0_ + 0), vec_.at(i0_ + 1), vec_.at(i0_ + 2), vec_.at(i0_ + 3)};
         }
 
     }
@@ -147,31 +166,31 @@ namespace utils
     template<> inline
     void toUniform(const QString &str_, int &data_)
     {
-        data_ = details::toType<int, int>(details::getArrayOfSize<1, int>(str_));
+        data_ = details::toType<int, int>(details::getArrayOfSize<1, int>(str_), 0);
     }
 
     template<> inline
     void toUniform(const QString &str_, float &data_)
     {
-        data_ = details::toType<float, float>(details::getArrayOfSize<1, float>(str_));
+        data_ = details::toType<float, float>(details::getArrayOfSize<1, float>(str_), 0);
     }
 
     template<> inline
     void toUniform(const QString &str_, QVector2D &data_)
     {
-        data_ = details::toType<QVector2D, float>(details::getArrayOfSize<2, float>(str_));
+        data_ = details::toType<QVector2D, float>(details::getArrayOfSize<2, float>(str_), 0);
     }
 
     template<> inline
     void toUniform(const QString &str_, QVector3D &data_)
     {
-        data_ = details::toType<QVector3D, float>(details::getArrayOfSize<3, float>(str_));
+        data_ = details::toType<QVector3D, float>(details::getArrayOfSize<3, float>(str_), 0);
     }
 
     template<> inline
     void toUniform(const QString &str_, QVector4D &data_)
     {
-        data_ = details::toType<QVector4D, float>(details::getArrayOfSize<4, float>(str_));
+        data_ = details::toType<QVector4D, float>(details::getArrayOfSize<4, float>(str_), 0);
     }
 
     template<> inline
@@ -193,23 +212,12 @@ namespace utils
     }
 
     template<> inline
-    void toAttribute(const QString &val_, std::vector<QVector3D> &data_)
+    void toAttribute(const QString &str_, std::vector<QVector3D> &data_)
     {
-        QString str(val_);
-        QTextStream s(&str);
-        for(std::size_t i = 0; !s.atEnd(); ++i)
+        std::vector<float> vec = details::getFullArray<float>(str_);
+        for(std::size_t i = 0; i + 3 <= vec.size(); i += 3)
         {
-            std::array<float, 3> v;
-            for(std::size_t j = 0; j < v.size(); ++j)
-            {
-                s >> v.at(j);
-            }
-            if(s.atEnd())
-            {
-                return;
-            }
-            QVector3D item(v.at(0), v.at(1), v.at(2));
-            data_.push_back(item);
+            data_.push_back(details::toType<QVector3D, float>(vec, i));
         }
     }
 }
