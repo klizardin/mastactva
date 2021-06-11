@@ -39,23 +39,23 @@ bool DrawingDataObjectArtefact::forArtefacts(
 
 bool DrawingDataObjectArtefact::setVertexShader(
         drawing_data::QuizImageObject &object_,
-        drawingdata::IFileSource *filesource_
+        const drawingdata::Details &details_
         ) const
 {
-    return forArtefacts([&object_, &filesource_](const DrawingDataArtefact *artefact_)->bool
+    return forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
     {
-        return artefact_->setVertexShader(object_, filesource_);
+        return artefact_->setVertexShader(object_, details_);
     });
 }
 
 bool DrawingDataObjectArtefact::setFragmentShader(
         drawing_data::QuizImageObject &object_,
-        drawingdata::IFileSource *filesource_
+        const drawingdata::Details &details_
         ) const
 {
-    return forArtefacts([&object_, &filesource_](const DrawingDataArtefact *artefact_)->bool
+    return forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
     {
-        return artefact_->setFragmentShader(object_, filesource_);
+        return artefact_->setFragmentShader(object_, details_);
     });
 }
 

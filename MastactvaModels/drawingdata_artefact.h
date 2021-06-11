@@ -13,11 +13,11 @@ public:
     virtual ~IDrawingDataArtefact() = default;
     virtual bool setVertexShader(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const = 0;
     virtual bool setFragmentShader(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const = 0;
     virtual void addArguments(
             drawing_data::QuizImageObject &object_
@@ -35,11 +35,11 @@ public:
 
     bool setVertexShader(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const override;
     bool setFragmentShader(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const override;
     void addArguments(
             drawing_data::QuizImageObject &object_

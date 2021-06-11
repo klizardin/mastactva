@@ -28,7 +28,7 @@ public:
     void next();
     void build(
             drawing_data::QuizImageObject &object_,
-            drawingdata::IFileSource *filesource_
+            const drawingdata::Details &details_
             ) const;
 
 private:
@@ -83,12 +83,12 @@ void ObjectArtefacts::next()
 
 void ObjectArtefacts::build(
         drawing_data::QuizImageObject &object_,
-        drawingdata::IFileSource *filesource_
+        const drawingdata::Details &details_
         ) const
 {
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        if((*it)->setVertexShader(object_, filesource_))
+        if((*it)->setVertexShader(object_, details_))
         {
             (*it)->addArguments(object_);
             break;
@@ -96,7 +96,7 @@ void ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        if((*it)->setFragmentShader(object_, filesource_))
+        if((*it)->setFragmentShader(object_, details_))
         {
             (*it)->addArguments(object_);
             break;
@@ -126,7 +126,7 @@ void ObjectArtefacts::findEnd()
 
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
-        drawingdata::IFileSource *filesource_
+        const drawingdata::Details &details_
         ) const
 {
     if(!m_objectArtefactData.operator bool())
@@ -139,6 +139,6 @@ void DrawingDataEffectObjects::addObjects(
     for(list.first(); !list.isEnd(); list.next())
     {
         data_.objects.push_back(std::make_shared<drawing_data::QuizImageObject>());
-        list.build(*(data_.objects.back()), filesource_);
+        list.build(*(data_.objects.back()), details_);
     }
 }

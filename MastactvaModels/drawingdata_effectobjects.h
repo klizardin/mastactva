@@ -14,7 +14,7 @@ public:
     DrawingDataEffectObjects() = default;
     DrawingDataEffectObjects(EffectObjectsData &&data_);
 
-    void addObjects(drawing_data::QuizImageObjects &data_, drawingdata::IFileSource *filesource_) const;
+    void addObjects(drawing_data::QuizImageObjects &data_, const drawingdata::Details &details_) const;
 };
 
 
