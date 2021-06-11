@@ -65,6 +65,9 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    namespace details
+    {
+
     template<typename Type_> inline
     bool getArray(const QString &str_, std::vector<Type_> &array_)
     {
@@ -90,22 +93,24 @@ namespace utils
         }
     }
 
+    }
+
     template<> inline
     void toUniform(const QString &str_, QMatrix2x2 &mat_)
     {
-        toMatrix<2*2, QMatrix2x2>(str_, mat_);
+        details::toMatrix<2*2, QMatrix2x2>(str_, mat_);
     }
 
     template<> inline
     void toUniform(const QString &str_, QMatrix3x3 &mat_)
     {
-        toMatrix<3*3, QMatrix3x3>(str_, mat_);
+        details::toMatrix<3*3, QMatrix3x3>(str_, mat_);
     }
 
     template<> inline
     void toUniform(const QString &str_, QMatrix4x4 &mat_)
     {
-        toMatrix<4*4, QMatrix4x4>(str_, mat_);
+        details::toMatrix<4*4, QMatrix4x4>(str_, mat_);
     }
 
     template<> inline
