@@ -70,77 +70,77 @@ namespace utils
     namespace details
     {
 
-    template<typename Type_> inline
-    bool getArray(const QString &str_, std::vector<Type_> &array_)
-    {
-        QString str(str_);
-        QTextStream s(&str);
-        std::size_t i = 0;
-        for(i = 0; i < array_.size() && !s.atEnd(); ++i)
+        template<typename Type_> inline
+        bool getArray(const QString &str_, std::vector<Type_> &array_)
         {
-            s >> array_.at(i);
+            QString str(str_);
+            QTextStream s(&str);
+            std::size_t i = 0;
+            for(i = 0; i < array_.size() && !s.atEnd(); ++i)
+            {
+                s >> array_.at(i);
+            }
+            return i >= array_.size();
         }
-        return i >= array_.size();
-    }
 
-    template<std::size_t size_, typename MatrixType_> inline
-    void toMatrix(const QString &str_, MatrixType_ &mat_)
-    {
-        std::vector<float> vec;
-        vec.resize(size_);
-        (void)getArray(str_, vec);
-        for(std::size_t i = 0; i < vec.size() && i < size_; ++i)
+        template<std::size_t size_, typename MatrixType_> inline
+        void toMatrix(const QString &str_, MatrixType_ &mat_)
         {
-            mat_.data()[i] = vec.at(i);
+            std::vector<float> vec;
+            vec.resize(size_);
+            (void)getArray(str_, vec);
+            for(std::size_t i = 0; i < vec.size() && i < size_; ++i)
+            {
+                mat_.data()[i] = vec.at(i);
+            }
         }
-    }
 
-    template<std::size_t size_, typename Type_> inline
-    std::vector<Type_> getArrayOfSize(const QString &str_)
-    {
-        std::vector<Type_> vec;
-        vec.resize(size_);
-        (void)details::getArray(str_, vec);
-        return vec;
-    }
+        template<std::size_t size_, typename Type_> inline
+        std::vector<Type_> getArrayOfSize(const QString &str_)
+        {
+            std::vector<Type_> vec;
+            vec.resize(size_);
+            (void)details::getArray(str_, vec);
+            return vec;
+        }
 
-    template<typename Type_, typename ItemType_> inline
-    Type_ toType(const std::vector<ItemType_> &vec_)
-    {
-        Q_UNUSED(vec_);
-        Q_ASSERT(false); // not implemented
-        return Type_{};
-    }
+        template<typename Type_, typename ItemType_> inline
+        Type_ toType(const std::vector<ItemType_> &vec_)
+        {
+            Q_UNUSED(vec_);
+            Q_ASSERT(false); // not implemented
+            return Type_{};
+        }
 
-    template<> inline
-    int toType(const std::vector<int> &vec_)
-    {
-        return vec_.at(0);
-    }
+        template<> inline
+        int toType(const std::vector<int> &vec_)
+        {
+            return vec_.at(0);
+        }
 
-    template<> inline
-    float toType(const std::vector<float> &vec_)
-    {
-        return vec_.at(0);
-    }
+        template<> inline
+        float toType(const std::vector<float> &vec_)
+        {
+            return vec_.at(0);
+        }
 
-    template<> inline
-    QVector2D toType(const std::vector<float> &vec_)
-    {
-        return {vec_.at(0), vec_.at(1)};
-    }
+        template<> inline
+        QVector2D toType(const std::vector<float> &vec_)
+        {
+            return {vec_.at(0), vec_.at(1)};
+        }
 
-    template<> inline
-    QVector3D toType(const std::vector<float> &vec_)
-    {
-        return {vec_.at(0), vec_.at(1), vec_.at(2)};
-    }
+        template<> inline
+        QVector3D toType(const std::vector<float> &vec_)
+        {
+            return {vec_.at(0), vec_.at(1), vec_.at(2)};
+        }
 
-    template<> inline
-    QVector4D toType(const std::vector<float> &vec_)
-    {
-        return {vec_.at(0), vec_.at(1), vec_.at(2), vec_.at(3)};
-    }
+        template<> inline
+        QVector4D toType(const std::vector<float> &vec_)
+        {
+            return {vec_.at(0), vec_.at(1), vec_.at(2), vec_.at(3)};
+        }
 
     }
 
