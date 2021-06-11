@@ -60,6 +60,19 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     return filesource;
 }
 
+QString toString(const std::vector<QVector2D> &data_)
+{
+    QString result;
+    for(const QVector2D &vec_ : data_)
+    {
+        result += QString("%1 %2 ").arg(
+                    fmt::toString(vec_.x()),
+                    fmt::toString(vec_.y())
+                    );
+    }
+    return result;
+}
+
 QString toString(const std::vector<QVector3D> &data_)
 {
     QString result;
@@ -74,6 +87,72 @@ QString toString(const std::vector<QVector3D> &data_)
     return result;
 }
 
+QString toString(const std::vector<QVector4D> &data_)
+{
+    QString result;
+    for(const QVector4D &vec_ : data_)
+    {
+        result += QString("%1 %2 %3 %4 ").arg(
+                    fmt::toString(vec_.x()),
+                    fmt::toString(vec_.y()),
+                    fmt::toString(vec_.z()),
+                    fmt::toString(vec_.w())
+                    );
+    }
+    return result;
+}
+
+QString toString(const int &data_)
+{
+    QString result = QString("%1")
+            .arg(
+                fmt::toString(data_)
+                );
+    return result;
+}
+
+QString toString(const float &data_)
+{
+    QString result = QString("%1")
+            .arg(
+                fmt::toString(data_)
+                );
+    return result;
+}
+
+QString toString(const QVector2D &vec_)
+{
+    QString result = QString("%1 %2")
+            .arg(
+                fmt::toString(vec_.x()),
+                fmt::toString(vec_.y())
+                );
+    return result;
+}
+
+QString toString(const QVector3D &vec_)
+{
+    QString result = QString("%1 %2 %3")
+            .arg(
+                fmt::toString(vec_.x()),
+                fmt::toString(vec_.y()),
+                fmt::toString(vec_.z())
+                );
+    return result;
+}
+
+QString toString(const QVector4D &vec_)
+{
+    QString result = QString("%1 %2 %3 %4")
+            .arg(
+                fmt::toString(vec_.x()),
+                fmt::toString(vec_.y()),
+                fmt::toString(vec_.z()),
+                fmt::toString(vec_.w())
+                );
+    return result;
+}
+
 QString toString(const QMatrix4x4 &mat4_)
 {
     QString result;
@@ -83,7 +162,6 @@ QString toString(const QMatrix4x4 &mat4_)
     }
     return result;
 }
-
 
 static const char *emptyStr = "";
 
