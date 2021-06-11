@@ -70,6 +70,17 @@ void DrawingDataObjectArtefact::addArguments(
     });
 }
 
+void DrawingDataObjectArtefact::addTexture(
+        drawing_data::QuizImageObject &object_
+        ) const
+{
+    (void)forArtefacts([&object_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->addTexture(object_);
+        return false;
+    });
+}
+
 bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_)
 {
     return left_.m_stepIndex < right_.m_stepIndex;

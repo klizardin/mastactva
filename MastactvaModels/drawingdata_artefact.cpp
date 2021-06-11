@@ -56,3 +56,16 @@ void DrawingDataArtefact::addArguments(
         arg->addArgument(object_);
     }
 }
+
+void DrawingDataArtefact::addTexture(
+        drawing_data::QuizImageObject &object_
+        ) const
+{
+    if(to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::texture1D
+            && to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::texture2D
+            && to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::texture3D)
+    {
+        return;
+    }
+    object_.textures.push_back({m_name, static_cast<const QString &>(m_filename)});
+}

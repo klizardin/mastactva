@@ -102,6 +102,10 @@ void ObjectArtefacts::build(
             break;
         }
     }
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        (*it)->addTexture(object_);
+    }
 }
 
 void ObjectArtefacts::findEnd()
