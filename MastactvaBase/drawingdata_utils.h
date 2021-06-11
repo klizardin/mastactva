@@ -232,6 +232,12 @@ namespace utils
     {
         details::toAttribute<3, QVector3D>(str_, data_);
     }
+
+    template<> inline
+    void toAttribute(const QString &str_, std::vector<QVector4D> &data_)
+    {
+        details::toAttribute<4, QVector4D>(str_, data_);
+    }
 }
 
 class IFileSource
