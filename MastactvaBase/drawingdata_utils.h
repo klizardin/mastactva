@@ -96,6 +96,26 @@ namespace utils
     }
 
     template<> inline
+    void toUniform(const QString &str_, int &data_)
+    {
+        std::size_t size = 1;
+        std::vector<int> vec;
+        vec.resize(size);
+        (void)details::getArray(str_, vec);
+        data_ = vec.at(0);
+    }
+
+    template<> inline
+    void toUniform(const QString &str_, float &data_)
+    {
+        std::size_t size = 1;
+        std::vector<float> vec;
+        vec.resize(size);
+        (void)details::getArray(str_, vec);
+        data_ = vec.at(0);
+    }
+
+    template<> inline
     void toUniform(const QString &str_, QMatrix2x2 &mat_)
     {
         details::toMatrix<2*2, QMatrix2x2>(str_, mat_);
