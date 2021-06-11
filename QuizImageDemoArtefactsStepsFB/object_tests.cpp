@@ -51,12 +51,16 @@ static const char *g_baseFragmatShader =
 
 static const char *g_baseVertexShaderFilename = "base.vsh";
 static const char *g_baseFragmentShaderFilename = "base.fsh";
+static const char *g_defaultVertexShaderFilename = "default.vsh";
+static const char *g_defaultFragmentShaderFilename = "default.fsh";
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
     filesource->add(g_baseVertexShaderFilename, g_baseVertexShader);
     filesource->add(g_baseFragmentShaderFilename, g_baseFragmatShader);
+    filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
+    filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
     return filesource;
 }
 
