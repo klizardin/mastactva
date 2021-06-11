@@ -459,7 +459,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::type)>(args2[i]),
                 std::get<to_underlying(ArgEn::storage)>(args2[i]),
                 std::get<to_underlying(ArgEn::name)>(args2[i]),
-                std::get<to_underlying(ArgEn::value)>(args1[i]),
+                std::get<to_underlying(ArgEn::value)>(args2[i]),
                 emptyStr,
                 now
                 );
