@@ -27,6 +27,9 @@ public:
     void addArguments(
             drawing_data::QuizImageObject &object_
             ) const override;
+    void addTexture(
+            drawing_data::QuizImageObject &object_
+            ) const override;
 
     friend bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_);
 

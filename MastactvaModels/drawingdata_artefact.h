@@ -22,6 +22,9 @@ public:
     virtual void addArguments(
             drawing_data::QuizImageObject &object_
             ) const = 0;
+    virtual void addTexture(
+            drawing_data::QuizImageObject &object_
+            ) const = 0;
 };
 
 
@@ -42,6 +45,9 @@ public:
             const drawingdata::Details &details_
             ) const override;
     void addArguments(
+            drawing_data::QuizImageObject &object_
+            ) const override;
+    void addTexture(
             drawing_data::QuizImageObject &object_
             ) const override;
 };
