@@ -157,6 +157,24 @@ namespace utils
     }
 
     template<> inline
+    void toUniform(const QString &str_, QVector2D &data_)
+    {
+        data_ = details::toType<QVector2D, float>(details::getArrayOfSize<2, float>(str_));
+    }
+
+    template<> inline
+    void toUniform(const QString &str_, QVector3D &data_)
+    {
+        data_ = details::toType<QVector3D, float>(details::getArrayOfSize<3, float>(str_));
+    }
+
+    template<> inline
+    void toUniform(const QString &str_, QVector4D &data_)
+    {
+        data_ = details::toType<QVector4D, float>(details::getArrayOfSize<4, float>(str_));
+    }
+
+    template<> inline
     void toUniform(const QString &str_, QMatrix2x2 &mat_)
     {
         details::toMatrix<2*2, QMatrix2x2>(str_, mat_);
