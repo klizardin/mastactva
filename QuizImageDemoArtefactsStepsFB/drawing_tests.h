@@ -52,7 +52,7 @@ namespace drawing_data
     };
 }
 
-using TestCaseInitializer = drawing_data::Test3QuizImageObject;
+//using TestCaseInitializer = drawing_data::Test3QuizImageObject;
 
 
 #endif // DRAWING_TESTS_H
