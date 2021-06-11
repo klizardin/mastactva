@@ -27,7 +27,7 @@ public:
 
     template<template <typename> class DrawingDataArtefactArgType_>
     static
-    std::unique_ptr<DrawingDataArtefactArg> create0(ArtefactArgData &&data_)
+    std::unique_ptr<DrawingDataArtefactArg> createForAttributeTypes(ArtefactArgData &&data_)
     {
         switch(to_enum<ArtefactArgTypeEn>(data_.m_argTypeId))
         {
@@ -48,7 +48,7 @@ public:
 
     template<template <typename> class DrawingDataArtefactArgType_>
     static
-    std::unique_ptr<DrawingDataArtefactArg> create1(ArtefactArgData &&data_)
+    std::unique_ptr<DrawingDataArtefactArg> createForUniformaTypes(ArtefactArgData &&data_)
     {
         switch(to_enum<ArtefactArgTypeEn>(data_.m_argTypeId))
         {
@@ -207,11 +207,11 @@ std::unique_ptr<DrawingDataArtefactArg> factory(ArtefactArgData &&data_, const D
     //return std::make_unique<DrawingDataArtefactArg>(std::move(data_));
     if(to_enum<ArtefactArgStorageEn>(data_.m_argStorageId) == ArtefactArgStorageEn::attributeStorage)
     {
-        return DrawingDataArtefactArg::create0<DrawingDataArtefactAtrributeArg>(std::move(data_));
+        return DrawingDataArtefactArg::createForAttributeTypes<DrawingDataArtefactAtrributeArg>(std::move(data_));
     }
     else if(to_enum<ArtefactArgStorageEn>(data_.m_argStorageId) == ArtefactArgStorageEn::uniformStorage)
     {
-        return DrawingDataArtefactArg::create1<DrawingDataArtefactUniformArg>(std::move(data_));
+        return DrawingDataArtefactArg::createForUniformaTypes<DrawingDataArtefactUniformArg>(std::move(data_));
     }
     else
     {
