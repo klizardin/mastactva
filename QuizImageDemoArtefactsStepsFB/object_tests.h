@@ -47,7 +47,7 @@ namespace drawing_objects
 }
 
 
-using TestCaseInitializer = drawing_objects::MultipleObjectsTest;
+using TestCaseInitializer = drawing_objects::DefaultTest;
 
 
 #endif // OBJECT_TESTS_H
