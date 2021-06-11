@@ -3,6 +3,8 @@
 
 
 #include <memory>
+#include <QString>
+#include <QTextStream>
 #include <QVector>
 #include <QImage>
 #include <QVector2D>
@@ -93,26 +95,65 @@ namespace utils
         }
     }
 
+    template<std::size_t size_, typename Type_> inline
+    std::vector<Type_> getArrayOfSize(const QString &str_)
+    {
+        std::vector<Type_> vec;
+        vec.resize(size_);
+        (void)details::getArray(str_, vec);
+        return vec;
+    }
+
+    template<typename Type_, typename ItemType_> inline
+    Type_ toType(const std::vector<ItemType_> &vec_)
+    {
+        Q_UNUSED(vec_);
+        Q_ASSERT(false); // not implemented
+        return Type_{};
+    }
+
+    template<> inline
+    int toType(const std::vector<int> &vec_)
+    {
+        return vec_.at(0);
+    }
+
+    template<> inline
+    float toType(const std::vector<float> &vec_)
+    {
+        return vec_.at(0);
+    }
+
+    template<> inline
+    QVector2D toType(const std::vector<float> &vec_)
+    {
+        return {vec_.at(0), vec_.at(1)};
+    }
+
+    template<> inline
+    QVector3D toType(const std::vector<float> &vec_)
+    {
+        return {vec_.at(0), vec_.at(1), vec_.at(2)};
+    }
+
+    template<> inline
+    QVector4D toType(const std::vector<float> &vec_)
+    {
+        return {vec_.at(0), vec_.at(1), vec_.at(2), vec_.at(3)};
+    }
+
     }
 
     template<> inline
     void toUniform(const QString &str_, int &data_)
     {
-        std::size_t size = 1;
-        std::vector<int> vec;
-        vec.resize(size);
-        (void)details::getArray(str_, vec);
-        data_ = vec.at(0);
+        data_ = details::toType<int, int>(details::getArrayOfSize<1, int>(str_));
     }
 
     template<> inline
     void toUniform(const QString &str_, float &data_)
     {
-        std::size_t size = 1;
-        std::vector<float> vec;
-        vec.resize(size);
-        (void)details::getArray(str_, vec);
-        data_ = vec.at(0);
+        data_ = details::toType<float, float>(details::getArrayOfSize<1, float>(str_));
     }
 
     template<> inline
