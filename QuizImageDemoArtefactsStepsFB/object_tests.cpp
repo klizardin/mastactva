@@ -383,14 +383,14 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         {
             101,
             ArtefactArgTypeEn::floatType,
-            ArtefactArgStorageEn::attributeStorage,
+            ArtefactArgStorageEn::uniformStorage,
             "renderOpacity",
             "1.0"
         },
         {
             102,
             ArtefactArgTypeEn::floatType,
-            ArtefactArgStorageEn::attributeStorage,
+            ArtefactArgStorageEn::uniformStorage,
             "renderT",
             "0.5"
         },
