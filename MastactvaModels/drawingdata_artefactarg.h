@@ -48,7 +48,7 @@ public:
 
     template<template <typename> class DrawingDataArtefactArgType_>
     static
-    std::unique_ptr<DrawingDataArtefactArg> createForUniformaTypes(ArtefactArgData &&data_)
+    std::unique_ptr<DrawingDataArtefactArg> createForUniformTypes(ArtefactArgData &&data_)
     {
         switch(to_enum<ArtefactArgTypeEn>(data_.m_argTypeId))
         {
@@ -81,9 +81,6 @@ public:
             return {nullptr};
         }
     }
-private:
-    void addAttribute(drawing_data::QuizImageObject &object_) const;
-    void addUniform(drawing_data::QuizImageObject &object_) const;
 };
 
 
@@ -146,7 +143,7 @@ std::unique_ptr<DrawingDataArtefactArg> factory(ArtefactArgData &&data_, const D
     }
     else if(to_enum<ArtefactArgStorageEn>(data_.m_argStorageId) == ArtefactArgStorageEn::uniformStorage)
     {
-        return DrawingDataArtefactArg::createForUniformaTypes<DrawingDataArtefactUniformArg>(std::move(data_));
+        return DrawingDataArtefactArg::createForUniformTypes<DrawingDataArtefactUniformArg>(std::move(data_));
     }
     else
     {
