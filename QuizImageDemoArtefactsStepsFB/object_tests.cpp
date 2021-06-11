@@ -170,7 +170,7 @@ QString toString(const QMatrix4x4 &mat4_)
 
 static const char *emptyStr = "";
 
-
+// TODO: refactoring
 std::unique_ptr<EffectObjectsData> createTestObject(
         int effectId,
         const char *effectName,
@@ -301,6 +301,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
     return effectObject;
 }
 
+// TODO: refactoring
 std::unique_ptr<EffectObjectsData> createTestObject2(
         int effectId,
         const char *effectName,
@@ -610,6 +611,7 @@ std::unique_ptr<EffectData> createTestData3()
 namespace drawing_objects
 {
 
+// TODO: refactoring
 void BaseTest::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
