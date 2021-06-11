@@ -52,10 +52,43 @@ namespace utils
     }
 
     template<typename Type_> inline
+    void toUniform(const QString &str_, Type_ &)
+    {
+        Q_UNUSED(str_);
+        Q_ASSERT(false); // not implemented
+    }
+
+    template<typename Type_> inline
     void toAttribute(const QString &val_, std::vector<Type_> &)
     {
         Q_UNUSED(val_);
         Q_ASSERT(false); // not implemented
+    }
+
+    template<typename Type_> inline
+    bool getArray(const QString &str_, std::vector<Type_> &array_)
+    {
+        QString str(str_);
+        QTextStream s(&str);
+        std::size_t i = 0;
+        for(i = 0; i < array_.size() && !s.atEnd(); ++i)
+        {
+            s >> array_.at(i);
+        }
+        return i >= array_.size();
+    }
+
+    template<> inline
+    void toUniform(const QString &str_, QMatrix4x4 &mat_)
+    {
+        const std::size_t size = 16;
+        std::vector<float> vec;
+        vec.resize(size);
+        (void)getArray(str_, vec);
+        for(std::size_t i = 0; i < vec.size() && i < size; ++i)
+        {
+            mat_.data()[i] = vec.at(i);
+        }
     }
 
     template<> inline
@@ -76,39 +109,6 @@ namespace utils
             }
             QVector3D item(v.at(0), v.at(1), v.at(2));
             data_.push_back(item);
-        }
-    }
-
-    template<typename Type_> inline
-    bool getArray(const QString &str_, std::vector<Type_> &array_)
-    {
-        QString str(str_);
-        QTextStream s(&str);
-        std::size_t i = 0;
-        for(i = 0; i < array_.size() && !s.atEnd(); ++i)
-        {
-            s >> array_.at(i);
-        }
-        return i >= array_.size();
-    }
-
-    template<typename Type_> inline
-    void toUniform(const QString &str_, Type_ &)
-    {
-        Q_UNUSED(str_);
-        Q_ASSERT(false); // not implemented
-    }
-
-    template<> inline
-    void toUniform(const QString &str_, QMatrix4x4 &mat_)
-    {
-        const std::size_t size = 16;
-        std::vector<float> vec;
-        vec.resize(size);
-        (void)getArray(str_, vec);
-        for(std::size_t i = 0; i < vec.size() && i < size; ++i)
-        {
-            mat_.data()[i] = vec.at(i);
         }
     }
 }
