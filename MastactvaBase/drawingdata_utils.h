@@ -47,6 +47,12 @@ public:
     virtual QImage getImage(const FileSource &filename_) const = 0;
 };
 
+class Details
+{
+public:
+    std::shared_ptr<IFileSource> filesource;
+};
+
 }
 
 
