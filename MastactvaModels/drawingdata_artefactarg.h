@@ -25,6 +25,7 @@ public:
     DrawingDataArtefactArg() = default;
     DrawingDataArtefactArg(ArtefactArgData &&data_);
 
+private:
     template<template <typename> class DrawingDataArtefactArgType_>
     static
     std::unique_ptr<DrawingDataArtefactArg> createForAttributeTypes(ArtefactArgData &&data_)
@@ -81,6 +82,8 @@ public:
             return {nullptr};
         }
     }
+
+    friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(ArtefactArgData &&data_, const DrawingDataArtefactArg *);
 };
 
 
