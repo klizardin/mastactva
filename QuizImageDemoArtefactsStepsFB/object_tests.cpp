@@ -174,6 +174,7 @@ static const char *emptyStr = "";
 std::unique_ptr<EffectObjectsData> createTestObject(
         int effectId,
         const char *effectName,
+        const char *effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
         QRandomGenerator &gen
@@ -181,35 +182,14 @@ std::unique_ptr<EffectObjectsData> createTestObject(
 {
     static const int effectObjectId = 1;
     static const int objectInfoId = 1;
-    static const char *effectProgrammerName = "effect1";
-    static const int artefactId1 = 1;
-    static const char *artefactName1 = "vertext shader";
-    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
-    static const int objectArtefactId1 = 1;
-    static const int objectArtefactStep0 = 0;
-    static const int artefactId2 = 2;
-    static const char *artefactName2 = "fragment shader";
-    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
-    static const int objectArtefactId2 = 2;
-    static const int artefactArgId1 = 1;
-    static const ArtefactArgTypeEn artefactArgType1 = ArtefactArgTypeEn::vec3Type;
-    static const ArtefactArgStorageEn artefactArgStorage1 = ArtefactArgStorageEn::attributeStorage;
-    static const char *artefactArgName1 = "vertex";
-    static const int artefactArgId2 = 2;
-    static const ArtefactArgTypeEn artefactArgType2 = ArtefactArgTypeEn::vec3Type;
-    static const ArtefactArgStorageEn artefactArgStorage2 = ArtefactArgStorageEn::attributeStorage;
-    static const char *artefactArgName2 = "normal";
-    static const int artefactArgId3 = 3;
-    static const ArtefactArgTypeEn artefactArgType3 = ArtefactArgTypeEn::mat4Type;
-    static const ArtefactArgStorageEn artefactArgStorage3 = ArtefactArgStorageEn::uniformStorage;
-    static const char *artefactArgName3 = "matrix";
-
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
                 effectId,
                 objectInfoId,
                 effectObjectStep
                 );
+
+    // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
                 objectInfoId,
                 effectName,
@@ -217,16 +197,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 now
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
-    auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId1,
-                artefactName1,
-                g_baseVertexShaderFilename,
-                emptyStr,
-                artefactType1,
-                emptyStr,
-                now
-                );
 
+    // prepare data
     std::vector<QVector3D> vertexData;
     std::vector<QVector3D> normalData;
     test::createGeometry(vertexData, normalData);
@@ -240,39 +212,61 @@ std::unique_ptr<EffectObjectsData> createTestObject(
     modelview.scale(fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
-    auto vertexArg = std::make_unique<ArtefactArgData>(
-                artefactArgId1,
+    // for both artefacts
+    static const int objectArtefactStep0 = 0;
+
+    // vertex shader artefact
+    enum class ArgEn{id, type, storage, name, value};
+    const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString> vertexArgs[] = {
+        {
+            1,
+            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "vertex",
+            toString(vertexData)
+        },
+        {
+            2,
+            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "normal",
+            toString(normalData)
+        },
+        {
+            3,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "matrix",
+            toString(modelview)
+        }
+    };
+    static const int artefactId1 = 1;
+    static const char *artefactName1 = "vertext shader";
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
+    auto artefact1 = std::make_unique<ArtefactData>(
                 artefactId1,
-                artefactArgType1,
-                artefactArgStorage1,
-                artefactArgName1,
-                toString(vertexData),
+                artefactName1,
+                g_baseVertexShaderFilename,
+                emptyStr,
+                artefactType1,
                 emptyStr,
                 now
                 );
-    artefact1->m_artefactArgData->push_back(vertexArg.release());
-    auto normalArg = std::make_unique<ArtefactArgData>(
-                artefactArgId2,
+    for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
                 artefactId1,
-                artefactArgType2,
-                artefactArgStorage2,
-                artefactArgName2,
-                toString(normalData),
+                std::get<to_underlying(ArgEn::type)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now
                 );
-    artefact1->m_artefactArgData->push_back(normalArg.release());
-    auto matrixArg = std::make_unique<ArtefactArgData>(
-                artefactArgId3,
-                artefactId1,
-                artefactArgType3,
-                artefactArgStorage3,
-                artefactArgName3,
-                toString(modelview),
-                emptyStr,
-                now
-                );
-    artefact1->m_artefactArgData->push_back(matrixArg.release());
+        artefact1->m_artefactArgData->push_back(arg.release());
+    }
+    static const int objectArtefactId1 = 1;
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
                 effectId,
@@ -281,6 +275,11 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefact1.release()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+
+    // fragment shader artefact
+    static const int artefactId2 = 2;
+    static const char *artefactName2 = "fragment shader";
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
     auto artefact2 = std::make_unique<ArtefactData>(
                 artefactId2,
                 artefactName2,
@@ -290,6 +289,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 emptyStr,
                 now
                 );
+    static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId2,
                 effectId,
@@ -298,6 +298,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefact2.release()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+
     return effectObject;
 }
 
@@ -515,6 +516,7 @@ std::unique_ptr<EffectData> createTestData1()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
+    static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
@@ -522,6 +524,7 @@ std::unique_ptr<EffectData> createTestData1()
     auto effectObject1 = createTestObject(
                 effectId,
                 effectName,
+                effectProgrammerName,
                 now,
                 effectObjectStep0,
                 gen
@@ -540,6 +543,7 @@ std::unique_ptr<EffectData> createTestData2()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
+    static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
@@ -548,6 +552,7 @@ std::unique_ptr<EffectData> createTestData2()
     auto effectObject1 = createTestObject(
                 effectId,
                 effectName,
+                effectProgrammerName,
                 now,
                 effectObjectStep0,
                 gen
@@ -555,6 +560,7 @@ std::unique_ptr<EffectData> createTestData2()
     auto effectObject2 = createTestObject(
                 effectId,
                 effectName,
+                effectProgrammerName,
                 now,
                 effectObjectStep1,
                 gen
