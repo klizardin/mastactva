@@ -248,10 +248,19 @@ public:
     virtual QImage getImage(const FileSource &filename_) const = 0;
 };
 
+class IVariables
+{
+public:
+    virtual ~IVariables() = default;
+    virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
+    virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
+};
+
 class Details
 {
 public:
     std::shared_ptr<IFileSource> filesource;
+    std::shared_ptr<IVariables> variables;
 };
 
 }
