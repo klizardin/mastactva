@@ -60,12 +60,13 @@ bool DrawingDataObjectArtefact::setFragmentShader(
 }
 
 void DrawingDataObjectArtefact::addArguments(
-        drawing_data::QuizImageObject &object_
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
         ) const
 {
-    (void)forArtefacts([&object_](const DrawingDataArtefact *artefact_)->bool
+    (void)forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
     {
-        artefact_->addArguments(object_);
+        artefact_->addArguments(object_, details_);
         return false;
     });
 }

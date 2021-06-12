@@ -13,7 +13,10 @@ class IDrawingDataArtefactArg
 {
 public:
     virtual ~IDrawingDataArtefactArg() = default;
-    virtual void addArgument(drawing_data::QuizImageObject &object_) const = 0;
+    virtual void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const = 0;
 };
 
 
@@ -97,10 +100,22 @@ public:
     {
     }
 
-    void addArgument(drawing_data::QuizImageObject &object_) const override
+    void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override
     {
         auto val = std::make_shared<std::vector<ArgType_>>();
-        drawingdata::utils::toAttribute(m_defaultValue, *val);
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
+        if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, data))
+        {
+            //drawingdata::utils::toAttribute(data, *val);
+        }
+        else
+        {
+            drawingdata::utils::toAttribute(m_defaultValue, *val);
+        }
         object_.attributes.push_back(
                     std::make_unique<drawing_data::Attribute<ArgType_>>(
                         m_name,
@@ -120,10 +135,22 @@ public:
     {
     }
 
-    void addArgument(drawing_data::QuizImageObject &object_) const override
+    void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override
     {
         auto val = std::make_shared<ArgType_>();
-        drawingdata::utils::toUniform(m_defaultValue, *val);
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
+        if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, data))
+        {
+            //drawingdata::utils::toUniform(data, *val);
+        }
+        else
+        {
+            drawingdata::utils::toUniform(m_defaultValue, *val);
+        }
         object_.uniforms.push_back(
                     std::make_unique<drawing_data::Uniform<ArgType_>>(
                         m_name,

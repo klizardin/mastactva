@@ -90,7 +90,7 @@ void ObjectArtefacts::build(
     {
         if((*it)->setVertexShader(object_, details_))
         {
-            (*it)->addArguments(object_);
+            (*it)->addArguments(object_, details_);
             break;
         }
     }
@@ -98,7 +98,7 @@ void ObjectArtefacts::build(
     {
         if((*it)->setFragmentShader(object_, details_))
         {
-            (*it)->addArguments(object_);
+            (*it)->addArguments(object_, details_);
             break;
         }
     }

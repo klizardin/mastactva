@@ -39,7 +39,8 @@ bool DrawingDataArtefact::setFragmentShader(
 }
 
 void DrawingDataArtefact::addArguments(
-        drawing_data::QuizImageObject &object_
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
         ) const
 {
     if(!m_artefactArgData.operator bool())
@@ -53,7 +54,7 @@ void DrawingDataArtefact::addArguments(
         {
             continue;
         }
-        arg->addArgument(object_);
+        arg->addArgument(object_, details_);
     }
 }
 

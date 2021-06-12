@@ -20,7 +20,8 @@ public:
             const drawingdata::Details &details_
             ) const = 0;
     virtual void addArguments(
-            drawing_data::QuizImageObject &object_
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
             ) const = 0;
     virtual void addTexture(
             drawing_data::QuizImageObject &object_
@@ -45,7 +46,8 @@ public:
             const drawingdata::Details &details_
             ) const override;
     void addArguments(
-            drawing_data::QuizImageObject &object_
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
             ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_
