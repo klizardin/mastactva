@@ -13,7 +13,10 @@ class IDrawingDataArtefactArg
 {
 public:
     virtual ~IDrawingDataArtefactArg() = default;
-    virtual void addArgument(drawing_data::QuizImageObject &object_) const = 0;
+    virtual void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const = 0;
 };
 
 
@@ -97,8 +100,12 @@ public:
     {
     }
 
-    void addArgument(drawing_data::QuizImageObject &object_) const override
+    void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override
     {
+        Q_UNUSED(details_);
         auto val = std::make_shared<std::vector<ArgType_>>();
         drawingdata::utils::toAttribute(m_defaultValue, *val);
         object_.attributes.push_back(
@@ -120,8 +127,12 @@ public:
     {
     }
 
-    void addArgument(drawing_data::QuizImageObject &object_) const override
+    void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override
     {
+        Q_UNUSED(details_);
         auto val = std::make_shared<ArgType_>();
         drawingdata::utils::toUniform(m_defaultValue, *val);
         object_.uniforms.push_back(
