@@ -305,24 +305,37 @@ std::unique_ptr<EffectObjectsData> createTestObject(
 std::unique_ptr<EffectObjectsData> createTestObject2(
         int effectId,
         const char *effectName,
+        const char *effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep
         )
 {
     static const int effectObjectId = 1;
     static const int objectInfoId = 1;
-    static const char *effectProgrammerName = "effect1";
+    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
+                effectObjectId,
+                effectId,
+                objectInfoId,
+                effectObjectStep
+                );
+
+    // ObjectInfoData
+    auto objectInfoData = std::make_unique<ObjectInfoData>(
+                objectInfoId,
+                effectName,
+                effectProgrammerName,
+                now
+                );
+    effectObject->m_objectInfoData->push_back(objectInfoData.release());
+
+    // vertex shader
     static const int artefactId1 = 1;
     static const char *artefactName1 = "vertext shader";
     static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
     static const int objectArtefactId1 = 1;
     static const int objectArtefactStep0 = 0;
-    static const int artefactId2 = 2;
-    static const char *artefactName2 = "fragment shader";
-    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
-    static const int objectArtefactId2 = 2;
     enum class ArgEn{id, type, storage, name, value};
-    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> args1[] = {
+    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> vertexArgs[] = {
         {
             1,
             ArtefactArgTypeEn::vec4Type,
@@ -380,7 +393,44 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             "1"
         }
     };
-    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> args2[] = {
+    auto artefact1 = std::make_unique<ArtefactData>(
+                artefactId1,
+                artefactName1,
+                g_defaultVertexShaderFilename,
+                emptyStr,
+                artefactType1,
+                emptyStr,
+                now
+                );
+    for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
+                artefactId1,
+                std::get<to_underlying(ArgEn::type)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
+                emptyStr,
+                now
+                );
+        artefact1->m_artefactArgData->push_back(arg.release());
+    }
+    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId1,
+                effectId,
+                artefactId1,
+                objectArtefactStep0,
+                artefact1.release()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+
+    // fragment shader
+    static const int artefactId2 = 2;
+    static const char *artefactName2 = "fragment shader";
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
+    static const int objectArtefactId2 = 2;
+    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> fragmentArgs[] = {
         {
             101,
             ArtefactArgTypeEn::floatType,
@@ -396,53 +446,6 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             "0.5"
         },
     };
-
-    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
-                effectObjectId,
-                effectId,
-                objectInfoId,
-                effectObjectStep
-                );
-    auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
-                effectName,
-                effectProgrammerName,
-                now
-                );
-    effectObject->m_objectInfoData->push_back(objectInfoData.release());
-    auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId1,
-                artefactName1,
-                g_defaultVertexShaderFilename,
-                emptyStr,
-                artefactType1,
-                emptyStr,
-                now
-                );
-
-    for(std::size_t i = 0; i < sizeof(args1)/sizeof(args1[0]); ++i)
-    {
-        auto arg = std::make_unique<ArtefactArgData>(
-                std::get<to_underlying(ArgEn::id)>(args1[i]),
-                artefactId1,
-                std::get<to_underlying(ArgEn::type)>(args1[i]),
-                std::get<to_underlying(ArgEn::storage)>(args1[i]),
-                std::get<to_underlying(ArgEn::name)>(args1[i]),
-                std::get<to_underlying(ArgEn::value)>(args1[i]),
-                emptyStr,
-                now
-                );
-        artefact1->m_artefactArgData->push_back(arg.release());
-    }
-
-    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
-                objectArtefactId1,
-                effectId,
-                artefactId1,
-                objectArtefactStep0,
-                artefact1.release()
-                );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
     auto artefact2 = std::make_unique<ArtefactData>(
                 artefactId2,
                 artefactName2,
@@ -452,15 +455,15 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 emptyStr,
                 now
                 );
-    for(std::size_t i = 0; i < sizeof(args2)/sizeof(args2[0]); ++i)
+    for(std::size_t i = 0; i < sizeof(fragmentArgs)/sizeof(fragmentArgs[0]); ++i)
     {
         auto arg = std::make_unique<ArtefactArgData>(
-                std::get<to_underlying(ArgEn::id)>(args2[i]),
+                std::get<to_underlying(ArgEn::id)>(fragmentArgs[i]),
                 artefactId1,
-                std::get<to_underlying(ArgEn::type)>(args2[i]),
-                std::get<to_underlying(ArgEn::storage)>(args2[i]),
-                std::get<to_underlying(ArgEn::name)>(args2[i]),
-                std::get<to_underlying(ArgEn::value)>(args2[i]),
+                std::get<to_underlying(ArgEn::type)>(fragmentArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(fragmentArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(fragmentArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(fragmentArgs[i]),
                 emptyStr,
                 now
                 );
@@ -475,53 +478,35 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
-    static const int artefactId3 = 3;
-    static const char *artefactName3 = "renderFromImage";
-    static const char *artefactFile3 = ":/Images/Images/no-image-001.png";
-    static const ArtefactTypeEn artefactType3 = ArtefactTypeEn::texture2D;
-    static const int objectArtefactId3 = 3;
-
-    auto artefact3 = std::make_unique<ArtefactData>(
-                artefactId3,
-                artefactName3,
-                artefactFile3,
-                emptyStr,
-                artefactType3,
-                emptyStr,
-                now
-                );
-    auto objectArtefactData3 = std::make_unique<ObjectArtefactData>(
-                objectArtefactId3,
-                effectId,
-                artefactId3,
-                objectArtefactStep0,
-                artefact3.release()
-                );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData3.release());
-
-    static const int artefactId4 = 4;
-    static const char *artefactName4 = "renderToImage";
-    static const char *artefactFile4 = ":/Images/Images/no-image-002.png";
-    static const ArtefactTypeEn artefactType4 = ArtefactTypeEn::texture2D;
-    static const int objectArtefactId4 = 4;
-
-    auto artefact4 = std::make_unique<ArtefactData>(
-                artefactId4,
-                artefactName4,
-                artefactFile4,
-                emptyStr,
-                artefactType4,
-                emptyStr,
-                now
-                );
-    auto objectArtefactData4 = std::make_unique<ObjectArtefactData>(
-                objectArtefactId4,
-                effectId,
-                artefactId4,
-                objectArtefactStep0,
-                artefact4.release()
-                );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData4.release());
+    // textures artefacts
+    enum class TextureEn{name, filename};
+    static std::tuple<const char *, const char *> textures[] =
+    {
+        {"renderFromImage", ":/Images/Images/no-image-001.png"},
+        {"renderToImage", ":/Images/Images/no-image-002.png"}
+    };
+    static const int textureBaseArtefactId = 3;
+    static const int textureBaseObjectArtefactIdBase = 3;
+    for(std::size_t i = 0; i < sizeof(textures)/sizeof(textures[0]); ++i)
+    {
+        auto textureArtefact = std::make_unique<ArtefactData>(
+                    textureBaseArtefactId + i,
+                    std::get<to_underlying(TextureEn::name)>(textures[i]),
+                    std::get<to_underlying(TextureEn::filename)>(textures[i]),
+                    emptyStr,
+                    ArtefactTypeEn::texture2D,
+                    emptyStr,
+                    now
+                    );
+        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
+                    textureBaseObjectArtefactIdBase + i,
+                    effectId,
+                    textureBaseArtefactId + i,
+                    objectArtefactStep0,
+                    textureArtefact.release()
+                    );
+        effectObject->m_objectArtefactData->push_back(textureObjectArtefactData.release());
+    }
 
     return effectObject;
 }
@@ -589,12 +574,14 @@ std::unique_ptr<EffectData> createTestData3()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
+    static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
 
     auto effectObject1 = createTestObject2(
                 effectId,
                 effectName,
+                effectProgrammerName,
                 now,
                 effectObjectStep0
                 );
