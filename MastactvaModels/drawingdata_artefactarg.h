@@ -105,9 +105,17 @@ public:
             const drawingdata::Details &details_
             ) const override
     {
-        Q_UNUSED(details_);
         auto val = std::make_shared<std::vector<ArgType_>>();
-        drawingdata::utils::toAttribute(m_defaultValue, *val);
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
+        if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, data))
+        {
+            //drawingdata::utils::toAttribute(data, *val);
+        }
+        else
+        {
+            drawingdata::utils::toAttribute(m_defaultValue, *val);
+        }
         object_.attributes.push_back(
                     std::make_unique<drawing_data::Attribute<ArgType_>>(
                         m_name,
@@ -132,9 +140,17 @@ public:
             const drawingdata::Details &details_
             ) const override
     {
-        Q_UNUSED(details_);
         auto val = std::make_shared<ArgType_>();
-        drawingdata::utils::toUniform(m_defaultValue, *val);
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
+        if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, data))
+        {
+            //drawingdata::utils::toUniform(data, *val);
+        }
+        else
+        {
+            drawingdata::utils::toUniform(m_defaultValue, *val);
+        }
         object_.uniforms.push_back(
                     std::make_unique<drawing_data::Uniform<ArgType_>>(
                         m_name,
