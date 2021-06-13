@@ -26,7 +26,7 @@ public:
     bool isEnd() const;
     void first();
     void next();
-    void build(
+    bool build(
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const;
@@ -81,7 +81,7 @@ void ObjectArtefacts::next()
     findEnd();
 }
 
-void ObjectArtefacts::build(
+bool ObjectArtefacts::build(
         drawing_data::QuizImageObject &object_,
         const drawingdata::Details &details_
         ) const
@@ -110,6 +110,7 @@ void ObjectArtefacts::build(
     {
         (*it)->addTexture(object_);
     }
+    return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
 }
 
 void ObjectArtefacts::findEnd()
@@ -146,7 +147,10 @@ void DrawingDataEffectObjects::addObjects(
     list.populate(*m_objectArtefactData);
     for(list.first(); !list.isEnd(); list.next())
     {
-        data_.objects.push_back(std::make_shared<drawing_data::QuizImageObject>());
-        list.build(*(data_.objects.back()), details_);
+        auto obj = std::make_shared<drawing_data::QuizImageObject>();
+        if(list.build(*obj, details_))
+        {
+            data_.objects.push_back(obj);
+        }
     }
 }
