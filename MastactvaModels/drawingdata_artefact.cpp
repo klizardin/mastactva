@@ -81,5 +81,5 @@ void DrawingDataArtefact::addData(
     {
         return;
     }
-    //details_.variables.add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
+    details_.variables->add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
 }
