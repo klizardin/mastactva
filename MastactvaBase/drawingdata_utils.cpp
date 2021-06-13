@@ -1,4 +1,5 @@
 #include "drawingdata_utils.h"
+#include <QJsonObject>
 
 
 namespace drawingdata
@@ -79,6 +80,41 @@ bool Variables::get(const QString &name_, QVector<float> &data_) const
     const_cast<Variable &>(fit->second).prepare(data_);
     fit->second.get(data_);
     return true;
+}
+
+static const char * g_jsonDataVariableValueName = "value";
+
+void Variables::add(const QJsonDocument &data_)
+{
+    if(!data_.isObject())
+    {
+        return;
+    }
+    QJsonObject rootObject = data_.object();
+    const QStringList keys = rootObject.keys();
+    for(const QString &key_ : keys)
+    {
+        const QJsonValue var = rootObject[key_];
+        if(var.isUndefined()
+                || !var.isObject())
+        {
+            continue;
+        }
+        const QJsonObject varObject = var.toObject();
+        if(!varObject.contains(g_jsonDataVariableValueName))
+        {
+            continue;
+        }
+        const QJsonValue val = varObject[g_jsonDataVariableValueName];
+        if(val.isUndefined()
+                || !val.isArray())
+        {
+            continue;
+        }
+        Variable newVar;
+        newVar.set(val.toArray());
+        m_variables.insert({key_, std::move(newVar)});
+    }
 }
 
 Details::Details()

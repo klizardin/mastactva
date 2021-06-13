@@ -9,6 +9,7 @@
 #include <QVector>
 #include <QImage>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
@@ -364,6 +365,7 @@ public:
     virtual ~IVariables() = default;
     virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
+    virtual void add(const QJsonDocument &data_) = 0;
 };
 
 class Variables : public IVariables
@@ -389,6 +391,7 @@ public:
 
     bool get(const QString &name_, QVector<int> &data_) const override;
     bool get(const QString &name_, QVector<float> &data_) const override;
+    void add(const QJsonDocument &data_) override;
 
 private:
     std::map<QString, Variable> m_variables;
