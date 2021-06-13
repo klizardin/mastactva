@@ -23,7 +23,7 @@ void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data
     data_.reserve(jsonArray_.size());
     for(int i = 0; i < jsonArray_.size(); ++i)
     {
-        const QJsonValue v = data_[i];
+        const QJsonValue v = jsonArray_.at(i);
         if(v.isUndefined() || !v.isDouble())
         {
             continue;
