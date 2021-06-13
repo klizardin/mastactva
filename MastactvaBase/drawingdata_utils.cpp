@@ -81,4 +81,9 @@ bool Variables::get(const QString &name_, QVector<float> &data_) const
     return true;
 }
 
+Details::Details()
+{
+    variables = std::make_shared<Variables>();
+}
+
 }
