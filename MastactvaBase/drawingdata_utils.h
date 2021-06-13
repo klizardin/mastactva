@@ -366,6 +366,7 @@ public:
     virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
+    virtual void clear() = 0;
 };
 
 namespace details
@@ -413,6 +414,7 @@ public:
     bool get(const QString &name_, QVector<int> &data_) const override;
     bool get(const QString &name_, QVector<float> &data_) const override;
     void add(const QJsonDocument &data_) override;
+    void clear() override;
 
 private:
     bool find(const QString &name_, VariablesMap::const_iterator &fit) const;

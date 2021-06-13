@@ -173,6 +173,12 @@ void Variables::add(const QJsonDocument &data_)
     }
 }
 
+void Variables::clear()
+{
+    m_variables.clear();
+    index = 0;
+}
+
 Details::Details()
 {
     variables = std::make_shared<Variables>();
