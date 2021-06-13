@@ -385,6 +385,21 @@ private:
     QVector<float> m_floatData;
     QVector<int> m_intData;
 };
+
+struct VariableName
+{
+    VariableName(const QString &name_ = QString(),int index_ = 0);
+
+    QString name;
+    int index = 0;
+
+    friend bool operator == (const VariableName &left_, const VariableName &right_);
+    friend bool operator < (const VariableName &left_, const VariableName &right_);
+};
+
+bool operator == (const VariableName &left_, const VariableName &right_);
+bool operator < (const VariableName &left_, const VariableName &right_);
+
 }
 
 class Variables : public IVariables

@@ -61,6 +61,31 @@ void Variable::get(QVector<int> &data_) const
     std::copy(std::begin(m_intData), std::end(m_intData),
               std::back_inserter(data_));
 }
+
+VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0*/)
+    : name(name_),
+      index(index_)
+{
+}
+
+bool operator == (const VariableName &left_, const VariableName &right_)
+{
+    return left_.name == right_.name && left_.index == right_.index;
+}
+
+bool operator < (const VariableName &left_, const VariableName &right_)
+{
+    const int nameCompareResult = left_.name.compare(right_.name);
+    if(0 != nameCompareResult)
+    {
+        return nameCompareResult < 0;
+    }
+    else
+    {
+        return left_.index < right_.index;
+    }
+}
+
 }
 
 bool Variables::get(const QString &name_, QVector<int> &data_) const
