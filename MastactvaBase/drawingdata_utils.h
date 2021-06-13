@@ -2,11 +2,13 @@
 #define DRAWINGDATA_UTILS_H
 
 
+#include <map>
 #include <memory>
 #include <QString>
 #include <QTextStream>
 #include <QVector>
 #include <QImage>
+#include <QJsonArray>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
@@ -254,6 +256,34 @@ public:
     virtual ~IVariables() = default;
     virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
+};
+
+class Variables : public IVariables
+{
+    struct Variable
+    {
+    public:
+        Variable() = default;
+        void set(const QJsonArray &jsonArray_);
+        void prepare(QVector<float> &);
+        void prepare(QVector<int> &);
+        void get(QVector<float> &data_) const;
+        void get(QVector<int> &data_) const;
+
+    private:
+        QJsonArray m_jsonArray;
+        QVector<float> m_floatData;
+        QVector<int> m_intData;
+    };
+
+public:
+    Variables() = default;
+
+    bool get(const QString &name_, QVector<int> &data_) const override;
+    bool get(const QString &name_, QVector<float> &data_) const override;
+
+private:
+    std::map<QString, Variable> m_variables;
 };
 
 class Details
