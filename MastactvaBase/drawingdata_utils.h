@@ -388,10 +388,11 @@ private:
 
 struct VariableName
 {
-    VariableName(const QString &name_ = QString(),int index_ = 0);
+    VariableName(const QString &name_ = QString(),int index_ = 0, bool hasIndex_ = true);
 
     QString name;
     int index = 0;
+    bool hasIndex = true;
 
     friend bool operator == (const VariableName &left_, const VariableName &right_);
     friend bool operator < (const VariableName &left_, const VariableName &right_);

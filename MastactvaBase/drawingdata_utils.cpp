@@ -62,15 +62,16 @@ void Variable::get(QVector<int> &data_) const
               std::back_inserter(data_));
 }
 
-VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0*/)
+VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0*/, bool hasIndex_ /*= true*/)
     : name(name_),
-      index(index_)
+      index(index_),
+      hasIndex(hasIndex_)
 {
 }
 
 bool operator == (const VariableName &left_, const VariableName &right_)
 {
-    return left_.name == right_.name && left_.index == right_.index;
+    return left_.name == right_.name && (left_.hasIndex && right_.hasIndex && left_.index == right_.index);
 }
 
 bool operator < (const VariableName &left_, const VariableName &right_)
@@ -80,9 +81,13 @@ bool operator < (const VariableName &left_, const VariableName &right_)
     {
         return nameCompareResult < 0;
     }
-    else
+    else if(left_.hasIndex && right_.hasIndex)
     {
         return left_.index < right_.index;
+    }
+    else
+    {
+        return false;
     }
 }
 
