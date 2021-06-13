@@ -82,6 +82,17 @@ void DrawingDataObjectArtefact::addTexture(
     });
 }
 
+void DrawingDataObjectArtefact::addData(
+        const drawingdata::Details &details_
+        ) const
+{
+    (void)forArtefacts([&details_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->addData(details_);
+        return false;
+    });
+}
+
 bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_)
 {
     return left_.m_stepIndex < right_.m_stepIndex;
