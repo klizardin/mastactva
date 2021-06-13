@@ -93,10 +93,30 @@ bool operator < (const VariableName &left_, const VariableName &right_)
 
 }
 
+bool Variables::find(const QString &name_, VariablesMap::const_iterator &fit) const
+{
+    if(m_variables.empty())
+    {
+        return false;
+    }
+    details::VariableName variableName(name_, 0, false);
+    fit = m_variables.upper_bound(variableName);
+    if(std::begin(m_variables) == fit)
+    {
+        return false;
+    }
+    --fit;
+    if(name_ != fit->first.name)
+    {
+        return false;
+    }
+    return true;
+}
+
 bool Variables::get(const QString &name_, QVector<int> &data_) const
 {
-    auto fit = m_variables.find(name_);
-    if(std::end(m_variables) == fit)
+    VariablesMap::const_iterator fit = std::cend(m_variables);
+    if(!find(name_, fit) || std::cend(m_variables) == fit)
     {
         return false;
     }
@@ -107,8 +127,8 @@ bool Variables::get(const QString &name_, QVector<int> &data_) const
 
 bool Variables::get(const QString &name_, QVector<float> &data_) const
 {
-    auto fit = m_variables.find(name_);
-    if(std::end(m_variables) == fit)
+    VariablesMap::const_iterator fit = std::cend(m_variables);
+    if(!find(name_, fit) || std::cend(m_variables) == fit)
     {
         return false;
     }
@@ -146,7 +166,9 @@ void Variables::add(const QJsonDocument &data_)
         }
         details::Variable newVar;
         newVar.set(val.toArray());
-        m_variables.insert({key_, std::move(newVar)});
+        details::VariableName variableName(key_, index);
+        ++index;
+        m_variables.insert({variableName, std::move(newVar)});
     }
 }
 

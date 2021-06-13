@@ -405,6 +405,8 @@ bool operator < (const VariableName &left_, const VariableName &right_);
 
 class Variables : public IVariables
 {
+    using VariablesMap = std::multimap<details::VariableName, details::Variable>;
+
 public:
     Variables() = default;
 
@@ -413,7 +415,11 @@ public:
     void add(const QJsonDocument &data_) override;
 
 private:
-    std::map<QString, details::Variable> m_variables;
+    bool find(const QString &name_, VariablesMap::const_iterator &fit) const;
+
+private:
+    VariablesMap m_variables;
+    int index = 0;
 };
 
 class Details
