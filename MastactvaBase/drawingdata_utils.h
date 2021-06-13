@@ -359,6 +359,16 @@ public:
     virtual QImage getImage(const FileSource &filename_) const = 0;
 };
 
+class IPosition
+{
+public:
+    virtual ~IPosition() = default;
+    virtual void startObject(const QString &name_, int stepIndex_) = 0;
+    virtual void nextStep(int stepIndex_) = 0;
+    virtual const QString &getObjectName() const = 0;
+    virtual int getObjectStepIndex() const = 0;
+};
+
 class IVariables
 {
 public:
