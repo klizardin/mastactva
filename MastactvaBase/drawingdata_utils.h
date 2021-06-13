@@ -368,24 +368,27 @@ public:
     virtual void add(const QJsonDocument &data_) = 0;
 };
 
+namespace details
+{
+struct Variable
+{
+public:
+    Variable() = default;
+    void set(const QJsonArray &jsonArray_);
+    void prepare(QVector<float> &);
+    void prepare(QVector<int> &);
+    void get(QVector<float> &data_) const;
+    void get(QVector<int> &data_) const;
+
+private:
+    QJsonArray m_jsonArray;
+    QVector<float> m_floatData;
+    QVector<int> m_intData;
+};
+}
+
 class Variables : public IVariables
 {
-    struct Variable
-    {
-    public:
-        Variable() = default;
-        void set(const QJsonArray &jsonArray_);
-        void prepare(QVector<float> &);
-        void prepare(QVector<int> &);
-        void get(QVector<float> &data_) const;
-        void get(QVector<int> &data_) const;
-
-    private:
-        QJsonArray m_jsonArray;
-        QVector<float> m_floatData;
-        QVector<int> m_intData;
-    };
-
 public:
     Variables() = default;
 
@@ -394,7 +397,7 @@ public:
     void add(const QJsonDocument &data_) override;
 
 private:
-    std::map<QString, Variable> m_variables;
+    std::map<QString, details::Variable> m_variables;
 };
 
 class Details

@@ -6,7 +6,10 @@
 namespace drawingdata
 {
 
-void Variables::Variable::set(const QJsonArray &jsonArray_)
+namespace details
+{
+
+void Variable::set(const QJsonArray &jsonArray_)
 {
     m_jsonArray = jsonArray_;
     m_floatData.clear();
@@ -33,17 +36,17 @@ void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data
     }
 }
 
-void Variables::Variable::prepare(QVector<float> &)
+void Variable::prepare(QVector<float> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_floatData);
 }
 
-void Variables::Variable::prepare(QVector<int> &)
+void Variable::prepare(QVector<int> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_intData);
 }
 
-void Variables::Variable::get(QVector<float> &data_) const
+void Variable::get(QVector<float> &data_) const
 {
     data_.clear();
     data_.reserve(m_floatData.size());
@@ -51,12 +54,13 @@ void Variables::Variable::get(QVector<float> &data_) const
               std::back_inserter(data_));
 }
 
-void Variables::Variable::get(QVector<int> &data_) const
+void Variable::get(QVector<int> &data_) const
 {
     data_.clear();
     data_.reserve(m_intData.size());
     std::copy(std::begin(m_intData), std::end(m_intData),
               std::back_inserter(data_));
+}
 }
 
 bool Variables::get(const QString &name_, QVector<int> &data_) const
@@ -66,7 +70,7 @@ bool Variables::get(const QString &name_, QVector<int> &data_) const
     {
         return false;
     }
-    const_cast<Variable &>(fit->second).prepare(data_);
+    const_cast<details::Variable &>(fit->second).prepare(data_);
     fit->second.get(data_);
     return true;
 }
@@ -78,7 +82,7 @@ bool Variables::get(const QString &name_, QVector<float> &data_) const
     {
         return false;
     }
-    const_cast<Variable &>(fit->second).prepare(data_);
+    const_cast<details::Variable &>(fit->second).prepare(data_);
     fit->second.get(data_);
     return true;
 }
@@ -110,7 +114,7 @@ void Variables::add(const QJsonDocument &data_)
         {
             continue;
         }
-        Variable newVar;
+        details::Variable newVar;
         newVar.set(val.toArray());
         m_variables.insert({key_, std::move(newVar)});
     }
