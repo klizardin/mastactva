@@ -1,5 +1,6 @@
 #include "drawingdata_utils.h"
 #include <QJsonObject>
+#include "../MastactvaBase/names.h"
 
 
 namespace drawingdata
@@ -81,8 +82,6 @@ bool Variables::get(const QString &name_, QVector<float> &data_) const
     fit->second.get(data_);
     return true;
 }
-
-static const char * g_jsonDataVariableValueName = "value";
 
 void Variables::add(const QJsonDocument &data_)
 {

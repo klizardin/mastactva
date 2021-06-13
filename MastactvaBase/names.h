@@ -156,4 +156,11 @@ static const char *g_defaultVertexShaderName = ":/Shaders/Shaders/default.vsh";
 static const char *g_defaultFragmentShaderName = ":/Shaders/Shaders/default.fsh";
 
 
+// jsonData artefacts
+static const char * g_jsonDataVariableValueName = "value";
+static const char * g_jsonDataVariableObjectNameName = "objectName";
+static const char * g_jsonDataVariableObjectStepIndexName = "objectStepIndex";
+static const char * g_jsonDataVariablePositionName = "position";
+
+
 #endif // NAMES_H

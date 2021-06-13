@@ -10,6 +10,7 @@
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaBase/format.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 
 
 QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr);
@@ -539,11 +540,11 @@ QJsonObject getJsonDataVariablePosition(const char *objectName_, const int *step
     }
     if(objectName_)
     {
-        position.insert("objectName", QJsonValue::fromVariant(QVariant::fromValue(QString(objectName_))));
+        position.insert(g_jsonDataVariableObjectNameName, QJsonValue::fromVariant(QVariant::fromValue(QString(objectName_))));
     }
     if(step_)
     {
-        position.insert("objectStepIndex", QJsonValue::fromVariant(QVariant::fromValue(*step_)));
+        position.insert(g_jsonDataVariableObjectStepIndexName, QJsonValue::fromVariant(QVariant::fromValue(*step_)));
     }
     return position;
 }
@@ -578,10 +579,10 @@ QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nul
         vertexJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.z())));
     }
     QJsonObject vertexJO;
-    vertexJO.insert("value", vertexJA);
+    vertexJO.insert(g_jsonDataVariableValueName, vertexJA);
     if(needPosition)
     {
-        vertexJO.insert("position", position);
+        vertexJO.insert(g_jsonDataVariablePositionName, position);
     }
     QJsonArray normalJA;
     for(const QVector3D &vec_ : normalData)
@@ -591,10 +592,10 @@ QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nul
         normalJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.z())));
     }
     QJsonObject normalJO;
-    normalJO.insert("value", normalJA);
+    normalJO.insert(g_jsonDataVariableValueName, normalJA);
     if(needPosition)
     {
-        normalJO.insert("position", position);
+        normalJO.insert(g_jsonDataVariablePositionName, position);
     }
     QJsonArray matrixJA;
     for(std::size_t i = 0; i < 4*4; ++i)
@@ -602,10 +603,10 @@ QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nul
         matrixJA.append(QJsonValue::fromVariant(QVariant::fromValue(modelview.constData()[i])));
     }
     QJsonObject matrixJO;
-    matrixJO.insert("value", matrixJA);
+    matrixJO.insert(g_jsonDataVariableValueName, matrixJA);
     if(needPosition)
     {
-        matrixJO.insert("position", position);
+        matrixJO.insert(g_jsonDataVariablePositionName, position);
     }
 
     QJsonObject object;
