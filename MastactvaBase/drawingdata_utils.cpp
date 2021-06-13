@@ -169,6 +169,7 @@ void Variables::add(const QJsonDocument &data_)
         details::VariableName variableName(key_, index);
         ++index;
         m_variables.insert({variableName, std::move(newVar)});
+        // TODO: add remove unreachable variables
     }
 }
 
