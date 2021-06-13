@@ -1,11 +1,15 @@
 #include "drawingdata_utils.h"
 #include <QJsonObject>
+#include "../MastactvaBase/names.h"
 
 
 namespace drawingdata
 {
 
-void Variables::Variable::set(const QJsonArray &jsonArray_)
+namespace details
+{
+
+void Variable::set(const QJsonArray &jsonArray_)
 {
     m_jsonArray = jsonArray_;
     m_floatData.clear();
@@ -32,17 +36,17 @@ void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data
     }
 }
 
-void Variables::Variable::prepare(QVector<float> &)
+void Variable::prepare(QVector<float> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_floatData);
 }
 
-void Variables::Variable::prepare(QVector<int> &)
+void Variable::prepare(QVector<int> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_intData);
 }
 
-void Variables::Variable::get(QVector<float> &data_) const
+void Variable::get(QVector<float> &data_) const
 {
     data_.clear();
     data_.reserve(m_floatData.size());
@@ -50,7 +54,7 @@ void Variables::Variable::get(QVector<float> &data_) const
               std::back_inserter(data_));
 }
 
-void Variables::Variable::get(QVector<int> &data_) const
+void Variable::get(QVector<int> &data_) const
 {
     data_.clear();
     data_.reserve(m_intData.size());
@@ -58,31 +62,80 @@ void Variables::Variable::get(QVector<int> &data_) const
               std::back_inserter(data_));
 }
 
-bool Variables::get(const QString &name_, QVector<int> &data_) const
+VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0*/, bool hasIndex_ /*= true*/)
+    : name(name_),
+      index(index_),
+      hasIndex(hasIndex_)
 {
-    auto fit = m_variables.find(name_);
-    if(std::end(m_variables) == fit)
+}
+
+bool operator == (const VariableName &left_, const VariableName &right_)
+{
+    return left_.name == right_.name && (left_.hasIndex && right_.hasIndex && left_.index == right_.index);
+}
+
+bool operator < (const VariableName &left_, const VariableName &right_)
+{
+    const int nameCompareResult = left_.name.compare(right_.name);
+    if(0 != nameCompareResult)
+    {
+        return nameCompareResult < 0;
+    }
+    else if(left_.hasIndex && right_.hasIndex)
+    {
+        return left_.index < right_.index;
+    }
+    else
     {
         return false;
     }
-    const_cast<Variable &>(fit->second).prepare(data_);
+}
+
+}
+
+bool Variables::find(const QString &name_, VariablesMap::const_iterator &fit) const
+{
+    if(m_variables.empty())
+    {
+        return false;
+    }
+    details::VariableName variableName(name_, 0, false);
+    fit = m_variables.upper_bound(variableName);
+    if(std::begin(m_variables) == fit)
+    {
+        return false;
+    }
+    --fit;
+    if(name_ != fit->first.name)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool Variables::get(const QString &name_, QVector<int> &data_) const
+{
+    VariablesMap::const_iterator fit = std::cend(m_variables);
+    if(!find(name_, fit) || std::cend(m_variables) == fit)
+    {
+        return false;
+    }
+    const_cast<details::Variable &>(fit->second).prepare(data_);
     fit->second.get(data_);
     return true;
 }
 
 bool Variables::get(const QString &name_, QVector<float> &data_) const
 {
-    auto fit = m_variables.find(name_);
-    if(std::end(m_variables) == fit)
+    VariablesMap::const_iterator fit = std::cend(m_variables);
+    if(!find(name_, fit) || std::cend(m_variables) == fit)
     {
         return false;
     }
-    const_cast<Variable &>(fit->second).prepare(data_);
+    const_cast<details::Variable &>(fit->second).prepare(data_);
     fit->second.get(data_);
     return true;
 }
-
-static const char * g_jsonDataVariableValueName = "value";
 
 void Variables::add(const QJsonDocument &data_)
 {
@@ -111,10 +164,19 @@ void Variables::add(const QJsonDocument &data_)
         {
             continue;
         }
-        Variable newVar;
+        details::Variable newVar;
         newVar.set(val.toArray());
-        m_variables.insert({key_, std::move(newVar)});
+        details::VariableName variableName(key_, index);
+        ++index;
+        m_variables.insert({variableName, std::move(newVar)});
+        // TODO: add remove unreachable variables
     }
+}
+
+void Variables::clear()
+{
+    m_variables.clear();
+    index = 0;
 }
 
 Details::Details()

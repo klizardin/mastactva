@@ -359,6 +359,16 @@ public:
     virtual QImage getImage(const FileSource &filename_) const = 0;
 };
 
+class IPosition
+{
+public:
+    virtual ~IPosition() = default;
+    virtual void startObject(const QString &name_, int stepIndex_) = 0;
+    virtual void nextStep(int stepIndex_) = 0;
+    virtual const QString &getObjectName() const = 0;
+    virtual int getObjectStepIndex() const = 0;
+};
+
 class IVariables
 {
 public:
@@ -366,25 +376,47 @@ public:
     virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
+    virtual void clear() = 0;
 };
+
+namespace details
+{
+struct Variable
+{
+public:
+    Variable() = default;
+    void set(const QJsonArray &jsonArray_);
+    void prepare(QVector<float> &);
+    void prepare(QVector<int> &);
+    void get(QVector<float> &data_) const;
+    void get(QVector<int> &data_) const;
+
+private:
+    QJsonArray m_jsonArray;
+    QVector<float> m_floatData;
+    QVector<int> m_intData;
+};
+
+struct VariableName
+{
+    VariableName(const QString &name_ = QString(),int index_ = 0, bool hasIndex_ = true);
+
+    QString name;
+    int index = 0;
+    bool hasIndex = true;
+
+    friend bool operator == (const VariableName &left_, const VariableName &right_);
+    friend bool operator < (const VariableName &left_, const VariableName &right_);
+};
+
+bool operator == (const VariableName &left_, const VariableName &right_);
+bool operator < (const VariableName &left_, const VariableName &right_);
+
+}
 
 class Variables : public IVariables
 {
-    struct Variable
-    {
-    public:
-        Variable() = default;
-        void set(const QJsonArray &jsonArray_);
-        void prepare(QVector<float> &);
-        void prepare(QVector<int> &);
-        void get(QVector<float> &data_) const;
-        void get(QVector<int> &data_) const;
-
-    private:
-        QJsonArray m_jsonArray;
-        QVector<float> m_floatData;
-        QVector<int> m_intData;
-    };
+    using VariablesMap = std::multimap<details::VariableName, details::Variable>;
 
 public:
     Variables() = default;
@@ -392,9 +424,14 @@ public:
     bool get(const QString &name_, QVector<int> &data_) const override;
     bool get(const QString &name_, QVector<float> &data_) const override;
     void add(const QJsonDocument &data_) override;
+    void clear() override;
 
 private:
-    std::map<QString, Variable> m_variables;
+    bool find(const QString &name_, VariablesMap::const_iterator &fit) const;
+
+private:
+    VariablesMap m_variables;
+    int index = 0;
 };
 
 class Details

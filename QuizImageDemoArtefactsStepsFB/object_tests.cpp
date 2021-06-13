@@ -10,9 +10,10 @@
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaBase/format.h"
 #include "../MastactvaBase/utils.h"
+#include "../MastactvaBase/names.h"
 
 
-QString createQTGeomJson(QRandomGenerator &gen_);
+QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr);
 
 
 void MapFileSource::add(const QString &filename_, const QString &text_)
@@ -63,6 +64,8 @@ static const char *g_baseFragmentShaderFilename = "base.fsh";
 static const char *g_defaultVertexShaderFilename = "default.vsh";
 static const char *g_defaultFragmentShaderFilename = "default.fsh";
 static const char *g_dataJsonQTGeometryFilename = "qt_geom.json";
+static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
+static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
@@ -74,6 +77,10 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     QRandomGenerator gen;
     gen.seed(time(nullptr));
     filesource->add(g_dataJsonQTGeometryFilename, createQTGeomJson(gen));
+    const int pos0 = 0;
+    filesource->add(g_dataJsonQTGeometry0Filename, createQTGeomJson(gen, nullptr, &pos0));
+    const int pos1 = 1;
+    filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
     return filesource;
 }
 
@@ -524,7 +531,25 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
     return effectObject;
 }
 
-QString createQTGeomJson(QRandomGenerator &gen_)
+QJsonObject getJsonDataVariablePosition(const char *objectName_, const int *step_)
+{
+    QJsonObject position;
+    if(!objectName_ && !step_)
+    {
+        return position;
+    }
+    if(objectName_)
+    {
+        position.insert(g_jsonDataVariableObjectNameName, QJsonValue::fromVariant(QVariant::fromValue(QString(objectName_))));
+    }
+    if(step_)
+    {
+        position.insert(g_jsonDataVariableObjectStepIndexName, QJsonValue::fromVariant(QVariant::fromValue(*step_)));
+    }
+    return position;
+}
+
+QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nullptr*/, const int *step_ /*= nullptr*/)
 {
     std::vector<QVector3D> vertexData;
     std::vector<QVector3D> normalData;
@@ -539,6 +564,13 @@ QString createQTGeomJson(QRandomGenerator &gen_)
     modelview.scale(fScale);
     modelview.translate(0.0f, -0.2f, 0.0f);
 
+    const bool needPosition = objectName_ || step_;
+    QJsonValue position;
+    if(needPosition)
+    {
+        position = getJsonDataVariablePosition(objectName_, step_);
+    }
+
     QJsonArray vertexJA;
     for(const QVector3D &vec_ : vertexData)
     {
@@ -547,7 +579,11 @@ QString createQTGeomJson(QRandomGenerator &gen_)
         vertexJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.z())));
     }
     QJsonObject vertexJO;
-    vertexJO.insert("value", vertexJA);
+    vertexJO.insert(g_jsonDataVariableValueName, vertexJA);
+    if(needPosition)
+    {
+        vertexJO.insert(g_jsonDataVariablePositionName, position);
+    }
     QJsonArray normalJA;
     for(const QVector3D &vec_ : normalData)
     {
@@ -556,14 +592,22 @@ QString createQTGeomJson(QRandomGenerator &gen_)
         normalJA.append(QJsonValue::fromVariant(QVariant::fromValue(vec_.z())));
     }
     QJsonObject normalJO;
-    normalJO.insert("value", normalJA);
+    normalJO.insert(g_jsonDataVariableValueName, normalJA);
+    if(needPosition)
+    {
+        normalJO.insert(g_jsonDataVariablePositionName, position);
+    }
     QJsonArray matrixJA;
     for(std::size_t i = 0; i < 4*4; ++i)
     {
         matrixJA.append(QJsonValue::fromVariant(QVariant::fromValue(modelview.constData()[i])));
     }
     QJsonObject matrixJO;
-    matrixJO.insert("value", matrixJA);
+    matrixJO.insert(g_jsonDataVariableValueName, matrixJA);
+    if(needPosition)
+    {
+        matrixJO.insert(g_jsonDataVariablePositionName, position);
+    }
 
     QJsonObject object;
     object.insert("vertex", vertexJO);
