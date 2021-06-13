@@ -110,7 +110,7 @@ public:
         if(details_.variables.operator bool() &&
                 details_.variables->get(m_name, data))
         {
-            //drawingdata::utils::toAttribute(data, *val);
+            drawingdata::utils::vecToAttribute(data, *val);
         }
         else
         {
@@ -141,11 +141,11 @@ public:
             ) const override
     {
         auto val = std::make_shared<ArgType_>();
-        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> vec;
         if(details_.variables.operator bool() &&
-                details_.variables->get(m_name, data))
+                details_.variables->get(m_name, vec))
         {
-            //drawingdata::utils::toUniform(data, *val);
+            drawingdata::utils::vecToUniform(vec, *val);
         }
         else
         {
