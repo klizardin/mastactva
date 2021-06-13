@@ -62,10 +62,24 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    template<typename Type_, typename ItemType_> inline
+    void vecToUniform(const QVector<ItemType_> &vec_, Type_ &)
+    {
+        Q_UNUSED(vec_);
+        Q_ASSERT(false); // not implemented
+    }
+
     template<typename Type_> inline
     void toAttribute(const QString &val_, std::vector<Type_> &)
     {
         Q_UNUSED(val_);
+        Q_ASSERT(false); // not implemented
+    }
+
+    template<typename Type_> inline
+    void vecToAttribute(const QVector<float> &vec_, std::vector<Type_> &)
+    {
+        Q_UNUSED(vec_);
         Q_ASSERT(false); // not implemented
     }
 
@@ -103,6 +117,15 @@ namespace utils
             for(std::size_t i = 0; i < vec.size() && i < size_; ++i)
             {
                 mat_.data()[i] = vec.at(i);
+            }
+        }
+
+        template<int size_, typename MatrixType_> inline
+        void vecToMatrix(const QVector<float> &vec_, MatrixType_ &mat_)
+        {
+            for(int i = 0; i < vec_.size() && i < size_; ++i)
+            {
+                mat_.data()[i] = vec_.at(i);
             }
         }
 
@@ -173,6 +196,25 @@ namespace utils
             }
         }
 
+        template<std::size_t size_, typename Type_> inline
+        void vecToAttribute(const std::vector<float> &vec_, std::vector<Type_> &data_)
+        {
+            for(int i = 0; i + size_ <= vec_.size(); i += size_)
+            {
+                data_.push_back(details::toType<Type_, float>(vec_, i));
+            }
+        }
+
+        template<typename Type_>
+        std::vector<Type_> toStdVector(const QVector<Type_> &vec_)
+        {
+            std::vector<Type_> result;
+            result.reserve(vec_.size());
+            std::copy(std::begin(vec_), std::end(vec_),
+                      std::back_inserter(result));
+            return result;
+        }
+
     }
 
     template<> inline
@@ -224,6 +266,54 @@ namespace utils
     }
 
     template<> inline
+    void vecToUniform(const QVector<int> &vec_, int &data_)
+    {
+        data_ = details::toType<int, int>(details::toStdVector(vec_), 0);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, float &data_)
+    {
+        data_ = details::toType<float, float>(details::toStdVector(vec_), 0);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, QVector2D &data_)
+    {
+        data_ = details::toType<QVector2D, float>(details::toStdVector(vec_), 0);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, QVector3D &data_)
+    {
+        data_ = details::toType<QVector3D, float>(details::toStdVector(vec_), 0);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, QVector4D &data_)
+    {
+        data_ = details::toType<QVector4D, float>(details::toStdVector(vec_), 0);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, QMatrix2x2 &mat_)
+    {
+        details::vecToMatrix<2*2, QMatrix2x2>(vec_, mat_);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, QMatrix3x3 &mat_)
+    {
+        details::vecToMatrix<3*3, QMatrix3x3>(vec_, mat_);
+    }
+
+    template<> inline
+    void vecToUniform(const QVector<float> &vec_, QMatrix4x4 &mat_)
+    {
+        details::vecToMatrix<4*4, QMatrix4x4>(vec_, mat_);
+    }
+
+    template<> inline
     void toAttribute(const QString &str_, std::vector<QVector2D> &data_)
     {
         details::toAttribute<2, QVector2D>(str_, data_);
@@ -239,6 +329,24 @@ namespace utils
     void toAttribute(const QString &str_, std::vector<QVector4D> &data_)
     {
         details::toAttribute<4, QVector4D>(str_, data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const QVector<float> &vec_, std::vector<QVector2D> &data_)
+    {
+        details::vecToAttribute<2, QVector2D>(details::toStdVector(vec_), data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const QVector<float> &vec_, std::vector<QVector3D> &data_)
+    {
+        details::vecToAttribute<3, QVector3D>(details::toStdVector(vec_), data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const QVector<float> &vec_, std::vector<QVector4D> &data_)
+    {
+        details::vecToAttribute<4, QVector4D>(details::toStdVector(vec_), data_);
     }
 }
 
