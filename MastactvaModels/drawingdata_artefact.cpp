@@ -70,3 +70,16 @@ void DrawingDataArtefact::addTexture(
     }
     object_.textures.push_back({m_name, static_cast<const QString &>(m_filename)});
 }
+
+void DrawingDataArtefact::addData(
+        const drawingdata::Details &details_
+        ) const
+{
+    if(!details_.filesource
+            || !details_.variables
+            || to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::dataJson)
+    {
+        return;
+    }
+    //details_.variables.add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
+}

@@ -88,6 +88,10 @@ void ObjectArtefacts::build(
 {
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        (*it)->addData(details_);
+    }
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
         if((*it)->setVertexShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
