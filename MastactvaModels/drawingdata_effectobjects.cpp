@@ -180,7 +180,8 @@ void ObjectArtefacts::checkArtefactStepIndex(
 
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        int stepIndexShift_ /*= 0*/
         ) const
 {
     if(!m_objectArtefactData.operator bool())
@@ -188,7 +189,7 @@ void DrawingDataEffectObjects::addObjects(
         return;
     }
 
-    setupPosition(details_);
+    setupPosition(details_, stepIndexShift_);
 
     ObjectArtefacts list;
     list.populate(*m_objectArtefactData);
@@ -228,11 +229,11 @@ QString DrawingDataEffectObjects::getProgrammerName() const
     }
 }
 
-void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_) const
+void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const
 {
     if(!details_.position.operator bool())
     {
         return;
     }
-    details_.position->setObject(getProgrammerName(), m_stepIndex);
+    details_.position->setObject(getProgrammerName(), m_stepIndex + stepIndexShift_);
 }
