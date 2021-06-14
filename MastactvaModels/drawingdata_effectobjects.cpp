@@ -191,6 +191,19 @@ int DrawingDataEffectObjects::getStepIndex() const
     return m_stepIndex;
 }
 
+QString DrawingDataEffectObjects::getProgrammerName() const
+{
+    if(m_objectInfoData.operator bool()
+            && 1 == m_objectInfoData->size())
+    {
+        return m_objectInfoData->front()->m_programmerName;
+    }
+    else
+    {
+        return g_defaultObjectInfoProgrammerName;
+    }
+}
+
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
         const drawingdata::Details &details_
