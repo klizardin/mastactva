@@ -30,12 +30,22 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
     }
     if(position_.contains(g_jsonDataVariableObjectStepIndexName))
     {
-        const QJsonValue objectNameStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
-        if(!objectNameStepIndexJV.isUndefined()
-                && objectNameStepIndexJV.isDouble())
+        const QJsonValue objectStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
+        if(!objectStepIndexJV.isUndefined()
+                && objectStepIndexJV.isDouble())
         {
-            result.objectArtefactStepIndex = static_cast<int>(objectNameStepIndexJV.toDouble());
-            result.hasObjectArtefactStepIndex = true;
+            result.objectStepIndex = static_cast<int>(objectStepIndexJV.toDouble());
+            result.hasObjectStepIndex = true;
+        }
+    }
+    if(position_.contains(g_jsonDataVariableArtefactStepIndexName))
+    {
+        const QJsonValue artefactStepIndexJV = position_[g_jsonDataVariableArtefactStepIndexName];
+        if(!artefactStepIndexJV.isUndefined()
+                && artefactStepIndexJV.isDouble())
+        {
+            result.artefactStepIndex = static_cast<int>(artefactStepIndexJV.toDouble());
+            result.hasArtefactStepIndex = true;
         }
     }
     return result;
@@ -51,8 +61,10 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
 
     result.hasObjectName = true;
     result.objectName = position_->getObjectName();
-    result.hasObjectArtefactStepIndex = true;
-    result.objectArtefactStepIndex = position_->getObjectStepIndex();
+    result.hasObjectStepIndex = true;
+    result.objectStepIndex = position_->getObjectStepIndex();
+    result.hasArtefactStepIndex = true;
+    result.artefactStepIndex = position_->getArtefactStepIndex();
 
     return result;
 }
@@ -64,12 +76,17 @@ bool operator == (const VariablePosition &left_, const VariablePosition &right_)
     {
         objectsEqual = left_.objectName == right_.objectName;
     }
-    bool indexesEqual = true;
-    if(left_.hasObjectArtefactStepIndex && right_.hasObjectArtefactStepIndex)
+    bool objectIndexesEqual = true;
+    if(left_.hasObjectStepIndex && right_.hasObjectStepIndex)
     {
-        indexesEqual = left_.objectArtefactStepIndex == right_.objectArtefactStepIndex;
+        objectIndexesEqual = left_.objectStepIndex == right_.objectStepIndex;
     }
-    return objectsEqual && indexesEqual;
+    bool artefactIndexesEqual = true;
+    if(left_.hasArtefactStepIndex && right_.hasArtefactStepIndex)
+    {
+        artefactIndexesEqual = left_.artefactStepIndex == right_.artefactStepIndex;
+    }
+    return objectsEqual && objectIndexesEqual && artefactIndexesEqual;
 }
 
 
@@ -272,12 +289,30 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
 }
 
 
-void Position::set(const QString &name_, int stepIndex_)
+void Position::setObject(const QString &name_, int objectStepIndex_)
 {
     objectName = name_;
-    stepIndex = stepIndex_;
+    objectStepIndex = objectStepIndex_;
+    artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
-    qDebug() << objectName << stepIndex;
+    qDebug() << objectName << objectStepIndex << artefactStepIndex;
+#endif
+}
+
+void Position::resetArtefactStepIndex(int stepIndex_)
+{
+    artefactStepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << objectStepIndex << artefactStepIndex;
+#endif
+}
+
+void Position::setArtefactStepIndex(int stepIndex_)
+{
+    Q_ASSERT(artefactStepIndex <= stepIndex_);
+    artefactStepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << objectStepIndex << artefactStepIndex;
 #endif
 }
 
@@ -288,13 +323,19 @@ const QString &Position::getObjectName() const
 
 int Position::getObjectStepIndex() const
 {
-    return stepIndex;
+    return objectStepIndex;
+}
+
+int Position::getArtefactStepIndex() const
+{
+    return artefactStepIndex;
 }
 
 void Position::clear()
 {
     objectName.clear();
-    std::numeric_limits<decltype (stepIndex)>::max();
+    std::numeric_limits<decltype (objectStepIndex)>::max();
+    artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 }
 
 

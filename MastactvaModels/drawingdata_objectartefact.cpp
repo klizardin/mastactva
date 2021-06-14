@@ -93,6 +93,33 @@ void DrawingDataObjectArtefact::addData(
     });
 }
 
+void DrawingDataObjectArtefact::updateStepIndex(drawingdata::IPosition *position_, bool first_) const
+{
+    if(!position_)
+    {
+        return;
+    }
+
+    if(first_)
+    {
+        position_->resetArtefactStepIndex(getStepIndex());
+    }
+    else
+    {
+        position_->setArtefactStepIndex(getStepIndex());
+    }
+}
+
+void DrawingDataObjectArtefact::checkStepIndex(drawingdata::IPosition *position_) const
+{
+    if(!position_)
+    {
+        return;
+    }
+
+    Q_ASSERT(position_->getArtefactStepIndex() == getStepIndex());
+}
+
 bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_)
 {
     return left_.m_stepIndex < right_.m_stepIndex;

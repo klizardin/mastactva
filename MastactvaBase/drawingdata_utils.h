@@ -364,9 +364,12 @@ class IPosition
 {
 public:
     virtual ~IPosition() = default;
-    virtual void set(const QString &name_, int stepIndex_) = 0;
+    virtual void setObject(const QString &name_, int objectStepIndex_) = 0;
+    virtual void resetArtefactStepIndex(int stepIndex_) = 0;
+    virtual void setArtefactStepIndex(int stepIndex_) = 0;
     virtual const QString &getObjectName() const = 0;
     virtual int getObjectStepIndex() const = 0;
+    virtual int getArtefactStepIndex() const = 0;
     virtual void clear() = 0;
 };
 
@@ -395,8 +398,10 @@ struct VariablePosition
 private:
     bool hasObjectName = false;
     QString objectName;
-    bool hasObjectArtefactStepIndex = false;
-    int objectArtefactStepIndex = 0;
+    bool hasObjectStepIndex = false;
+    int objectStepIndex = 0;
+    bool hasArtefactStepIndex = false;
+    int artefactStepIndex = 0;
 
     friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
 };
@@ -466,14 +471,18 @@ class Position : public IPosition
 public:
     Position() = default;
 
-    void set(const QString &name_, int stepIndex_) override;
+    void setObject(const QString &name_, int objectStepIndex_) override;
+    void resetArtefactStepIndex(int stepIndex_) override;
+    void setArtefactStepIndex(int stepIndex_) override;
     const QString &getObjectName() const override;
     int getObjectStepIndex() const override;
+    int getArtefactStepIndex() const override;
     void clear() override;
 
 private:
     QString objectName;
-    int stepIndex = std::numeric_limits<decltype (stepIndex)>::max();
+    int objectStepIndex = std::numeric_limits<decltype (objectStepIndex)>::max();
+    int artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 };
 
 

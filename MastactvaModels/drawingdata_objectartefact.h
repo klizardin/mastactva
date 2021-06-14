@@ -4,6 +4,7 @@
 
 #include "../MastactvaModels/objectartefact_data.h"
 #include "../MastactvaModels/drawingdata_artefact.h"
+#include "../MastactvaBase/drawingdata_utils.h"
 
 
 class DrawingDataObjectArtefact :
@@ -36,6 +37,8 @@ public:
             ) const override;
 
     friend bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_);
+    void updateStepIndex(drawingdata::IPosition *position_, bool first_) const;
+    void checkStepIndex(drawingdata::IPosition *position_) const;
 
 private:
     bool forArtefacts(std::function<bool(const DrawingDataArtefact *)> func_) const;
