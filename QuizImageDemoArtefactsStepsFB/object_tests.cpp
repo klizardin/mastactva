@@ -935,7 +935,7 @@ std::unique_ptr<EffectData> createTestData6()
                 g_dataJsonQTGeometry0Filename,
                 objectInfoId,
                 effectObjectDataName,
-                effectObjectDataProgrammerName
+                g_defaultObjectInfoProgrammerName
                 );
     auto effectObject2 = createTestObject3(
                 effectId,
@@ -947,7 +947,7 @@ std::unique_ptr<EffectData> createTestData6()
                 g_dataJsonQTGeometry1Filename,
                 objectInfoId + 1,
                 effectObjectDataName,
-                effectObjectDataProgrammerName
+                g_defaultObjectInfoProgrammerName
                 );
     auto effectObject3 = createTestObject3(
                 effectId,
@@ -959,7 +959,7 @@ std::unique_ptr<EffectData> createTestData6()
                 g_dataJsonQTGeometry2Filename,
                 objectInfoId + 2,
                 effectObjectDataName,
-                effectObjectDataProgrammerName
+                g_defaultObjectInfoProgrammerName
                 );
     auto effectObject0 = createTestObject3(
                 effectId,
