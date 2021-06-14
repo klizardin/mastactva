@@ -22,6 +22,7 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
     {
         return;
     }
+    const_cast<DrawingDataEffect *>(this)->m_details.clear();
     using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;
     SortedEffectObjects sortedEffectObjects;
     for(const EffectObjectsData *effectObject_ : *m_effectObjectsData)
