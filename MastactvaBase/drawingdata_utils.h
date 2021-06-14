@@ -464,6 +464,7 @@ public:
 
     std::shared_ptr<IFileSource> filesource;
     std::shared_ptr<IVariables> variables;
+    std::shared_ptr<IPosition> position;
 };
 
 }
