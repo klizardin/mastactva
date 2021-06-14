@@ -24,8 +24,10 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
     }
     const_cast<DrawingDataEffect *>(this)->m_details.clear();
     using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;
+    using SortedByProgrammerNameEffectObjects = std::multimap<QString, const DrawingDataEffectObjects *>;
     SortedEffectObjects sortedMainEffectObjects;
     SortedEffectObjects sortedEffectObjects;
+    SortedByProgrammerNameEffectObjects sortedByProgrammerNameEffectObjects;
     for(const EffectObjectsData *effectObject_ : *m_effectObjectsData)
     {
         const DrawingDataEffectObjects *effectObject = dynamic_cast<const DrawingDataEffectObjects *>(effectObject_);
@@ -40,6 +42,7 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
         else
         {
             sortedEffectObjects.insert({effectObject->getStepIndex(), effectObject});
+            sortedByProgrammerNameEffectObjects.insert({effectObject->getProgrammerName(), effectObject});
         }
     }
     for(const SortedEffectObjects::value_type &v_ : sortedMainEffectObjects)
