@@ -1,6 +1,8 @@
 #include "drawingdata_utils.h"
 #include <QJsonObject>
+#include <QDebug>
 #include "../MastactvaBase/names.h"
+#include "../MastactvaBase/defines.h"
 
 
 namespace drawingdata
@@ -186,17 +188,26 @@ void Position::startObject(const QString &name_)
 {
     objectName = name_;
     stepIndex = std::numeric_limits<int>::max();
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << stepIndex;
+#endif
 }
 
 void Position::resetStep(int stepIndex_)
 {
     stepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << stepIndex;
+#endif
 }
 
 void Position::nextStep(int stepIndex_)
 {
     Q_ASSERT(stepIndex <= stepIndex_);
     stepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << stepIndex;
+#endif
 }
 
 const QString &Position::getObjectName() const
