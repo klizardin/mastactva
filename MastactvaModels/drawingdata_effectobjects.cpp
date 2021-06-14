@@ -234,14 +234,5 @@ void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details
     {
         return;
     }
-    if(m_objectInfoData.operator bool()
-            && 1 == m_objectInfoData->size()
-            )
-    {
-        details_.position->setObject(m_objectInfoData->front()->m_programmerName, m_stepIndex);
-    }
-    else
-    {
-        details_.position->setObject(g_defaultObjectInfoProgrammerName, m_stepIndex);
-    }
+    details_.position->setObject(getProgrammerName(), m_stepIndex);
 }
