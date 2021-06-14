@@ -184,11 +184,18 @@ void DrawingDataEffectObjects::addObjects(
 
 void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_) const
 {
-    if(details_.position.operator bool()
-            && m_objectInfoData.operator bool()
-            && !m_objectInfoData->isEmpty()
+    if(!details_.position.operator bool())
+    {
+        return;
+    }
+    if(m_objectInfoData.operator bool()
+            && 1 == m_objectInfoData->size()
             )
     {
         details_.position->startObject(m_objectInfoData->front()->m_programmerName);
+    }
+    else
+    {
+        details_.position->startObject(g_defaultObjectInfoProgrammerName);
     }
 }
