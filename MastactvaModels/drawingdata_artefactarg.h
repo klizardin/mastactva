@@ -108,7 +108,7 @@ public:
         auto val = std::make_shared<std::vector<ArgType_>>();
         QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data;
         if(details_.variables.operator bool() &&
-                details_.variables->get(m_name, data))
+                details_.variables->get(m_name, details_.position.get(), data))
         {
             drawingdata::utils::vecToAttribute(data, *val);
         }
@@ -143,7 +143,7 @@ public:
         auto val = std::make_shared<ArgType_>();
         QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> vec;
         if(details_.variables.operator bool() &&
-                details_.variables->get(m_name, vec))
+                details_.variables->get(m_name, details_.position.get(), vec))
         {
             drawingdata::utils::vecToUniform(vec, *val);
         }

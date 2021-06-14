@@ -1,6 +1,8 @@
 #include "drawingdata_utils.h"
 #include <QJsonObject>
+#include <QDebug>
 #include "../MastactvaBase/names.h"
+#include "../MastactvaBase/defines.h"
 
 
 namespace drawingdata
@@ -9,11 +11,78 @@ namespace drawingdata
 namespace details
 {
 
+VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
+{
+    VariablePosition result;
+    if(position_.isEmpty())
+    {
+        return result;
+    }
+    if(position_.contains(g_jsonDataVariableObjectNameName))
+    {
+        const QJsonValue objectNameJV = position_[g_jsonDataVariableObjectNameName];
+        if(!objectNameJV.isUndefined()
+                && objectNameJV.isString())
+        {
+            result.objectName = objectNameJV.toString();
+            result.hasObjectName = true;
+        }
+    }
+    if(position_.contains(g_jsonDataVariableObjectStepIndexName))
+    {
+        const QJsonValue objectNameStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
+        if(!objectNameStepIndexJV.isUndefined()
+                && objectNameStepIndexJV.isDouble())
+        {
+            result.objectArtefactStepIndex = static_cast<int>(objectNameStepIndexJV.toDouble());
+            result.hasObjectArtefactStepIndex = true;
+        }
+    }
+    return result;
+}
+
+VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
+{
+    VariablePosition result;
+    if(nullptr == position_)
+    {
+        return result;
+    }
+
+    result.hasObjectName = true;
+    result.objectName = position_->getObjectName();
+    result.hasObjectArtefactStepIndex = true;
+    result.objectArtefactStepIndex = position_->getObjectStepIndex();
+
+    return result;
+}
+
+bool operator == (const VariablePosition &left_, const VariablePosition &right_)
+{
+    bool objectsEqual = true;
+    if(left_.hasObjectName && right_.hasObjectName)
+    {
+        objectsEqual = left_.objectName == right_.objectName;
+    }
+    bool indexesEqual = true;
+    if(left_.hasObjectArtefactStepIndex && right_.hasObjectArtefactStepIndex)
+    {
+        indexesEqual = left_.objectArtefactStepIndex == right_.objectArtefactStepIndex;
+    }
+    return objectsEqual && indexesEqual;
+}
+
+
 void Variable::set(const QJsonArray &jsonArray_)
 {
     m_jsonArray = jsonArray_;
     m_floatData.clear();
     m_intData.clear();
+}
+
+void Variable::setPosition(const QJsonObject &position_)
+{
+    m_position = VariablePosition::fromJson(position_);
 }
 
 template<typename Type_> static inline
@@ -62,6 +131,12 @@ void Variable::get(QVector<int> &data_) const
               std::back_inserter(data_));
 }
 
+bool Variable::match(const VariablePosition &pos_) const
+{
+    return m_position == pos_;
+}
+
+
 VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0*/, bool hasIndex_ /*= true*/)
     : name(name_),
       index(index_),
@@ -93,30 +168,11 @@ bool operator < (const VariableName &left_, const VariableName &right_)
 
 }
 
-bool Variables::find(const QString &name_, VariablesMap::const_iterator &fit) const
-{
-    if(m_variables.empty())
-    {
-        return false;
-    }
-    details::VariableName variableName(name_, 0, false);
-    fit = m_variables.upper_bound(variableName);
-    if(std::begin(m_variables) == fit)
-    {
-        return false;
-    }
-    --fit;
-    if(name_ != fit->first.name)
-    {
-        return false;
-    }
-    return true;
-}
 
-bool Variables::get(const QString &name_, QVector<int> &data_) const
+bool Variables::get(const QString &name_, const IPosition *position_, QVector<int> &data_) const
 {
     VariablesMap::const_iterator fit = std::cend(m_variables);
-    if(!find(name_, fit) || std::cend(m_variables) == fit)
+    if(!find(name_, position_, fit) || std::cend(m_variables) == fit)
     {
         return false;
     }
@@ -125,10 +181,10 @@ bool Variables::get(const QString &name_, QVector<int> &data_) const
     return true;
 }
 
-bool Variables::get(const QString &name_, QVector<float> &data_) const
+bool Variables::get(const QString &name_, const IPosition *position_, QVector<float> &data_) const
 {
     VariablesMap::const_iterator fit = std::cend(m_variables);
-    if(!find(name_, fit) || std::cend(m_variables) == fit)
+    if(!find(name_, position_, fit) || std::cend(m_variables) == fit)
     {
         return false;
     }
@@ -166,7 +222,16 @@ void Variables::add(const QJsonDocument &data_)
         }
         details::Variable newVar;
         newVar.set(val.toArray());
+
+        const QJsonValue position = varObject[g_jsonDataVariablePositionName];
+        if(!position.isUndefined()
+                && position.isObject())
+        {
+            newVar.setPosition(position.toObject());
+        }
+
         details::VariableName variableName(key_, index);
+        Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
         ++index;
         m_variables.insert({variableName, std::move(newVar)});
         // TODO: add remove unreachable variables
@@ -176,12 +241,92 @@ void Variables::add(const QJsonDocument &data_)
 void Variables::clear()
 {
     m_variables.clear();
-    index = 0;
+    index = std::numeric_limits<decltype (index)>::min();
 }
+
+bool Variables::find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const
+{
+    if(m_variables.empty())
+    {
+        return false;
+    }
+    details::VariableName variableName(name_, 0, false);
+    fit = m_variables.upper_bound(variableName);
+    if(std::begin(m_variables) == fit)
+    {
+        return false;
+    }
+    details::VariablePosition currentPos = details::VariablePosition::fromCurrent(position_);
+    for(--fit; name_ == fit->first.name; --fit)
+    {
+        if(fit->second.match(currentPos))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+void Position::startObject(const QString &name_)
+{
+    objectName = name_;
+    std::numeric_limits<decltype (stepIndex)>::max();
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << stepIndex;
+#endif
+}
+
+void Position::resetStep(int stepIndex_)
+{
+    stepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << stepIndex;
+#endif
+}
+
+void Position::nextStep(int stepIndex_)
+{
+    Q_ASSERT(stepIndex <= stepIndex_);
+    stepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << stepIndex;
+#endif
+}
+
+const QString &Position::getObjectName() const
+{
+    return objectName;
+}
+
+int Position::getObjectStepIndex() const
+{
+    return stepIndex;
+}
+
+void Position::clear()
+{
+    objectName.clear();
+    std::numeric_limits<decltype (stepIndex)>::max();
+}
+
 
 Details::Details()
 {
     variables = std::make_shared<Variables>();
+    position = std::make_shared<Position>();
+}
+
+void Details::clear()
+{
+    if(variables.operator bool())
+    {
+        variables->clear();
+    }
+    if(position.operator bool())
+    {
+        position->clear();
+    }
 }
 
 }

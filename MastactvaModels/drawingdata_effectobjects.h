@@ -15,6 +15,9 @@ public:
     DrawingDataEffectObjects(EffectObjectsData &&data_);
 
     void addObjects(drawing_data::QuizImageObjects &data_, const drawingdata::Details &details_) const;
+
+private:
+    void setupPosition(const drawingdata::Details &details_) const;
 };
 
 

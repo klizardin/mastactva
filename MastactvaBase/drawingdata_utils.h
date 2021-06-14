@@ -31,7 +31,6 @@ namespace utils
         return std::make_unique<DrawingDataType_>(std::move(data_));
     }
 
-
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
     {
@@ -351,6 +350,7 @@ namespace utils
     }
 }
 
+
 class IFileSource
 {
 public:
@@ -359,43 +359,70 @@ public:
     virtual QImage getImage(const FileSource &filename_) const = 0;
 };
 
+
 class IPosition
 {
 public:
     virtual ~IPosition() = default;
-    virtual void startObject(const QString &name_, int stepIndex_) = 0;
+    virtual void startObject(const QString &name_) = 0;
+    virtual void resetStep(int stepIndex_) = 0;
     virtual void nextStep(int stepIndex_) = 0;
     virtual const QString &getObjectName() const = 0;
     virtual int getObjectStepIndex() const = 0;
+    virtual void clear() = 0;
 };
+
 
 class IVariables
 {
 public:
     virtual ~IVariables() = default;
-    virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
-    virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
     virtual void clear() = 0;
 };
 
+
 namespace details
 {
+
+struct VariablePosition
+{
+    VariablePosition() = default;
+
+    static VariablePosition fromJson(const QJsonObject &position_);
+    static VariablePosition fromCurrent(const IPosition *position_);
+
+private:
+    bool hasObjectName = false;
+    QString objectName;
+    bool hasObjectArtefactStepIndex = false;
+    int objectArtefactStepIndex = 0;
+
+    friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
+};
+
+
 struct Variable
 {
 public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
+    void setPosition(const QJsonObject &position_);
     void prepare(QVector<float> &);
     void prepare(QVector<int> &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
+    bool match(const VariablePosition &pos_) const;
 
 private:
     QJsonArray m_jsonArray;
     QVector<float> m_floatData;
     QVector<int> m_intData;
+    VariablePosition m_position;
 };
+
 
 struct VariableName
 {
@@ -414,6 +441,7 @@ bool operator < (const VariableName &left_, const VariableName &right_);
 
 }
 
+
 class Variables : public IVariables
 {
     using VariablesMap = std::multimap<details::VariableName, details::Variable>;
@@ -421,18 +449,37 @@ class Variables : public IVariables
 public:
     Variables() = default;
 
-    bool get(const QString &name_, QVector<int> &data_) const override;
-    bool get(const QString &name_, QVector<float> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
     void add(const QJsonDocument &data_) override;
     void clear() override;
 
 private:
-    bool find(const QString &name_, VariablesMap::const_iterator &fit) const;
+    bool find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const;
 
 private:
     VariablesMap m_variables;
-    int index = 0;
+    int index = std::numeric_limits<decltype (index)>::min();
 };
+
+
+class Position : public IPosition
+{
+public:
+    Position() = default;
+
+    void startObject(const QString &name_) override;
+    void resetStep(int stepIndex_) override;
+    void nextStep(int stepIndex_) override;
+    const QString &getObjectName() const override;
+    int getObjectStepIndex() const override;
+    void clear() override;
+
+private:
+    QString objectName;
+    int stepIndex = std::numeric_limits<decltype (stepIndex)>::max();
+};
+
 
 class Details
 {
@@ -441,6 +488,9 @@ public:
 
     std::shared_ptr<IFileSource> filesource;
     std::shared_ptr<IVariables> variables;
+    std::shared_ptr<IPosition> position;
+
+    void clear();
 };
 
 }
