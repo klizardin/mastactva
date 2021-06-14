@@ -368,6 +368,7 @@ public:
     virtual void nextStep(int stepIndex_) = 0;
     virtual const QString &getObjectName() const = 0;
     virtual int getObjectStepIndex() const = 0;
+    virtual void clear() = 0;
 };
 
 
@@ -450,6 +451,7 @@ public:
     void nextStep(int stepIndex_) override;
     const QString &getObjectName() const override;
     int getObjectStepIndex() const override;
+    void clear() override;
 
 private:
     QString objectName;

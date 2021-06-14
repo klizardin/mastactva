@@ -204,6 +204,12 @@ int Position::getObjectStepIndex() const
     return stepIndex;
 }
 
+void Position::clear()
+{
+    objectName.clear();
+    stepIndex = 0;
+}
+
 
 Details::Details()
 {
