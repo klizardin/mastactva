@@ -241,7 +241,7 @@ void Variables::add(const QJsonDocument &data_)
 void Variables::clear()
 {
     m_variables.clear();
-    index = 0;
+    index = std::numeric_limits<decltype (index)>::min();
 }
 
 bool Variables::find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const

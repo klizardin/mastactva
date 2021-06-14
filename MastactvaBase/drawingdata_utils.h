@@ -459,7 +459,7 @@ private:
 
 private:
     VariablesMap m_variables;
-    int index = 0;
+    int index = std::numeric_limits<decltype (index)>::min();
 };
 
 
