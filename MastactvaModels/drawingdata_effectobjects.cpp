@@ -33,6 +33,7 @@ public:
 
 private:
     void findEnd();
+    static void updatePosition(const drawingdata::Details &details_, const DrawingDataObjectArtefact *object, bool firstObject_);
 
 private:
     VectorType m_artefacts;
@@ -88,10 +89,12 @@ bool ObjectArtefacts::build(
 {
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        updatePosition(details_, *it, m_objectBegin == it);
         (*it)->addData(details_);
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        updatePosition(details_, *it, m_objectBegin == it);
         if((*it)->setVertexShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -100,6 +103,7 @@ bool ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        updatePosition(details_, *it, m_objectBegin == it);
         if((*it)->setFragmentShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -132,6 +136,27 @@ void ObjectArtefacts::findEnd()
     }
 }
 
+void ObjectArtefacts::updatePosition(
+        const drawingdata::Details &details_,
+        const DrawingDataObjectArtefact *object,
+        bool firstObject_
+        )
+{
+    if(!details_.position.operator bool()
+            || nullptr == object)
+    {
+        return;
+    }
+    if(firstObject_)
+    {
+        details_.position->resetStep(object->getStepIndex());
+    }
+    else
+    {
+        details_.position->nextStep(object->getStepIndex());
+    }
+}
+
 
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
@@ -143,6 +168,8 @@ void DrawingDataEffectObjects::addObjects(
         return;
     }
 
+    setupPosition(details_);
+
     ObjectArtefacts list;
     list.populate(*m_objectArtefactData);
     for(list.first(); !list.isEnd(); list.next())
@@ -152,5 +179,16 @@ void DrawingDataEffectObjects::addObjects(
         {
             data_.objects.push_back(obj);
         }
+    }
+}
+
+void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_) const
+{
+    if(details_.position.operator bool()
+            && m_objectInfoData.operator bool()
+            && !m_objectInfoData->isEmpty()
+            )
+    {
+        details_.position->startObject(m_objectInfoData->front()->m_programmerName);
     }
 }
