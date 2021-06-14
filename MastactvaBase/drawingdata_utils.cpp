@@ -179,6 +179,30 @@ void Variables::clear()
     index = 0;
 }
 
+
+void Position::startObject(const QString &name_, int stepIndex_)
+{
+    objectName = name_;
+    stepIndex = stepIndex_;
+}
+
+void Position::nextStep(int stepIndex_)
+{
+    Q_ASSERT(stepIndex <= stepIndex_);
+    stepIndex = stepIndex_;
+}
+
+const QString &Position::getObjectName() const
+{
+    return objectName;
+}
+
+int Position::getObjectStepIndex() const
+{
+    return stepIndex;
+}
+
+
 Details::Details()
 {
     variables = std::make_shared<Variables>();

@@ -434,6 +434,23 @@ private:
     int index = 0;
 };
 
+
+class Position : public IPosition
+{
+public:
+    Position() = default;
+
+    void startObject(const QString &name_, int stepIndex_) override;
+    void nextStep(int stepIndex_) override;
+    const QString &getObjectName() const override;
+    int getObjectStepIndex() const override;
+
+private:
+    QString objectName;
+    int stepIndex = 0;
+};
+
+
 class Details
 {
 public:
