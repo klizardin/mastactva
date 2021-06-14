@@ -381,6 +381,7 @@ public:
     virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
+    virtual bool getObjectsList(QStringList &objects_) const = 0;
     virtual void clear() = 0;
 };
 
@@ -455,14 +456,18 @@ public:
     bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
     void add(const QJsonDocument &data_) override;
+    bool getObjectsList(QStringList &objects_) const override;
     void clear() override;
 
 private:
     bool find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const;
+    void setObjectsList(const QJsonArray &array_);
 
 private:
     VariablesMap m_variables;
     int index = std::numeric_limits<decltype (index)>::min();
+    QStringList m_objects;
+    bool m_hasObjectsList = false;
 };
 
 

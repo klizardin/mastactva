@@ -237,22 +237,40 @@ void Variables::add(const QJsonDocument &data_)
         {
             continue;
         }
-        details::Variable newVar;
-        newVar.set(val.toArray());
 
-        const QJsonValue position = varObject[g_jsonDataVariablePositionName];
-        if(!position.isUndefined()
-                && position.isObject())
+        if(key_ == g_jsonDataVariableNameObjectListName)
         {
-            newVar.setPosition(position.toObject());
+            setObjectsList(val.toArray());
         }
+        else
+        {
+            details::Variable newVar;
+            newVar.set(val.toArray());
 
-        details::VariableName variableName(key_, index);
-        Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
-        ++index;
-        m_variables.insert({variableName, std::move(newVar)});
-        // TODO: add remove unreachable variables
+            const QJsonValue position = varObject[g_jsonDataVariablePositionName];
+            if(!position.isUndefined()
+                    && position.isObject())
+            {
+                newVar.setPosition(position.toObject());
+            }
+
+            details::VariableName variableName(key_, index);
+            Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
+            ++index;
+            m_variables.insert({variableName, std::move(newVar)});
+            // TODO: add remove unreachable variables
+        }
     }
+}
+
+bool Variables::getObjectsList(QStringList &objects_) const
+{
+    if(!m_hasObjectsList)
+    {
+        return false;
+    }
+    objects_ = m_objects;
+    return true;
 }
 
 void Variables::clear()
@@ -286,6 +304,23 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
         }
     }
     return false;
+}
+
+void Variables::setObjectsList(const QJsonArray &array_)
+{
+    m_objects.clear();
+    m_objects.reserve(array_.size());
+    for(int i = 0; i < array_.size(); ++i)
+    {
+        const QJsonValue v = array_.at(i);
+        if(v.isUndefined()
+                || !v.isString())
+        {
+            continue;
+        }
+        m_objects.push_back(v.toString());
+    }
+    m_hasObjectsList = true;
 }
 
 
