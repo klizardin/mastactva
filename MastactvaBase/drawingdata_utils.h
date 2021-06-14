@@ -31,7 +31,6 @@ namespace utils
         return std::make_unique<DrawingDataType_>(std::move(data_));
     }
 
-
     template<class DataType_, class DrawingDataType_> inline
     void rebuild(const std::shared_ptr<QVector<DataType_ *>> &data_, DrawingDataType_ *)
     {
@@ -351,6 +350,7 @@ namespace utils
     }
 }
 
+
 class IFileSource
 {
 public:
@@ -358,6 +358,7 @@ public:
     virtual QString getText(const FileSource &filename_) const = 0;
     virtual QImage getImage(const FileSource &filename_) const = 0;
 };
+
 
 class IPosition
 {
@@ -369,6 +370,7 @@ public:
     virtual int getObjectStepIndex() const = 0;
 };
 
+
 class IVariables
 {
 public:
@@ -379,8 +381,10 @@ public:
     virtual void clear() = 0;
 };
 
+
 namespace details
 {
+
 struct Variable
 {
 public:
@@ -396,6 +400,7 @@ private:
     QVector<float> m_floatData;
     QVector<int> m_intData;
 };
+
 
 struct VariableName
 {
@@ -413,6 +418,7 @@ bool operator == (const VariableName &left_, const VariableName &right_);
 bool operator < (const VariableName &left_, const VariableName &right_);
 
 }
+
 
 class Variables : public IVariables
 {
