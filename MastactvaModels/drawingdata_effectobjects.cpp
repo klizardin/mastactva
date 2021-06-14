@@ -87,14 +87,17 @@ bool ObjectArtefacts::build(
         const drawingdata::Details &details_
         ) const
 {
+    if(std::cend(m_artefacts) != m_objectBegin)
+    {
+        updatePosition(details_, *m_objectBegin, m_objectBegin == std::cbegin(m_artefacts));
+    }
+
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        updatePosition(details_, *it, m_objectBegin == it);
         (*it)->addData(details_);
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        updatePosition(details_, *it, m_objectBegin == it);
         if((*it)->setVertexShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -103,7 +106,6 @@ bool ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        updatePosition(details_, *it, m_objectBegin == it);
         if((*it)->setFragmentShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
