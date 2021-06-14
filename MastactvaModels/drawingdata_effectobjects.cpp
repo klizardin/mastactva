@@ -33,6 +33,15 @@ public:
 
 private:
     void findEnd();
+    static void updateArtefactStepIndex(
+            const drawingdata::Details &details_,
+            const DrawingDataObjectArtefact *objectArtefact_,
+            bool first_
+            );
+    static void checkArtefactStepIndex(
+            const drawingdata::Details &details_,
+            const DrawingDataObjectArtefact *objectArtefact_
+            );
 
 private:
     VectorType m_artefacts;
@@ -86,12 +95,19 @@ bool ObjectArtefacts::build(
         const drawingdata::Details &details_
         ) const
 {
+    if(std::cend(m_artefacts) != m_objectBegin)
+    {
+        updateArtefactStepIndex(details_, *m_objectBegin, std::cbegin(m_artefacts) == m_objectBegin);
+    }
+
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        checkArtefactStepIndex(details_, *it);
         (*it)->addData(details_);
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        checkArtefactStepIndex(details_, *it);
         if((*it)->setVertexShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -100,6 +116,7 @@ bool ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        checkArtefactStepIndex(details_, *it);
         if((*it)->setFragmentShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -108,6 +125,7 @@ bool ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
+        checkArtefactStepIndex(details_, *it);
         (*it)->addTexture(object_);
     }
     return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
@@ -132,10 +150,38 @@ void ObjectArtefacts::findEnd()
     }
 }
 
+void ObjectArtefacts::updateArtefactStepIndex(
+        const drawingdata::Details &details_,
+        const DrawingDataObjectArtefact *objectArtefact_,
+        bool first_
+        )
+{
+    if(!details_.position.operator bool()
+            || !objectArtefact_)
+    {
+        return;
+    }
+    objectArtefact_->updateStepIndex(details_.position.get(), first_);
+}
+
+void ObjectArtefacts::checkArtefactStepIndex(
+        const drawingdata::Details &details_,
+        const DrawingDataObjectArtefact *objectArtefact_
+        )
+{
+    if(!details_.position.operator bool()
+            || !objectArtefact_)
+    {
+        return;
+    }
+    objectArtefact_->checkStepIndex(details_.position.get());
+}
+
 
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        int stepIndexShift_ /*= 0*/
         ) const
 {
     if(!m_objectArtefactData.operator bool())
@@ -143,7 +189,7 @@ void DrawingDataEffectObjects::addObjects(
         return;
     }
 
-    setupPosition(details_);
+    setupPosition(details_, stepIndexShift_);
 
     ObjectArtefacts list;
     list.populate(*m_objectArtefactData);
@@ -157,20 +203,37 @@ void DrawingDataEffectObjects::addObjects(
     }
 }
 
-void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_) const
+bool DrawingDataEffectObjects::isMain() const
+{
+    return m_objectInfoData.operator bool()
+            && 1 == m_objectInfoData->size()
+            && QString(g_defaultObjectInfoProgrammerName) == m_objectInfoData->front()->m_programmerName
+            ;
+}
+
+int DrawingDataEffectObjects::getStepIndex() const
+{
+    return m_stepIndex;
+}
+
+QString DrawingDataEffectObjects::getProgrammerName() const
+{
+    if(m_objectInfoData.operator bool()
+            && 1 == m_objectInfoData->size())
+    {
+        return m_objectInfoData->front()->m_programmerName;
+    }
+    else
+    {
+        return g_defaultObjectInfoProgrammerName;
+    }
+}
+
+void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const
 {
     if(!details_.position.operator bool())
     {
         return;
     }
-    if(m_objectInfoData.operator bool()
-            && 1 == m_objectInfoData->size()
-            )
-    {
-        details_.position->set(m_objectInfoData->front()->m_programmerName, m_stepIndex);
-    }
-    else
-    {
-        details_.position->set(g_defaultObjectInfoProgrammerName, m_stepIndex);
-    }
+    details_.position->setObject(getProgrammerName(), m_stepIndex + stepIndexShift_);
 }

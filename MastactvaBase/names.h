@@ -47,6 +47,7 @@ static const char *g_createDefaultEffectObjectProcedureName = "create_default_ob
 static const char *g_effectIDName = "id";
 static const char *g_defaultObjectInfoNameName = "name";
 static const char *g_defaultObjectInfoProgrammerNameName = "programmer_name";
+static const char *g_jsonDataVariableNameObjectListName = "objectsToRun";
 static const char *g_defaultObjectInfoDescriptionName = "description";
 static const char *g_defaultObjectInfoCreatedName = "created";
 static const char *g_defaultObjectInfoProgrammerName = "";
@@ -160,6 +161,7 @@ static const char *g_defaultFragmentShaderName = ":/Shaders/Shaders/default.fsh"
 static const char * g_jsonDataVariableValueName = "value";
 static const char * g_jsonDataVariableObjectNameName = "objectName";
 static const char * g_jsonDataVariableObjectStepIndexName = "objectStepIndex";
+static const char * g_jsonDataVariableArtefactStepIndexName = "artefactStepIndex";
 static const char * g_jsonDataVariablePositionName = "position";
 
 

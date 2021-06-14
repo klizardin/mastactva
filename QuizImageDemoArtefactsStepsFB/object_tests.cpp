@@ -14,6 +14,7 @@
 
 
 QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr);
+QString createObjectsQTGeomJson(int cnt_, const char *objectName_);
 
 
 void MapFileSource::add(const QString &filename_, const QString &text_)
@@ -59,6 +60,7 @@ static const char *g_baseFragmatShader =
     "    gl_FragColor = color;\n"
     "}\n";
 
+static const char *g_effectObjectQtLogoProgrammerName = "gt_logo";
 static const char *g_baseVertexShaderFilename = "base.vsh";
 static const char *g_baseFragmentShaderFilename = "base.fsh";
 static const char *g_defaultVertexShaderFilename = "default.vsh";
@@ -66,6 +68,8 @@ static const char *g_defaultFragmentShaderFilename = "default.fsh";
 static const char *g_dataJsonQTGeometryFilename = "qt_geom.json";
 static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
 static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
+static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
+static const char *g_dataJsonObjectsOfQtGeomFilename = "qt_geom_1.json";
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
@@ -81,6 +85,9 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJsonQTGeometry0Filename, createQTGeomJson(gen, nullptr, &pos0));
     const int pos1 = 2;
     filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
+    const int pos2 = 3;
+    filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
+    filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(3, g_effectObjectQtLogoProgrammerName));
     return filesource;
 }
 
@@ -617,6 +624,21 @@ QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nul
     return QJsonDocument(object).toJson();
 }
 
+QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
+{
+    QJsonArray objectsJA;
+    for(int i = 0; i < cnt_; ++i)
+    {
+        objectsJA.append(QJsonValue::fromVariant(QVariant::fromValue(QString(objectName_))));
+    }
+    QJsonObject objectsJO;
+    objectsJO.insert(g_jsonDataVariableValueName, objectsJA);
+    QJsonObject object;
+    object.insert(g_jsonDataVariableNameObjectListName, objectsJO);
+
+    return QJsonDocument(object).toJson();
+}
+
 std::unique_ptr<EffectObjectsData> createTestObject3(
         int effectId,
         const QDateTime &now,
@@ -782,7 +804,6 @@ std::unique_ptr<EffectData> createTestData4()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
     static const char *effectObjectName = "qt logo";
-    static const char *effectObjectProgrammerName = "gt_logo";
 
     auto effectObject1 = createTestObject3(
                 effectId,
@@ -803,7 +824,7 @@ std::unique_ptr<EffectData> createTestData4()
                 gen,
                 objectInfoId + 1,
                 effectObjectName,
-                effectObjectProgrammerName
+                g_effectObjectQtLogoProgrammerName
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -888,6 +909,92 @@ std::unique_ptr<EffectData> createTestData5()
     return effect;
 }
 
+std::unique_ptr<EffectData> createTestData6()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const char *artefactName1 = "data json object";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName = "data for object";
+    static const char *effectObjectName = "qt logo";
+
+    auto effectObject1 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometry0Filename,
+                objectInfoId,
+                effectObjectDataName,
+                g_defaultObjectInfoProgrammerName
+                );
+    auto effectObject2 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1 + 1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometry1Filename,
+                objectInfoId + 1,
+                effectObjectDataName,
+                g_defaultObjectInfoProgrammerName
+                );
+    auto effectObject3 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1 + 1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometry2Filename,
+                objectInfoId + 2,
+                effectObjectDataName,
+                g_defaultObjectInfoProgrammerName
+                );
+    auto effectObject0 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1 + 2,
+                artefactType1,
+                artefactName1,
+                g_dataJsonObjectsOfQtGeomFilename,
+                objectInfoId + 2,
+                effectObjectDataName,
+                g_defaultObjectInfoProgrammerName
+                );
+    auto effectObject4 = createTestObject(
+                effectId,
+                now,
+                effectObjectStep1,
+                gen,
+                objectInfoId + 3,
+                effectObjectName,
+                g_effectObjectQtLogoProgrammerName
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject0.release());
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
+    effect->m_effectObjectsData->push_back(effectObject3.release());
+    effect->m_effectObjectsData->push_back(effectObject4.release());
+    return effect;
+}
+
 namespace drawing_objects
 {
 
@@ -932,6 +1039,15 @@ void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData5();
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData6();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);

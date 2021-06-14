@@ -30,12 +30,22 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
     }
     if(position_.contains(g_jsonDataVariableObjectStepIndexName))
     {
-        const QJsonValue objectNameStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
-        if(!objectNameStepIndexJV.isUndefined()
-                && objectNameStepIndexJV.isDouble())
+        const QJsonValue objectStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
+        if(!objectStepIndexJV.isUndefined()
+                && objectStepIndexJV.isDouble())
         {
-            result.objectArtefactStepIndex = static_cast<int>(objectNameStepIndexJV.toDouble());
-            result.hasObjectArtefactStepIndex = true;
+            result.objectStepIndex = static_cast<int>(objectStepIndexJV.toDouble());
+            result.hasObjectStepIndex = true;
+        }
+    }
+    if(position_.contains(g_jsonDataVariableArtefactStepIndexName))
+    {
+        const QJsonValue artefactStepIndexJV = position_[g_jsonDataVariableArtefactStepIndexName];
+        if(!artefactStepIndexJV.isUndefined()
+                && artefactStepIndexJV.isDouble())
+        {
+            result.artefactStepIndex = static_cast<int>(artefactStepIndexJV.toDouble());
+            result.hasArtefactStepIndex = true;
         }
     }
     return result;
@@ -51,8 +61,10 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
 
     result.hasObjectName = true;
     result.objectName = position_->getObjectName();
-    result.hasObjectArtefactStepIndex = true;
-    result.objectArtefactStepIndex = position_->getObjectStepIndex();
+    result.hasObjectStepIndex = true;
+    result.objectStepIndex = position_->getObjectStepIndex();
+    result.hasArtefactStepIndex = true;
+    result.artefactStepIndex = position_->getArtefactStepIndex();
 
     return result;
 }
@@ -64,12 +76,17 @@ bool operator == (const VariablePosition &left_, const VariablePosition &right_)
     {
         objectsEqual = left_.objectName == right_.objectName;
     }
-    bool indexesEqual = true;
-    if(left_.hasObjectArtefactStepIndex && right_.hasObjectArtefactStepIndex)
+    bool objectIndexesEqual = true;
+    if(left_.hasObjectStepIndex && right_.hasObjectStepIndex)
     {
-        indexesEqual = left_.objectArtefactStepIndex == right_.objectArtefactStepIndex;
+        objectIndexesEqual = left_.objectStepIndex == right_.objectStepIndex;
     }
-    return objectsEqual && indexesEqual;
+    bool artefactIndexesEqual = true;
+    if(left_.hasArtefactStepIndex && right_.hasArtefactStepIndex)
+    {
+        artefactIndexesEqual = left_.artefactStepIndex == right_.artefactStepIndex;
+    }
+    return objectsEqual && objectIndexesEqual && artefactIndexesEqual;
 }
 
 
@@ -220,22 +237,40 @@ void Variables::add(const QJsonDocument &data_)
         {
             continue;
         }
-        details::Variable newVar;
-        newVar.set(val.toArray());
 
-        const QJsonValue position = varObject[g_jsonDataVariablePositionName];
-        if(!position.isUndefined()
-                && position.isObject())
+        if(key_ == g_jsonDataVariableNameObjectListName)
         {
-            newVar.setPosition(position.toObject());
+            setObjectsList(val.toArray());
         }
+        else
+        {
+            details::Variable newVar;
+            newVar.set(val.toArray());
 
-        details::VariableName variableName(key_, index);
-        Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
-        ++index;
-        m_variables.insert({variableName, std::move(newVar)});
-        // TODO: add remove unreachable variables
+            const QJsonValue position = varObject[g_jsonDataVariablePositionName];
+            if(!position.isUndefined()
+                    && position.isObject())
+            {
+                newVar.setPosition(position.toObject());
+            }
+
+            details::VariableName variableName(key_, index);
+            Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
+            ++index;
+            m_variables.insert({variableName, std::move(newVar)});
+            // TODO: add remove unreachable variables
+        }
     }
+}
+
+bool Variables::getObjectsList(QStringList &objects_) const
+{
+    if(!m_hasObjectsList)
+    {
+        return false;
+    }
+    objects_ = m_objects;
+    return true;
 }
 
 void Variables::clear()
@@ -271,13 +306,48 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
     return false;
 }
 
+void Variables::setObjectsList(const QJsonArray &array_)
+{
+    m_objects.clear();
+    m_objects.reserve(array_.size());
+    for(int i = 0; i < array_.size(); ++i)
+    {
+        const QJsonValue v = array_.at(i);
+        if(v.isUndefined()
+                || !v.isString())
+        {
+            continue;
+        }
+        m_objects.push_back(v.toString());
+    }
+    m_hasObjectsList = true;
+}
 
-void Position::set(const QString &name_, int stepIndex_)
+
+void Position::setObject(const QString &name_, int objectStepIndex_)
 {
     objectName = name_;
-    stepIndex = stepIndex_;
+    objectStepIndex = objectStepIndex_;
+    artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
-    qDebug() << objectName << stepIndex;
+    qDebug() << objectName << objectStepIndex << artefactStepIndex;
+#endif
+}
+
+void Position::resetArtefactStepIndex(int stepIndex_)
+{
+    artefactStepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << objectStepIndex << artefactStepIndex;
+#endif
+}
+
+void Position::setArtefactStepIndex(int stepIndex_)
+{
+    Q_ASSERT(artefactStepIndex <= stepIndex_);
+    artefactStepIndex = stepIndex_;
+#if defined(TRACE_EFFECT_OBJECT_POSITION)
+    qDebug() << objectName << objectStepIndex << artefactStepIndex;
 #endif
 }
 
@@ -288,13 +358,19 @@ const QString &Position::getObjectName() const
 
 int Position::getObjectStepIndex() const
 {
-    return stepIndex;
+    return objectStepIndex;
+}
+
+int Position::getArtefactStepIndex() const
+{
+    return artefactStepIndex;
 }
 
 void Position::clear()
 {
     objectName.clear();
-    std::numeric_limits<decltype (stepIndex)>::max();
+    std::numeric_limits<decltype (objectStepIndex)>::max();
+    artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 }
 
 

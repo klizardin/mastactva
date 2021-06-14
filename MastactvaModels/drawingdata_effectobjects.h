@@ -14,10 +14,17 @@ public:
     DrawingDataEffectObjects() = default;
     DrawingDataEffectObjects(EffectObjectsData &&data_);
 
-    void addObjects(drawing_data::QuizImageObjects &data_, const drawingdata::Details &details_) const;
+    void addObjects(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_,
+            int stepIndexShift_ = 0
+            ) const;
+    bool isMain() const;
+    int getStepIndex() const;
+    QString getProgrammerName() const;
 
 private:
-    void setupPosition(const drawingdata::Details &details_) const;
+    void setupPosition(const drawingdata::Details &details_, int stepIndexShift_) const;
 };
 
 
