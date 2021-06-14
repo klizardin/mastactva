@@ -263,6 +263,10 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
         {
             return true;
         }
+        if(std::begin(m_variables) == fit)
+        {
+            return false;
+        }
     }
     return false;
 }
