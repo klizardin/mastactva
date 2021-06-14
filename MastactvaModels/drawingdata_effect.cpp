@@ -53,12 +53,29 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
         }
         v_.second->addObjects(data_, m_details);
     }
-    for(const SortedEffectObjects::value_type &v_ : sortedEffectObjects)
+    QStringList objectsToRun;
+    if(m_details.variables.operator bool()
+            && m_details.variables->getObjectsList(objectsToRun))
     {
-        if(!v_.second)
+        for(const QString &objectName_ : objectsToRun)
         {
-            continue;
+            const auto fitb = sortedByProgrammerNameEffectObjects.lower_bound(objectName_);
+            const auto fite = sortedByProgrammerNameEffectObjects.upper_bound(objectName_);
+            for(auto it = fitb; it != fite; ++it)
+            {
+                it->second->addObjects(data_, m_details);
+            }
         }
-        v_.second->addObjects(data_, m_details);
+    }
+    else
+    {
+        for(const SortedEffectObjects::value_type &v_ : sortedEffectObjects)
+        {
+            if(!v_.second)
+            {
+                continue;
+            }
+            v_.second->addObjects(data_, m_details);
+        }
     }
 }
