@@ -77,9 +77,9 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     QRandomGenerator gen;
     gen.seed(time(nullptr));
     filesource->add(g_dataJsonQTGeometryFilename, createQTGeomJson(gen));
-    const int pos0 = 0;
+    const int pos0 = 1;
     filesource->add(g_dataJsonQTGeometry0Filename, createQTGeomJson(gen, nullptr, &pos0));
-    const int pos1 = 1;
+    const int pos1 = 2;
     filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
     return filesource;
 }
@@ -192,15 +192,15 @@ static const char *emptyStr = "";
 // TODO: refactoring
 std::unique_ptr<EffectObjectsData> createTestObject(
         int effectId,
-        const char *effectName,
-        const char *effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
-        QRandomGenerator &gen
+        QRandomGenerator &gen,
+        const int objectInfoId,
+        const char *effectObjectName,
+        const char *effectObjectProgrammerName
         )
 {
     static const int effectObjectId = 1;
-    static const int objectInfoId = 1;
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
                 effectId,
@@ -211,8 +211,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
     // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
                 objectInfoId,
-                effectName,
-                effectProgrammerName,
+                effectObjectName,
+                effectObjectProgrammerName,
                 now
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
@@ -619,14 +619,18 @@ QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nul
 
 std::unique_ptr<EffectObjectsData> createTestObject3(
         int effectId,
-        const char *effectName,
-        const char *effectProgrammerName,
         const QDateTime &now,
-        int effectObjectStep
+        int effectObjectStep,
+        const int artefactId,
+        const ArtefactTypeEn artefactType,
+        const char * artefactName,
+        const char * artefactFilename,
+        const int objectInfoId,
+        const char *effectObjectName,
+        const char *effectObjectProgrammerName
         )
 {
     static const int effectObjectId = 1;
-    static const int objectInfoId = 1;
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
                 effectId,
@@ -637,21 +641,18 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
     // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
                 objectInfoId,
-                effectName,
-                effectProgrammerName,
+                effectObjectName,
+                effectObjectProgrammerName,
                 now
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
-    static const int artefactId1 = 1;
-    static const char *artefactName1 = "data json object";
-    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
     auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId1,
-                artefactName1,
-                g_dataJsonQTGeometryFilename,
+                artefactId,
+                artefactName,
+                artefactFilename,
                 emptyStr,
-                artefactType1,
+                artefactType,
                 emptyStr,
                 now
                 );
@@ -660,7 +661,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
                 effectId,
-                artefactId1,
+                artefactId,
                 objectArtefactStep0,
                 artefact1.release()
                 );
@@ -673,18 +674,21 @@ std::unique_ptr<EffectData> createTestData1()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
-    static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
+    static const int objectInfoId = 1;
+    static const char *effectObjectName = "qt logo";
+    static const char *effectObjectProgrammerName = "gtlogo";
 
     auto effectObject1 = createTestObject(
                 effectId,
-                effectName,
-                effectProgrammerName,
                 now,
                 effectObjectStep0,
-                gen
+                gen,
+                objectInfoId,
+                effectObjectName,
+                effectObjectProgrammerName
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -700,27 +704,32 @@ std::unique_ptr<EffectData> createTestData2()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
-    static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 1;
+    static const int objectInfoId1 = 1;
+    static const int objectInfoId2 = 2;
+    static const char *effectObjectName = "qt logo";
+    static const char *effectObjectProgrammerName = "gtlogo";
 
     auto effectObject1 = createTestObject(
                 effectId,
-                effectName,
-                effectProgrammerName,
                 now,
                 effectObjectStep0,
-                gen
+                gen,
+                objectInfoId1,
+                effectObjectName,
+                effectObjectProgrammerName
                 );
     auto effectObject2 = createTestObject(
                 effectId,
-                effectName,
-                effectProgrammerName,
                 now,
                 effectObjectStep1,
-                gen
+                gen,
+                objectInfoId2,
+                effectObjectName,
+                effectObjectProgrammerName
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -762,26 +771,39 @@ std::unique_ptr<EffectData> createTestData4()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
-    static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const char *artefactName1 = "data json object";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName = "data for object";
+    static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
+    static const char *effectObjectName = "qt logo";
+    static const char *effectObjectProgrammerName = "gt_logo";
 
     auto effectObject1 = createTestObject3(
                 effectId,
-                effectName,
-                effectProgrammerName,
                 now,
-                effectObjectStep0
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometryFilename,
+                objectInfoId,
+                effectObjectDataName,
+                effectObjectDataProgrammerName
                 );
     auto effectObject2 = createTestObject(
                 effectId,
-                effectName,
-                effectProgrammerName,
                 now,
                 effectObjectStep1,
-                gen
+                gen,
+                objectInfoId + 1,
+                effectObjectName,
+                effectObjectProgrammerName
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -791,6 +813,78 @@ std::unique_ptr<EffectData> createTestData4()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
+    return effect;
+}
+
+std::unique_ptr<EffectData> createTestData5()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const char *artefactName1 = "data json object";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName = "data for object";
+    static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
+    static const char *effectObjectName = "qt logo";
+    static const char *effectObjectProgrammerName = "gt_logo";
+
+    auto effectObject1 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometry0Filename,
+                objectInfoId,
+                effectObjectDataName,
+                effectObjectDataProgrammerName
+                );
+    auto effectObject2 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometry1Filename,
+                objectInfoId + 1,
+                effectObjectDataName,
+                effectObjectDataProgrammerName
+                );
+    auto effectObject3 = createTestObject(
+                effectId,
+                now,
+                effectObjectStep1,
+                gen,
+                objectInfoId + 2,
+                effectObjectName,
+                effectObjectProgrammerName
+                );
+    auto effectObject4 = createTestObject(
+                effectId,
+                now,
+                effectObjectStep1 + 1,
+                gen,
+                objectInfoId + 3,
+                effectObjectName,
+                effectObjectProgrammerName
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
+    effect->m_effectObjectsData->push_back(effectObject3.release());
+    effect->m_effectObjectsData->push_back(effectObject4.release());
     return effect;
 }
 
@@ -829,6 +923,15 @@ void DataTestBase::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData4();
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData5();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);

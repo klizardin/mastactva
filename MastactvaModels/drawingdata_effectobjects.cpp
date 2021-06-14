@@ -33,8 +33,6 @@ public:
 
 private:
     void findEnd();
-    static void updatePosition(const drawingdata::Details &details_, const DrawingDataObjectArtefact *object, bool firstObject_);
-    static void checkPosition(const drawingdata::Details &details_, const DrawingDataObjectArtefact *object);
 
 private:
     VectorType m_artefacts;
@@ -88,19 +86,12 @@ bool ObjectArtefacts::build(
         const drawingdata::Details &details_
         ) const
 {
-    if(std::cend(m_artefacts) != m_objectBegin)
-    {
-        updatePosition(details_, *m_objectBegin, std::cbegin(m_artefacts) == m_objectBegin);
-    }
-
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        checkPosition(details_, *it);
         (*it)->addData(details_);
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        checkPosition(details_, *it);
         if((*it)->setVertexShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -109,7 +100,6 @@ bool ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        checkPosition(details_, *it);
         if((*it)->setFragmentShader(object_, details_))
         {
             (*it)->addArguments(object_, details_);
@@ -118,7 +108,6 @@ bool ObjectArtefacts::build(
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
-        checkPosition(details_, *it);
         (*it)->addTexture(object_);
     }
     return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
@@ -141,40 +130,6 @@ void ObjectArtefacts::findEnd()
     {
         m_objectEnd = std::cend(m_artefacts);
     }
-}
-
-void ObjectArtefacts::updatePosition(
-        const drawingdata::Details &details_,
-        const DrawingDataObjectArtefact *object,
-        bool firstObject_
-        )
-{
-    if(!details_.position.operator bool()
-            || nullptr == object)
-    {
-        return;
-    }
-    if(firstObject_)
-    {
-        details_.position->resetStep(object->getStepIndex());
-    }
-    else
-    {
-        details_.position->nextStep(object->getStepIndex());
-    }
-}
-
-void ObjectArtefacts::checkPosition(
-        const drawingdata::Details &details_,
-        const DrawingDataObjectArtefact *object
-        )
-{
-    if(!details_.position.operator bool()
-            || nullptr == object)
-    {
-        return;
-    }
-    Q_ASSERT(details_.position->getObjectStepIndex() == object->getStepIndex());
 }
 
 
@@ -212,10 +167,10 @@ void DrawingDataEffectObjects::setupPosition(const drawingdata::Details &details
             && 1 == m_objectInfoData->size()
             )
     {
-        details_.position->startObject(m_objectInfoData->front()->m_programmerName);
+        details_.position->set(m_objectInfoData->front()->m_programmerName, m_stepIndex);
     }
     else
     {
-        details_.position->startObject(g_defaultObjectInfoProgrammerName);
+        details_.position->set(g_defaultObjectInfoProgrammerName, m_stepIndex);
     }
 }
