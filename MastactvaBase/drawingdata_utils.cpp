@@ -11,6 +11,68 @@ namespace drawingdata
 namespace details
 {
 
+VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
+{
+    VariablePosition result;
+    if(position_.isEmpty())
+    {
+        return result;
+    }
+    if(position_.contains(g_jsonDataVariableObjectNameName))
+    {
+        const QJsonValue objectNameJV = position_[g_jsonDataVariableObjectNameName];
+        if(!objectNameJV.isUndefined()
+                && objectNameJV.isString())
+        {
+            result.objectName = objectNameJV.toString();
+            result.hasObjectName = true;
+        }
+    }
+    if(position_.contains(g_jsonDataVariableObjectStepIndexName))
+    {
+        const QJsonValue objectNameStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
+        if(!objectNameStepIndexJV.isUndefined()
+                && objectNameStepIndexJV.isDouble())
+        {
+            result.objectArtefactStepIndex = static_cast<int>(objectNameStepIndexJV.toDouble());
+            result.hasObjectArtefactStepIndex = true;
+        }
+    }
+    return result;
+}
+
+VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
+{
+    VariablePosition result;
+    if(nullptr == position_)
+    {
+        return result;
+    }
+
+    result.hasObjectName = true;
+    result.objectName = position_->getObjectName();
+    result.hasObjectArtefactStepIndex = true;
+    result.objectArtefactStepIndex = position_->getObjectStepIndex();
+
+    return result;
+}
+
+bool operator == (const VariablePosition &left_, const VariablePosition &right_)
+{
+    bool objectsEqual = true;
+    if(left_.hasObjectName && right_.hasObjectName)
+    {
+        objectsEqual = left_.objectName == right_.objectName;
+    }
+    bool indexesEqual = true;
+    if(left_.hasObjectArtefactStepIndex && right_.hasObjectArtefactStepIndex)
+    {
+        indexesEqual = left_.objectArtefactStepIndex == right_.objectArtefactStepIndex;
+    }
+    return objectsEqual && indexesEqual;
+}
+
+
 void Variable::set(const QJsonArray &jsonArray_)
 {
     m_jsonArray = jsonArray_;
@@ -92,67 +154,6 @@ bool operator < (const VariableName &left_, const VariableName &right_)
     {
         return false;
     }
-}
-
-VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
-{
-    VariablePosition result;
-    if(position_.isEmpty())
-    {
-        return result;
-    }
-    if(position_.contains(g_jsonDataVariableObjectNameName))
-    {
-        const QJsonValue objectNameJV = position_[g_jsonDataVariableObjectNameName];
-        if(!objectNameJV.isUndefined()
-                && objectNameJV.isString())
-        {
-            result.objectName = objectNameJV.toString();
-            result.hasObjectName = true;
-        }
-    }
-    if(position_.contains(g_jsonDataVariableObjectStepIndexName))
-    {
-        const QJsonValue objectNameStepIndexJV = position_[g_jsonDataVariableObjectStepIndexName];
-        if(!objectNameStepIndexJV.isUndefined()
-                && objectNameStepIndexJV.isDouble())
-        {
-            result.objectArtefactStepIndex = static_cast<int>(objectNameStepIndexJV.toDouble());
-            result.hasObjectArtefactStepIndex = true;
-        }
-    }
-    return result;
-}
-
-VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
-{
-    VariablePosition result;
-    if(nullptr == position_)
-    {
-        return result;
-    }
-
-    result.hasObjectName = true;
-    result.objectName = position_->getObjectName();
-    result.hasObjectArtefactStepIndex = true;
-    result.objectArtefactStepIndex = position_->getObjectStepIndex();
-
-    return result;
-}
-
-bool operator == (const VariablePosition &left_, const VariablePosition &right_)
-{
-    bool objectsEqual = true;
-    if(left_.hasObjectName && right_.hasObjectName)
-    {
-        objectsEqual = left_.objectName == right_.objectName;
-    }
-    bool indexesEqual = true;
-    if(left_.hasObjectArtefactStepIndex && right_.hasObjectArtefactStepIndex)
-    {
-        indexesEqual = left_.objectArtefactStepIndex == right_.objectArtefactStepIndex;
-    }
-    return objectsEqual && indexesEqual;
 }
 
 }

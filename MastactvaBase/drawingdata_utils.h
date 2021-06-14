@@ -387,6 +387,23 @@ public:
 namespace details
 {
 
+struct VariablePosition
+{
+    VariablePosition() = default;
+
+    static VariablePosition fromJson(const QJsonObject &position_);
+    static VariablePosition fromCurrent(const IPosition *position_);
+
+private:
+    bool hasObjectName = false;
+    QString objectName;
+    bool hasObjectArtefactStepIndex = false;
+    int objectArtefactStepIndex = 0;
+
+    friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
+};
+
+
 struct Variable
 {
 public:
@@ -418,22 +435,6 @@ struct VariableName
 
 bool operator == (const VariableName &left_, const VariableName &right_);
 bool operator < (const VariableName &left_, const VariableName &right_);
-
-struct VariablePosition
-{
-    VariablePosition() = default;
-
-    static VariablePosition fromJson(const QJsonObject &position_);
-    static VariablePosition fromCurrent(const IPosition *position_);
-
-private:
-    bool hasObjectName = false;
-    QString objectName;
-    bool hasObjectArtefactStepIndex = false;
-    int objectArtefactStepIndex = 0;
-
-    friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
-};
 
 }
 
