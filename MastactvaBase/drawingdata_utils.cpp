@@ -271,7 +271,7 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
 void Position::startObject(const QString &name_)
 {
     objectName = name_;
-    stepIndex = std::numeric_limits<int>::max();
+    std::numeric_limits<decltype (stepIndex)>::max();
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
     qDebug() << objectName << stepIndex;
 #endif
@@ -307,7 +307,7 @@ int Position::getObjectStepIndex() const
 void Position::clear()
 {
     objectName.clear();
-    stepIndex = 0;
+    std::numeric_limits<decltype (stepIndex)>::max();
 }
 
 

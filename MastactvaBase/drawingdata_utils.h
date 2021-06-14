@@ -477,7 +477,7 @@ public:
 
 private:
     QString objectName;
-    int stepIndex = std::numeric_limits<int>::max();
+    int stepIndex = std::numeric_limits<decltype (stepIndex)>::max();
 };
 
 
