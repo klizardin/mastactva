@@ -231,6 +231,7 @@ void Variables::add(const QJsonDocument &data_)
         }
 
         details::VariableName variableName(key_, index);
+        Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
         ++index;
         m_variables.insert({variableName, std::move(newVar)});
         // TODO: add remove unreachable variables
