@@ -217,4 +217,16 @@ Details::Details()
     position = std::make_shared<Position>();
 }
 
+void Details::clear()
+{
+    if(variables.operator bool())
+    {
+        variables->clear();
+    }
+    if(position.operator bool())
+    {
+        position->clear();
+    }
+}
+
 }
