@@ -272,26 +272,9 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
 }
 
 
-void Position::startObject(const QString &name_)
+void Position::set(const QString &name_, int stepIndex_)
 {
     objectName = name_;
-    std::numeric_limits<decltype (stepIndex)>::max();
-#if defined(TRACE_EFFECT_OBJECT_POSITION)
-    qDebug() << objectName << stepIndex;
-#endif
-}
-
-void Position::resetStep(int stepIndex_)
-{
-    stepIndex = stepIndex_;
-#if defined(TRACE_EFFECT_OBJECT_POSITION)
-    qDebug() << objectName << stepIndex;
-#endif
-}
-
-void Position::nextStep(int stepIndex_)
-{
-    Q_ASSERT(stepIndex <= stepIndex_);
     stepIndex = stepIndex_;
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
     qDebug() << objectName << stepIndex;
