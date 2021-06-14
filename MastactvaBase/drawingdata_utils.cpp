@@ -131,7 +131,7 @@ void Variable::get(QVector<int> &data_) const
               std::back_inserter(data_));
 }
 
-bool Variable::match(const VariablePosition &pos_)
+bool Variable::match(const VariablePosition &pos_) const
 {
     return m_position == pos_;
 }
@@ -255,12 +255,15 @@ bool Variables::find(const QString &name_, const IPosition *position_, Variables
     {
         return false;
     }
-    --fit;
-    if(name_ != fit->first.name)
+    details::VariablePosition currentPos = details::VariablePosition::fromCurrent(position_);
+    for(--fit; name_ == fit->first.name; --fit)
     {
-        return false;
+        if(fit->second.match(currentPos))
+        {
+            return true;
+        }
     }
-    return true;
+    return false;
 }
 
 

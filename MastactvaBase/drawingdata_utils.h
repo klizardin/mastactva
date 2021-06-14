@@ -414,7 +414,7 @@ public:
     void prepare(QVector<int> &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
-    bool match(const VariablePosition &pos_);
+    bool match(const VariablePosition &pos_) const;
 
 private:
     QJsonArray m_jsonArray;
