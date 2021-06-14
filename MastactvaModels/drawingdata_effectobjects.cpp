@@ -89,7 +89,7 @@ bool ObjectArtefacts::build(
 {
     if(std::cend(m_artefacts) != m_objectBegin)
     {
-        updatePosition(details_, *m_objectBegin, m_objectBegin == std::cbegin(m_artefacts));
+        updatePosition(details_, *m_objectBegin, std::cbegin(m_artefacts) == m_objectBegin);
     }
 
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
