@@ -80,6 +80,11 @@ void Variable::set(const QJsonArray &jsonArray_)
     m_intData.clear();
 }
 
+void Variable::setPosition(const QJsonObject &position_)
+{
+    m_position = VariablePosition::fromJson(position_);
+}
+
 template<typename Type_> static inline
 void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data_)
 {
@@ -124,6 +129,11 @@ void Variable::get(QVector<int> &data_) const
     data_.reserve(m_intData.size());
     std::copy(std::begin(m_intData), std::end(m_intData),
               std::back_inserter(data_));
+}
+
+bool Variable::match(const VariablePosition &pos_)
+{
+    return m_position == pos_;
 }
 
 

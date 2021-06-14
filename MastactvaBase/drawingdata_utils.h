@@ -409,15 +409,18 @@ struct Variable
 public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
+    void setPosition(const QJsonObject &position_);
     void prepare(QVector<float> &);
     void prepare(QVector<int> &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
+    bool match(const VariablePosition &pos_);
 
 private:
     QJsonArray m_jsonArray;
     QVector<float> m_floatData;
     QVector<int> m_intData;
+    VariablePosition m_position;
 };
 
 
