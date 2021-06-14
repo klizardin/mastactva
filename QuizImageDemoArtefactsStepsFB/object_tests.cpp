@@ -922,7 +922,6 @@ std::unique_ptr<EffectData> createTestData6()
     static const char *artefactName1 = "data json object";
     static const int objectInfoId = 1;
     static const char *effectObjectDataName = "data for object";
-    static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
     static const char *effectObjectName = "qt logo";
 
     auto effectObject1 = createTestObject3(
