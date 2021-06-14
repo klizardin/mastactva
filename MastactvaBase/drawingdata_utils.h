@@ -377,8 +377,8 @@ class IVariables
 {
 public:
     virtual ~IVariables() = default;
-    virtual bool get(const QString &name_, QVector<int> &data_) const = 0;
-    virtual bool get(const QString &name_, QVector<float> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
     virtual void clear() = 0;
 };
@@ -449,13 +449,13 @@ class Variables : public IVariables
 public:
     Variables() = default;
 
-    bool get(const QString &name_, QVector<int> &data_) const override;
-    bool get(const QString &name_, QVector<float> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
     void add(const QJsonDocument &data_) override;
     void clear() override;
 
 private:
-    bool find(const QString &name_, VariablesMap::const_iterator &fit) const;
+    bool find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const;
 
 private:
     VariablesMap m_variables;
