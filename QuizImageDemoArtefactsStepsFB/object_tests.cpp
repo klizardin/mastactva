@@ -622,7 +622,11 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
         const char *effectName,
         const char *effectProgrammerName,
         const QDateTime &now,
-        int effectObjectStep
+        int effectObjectStep,
+        const int artefactId,
+        const ArtefactTypeEn artefactType,
+        const char * artefactName,
+        const char * artefactFilename
         )
 {
     static const int effectObjectId = 1;
@@ -643,15 +647,12 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
-    static const int artefactId1 = 1;
-    static const char *artefactName1 = "data json object";
-    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
     auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId1,
-                artefactName1,
-                g_dataJsonQTGeometryFilename,
+                artefactId,
+                artefactName,
+                artefactFilename,
                 emptyStr,
-                artefactType1,
+                artefactType,
                 emptyStr,
                 now
                 );
@@ -660,7 +661,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
                 effectId,
-                artefactId1,
+                artefactId,
                 objectArtefactStep0,
                 artefact1.release()
                 );
@@ -767,13 +768,20 @@ std::unique_ptr<EffectData> createTestData4()
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const char *artefactName1 = "data json object";
 
     auto effectObject1 = createTestObject3(
                 effectId,
                 effectName,
                 effectProgrammerName,
                 now,
-                effectObjectStep0
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                g_dataJsonQTGeometryFilename
                 );
     auto effectObject2 = createTestObject(
                 effectId,
