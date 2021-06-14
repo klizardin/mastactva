@@ -208,6 +208,7 @@ int Position::getObjectStepIndex() const
 Details::Details()
 {
     variables = std::make_shared<Variables>();
+    position = std::make_shared<Position>();
 }
 
 }
