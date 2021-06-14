@@ -222,6 +222,14 @@ void Variables::add(const QJsonDocument &data_)
         }
         details::Variable newVar;
         newVar.set(val.toArray());
+
+        const QJsonValue position = varObject[g_jsonDataVariablePositionName];
+        if(!position.isUndefined()
+                && position.isObject())
+        {
+            newVar.setPosition(position.toObject());
+        }
+
         details::VariableName variableName(key_, index);
         ++index;
         m_variables.insert({variableName, std::move(newVar)});
