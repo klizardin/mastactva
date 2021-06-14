@@ -178,6 +178,30 @@ void ObjectArtefacts::checkArtefactStepIndex(
 }
 
 
+void DrawingDataEffectObjects::addObjects(
+        drawing_data::QuizImageObjects &data_,
+        const drawingdata::Details &details_
+        ) const
+{
+    if(!m_objectArtefactData.operator bool())
+    {
+        return;
+    }
+
+    setupPosition(details_);
+
+    ObjectArtefacts list;
+    list.populate(*m_objectArtefactData);
+    for(list.first(); !list.isEnd(); list.next())
+    {
+        auto obj = std::make_shared<drawing_data::QuizImageObject>();
+        if(list.build(*obj, details_))
+        {
+            data_.objects.push_back(obj);
+        }
+    }
+}
+
 bool DrawingDataEffectObjects::isMain() const
 {
     return m_objectInfoData.operator bool()
@@ -201,30 +225,6 @@ QString DrawingDataEffectObjects::getProgrammerName() const
     else
     {
         return g_defaultObjectInfoProgrammerName;
-    }
-}
-
-void DrawingDataEffectObjects::addObjects(
-        drawing_data::QuizImageObjects &data_,
-        const drawingdata::Details &details_
-        ) const
-{
-    if(!m_objectArtefactData.operator bool())
-    {
-        return;
-    }
-
-    setupPosition(details_);
-
-    ObjectArtefacts list;
-    list.populate(*m_objectArtefactData);
-    for(list.first(); !list.isEnd(); list.next())
-    {
-        auto obj = std::make_shared<drawing_data::QuizImageObject>();
-        if(list.build(*obj, details_))
-        {
-            data_.objects.push_back(obj);
-        }
     }
 }
 
