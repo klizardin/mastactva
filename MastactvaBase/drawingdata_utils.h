@@ -364,7 +364,8 @@ class IPosition
 {
 public:
     virtual ~IPosition() = default;
-    virtual void startObject(const QString &name_, int stepIndex_) = 0;
+    virtual void startObject(const QString &name_) = 0;
+    virtual void resetStep(int stepIndex_) = 0;
     virtual void nextStep(int stepIndex_) = 0;
     virtual const QString &getObjectName() const = 0;
     virtual int getObjectStepIndex() const = 0;
@@ -447,7 +448,8 @@ class Position : public IPosition
 public:
     Position() = default;
 
-    void startObject(const QString &name_, int stepIndex_) override;
+    void startObject(const QString &name_) override;
+    void resetStep(int stepIndex_) override;
     void nextStep(int stepIndex_) override;
     const QString &getObjectName() const override;
     int getObjectStepIndex() const override;
@@ -455,7 +457,7 @@ public:
 
 private:
     QString objectName;
-    int stepIndex = 0;
+    int stepIndex = std::numeric_limits<int>::max();
 };
 
 

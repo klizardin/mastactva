@@ -182,9 +182,14 @@ bool Variables::find(const QString &name_, VariablesMap::const_iterator &fit) co
 }
 
 
-void Position::startObject(const QString &name_, int stepIndex_)
+void Position::startObject(const QString &name_)
 {
     objectName = name_;
+    stepIndex = std::numeric_limits<int>::max();
+}
+
+void Position::resetStep(int stepIndex_)
+{
     stepIndex = stepIndex_;
 }
 
