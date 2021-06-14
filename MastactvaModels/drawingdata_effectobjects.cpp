@@ -178,6 +178,14 @@ void ObjectArtefacts::checkArtefactStepIndex(
 }
 
 
+bool DrawingDataEffectObjects::isMain() const
+{
+    return m_objectInfoData.operator bool()
+            && 1 == m_objectInfoData->size()
+            && QString(g_defaultObjectInfoProgrammerName) == m_objectInfoData->front()->m_programmerName
+            ;
+}
+
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
         const drawingdata::Details &details_
