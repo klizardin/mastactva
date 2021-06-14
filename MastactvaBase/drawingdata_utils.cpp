@@ -62,6 +62,7 @@ void Variable::get(QVector<int> &data_) const
               std::back_inserter(data_));
 }
 
+
 VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0*/, bool hasIndex_ /*= true*/)
     : name(name_),
       index(index_),
@@ -92,6 +93,7 @@ bool operator < (const VariableName &left_, const VariableName &right_)
 }
 
 }
+
 
 bool Variables::get(const QString &name_, QVector<int> &data_) const
 {
