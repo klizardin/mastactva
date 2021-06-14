@@ -93,26 +93,6 @@ bool operator < (const VariableName &left_, const VariableName &right_)
 
 }
 
-bool Variables::find(const QString &name_, VariablesMap::const_iterator &fit) const
-{
-    if(m_variables.empty())
-    {
-        return false;
-    }
-    details::VariableName variableName(name_, 0, false);
-    fit = m_variables.upper_bound(variableName);
-    if(std::begin(m_variables) == fit)
-    {
-        return false;
-    }
-    --fit;
-    if(name_ != fit->first.name)
-    {
-        return false;
-    }
-    return true;
-}
-
 bool Variables::get(const QString &name_, QVector<int> &data_) const
 {
     VariablesMap::const_iterator fit = std::cend(m_variables);
@@ -177,6 +157,26 @@ void Variables::clear()
 {
     m_variables.clear();
     index = 0;
+}
+
+bool Variables::find(const QString &name_, VariablesMap::const_iterator &fit) const
+{
+    if(m_variables.empty())
+    {
+        return false;
+    }
+    details::VariableName variableName(name_, 0, false);
+    fit = m_variables.upper_bound(variableName);
+    if(std::begin(m_variables) == fit)
+    {
+        return false;
+    }
+    --fit;
+    if(name_ != fit->first.name)
+    {
+        return false;
+    }
+    return true;
 }
 
 
