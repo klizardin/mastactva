@@ -35,11 +35,11 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
         }
         if(effectObject->isMain())
         {
-            sortedMainEffectObjects.insert({effectObject_->m_stepIndex, effectObject});
+            sortedMainEffectObjects.insert({effectObject->getStepIndex(), effectObject});
         }
         else
         {
-            sortedEffectObjects.insert({effectObject_->m_stepIndex, effectObject});
+            sortedEffectObjects.insert({effectObject->getStepIndex(), effectObject});
         }
     }
     for(const SortedEffectObjects::value_type &v_ : sortedMainEffectObjects)

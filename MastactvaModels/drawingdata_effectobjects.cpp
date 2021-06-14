@@ -186,6 +186,11 @@ bool DrawingDataEffectObjects::isMain() const
             ;
 }
 
+int DrawingDataEffectObjects::getStepIndex() const
+{
+    return m_stepIndex;
+}
+
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
         const drawingdata::Details &details_
