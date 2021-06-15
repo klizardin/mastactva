@@ -567,9 +567,12 @@ bool WavefrontOBJ::buildObject(
 {
     QVector<WavefrontOBJFaceElement>::const_iterator fbit = std::begin(m_faceElements);
     QVector<WavefrontOBJFaceElement>::const_iterator feit = std::end(m_faceElements);
-    if(!(startLineNumber_ < 0 && endLineNumber_ < 0))
+    if(startLineNumber_ >= 0)
     {
         fbit = upper_bound(m_faceElements, startLineNumber_);
+    }
+    if(endLineNumber_ >= 0)
+    {
         feit = lower_bound(m_faceElements, endLineNumber_);
     }
     std::set<Vector3di> unique;
