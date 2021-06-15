@@ -584,10 +584,10 @@ bool WavefrontOBJ::buildObject(
     {
         feit = std::upper_bound(
                     std::begin(m_faceElements), std::end(m_faceElements),
-                    startLineNumber_,
+                    endLineNumber_,
                     [](int lineNumber_, const WavefrontOBJFaceElement &elem_)->bool
         {
-            return !(lineNumber_ < elem_.getLine());
+            return lineNumber_ < elem_.getLine();
         });
     }
     std::set<Vector3di> unique;
