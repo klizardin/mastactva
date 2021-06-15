@@ -9,6 +9,7 @@
 #include "drawingdata_effect.h"
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaBase/format.h"
+#include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/names.h"
 
@@ -38,9 +39,9 @@ QImage MapFileSource::getImage(const FileSource &filename_) const
 }
 
 
-static const char *g_baseVertexShader =
-    "attribute highp vec4 vertex;\n"
-    "attribute mediump vec3 normal;\n"
+static const char *g_baseVertexShaderFmt =
+    "attribute highp vec4 %1;\n"
+    "attribute mediump vec3 %2;\n"
     "uniform mediump mat4 matrix;\n"
     "varying mediump vec4 color;\n"
     "void main(void)\n"
@@ -70,11 +71,15 @@ static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
 static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
 static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
 static const char *g_dataJsonObjectsOfQtGeomFilename = "qt_geom_1.json";
+static const char *g_dataJson3DObjectFilename = "swift.obj";
+static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
-    filesource->add(g_baseVertexShaderFilename, g_baseVertexShader);
+    filesource->add(g_baseVertexShaderFilename,
+                    QString(g_baseVertexShaderFmt).arg("vertex", "normal")
+                    );
     filesource->add(g_baseFragmentShaderFilename, g_baseFragmatShader);
     filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
     filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
@@ -88,6 +93,11 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     const int pos2 = 3;
     filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
     filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(3, g_effectObjectQtLogoProgrammerName));
+    filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
+    filesource->add(g_3dObjectSwiftFragmentShaderFilename,
+                    QString(g_baseVertexShaderFmt)
+                        .arg("Cube__vertex", "Cube__normal")
+                    );
     return filesource;
 }
 
