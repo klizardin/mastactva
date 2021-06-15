@@ -86,7 +86,8 @@ static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
 static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
 static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
 static const char *g_dataJsonObjectsOfQtGeomFilename = "qt_geom_1.json";
-static const char *g_dataJson3DObjectFilename = "swift.obj";
+static const char *g_dataJson3DObjectSwiftFilename = "swift.obj";
+static const char *g_dataJson3DObjectCubeFilename = "cube.obj";
 static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
 static const char *g_3dObjectCubeFragmentShaderFilename = "cube.vsh";
 
@@ -107,7 +108,8 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     const int pos2 = 3;
     filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
     filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(3, g_effectObjectQtLogoProgrammerName));
-    filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
+    filesource->add(g_dataJson3DObjectSwiftFilename, loadTextFile(":/obj3d/swift.obj"));
+    filesource->add(g_dataJson3DObjectCubeFilename, loadTextFile(":/obj3d/cube.obj"));
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
                     QString(g_baseVertexShader3DObject).arg("swift_vertex", "swift_normal")
                     );
@@ -361,7 +363,9 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
         QRandomGenerator &gen,
         const int objectInfoId,
         const char *effectObjectName,
-        const char *effectObjectProgrammerName
+        const char *effectObjectProgrammerName,
+        const char *object3DName_,
+        const char *shaderFilename_
         )
 {
     static const int effectObjectId = 1;
@@ -396,19 +400,19 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
 
     // vertex shader artefact
     enum class ArgEn{id, type, storage, name, value};
-    const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString> vertexArgs[] = {
+    const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString> vertexArgs[] = {
         {
             1,
             ArtefactArgTypeEn::vec3Type,
             ArtefactArgStorageEn::attributeStorage,
-            "swift_vertex",
+            QString("%1_vertex").arg(object3DName_),
             emptyStr
         },
         {
             2,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
-            "swift_normal",
+            QString("%1_normal").arg(object3DName_),
             emptyStr
         },
         {
@@ -425,7 +429,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
     auto artefact1 = std::make_unique<ArtefactData>(
                 artefactId1,
                 artefactName1,
-                g_3dObjectSwiftFragmentShaderFilename,
+                shaderFilename_,
                 emptyStr,
                 artefactType1,
                 emptyStr,
@@ -1148,7 +1152,11 @@ std::unique_ptr<EffectData> createTestData6()
     return effect;
 }
 
-std::unique_ptr<EffectData> createTestData7()
+std::unique_ptr<EffectData> createTestData7(
+        const char *data3DObjectFilename_,
+        const char *object3DName_,
+        const char *shaderFilename_
+        )
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -1171,7 +1179,7 @@ std::unique_ptr<EffectData> createTestData7()
                 artefactId1,
                 artefactType1,
                 artefactName1,
-                g_dataJson3DObjectFilename,
+                data3DObjectFilename_,
                 objectInfoId,
                 effectObjectDataName,
                 effectObjectDataProgrammerName
@@ -1183,7 +1191,9 @@ std::unique_ptr<EffectData> createTestData7()
                 gen,
                 objectInfoId + 1,
                 effectObjectName,
-                g_effectObjectQtLogoProgrammerName
+                g_effectObjectQtLogoProgrammerName,
+                object3DName_,
+                shaderFilename_
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -1254,10 +1264,27 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_) cons
     drawingDataEffect.initialize(data_);
 }
 
-void DataTest3DObject::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createTestData7();
+    auto effectObjectsData = createTestData7(
+                g_dataJson3DObjectSwiftFilename,
+                "swift",
+                g_3dObjectSwiftFragmentShaderFilename
+                );
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData7(
+                g_dataJson3DObjectCubeFilename,
+                "cube",
+                g_3dObjectCubeFragmentShaderFilename
+                );
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);

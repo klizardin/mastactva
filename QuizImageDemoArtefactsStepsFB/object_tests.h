@@ -63,7 +63,13 @@ namespace drawing_objects
         void initialize(drawing_data::QuizImageObjects &data_) const override;
     };
 
-    class DataTest3DObject : public IDefaultData<drawing_data::QuizImageObjects>
+    class DataTest3DObjectSwift : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_) const override;
+    };
+
+    class DataTest3DObjectCube : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
         void initialize(drawing_data::QuizImageObjects &data_) const override;
@@ -71,7 +77,7 @@ namespace drawing_objects
 }
 
 
-using TestCaseInitializer = drawing_objects::DataTest3DObject;
+using TestCaseInitializer = drawing_objects::DataTest3DObjectCube;
 
 
 #endif // OBJECT_TESTS_H
