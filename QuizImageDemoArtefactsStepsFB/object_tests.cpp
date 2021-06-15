@@ -386,7 +386,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
     // prepare data
-    qreal fScale = 0.1;
+    qreal fScale = 0.08;
     qreal fAngle = gen.generateDouble() * 360.0;
     QMatrix4x4 modelview;
     modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
@@ -403,7 +403,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
     const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString> vertexArgs[] = {
         {
             1,
-            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
             QString("%1_vertex").arg(object3DName_),
             emptyStr
@@ -1171,6 +1171,8 @@ std::unique_ptr<EffectData> createTestData7(
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
     static const char *effectObjectName = "qt logo";
+
+    gen.seed(time(nullptr));
 
     auto effectObject1 = createTestObject3(
                 effectId,
