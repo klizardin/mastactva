@@ -150,7 +150,13 @@ protected:
     static bool startsWith(const QString &line_, const QString &str_, QString &dataLine_);
     bool hasTextureIndicies() const;
     bool hasNormalIndicies() const;
-    bool buildObject(int startLineNumber_, int endLineNumber_, const Vector3di &mask_, QJsonObject &obj_) const;
+    bool buildObject(
+            int startLineNumber_, int endLineNumber_,
+            const Vector3di &mask_,
+            QJsonArray &vertex_,
+            QJsonArray &normal_,
+            QJsonArray &textures_
+            ) const;
     static QVector<WavefrontOBJFaceElement>::const_iterator lower_bound(
             const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_);
     static QVector<WavefrontOBJFaceElement>::const_iterator upper_bound(

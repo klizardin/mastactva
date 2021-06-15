@@ -481,41 +481,83 @@ QJsonDocument WavefrontOBJ::toJsonData() const
     const bool hasNormIndixes = hasNormalIndicies();
     Vector3di mask(0, hasTexIndixes ? 0 : -1, hasNormIndixes ? 0 : -1);
 
-    QJsonObject objects;
-    QString prevObjectName = g_firstSpecialwordName;
+    QJsonObject variables;
+    QString prevObjectName = g_defaultObjectNameName;
+
+    const auto toObjectName = [](const QString &name_) ->QString
+    {
+        QString result = name_;
+        for(int i = 0; i < result.size() ; ++i)
+        {
+            if(!isLetterNumeric(result.at(i)) && result.at(i) != '_')
+            {
+                result[i] = '_';
+            }
+        }
+        return result;
+    };
+
+    const auto addObjects = [&variables, hasTexIndixes, hasNormIndixes, &toObjectName](
+            const QString &prevObjectName_,
+            const QJsonArray &vertext_,
+            const QJsonArray &normals_,
+            const QJsonArray &textures_)
+    {
+        QJsonObject vertexJO;
+        vertexJO.insert(g_jsonDataVariableValueName, QJsonValue(vertext_));
+        variables.insert(toObjectName(prevObjectName_ + g_vertexSpecialwordName), vertexJO);
+        if(hasNormIndixes)
+        {
+            QJsonObject normalJO;
+            normalJO.insert(g_jsonDataVariableValueName, QJsonValue(normals_));
+            variables.insert(toObjectName(prevObjectName_ + g_vertexNormalSpecialwordName), normalJO);
+        }
+        if(hasTexIndixes)
+        {
+            QJsonObject textureJO;
+            textureJO.insert(g_jsonDataVariableValueName, QJsonValue(textures_));
+            variables.insert(toObjectName(prevObjectName_ + g_vertexTextureSpecialwordName), textureJO);
+        }
+    };
+
     if(m_objectNames.isEmpty())
     {
-        QJsonObject obj;
-        buildObject(-1, -1, mask, obj);
-        objects.insert(prevObjectName, obj);
+        QJsonArray vertext;
+        QJsonArray normal;
+        QJsonArray textures;
+        if(buildObject(-1, -1, mask, vertext, normal, textures))
+        {
+            addObjects(prevObjectName, vertext, normal, textures);
+        }
     }
     else
     {
         int prevLineNumber = 0;
         for(const WavefrontOBJObjectName &objectName: m_objectNames)
         {
-            QJsonObject obj;
-            if(buildObject(prevLineNumber, objectName.getLine(), mask, obj))
+            QJsonArray vertext;
+            QJsonArray normal;
+            QJsonArray textures;
+            if(buildObject(prevLineNumber, objectName.getLine(), mask, vertext, normal, textures))
             {
-                objects.insert(prevObjectName, obj);
+                addObjects(prevObjectName, vertext, normal, textures);
             }
             prevLineNumber = objectName.getLine();
             prevObjectName = static_cast<const QString&>(objectName);
         }
         if(!m_faceElements.isEmpty())
         {
-            QJsonObject obj;
-            buildObject(prevLineNumber, m_faceElements.back().getLine(), mask, obj);
-            objects.insert(prevObjectName, obj);
+            QJsonArray vertext;
+            QJsonArray normal;
+            QJsonArray textures;
+            if(buildObject(prevLineNumber, m_faceElements.back().getLine(), mask, vertext, normal, textures))
+            {
+                addObjects(prevObjectName, vertext, normal, textures);
+            }
         }
     }
 
-    QJsonObject step;
-    step.insert(g_currentSpecialwordName, objects);
-    QJsonObject object;
-    object.insert(g_currentSpecialwordName, step);
-
-    return QJsonDocument(object);
+    return QJsonDocument(variables);
 }
 
 
@@ -562,7 +604,9 @@ QVector<WavefrontOBJFaceElement>::const_iterator WavefrontOBJ::upper_bound(
 bool WavefrontOBJ::buildObject(
         int startLineNumber_, int endLineNumber_,
         const Vector3di &mask_,
-        QJsonObject &obj_
+        QJsonArray &vertex_,
+        QJsonArray &normal_,
+        QJsonArray &textures_
         ) const
 {
     QVector<WavefrontOBJFaceElement>::const_iterator fbit = std::begin(m_faceElements);
@@ -597,8 +641,6 @@ bool WavefrontOBJ::buildObject(
     QVector<QVector4D> vertex;
     QVector<QVector3D> vertexTexture;
     QVector<QVector3D> vertexNormal;
-    /*QVector<int> indexes;
-    indexes.resize(indexesCount);*/
 
     vertex.resize(unique.size());
     vertexTexture.resize(unique.size());
@@ -645,57 +687,44 @@ bool WavefrontOBJ::buildObject(
         }
     }
 
-    QJsonObject vertexObj;
+    vertex_ = QJsonArray{};
     int vi = 0;
     for(const QVector4D &v_ : vertex)
     {
-        QJsonArray arr;
         for(std::size_t i = 0; i < 4; i++)
         {
-            arr.append(QJsonValue(v_[i]));
+            vertex_.append(QJsonValue(v_[i]));
         }
-        vertexObj.insert(QString::number(vi), arr);
         ++vi;
     }
-    obj_.insert(g_vertexSpecialwordName, vertexObj);
     if(mask_.y() >= 0)
     {
         Q_ASSERT(vertexTexture.size() == vertex.size());
+        normal_ = QJsonArray{};
         int vti = 0;
         for(const QVector3D &v_ : vertexTexture)
         {
-            QJsonArray arr;
             for(std::size_t i = 0; i < 3; i++)
             {
-                arr.append(QJsonValue(v_[i]));
+                normal_.append(QJsonValue(v_[i]));
             }
-            vertexObj.insert(QString::number(vti), arr);
             ++vti;
         }
-        obj_.insert(g_vertexTextureSpecialwordName, vertexObj);
     }
     if(mask_.z() >= 0)
     {
         Q_ASSERT(vertexTexture.size() == vertex.size());
+        textures_ = QJsonArray{};
         int vni = 0;
         for(const QVector3D &v_ : vertexNormal)
         {
-            QJsonArray arr;
             for(std::size_t i = 0; i < 3; i++)
             {
-                arr.append(QJsonValue(v_[i]));
+                textures_.append(QJsonValue(v_[i]));
             }
-            vertexObj.insert(QString::number(vni), arr);
             ++vni;
         }
-        obj_.insert(g_vertexNormalSpecialwordName, vertexObj);
     }
-    /*QJsonArray indexesArr;
-    for(const int &index_ : indexes)
-    {
-        indexesArr.append(index_);
-    }
-    obj_.insert(g_indexesSpecialwordName, indexesArr);*/
 
     return true;
 }
