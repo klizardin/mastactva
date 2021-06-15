@@ -58,6 +58,7 @@ static const char *g_vertexTextureSpecialwordName = "__texture";
 static const char *g_vertexNormalSpecialwordName = "__normal";
 static const char *g_indexesSpecialwordName = "__indexes";
 static const char *g_mainSpecialwordName = "__main";
+static const char *g_defaultObjectNameName = "default";
 static const char *g_firstSpecialwordName = "__first";
 static const char *g_lastSpecialwordName = "__last";
 static const char *g_renderFromImageName = "renderFromImage";
