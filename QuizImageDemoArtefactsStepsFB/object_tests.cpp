@@ -88,6 +88,7 @@ static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
 static const char *g_dataJsonObjectsOfQtGeomFilename = "qt_geom_1.json";
 static const char *g_dataJson3DObjectFilename = "swift.obj";
 static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
+static const char *g_3dObjectCubeFragmentShaderFilename = "cube.vsh";
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
@@ -109,6 +110,9 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
                     QString(g_baseVertexShader3DObject).arg("swift_vertex", "swift_normal")
+                    );
+    filesource->add(g_3dObjectCubeFragmentShaderFilename,
+                    QString(g_baseVertexShader3DObject).arg("cube_vertex", "cube_normal")
                     );
     return filesource;
 }
