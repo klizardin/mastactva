@@ -560,47 +560,6 @@ QJsonDocument WavefrontOBJ::toJsonData() const
     return QJsonDocument(variables);
 }
 
-
-QVector<WavefrontOBJFaceElement>::const_iterator WavefrontOBJ::lower_bound(
-        const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_)
-{
-    int i1 = 0, i2 = faceElements_.size();
-    for(;i2 - i1 > 1; )
-    {
-        const int i0 = (i2 - i1) / 2;
-        const int i0line = faceElements_[i0].getLine();
-        if(i0line <= lineNumber_)
-        {
-            i1 = i0;
-        }
-        if(i0line >= lineNumber_)
-        {
-            i2 = i0;
-        }
-    }
-    return std::begin(faceElements_) + i1;
-}
-
-QVector<WavefrontOBJFaceElement>::const_iterator WavefrontOBJ::upper_bound(
-        const QVector<WavefrontOBJFaceElement> &faceElements_, int lineNumber_)
-{
-    int i1 = 0, i2 = faceElements_.size();
-    for(;i2 - i1 > 1; )
-    {
-        const int i0 = (i2 - i1) / 2;
-        const int i0line = faceElements_[i0].getLine();
-        if(i0line <= lineNumber_)
-        {
-            i1 = i0;
-        }
-        if(i0line >= lineNumber_)
-        {
-            i2 = i0;
-        }
-    }
-    return std::begin(faceElements_) + i2;
-}
-
 bool WavefrontOBJ::buildObject(
         int startLineNumber_, int endLineNumber_,
         const Vector3di &mask_,
@@ -613,11 +572,23 @@ bool WavefrontOBJ::buildObject(
     QVector<WavefrontOBJFaceElement>::const_iterator feit = std::end(m_faceElements);
     if(startLineNumber_ >= 0)
     {
-        fbit = upper_bound(m_faceElements, startLineNumber_);
+        fbit = std::lower_bound(
+                    std::begin(m_faceElements), std::end(m_faceElements),
+                    startLineNumber_,
+                    [](const WavefrontOBJFaceElement &elem_, int lineNumber_)->bool
+        {
+            return elem_.getLine() < lineNumber_;
+        });
     }
     if(endLineNumber_ >= 0)
     {
-        feit = lower_bound(m_faceElements, endLineNumber_);
+        feit = std::upper_bound(
+                    std::begin(m_faceElements), std::end(m_faceElements),
+                    startLineNumber_,
+                    [](int lineNumber_, const WavefrontOBJFaceElement &elem_)->bool
+        {
+            return !(lineNumber_ < elem_.getLine());
+        });
     }
     std::set<Vector3di> unique;
     int indexesCount = 0;
