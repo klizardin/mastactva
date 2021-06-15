@@ -39,19 +39,34 @@ QImage MapFileSource::getImage(const FileSource &filename_) const
 }
 
 
-static const char *g_baseVertexShaderFmt =
-    "attribute highp %1 %2;\n"
-    "attribute mediump %3 %4;\n"
+static const char *g_baseVertexShader0 =
+    "attribute highp vec4 vertex;\n"
+    "attribute mediump vec3 normal;\n"
     "uniform mediump mat4 matrix;\n"
     "varying mediump vec4 color;\n"
     "void main(void)\n"
     "{\n"
-    "    vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
-    "    float angle = max(dot(normal, toLight), 0.0);\n"
-    "    vec3 col = vec3(0.40, 1.0, 0.0);\n"
+    "    mediump vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
+    "    mediump float angle = max(dot(normal, toLight), 0.0);\n"
+    "    mediump vec3 col = vec3(0.40, 1.0, 0.0);\n"
     "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
     "    color = clamp(color, 0.0, 1.0);\n"
     "    gl_Position = matrix * vertex;\n"
+    "}\n";
+
+static const char *g_baseVertexShaderSwift =
+    "attribute highp vec4 swift_vertex;\n"
+    "attribute mediump vec4 swift_normal;\n"
+    "uniform mediump mat4 matrix;\n"
+    "varying mediump vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    mediump vec4 toLight = normalize(vec4(0.0, 0.3, 1.0, 0.0));\n"
+    "    mediump float angle = max(dot(swift_normal, toLight), 0.0);\n"
+    "    mediump vec3 col = vec3(0.40, 1.0, 0.0);\n"
+    "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
+    "    color = clamp(color, 0.0, 1.0);\n"
+    "    gl_Position = matrix * swift_vertex;\n"
     "}\n";
 
 static const char *g_baseFragmatShader =
@@ -77,9 +92,7 @@ static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
-    filesource->add(g_baseVertexShaderFilename,
-                    QString(g_baseVertexShaderFmt).arg("vec4", "vertex", "vec3", "normal")
-                    );
+    filesource->add(g_baseVertexShaderFilename, g_baseVertexShader0);
     filesource->add(g_baseFragmentShaderFilename, g_baseFragmatShader);
     filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
     filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
@@ -94,10 +107,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
     filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(3, g_effectObjectQtLogoProgrammerName));
     filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
-    filesource->add(g_3dObjectSwiftFragmentShaderFilename,
-                    QString(g_baseVertexShaderFmt)
-                        .arg("vec4", "swift__vertex", "vec4", "swift__normal")
-                    );
+    filesource->add(g_3dObjectSwiftFragmentShaderFilename, g_baseVertexShaderSwift);
     return filesource;
 }
 
@@ -283,6 +293,133 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefactId1,
                 artefactName1,
                 g_baseVertexShaderFilename,
+                emptyStr,
+                artefactType1,
+                emptyStr,
+                now
+                );
+    for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
+                artefactId1,
+                std::get<to_underlying(ArgEn::type)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
+                emptyStr,
+                now
+                );
+        artefact1->m_artefactArgData->push_back(arg.release());
+    }
+    static const int objectArtefactId1 = 1;
+    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId1,
+                effectId,
+                artefactId1,
+                objectArtefactStep0,
+                artefact1.release()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+
+    // fragment shader artefact
+    static const int artefactId2 = 2;
+    static const char *artefactName2 = "fragment shader";
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
+    auto artefact2 = std::make_unique<ArtefactData>(
+                artefactId2,
+                artefactName2,
+                g_baseFragmentShaderFilename,
+                emptyStr,
+                artefactType2,
+                emptyStr,
+                now
+                );
+    static const int objectArtefactId2 = 2;
+    auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId2,
+                effectId,
+                artefactId2,
+                objectArtefactStep0,
+                artefact2.release()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+
+    return effectObject;
+}
+
+std::unique_ptr<EffectObjectsData> createTestObject3DObject(
+        int effectId,
+        const QDateTime &now,
+        int effectObjectStep,
+        QRandomGenerator &gen,
+        const int objectInfoId,
+        const char *effectObjectName,
+        const char *effectObjectProgrammerName
+        )
+{
+    static const int effectObjectId = 1;
+    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
+                effectObjectId,
+                effectId,
+                objectInfoId,
+                effectObjectStep
+                );
+
+    // object info
+    auto objectInfoData = std::make_unique<ObjectInfoData>(
+                objectInfoId,
+                effectObjectName,
+                effectObjectProgrammerName,
+                now
+                );
+    effectObject->m_objectInfoData->push_back(objectInfoData.release());
+
+    // prepare data
+    qreal fScale = 0.1;
+    qreal fAngle = gen.generateDouble() * 360.0;
+    QMatrix4x4 modelview;
+    modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
+    modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
+    modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
+    modelview.scale(fScale);
+    modelview.translate(0.0f, -0.2f, 0.0f);
+
+    // for both artefacts
+    static const int objectArtefactStep0 = 0;
+
+    // vertex shader artefact
+    enum class ArgEn{id, type, storage, name, value};
+    const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString> vertexArgs[] = {
+        {
+            1,
+            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "swift_vertex",
+            emptyStr
+        },
+        {
+            2,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "swift_normal",
+            emptyStr
+        },
+        {
+            3,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "matrix",
+            toString(modelview)
+        }
+    };
+    static const int artefactId1 = 1;
+    static const char *artefactName1 = "vertext shader";
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
+    auto artefact1 = std::make_unique<ArtefactData>(
+                artefactId1,
+                artefactName1,
+                g_3dObjectSwiftFragmentShaderFilename,
                 emptyStr,
                 artefactType1,
                 emptyStr,
@@ -1005,6 +1142,54 @@ std::unique_ptr<EffectData> createTestData6()
     return effect;
 }
 
+std::unique_ptr<EffectData> createTestData7()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataObj3D;
+    static const char *artefactName1 = "data json object";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName = "data for object";
+    static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
+    static const char *effectObjectName = "qt logo";
+
+    auto effectObject1 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                g_dataJson3DObjectFilename,
+                objectInfoId,
+                effectObjectDataName,
+                effectObjectDataProgrammerName
+                );
+    auto effectObject2 = createTestObject3DObject(
+                effectId,
+                now,
+                effectObjectStep1,
+                gen,
+                objectInfoId + 1,
+                effectObjectName,
+                g_effectObjectQtLogoProgrammerName
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
+    return effect;
+}
+
 namespace drawing_objects
 {
 
@@ -1058,6 +1243,15 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_) cons
 {
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData6();
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void DataTest3DObject::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData7();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
