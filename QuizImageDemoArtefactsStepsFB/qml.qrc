@@ -22,4 +22,7 @@
         <file>Images/no-image-001.png</file>
         <file>Images/no-image-002.png</file>
     </qresource>
+    <qresource prefix="/obj3d">
+        <file>swift.obj</file>
+    </qresource>
 </RCC>
