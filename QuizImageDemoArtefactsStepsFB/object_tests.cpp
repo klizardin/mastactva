@@ -96,7 +96,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
                     QString(g_baseVertexShaderFmt)
-                        .arg("vec4", "Cube__vertex", "vec4", "Cube__normal")
+                        .arg("vec4", "swift__vertex", "vec4", "swift__normal")
                     );
     return filesource;
 }
