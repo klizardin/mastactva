@@ -40,8 +40,8 @@ QImage MapFileSource::getImage(const FileSource &filename_) const
 
 
 static const char *g_baseVertexShaderFmt =
-    "attribute highp vec4 %1;\n"
-    "attribute mediump vec3 %2;\n"
+    "attribute highp %1 %2;\n"
+    "attribute mediump %3 %4;\n"
     "uniform mediump mat4 matrix;\n"
     "varying mediump vec4 color;\n"
     "void main(void)\n"
@@ -78,7 +78,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
 {
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
     filesource->add(g_baseVertexShaderFilename,
-                    QString(g_baseVertexShaderFmt).arg("vertex", "normal")
+                    QString(g_baseVertexShaderFmt).arg("vec4", "vertex", "vec3", "normal")
                     );
     filesource->add(g_baseFragmentShaderFilename, g_baseFragmatShader);
     filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
@@ -96,7 +96,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
                     QString(g_baseVertexShaderFmt)
-                        .arg("Cube__vertex", "Cube__normal")
+                        .arg("vec4", "Cube__vertex", "vec4", "Cube__normal")
                     );
     return filesource;
 }
