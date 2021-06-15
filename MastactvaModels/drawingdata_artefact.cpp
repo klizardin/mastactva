@@ -1,6 +1,7 @@
 #include "drawingdata_artefact.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_artefactarg.h"
+#include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -77,9 +78,16 @@ void DrawingDataArtefact::addData(
 {
     if(!details_.filesource
             || !details_.variables
-            || to_enum<ArtefactTypeEn>(m_typeId) != ArtefactTypeEn::dataJson)
+            )
     {
         return;
     }
-    details_.variables->add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
+    if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataJson)
+    {
+        details_.variables->add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
+    }
+    else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataObj3D)
+    {
+        details_.variables->add(graphicsOBJtoJson(details_.filesource->getText(m_filename)));
+    }
 }

@@ -92,6 +92,7 @@ unix: SOURCES +=    \
     drawingdata_objectinfo.cpp  \
     drawingdata_effect.cpp  \
     data_utils.cpp  \
+    wavefrontobj.cpp    \
     utils.cpp   \
 
 
@@ -120,6 +121,7 @@ unix: HEADERS +=    \
     drawingdata_objectinfo.h    \
     drawingdata_effect.h    \
     data_utils.h    \
+    wavefrontobj.h  \
     utils.h \
 
 
