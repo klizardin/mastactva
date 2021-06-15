@@ -24,5 +24,6 @@
     </qresource>
     <qresource prefix="/obj3d">
         <file>swift.obj</file>
+        <file>cube.obj</file>
     </qresource>
 </RCC>

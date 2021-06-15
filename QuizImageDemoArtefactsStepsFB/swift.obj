@@ -1,7 +1,7 @@
 # Blender v2.82 (sub 1) OBJ File: 'swift.blend'
 # www.blender.org
 mtllib swift.mtl
-o Cube
+o swift
 v 0.415164 0.785648 -0.983274
 v 0.412240 -0.747644 -0.983274
 v 0.149540 0.650569 0.507229
