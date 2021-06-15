@@ -403,7 +403,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
     const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString> vertexArgs[] = {
         {
             1,
-            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
             QString("%1_vertex").arg(object3DName_),
             emptyStr
