@@ -76,14 +76,14 @@ namespace drawing_objects
     };
 }
 
-//using TestCaseInitializer = drawing_objects::BaseTest;
-//using TestCaseInitializer = drawing_objects::MultipleObjectsTest;
-//using TestCaseInitializer = drawing_objects::DefaultTest;
-//using TestCaseInitializer = drawing_objects::DataTestBase;
-//using TestCaseInitializer = drawing_objects::DataTestPosition;
-//using TestCaseInitializer = drawing_objects::DataTestObjectsList;
+// using TestCaseInitializer = drawing_objects::BaseTest;
+// using TestCaseInitializer = drawing_objects::MultipleObjectsTest;
+// using TestCaseInitializer = drawing_objects::DefaultTest;
+// using TestCaseInitializer = drawing_objects::DataTestBase;
+// using TestCaseInitializer = drawing_objects::DataTestPosition;
+// using TestCaseInitializer = drawing_objects::DataTestObjectsList;
 using TestCaseInitializer = drawing_objects::DataTest3DObjectSwift;
-//using TestCaseInitializer = drawing_objects::DataTest3DObjectCube;
+// using TestCaseInitializer = drawing_objects::DataTest3DObjectCube;
 
 
 #endif // OBJECT_TESTS_H
