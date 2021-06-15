@@ -54,19 +54,19 @@ static const char *g_baseVertexShader0 =
     "    gl_Position = matrix * vertex;\n"
     "}\n";
 
-static const char *g_baseVertexShaderSwift =
-    "attribute highp vec4 swift_vertex;\n"
-    "attribute mediump vec4 swift_normal;\n"
+static const char *g_baseVertexShader3DObject =
+    "attribute highp vec4 %1;\n"
+    "attribute mediump vec4 %2;\n"
     "uniform mediump mat4 matrix;\n"
     "varying mediump vec4 color;\n"
     "void main(void)\n"
     "{\n"
     "    mediump vec4 toLight = normalize(vec4(0.0, 0.3, 1.0, 0.0));\n"
-    "    mediump float angle = max(dot(swift_normal, toLight), 0.0);\n"
+    "    mediump float angle = max(dot(%2, toLight), 0.0);\n"
     "    mediump vec3 col = vec3(0.40, 1.0, 0.0);\n"
     "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
     "    color = clamp(color, 0.0, 1.0);\n"
-    "    gl_Position = matrix * swift_vertex;\n"
+    "    gl_Position = matrix * %1;\n"
     "}\n";
 
 static const char *g_baseFragmatShader =
@@ -107,7 +107,9 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
     filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(3, g_effectObjectQtLogoProgrammerName));
     filesource->add(g_dataJson3DObjectFilename, loadTextFile(":/obj3d/swift.obj"));
-    filesource->add(g_3dObjectSwiftFragmentShaderFilename, g_baseVertexShaderSwift);
+    filesource->add(g_3dObjectSwiftFragmentShaderFilename,
+                    QString(g_baseVertexShader3DObject).arg("swift_vertex", "swift_normal")
+                    );
     return filesource;
 }
 
@@ -383,7 +385,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
     modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
     modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
     modelview.scale(fScale);
-    modelview.translate(0.0f, -0.2f, 0.0f);
+    modelview.translate(0.0f, -0.02f, 0.0f);
 
     // for both artefacts
     static const int objectArtefactStep0 = 0;
