@@ -594,8 +594,8 @@ bool WavefrontOBJ::buildObject(
     QVector<QVector4D> vertex;
     QVector<QVector3D> vertexTexture;
     QVector<QVector3D> vertexNormal;
-    QVector<int> indexes;
-    indexes.resize(indexesCount);
+    /*QVector<int> indexes;
+    indexes.resize(indexesCount);*/
 
     vertex.resize(unique.size());
     vertexTexture.resize(unique.size());
@@ -687,12 +687,12 @@ bool WavefrontOBJ::buildObject(
         }
         obj_.insert(g_vertexNormalSpecialwordName, vertexObj);
     }
-    QJsonArray indexesArr;
+    /*QJsonArray indexesArr;
     for(const int &index_ : indexes)
     {
         indexesArr.append(index_);
     }
-    obj_.insert(g_indexesSpecialwordName, indexesArr);
+    obj_.insert(g_indexesSpecialwordName, indexesArr);*/
 
     return true;
 }
