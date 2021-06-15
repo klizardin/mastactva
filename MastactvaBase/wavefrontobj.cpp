@@ -134,6 +134,7 @@ bool Vector3di::operator < (const Vector3di &val_) const
 
 void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
 {
+    data_.setW(1.0);
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     data_.setZ(1.0f);
     std::size_t j = 0;
@@ -170,7 +171,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     for(const QString &val_: values)
     {
-        QStringList faceItems = val_.split(QChar('/'), Qt::SkipEmptyParts);
+        QStringList faceItems = val_.split(QChar('/'), Qt::KeepEmptyParts);
         std::size_t j = 0;
         Vector3di val;
         for(const QString &fval_: faceItems)
@@ -180,7 +181,11 @@ void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
             if(ok)
             {
                 val[j] = vali;
-                j++;
+            }
+            j++;
+            if(3 <= j)
+            {
+                break;
             }
         }
         data_.push_back(val);
@@ -401,10 +406,10 @@ bool WavefrontOBJ::validate() const
                 std::end(static_cast<const QVector<Vector3di>&>(fItems_)),
                 [this](const Vector3di &f_)->bool
         {
-            return (f_.x() >= 0 && f_.x() < m_vertex.size()) &&
-                ((f_.y() >= -1 && f_.y() < m_vertexTexture.size())) &&
-                ((f_.z() >= -1 && f_.z() < m_normal.size()))
-            ;
+            return (f_.x() >= 0 && f_.x() < m_vertex.size())
+                    && ((f_.y() >= -1 && f_.y() < m_vertexTexture.size()))
+                    && ((f_.z() >= -1 && f_.z() < m_normal.size()))
+                ;
         });
     });
     if(!fInRange) { return false; }
@@ -470,7 +475,7 @@ bool WavefrontOBJ::hasNormalIndicies() const
                 std::end(fItems_),
                 [this](const Vector3di &f_)->bool
         {
-            return f_.z() >= 0 && f_.z() < m_vertexTexture.size();
+            return f_.z() >= 0 && f_.z() < m_normal.size();
         });
     });
 }
@@ -610,8 +615,8 @@ bool WavefrontOBJ::buildObject(
     if(unique.empty()) { return false; }
 
     QVector<QVector4D> vertex;
-    QVector<QVector3D> vertexTexture;
-    QVector<QVector3D> vertexNormal;
+    QVector<QVector4D> vertexTexture;
+    QVector<QVector4D> vertexNormal;
 
     vertex.resize(unique.size());
     vertexTexture.resize(unique.size());
@@ -635,6 +640,7 @@ bool WavefrontOBJ::buildObject(
         ++j;
     }
 
+    std::vector<std::vector<std::size_t>> triangles;
     for(QVector<WavefrontOBJFaceElement>::const_iterator it = fbit; it != feit; ++it)
     {
         int fc = 0;
@@ -656,42 +662,55 @@ bool WavefrontOBJ::buildObject(
             ii.push_back(ci);
             ++fc;
         }
+        triangles.push_back(ii);
     }
 
     vertex_ = QJsonArray{};
     int vi = 0;
-    for(const QVector4D &v_ : vertex)
+    for(const std::vector<std::size_t> &tri : triangles)
     {
-        for(std::size_t i = 0; i < 4; i++)
+        for(const std::size_t &index_ : tri)
         {
-            vertex_.append(QJsonValue(v_[i]));
+            Q_ASSERT((int)index_ < vertex.size());
+            auto uit = std::begin(unique);
+            std::advance(uit,index_);
+            for(std::size_t i = 0; i < 4; i++)
+            {
+                vertex_.append(QJsonValue(vertex[index_][i]));
+            }
         }
         ++vi;
     }
     if(mask_.y() >= 0)
     {
-        Q_ASSERT(vertexTexture.size() == vertex.size());
-        normal_ = QJsonArray{};
+        textures_ = QJsonArray{};
         int vti = 0;
-        for(const QVector3D &v_ : vertexTexture)
+        for(const std::vector<std::size_t> &tri : triangles)
         {
-            for(std::size_t i = 0; i < 3; i++)
+            for(const std::size_t &index_ : tri)
             {
-                normal_.append(QJsonValue(v_[i]));
+                Q_ASSERT((int)index_ < vertexTexture.size());
+                for(std::size_t i = 0; i < 4; i++)
+                {
+                    textures_.append(QJsonValue(vertexTexture[index_][i]));
+                }
             }
             ++vti;
         }
     }
     if(mask_.z() >= 0)
     {
-        Q_ASSERT(vertexTexture.size() == vertex.size());
-        textures_ = QJsonArray{};
+        normal_ = QJsonArray{};
         int vni = 0;
-        for(const QVector3D &v_ : vertexNormal)
+        for(const std::vector<std::size_t> &tri : triangles)
         {
-            for(std::size_t i = 0; i < 3; i++)
+            for(const std::size_t &index_ : tri)
             {
-                textures_.append(QJsonValue(v_[i]));
+                Q_ASSERT((int)index_ < vertexNormal.size());
+                for(std::size_t i = 0; i < 4; i++)
+                {
+                    normal_.append(QJsonValue(vertexNormal[index_][i]));
+                }
             }
             ++vni;
         }
