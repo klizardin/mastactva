@@ -152,6 +152,18 @@ constexpr bool has_value(const std::tuple<Type_, bool> &data_) noexcept
 }
 
 template <typename Type_>
+constexpr bool & has_value(std::pair<Type_, bool> &data_) noexcept
+{
+    return data_.second;
+}
+
+template <typename Type_>
+constexpr bool & has_value(std::tuple<Type_, bool> &data_) noexcept
+{
+    return std::get<1>(data_);
+}
+
+template <typename Type_>
 constexpr const Type_ & value(const std::pair<Type_, bool> &data_) noexcept
 {
     return data_.first;
