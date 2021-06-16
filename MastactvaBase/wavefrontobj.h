@@ -26,11 +26,13 @@ private:
     QString m_comment;
 };
 
+
 class WavefrontOBJVertex : public WavefrontOBJItem, public QVector4D
 {
 public:
     WavefrontOBJVertex() = default;
 };
+
 
 class WavefrontOBJVertexTexture : public WavefrontOBJItem, public QVector3D
 {
@@ -38,17 +40,20 @@ public:
     WavefrontOBJVertexTexture() = default;
 };
 
+
 class WavefrontOBJVertexNormal : public WavefrontOBJItem, public QVector3D
 {
 public:
     WavefrontOBJVertexNormal() = default;
 };
 
+
 class WavefrontOBJVertexParameter : public WavefrontOBJItem, public QVector3D
 {
 public:
     WavefrontOBJVertexParameter() = default;
 };
+
 
 class Vector3di
 {
@@ -76,11 +81,13 @@ private:
     int m_z = 0;
 };
 
+
 class WavefrontOBJFaceElement : public WavefrontOBJItem, public QVector<Vector3di>
 {
 public:
     WavefrontOBJFaceElement() = default;
 };
+
 
 class WavefrontOBJLineElement : public WavefrontOBJItem, public QVector<int>
 {
@@ -88,11 +95,13 @@ public:
     WavefrontOBJLineElement() = default;
 };
 
+
 class WavefrontOBJObjectName : public WavefrontOBJItem, public QString
 {
 public:
     WavefrontOBJObjectName() = default;
 };
+
 
 class WavefrontOBJGroupName : public WavefrontOBJItem, public QString
 {
@@ -100,17 +109,20 @@ public:
     WavefrontOBJGroupName() = default;
 };
 
+
 class WavefrontOBJMaterialLib : public WavefrontOBJItem, public QString
 {
 public:
     WavefrontOBJMaterialLib() = default;
 };
 
+
 class WavefrontOBJMaterialName : public WavefrontOBJItem, public QString
 {
 public:
     WavefrontOBJMaterialName() = default;
 };
+
 
 class WavefrontOBJSmoothing :  public WavefrontOBJItem, public Bool
 {

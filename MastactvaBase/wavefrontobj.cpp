@@ -132,6 +132,7 @@ bool Vector3di::operator < (const Vector3di &val_) const
     return (*this)[2] < val_[2];
 }
 
+
 void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
 {
     data_.setW(1.0);
@@ -718,7 +719,6 @@ bool WavefrontOBJ::buildObject(
 
     return true;
 }
-
 
 QJsonDocument WavefrontOBJ::graphicsOBJtoJson(const QString &objData_)
 {
