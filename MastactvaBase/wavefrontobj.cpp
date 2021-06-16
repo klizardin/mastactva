@@ -720,22 +720,21 @@ bool WavefrontOBJ::buildObject(
 }
 
 
-QJsonDocument graphicsOBJtoJson(const QString &objData_)
+QJsonDocument WavefrontOBJ::graphicsOBJtoJson(const QString &objData_)
 {
-    WavefrontOBJ *obj = parseGraphicsOBJ(objData_);
+    std::unique_ptr<WavefrontOBJ> obj = parseGraphicsOBJ(objData_);
     QJsonDocument resultDocument;
-    if(obj)
+    if(!obj)
     {
-        resultDocument = obj->toJsonData();
+        return resultDocument;
     }
-    delete obj;
-    obj = nullptr;
+    resultDocument = obj->toJsonData();
     return resultDocument;
 }
 
-WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
+std::unique_ptr<WavefrontOBJ> WavefrontOBJ::parseGraphicsOBJ(const QString &objData_)
 {
-    WavefrontOBJ *res = new WavefrontOBJ();
+    std::unique_ptr<WavefrontOBJ> res = std::make_unique<WavefrontOBJ>();
     QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
     int lineNumber = 0;
     for(const QString &line0 : lines)
@@ -747,8 +746,7 @@ WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
     res->correct();
     if(!res->validate())
     {
-        delete res;
-        res = nullptr;
+        res.reset();
     }
     return res;
 }

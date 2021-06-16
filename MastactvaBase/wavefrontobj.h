@@ -146,6 +146,9 @@ public:
     bool validate() const;
     QJsonDocument toJsonData() const;
 
+    static QJsonDocument graphicsOBJtoJson(const QString &objData_);
+    static std::unique_ptr<WavefrontOBJ> parseGraphicsOBJ(const QString &objData_);
+
 private:
     static bool startsWith(const QString &line_, const QString &str_, QString &dataLine_);
     bool hasTextureIndicies() const;
@@ -176,10 +179,6 @@ private:
     QVector<WavefrontOBJMaterialName> m_materialNames;
     QVector<WavefrontOBJSmoothing> m_smoothing;
 };
-
-
-QJsonDocument graphicsOBJtoJson(const QString &objData_);
-WavefrontOBJ *parseGraphicsOBJ(const QString &objData_);
 
 
 #endif // WAVEFRONTOBJ_H
