@@ -91,16 +91,11 @@ bool operator == (const VariablePosition &left_, const VariablePosition &right_)
 }
 
 
-void Variable::set(const QJsonArray &jsonArray_)
+void ValiableData::set(const QJsonArray &jsonArray_)
 {
     m_jsonArray = jsonArray_;
     m_floatData.clear();
     m_intData.clear();
-}
-
-void Variable::setPosition(const QJsonObject &position_)
-{
-    m_position = VariablePosition::fromJson(position_);
 }
 
 template<typename Type_> static inline
@@ -123,17 +118,17 @@ void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data
     }
 }
 
-void Variable::prepare(QVector<float> &)
+void ValiableData::prepare(QVector<float> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_floatData);
 }
 
-void Variable::prepare(QVector<int> &)
+void ValiableData::prepare(QVector<int> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_intData);
 }
 
-void Variable::get(QVector<float> &data_) const
+void ValiableData::get(QVector<float> &data_) const
 {
     data_.clear();
     data_.reserve(m_floatData.size());
@@ -141,12 +136,58 @@ void Variable::get(QVector<float> &data_) const
               std::back_inserter(data_));
 }
 
-void Variable::get(QVector<int> &data_) const
+void ValiableData::get(QVector<int> &data_) const
 {
     data_.clear();
     data_.reserve(m_intData.size());
     std::copy(std::begin(m_intData), std::end(m_intData),
               std::back_inserter(data_));
+}
+
+
+void Variable::set(const QJsonArray &jsonArray_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->set(jsonArray_);
+    }
+}
+
+void Variable::setPosition(const QJsonObject &position_)
+{
+    m_position = VariablePosition::fromJson(position_);
+}
+
+void Variable::prepare(QVector<float> &data_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->prepare(data_);
+    }
+}
+
+void Variable::prepare(QVector<int> &data_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->prepare(data_);
+    }
+}
+
+void Variable::get(QVector<float> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->get(data_);
+    }
+}
+
+void Variable::get(QVector<int> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->get(data_);
+    }
 }
 
 bool Variable::match(const VariablePosition &pos_) const

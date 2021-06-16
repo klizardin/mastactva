@@ -405,6 +405,22 @@ private:
 };
 
 
+class ValiableData
+{
+public:
+    ValiableData() = default;
+    void set(const QJsonArray &jsonArray_);
+    void prepare(QVector<float> &);
+    void prepare(QVector<int> &);
+    void get(QVector<float> &data_) const;
+    void get(QVector<int> &data_) const;
+
+private:
+    QJsonArray m_jsonArray;
+    QVector<float> m_floatData;
+    QVector<int> m_intData;
+};
+
 struct Variable
 {
 public:
@@ -418,9 +434,7 @@ public:
     bool match(const VariablePosition &pos_) const;
 
 private:
-    QJsonArray m_jsonArray;
-    QVector<float> m_floatData;
-    QVector<int> m_intData;
+    std::shared_ptr<ValiableData> m_data = std::make_shared<ValiableData>();
     VariablePosition m_position;
 };
 
