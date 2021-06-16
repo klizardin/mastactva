@@ -428,8 +428,8 @@ public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
     void setPosition(const QJsonObject &position_);
-    void prepare(QVector<float> &);
-    void prepare(QVector<int> &);
+    void prepare(QVector<float> &) const;
+    void prepare(QVector<int> &) const;
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     bool match(const VariablePosition &pos_) const;

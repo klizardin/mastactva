@@ -158,7 +158,7 @@ void Variable::setPosition(const QJsonObject &position_)
     m_position = VariablePosition::fromJson(position_);
 }
 
-void Variable::prepare(QVector<float> &data_)
+void Variable::prepare(QVector<float> &data_) const
 {
     if(m_data.operator bool())
     {
@@ -166,7 +166,7 @@ void Variable::prepare(QVector<float> &data_)
     }
 }
 
-void Variable::prepare(QVector<int> &data_)
+void Variable::prepare(QVector<int> &data_) const
 {
     if(m_data.operator bool())
     {
@@ -235,7 +235,7 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<in
     {
         return false;
     }
-    const_cast<details::Variable &>(fit->second).prepare(data_);
+    fit->second.prepare(data_);
     fit->second.get(data_);
     return true;
 }
@@ -247,7 +247,7 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<fl
     {
         return false;
     }
-    const_cast<details::Variable &>(fit->second).prepare(data_);
+    fit->second.prepare(data_);
     fit->second.get(data_);
     return true;
 }
