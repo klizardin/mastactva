@@ -193,7 +193,6 @@ private:
 
     template <typename WavefrontOBJType_>
     friend void initWavefrontOBJItem(
-            WavefrontOBJType_ &d_,
             const QString &dataLine_,
             const QString &comment_,
             int lineNumber_,

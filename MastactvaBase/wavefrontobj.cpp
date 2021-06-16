@@ -250,17 +250,17 @@ void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, Bool &data_)
 
 template<typename WavefrontOBJType_> inline
 void initWavefrontOBJItem(
-        WavefrontOBJType_ &d_,
         const QString &dataLine_,
         const QString &comment_,
         int lineNumber_,
         QVector<WavefrontOBJType_> &vec_
         )
 {
-    d_.setComment(comment_);
-    d_.setLine(lineNumber_);
-    WavefrontOBJ::parseWavefrontOBJLine(dataLine_, d_);
-    vec_.push_back(d_);
+    WavefrontOBJType_ d;
+    d.setComment(comment_);
+    d.setLine(lineNumber_);
+    WavefrontOBJ::parseWavefrontOBJLine(dataLine_, d);
+    vec_.push_back(std::move(d));
 }
 
 bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, int lineNumber_)
@@ -268,68 +268,57 @@ bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, in
     QString dataLine;
     if(startsWith(line_, "v ", dataLine))
     {
-        WavefrontOBJVertex v;
-        initWavefrontOBJItem(v, dataLine, comment_, lineNumber_, m_vertex);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_vertex);
         return true;
     }
     else if(startsWith(line_, "vt ", dataLine))
     {
-        WavefrontOBJVertexTexture vt;
-        initWavefrontOBJItem(vt, dataLine, comment_, lineNumber_, m_vertexTexture);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_vertexTexture);
         return true;
     }
     else if(startsWith(line_, "vn ", dataLine))
     {
-        WavefrontOBJVertexNormal vn;
-        initWavefrontOBJItem(vn, dataLine, comment_, lineNumber_, m_normal);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_normal);
         return true;
     }
     else if(startsWith(line_, "vp ", dataLine))
     {
-        WavefrontOBJVertexParameter vp;
-        initWavefrontOBJItem(vp, dataLine, comment_, lineNumber_, m_vertexParameter);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_vertexParameter);
         return true;
     }
     else if(startsWith(line_, "f ", dataLine))
     {
-        WavefrontOBJFaceElement f;
-        initWavefrontOBJItem(f, dataLine, comment_, lineNumber_, m_faceElements);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_faceElements);
         return true;
     }
     else if(startsWith(line_, "l ", dataLine))
     {
-        WavefrontOBJLineElement l;
-        initWavefrontOBJItem(l, dataLine, comment_, lineNumber_, m_lineElements);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_lineElements);
         return true;
     }
     else if(startsWith(line_, "o ", dataLine))
     {
-        WavefrontOBJObjectName o;
-        initWavefrontOBJItem(o, dataLine, comment_, lineNumber_, m_objectNames);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_objectNames);
         return true;
     }
     else if(startsWith(line_, "g ", dataLine))
     {
-        WavefrontOBJGroupName g;
-        initWavefrontOBJItem(g, dataLine, comment_, lineNumber_, m_groupNames);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_groupNames);
         return true;
     }
     else if(startsWith(line_, "mtllib ", dataLine))
     {
-        WavefrontOBJMaterialLib mtllib;
-        initWavefrontOBJItem(mtllib, dataLine, comment_, lineNumber_, m_materialLibs);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_materialLibs);
         return true;
     }
     else if(startsWith(line_, "usemtl ", dataLine))
     {
-        WavefrontOBJMaterialName usemtl;
-        initWavefrontOBJItem(usemtl, dataLine, comment_, lineNumber_, m_materialNames);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_materialNames);
         return true;
     }
     else if(startsWith(line_, "s ", dataLine))
     {
-        WavefrontOBJSmoothing s;
-        initWavefrontOBJItem(s, dataLine, comment_, lineNumber_, m_smoothing);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_smoothing);
         return true;
     }
     else if(line_.trimmed().isEmpty() && !comment_.isEmpty())
