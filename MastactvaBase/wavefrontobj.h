@@ -26,11 +26,13 @@ private:
     QString m_comment;
 };
 
+
 class WavefrontOBJVertex : public WavefrontOBJItem, public QVector4D
 {
 public:
     WavefrontOBJVertex() = default;
 };
+
 
 class WavefrontOBJVertexTexture : public WavefrontOBJItem, public QVector3D
 {
@@ -38,17 +40,20 @@ public:
     WavefrontOBJVertexTexture() = default;
 };
 
+
 class WavefrontOBJVertexNormal : public WavefrontOBJItem, public QVector3D
 {
 public:
     WavefrontOBJVertexNormal() = default;
 };
 
+
 class WavefrontOBJVertexParameter : public WavefrontOBJItem, public QVector3D
 {
 public:
     WavefrontOBJVertexParameter() = default;
 };
+
 
 class Vector3di
 {
@@ -76,11 +81,13 @@ private:
     int m_z = 0;
 };
 
+
 class WavefrontOBJFaceElement : public WavefrontOBJItem, public QVector<Vector3di>
 {
 public:
     WavefrontOBJFaceElement() = default;
 };
+
 
 class WavefrontOBJLineElement : public WavefrontOBJItem, public QVector<int>
 {
@@ -88,11 +95,13 @@ public:
     WavefrontOBJLineElement() = default;
 };
 
+
 class WavefrontOBJObjectName : public WavefrontOBJItem, public QString
 {
 public:
     WavefrontOBJObjectName() = default;
 };
+
 
 class WavefrontOBJGroupName : public WavefrontOBJItem, public QString
 {
@@ -100,17 +109,20 @@ public:
     WavefrontOBJGroupName() = default;
 };
 
+
 class WavefrontOBJMaterialLib : public WavefrontOBJItem, public QString
 {
 public:
     WavefrontOBJMaterialLib() = default;
 };
 
+
 class WavefrontOBJMaterialName : public WavefrontOBJItem, public QString
 {
 public:
     WavefrontOBJMaterialName() = default;
 };
+
 
 class WavefrontOBJSmoothing :  public WavefrontOBJItem, public Bool
 {
@@ -119,16 +131,16 @@ public:
 };
 
 
-void parseWavefrontOBJLine(const QString &line_, QVector4D &data_);
-void parseWavefrontOBJLine(const QString &line_, QVector3D &data_);
-void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_);
-void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_);
-void parseWavefrontOBJLine(const QString &line_, QString &data_);
-void parseWavefrontOBJLine(const QString &line_, Bool &data_);
-
-
 class WavefrontOBJ
 {
+private:
+    static void parseWavefrontOBJLine(const QString &line_, QVector4D &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QVector3D &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QString &data_);
+    static void parseWavefrontOBJLine(const QString &line_, Bool &data_);
+
 public:
     const QVector<WavefrontOBJItem> &getComments() const;
     const QVector<WavefrontOBJVertex> &getVertex() const;
@@ -143,10 +155,13 @@ public:
 
     bool processLine(const QString &line_, const QString &comment_, int lineNumber_);
     void correct();
-    bool validate() const;
+    bool isValid() const;
     QJsonDocument toJsonData() const;
 
-protected:
+    static QJsonDocument graphicsOBJtoJson(const QString &objData_);
+    static std::unique_ptr<WavefrontOBJ> parseGraphicsOBJ(const QString &objData_);
+
+private:
     static bool startsWith(const QString &line_, const QString &str_, QString &dataLine_);
     bool hasTextureIndicies() const;
     bool hasNormalIndicies() const;
@@ -175,11 +190,25 @@ private:
     QVector<WavefrontOBJMaterialLib> m_materialLibs;
     QVector<WavefrontOBJMaterialName> m_materialNames;
     QVector<WavefrontOBJSmoothing> m_smoothing;
+
+    template <typename WavefrontOBJType_>
+    friend void initWavefrontOBJItem(
+            const QString &dataLine_,
+            const QString &comment_,
+            int lineNumber_,
+            QVector<WavefrontOBJType_> &vec_
+            );
+    template<typename WavefrontOBJTupleType_>
+    friend bool initWavefrontOBJItemList(
+            const QString &line_, const QString &comment_, int lineNumber_,
+            WavefrontOBJTupleType_ &&val_
+            );
+    template<typename WavefrontOBJTupleType_, typename ... WavefrontOBJTuplesTypes_>
+    friend bool initWavefrontOBJItemList(
+            const QString &line_, const QString &comment_, int lineNumber_,
+            WavefrontOBJTupleType_ &&val_, WavefrontOBJTuplesTypes_  &&...vals_
+            );
 };
-
-
-QJsonDocument graphicsOBJtoJson(const QString &objData_);
-WavefrontOBJ *parseGraphicsOBJ(const QString &objData_);
 
 
 #endif // WAVEFRONTOBJ_H

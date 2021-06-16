@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
+#include "../MastactvaBase/utils.h"
 
 
 namespace drawingdata
@@ -24,8 +25,8 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
         if(!objectNameJV.isUndefined()
                 && objectNameJV.isString())
         {
-            result.objectName = objectNameJV.toString();
-            result.hasObjectName = true;
+            value(result.objectName) = objectNameJV.toString();
+            has_value(result.objectName) = true;
         }
     }
     if(position_.contains(g_jsonDataVariableObjectStepIndexName))
@@ -34,8 +35,8 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
         if(!objectStepIndexJV.isUndefined()
                 && objectStepIndexJV.isDouble())
         {
-            result.objectStepIndex = static_cast<int>(objectStepIndexJV.toDouble());
-            result.hasObjectStepIndex = true;
+            value(result.objectStepIndex) = static_cast<int>(objectStepIndexJV.toDouble());
+            has_value(result.objectStepIndex) = true;
         }
     }
     if(position_.contains(g_jsonDataVariableArtefactStepIndexName))
@@ -44,8 +45,8 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
         if(!artefactStepIndexJV.isUndefined()
                 && artefactStepIndexJV.isDouble())
         {
-            result.artefactStepIndex = static_cast<int>(artefactStepIndexJV.toDouble());
-            result.hasArtefactStepIndex = true;
+            value(result.artefactStepIndex) = static_cast<int>(artefactStepIndexJV.toDouble());
+            has_value(result.artefactStepIndex) = true;
         }
     }
     return result;
@@ -59,12 +60,12 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
         return result;
     }
 
-    result.hasObjectName = true;
-    result.objectName = position_->getObjectName();
-    result.hasObjectStepIndex = true;
-    result.objectStepIndex = position_->getObjectStepIndex();
-    result.hasArtefactStepIndex = true;
-    result.artefactStepIndex = position_->getArtefactStepIndex();
+    value(result.objectName) = position_->getObjectName();
+    has_value(result.objectName) = true;
+    value(result.objectStepIndex) = position_->getObjectStepIndex();
+    has_value(result.objectStepIndex) = true;
+    value(result.artefactStepIndex) = position_->getArtefactStepIndex();
+    has_value(result.artefactStepIndex) = true;
 
     return result;
 }
@@ -72,34 +73,29 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
 bool operator == (const VariablePosition &left_, const VariablePosition &right_)
 {
     bool objectsEqual = true;
-    if(left_.hasObjectName && right_.hasObjectName)
+    if(has_value(left_.objectName) && has_value(right_.objectName))
     {
-        objectsEqual = left_.objectName == right_.objectName;
+        objectsEqual = value(left_.objectName) == value(right_.objectName);
     }
     bool objectIndexesEqual = true;
-    if(left_.hasObjectStepIndex && right_.hasObjectStepIndex)
+    if(has_value(left_.objectStepIndex) && has_value(right_.objectStepIndex))
     {
-        objectIndexesEqual = left_.objectStepIndex == right_.objectStepIndex;
+        objectIndexesEqual = value(left_.objectStepIndex) == value(right_.objectStepIndex);
     }
     bool artefactIndexesEqual = true;
-    if(left_.hasArtefactStepIndex && right_.hasArtefactStepIndex)
+    if(has_value(left_.artefactStepIndex) && has_value(right_.artefactStepIndex))
     {
-        artefactIndexesEqual = left_.artefactStepIndex == right_.artefactStepIndex;
+        artefactIndexesEqual = value(left_.artefactStepIndex) == value(right_.artefactStepIndex);
     }
     return objectsEqual && objectIndexesEqual && artefactIndexesEqual;
 }
 
 
-void Variable::set(const QJsonArray &jsonArray_)
+void ValiableData::set(const QJsonArray &jsonArray_)
 {
     m_jsonArray = jsonArray_;
     m_floatData.clear();
     m_intData.clear();
-}
-
-void Variable::setPosition(const QJsonObject &position_)
-{
-    m_position = VariablePosition::fromJson(position_);
 }
 
 template<typename Type_> static inline
@@ -122,17 +118,17 @@ void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data
     }
 }
 
-void Variable::prepare(QVector<float> &)
+void ValiableData::prepare(QVector<float> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_floatData);
 }
 
-void Variable::prepare(QVector<int> &)
+void ValiableData::prepare(QVector<int> &)
 {
     prepareDataFromJsonArray(m_jsonArray, m_intData);
 }
 
-void Variable::get(QVector<float> &data_) const
+void ValiableData::get(QVector<float> &data_) const
 {
     data_.clear();
     data_.reserve(m_floatData.size());
@@ -140,12 +136,58 @@ void Variable::get(QVector<float> &data_) const
               std::back_inserter(data_));
 }
 
-void Variable::get(QVector<int> &data_) const
+void ValiableData::get(QVector<int> &data_) const
 {
     data_.clear();
     data_.reserve(m_intData.size());
     std::copy(std::begin(m_intData), std::end(m_intData),
               std::back_inserter(data_));
+}
+
+
+void Variable::set(const QJsonArray &jsonArray_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->set(jsonArray_);
+    }
+}
+
+void Variable::setPosition(const QJsonObject &position_)
+{
+    m_position = VariablePosition::fromJson(position_);
+}
+
+void Variable::prepare(QVector<float> &data_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->prepare(data_);
+    }
+}
+
+void Variable::prepare(QVector<int> &data_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->prepare(data_);
+    }
+}
+
+void Variable::get(QVector<float> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->get(data_);
+    }
+}
+
+void Variable::get(QVector<int> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->get(data_);
+    }
 }
 
 bool Variable::match(const VariablePosition &pos_) const

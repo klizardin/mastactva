@@ -1,5 +1,7 @@
 #include "wavefrontobj.h"
 #include <set>
+#include <functional>
+#include <tuple>
 #include <QJsonArray>
 #include <QJsonObject>
 #include "../MastactvaBase/names.h"
@@ -132,7 +134,8 @@ bool Vector3di::operator < (const Vector3di &val_) const
     return (*this)[2] < val_[2];
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
+
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
 {
     data_.setW(1.0);
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
@@ -150,7 +153,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     std::size_t j = 0;
@@ -166,7 +169,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     for(const QString &val_: values)
@@ -192,7 +195,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     for(const QString &val_: values)
@@ -206,12 +209,12 @@ void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QString &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QString &data_)
 {
     data_ = line_;
 }
 
-void parseWavefrontOBJLine(const QString &line_, Bool &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, Bool &data_)
 {
     bool ok = false;
     const int iv = line_.toInt(&ok);
@@ -247,89 +250,74 @@ void parseWavefrontOBJLine(const QString &line_, Bool &data_)
     data_.set(false);
 }
 
-
-template<typename WavefrontOBJType_>
+template<typename WavefrontOBJType_> inline
 void initWavefrontOBJItem(
-        WavefrontOBJType_ &d_,
         const QString &dataLine_,
         const QString &comment_,
         int lineNumber_,
         QVector<WavefrontOBJType_> &vec_
         )
 {
-    d_.setComment(comment_);
-    d_.setLine(lineNumber_);
-    parseWavefrontOBJLine(dataLine_, d_);
-    vec_.push_back(d_);
+    WavefrontOBJType_ d;
+    d.setComment(comment_);
+    d.setLine(lineNumber_);
+    WavefrontOBJ::parseWavefrontOBJLine(dataLine_, d);
+    vec_.push_back(std::move(d));
+}
+
+template<typename WavefrontOBJTupleType_> inline
+bool initWavefrontOBJItemList(
+        const QString &line_, const QString &comment_, int lineNumber_,
+        WavefrontOBJTupleType_ &&val_
+        )
+{
+    QString dataLine;
+    if(WavefrontOBJ::startsWith(line_, val_.second, dataLine))
+    {
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, val_.first);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+template<typename WavefrontOBJTupleType_, typename ... WavefrontOBJTuplesTypes_> inline
+bool initWavefrontOBJItemList(
+        const QString &line_, const QString &comment_, int lineNumber_,
+        WavefrontOBJTupleType_ &&val_, WavefrontOBJTuplesTypes_  &&... vals_
+        )
+{
+    QString dataLine;
+    if(WavefrontOBJ::startsWith(line_, val_.second, dataLine))
+    {
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, val_.first);
+        return true;
+    }
+    else
+    {
+        return initWavefrontOBJItemList(line_, comment_, lineNumber_, std::move(vals_) ...);
+    }
 }
 
 bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, int lineNumber_)
 {
-    QString dataLine;
-    if(startsWith(line_, "v ", dataLine))
+    if(initWavefrontOBJItemList(
+        line_, comment_, lineNumber_,
+        std::make_pair(std::ref(m_vertex), "v"),
+        std::make_pair(std::ref(m_vertexTexture), "vt"),
+        std::make_pair(std::ref(m_normal), "vn"),
+        std::make_pair(std::ref(m_vertexParameter), "vp"),
+        std::make_pair(std::ref(m_faceElements), "f"),
+        std::make_pair(std::ref(m_lineElements), "l"),
+        std::make_pair(std::ref(m_objectNames), "o"),
+        std::make_pair(std::ref(m_groupNames), "g"),
+        std::make_pair(std::ref(m_materialLibs), "mtllib"),
+        std::make_pair(std::ref(m_materialNames), "usemtl"),
+        std::make_pair(std::ref(m_smoothing), "s")
+        ))
     {
-        WavefrontOBJVertex v;
-        initWavefrontOBJItem(v, dataLine, comment_, lineNumber_, m_vertex);
-        return true;
-    }
-    else if(startsWith(line_, "vt ", dataLine))
-    {
-        WavefrontOBJVertexTexture vt;
-        initWavefrontOBJItem(vt, dataLine, comment_, lineNumber_, m_vertexTexture);
-        return true;
-    }
-    else if(startsWith(line_, "vn ", dataLine))
-    {
-        WavefrontOBJVertexNormal vn;
-        initWavefrontOBJItem(vn, dataLine, comment_, lineNumber_, m_normal);
-        return true;
-    }
-    else if(startsWith(line_, "vp ", dataLine))
-    {
-        WavefrontOBJVertexParameter vp;
-        initWavefrontOBJItem(vp, dataLine, comment_, lineNumber_, m_vertexParameter);
-        return true;
-    }
-    else if(startsWith(line_, "f ", dataLine))
-    {
-        WavefrontOBJFaceElement f;
-        initWavefrontOBJItem(f, dataLine, comment_, lineNumber_, m_faceElements);
-        return true;
-    }
-    else if(startsWith(line_, "l ", dataLine))
-    {
-        WavefrontOBJLineElement l;
-        initWavefrontOBJItem(l, dataLine, comment_, lineNumber_, m_lineElements);
-        return true;
-    }
-    else if(startsWith(line_, "o ", dataLine))
-    {
-        WavefrontOBJObjectName o;
-        initWavefrontOBJItem(o, dataLine, comment_, lineNumber_, m_objectNames);
-        return true;
-    }
-    else if(startsWith(line_, "g ", dataLine))
-    {
-        WavefrontOBJGroupName g;
-        initWavefrontOBJItem(g, dataLine, comment_, lineNumber_, m_groupNames);
-        return true;
-    }
-    else if(startsWith(line_, "mtllib ", dataLine))
-    {
-        WavefrontOBJMaterialLib mtllib;
-        initWavefrontOBJItem(mtllib, dataLine, comment_, lineNumber_, m_materialLibs);
-        return true;
-    }
-    else if(startsWith(line_, "usemtl ", dataLine))
-    {
-        WavefrontOBJMaterialName usemtl;
-        initWavefrontOBJItem(usemtl, dataLine, comment_, lineNumber_, m_materialNames);
-        return true;
-    }
-    else if(startsWith(line_, "s ", dataLine))
-    {
-        WavefrontOBJSmoothing s;
-        initWavefrontOBJItem(s, dataLine, comment_, lineNumber_, m_smoothing);
         return true;
     }
     else if(line_.trimmed().isEmpty() && !comment_.isEmpty())
@@ -361,7 +349,7 @@ void WavefrontOBJ::correct()
 
             if(f_.y() < 0)
             {
-                f_.setY(m_vertex.size() - f_.y());
+                f_.setY(m_vertexTexture.size() - f_.y());
             }
             else
             {
@@ -370,7 +358,7 @@ void WavefrontOBJ::correct()
 
             if(f_.z() < 0)
             {
-                f_.setZ(m_vertex.size() - f_.z());
+                f_.setZ(m_normal.size() - f_.z());
             }
             else
             {
@@ -394,7 +382,7 @@ void WavefrontOBJ::correct()
     }
 }
 
-bool WavefrontOBJ::validate() const
+bool WavefrontOBJ::isValid() const
 {
     const bool fInRange = std::all_of(
                 std::begin(m_faceElements),
@@ -434,9 +422,9 @@ bool WavefrontOBJ::validate() const
 
 bool WavefrontOBJ::startsWith(const QString &line_, const QString &str_, QString &dataLine_)
 {
-    if(line_.startsWith(str_))
+    if(line_.startsWith(str_ + QString(" ")))
     {
-        dataLine_ = line_.mid(str_.length());
+        dataLine_ = line_.mid(str_.length() + 1);
         return true;
     }
     else
@@ -565,6 +553,28 @@ QJsonDocument WavefrontOBJ::toJsonData() const
     return QJsonDocument(variables);
 }
 
+inline
+void buildResultArray(
+        const std::vector<std::vector<std::size_t>> &triangles_,
+        const QVector<QVector4D> &vec_,
+        QJsonArray &result_
+        )
+{
+    int vi = 0;
+    for(const std::vector<std::size_t> &tri : triangles_)
+    {
+        for(const std::size_t &index_ : tri)
+        {
+            Q_ASSERT((int)index_ < vec_.size());
+            for(std::size_t i = 0; i < 4; i++)
+            {
+                result_.append(QJsonValue(vec_[index_][i]));
+            }
+        }
+        ++vi;
+    }
+}
+
 bool WavefrontOBJ::buildObject(
         int startLineNumber_, int endLineNumber_,
         const Vector3di &mask_,
@@ -666,76 +676,37 @@ bool WavefrontOBJ::buildObject(
     }
 
     vertex_ = QJsonArray{};
-    int vi = 0;
-    for(const std::vector<std::size_t> &tri : triangles)
-    {
-        for(const std::size_t &index_ : tri)
-        {
-            Q_ASSERT((int)index_ < vertex.size());
-            auto uit = std::begin(unique);
-            std::advance(uit,index_);
-            for(std::size_t i = 0; i < 4; i++)
-            {
-                vertex_.append(QJsonValue(vertex[index_][i]));
-            }
-        }
-        ++vi;
-    }
+    textures_ = QJsonArray{};
+    normal_ = QJsonArray{};
+
+    buildResultArray(triangles, vertex, vertex_);
     if(mask_.y() >= 0)
     {
-        textures_ = QJsonArray{};
-        int vti = 0;
-        for(const std::vector<std::size_t> &tri : triangles)
-        {
-            for(const std::size_t &index_ : tri)
-            {
-                Q_ASSERT((int)index_ < vertexTexture.size());
-                for(std::size_t i = 0; i < 4; i++)
-                {
-                    textures_.append(QJsonValue(vertexTexture[index_][i]));
-                }
-            }
-            ++vti;
-        }
+        buildResultArray(triangles, vertexTexture, textures_);
     }
     if(mask_.z() >= 0)
     {
-        normal_ = QJsonArray{};
-        int vni = 0;
-        for(const std::vector<std::size_t> &tri : triangles)
-        {
-            for(const std::size_t &index_ : tri)
-            {
-                Q_ASSERT((int)index_ < vertexNormal.size());
-                for(std::size_t i = 0; i < 4; i++)
-                {
-                    normal_.append(QJsonValue(vertexNormal[index_][i]));
-                }
-            }
-            ++vni;
-        }
+        buildResultArray(triangles, vertexNormal, normal_);
     }
 
     return true;
 }
 
-
-QJsonDocument graphicsOBJtoJson(const QString &objData_)
+QJsonDocument WavefrontOBJ::graphicsOBJtoJson(const QString &objData_)
 {
-    WavefrontOBJ *obj = parseGraphicsOBJ(objData_);
+    std::unique_ptr<WavefrontOBJ> obj = parseGraphicsOBJ(objData_);
     QJsonDocument resultDocument;
-    if(obj)
+    if(!obj)
     {
-        resultDocument = obj->toJsonData();
+        return resultDocument;
     }
-    delete obj;
-    obj = nullptr;
+    resultDocument = obj->toJsonData();
     return resultDocument;
 }
 
-WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
+std::unique_ptr<WavefrontOBJ> WavefrontOBJ::parseGraphicsOBJ(const QString &objData_)
 {
-    WavefrontOBJ *res = new WavefrontOBJ();
+    std::unique_ptr<WavefrontOBJ> res = std::make_unique<WavefrontOBJ>();
     QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
     int lineNumber = 0;
     for(const QString &line0 : lines)
@@ -745,10 +716,9 @@ WavefrontOBJ *parseGraphicsOBJ(const QString &objData_)
         if(res->processLine(line, comment, lineNumber)) { ++lineNumber; }
     }
     res->correct();
-    if(!res->validate())
+    if(!res->isValid())
     {
-        delete res;
-        res = nullptr;
+        res.reset();
     }
     return res;
 }

@@ -88,6 +88,6 @@ void DrawingDataArtefact::addData(
     }
     else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataObj3D)
     {
-        details_.variables->add(graphicsOBJtoJson(details_.filesource->getText(m_filename)));
+        details_.variables->add(WavefrontOBJ::graphicsOBJtoJson(details_.filesource->getText(m_filename)));
     }
 }

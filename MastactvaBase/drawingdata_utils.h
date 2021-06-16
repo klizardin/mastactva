@@ -397,14 +397,28 @@ struct VariablePosition
     static VariablePosition fromCurrent(const IPosition *position_);
 
 private:
-    bool hasObjectName = false;
-    QString objectName;
-    bool hasObjectStepIndex = false;
-    int objectStepIndex = 0;
-    bool hasArtefactStepIndex = false;
-    int artefactStepIndex = 0;
+    std::tuple<QString, bool> objectName = std::make_tuple(QString{}, false);
+    std::tuple<int, bool> objectStepIndex = std::make_tuple(0, false);
+    std::tuple<int, bool> artefactStepIndex = std::make_tuple(0, false);
 
     friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
+};
+
+
+class ValiableData
+{
+public:
+    ValiableData() = default;
+    void set(const QJsonArray &jsonArray_);
+    void prepare(QVector<float> &);
+    void prepare(QVector<int> &);
+    void get(QVector<float> &data_) const;
+    void get(QVector<int> &data_) const;
+
+private:
+    QJsonArray m_jsonArray;
+    QVector<float> m_floatData;
+    QVector<int> m_intData;
 };
 
 
@@ -421,9 +435,7 @@ public:
     bool match(const VariablePosition &pos_) const;
 
 private:
-    QJsonArray m_jsonArray;
-    QVector<float> m_floatData;
-    QVector<int> m_intData;
+    std::shared_ptr<ValiableData> m_data = std::make_shared<ValiableData>();
     VariablePosition m_position;
 };
 
