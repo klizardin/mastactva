@@ -305,6 +305,11 @@ void Variables::add(const QJsonDocument &data_)
     }
 }
 
+void Variables::addAliases(const QJsonDocument &data_)
+{
+    Q_UNUSED(data_);
+}
+
 bool Variables::getObjectsList(QStringList &objects_) const
 {
     if(!m_hasObjectsList)
