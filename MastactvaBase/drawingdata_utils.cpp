@@ -283,7 +283,7 @@ void Variables::addVariable(
     details::VariableName variableName(name_, index);
     Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
     ++index;
-    m_variables.insert({std::move(variableName), newVar});
+    m_variables.insert({std::move(variableName), std::move(newVar)});
 }
 
 void Variables::addVariables(
