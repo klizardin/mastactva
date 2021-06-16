@@ -382,7 +382,7 @@ void WavefrontOBJ::correct()
     }
 }
 
-bool WavefrontOBJ::validate() const
+bool WavefrontOBJ::isValid() const
 {
     const bool fInRange = std::all_of(
                 std::begin(m_faceElements),
@@ -731,7 +731,7 @@ std::unique_ptr<WavefrontOBJ> WavefrontOBJ::parseGraphicsOBJ(const QString &objD
         if(res->processLine(line, comment, lineNumber)) { ++lineNumber; }
     }
     res->correct();
-    if(!res->validate())
+    if(!res->isValid())
     {
         res.reset();
     }

@@ -155,7 +155,7 @@ public:
 
     bool processLine(const QString &line_, const QString &comment_, int lineNumber_);
     void correct();
-    bool validate() const;
+    bool isValid() const;
     QJsonDocument toJsonData() const;
 
     static QJsonDocument graphicsOBJtoJson(const QString &objData_);
