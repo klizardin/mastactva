@@ -187,6 +187,54 @@ constexpr Type_ & value(std::tuple<Type_, bool> &data_) noexcept
     return std::get<0>(data_);
 }
 
+template <typename Type_>
+constexpr bool has_value(const std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.first;
+}
+
+template <typename Type_>
+constexpr bool has_value(const std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<0>(data_);
+}
+
+template <typename Type_>
+constexpr bool & has_value(std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.first;
+}
+
+template <typename Type_>
+constexpr bool & has_value(std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<0>(data_);
+}
+
+template <typename Type_>
+constexpr const Type_ & value(const std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.second;
+}
+
+template <typename Type_>
+constexpr const Type_ & value(const std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<1>(data_);
+}
+
+template <typename Type_>
+constexpr Type_ & value(std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.second;
+}
+
+template <typename Type_>
+constexpr Type_ & value(std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<1>(data_);
+}
+
 bool isDefaultImage(const QString &imageURLStr_);
 bool isDefaultImage(const QUrl &imageUrl_);
 QString setDefaultImageIfEmpty(const QString &imageURLStr_);
