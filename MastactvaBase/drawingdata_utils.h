@@ -482,6 +482,16 @@ private:
             const std::tuple<details::Variable, bool> &dataSource_
             );
     static std::tuple<QJsonValue, bool> getJsonValue(const QJsonObject &varObject);
+    void addVariable(
+            const details::Variable &newVarTempl_,
+            const QString &name_,
+            const QJsonObject &position_
+            );
+    void addVariables(
+            const details::Variable &newVarTempl_,
+            const QString &name_,
+            const QJsonArray &positions_
+            );
 
 private:
     VariablesMap m_variables;
