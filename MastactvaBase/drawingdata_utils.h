@@ -428,6 +428,7 @@ struct Variable
 public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
+    void set(std::shared_ptr<ValiableData> data_);
     void setPosition(const QJsonObject &position_);
     void prepare(QVector<float> &) const;
     void prepare(QVector<int> &) const;

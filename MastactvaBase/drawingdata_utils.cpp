@@ -153,6 +153,11 @@ void Variable::set(const QJsonArray &jsonArray_)
     }
 }
 
+void Variable::set(std::shared_ptr<ValiableData> data_)
+{
+    m_data = std::move(data_);
+}
+
 void Variable::setPosition(const QJsonObject &position_)
 {
     m_position = VariablePosition::fromJson(position_);
