@@ -146,7 +146,7 @@ public:
     bool validate() const;
     QJsonDocument toJsonData() const;
 
-protected:
+private:
     static bool startsWith(const QString &line_, const QString &str_, QString &dataLine_);
     bool hasTextureIndicies() const;
     bool hasNormalIndicies() const;
