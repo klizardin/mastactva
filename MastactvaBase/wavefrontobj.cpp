@@ -1,5 +1,7 @@
 #include "wavefrontobj.h"
 #include <set>
+#include <functional>
+#include <tuple>
 #include <QJsonArray>
 #include <QJsonObject>
 #include "../MastactvaBase/names.h"
@@ -263,62 +265,65 @@ void initWavefrontOBJItem(
     vec_.push_back(std::move(d));
 }
 
-bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, int lineNumber_)
+template<typename ... WavefrontOBJTuplesTypes_> inline
+bool initWavefrontOBJItemList(
+        const QString &line_, const QString &comment_, int lineNumber_,
+        WavefrontOBJTuplesTypes_  && ... vals_
+        );
+
+template<typename WavefrontOBJTupleType_> inline
+bool initWavefrontOBJItemList(
+        const QString &line_, const QString &comment_, int lineNumber_,
+        WavefrontOBJTupleType_ &&val_
+        )
 {
     QString dataLine;
-    if(startsWith(line_, "v ", dataLine))
+    if(WavefrontOBJ::startsWith(line_, val_.second, dataLine))
     {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_vertex);
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, val_.first);
         return true;
     }
-    else if(startsWith(line_, "vt ", dataLine))
+    else
     {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_vertexTexture);
+        return false;
+    }
+}
+
+template<typename WavefrontOBJTupleType_, typename ... WavefrontOBJTuplesTypes_> inline
+bool initWavefrontOBJItemList(
+        const QString &line_, const QString &comment_, int lineNumber_,
+        WavefrontOBJTupleType_ &&val_, WavefrontOBJTuplesTypes_  &&... vals_
+        )
+{
+    QString dataLine;
+    if(WavefrontOBJ::startsWith(line_, val_.second, dataLine))
+    {
+        initWavefrontOBJItem(dataLine, comment_, lineNumber_, val_.first);
         return true;
     }
-    else if(startsWith(line_, "vn ", dataLine))
+    else
     {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_normal);
-        return true;
+        return initWavefrontOBJItemList(line_, comment_, lineNumber_, std::move(vals_) ...);
     }
-    else if(startsWith(line_, "vp ", dataLine))
+}
+
+bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, int lineNumber_)
+{
+    if(initWavefrontOBJItemList(
+        line_, comment_, lineNumber_,
+        std::make_pair(std::ref(m_vertex), "v "),
+        std::make_pair(std::ref(m_vertexTexture), "vt "),
+        std::make_pair(std::ref(m_normal), "vn "),
+        std::make_pair(std::ref(m_vertexParameter), "vp "),
+        std::make_pair(std::ref(m_faceElements), "f "),
+        std::make_pair(std::ref(m_lineElements), "l "),
+        std::make_pair(std::ref(m_objectNames), "o "),
+        std::make_pair(std::ref(m_groupNames), "g "),
+        std::make_pair(std::ref(m_materialLibs), "mtllib "),
+        std::make_pair(std::ref(m_materialNames), "usemtl "),
+        std::make_pair(std::ref(m_smoothing), "s ")
+        ))
     {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_vertexParameter);
-        return true;
-    }
-    else if(startsWith(line_, "f ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_faceElements);
-        return true;
-    }
-    else if(startsWith(line_, "l ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_lineElements);
-        return true;
-    }
-    else if(startsWith(line_, "o ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_objectNames);
-        return true;
-    }
-    else if(startsWith(line_, "g ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_groupNames);
-        return true;
-    }
-    else if(startsWith(line_, "mtllib ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_materialLibs);
-        return true;
-    }
-    else if(startsWith(line_, "usemtl ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_materialNames);
-        return true;
-    }
-    else if(startsWith(line_, "s ", dataLine))
-    {
-        initWavefrontOBJItem(dataLine, comment_, lineNumber_, m_smoothing);
         return true;
     }
     else if(line_.trimmed().isEmpty() && !comment_.isEmpty())
