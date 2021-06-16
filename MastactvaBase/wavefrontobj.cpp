@@ -133,7 +133,7 @@ bool Vector3di::operator < (const Vector3di &val_) const
 }
 
 
-void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
 {
     data_.setW(1.0);
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
@@ -151,7 +151,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector4D &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     std::size_t j = 0;
@@ -167,7 +167,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector3D &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     for(const QString &val_: values)
@@ -193,7 +193,7 @@ void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
 {
     QStringList values = line_.split(QChar(' '), Qt::SkipEmptyParts);
     for(const QString &val_: values)
@@ -207,12 +207,12 @@ void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_)
     }
 }
 
-void parseWavefrontOBJLine(const QString &line_, QString &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, QString &data_)
 {
     data_ = line_;
 }
 
-void parseWavefrontOBJLine(const QString &line_, Bool &data_)
+void WavefrontOBJ::parseWavefrontOBJLine(const QString &line_, Bool &data_)
 {
     bool ok = false;
     const int iv = line_.toInt(&ok);
@@ -248,8 +248,7 @@ void parseWavefrontOBJLine(const QString &line_, Bool &data_)
     data_.set(false);
 }
 
-
-template<typename WavefrontOBJType_>
+template<typename WavefrontOBJType_> inline
 void initWavefrontOBJItem(
         WavefrontOBJType_ &d_,
         const QString &dataLine_,
@@ -260,7 +259,7 @@ void initWavefrontOBJItem(
 {
     d_.setComment(comment_);
     d_.setLine(lineNumber_);
-    parseWavefrontOBJLine(dataLine_, d_);
+    WavefrontOBJ::parseWavefrontOBJLine(dataLine_, d_);
     vec_.push_back(d_);
 }
 

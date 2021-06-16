@@ -131,16 +131,16 @@ public:
 };
 
 
-void parseWavefrontOBJLine(const QString &line_, QVector4D &data_);
-void parseWavefrontOBJLine(const QString &line_, QVector3D &data_);
-void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_);
-void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_);
-void parseWavefrontOBJLine(const QString &line_, QString &data_);
-void parseWavefrontOBJLine(const QString &line_, Bool &data_);
-
-
 class WavefrontOBJ
 {
+private:
+    static void parseWavefrontOBJLine(const QString &line_, QVector4D &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QVector3D &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QVector<Vector3di> &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QVector<int> &data_);
+    static void parseWavefrontOBJLine(const QString &line_, QString &data_);
+    static void parseWavefrontOBJLine(const QString &line_, Bool &data_);
+
 public:
     const QVector<WavefrontOBJItem> &getComments() const;
     const QVector<WavefrontOBJVertex> &getVertex() const;
@@ -190,6 +190,15 @@ private:
     QVector<WavefrontOBJMaterialLib> m_materialLibs;
     QVector<WavefrontOBJMaterialName> m_materialNames;
     QVector<WavefrontOBJSmoothing> m_smoothing;
+
+    template <typename WavefrontOBJType_>
+    friend void initWavefrontOBJItem(
+            WavefrontOBJType_ &d_,
+            const QString &dataLine_,
+            const QString &comment_,
+            int lineNumber_,
+            QVector<WavefrontOBJType_> &vec_
+            );
 };
 
 
