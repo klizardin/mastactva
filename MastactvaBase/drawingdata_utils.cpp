@@ -345,9 +345,10 @@ void Variables::add(const QJsonDocument &data_)
     addVariables(rootObject, {details::Variable{}, false});
 }
 
-void Variables::addAliases(const QJsonDocument &data_)
+void Variables::addAliases(const QJsonDocument &data_, const IPosition *position_)
 {
     Q_UNUSED(data_);
+    Q_UNUSED(position_);
 }
 
 bool Variables::getObjectsList(QStringList &objects_) const
