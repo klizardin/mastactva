@@ -305,17 +305,17 @@ bool WavefrontOBJ::processLine(const QString &line_, const QString &comment_, in
 {
     if(initWavefrontOBJItemList(
         line_, comment_, lineNumber_,
-        std::make_pair(std::ref(m_vertex), "v "),
-        std::make_pair(std::ref(m_vertexTexture), "vt "),
-        std::make_pair(std::ref(m_normal), "vn "),
-        std::make_pair(std::ref(m_vertexParameter), "vp "),
-        std::make_pair(std::ref(m_faceElements), "f "),
-        std::make_pair(std::ref(m_lineElements), "l "),
-        std::make_pair(std::ref(m_objectNames), "o "),
-        std::make_pair(std::ref(m_groupNames), "g "),
-        std::make_pair(std::ref(m_materialLibs), "mtllib "),
-        std::make_pair(std::ref(m_materialNames), "usemtl "),
-        std::make_pair(std::ref(m_smoothing), "s ")
+        std::make_pair(std::ref(m_vertex), "v"),
+        std::make_pair(std::ref(m_vertexTexture), "vt"),
+        std::make_pair(std::ref(m_normal), "vn"),
+        std::make_pair(std::ref(m_vertexParameter), "vp"),
+        std::make_pair(std::ref(m_faceElements), "f"),
+        std::make_pair(std::ref(m_lineElements), "l"),
+        std::make_pair(std::ref(m_objectNames), "o"),
+        std::make_pair(std::ref(m_groupNames), "g"),
+        std::make_pair(std::ref(m_materialLibs), "mtllib"),
+        std::make_pair(std::ref(m_materialNames), "usemtl"),
+        std::make_pair(std::ref(m_smoothing), "s")
         ))
     {
         return true;
@@ -422,9 +422,9 @@ bool WavefrontOBJ::validate() const
 
 bool WavefrontOBJ::startsWith(const QString &line_, const QString &str_, QString &dataLine_)
 {
-    if(line_.startsWith(str_))
+    if(line_.startsWith(str_ + QString(" ")))
     {
-        dataLine_ = line_.mid(str_.length());
+        dataLine_ = line_.mid(str_.length() + 1);
         return true;
     }
     else
