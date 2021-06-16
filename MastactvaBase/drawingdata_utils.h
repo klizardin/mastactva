@@ -421,6 +421,7 @@ private:
     QVector<int> m_intData;
 };
 
+
 struct Variable
 {
 public:
