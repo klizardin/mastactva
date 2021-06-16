@@ -78,10 +78,12 @@ void DrawingDataArtefact::addData(
 {
     if(!details_.filesource
             || !details_.variables
+            || !details_.position
             )
     {
         return;
     }
+
     if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataJson)
     {
         details_.variables->add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
@@ -90,4 +92,12 @@ void DrawingDataArtefact::addData(
     {
         details_.variables->add(WavefrontOBJ::graphicsOBJtoJson(details_.filesource->getText(m_filename)));
     }
+    else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::convertNamesJson)
+    {
+        details_.variables->addAliases(
+                    QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()),
+                    details_.position.get()
+                    );
+    }
+
 }
