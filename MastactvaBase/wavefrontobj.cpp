@@ -553,6 +553,28 @@ QJsonDocument WavefrontOBJ::toJsonData() const
     return QJsonDocument(variables);
 }
 
+inline
+void buildResultArray(
+        const std::vector<std::vector<std::size_t>> &triangles_,
+        const QVector<QVector4D> &vec_,
+        QJsonArray &result_
+        )
+{
+    int vi = 0;
+    for(const std::vector<std::size_t> &tri : triangles_)
+    {
+        for(const std::size_t &index_ : tri)
+        {
+            Q_ASSERT((int)index_ < vec_.size());
+            for(std::size_t i = 0; i < 4; i++)
+            {
+                result_.append(QJsonValue(vec_[index_][i]));
+            }
+        }
+        ++vi;
+    }
+}
+
 bool WavefrontOBJ::buildObject(
         int startLineNumber_, int endLineNumber_,
         const Vector3di &mask_,
@@ -654,54 +676,16 @@ bool WavefrontOBJ::buildObject(
     }
 
     vertex_ = QJsonArray{};
-    int vi = 0;
-    for(const std::vector<std::size_t> &tri : triangles)
-    {
-        for(const std::size_t &index_ : tri)
-        {
-            Q_ASSERT((int)index_ < vertex.size());
-            auto uit = std::begin(unique);
-            std::advance(uit,index_);
-            for(std::size_t i = 0; i < 4; i++)
-            {
-                vertex_.append(QJsonValue(vertex[index_][i]));
-            }
-        }
-        ++vi;
-    }
+    buildResultArray(triangles, vertex, vertex_);
     if(mask_.y() >= 0)
     {
         textures_ = QJsonArray{};
-        int vti = 0;
-        for(const std::vector<std::size_t> &tri : triangles)
-        {
-            for(const std::size_t &index_ : tri)
-            {
-                Q_ASSERT((int)index_ < vertexTexture.size());
-                for(std::size_t i = 0; i < 4; i++)
-                {
-                    textures_.append(QJsonValue(vertexTexture[index_][i]));
-                }
-            }
-            ++vti;
-        }
+        buildResultArray(triangles, vertexTexture, textures_);
     }
     if(mask_.z() >= 0)
     {
         normal_ = QJsonArray{};
-        int vni = 0;
-        for(const std::vector<std::size_t> &tri : triangles)
-        {
-            for(const std::size_t &index_ : tri)
-            {
-                Q_ASSERT((int)index_ < vertexNormal.size());
-                for(std::size_t i = 0; i < 4; i++)
-                {
-                    normal_.append(QJsonValue(vertexNormal[index_][i]));
-                }
-            }
-            ++vni;
-        }
+        buildResultArray(triangles, vertexNormal, normal_);
     }
 
     return true;
