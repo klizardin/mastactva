@@ -153,9 +153,9 @@ void Variable::set(const QJsonArray &jsonArray_)
     }
 }
 
-void Variable::set(std::shared_ptr<ValiableData> data_)
+void Variable::setAlias(const Variable &var_)
 {
-    m_data = std::move(data_);
+    m_data = var_.m_data;
 }
 
 void Variable::setPosition(const QJsonObject &position_)
@@ -257,42 +257,67 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<fl
     return true;
 }
 
-void Variables::add(const QJsonDocument &data_)
+std::tuple<QJsonValue, bool> Variables::getJsonValue(const QJsonObject &varObject)
 {
-    if(!data_.isObject())
+    if(!varObject.contains(g_jsonDataVariableValueName))
     {
-        return;
+        return {{}, false};
     }
-    QJsonObject rootObject = data_.object();
-    const QStringList keys = rootObject.keys();
+    QJsonValue val = varObject[g_jsonDataVariableValueName];
+    if(val.isUndefined()
+            || !val.isArray())
+    {
+        return {{}, false};
+    }
+    return {val, true};
+}
+
+void Variables::addVariables(
+        const QJsonObject &rootObject_,
+        const std::tuple<details::Variable, bool> &dataSource_
+        )
+{
+    const QStringList keys = rootObject_.keys();
     for(const QString &key_ : keys)
     {
-        const QJsonValue var = rootObject[key_];
+        const QJsonValue var = rootObject_[key_];
         if(var.isUndefined()
                 || !var.isObject())
         {
             continue;
         }
         const QJsonObject varObject = var.toObject();
-        if(!varObject.contains(g_jsonDataVariableValueName))
-        {
-            continue;
-        }
-        const QJsonValue val = varObject[g_jsonDataVariableValueName];
-        if(val.isUndefined()
-                || !val.isArray())
+
+        const auto jsonVal = has_value(dataSource_)
+                ? std::make_tuple(QJsonValue{}, true)
+                : getJsonValue(varObject)
+                  ;
+        if(!std::get<bool>(jsonVal))
         {
             continue;
         }
 
         if(key_ == g_jsonDataVariableNameObjectListName)
         {
-            setObjectsList(val.toArray());
+            if(has_value(dataSource_))
+            {
+                // can't alias objectslist
+                continue;
+            }
+
+            setObjectsList(value(jsonVal).toArray());
         }
         else
         {
             details::Variable newVar;
-            newVar.set(val.toArray());
+            if(has_value(dataSource_))
+            {
+                newVar.setAlias(value(dataSource_));
+            }
+            else
+            {
+                newVar.set(value(jsonVal).toArray());
+            }
 
             const QJsonValue position = varObject[g_jsonDataVariablePositionName];
             if(!position.isUndefined()
@@ -304,10 +329,20 @@ void Variables::add(const QJsonDocument &data_)
             details::VariableName variableName(key_, index);
             Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
             ++index;
-            m_variables.insert({variableName, std::move(newVar)});
+            m_variables.insert({std::move(variableName), std::move(newVar)});
             // TODO: add remove unreachable variables
         }
     }
+}
+
+void Variables::add(const QJsonDocument &data_)
+{
+    if(!data_.isObject())
+    {
+        return;
+    }
+    QJsonObject rootObject = data_.object();
+    addVariables(rootObject, {details::Variable{}, false});
 }
 
 void Variables::addAliases(const QJsonDocument &data_)

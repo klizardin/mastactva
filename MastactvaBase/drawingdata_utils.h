@@ -428,7 +428,7 @@ struct Variable
 public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
-    void set(std::shared_ptr<ValiableData> data_);
+    void setAlias(const Variable &var_);
     void setPosition(const QJsonObject &position_);
     void prepare(QVector<float> &) const;
     void prepare(QVector<int> &) const;
@@ -477,6 +477,11 @@ public:
 private:
     bool find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const;
     void setObjectsList(const QJsonArray &array_);
+    void addVariables(
+            const QJsonObject &rootObject_,
+            const std::tuple<details::Variable, bool> &dataSource_
+            );
+    static std::tuple<QJsonValue, bool> getJsonValue(const QJsonObject &varObject);
 
 private:
     VariablesMap m_variables;
