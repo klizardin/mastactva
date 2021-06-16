@@ -265,12 +265,6 @@ void initWavefrontOBJItem(
     vec_.push_back(std::move(d));
 }
 
-template<typename ... WavefrontOBJTuplesTypes_> inline
-bool initWavefrontOBJItemList(
-        const QString &line_, const QString &comment_, int lineNumber_,
-        WavefrontOBJTuplesTypes_  && ... vals_
-        );
-
 template<typename WavefrontOBJTupleType_> inline
 bool initWavefrontOBJItemList(
         const QString &line_, const QString &comment_, int lineNumber_,

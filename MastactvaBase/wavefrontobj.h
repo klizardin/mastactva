@@ -198,11 +198,6 @@ private:
             int lineNumber_,
             QVector<WavefrontOBJType_> &vec_
             );
-    template<typename ... WavefrontOBJTuplesTypes_>
-    friend bool initWavefrontOBJItemList(
-            const QString &line_, const QString &comment_, int lineNumber_,
-            WavefrontOBJTuplesTypes_  &&...val_
-            );
     template<typename WavefrontOBJTupleType_>
     friend bool initWavefrontOBJItemList(
             const QString &line_, const QString &comment_, int lineNumber_,
