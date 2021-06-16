@@ -676,15 +676,16 @@ bool WavefrontOBJ::buildObject(
     }
 
     vertex_ = QJsonArray{};
+    textures_ = QJsonArray{};
+    normal_ = QJsonArray{};
+
     buildResultArray(triangles, vertex, vertex_);
     if(mask_.y() >= 0)
     {
-        textures_ = QJsonArray{};
         buildResultArray(triangles, vertexTexture, textures_);
     }
     if(mask_.z() >= 0)
     {
-        normal_ = QJsonArray{};
         buildResultArray(triangles, vertexNormal, normal_);
     }
 
