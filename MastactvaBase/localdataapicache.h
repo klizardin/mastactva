@@ -81,7 +81,7 @@ public:
                            refAppId_, refValue_,
                            readonly_,
                            extraFields_);
-        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
+        DynamicCastPtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.getListImpl(r)
                 : view->getListImpl(r)
@@ -120,7 +120,7 @@ public:
                     layoutName_,
                     false,
                     extraFields);
-        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
+        DynamicCastPtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.addItemImpl(appId, values, r)
                 : view->addItemImpl(appId, values, r)
@@ -157,7 +157,7 @@ public:
                     false,
                     extraFields);
         if(!id.isValid()) { return nullptr; }
-        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
+        DynamicCastPtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.setItemImpl(id, values, r)
                 : view->setItemImpl(id, values, r)
@@ -190,7 +190,7 @@ public:
                     extraFields);
         QVariant id = getDataLayout<DataType_>().getIdJsonValue(item_);
         if(!id.isValid()) { return nullptr; }
-        ConcretePtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
+        DynamicCastPtr<LocalDataAPIDefaultCacheImpl, ILocalDataAPI> view(chooseView(r));
         bool res = !view
                 ? m_defaultAPIImpl.delItemImpl(id, r)
                 : view->delItemImpl(id, r)

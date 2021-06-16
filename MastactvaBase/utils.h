@@ -475,13 +475,13 @@ public:
 };
 
 
-template<typename ConcreteType_, typename BaseType_>
-class ConcretePtr
+template<typename DerivedType_, typename BaseType_>
+class DynamicCastPtr
 {
 public:
-    explicit ConcretePtr(BaseType_ *ptr_)
+    explicit DynamicCastPtr(BaseType_ *ptr_)
     {
-        m_ptr = dynamic_cast<ConcreteType_*>(ptr_);
+        m_ptr = dynamic_cast<DerivedType_*>(ptr_);
     }
 
     operator bool () const
@@ -494,14 +494,14 @@ public:
         return !operator bool();
     }
 
-    ConcreteType_ * operator -> () const
+    DerivedType_ * operator -> () const
     {
         Q_ASSERT(operator bool());
         return m_ptr;
     }
 
 private:
-    ConcreteType_ *m_ptr = nullptr;
+    DerivedType_ *m_ptr = nullptr;
 };
 
 

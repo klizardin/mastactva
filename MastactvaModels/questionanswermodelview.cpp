@@ -284,7 +284,7 @@ void QuestionAnswerModelView::addUserQuestionAnswerItem()
     }
 
     LocalDBRequest *r = static_cast<LocalDBRequest *>(request);
-    ConcretePtr<ILocalDataUpdateAPI, ILocalDataAPI> defaultHandler(request->getDefaultAPI());
+    DynamicCastPtr<ILocalDataUpdateAPI, ILocalDataAPI> defaultHandler(request->getDefaultAPI());
     if(defaultHandler.operator bool())
     {
         defaultHandler->addItemImpl(r->getItemAppId(), values, request);
