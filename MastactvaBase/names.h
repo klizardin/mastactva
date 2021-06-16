@@ -164,6 +164,8 @@ static const char * g_jsonDataVariableObjectNameName = "objectName";
 static const char * g_jsonDataVariableObjectStepIndexName = "objectStepIndex";
 static const char * g_jsonDataVariableArtefactStepIndexName = "artefactStepIndex";
 static const char * g_jsonDataVariablePositionName = "position";
+static const char * g_jsonDataVariableNamesName = "names";
+static const char * g_jsonDataVariablePositionsName = "positions";
 
 
 #endif // NAMES_H
