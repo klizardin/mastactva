@@ -74,6 +74,12 @@ namespace drawing_objects
     public:
         void initialize(drawing_data::QuizImageObjects &data_) const override;
     };
+
+    class DataTestAlias : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_) const override;
+    };
 }
 
 // using TestCaseInitializer = drawing_objects::BaseTest;
@@ -82,8 +88,9 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::DataTestBase;
 // using TestCaseInitializer = drawing_objects::DataTestPosition;
 // using TestCaseInitializer = drawing_objects::DataTestObjectsList;
-using TestCaseInitializer = drawing_objects::DataTest3DObjectSwift;
+// using TestCaseInitializer = drawing_objects::DataTest3DObjectSwift;
 // using TestCaseInitializer = drawing_objects::DataTest3DObjectCube;
+using TestCaseInitializer = drawing_objects::DataTestAlias;
 
 
 #endif // OBJECT_TESTS_H

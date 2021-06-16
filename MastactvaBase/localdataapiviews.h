@@ -55,7 +55,7 @@ public:
                              );
         r_->clearReferences();
 
-        ConcretePtr<ILocalDataGetAPI, ILocalDataAPI> defaultHandler(defaultAPI);
+        DynamicCastPtr<ILocalDataGetAPI, ILocalDataAPI> defaultHandler(defaultAPI);
         if(!defaultHandler)
         {
             return false;

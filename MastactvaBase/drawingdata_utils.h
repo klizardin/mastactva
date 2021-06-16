@@ -381,6 +381,7 @@ public:
     virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
+    virtual void addAliases(const QJsonDocument &data_, const IPosition *position_) = 0;
     virtual bool getObjectsList(QStringList &objects_) const = 0;
     virtual void clear() = 0;
 };
@@ -427,9 +428,10 @@ struct Variable
 public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
+    void setAlias(const Variable &var_);
     void setPosition(const QJsonObject &position_);
-    void prepare(QVector<float> &);
-    void prepare(QVector<int> &);
+    void prepare(QVector<float> &) const;
+    void prepare(QVector<int> &) const;
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     bool match(const VariablePosition &pos_) const;
@@ -468,12 +470,28 @@ public:
     bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
     void add(const QJsonDocument &data_) override;
+    void addAliases(const QJsonDocument &data_, const IPosition *position_) override;
     bool getObjectsList(QStringList &objects_) const override;
     void clear() override;
 
 private:
     bool find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const;
     void setObjectsList(const QJsonArray &array_);
+    void addVariables(
+            const QJsonObject &rootObject_,
+            const std::tuple<details::Variable, bool> &dataSource_
+            );
+    static std::tuple<QJsonValue, bool> getJsonValue(const QJsonObject &varObject);
+    void addVariable(
+            const details::Variable &newVarTempl_,
+            const QString &name_,
+            const QJsonObject &position_
+            );
+    void addVariables(
+            const details::Variable &newVarTempl_,
+            const QString &name_,
+            const QJsonArray &positions_
+            );
 
 private:
     VariablesMap m_variables;

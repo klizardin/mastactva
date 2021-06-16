@@ -68,7 +68,7 @@ public:
                                readonly_,
                                extraFields_
                                );
-            ConcretePtr<LocalDataAPINoCacheImpl,ILocalDataAPI> view(chooseAPI(r));
+            DynamicCastPtr<LocalDataAPINoCacheImpl,ILocalDataAPI> view(chooseAPI(r));
             if(!view)
             {
                 m_defaultAPIImpl.getListImpl(r);

@@ -127,25 +127,25 @@ void extractValues(const QString &valuesStr_, QVector<Type_> &valuesArray_, int 
     extractValues(valuesVar, valuesArray_, arraySize_);
 }
 
-template <typename EnumType_>
+template <typename EnumType_> inline
 constexpr auto to_underlying(EnumType_ enumValue_) noexcept
 {
     return static_cast<std::underlying_type_t<EnumType_>>(enumValue_);
 }
 
-template <typename EnumType_>
+template <typename EnumType_> inline
 constexpr auto to_enum(const std::underlying_type_t<EnumType_> &val_) noexcept
 {
     return static_cast<EnumType_>(val_);
 }
 
-template <typename Type_>
+template <typename Type_> inline
 constexpr bool has_value(const std::pair<Type_, bool> &data_) noexcept
 {
     return data_.second;
 }
 
-template <typename Type_>
+template <typename Type_> inline
 constexpr bool has_value(const std::tuple<Type_, bool> &data_) noexcept
 {
     return std::get<1>(data_);
@@ -157,13 +157,13 @@ constexpr bool & has_value(std::pair<Type_, bool> &data_) noexcept
     return data_.second;
 }
 
-template <typename Type_>
+template <typename Type_> inline
 constexpr bool & has_value(std::tuple<Type_, bool> &data_) noexcept
 {
     return std::get<1>(data_);
 }
 
-template <typename Type_>
+template <typename Type_> inline
 constexpr const Type_ & value(const std::pair<Type_, bool> &data_) noexcept
 {
     return data_.first;
@@ -175,16 +175,64 @@ constexpr const Type_ & value(const std::tuple<Type_, bool> &data_) noexcept
     return std::get<0>(data_);
 }
 
-template <typename Type_>
+template <typename Type_> inline
 constexpr Type_ & value(std::pair<Type_, bool> &data_) noexcept
 {
     return data_.first;
 }
 
-template <typename Type_>
+template <typename Type_> inline
 constexpr Type_ & value(std::tuple<Type_, bool> &data_) noexcept
 {
     return std::get<0>(data_);
+}
+
+template <typename Type_>
+constexpr bool has_value(const std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.first;
+}
+
+template <typename Type_> inline
+constexpr bool has_value(const std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<0>(data_);
+}
+
+template <typename Type_> inline
+constexpr bool & has_value(std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.first;
+}
+
+template <typename Type_> inline
+constexpr bool & has_value(std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<0>(data_);
+}
+
+template <typename Type_> inline
+constexpr const Type_ & value(const std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.second;
+}
+
+template <typename Type_> inline
+constexpr const Type_ & value(const std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<1>(data_);
+}
+
+template <typename Type_> inline
+constexpr Type_ & value(std::pair<bool, Type_> &data_) noexcept
+{
+    return data_.second;
+}
+
+template <typename Type_> inline
+constexpr Type_ & value(std::tuple<bool, Type_> &data_) noexcept
+{
+    return std::get<1>(data_);
 }
 
 bool isDefaultImage(const QString &imageURLStr_);
@@ -427,13 +475,13 @@ public:
 };
 
 
-template<typename ConcreteType_, typename BaseType_>
-class ConcretePtr
+template<typename DerivedType_, typename BaseType_>
+class DynamicCastPtr
 {
 public:
-    explicit ConcretePtr(BaseType_ *ptr_)
+    explicit DynamicCastPtr(BaseType_ *ptr_)
     {
-        m_ptr = dynamic_cast<ConcreteType_*>(ptr_);
+        m_ptr = dynamic_cast<DerivedType_*>(ptr_);
     }
 
     operator bool () const
@@ -446,14 +494,14 @@ public:
         return !operator bool();
     }
 
-    ConcreteType_ * operator -> () const
+    DerivedType_ * operator -> () const
     {
         Q_ASSERT(operator bool());
         return m_ptr;
     }
 
 private:
-    ConcreteType_ *m_ptr = nullptr;
+    DerivedType_ *m_ptr = nullptr;
 };
 
 
