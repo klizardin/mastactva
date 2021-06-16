@@ -397,12 +397,9 @@ struct VariablePosition
     static VariablePosition fromCurrent(const IPosition *position_);
 
 private:
-    bool hasObjectName = false;
-    QString objectName;
-    bool hasObjectStepIndex = false;
-    int objectStepIndex = 0;
-    bool hasArtefactStepIndex = false;
-    int artefactStepIndex = 0;
+    std::tuple<QString, bool> objectName = std::make_tuple(QString{}, false);
+    std::tuple<int, bool> objectStepIndex = std::make_tuple(0, false);
+    std::tuple<int, bool> artefactStepIndex = std::make_tuple(0, false);
 
     friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
 };

@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
+#include "../MastactvaBase/utils.h"
 
 
 namespace drawingdata
@@ -24,8 +25,8 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
         if(!objectNameJV.isUndefined()
                 && objectNameJV.isString())
         {
-            result.objectName = objectNameJV.toString();
-            result.hasObjectName = true;
+            value(result.objectName) = objectNameJV.toString();
+            has_value(result.objectName) = true;
         }
     }
     if(position_.contains(g_jsonDataVariableObjectStepIndexName))
@@ -34,8 +35,8 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
         if(!objectStepIndexJV.isUndefined()
                 && objectStepIndexJV.isDouble())
         {
-            result.objectStepIndex = static_cast<int>(objectStepIndexJV.toDouble());
-            result.hasObjectStepIndex = true;
+            value(result.objectStepIndex) = static_cast<int>(objectStepIndexJV.toDouble());
+            has_value(result.objectStepIndex) = true;
         }
     }
     if(position_.contains(g_jsonDataVariableArtefactStepIndexName))
@@ -44,8 +45,8 @@ VariablePosition VariablePosition::fromJson(const QJsonObject &position_)
         if(!artefactStepIndexJV.isUndefined()
                 && artefactStepIndexJV.isDouble())
         {
-            result.artefactStepIndex = static_cast<int>(artefactStepIndexJV.toDouble());
-            result.hasArtefactStepIndex = true;
+            value(result.artefactStepIndex) = static_cast<int>(artefactStepIndexJV.toDouble());
+            has_value(result.artefactStepIndex) = true;
         }
     }
     return result;
@@ -59,12 +60,12 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
         return result;
     }
 
-    result.hasObjectName = true;
-    result.objectName = position_->getObjectName();
-    result.hasObjectStepIndex = true;
-    result.objectStepIndex = position_->getObjectStepIndex();
-    result.hasArtefactStepIndex = true;
-    result.artefactStepIndex = position_->getArtefactStepIndex();
+    value(result.objectName) = position_->getObjectName();
+    has_value(result.objectName) = true;
+    value(result.objectStepIndex) = position_->getObjectStepIndex();
+    has_value(result.objectStepIndex) = true;
+    value(result.artefactStepIndex) = position_->getArtefactStepIndex();
+    has_value(result.artefactStepIndex) = true;
 
     return result;
 }
@@ -72,19 +73,19 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
 bool operator == (const VariablePosition &left_, const VariablePosition &right_)
 {
     bool objectsEqual = true;
-    if(left_.hasObjectName && right_.hasObjectName)
+    if(has_value(left_.objectName) && has_value(right_.objectName))
     {
-        objectsEqual = left_.objectName == right_.objectName;
+        objectsEqual = value(left_.objectName) == value(right_.objectName);
     }
     bool objectIndexesEqual = true;
-    if(left_.hasObjectStepIndex && right_.hasObjectStepIndex)
+    if(has_value(left_.objectStepIndex) && has_value(right_.objectStepIndex))
     {
-        objectIndexesEqual = left_.objectStepIndex == right_.objectStepIndex;
+        objectIndexesEqual = value(left_.objectStepIndex) == value(right_.objectStepIndex);
     }
     bool artefactIndexesEqual = true;
-    if(left_.hasArtefactStepIndex && right_.hasArtefactStepIndex)
+    if(has_value(left_.artefactStepIndex) && has_value(right_.artefactStepIndex))
     {
-        artefactIndexesEqual = left_.artefactStepIndex == right_.artefactStepIndex;
+        artefactIndexesEqual = value(left_.artefactStepIndex) == value(right_.artefactStepIndex);
     }
     return objectsEqual && objectIndexesEqual && artefactIndexesEqual;
 }
