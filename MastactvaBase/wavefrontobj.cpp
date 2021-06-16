@@ -349,7 +349,7 @@ void WavefrontOBJ::correct()
 
             if(f_.y() < 0)
             {
-                f_.setY(m_vertex.size() - f_.y());
+                f_.setY(m_vertexTexture.size() - f_.y());
             }
             else
             {
@@ -358,7 +358,7 @@ void WavefrontOBJ::correct()
 
             if(f_.z() < 0)
             {
-                f_.setZ(m_vertex.size() - f_.z());
+                f_.setZ(m_normal.size() - f_.z());
             }
             else
             {
