@@ -159,6 +159,34 @@ LUA:
 96. fix list actions
 97. add mock tests for local data api
 
+98. runtime variables update
+    use shared variable to get data (different from calculations at prepare)
+    address variables by name (compiler time find out required variables?)
+    step -- variables -- runtime updates (may require more variables than shaders)
+    but can update only local variables (it is update for local state)
+    but also may update variables required by other calculations
+
+    calculation -- arg in (result -- all other args)
+
+    so calculate artefact - requires arguments
+    can get them by name 
+    can get all other by name to set (get?)
+    ok input variables -- are just added to list of all variables we can get/set any
+    and add new variables (return)
+    get/set -- through interface
+
+    runtime staff can't add new variables
+    ok -- need a different type for runtime staff (ignore return)
+
+99. update flag for variable
+    update flag for runtime calculation
+    - set update flag for calculation
+    - clear update flag for variables
+    - process need to update (one time)
+    - set update flag for calcalation
+    - clear update float for variables
+    - process need to update (just one time)
+    - if nothing is required to update exit
 
 100. effects addin, compiler time information about types arguments
      and extract effect info to data object not vice vers
@@ -172,10 +200,4 @@ LUA:
      just addin to process required effects and to get information from it
      for editor app.
 
-
-
-
-
-
-
-
+101. c++ version for release (addin version)
