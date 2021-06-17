@@ -9,7 +9,7 @@ CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuizEditor
 QML_IMPORT_MAJOR_VERSION = 1
 
-CONFIG += c++17
+CONFIG += c++14
 
 
 # You can make your code fail to compile if it uses deprecated APIs.
