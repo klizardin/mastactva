@@ -160,6 +160,20 @@ LUA:
 97. add mock tests for local data api
 
 
+100. effects addin, compiler time information about types arguments
+     and extract effect info to data object not vice vers
+     to build effect at compiler time maximum
+     to add calculation staff
+     extend drawing_data to support dynamic data
+     not only static with specific values
+     some state machine? if we set the value then recalculate values?
+     some staff for interaction maybe? -- no
+
+     just addin to process required effects and to get information from it
+     for editor app.
+
+
+
 
 
 
