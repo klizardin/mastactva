@@ -13,3 +13,7 @@ HEADERS += \
 SOURCES += \
         luaapi.cpp \
         main.cpp
+
+# lua
+INCLUDEPATH += /home/klizardin/projects/lua-5.4.3/src/
+LIBS += -L/home/klizardin/projects/lua-5.4.3/src/ -llua
