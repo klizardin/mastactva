@@ -7,7 +7,9 @@ CONFIG += thread
 CONFIG -= qt
 
 HEADERS += \
+        luaapi.h \
         tst_installed.h
 
 SOURCES += \
+        luaapi.cpp \
         main.cpp
