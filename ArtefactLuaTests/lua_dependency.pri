@@ -22,5 +22,5 @@ requires(exists($$LUA_SRCDIR))
         $$LUA_SRCDIR
 
     LIBS += \
-        -L$$LUA_SRCDIR -llua
+        -L$$LUA_SRCDIR -llua -ldl
 }
