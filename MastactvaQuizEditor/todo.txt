@@ -201,3 +201,4 @@ LUA:
      for editor app.
 
 101. c++ version for release (addin version)
+102. absl for c++ version for release
