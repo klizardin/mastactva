@@ -113,3 +113,16 @@ bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
     lua_pop(m_luaState, 1);
     return true;
 }
+
+bool LuaAPI::check(int error_, bool errorStrAtTop_ /*= true*/) const
+{
+    if(error_)
+    {
+        if(errorStrAtTop_)
+        {
+            qDebug() << QString(lua_tostring(m_luaState, -1));
+        }
+        return false;
+    }
+    return true;
+}
