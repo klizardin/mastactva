@@ -38,6 +38,9 @@ public:
             std::map<QString, QVector<double>> &result_
             ) const;
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
+    bool pushVariableValue(const QString &name_) const;
+
+    static LuaAPI *getByState(lua_State *luaState_);
 
 private:
     void dumpStack() const;
@@ -45,10 +48,13 @@ private:
     bool ok(int error_, bool errorStrAtTop_ = true) const;
     bool loadScript(const QString &script_) const;
     bool callFunction(const QString &functionName_) const;
+    void push(const QVector<double> &value_) const;
+    void initFunctions() const;
 
 private:
     lua_State *m_luaState = nullptr;
     std::shared_ptr<IVariablesGetter> m_variablesGetter;
+    static QHash<lua_State *, LuaAPI *> s_apis;
 };
 
 
