@@ -79,7 +79,7 @@ bool LuaAPI::call(
     return true;
 }
 
-void LuaAPI::dumpStack()
+void LuaAPI::dumpStack() const
 {
     int top = lua_gettop(m_luaState);
     for (int i=1; i <= top; i++) {
