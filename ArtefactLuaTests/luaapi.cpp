@@ -58,7 +58,8 @@ bool LuaAPI::call(
 void LuaAPI::dumpStack() const
 {
     int top = lua_gettop(m_luaState);
-    for (int i=1; i <= top; i++) {
+    for (int i=1; i <= top; i++)
+    {
         printf("%d\t%s\t", i, luaL_typename(m_luaState,i));
         switch (lua_type(m_luaState, i))
         {
