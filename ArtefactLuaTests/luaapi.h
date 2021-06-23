@@ -26,6 +26,7 @@ private:
     bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
     bool ok(int error_, bool errorStrAtTop_ = true) const;
     bool loadScript(const QString &script_) const;
+    bool callFunction(const QString &functionName_) const;
 
 private:
     lua_State *m_luaState = nullptr;

@@ -30,8 +30,7 @@ bool LuaAPI::call(
     {
         return false;
     }
-    lua_getglobal(m_luaState, functionName_.toUtf8().constData());
-    if(!ok(lua_pcall(m_luaState, 0, 1, 0)))
+    if(!callFunction(functionName_))
     {
         return false;
     }
@@ -122,6 +121,16 @@ bool LuaAPI::loadScript(const QString &script_) const
         return false;
     }
     if(!ok(lua_pcall(m_luaState, 0, 0, 0)))
+    {
+        return false;
+    }
+    return true;
+}
+
+bool LuaAPI::callFunction(const QString &functionName_) const
+{
+    lua_getglobal(m_luaState, functionName_.toUtf8().constData());
+    if(!ok(lua_pcall(m_luaState, 0, 1, 0)))
     {
         return false;
     }
