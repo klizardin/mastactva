@@ -8,6 +8,22 @@
 #include <lua.hpp>
 
 
+class IVariablesGetter
+{
+public:
+    virtual ~IVariablesGetter() = default;
+    virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
+};
+
+
+class IVariablesSetter
+{
+public:
+    virtual ~IVariablesSetter() = default;
+    virtual bool add(const std::map<QString, QVector<double>> &variables_) = 0;
+};
+
+
 class LuaAPI
 {
 public:
