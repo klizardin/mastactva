@@ -17,11 +17,12 @@ LuaAPI::~LuaAPI()
 
 bool LuaAPI::run(const QString &script_) const
 {
-    int error = luaL_loadstring(m_luaState, script_.toUtf8().constData())
-            || lua_pcall(m_luaState, 0, 0, 0);
-    if(error)
+    if(!check(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
     {
-        qDebug() << QString(lua_tostring(m_luaState, -1));
+        return false;
+    }
+    if(!check(lua_pcall(m_luaState, 0, 0, 0)))
+    {
         return false;
     }
     return true;
@@ -33,19 +34,17 @@ bool LuaAPI::call(
         std::map<QString, QVector<double>> &result_
         ) const
 {
-    int error = luaL_loadstring(m_luaState, script_.toUtf8().constData())
-            || lua_pcall(m_luaState, 0, 0, 0)
-            ;
-    if(error)
+    if(!check(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
     {
-        qDebug() << QString(lua_tostring(m_luaState, -1));
+        return false;
+    }
+    if(!check(lua_pcall(m_luaState, 0, 0, 0)))
+    {
         return false;
     }
     lua_getglobal(m_luaState, functionName_.toUtf8().constData());
-    error = lua_pcall(m_luaState, 0, 1, 0);
-    if(error)
+    if(!check(lua_pcall(m_luaState, 0, 1, 0)))
     {
-        qDebug() << QString(lua_tostring(m_luaState, -1));
         return false;
     }
     if(!getNewVariables(result_))
