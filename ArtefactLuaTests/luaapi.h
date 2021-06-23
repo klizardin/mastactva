@@ -24,7 +24,7 @@ public:
 private:
     void dumpStack() const;
     bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
-    bool check(int error_, bool errorStrAtTop_ = true) const;
+    bool ok(int error_, bool errorStrAtTop_ = true) const;
 
 private:
     lua_State *m_luaState = nullptr;

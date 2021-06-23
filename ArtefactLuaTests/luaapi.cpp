@@ -17,11 +17,11 @@ LuaAPI::~LuaAPI()
 
 bool LuaAPI::run(const QString &script_) const
 {
-    if(!check(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
+    if(!ok(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
     {
         return false;
     }
-    if(!check(lua_pcall(m_luaState, 0, 0, 0)))
+    if(!ok(lua_pcall(m_luaState, 0, 0, 0)))
     {
         return false;
     }
@@ -34,16 +34,16 @@ bool LuaAPI::call(
         std::map<QString, QVector<double>> &result_
         ) const
 {
-    if(!check(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
+    if(!ok(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
     {
         return false;
     }
-    if(!check(lua_pcall(m_luaState, 0, 0, 0)))
+    if(!ok(lua_pcall(m_luaState, 0, 0, 0)))
     {
         return false;
     }
     lua_getglobal(m_luaState, functionName_.toUtf8().constData());
-    if(!check(lua_pcall(m_luaState, 0, 1, 0)))
+    if(!ok(lua_pcall(m_luaState, 0, 1, 0)))
     {
         return false;
     }
@@ -113,7 +113,7 @@ bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
     return true;
 }
 
-bool LuaAPI::check(int error_, bool errorStrAtTop_ /*= true*/) const
+bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
 {
     if(error_)
     {
