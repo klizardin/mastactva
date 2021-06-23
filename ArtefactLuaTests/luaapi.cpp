@@ -5,23 +5,23 @@
 
 LuaAPI::LuaAPI()
 {
-    luaState = luaL_newstate();
-    luaL_openlibs(luaState);
+    m_luaState = luaL_newstate();
+    luaL_openlibs(m_luaState);
 }
 
 LuaAPI::~LuaAPI()
 {
-    lua_close(luaState);
-    luaState = nullptr;
+    lua_close(m_luaState);
+    m_luaState = nullptr;
 }
 
 bool LuaAPI::run(const QString &script_) const
 {
-    int error = luaL_loadstring(luaState, script_.toUtf8().constData())
-            || lua_pcall(luaState, 0, 0, 0);
+    int error = luaL_loadstring(m_luaState, script_.toUtf8().constData())
+            || lua_pcall(m_luaState, 0, 0, 0);
     if(error)
     {
-        qDebug() << QString(lua_tostring(luaState, -1));
+        qDebug() << QString(lua_tostring(m_luaState, -1));
         return false;
     }
     return true;
@@ -60,49 +60,47 @@ bool LuaAPI::call(
         ) const
 {
     result_.clear();
-    int error = luaL_loadstring(luaState, script_.toUtf8().constData())
-            || lua_pcall(luaState, 0, 0, 0)
+    int error = luaL_loadstring(m_luaState, script_.toUtf8().constData())
+            || lua_pcall(m_luaState, 0, 0, 0)
             ;
     if(error)
     {
-        qDebug() << QString(lua_tostring(luaState, -1));
+        qDebug() << QString(lua_tostring(m_luaState, -1));
         return false;
     }
-    dumpStack(luaState);
-    lua_getglobal(luaState, functionName_.toUtf8().constData());
-    dumpStack(luaState);
-    error = lua_pcall(luaState, 0, 1, 0);
+    lua_getglobal(m_luaState, functionName_.toUtf8().constData());
+    error = lua_pcall(m_luaState, 0, 1, 0);
     if(error)
     {
-        qDebug() << QString(lua_tostring(luaState, -1));
+        qDebug() << QString(lua_tostring(m_luaState, -1));
         return false;
     }
-    if(!lua_istable(luaState, -1))
+    if(!lua_istable(m_luaState, -1))
     {
         qDebug() << "result type is not table";
         return false;
     }
-    lua_pushnil(luaState);
-    while(lua_next(luaState, -2) != 0)
+    lua_pushnil(m_luaState);
+    while(lua_next(m_luaState, -2) != 0)
     {
-        if(lua_isstring(luaState, -2)
-                && lua_istable(luaState, -1))
+        if(lua_isstring(m_luaState, -2)
+                && lua_istable(m_luaState, -1))
         {
-            const QString variableName = lua_tostring(luaState, -2);
+            const QString variableName = lua_tostring(m_luaState, -2);
             QVector<double> variableValues;
-            lua_pushnil(luaState);
-            while(lua_next(luaState, -2) != 0)
+            lua_pushnil(m_luaState);
+            while(lua_next(m_luaState, -2) != 0)
             {
-                if(lua_isnumber(luaState, -1))
+                if(lua_isnumber(m_luaState, -1))
                 {
-                    variableValues.push_back(lua_tonumber(luaState, -1));
+                    variableValues.push_back(lua_tonumber(m_luaState, -1));
                 }
-                lua_pop(luaState, 1);
+                lua_pop(m_luaState, 1);
             }
             result_.insert({std::move(variableName), std::move(variableValues)});
         }
-        lua_pop(luaState, 1);
+        lua_pop(m_luaState, 1);
     }
-    lua_pop(luaState, 1);
+    lua_pop(m_luaState, 1);
     return true;
 }

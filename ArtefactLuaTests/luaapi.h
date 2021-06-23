@@ -22,7 +22,7 @@ public:
             ) const;
 
 private:
-    lua_State *luaState = nullptr;
+    lua_State *m_luaState = nullptr;
 };
 
 
