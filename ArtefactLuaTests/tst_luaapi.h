@@ -23,7 +23,7 @@ namespace {
     const char *g_callTestFunctionName = "main";
     const char *g_variablesCallTestCode =
             "function main (...)\n"
-            "   result = getVaribale(\"a\")\n"
+            "   result = getVariable(\"a\")\n"
             "   return result\n"
             "end\n"
             ;
