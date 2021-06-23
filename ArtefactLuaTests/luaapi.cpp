@@ -17,15 +17,7 @@ LuaAPI::~LuaAPI()
 
 bool LuaAPI::run(const QString &script_) const
 {
-    if(!ok(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
-    {
-        return false;
-    }
-    if(!ok(lua_pcall(m_luaState, 0, 0, 0)))
-    {
-        return false;
-    }
-    return true;
+    return loadScript(script_);
 }
 
 bool LuaAPI::call(
@@ -34,11 +26,7 @@ bool LuaAPI::call(
         std::map<QString, QVector<double>> &result_
         ) const
 {
-    if(!ok(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
-    {
-        return false;
-    }
-    if(!ok(lua_pcall(m_luaState, 0, 0, 0)))
+    if(!loadScript(script_))
     {
         return false;
     }
