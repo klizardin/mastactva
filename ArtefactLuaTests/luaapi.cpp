@@ -42,6 +42,11 @@ bool LuaAPI::call(
     return true;
 }
 
+void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
+{
+    m_variablesGetter = variablesGetter_;
+}
+
 void LuaAPI::dumpStack() const
 {
     int top = lua_gettop(m_luaState);

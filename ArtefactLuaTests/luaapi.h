@@ -2,6 +2,7 @@
 #define LUAAPI_H
 
 
+#include <memory>
 #include <map>
 #include <QString>
 #include <QVector>
@@ -36,6 +37,7 @@ public:
             const QString &functionName_,
             std::map<QString, QVector<double>> &result_
             ) const;
+    void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
 
 private:
     void dumpStack() const;
@@ -46,6 +48,7 @@ private:
 
 private:
     lua_State *m_luaState = nullptr;
+    std::shared_ptr<IVariablesGetter> m_variablesGetter;
 };
 
 
