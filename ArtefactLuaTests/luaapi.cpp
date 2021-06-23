@@ -126,3 +126,16 @@ bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
     }
     return true;
 }
+
+bool LuaAPI::loadScript(const QString &script_) const
+{
+    if(!ok(luaL_loadstring(m_luaState, script_.toUtf8().constData()), false))
+    {
+        return false;
+    }
+    if(!ok(lua_pcall(m_luaState, 0, 0, 0)))
+    {
+        return false;
+    }
+    return true;
+}
