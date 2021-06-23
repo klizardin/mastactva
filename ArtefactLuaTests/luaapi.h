@@ -23,6 +23,7 @@ public:
 
 private:
     void dumpStack() const;
+    bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
 
 private:
     lua_State *m_luaState = nullptr;

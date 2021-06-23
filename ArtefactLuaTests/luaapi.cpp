@@ -33,7 +33,6 @@ bool LuaAPI::call(
         std::map<QString, QVector<double>> &result_
         ) const
 {
-    result_.clear();
     int error = luaL_loadstring(m_luaState, script_.toUtf8().constData())
             || lua_pcall(m_luaState, 0, 0, 0)
             ;
@@ -49,33 +48,11 @@ bool LuaAPI::call(
         qDebug() << QString(lua_tostring(m_luaState, -1));
         return false;
     }
-    if(!lua_istable(m_luaState, -1))
+    if(!getNewVariables(result_))
     {
         qDebug() << "result type is not table";
         return false;
     }
-    lua_pushnil(m_luaState);
-    while(lua_next(m_luaState, -2) != 0)
-    {
-        if(lua_isstring(m_luaState, -2)
-                && lua_istable(m_luaState, -1))
-        {
-            QString variableName = lua_tostring(m_luaState, -2);
-            QVector<double> variableValues;
-            lua_pushnil(m_luaState);
-            while(lua_next(m_luaState, -2) != 0)
-            {
-                if(lua_isnumber(m_luaState, -1))
-                {
-                    variableValues.push_back(lua_tonumber(m_luaState, -1));
-                }
-                lua_pop(m_luaState, 1);
-            }
-            result_.insert({std::move(variableName), std::move(variableValues)});
-        }
-        lua_pop(m_luaState, 1);
-    }
-    lua_pop(m_luaState, 1);
     return true;
 }
 
@@ -103,4 +80,36 @@ void LuaAPI::dumpStack() const
             break;
         }
     }
+}
+
+bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
+{
+    result_.clear();
+    if(!lua_istable(m_luaState, -1))
+    {
+        return false;
+    }
+    lua_pushnil(m_luaState);
+    while(lua_next(m_luaState, -2) != 0)
+    {
+        if(lua_isstring(m_luaState, -2)
+                && lua_istable(m_luaState, -1))
+        {
+            QString variableName = lua_tostring(m_luaState, -2);
+            QVector<double> variableValues;
+            lua_pushnil(m_luaState);
+            while(lua_next(m_luaState, -2) != 0)
+            {
+                if(lua_isnumber(m_luaState, -1))
+                {
+                    variableValues.push_back(lua_tonumber(m_luaState, -1));
+                }
+                lua_pop(m_luaState, 1);
+            }
+            result_.insert({std::move(variableName), std::move(variableValues)});
+        }
+        lua_pop(m_luaState, 1);
+    }
+    lua_pop(m_luaState, 1);
+    return true;
 }
