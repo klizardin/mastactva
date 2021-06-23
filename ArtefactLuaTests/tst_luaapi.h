@@ -42,7 +42,7 @@ TEST(LuaAPI, callReturn)
     LuaAPI luaAPI;
     std::map<QString, QVector<double>> result;
     EXPECT_TRUE(luaAPI.call(g_simpleCallTestCode, g_callTestFunctionName, result));
-    //ASSERT_THAT(result, Eq(g_variables));
+    ASSERT_THAT(result, Eq(g_variables));
 }
 
 
