@@ -27,32 +27,6 @@ bool LuaAPI::run(const QString &script_) const
     return true;
 }
 
-void LuaAPI::dumpStack()
-{
-    int top = lua_gettop(m_luaState);
-    for (int i=1; i <= top; i++) {
-        printf("%d\t%s\t", i, luaL_typename(m_luaState,i));
-        switch (lua_type(m_luaState, i))
-        {
-        case LUA_TNUMBER:
-            qDebug() << lua_tonumber(m_luaState,i);
-            break;
-        case LUA_TSTRING:
-            qDebug() << lua_tostring(m_luaState,i);
-            break;
-        case LUA_TBOOLEAN:
-            qDebug() << (lua_toboolean(m_luaState, i) ? "true" : "false");
-            break;
-        case LUA_TNIL:
-            qDebug() << "nil";
-            break;
-        default:
-            qDebug() << lua_topointer(m_luaState,i);
-            break;
-        }
-    }
-}
-
 bool LuaAPI::call(
         const QString &script_,
         const QString &functionName_,
@@ -103,4 +77,30 @@ bool LuaAPI::call(
     }
     lua_pop(m_luaState, 1);
     return true;
+}
+
+void LuaAPI::dumpStack()
+{
+    int top = lua_gettop(m_luaState);
+    for (int i=1; i <= top; i++) {
+        printf("%d\t%s\t", i, luaL_typename(m_luaState,i));
+        switch (lua_type(m_luaState, i))
+        {
+        case LUA_TNUMBER:
+            qDebug() << lua_tonumber(m_luaState,i);
+            break;
+        case LUA_TSTRING:
+            qDebug() << lua_tostring(m_luaState,i);
+            break;
+        case LUA_TBOOLEAN:
+            qDebug() << (lua_toboolean(m_luaState, i) ? "true" : "false");
+            break;
+        case LUA_TNIL:
+            qDebug() << "nil";
+            break;
+        default:
+            qDebug() << lua_topointer(m_luaState,i);
+            break;
+        }
+    }
 }
