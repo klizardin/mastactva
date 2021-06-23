@@ -3,21 +3,27 @@
 #include <lua.hpp>
 
 
+LuaAPI::LuaAPI()
+{
+    luaState = luaL_newstate();
+    luaL_openlibs(luaState);
+}
+
+LuaAPI::~LuaAPI()
+{
+    lua_close(luaState);
+    luaState = nullptr;
+}
+
 bool LuaAPI::run(const QString &script_) const
 {
-    lua_State *luaState = luaL_newstate();
-    luaL_openlibs(luaState);
     int error = luaL_loadstring(luaState, script_.toUtf8().constData())
             || lua_pcall(luaState, 0, 0, 0);
     if(error)
     {
         qDebug() << QString(lua_tostring(luaState, -1));
-        lua_close(luaState);
-        luaState = nullptr;
         return false;
     }
-    lua_close(luaState);
-    luaState = nullptr;
     return true;
 }
 
@@ -54,16 +60,12 @@ bool LuaAPI::call(
         ) const
 {
     result_.clear();
-    lua_State *luaState = luaL_newstate();
-    luaL_openlibs(luaState);
     int error = luaL_loadstring(luaState, script_.toUtf8().constData())
             || lua_pcall(luaState, 0, 0, 0)
             ;
     if(error)
     {
         qDebug() << QString(lua_tostring(luaState, -1));
-        lua_close(luaState);
-        luaState = nullptr;
         return false;
     }
     dumpStack(luaState);
@@ -73,15 +75,11 @@ bool LuaAPI::call(
     if(error)
     {
         qDebug() << QString(lua_tostring(luaState, -1));
-        lua_close(luaState);
-        luaState = nullptr;
         return false;
     }
     if(!lua_istable(luaState, -1))
     {
         qDebug() << "result type is not table";
-        lua_close(luaState);
-        luaState = nullptr;
         return false;
     }
     lua_pushnil(luaState);
@@ -106,7 +104,5 @@ bool LuaAPI::call(
         lua_pop(luaState, 1);
     }
     lua_pop(luaState, 1);
-    lua_close(luaState);
-    luaState = nullptr;
     return true;
 }
