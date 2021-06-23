@@ -5,6 +5,7 @@
 #include <QString>
 #include <QVector>
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <gmock/gmock-matchers.h>
 #include "luaapi.h"
 
@@ -45,10 +46,29 @@ TEST(LuaAPI, callReturn)
     ASSERT_THAT(result, Eq(g_variables));
 }
 
+
+class VariablesGetterMock : public IVariablesGetter
+{
+public:
+    MOCK_METHOD(bool, get, (const QString &, QVector<double> &), (const, override));
+};
+
+
+bool returnA(const QString &, QVector<double> &data_)
+{
+    data_ = g_variables["a"];
+    return true;
+}
+
+
 TEST(LuaAPI, getVariable)
 {
+    std::shared_ptr<VariablesGetterMock> variablesGetterMock = std::make_shared<VariablesGetterMock>();
     LuaAPI luaAPI;
+    luaAPI.set(variablesGetterMock);
     std::map<QString, QVector<double>> result;
+    EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
+            .WillOnce(&returnA);
     EXPECT_TRUE(luaAPI.call(g_variablesCallTestCode, g_callTestFunctionName, result));
     ASSERT_THAT(result, Eq(g_variables));
 }
