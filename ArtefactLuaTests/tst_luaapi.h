@@ -12,7 +12,8 @@
 
 using namespace testing;
 
-namespace {
+namespace
+{
     const char *g_simpleCallTestCode =
             "function main (...)\n"
             "   result = {}\n"
