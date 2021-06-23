@@ -12,7 +12,7 @@
 using namespace testing;
 
 namespace {
-    const char *g_callTestCode =
+    const char *g_simpleCallTestCode =
             "function main (...)\n"
             "   result = {}\n"
             "   result[\"a\"] = {1,2,3}\n"
@@ -28,7 +28,7 @@ TEST(LuaAPI, callReturn)
     LuaAPI luaAPI;
     std::map<QString, QVector<double>> resultValue = {{QString("a"), {1.0, 2.0, 3.0}},};
     std::map<QString, QVector<double>> result;
-    EXPECT_TRUE(luaAPI.call(g_callTestCode, g_callTestFunctionName, result));
+    EXPECT_TRUE(luaAPI.call(g_simpleCallTestCode, g_callTestFunctionName, result));
     //ASSERT_THAT(result, Eq(resultValue));
 }
 
