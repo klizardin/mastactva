@@ -45,5 +45,12 @@ TEST(LuaAPI, callReturn)
     ASSERT_THAT(result, Eq(g_variables));
 }
 
+TEST(LuaAPI, getVariable)
+{
+    LuaAPI luaAPI;
+    std::map<QString, QVector<double>> result;
+    EXPECT_TRUE(luaAPI.call(g_variablesCallTestCode, g_callTestFunctionName, result));
+    ASSERT_THAT(result, Eq(g_variables));
+}
 
 #endif // TST_LUAAPI_H
