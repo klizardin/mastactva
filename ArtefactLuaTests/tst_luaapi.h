@@ -26,16 +26,23 @@ namespace {
             "   return result\n"
             "end\n"
             ;
+
+    std::map<QString, QVector<double>> g_variables =
+    {
+        {
+            QString("a"),
+            {1.0, 2.0, 3.0}
+        },
+    };
 }
 
 
 TEST(LuaAPI, callReturn)
 {
     LuaAPI luaAPI;
-    std::map<QString, QVector<double>> resultValue = {{QString("a"), {1.0, 2.0, 3.0}},};
     std::map<QString, QVector<double>> result;
     EXPECT_TRUE(luaAPI.call(g_simpleCallTestCode, g_callTestFunctionName, result));
-    //ASSERT_THAT(result, Eq(resultValue));
+    //ASSERT_THAT(result, Eq(g_variables));
 }
 
 
