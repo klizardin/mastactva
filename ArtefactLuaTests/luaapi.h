@@ -22,6 +22,9 @@ public:
             ) const;
 
 private:
+    void dumpStack();
+
+private:
     lua_State *m_luaState = nullptr;
 };
 
