@@ -60,7 +60,7 @@ bool LuaAPI::call(
         if(lua_isstring(m_luaState, -2)
                 && lua_istable(m_luaState, -1))
         {
-            const QString variableName = lua_tostring(m_luaState, -2);
+            QString variableName = lua_tostring(m_luaState, -2);
             QVector<double> variableValues;
             lua_pushnil(m_luaState);
             while(lua_next(m_luaState, -2) != 0)
