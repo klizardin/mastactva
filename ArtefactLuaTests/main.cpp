@@ -1,4 +1,5 @@
 #include "tst_installed.h"
+#include "tst_luaapi.h"
 
 #include <gtest/gtest.h>
 

@@ -11,7 +11,8 @@ CONFIG += thread
 
 HEADERS += \
         luaapi.h \
-        tst_installed.h
+        tst_installed.h \
+        tst_luaapi.h
 
 SOURCES += \
         luaapi.cpp \
