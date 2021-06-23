@@ -3,14 +3,19 @@
 #include <lua.hpp>
 
 
+QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
+
+
 LuaAPI::LuaAPI()
 {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
+    s_apis.insert(m_luaState, this);
 }
 
 LuaAPI::~LuaAPI()
 {
+    s_apis.remove(m_luaState);
     lua_close(m_luaState);
     m_luaState = nullptr;
 }
@@ -30,6 +35,7 @@ bool LuaAPI::call(
     {
         return false;
     }
+    initFunctions();
     if(!callFunction(functionName_))
     {
         return false;
@@ -45,6 +51,29 @@ bool LuaAPI::call(
 void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
 {
     m_variablesGetter = variablesGetter_;
+}
+
+bool LuaAPI::pushVariableValue(const QString &name_) const
+{
+    QVector<double> value;
+    if(!m_variablesGetter->get(name_, value))
+    {
+        return false;
+    }
+    push(value);
+    return true;
+}
+
+LuaAPI *LuaAPI::getByState(lua_State *luaState_)
+{
+    if(s_apis.contains(luaState_))
+    {
+        return s_apis.value(luaState_);
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 void LuaAPI::dumpStack() const
@@ -140,4 +169,43 @@ bool LuaAPI::callFunction(const QString &functionName_) const
         return false;
     }
     return true;
+}
+
+void LuaAPI::push(const QVector<double> &value_) const
+{
+    lua_newtable(m_luaState);
+    int index = 1;
+    for(double v_ : value_)
+    {
+        lua_pushnumber(m_luaState, index);
+        lua_pushnumber(m_luaState, v_);
+        lua_settable(m_luaState, -3);
+        ++index;
+    }
+}
+
+int l_getVariable(lua_State *luaState_)
+{
+    const QString name = lua_isstring(luaState_, -1)
+            ? lua_tostring(luaState_, -1)
+            : QString()
+              ;
+    lua_pop(luaState_, 1);
+    LuaAPI *api = LuaAPI::getByState(luaState_);
+    if(!api)
+    {
+        lua_pushnil(luaState_);
+        return 1;
+    }
+    if(!api->pushVariableValue(name))
+    {
+        lua_pushnil(luaState_);
+    }
+    return 1;
+}
+
+void LuaAPI::initFunctions() const
+{
+    lua_pushcfunction(m_luaState, l_getVariable);
+    lua_setglobal(m_luaState, "getVariable");
 }
