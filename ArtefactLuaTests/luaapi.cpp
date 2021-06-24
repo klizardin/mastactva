@@ -247,11 +247,11 @@ std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
         const bool hasStrings = !std::get<1>(values).isEmpty();
         if(!hasNumbers && !hasStrings)
         {
-            if(lua_isnumber(m_luaState, -1))
+            if(LUA_TNUMBER == lua_type(m_luaState, -1))
             {
                 std::get<0>(values).push_back(lua_tonumber(m_luaState, -1));
             }
-            else if(lua_isstring(m_luaState, -1))
+            else if(LUA_TSTRING == lua_type(m_luaState, -1))
             {
                 std::get<1>(values).push_back(lua_tostring(m_luaState, -1));
             }
