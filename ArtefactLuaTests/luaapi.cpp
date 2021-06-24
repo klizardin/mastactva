@@ -248,10 +248,10 @@ void LuaAPI::setVariableImpl() const
     processStack(2, 0);
 }
 
-void LuaAPI::processStack(int inputArgs_, int outputArgs_) const
+void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
 {
-    lua_pop(m_luaState, inputArgs_);
-    for(int i = 0; i < outputArgs_; ++i)
+    lua_pop(m_luaState, inputArgsCount_);
+    for(int i = 0; i < outputArgsCount_; ++i)
     {
         lua_pushnil(m_luaState);
     }

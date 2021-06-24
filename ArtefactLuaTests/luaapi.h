@@ -59,7 +59,7 @@ private:
     static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;
-    void processStack(int inputArgs_, int outputArgs_) const;
+    void processStack(int inputArgsCount_, int outputArgsCount_) const;
     template<FunctionImplEn func_>
     void functionImplementationDispatch() const;
     void initFunctions() const;
