@@ -23,8 +23,8 @@ const char * g_simpleErrorLuaScript = "b*2"; // undefined variable error
 TEST(Lua, installed)
 {
     LuaAPI api;
-    EXPECT_TRUE(api.run(g_simpleLuaScript));
-    EXPECT_FALSE(api.run(g_simpleErrorLuaScript));
+    EXPECT_TRUE(api.load(g_simpleLuaScript));
+    EXPECT_FALSE(api.load(g_simpleErrorLuaScript));
 }
 
 

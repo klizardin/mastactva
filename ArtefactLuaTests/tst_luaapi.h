@@ -12,18 +12,19 @@
 
 using namespace testing;
 
+
 namespace
 {
     const char *g_simpleCallTestCode =
-            "function main (...)\n"
+            "function main ()\n"
             "   result = {}\n"
             "   result[\"a\"] = {1,2,3}\n"
             "   return result\n"
             "end\n"
             ;
-    const char *g_callTestFunctionName = "main";
+    const char *g_functionName = "main";
     const char *g_variablesCallTestCode =
-            "function main (...)\n"
+            "function main ()\n"
             "   result = {}\n"
             "   result[\"a\"] = getVariable(\"a\")\n"
             "   return result\n"
@@ -44,7 +45,8 @@ TEST(LuaAPI, callReturn)
 {
     LuaAPI luaAPI;
     std::map<QString, QVector<double>> result;
-    EXPECT_TRUE(luaAPI.call(g_simpleCallTestCode, g_callTestFunctionName, result));
+    EXPECT_TRUE(luaAPI.load(g_simpleCallTestCode));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_variables));
 }
 
@@ -68,10 +70,11 @@ TEST(LuaAPI, getVariable)
     std::shared_ptr<VariablesGetterMock> variablesGetterMock = std::make_shared<VariablesGetterMock>();
     LuaAPI luaAPI;
     luaAPI.set(variablesGetterMock);
+    EXPECT_TRUE(luaAPI.load(g_variablesCallTestCode));
     std::map<QString, QVector<double>> result;
     EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
             .WillOnce(&returnA);
-    EXPECT_TRUE(luaAPI.call(g_variablesCallTestCode, g_callTestFunctionName, result));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_variables));
 }
 
