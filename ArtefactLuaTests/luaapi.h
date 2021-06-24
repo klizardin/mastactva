@@ -26,6 +26,13 @@ public:
 };
 
 
+enum LuaFunctionImplEn
+{
+    getVariable,
+    setVariable
+};
+
+
 class LuaAPI
 {
 public:
