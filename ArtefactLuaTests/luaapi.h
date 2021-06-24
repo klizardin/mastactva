@@ -47,11 +47,6 @@ public:
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
     void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
 
-    template<LuaFunctionImplEn func_>
-    void functionImplementation() const;
-
-    static LuaAPI *getByState(lua_State *luaState_);
-
 private:
     void dumpStack() const;
     bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
@@ -61,9 +56,12 @@ private:
     void push(const QVector<double> &value_) const;
     QVector<double> getNumberList() const;
     bool pushVariableValue(const QString &name_) const;
+    static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;
     void processStack(int inputArgs_, int outputArgs_) const;
+    template<LuaFunctionImplEn func_>
+    void functionImplementation() const;
     void initFunctions() const;
 
 private:
@@ -71,6 +69,9 @@ private:
     std::shared_ptr<IVariablesGetter> m_variablesGetter;
     std::shared_ptr<IVariablesSetter> m_variablesSetter;
     static QHash<lua_State *, LuaAPI *> s_apis;
+
+    template<LuaFunctionImplEn impl_, int inputArgs_, int outputArgs_>
+    friend int l_implementation(lua_State *luaState_);
 };
 
 
