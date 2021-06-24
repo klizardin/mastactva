@@ -40,6 +40,7 @@ public:
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
     void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
     bool pushVariableValue(const QString &name_) const;
+    void setVariableImpl() const;
 
     static LuaAPI *getByState(lua_State *luaState_);
 
@@ -50,6 +51,7 @@ private:
     bool loadScript(const QString &script_) const;
     bool callFunction(const QString &functionName_) const;
     void push(const QVector<double> &value_) const;
+    QVector<double> getNumberList() const;
     void initFunctions() const;
 
 private:

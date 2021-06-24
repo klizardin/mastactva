@@ -79,6 +79,30 @@ bool LuaAPI::pushVariableValue(const QString &name_) const
     return true;
 }
 
+void LuaAPI::setVariableImpl() const
+{
+    // check arguments types
+    if(!lua_isstring(m_luaState, -2)
+            || !lua_istable(m_luaState, -1))
+    {
+        lua_pop(m_luaState, 2);
+        qDebug() << "wrong argument types:"
+            << lua_type(m_luaState, -2) << "(should be string)"
+            << lua_type(m_luaState, -1) << "(should be table of numbers)"
+            ;
+        return;
+    }
+    if(!m_variablesSetter.operator bool())
+    {
+        lua_pop(m_luaState, 2);
+        return;
+    }
+    const QString name = lua_tostring(m_luaState, -2);
+    const QVector<double> value = getNumberList();
+    lua_pop(m_luaState, 2);
+    m_variablesSetter->add(name, value);
+}
+
 LuaAPI *LuaAPI::getByState(lua_State *luaState_)
 {
     if(s_apis.contains(luaState_))
@@ -132,16 +156,7 @@ bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
                 && lua_istable(m_luaState, -1))
         {
             QString variableName = lua_tostring(m_luaState, -2);
-            QVector<double> variableValues;
-            lua_pushnil(m_luaState);
-            while(lua_next(m_luaState, -2) != 0)
-            {
-                if(lua_isnumber(m_luaState, -1))
-                {
-                    variableValues.push_back(lua_tonumber(m_luaState, -1));
-                }
-                lua_pop(m_luaState, 1);
-            }
+            QVector<double> variableValues = getNumberList();
             result_.insert({std::move(variableName), std::move(variableValues)});
         }
         lua_pop(m_luaState, 1);
@@ -199,6 +214,21 @@ void LuaAPI::push(const QVector<double> &value_) const
     }
 }
 
+QVector<double> LuaAPI::getNumberList() const
+{
+    QVector<double> values;
+    lua_pushnil(m_luaState);
+    while(lua_next(m_luaState, -2) != 0)
+    {
+        if(lua_isnumber(m_luaState, -1))
+        {
+            values.push_back(lua_tonumber(m_luaState, -1));
+        }
+        lua_pop(m_luaState, 1);
+    }
+    return values;
+}
+
 int l_getVariable(lua_State *luaState_)
 {
     const QString name = lua_isstring(luaState_, -1)
@@ -219,8 +249,24 @@ int l_getVariable(lua_State *luaState_)
     return 1;
 }
 
+int l_setVariable(lua_State *luaState_)
+{
+    LuaAPI *api = LuaAPI::getByState(luaState_);
+    if(!api)
+    {
+        lua_pop(luaState_, 2);
+        return 0;
+    }
+
+    api->setVariableImpl();
+    return 0;
+}
+
 void LuaAPI::initFunctions() const
 {
     lua_pushcfunction(m_luaState, l_getVariable);
     lua_setglobal(m_luaState, "getVariable");
+    lua_pushcfunction(m_luaState, l_setVariable);
+    lua_setglobal(m_luaState, "setVariable");
 }
+
