@@ -20,7 +20,7 @@ LuaAPI::~LuaAPI()
     m_luaState = nullptr;
 }
 
-bool LuaAPI::run(const QString &script_) const
+bool LuaAPI::load(const QString &script_) const
 {
     return loadScript(script_);
 }

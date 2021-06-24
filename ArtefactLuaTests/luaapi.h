@@ -31,7 +31,7 @@ public:
     LuaAPI();
     ~LuaAPI();
 
-    bool run(const QString &script_) const;
+    bool load(const QString &script_) const;
     bool call(
             const QString &script_,
             const QString &functionName_,
