@@ -258,13 +258,13 @@ void LuaAPI::processStack(int inputArgs_, int outputArgs_) const
 }
 
 template<>
-void LuaAPI::functionImplementation<LuaAPI::FunctionImplEn::getVariable>() const
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::getVariable>() const
 {
     getVariableImpl();
 }
 
 template<>
-void LuaAPI::functionImplementation<LuaAPI::FunctionImplEn::setVariable>() const
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariable>() const
 {
     setVariableImpl();
 }
@@ -282,7 +282,7 @@ int l_implementation(lua_State *luaState_)
         }
         return outputArgs_;
     }
-    api->functionImplementation<impl_>();
+    api->functionImplementationDispatch<impl_>();
     return outputArgs_;
 }
 

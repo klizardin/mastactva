@@ -61,7 +61,7 @@ private:
     void setVariableImpl() const;
     void processStack(int inputArgs_, int outputArgs_) const;
     template<FunctionImplEn func_>
-    void functionImplementation() const;
+    void functionImplementationDispatch() const;
     void initFunctions() const;
 
 private:
