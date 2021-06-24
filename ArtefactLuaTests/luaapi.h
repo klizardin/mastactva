@@ -33,7 +33,6 @@ public:
 
     bool load(const QString &script_) const;
     bool call(
-            const QString &script_,
             const QString &functionName_,
             std::map<QString, QVector<double>> &result_
             ) const;

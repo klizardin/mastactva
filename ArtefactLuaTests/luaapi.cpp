@@ -22,20 +22,19 @@ LuaAPI::~LuaAPI()
 
 bool LuaAPI::load(const QString &script_) const
 {
-    return loadScript(script_);
-}
-
-bool LuaAPI::call(
-        const QString &script_,
-        const QString &functionName_,
-        std::map<QString, QVector<double>> &result_
-        ) const
-{
     if(!loadScript(script_))
     {
         return false;
     }
     initFunctions();
+    return true;
+}
+
+bool LuaAPI::call(
+        const QString &functionName_,
+        std::map<QString, QVector<double>> &result_
+        ) const
+{
     if(!callFunction(functionName_))
     {
         return false;
