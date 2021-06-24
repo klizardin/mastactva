@@ -3,6 +3,17 @@
 #include <lua.hpp>
 
 
+bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
+{
+    bool result = false;
+    for(const std::map<QString, QVector<double>>::value_type &var_ : variables_)
+    {
+        result |= add(var_.first, var_.second);
+    }
+    return result;
+}
+
+
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
 
 
