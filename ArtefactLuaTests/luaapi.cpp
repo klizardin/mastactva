@@ -258,18 +258,18 @@ void LuaAPI::processStack(int inputArgs_, int outputArgs_) const
 }
 
 template<>
-void LuaAPI::functionImplementation<LuaAPI::LuaFunctionImplEn::getVariable>() const
+void LuaAPI::functionImplementation<LuaAPI::FunctionImplEn::getVariable>() const
 {
     getVariableImpl();
 }
 
 template<>
-void LuaAPI::functionImplementation<LuaAPI::LuaFunctionImplEn::setVariable>() const
+void LuaAPI::functionImplementation<LuaAPI::FunctionImplEn::setVariable>() const
 {
     setVariableImpl();
 }
 
-template<LuaAPI::LuaFunctionImplEn impl_, int inputArgs_, int outputArgs_>
+template<LuaAPI::FunctionImplEn impl_, int inputArgs_, int outputArgs_>
 int l_implementation(lua_State *luaState_)
 {
     LuaAPI *api = LuaAPI::getByState(luaState_);
@@ -289,8 +289,8 @@ int l_implementation(lua_State *luaState_)
 void LuaAPI::initFunctions() const
 {
     std::tuple<const char *, lua_CFunction> functions[] = {
-        {"getVariable", l_implementation<LuaAPI::LuaFunctionImplEn::getVariable, 1, 1>},
-        {"setVariable", l_implementation<LuaAPI::LuaFunctionImplEn::setVariable, 2, 0>},
+        {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
+        {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
     };
 
     for(const auto &val_ : functions)

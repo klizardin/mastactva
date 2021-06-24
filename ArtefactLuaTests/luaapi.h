@@ -29,7 +29,7 @@ public:
 class LuaAPI
 {
 private:
-    enum class LuaFunctionImplEn
+    enum class FunctionImplEn
     {
         getVariable,
         setVariable
@@ -60,7 +60,7 @@ private:
     void getVariableImpl() const;
     void setVariableImpl() const;
     void processStack(int inputArgs_, int outputArgs_) const;
-    template<LuaFunctionImplEn func_>
+    template<FunctionImplEn func_>
     void functionImplementation() const;
     void initFunctions() const;
 
@@ -70,7 +70,7 @@ private:
     std::shared_ptr<IVariablesSetter> m_variablesSetter;
     static QHash<lua_State *, LuaAPI *> s_apis;
 
-    template<LuaFunctionImplEn impl_, int inputArgs_, int outputArgs_>
+    template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);
 };
 
