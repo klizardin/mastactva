@@ -49,10 +49,10 @@ public:
 
 private:
     void dumpStack() const;
-    bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
     bool ok(int error_, bool errorStrAtTop_ = true) const;
     bool loadScript(const QString &script_) const;
     bool callFunction(const QString &functionName_) const;
+    bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
     void push(const QVector<double> &value_) const;
     QVector<double> getNumberList() const;
     bool pushVariableValue(const QString &name_) const;

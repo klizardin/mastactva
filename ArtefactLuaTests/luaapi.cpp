@@ -107,29 +107,6 @@ void LuaAPI::dumpStack() const
     }
 }
 
-bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
-{
-    result_.clear();
-    if(!lua_istable(m_luaState, -1))
-    {
-        return false;
-    }
-    lua_pushnil(m_luaState);
-    while(lua_next(m_luaState, -2) != 0)
-    {
-        if(lua_isstring(m_luaState, -2)
-                && lua_istable(m_luaState, -1))
-        {
-            QString variableName = lua_tostring(m_luaState, -2);
-            QVector<double> variableValues = getNumberList();
-            result_.insert({std::move(variableName), std::move(variableValues)});
-        }
-        lua_pop(m_luaState, 1);
-    }
-    lua_pop(m_luaState, 1);
-    return true;
-}
-
 bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
 {
     if(error_)
@@ -163,6 +140,29 @@ bool LuaAPI::callFunction(const QString &functionName_) const
     {
         return false;
     }
+    return true;
+}
+
+bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
+{
+    result_.clear();
+    if(!lua_istable(m_luaState, -1))
+    {
+        return false;
+    }
+    lua_pushnil(m_luaState);
+    while(lua_next(m_luaState, -2) != 0)
+    {
+        if(lua_isstring(m_luaState, -2)
+                && lua_istable(m_luaState, -1))
+        {
+            QString variableName = lua_tostring(m_luaState, -2);
+            QVector<double> variableValues = getNumberList();
+            result_.insert({std::move(variableName), std::move(variableValues)});
+        }
+        lua_pop(m_luaState, 1);
+    }
+    lua_pop(m_luaState, 1);
     return true;
 }
 
