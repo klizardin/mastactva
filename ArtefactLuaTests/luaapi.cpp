@@ -266,7 +266,10 @@ void LuaAPI::hideLibsBlackList()
     static const GlobalNameType s_globalNames[] =
     {
         {"io"},
-        {"debug"}
+        {"debug"},
+        {"dofile"},
+        {"load"},
+        {"loadfile"}
     };
     for(const GlobalNameType &name_ : s_globalNames)
     {
