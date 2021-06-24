@@ -273,7 +273,7 @@ int l_implementation(lua_State *luaState_)
     if(!api)
     {
         lua_pop(luaState_, inputArgs_);
-        for(int i = 0; i < inputArgs_; ++i)
+        for(int i = 0; i < outputArgs_; ++i)
         {
             lua_pushnil(luaState_);
         }
@@ -285,9 +285,15 @@ int l_implementation(lua_State *luaState_)
 
 void LuaAPI::initFunctions() const
 {
-    lua_pushcfunction(m_luaState, (l_implementation<LuaFunctionImplEn::getVariable, 1, 1>));
-    lua_setglobal(m_luaState, "getVariable");
-    lua_pushcfunction(m_luaState, (l_implementation<LuaFunctionImplEn::setVariable, 2, 0>));
-    lua_setglobal(m_luaState, "setVariable");
+    std::tuple<const char *, lua_CFunction> functions[] = {
+        {"getVariable", l_implementation<LuaFunctionImplEn::getVariable, 1, 1>},
+        {"setVariable", l_implementation<LuaFunctionImplEn::setVariable, 2, 0>},
+    };
+
+    for(const auto &val_ : functions)
+    {
+        lua_pushcfunction(m_luaState, std::get<1>(val_));
+        lua_setglobal(m_luaState, std::get<0>(val_));
+    }
 }
 
