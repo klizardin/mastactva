@@ -224,6 +224,19 @@ void LuaAPI::push(const QVector<double> &value_) const
     }
 }
 
+void LuaAPI::push(const QStringList &value_) const
+{
+    lua_newtable(m_luaState);
+    int index = 1;
+    for(const QString &v_ : value_)
+    {
+        lua_pushnumber(m_luaState, index);
+        lua_pushstring(m_luaState, v_.toUtf8().constData());
+        lua_settable(m_luaState, -3);
+        ++index;
+    }
+}
+
 std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
 {
     std::tuple<QVector<double>, QStringList> values;
@@ -265,11 +278,19 @@ std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
 bool LuaAPI::pushVariableValue(const QString &name_) const
 {
     QVector<double> value;
-    if(!m_variablesGetter->get(name_, value))
+    QStringList valueStr;
+    if(m_variablesGetter->get(name_, value))
+    {
+        push(value);
+    }
+    else if(m_variablesGetter->get(name_, valueStr))
+    {
+        push(valueStr);
+    }
+    else
     {
         return false;
     }
-    push(value);
     return true;
 }
 

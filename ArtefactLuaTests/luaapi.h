@@ -15,6 +15,7 @@ class IVariablesGetter
 public:
     virtual ~IVariablesGetter() = default;
     virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
+    virtual bool get(const QString &name_, QStringList &data_) const = 0;
 };
 
 
@@ -71,6 +72,7 @@ private:
             std::map<QString, QStringList> &resultStrs_
             ) const;
     void push(const QVector<double> &value_) const;
+    void push(const QStringList &value_) const;
     std::tuple<QVector<double>, QStringList> getList() const;
     bool pushVariableValue(const QString &name_) const;
     static LuaAPI *getByState(lua_State *luaState_);
