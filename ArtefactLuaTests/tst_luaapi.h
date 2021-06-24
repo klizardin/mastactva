@@ -89,8 +89,13 @@ TEST(LuaAPI, getVariable)
 class VariablesSetterMock : public IVariablesSetter
 {
 public:
+    bool add(const QString &name_, QVector<double> &&data_) override
+    {
+        return add_rvref(name_, std::move(data_));
+    }
+
     MOCK_METHOD(bool, add, (const QString &, const QVector<double> &), (override));
-    MOCK_METHOD(bool, add, (const QString &, QVector<double> &&), (override));
+    MOCK_METHOD2(add_rvref, bool(const QString &, QVector<double>));
 };
 
 TEST(LuaAPI, setVariable)
@@ -104,7 +109,7 @@ TEST(LuaAPI, setVariable)
     std::map<QString, QVector<double>> result;
     EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
             .WillOnce(&returnA);
-    EXPECT_CALL(*variablesSetterMock, add(QString("b"), g_variables["a"]))
+    EXPECT_CALL(*variablesSetterMock, add_rvref(QString("b"), g_variables["a"]))
             .WillOnce(Return(true));
     EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_empty));

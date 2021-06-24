@@ -245,8 +245,8 @@ void LuaAPI::setVariableImpl() const
         return;
     }
     const QString name = lua_tostring(m_luaState, -2);
-    const QVector<double> value = getNumberList();
-    m_variablesSetter->add(name, value);
+    QVector<double> value = getNumberList();
+    m_variablesSetter->add(name, std::move(value));
     processStack(2, 0);
 }
 
