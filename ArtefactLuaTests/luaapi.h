@@ -38,6 +38,7 @@ public:
             std::map<QString, QVector<double>> &result_
             ) const;
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
+    void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
     bool pushVariableValue(const QString &name_) const;
 
     static LuaAPI *getByState(lua_State *luaState_);
@@ -54,6 +55,7 @@ private:
 private:
     lua_State *m_luaState = nullptr;
     std::shared_ptr<IVariablesGetter> m_variablesGetter;
+    std::shared_ptr<IVariablesSetter> m_variablesSetter;
     static QHash<lua_State *, LuaAPI *> s_apis;
 };
 

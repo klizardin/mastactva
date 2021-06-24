@@ -63,6 +63,11 @@ void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
     m_variablesGetter = variablesGetter_;
 }
 
+void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
+{
+    m_variablesSetter = variablesSetter_;
+}
+
 bool LuaAPI::pushVariableValue(const QString &name_) const
 {
     QVector<double> value;
