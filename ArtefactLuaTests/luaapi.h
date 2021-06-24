@@ -26,7 +26,7 @@ public:
 };
 
 
-enum LuaFunctionImplEn
+enum class LuaFunctionImplEn
 {
     getVariable,
     setVariable
@@ -46,6 +46,10 @@ public:
             ) const;
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
     void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
+
+    template<LuaFunctionImplEn func_>
+    void functionImplementation() const;
+
     void getVariableImpl() const;
     void setVariableImpl() const;
 

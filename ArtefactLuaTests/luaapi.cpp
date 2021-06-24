@@ -248,6 +248,25 @@ bool LuaAPI::pushVariableValue(const QString &name_) const
     return true;
 }
 
+template<LuaFunctionImplEn func_>
+void LuaAPI::functionImplementation() const
+{
+    Q_ASSERT(false); // not implemented
+}
+
+template<>
+void LuaAPI::functionImplementation<LuaFunctionImplEn::getVariable>() const
+{
+    getVariableImpl();
+}
+
+template<>
+void LuaAPI::functionImplementation<LuaFunctionImplEn::setVariable>() const
+{
+    setVariableImpl();
+}
+
+
 int l_getVariable(lua_State *luaState_)
 {
     LuaAPI *api = LuaAPI::getByState(luaState_);
