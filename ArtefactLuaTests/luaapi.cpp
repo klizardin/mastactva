@@ -266,38 +266,28 @@ void LuaAPI::functionImplementation<LuaFunctionImplEn::setVariable>() const
     setVariableImpl();
 }
 
-
-int l_getVariable(lua_State *luaState_)
+template<LuaFunctionImplEn impl_, int inputArgs_, int outputArgs_>
+int l_implementation(lua_State *luaState_)
 {
     LuaAPI *api = LuaAPI::getByState(luaState_);
     if(!api)
     {
-        lua_pop(luaState_, 1);
-        lua_pushnil(luaState_);
-        return 1;
+        lua_pop(luaState_, inputArgs_);
+        for(int i = 0; i < inputArgs_; ++i)
+        {
+            lua_pushnil(luaState_);
+        }
+        return outputArgs_;
     }
-    api->getVariableImpl();
-    return 1;
-}
-
-int l_setVariable(lua_State *luaState_)
-{
-    LuaAPI *api = LuaAPI::getByState(luaState_);
-    if(!api)
-    {
-        lua_pop(luaState_, 2);
-        return 0;
-    }
-
-    api->setVariableImpl();
-    return 0;
+    api->functionImplementation<impl_>();
+    return outputArgs_;
 }
 
 void LuaAPI::initFunctions() const
 {
-    lua_pushcfunction(m_luaState, l_getVariable);
+    lua_pushcfunction(m_luaState, (l_implementation<LuaFunctionImplEn::getVariable, 1, 1>));
     lua_setglobal(m_luaState, "getVariable");
-    lua_pushcfunction(m_luaState, l_setVariable);
+    lua_pushcfunction(m_luaState, (l_implementation<LuaFunctionImplEn::setVariable, 2, 0>));
     lua_setglobal(m_luaState, "setVariable");
 }
 
