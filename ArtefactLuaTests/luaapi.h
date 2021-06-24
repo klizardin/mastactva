@@ -26,15 +26,15 @@ public:
 };
 
 
-enum class LuaFunctionImplEn
-{
-    getVariable,
-    setVariable
-};
-
-
 class LuaAPI
 {
+private:
+    enum class LuaFunctionImplEn
+    {
+        getVariable,
+        setVariable
+    };
+
 public:
     LuaAPI();
     ~LuaAPI();
