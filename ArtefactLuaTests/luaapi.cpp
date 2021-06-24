@@ -30,6 +30,7 @@ LuaAPI::LuaAPI()
 {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
+    hideLibs();
     s_apis.insert(m_luaState, this);
 }
 
@@ -256,6 +257,39 @@ void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
     for(int i = 0; i < outputArgsCount_; ++i)
     {
         lua_pushnil(m_luaState);
+    }
+}
+
+void LuaAPI::hideLibs()
+{
+    using GlobalNameType = std::tuple<const char *>;
+    static const GlobalNameType s_globalNames[] =
+    {
+        {"io"},
+        {"debug"}
+    };
+    for(const GlobalNameType &name_ : s_globalNames)
+    {
+        lua_pushnil(m_luaState);
+        lua_setglobal(m_luaState, std::get<0>(name_));
+    }
+    using SpecificName2Type = std::tuple<const char *, const char *>;
+    static const SpecificName2Type s_specificNames[] =
+    {
+        {"os", "execute"},
+        {"os", "exit"},
+        {"os", "getenv"},
+        {"os", "remove"},
+        {"os", "rename"},
+        {"os", "setlocale"},
+        {"os", "tmpname"},
+    };
+    for(const SpecificName2Type &name_ : s_specificNames)
+    {
+        lua_getglobal(m_luaState, std::get<0>(name_));
+        lua_pushnil(m_luaState);
+        lua_setfield(m_luaState, -2, std::get<1>(name_));
+        lua_pop(m_luaState, 1);
     }
 }
 

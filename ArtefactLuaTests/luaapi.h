@@ -62,6 +62,7 @@ private:
     void getVariableImpl() const;
     void setVariableImpl() const;
     void processStack(int inputArgsCount_, int outputArgsCount_) const;
+    void hideLibs();
     template<FunctionImplEn func_>
     void functionImplementationDispatch() const;
     void initFunctions() const;
