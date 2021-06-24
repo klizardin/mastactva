@@ -31,6 +31,11 @@ LuaAPI::~LuaAPI()
     m_luaState = nullptr;
 }
 
+LuaAPI *LuaAPI::getByState(lua_State *luaState_)
+{
+    return s_apis.value(luaState_, nullptr);
+}
+
 bool LuaAPI::load(const QString &script_) const
 {
     if(!loadScript(script_))
@@ -66,11 +71,6 @@ void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
 void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
 {
     m_variablesSetter = variablesSetter_;
-}
-
-LuaAPI *LuaAPI::getByState(lua_State *luaState_)
-{
-    return s_apis.value(luaState_, nullptr);
 }
 
 void LuaAPI::dumpStack() const
