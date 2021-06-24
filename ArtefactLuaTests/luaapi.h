@@ -40,6 +40,7 @@ public:
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
     void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
     bool pushVariableValue(const QString &name_) const;
+    void getVariableImpl() const;
     void setVariableImpl() const;
 
     static LuaAPI *getByState(lua_State *luaState_);

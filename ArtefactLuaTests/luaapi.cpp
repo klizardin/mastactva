@@ -79,6 +79,25 @@ bool LuaAPI::pushVariableValue(const QString &name_) const
     return true;
 }
 
+void LuaAPI::getVariableImpl() const
+{
+    // check arguments types
+    if(!lua_isstring(m_luaState, -1))
+    {
+        qDebug() << "wrong argument types:"
+            << lua_type(m_luaState, -1) << "(should be string)"
+            ;
+        lua_pop(m_luaState, 1);
+        return;
+    }
+    const QString name = lua_tostring(m_luaState, -1);
+    lua_pop(m_luaState, 1);
+    if(!pushVariableValue(name))
+    {
+        lua_pushnil(m_luaState);
+    }
+}
+
 void LuaAPI::setVariableImpl() const
 {
     // check arguments types
@@ -231,21 +250,14 @@ QVector<double> LuaAPI::getNumberList() const
 
 int l_getVariable(lua_State *luaState_)
 {
-    const QString name = lua_isstring(luaState_, -1)
-            ? lua_tostring(luaState_, -1)
-            : QString()
-              ;
-    lua_pop(luaState_, 1);
     LuaAPI *api = LuaAPI::getByState(luaState_);
     if(!api)
     {
+        lua_pop(luaState_, 1);
         lua_pushnil(luaState_);
         return 1;
     }
-    if(!api->pushVariableValue(name))
-    {
-        lua_pushnil(luaState_);
-    }
+    api->getVariableImpl();
     return 1;
 }
 
