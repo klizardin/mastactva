@@ -241,37 +241,39 @@ std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
 {
     std::tuple<QVector<double>, QStringList> values;
     lua_pushnil(m_luaState);
-    while(lua_next(m_luaState, -2) != 0)
+    if(0 == lua_next(m_luaState, -2))
     {
-        const bool hasNumbers = !std::get<0>(values).isEmpty();
-        const bool hasStrings = !std::get<1>(values).isEmpty();
-        if(!hasNumbers && !hasStrings)
-        {
-            const int firstItemType = lua_type(m_luaState, -1);
-            if(LUA_TNUMBER == firstItemType)
-            {
-                std::get<0>(values).push_back(lua_tonumber(m_luaState, -1));
-            }
-            else if(LUA_TSTRING == firstItemType)
-            {
-                std::get<1>(values).push_back(lua_tostring(m_luaState, -1));
-            }
-        }
-        else if(hasNumbers)
+        return values;
+    }
+
+    const int firstItemType = lua_type(m_luaState, -1);
+    if(LUA_TNUMBER == firstItemType)
+    {
+        std::get<0>(values).push_back(lua_tonumber(m_luaState, -1));
+        lua_pop(m_luaState, 1);
+
+        while(lua_next(m_luaState, -2) != 0)
         {
             if(lua_isnumber(m_luaState, -1))
             {
                 std::get<0>(values).push_back(lua_tonumber(m_luaState, -1));
             }
+            lua_pop(m_luaState, 1);
         }
-        else if(hasStrings)
+    }
+    else if(LUA_TSTRING == firstItemType)
+    {
+        std::get<1>(values).push_back(lua_tostring(m_luaState, -1));
+        lua_pop(m_luaState, 1);
+
+        while(lua_next(m_luaState, -2) != 0)
         {
             if(lua_isstring(m_luaState, -1))
             {
                 std::get<1>(values).push_back(lua_tostring(m_luaState, -1));
             }
+            lua_pop(m_luaState, 1);
         }
-        lua_pop(m_luaState, 1);
     }
     return values;
 }
