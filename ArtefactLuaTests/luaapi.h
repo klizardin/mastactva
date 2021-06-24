@@ -22,19 +22,21 @@ class IVariablesSetter
 public:
     virtual ~IVariablesSetter() = default;
     virtual bool add(const QString &name_, const QVector<double> &data_) = 0;
+    virtual bool add(const QString &name_, QVector<double> &&data_) = 0;
     bool add(const std::map<QString, QVector<double>> &variables_);
-};
-
-
-enum class LuaFunctionImplEn
-{
-    getVariable,
-    setVariable
+    bool add(std::map<QString, QVector<double>> &&variables_);
 };
 
 
 class LuaAPI
 {
+private:
+    enum class FunctionImplEn
+    {
+        getVariable,
+        setVariable
+    };
+
 public:
     LuaAPI();
     ~LuaAPI();
@@ -47,23 +49,22 @@ public:
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
     void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
 
-    template<LuaFunctionImplEn func_>
-    void functionImplementation() const;
-
-    static LuaAPI *getByState(lua_State *luaState_);
-
 private:
     void dumpStack() const;
-    bool getNewVariables(std::map<QString, QVector<double>> &result_) const;
     bool ok(int error_, bool errorStrAtTop_ = true) const;
     bool loadScript(const QString &script_) const;
     bool callFunction(const QString &functionName_) const;
+    bool getReturnVariables(std::map<QString, QVector<double>> &result_) const;
     void push(const QVector<double> &value_) const;
     QVector<double> getNumberList() const;
     bool pushVariableValue(const QString &name_) const;
+    static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;
-    void processStack(int inputArgs_, int outputArgs_) const;
+    void processStack(int inputArgsCount_, int outputArgsCount_) const;
+    void hideLibsBlackList();
+    template<FunctionImplEn func_>
+    void functionImplementationDispatch() const;
     void initFunctions() const;
 
 private:
@@ -71,6 +72,9 @@ private:
     std::shared_ptr<IVariablesGetter> m_variablesGetter;
     std::shared_ptr<IVariablesSetter> m_variablesSetter;
     static QHash<lua_State *, LuaAPI *> s_apis;
+
+    template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
+    friend int l_implementation(lua_State *luaState_);
 };
 
 

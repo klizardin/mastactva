@@ -13,6 +13,15 @@ bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
     return result;
 }
 
+bool IVariablesSetter::add(std::map<QString, QVector<double>> &&variables_)
+{
+    bool result = false;
+    for(std::map<QString, QVector<double>>::value_type &var_ : variables_)
+    {
+        result |= add(var_.first, std::move(var_.second));
+    }
+    return result;
+}
 
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
 
@@ -21,6 +30,7 @@ LuaAPI::LuaAPI()
 {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
+    hideLibsBlackList();
     s_apis.insert(m_luaState, this);
 }
 
@@ -29,6 +39,11 @@ LuaAPI::~LuaAPI()
     s_apis.remove(m_luaState);
     lua_close(m_luaState);
     m_luaState = nullptr;
+}
+
+LuaAPI *LuaAPI::getByState(lua_State *luaState_)
+{
+    return s_apis.value(luaState_, nullptr);
 }
 
 bool LuaAPI::load(const QString &script_) const
@@ -50,7 +65,7 @@ bool LuaAPI::call(
     {
         return false;
     }
-    if(!getNewVariables(result_))
+    if(!getReturnVariables(result_))
     {
         qDebug() << "result type is not table";
         return false;
@@ -66,18 +81,6 @@ void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
 void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
 {
     m_variablesSetter = variablesSetter_;
-}
-
-LuaAPI *LuaAPI::getByState(lua_State *luaState_)
-{
-    if(s_apis.contains(luaState_))
-    {
-        return s_apis.value(luaState_);
-    }
-    else
-    {
-        return nullptr;
-    }
 }
 
 void LuaAPI::dumpStack() const
@@ -105,29 +108,6 @@ void LuaAPI::dumpStack() const
             break;
         }
     }
-}
-
-bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
-{
-    result_.clear();
-    if(!lua_istable(m_luaState, -1))
-    {
-        return false;
-    }
-    lua_pushnil(m_luaState);
-    while(lua_next(m_luaState, -2) != 0)
-    {
-        if(lua_isstring(m_luaState, -2)
-                && lua_istable(m_luaState, -1))
-        {
-            QString variableName = lua_tostring(m_luaState, -2);
-            QVector<double> variableValues = getNumberList();
-            result_.insert({std::move(variableName), std::move(variableValues)});
-        }
-        lua_pop(m_luaState, 1);
-    }
-    lua_pop(m_luaState, 1);
-    return true;
 }
 
 bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
@@ -163,6 +143,29 @@ bool LuaAPI::callFunction(const QString &functionName_) const
     {
         return false;
     }
+    return true;
+}
+
+bool LuaAPI::getReturnVariables(std::map<QString, QVector<double>> &result_) const
+{
+    result_.clear();
+    if(!lua_istable(m_luaState, -1))
+    {
+        return false;
+    }
+    lua_pushnil(m_luaState);
+    while(lua_next(m_luaState, -2) != 0)
+    {
+        if(lua_isstring(m_luaState, -2)
+                && lua_istable(m_luaState, -1))
+        {
+            QString variableName = lua_tostring(m_luaState, -2);
+            QVector<double> variableValues = getNumberList();
+            result_.insert({std::move(variableName), std::move(variableValues)});
+        }
+        lua_pop(m_luaState, 1);
+    }
+    lua_pop(m_luaState, 1);
     return true;
 }
 
@@ -243,54 +246,90 @@ void LuaAPI::setVariableImpl() const
         return;
     }
     const QString name = lua_tostring(m_luaState, -2);
-    const QVector<double> value = getNumberList();
-    m_variablesSetter->add(name, value);
+    QVector<double> value = getNumberList();
+    m_variablesSetter->add(name, std::move(value));
     processStack(2, 0);
 }
 
-void LuaAPI::processStack(int inputArgs_, int outputArgs_) const
+void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
 {
-    lua_pop(m_luaState, inputArgs_);
-    for(int i = 0; i < outputArgs_; ++i)
+    lua_pop(m_luaState, inputArgsCount_);
+    for(int i = 0; i < outputArgsCount_; ++i)
     {
         lua_pushnil(m_luaState);
     }
 }
 
+void LuaAPI::hideLibsBlackList()
+{
+    using GlobalNameType = std::tuple<const char *>;
+    static const GlobalNameType s_globalNames[] =
+    {
+        {"io"},
+        {"debug"},
+        {"dofile"},
+        {"load"},
+        {"loadfile"}
+    };
+    for(const GlobalNameType &name_ : s_globalNames)
+    {
+        lua_pushnil(m_luaState);
+        lua_setglobal(m_luaState, std::get<0>(name_));
+    }
+    using SpecificName2Type = std::tuple<const char *, const char *>;
+    static const SpecificName2Type s_specificNames[] =
+    {
+        {"os", "execute"},
+        {"os", "exit"},
+        {"os", "getenv"},
+        {"os", "remove"},
+        {"os", "rename"},
+        {"os", "setlocale"},
+        {"os", "tmpname"},
+    };
+    for(const SpecificName2Type &name_ : s_specificNames)
+    {
+        lua_getglobal(m_luaState, std::get<0>(name_));
+        lua_pushnil(m_luaState);
+        lua_setfield(m_luaState, -2, std::get<1>(name_));
+        lua_pop(m_luaState, 1);
+    }
+}
+
 template<>
-void LuaAPI::functionImplementation<LuaFunctionImplEn::getVariable>() const
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::getVariable>() const
 {
     getVariableImpl();
 }
 
 template<>
-void LuaAPI::functionImplementation<LuaFunctionImplEn::setVariable>() const
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariable>() const
 {
     setVariableImpl();
 }
 
-template<LuaFunctionImplEn impl_, int inputArgs_, int outputArgs_>
+template<LuaAPI::FunctionImplEn function_, int inputArgsCount_, int outputArgsCount_>
 int l_implementation(lua_State *luaState_)
 {
     LuaAPI *api = LuaAPI::getByState(luaState_);
     if(!api)
     {
-        lua_pop(luaState_, inputArgs_);
-        for(int i = 0; i < outputArgs_; ++i)
+        lua_pop(luaState_, inputArgsCount_);
+        for(int i = 0; i < outputArgsCount_; ++i)
         {
             lua_pushnil(luaState_);
         }
-        return outputArgs_;
+        return outputArgsCount_;
     }
-    api->functionImplementation<impl_>();
-    return outputArgs_;
+    api->functionImplementationDispatch<function_>();
+    return outputArgsCount_;
 }
 
 void LuaAPI::initFunctions() const
 {
     std::tuple<const char *, lua_CFunction> functions[] = {
-        {"getVariable", l_implementation<LuaFunctionImplEn::getVariable, 1, 1>},
-        {"setVariable", l_implementation<LuaFunctionImplEn::setVariable, 2, 0>},
+        {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
+        {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
     };
 
     for(const auto &val_ : functions)

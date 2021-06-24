@@ -37,6 +37,12 @@ namespace
             "   return {}\n"
             "end\n"
             ;
+    const char *g_badLibCallTestCode =
+            "os.execute()\n"
+            ;
+    const char *g_badLibCallTest2Code =
+            "debug.debug()\n"
+            ;
 
     std::map<QString, QVector<double>> g_variables =
     {
@@ -89,7 +95,13 @@ TEST(LuaAPI, getVariable)
 class VariablesSetterMock : public IVariablesSetter
 {
 public:
+    bool add(const QString &name_, QVector<double> &&data_) override
+    {
+        return add_rvref(name_, std::move(data_));
+    }
+
     MOCK_METHOD(bool, add, (const QString &, const QVector<double> &), (override));
+    MOCK_METHOD2(add_rvref, bool(const QString &, QVector<double>));
 };
 
 TEST(LuaAPI, setVariable)
@@ -103,10 +115,17 @@ TEST(LuaAPI, setVariable)
     std::map<QString, QVector<double>> result;
     EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
             .WillOnce(&returnA);
-    EXPECT_CALL(*variablesSetterMock, add(QString("b"), g_variables["a"]))
+    EXPECT_CALL(*variablesSetterMock, add_rvref(QString("b"), g_variables["a"]))
             .WillOnce(Return(true));
     EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_empty));
+}
+
+TEST(LuaAPI, hideLibs)
+{
+    LuaAPI luaAPI;
+    EXPECT_FALSE(luaAPI.load(g_badLibCallTestCode));
+    EXPECT_FALSE(luaAPI.load(g_badLibCallTest2Code));
 }
 
 #endif // TST_LUAAPI_H
