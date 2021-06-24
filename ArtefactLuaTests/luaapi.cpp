@@ -269,21 +269,21 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariable>
     setVariableImpl();
 }
 
-template<LuaAPI::FunctionImplEn impl_, int inputArgs_, int outputArgs_>
+template<LuaAPI::FunctionImplEn function_, int inputArgsCount_, int outputArgsCount_>
 int l_implementation(lua_State *luaState_)
 {
     LuaAPI *api = LuaAPI::getByState(luaState_);
     if(!api)
     {
-        lua_pop(luaState_, inputArgs_);
-        for(int i = 0; i < outputArgs_; ++i)
+        lua_pop(luaState_, inputArgsCount_);
+        for(int i = 0; i < outputArgsCount_; ++i)
         {
             lua_pushnil(luaState_);
         }
-        return outputArgs_;
+        return outputArgsCount_;
     }
-    api->functionImplementationDispatch<impl_>();
-    return outputArgs_;
+    api->functionImplementationDispatch<function_>();
+    return outputArgsCount_;
 }
 
 void LuaAPI::initFunctions() const
