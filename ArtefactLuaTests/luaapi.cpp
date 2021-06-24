@@ -248,12 +248,6 @@ void LuaAPI::setVariableImpl() const
     m_variablesSetter->add(name, value);
 }
 
-template<LuaFunctionImplEn func_>
-void LuaAPI::functionImplementation() const
-{
-    Q_ASSERT(false); // not implemented
-}
-
 template<>
 void LuaAPI::functionImplementation<LuaFunctionImplEn::getVariable>() const
 {
