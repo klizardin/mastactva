@@ -3,6 +3,17 @@
 #include <lua.hpp>
 
 
+bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
+{
+    bool result = false;
+    for(const std::map<QString, QVector<double>>::value_type &var_ : variables_)
+    {
+        result |= add(var_.first, var_.second);
+    }
+    return result;
+}
+
+
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
 
 
@@ -52,15 +63,9 @@ void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
     m_variablesGetter = variablesGetter_;
 }
 
-bool LuaAPI::pushVariableValue(const QString &name_) const
+void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
 {
-    QVector<double> value;
-    if(!m_variablesGetter->get(name_, value))
-    {
-        return false;
-    }
-    push(value);
-    return true;
+    m_variablesSetter = variablesSetter_;
 }
 
 LuaAPI *LuaAPI::getByState(lua_State *luaState_)
@@ -116,16 +121,7 @@ bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
                 && lua_istable(m_luaState, -1))
         {
             QString variableName = lua_tostring(m_luaState, -2);
-            QVector<double> variableValues;
-            lua_pushnil(m_luaState);
-            while(lua_next(m_luaState, -2) != 0)
-            {
-                if(lua_isnumber(m_luaState, -1))
-                {
-                    variableValues.push_back(lua_tonumber(m_luaState, -1));
-                }
-                lua_pop(m_luaState, 1);
-            }
+            QVector<double> variableValues = getNumberList();
             result_.insert({std::move(variableName), std::move(variableValues)});
         }
         lua_pop(m_luaState, 1);
@@ -183,28 +179,124 @@ void LuaAPI::push(const QVector<double> &value_) const
     }
 }
 
-int l_getVariable(lua_State *luaState_)
+QVector<double> LuaAPI::getNumberList() const
 {
-    const QString name = lua_isstring(luaState_, -1)
-            ? lua_tostring(luaState_, -1)
-            : QString()
-              ;
-    lua_pop(luaState_, 1);
+    QVector<double> values;
+    lua_pushnil(m_luaState);
+    while(lua_next(m_luaState, -2) != 0)
+    {
+        if(lua_isnumber(m_luaState, -1))
+        {
+            values.push_back(lua_tonumber(m_luaState, -1));
+        }
+        lua_pop(m_luaState, 1);
+    }
+    return values;
+}
+
+bool LuaAPI::pushVariableValue(const QString &name_) const
+{
+    QVector<double> value;
+    if(!m_variablesGetter->get(name_, value))
+    {
+        return false;
+    }
+    push(value);
+    return true;
+}
+
+void LuaAPI::getVariableImpl() const
+{
+    // check arguments types
+    if(!lua_isstring(m_luaState, -1))
+    {
+        qDebug() << "wrong argument types:"
+            << lua_type(m_luaState, -1) << "(should be string)"
+            ;
+        processStack(1, 1);
+        return;
+    }
+    const QString name = lua_tostring(m_luaState, -1);
+    lua_pop(m_luaState, 1);
+    if(!pushVariableValue(name))
+    {
+        processStack(0, 1);
+    }
+}
+
+void LuaAPI::setVariableImpl() const
+{
+    // check arguments types
+    if(!lua_isstring(m_luaState, -2)
+            || !lua_istable(m_luaState, -1))
+    {
+        qDebug() << "wrong argument types:"
+            << lua_type(m_luaState, -2) << "(should be string)"
+            << lua_type(m_luaState, -1) << "(should be table of numbers)"
+            ;
+        processStack(2, 0);
+        return;
+    }
+    if(!m_variablesSetter.operator bool())
+    {
+        processStack(2, 0);
+        return;
+    }
+    const QString name = lua_tostring(m_luaState, -2);
+    const QVector<double> value = getNumberList();
+    m_variablesSetter->add(name, value);
+    processStack(2, 0);
+}
+
+void LuaAPI::processStack(int inputArgs_, int outputArgs_) const
+{
+    lua_pop(m_luaState, inputArgs_);
+    for(int i = 0; i < outputArgs_; ++i)
+    {
+        lua_pushnil(m_luaState);
+    }
+}
+
+template<>
+void LuaAPI::functionImplementation<LuaFunctionImplEn::getVariable>() const
+{
+    getVariableImpl();
+}
+
+template<>
+void LuaAPI::functionImplementation<LuaFunctionImplEn::setVariable>() const
+{
+    setVariableImpl();
+}
+
+template<LuaFunctionImplEn impl_, int inputArgs_, int outputArgs_>
+int l_implementation(lua_State *luaState_)
+{
     LuaAPI *api = LuaAPI::getByState(luaState_);
     if(!api)
     {
-        lua_pushnil(luaState_);
-        return 1;
+        lua_pop(luaState_, inputArgs_);
+        for(int i = 0; i < outputArgs_; ++i)
+        {
+            lua_pushnil(luaState_);
+        }
+        return outputArgs_;
     }
-    if(!api->pushVariableValue(name))
-    {
-        lua_pushnil(luaState_);
-    }
-    return 1;
+    api->functionImplementation<impl_>();
+    return outputArgs_;
 }
 
 void LuaAPI::initFunctions() const
 {
-    lua_pushcfunction(m_luaState, l_getVariable);
-    lua_setglobal(m_luaState, "getVariable");
+    std::tuple<const char *, lua_CFunction> functions[] = {
+        {"getVariable", l_implementation<LuaFunctionImplEn::getVariable, 1, 1>},
+        {"setVariable", l_implementation<LuaFunctionImplEn::setVariable, 2, 0>},
+    };
+
+    for(const auto &val_ : functions)
+    {
+        lua_pushcfunction(m_luaState, std::get<1>(val_));
+        lua_setglobal(m_luaState, std::get<0>(val_));
+    }
 }
+

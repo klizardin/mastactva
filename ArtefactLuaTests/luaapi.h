@@ -21,7 +21,15 @@ class IVariablesSetter
 {
 public:
     virtual ~IVariablesSetter() = default;
-    virtual bool add(const std::map<QString, QVector<double>> &variables_) = 0;
+    virtual bool add(const QString &name_, const QVector<double> &data_) = 0;
+    bool add(const std::map<QString, QVector<double>> &variables_);
+};
+
+
+enum class LuaFunctionImplEn
+{
+    getVariable,
+    setVariable
 };
 
 
@@ -37,7 +45,10 @@ public:
             std::map<QString, QVector<double>> &result_
             ) const;
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
-    bool pushVariableValue(const QString &name_) const;
+    void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
+
+    template<LuaFunctionImplEn func_>
+    void functionImplementation() const;
 
     static LuaAPI *getByState(lua_State *luaState_);
 
@@ -48,11 +59,17 @@ private:
     bool loadScript(const QString &script_) const;
     bool callFunction(const QString &functionName_) const;
     void push(const QVector<double> &value_) const;
+    QVector<double> getNumberList() const;
+    bool pushVariableValue(const QString &name_) const;
+    void getVariableImpl() const;
+    void setVariableImpl() const;
+    void processStack(int inputArgs_, int outputArgs_) const;
     void initFunctions() const;
 
 private:
     lua_State *m_luaState = nullptr;
     std::shared_ptr<IVariablesGetter> m_variablesGetter;
+    std::shared_ptr<IVariablesSetter> m_variablesSetter;
     static QHash<lua_State *, LuaAPI *> s_apis;
 };
 
