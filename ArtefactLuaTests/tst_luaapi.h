@@ -52,6 +52,7 @@ namespace
         },
     };
     std::map<QString, QVector<double>> g_empty;
+    std::map<QString, QStringList> g_emptyStrs;
 }
 
 
@@ -59,8 +60,9 @@ TEST(LuaAPI, callReturn)
 {
     LuaAPI luaAPI;
     std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStr;
     EXPECT_TRUE(luaAPI.load(g_simpleCallTestCode));
-    EXPECT_TRUE(luaAPI.call(g_functionName, result));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
     ASSERT_THAT(result, Eq(g_variables));
 }
 
@@ -86,10 +88,12 @@ TEST(LuaAPI, getVariable)
     luaAPI.set(variablesGetterMock);
     EXPECT_TRUE(luaAPI.load(g_variablesCallTestCode));
     std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStr;
     EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
             .WillOnce(&returnA);
-    EXPECT_TRUE(luaAPI.call(g_functionName, result));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
     ASSERT_THAT(result, Eq(g_variables));
+    ASSERT_THAT(resultStr, Eq(g_emptyStrs));
 }
 
 class VariablesSetterMock : public IVariablesSetter
@@ -100,8 +104,15 @@ public:
         return add_rvref(name_, std::move(data_));
     }
 
+    bool add(const QString &name_, QStringList &&data_) override
+    {
+        return add_rvrefsl(name_, std::move(data_));
+    }
+
     MOCK_METHOD(bool, add, (const QString &, const QVector<double> &), (override));
+    MOCK_METHOD(bool, add, (const QString &, const QStringList &), (override));
     MOCK_METHOD2(add_rvref, bool(const QString &, QVector<double>));
+    MOCK_METHOD2(add_rvrefsl, bool(const QString &, QStringList));
 };
 
 TEST(LuaAPI, setVariable)
@@ -113,12 +124,14 @@ TEST(LuaAPI, setVariable)
     luaAPI.set(variablesSetterMock);
     EXPECT_TRUE(luaAPI.load(g_setVariablesCallTestCode));
     std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStr;
     EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
             .WillOnce(&returnA);
     EXPECT_CALL(*variablesSetterMock, add_rvref(QString("b"), g_variables["a"]))
             .WillOnce(Return(true));
-    EXPECT_TRUE(luaAPI.call(g_functionName, result));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
     ASSERT_THAT(result, Eq(g_empty));
+    ASSERT_THAT(resultStr, Eq(g_emptyStrs));
 }
 
 TEST(LuaAPI, hideLibs)
