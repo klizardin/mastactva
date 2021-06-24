@@ -13,6 +13,15 @@ bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
     return result;
 }
 
+bool IVariablesSetter::add(std::map<QString, QVector<double>> &&variables_)
+{
+    bool result = false;
+    for(std::map<QString, QVector<double>>::value_type &var_ : variables_)
+    {
+        result |= add(var_.first, std::move(var_.second));
+    }
+    return result;
+}
 
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
 

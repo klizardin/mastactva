@@ -22,7 +22,9 @@ class IVariablesSetter
 public:
     virtual ~IVariablesSetter() = default;
     virtual bool add(const QString &name_, const QVector<double> &data_) = 0;
+    virtual bool add(const QString &name_, QVector<double> &&data_) = 0;
     bool add(const std::map<QString, QVector<double>> &variables_);
+    bool add(std::map<QString, QVector<double>> &&variables_);
 };
 
 

@@ -90,6 +90,7 @@ class VariablesSetterMock : public IVariablesSetter
 {
 public:
     MOCK_METHOD(bool, add, (const QString &, const QVector<double> &), (override));
+    MOCK_METHOD(bool, add, (const QString &, QVector<double> &&), (override));
 };
 
 TEST(LuaAPI, setVariable)
