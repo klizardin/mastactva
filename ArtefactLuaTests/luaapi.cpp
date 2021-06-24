@@ -70,14 +70,7 @@ void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
 
 LuaAPI *LuaAPI::getByState(lua_State *luaState_)
 {
-    if(s_apis.contains(luaState_))
-    {
-        return s_apis.value(luaState_);
-    }
-    else
-    {
-        return nullptr;
-    }
+    return s_apis.value(luaState_, nullptr);
 }
 
 void LuaAPI::dumpStack() const
