@@ -64,7 +64,7 @@ bool LuaAPI::call(
     {
         return false;
     }
-    if(!getNewVariables(result_))
+    if(!getReturnVariables(result_))
     {
         qDebug() << "result type is not table";
         return false;
@@ -145,7 +145,7 @@ bool LuaAPI::callFunction(const QString &functionName_) const
     return true;
 }
 
-bool LuaAPI::getNewVariables(std::map<QString, QVector<double>> &result_) const
+bool LuaAPI::getReturnVariables(std::map<QString, QVector<double>> &result_) const
 {
     result_.clear();
     if(!lua_istable(m_luaState, -1))
