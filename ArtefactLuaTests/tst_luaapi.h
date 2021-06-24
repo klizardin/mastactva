@@ -16,7 +16,7 @@ using namespace testing;
 namespace
 {
     const char *g_simpleCallTestCode =
-            "function main (...)\n"
+            "function main ()\n"
             "   result = {}\n"
             "   result[\"a\"] = {1,2,3}\n"
             "   return result\n"
@@ -24,7 +24,7 @@ namespace
             ;
     const char *g_functionName = "main";
     const char *g_variablesCallTestCode =
-            "function main (...)\n"
+            "function main ()\n"
             "   result = {}\n"
             "   result[\"a\"] = getVariable(\"a\")\n"
             "   return result\n"
