@@ -213,15 +213,14 @@ void LuaAPI::getVariableImpl() const
         qDebug() << "wrong argument types:"
             << lua_type(m_luaState, -1) << "(should be string)"
             ;
-        lua_pop(m_luaState, 1);
-        lua_pushnil(m_luaState);
+        processStack(1, 1);
         return;
     }
     const QString name = lua_tostring(m_luaState, -1);
     lua_pop(m_luaState, 1);
     if(!pushVariableValue(name))
     {
-        lua_pushnil(m_luaState);
+        processStack(0, 1);
     }
 }
 
@@ -235,18 +234,27 @@ void LuaAPI::setVariableImpl() const
             << lua_type(m_luaState, -2) << "(should be string)"
             << lua_type(m_luaState, -1) << "(should be table of numbers)"
             ;
-        lua_pop(m_luaState, 2);
+        processStack(2, 0);
         return;
     }
     if(!m_variablesSetter.operator bool())
     {
-        lua_pop(m_luaState, 2);
+        processStack(2, 0);
         return;
     }
     const QString name = lua_tostring(m_luaState, -2);
     const QVector<double> value = getNumberList();
-    lua_pop(m_luaState, 2);
     m_variablesSetter->add(name, value);
+    processStack(2, 0);
+}
+
+void LuaAPI::processStack(int inputArgs_, int outputArgs_) const
+{
+    lua_pop(m_luaState, inputArgs_);
+    for(int i = 0; i < outputArgs_; ++i)
+    {
+        lua_pushnil(m_luaState);
+    }
 }
 
 template<>

@@ -63,6 +63,7 @@ private:
     bool pushVariableValue(const QString &name_) const;
     void getVariableImpl() const;
     void setVariableImpl() const;
+    void processStack(int inputArgs_, int outputArgs_) const;
     void initFunctions() const;
 
 private:
