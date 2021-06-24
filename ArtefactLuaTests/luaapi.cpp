@@ -68,49 +68,6 @@ void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
     m_variablesSetter = variablesSetter_;
 }
 
-void LuaAPI::getVariableImpl() const
-{
-    // check arguments types
-    if(!lua_isstring(m_luaState, -1))
-    {
-        qDebug() << "wrong argument types:"
-            << lua_type(m_luaState, -1) << "(should be string)"
-            ;
-        lua_pop(m_luaState, 1);
-        return;
-    }
-    const QString name = lua_tostring(m_luaState, -1);
-    lua_pop(m_luaState, 1);
-    if(!pushVariableValue(name))
-    {
-        lua_pushnil(m_luaState);
-    }
-}
-
-void LuaAPI::setVariableImpl() const
-{
-    // check arguments types
-    if(!lua_isstring(m_luaState, -2)
-            || !lua_istable(m_luaState, -1))
-    {
-        lua_pop(m_luaState, 2);
-        qDebug() << "wrong argument types:"
-            << lua_type(m_luaState, -2) << "(should be string)"
-            << lua_type(m_luaState, -1) << "(should be table of numbers)"
-            ;
-        return;
-    }
-    if(!m_variablesSetter.operator bool())
-    {
-        lua_pop(m_luaState, 2);
-        return;
-    }
-    const QString name = lua_tostring(m_luaState, -2);
-    const QVector<double> value = getNumberList();
-    lua_pop(m_luaState, 2);
-    m_variablesSetter->add(name, value);
-}
-
 LuaAPI *LuaAPI::getByState(lua_State *luaState_)
 {
     if(s_apis.contains(luaState_))
@@ -246,6 +203,49 @@ bool LuaAPI::pushVariableValue(const QString &name_) const
     }
     push(value);
     return true;
+}
+
+void LuaAPI::getVariableImpl() const
+{
+    // check arguments types
+    if(!lua_isstring(m_luaState, -1))
+    {
+        qDebug() << "wrong argument types:"
+            << lua_type(m_luaState, -1) << "(should be string)"
+            ;
+        lua_pop(m_luaState, 1);
+        return;
+    }
+    const QString name = lua_tostring(m_luaState, -1);
+    lua_pop(m_luaState, 1);
+    if(!pushVariableValue(name))
+    {
+        lua_pushnil(m_luaState);
+    }
+}
+
+void LuaAPI::setVariableImpl() const
+{
+    // check arguments types
+    if(!lua_isstring(m_luaState, -2)
+            || !lua_istable(m_luaState, -1))
+    {
+        lua_pop(m_luaState, 2);
+        qDebug() << "wrong argument types:"
+            << lua_type(m_luaState, -2) << "(should be string)"
+            << lua_type(m_luaState, -1) << "(should be table of numbers)"
+            ;
+        return;
+    }
+    if(!m_variablesSetter.operator bool())
+    {
+        lua_pop(m_luaState, 2);
+        return;
+    }
+    const QString name = lua_tostring(m_luaState, -2);
+    const QVector<double> value = getNumberList();
+    lua_pop(m_luaState, 2);
+    m_variablesSetter->add(name, value);
 }
 
 template<LuaFunctionImplEn func_>

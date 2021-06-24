@@ -50,9 +50,6 @@ public:
     template<LuaFunctionImplEn func_>
     void functionImplementation() const;
 
-    void getVariableImpl() const;
-    void setVariableImpl() const;
-
     static LuaAPI *getByState(lua_State *luaState_);
 
 private:
@@ -64,6 +61,8 @@ private:
     void push(const QVector<double> &value_) const;
     QVector<double> getNumberList() const;
     bool pushVariableValue(const QString &name_) const;
+    void getVariableImpl() const;
+    void setVariableImpl() const;
     void initFunctions() const;
 
 private:
