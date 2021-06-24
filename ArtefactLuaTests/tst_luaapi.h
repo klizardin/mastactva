@@ -12,6 +12,7 @@
 
 using namespace testing;
 
+
 namespace
 {
     const char *g_simpleCallTestCode =
