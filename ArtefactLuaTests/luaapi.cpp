@@ -30,7 +30,7 @@ LuaAPI::LuaAPI()
 {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
-    hideLibs();
+    hideLibsBlackList();
     s_apis.insert(m_luaState, this);
 }
 
@@ -260,7 +260,7 @@ void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
     }
 }
 
-void LuaAPI::hideLibs()
+void LuaAPI::hideLibsBlackList()
 {
     using GlobalNameType = std::tuple<const char *>;
     static const GlobalNameType s_globalNames[] =
