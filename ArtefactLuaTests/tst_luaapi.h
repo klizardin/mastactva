@@ -22,7 +22,7 @@ namespace
             "   return result\n"
             "end\n"
             ;
-    const char *g_callTestFunctionName = "main";
+    const char *g_functionName = "main";
     const char *g_variablesCallTestCode =
             "function main (...)\n"
             "   result = {}\n"
@@ -46,7 +46,7 @@ TEST(LuaAPI, callReturn)
     LuaAPI luaAPI;
     std::map<QString, QVector<double>> result;
     EXPECT_TRUE(luaAPI.load(g_simpleCallTestCode));
-    EXPECT_TRUE(luaAPI.call(g_callTestFunctionName, result));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_variables));
 }
 
@@ -74,7 +74,7 @@ TEST(LuaAPI, getVariable)
     std::map<QString, QVector<double>> result;
     EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
             .WillOnce(&returnA);
-    EXPECT_TRUE(luaAPI.call(g_callTestFunctionName, result));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_variables));
 }
 
