@@ -39,7 +39,6 @@ public:
             ) const;
     void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
     void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
-    bool pushVariableValue(const QString &name_) const;
     void getVariableImpl() const;
     void setVariableImpl() const;
 
@@ -53,6 +52,7 @@ private:
     bool callFunction(const QString &functionName_) const;
     void push(const QVector<double> &value_) const;
     QVector<double> getNumberList() const;
+    bool pushVariableValue(const QString &name_) const;
     void initFunctions() const;
 
 private:

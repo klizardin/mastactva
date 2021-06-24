@@ -68,17 +68,6 @@ void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
     m_variablesSetter = variablesSetter_;
 }
 
-bool LuaAPI::pushVariableValue(const QString &name_) const
-{
-    QVector<double> value;
-    if(!m_variablesGetter->get(name_, value))
-    {
-        return false;
-    }
-    push(value);
-    return true;
-}
-
 void LuaAPI::getVariableImpl() const
 {
     // check arguments types
@@ -246,6 +235,17 @@ QVector<double> LuaAPI::getNumberList() const
         lua_pop(m_luaState, 1);
     }
     return values;
+}
+
+bool LuaAPI::pushVariableValue(const QString &name_) const
+{
+    QVector<double> value;
+    if(!m_variablesGetter->get(name_, value))
+    {
+        return false;
+    }
+    push(value);
+    return true;
 }
 
 int l_getVariable(lua_State *luaState_)
