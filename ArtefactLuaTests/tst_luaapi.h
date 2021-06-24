@@ -2,6 +2,7 @@
 #define TST_LUAAPI_H
 
 
+#include <map>
 #include <QString>
 #include <QVector>
 #include <gtest/gtest.h>
@@ -30,6 +31,12 @@ namespace
             "   return result\n"
             "end\n"
             ;
+    const char *g_setVariablesCallTestCode =
+            "function main ()\n"
+            "   setVariable(\"b\", getVariable(\"a\"))\n"
+            "   return {}\n"
+            "end\n"
+            ;
 
     std::map<QString, QVector<double>> g_variables =
     {
@@ -38,6 +45,7 @@ namespace
             {1.0, 2.0, 3.0}
         },
     };
+    std::map<QString, QVector<double>> g_empty;
 }
 
 
@@ -76,6 +84,29 @@ TEST(LuaAPI, getVariable)
             .WillOnce(&returnA);
     EXPECT_TRUE(luaAPI.call(g_functionName, result));
     ASSERT_THAT(result, Eq(g_variables));
+}
+
+class VariablesSetterMock : public IVariablesSetter
+{
+public:
+    MOCK_METHOD(bool, add, (const QString &, const QVector<double> &), (override));
+};
+
+TEST(LuaAPI, setVariable)
+{
+    std::shared_ptr<VariablesGetterMock> variablesGetterMock = std::make_shared<VariablesGetterMock>();
+    std::shared_ptr<VariablesSetterMock> variablesSetterMock = std::make_shared<VariablesSetterMock>();
+    LuaAPI luaAPI;
+    luaAPI.set(variablesGetterMock);
+    luaAPI.set(variablesSetterMock);
+    EXPECT_TRUE(luaAPI.load(g_setVariablesCallTestCode));
+    std::map<QString, QVector<double>> result;
+    EXPECT_CALL(*variablesGetterMock, get(QString("a"), _))
+            .WillOnce(&returnA);
+    EXPECT_CALL(*variablesSetterMock, add(QString("b"), g_variables["a"]))
+            .WillOnce(Return(true));
+    EXPECT_TRUE(luaAPI.call(g_functionName, result));
+    ASSERT_THAT(result, Eq(g_empty));
 }
 
 #endif // TST_LUAAPI_H
