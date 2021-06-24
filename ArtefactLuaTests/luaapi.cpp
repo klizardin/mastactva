@@ -214,6 +214,7 @@ void LuaAPI::getVariableImpl() const
             << lua_type(m_luaState, -1) << "(should be string)"
             ;
         lua_pop(m_luaState, 1);
+        lua_pushnil(m_luaState);
         return;
     }
     const QString name = lua_tostring(m_luaState, -1);
@@ -230,11 +231,11 @@ void LuaAPI::setVariableImpl() const
     if(!lua_isstring(m_luaState, -2)
             || !lua_istable(m_luaState, -1))
     {
-        lua_pop(m_luaState, 2);
         qDebug() << "wrong argument types:"
             << lua_type(m_luaState, -2) << "(should be string)"
             << lua_type(m_luaState, -1) << "(should be table of numbers)"
             ;
+        lua_pop(m_luaState, 2);
         return;
     }
     if(!m_variablesSetter.operator bool())
