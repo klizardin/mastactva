@@ -37,6 +37,12 @@ namespace
             "   return {}\n"
             "end\n"
             ;
+    const char *g_setVariablesStrsCallTestCode =
+            "function main ()\n"
+            "   setVariable(\"b\", getVariable(\"a\"))\n"
+            "   return {\"a\" = {\"1.0\", \"b\", \"c\"}}\n"
+            "end\n"
+            ;
     const char *g_badLibCallTestCode =
             "os.execute()\n"
             ;
@@ -53,6 +59,13 @@ namespace
     };
     std::map<QString, QVector<double>> g_empty;
     std::map<QString, QStringList> g_emptyStrs;
+    std::map<QString, QStringList> g_variablesStrs =
+    {
+        {
+            QString("a"),
+            {QString("1.0"), QString("b"), QString("c")}
+        },
+    };
 }
 
 
