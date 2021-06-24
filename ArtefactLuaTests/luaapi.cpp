@@ -3,25 +3,48 @@
 #include <lua.hpp>
 
 
-bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
+template<typename DataType_>
+bool IVariablesSetter::addT(const std::map<QString, DataType_> &variables_)
 {
     bool result = false;
-    for(const std::map<QString, QVector<double>>::value_type &var_ : variables_)
+    for(const auto &var_ : variables_)
     {
         result |= add(var_.first, var_.second);
     }
     return result;
 }
 
-bool IVariablesSetter::add(std::map<QString, QVector<double>> &&variables_)
+template<typename DataType_>
+bool IVariablesSetter::addT(std::map<QString, DataType_> &&variables_)
 {
     bool result = false;
-    for(std::map<QString, QVector<double>>::value_type &var_ : variables_)
+    for(const auto &var_ : variables_)
     {
         result |= add(var_.first, std::move(var_.second));
     }
     return result;
 }
+
+bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
+{
+    return addT(variables_);
+}
+
+bool IVariablesSetter::add(std::map<QString, QVector<double>> &&variables_)
+{
+    return addT(std::move(variables_));
+}
+
+bool IVariablesSetter::add(const std::map<QString, QStringList> &variables_)
+{
+    return addT(variables_);
+}
+
+bool IVariablesSetter::add(std::map<QString, QStringList> &&variables_)
+{
+    return addT(std::move(variables_));
+}
+
 
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
 
@@ -58,14 +81,15 @@ bool LuaAPI::load(const QString &script_) const
 
 bool LuaAPI::call(
         const QString &functionName_,
-        std::map<QString, QVector<double>> &result_
+        std::map<QString, QVector<double>> &result_,
+        std::map<QString, QStringList> &resultStrs_
         ) const
 {
     if(!callFunction(functionName_))
     {
         return false;
     }
-    if(!getReturnVariables(result_))
+    if(!getReturnVariables(result_, resultStrs_))
     {
         qDebug() << "result type is not table";
         return false;
@@ -146,7 +170,10 @@ bool LuaAPI::callFunction(const QString &functionName_) const
     return true;
 }
 
-bool LuaAPI::getReturnVariables(std::map<QString, QVector<double>> &result_) const
+bool LuaAPI::getReturnVariables(
+        std::map<QString, QVector<double>> &result_,
+        std::map<QString, QStringList> &resultStrs_
+        ) const
 {
     result_.clear();
     if(!lua_istable(m_luaState, -1))
@@ -160,8 +187,23 @@ bool LuaAPI::getReturnVariables(std::map<QString, QVector<double>> &result_) con
                 && lua_istable(m_luaState, -1))
         {
             QString variableName = lua_tostring(m_luaState, -2);
-            QVector<double> variableValues = getNumberList();
-            result_.insert({std::move(variableName), std::move(variableValues)});
+            auto variableValues = getList();
+            const bool hasNumbers = !std::get<0>(variableValues).isEmpty();
+            const bool hasStrings = !std::get<1>(variableValues).isEmpty();
+            if(hasNumbers)
+            {
+                result_.insert({
+                                std::move(variableName),
+                                std::move(std::get<0>(variableValues))
+                            });
+            }
+            else if(hasStrings)
+            {
+                resultStrs_.insert({
+                                std::move(variableName),
+                                std::move(std::get<1>(variableValues))
+                            });
+            }
         }
         lua_pop(m_luaState, 1);
     }
@@ -182,17 +224,56 @@ void LuaAPI::push(const QVector<double> &value_) const
     }
 }
 
-QVector<double> LuaAPI::getNumberList() const
+void LuaAPI::push(const QStringList &value_) const
 {
-    QVector<double> values;
-    lua_pushnil(m_luaState);
-    while(lua_next(m_luaState, -2) != 0)
+    lua_newtable(m_luaState);
+    int index = 1;
+    for(const QString &v_ : value_)
     {
-        if(lua_isnumber(m_luaState, -1))
-        {
-            values.push_back(lua_tonumber(m_luaState, -1));
-        }
+        lua_pushnumber(m_luaState, index);
+        lua_pushstring(m_luaState, v_.toUtf8().constData());
+        lua_settable(m_luaState, -3);
+        ++index;
+    }
+}
+
+std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
+{
+    std::tuple<QVector<double>, QStringList> values;
+    lua_pushnil(m_luaState);
+    if(0 == lua_next(m_luaState, -2))
+    {
+        return values;
+    }
+
+    const int firstItemType = lua_type(m_luaState, -1);
+    if(LUA_TNUMBER == firstItemType)
+    {
+        std::get<0>(values).push_back(lua_tonumber(m_luaState, -1));
         lua_pop(m_luaState, 1);
+
+        while(lua_next(m_luaState, -2) != 0)
+        {
+            if(lua_isnumber(m_luaState, -1))
+            {
+                std::get<0>(values).push_back(lua_tonumber(m_luaState, -1));
+            }
+            lua_pop(m_luaState, 1);
+        }
+    }
+    else if(LUA_TSTRING == firstItemType)
+    {
+        std::get<1>(values).push_back(lua_tostring(m_luaState, -1));
+        lua_pop(m_luaState, 1);
+
+        while(lua_next(m_luaState, -2) != 0)
+        {
+            if(lua_isstring(m_luaState, -1))
+            {
+                std::get<1>(values).push_back(lua_tostring(m_luaState, -1));
+            }
+            lua_pop(m_luaState, 1);
+        }
     }
     return values;
 }
@@ -200,11 +281,19 @@ QVector<double> LuaAPI::getNumberList() const
 bool LuaAPI::pushVariableValue(const QString &name_) const
 {
     QVector<double> value;
-    if(!m_variablesGetter->get(name_, value))
+    QStringList valueStr;
+    if(m_variablesGetter->get(name_, value))
+    {
+        push(value);
+    }
+    else if(m_variablesGetter->get(name_, valueStr))
+    {
+        push(valueStr);
+    }
+    else
     {
         return false;
     }
-    push(value);
     return true;
 }
 
@@ -246,8 +335,17 @@ void LuaAPI::setVariableImpl() const
         return;
     }
     const QString name = lua_tostring(m_luaState, -2);
-    QVector<double> value = getNumberList();
-    m_variablesSetter->add(name, std::move(value));
+    auto values = getList();
+    const bool hasNumbers = !std::get<0>(values).isEmpty();
+    const bool hasStrings = !std::get<1>(values).isEmpty();
+    if(hasNumbers)
+    {
+        m_variablesSetter->add(name, std::move(std::get<0>(values)));
+    }
+    else if(hasStrings)
+    {
+        m_variablesSetter->add(name, std::move(std::get<1>(values)));
+    }
     processStack(2, 0);
 }
 
