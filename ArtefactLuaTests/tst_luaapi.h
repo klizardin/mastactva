@@ -40,6 +40,9 @@ namespace
     const char *g_badLibCallTestCode =
             "os.execute()\n"
             ;
+    const char *g_badLibCallTest2Code =
+            "debug.debug()\n"
+            ;
 
     std::map<QString, QVector<double>> g_variables =
     {
@@ -122,6 +125,7 @@ TEST(LuaAPI, hideLibs)
 {
     LuaAPI luaAPI;
     EXPECT_FALSE(luaAPI.load(g_badLibCallTestCode));
+    EXPECT_FALSE(luaAPI.load(g_badLibCallTest2Code));
 }
 
 #endif // TST_LUAAPI_H
