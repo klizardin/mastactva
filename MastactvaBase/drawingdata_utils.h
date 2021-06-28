@@ -380,10 +380,26 @@ public:
     virtual ~IVariables() = default;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QStringList &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
+    virtual bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) = 0;
+    virtual bool add(const QString &name_, const IPosition *position_, QVector<double> &&data_) = 0;
+    virtual bool add(const QString &name_, const IPosition *position_, const QStringList &data_) = 0;
+    virtual bool add(const QString &name_, const IPosition *position_, QStringList &&data_) = 0;
     virtual void addAliases(const QJsonDocument &data_, const IPosition *position_) = 0;
     virtual bool getObjectsList(QStringList &objects_) const = 0;
     virtual void clear() = 0;
+
+    bool add(const IPosition *position_, const std::map<QString, QVector<double>> &variables_);
+    bool add(const IPosition *position_, std::map<QString, QVector<double>> &&variables_);
+    bool add(const IPosition *position_, const std::map<QString, QStringList> &variables_);
+    bool add(const IPosition *position_, std::map<QString, QStringList> &&variables_);
+
+private:
+    template<typename DataType_>
+    bool addT(const IPosition *position_, const std::map<QString, DataType_> &variables_);
+    template<typename DataType_>
+    bool addT(const IPosition *position_, std::map<QString, DataType_> &&variables_);
 };
 
 
@@ -411,13 +427,17 @@ class ValiableData
 public:
     ValiableData() = default;
     void set(const QJsonArray &jsonArray_);
+    void set(const QVector<double> &data_);
+    void set(QVector<double> &&data_);
     void prepare(QVector<float> &);
     void prepare(QVector<int> &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
+    void get(QVector<double> &data_) const;
 
 private:
     QJsonArray m_jsonArray;
+    QVector<double> m_doubleData;
     QVector<float> m_floatData;
     QVector<int> m_intData;
 };
@@ -428,12 +448,16 @@ struct Variable
 public:
     Variable() = default;
     void set(const QJsonArray &jsonArray_);
+    void set(const QVector<double> &data_);
+    void set(QVector<double> &&data_);
     void setAlias(const Variable &var_);
     void setPosition(const QJsonObject &position_);
+    void setPosition(const IPosition *position_);
     void prepare(QVector<float> &) const;
     void prepare(QVector<int> &) const;
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
+    void get(QVector<double> &data_) const;
     bool match(const VariablePosition &pos_) const;
 
 private:
@@ -469,7 +493,12 @@ public:
 
     bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QStringList &data_) const override;
     void add(const QJsonDocument &data_) override;
+    bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) override;
+    bool add(const QString &name_, const IPosition *position_, QVector<double> &&data_) override;
+    bool add(const QString &name_, const IPosition *position_, const QStringList &data_) override;
+    bool add(const QString &name_, const IPosition *position_, QStringList &&data_) override;
     void addAliases(const QJsonDocument &data_, const IPosition *position_) override;
     bool getObjectsList(QStringList &objects_) const override;
     void clear() override;
@@ -477,6 +506,8 @@ public:
 private:
     bool find(const QString &name_, const IPosition *position_, VariablesMap::const_iterator &fit) const;
     void setObjectsList(const QJsonArray &array_);
+    void setObjectsList(const QStringList &list_);
+    void setObjectsList(QStringList &&list_);
     void addVariables(
             const QJsonObject &rootObject_,
             const std::tuple<details::Variable, bool> &dataSource_

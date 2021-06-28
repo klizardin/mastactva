@@ -9,6 +9,48 @@
 namespace drawingdata
 {
 
+template<typename DataType_>
+bool IVariables::addT(const IPosition *position_, const std::map<QString, DataType_> &variables_)
+{
+    bool result = false;
+    for(const auto &var_ : variables_)
+    {
+        result |= add(var_.first, position_, var_.second);
+    }
+    return result;
+}
+
+template<typename DataType_>
+bool IVariables::addT(const IPosition *position_, std::map<QString, DataType_> &&variables_)
+{
+    bool result = false;
+    for(const auto &var_ : variables_)
+    {
+        result |= add(var_.first, position_, std::move(var_.second));
+    }
+    return result;
+}
+
+bool IVariables::add(const IPosition *position_, const std::map<QString, QVector<double>> &variables_)
+{
+    return addT(position_, variables_);
+}
+
+bool IVariables::add(const IPosition *position_, std::map<QString, QVector<double>> &&variables_)
+{
+    return addT(position_, std::move(variables_));
+}
+
+bool IVariables::add(const IPosition *position_, const std::map<QString, QStringList> &variables_)
+{
+    return addT(position_, variables_);
+}
+
+bool IVariables::add(const IPosition *position_, std::map<QString, QStringList> &&variables_)
+{
+    return addT(position_, std::move(variables_));
+}
+
 namespace details
 {
 
@@ -98,10 +140,27 @@ void ValiableData::set(const QJsonArray &jsonArray_)
     m_intData.clear();
 }
 
-template<typename Type_> static inline
-void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data_)
+void ValiableData::set(const QVector<double> &data_)
 {
-    if(!data_.empty())
+    m_jsonArray = QJsonArray{};
+    m_doubleData = data_;
+    m_floatData.clear();
+    m_intData.clear();
+}
+
+void ValiableData::set(QVector<double> &&data_)
+{
+    m_jsonArray = QJsonArray{};
+    m_doubleData = std::move(data_);
+    m_floatData.clear();
+    m_intData.clear();
+}
+
+template<typename Type_> static inline
+void prepareDataFromJsonArray(const QJsonArray &jsonArray_, const QVector<double> &doubleData_, QVector<Type_> &data_)
+{
+    if(!data_.empty()
+            || !doubleData_.isEmpty())
     {
         return;
     }
@@ -120,28 +179,73 @@ void prepareDataFromJsonArray(const QJsonArray &jsonArray_, QVector<Type_> &data
 
 void ValiableData::prepare(QVector<float> &)
 {
-    prepareDataFromJsonArray(m_jsonArray, m_floatData);
+    prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_floatData);
 }
 
 void ValiableData::prepare(QVector<int> &)
 {
-    prepareDataFromJsonArray(m_jsonArray, m_intData);
+    prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_intData);
 }
 
 void ValiableData::get(QVector<float> &data_) const
 {
-    data_.clear();
-    data_.reserve(m_floatData.size());
-    std::copy(std::begin(m_floatData), std::end(m_floatData),
-              std::back_inserter(data_));
+    if(!m_floatData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_floatData.size());
+        std::copy(std::begin(m_floatData), std::end(m_floatData),
+                  std::back_inserter(data_));
+    }
+    else if(!m_doubleData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_doubleData.size());
+        std::copy(std::begin(m_doubleData), std::end(m_doubleData),
+                  std::back_inserter(data_));
+    }
 }
 
 void ValiableData::get(QVector<int> &data_) const
 {
-    data_.clear();
-    data_.reserve(m_intData.size());
-    std::copy(std::begin(m_intData), std::end(m_intData),
-              std::back_inserter(data_));
+    if(!m_intData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_intData.size());
+        std::copy(std::begin(m_intData), std::end(m_intData),
+                  std::back_inserter(data_));
+    }
+    else if(!m_doubleData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_doubleData.size());
+        std::copy(std::begin(m_doubleData), std::end(m_doubleData),
+                  std::back_inserter(data_));
+    }
+}
+
+void ValiableData::get(QVector<double> &data_) const
+{
+    if(!m_doubleData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_doubleData.size());
+        std::copy(std::begin(m_doubleData), std::end(m_doubleData),
+                  std::back_inserter(data_));
+    }
+    else if(!m_floatData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_floatData.size());
+        std::copy(std::begin(m_floatData), std::end(m_floatData),
+                  std::back_inserter(data_));
+    }
+    else if(!m_intData.isEmpty())
+    {
+        data_.clear();
+        data_.reserve(m_intData.size());
+        std::copy(std::begin(m_intData), std::end(m_intData),
+                  std::back_inserter(data_));
+    }
 }
 
 
@@ -153,6 +257,22 @@ void Variable::set(const QJsonArray &jsonArray_)
     }
 }
 
+void Variable::set(const QVector<double> &data_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->set(data_);
+    }
+}
+
+void Variable::set(QVector<double> &&data_)
+{
+    if(m_data.operator bool())
+    {
+        m_data->set(std::move(data_));
+    }
+}
+
 void Variable::setAlias(const Variable &var_)
 {
     m_data = var_.m_data;
@@ -161,6 +281,11 @@ void Variable::setAlias(const Variable &var_)
 void Variable::setPosition(const QJsonObject &position_)
 {
     m_position = VariablePosition::fromJson(position_);
+}
+
+void Variable::setPosition(const IPosition *position_)
+{
+    m_position = VariablePosition::fromCurrent(position_);
 }
 
 void Variable::prepare(QVector<float> &data_) const
@@ -188,6 +313,14 @@ void Variable::get(QVector<float> &data_) const
 }
 
 void Variable::get(QVector<int> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->get(data_);
+    }
+}
+
+void Variable::get(QVector<double> &data_) const
 {
     if(m_data.operator bool())
     {
@@ -255,6 +388,21 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<fl
     fit->second.prepare(data_);
     fit->second.get(data_);
     return true;
+}
+
+bool Variables::get(const QString &name_, const IPosition *position_, QStringList &data_) const
+{
+    Q_UNUSED(position_);
+    if(g_jsonDataVariableNameObjectListName == name_)
+    {
+        data_ = m_objects;
+        return true;
+    }
+    else
+    {
+        Q_ASSERT(false); // do not support other variable names
+        return false;
+    }
 }
 
 std::tuple<QJsonValue, bool> Variables::getJsonValue(const QJsonObject &varObject)
@@ -375,6 +523,60 @@ void Variables::add(const QJsonDocument &data_)
     addVariables(rootObject, {details::Variable{}, false});
 }
 
+bool Variables::add(const QString &name_, const IPosition *position_, const QVector<double> &data_)
+{
+    details::Variable newVar;
+    newVar.setPosition(position_);
+    newVar.set(data_);
+    details::VariableName variableName(name_, index);
+    Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
+    ++index;
+    m_variables.insert({std::move(variableName), std::move(newVar)});
+    return true;
+}
+
+bool Variables::add(const QString &name_, const IPosition *position_, QVector<double> &&data_)
+{
+    details::Variable newVar;
+    newVar.setPosition(position_);
+    newVar.set(std::move(data_));
+    details::VariableName variableName(name_, index);
+    Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
+    ++index;
+    m_variables.insert({std::move(variableName), std::move(newVar)});
+    return true;
+}
+
+bool Variables::add(const QString &name_, const IPosition *position_, const QStringList &data_)
+{
+    Q_UNUSED(position_);
+    if(name_ == g_jsonDataVariableNameObjectListName)
+    {
+        setObjectsList(data_);
+        return true;
+    }
+    else
+    {
+        Q_ASSERT(false);
+        return false;
+    }
+}
+
+bool Variables::add(const QString &name_, const IPosition *position_, QStringList &&data_)
+{
+    Q_UNUSED(position_);
+    if(name_ == g_jsonDataVariableNameObjectListName)
+    {
+        setObjectsList(std::move(data_));
+        return true;
+    }
+    else
+    {
+        Q_ASSERT(false);
+        return false;
+    }
+}
+
 void Variables::addAliases(const QJsonDocument &data_, const IPosition *position_)
 {
     if(!data_.isObject())
@@ -482,6 +684,18 @@ void Variables::setObjectsList(const QJsonArray &array_)
         }
         m_objects.push_back(v.toString());
     }
+    m_hasObjectsList = true;
+}
+
+void Variables::setObjectsList(const QStringList &list_)
+{
+    m_objects = list_;
+    m_hasObjectsList = true;
+}
+
+void Variables::setObjectsList(QStringList &&list_)
+{
+    m_objects = std::move(list_);
     m_hasObjectsList = true;
 }
 
