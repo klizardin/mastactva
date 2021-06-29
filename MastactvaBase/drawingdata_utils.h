@@ -380,6 +380,7 @@ public:
     virtual ~IVariables() = default;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QVector<double> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QStringList &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
     virtual bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) = 0;
@@ -431,6 +432,7 @@ public:
     void set(QVector<double> &&data_);
     void prepare(QVector<float> &);
     void prepare(QVector<int> &);
+    void prepare(QVector<double> &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
@@ -455,6 +457,7 @@ public:
     void setPosition(const IPosition *position_);
     void prepare(QVector<float> &) const;
     void prepare(QVector<int> &) const;
+    void prepare(QVector<double> &) const;
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
@@ -493,6 +496,7 @@ public:
 
     bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QVector<double> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QStringList &data_) const override;
     void add(const QJsonDocument &data_) override;
     bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) override;

@@ -187,6 +187,11 @@ void ValiableData::prepare(QVector<int> &)
     prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_intData);
 }
 
+void ValiableData::prepare(QVector<double> &)
+{
+    prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_doubleData);
+}
+
 void ValiableData::get(QVector<float> &data_) const
 {
     if(!m_floatData.isEmpty())
@@ -304,6 +309,14 @@ void Variable::prepare(QVector<int> &data_) const
     }
 }
 
+void Variable::prepare(QVector<double> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->prepare(data_);
+    }
+}
+
 void Variable::get(QVector<float> &data_) const
 {
     if(m_data.operator bool())
@@ -379,6 +392,18 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<in
 }
 
 bool Variables::get(const QString &name_, const IPosition *position_, QVector<float> &data_) const
+{
+    VariablesMap::const_iterator fit = std::cend(m_variables);
+    if(!find(name_, position_, fit) || std::cend(m_variables) == fit)
+    {
+        return false;
+    }
+    fit->second.prepare(data_);
+    fit->second.get(data_);
+    return true;
+}
+
+bool Variables::get(const QString &name_, const IPosition *position_, QVector<double> &data_) const
 {
     VariablesMap::const_iterator fit = std::cend(m_variables);
     if(!find(name_, position_, fit) || std::cend(m_variables) == fit)
