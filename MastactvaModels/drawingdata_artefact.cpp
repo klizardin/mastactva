@@ -2,6 +2,7 @@
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_artefactarg.h"
 #include "../MastactvaBase/wavefrontobj.h"
+#include "../MastactvaBase/luaapi.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -101,6 +102,15 @@ void DrawingDataArtefact::addData(
                     details_.position.get()
                     );
         break;
+
+    case ArtefactTypeEn::scriptLua:
+    {
+        LuaAPI luaAPI;
+        luaAPI.set(details_.variables);
+        luaAPI.load(details_.filesource->getText(m_filename).toUtf8())
+                && luaAPI.callArtefact(details_.position.get());
+        break;
+    }
 
     default:
         break;
