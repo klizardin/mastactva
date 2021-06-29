@@ -21,6 +21,12 @@ QString createAliseQTGeomJson(
         const char *objectName_ = nullptr,
         const int *step_ = nullptr
         );
+QString createQTGeomLuaNewVariables(
+        const char *geom3dObjectName_
+        );
+QString createQTGeomLuaSetVariables(
+        const char *geom3dObjectName_
+        );
 
 
 void MapFileSource::add(const QString &filename_, const QString &text_)
@@ -81,6 +87,22 @@ static const char *g_baseFragmatShader =
     "    gl_FragColor = color;\n"
     "}\n";
 
+static const char *g_luaScript2NewVariable =
+    "function main ()\n"
+    "    result = {}\n"
+    "    result[\"%1\"] = getVariable(\"%2\")\n"
+    "    result[\"%3\"] = getVariable(\"%4\")\n"
+    "    return result;\n"
+    "end\n";
+
+static const char *g_luaScript2SetVariable =
+    "function main ()\n"
+    "    result = {}\n"
+    "    setVariable(\"%1\", getVariable(\"%2\"))\n"
+    "    setVariable(\"%3\", getVariable(\"%4\"))\n"
+    "    return result;\n"
+    "end\n";
+
 static const char *g_effectObjectQtLogoProgrammerName = "gt_logo";
 static const char *g_baseVertexShaderFilename = "base.vsh";
 static const char *g_baseFragmentShaderFilename = "base.fsh";
@@ -97,6 +119,9 @@ static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
 static const char *g_3dObjectCubeFragmentShaderFilename = "cube.vsh";
 static const char *g_3dObjectDefaultFragmentShaderFilename = "cube.vsh";
 static const char *g_dataJsonAliasSwiftFilename = "alias_swift.json";
+static const char *g_dataLua2NewVariableFilename = "new_variables.lua";
+static const char *g_dataLua2SetVariableFilename = "set_variables.lua";
+
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
@@ -131,6 +156,8 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     QString(g_baseVertexShader3DObject).arg("vertex", "normal")
                     );
     filesource->add(g_dataJsonAliasSwiftFilename, createAliseQTGeomJson("swift_", nullptr, &pos2));
+    filesource->add(g_dataLua2NewVariableFilename, createQTGeomLuaNewVariables("swift_"));
+    filesource->add(g_dataLua2SetVariableFilename, createQTGeomLuaSetVariables("swift_"));
     return filesource;
 }
 
@@ -835,6 +862,33 @@ QString createAliseQTGeomJson(
 
     return QJsonDocument(object).toJson();
 }
+
+QString createQTGeomLuaNewVariables(
+        const char *geom3dObjectName_
+        )
+{
+    const QString inv1 = QString("%1vertex").arg(geom3dObjectName_);
+    const QString inv2 = QString("%1normal").arg(geom3dObjectName_);
+    QString result = QString(g_luaScript2NewVariable)
+            .arg(QString("vertex"), inv1,
+                 QString("normal"), inv2
+                 );
+    return result;
+}
+
+QString createQTGeomLuaSetVariables(
+        const char *geom3dObjectName_
+        )
+{
+    const QString inv1 = QString("%1vertex").arg(geom3dObjectName_);
+    const QString inv2 = QString("%1normal").arg(geom3dObjectName_);
+    QString result = QString(g_luaScript2SetVariable)
+            .arg(QString("vertex"), inv1,
+                 QString("normal"), inv2
+                 );
+    return result;
+}
+
 
 QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
 {
