@@ -91,16 +91,26 @@ void DrawingDataArtefact::addData(
     switch(currentType)
     {
     case ArtefactTypeEn::dataJson:
-        details_.variables->add(QJsonDocument::fromJson(std::move(artefactText)));
+        details_.variables->add(
+                    QJsonDocument::fromJson(
+                        std::move(artefactText)
+                        )
+                    );
         break;
 
     case ArtefactTypeEn::dataObj3D:
-        details_.variables->add(WavefrontOBJ::graphicsOBJtoJson(std::move(artefactTextStr)));
+        details_.variables->add(
+                    WavefrontOBJ::graphicsOBJtoJson(
+                        std::move(artefactTextStr)
+                        )
+                    );
         break;
 
     case ArtefactTypeEn::convertNamesJson:
         details_.variables->addAliases(
-                    QJsonDocument::fromJson(std::move(artefactText)),
+                    QJsonDocument::fromJson(
+                        std::move(artefactText)
+                        ),
                     details_.position.get()
                     );
         break;
@@ -109,8 +119,13 @@ void DrawingDataArtefact::addData(
     {
         LuaAPI luaAPI;
         luaAPI.set(details_.variables);
-        luaAPI.load(std::move(artefactTextStr))
-                && luaAPI.callArtefact(details_.position.get());
+        luaAPI.load(
+                    std::move(artefactTextStr)
+                    )
+                &&
+                luaAPI.callArtefact(
+                    details_.position.get()
+                    );
         break;
     }
 
