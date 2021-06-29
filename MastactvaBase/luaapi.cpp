@@ -1,6 +1,7 @@
 #include "luaapi.h"
 #include <QDebug>
 #include <lua.hpp>
+#include "../MastactvaBase/names.h"
 
 
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
@@ -53,6 +54,24 @@ bool LuaAPI::call(
         qDebug() << "result type is not table";
         return false;
     }
+    return true;
+}
+
+bool LuaAPI::callArtefact(drawingdata::IPosition *position_)
+{
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStrs;
+    const bool callResult = call(g_luaArtefactMainFunctionName, position_, result, resultStrs);
+    if(!callResult)
+    {
+        return false;
+    }
+    if(!m_variables.operator bool())
+    {
+        return false;
+    }
+    m_variables->add(position_, std::move(result));
+    m_variables->add(position_, std::move(resultStrs));
     return true;
 }
 
@@ -390,4 +409,3 @@ void LuaAPI::initFunctions() const
         lua_setglobal(m_luaState, std::get<0>(val_));
     }
 }
-

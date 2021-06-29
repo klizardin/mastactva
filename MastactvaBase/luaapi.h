@@ -31,6 +31,7 @@ public:
             std::map<QString, QVector<double>> &result_,
             std::map<QString, QStringList> &resultStrs_
             ) const;
+    bool callArtefact(drawingdata::IPosition *position_);
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
 
 private:

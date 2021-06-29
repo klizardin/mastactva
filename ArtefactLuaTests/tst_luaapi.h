@@ -184,5 +184,19 @@ TEST(LuaAPI, strVariables)
     ASSERT_THAT(resultStr, Eq(g_variablesStrs));
 }
 
+TEST(LuaAPI, callArtefact)
+{
+    std::shared_ptr<VariablesMock> variablesMock = std::make_shared<VariablesMock>();
+    LuaAPI luaAPI;
+    luaAPI.set(variablesMock);
+    EXPECT_TRUE(luaAPI.load(g_variablesCallTestCode));
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStr;
+    EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QVector<double> &>(_)))
+            .WillOnce(&returnA);
+    EXPECT_CALL(*variablesMock, add_rvref(QString("a"), g_variables["a"]))
+            .WillOnce(Return(true));
+    EXPECT_TRUE(luaAPI.callArtefact(nullptr));
+}
 
 #endif // TST_LUAAPI_H
