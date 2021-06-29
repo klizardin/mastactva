@@ -1,3 +1,5 @@
+include(lua_dependency.pri)
+
 QT += quick \
     quickcontrols2  \
     widgets \
@@ -41,6 +43,7 @@ unix: SOURCES +=    \
     drawingdata_effect.cpp  \
     data_utils.cpp  \
     wavefrontobj.cpp    \
+    luaapi.cpp  \
     utils.cpp   \
 
 
@@ -70,6 +73,7 @@ unix: HEADERS +=    \
     drawingdata_effect.h    \
     data_utils.h    \
     wavefrontobj.h  \
+    luaapi.h    \
     utils.h \
 
 
