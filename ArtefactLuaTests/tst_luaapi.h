@@ -3,6 +3,7 @@
 
 
 #include <map>
+#include <memory>
 #include <QString>
 #include <QVector>
 #include <gtest/gtest.h>
@@ -78,20 +79,41 @@ TEST(LuaAPI, callReturn)
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStr;
     EXPECT_TRUE(luaAPI.load(g_simpleCallTestCode));
-    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
+    EXPECT_TRUE(luaAPI.call(g_functionName, nullptr, result, resultStr));
     ASSERT_THAT(result, Eq(g_variables));
 }
 
 
-class VariablesGetterMock : public IVariablesGetter
+class VariablesMock : public drawingdata::IVariables
 {
 public:
-    MOCK_METHOD(bool, get, (const QString &, QVector<double> &), (const, override));
-    MOCK_METHOD(bool, get, (const QString &, QStringList &), (const, override));
+    bool add(const QString &name_, const drawingdata::IPosition *position_, QVector<double> &&data_) override
+    {
+        Q_UNUSED(position_);
+        return add_rvref(name_, std::move(data_));
+    }
+
+    bool add(const QString &name_, const drawingdata::IPosition *position_, QStringList &&data_) override
+    {
+        Q_UNUSED(position_);
+        return add_rvrefsl(name_, std::move(data_));
+    }
+    MOCK_METHOD(bool, get, (const QString &, const drawingdata::IPosition *, QVector<int> &), (const, override));
+    MOCK_METHOD(bool, get, (const QString &, const drawingdata::IPosition *, QVector<float> &), (const, override));
+    MOCK_METHOD(bool, get, (const QString &, const drawingdata::IPosition *, QVector<double> &), (const, override));
+    MOCK_METHOD(bool, get, (const QString &, const drawingdata::IPosition *, QStringList &), (const, override));
+    MOCK_METHOD(void, add, (const QJsonDocument &), (override));
+    MOCK_METHOD(bool, add, (const QString &, const drawingdata::IPosition *, const QVector<double> &), (override));
+    MOCK_METHOD(bool, add, (const QString &, const drawingdata::IPosition *, const QStringList &), (override));
+    MOCK_METHOD2(add_rvref, bool(const QString &, QVector<double>));
+    MOCK_METHOD2(add_rvrefsl, bool(const QString &, QStringList));
+    MOCK_METHOD(void, addAliases, (const QJsonDocument &, const drawingdata::IPosition *), (override));
+    MOCK_METHOD(bool, getObjectsList, (QStringList &), (const, override));
+    MOCK_METHOD(void, clear, (), (override));
 };
 
 
-bool returnA(const QString &, QVector<double> &data_)
+bool returnA(const QString &, const drawingdata::IPosition *, QVector<double> &data_)
 {
     data_ = g_variables["a"];
     return true;
@@ -100,53 +122,32 @@ bool returnA(const QString &, QVector<double> &data_)
 
 TEST(LuaAPI, getVariable)
 {
-    std::shared_ptr<VariablesGetterMock> variablesGetterMock = std::make_shared<VariablesGetterMock>();
+    std::shared_ptr<VariablesMock> variablesMock = std::make_shared<VariablesMock>();
     LuaAPI luaAPI;
-    luaAPI.set(variablesGetterMock);
+    luaAPI.set(variablesMock);
     EXPECT_TRUE(luaAPI.load(g_variablesCallTestCode));
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStr;
-    EXPECT_CALL(*variablesGetterMock, get(QString("a"), Matcher<QVector<double> &>(_)))
+    EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QVector<double> &>(_)))
             .WillOnce(&returnA);
-    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
+    EXPECT_TRUE(luaAPI.call(g_functionName, nullptr, result, resultStr));
     ASSERT_THAT(result, Eq(g_variables));
     ASSERT_THAT(resultStr, Eq(g_emptyStrs));
 }
 
-class VariablesSetterMock : public IVariablesSetter
-{
-public:
-    bool add(const QString &name_, QVector<double> &&data_) override
-    {
-        return add_rvref(name_, std::move(data_));
-    }
-
-    bool add(const QString &name_, QStringList &&data_) override
-    {
-        return add_rvrefsl(name_, std::move(data_));
-    }
-
-    MOCK_METHOD(bool, add, (const QString &, const QVector<double> &), (override));
-    MOCK_METHOD(bool, add, (const QString &, const QStringList &), (override));
-    MOCK_METHOD2(add_rvref, bool(const QString &, QVector<double>));
-    MOCK_METHOD2(add_rvrefsl, bool(const QString &, QStringList));
-};
-
 TEST(LuaAPI, setVariable)
 {
-    std::shared_ptr<VariablesGetterMock> variablesGetterMock = std::make_shared<VariablesGetterMock>();
-    std::shared_ptr<VariablesSetterMock> variablesSetterMock = std::make_shared<VariablesSetterMock>();
+    std::shared_ptr<VariablesMock> variablesMock = std::make_shared<VariablesMock>();
     LuaAPI luaAPI;
-    luaAPI.set(variablesGetterMock);
-    luaAPI.set(variablesSetterMock);
+    luaAPI.set(variablesMock);
     EXPECT_TRUE(luaAPI.load(g_setVariablesCallTestCode));
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStr;
-    EXPECT_CALL(*variablesGetterMock, get(QString("a"), Matcher<QVector<double> &>(_)))
+    EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QVector<double> &>(_)))
             .WillOnce(&returnA);
-    EXPECT_CALL(*variablesSetterMock, add_rvref(QString("b"), g_variables["a"]))
+    EXPECT_CALL(*variablesMock, add_rvref(QString("b"), g_variables["a"]))
             .WillOnce(Return(true));
-    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
+    EXPECT_TRUE(luaAPI.call(g_functionName, nullptr, result, resultStr));
     ASSERT_THAT(result, Eq(g_empty));
     ASSERT_THAT(resultStr, Eq(g_emptyStrs));
 }
@@ -158,7 +159,7 @@ TEST(LuaAPI, hideLibs)
     EXPECT_FALSE(luaAPI.load(g_badLibCallTest2Code));
 }
 
-bool returnAStr(const QString &, QStringList &data_)
+bool returnAStr(const QString &, const drawingdata::IPosition *, QStringList &data_)
 {
     data_ = g_variablesStrs["a"];
     return true;
@@ -166,21 +167,19 @@ bool returnAStr(const QString &, QStringList &data_)
 
 TEST(LuaAPI, strVariables)
 {
-    std::shared_ptr<VariablesGetterMock> variablesGetterMock = std::make_shared<VariablesGetterMock>();
-    std::shared_ptr<VariablesSetterMock> variablesSetterMock = std::make_shared<VariablesSetterMock>();
+    std::shared_ptr<VariablesMock> variablesMock = std::make_shared<VariablesMock>();
     LuaAPI luaAPI;
-    luaAPI.set(variablesGetterMock);
-    luaAPI.set(variablesSetterMock);
+    luaAPI.set(variablesMock);
     EXPECT_TRUE(luaAPI.load(g_setVariablesStrsCallTestCode));
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStr;
-    EXPECT_CALL(*variablesGetterMock, get(QString("a"), Matcher<QVector<double> &>(_)))
+    EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QVector<double> &>(_)))
             .WillOnce(Return(false));
-    EXPECT_CALL(*variablesGetterMock, get(QString("a"), Matcher<QStringList &>(_)))
+    EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QStringList &>(_)))
             .WillOnce(&returnAStr);
-    EXPECT_CALL(*variablesSetterMock, add_rvrefsl(QString("b"), g_variablesStrs["a"]))
+    EXPECT_CALL(*variablesMock, add_rvrefsl(QString("b"), g_variablesStrs["a"]))
             .WillOnce(Return(true));
-    EXPECT_TRUE(luaAPI.call(g_functionName, result, resultStr));
+    EXPECT_TRUE(luaAPI.call(g_functionName, nullptr, result, resultStr));
     ASSERT_THAT(result, Eq(g_empty));
     ASSERT_THAT(resultStr, Eq(g_variablesStrs));
 }
