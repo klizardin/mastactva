@@ -574,6 +574,8 @@ private:
             const QString &name_,
             const QJsonArray &positions_
             );
+    template<class Data_>
+    bool addT(const QString &name_, const IPosition *position_, Data_ &&data_);
 
 private:
     VariablesMap m_variables;

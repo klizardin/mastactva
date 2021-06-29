@@ -150,65 +150,52 @@ void ValiableData::prepare(QVector<double> &)
     prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_doubleData);
 }
 
+
+template<typename TypeSource_, typename TypeDest_> inline
+void variableDataCopyT(const QVector<TypeSource_> &dataSource_, QVector<TypeDest_> &dataDest_)
+{
+    dataDest_.clear();
+    dataDest_.reserve(dataSource_.size());
+    std::copy(std::begin(dataSource_), std::end(dataSource_),
+              std::back_inserter(dataDest_));
+}
+
+template<class DataDest_, class DataSource_> inline
+void variableDataGetT(DataDest_ &dataDest_, const DataSource_ &dataSource_)
+{
+    if(!dataSource_.isEmpty())
+    {
+        variableDataCopyT(dataSource_, dataDest_);
+    }
+}
+
+template<class DataDest_, class DataSource_, class ... DataSources_> inline
+void variableDataGetT(DataDest_ &dataDest_, const DataSource_ &dataSource_, const DataSources_ & ... dataSources_)
+{
+    if(!dataSource_.isEmpty())
+    {
+        variableDataCopyT(dataSource_, dataDest_);
+    }
+    else
+    {
+        variableDataGetT(dataDest_, dataSources_ ...);
+    }
+}
+
+
 void ValiableData::get(QVector<float> &data_) const
 {
-    if(!m_floatData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_floatData.size());
-        std::copy(std::begin(m_floatData), std::end(m_floatData),
-                  std::back_inserter(data_));
-    }
-    else if(!m_doubleData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_doubleData.size());
-        std::copy(std::begin(m_doubleData), std::end(m_doubleData),
-                  std::back_inserter(data_));
-    }
+    variableDataGetT(data_, m_floatData, m_doubleData);
 }
 
 void ValiableData::get(QVector<int> &data_) const
 {
-    if(!m_intData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_intData.size());
-        std::copy(std::begin(m_intData), std::end(m_intData),
-                  std::back_inserter(data_));
-    }
-    else if(!m_doubleData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_doubleData.size());
-        std::copy(std::begin(m_doubleData), std::end(m_doubleData),
-                  std::back_inserter(data_));
-    }
+    variableDataGetT(data_, m_intData, m_doubleData);
 }
 
 void ValiableData::get(QVector<double> &data_) const
 {
-    if(!m_doubleData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_doubleData.size());
-        std::copy(std::begin(m_doubleData), std::end(m_doubleData),
-                  std::back_inserter(data_));
-    }
-    else if(!m_floatData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_floatData.size());
-        std::copy(std::begin(m_floatData), std::end(m_floatData),
-                  std::back_inserter(data_));
-    }
-    else if(!m_intData.isEmpty())
-    {
-        data_.clear();
-        data_.reserve(m_intData.size());
-        std::copy(std::begin(m_intData), std::end(m_intData),
-                  std::back_inserter(data_));
-    }
+    variableDataGetT(data_, m_doubleData, m_floatData, m_intData);
 }
 
 
@@ -506,11 +493,13 @@ void Variables::add(const QJsonDocument &data_)
     addVariables(rootObject, {details::Variable{}, false});
 }
 
-bool Variables::add(const QString &name_, const IPosition *position_, const QVector<double> &data_)
+template<class Data_>
+bool Variables::addT(const QString &name_, const IPosition *position_, Data_ &&data_)
 {
+    Q_UNUSED(position_);
     details::Variable newVar;
-    newVar.setPosition(position_);
-    newVar.set(data_);
+    newVar.setPosition(nullptr);  // for all next positions
+    newVar.set(std::forward<Data_>(data_));
     details::VariableName variableName(name_, index);
     Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
     ++index;
@@ -518,16 +507,14 @@ bool Variables::add(const QString &name_, const IPosition *position_, const QVec
     return true;
 }
 
+bool Variables::add(const QString &name_, const IPosition *position_, const QVector<double> &data_)
+{
+    return addT(name_, position_, data_);
+}
+
 bool Variables::add(const QString &name_, const IPosition *position_, QVector<double> &&data_)
 {
-    details::Variable newVar;
-    newVar.setPosition(position_);
-    newVar.set(std::move(data_));
-    details::VariableName variableName(name_, index);
-    Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
-    ++index;
-    m_variables.insert({std::move(variableName), std::move(newVar)});
-    return true;
+    return addT(name_, position_, std::move(data_));
 }
 
 bool Variables::add(const QString &name_, const IPosition *position_, const QStringList &data_)
