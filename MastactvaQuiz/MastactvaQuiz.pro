@@ -1,3 +1,5 @@
+include(lua_dependency.pri)
+
 _QT += quick
 QT += quickcontrols2 \
     quick   \
@@ -46,6 +48,7 @@ unix: SOURCES += \
         containerutils.cpp  \
         format.cpp  \
         data_utils.cpp  \
+        luaapi.cpp  \
         \
         quizimage.cpp   \
         quizimagedrawingdata.cpp    \
@@ -174,6 +177,7 @@ unix: HEADERS += \
     format_type.h   \
     containerutils.h    \
     data_utils.h    \
+    luaapi.h    \
     \
     quizimage.h \
     quizimagedrawingdata.h  \

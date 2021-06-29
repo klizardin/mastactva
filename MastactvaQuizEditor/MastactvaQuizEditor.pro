@@ -1,3 +1,5 @@
+include(lua_dependency.pri)
+
 QT += quick \
     quickcontrols2  \
     widgets \
@@ -54,6 +56,7 @@ unix: HEADERS += \
         serverfiles.h   \
         containerutils.h    \
         data_utils.h    \
+        luaapi.h    \
         utils.h \
         names.h \
         defines.h   \
@@ -139,6 +142,7 @@ unix: SOURCES += \
         timeutils.cpp   \
         containerutils.cpp  \
         data_utils.cpp  \
+        luaapi.cpp  \
         utils.cpp  \
         \
         quizimage.cpp   \

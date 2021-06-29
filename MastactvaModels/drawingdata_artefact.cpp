@@ -2,6 +2,7 @@
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_artefactarg.h"
 #include "../MastactvaBase/wavefrontobj.h"
+#include "../MastactvaBase/luaapi.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -84,20 +85,51 @@ void DrawingDataArtefact::addData(
         return;
     }
 
-    if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataJson)
+    const ArtefactTypeEn currentType = to_enum<ArtefactTypeEn>(m_typeId);
+    auto artefactTextStr = details_.filesource->getText(m_filename);
+    auto artefactText = artefactTextStr.toUtf8();
+    switch(currentType)
     {
-        details_.variables->add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
-    }
-    else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataObj3D)
-    {
-        details_.variables->add(WavefrontOBJ::graphicsOBJtoJson(details_.filesource->getText(m_filename)));
-    }
-    else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::convertNamesJson)
-    {
+    case ArtefactTypeEn::dataJson:
+        details_.variables->add(
+                    QJsonDocument::fromJson(
+                        std::move(artefactText)
+                        )
+                    );
+        break;
+
+    case ArtefactTypeEn::dataObj3D:
+        details_.variables->add(
+                    WavefrontOBJ::graphicsOBJtoJson(
+                        std::move(artefactTextStr)
+                        )
+                    );
+        break;
+
+    case ArtefactTypeEn::convertNamesJson:
         details_.variables->addAliases(
-                    QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()),
+                    QJsonDocument::fromJson(
+                        std::move(artefactText)
+                        ),
                     details_.position.get()
                     );
+        break;
+
+    case ArtefactTypeEn::scriptLua:
+    {
+        LuaAPI luaAPI;
+        luaAPI.set(details_.variables);
+        luaAPI.load(
+                    std::move(artefactTextStr)
+                    )
+                &&
+                luaAPI.callArtefact(
+                    details_.position.get()
+                    );
+        break;
     }
 
+    default:
+        break;
+    }
 }
