@@ -8,36 +8,7 @@
 #include <QStringList>
 #include <QVector>
 #include <lua.hpp>
-
-
-class IVariablesGetter
-{
-public:
-    virtual ~IVariablesGetter() = default;
-    virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
-    virtual bool get(const QString &name_, QStringList &data_) const = 0;
-};
-
-
-class IVariablesSetter
-{
-public:
-    virtual ~IVariablesSetter() = default;
-    virtual bool add(const QString &name_, const QVector<double> &data_) = 0;
-    virtual bool add(const QString &name_, QVector<double> &&data_) = 0;
-    virtual bool add(const QString &name_, const QStringList &data_) = 0;
-    virtual bool add(const QString &name_, QStringList &&data_) = 0;
-    bool add(const std::map<QString, QVector<double>> &variables_);
-    bool add(std::map<QString, QVector<double>> &&variables_);
-    bool add(const std::map<QString, QStringList> &variables_);
-    bool add(std::map<QString, QStringList> &&variables_);
-
-private:
-    template<typename DataType_>
-    bool addT(const std::map<QString, DataType_> &variables_);
-    template<typename DataType_>
-    bool addT(std::map<QString, DataType_> &&variables_);
-};
+#include "../MastactvaBase/drawingdata_utils.h"
 
 
 class LuaAPI
@@ -56,11 +27,12 @@ public:
     bool load(const QString &script_) const;
     bool call(
             const QString &functionName_,
+            drawingdata::IPosition *position_,
             std::map<QString, QVector<double>> &result_,
             std::map<QString, QStringList> &resultStrs_
             ) const;
-    void set(std::shared_ptr<IVariablesGetter> variablesGetter_);
-    void set(std::shared_ptr<IVariablesSetter> variablesSetter_);
+    bool callArtefact(drawingdata::IPosition *position_);
+    void set(std::shared_ptr<drawingdata::IVariables> variables_);
 
 private:
     void dumpStack() const;
@@ -86,8 +58,8 @@ private:
 
 private:
     lua_State *m_luaState = nullptr;
-    std::shared_ptr<IVariablesGetter> m_variablesGetter;
-    std::shared_ptr<IVariablesSetter> m_variablesSetter;
+    std::shared_ptr<drawingdata::IVariables> m_variables;
+    mutable drawingdata::IPosition *m_artefactPosition = nullptr;
     static QHash<lua_State *, LuaAPI *> s_apis;
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>

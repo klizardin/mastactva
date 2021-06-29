@@ -380,6 +380,7 @@ public:
     virtual ~IVariables() = default;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const = 0;
+    virtual bool get(const QString &name_, const IPosition *position_, QVector<double> &data_) const = 0;
     virtual bool get(const QString &name_, const IPosition *position_, QStringList &data_) const = 0;
     virtual void add(const QJsonDocument &data_) = 0;
     virtual bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) = 0;
@@ -401,6 +402,53 @@ private:
     template<typename DataType_>
     bool addT(const IPosition *position_, std::map<QString, DataType_> &&variables_);
 };
+
+
+template<typename DataType_> inline
+bool IVariables::addT(const IPosition *position_, const std::map<QString, DataType_> &variables_)
+{
+    bool result = false;
+    for(const auto &var_ : variables_)
+    {
+        result |= add(var_.first, position_, var_.second);
+    }
+    return result;
+}
+
+template<typename DataType_> inline
+bool IVariables::addT(const IPosition *position_, std::map<QString, DataType_> &&variables_)
+{
+    bool result = false;
+    for(auto &var_ : variables_)
+    {
+        result |= add(var_.first, position_, std::move(var_.second));
+    }
+    return result;
+}
+
+inline
+bool IVariables::add(const IPosition *position_, const std::map<QString, QVector<double>> &variables_)
+{
+    return addT(position_, variables_);
+}
+
+inline
+bool IVariables::add(const IPosition *position_, std::map<QString, QVector<double>> &&variables_)
+{
+    return addT(position_, std::move(variables_));
+}
+
+inline
+bool IVariables::add(const IPosition *position_, const std::map<QString, QStringList> &variables_)
+{
+    return addT(position_, variables_);
+}
+
+inline
+bool IVariables::add(const IPosition *position_, std::map<QString, QStringList> &&variables_)
+{
+    return addT(position_, std::move(variables_));
+}
 
 
 namespace details
@@ -431,6 +479,7 @@ public:
     void set(QVector<double> &&data_);
     void prepare(QVector<float> &);
     void prepare(QVector<int> &);
+    void prepare(QVector<double> &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
@@ -455,6 +504,7 @@ public:
     void setPosition(const IPosition *position_);
     void prepare(QVector<float> &) const;
     void prepare(QVector<int> &) const;
+    void prepare(QVector<double> &) const;
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
@@ -493,6 +543,7 @@ public:
 
     bool get(const QString &name_, const IPosition *position_, QVector<int> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QVector<float> &data_) const override;
+    bool get(const QString &name_, const IPosition *position_, QVector<double> &data_) const override;
     bool get(const QString &name_, const IPosition *position_, QStringList &data_) const override;
     void add(const QJsonDocument &data_) override;
     bool add(const QString &name_, const IPosition *position_, const QVector<double> &data_) override;

@@ -168,4 +168,8 @@ Q_DECL_UNUSED static const char * g_jsonDataVariableNamesName = "names";
 Q_DECL_UNUSED static const char * g_jsonDataVariablePositionsName = "positions";
 
 
+// lua artefacts
+Q_DECL_UNUSED static const char * g_luaArtefactMainFunctionName = "main";
+
+
 #endif // NAMES_H

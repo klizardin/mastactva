@@ -9,48 +9,6 @@
 namespace drawingdata
 {
 
-template<typename DataType_>
-bool IVariables::addT(const IPosition *position_, const std::map<QString, DataType_> &variables_)
-{
-    bool result = false;
-    for(const auto &var_ : variables_)
-    {
-        result |= add(var_.first, position_, var_.second);
-    }
-    return result;
-}
-
-template<typename DataType_>
-bool IVariables::addT(const IPosition *position_, std::map<QString, DataType_> &&variables_)
-{
-    bool result = false;
-    for(const auto &var_ : variables_)
-    {
-        result |= add(var_.first, position_, std::move(var_.second));
-    }
-    return result;
-}
-
-bool IVariables::add(const IPosition *position_, const std::map<QString, QVector<double>> &variables_)
-{
-    return addT(position_, variables_);
-}
-
-bool IVariables::add(const IPosition *position_, std::map<QString, QVector<double>> &&variables_)
-{
-    return addT(position_, std::move(variables_));
-}
-
-bool IVariables::add(const IPosition *position_, const std::map<QString, QStringList> &variables_)
-{
-    return addT(position_, variables_);
-}
-
-bool IVariables::add(const IPosition *position_, std::map<QString, QStringList> &&variables_)
-{
-    return addT(position_, std::move(variables_));
-}
-
 namespace details
 {
 
@@ -187,6 +145,11 @@ void ValiableData::prepare(QVector<int> &)
     prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_intData);
 }
 
+void ValiableData::prepare(QVector<double> &)
+{
+    prepareDataFromJsonArray(m_jsonArray, m_doubleData, m_doubleData);
+}
+
 void ValiableData::get(QVector<float> &data_) const
 {
     if(!m_floatData.isEmpty())
@@ -304,6 +267,14 @@ void Variable::prepare(QVector<int> &data_) const
     }
 }
 
+void Variable::prepare(QVector<double> &data_) const
+{
+    if(m_data.operator bool())
+    {
+        m_data->prepare(data_);
+    }
+}
+
 void Variable::get(QVector<float> &data_) const
 {
     if(m_data.operator bool())
@@ -379,6 +350,18 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<in
 }
 
 bool Variables::get(const QString &name_, const IPosition *position_, QVector<float> &data_) const
+{
+    VariablesMap::const_iterator fit = std::cend(m_variables);
+    if(!find(name_, position_, fit) || std::cend(m_variables) == fit)
+    {
+        return false;
+    }
+    fit->second.prepare(data_);
+    fit->second.get(data_);
+    return true;
+}
+
+bool Variables::get(const QString &name_, const IPosition *position_, QVector<double> &data_) const
 {
     VariablesMap::const_iterator fit = std::cend(m_variables);
     if(!find(name_, position_, fit) || std::cend(m_variables) == fit)

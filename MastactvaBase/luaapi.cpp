@@ -1,49 +1,7 @@
 #include "luaapi.h"
 #include <QDebug>
 #include <lua.hpp>
-
-
-template<typename DataType_>
-bool IVariablesSetter::addT(const std::map<QString, DataType_> &variables_)
-{
-    bool result = false;
-    for(const auto &var_ : variables_)
-    {
-        result |= add(var_.first, var_.second);
-    }
-    return result;
-}
-
-template<typename DataType_>
-bool IVariablesSetter::addT(std::map<QString, DataType_> &&variables_)
-{
-    bool result = false;
-    for(const auto &var_ : variables_)
-    {
-        result |= add(var_.first, std::move(var_.second));
-    }
-    return result;
-}
-
-bool IVariablesSetter::add(const std::map<QString, QVector<double>> &variables_)
-{
-    return addT(variables_);
-}
-
-bool IVariablesSetter::add(std::map<QString, QVector<double>> &&variables_)
-{
-    return addT(std::move(variables_));
-}
-
-bool IVariablesSetter::add(const std::map<QString, QStringList> &variables_)
-{
-    return addT(variables_);
-}
-
-bool IVariablesSetter::add(std::map<QString, QStringList> &&variables_)
-{
-    return addT(std::move(variables_));
-}
+#include "../MastactvaBase/names.h"
 
 
 QHash<lua_State *, LuaAPI *> LuaAPI::s_apis;
@@ -81,10 +39,12 @@ bool LuaAPI::load(const QString &script_) const
 
 bool LuaAPI::call(
         const QString &functionName_,
+        drawingdata::IPosition *position_,
         std::map<QString, QVector<double>> &result_,
         std::map<QString, QStringList> &resultStrs_
         ) const
 {
+    m_artefactPosition = position_;
     if(!callFunction(functionName_))
     {
         return false;
@@ -97,14 +57,27 @@ bool LuaAPI::call(
     return true;
 }
 
-void LuaAPI::set(std::shared_ptr<IVariablesGetter> variablesGetter_)
+bool LuaAPI::callArtefact(drawingdata::IPosition *position_)
 {
-    m_variablesGetter = variablesGetter_;
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStrs;
+    const bool callResult = call(g_luaArtefactMainFunctionName, position_, result, resultStrs);
+    if(!callResult)
+    {
+        return false;
+    }
+    if(!m_variables.operator bool())
+    {
+        return false;
+    }
+    m_variables->add(position_, std::move(result));
+    m_variables->add(position_, std::move(resultStrs));
+    return true;
 }
 
-void LuaAPI::set(std::shared_ptr<IVariablesSetter> variablesSetter_)
+void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
 {
-    m_variablesSetter = variablesSetter_;
+    m_variables = variables_;
 }
 
 void LuaAPI::dumpStack() const
@@ -282,11 +255,11 @@ bool LuaAPI::pushVariableValue(const QString &name_) const
 {
     QVector<double> value;
     QStringList valueStr;
-    if(m_variablesGetter->get(name_, value))
+    if(m_variables->get(name_, m_artefactPosition,  value))
     {
         push(value);
     }
-    else if(m_variablesGetter->get(name_, valueStr))
+    else if(m_variables->get(name_, m_artefactPosition, valueStr))
     {
         push(valueStr);
     }
@@ -329,7 +302,7 @@ void LuaAPI::setVariableImpl() const
         processStack(2, 0);
         return;
     }
-    if(!m_variablesSetter.operator bool())
+    if(!m_variables.operator bool())
     {
         processStack(2, 0);
         return;
@@ -340,11 +313,11 @@ void LuaAPI::setVariableImpl() const
     const bool hasStrings = !std::get<1>(values).isEmpty();
     if(hasNumbers)
     {
-        m_variablesSetter->add(name, std::move(std::get<0>(values)));
+        m_variables->add(name, m_artefactPosition, std::move(std::get<0>(values)));
     }
     else if(hasStrings)
     {
-        m_variablesSetter->add(name, std::move(std::get<1>(values)));
+        m_variables->add(name, m_artefactPosition, std::move(std::get<1>(values)));
     }
     processStack(2, 0);
 }
@@ -436,4 +409,3 @@ void LuaAPI::initFunctions() const
         lua_setglobal(m_luaState, std::get<0>(val_));
     }
 }
-
