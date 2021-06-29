@@ -419,7 +419,7 @@ template<typename DataType_> inline
 bool IVariables::addT(const IPosition *position_, std::map<QString, DataType_> &&variables_)
 {
     bool result = false;
-    for(const auto &var_ : variables_)
+    for(auto &var_ : variables_)
     {
         result |= add(var_.first, position_, std::move(var_.second));
     }
