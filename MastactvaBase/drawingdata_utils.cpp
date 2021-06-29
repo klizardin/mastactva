@@ -152,7 +152,7 @@ void ValiableData::prepare(QVector<double> &)
 
 
 template<typename TypeSource_, typename TypeDest_> inline
-void copyT(const QVector<TypeSource_> &dataSource_, QVector<TypeDest_> &dataDest_)
+void variableDataCopyT(const QVector<TypeSource_> &dataSource_, QVector<TypeDest_> &dataDest_)
 {
     dataDest_.clear();
     dataDest_.reserve(dataSource_.size());
@@ -161,41 +161,41 @@ void copyT(const QVector<TypeSource_> &dataSource_, QVector<TypeDest_> &dataDest
 }
 
 template<class DataDest_, class DataSource_> inline
-void getT(DataDest_ &dataDest_, const DataSource_ &dataSource_)
+void variableDataGetT(DataDest_ &dataDest_, const DataSource_ &dataSource_)
 {
     if(!dataSource_.isEmpty())
     {
-        copyT(dataSource_, dataDest_);
+        variableDataCopyT(dataSource_, dataDest_);
     }
 }
 
 template<class DataDest_, class DataSource0_, class ... DataSource_> inline
-void getT(DataDest_ &dataDest_, const DataSource0_ &dataSource_, const DataSource_ & ... dataSources_)
+void variableDataGetT(DataDest_ &dataDest_, const DataSource0_ &dataSource_, const DataSource_ & ... dataSources_)
 {
     if(!dataSource_.isEmpty())
     {
-        copyT(dataSource_, dataDest_);
+        variableDataCopyT(dataSource_, dataDest_);
     }
     else
     {
-        getT(dataDest_, dataSources_ ...);
+        variableDataGetT(dataDest_, dataSources_ ...);
     }
 }
 
 
 void ValiableData::get(QVector<float> &data_) const
 {
-    getT(data_, m_floatData, m_doubleData);
+    variableDataGetT(data_, m_floatData, m_doubleData);
 }
 
 void ValiableData::get(QVector<int> &data_) const
 {
-    getT(data_, m_intData, m_doubleData);
+    variableDataGetT(data_, m_intData, m_doubleData);
 }
 
 void ValiableData::get(QVector<double> &data_) const
 {
-    getT(data_, m_doubleData, m_floatData, m_intData);
+    variableDataGetT(data_, m_doubleData, m_floatData, m_intData);
 }
 
 
