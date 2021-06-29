@@ -1389,6 +1389,78 @@ std::unique_ptr<EffectData> createTestData8(
     return effect;
 }
 
+std::unique_ptr<EffectData> createTestData9(
+        const char *data3DObjectFilename_,
+        const char *dataLuaScriptFilename_,
+        const char *shaderFilename_
+        )
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataObj3D;
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::scriptLua;
+    static const char *artefactName1 = "data json object";
+    static const char *artefactName2 = "lua script new variables";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName = "data for object";
+    static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
+    static const char *effectObjectDataName2 = "lua script new variables";
+    static const char *effectObjectDataProgrammerName2 = "lua_new_variables";
+    static const char *effectObjectName = "qt logo";
+
+    gen.seed(time(nullptr));
+
+    auto effectObject1 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                data3DObjectFilename_,
+                objectInfoId,
+                effectObjectDataName,
+                effectObjectDataProgrammerName
+                );
+    auto effectObject2 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0 + 1,
+                artefactId1 + 1,
+                artefactType2,
+                artefactName2,
+                dataLuaScriptFilename_,
+                objectInfoId + 1,
+                effectObjectDataName2,
+                effectObjectDataProgrammerName2
+                );
+    auto effectObject3 = createTestObject3DObject(
+                effectId,
+                now,
+                effectObjectStep0 + 2,
+                gen,
+                objectInfoId + 2,
+                effectObjectName,
+                g_effectObjectQtLogoProgrammerName,
+                "",
+                shaderFilename_
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
+    effect->m_effectObjectsData->push_back(effectObject3.release());
+    return effect;
+}
+
 namespace drawing_objects
 {
 
@@ -1479,6 +1551,32 @@ void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_) const
     auto effectObjectsData = createTestData8(
                 g_dataJson3DObjectSwiftFilename,
                 g_dataJsonAliasSwiftFilename,
+                g_3dObjectDefaultFragmentShaderFilename
+                );
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData9(
+                g_dataJson3DObjectSwiftFilename,
+                g_dataLua2NewVariableFilename,
+                g_3dObjectDefaultFragmentShaderFilename
+                );
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData9(
+                g_dataJson3DObjectSwiftFilename,
+                g_dataLua2SetVariableFilename,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
