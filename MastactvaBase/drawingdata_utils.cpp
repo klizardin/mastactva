@@ -506,12 +506,13 @@ void Variables::add(const QJsonDocument &data_)
     addVariables(rootObject, {details::Variable{}, false});
 }
 
-bool Variables::add(const QString &name_, const IPosition *position_, const QVector<double> &data_)
+template<class Data_>
+bool Variables::addT(const QString &name_, const IPosition *position_, Data_ &&data_)
 {
     Q_UNUSED(position_);
     details::Variable newVar;
     newVar.setPosition(nullptr);  // for all next positions
-    newVar.set(data_);
+    newVar.set(std::forward<Data_>(data_));
     details::VariableName variableName(name_, index);
     Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
     ++index;
@@ -519,17 +520,14 @@ bool Variables::add(const QString &name_, const IPosition *position_, const QVec
     return true;
 }
 
+bool Variables::add(const QString &name_, const IPosition *position_, const QVector<double> &data_)
+{
+    return addT(name_, position_, data_);
+}
+
 bool Variables::add(const QString &name_, const IPosition *position_, QVector<double> &&data_)
 {
-    Q_UNUSED(position_);
-    details::Variable newVar;
-    newVar.setPosition(nullptr);  // for all next positions
-    newVar.set(std::move(data_));
-    details::VariableName variableName(name_, index);
-    Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
-    ++index;
-    m_variables.insert({std::move(variableName), std::move(newVar)});
-    return true;
+    return addT(name_, position_, std::move(data_));
 }
 
 bool Variables::add(const QString &name_, const IPosition *position_, const QStringList &data_)
