@@ -404,6 +404,53 @@ private:
 };
 
 
+template<typename DataType_> inline
+bool IVariables::addT(const IPosition *position_, const std::map<QString, DataType_> &variables_)
+{
+    bool result = false;
+    for(const auto &var_ : variables_)
+    {
+        result |= add(var_.first, position_, var_.second);
+    }
+    return result;
+}
+
+template<typename DataType_> inline
+bool IVariables::addT(const IPosition *position_, std::map<QString, DataType_> &&variables_)
+{
+    bool result = false;
+    for(const auto &var_ : variables_)
+    {
+        result |= add(var_.first, position_, std::move(var_.second));
+    }
+    return result;
+}
+
+inline
+bool IVariables::add(const IPosition *position_, const std::map<QString, QVector<double>> &variables_)
+{
+    return addT(position_, variables_);
+}
+
+inline
+bool IVariables::add(const IPosition *position_, std::map<QString, QVector<double>> &&variables_)
+{
+    return addT(position_, std::move(variables_));
+}
+
+inline
+bool IVariables::add(const IPosition *position_, const std::map<QString, QStringList> &variables_)
+{
+    return addT(position_, variables_);
+}
+
+inline
+bool IVariables::add(const IPosition *position_, std::map<QString, QStringList> &&variables_)
+{
+    return addT(position_, std::move(variables_));
+}
+
+
 namespace details
 {
 
