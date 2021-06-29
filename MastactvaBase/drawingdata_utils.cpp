@@ -169,8 +169,8 @@ void variableDataGetT(DataDest_ &dataDest_, const DataSource_ &dataSource_)
     }
 }
 
-template<class DataDest_, class DataSource0_, class ... DataSource_> inline
-void variableDataGetT(DataDest_ &dataDest_, const DataSource0_ &dataSource_, const DataSource_ & ... dataSources_)
+template<class DataDest_, class DataSource_, class ... DataSources_> inline
+void variableDataGetT(DataDest_ &dataDest_, const DataSource_ &dataSource_, const DataSources_ & ... dataSources_)
 {
     if(!dataSource_.isEmpty())
     {
