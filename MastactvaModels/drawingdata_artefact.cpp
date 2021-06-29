@@ -84,20 +84,25 @@ void DrawingDataArtefact::addData(
         return;
     }
 
-    if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataJson)
+    const ArtefactTypeEn currentType = to_enum<ArtefactTypeEn>(m_typeId);
+    switch(currentType)
     {
+    case ArtefactTypeEn::dataJson:
         details_.variables->add(QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()));
-    }
-    else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::dataObj3D)
-    {
+        break;
+
+    case ArtefactTypeEn::dataObj3D:
         details_.variables->add(WavefrontOBJ::graphicsOBJtoJson(details_.filesource->getText(m_filename)));
-    }
-    else if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::convertNamesJson)
-    {
+        break;
+
+    case ArtefactTypeEn::convertNamesJson:
         details_.variables->addAliases(
                     QJsonDocument::fromJson(details_.filesource->getText(m_filename).toUtf8()),
                     details_.position.get()
                     );
-    }
+        break;
 
+    default:
+        break;
+    }
 }
