@@ -508,8 +508,9 @@ void Variables::add(const QJsonDocument &data_)
 
 bool Variables::add(const QString &name_, const IPosition *position_, const QVector<double> &data_)
 {
+    Q_UNUSED(position_);
     details::Variable newVar;
-    newVar.setPosition(position_);
+    newVar.setPosition(nullptr);  // for all next positions
     newVar.set(data_);
     details::VariableName variableName(name_, index);
     Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
@@ -520,8 +521,9 @@ bool Variables::add(const QString &name_, const IPosition *position_, const QVec
 
 bool Variables::add(const QString &name_, const IPosition *position_, QVector<double> &&data_)
 {
+    Q_UNUSED(position_);
     details::Variable newVar;
-    newVar.setPosition(position_);
+    newVar.setPosition(nullptr);  // for all next positions
     newVar.set(std::move(data_));
     details::VariableName variableName(name_, index);
     Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
