@@ -132,7 +132,13 @@ public:
     void render();
     void setFromImage(const QString &url_);
     void setToImage(const QString &url_);
+    void updateVariables(
+            const QVector2D &rectSize_,
+            bool imageDataChanged_, bool sizeChanged_,
+            qreal t_,
+            const QVector2D &windowSize_);
 
+private:
     template<typename ItemType_>
     void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
     {
@@ -183,10 +189,12 @@ public:
     int getAttributeTupleSize(const QString &name_) const;
     bool getTextureSize(const QString &name_, QSize &size_) const;
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
-
-private:
+    void updateGeometry(const QVector2D &proportinalRect_);
+    void updateSize(const QVector2D &windowSize_);
     void initialize();
     bool isValidData() const;
+    QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
+    static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;
@@ -226,12 +234,6 @@ protected:
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
     void setFromImage(const QString &url_);
     void setToImage(const QString &url_);
-
-private:
-    static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
-    QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
-    void updateGeometry(const QVector2D &proportinalRect_);
-    void updateSize();
 
 private:
     ObjectsRenderer m_objectRenderer;
