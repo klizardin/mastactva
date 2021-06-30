@@ -183,6 +183,7 @@ public:
     int getAttributeTupleSize(const QString &name_) const;
     bool getTextureSize(const QString &name_, QSize &size_) const;
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
+    void updateGeometry(const QVector2D &proportinalRect_);
 
 private:
     void initialize();
@@ -230,7 +231,6 @@ protected:
 private:
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
     QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
-    void updateGeometry(const QVector2D &proportinalRect_);
     void updateSize();
 
 private:

@@ -560,6 +560,61 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
     }
 }
 
+void ObjectsRenderer::updateGeometry(const QVector2D &proportinalRect_)
+{
+    const int vertexAttributeTupleSize = getAttributeTupleSize(
+                g_renderVertexAttributeName
+                );
+    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
+
+    if(!vertextAttributeExist)
+    {
+        return;
+    }
+
+    const GLint isSolidGeometry = getUniform(
+                g_renderIsGeomertySolidName,
+                GLint{1}
+                );
+    const QVector2D geometryFacedSize = getUniform(
+                g_renderGeomertySizeName,
+                QVector2D{2.0, 2.0}
+                );
+    const QVector2D geometryFacedInterval = getUniform(
+                g_renderGeomertySizeName,
+                QVector2D{0.0, 0.0}
+                );
+    const int textureAttributeTupleSize = getAttributeTupleSize(
+                g_renderTextureAttributeName
+                );
+
+    std::vector<GLfloat> vertexData;
+    std::vector<GLfloat> textureData;
+
+    const bool textureAttributeExist = textureAttributeTupleSize > 0;
+    makeGeometry(proportinalRect_.x(), proportinalRect_.y(),
+                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
+                 geometryFacedInterval.x(), geometryFacedInterval.y(),
+                 vertexAttributeTupleSize,
+                 textureAttributeTupleSize, textureAttributeExist,
+                 isSolidGeometry,
+                 vertexData, textureData);
+
+    setAttribute(
+                g_renderVertexAttributeName,
+                vertexData,
+                vertexAttributeTupleSize
+                );
+    if(textureAttributeExist)
+    {
+        setAttribute(
+                    g_renderTextureAttributeName,
+                    textureData,
+                    textureAttributeTupleSize
+                    );
+    }
+}
+
 void ObjectsRenderer::initialize()
 {
     initializeOpenGLFunctions();
@@ -804,63 +859,8 @@ void QuizImageFboRendererImpl::synchronizeImpl(
         return;
     }
 
-    updateGeometry(proportinalRect);
+    m_objectRenderer.updateGeometry(proportinalRect);
     updateSize();
-}
-
-void QuizImageFboRendererImpl::updateGeometry(const QVector2D &proportinalRect_)
-{
-    const int vertexAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
-                g_renderVertexAttributeName
-                );
-    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
-
-    if(!vertextAttributeExist)
-    {
-        return;
-    }
-
-    const GLint isSolidGeometry = m_objectRenderer.getUniform(
-                g_renderIsGeomertySolidName,
-                GLint{1}
-                );
-    const QVector2D geometryFacedSize = m_objectRenderer.getUniform(
-                g_renderGeomertySizeName,
-                QVector2D{2.0, 2.0}
-                );
-    const QVector2D geometryFacedInterval = m_objectRenderer.getUniform(
-                g_renderGeomertySizeName,
-                QVector2D{0.0, 0.0}
-                );
-    const int textureAttributeTupleSize = m_objectRenderer.getAttributeTupleSize(
-                g_renderTextureAttributeName
-                );
-
-    std::vector<GLfloat> vertexData;
-    std::vector<GLfloat> textureData;
-
-    const bool textureAttributeExist = textureAttributeTupleSize > 0;
-    makeGeometry(proportinalRect_.x(), proportinalRect_.y(),
-                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
-                 geometryFacedInterval.x(), geometryFacedInterval.y(),
-                 vertexAttributeTupleSize,
-                 textureAttributeTupleSize, textureAttributeExist,
-                 isSolidGeometry,
-                 vertexData, textureData);
-
-    m_objectRenderer.setAttribute(
-                g_renderVertexAttributeName,
-                vertexData,
-                vertexAttributeTupleSize
-                );
-    if(textureAttributeExist)
-    {
-        m_objectRenderer.setAttribute(
-                    g_renderTextureAttributeName,
-                    textureData,
-                    textureAttributeTupleSize
-                    );
-    }
 }
 
 void QuizImageFboRendererImpl::updateSize()
