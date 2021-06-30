@@ -615,6 +615,19 @@ void ObjectsRenderer::updateGeometry(const QVector2D &proportinalRect_)
     }
 }
 
+void ObjectsRenderer::updateSize(const QVector2D &windowSize_)
+{
+    const QSize windowSize((int)windowSize_.x(), (int)windowSize_.y());
+    setUniform(
+                g_renderFromImageMatrixName,
+                getImageMatrix(g_renderFromImageName, windowSize)
+                );
+    setUniform(
+                g_renderToImageMatrixName,
+                getImageMatrix(g_renderToImageName, windowSize)
+                );
+}
+
 void ObjectsRenderer::initialize()
 {
     initializeOpenGLFunctions();
@@ -626,6 +639,37 @@ void ObjectsRenderer::initialize()
 bool ObjectsRenderer::isValidData() const
 {
     return m_openglData.operator bool();
+}
+
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+        const QSize &imageSize_,
+        const QSize &rectSize_
+        )
+{
+    QMatrix4x4 textureMatrix;
+    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
+            / (qreal)std::max(1, imageSize_.height())
+            ;
+    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
+            / (qreal)std::max(1, rectSize_.height())
+            ;
+    if(rectRate >= imageRate)
+    {
+        textureMatrix.scale(rectRate/imageRate, 1.0);
+        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+    }
+    else
+    {
+        textureMatrix.scale(1.0, imageRate/rectRate);
+        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+    }
+    return textureMatrix;
+}
+
+QMatrix4x4 ObjectsRenderer::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
+{
+    const QSize imageSize = getTextureSize(imageName_ , windowSize_);
+    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 void ObjectsRenderer::render()
@@ -777,31 +821,6 @@ void makeGeometry(
     }
 }
 
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
-}
-
 
 void QuizImageFboRendererImpl::renderImpl()
 {
@@ -833,12 +852,6 @@ QMatrix4x4 QuizImageFboRendererImpl::getScreenMatrix(const QVector2D &proportina
     return renderMatrix;
 }
 
-QMatrix4x4 QuizImageFboRendererImpl::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
-{
-    const QSize imageSize = m_objectRenderer.getTextureSize(imageName_ , windowSize_);
-    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
-}
-
 void QuizImageFboRendererImpl::synchronizeImpl(
         const QVector2D &rectSize_,
         bool imageDataChanged_,
@@ -860,20 +873,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(
     }
 
     m_objectRenderer.updateGeometry(proportinalRect);
-    updateSize();
-}
-
-void QuizImageFboRendererImpl::updateSize()
-{
-    const QSize windowSize((int)m_windowSize.x(), (int)m_windowSize.y());
-    m_objectRenderer.setUniform(
-                g_renderFromImageMatrixName,
-                getImageMatrix(g_renderFromImageName, windowSize)
-                );
-    m_objectRenderer.setUniform(
-                g_renderToImageMatrixName,
-                getImageMatrix(g_renderToImageName, windowSize)
-                );
+    m_objectRenderer.updateSize(m_windowSize);
 }
 
 std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()
