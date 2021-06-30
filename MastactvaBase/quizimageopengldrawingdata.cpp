@@ -628,6 +628,29 @@ void ObjectsRenderer::updateSize(const QVector2D &windowSize_)
                 );
 }
 
+void ObjectsRenderer::synchronizeImpl(
+        const QVector2D &rectSize_,
+        bool imageDataChanged_, bool sizeChanged_,
+        qreal t_,
+        const QVector2D &windowSize_)
+{
+    const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
+    const QVector2D proportinalRect(rectSize_.x() / maxCxCy, rectSize_.y() / maxCxCy);
+
+    setUniform( g_renderScreenRectName, proportinalRect );
+    setUniform( g_renderTName, t_ );
+    setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
+
+    const bool requireGeometryOrSizeUpdate = imageDataChanged_ || sizeChanged_;
+    if(!requireGeometryOrSizeUpdate)
+    {
+        return;
+    }
+
+    updateGeometry(proportinalRect);
+    updateSize(windowSize_);
+}
+
 void ObjectsRenderer::initialize()
 {
     initializeOpenGLFunctions();
@@ -670,6 +693,13 @@ QMatrix4x4 ObjectsRenderer::getImageMatrix(const QString &imageName_, const QSiz
 {
     const QSize imageSize = getTextureSize(imageName_ , windowSize_);
     return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+}
+
+QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
+{
+    QMatrix4x4 renderMatrix;
+    renderMatrix.ortho(QRectF(0, 0, proportinalRect_.x(), proportinalRect_.y()));
+    return renderMatrix;
 }
 
 void ObjectsRenderer::render()
@@ -845,13 +875,6 @@ void QuizImageFboRendererImpl::setWindowSize(const QVector2D &windowSize_)
     m_windowSize = windowSize_;
 }
 
-QMatrix4x4 QuizImageFboRendererImpl::getScreenMatrix(const QVector2D &proportinalRect_)
-{
-    QMatrix4x4 renderMatrix;
-    renderMatrix.ortho(QRectF(0, 0, proportinalRect_.x(), proportinalRect_.y()));
-    return renderMatrix;
-}
-
 void QuizImageFboRendererImpl::synchronizeImpl(
         const QVector2D &rectSize_,
         bool imageDataChanged_,
@@ -859,21 +882,7 @@ void QuizImageFboRendererImpl::synchronizeImpl(
         qreal t_
         )
 {
-    const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
-    const QVector2D proportinalRect(rectSize_.x() / maxCxCy, rectSize_.y() / maxCxCy);
-
-    m_objectRenderer.setUniform( g_renderScreenRectName, proportinalRect );
-    m_objectRenderer.setUniform( g_renderTName, t_ );
-    m_objectRenderer.setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
-
-    const bool requireGeometryOrSizeUpdate = imageDataChanged_ || sizeChanged_;
-    if(!requireGeometryOrSizeUpdate)
-    {
-        return;
-    }
-
-    m_objectRenderer.updateGeometry(proportinalRect);
-    m_objectRenderer.updateSize(m_windowSize);
+    m_objectRenderer.synchronizeImpl(rectSize_, imageDataChanged_, sizeChanged_, t_, m_windowSize);
 }
 
 std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()

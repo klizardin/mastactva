@@ -185,11 +185,17 @@ public:
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
     void updateGeometry(const QVector2D &proportinalRect_);
     void updateSize(const QVector2D &windowSize_);
+    void synchronizeImpl(
+            const QVector2D &rectSize_,
+            bool imageDataChanged_, bool sizeChanged_,
+            qreal t_,
+            const QVector2D &windowSize_);
 
 private:
     void initialize();
     bool isValidData() const;
     QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
+    static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;
@@ -229,9 +235,6 @@ protected:
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
     void setFromImage(const QString &url_);
     void setToImage(const QString &url_);
-
-private:
-    static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
     ObjectsRenderer m_objectRenderer;
