@@ -132,7 +132,13 @@ public:
     void render();
     void setFromImage(const QString &url_);
     void setToImage(const QString &url_);
+    void updateVariables(
+            const QVector2D &rectSize_,
+            bool imageDataChanged_, bool sizeChanged_,
+            qreal t_,
+            const QVector2D &windowSize_);
 
+private:
     template<typename ItemType_>
     void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
     {
@@ -185,13 +191,6 @@ public:
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
     void updateGeometry(const QVector2D &proportinalRect_);
     void updateSize(const QVector2D &windowSize_);
-    void updateVariables(
-            const QVector2D &rectSize_,
-            bool imageDataChanged_, bool sizeChanged_,
-            qreal t_,
-            const QVector2D &windowSize_);
-
-private:
     void initialize();
     bool isValidData() const;
     QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
