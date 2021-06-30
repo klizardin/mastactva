@@ -185,7 +185,7 @@ public:
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
     void updateGeometry(const QVector2D &proportinalRect_);
     void updateSize(const QVector2D &windowSize_);
-    void synchronizeImpl(
+    void updateVariables(
             const QVector2D &rectSize_,
             bool imageDataChanged_, bool sizeChanged_,
             qreal t_,
