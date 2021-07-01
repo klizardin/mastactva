@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QStringList>
 
 
 namespace opengl_drawing
@@ -18,14 +19,23 @@ public:
     virtual void set(const QString &name_, QVector<double> &&data_) = 0;
 };
 
-// stateless
+// stateless (except this members)
 class IEffectCalculation
 {
 public:
     virtual ~IEffectCalculation() = default;
-    virtual QString getFilename() const = 0;
-    virtual QStringList getVariables() const = 0;
     virtual void calculate(IVariables *variables_) const = 0;
+
+    const QString &getFilename() const;
+    const QStringList &getVariables() const;
+
+protected:
+    void setFilename(const QString &filename_);
+    void setVariables(const QStringList &vars_);
+
+private:
+    QString m_filename;
+    QStringList m_vars;
 };
 
 }
