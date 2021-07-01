@@ -566,7 +566,7 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
 }
 
 
-ImageMatrixDefaultCalculation g_imageMatrixCalculation;
+ImageMatrixDefaultCalculation g_imageMatrixDefaultCalculation;
 GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
@@ -602,8 +602,8 @@ void opengl_drawing::Objects::init(
         return false;
     };
 
-    m_imageMatrixDefault = !doExtend(m_imageData.get(), &g_imageMatrixCalculation)
-            ? &g_imageMatrixCalculation
+    m_imageMatrixDefault = !doExtend(m_imageData.get(), &g_imageMatrixDefaultCalculation)
+            ? &g_imageMatrixDefaultCalculation
             : nullptr
               ;
     m_geometryDefault = !doExtend(m_imageData.get(), &g_geometryDefaultCalculation)
