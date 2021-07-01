@@ -338,6 +338,12 @@ void drawing_data::Test0QuizImageObject::initialize(
                    new drawing_data::Uniform<QVector2D>{ g_renderScreenRectName, renderScreenRect }
                 ));
 
+    std::shared_ptr<QVector2D> renderWindowSize(new QVector2D());
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderWindowSizeName, renderScreenRect }
+                ));
+
     std::shared_ptr<GLfloat> renderT(new GLfloat{0.5});
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
@@ -420,6 +426,11 @@ void drawing_data::Test1QuizImageObject::initialize(
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QVector2D>{ g_renderScreenRectName, renderScreenRect }
+                ));
+    std::shared_ptr<QVector2D> renderWindowSize(new QVector2D());
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderWindowSizeName, renderScreenRect }
                 ));
 
     QRandomGenerator gen;
@@ -516,6 +527,11 @@ void drawing_data::Test2QuizImageObject::initialize(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QVector2D>{ g_renderScreenRectName, renderScreenRect }
                 ));
+    std::shared_ptr<QVector2D> renderWindowSize(new QVector2D());
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderWindowSizeName, renderScreenRect }
+                ));
 
     QRandomGenerator gen;
     std::shared_ptr<GLfloat> slope = std::make_shared<GLfloat>(gen.generateDouble());
@@ -606,6 +622,11 @@ void drawing_data::Test3QuizImageObject::initialize(
     object->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QVector2D>{ g_renderScreenRectName, renderScreenRect }
+                ));
+    std::shared_ptr<QVector2D> renderWindowSize(new QVector2D());
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderWindowSizeName, renderScreenRect }
                 ));
 
     QRandomGenerator gen(time(nullptr));
