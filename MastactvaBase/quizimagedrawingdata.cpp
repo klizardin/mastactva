@@ -18,6 +18,7 @@ void drawing_data::QuizImageObject::setTexture(const QString &name_, const QStri
     fit->filename = newFilename_;
 }
 
+// TODO: refactoring extend base class
 bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variables_)
 {
     opengl_drawing::VariablesExtended va(this, variables_);
