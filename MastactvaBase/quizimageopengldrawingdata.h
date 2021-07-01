@@ -138,7 +138,6 @@ public:
             qreal t_,
             const QVector2D &windowSize_);
 
-private:
     template<typename ItemType_>
     void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
     {
@@ -187,8 +186,10 @@ private:
     }
 
     int getAttributeTupleSize(const QString &name_) const;
-    bool getTextureSize(const QString &name_, QSize &size_) const;
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
+
+private:
+    bool getTextureSize(const QString &name_, QSize &size_) const;
     void updateGeometry(const QVector2D &proportinalRect_);
     void updateSize(const QVector2D &windowSize_);
     void initialize();
