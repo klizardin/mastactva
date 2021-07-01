@@ -175,5 +175,6 @@ Q_DECL_UNUSED static const char * g_luaArtefactMainFunctionName = "main";
 
 // lua effect calculations
 Q_DECL_UNUSED static const char * g_imageMatrixDefaultCalculationName = "imageMatrix";
+Q_DECL_UNUSED static const char * g_geometryDefaultCalculationName = "geometry";
 
 #endif // NAMES_H
