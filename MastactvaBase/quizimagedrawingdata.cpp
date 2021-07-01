@@ -24,6 +24,7 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
     opengl_drawing::VariablesExtended va(this, variables_);
 
     std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> updated;
+    updated.reserve(m_availableCalculations.size());
     std::copy_if(
                 std::begin(m_availableCalculations),
                 std::end(m_availableCalculations),
@@ -156,6 +157,7 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
     opengl_drawing::VariablesExtended va(this, variables_);
 
     std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> updated;
+    updated.reserve(m_availableCalculations.size());
     std::copy_if(
                 std::begin(m_availableCalculations),
                 std::end(m_availableCalculations),
