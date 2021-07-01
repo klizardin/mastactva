@@ -27,7 +27,7 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
     updated.reserve(m_availableCalculations.size());
     for(const auto &calc_ : m_availableCalculations)
     {
-        if(isUpdated(calc_->getRequiredVariables(), nullptr))
+        if(calc_.operator bool() && isUpdated(calc_->getRequiredVariables(), nullptr))
         {
             updated.push_back(calc_.get());
         }
@@ -159,7 +159,7 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
     updated.reserve(m_availableCalculations.size());
     for(const auto &calc_ : m_availableCalculations)
     {
-        if(isUpdated(calc_->getRequiredVariables(), nullptr))
+        if(calc_.operator bool() && isUpdated(calc_->getRequiredVariables(), nullptr))
         {
             updated.push_back(calc_.get());
         }
