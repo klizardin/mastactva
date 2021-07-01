@@ -173,4 +173,7 @@ Q_DECL_UNUSED static const char * g_jsonDataVariablePositionsName = "positions";
 Q_DECL_UNUSED static const char * g_luaArtefactMainFunctionName = "main";
 
 
+// lua effect calculations
+Q_DECL_UNUSED static const char * g_imageMatrixDefaultCalculationName = "imageMatrix";
+
 #endif // NAMES_H
