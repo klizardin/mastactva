@@ -22,23 +22,48 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
 {
     opengl_drawing::VariablesExtended va(this, variables_);
 
-    for(const auto &calc_ : calculations)
+    std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> updated;
+    std::copy_if(
+                std::begin(m_availableCalculations),
+                std::end(m_availableCalculations),
+                std::back_inserter(updated),
+                [this](const std::shared_ptr<opengl_drawing::IEffectCalculation> &calc_)->bool
+    {
+        return isUpdated(calc_->getRequiredVariables(), nullptr);
+    });
+
+    clearUpdated();
+
+    for(const auto &calc_ : updated)
     {
         if(!calc_.operator bool())
         {
             continue;
         }
         calc_->calculate(&va);
+
+        auto fit = std::find_if(
+                    std::begin(m_availableCalculations),
+                    std::end(m_availableCalculations),
+                    [&calc_](const auto &calc1_)->bool
+        {
+            return calc_.get() == calc1_.get();
+        });
+        m_availableCalculations.erase(fit);
     }
-    return false;
+
+    return !updated.empty();
 }
 
 void drawing_data::QuizImageObject::preCalculation()
 {
+    std::copy(std::begin(calculations), std::end(calculations),
+              std::back_inserter(m_availableCalculations));
 }
 
 void drawing_data::QuizImageObject::postCalculation()
 {
+    m_availableCalculations.clear();
     clearUpdated();
 }
 
@@ -86,6 +111,12 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
         }
         return sz;
     }();
+    for(const auto &object_ : objects)
+    {
+        object_->preCalculation();
+    }
+    std::copy(std::begin(calculations), std::end(calculations),
+              std::back_inserter(m_availableCalculations));
     for(
         int step = 0;
         calculateStep(variables_) && step < maxSteps;
@@ -95,6 +126,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
     {
         object_->postCalculation();
     }
+    m_availableCalculations.clear();
     clearUpdated();
 }
 
@@ -122,19 +154,43 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
 {
     opengl_drawing::VariablesExtended va(this, variables_);
 
-    for(const auto &calc_ : calculations)
+    std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> updated;
+    std::copy_if(
+                std::begin(m_availableCalculations),
+                std::end(m_availableCalculations),
+                std::back_inserter(updated),
+                [this](const std::shared_ptr<opengl_drawing::IEffectCalculation> &calc_)->bool
+    {
+        return isUpdated(calc_->getRequiredVariables(), nullptr);
+    });
+
+    clearUpdated();
+
+    for(const auto &calc_ : updated)
     {
         if(!calc_.operator bool())
         {
             continue;
         }
         calc_->calculate(&va);
+
+        auto fit = std::find_if(
+                    std::begin(m_availableCalculations),
+                    std::end(m_availableCalculations),
+                    [&calc_](const auto &calc1_)->bool
+        {
+            return calc_.get() == calc1_.get();
+        });
+        m_availableCalculations.erase(fit);
     }
+
+    bool anyProcessed = !updated.empty();
     for(const auto &object_ : objects)
     {
-        object_->calculate(variables_);
+        anyProcessed |= object_->calculate(variables_);
     }
-    return false;
+
+    return anyProcessed;
 }
 
 void drawing_data::QuizImageObjects::clearUpdated()

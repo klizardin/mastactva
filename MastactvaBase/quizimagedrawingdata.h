@@ -1080,6 +1080,7 @@ namespace drawing_data
 
     private:
         QStringList m_updated;
+        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
     };
 
 
@@ -1225,6 +1226,7 @@ namespace drawing_data
 
     private:
         QStringList m_updated;
+        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
     };
 }
 
