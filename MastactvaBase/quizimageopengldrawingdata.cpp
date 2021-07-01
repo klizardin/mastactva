@@ -637,6 +637,7 @@ void opengl_drawing::Objects::calculate()
         m_imageMatrixDefault->calculate(this);
     }
     m_imageData->calculate(this);
+    clearUpdated();
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
