@@ -9,6 +9,7 @@
 #include <QtQuick/QQuickWindow>
 #include <QQuickFramebufferObject>
 #include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/opengldrawing_utils.h"
 
 
 namespace opengl_drawing
@@ -67,12 +68,43 @@ namespace opengl_drawing
         std::map<QString, std::unique_ptr<Texture>> textures;
     };
 
-    class Objects
+    class Objects : public IVariables
     {
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
+        void calculate();
         void draw(QOpenGLFunctions *f_);
+
+        bool get(const QString &name_, QVector<double> &data_) const override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return false;
+            }
+
+            return m_imageData->get(name_, data_);
+        }
+
+        void set(const QString &name_, const QVector<double> &data_) override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+
+            m_imageData->set(name_, data_);
+        }
+
+        void set(const QString &name_, QVector<double> &&data_) override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+
+            m_imageData->set(name_, std::move(data_));
+        }
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
@@ -107,21 +139,41 @@ namespace opengl_drawing
             return m_imageData->getUniform(name_, value_);
         }
 
+        template<typename ItemType_>
+        ItemType_ getUniform(const QString &name_, const ItemType_ &defaultValue_) const
+        {
+            ItemType_ result{};
+            if(getUniform(name_, result))
+            {
+                return result;
+            }
+            else
+            {
+                return defaultValue_;
+            }
+        }
+
         QColor getClearColor() const;
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;
+        QSize getTextureSize(const QString &name_, const QSize &size_) const;
         void setTexture(const QString &name_, const QString &newFilename_);
         void setFromImage(const QString &url_);
         void setToImage(const QString &url_);
 
     private:
+        QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
+
+    private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
+        opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
+        opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
     };
 }
 
 
-class ObjectsRenderer : protected QOpenGLFunctions
+class ObjectsRenderer : protected QOpenGLFunctions, public opengl_drawing::IVariables
 {
 public:
     ObjectsRenderer();
@@ -138,7 +190,36 @@ public:
             qreal t_,
             const QVector2D &windowSize_);
 
-private:
+    bool get(const QString &name_, QVector<double> &data_) const override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return false;
+        }
+
+        return m_openglData->get(name_, data_);
+    }
+
+    void set(const QString &name_, const QVector<double> &data_) override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+
+        m_openglData->set(name_, data_);
+    }
+
+    void set(const QString &name_, QVector<double> &&data_) override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+
+        m_openglData->set(name_, std::move(data_));
+    }
+
     template<typename ItemType_>
     void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
     {
@@ -187,13 +268,12 @@ private:
     }
 
     int getAttributeTupleSize(const QString &name_) const;
-    bool getTextureSize(const QString &name_, QSize &size_) const;
     QSize getTextureSize(const QString &name_, const QSize &size_) const;
-    void updateGeometry(const QVector2D &proportinalRect_);
-    void updateSize(const QVector2D &windowSize_);
+
+private:
+    bool getTextureSize(const QString &name_, QSize &size_) const;
     void initialize();
     bool isValidData() const;
-    QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:

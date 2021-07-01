@@ -57,6 +57,7 @@ unix: HEADERS += \
         containerutils.h    \
         data_utils.h    \
         luaapi.h    \
+        opengldrawing_utils.h   \
         utils.h \
         names.h \
         defines.h   \
@@ -143,6 +144,7 @@ unix: SOURCES += \
         containerutils.cpp  \
         data_utils.cpp  \
         luaapi.cpp  \
+        opengldrawing_utils.cpp \
         utils.cpp  \
         \
         quizimage.cpp   \

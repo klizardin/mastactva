@@ -67,6 +67,7 @@ Q_DECL_UNUSED static const char *g_renderMatrixName = "renderMatrix";
 Q_DECL_UNUSED static const char *g_renderFromImageMatrixName = "renderFromImageMatrix";
 Q_DECL_UNUSED static const char *g_renderToImageMatrixName = "renderToImageMatrix";
 Q_DECL_UNUSED static const char *g_renderScreenRectName = "renderScreenRect";
+Q_DECL_UNUSED static const char *g_renderWindowSizeName = "renderWindowSize";
 Q_DECL_UNUSED static const char *g_renderOpacityName = "renderOpacity";
 Q_DECL_UNUSED static const char *g_renderTName = "renderT";
 Q_DECL_UNUSED static const char *g_renderFacedGeometryCoefsName = "renderFacedGeometryCoefs";
@@ -171,5 +172,9 @@ Q_DECL_UNUSED static const char * g_jsonDataVariablePositionsName = "positions";
 // lua artefacts
 Q_DECL_UNUSED static const char * g_luaArtefactMainFunctionName = "main";
 
+
+// lua effect calculations
+Q_DECL_UNUSED static const char * g_imageMatrixDefaultCalculationName = "imageMatrix";
+Q_DECL_UNUSED static const char * g_geometryDefaultCalculationName = "geometry";
 
 #endif // NAMES_H

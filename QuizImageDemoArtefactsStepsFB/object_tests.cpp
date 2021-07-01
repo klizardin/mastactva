@@ -566,57 +566,71 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             1,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
-            "renderVertexAttribute",
+            g_renderVertexAttributeName,
             emptyStr
         },
         {
             2,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
-            "renderTextureAttribute",
+            g_renderTextureAttributeName,
             emptyStr
         },
         {
             3,
             ArtefactArgTypeEn::mat4Type,
             ArtefactArgStorageEn::uniformStorage,
-            "renderMatrix",
+            g_renderMatrixName,
             emptyStr
         },
         {
             4,
             ArtefactArgTypeEn::mat4Type,
             ArtefactArgStorageEn::uniformStorage,
-            "renderFromImageMatrix",
+            g_renderFromImageMatrixName,
             emptyStr
         },
         {
             5,
             ArtefactArgTypeEn::mat4Type,
             ArtefactArgStorageEn::uniformStorage,
-            "renderToImageMatrix",
+            g_renderToImageMatrixName,
             emptyStr
         },
         {
             6,
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
-            "renderFacedGeometryCoefs",
+            g_renderFacedGeometryCoefsName,
             "0.0 0.0"
         },
         {
             7,
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
-            "renderGeomertySize",
+            g_renderGeomertySizeName,
             "2.0 2.0"
         },
         {
             8,
             ArtefactArgTypeEn::intType,
             ArtefactArgStorageEn::uniformStorage,
-            "renderIsGeomertySolid",
+            g_renderIsGeomertySolidName,
             "1"
+        },
+        {
+            9,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderScreenRectName,
+            "1.0 1.0"
+        },
+        {
+            10,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderWindowSizeName,
+            "1.0 1.0"
         }
     };
     auto artefact1 = std::make_unique<ArtefactData>(
@@ -661,14 +675,14 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             101,
             ArtefactArgTypeEn::floatType,
             ArtefactArgStorageEn::uniformStorage,
-            "renderOpacity",
+            g_renderOpacityName,
             "1.0"
         },
         {
             102,
             ArtefactArgTypeEn::floatType,
             ArtefactArgStorageEn::uniformStorage,
-            "renderT",
+            g_renderTName,
             "0.5"
         },
     };
@@ -708,8 +722,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
     enum class TextureEn{name, filename};
     static std::tuple<const char *, const char *> textures[] =
     {
-        {"renderFromImage", ":/Images/Images/no-image-001.png"},
-        {"renderToImage", ":/Images/Images/no-image-002.png"}
+        {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
+        {g_renderToImageName, ":/Images/Images/no-image-002.png"}
     };
     static const int textureBaseArtefactId = 3;
     static const int textureBaseObjectArtefactIdBase = 3;

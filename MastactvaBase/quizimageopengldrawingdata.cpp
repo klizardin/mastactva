@@ -404,6 +404,171 @@ std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
     return std::move(m_imageData);
 }
 
+
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+        const QSize &imageSize_,
+        const QSize &rectSize_
+        )
+{
+    QMatrix4x4 textureMatrix;
+    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
+            / (qreal)std::max(1, imageSize_.height())
+            ;
+    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
+            / (qreal)std::max(1, rectSize_.height())
+            ;
+    if(rectRate >= imageRate)
+    {
+        textureMatrix.scale(rectRate/imageRate, 1.0);
+        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+    }
+    else
+    {
+        textureMatrix.scale(1.0, imageRate/rectRate);
+        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+    }
+    return textureMatrix;
+}
+
+
+class ImageMatrixDefaultCalculation : public opengl_drawing::IEffectCalculation
+{
+public:
+    ImageMatrixDefaultCalculation();
+    void calculate(opengl_drawing::IVariables *variables_) const override;
+
+private:
+    QMatrix4x4 getImageMatrix(
+            opengl_drawing::Objects *objects_,
+            const QString &imageName_,
+            const QSize &windowSize_
+            ) const;
+};
+
+ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
+{
+    setFilename(g_imageMatrixDefaultCalculationName);
+    setVariables({g_renderWindowSizeName,});
+}
+
+void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!objects)
+    {
+        return;
+    }
+
+    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
+    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
+    objects->setUniform(
+                g_renderFromImageMatrixName,
+                getImageMatrix(objects, g_renderFromImageName, windowSize)
+                );
+    objects->setUniform(
+                g_renderToImageMatrixName,
+                getImageMatrix(objects, g_renderToImageName, windowSize)
+                );
+}
+
+QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
+        opengl_drawing::Objects *objects_,
+        const QString &imageName_,
+        const QSize &windowSize_
+        ) const
+{
+    const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+}
+
+
+class GeometryDefaultCalculation : public opengl_drawing::IEffectCalculation
+{
+public:
+    GeometryDefaultCalculation();
+    void calculate(opengl_drawing::IVariables *variables_) const override;
+};
+
+GeometryDefaultCalculation::GeometryDefaultCalculation()
+{
+    setFilename(g_geometryDefaultCalculationName);
+    setVariables({g_renderScreenRectName,
+                  g_renderIsGeomertySolidName,
+                  g_renderGeomertySizeName,
+                  g_renderFacedGeometryCoefsName,
+                  g_renderTextureAttributeName,
+                 });
+}
+
+void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!objects)
+    {
+        return;
+    }
+
+    const int vertexAttributeTupleSize = objects->getAttributeTupleSize(
+                g_renderVertexAttributeName
+                );
+    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
+
+    if(!vertextAttributeExist)
+    {
+        return;
+    }
+
+    const QVector2D proportinalRect = objects->getUniform(
+                g_renderScreenRectName,
+                QVector2D{1.0, 1.0}
+                );
+    const GLint isSolidGeometry = objects->getUniform(
+                g_renderIsGeomertySolidName,
+                GLint{1}
+                );
+    const QVector2D geometryFacedSize = objects->getUniform(
+                g_renderGeomertySizeName,
+                QVector2D{2.0, 2.0}
+                );
+    const QVector2D geometryFacedInterval = objects->getUniform(
+                g_renderFacedGeometryCoefsName,
+                QVector2D{0.0, 0.0}
+                );
+    const int textureAttributeTupleSize = objects->getAttributeTupleSize(
+                g_renderTextureAttributeName
+                );
+
+    std::vector<GLfloat> vertexData;
+    std::vector<GLfloat> textureData;
+
+    const bool textureAttributeExist = textureAttributeTupleSize > 0;
+    makeGeometry(proportinalRect.x(), proportinalRect.y(),
+                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
+                 geometryFacedInterval.x(), geometryFacedInterval.y(),
+                 vertexAttributeTupleSize,
+                 textureAttributeTupleSize, textureAttributeExist,
+                 isSolidGeometry,
+                 vertexData, textureData);
+
+    objects->setAttribute(
+                g_renderVertexAttributeName,
+                vertexData,
+                vertexAttributeTupleSize
+                );
+    if(textureAttributeExist)
+    {
+        objects->setAttribute(
+                    g_renderTextureAttributeName,
+                    textureData,
+                    textureAttributeTupleSize
+                    );
+    }
+}
+
+
+ImageMatrixDefaultCalculation g_imageMatrixCalculation;
+GeometryDefaultCalculation g_geometryDefaultCalculation;
+
 void opengl_drawing::Objects::init(
         std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_
         )
@@ -416,6 +581,65 @@ void opengl_drawing::Objects::init(
                     std::make_unique<opengl_drawing::Object>()
                     );
         m_objects.back()->init(object);
+    }
+
+    auto doExtend = [](
+            drawing_data::QuizImageObjects *objects_,
+            opengl_drawing::IEffectCalculation *newCalc_
+            )->bool
+    {
+        for(const auto &calc_ : objects_->calculations)
+        {
+            if(!calc_.operator bool())
+            {
+                continue;
+            }
+            if(calc_->doExtend(newCalc_))
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    m_imageMatrixDefault = !doExtend(m_imageData.get(), &g_imageMatrixCalculation)
+            ? &g_imageMatrixCalculation
+            : nullptr
+              ;
+    m_geometryDefault = !doExtend(m_imageData.get(), &g_geometryDefaultCalculation)
+            ? &g_geometryDefaultCalculation
+            : nullptr
+              ;
+}
+
+void opengl_drawing::Objects::calculate()
+{
+    if(m_geometryDefault)
+    {
+        m_geometryDefault->calculate(this);
+    }
+    if(m_imageMatrixDefault)
+    {
+        m_imageMatrixDefault->calculate(this);
+    }
+    for(const auto &calc_ : m_imageData->calculations)
+    {
+        if(!calc_.operator bool())
+        {
+            continue;
+        }
+        calc_->calculate(this);
+    }
+    for(const auto &object_ : m_imageData->objects)
+    {
+        for(const auto &calc_ : object_->calculations)
+        {
+            if(!calc_.operator bool())
+            {
+                continue;
+            }
+            calc_->calculate(this);
+        }
     }
 }
 
@@ -478,6 +702,19 @@ bool opengl_drawing::Objects::getTextureSize(
     return false;
 }
 
+QSize opengl_drawing::Objects::getTextureSize(const QString &name_, const QSize &size_) const
+{
+    QSize result;
+    if(getTextureSize(name_, result))
+    {
+        return result;
+    }
+    else
+    {
+        return size_;
+    }
+}
+
 void opengl_drawing::Objects::setTexture(
         const QString &name_,
         const QString &newFilename_
@@ -497,6 +734,12 @@ void opengl_drawing::Objects::setFromImage(const QString &url_)
 void opengl_drawing::Objects::setToImage(const QString &url_)
 {
     setTexture(g_renderToImageName, url_);  // TODO: dependency inversion
+}
+
+QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
+{
+    const QSize imageSize = getTextureSize(imageName_ , windowSize_);
+    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 
@@ -560,74 +803,6 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
     }
 }
 
-void ObjectsRenderer::updateGeometry(const QVector2D &proportinalRect_)
-{
-    const int vertexAttributeTupleSize = getAttributeTupleSize(
-                g_renderVertexAttributeName
-                );
-    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
-
-    if(!vertextAttributeExist)
-    {
-        return;
-    }
-
-    const GLint isSolidGeometry = getUniform(
-                g_renderIsGeomertySolidName,
-                GLint{1}
-                );
-    const QVector2D geometryFacedSize = getUniform(
-                g_renderGeomertySizeName,
-                QVector2D{2.0, 2.0}
-                );
-    const QVector2D geometryFacedInterval = getUniform(
-                g_renderGeomertySizeName,
-                QVector2D{0.0, 0.0}
-                );
-    const int textureAttributeTupleSize = getAttributeTupleSize(
-                g_renderTextureAttributeName
-                );
-
-    std::vector<GLfloat> vertexData;
-    std::vector<GLfloat> textureData;
-
-    const bool textureAttributeExist = textureAttributeTupleSize > 0;
-    makeGeometry(proportinalRect_.x(), proportinalRect_.y(),
-                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
-                 geometryFacedInterval.x(), geometryFacedInterval.y(),
-                 vertexAttributeTupleSize,
-                 textureAttributeTupleSize, textureAttributeExist,
-                 isSolidGeometry,
-                 vertexData, textureData);
-
-    setAttribute(
-                g_renderVertexAttributeName,
-                vertexData,
-                vertexAttributeTupleSize
-                );
-    if(textureAttributeExist)
-    {
-        setAttribute(
-                    g_renderTextureAttributeName,
-                    textureData,
-                    textureAttributeTupleSize
-                    );
-    }
-}
-
-void ObjectsRenderer::updateSize(const QVector2D &windowSize_)
-{
-    const QSize windowSize((int)windowSize_.x(), (int)windowSize_.y());
-    setUniform(
-                g_renderFromImageMatrixName,
-                getImageMatrix(g_renderFromImageName, windowSize)
-                );
-    setUniform(
-                g_renderToImageMatrixName,
-                getImageMatrix(g_renderToImageName, windowSize)
-                );
-}
-
 void ObjectsRenderer::updateVariables(
         const QVector2D &rectSize_,
         bool imageDataChanged_, bool sizeChanged_,
@@ -640,6 +815,7 @@ void ObjectsRenderer::updateVariables(
     setUniform( g_renderScreenRectName, proportinalRect );
     setUniform( g_renderTName, t_ );
     setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
+    setUniform( g_renderWindowSizeName, windowSize_);
 
     const bool requireGeometryOrSizeUpdate = imageDataChanged_ || sizeChanged_;
     if(!requireGeometryOrSizeUpdate)
@@ -647,8 +823,10 @@ void ObjectsRenderer::updateVariables(
         return;
     }
 
-    updateGeometry(proportinalRect);
-    updateSize(windowSize_);
+    if(m_openglData.operator bool())
+    {
+        m_openglData->calculate();
+    }
 }
 
 void ObjectsRenderer::initialize()
@@ -662,37 +840,6 @@ void ObjectsRenderer::initialize()
 bool ObjectsRenderer::isValidData() const
 {
     return m_openglData.operator bool();
-}
-
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
-}
-
-QMatrix4x4 ObjectsRenderer::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
-{
-    const QSize imageSize = getTextureSize(imageName_ , windowSize_);
-    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
@@ -956,6 +1103,12 @@ void drawing_data::DefaultQuizImageObject::initialize(
     object->uniforms.push_back(
                 std::make_unique<drawing_data::Uniform<QVector2D>>(
                     g_renderScreenRectName,
+                    std::make_shared<QVector2D>()
+                    )
+                );
+    object->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<QVector2D>>(
+                    g_renderWindowSizeName,
                     std::make_shared<QVector2D>()
                     )
                 );
