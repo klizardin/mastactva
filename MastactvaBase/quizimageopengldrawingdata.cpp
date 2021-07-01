@@ -614,33 +614,20 @@ void opengl_drawing::Objects::init(
 
 void opengl_drawing::Objects::calculate()
 {
-    if(m_geometryDefault)
+    if(!m_imageData.operator bool())
+    {
+        return;
+    }
+
+    if(m_geometryDefault && m_imageData->isUpdated(m_geometryDefault->getVariables()))
     {
         m_geometryDefault->calculate(this);
     }
-    if(m_imageMatrixDefault)
+    if(m_imageMatrixDefault && m_imageData->isUpdated(m_imageMatrixDefault->getVariables()))
     {
         m_imageMatrixDefault->calculate(this);
     }
-    for(const auto &calc_ : m_imageData->calculations)
-    {
-        if(!calc_.operator bool())
-        {
-            continue;
-        }
-        calc_->calculate(this);
-    }
-    for(const auto &object_ : m_imageData->objects)
-    {
-        for(const auto &calc_ : object_->calculations)
-        {
-            if(!calc_.operator bool())
-            {
-                continue;
-            }
-            calc_->calculate(this);
-        }
-    }
+    m_imageData->calculate(this);
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
@@ -805,7 +792,6 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
 
 void ObjectsRenderer::updateVariables(
         const QVector2D &rectSize_,
-        bool imageDataChanged_, bool sizeChanged_,
         qreal t_,
         const QVector2D &windowSize_)
 {
@@ -816,17 +802,6 @@ void ObjectsRenderer::updateVariables(
     setUniform( g_renderTName, t_ );
     setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
     setUniform( g_renderWindowSizeName, windowSize_);
-
-    const bool requireGeometryOrSizeUpdate = imageDataChanged_ || sizeChanged_;
-    if(!requireGeometryOrSizeUpdate)
-    {
-        return;
-    }
-
-    if(m_openglData.operator bool())
-    {
-        m_openglData->calculate();
-    }
 }
 
 void ObjectsRenderer::initialize()
@@ -851,6 +826,11 @@ QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
 
 void ObjectsRenderer::render()
 {
+    if(m_openglData.operator bool())
+    {
+        m_openglData->calculate();
+    }
+
     glDepthMask(true);
 
     if(isValidData())
@@ -1024,12 +1004,10 @@ void QuizImageFboRendererImpl::setWindowSize(const QVector2D &windowSize_)
 
 void QuizImageFboRendererImpl::synchronizeImpl(
         const QVector2D &rectSize_,
-        bool imageDataChanged_,
-        bool sizeChanged_,
         qreal t_
         )
 {
-    m_objectRenderer.updateVariables(rectSize_, imageDataChanged_, sizeChanged_, t_, m_windowSize);
+    m_objectRenderer.updateVariables(rectSize_, t_, m_windowSize);
 }
 
 std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()

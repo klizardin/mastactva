@@ -186,7 +186,6 @@ public:
     void setToImage(const QString &url_);
     void updateVariables(
             const QVector2D &rectSize_,
-            bool imageDataChanged_, bool sizeChanged_,
             qreal t_,
             const QVector2D &windowSize_);
 
@@ -309,7 +308,7 @@ protected:
     QOpenGLFramebufferObject *createFramebufferObjectImpl(const QSize &size_);
     const QVector2D &getWindowSize() const;
     void setWindowSize(const QVector2D &windowSize_);
-    void synchronizeImpl(const QVector2D &rectSize_, bool imageDataChanged_, bool sizeChanged_, qreal t_);
+    void synchronizeImpl(const QVector2D &rectSize_, qreal t_);
     std::unique_ptr<drawing_data::QuizImageObjects> releaseImageData();
     void setImageData(std::unique_ptr<drawing_data::QuizImageObjects> imageData_);
     void setFromImage(const QString &url_);
@@ -348,7 +347,6 @@ public:
         }
 
         const QVector2D rectSize(quizImage->width(), quizImage->height());
-        const bool sizeChanged = getWindowSize() != rectSize;
         setWindowSize(rectSize);
         const qreal t = quizImage->t();
 
@@ -358,7 +356,7 @@ public:
             quizImage->setDataToFree(releaseImageData());
             setImageData(quizImage->getData());
         }
-        synchronizeImpl(rectSize, imageDataChanged, sizeChanged, t);
+        synchronizeImpl(rectSize, t);
         if(quizImage->isFromImageReady() && !quizImage->getFromImageUrl().isEmpty())
         {
             setFromImage(quizImage->getFromImageUrl());

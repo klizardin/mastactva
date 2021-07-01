@@ -18,6 +18,47 @@ void drawing_data::QuizImageObject::setTexture(const QString &name_, const QStri
     fit->filename = newFilename_;
 }
 
+bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variables_)
+{
+    opengl_drawing::VariablesExtended va(this, variables_);
+
+    for(const auto &calc_ : calculations)
+    {
+        if(!calc_.operator bool())
+        {
+            continue;
+        }
+        calc_->calculate(&va);
+    }
+    return false;
+}
+
+void drawing_data::QuizImageObject::preCalculation()
+{
+}
+
+void drawing_data::QuizImageObject::postCalculation()
+{
+    clearUpdated();
+}
+
+bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_) const
+{
+    for(const QString &var_ : m_updated)
+    {
+        if(vars_.contains(var_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void drawing_data::QuizImageObject::clearUpdated()
+{
+    m_updated.clear();
+}
+
 
 void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QString &newFilename_)
 {
@@ -30,4 +71,62 @@ void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QStr
 
         object_->setTexture(name_, newFilename_);
     }
+}
+
+void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *variables_)
+{
+    static const std::size_t maxSteps = 100;
+    for(
+        std::size_t step = 0;
+        calculateStep(variables_) && step < maxSteps;
+        ++step)
+    {};
+    for(const auto &object_ : objects)
+    {
+        object_->postCalculation();
+    }
+    clearUpdated();
+}
+
+bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_) const
+{
+    for(const QString &var_ : m_updated)
+    {
+        if(vars_.contains(var_))
+        {
+            return true;
+        }
+    }
+    for(const auto &object_ : objects)
+    {
+        if(object_->isUpdated(vars_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *variables_)
+{
+    opengl_drawing::VariablesExtended va(this, variables_);
+
+    for(const auto &calc_ : calculations)
+    {
+        if(!calc_.operator bool())
+        {
+            continue;
+        }
+        calc_->calculate(&va);
+    }
+    for(const auto &object_ : objects)
+    {
+        object_->calculate(variables_);
+    }
+    return false;
+}
+
+void drawing_data::QuizImageObjects::clearUpdated()
+{
+    m_updated.clear();
 }
