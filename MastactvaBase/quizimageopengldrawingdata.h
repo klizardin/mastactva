@@ -73,6 +73,7 @@ namespace opengl_drawing
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
+        void calculate();
         void draw(QOpenGLFunctions *f_);
 
         bool get(const QString &name_, QVector<double> &data_) const override
@@ -138,12 +139,30 @@ namespace opengl_drawing
             return m_imageData->getUniform(name_, value_);
         }
 
+        template<typename ItemType_>
+        ItemType_ getUniform(const QString &name_, const ItemType_ &defaultValue_) const
+        {
+            ItemType_ result{};
+            if(getUniform(name_, result))
+            {
+                return result;
+            }
+            else
+            {
+                return defaultValue_;
+            }
+        }
+
         QColor getClearColor() const;
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;
+        QSize getTextureSize(const QString &name_, const QSize &size_) const;
         void setTexture(const QString &name_, const QString &newFilename_);
         void setFromImage(const QString &url_);
         void setToImage(const QString &url_);
+
+    private:
+        QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
 
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
@@ -252,10 +271,8 @@ public:
 private:
     bool getTextureSize(const QString &name_, QSize &size_) const;
     void updateGeometry(const QVector2D &proportinalRect_);
-    void updateSize(const QVector2D &windowSize_);
     void initialize();
     bool isValidData() const;
-    QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);
 
 private:
