@@ -867,6 +867,7 @@ namespace drawing_data
         std::vector<std::unique_ptr<IAttribute>> attributes;
         std::vector<std::unique_ptr<IUniform>> uniforms;
         std::vector<Texture> textures;
+        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
         bool get(const QString &name_, QVector<double> &data_) const override
