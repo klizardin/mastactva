@@ -404,6 +404,85 @@ std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
     return std::move(m_imageData);
 }
 
+
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+        const QSize &imageSize_,
+        const QSize &rectSize_
+        )
+{
+    QMatrix4x4 textureMatrix;
+    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
+            / (qreal)std::max(1, imageSize_.height())
+            ;
+    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
+            / (qreal)std::max(1, rectSize_.height())
+            ;
+    if(rectRate >= imageRate)
+    {
+        textureMatrix.scale(rectRate/imageRate, 1.0);
+        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+    }
+    else
+    {
+        textureMatrix.scale(1.0, imageRate/rectRate);
+        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+    }
+    return textureMatrix;
+}
+
+
+class ImageMatrixDefaultCalculation : public opengl_drawing::IEffectCalculation
+{
+public:
+    ImageMatrixDefaultCalculation();
+    void calculate(opengl_drawing::IVariables *variables_) const override;
+
+private:
+    QMatrix4x4 getImageMatrix(
+            opengl_drawing::Objects *objects_,
+            const QString &imageName_,
+            const QSize &windowSize_
+            ) const;
+};
+
+ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
+{
+    setFilename(g_imageMatrixDefaultCalculationName);
+    setVariables({g_renderWindowSizeName,});
+}
+
+void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!objects)
+    {
+        return;
+    }
+
+    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D(1,1));
+    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
+    objects->setUniform(
+                g_renderFromImageMatrixName,
+                getImageMatrix(objects, g_renderFromImageName, windowSize)
+                );
+    objects->setUniform(
+                g_renderToImageMatrixName,
+                getImageMatrix(objects, g_renderToImageName, windowSize)
+                );
+}
+
+QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
+        opengl_drawing::Objects *objects_,
+        const QString &imageName_,
+        const QSize &windowSize_
+        ) const
+{
+    const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+}
+
+ImageMatrixDefaultCalculation g_imageMatrixCalculation;
+
 void opengl_drawing::Objects::init(
         std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_
         )
@@ -421,16 +500,7 @@ void opengl_drawing::Objects::init(
 
 void opengl_drawing::Objects::calculate()
 {
-    const QVector2D windowSizeF = getUniform(g_renderWindowSizeName, QVector2D(1,1));
-    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
-    setUniform(
-                g_renderFromImageMatrixName,
-                getImageMatrix(g_renderFromImageName, windowSize)
-                );
-    setUniform(
-                g_renderToImageMatrixName,
-                getImageMatrix(g_renderToImageName, windowSize)
-                );
+    g_imageMatrixCalculation.calculate(this);
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
@@ -524,31 +594,6 @@ void opengl_drawing::Objects::setFromImage(const QString &url_)
 void opengl_drawing::Objects::setToImage(const QString &url_)
 {
     setTexture(g_renderToImageName, url_);  // TODO: dependency inversion
-}
-
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
 }
 
 QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
