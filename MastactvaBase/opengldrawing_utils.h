@@ -18,6 +18,16 @@ public:
     virtual void set(const QString &name_, QVector<double> &&data_) = 0;
 };
 
+// stateless
+class IEffectCalculation
+{
+public:
+    virtual ~IEffectCalculation() = default;
+    virtual QString getFilename() const = 0;
+    virtual QStringList getVariables() const = 0;
+    virtual void calculate(IVariables *variables_) const = 0;
+};
+
 }
 
 
