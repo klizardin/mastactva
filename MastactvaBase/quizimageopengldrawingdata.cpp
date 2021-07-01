@@ -496,11 +496,46 @@ void opengl_drawing::Objects::init(
                     );
         m_objects.back()->init(object);
     }
+
+    auto doExtend = [](
+            drawing_data::QuizImageObjects *objects_,
+            opengl_drawing::IEffectCalculation *newCalc_
+            )->bool
+    {
+        for(const auto &calc_ : objects_->calculations)
+        {
+            if(!calc_.operator bool())
+            {
+                continue;
+            }
+            if(calc_->doExtend(newCalc_))
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    m_imageMatrixDefault = !doExtend(m_imageData.get(), &g_imageMatrixCalculation)
+            ? &g_imageMatrixCalculation
+            : nullptr
+              ;
 }
 
 void opengl_drawing::Objects::calculate()
 {
-    g_imageMatrixCalculation.calculate(this);
+    if(m_imageMatrixDefault)
+    {
+        m_imageMatrixDefault->calculate(this);
+    }
+    for(const auto &calc_ : m_imageData->calculations)
+    {
+        if(!calc_.operator bool())
+        {
+            continue;
+        }
+        calc_->calculate(this);
+    }
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)

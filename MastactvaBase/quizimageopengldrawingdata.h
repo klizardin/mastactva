@@ -167,6 +167,7 @@ namespace opengl_drawing
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
+        opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
     };
 }
 
