@@ -42,7 +42,7 @@ void drawing_data::QuizImageObject::postCalculation()
     clearUpdated();
 }
 
-bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_) const
+bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
 {
     for(const QString &var_ : m_updated)
     {
@@ -88,7 +88,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
     clearUpdated();
 }
 
-bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_) const
+bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariables *base_) const
 {
     for(const QString &var_ : m_updated)
     {
@@ -99,7 +99,7 @@ bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_) const
     }
     for(const auto &object_ : objects)
     {
-        if(object_->isUpdated(vars_))
+        if(object_->isUpdated(vars_, nullptr))
         {
             return true;
         }

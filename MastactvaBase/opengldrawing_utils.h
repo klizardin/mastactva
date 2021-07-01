@@ -17,7 +17,7 @@ public:
     virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
     virtual void set(const QString &name_, const QVector<double> &data_) = 0;
     virtual void set(const QString &name_, QVector<double> &&data_) = 0;
-    virtual bool isUpdated(const QStringList &vars_) const = 0;
+    virtual bool isUpdated(const QStringList &vars_, IVariables *base_) const = 0;
 };
 
 class VariablesExtended : public IVariables
@@ -28,7 +28,7 @@ public:
     bool get(const QString &name_, QVector<double> &data_) const override;
     void set(const QString &name_, const QVector<double> &data_) override;
     void set(const QString &name_, QVector<double> &&data_) override;
-    bool isUpdated(const QStringList &vars_) const override;
+    bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
 
 private:
     IVariables *m_base = nullptr;

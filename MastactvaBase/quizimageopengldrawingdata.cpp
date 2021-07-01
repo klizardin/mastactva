@@ -625,13 +625,13 @@ void opengl_drawing::Objects::calculate()
     }
 
     if(m_geometryDefault
-            && isUpdated(m_geometryDefault->getRequiredVariables())
+            && isUpdated(m_geometryDefault->getRequiredVariables(), nullptr)
             )
     {
         m_geometryDefault->calculate(this);
     }
     if(m_imageMatrixDefault
-            && isUpdated(m_imageMatrixDefault->getRequiredVariables())
+            && isUpdated(m_imageMatrixDefault->getRequiredVariables(), nullptr)
             )
     {
         m_imageMatrixDefault->calculate(this);
@@ -742,7 +742,7 @@ QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, co
     return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
-bool opengl_drawing::Objects::isUpdated(const QStringList &vars_) const
+bool opengl_drawing::Objects::isUpdated(const QStringList &vars_, IVariables *base_) const
 {
     for(const QString &var_ : m_updated)
     {
@@ -751,9 +751,13 @@ bool opengl_drawing::Objects::isUpdated(const QStringList &vars_) const
             return true;
         }
     }
+    if(base_)
+    {
+        return base_->isUpdated(vars_, nullptr);
+    }
     if(m_imageData.operator bool())
     {
-        return m_imageData->isUpdated(vars_);
+        return m_imageData->isUpdated(vars_, nullptr);
     }
     return false;
 }

@@ -1073,7 +1073,7 @@ namespace drawing_data
         bool calculate(opengl_drawing::IVariables *variables_);
         void preCalculation();
         void postCalculation();
-        bool isUpdated(const QStringList &vars_) const override;
+        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
 
     private:
         void clearUpdated();
@@ -1217,7 +1217,7 @@ namespace drawing_data
 
         void setTexture(const QString &name_, const QString &newFilename_);
         void calculate(opengl_drawing::IVariables *variables_);
-        bool isUpdated(const QStringList &vars_) const override;
+        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
 
     private:
         bool calculateStep(opengl_drawing::IVariables *variables_);
