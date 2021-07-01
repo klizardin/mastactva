@@ -45,10 +45,10 @@ void VariablesExtended::set(const QString &name_, QVector<double> &&data_)
 
 bool VariablesExtended::isUpdated(const QStringList &vars_) const
 {
-    return m_base ?
-                m_base->isUpdated(vars_)
-              : m_extend ?
-                    m_extend->isUpdated(vars_)
+    return m_extend ?
+                m_extend->isUpdated(vars_)
+              : m_base ?
+                    m_base->isUpdated(vars_)
                   : false
                     ;
 }
