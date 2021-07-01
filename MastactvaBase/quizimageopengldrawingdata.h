@@ -168,6 +168,7 @@ namespace opengl_drawing
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
         opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
+        opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
     };
 }
 
@@ -271,7 +272,6 @@ public:
 
 private:
     bool getTextureSize(const QString &name_, QSize &size_) const;
-    void updateGeometry(const QVector2D &proportinalRect_);
     void initialize();
     bool isValidData() const;
     static QMatrix4x4 getScreenMatrix(const QVector2D &proportinalRect_);

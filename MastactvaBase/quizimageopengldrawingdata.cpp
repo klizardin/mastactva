@@ -481,7 +481,93 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
     return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
+
+class GeometryDefaultCalculation : public opengl_drawing::IEffectCalculation
+{
+public:
+    GeometryDefaultCalculation();
+    void calculate(opengl_drawing::IVariables *variables_) const override;
+};
+
+GeometryDefaultCalculation::GeometryDefaultCalculation()
+{
+    setFilename(g_geometryDefaultCalculationName);
+    setVariables({g_renderScreenRectName,
+                  g_renderIsGeomertySolidName,
+                  g_renderGeomertySizeName,
+                  g_renderFacedGeometryCoefsName,
+                  g_renderTextureAttributeName,
+                 });
+}
+
+void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!objects)
+    {
+        return;
+    }
+
+    const int vertexAttributeTupleSize = objects->getAttributeTupleSize(
+                g_renderVertexAttributeName
+                );
+    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
+
+    if(!vertextAttributeExist)
+    {
+        return;
+    }
+
+    const QVector2D proportinalRect = objects->getUniform(
+                g_renderScreenRectName,
+                QVector2D{1.0, 1.0}
+                );
+    const GLint isSolidGeometry = objects->getUniform(
+                g_renderIsGeomertySolidName,
+                GLint{1}
+                );
+    const QVector2D geometryFacedSize = objects->getUniform(
+                g_renderGeomertySizeName,
+                QVector2D{2.0, 2.0}
+                );
+    const QVector2D geometryFacedInterval = objects->getUniform(
+                g_renderFacedGeometryCoefsName,
+                QVector2D{0.0, 0.0}
+                );
+    const int textureAttributeTupleSize = objects->getAttributeTupleSize(
+                g_renderTextureAttributeName
+                );
+
+    std::vector<GLfloat> vertexData;
+    std::vector<GLfloat> textureData;
+
+    const bool textureAttributeExist = textureAttributeTupleSize > 0;
+    makeGeometry(proportinalRect.x(), proportinalRect.y(),
+                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
+                 geometryFacedInterval.x(), geometryFacedInterval.y(),
+                 vertexAttributeTupleSize,
+                 textureAttributeTupleSize, textureAttributeExist,
+                 isSolidGeometry,
+                 vertexData, textureData);
+
+    objects->setAttribute(
+                g_renderVertexAttributeName,
+                vertexData,
+                vertexAttributeTupleSize
+                );
+    if(textureAttributeExist)
+    {
+        objects->setAttribute(
+                    g_renderTextureAttributeName,
+                    textureData,
+                    textureAttributeTupleSize
+                    );
+    }
+}
+
+
 ImageMatrixDefaultCalculation g_imageMatrixCalculation;
+GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
         std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_
@@ -520,10 +606,18 @@ void opengl_drawing::Objects::init(
             ? &g_imageMatrixCalculation
             : nullptr
               ;
+    m_geometryDefault = !doExtend(m_imageData.get(), &g_geometryDefaultCalculation)
+            ? &g_geometryDefaultCalculation
+            : nullptr
+              ;
 }
 
 void opengl_drawing::Objects::calculate()
 {
+    if(m_geometryDefault)
+    {
+        m_geometryDefault->calculate(this);
+    }
     if(m_imageMatrixDefault)
     {
         m_imageMatrixDefault->calculate(this);
@@ -709,61 +803,6 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
     }
 }
 
-void ObjectsRenderer::updateGeometry(const QVector2D &proportinalRect_)
-{
-    const int vertexAttributeTupleSize = getAttributeTupleSize(
-                g_renderVertexAttributeName
-                );
-    const bool vertextAttributeExist = vertexAttributeTupleSize > 0;
-
-    if(!vertextAttributeExist)
-    {
-        return;
-    }
-
-    const GLint isSolidGeometry = getUniform(
-                g_renderIsGeomertySolidName,
-                GLint{1}
-                );
-    const QVector2D geometryFacedSize = getUniform(
-                g_renderGeomertySizeName,
-                QVector2D{2.0, 2.0}
-                );
-    const QVector2D geometryFacedInterval = getUniform(
-                g_renderGeomertySizeName,
-                QVector2D{0.0, 0.0}
-                );
-    const int textureAttributeTupleSize = getAttributeTupleSize(
-                g_renderTextureAttributeName
-                );
-
-    std::vector<GLfloat> vertexData;
-    std::vector<GLfloat> textureData;
-
-    const bool textureAttributeExist = textureAttributeTupleSize > 0;
-    makeGeometry(proportinalRect_.x(), proportinalRect_.y(),
-                 (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
-                 geometryFacedInterval.x(), geometryFacedInterval.y(),
-                 vertexAttributeTupleSize,
-                 textureAttributeTupleSize, textureAttributeExist,
-                 isSolidGeometry,
-                 vertexData, textureData);
-
-    setAttribute(
-                g_renderVertexAttributeName,
-                vertexData,
-                vertexAttributeTupleSize
-                );
-    if(textureAttributeExist)
-    {
-        setAttribute(
-                    g_renderTextureAttributeName,
-                    textureData,
-                    textureAttributeTupleSize
-                    );
-    }
-}
-
 void ObjectsRenderer::updateVariables(
         const QVector2D &rectSize_,
         bool imageDataChanged_, bool sizeChanged_,
@@ -784,7 +823,6 @@ void ObjectsRenderer::updateVariables(
         return;
     }
 
-    updateGeometry(proportinalRect);
     if(m_openglData.operator bool())
     {
         m_openglData->calculate();
