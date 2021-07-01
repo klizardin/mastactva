@@ -792,7 +792,6 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
 
 void ObjectsRenderer::updateVariables(
         const QVector2D &rectSize_,
-        bool imageDataChanged_, bool sizeChanged_,
         qreal t_,
         const QVector2D &windowSize_)
 {
@@ -803,17 +802,6 @@ void ObjectsRenderer::updateVariables(
     setUniform( g_renderTName, t_ );
     setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
     setUniform( g_renderWindowSizeName, windowSize_);
-
-    const bool requireGeometryOrSizeUpdate = imageDataChanged_ || sizeChanged_;
-    if(!requireGeometryOrSizeUpdate)
-    {
-        return;
-    }
-
-    if(m_openglData.operator bool())
-    {
-        m_openglData->calculate();
-    }
 }
 
 void ObjectsRenderer::initialize()
@@ -838,6 +826,11 @@ QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
 
 void ObjectsRenderer::render()
 {
+    if(m_openglData.operator bool())
+    {
+        m_openglData->calculate();
+    }
+
     glDepthMask(true);
 
     if(isValidData())
@@ -1011,12 +1004,10 @@ void QuizImageFboRendererImpl::setWindowSize(const QVector2D &windowSize_)
 
 void QuizImageFboRendererImpl::synchronizeImpl(
         const QVector2D &rectSize_,
-        bool imageDataChanged_,
-        bool sizeChanged_,
         qreal t_
         )
 {
-    m_objectRenderer.updateVariables(rectSize_, imageDataChanged_, sizeChanged_, t_, m_windowSize);
+    m_objectRenderer.updateVariables(rectSize_, t_, m_windowSize);
 }
 
 std::unique_ptr<drawing_data::QuizImageObjects> QuizImageFboRendererImpl::releaseImageData()
