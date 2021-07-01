@@ -60,7 +60,7 @@ bool IEffectCalculation::doExtend(IEffectCalculation *calculation_) const
     return fiCurrent.baseName().startsWith(fiNew.baseName());
 }
 
-const QStringList &IEffectCalculation::getVariables() const
+const QStringList &IEffectCalculation::getRequiredVariables() const
 {
     return m_vars;
 }
@@ -70,7 +70,7 @@ void IEffectCalculation::setFilename(const QString &filename_)
     m_filename = filename_;
 }
 
-void IEffectCalculation::setVariables(const QStringList &vars_)
+void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
 {
     m_vars = vars_;
 }

@@ -448,7 +448,7 @@ private:
 ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
 {
     setFilename(g_imageMatrixDefaultCalculationName);
-    setVariables({g_renderWindowSizeName,});
+    setRequiredVariables({g_renderWindowSizeName,});
 }
 
 void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
@@ -492,7 +492,7 @@ public:
 GeometryDefaultCalculation::GeometryDefaultCalculation()
 {
     setFilename(g_geometryDefaultCalculationName);
-    setVariables({g_renderScreenRectName,
+    setRequiredVariables({g_renderScreenRectName,
                   g_renderIsGeomertySolidName,
                   g_renderGeomertySizeName,
                   g_renderFacedGeometryCoefsName,
@@ -620,13 +620,13 @@ void opengl_drawing::Objects::calculate()
     }
 
     if(m_geometryDefault
-            && m_imageData->isUpdated(m_geometryDefault->getVariables())
+            && m_imageData->isUpdated(m_geometryDefault->getRequiredVariables())
             )
     {
         m_geometryDefault->calculate(this);
     }
     if(m_imageMatrixDefault
-            && m_imageData->isUpdated(m_imageMatrixDefault->getVariables())
+            && m_imageData->isUpdated(m_imageMatrixDefault->getRequiredVariables())
             )
     {
         m_imageMatrixDefault->calculate(this);
