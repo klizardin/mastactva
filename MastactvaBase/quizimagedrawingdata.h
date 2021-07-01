@@ -325,7 +325,7 @@ namespace drawing_data
     class ITypeInfoImpl : public virtual ITypeInfo
     {
     public:
-        virtual int typeIndex() const
+        int typeIndex() const override
         {
             static_assert(
                 sizeof(decltype(ItemTypeTraits<ItemType_>::typeIndex)) <= sizeof(int),
@@ -334,7 +334,7 @@ namespace drawing_data
             return ItemTypeTraits<ItemType_>::typeIndex;
         }
 
-        virtual int tupleSize() const override
+        int tupleSize() const override
         {
             return ItemTypeTraits<ItemType_>::tupleSize;
         }
