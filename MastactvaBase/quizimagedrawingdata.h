@@ -1054,6 +1054,7 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
+        bool calculate();
     };
 
 
@@ -1174,6 +1175,7 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
+        bool calculate();
     };
 }
 

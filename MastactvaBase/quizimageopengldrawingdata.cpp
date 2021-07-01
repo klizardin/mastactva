@@ -622,24 +622,9 @@ void opengl_drawing::Objects::calculate()
     {
         m_imageMatrixDefault->calculate(this);
     }
-    for(const auto &calc_ : m_imageData->calculations)
+    if(m_imageData.operator bool())
     {
-        if(!calc_.operator bool())
-        {
-            continue;
-        }
-        calc_->calculate(this);
-    }
-    for(const auto &object_ : m_imageData->objects)
-    {
-        for(const auto &calc_ : object_->calculations)
-        {
-            if(!calc_.operator bool())
-            {
-                continue;
-            }
-            calc_->calculate(this);
-        }
+        m_imageData->calculate();
     }
 }
 

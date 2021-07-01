@@ -18,6 +18,19 @@ void drawing_data::QuizImageObject::setTexture(const QString &name_, const QStri
     fit->filename = newFilename_;
 }
 
+bool drawing_data::QuizImageObject::calculate()
+{
+    for(const auto &calc_ : calculations)
+    {
+        if(!calc_.operator bool())
+        {
+            continue;
+        }
+        calc_->calculate(this);
+    }
+    return false;
+}
+
 
 void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QString &newFilename_)
 {
@@ -30,4 +43,21 @@ void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QStr
 
         object_->setTexture(name_, newFilename_);
     }
+}
+
+bool drawing_data::QuizImageObjects::calculate()
+{
+    for(const auto &calc_ : calculations)
+    {
+        if(!calc_.operator bool())
+        {
+            continue;
+        }
+        calc_->calculate(this);
+    }
+    for(const auto &object_ : objects)
+    {
+        object_->calculate();
+    }
+    return false;
 }
