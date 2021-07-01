@@ -624,7 +624,7 @@ void opengl_drawing::Objects::calculate()
     }
     if(m_imageData.operator bool())
     {
-        m_imageData->calculate();
+        m_imageData->calculate(this);
     }
 }
 

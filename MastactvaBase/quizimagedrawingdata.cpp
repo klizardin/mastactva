@@ -18,15 +18,17 @@ void drawing_data::QuizImageObject::setTexture(const QString &name_, const QStri
     fit->filename = newFilename_;
 }
 
-bool drawing_data::QuizImageObject::calculate()
+bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variables_)
 {
+    opengl_drawing::VariablesExtended va(this, variables_);
+
     for(const auto &calc_ : calculations)
     {
         if(!calc_.operator bool())
         {
             continue;
         }
-        calc_->calculate(this);
+        calc_->calculate(&va);
     }
     return false;
 }
@@ -45,19 +47,21 @@ void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QStr
     }
 }
 
-bool drawing_data::QuizImageObjects::calculate()
+bool drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *variables_)
 {
+    opengl_drawing::VariablesExtended va(this, variables_);
+
     for(const auto &calc_ : calculations)
     {
         if(!calc_.operator bool())
         {
             continue;
         }
-        calc_->calculate(this);
+        calc_->calculate(&va);
     }
     for(const auto &object_ : objects)
     {
-        object_->calculate();
+        object_->calculate(variables_);
     }
     return false;
 }

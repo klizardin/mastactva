@@ -1054,7 +1054,7 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
-        bool calculate();
+        bool calculate(opengl_drawing::IVariables *variables_);
     };
 
 
@@ -1175,7 +1175,7 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
-        bool calculate();
+        bool calculate(opengl_drawing::IVariables *variables_);
     };
 }
 
