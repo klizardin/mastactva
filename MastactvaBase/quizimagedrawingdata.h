@@ -1061,6 +1061,7 @@ namespace drawing_data
     public:
         QColor clearColor{255, 255, 255};
         std::vector<std::shared_ptr<QuizImageObject>> objects;
+        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
         bool get(const QString &name_, QVector<double> &data_) const override
