@@ -448,7 +448,11 @@ private:
 ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
 {
     setFilename(g_imageMatrixDefaultCalculationName);
-    setVariables({g_renderWindowSizeName,});
+    setRequiredVariables({
+                 g_renderWindowSizeName,
+                 g_renderFromImageName,
+                 g_renderToImageName
+                });
 }
 
 void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
@@ -492,7 +496,8 @@ public:
 GeometryDefaultCalculation::GeometryDefaultCalculation()
 {
     setFilename(g_geometryDefaultCalculationName);
-    setVariables({g_renderScreenRectName,
+    setRequiredVariables({
+                  g_renderScreenRectName,
                   g_renderIsGeomertySolidName,
                   g_renderGeomertySizeName,
                   g_renderFacedGeometryCoefsName,
@@ -566,7 +571,7 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
 }
 
 
-ImageMatrixDefaultCalculation g_imageMatrixCalculation;
+ImageMatrixDefaultCalculation g_imageMatrixDefaultCalculation;
 GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
@@ -602,8 +607,8 @@ void opengl_drawing::Objects::init(
         return false;
     };
 
-    m_imageMatrixDefault = !doExtend(m_imageData.get(), &g_imageMatrixCalculation)
-            ? &g_imageMatrixCalculation
+    m_imageMatrixDefault = !doExtend(m_imageData.get(), &g_imageMatrixDefaultCalculation)
+            ? &g_imageMatrixDefaultCalculation
             : nullptr
               ;
     m_geometryDefault = !doExtend(m_imageData.get(), &g_geometryDefaultCalculation)
@@ -619,15 +624,20 @@ void opengl_drawing::Objects::calculate()
         return;
     }
 
-    if(m_geometryDefault && m_imageData->isUpdated(m_geometryDefault->getVariables()))
+    if(m_geometryDefault
+            && isUpdated(m_geometryDefault->getRequiredVariables(), nullptr)
+            )
     {
         m_geometryDefault->calculate(this);
     }
-    if(m_imageMatrixDefault && m_imageData->isUpdated(m_imageMatrixDefault->getVariables()))
+    if(m_imageMatrixDefault
+            && isUpdated(m_imageMatrixDefault->getRequiredVariables(), nullptr)
+            )
     {
         m_imageMatrixDefault->calculate(this);
     }
     m_imageData->calculate(this);
+    clearUpdated();
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
@@ -707,6 +717,10 @@ void opengl_drawing::Objects::setTexture(
         const QString &newFilename_
         )
 {
+    if(!m_updated.contains(name_))
+    {
+        m_updated.push_back(name_);
+    }
     for(std::unique_ptr<Object> &object_ : m_objects)
     {
         object_->setTexture(name_, newFilename_);
@@ -727,6 +741,31 @@ QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, co
 {
     const QSize imageSize = getTextureSize(imageName_ , windowSize_);
     return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+}
+
+bool opengl_drawing::Objects::isUpdated(const QStringList &vars_, IVariables *base_) const
+{
+    for(const QString &var_ : m_updated)
+    {
+        if(vars_.contains(var_))
+        {
+            return true;
+        }
+    }
+    if(base_)
+    {
+        return base_->isUpdated(vars_, nullptr);
+    }
+    if(m_imageData.operator bool())
+    {
+        return m_imageData->isUpdated(vars_, nullptr);
+    }
+    return false;
+}
+
+void opengl_drawing::Objects::clearUpdated()
+{
+    m_updated.clear();
 }
 
 
