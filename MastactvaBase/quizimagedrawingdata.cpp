@@ -23,21 +23,23 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
 {
     opengl_drawing::VariablesExtended va(this, variables_);
 
-    std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> updated;
-    std::copy_if(
-                std::begin(m_availableCalculations),
-                std::end(m_availableCalculations),
-                std::back_inserter(updated),
-                [this](const std::shared_ptr<opengl_drawing::IEffectCalculation> &calc_)->bool
+    std::vector<opengl_drawing::IEffectCalculation *> updated;
+    updated.reserve(m_availableCalculations.size());
+    for(const auto &calc_ : m_availableCalculations)
     {
-        return isUpdated(calc_->getRequiredVariables(), nullptr);
-    });
+        if(calc_.operator bool()
+                && isUpdated(calc_->getRequiredVariables(), nullptr)
+                )
+        {
+            updated.push_back(calc_.get());
+        }
+    }
 
     clearUpdated();
 
     for(const auto &calc_ : updated)
     {
-        if(!calc_.operator bool())
+        if(!calc_)
         {
             continue;
         }
@@ -48,7 +50,7 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
                     std::end(m_availableCalculations),
                     [&calc_](const auto &calc1_)->bool
         {
-            return calc_.get() == calc1_.get();
+            return calc_ == calc1_.get();
         });
         m_availableCalculations.erase(fit);
     }
@@ -155,21 +157,23 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
 {
     opengl_drawing::VariablesExtended va(this, variables_);
 
-    std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> updated;
-    std::copy_if(
-                std::begin(m_availableCalculations),
-                std::end(m_availableCalculations),
-                std::back_inserter(updated),
-                [this](const std::shared_ptr<opengl_drawing::IEffectCalculation> &calc_)->bool
+    std::vector<opengl_drawing::IEffectCalculation *> updated;
+    updated.reserve(m_availableCalculations.size());
+    for(const auto &calc_ : m_availableCalculations)
     {
-        return isUpdated(calc_->getRequiredVariables(), nullptr);
-    });
+        if(calc_.operator bool()
+                && isUpdated(calc_->getRequiredVariables(), nullptr)
+                )
+        {
+            updated.push_back(calc_.get());
+        }
+    }
 
     clearUpdated();
 
     for(const auto &calc_ : updated)
     {
-        if(!calc_.operator bool())
+        if(!calc_)
         {
             continue;
         }
@@ -180,7 +184,7 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
                     std::end(m_availableCalculations),
                     [&calc_](const auto &calc1_)->bool
         {
-            return calc_.get() == calc1_.get();
+            return calc_ == calc1_.get();
         });
         m_availableCalculations.erase(fit);
     }
