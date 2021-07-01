@@ -617,6 +617,20 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             ArtefactArgStorageEn::uniformStorage,
             g_renderIsGeomertySolidName,
             "1"
+        },
+        {
+            9,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderScreenRectName,
+            "1.0 1.0"
+        },
+        {
+            10,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderWindowSizeName,
+            "1.0 1.0"
         }
     };
     auto artefact1 = std::make_unique<ArtefactData>(
