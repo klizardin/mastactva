@@ -33,6 +33,32 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
     return false;
 }
 
+void drawing_data::QuizImageObject::preCalculation()
+{
+}
+
+void drawing_data::QuizImageObject::postCalculation()
+{
+    clearUpdated();
+}
+
+bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_) const
+{
+    for(const QString &var_ : m_updated)
+    {
+        if(vars_.contains(var_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void drawing_data::QuizImageObject::clearUpdated()
+{
+    m_updated.clear();
+}
+
 
 void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QString &newFilename_)
 {
@@ -55,6 +81,30 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
         calculateStep(variables_) && step < maxSteps;
         ++step)
     {};
+    for(const auto &object_ : objects)
+    {
+        object_->postCalculation();
+    }
+    clearUpdated();
+}
+
+bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_) const
+{
+    for(const QString &var_ : m_updated)
+    {
+        if(vars_.contains(var_))
+        {
+            return true;
+        }
+    }
+    for(const auto &object_ : objects)
+    {
+        if(object_->isUpdated(vars_))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *variables_)
@@ -74,4 +124,9 @@ bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *v
         object_->calculate(variables_);
     }
     return false;
+}
+
+void drawing_data::QuizImageObjects::clearUpdated()
+{
+    m_updated.clear();
 }

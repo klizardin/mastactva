@@ -918,6 +918,10 @@ namespace drawing_data
 
         void set(const QString &name_, const QVector<double> &data_) override
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             std::vector<float> data;
             data.reserve(data_.size());
             std::copy(std::begin(data_), std::end(data_)
@@ -951,6 +955,10 @@ namespace drawing_data
 
         void set(const QString &name_, QVector<double> &&data_) override
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             QVector<double> data0 = std::move(data_);
             std::vector<float> data;
             data.reserve(data0.size());
@@ -986,6 +994,10 @@ namespace drawing_data
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             for(std::unique_ptr<IAttribute> &attribute_ : attributes)
             {
                 if(!attribute_.operator bool()
@@ -1020,6 +1032,10 @@ namespace drawing_data
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             for(std::unique_ptr<IUniform> &uniform_ : uniforms)
             {
                 if(!uniform_.operator bool()
@@ -1055,6 +1071,15 @@ namespace drawing_data
 
         void setTexture(const QString &name_, const QString &newFilename_);
         bool calculate(opengl_drawing::IVariables *variables_);
+        void preCalculation();
+        void postCalculation();
+        bool isUpdated(const QStringList &vars_) const;
+
+    private:
+        void clearUpdated();
+
+    private:
+        QStringList m_updated;
     };
 
 
@@ -1083,6 +1108,10 @@ namespace drawing_data
 
         void set(const QString &name_, const QVector<double> &data_) override
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1096,6 +1125,10 @@ namespace drawing_data
 
         void set(const QString &name_, QVector<double> &&data_) override
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1110,6 +1143,10 @@ namespace drawing_data
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1142,6 +1179,10 @@ namespace drawing_data
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
+            if(!m_updated.contains(name_))
+            {
+                m_updated.push_back(name_);
+            }
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1176,9 +1217,14 @@ namespace drawing_data
 
         void setTexture(const QString &name_, const QString &newFilename_);
         void calculate(opengl_drawing::IVariables *variables_);
+        bool isUpdated(const QStringList &vars_) const;
 
     private:
         bool calculateStep(opengl_drawing::IVariables *variables_);
+        void clearUpdated();
+
+    private:
+        QStringList m_updated;
     };
 }
 
