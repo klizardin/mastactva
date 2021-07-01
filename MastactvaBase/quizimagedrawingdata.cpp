@@ -47,7 +47,17 @@ void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QStr
     }
 }
 
-bool drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *variables_)
+void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *variables_)
+{
+    static const std::size_t maxSteps = 100;
+    for(
+        std::size_t step = 0;
+        calculateStep(variables_) && step < maxSteps;
+        ++step)
+    {};
+}
+
+bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *variables_)
 {
     opengl_drawing::VariablesExtended va(this, variables_);
 
