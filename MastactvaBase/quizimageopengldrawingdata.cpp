@@ -614,18 +614,20 @@ void opengl_drawing::Objects::init(
 
 void opengl_drawing::Objects::calculate()
 {
-    if(m_geometryDefault) // && m_imageData.isUpdated(m_geometryDefault->getVariables()))
+    if(!m_imageData.operator bool())
+    {
+        return;
+    }
+
+    if(m_geometryDefault && m_imageData->isUpdated(m_geometryDefault->getVariables()))
     {
         m_geometryDefault->calculate(this);
     }
-    if(m_imageMatrixDefault) // && m_imageData.isUpdated(m_imageMatrixDefault->getVariables()))
+    if(m_imageMatrixDefault && m_imageData->isUpdated(m_imageMatrixDefault->getVariables()))
     {
         m_imageMatrixDefault->calculate(this);
     }
-    if(m_imageData.operator bool())
-    {
-        m_imageData->calculate(this);
-    }
+    m_imageData->calculate(this);
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
