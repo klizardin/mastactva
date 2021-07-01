@@ -1,12 +1,26 @@
 #include "opengldrawing_utils.h"
 
 
+#include <QFileInfo>
+
+
 namespace opengl_drawing
 {
 
 const QString &IEffectCalculation::getFilename() const
 {
     return m_filename;
+}
+
+bool IEffectCalculation::doExtend(IEffectCalculation *calculation_) const
+{
+    if(!calculation_)
+    {
+        return false;
+    }
+    QFileInfo fiCurrent(getFilename());
+    QFileInfo fiNew(calculation_->getFilename());
+    return fiCurrent.baseName().startsWith(fiNew.baseName());
 }
 
 const QStringList &IEffectCalculation::getVariables() const

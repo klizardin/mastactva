@@ -27,6 +27,7 @@ public:
     virtual void calculate(IVariables *variables_) const = 0;
 
     const QString &getFilename() const;
+    bool doExtend(IEffectCalculation *calculation_) const;
     const QStringList &getVariables() const;
 
 protected:
