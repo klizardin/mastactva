@@ -44,6 +44,7 @@ unix: SOURCES +=    \
     data_utils.cpp  \
     wavefrontobj.cpp    \
     luaapi.cpp  \
+    opengldrawing_utils.cpp \
     utils.cpp   \
 
 
@@ -74,6 +75,7 @@ unix: HEADERS +=    \
     data_utils.h    \
     wavefrontobj.h  \
     luaapi.h    \
+    opengldrawing_utils.h   \
     utils.h \
 
 
