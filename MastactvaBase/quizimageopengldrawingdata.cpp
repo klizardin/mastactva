@@ -536,6 +536,17 @@ void opengl_drawing::Objects::calculate()
         }
         calc_->calculate(this);
     }
+    for(const auto &object_ : m_imageData->objects)
+    {
+        for(const auto &calc_ : object_->calculations)
+        {
+            if(!calc_.operator bool())
+            {
+                continue;
+            }
+            calc_->calculate(this);
+        }
+    }
 }
 
 void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
