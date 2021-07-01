@@ -459,7 +459,7 @@ void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variab
         return;
     }
 
-    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D(1,1));
+    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
     const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
     objects->setUniform(
                 g_renderFromImageMatrixName,
