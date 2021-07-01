@@ -44,6 +44,7 @@ void drawing_data::QuizImageObject::postCalculation()
 
 bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
 {
+    Q_UNUSED(base_);
     for(const QString &var_ : m_updated)
     {
         if(vars_.contains(var_))
@@ -99,6 +100,7 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
 
 bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariables *base_) const
 {
+    Q_UNUSED(base_);
     for(const QString &var_ : m_updated)
     {
         if(vars_.contains(var_))
