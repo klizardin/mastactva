@@ -448,7 +448,8 @@ private:
 ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
 {
     setFilename(g_imageMatrixDefaultCalculationName);
-    setRequiredVariables({g_renderWindowSizeName,});
+    setRequiredVariables({g_renderWindowSizeName,}); // TODO: should depends also and on
+    // g_renderFromImageName, g_renderToImageName
 }
 
 void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
