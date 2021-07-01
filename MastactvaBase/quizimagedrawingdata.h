@@ -13,6 +13,7 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/QOpenGLShader>
+#include "../MastactvaBase/opengldrawing_utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 
@@ -48,6 +49,200 @@ namespace drawing_data
         QMatrix4x4,
         toItem
     };
+
+    namespace details
+    {
+
+    template<typename ResultType_, typename ItemType_> inline
+    ResultType_ fromVector(const std::vector<ItemType_> &);
+    template<typename ResultType_, typename ItemType_> inline
+    std::vector<ResultType_> toVector(const ItemType_ &);
+
+    template<> inline
+    GLfloat fromVector<GLfloat, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return !data_.empty() ? data_.at(0) : GLfloat{};
+    }
+
+    template<> inline
+    GLint fromVector<GLint, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return !data_.empty() ? static_cast<GLint>(data_.at(0)) : GLint{};
+    }
+
+    template<> inline
+    GLuint fromVector<GLuint, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return !data_.empty() ? static_cast<GLuint>(data_.at(0)) : GLuint{};
+    }
+
+    template<> inline
+    GLint fromVector<GLint, GLint>(const std::vector<GLint> &data_)
+    {
+        return !data_.empty() ? data_.at(0) : GLint{};
+    }
+
+    template<> inline
+    GLuint fromVector<GLuint, GLuint>(const std::vector<GLuint> &data_)
+    {
+        return !data_.empty() ? data_.at(0) : GLuint{};
+    }
+
+    template<> inline
+    QVector2D fromVector<QVector2D, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 2
+                ? QVector2D{data_.at(0), data_.at(1)}
+                : QVector2D{}
+                  ;
+    }
+
+    template<> inline
+    QColor fromVector<QColor, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        QColor result;
+        if(data_.size() >= 3)
+        {
+            result.setRedF(data_.at(0));
+            result.setGreenF(data_.at(1));
+            result.setBlueF(data_.at(2));
+        }
+        if(data_.size() >= 4)
+        {
+            result.setAlphaF(data_.at(3));
+        }
+        return result;
+    }
+
+    template<> inline
+    QVector3D fromVector<QVector3D, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 3
+                ? QVector3D{data_.at(0), data_.at(1), data_.at(2)}
+                : QVector3D{}
+                  ;
+    }
+
+    template<> inline
+    QVector4D fromVector<QVector4D, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 4
+                ? QVector4D{data_.at(0), data_.at(1), data_.at(2), data_.at(3)}
+                : QVector4D{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix2x2 fromVector<QMatrix2x2, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 2*2
+                ? QMatrix2x2{&data_[0]}
+                : QMatrix2x2{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix3x3 fromVector<QMatrix3x3, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 3*3
+                ? QMatrix3x3{&data_[0]}
+                : QMatrix3x3{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix4x4 fromVector<QMatrix4x4, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 4*4
+                ? QMatrix4x4{&data_[0]}
+                : QMatrix4x4{}
+                  ;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, GLfloat>(const GLfloat &val_)
+    {
+        std::vector<GLfloat> result = {val_};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, GLint>(const GLint &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_)};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, GLuint>(const GLuint &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_)};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLint> toVector<GLint, GLint>(const GLint &val_)
+    {
+        std::vector<GLint> result = {val_};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLuint> toVector<GLuint, GLuint>(const GLuint &val_)
+    {
+        std::vector<GLuint> result = {val_};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QVector2D>(const QVector2D &val_)
+    {
+        std::vector<GLfloat> result = {val_.x(), val_.y()};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QVector3D>(const QVector3D &val_)
+    {
+        std::vector<GLfloat> result = {val_.x(), val_.y(), val_.z()};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QVector4D>(const QVector4D &val_)
+    {
+        std::vector<GLfloat> result = {val_.x(), val_.y(), val_.z(), val_.w()};
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix2x2>(const QMatrix2x2 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(2*2);
+        std::copy(val_.constData(), val_.constData() + 2*2, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix3x3>(const QMatrix3x3 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(3*3);
+        std::copy(val_.constData(), val_.constData() + 3*3, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix4x4>(const QMatrix4x4 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(4*4);
+        std::copy(val_.constData(), val_.constData() + 4*4, std::back_inserter(result));
+        return result;
+    }
+
+    }
 
     class ItemTypeConvert
     {
@@ -200,6 +395,19 @@ namespace drawing_data
             *m_data = value_;
         }
 
+        bool get(std::vector<ItemType_> &value_, int tupleSize_) const
+        {
+            const bool cond = 0 == tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
+            {
+                return false;
+            }
+
+            value_ = *m_data;
+            return true;
+        }
+
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_, int tupleSize_)
         {
@@ -211,6 +419,21 @@ namespace drawing_data
                     typename std::integral_constant<
                         bool
                         , std::is_same<typename ItemTypeTraits<ItemType_>::underlayingType, ItemType2_>::value
+                        >::type()
+                    );
+        }
+
+        template<typename ItemType2_>
+        bool get(std::vector<ItemType2_> &value_, int tupleSize_) const
+        {
+            return getImpl(value_, tupleSize_,
+                    typename std::integral_constant<
+                        bool
+                        ,std::is_convertible<ItemType_, ItemType2_>::value
+                        >::type(),
+                    typename std::integral_constant<
+                        bool
+                        , std::is_same<typename ItemTypeTraits<ItemType2_>::underlayingType, ItemType_>::value
                         >::type()
                     );
         }
@@ -282,6 +505,61 @@ namespace drawing_data
         {
         }
 
+        template<typename ItemType2_>
+        bool getImpl(std::vector<ItemType2_> &value_, int tupleSize_, std::true_type, std::false_type) const
+        {
+            const bool cond = 0 == tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
+            {
+                return false;
+            }
+
+            value_.reserve(m_data->size());
+            value_.clear();
+            for(const ItemType_ &val_ : *m_data)
+            {
+                value_.push_back(static_cast<ItemType2_>(val_));
+            }
+            return true;
+        }
+
+        template<typename ItemType2_>
+        bool getImpl(std::vector<ItemType2_> &value_, int tupleSize_, std::false_type, std::true_type) const
+        {
+            const bool cond = 0 < tupleSize_;
+            Q_ASSERT(cond);
+            if(!cond)
+            {
+                return false;
+            }
+
+            value_.resize(m_data->size() / tupleSize_);
+            for(std::size_t i = 0; i < m_data->size(); ++i)
+            {
+                for(std::size_t j = 0; j < std::size_t(tupleSize_); ++j)
+                {
+                    value_[i*tupleSize_ + j]
+                        = static_cast<ItemType2_>(
+                                (*m_data)[i][j]
+                            );
+                }
+            }
+            return true;
+        }
+
+        template<typename ItemType2_>
+        bool getImpl(std::vector<ItemType2_> &, int, std::false_type, std::false_type) const
+        {
+            return false;
+        }
+
+        template<typename ItemType2_>
+        bool getImpl(std::vector<ItemType2_> &, int, std::true_type, std::true_type) const
+        {
+            return false;
+        }
+
     private:
         QString m_name;
         std::shared_ptr<std::vector<ItemType_>> m_data;
@@ -345,6 +623,19 @@ namespace drawing_data
                                 >::type());
         }
 
+        template<typename ItemType2_>
+        void set(const std::vector<ItemType2_> &value_)
+        {
+            return setImpl(value_,
+                            typename std::integral_constant<
+                                bool,
+                                std::is_convertible<
+                                    ItemType2_,
+                                    ItemType_
+                                    >::value
+                                >::type());
+        }
+
         bool get(ItemType_ &value_) const
         {
             if(!m_data.operator bool())
@@ -358,6 +649,19 @@ namespace drawing_data
 
         template<typename ItemType2_>
         bool get(ItemType2_ &value_) const
+        {
+            return getImpl(value_,
+                            typename std::integral_constant<
+                                bool,
+                                std::is_convertible<
+                                    ItemType_,
+                                    ItemType2_
+                                    >::value
+                                >::type());
+        }
+
+        template<typename ItemType2_>
+        bool get(std::vector<ItemType2_> &value_) const
         {
             return getImpl(value_,
                             typename std::integral_constant<
@@ -399,6 +703,18 @@ namespace drawing_data
         }
 
         template<typename ItemType2_>
+        bool getImpl(std::vector<ItemType2_> &value_, std::true_type) const
+        {
+            if(!m_data.operator bool())
+            {
+                return false;
+            }
+
+            value_ = details::toVector<ItemType2_, ItemType_>(*m_data);
+            return true;
+        }
+
+        template<typename ItemType2_>
         void setImpl(const ItemType2_ &value_, std::true_type)
         {
             createData();
@@ -409,6 +725,14 @@ namespace drawing_data
         template<typename ItemType2_>
         void setImpl(const ItemType2_ &, std::false_type)
         {
+        }
+
+        template<typename ItemType2_>
+        void setImpl(const std::vector<ItemType2_> &value_, std::true_type)
+        {
+            createData();
+
+            *m_data = details::fromVector<ItemType_, ItemType2_>(value_);
         }
 
     private:
@@ -442,6 +766,22 @@ namespace drawing_data
                     return;
                 }
                 attr->set(value_, tupleSize_);
+            }
+
+            template<typename ItemType_>
+            static bool get(const IAttribute *interface_, int itemIndex_, std::vector<ItemType_> &value_, int tupleSize_)
+            {
+                if(itemIndex_ != index_)
+                {
+                    return base::get(interface_, itemIndex_, value_, tupleSize_);
+                }
+
+                const AttributeType *attr = dynamic_cast<const AttributeType *>(interface_);
+                if(!attr)
+                {
+                    return false;
+                }
+                return attr->get(value_, tupleSize_);
             }
 
             template<typename ItemType_>
@@ -489,6 +829,12 @@ namespace drawing_data
             }
 
             template<typename ItemType_>
+            static bool get(const IAttribute *, int , std::vector<ItemType_> &, int )
+            {
+                return false;
+            }
+
+            template<typename ItemType_>
             static void set(IUniform *, int , const ItemType_ &)
             {
             }
@@ -512,7 +858,7 @@ namespace drawing_data
     };
 
 
-    struct QuizImageObject
+    struct QuizImageObject : public ::opengl_drawing::IVariables
     {
     public:
         QByteArray vertexShader;
@@ -523,6 +869,119 @@ namespace drawing_data
         std::vector<Texture> textures;
 
     public:
+        bool get(const QString &name_, QVector<double> &data_) const override
+        {
+            std::vector<float> data;
+            for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+            {
+                if(!attribute_.operator bool()
+                        || attribute_->name() != name_
+                        )
+                {
+                    continue;
+                }
+
+                // return first value
+                const bool res = ItemTypeBaseSet::get(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
+                data_.clear();
+                if(res)
+                {
+                    data_.reserve(data.size());
+                    std::copy(std::begin(data), std::end(data),
+                              std::back_inserter(data_));
+                }
+                return res;
+            }
+            for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+            {
+                if(!uniform_.operator bool()
+                        || uniform_->name() != name_
+                        )
+                {
+                    continue;
+                }
+
+                // return first value
+                const bool res = ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), data);
+                data_.clear();
+                if(res)
+                {
+                    data_.reserve(data.size());
+                    std::copy(std::begin(data), std::end(data),
+                              std::back_inserter(data_));
+                }
+                return res;
+            }
+            return false;
+        }
+
+        void set(const QString &name_, const QVector<double> &data_) override
+        {
+            std::vector<float> data;
+            data.reserve(data_.size());
+            std::copy(std::begin(data_), std::end(data_)
+                      , std::back_inserter(data));
+            for(std::unique_ptr<IAttribute> &attribute_ : attributes)
+            {
+                if(!attribute_.operator bool()
+                        || attribute_->name() != name_
+                        )
+                {
+                    continue;
+                }
+
+                ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
+                // set all attributes with this name
+            }
+            for(std::unique_ptr<IUniform> &uniform_ : uniforms)
+            {
+                if(!uniform_.operator bool()
+                        || uniform_->name() != name_
+                        )
+                {
+                    continue;
+                }
+
+                ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), data);
+                // set all uniforms with this name
+                // TODO: ptimize for std::shared_ptr data use
+            }
+        }
+
+        void set(const QString &name_, QVector<double> &&data_) override
+        {
+            QVector<double> data0 = std::move(data_);
+            std::vector<float> data;
+            data.reserve(data0.size());
+            std::copy(std::begin(data0), std::end(data0)
+                      , std::back_inserter(data));
+            for(std::unique_ptr<IAttribute> &attribute_ : attributes)
+            {
+                if(!attribute_.operator bool()
+                        || attribute_->name() != name_
+                        )
+                {
+                    continue;
+                }
+
+                ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
+                // set all attributes with this name
+            }
+            for(std::unique_ptr<IUniform> &uniform_ : uniforms)
+            {
+                if(!uniform_.operator bool()
+                        || uniform_->name() != name_
+                        )
+                {
+                    continue;
+                }
+
+                ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), data);
+                // set all uniforms with this name
+                // TODO: ptimize for std::shared_ptr data use
+            }
+        }
+
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
@@ -597,13 +1056,54 @@ namespace drawing_data
     };
 
 
-    struct QuizImageObjects
+    struct QuizImageObjects : public ::opengl_drawing::IVariables
     {
     public:
         QColor clearColor{255, 255, 255};
         std::vector<std::shared_ptr<QuizImageObject>> objects;
 
     public:
+        bool get(const QString &name_, QVector<double> &data_) const override
+        {
+            bool result = false;
+            for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+            {
+                if(!object_.operator bool())
+                {
+                    continue;
+                }
+
+                result |= object_->get(name_, data_);
+            }
+            return result;
+        }
+
+        void set(const QString &name_, const QVector<double> &data_) override
+        {
+            for(std::shared_ptr<QuizImageObject> &object_ : objects)
+            {
+                if(!object_.operator bool())
+                {
+                    continue;
+                }
+
+                object_->set(name_, data_);
+            }
+        }
+
+        void set(const QString &name_, QVector<double> &&data_) override
+        {
+            for(std::shared_ptr<QuizImageObject> &object_ : objects)
+            {
+                if(!object_.operator bool())
+                {
+                    continue;
+                }
+
+                object_->set(name_, std::move(data_));
+            }
+        }
+
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {

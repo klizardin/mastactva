@@ -9,6 +9,7 @@
 #include <QtQuick/QQuickWindow>
 #include <QQuickFramebufferObject>
 #include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/opengldrawing_utils.h"
 
 
 namespace opengl_drawing
@@ -67,12 +68,42 @@ namespace opengl_drawing
         std::map<QString, std::unique_ptr<Texture>> textures;
     };
 
-    class Objects
+    class Objects : public IVariables
     {
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
         void draw(QOpenGLFunctions *f_);
+
+        bool get(const QString &name_, QVector<double> &data_) const override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return false;
+            }
+
+            return m_imageData->get(name_, data_);
+        }
+
+        void set(const QString &name_, const QVector<double> &data_) override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+
+            m_imageData->set(name_, data_);
+        }
+
+        void set(const QString &name_, QVector<double> &&data_) override
+        {
+            if(!m_imageData.operator bool())
+            {
+                return;
+            }
+
+            m_imageData->set(name_, std::move(data_));
+        }
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
@@ -121,7 +152,7 @@ namespace opengl_drawing
 }
 
 
-class ObjectsRenderer : protected QOpenGLFunctions
+class ObjectsRenderer : protected QOpenGLFunctions, public opengl_drawing::IVariables
 {
 public:
     ObjectsRenderer();
@@ -137,6 +168,36 @@ public:
             bool imageDataChanged_, bool sizeChanged_,
             qreal t_,
             const QVector2D &windowSize_);
+
+    bool get(const QString &name_, QVector<double> &data_) const override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return false;
+        }
+
+        return m_openglData->get(name_, data_);
+    }
+
+    void set(const QString &name_, const QVector<double> &data_) override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+
+        m_openglData->set(name_, data_);
+    }
+
+    void set(const QString &name_, QVector<double> &&data_) override
+    {
+        if(!m_openglData.operator bool())
+        {
+            return;
+        }
+
+        m_openglData->set(name_, std::move(data_));
+    }
 
     template<typename ItemType_>
     void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
