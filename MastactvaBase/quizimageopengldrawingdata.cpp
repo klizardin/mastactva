@@ -614,11 +614,11 @@ void opengl_drawing::Objects::init(
 
 void opengl_drawing::Objects::calculate()
 {
-    if(m_geometryDefault)
+    if(m_geometryDefault) // && m_imageData.isUpdated(m_geometryDefault->getVariables()))
     {
         m_geometryDefault->calculate(this);
     }
-    if(m_imageMatrixDefault)
+    if(m_imageMatrixDefault) // && m_imageData.isUpdated(m_imageMatrixDefault->getVariables()))
     {
         m_imageMatrixDefault->calculate(this);
     }
