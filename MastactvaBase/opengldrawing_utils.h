@@ -14,7 +14,7 @@ class IVariables
 public:
     virtual ~IVariables() = default;
     virtual bool get(const QString &name_, QVector<double> &data_) const = 0;
-    virtual bool set(const QString &name_, const QVector<double> &data_) = 0;
+    virtual void set(const QString &name_, const QVector<double> &data_) = 0;
     virtual void set(const QString &name_, QVector<double> &&data_) = 0;
 };
 
