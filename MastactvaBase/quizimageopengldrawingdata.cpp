@@ -496,7 +496,8 @@ public:
 GeometryDefaultCalculation::GeometryDefaultCalculation()
 {
     setFilename(g_geometryDefaultCalculationName);
-    setRequiredVariables({g_renderScreenRectName,
+    setRequiredVariables({
+                  g_renderScreenRectName,
                   g_renderIsGeomertySolidName,
                   g_renderGeomertySizeName,
                   g_renderFacedGeometryCoefsName,
