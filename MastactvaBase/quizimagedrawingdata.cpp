@@ -2,33 +2,31 @@
 #include "../MastactvaBase/utils.h"
 
 
-void drawing_data::QuizImageObject::setTexture(const QString &name_, const QString &newFilename_)
+drawing_data::detail::Calculations::Calculations(
+        ::opengl_drawing::IVariables *ivariables_
+        )
+    : m_thisIVariables(ivariables_)
 {
-    auto fit = std::find_if(
-                std::begin(textures),
-                std::end(textures),
-                [&name_](const drawing_data::Texture &texture_)->bool
-    {
-        return texture_.name == name_;
-    });
-    if(std::end(textures) == fit)
-    {
-        return;
-    }
-    fit->filename = newFilename_;
+    Q_ASSERT(m_thisIVariables);
 }
 
-// TODO: refactoring extend base class
-bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variables_)
+bool drawing_data::detail::Calculations::calculate(
+        opengl_drawing::IVariables *variables_
+        )
 {
-    opengl_drawing::VariablesExtended va(this, variables_);
+    if(!m_thisIVariables)
+    {
+        return false;
+    }
+
+    opengl_drawing::VariablesExtended va(m_thisIVariables, variables_);
 
     std::vector<opengl_drawing::IEffectCalculation *> updated;
     updated.reserve(m_availableCalculations.size());
     for(const auto &calc_ : m_availableCalculations)
     {
         if(calc_.operator bool()
-                && isUpdated(calc_->getRequiredVariables(), nullptr)
+                && m_thisIVariables->isUpdated(calc_->getRequiredVariables(), nullptr)
                 )
         {
             updated.push_back(calc_.get());
@@ -58,36 +56,74 @@ bool drawing_data::QuizImageObject::calculate(opengl_drawing::IVariables *variab
     return !updated.empty();
 }
 
-void drawing_data::QuizImageObject::preCalculation()
+void drawing_data::detail::Calculations::preCalculation()
 {
     std::copy(std::begin(calculations), std::end(calculations),
               std::back_inserter(m_availableCalculations));
 }
 
-void drawing_data::QuizImageObject::postCalculation()
+void drawing_data::detail::Calculations::postCalculation()
 {
     m_availableCalculations.clear();
     clearUpdated();
 }
 
-bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
+void drawing_data::detail::Calculations::setVariable(const QString &name_)
 {
-    Q_UNUSED(base_);
-    for(const QString &var_ : m_updated)
-    {
-        if(vars_.contains(var_))
-        {
-            return true;
-        }
-    }
-    return false;
+    m_updated.insert(name_);
 }
 
-void drawing_data::QuizImageObject::clearUpdated()
+bool drawing_data::detail::Calculations::isUpdated(
+        const QStringList &vars_,
+        ::opengl_drawing::IVariables *base_
+        ) const
+{
+    Q_UNUSED(base_);
+    QSet<QString> vars;
+    for(const QString &s_ : vars_)
+    {
+        vars.insert(s_);
+    }
+    return m_updated.intersects(vars);
+}
+
+void drawing_data::detail::Calculations::clearUpdated()
 {
     m_updated.clear();
 }
 
+
+drawing_data::QuizImageObject::QuizImageObject()
+    : detail::Calculations(this)
+{
+}
+
+void drawing_data::QuizImageObject::setTexture(const QString &name_, const QString &newFilename_)
+{
+    auto fit = std::find_if(
+                std::begin(textures),
+                std::end(textures),
+                [&name_](const drawing_data::Texture &texture_)->bool
+    {
+        return texture_.name == name_;
+    });
+    if(std::end(textures) == fit)
+    {
+        return;
+    }
+    fit->filename = newFilename_;
+}
+
+bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
+{
+    return detail::Calculations::isUpdated(vars_, base_);
+}
+
+
+drawing_data::QuizImageObjects::QuizImageObjects()
+    : detail::Calculations(this)
+{
+}
 
 void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QString &newFilename_)
 {
@@ -114,35 +150,33 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
         }
         return sz;
     }();
+
+    preCalculation();
     for(const auto &object_ : objects)
     {
         object_->preCalculation();
     }
-    std::copy(std::begin(calculations), std::end(calculations),
-              std::back_inserter(m_availableCalculations));
+
     for(
         int step = 0;
         calculateStep(variables_) && step < maxSteps;
         ++step)
     {};
+
     for(const auto &object_ : objects)
     {
         object_->postCalculation();
     }
-    m_availableCalculations.clear();
-    clearUpdated();
+    postCalculation();
 }
 
 bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariables *base_) const
 {
-    Q_UNUSED(base_);
-    for(const QString &var_ : m_updated)
+    if(detail::Calculations::isUpdated(vars_, base_))
     {
-        if(vars_.contains(var_))
-        {
-            return true;
-        }
+        return true;
     }
+
     for(const auto &object_ : objects)
     {
         if(object_->isUpdated(vars_, nullptr))
@@ -155,50 +189,12 @@ bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariab
 
 bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *variables_)
 {
-    opengl_drawing::VariablesExtended va(this, variables_);
+    bool anyProcessed = detail::Calculations::calculate(variables_);
 
-    std::vector<opengl_drawing::IEffectCalculation *> updated;
-    updated.reserve(m_availableCalculations.size());
-    for(const auto &calc_ : m_availableCalculations)
-    {
-        if(calc_.operator bool()
-                && isUpdated(calc_->getRequiredVariables(), nullptr)
-                )
-        {
-            updated.push_back(calc_.get());
-        }
-    }
-
-    clearUpdated();
-
-    for(const auto &calc_ : updated)
-    {
-        if(!calc_)
-        {
-            continue;
-        }
-        calc_->calculate(&va);
-
-        auto fit = std::find_if(
-                    std::begin(m_availableCalculations),
-                    std::end(m_availableCalculations),
-                    [&calc_](const auto &calc1_)->bool
-        {
-            return calc_ == calc1_.get();
-        });
-        m_availableCalculations.erase(fit);
-    }
-
-    bool anyProcessed = !updated.empty();
     for(const auto &object_ : objects)
     {
         anyProcessed |= object_->calculate(variables_);
     }
 
     return anyProcessed;
-}
-
-void drawing_data::QuizImageObjects::clearUpdated()
-{
-    m_updated.clear();
 }

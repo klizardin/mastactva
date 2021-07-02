@@ -858,7 +858,34 @@ namespace drawing_data
     };
 
 
-    struct QuizImageObject : public ::opengl_drawing::IVariables
+    namespace detail
+    {
+        class Calculations
+        {
+        public:
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
+
+        public:
+            Calculations(::opengl_drawing::IVariables *ivariables_);
+            bool calculate(opengl_drawing::IVariables *variables_);
+            void preCalculation();
+            void postCalculation();
+
+        protected:
+            void setVariable(const QString &name_);
+            bool isUpdated(const QStringList &vars_, ::opengl_drawing::IVariables *base_) const;
+
+        private:
+            void clearUpdated();
+
+        private:
+            QSet<QString> m_updated;
+            ::opengl_drawing::IVariables *m_thisIVariables = nullptr;
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
+        };
+    }
+
+    struct QuizImageObject : public ::opengl_drawing::IVariables, public detail::Calculations
     {
     public:
         QByteArray vertexShader;
@@ -870,6 +897,8 @@ namespace drawing_data
         std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
+        QuizImageObject();
+
         bool get(const QString &name_, QVector<double> &data_) const override
         {
             std::vector<float> data;
@@ -918,10 +947,8 @@ namespace drawing_data
 
         void set(const QString &name_, const QVector<double> &data_) override
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             std::vector<float> data;
             data.reserve(data_.size());
             std::copy(std::begin(data_), std::end(data_)
@@ -955,10 +982,8 @@ namespace drawing_data
 
         void set(const QString &name_, QVector<double> &&data_) override
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             QVector<double> data0 = std::move(data_);
             std::vector<float> data;
             data.reserve(data0.size());
@@ -994,10 +1019,8 @@ namespace drawing_data
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::unique_ptr<IAttribute> &attribute_ : attributes)
             {
                 if(!attribute_.operator bool()
@@ -1032,10 +1055,8 @@ namespace drawing_data
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::unique_ptr<IUniform> &uniform_ : uniforms)
             {
                 if(!uniform_.operator bool()
@@ -1070,21 +1091,11 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
-        bool calculate(opengl_drawing::IVariables *variables_);
-        void preCalculation();
-        void postCalculation();
         bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
-
-    private:
-        void clearUpdated();
-
-    private:
-        QStringList m_updated;
-        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
     };
 
 
-    struct QuizImageObjects : public ::opengl_drawing::IVariables
+    struct QuizImageObjects : public ::opengl_drawing::IVariables, public detail::Calculations
     {
     public:
         QColor clearColor{255, 255, 255};
@@ -1092,6 +1103,8 @@ namespace drawing_data
         std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
+        QuizImageObjects();
+
         bool get(const QString &name_, QVector<double> &data_) const override
         {
             bool result = false;
@@ -1109,10 +1122,8 @@ namespace drawing_data
 
         void set(const QString &name_, const QVector<double> &data_) override
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1126,10 +1137,8 @@ namespace drawing_data
 
         void set(const QString &name_, QVector<double> &&data_) override
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1144,10 +1153,8 @@ namespace drawing_data
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1180,10 +1187,8 @@ namespace drawing_data
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1222,11 +1227,6 @@ namespace drawing_data
 
     private:
         bool calculateStep(opengl_drawing::IVariables *variables_);
-        void clearUpdated();
-
-    private:
-        QStringList m_updated;
-        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
     };
 }
 
