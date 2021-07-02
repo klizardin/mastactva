@@ -389,6 +389,102 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariable>
     setVariableImpl();
 }
 
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIdentity>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIsIdentity>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixDeterminant>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixInverted>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIsInvertible>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixRotate>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixScale>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixShear>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixTranslate>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixFrustrum>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIsAphine>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixLookAt>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixNormal>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixOrtho>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixPerspective>() const
+{
+    // TODO: implement
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixViewport>() const
+{
+    // TODO: implement
+}
+
 template<LuaAPI::FunctionImplEn function_, int inputArgsCount_, int outputArgsCount_>
 int l_implementation(lua_State *luaState_)
 {
@@ -418,5 +514,43 @@ void LuaAPI::initFunctions() const
     {
         lua_pushcfunction(m_luaState, std::get<1>(val_));
         lua_setglobal(m_luaState, std::get<0>(val_));
+    }
+
+    using ModuleFunctions = std::tuple<const char *, std::vector<FunctionInfo>>;
+    static const ModuleFunctions moduleFunctions[] = {
+        {
+            "matrix",
+            {
+                {"identity", l_implementation<LuaAPI::FunctionImplEn::matrixIdentity, 0, 1>},
+                {"isIdentity", l_implementation<LuaAPI::FunctionImplEn::matrixIsIdentity, 1, 1>},
+                {"determinant", l_implementation<LuaAPI::FunctionImplEn::matrixDeterminant, 1, 1>},
+                {"inverted", l_implementation<LuaAPI::FunctionImplEn::matrixInverted, 1, 1>},
+                {"isInvertible", l_implementation<LuaAPI::FunctionImplEn::matrixIsInvertible, 1, 1>},
+                {"rotate", l_implementation<LuaAPI::FunctionImplEn::matrixRotate, 2, 1>},
+                {"scale", l_implementation<LuaAPI::FunctionImplEn::matrixScale, 2, 1>},
+                {"shear", l_implementation<LuaAPI::FunctionImplEn::matrixShear, 2, 1>},
+                {"translate", l_implementation<LuaAPI::FunctionImplEn::matrixTranslate, 2, 1>},
+                {"frustrum", l_implementation<LuaAPI::FunctionImplEn::matrixFrustrum, 2, 1>},
+                {"isAphine", l_implementation<LuaAPI::FunctionImplEn::matrixIsAphine, 1, 1>},
+                {"lookAt", l_implementation<LuaAPI::FunctionImplEn::matrixLookAt, 2, 1>},
+                {"normal", l_implementation<LuaAPI::FunctionImplEn::matrixNormal, 1, 1>},
+                {"ortho", l_implementation<LuaAPI::FunctionImplEn::matrixOrtho, 2, 1>},
+                {"perspective", l_implementation<LuaAPI::FunctionImplEn::matrixPerspective, 2, 1>},
+                {"viewport", l_implementation<LuaAPI::FunctionImplEn::matrixViewport, 2, 1>},
+            }
+        }
+    };
+    for(const auto &mf_ : moduleFunctions)
+    {
+        lua_newtable(m_luaState);
+        for(const auto &fi_ : std::get<1>(mf_))
+        {
+            const lua_CFunction func = std::get<1>(fi_);
+            const char * funcName = std::get<0>(fi_);
+            lua_pushcfunction(m_luaState, func);
+            lua_setfield(m_luaState, -2, funcName);
+        }
+        const char *moduleName = std::get<0>(mf_);
+        lua_setglobal(m_luaState, moduleName);
     }
 }

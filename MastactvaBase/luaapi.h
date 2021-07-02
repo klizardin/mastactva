@@ -17,7 +17,23 @@ private:
     enum class FunctionImplEn
     {
         getVariable,
-        setVariable
+        setVariable,
+        matrixIdentity,
+        matrixIsIdentity,
+        matrixDeterminant,
+        matrixInverted,
+        matrixIsInvertible,
+        matrixRotate,
+        matrixScale,
+        matrixShear,
+        matrixTranslate,
+        matrixFrustrum,
+        matrixIsAphine,
+        matrixLookAt,
+        matrixNormal,
+        matrixOrtho,
+        matrixPerspective,
+        matrixViewport,
     };
 
 public:
