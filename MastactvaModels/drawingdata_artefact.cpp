@@ -3,6 +3,7 @@
 #include "../MastactvaModels/drawingdata_artefactarg.h"
 #include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/luaapi.h"
+#include "../MastactvaBase/opengldrawing_utils.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -133,3 +134,186 @@ void DrawingDataArtefact::addData(
         break;
     }
 }
+
+class LuaRuntimeVariables : public drawingdata::IVariables
+{
+public:
+    LuaRuntimeVariables() = default;
+    void setImpl(opengl_drawing::IVariables *variables_);
+    void clearImpl();
+
+    bool get(const QString &name_, const drawingdata::IPosition *position_, QVector<int> &data_) const override;
+    bool get(const QString &name_, const drawingdata::IPosition *position_, QVector<float> &data_) const override;
+    bool get(const QString &name_, const drawingdata::IPosition *position_, QVector<double> &data_) const override;
+    bool get(const QString &name_, const drawingdata::IPosition *position_, QStringList &data_) const override;
+    void add(const QJsonDocument &data_) override;
+    bool add(const QString &name_, const drawingdata::IPosition *position_, const QVector<double> &data_) override;
+    bool add(const QString &name_, const drawingdata::IPosition *position_, QVector<double> &&data_) override;
+    bool add(const QString &name_, const drawingdata::IPosition *position_, const QStringList &data_) override;
+    bool add(const QString &name_, const drawingdata::IPosition *position_, QStringList &&data_) override;
+    void addAliases(const QJsonDocument &data_, const drawingdata::IPosition *position_) override;
+    bool getObjectsList(QStringList &objects_) const override;
+    void clear() override;
+
+private:
+    opengl_drawing::IVariables *m_variables = nullptr;
+};
+
+void LuaRuntimeVariables::setImpl(opengl_drawing::IVariables *variables_)
+{
+    m_variables = variables_;
+}
+
+void LuaRuntimeVariables::clearImpl()
+{
+    m_variables = nullptr;
+}
+
+bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition *position_, QVector<int> &data_) const
+{
+    Q_UNUSED(name_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+    return false; // no implementation at runtime
+}
+
+bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition *position_, QVector<float> &data_) const
+{
+    Q_UNUSED(name_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+    return false; // no implementation at runtime
+}
+
+bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition *position_, QVector<double> &data_) const
+{
+    Q_UNUSED(position_);
+    if(m_variables)
+    {
+        return m_variables->get(name_, data_);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool LuaRuntimeVariables::get(const QString &name_, const drawingdata::IPosition *position_, QStringList &data_) const
+{
+    Q_UNUSED(name_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+    return false; // no implementation at runtime
+}
+
+void LuaRuntimeVariables::add(const QJsonDocument &data_)
+{
+    Q_UNUSED(data_);
+}
+
+bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, const QVector<double> &data_)
+{
+    Q_UNUSED(position_);
+    if(m_variables)
+    {
+        m_variables->set(name_, data_);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, QVector<double> &&data_)
+{
+    Q_UNUSED(position_);
+    if(m_variables)
+    {
+        m_variables->set(name_, std::move(data_));
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, const QStringList &data_)
+{
+    Q_UNUSED(name_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+    return false; // no implementation at runtime
+}
+
+bool LuaRuntimeVariables::add(const QString &name_, const drawingdata::IPosition *position_, QStringList &&data_)
+{
+    Q_UNUSED(name_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+    return false; // no implementation at runtime
+}
+
+void LuaRuntimeVariables::addAliases(const QJsonDocument &data_, const drawingdata::IPosition *position_)
+{
+    Q_UNUSED(data_);
+    Q_UNUSED(position_);
+    // no implementation at runtime
+}
+
+bool LuaRuntimeVariables::getObjectsList(QStringList &objects_) const
+{
+    Q_UNUSED(objects_);
+    return false;   // no implementation at runtime
+}
+
+void LuaRuntimeVariables::clear()
+{
+    // no implementation at runtime
+}
+
+
+class LuaRuntimeCalculations :
+        public opengl_drawing::IEffectCalculation,
+        protected LuaAPI
+{
+public:
+    LuaRuntimeCalculations(
+            const QString &filename_,
+            const QString& luaScript_,
+            const QStringList &requiredVariables_
+            );
+    void calculate(opengl_drawing::IVariables *variables_) const;
+
+private:
+    mutable std::shared_ptr<drawingdata::IVariables> m_variables;
+};
+
+LuaRuntimeCalculations::LuaRuntimeCalculations(
+        const QString &filename_,
+        const QString& luaScript_,
+        const QStringList &requiredVariables_
+        )
+{
+    setFilename(filename_);
+    setRequiredVariables(requiredVariables_);
+    load(luaScript_);
+    m_variables = std::make_shared<LuaRuntimeVariables>();
+    set(m_variables);
+}
+
+void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) const
+{
+    if(!m_variables
+            && dynamic_cast<LuaRuntimeVariables *>(m_variables.get())
+            )
+    {
+        return;
+    }
+
+    dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->setImpl(variables_);
+    callArtefactAtRuntime(nullptr);
+    dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->clearImpl();
+}
+
