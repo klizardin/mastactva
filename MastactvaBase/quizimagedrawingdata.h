@@ -858,7 +858,34 @@ namespace drawing_data
     };
 
 
-    struct QuizImageObject : public ::opengl_drawing::IVariables
+    namespace detail
+    {
+        class Calculations
+        {
+        public:
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
+
+        public:
+            Calculations(::opengl_drawing::IVariables *ivariables_);
+            bool calculate(opengl_drawing::IVariables *variables_);
+            void preCalculation();
+            void postCalculation();
+
+        protected:
+            void setVariable(const QString &name_);
+            bool isUpdated(const QStringList &vars_, ::opengl_drawing::IVariables *base_) const;
+
+        private:
+            void clearUpdated();
+
+        private:
+            QSet<QString> m_updated;
+            ::opengl_drawing::IVariables *m_thisIVariables = nullptr;
+            std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
+        };
+    }
+
+    struct QuizImageObject : public ::opengl_drawing::IVariables, public detail::Calculations
     {
     public:
         QByteArray vertexShader;
@@ -870,134 +897,18 @@ namespace drawing_data
         std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
-        bool get(const QString &name_, QVector<double> &data_) const override
-        {
-            std::vector<float> data;
-            for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
-            {
-                if(!attribute_.operator bool()
-                        || attribute_->name() != name_
-                        )
-                {
-                    continue;
-                }
+        QuizImageObject();
 
-                // return first value
-                const bool res = ItemTypeBaseSet::get(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
-                data_.clear();
-                if(res)
-                {
-                    data_.reserve(data.size());
-                    std::copy(std::begin(data), std::end(data),
-                              std::back_inserter(data_));
-                }
-                return res;
-            }
-            for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
-            {
-                if(!uniform_.operator bool()
-                        || uniform_->name() != name_
-                        )
-                {
-                    continue;
-                }
-
-                // return first value
-                const bool res = ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), data);
-                data_.clear();
-                if(res)
-                {
-                    data_.reserve(data.size());
-                    std::copy(std::begin(data), std::end(data),
-                              std::back_inserter(data_));
-                }
-                return res;
-            }
-            return false;
-        }
-
-        void set(const QString &name_, const QVector<double> &data_) override
-        {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
-            std::vector<float> data;
-            data.reserve(data_.size());
-            std::copy(std::begin(data_), std::end(data_)
-                      , std::back_inserter(data));
-            for(std::unique_ptr<IAttribute> &attribute_ : attributes)
-            {
-                if(!attribute_.operator bool()
-                        || attribute_->name() != name_
-                        )
-                {
-                    continue;
-                }
-
-                ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
-                // set all attributes with this name
-            }
-            for(std::unique_ptr<IUniform> &uniform_ : uniforms)
-            {
-                if(!uniform_.operator bool()
-                        || uniform_->name() != name_
-                        )
-                {
-                    continue;
-                }
-
-                ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), data);
-                // set all uniforms with this name
-                // TODO: ptimize for std::shared_ptr data use
-            }
-        }
-
-        void set(const QString &name_, QVector<double> &&data_) override
-        {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
-            QVector<double> data0 = std::move(data_);
-            std::vector<float> data;
-            data.reserve(data0.size());
-            std::copy(std::begin(data0), std::end(data0)
-                      , std::back_inserter(data));
-            for(std::unique_ptr<IAttribute> &attribute_ : attributes)
-            {
-                if(!attribute_.operator bool()
-                        || attribute_->name() != name_
-                        )
-                {
-                    continue;
-                }
-
-                ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
-                // set all attributes with this name
-            }
-            for(std::unique_ptr<IUniform> &uniform_ : uniforms)
-            {
-                if(!uniform_.operator bool()
-                        || uniform_->name() != name_
-                        )
-                {
-                    continue;
-                }
-
-                ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), data);
-                // set all uniforms with this name
-                // TODO: ptimize for std::shared_ptr data use
-            }
-        }
+        bool get(const QString &name_, QVector<double> &data_) const override;
+        void set(const QString &name_, const QVector<double> &data_) override;
+        void set(const QString &name_, QVector<double> &&data_) override;
+        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::unique_ptr<IAttribute> &attribute_ : attributes)
             {
                 if(!attribute_.operator bool()
@@ -1012,30 +923,13 @@ namespace drawing_data
             }
         }
 
-        int getAttributeTupleSize(const QString &name_) const
-        {
-            for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
-            {
-                if(!attribute_.operator bool()
-                        || attribute_->name() != name_
-                        )
-                {
-                    continue;
-                }
-
-                // return first attribute
-                return attribute_->tupleSize();
-            }
-            return -1;
-        }
+        int getAttributeTupleSize(const QString &name_) const;
 
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::unique_ptr<IUniform> &uniform_ : uniforms)
             {
                 if(!uniform_.operator bool()
@@ -1070,21 +964,10 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
-        bool calculate(opengl_drawing::IVariables *variables_);
-        void preCalculation();
-        void postCalculation();
-        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
-
-    private:
-        void clearUpdated();
-
-    private:
-        QStringList m_updated;
-        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
     };
 
 
-    struct QuizImageObjects : public ::opengl_drawing::IVariables
+    struct QuizImageObjects : public ::opengl_drawing::IVariables, protected detail::Calculations
     {
     public:
         QColor clearColor{255, 255, 255};
@@ -1092,62 +975,18 @@ namespace drawing_data
         std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
-        bool get(const QString &name_, QVector<double> &data_) const override
-        {
-            bool result = false;
-            for(const std::shared_ptr<QuizImageObject> &object_ : objects)
-            {
-                if(!object_.operator bool())
-                {
-                    continue;
-                }
+        QuizImageObjects();
 
-                result |= object_->get(name_, data_);
-            }
-            return result;
-        }
-
-        void set(const QString &name_, const QVector<double> &data_) override
-        {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
-            for(std::shared_ptr<QuizImageObject> &object_ : objects)
-            {
-                if(!object_.operator bool())
-                {
-                    continue;
-                }
-
-                object_->set(name_, data_);
-            }
-        }
-
-        void set(const QString &name_, QVector<double> &&data_) override
-        {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
-            for(std::shared_ptr<QuizImageObject> &object_ : objects)
-            {
-                if(!object_.operator bool())
-                {
-                    continue;
-                }
-
-                object_->set(name_, std::move(data_));
-            }
-        }
+        bool get(const QString &name_, QVector<double> &data_) const override;
+        void set(const QString &name_, const QVector<double> &data_) override;
+        void set(const QString &name_, QVector<double> &&data_) override;
+        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1159,31 +998,13 @@ namespace drawing_data
             }
         }
 
-        int getAttributeTupleSize(const QString &name_) const
-        {
-            for(const std::shared_ptr<QuizImageObject> &object_ : objects)
-            {
-                if(!object_.operator bool())
-                {
-                    continue;
-                }
-
-                int res = object_->getAttributeTupleSize(name_);
-                if(res >= 0)
-                {
-                    return res;
-                }
-            }
-            return 0;
-        }
+        int getAttributeTupleSize(const QString &name_) const;
 
         template<typename ItemType_>
         void setUniform(const QString &name_, const ItemType_ &value_)
         {
-            if(!m_updated.contains(name_))
-            {
-                m_updated.push_back(name_);
-            }
+            setVariable(name_);
+
             for(std::shared_ptr<QuizImageObject> &object_ : objects)
             {
                 if(!object_.operator bool())
@@ -1218,15 +1039,9 @@ namespace drawing_data
 
         void setTexture(const QString &name_, const QString &newFilename_);
         void calculate(opengl_drawing::IVariables *variables_);
-        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
 
     private:
         bool calculateStep(opengl_drawing::IVariables *variables_);
-        void clearUpdated();
-
-    private:
-        QStringList m_updated;
-        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> m_availableCalculations;
     };
 }
 
