@@ -75,7 +75,7 @@ bool LuaAPI::callArtefact(drawingdata::IPosition *position_)
     return true;
 }
 
-bool LuaAPI::callArtefactAtRuntime(drawingdata::IPosition *position_)
+bool LuaAPI::callArtefactAtRuntime(drawingdata::IPosition *position_) const
 {
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStrs;
