@@ -30,6 +30,10 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const;
+    void addMainCalculations(
+            drawing_data::QuizImageObjects &objects_,
+            const drawingdata::Details &details_
+            ) const;
 
 private:
     void findEnd();
@@ -103,6 +107,11 @@ bool ObjectArtefacts::build(
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
+        (*it)->addCalculations(object_, details_);
+    }
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        checkArtefactStepIndex(details_, *it);
         (*it)->addData(details_);
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
@@ -129,6 +138,23 @@ bool ObjectArtefacts::build(
         (*it)->addTexture(object_);
     }
     return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
+}
+
+void ObjectArtefacts::addMainCalculations(
+        drawing_data::QuizImageObjects &objects_,
+        const drawingdata::Details &details_
+        ) const
+{
+    if(std::cend(m_artefacts) != m_objectBegin)
+    {
+        updateArtefactStepIndex(details_, *m_objectBegin, std::cbegin(m_artefacts) == m_objectBegin);
+    }
+
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        checkArtefactStepIndex(details_, *it);
+        (*it)->addMainCalculations(objects_, details_);
+    }
 }
 
 void ObjectArtefacts::findEnd()
@@ -195,6 +221,10 @@ void DrawingDataEffectObjects::addObjects(
     list.populate(*m_objectArtefactData);
     for(list.first(); !list.isEnd(); list.next())
     {
+        if(isMain())
+        {
+            list.addMainCalculations(data_, details_);
+        }
         auto obj = std::make_shared<drawing_data::QuizImageObject>();
         if(list.build(*obj, details_))
         {

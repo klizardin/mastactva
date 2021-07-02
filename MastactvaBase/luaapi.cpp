@@ -75,6 +75,16 @@ bool LuaAPI::callArtefact(drawingdata::IPosition *position_)
     return true;
 }
 
+bool LuaAPI::callArtefactAtRuntime(drawingdata::IPosition *position_) const
+{
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStrs;
+    const bool callResult = call(g_luaArtefactMainFunctionName, position_, result, resultStrs);
+    Q_UNUSED(result);
+    Q_UNUSED(resultStrs);
+    return callResult;
+}
+
 void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
 {
     m_variables = variables_;

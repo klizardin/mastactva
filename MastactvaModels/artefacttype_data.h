@@ -12,6 +12,7 @@ enum class ArtefactTypeEn{
     dataObj3D,
     convertNamesJson,
     scriptLua,
+    scriptLuaRuntime,
     scriptLibrary
 };
 

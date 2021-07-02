@@ -35,6 +35,14 @@ public:
     void addData(
             const drawingdata::Details &details_
             ) const override;
+    void addCalculations(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override;
+    void addMainCalculations(
+            drawing_data::QuizImageObjects &objects_,
+            const drawingdata::Details &details_
+            ) const override;
 
     friend bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_);
     void updateStepIndex(drawingdata::IPosition *position_, bool first_) const;

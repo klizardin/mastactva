@@ -29,6 +29,14 @@ public:
     virtual void addData(
             const drawingdata::Details &details_
             ) const = 0;
+    virtual void addCalculations(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const = 0;
+    virtual void addMainCalculations(
+            drawing_data::QuizImageObjects &objects_,
+            const drawingdata::Details &details_
+            ) const = 0;
 };
 
 
@@ -56,6 +64,14 @@ public:
             drawing_data::QuizImageObject &object_
             ) const override;
     void addData(
+            const drawingdata::Details &details_
+            ) const override;
+    void addCalculations(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override;
+    void addMainCalculations(
+            drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const override;
 };

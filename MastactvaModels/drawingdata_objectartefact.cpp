@@ -93,6 +93,31 @@ void DrawingDataObjectArtefact::addData(
     });
 }
 
+void DrawingDataObjectArtefact::addCalculations(
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
+        ) const
+{
+    (void)forArtefacts([&object_, &details_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->addCalculations(object_, details_);
+        return false;
+    });
+}
+
+void DrawingDataObjectArtefact::addMainCalculations(
+        drawing_data::QuizImageObjects &objects_,
+        const drawingdata::Details &details_
+        ) const
+{
+    (void)forArtefacts([&objects_, &details_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->addMainCalculations(objects_, details_);
+        return false;
+    });
+}
+
+
 void DrawingDataObjectArtefact::updateStepIndex(drawingdata::IPosition *position_, bool first_) const
 {
     if(!position_)
