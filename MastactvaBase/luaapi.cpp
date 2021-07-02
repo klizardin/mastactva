@@ -332,6 +332,11 @@ void LuaAPI::setVariableImpl() const
     processStack(2, 0);
 }
 
+void LuaAPI::getIdentityMatrixImpl() const
+{
+    // arg - table with size, example {4,4}
+}
+
 void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
 {
     lua_pop(m_luaState, inputArgsCount_);
@@ -392,7 +397,7 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariable>
 template<>
 void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIdentity>() const
 {
-    // TODO: implement
+    getIdentityMatrixImpl();
 }
 
 template<>
@@ -521,7 +526,7 @@ void LuaAPI::initFunctions() const
         {
             "matrix",
             {
-                {"identity", l_implementation<LuaAPI::FunctionImplEn::matrixIdentity, 0, 1>},
+                {"identity", l_implementation<LuaAPI::FunctionImplEn::matrixIdentity, 1, 1>},
                 {"isIdentity", l_implementation<LuaAPI::FunctionImplEn::matrixIsIdentity, 1, 1>},
                 {"determinant", l_implementation<LuaAPI::FunctionImplEn::matrixDeterminant, 1, 1>},
                 {"inverted", l_implementation<LuaAPI::FunctionImplEn::matrixInverted, 1, 1>},

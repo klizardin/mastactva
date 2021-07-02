@@ -67,6 +67,7 @@ private:
     static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;
+    void getIdentityMatrixImpl() const;
     void processStack(int inputArgsCount_, int outputArgsCount_) const;
     void hideLibsBlackList();
     template<FunctionImplEn func_>
