@@ -967,7 +967,7 @@ namespace drawing_data
     };
 
 
-    struct QuizImageObjects : public ::opengl_drawing::IVariables, public detail::Calculations
+    struct QuizImageObjects : public ::opengl_drawing::IVariables, protected detail::Calculations
     {
     public:
         QColor clearColor{255, 255, 255};
