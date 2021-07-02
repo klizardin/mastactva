@@ -106,7 +106,7 @@ namespace opengl_drawing
             m_imageData->set(name_, std::move(data_));
         }
 
-        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
+        bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
@@ -223,7 +223,7 @@ public:
         m_openglData->set(name_, std::move(data_));
     }
 
-    bool isUpdated(const QStringList &vars_, IVariables *base_) const override
+    bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override
     {
         if(!m_openglData.operator bool())
         {

@@ -743,7 +743,7 @@ QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, co
     return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
-bool opengl_drawing::Objects::isUpdated(const QStringList &vars_, IVariables *base_) const
+bool opengl_drawing::Objects::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
     for(const QString &var_ : m_updated)
     {

@@ -43,7 +43,7 @@ void VariablesExtended::set(const QString &name_, QVector<double> &&data_)
             ;
 }
 
-bool VariablesExtended::isUpdated(const QStringList &vars_, IVariables *base_) const
+bool VariablesExtended::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
     return m_extend ?
                 m_extend->isUpdated(vars_, base_)
@@ -70,7 +70,7 @@ bool IEffectCalculation::doExtend(IEffectCalculation *calculation_) const
     return fiCurrent.baseName().startsWith(fiNew.baseName());
 }
 
-const QStringList &IEffectCalculation::getRequiredVariables() const
+const QSet<QString> &IEffectCalculation::getRequiredVariables() const
 {
     return m_vars;
 }
@@ -82,7 +82,10 @@ void IEffectCalculation::setFilename(const QString &filename_)
 
 void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
 {
-    m_vars = vars_;
+    for(const QString &v_ : vars_)
+    {
+        m_vars.insert(v_);
+    }
 }
 
 }

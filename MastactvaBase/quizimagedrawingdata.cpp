@@ -74,17 +74,12 @@ void drawing_data::detail::Calculations::setVariable(const QString &name_)
 }
 
 bool drawing_data::detail::Calculations::isUpdated(
-        const QStringList &vars_,
+        const QSet<QString> &vars_,
         ::opengl_drawing::IVariables *base_
         ) const
 {
     Q_UNUSED(base_);
-    QSet<QString> vars;
-    for(const QString &s_ : vars_)
-    {
-        vars.insert(s_);
-    }
-    return m_updated.intersects(vars);
+    return m_updated.intersects(vars_);
 }
 
 void drawing_data::detail::Calculations::clearUpdated()
@@ -215,7 +210,7 @@ void drawing_data::QuizImageObject::set(const QString &name_, QVector<double> &&
     }
 }
 
-bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
+bool drawing_data::QuizImageObject::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
     return detail::Calculations::isUpdated(vars_, base_);
 }
@@ -304,7 +299,7 @@ void drawing_data::QuizImageObjects::set(const QString &name_, QVector<double> &
     }
 }
 
-bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariables *base_) const
+bool drawing_data::QuizImageObjects::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
 {
     if(detail::Calculations::isUpdated(vars_, base_))
     {

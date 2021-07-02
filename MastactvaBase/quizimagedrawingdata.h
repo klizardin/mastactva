@@ -873,7 +873,7 @@ namespace drawing_data
 
         protected:
             void setVariable(const QString &name_);
-            bool isUpdated(const QStringList &vars_, ::opengl_drawing::IVariables *base_) const;
+            bool isUpdated(const QSet<QString> &vars_, ::opengl_drawing::IVariables *base_) const;
 
         private:
             void clearUpdated();
@@ -902,7 +902,7 @@ namespace drawing_data
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
-        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
+        bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
@@ -980,7 +980,7 @@ namespace drawing_data
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
         void set(const QString &name_, QVector<double> &&data_) override;
-        bool isUpdated(const QStringList &vars_, IVariables *base_) const override;
+        bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
