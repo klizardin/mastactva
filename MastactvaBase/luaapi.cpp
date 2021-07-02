@@ -408,7 +408,8 @@ int l_implementation(lua_State *luaState_)
 
 void LuaAPI::initFunctions() const
 {
-    std::tuple<const char *, lua_CFunction> functions[] = {
+    using FunctionInfo = std::tuple<const char *, lua_CFunction>;
+    static const FunctionInfo functions[] = {
         {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
         {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
     };
