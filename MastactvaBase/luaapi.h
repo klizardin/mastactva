@@ -17,7 +17,23 @@ private:
     enum class FunctionImplEn
     {
         getVariable,
-        setVariable
+        setVariable,
+        matrixIdentity,
+        matrixIsIdentity,
+        matrixDeterminant,
+        matrixInverted,
+        matrixIsInvertible,
+        matrixRotate,
+        matrixScale,
+        matrixShear,
+        matrixTranslate,
+        matrixFrustrum,
+        matrixIsAphine,
+        matrixLookAt,
+        matrixNormal,
+        matrixOrtho,
+        matrixPerspective,
+        matrixViewport,
     };
 
 public:
@@ -51,6 +67,22 @@ private:
     static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;
+    void matrixIdentityImpl() const;
+    void matrixIsIdentityImpl() const;
+    void matrixDeterminantImpl() const;
+    void matrixInvertedImpl() const;
+    void matrixIsInvertibleImpl() const;
+    void matrixRotateImpl() const;
+    void matrixScaleImpl() const;
+    void matrixShearImpl() const;
+    void matrixTranslateImpl() const;
+    void matrixFrustumImpl() const;
+    void matrixIsAphineImpl() const;
+    void matrixLookAtImpl() const;
+    void matrixNormalImpl() const;
+    void matrixOrthoImpl() const;
+    void matrixPerspectiveImpl() const;
+    void matrixViewportImpl() const;
     void processStack(int inputArgsCount_, int outputArgsCount_) const;
     void hideLibsBlackList();
     template<FunctionImplEn func_>
