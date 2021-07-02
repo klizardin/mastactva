@@ -98,6 +98,145 @@ drawing_data::QuizImageObject::QuizImageObject()
 {
 }
 
+bool drawing_data::QuizImageObject::get(const QString &name_, QVector<double> &data_) const
+{
+    std::vector<float> data;
+    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    {
+        if(!attribute_.operator bool()
+                || attribute_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        // return first value
+        const bool res = ItemTypeBaseSet::get(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
+        data_.clear();
+        if(res)
+        {
+            data_.reserve(data.size());
+            std::copy(std::begin(data), std::end(data),
+                      std::back_inserter(data_));
+        }
+        return res;
+    }
+    for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+    {
+        if(!uniform_.operator bool()
+                || uniform_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        // return first value
+        const bool res = ItemTypeBaseSet::get(uniform_.get(), uniform_->typeIndex(), data);
+        data_.clear();
+        if(res)
+        {
+            data_.reserve(data.size());
+            std::copy(std::begin(data), std::end(data),
+                      std::back_inserter(data_));
+        }
+        return res;
+    }
+    return false;
+}
+
+void drawing_data::QuizImageObject::set(const QString &name_, const QVector<double> &data_)
+{
+    setVariable(name_);
+
+    std::vector<float> data;
+    data.reserve(data_.size());
+    std::copy(std::begin(data_), std::end(data_)
+              , std::back_inserter(data));
+    for(std::unique_ptr<IAttribute> &attribute_ : attributes)
+    {
+        if(!attribute_.operator bool()
+                || attribute_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
+        // set all attributes with this name
+    }
+    for(std::unique_ptr<IUniform> &uniform_ : uniforms)
+    {
+        if(!uniform_.operator bool()
+                || uniform_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), data);
+        // set all uniforms with this name
+        // TODO: ptimize for std::shared_ptr data use
+    }
+}
+
+void drawing_data::QuizImageObject::set(const QString &name_, QVector<double> &&data_)
+{
+    setVariable(name_);
+
+    QVector<double> data0 = std::move(data_);
+    std::vector<float> data;
+    data.reserve(data0.size());
+    std::copy(std::begin(data0), std::end(data0)
+              , std::back_inserter(data));
+    for(std::unique_ptr<IAttribute> &attribute_ : attributes)
+    {
+        if(!attribute_.operator bool()
+                || attribute_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        ItemTypeBaseSet::set(attribute_.get(), attribute_->typeIndex(), data, attribute_->tupleSize());
+        // set all attributes with this name
+    }
+    for(std::unique_ptr<IUniform> &uniform_ : uniforms)
+    {
+        if(!uniform_.operator bool()
+                || uniform_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        ItemTypeBaseSet::set(uniform_.get(), uniform_->typeIndex(), data);
+        // set all uniforms with this name
+        // TODO: ptimize for std::shared_ptr data use
+    }
+}
+
+bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
+{
+    return detail::Calculations::isUpdated(vars_, base_);
+}
+
+int drawing_data::QuizImageObject::getAttributeTupleSize(const QString &name_) const
+{
+    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    {
+        if(!attribute_.operator bool()
+                || attribute_->name() != name_
+                )
+        {
+            continue;
+        }
+
+        // return first attribute
+        return attribute_->tupleSize();
+    }
+    return -1;
+}
+
 void drawing_data::QuizImageObject::setTexture(const QString &name_, const QString &newFilename_)
 {
     auto fit = std::find_if(
@@ -114,15 +253,90 @@ void drawing_data::QuizImageObject::setTexture(const QString &name_, const QStri
     fit->filename = newFilename_;
 }
 
-bool drawing_data::QuizImageObject::isUpdated(const QStringList &vars_, IVariables *base_) const
-{
-    return detail::Calculations::isUpdated(vars_, base_);
-}
-
 
 drawing_data::QuizImageObjects::QuizImageObjects()
     : detail::Calculations(this)
 {
+}
+
+bool drawing_data::QuizImageObjects::get(const QString &name_, QVector<double> &data_) const
+{
+    bool result = false;
+    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        result |= object_->get(name_, data_);
+    }
+    return result;
+}
+
+void drawing_data::QuizImageObjects::set(const QString &name_, const QVector<double> &data_)
+{
+    setVariable(name_);
+
+    for(std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->set(name_, data_);
+    }
+}
+
+void drawing_data::QuizImageObjects::set(const QString &name_, QVector<double> &&data_)
+{
+    setVariable(name_);
+
+    for(std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->set(name_, std::move(data_));
+    }
+}
+
+bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariables *base_) const
+{
+    if(detail::Calculations::isUpdated(vars_, base_))
+    {
+        return true;
+    }
+
+    for(const auto &object_ : objects)
+    {
+        if(object_->isUpdated(vars_, nullptr))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+int drawing_data::QuizImageObjects::getAttributeTupleSize(const QString &name_) const
+{
+    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        int res = object_->getAttributeTupleSize(name_);
+        if(res >= 0)
+        {
+            return res;
+        }
+    }
+    return 0;
 }
 
 void drawing_data::QuizImageObjects::setTexture(const QString &name_, const QString &newFilename_)
@@ -168,23 +382,6 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
         object_->postCalculation();
     }
     postCalculation();
-}
-
-bool drawing_data::QuizImageObjects::isUpdated(const QStringList &vars_, IVariables *base_) const
-{
-    if(detail::Calculations::isUpdated(vars_, base_))
-    {
-        return true;
-    }
-
-    for(const auto &object_ : objects)
-    {
-        if(object_->isUpdated(vars_, nullptr))
-        {
-            return true;
-        }
-    }
-    return false;
 }
 
 bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *variables_)
