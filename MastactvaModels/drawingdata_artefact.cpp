@@ -317,3 +317,60 @@ void LuaRuntimeCalculations::calculate(opengl_drawing::IVariables *variables_) c
     dynamic_cast<LuaRuntimeVariables *>(m_variables.get())->clearImpl();
 }
 
+
+template<typename DataType_>
+void addCalculationsT(
+        const DrawingDataArtefact *artefact_,
+        DataType_ &object_,
+        const drawingdata::Details &details_
+        )
+{
+    if(!artefact_
+            || !details_.filesource
+            || !artefact_->m_artefactArgData.operator bool())
+    {
+        return;
+    }
+    const ArtefactTypeEn currentType = to_enum<ArtefactTypeEn>(artefact_->m_typeId);
+    if(ArtefactTypeEn::scriptLuaRuntime == currentType)
+    {
+        auto artefactTextStr = details_.filesource->getText(artefact_->m_filename);
+
+        QStringList args;
+        args.reserve(artefact_->m_artefactArgData->size());
+
+        for(const ArtefactArgData *arg_ : *artefact_->m_artefactArgData)
+        {
+            auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+            if(!arg)
+            {
+                continue;
+            }
+            args.push_back(arg->m_name);
+        }
+
+        object_.calculations.push_back(
+                    std::make_shared<LuaRuntimeCalculations>(
+                        artefact_->m_filename,
+                        artefactTextStr,
+                        args
+                        )
+                    );
+    }
+}
+
+void DrawingDataArtefact::addCalculations(
+        drawing_data::QuizImageObject &object_,
+        const drawingdata::Details &details_
+        ) const
+{
+    addCalculationsT(this, object_, details_);
+}
+
+void DrawingDataArtefact::addMainCalculations(
+        drawing_data::QuizImageObjects &objects_,
+        const drawingdata::Details &details_
+        ) const
+{
+    addCalculationsT(this, objects_, details_);
+}
