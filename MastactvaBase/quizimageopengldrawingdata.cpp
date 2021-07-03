@@ -837,22 +837,10 @@ void ObjectsRenderer::updateVariables(
     const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
     const QVector2D proportinalRect(rectSize_.x() / maxCxCy, rectSize_.y() / maxCxCy);
 
-    setUniform( g_renderTName, t_ );
-
-    // update only if value is changed
-    const QVector2D oldScreeenRect = getUniform(g_renderScreenRectName, QVector2D{1.0e-9, 1.0e-9});
-    if(oldScreeenRect != proportinalRect)
-    {
-        setUniform( g_renderScreenRectName, proportinalRect );
-        setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
-    }
-
-    // update only if value is changed
-    const QVector2D oldWindowSize = getUniform(g_renderWindowSizeName, QVector2D{1.0e-9, 1.0e-9});
-    if(oldWindowSize != windowSize_)
-    {
-        setUniform( g_renderWindowSizeName, windowSize_);
-    }
+    setUniformIfExistsAndChanged( g_renderTName, t_ );
+    setUniformIfExistsAndChanged( g_renderScreenRectName, proportinalRect );
+    setUniformIfExistsAndChanged( g_renderMatrixName, getScreenMatrix(proportinalRect));
+    setUniformIfExistsAndChanged( g_renderWindowSizeName, windowSize_);
 }
 
 void ObjectsRenderer::initialize()

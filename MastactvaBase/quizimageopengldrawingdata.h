@@ -256,6 +256,17 @@ public:
     }
 
     template<typename ItemType_>
+    void setUniformIfExistsAndChanged(const QString &name_, const ItemType_ &value_)
+    {
+        ItemType_ oldValue{};
+        if(getUniform(name_, oldValue)
+                && value_ != oldValue)
+        {
+            setUniform(name_, value_);
+        }
+    }
+
+    template<typename ItemType_>
     bool getUniform(const QString &name_, ItemType_ &value_) const
     {
         if(!m_openglData.operator bool())
