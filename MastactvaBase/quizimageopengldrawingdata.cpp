@@ -839,17 +839,27 @@ void ObjectsRenderer::updateVariables(
 
     setUniform( g_renderTName, t_ );
 
-    // update only if value is changed
-    const QVector2D oldScreeenRect = getUniform(g_renderScreenRectName, QVector2D{1.0e-9, 1.0e-9});
-    if(oldScreeenRect != proportinalRect)
+    // update only if value is changed and exists
+    QVector2D oldScreeenRect;
+    if(getUniform(g_renderScreenRectName, oldScreeenRect)
+            && oldScreeenRect != proportinalRect)
     {
         setUniform( g_renderScreenRectName, proportinalRect );
-        setUniform( g_renderMatrixName, getScreenMatrix(proportinalRect) );
     }
 
-    // update only if value is changed
-    const QVector2D oldWindowSize = getUniform(g_renderWindowSizeName, QVector2D{1.0e-9, 1.0e-9});
-    if(oldWindowSize != windowSize_)
+    // update only if value is changed and exists
+    const QMatrix4x4 newMatrix = getScreenMatrix(proportinalRect);
+    QMatrix4x4 oldMatrix;
+    if(getUniform(g_renderMatrixName, oldMatrix)
+            && newMatrix != oldMatrix)
+    {
+        setUniform( g_renderMatrixName, newMatrix);
+    }
+
+    // update only if value is changed and exists
+    QVector2D oldWindowSize;
+    if(getUniform(g_renderWindowSizeName, oldWindowSize)
+            && oldWindowSize != windowSize_)
     {
         setUniform( g_renderWindowSizeName, windowSize_);
     }
