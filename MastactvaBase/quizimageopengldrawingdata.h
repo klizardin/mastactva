@@ -256,7 +256,7 @@ public:
     }
 
     template<typename ItemType_>
-    void setUniformIfChangedAndExists(const QString &name_, const ItemType_ &value_)
+    void setUniformIfExistsAndChanged(const QString &name_, const ItemType_ &value_)
     {
         ItemType_ oldValue{};
         if(getUniform(name_, oldValue)
