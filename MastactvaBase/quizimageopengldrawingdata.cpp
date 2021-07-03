@@ -842,7 +842,7 @@ void ObjectsRenderer::updateVariables(
     // update only if value is changed and exists
     QVector2D oldScreeenRect;
     if(getUniform(g_renderScreenRectName, oldScreeenRect)
-            && oldScreeenRect != proportinalRect)
+            && proportinalRect != oldScreeenRect)
     {
         setUniform( g_renderScreenRectName, proportinalRect );
     }
@@ -859,7 +859,7 @@ void ObjectsRenderer::updateVariables(
     // update only if value is changed and exists
     QVector2D oldWindowSize;
     if(getUniform(g_renderWindowSizeName, oldWindowSize)
-            && oldWindowSize != windowSize_)
+            && windowSize_ != oldWindowSize)
     {
         setUniform( g_renderWindowSizeName, windowSize_);
     }
