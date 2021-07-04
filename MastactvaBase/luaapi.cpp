@@ -353,6 +353,74 @@ bool getArgument<double>(lua_State *luaState_, int position_, double &arg_)
 }
 
 template<> inline
+bool getArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<double> &arg_)
+{
+    if(!lua_istable(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_.clear();
+    lua_pushnil(luaState_);
+    if(0 == lua_next(luaState_, position_ - 1))
+    {
+        return true;
+    }
+
+    const int firstItemType = lua_type(luaState_, -1);
+    if(LUA_TNUMBER == firstItemType)
+    {
+        arg_.push_back(lua_tonumber(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isnumber(luaState_, -1))
+            {
+                arg_.push_back(lua_tonumber(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+
+    return true;
+}
+
+template<> inline
+bool getArgument<QVector<QString>>(lua_State *luaState_, int position_, QVector<QString> &arg_)
+{
+    if(!lua_istable(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_.clear();
+    lua_pushnil(luaState_);
+    if(0 == lua_next(luaState_, position_ - 1))
+    {
+        return true;
+    }
+
+    const int firstItemType = lua_type(luaState_, -1);
+    if(LUA_TSTRING == firstItemType)
+    {
+        arg_.push_back(lua_tostring(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isstring(luaState_, -1))
+            {
+                arg_.push_back(lua_tostring(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+
+    return true;
+}
+
+template<> inline
 void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 {
     Q_UNUSED(arg_);
@@ -371,6 +439,20 @@ void traceArgument<double>(lua_State *luaState_, int position_, double &arg_)
 {
     Q_UNUSED(arg_);
     qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be number)";
+}
+
+template<> inline
+void traceArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<double> &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
+template<> inline
+void traceArgument<QVector<QString>>(lua_State *luaState_, int position_, QVector<QString> &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
 }
 
 template<typename Arg_> inline
