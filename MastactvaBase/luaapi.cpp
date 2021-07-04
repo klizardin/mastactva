@@ -689,7 +689,7 @@ bool getArguments(lua_State *luaState_, Args_ &... args_)
 }
 
 template<typename ... Args_> inline
-void pushArguments(lua_State *luaState_, Args_ &... args_)
+void pushArguments(lua_State *luaState_, const Args_ &... args_)
 {
     detail::pushArguments(luaState_, args_ ...);
 }
@@ -1096,6 +1096,33 @@ void LuaAPI::matrixIsAphineImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - bool
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    bool isAphine = false;
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+    case 3:
+        break;
+    case 4:
+        isAphine = std::get<3>(matrix).isAffine();
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
+    pushArguments(m_luaState, isAphine);
 }
 
 void LuaAPI::matrixLookAtImpl() const
@@ -1103,12 +1130,68 @@ void LuaAPI::matrixLookAtImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 9)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).lookAt(QVector3D(params.at(0), params.at(1), params.at(2)),
+                                    QVector3D(params.at(3), params.at(4), params.at(5)),
+                                    QVector3D(params.at(6), params.at(7), params.at(8))
+                                    );
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixNormalImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix))
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+    {
+        pushArguments(m_luaState, std::get<3>(matrix).normalMatrix());
+        break;
+    }
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixOrthoImpl() const
