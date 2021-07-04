@@ -332,7 +332,7 @@ template<> inline
 void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 {
     Q_UNUSED(arg_);
-    qDebug() << lua_type(luaState_, position_) << "(should be string)";
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be string)";
 }
 
 template<typename Arg_> inline
