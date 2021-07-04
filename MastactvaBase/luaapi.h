@@ -62,10 +62,10 @@ private:
             std::map<QString, QVector<double>> &result_,
             std::map<QString, QStringList> &resultStrs_
             ) const;
-    void push(const QVector<double> &value_) const;
-    void push(const QStringList &value_) const;
+    //void push(const QVector<double> &value_) const;
+    //void push(const QStringList &value_) const;
     std::tuple<QVector<double>, QStringList> getList() const;
-    bool pushVariableValue(const QString &name_) const;
+    std::tuple<bool, QVector<double>, QStringList> getVariableValue(const QString &name_) const;
     static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;

@@ -216,7 +216,7 @@ bool LuaAPI::getReturnVariables(
     return true;
 }
 
-void LuaAPI::push(const QVector<double> &value_) const
+/*void LuaAPI::push(const QVector<double> &value_) const
 {
     lua_newtable(m_luaState);
     int index = 1;
@@ -240,7 +240,7 @@ void LuaAPI::push(const QStringList &value_) const
         lua_settable(m_luaState, -3);
         ++index;
     }
-}
+}*/
 
 std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
 {
@@ -283,23 +283,14 @@ std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
     return values;
 }
 
-bool LuaAPI::pushVariableValue(const QString &name_) const
+std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QString &name_) const
 {
-    QVector<double> value;
-    QStringList valueStr;
-    if(m_variables->get(name_, m_artefactPosition,  value))
-    {
-        push(value);
-    }
-    else if(m_variables->get(name_, m_artefactPosition, valueStr))
-    {
-        push(valueStr);
-    }
-    else
-    {
-        return false;
-    }
-    return true;
+    std::tuple<bool, QVector<double>, QStringList> value;
+    std::get<0>(value)
+            = m_variables->get(name_, m_artefactPosition,  std::get<1>(value))
+                || m_variables->get(name_, m_artefactPosition, std::get<2>(value))
+            ;
+    return value;
 }
 
 namespace detail
@@ -315,6 +306,9 @@ bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
 
 template<typename Arg_>
 void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+
+template<typename Arg_>
+void pushArgument(lua_State *luaState_, const Arg_ &arg_);
 
 template<> inline
 bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
@@ -519,6 +513,64 @@ void traceArgument<std::tuple<QVector<double>, QStringList>>(
     qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
 }
 
+template<>
+void pushArgument<QString>(lua_State *luaState_, const QString &arg_)
+{
+    lua_pushstring(luaState_, arg_.toUtf8().constData());
+}
+
+template<>
+void pushArgument<bool>(lua_State *luaState_, const bool &arg_)
+{
+    lua_pushboolean(luaState_, arg_ ? 1 : 0);
+}
+
+template<>
+void pushArgument<int>(lua_State *luaState_, const int &arg_)
+{
+    lua_pushnumber(luaState_, arg_);
+}
+
+template<>
+void pushArgument<float>(lua_State *luaState_, const float &arg_)
+{
+    lua_pushnumber(luaState_, arg_);
+}
+
+template<>
+void pushArgument<double>(lua_State *luaState_, const double &arg_)
+{
+    lua_pushnumber(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QVector<double>>(lua_State *luaState_, const QVector<double> &arg_)
+{
+    lua_newtable(luaState_);
+    int index = 1;
+    for(double v_ : arg_)
+    {
+        lua_pushnumber(luaState_, index);
+        lua_pushnumber(luaState_, v_);
+        lua_settable(luaState_, -3);
+        ++index;
+    }
+}
+
+template<>
+void pushArgument<QStringList>(lua_State *luaState_, const QStringList &arg_)
+{
+    lua_newtable(luaState_);
+    int index = 1;
+    for(const QString &v_ : arg_)
+    {
+        lua_pushnumber(luaState_, index);
+        lua_pushstring(luaState_, v_.toUtf8().constData());
+        lua_settable(luaState_, -3);
+        ++index;
+    }
+}
+
 template<typename Arg_> inline
 bool getArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
 {
@@ -529,6 +581,12 @@ template<typename Arg_> inline
 void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
 {
     traceArgument(luaState_, position_ - count_, arg_);
+}
+
+template<typename Arg_> inline
+void pushArguments(lua_State *luaState_, const Arg_ &arg_)
+{
+    pushArgument(luaState_, arg_);
 }
 
 template<typename Arg_, typename ... Args_> inline
@@ -549,6 +607,13 @@ void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_,
     traceArguments(luaState_, count_, position_, args_ ...);
 }
 
+template<typename Arg_, typename ... Args_> inline
+void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args_)
+{
+    pushArgument(luaState_, arg_);
+    pushArguments(luaState_, args_ ...);
+}
+
 }
 
 template<typename ... Args_> inline
@@ -564,6 +629,12 @@ bool getArguments(lua_State *luaState_, Args_ &... args_)
     return success;
 }
 
+template<typename ... Args_> inline
+void pushArguments(lua_State *luaState_, Args_ &... args_)
+{
+    detail::pushArguments(luaState_, args_ ...);
+}
+
 void LuaAPI::getVariableImpl() const
 {
     QString name;
@@ -573,9 +644,18 @@ void LuaAPI::getVariableImpl() const
         return;
     }
     lua_pop(m_luaState, 1);
-    if(!pushVariableValue(name))
+    auto value = getVariableValue(name);
+    if(!std::get<0>(value))
     {
         processStack(0, 1);
+    }
+    else if(!std::get<2>(value).isEmpty())
+    {
+        pushArguments(m_luaState, std::get<2>(value));
+    }
+    else
+    {
+        pushArguments(m_luaState, std::get<1>(value));
     }
 }
 
