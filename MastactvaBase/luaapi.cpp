@@ -387,7 +387,7 @@ bool getArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<d
 }
 
 template<> inline
-bool getArgument<QVector<QString>>(lua_State *luaState_, int position_, QVector<QString> &arg_)
+bool getArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
 {
     if(!lua_istable(luaState_, position_))
     {
@@ -449,7 +449,7 @@ void traceArgument<QVector<double>>(lua_State *luaState_, int position_, QVector
 }
 
 template<> inline
-void traceArgument<QVector<QString>>(lua_State *luaState_, int position_, QVector<QString> &arg_)
+void traceArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
 {
     Q_UNUSED(arg_);
     qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
