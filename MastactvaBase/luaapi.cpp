@@ -362,6 +362,7 @@ bool getArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
         std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
         )
 {
+    std::get<0>(arg_) = 0;
     QVector<double> data;
     if(!getArgument(luaState_, position_, data))
     {
@@ -750,21 +751,25 @@ void LuaAPI::matrixIdentityImpl() const
             QMatrix2x2 m;
             m.setToIdentity();
             pushArguments(m_luaState, m);
+            break;
         }
         case 3:
         {
             QMatrix3x3 m;
             m.setToIdentity();
             pushArguments(m_luaState, m);
+            break;
         }
         case 4:
         {
             QMatrix4x4 m;
             m.setToIdentity();
             pushArguments(m_luaState, m);
+            break;
         }
         default:
             processStack(1, 1);
+            break;
         }
     }
     else if(size.size() >= 2)
@@ -802,6 +807,31 @@ void LuaAPI::matrixIsIdentityImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - bool
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix))
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    bool result = false;
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        result = std::get<1>(matrix).isIdentity();
+        break;
+    case 3:
+        result = std::get<2>(matrix).isIdentity();
+        break;
+    case 4:
+        result = std::get<3>(matrix).isIdentity();
+        break;
+    default:
+        processStack(1, 1);
+        return;
+    }
+    pushArguments(m_luaState, result);
 }
 
 void LuaAPI::matrixDeterminantImpl() const
