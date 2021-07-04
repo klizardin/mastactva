@@ -821,7 +821,9 @@ void LuaAPI::matrixIsIdentityImpl() const
     // result1 - bool
 
     std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
-    if(!getArguments(m_luaState, matrix))
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
     {
         processStack(1, 1);
         return;
@@ -854,7 +856,9 @@ void LuaAPI::matrixDeterminantImpl() const
     // result1 - number
 
     std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
-    if(!getArguments(m_luaState, matrix))
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
     {
         processStack(1, 1);
         return;
@@ -881,7 +885,9 @@ void LuaAPI::matrixInvertedImpl() const
     // result1 - table (matrix as array)
 
     std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
-    if(!getArguments(m_luaState, matrix))
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
     {
         processStack(1, 1);
         return;
@@ -908,7 +914,9 @@ void LuaAPI::matrixIsInvertibleImpl() const
     // result1 - bool
 
     std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
-    if(!getArguments(m_luaState, matrix))
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
     {
         processStack(1, 1);
         return;
@@ -934,6 +942,36 @@ void LuaAPI::matrixRotateImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (angles to rotate by axis)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 4)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).rotate(params.at(0), params.at(1), params.at(2), params.at(3));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixScaleImpl() const
