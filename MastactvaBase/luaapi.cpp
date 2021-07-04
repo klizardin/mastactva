@@ -1,4 +1,5 @@
 #include "luaapi.h"
+#include <math.h>
 #include <QDebug>
 #include <lua.hpp>
 #include "../MastactvaBase/names.h"
@@ -117,6 +118,28 @@ void LuaAPI::dumpStack() const
     }
 }
 
+QString LuaAPI::type2String(int type_)
+{
+    switch (type_)
+    {
+    case LUA_TNUMBER:
+        return "LUA_TNUMBER";
+        break;
+    case LUA_TSTRING:
+        return "LUA_TSTRING";
+        break;
+    case LUA_TBOOLEAN:
+        return "LUA_TBOOLEAN";
+        break;
+    case LUA_TNIL:
+        return "LUA_TNIL";
+        break;
+    default:
+        return QString("unknown %1").arg(type_);
+        break;
+    }
+}
+
 bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
 {
     if(error_)
@@ -194,32 +217,6 @@ bool LuaAPI::getReturnVariables(
     return true;
 }
 
-void LuaAPI::push(const QVector<double> &value_) const
-{
-    lua_newtable(m_luaState);
-    int index = 1;
-    for(double v_ : value_)
-    {
-        lua_pushnumber(m_luaState, index);
-        lua_pushnumber(m_luaState, v_);
-        lua_settable(m_luaState, -3);
-        ++index;
-    }
-}
-
-void LuaAPI::push(const QStringList &value_) const
-{
-    lua_newtable(m_luaState);
-    int index = 1;
-    for(const QString &v_ : value_)
-    {
-        lua_pushnumber(m_luaState, index);
-        lua_pushstring(m_luaState, v_.toUtf8().constData());
-        lua_settable(m_luaState, -3);
-        ++index;
-    }
-}
-
 std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
 {
     std::tuple<QVector<double>, QStringList> values;
@@ -261,23 +258,14 @@ std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
     return values;
 }
 
-bool LuaAPI::pushVariableValue(const QString &name_) const
+std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QString &name_) const
 {
-    QVector<double> value;
-    QStringList valueStr;
-    if(m_variables->get(name_, m_artefactPosition,  value))
-    {
-        push(value);
-    }
-    else if(m_variables->get(name_, m_artefactPosition, valueStr))
-    {
-        push(valueStr);
-    }
-    else
-    {
-        return false;
-    }
-    return true;
+    std::tuple<bool, QVector<double>, QStringList> value;
+    std::get<0>(value)
+            = m_variables->get(name_, m_artefactPosition,  std::get<1>(value))
+                || m_variables->get(name_, m_artefactPosition, std::get<2>(value))
+            ;
+    return value;
 }
 
 namespace detail
@@ -291,24 +279,373 @@ auto countOf(Arg_ &&, Args_ &&... args_) -> char(*)[sizeof(decltype(*countOf(arg
 template<typename Arg_>
 bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
 
+template<typename Arg_>
+void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+
+template<typename Arg_>
+void pushArgument(lua_State *luaState_, const Arg_ &arg_);
+
 template<> inline
 bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 {
     if(!lua_isstring(luaState_, position_))
     {
-        qDebug() << "wrong argument types:"
-            << lua_type(luaState_, position_) << "(should be string)"
-            ;
         return false;
     }
+
     arg_ = lua_tostring(luaState_, position_);
     return true;
+}
+
+template<> inline
+bool getArgument<bool>(lua_State *luaState_, int position_, bool &arg_)
+{
+    if(!lua_isboolean(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_ = lua_toboolean(luaState_, position_) != 0;
+    return true;
+}
+
+template<> inline
+bool getArgument<double>(lua_State *luaState_, int position_, double &arg_)
+{
+    if(!lua_isnumber(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_ = lua_tonumber(luaState_, position_);
+    return true;
+}
+
+template<> inline
+bool getArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<double> &arg_)
+{
+    if(!lua_istable(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_.clear();
+    lua_pushnil(luaState_);
+    if(0 == lua_next(luaState_, position_ - 1))
+    {
+        return true;
+    }
+
+    const int firstItemType = lua_type(luaState_, -1);
+    if(LUA_TNUMBER == firstItemType)
+    {
+        arg_.push_back(lua_tonumber(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isnumber(luaState_, -1))
+            {
+                arg_.push_back(lua_tonumber(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+
+    return true;
+}
+
+template<> inline
+bool getArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
+        )
+{
+    std::get<0>(arg_) = 0;
+    QVector<double> data;
+    if(!getArgument(luaState_, position_, data))
+    {
+        return false;
+    }
+
+    if(data.size() == 2*2)
+    {
+        std::get<0>(arg_) = 2;
+        for(int i = 0; i < data.size(); ++i)
+        {
+            std::get<1>(arg_).data()[i] = data[i];
+        }
+        return true;
+    }
+    else if(data.size() == 3*3)
+    {
+        std::get<0>(arg_) = 3;
+        for(int i = 0; i < data.size(); ++i)
+        {
+            std::get<2>(arg_).data()[i] = data[i];
+        }
+        return true;
+    }
+    else if(data.size() == 4*4)
+    {
+        std::get<0>(arg_) = 4;
+        for(int i = 0; i < data.size(); ++i)
+        {
+            std::get<3>(arg_).data()[i] = data[i];
+        }
+        return true;
+    }
+
+    return false;
+}
+
+template<> inline
+bool getArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
+{
+    if(!lua_istable(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_.clear();
+    lua_pushnil(luaState_);
+    if(0 == lua_next(luaState_, position_ - 1))
+    {
+        return true;
+    }
+
+    const int firstItemType = lua_type(luaState_, -1);
+    if(LUA_TSTRING == firstItemType)
+    {
+        arg_.push_back(lua_tostring(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isstring(luaState_, -1))
+            {
+                arg_.push_back(lua_tostring(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+
+    return true;
+}
+
+template<> inline
+bool getArgument<std::tuple<QVector<double>, QStringList>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<QVector<double>, QStringList> &arg_
+        )
+{
+    if(!lua_istable(luaState_, position_))
+    {
+        return false;
+    }
+
+    std::get<0>(arg_).clear();
+    std::get<1>(arg_).clear();
+    lua_pushnil(luaState_);
+    if(0 == lua_next(luaState_, position_ - 1))
+    {
+        return true;
+    }
+
+    const int firstItemType = lua_type(luaState_, -1);
+    if(LUA_TNUMBER == firstItemType)
+    {
+        std::get<0>(arg_).push_back(lua_tonumber(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isnumber(luaState_, -1))
+            {
+                std::get<0>(arg_).push_back(lua_tonumber(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+    else if(LUA_TSTRING == firstItemType)
+    {
+        std::get<1>(arg_).push_back(lua_tostring(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isstring(luaState_, -1))
+            {
+                std::get<1>(arg_).push_back(lua_tostring(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+
+    return true;
+}
+
+template<> inline
+void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be string)";
+}
+
+template<> inline
+void traceArgument<bool>(lua_State *luaState_, int position_, bool &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be boolean)";
+}
+
+template<> inline
+void traceArgument<double>(lua_State *luaState_, int position_, double &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be number)";
+}
+
+template<> inline
+void traceArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<double> &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
+template<> inline
+void traceArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
+template<> inline
+void traceArgument<std::tuple<QVector<double>, QStringList>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<QVector<double>, QStringList> &arg_
+        )
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
+template<> inline
+void traceArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
+        )
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
+template<>
+void pushArgument<QString>(lua_State *luaState_, const QString &arg_)
+{
+    lua_pushstring(luaState_, arg_.toUtf8().constData());
+}
+
+template<>
+void pushArgument<bool>(lua_State *luaState_, const bool &arg_)
+{
+    lua_pushboolean(luaState_, arg_ ? 1 : 0);
+}
+
+template<>
+void pushArgument<int>(lua_State *luaState_, const int &arg_)
+{
+    lua_pushnumber(luaState_, arg_);
+}
+
+template<>
+void pushArgument<float>(lua_State *luaState_, const float &arg_)
+{
+    lua_pushnumber(luaState_, arg_);
+}
+
+template<>
+void pushArgument<double>(lua_State *luaState_, const double &arg_)
+{
+    lua_pushnumber(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QVector<double>>(lua_State *luaState_, const QVector<double> &arg_)
+{
+    lua_newtable(luaState_);
+    int index = 1;
+    for(double v_ : arg_)
+    {
+        lua_pushnumber(luaState_, index);
+        lua_pushnumber(luaState_, v_);
+        lua_settable(luaState_, -3);
+        ++index;
+    }
+}
+
+template<int size_, typename MatrixArg_>
+void pushMatrix(lua_State *luaState_, const MatrixArg_ &arg_)
+{
+    QVector<double> data;
+    data.reserve(size_);
+    std::copy(arg_.constData(), arg_.constData() + size_,
+              std::back_inserter(data));
+    pushArgument(luaState_, data);
+}
+
+template<>
+void pushArgument<QMatrix2x2>(lua_State *luaState_, const QMatrix2x2 &arg_)
+{
+    pushMatrix<2*2>(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QMatrix3x3>(lua_State *luaState_, const QMatrix3x3 &arg_)
+{
+    pushMatrix<3*3>(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QMatrix4x4>(lua_State *luaState_, const QMatrix4x4 &arg_)
+{
+    pushMatrix<4*4>(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QStringList>(lua_State *luaState_, const QStringList &arg_)
+{
+    lua_newtable(luaState_);
+    int index = 1;
+    for(const QString &v_ : arg_)
+    {
+        lua_pushnumber(luaState_, index);
+        lua_pushstring(luaState_, v_.toUtf8().constData());
+        lua_settable(luaState_, -3);
+        ++index;
+    }
 }
 
 template<typename Arg_> inline
 bool getArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
 {
     return getArgument(luaState_, position_ - count_, arg_);
+}
+
+template<typename Arg_> inline
+void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
+{
+    traceArgument(luaState_, position_ - count_, arg_);
+}
+
+template<typename Arg_> inline
+void pushArguments(lua_State *luaState_, const Arg_ &arg_)
+{
+    pushArgument(luaState_, arg_);
 }
 
 template<typename Arg_, typename ... Args_> inline
@@ -319,6 +656,21 @@ bool getArguments(lua_State *luaState_, int count_, int position_,  Arg_ &arg_, 
         return false;
     }
     getArguments(luaState_, count_, position_ + 1, args_ ...);
+    return true;
+}
+
+template<typename Arg_, typename ... Args_> inline
+void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_, Args_ &... args_)
+{
+    traceArgument(luaState_, position_ - count_, arg_);
+    traceArguments(luaState_, count_, position_, args_ ...);
+}
+
+template<typename Arg_, typename ... Args_> inline
+void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args_)
+{
+    pushArgument(luaState_, arg_);
+    pushArguments(luaState_, args_ ...);
 }
 
 }
@@ -327,7 +679,19 @@ template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
 {
     constexpr int argumentsCount = sizeof(decltype(*detail::countOf(args_ ...)));
-    return detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
+    const bool success = detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
+    if(!success)
+    {
+        qDebug() << "wrong argument type(s) : ";
+        detail::traceArguments(luaState_, argumentsCount, 0, args_ ...);
+    }
+    return success;
+}
+
+template<typename ... Args_> inline
+void pushArguments(lua_State *luaState_, const Args_ &... args_)
+{
+    detail::pushArguments(luaState_, args_ ...);
 }
 
 void LuaAPI::getVariableImpl() const
@@ -339,32 +703,30 @@ void LuaAPI::getVariableImpl() const
         return;
     }
     lua_pop(m_luaState, 1);
-    if(!pushVariableValue(name))
+    auto value = getVariableValue(name);
+    if(!std::get<0>(value))
     {
         processStack(0, 1);
+    }
+    else if(!std::get<2>(value).isEmpty())
+    {
+        pushArguments(m_luaState, std::get<2>(value));
+    }
+    else
+    {
+        pushArguments(m_luaState, std::get<1>(value));
     }
 }
 
 void LuaAPI::setVariableImpl() const
 {
-    // check arguments types
-    if(!lua_isstring(m_luaState, -2)
-            || !lua_istable(m_luaState, -1))
-    {
-        qDebug() << "wrong argument types:"
-            << lua_type(m_luaState, -2) << "(should be string)"
-            << lua_type(m_luaState, -1) << "(should be table of numbers)"
-            ;
-        processStack(2, 0);
-        return;
-    }
-    if(!m_variables.operator bool())
+    QString name;
+    std::tuple<QVector<double>, QStringList> values;
+    if(!getArguments(m_luaState, name, values))
     {
         processStack(2, 0);
         return;
     }
-    const QString name = lua_tostring(m_luaState, -2);
-    auto values = getList();
     const bool hasNumbers = !std::get<0>(values).isEmpty();
     const bool hasStrings = !std::get<1>(values).isEmpty();
     if(hasNumbers)
@@ -382,30 +744,197 @@ void LuaAPI::matrixIdentityImpl() const
 {
     // arg1 - table with size, example {4,4}
     // result1 - table (matrix as array)
+
+    QVector<double> size;
+    if(!getArguments(m_luaState, size)
+            || size.empty()
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+    lua_pop(m_luaState, 1);
+    if(size.size() == 1)
+    {
+        switch(static_cast<int>(size.at(0)))
+        {
+        case 2:
+        {
+            QMatrix2x2 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+            break;
+        }
+        case 3:
+        {
+            QMatrix3x3 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+            break;
+        }
+        case 4:
+        {
+            QMatrix4x4 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+            break;
+        }
+        default:
+            processStack(0, 1);
+            break;
+        }
+    }
+    else if(size.size() >= 2)
+    {
+        if(size.at(0) == 2 && size.at(1) == 2)
+        {
+            QMatrix2x2 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        else if(size.at(0) == 3 && size.at(1) == 3)
+        {
+            QMatrix3x3 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        else if(size.at(0) == 4 && size.at(1) == 4)
+        {
+            QMatrix4x4 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        else
+        {
+            processStack(0, 1);
+        }
+    }
+    else
+    {
+        processStack(0, 1);
+    }
 }
 
 void LuaAPI::matrixIsIdentityImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - bool
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    bool result = false;
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        result = std::get<1>(matrix).isIdentity();
+        break;
+    case 3:
+        result = std::get<2>(matrix).isIdentity();
+        break;
+    case 4:
+        result = std::get<3>(matrix).isIdentity();
+        break;
+    default:
+        processStack(0, 1);
+        return;
+    }
+    pushArguments(m_luaState, result);
 }
 
 void LuaAPI::matrixDeterminantImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - number
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    double result = false;
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+        result = std::get<3>(matrix).determinant();
+        break;
+    default:
+        processStack(0, 1);
+        return;
+    }
+    pushArguments(m_luaState, result);
 }
 
 void LuaAPI::matrixInvertedImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    bool invertible = false;
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+        std::get<3>(matrix) = std::get<3>(matrix).inverted(&invertible);
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixIsInvertibleImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - bool
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    bool invertible = false;
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+        std::get<3>(matrix).inverted(&invertible);
+        pushArguments(m_luaState, invertible);
+        break;
+    default:
+        pushArguments(m_luaState, invertible);
+        return;
+    }
 }
 
 void LuaAPI::matrixRotateImpl() const
@@ -413,6 +942,36 @@ void LuaAPI::matrixRotateImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (angles to rotate by axis)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 4)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).rotate(params.at(0), params.at(1), params.at(2), params.at(3));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixScaleImpl() const
@@ -420,6 +979,36 @@ void LuaAPI::matrixScaleImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (scale value by axis, 1.0 is default)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 3)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).scale(params.at(0), params.at(1), params.at(2));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixShearImpl() const
@@ -434,6 +1023,36 @@ void LuaAPI::matrixTranslateImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (shift value, default 0.0)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 3)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).translate(params.at(0), params.at(1), params.at(2));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixFrustumImpl() const
@@ -441,12 +1060,70 @@ void LuaAPI::matrixFrustumImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 6)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).frustum(params.at(0), params.at(1), params.at(2),
+                                      params.at(3), params.at(4), params.at(5));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixIsAphineImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - bool
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix)
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    bool isAphine = false;
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+    case 3:
+        break;
+    case 4:
+        isAphine = std::get<3>(matrix).isAffine();
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
+    pushArguments(m_luaState, isAphine);
 }
 
 void LuaAPI::matrixLookAtImpl() const
@@ -454,12 +1131,68 @@ void LuaAPI::matrixLookAtImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 9)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).lookAt(QVector3D(params.at(0), params.at(1), params.at(2)),
+                                    QVector3D(params.at(3), params.at(4), params.at(5)),
+                                    QVector3D(params.at(6), params.at(7), params.at(8))
+                                    );
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixNormalImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix)
+            || 0 == std::get<0>(matrix))
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+    {
+        pushArguments(m_luaState, std::get<3>(matrix).normalMatrix());
+        break;
+    }
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixOrthoImpl() const
@@ -467,6 +1200,37 @@ void LuaAPI::matrixOrthoImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 6)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).ortho(params.at(0), params.at(1), params.at(2),
+                                      params.at(3), params.at(4), params.at(5));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixPerspectiveImpl() const
@@ -474,6 +1238,36 @@ void LuaAPI::matrixPerspectiveImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 4)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).perspective(params.at(0), params.at(1), params.at(2), params.at(3));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixViewportImpl() const
@@ -481,6 +1275,37 @@ void LuaAPI::matrixViewportImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 6)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).viewport(params.at(0), params.at(1), params.at(2),
+                                      params.at(3), params.at(4), params.at(5));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
