@@ -539,13 +539,14 @@ bool getArguments(lua_State *luaState_, int count_, int position_,  Arg_ &arg_, 
         return false;
     }
     getArguments(luaState_, count_, position_ + 1, args_ ...);
+    return true;
 }
 
 template<typename Arg_, typename ... Args_> inline
 void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_, Args_ &... args_)
 {
     traceArgument(luaState_, position_ - count_, arg_);
-    traceArguments(luaState_, position_ - count_, args_ ...);
+    traceArguments(luaState_, count_, position_, args_ ...);
 }
 
 }
@@ -580,24 +581,13 @@ void LuaAPI::getVariableImpl() const
 
 void LuaAPI::setVariableImpl() const
 {
-    // check arguments types
-    if(!lua_isstring(m_luaState, -2)
-            || !lua_istable(m_luaState, -1))
-    {
-        qDebug() << "wrong argument types:"
-            << lua_type(m_luaState, -2) << "(should be string)"
-            << lua_type(m_luaState, -1) << "(should be table of numbers)"
-            ;
-        processStack(2, 0);
-        return;
-    }
-    if(!m_variables.operator bool())
+    QString name;
+    std::tuple<QVector<double>, QStringList> values;
+    if(!getArguments(m_luaState, name, values))
     {
         processStack(2, 0);
         return;
     }
-    const QString name = lua_tostring(m_luaState, -2);
-    auto values = getList();
     const bool hasNumbers = !std::get<0>(values).isEmpty();
     const bool hasStrings = !std::get<1>(values).isEmpty();
     if(hasNumbers)
