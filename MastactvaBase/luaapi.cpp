@@ -1,4 +1,5 @@
 #include "luaapi.h"
+#include <math.h>
 #include <QDebug>
 #include <lua.hpp>
 #include "../MastactvaBase/names.h"
@@ -355,6 +356,50 @@ bool getArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<d
 }
 
 template<> inline
+bool getArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
+        )
+{
+    QVector<double> data;
+    if(!getArgument(luaState_, position_, data))
+    {
+        return false;
+    }
+
+    if(data.size() == 2*2)
+    {
+        std::get<0>(arg_) = 2;
+        for(int i = 0; i < data.size(); ++i)
+        {
+            std::get<1>(arg_).data()[i] = data[i];
+        }
+        return true;
+    }
+    else if(data.size() == 3*3)
+    {
+        std::get<0>(arg_) = 3;
+        for(int i = 0; i < data.size(); ++i)
+        {
+            std::get<2>(arg_).data()[i] = data[i];
+        }
+        return true;
+    }
+    else if(data.size() == 4*4)
+    {
+        std::get<0>(arg_) = 4;
+        for(int i = 0; i < data.size(); ++i)
+        {
+            std::get<3>(arg_).data()[i] = data[i];
+        }
+        return true;
+    }
+
+    return false;
+}
+
+template<> inline
 bool getArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
 {
     if(!lua_istable(luaState_, position_))
@@ -531,6 +576,34 @@ void pushArgument<QVector<double>>(lua_State *luaState_, const QVector<double> &
     }
 }
 
+template<int size_, typename MatrixArg_>
+void pushMatrix(lua_State *luaState_, const MatrixArg_ &arg_)
+{
+    QVector<double> data;
+    data.reserve(size_);
+    std::copy(arg_.constData(), arg_.constData() + size_,
+              std::back_inserter(data));
+    pushArgument(luaState_, data);
+}
+
+template<>
+void pushArgument<QMatrix2x2>(lua_State *luaState_, const QMatrix2x2 &arg_)
+{
+    pushMatrix<2*2>(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QMatrix3x3>(lua_State *luaState_, const QMatrix3x3 &arg_)
+{
+    pushMatrix<3*3>(luaState_, arg_);
+}
+
+template<>
+void pushArgument<QMatrix4x4>(lua_State *luaState_, const QMatrix4x4 &arg_)
+{
+    pushMatrix<4*4>(luaState_, arg_);
+}
+
 template<>
 void pushArgument<QStringList>(lua_State *luaState_, const QStringList &arg_)
 {
@@ -659,6 +732,70 @@ void LuaAPI::matrixIdentityImpl() const
 {
     // arg1 - table with size, example {4,4}
     // result1 - table (matrix as array)
+
+    QVector<double> size;
+    if(!getArguments(m_luaState, size)
+            || size.empty()
+            )
+    {
+        processStack(1, 1);
+        return;
+    }
+    if(size.size() == 1)
+    {
+        switch(static_cast<int>(size.at(0)))
+        {
+        case 2:
+        {
+            QMatrix2x2 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        case 3:
+        {
+            QMatrix3x3 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        case 4:
+        {
+            QMatrix4x4 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        default:
+            processStack(1, 1);
+        }
+    }
+    else if(size.size() >= 2)
+    {
+        if(size.at(0) == 2 && size.at(1) == 2)
+        {
+            QMatrix2x2 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        else if(size.at(0) == 3 && size.at(1) == 3)
+        {
+            QMatrix3x3 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        else if(size.at(0) == 4 && size.at(1) == 4)
+        {
+            QMatrix4x4 m;
+            m.setToIdentity();
+            pushArguments(m_luaState, m);
+        }
+        else
+        {
+            processStack(1, 1);
+        }
+    }
+    else
+    {
+        processStack(1, 1);
+    }
 }
 
 void LuaAPI::matrixIsIdentityImpl() const
