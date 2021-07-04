@@ -838,6 +838,25 @@ void LuaAPI::matrixDeterminantImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - number
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix))
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    double result = false;
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+        result = std::get<3>(matrix).determinant();
+        break;
+    default:
+        processStack(1, 1);
+        return;
+    }
+    pushArguments(m_luaState, result);
 }
 
 void LuaAPI::matrixInvertedImpl() const
