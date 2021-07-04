@@ -742,6 +742,7 @@ void LuaAPI::matrixIdentityImpl() const
         processStack(1, 1);
         return;
     }
+    lua_pop(m_luaState, 1);
     if(size.size() == 1)
     {
         switch(static_cast<int>(size.at(0)))
@@ -768,7 +769,7 @@ void LuaAPI::matrixIdentityImpl() const
             break;
         }
         default:
-            processStack(1, 1);
+            processStack(0, 1);
             break;
         }
     }
@@ -794,12 +795,12 @@ void LuaAPI::matrixIdentityImpl() const
         }
         else
         {
-            processStack(1, 1);
+            processStack(0, 1);
         }
     }
     else
     {
-        processStack(1, 1);
+        processStack(0, 1);
     }
 }
 
@@ -815,6 +816,8 @@ void LuaAPI::matrixIsIdentityImpl() const
         return;
     }
 
+    lua_pop(m_luaState, 1);
+
     bool result = false;
     switch(std::get<0>(matrix))
     {
@@ -828,7 +831,7 @@ void LuaAPI::matrixIsIdentityImpl() const
         result = std::get<3>(matrix).isIdentity();
         break;
     default:
-        processStack(1, 1);
+        processStack(0, 1);
         return;
     }
     pushArguments(m_luaState, result);
@@ -846,6 +849,8 @@ void LuaAPI::matrixDeterminantImpl() const
         return;
     }
 
+    lua_pop(m_luaState, 1);
+
     double result = false;
     switch(std::get<0>(matrix))
     {
@@ -853,7 +858,7 @@ void LuaAPI::matrixDeterminantImpl() const
         result = std::get<3>(matrix).determinant();
         break;
     default:
-        processStack(1, 1);
+        processStack(0, 1);
         return;
     }
     pushArguments(m_luaState, result);
@@ -871,6 +876,8 @@ void LuaAPI::matrixInvertedImpl() const
         return;
     }
 
+    lua_pop(m_luaState, 1);
+
     bool invertible = false;
     switch(std::get<0>(matrix))
     {
@@ -879,7 +886,7 @@ void LuaAPI::matrixInvertedImpl() const
         pushArguments(m_luaState, std::get<3>(matrix));
         break;
     default:
-        processStack(1, 1);
+        processStack(0, 1);
         return;
     }
 }
@@ -888,6 +895,27 @@ void LuaAPI::matrixIsInvertibleImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - bool
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix))
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 1);
+
+    bool invertible = false;
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+        std::get<3>(matrix).inverted(&invertible);
+        pushArguments(m_luaState, invertible);
+        break;
+    default:
+        pushArguments(m_luaState, invertible);
+        return;
+    }
 }
 
 void LuaAPI::matrixRotateImpl() const
