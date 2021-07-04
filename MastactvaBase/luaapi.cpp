@@ -329,10 +329,48 @@ bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 }
 
 template<> inline
+bool getArgument<bool>(lua_State *luaState_, int position_, bool &arg_)
+{
+    if(!lua_isboolean(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_ = lua_toboolean(luaState_, position_) != 0;
+    return true;
+}
+
+template<> inline
+bool getArgument<double>(lua_State *luaState_, int position_, double &arg_)
+{
+    if(!lua_isnumber(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_ = lua_tonumber(luaState_, position_);
+    return true;
+}
+
+template<> inline
 void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 {
     Q_UNUSED(arg_);
     qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be string)";
+}
+
+template<> inline
+void traceArgument<bool>(lua_State *luaState_, int position_, bool &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be boolean)";
+}
+
+template<> inline
+void traceArgument<double>(lua_State *luaState_, int position_, double &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be number)";
 }
 
 template<typename Arg_> inline
