@@ -533,6 +533,17 @@ void traceArgument<std::tuple<QVector<double>, QStringList>>(
     qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
 }
 
+template<> inline
+void traceArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
+        )
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
 template<>
 void pushArgument<QString>(lua_State *luaState_, const QString &arg_)
 {
