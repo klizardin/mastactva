@@ -216,32 +216,6 @@ bool LuaAPI::getReturnVariables(
     return true;
 }
 
-/*void LuaAPI::push(const QVector<double> &value_) const
-{
-    lua_newtable(m_luaState);
-    int index = 1;
-    for(double v_ : value_)
-    {
-        lua_pushnumber(m_luaState, index);
-        lua_pushnumber(m_luaState, v_);
-        lua_settable(m_luaState, -3);
-        ++index;
-    }
-}
-
-void LuaAPI::push(const QStringList &value_) const
-{
-    lua_newtable(m_luaState);
-    int index = 1;
-    for(const QString &v_ : value_)
-    {
-        lua_pushnumber(m_luaState, index);
-        lua_pushstring(m_luaState, v_.toUtf8().constData());
-        lua_settable(m_luaState, -3);
-        ++index;
-    }
-}*/
-
 std::tuple<QVector<double>, QStringList> LuaAPI::getList() const
 {
     std::tuple<QVector<double>, QStringList> values;
