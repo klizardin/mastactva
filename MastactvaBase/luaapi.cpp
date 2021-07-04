@@ -979,6 +979,7 @@ void LuaAPI::matrixScaleImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (scale value by axis, 1.0 is default)
     // result1 - table (matrix as array)
+
     std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
     QVector<double> params;
     if(!getArguments(m_luaState, matrix, params)
@@ -1237,6 +1238,7 @@ void LuaAPI::matrixPerspectiveImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
     std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
     QVector<double> params;
     if(!getArguments(m_luaState, matrix, params)
