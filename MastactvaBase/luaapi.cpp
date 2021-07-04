@@ -280,18 +280,64 @@ bool LuaAPI::pushVariableValue(const QString &name_) const
     return true;
 }
 
-void LuaAPI::getVariableImpl() const
+namespace detail
 {
-    // check arguments types
-    if(!lua_isstring(m_luaState, -1))
+
+template<typename Arg_>
+auto countOf(Arg_ &&) -> char(*)[1];
+template<typename Arg_, typename ... Args_>
+auto countOf(Arg_ &&, Args_ &&... args_) -> char(*)[sizeof(decltype(*countOf(args_...))) + 1];
+
+template<typename Arg_>
+bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+
+template<> inline
+bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
+{
+    if(!lua_isstring(luaState_, position_))
     {
         qDebug() << "wrong argument types:"
-            << lua_type(m_luaState, -1) << "(should be string)"
+            << lua_type(luaState_, position_) << "(should be string)"
             ;
+        return false;
+    }
+    arg_ = lua_tostring(luaState_, position_);
+    return true;
+}
+
+template<typename Arg_> inline
+bool getArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
+{
+    return getArgument(luaState_, position_ - count_, arg_);
+}
+
+template<typename Arg_, typename ... Args_> inline
+bool getArguments(lua_State *luaState_, int count_, int position_,  Arg_ &arg_, Args_ &... args_)
+{
+    if(!getArgument(luaState_, position_ - count_, arg_))
+    {
+        return false;
+    }
+    getArguments(luaState_, count_, position_ + 1, args_ ...);
+}
+
+}
+
+template<typename ... Args_> inline
+bool getArguments(lua_State *luaState_, Args_ &... args_)
+{
+    constexpr int argumentsCount = sizeof(decltype(*detail::countOf(args_ ...)));
+    return detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
+}
+
+void LuaAPI::getVariableImpl() const
+{
+    QString name;
+    if(!getArguments(m_luaState, name))
+    {
         processStack(1, 1);
         return;
     }
-    const QString name = lua_tostring(m_luaState, -1);
     lua_pop(m_luaState, 1);
     if(!pushVariableValue(name))
     {
