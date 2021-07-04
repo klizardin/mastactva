@@ -291,24 +291,38 @@ auto countOf(Arg_ &&, Args_ &&... args_) -> char(*)[sizeof(decltype(*countOf(arg
 template<typename Arg_>
 bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
 
+template<typename Arg_>
+void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+
 template<> inline
 bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 {
     if(!lua_isstring(luaState_, position_))
     {
-        qDebug() << "wrong argument types:"
-            << lua_type(luaState_, position_) << "(should be string)"
-            ;
         return false;
     }
+
     arg_ = lua_tostring(luaState_, position_);
     return true;
+}
+
+template<> inline
+void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << lua_type(luaState_, position_) << "(should be string)";
 }
 
 template<typename Arg_> inline
 bool getArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
 {
     return getArgument(luaState_, position_ - count_, arg_);
+}
+
+template<typename Arg_> inline
+void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
+{
+    traceArgument(luaState_, position_ - count_, arg_);
 }
 
 template<typename Arg_, typename ... Args_> inline
@@ -321,13 +335,26 @@ bool getArguments(lua_State *luaState_, int count_, int position_,  Arg_ &arg_, 
     getArguments(luaState_, count_, position_ + 1, args_ ...);
 }
 
+template<typename Arg_, typename ... Args_> inline
+void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_, Args_ &... args_)
+{
+    traceArgument(luaState_, position_ - count_, arg_);
+    traceArguments(luaState_, position_ - count_, args_ ...);
+}
+
 }
 
 template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
 {
     constexpr int argumentsCount = sizeof(decltype(*detail::countOf(args_ ...)));
-    return detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
+    const bool success = detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
+    if(!success)
+    {
+        qDebug() << "wrong argument type(s) : ";
+        detail::traceArguments(luaState_, argumentsCount, 0, args_ ...);
+    }
+    return success;
 }
 
 void LuaAPI::getVariableImpl() const
