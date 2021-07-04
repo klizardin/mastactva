@@ -421,6 +421,59 @@ bool getArgument<QStringList>(lua_State *luaState_, int position_, QStringList &
 }
 
 template<> inline
+bool getArgument<std::tuple<QVector<double>, QStringList>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<QVector<double>, QStringList> &arg_
+        )
+{
+    if(!lua_istable(luaState_, position_))
+    {
+        return false;
+    }
+
+    std::get<0>(arg_).clear();
+    std::get<1>(arg_).clear();
+    lua_pushnil(luaState_);
+    if(0 == lua_next(luaState_, position_ - 1))
+    {
+        return true;
+    }
+
+    const int firstItemType = lua_type(luaState_, -1);
+    if(LUA_TNUMBER == firstItemType)
+    {
+        std::get<0>(arg_).push_back(lua_tonumber(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isnumber(luaState_, -1))
+            {
+                std::get<0>(arg_).push_back(lua_tonumber(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+    else if(LUA_TSTRING == firstItemType)
+    {
+        std::get<1>(arg_).push_back(lua_tostring(luaState_, -1));
+        lua_pop(luaState_, 1);
+
+        while(lua_next(luaState_, position_ - 1) != 0)
+        {
+            if(lua_isstring(luaState_, -1))
+            {
+                std::get<1>(arg_).push_back(lua_tostring(luaState_, -1));
+            }
+            lua_pop(luaState_, 1);
+        }
+    }
+
+    return true;
+}
+
+template<> inline
 void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
 {
     Q_UNUSED(arg_);
@@ -450,6 +503,17 @@ void traceArgument<QVector<double>>(lua_State *luaState_, int position_, QVector
 
 template<> inline
 void traceArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
+{
+    Q_UNUSED(arg_);
+    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
+}
+
+template<> inline
+void traceArgument<std::tuple<QVector<double>, QStringList>>(
+        lua_State *luaState_,
+        int position_,
+        std::tuple<QVector<double>, QStringList> &arg_
+        )
 {
     Q_UNUSED(arg_);
     qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
