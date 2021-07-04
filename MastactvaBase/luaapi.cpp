@@ -1022,6 +1022,36 @@ void LuaAPI::matrixTranslateImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (shift value, default 0.0)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 3)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).translate(params.at(0), params.at(1), params.at(2));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixFrustumImpl() const
@@ -1029,6 +1059,37 @@ void LuaAPI::matrixFrustumImpl() const
     // arg1 - table (matrix as array)
     // arg2 - array of arguments (? ?named by position)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    QVector<double> params;
+    if(!getArguments(m_luaState, matrix, params)
+            || 0 == std::get<0>(matrix)
+            || params.size() < 6)
+    {
+        processStack(2, 1);
+        return;
+    }
+
+    lua_pop(m_luaState, 2);
+
+    switch(std::get<0>(matrix))
+    {
+    case 2:
+        pushArguments(m_luaState, std::get<1>(matrix));
+        break;
+    case 3:
+        pushArguments(m_luaState, std::get<2>(matrix));
+        break;
+    case 4:
+        std::get<3>(matrix).frustum(params.at(0), params.at(1), params.at(2),
+                                      params.at(3), params.at(4), params.at(5));
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        Q_ASSERT(false); // wrong value
+        processStack(0, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixIsAphineImpl() const
