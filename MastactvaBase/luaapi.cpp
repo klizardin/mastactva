@@ -863,6 +863,25 @@ void LuaAPI::matrixInvertedImpl() const
 {
     // arg1 - table (matrix as array)
     // result1 - table (matrix as array)
+
+    std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> matrix;
+    if(!getArguments(m_luaState, matrix))
+    {
+        processStack(1, 1);
+        return;
+    }
+
+    bool invertible = false;
+    switch(std::get<0>(matrix))
+    {
+    case 4:
+        std::get<3>(matrix) = std::get<3>(matrix).inverted(&invertible);
+        pushArguments(m_luaState, std::get<3>(matrix));
+        break;
+    default:
+        processStack(1, 1);
+        return;
+    }
 }
 
 void LuaAPI::matrixIsInvertibleImpl() const
