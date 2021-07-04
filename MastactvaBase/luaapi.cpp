@@ -117,6 +117,28 @@ void LuaAPI::dumpStack() const
     }
 }
 
+QString LuaAPI::type2String(int type_)
+{
+    switch (type_)
+    {
+    case LUA_TNUMBER:
+        return "LUA_TNUMBER";
+        break;
+    case LUA_TSTRING:
+        return "LUA_TSTRING";
+        break;
+    case LUA_TBOOLEAN:
+        return "LUA_TBOOLEAN";
+        break;
+    case LUA_TNIL:
+        return "LUA_TNIL";
+        break;
+    default:
+        return QString("unknown %1").arg(type_);
+        break;
+    }
+}
+
 bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
 {
     if(error_)

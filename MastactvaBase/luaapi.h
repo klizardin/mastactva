@@ -51,6 +51,8 @@ public:
     bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
 
+    static QString type2String(int type_);
+
 private:
     void dumpStack() const;
     bool ok(int error_, bool errorStrAtTop_ = true) const;
