@@ -53,6 +53,26 @@ namespace
     const char *g_badLibCallTest2Code =
             "debug.debug()\n"
             ;
+    const char *g_matrixFunctionsSmokeCallTestCode =
+            "function main ()\n"
+            "   local pi = {4, 4}\n"
+            "   local m = matrix.identity(pi)\n"
+            "   local a = getVariable(\"a\")\n"
+            "   local pry = {a[1], 0.0, 1.0, 0.0}\n"
+            "   m = matrix.rotate(m, pry)\n"
+            "   local prx = {a[1], 1.0, 0.0, 0.0}\n"
+            "   m = matrix.rotate(m, prx)\n"
+            "   local prz = {a[1], 0.0, 0.0, 1.0}\n"
+            "   m = matrix.rotate(m, prz)\n"
+            "   local ps = {2.0, 2.0, 2.0}\n"
+            "   m = matrix.scale(m , ps)\n"
+            "   local pt = {0.0, -0.2, 0.0}\n"
+            "   m = matrix.translate(m , pt)\n"
+            "   setVariable(\"m\", m)\n"
+            "   result = {}\n"
+            "   return result\n"
+            "end\n"
+            ;
 
     std::map<QString, QVector<double>> g_variables =
     {
@@ -195,6 +215,40 @@ TEST(LuaAPI, callArtefact)
     EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QVector<double> &>(_)))
             .WillOnce(&returnA);
     EXPECT_CALL(*variablesMock, add_rvref(QString("a"), g_variables["a"]))
+            .WillOnce(Return(true));
+    EXPECT_TRUE(luaAPI.callArtefact(nullptr));
+}
+
+template<int angle_>
+bool returnAngle(const QString &, const drawingdata::IPosition *, QVector<double> &data_)
+{
+    data_ = {static_cast<double>(angle_),};
+    return true;
+}
+
+TEST(LuaAPI, matrixSmoke)
+{
+    std::shared_ptr<VariablesMock> variablesMock = std::make_shared<VariablesMock>();
+    LuaAPI luaAPI;
+    luaAPI.set(variablesMock);
+    EXPECT_TRUE(luaAPI.load(g_matrixFunctionsSmokeCallTestCode));
+    EXPECT_CALL(*variablesMock, get(QString("a"), _, Matcher<QVector<double> &>(_)))
+            .WillOnce(&returnAngle<10>);
+
+    qreal fScale = 2.0;
+    qreal fAngle = 10.0;
+    QMatrix4x4 modelview;
+    modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
+    modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
+    modelview.rotate(fAngle, 0.0f, 0.0f, 1.0f);
+    modelview.scale(fScale);
+    modelview.translate(0.0f, -0.2f, 0.0f);
+    QVector<double> matrixLuaRes;
+    matrixLuaRes.reserve(4*4);
+    std::copy(modelview.constData(), modelview.constData() + 4*4,
+              std::back_inserter(matrixLuaRes));
+
+    EXPECT_CALL(*variablesMock, add_rvref(QString("m"), matrixLuaRes))
             .WillOnce(Return(true));
     EXPECT_TRUE(luaAPI.callArtefact(nullptr));
 }
