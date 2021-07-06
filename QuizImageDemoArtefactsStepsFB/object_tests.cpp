@@ -27,7 +27,10 @@ QString createQTGeomLuaNewVariables(
 QString createQTGeomLuaSetVariables(
         const char *geom3dObjectName_
         );
-
+QString createQTGeomLua1SetVariables(
+        const char *dest_,
+        const char *src_
+        );
 
 void MapFileSource::add(const QString &filename_, const QString &text_)
 {
@@ -103,6 +106,34 @@ static const char *g_luaScript2SetVariable =
     "    return result;\n"
     "end\n";
 
+static const char *g_luaScript1SetVariable =
+    "function main ()\n"
+    "    result = {}\n"
+    "    setVariable(\"%1\", getVariable(\"%2\"))\n"
+    "    return result;\n"
+    "end\n";
+
+static const char *g_luaScriptCalcMatrix =
+    "function main ()\n"
+    "   local pi = {4, 4}\n"
+    "   local m = matrix.identity(pi)\n"
+    "   local a = getVariable(\"angle\")\n"
+    "   local pry = {a[1] * 30.0, 0.0, 1.0, 0.0}\n"
+    "   m = matrix.rotate(m, pry)\n"
+    "   local prx = {a[1] * 30.0, 1.0, 0.0, 0.0}\n"
+    "   m = matrix.rotate(m, prx)\n"
+    "   local prz = {a[1] * 30.0, 0.0, 0.0, 1.0}\n"
+    "   m = matrix.rotate(m, prz)\n"
+    "   local ps = {0.08, 0.08, 0.08}\n"
+    "   m = matrix.scale(m , ps)\n"
+    "   local pt = {0.0, -0.2, 0.0}\n"
+    "   m = matrix.translate(m , pt)\n"
+    "   setVariable(\"m\", m)\n"
+    "   result = {}\n"
+    "   return result\n"
+    "end\n"
+    ;
+
 static const char *g_effectObjectQtLogoProgrammerName = "gt_logo";
 static const char *g_baseVertexShaderFilename = "base.vsh";
 static const char *g_baseFragmentShaderFilename = "base.fsh";
@@ -121,6 +152,8 @@ static const char *g_3dObjectDefaultFragmentShaderFilename = "cube.vsh";
 static const char *g_dataJsonAliasSwiftFilename = "alias_swift.json";
 static const char *g_dataLua2NewVariableFilename = "new_variables.lua";
 static const char *g_dataLua2SetVariableFilename = "set_variables.lua";
+static const char *g_dataLua1SetVariableAngleAsTFilename = "set_angle_as_t.lua";
+static const char *g_dataLuaCalcMatrixFilename = "calc_matrix_from_angle.lua";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -158,6 +191,8 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJsonAliasSwiftFilename, createAliseQTGeomJson("swift_", nullptr, &pos2));
     filesource->add(g_dataLua2NewVariableFilename, createQTGeomLuaNewVariables("swift_"));
     filesource->add(g_dataLua2SetVariableFilename, createQTGeomLuaSetVariables("swift_"));
+    filesource->add(g_dataLua1SetVariableAngleAsTFilename, createQTGeomLua1SetVariables("angle", g_renderTName));
+    filesource->add(g_dataLuaCalcMatrixFilename, g_luaScriptCalcMatrix);
     return filesource;
 }
 
@@ -463,6 +498,13 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
             ArtefactArgStorageEn::uniformStorage,
             "matrix",
             toString(modelview)
+        },
+        {
+            4,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            "angle",
+            "0.0"
         }
     };
     static const int artefactId1 = 1;
@@ -900,6 +942,16 @@ QString createQTGeomLuaSetVariables(
             .arg(QString("vertex"), inv1,
                  QString("normal"), inv2
                  );
+    return result;
+}
+
+QString createQTGeomLua1SetVariables(
+        const char *dest_,
+        const char *src_
+        )
+{
+    QString result = QString(g_luaScript1SetVariable)
+            .arg(QString(dest_), QString(src_));
     return result;
 }
 
@@ -1475,6 +1527,108 @@ std::unique_ptr<EffectData> createTestData9(
     return effect;
 }
 
+std::unique_ptr<EffectData> createTestData10(
+        const char *data3DObjectFilename_,
+        const char *dataLuaScriptFilename_,
+        const char *luaRuntime1Filename_,
+        const char *luaRuntime2Filename_,
+        const char *shaderFilename_
+        )
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataObj3D;
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::scriptLua;
+    static const ArtefactTypeEn artefactType3 = ArtefactTypeEn::scriptLuaRuntime;
+    static const char *artefactName1 = "data json object";
+    static const char *artefactName2 = "lua script new variables";
+    static const char *artefactName3 = "lua script runtime";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName = "data for object";
+    static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
+    static const char *effectObjectDataName2 = "lua script new variables";
+    static const char *effectObjectDataProgrammerName2 = "lua_new_variables";
+    static const char *effectObjectName = "qt logo";
+
+    gen.seed(time(nullptr));
+
+    auto effectObject1 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1,
+                artefactType1,
+                artefactName1,
+                data3DObjectFilename_,
+                objectInfoId,
+                effectObjectDataName,
+                effectObjectDataProgrammerName
+                );
+    auto effectObject2 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0 + 1,
+                artefactId1 + 1,
+                artefactType2,
+                artefactName2,
+                dataLuaScriptFilename_,
+                objectInfoId + 1,
+                effectObjectDataName2,
+                effectObjectDataProgrammerName2
+                );
+    auto effectObject3 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0 + 2,
+                artefactId1 + 2,
+                artefactType3,
+                artefactName3,
+                luaRuntime1Filename_,
+                objectInfoId + 2,
+                "",
+                g_defaultObjectInfoProgrammerName
+                );
+    auto effectObject4 = createTestObject3(
+                effectId,
+                now,
+                effectObjectStep0 + 3,
+                artefactId1 + 3,
+                artefactType3,
+                artefactName3,
+                luaRuntime2Filename_,
+                objectInfoId + 3,
+                "",
+                g_defaultObjectInfoProgrammerName
+                );
+    auto effectObject5 = createTestObject3DObject(
+                effectId,
+                now,
+                effectObjectStep0 + 4,
+                gen,
+                objectInfoId + 4,
+                effectObjectName,
+                g_effectObjectQtLogoProgrammerName,
+                "",
+                shaderFilename_
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
+    effect->m_effectObjectsData->push_back(effectObject3.release());
+    effect->m_effectObjectsData->push_back(effectObject4.release());
+    effect->m_effectObjectsData->push_back(effectObject5.release());
+    return effect;
+}
+
 namespace drawing_objects
 {
 
@@ -1591,6 +1745,21 @@ void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_)
     auto effectObjectsData = createTestData9(
                 g_dataJson3DObjectSwiftFilename,
                 g_dataLua2SetVariableFilename,
+                g_3dObjectDefaultFragmentShaderFilename
+                );
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_) const
+{
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData10(
+                g_dataJson3DObjectSwiftFilename,
+                g_dataLua2SetVariableFilename,
+                g_dataLua1SetVariableAngleAsTFilename,
+                g_dataLuaCalcMatrixFilename,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
