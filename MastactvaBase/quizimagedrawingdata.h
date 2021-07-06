@@ -115,6 +115,54 @@ namespace drawing_data
     }
 
     template<> inline
+    QPointF fromVector<QPointF, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        QPointF result;
+        if(data_.size() >= 2)
+        {
+            result.setX(data_.at(0));
+            result.setY(data_.at(1));
+        }
+        return result;
+    }
+
+    template<> inline
+    QPoint fromVector<QPoint, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        QPoint result;
+        if(data_.size() >= 2)
+        {
+            result.setX(data_.at(0));
+            result.setY(data_.at(1));
+        }
+        return result;
+    }
+
+    template<> inline
+    QSizeF fromVector<QSizeF, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        QSizeF result;
+        if(data_.size() >= 2)
+        {
+            result.setWidth(data_.at(0));
+            result.setHeight(data_.at(1));
+        }
+        return result;
+    }
+
+    template<> inline
+    QSize fromVector<QSize, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        QSize result;
+        if(data_.size() >= 2)
+        {
+            result.setWidth(data_.at(0));
+            result.setHeight(data_.at(1));
+        }
+        return result;
+    }
+
+    template<> inline
     QVector3D fromVector<QVector3D, GLfloat>(const std::vector<GLfloat> &data_)
     {
         return data_.size() >= 3
@@ -142,6 +190,24 @@ namespace drawing_data
     }
 
     template<> inline
+    QMatrix2x3 fromVector<QMatrix2x3, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 2*3
+                ? QMatrix2x3{&data_[0]}
+                : QMatrix2x3{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix2x4 fromVector<QMatrix2x4, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 2*4
+                ? QMatrix2x4{&data_[0]}
+                : QMatrix2x4{}
+                  ;
+    }
+
+    template<> inline
     QMatrix3x3 fromVector<QMatrix3x3, GLfloat>(const std::vector<GLfloat> &data_)
     {
         return data_.size() >= 3*3
@@ -151,11 +217,47 @@ namespace drawing_data
     }
 
     template<> inline
+    QMatrix3x2 fromVector<QMatrix3x2, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 3*2
+                ? QMatrix3x2{&data_[0]}
+                : QMatrix3x2{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix3x4 fromVector<QMatrix3x4, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 3*4
+                ? QMatrix3x4{&data_[0]}
+                : QMatrix3x4{}
+                  ;
+    }
+
+    template<> inline
     QMatrix4x4 fromVector<QMatrix4x4, GLfloat>(const std::vector<GLfloat> &data_)
     {
         return data_.size() >= 4*4
                 ? QMatrix4x4{&data_[0]}
                 : QMatrix4x4{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix4x2 fromVector<QMatrix4x2, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 4*2
+                ? QMatrix4x2{&data_[0]}
+                : QMatrix4x2{}
+                  ;
+    }
+
+    template<> inline
+    QMatrix4x3 fromVector<QMatrix4x3, GLfloat>(const std::vector<GLfloat> &data_)
+    {
+        return data_.size() >= 4*3
+                ? QMatrix4x3{&data_[0]}
+                : QMatrix4x3{}
                   ;
     }
 
@@ -202,6 +304,53 @@ namespace drawing_data
     }
 
     template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QColor>(const QColor &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_.redF()),
+                                       static_cast<GLfloat>(val_.greenF()),
+                                       static_cast<GLfloat>(val_.blueF()),
+                                       static_cast<GLfloat>(val_.alphaF())
+                                      };
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QPointF>(const QPointF &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_.x()),
+                                       static_cast<GLfloat>(val_.y()),
+                                      };
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QPoint>(const QPoint &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_.x()),
+                                       static_cast<GLfloat>(val_.y()),
+                                      };
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QSizeF>(const QSizeF &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_.width()),
+                                       static_cast<GLfloat>(val_.height()),
+                                      };
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QSize>(const QSize &val_)
+    {
+        std::vector<GLfloat> result = {static_cast<GLfloat>(val_.width()),
+                                       static_cast<GLfloat>(val_.height()),
+                                      };
+        return result;
+    }
+
+    template<> inline
     std::vector<GLfloat> toVector<GLfloat, QVector3D>(const QVector3D &val_)
     {
         std::vector<GLfloat> result = {val_.x(), val_.y(), val_.z()};
@@ -225,6 +374,24 @@ namespace drawing_data
     }
 
     template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix2x3>(const QMatrix2x3 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(2*3);
+        std::copy(val_.constData(), val_.constData() + 2*3, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix2x4>(const QMatrix2x4 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(2*4);
+        std::copy(val_.constData(), val_.constData() + 2*4, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
     std::vector<GLfloat> toVector<GLfloat, QMatrix3x3>(const QMatrix3x3 &val_)
     {
         std::vector<GLfloat> result;
@@ -234,11 +401,47 @@ namespace drawing_data
     }
 
     template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix3x2>(const QMatrix3x2 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(3*2);
+        std::copy(val_.constData(), val_.constData() + 3*2, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix3x4>(const QMatrix3x4 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(3*4);
+        std::copy(val_.constData(), val_.constData() + 3*4, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
     std::vector<GLfloat> toVector<GLfloat, QMatrix4x4>(const QMatrix4x4 &val_)
     {
         std::vector<GLfloat> result;
         result.reserve(4*4);
         std::copy(val_.constData(), val_.constData() + 4*4, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix4x2>(const QMatrix4x2 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(4*2);
+        std::copy(val_.constData(), val_.constData() + 4*2, std::back_inserter(result));
+        return result;
+    }
+
+    template<> inline
+    std::vector<GLfloat> toVector<GLfloat, QMatrix4x3>(const QMatrix4x3 &val_)
+    {
+        std::vector<GLfloat> result;
+        result.reserve(4*3);
+        std::copy(val_.constData(), val_.constData() + 4*3, std::back_inserter(result));
         return result;
     }
 
@@ -626,14 +829,7 @@ namespace drawing_data
         template<typename ItemType2_>
         void set(const std::vector<ItemType2_> &value_)
         {
-            return setImpl(value_,
-                            typename std::integral_constant<
-                                bool,
-                                std::is_convertible<
-                                    ItemType2_,
-                                    ItemType_
-                                    >::value
-                                >::type());
+            return setImpl(value_, std::true_type());
         }
 
         bool get(ItemType_ &value_) const
@@ -663,14 +859,7 @@ namespace drawing_data
         template<typename ItemType2_>
         bool get(std::vector<ItemType2_> &value_) const
         {
-            return getImpl(value_,
-                            typename std::integral_constant<
-                                bool,
-                                std::is_convertible<
-                                    ItemType_,
-                                    ItemType2_
-                                    >::value
-                                >::type());
+            return getImpl(value_, std::true_type());
         }
 
     private:
@@ -894,7 +1083,6 @@ namespace drawing_data
         std::vector<std::unique_ptr<IAttribute>> attributes;
         std::vector<std::unique_ptr<IUniform>> uniforms;
         std::vector<Texture> textures;
-        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
         QuizImageObject();
@@ -967,12 +1155,11 @@ namespace drawing_data
     };
 
 
-    struct QuizImageObjects : public ::opengl_drawing::IVariables, protected detail::Calculations
+    struct QuizImageObjects : public ::opengl_drawing::IVariables, public detail::Calculations
     {
     public:
         QColor clearColor{255, 255, 255};
         std::vector<std::shared_ptr<QuizImageObject>> objects;
-        std::vector<std::shared_ptr<opengl_drawing::IEffectCalculation>> calculations;
 
     public:
         QuizImageObjects();

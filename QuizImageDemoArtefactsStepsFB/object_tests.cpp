@@ -118,17 +118,17 @@ static const char *g_luaScriptCalcMatrix =
     "   local pi = {4, 4}\n"
     "   local m = matrix.identity(pi)\n"
     "   local a = getVariable(\"angle\")\n"
-    "   local pry = {a[1] * 30.0, 0.0, 1.0, 0.0}\n"
+    "   local pry = {a[1] * 90.0, 0.0, 1.0, 0.0}\n"
     "   m = matrix.rotate(m, pry)\n"
-    "   local prx = {a[1] * 30.0, 1.0, 0.0, 0.0}\n"
+    "   local prx = {a[1] * 90.0, 1.0, 0.0, 0.0}\n"
     "   m = matrix.rotate(m, prx)\n"
-    "   local prz = {a[1] * 30.0, 0.0, 0.0, 1.0}\n"
+    "   local prz = {a[1] * 90.0, 0.0, 0.0, 1.0}\n"
     "   m = matrix.rotate(m, prz)\n"
     "   local ps = {0.08, 0.08, 0.08}\n"
     "   m = matrix.scale(m , ps)\n"
     "   local pt = {0.0, -0.2, 0.0}\n"
     "   m = matrix.translate(m , pt)\n"
-    "   setVariable(\"m\", m)\n"
+    "   setVariable(\"matrix\", m)\n"
     "   result = {}\n"
     "   return result\n"
     "end\n"
@@ -301,6 +301,8 @@ QString toString(const QMatrix4x4 &mat4_)
 
 static const char *emptyStr = "";
 
+enum class ArgEn{id, type, storage, name, value};
+
 // TODO: refactoring
 std::unique_ptr<EffectObjectsData> createTestObject(
         int effectId,
@@ -347,7 +349,6 @@ std::unique_ptr<EffectObjectsData> createTestObject(
     static const int objectArtefactStep0 = 0;
 
     // vertex shader artefact
-    enum class ArgEn{id, type, storage, name, value};
     const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString> vertexArgs[] = {
         {
             1,
@@ -476,7 +477,6 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
     static const int objectArtefactStep0 = 0;
 
     // vertex shader artefact
-    enum class ArgEn{id, type, storage, name, value};
     const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString> vertexArgs[] = {
         {
             1,
@@ -504,6 +504,13 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
             ArtefactArgTypeEn::floatType,
             ArtefactArgStorageEn::uniformStorage,
             "angle",
+            "0.0"
+        },
+        {
+            5,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTName,
             "0.0"
         }
     };
@@ -971,6 +978,8 @@ QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
     return QJsonDocument(object).toJson();
 }
 
+using Argument = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString>;
+
 std::unique_ptr<EffectObjectsData> createTestObject3(
         int effectId,
         const QDateTime &now,
@@ -981,7 +990,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
         const char * artefactFilename,
         const int objectInfoId,
         const char *effectObjectName,
-        const char *effectObjectProgrammerName
+        const char *effectObjectProgrammerName,
+        const std::vector<Argument> &arguments_ = std::vector<Argument>()
         )
 {
     static const int effectObjectId = 1;
@@ -1010,6 +1020,20 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 emptyStr,
                 now
                 );
+    for(const auto &arg_ : arguments_)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(arg_),
+                artefactId,
+                std::get<to_underlying(ArgEn::type)>(arg_),
+                std::get<to_underlying(ArgEn::storage)>(arg_),
+                std::get<to_underlying(ArgEn::name)>(arg_),
+                std::get<to_underlying(ArgEn::value)>(arg_),
+                emptyStr,
+                now
+                );
+        artefact1->m_artefactArgData->push_back(arg.release());
+    }
     static const int objectArtefactId1 = 1;
     static const int objectArtefactStep0 = 0;
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
@@ -1531,7 +1555,9 @@ std::unique_ptr<EffectData> createTestData10(
         const char *data3DObjectFilename_,
         const char *dataLuaScriptFilename_,
         const char *luaRuntime1Filename_,
+        const std::vector<Argument> &args1_,
         const char *luaRuntime2Filename_,
+        const std::vector<Argument> &args2_,
         const char *shaderFilename_
         )
 {
@@ -1590,7 +1616,8 @@ std::unique_ptr<EffectData> createTestData10(
                 luaRuntime1Filename_,
                 objectInfoId + 2,
                 "",
-                g_defaultObjectInfoProgrammerName
+                g_defaultObjectInfoProgrammerName,
+                args1_
                 );
     auto effectObject4 = createTestObject3(
                 effectId,
@@ -1602,7 +1629,8 @@ std::unique_ptr<EffectData> createTestData10(
                 luaRuntime2Filename_,
                 objectInfoId + 3,
                 "",
-                g_defaultObjectInfoProgrammerName
+                g_defaultObjectInfoProgrammerName,
+                args2_
                 );
     auto effectObject5 = createTestObject3DObject(
                 effectId,
@@ -1755,11 +1783,29 @@ void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_)
 void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_) const
 {
     auto filesource = createMapFileSource();
+    const std::vector<Argument> args1 = {
+        {
+            1,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTName,
+            "0.0"
+        }
+    };
+    const std::vector<Argument> args2 = {
+        {
+            1,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            "angle",
+            "0.0"
+        }
+    };
     auto effectObjectsData = createTestData10(
                 g_dataJson3DObjectSwiftFilename,
                 g_dataLua2SetVariableFilename,
-                g_dataLua1SetVariableAngleAsTFilename,
-                g_dataLuaCalcMatrixFilename,
+                g_dataLua1SetVariableAngleAsTFilename, args1,
+                g_dataLuaCalcMatrixFilename, args2,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
