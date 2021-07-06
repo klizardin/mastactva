@@ -287,6 +287,7 @@ void drawing_data::QuizImageObjects::set(const QString &name_, const QVector<dou
 void drawing_data::QuizImageObjects::set(const QString &name_, QVector<double> &&data_)
 {
     setVariable(name_);
+    const QVector<double> data = std::move(data_);
 
     for(std::shared_ptr<QuizImageObject> &object_ : objects)
     {
@@ -295,7 +296,7 @@ void drawing_data::QuizImageObjects::set(const QString &name_, QVector<double> &
             continue;
         }
 
-        object_->set(name_, std::move(data_));
+        object_->set(name_, data);
     }
 }
 
