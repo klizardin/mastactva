@@ -128,7 +128,7 @@ static const char *g_luaScriptCalcMatrix =
     "   m = matrix.scale(m , ps)\n"
     "   local pt = {0.0, -0.2, 0.0}\n"
     "   m = matrix.translate(m , pt)\n"
-    "   setVariable(\"m\", m)\n"
+    "   setVariable(\"matrix\", m)\n"
     "   result = {}\n"
     "   return result\n"
     "end\n"
