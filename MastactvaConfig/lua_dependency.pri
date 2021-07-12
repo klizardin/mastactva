@@ -1,11 +1,12 @@
 isEmpty(LUA_DIR):LUA_DIR=$$(LUA_DIR)
 
 isEmpty(LUA_DIR) {
-    LUA_DIR = /home/klizardin/projects/lua-5.4.3
-    !isEmpty(LUA_DIR) {
-        warning("Using LUA src dir specified at Qt Creator wizard")
-        message("set LUA_DIR as environment variable or qmake variable to get rid of this message")
-    }
+    isEmpty(MASTACTVA_LIBS):MASTACTVA_LIBS=$$(MASTACTVA_LIBS)
+    LUA_DIR = $$MASTACTVA_LIBS/lua-5.4.3
+    # !isEmpty(LUA_DIR) {
+    #    warning("Using LUA src dir specified at Qt Creator wizard")
+    #    message("set LUA_DIR as environment variable or qmake variable to get rid of this message")
+    # }
 }
 
 !isEmpty(LUA_DIR): {
