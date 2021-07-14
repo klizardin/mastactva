@@ -1096,6 +1096,33 @@ QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
     return QString();
 }
 
+QString MastactvaAPI::getLuaDescription(const QString &fileUrl_)
+{
+    QUrl url(fileUrl_);
+    QString filename = url.toLocalFile();
+    QFile f1(filename);
+    if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
+    QByteArray fd = f1.readAll();
+
+    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
+    QString shaderText = codec->toUnicode(fd);
+
+    QVector<Comment> comments;
+    getLuaComments(shaderText, comments);
+    for(const Comment& comment : qAsConst(comments))
+    {
+        if(comment.values().contains(g_scriptName))
+        {
+            return
+                    comment.values().contains(g_descriptionName)
+                    ?  comment.values().value(g_descriptionName)
+                     : QString()
+                       ;
+        }
+    }
+    return QString();
+}
+
 QDateTime MastactvaAPI::now() const
 {
     return date_time::nowTz();

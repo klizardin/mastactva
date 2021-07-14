@@ -2593,6 +2593,17 @@
                     },
                     {
                         "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileUrl_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "getLuaDescription",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
                         "name": "now",
                         "returnType": "QDateTime"
                     }

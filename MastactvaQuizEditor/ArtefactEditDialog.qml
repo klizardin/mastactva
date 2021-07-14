@@ -37,6 +37,10 @@ Dialog {
             {
                 editArtefactDescription.text = mastactva.getShaderDescription(fileUrl)
             }
+            else if(mastactva.isLuaUrl(fileUrl))
+            {
+                editArtefactDescription.text = mastactva.getLuaDescription(fileUrl)
+            }
             else
             {
                 editArtefactDescription.text = ""

@@ -90,6 +90,7 @@ public:
     Q_INVOKABLE QString leftDoubleCR(const QString &str_);
     Q_INVOKABLE QString calculateHash(const QString &fileUrl_);
     Q_INVOKABLE QString getShaderDescription(const QString &fileUrl_);
+    Q_INVOKABLE QString getLuaDescription(const QString &fileUrl_);
     Q_INVOKABLE QDateTime now() const;
 
 public:

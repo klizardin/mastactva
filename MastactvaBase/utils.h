@@ -61,6 +61,7 @@ bool isLetterNumeric(const QChar &ch_);
 bool isNumeric(const QChar &ch_);
 bool isNumeric(const QString &str_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
+void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);
 QString loadTextFile(const QString &filename_);

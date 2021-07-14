@@ -343,6 +343,12 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
     }
 }
 
+void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_)
+{
+    Q_UNUSED(shaderText_);
+    Q_UNUSED(comments_);
+}
+
 QString calculateHash(const QByteArray &data_)
 {
     return QString("%1").arg(QString(QCryptographicHash::hash(data_, QCryptographicHash::RealSha3_256).toHex()));
