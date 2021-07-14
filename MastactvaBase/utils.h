@@ -66,8 +66,10 @@ QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);
 QString loadTextFile(const QString &filename_);
 // TODO: separate utils. it is serverfiles utils
+QString loadTextFileUrl(const QString &filenameUrl_);
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QByteArray loadBinaryFile(const QString &filename_);
+QByteArray loadBinaryFileUrl(const QString &filenameUrl_);
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QString getTextFromBinaryData(const QByteArray &data_);
 
