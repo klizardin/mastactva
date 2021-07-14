@@ -1083,7 +1083,11 @@ QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
     {
         if(comment.values().contains(g_shaderName))
         {
-            return comment.values().contains(g_descriptionName) ?  comment.values().value(g_descriptionName) : QString() ;
+            return
+                    comment.values().contains(g_descriptionName)
+                    ?  comment.values().value(g_descriptionName)
+                     : QString()
+                       ;
         }
     }
     return QString();
