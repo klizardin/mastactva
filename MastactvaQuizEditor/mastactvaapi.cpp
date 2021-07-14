@@ -1075,14 +1075,7 @@ QString MastactvaAPI::calculateHash(const QString &fileUrl_)
 
 QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
 {
-    QUrl url(fileUrl_);
-    QString filename = url.toLocalFile();
-    QFile f1(filename);
-    if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
-    QByteArray fd = f1.readAll();
-
-    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
-    QString shaderText = codec->toUnicode(fd);
+    const QString shaderText = loadTextFileUrl(fileUrl_);
 
     QVector<Comment> comments;
     getShaderComments(shaderText, comments);
@@ -1098,14 +1091,7 @@ QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
 
 QString MastactvaAPI::getLuaDescription(const QString &fileUrl_)
 {
-    QUrl url(fileUrl_);
-    QString filename = url.toLocalFile();
-    QFile f1(filename);
-    if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
-    QByteArray fd = f1.readAll();
-
-    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
-    QString shaderText = codec->toUnicode(fd);
+    const QString shaderText = loadTextFileUrl(fileUrl_);
 
     QVector<Comment> comments;
     getLuaComments(shaderText, comments);
