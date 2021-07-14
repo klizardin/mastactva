@@ -1079,13 +1079,17 @@ QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
 
     QVector<Comment> comments;
     getShaderComments(shaderText, comments);
-    for(const Comment& comment : qAsConst(comments))
+    const auto fit = std::find_if(
+                std::cbegin(comments),
+                std::cend(comments),
+                [](const Comment& comment_)->bool
     {
-        if(comment.values().contains(g_shaderName))
-        {
-            return comment.values().value(g_descriptionName, QString());
-        }
-    }
+        return comment_.values().contains(g_shaderName);
+    });
+    return std::cend(comments) != fit
+            ? fit->values().value(g_descriptionName, QString())
+            : QString()
+              ;
     return QString();
 }
 
@@ -1095,14 +1099,17 @@ QString MastactvaAPI::getLuaDescription(const QString &fileUrl_)
 
     QVector<Comment> comments;
     getLuaComments(shaderText, comments);
-    for(const Comment& comment : qAsConst(comments))
+    const auto fit = std::find_if(
+                std::cbegin(comments),
+                std::cend(comments),
+                [](const Comment& comment_)->bool
     {
-        if(comment.values().contains(g_scriptName))
-        {
-            return comment.values().value(g_descriptionName, QString());
-        }
-    }
-    return QString();
+        return comment_.values().contains(g_scriptName);
+    });
+    return std::cend(comments) != fit
+            ? fit->values().value(g_descriptionName, QString())
+            : QString()
+              ;
 }
 
 QDateTime MastactvaAPI::now() const
