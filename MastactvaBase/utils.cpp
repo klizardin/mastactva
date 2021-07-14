@@ -287,7 +287,13 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
 }
 
 
-void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
+void getComments(
+        const QString &shaderText_,
+        const char *cb_,
+        const char * ce_,
+        bool extracNearType_,
+        QVector<Comment> &comments_
+        )
 {
     comments_.clear();
     QVector<int> indexesOfNL;
@@ -304,31 +310,36 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
 
     for(cnt = 0, p = 0; p >= 0;)
     {
-        p = shaderText_.indexOf(g_cb, p);
+        p = shaderText_.indexOf(cb_, p);
         if(p < 0) { break; }
-        p += QString(g_cb).length();
-        p = shaderText_.indexOf(g_ce, p);
+        p += QString(cb_).length();
+        p = shaderText_.indexOf(ce_, p);
         if(p < 0) { break; }
-        p += QString(g_ce).length();
+        p += QString(ce_).length();
         cnt++;
     }
     comments_.reserve(cnt);
     for(p = 0; p >= 0;)
     {
-        p = shaderText_.indexOf(g_cb, p);
+        p = shaderText_.indexOf(cb_, p);
         if(p < 0) { break; }
-        const int cb = p + QString(g_cb).length();
-        p += QString(g_cb).length();
-        p = shaderText_.indexOf(g_ce, p);
+        const int cb = p + QString(cb_).length();
+        p += QString(cb_).length();
+        p = shaderText_.indexOf(ce_, p);
         if(p < 0) { break; }
         const int ce = p;
-        p += QString(g_ce).length();
+        p += QString(ce_).length();
         comments_.push_back(Comment(cb, ce));
     }
 
     for(Comment &comment : comments_)
     {
         comment.extractValues(shaderText_);
+        if(!extracNearType_)
+        {
+            continue;
+        }
+
         if(comment.isAlignedToLeft(shaderText_))
         {
             comment.findLeftLine(indexesOfNL, shaderText_);
@@ -338,9 +349,18 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
             comment.findRightLine(indexesOfNL, shaderText_);
         }
         comment.extractLineValues(shaderText_);
+    }
 
+    for(Comment &comment : comments_)
+    {
+        Q_UNUSED(comment);
         //qDebug() << comment.values();
     }
+}
+
+void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
+{
+    getComments(shaderText_, g_cb, g_ce, true, comments_);
 }
 
 void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_)
