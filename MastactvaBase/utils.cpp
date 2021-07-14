@@ -83,6 +83,8 @@ bool isNumeric(const QString &str_)
 static const char *g_nl = "\n";
 static const char *g_cb = "/*";
 static const char *g_ce = "*/";
+static const char *g_luaCb = "--[[";
+static const char *g_luaCe = "--]]";
 static const char *g_leftAlign = "<";
 static const char *g_nameStart = "@";
 //static const char *g_argStorageAttribure = "attribute";
@@ -365,8 +367,7 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
 
 void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_)
 {
-    Q_UNUSED(shaderText_);
-    Q_UNUSED(comments_);
+    getComments(shaderText_, g_luaCb, g_luaCe, false, comments_);
 }
 
 QString calculateHash(const QByteArray &data_)
