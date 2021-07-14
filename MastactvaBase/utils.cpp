@@ -401,13 +401,11 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
         if(!sf ||
                 !sf->isUrlDownloaded(filenameUrl_)
                 ) { return QString(); }
-        QUrl url(sf->get(filenameUrl_));
-        return loadTextFile(url.toLocalFile());
+        return loadTextFileUrl(sf->get(filenameUrl_));
     }
     else
     {
-        QUrl url(filenameUrl_);
-        return loadTextFile(url.toLocalFile());
+        return loadTextFileUrl(filenameUrl_);
     }
 }
 
@@ -437,13 +435,11 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
         if(!sf ||
                 !sf->isUrlDownloaded(filenameUrl_)
                 ) { return QByteArray(); }
-        QUrl url(sf->get(filenameUrl_));
-        return loadBinaryFile(url.toLocalFile());
+        return loadBinaryFileUrl(sf->get(filenameUrl_));
     }
     else
     {
-        QUrl url(filenameUrl_);
-        return loadBinaryFile(url.toLocalFile());
+        return loadBinaryFileUrl(filenameUrl_);
     }
 }
 
