@@ -26,7 +26,7 @@ Dialog {
         id: openArtefactDialog
         title: qsTr("Please choose an artefact file to upload to the server")
         folder: shortcuts.pictures
-        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh);Texture files (*.png *.jpg *.jpeg);Json data files (*.json);3D Objext files (*.obj)" ]
+        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh);Texture files (*.png *.jpg *.jpeg);Json data files (*.json);3D Objext files (*.obj);Lua script file (*.lua)" ]
         selectExisting: true
         selectMultiple: false
 
@@ -36,6 +36,10 @@ Dialog {
             if(mastactva.isShaderUrl(fileUrl))
             {
                 editArtefactDescription.text = mastactva.getShaderDescription(fileUrl)
+            }
+            else if(mastactva.isLuaUrl(fileUrl))
+            {
+                editArtefactDescription.text = mastactva.getLuaDescription(fileUrl)
             }
             else
             {

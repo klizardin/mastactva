@@ -83,6 +83,8 @@ bool isNumeric(const QString &str_)
 static const char *g_nl = "\n";
 static const char *g_cb = "/*";
 static const char *g_ce = "*/";
+static const char *g_luaCb = "--[[";
+static const char *g_luaCe = "--]]";
 static const char *g_leftAlign = "<";
 static const char *g_nameStart = "@";
 //static const char *g_argStorageAttribure = "attribute";
@@ -287,7 +289,13 @@ void Comment::extractArgumentsLineValues(const QString &shaderText_)
 }
 
 
-void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
+void getComments(
+        const QString &shaderText_,
+        const char *cb_,
+        const char * ce_,
+        bool extracNearType_,
+        QVector<Comment> &comments_
+        )
 {
     comments_.clear();
     QVector<int> indexesOfNL;
@@ -304,31 +312,36 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
 
     for(cnt = 0, p = 0; p >= 0;)
     {
-        p = shaderText_.indexOf(g_cb, p);
+        p = shaderText_.indexOf(cb_, p);
         if(p < 0) { break; }
-        p += QString(g_cb).length();
-        p = shaderText_.indexOf(g_ce, p);
+        p += QString(cb_).length();
+        p = shaderText_.indexOf(ce_, p);
         if(p < 0) { break; }
-        p += QString(g_ce).length();
+        p += QString(ce_).length();
         cnt++;
     }
     comments_.reserve(cnt);
     for(p = 0; p >= 0;)
     {
-        p = shaderText_.indexOf(g_cb, p);
+        p = shaderText_.indexOf(cb_, p);
         if(p < 0) { break; }
-        const int cb = p + QString(g_cb).length();
-        p += QString(g_cb).length();
-        p = shaderText_.indexOf(g_ce, p);
+        const int cb = p + QString(cb_).length();
+        p += QString(cb_).length();
+        p = shaderText_.indexOf(ce_, p);
         if(p < 0) { break; }
         const int ce = p;
-        p += QString(g_ce).length();
+        p += QString(ce_).length();
         comments_.push_back(Comment(cb, ce));
     }
 
     for(Comment &comment : comments_)
     {
         comment.extractValues(shaderText_);
+        if(!extracNearType_)
+        {
+            continue;
+        }
+
         if(comment.isAlignedToLeft(shaderText_))
         {
             comment.findLeftLine(indexesOfNL, shaderText_);
@@ -338,9 +351,23 @@ void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
             comment.findRightLine(indexesOfNL, shaderText_);
         }
         comment.extractLineValues(shaderText_);
+    }
 
+    for(Comment &comment : comments_)
+    {
+        Q_UNUSED(comment);
         //qDebug() << comment.values();
     }
+}
+
+void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_)
+{
+    getComments(shaderText_, g_cb, g_ce, true, comments_);
+}
+
+void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_)
+{
+    getComments(shaderText_, g_luaCb, g_luaCe, false, comments_);
 }
 
 QString calculateHash(const QByteArray &data_)
@@ -379,6 +406,12 @@ QString loadTextFile(const QString &filename_)
     return getTextFromBinaryData(fd);
 }
 
+QString loadTextFileUrl(const QString &filenameUrl_)
+{
+    QUrl url(filenameUrl_);
+    return loadTextFile(url.toLocalFile());
+}
+
 #if defined(QMLOBJECTS_CPP) && defined(SERVERFILES_CPP)
 
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
@@ -389,13 +422,11 @@ QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= 
         if(!sf ||
                 !sf->isUrlDownloaded(filenameUrl_)
                 ) { return QString(); }
-        QUrl url(sf->get(filenameUrl_));
-        return loadTextFile(url.toLocalFile());
+        return loadTextFileUrl(sf->get(filenameUrl_));
     }
     else
     {
-        QUrl url(filenameUrl_);
-        return loadTextFile(url.toLocalFile());
+        return loadTextFileUrl(filenameUrl_);
     }
 }
 
@@ -409,6 +440,12 @@ QByteArray loadBinaryFile(const QString &filename_)
     return fd;
 }
 
+QByteArray loadBinaryFileUrl(const QString &filenameUrl_)
+{
+    QUrl url(filenameUrl_);
+    return loadBinaryFile(url.toLocalFile());
+}
+
 #if defined(QMLOBJECTS_CPP) && defined(SERVERFILES_CPP)
 
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ /*= true*/)
@@ -419,13 +456,11 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
         if(!sf ||
                 !sf->isUrlDownloaded(filenameUrl_)
                 ) { return QByteArray(); }
-        QUrl url(sf->get(filenameUrl_));
-        return loadBinaryFile(url.toLocalFile());
+        return loadBinaryFileUrl(sf->get(filenameUrl_));
     }
     else
     {
-        QUrl url(filenameUrl_);
-        return loadBinaryFile(url.toLocalFile());
+        return loadBinaryFileUrl(filenameUrl_);
     }
 }
 

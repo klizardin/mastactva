@@ -11,6 +11,7 @@ Q_DECL_UNUSED static const int g_userId = 1;
 Q_DECL_UNUSED static const char *g_englishLanguage = "English";
 Q_DECL_UNUSED static const char *g_belarusLanguage = "Belarus";
 Q_DECL_UNUSED static const char *g_shaderName = "shader";
+Q_DECL_UNUSED static const char *g_scriptName = "script";
 Q_DECL_UNUSED static const char *g_argumentName = "argument";
 Q_DECL_UNUSED static const char *g_storageName = "storage";
 Q_DECL_UNUSED static const char *g_precisionName = "precision";

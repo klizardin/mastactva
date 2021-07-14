@@ -61,12 +61,15 @@ bool isLetterNumeric(const QChar &ch_);
 bool isNumeric(const QChar &ch_);
 bool isNumeric(const QString &str_);
 void getShaderComments(const QString &shaderText_, QVector<Comment> &comments_);
+void getLuaComments(const QString &shaderText_, QVector<Comment> &comments_);
 QString calculateHash(const QString &data_);
 QString calculateFileURLHash(const QString &fileUrl_);
 QString loadTextFile(const QString &filename_);
 // TODO: separate utils. it is serverfiles utils
+QString loadTextFileUrl(const QString &filenameUrl_);
 QString loadTextFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QByteArray loadBinaryFile(const QString &filename_);
+QByteArray loadBinaryFileUrl(const QString &filenameUrl_);
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QString getTextFromBinaryData(const QByteArray &data_);
 

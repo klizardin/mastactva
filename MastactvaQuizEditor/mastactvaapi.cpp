@@ -1075,25 +1075,41 @@ QString MastactvaAPI::calculateHash(const QString &fileUrl_)
 
 QString MastactvaAPI::getShaderDescription(const QString &fileUrl_)
 {
-    QUrl url(fileUrl_);
-    QString filename = url.toLocalFile();
-    QFile f1(filename);
-    if(!f1.open(QIODevice::ReadOnly)) { return QString(); }
-    QByteArray fd = f1.readAll();
-
-    QTextCodec *codec = QTextCodec::codecForUtfText(fd);
-    QString shaderText = codec->toUnicode(fd);
+    const QString shaderText = loadTextFileUrl(fileUrl_);
 
     QVector<Comment> comments;
     getShaderComments(shaderText, comments);
-    for(const Comment& comment : qAsConst(comments))
+    const auto fit = std::find_if(
+                std::cbegin(comments),
+                std::cend(comments),
+                [](const Comment& comment_)->bool
     {
-        if(comment.values().contains(g_shaderName))
-        {
-            return comment.values().contains(g_descriptionName) ?  comment.values().value(g_descriptionName) : QString() ;
-        }
-    }
+        return comment_.values().contains(g_shaderName);
+    });
+    return std::cend(comments) != fit
+            ? fit->values().value(g_descriptionName, QString())
+            : QString()
+              ;
     return QString();
+}
+
+QString MastactvaAPI::getLuaDescription(const QString &fileUrl_)
+{
+    const QString shaderText = loadTextFileUrl(fileUrl_);
+
+    QVector<Comment> comments;
+    getLuaComments(shaderText, comments);
+    const auto fit = std::find_if(
+                std::cbegin(comments),
+                std::cend(comments),
+                [](const Comment& comment_)->bool
+    {
+        return comment_.values().contains(g_scriptName);
+    });
+    return std::cend(comments) != fit
+            ? fit->values().value(g_descriptionName, QString())
+            : QString()
+              ;
 }
 
 QDateTime MastactvaAPI::now() const
