@@ -31,6 +31,7 @@
         <file>ImagePointEffectEditDialog.qml</file>
         <file>ArtefactEditDialog.qml</file>
         <file>ChooseEffectObjectArtefactDialog.qml</file>
+        <file>ArtefactArgEditDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
