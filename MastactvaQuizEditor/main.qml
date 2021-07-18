@@ -3193,10 +3193,35 @@ ApplicationWindow {
         }
     }
 
+    function isEffectObjectArtefactsListValid()
+    {
+        return effectObjectArtefactsCurrentModel !== null;
+    }
+
     Action {
         id: refreshEffectObjectArtefacts
         text: qsTr("&Refresh")
         onTriggered: {
+            if(isEffectObjectArtefactsListValid())
+            {
+                effectObjectArtefactsCurrentIndex = -1
+                effectObjectArtefactsCurrentModel.listReloaded.connect(onEffectObjectArtefactsListLoaded)
+                effectObjectArtefactsListBusyIndicator.visible = true
+                effectObjectArtefactsListBusyIndicator.running = true
+                effectObjectArtefactsList.model = 0
+                effectObjectArtefactsCurrentModel.loadList()
+            }
+        }
+
+        function onEffectObjectArtefactsListLoaded()
+        {
+            if(isEffectObjectArtefactsListValid()) {
+                effectObjectArtefactsCurrentModel.listReloaded.disconnect(onEffectObjectArtefactsListLoaded)
+                effectObjectArtefactsListBusyIndicator.visible = false
+                effectObjectArtefactsListBusyIndicator.running = false
+                effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
+                effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
+            }
         }
     }
 
@@ -3204,6 +3229,7 @@ ApplicationWindow {
         id: addNewEffectObjectArtefact
         text: qsTr("Add &new")
         onTriggered: {
+            artefactEditDialog.createNew()
         }
     }
 
@@ -3218,6 +3244,7 @@ ApplicationWindow {
         id: editEffectObjectArtefact
         text: qsTr("&Edit")
         onTriggered: {
+            artefactEditDialog.editCurrent()
         }
     }
 
@@ -3225,6 +3252,33 @@ ApplicationWindow {
         id: removeEffectObjectArtefact
         text: qsTr("Remove")
         onTriggered: {
+            if(isValidPos())
+            {
+                effectObjectArtefactsCurrentModel.itemDeleted.connect(effectObjectArtefactsItemDeleted)
+                effectObjectArtefactsCurrentModel.delItem(effectObjectArtefactsCurrentIndex)
+                effectObjectArtefactsCurrentIndex = -1
+            }
+        }
+
+        // private:
+        function isValidModel()
+        {
+            var validModel = effectObjectArtefactsCurrentModel !== unddefined && effectObjectArtefactsCurrentModel !== null
+            return validModel
+        }
+
+        function isValidPos()
+        {
+            var validIndex = effectObjectArtefactsCurrentIndex >= 0
+            return isValidModel() && validIndex
+        }
+
+        function effectObjectArtefactsItemDeleted()
+        {
+            if(isValidModel())
+            {
+                effectObjectArtefactsCurrentModel.itemDeleted.disconnect(effectObjectArtefactsItemDeleted)
+            }
         }
     }
 
