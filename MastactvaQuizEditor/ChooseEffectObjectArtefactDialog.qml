@@ -16,7 +16,7 @@ Dialog {
     property var artefactTypeModel: undefined
     property var artefactModel: undefined
 
-    // private:
+    // result:
     property var fieldArtefact: undefined
 
     x: (parent.width - width) / 2
@@ -44,7 +44,15 @@ Dialog {
 
     function init()
     {
+        fieldArtefact = undefined
+        artefactModel.listReloaded.connect(artefactModelListReloaded)
         artefactModel.loadList()
+    }
+
+    function artefactModelListReloaded()
+    {
+        artefactModel.listReloaded.disconnect(artefactModelListReloaded)
+        fieldArtefact = artefactModel.currentItem
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
