@@ -102,6 +102,20 @@ Dialog {
 
                 Row {
                     Label {
+                        id: artefactItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+
+                    Text {
+                        id: artefactItemName
+                        width: Constants.smallDialogWidth - artefactItemNameLabel.width
+                        text: artefactName
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    Label {
                         id: artefactItemFilenameLabel
                         text: qsTr("Filename : ")
                     }
@@ -124,20 +138,6 @@ Dialog {
                         id: artefactItemHash
                         width: Constants.smallDialogWidth - artefactItemHashLabel.width
                         text: artefactHash
-                        wrapMode: Text.Wrap
-                    }
-                }
-
-                Row {
-                    Label {
-                        id: artefactItemNameLabel
-                        text: qsTr("Name : ")
-                    }
-
-                    Text {
-                        id: artefactItemName
-                        width: Constants.smallDialogWidth - artefactItemNameLabel.width
-                        text: artefactName
                         wrapMode: Text.Wrap
                     }
                 }
