@@ -3357,8 +3357,8 @@ ApplicationWindow {
     }
 
     Action {
-        id: addExistingEffectObjectArtefactArg
-        text: qsTr("Add &existing")
+        id: addFromArtefactEffectObjectArtefactArg
+        text: qsTr("Add from &artefact")
         onTriggered: {
         }
     }
@@ -3880,7 +3880,7 @@ ApplicationWindow {
             title: qsTr("&Object's Artefact's Args")
             MenuItem { action: refreshEffectObjectArtefactArgs }
             MenuItem { action: addNewEffectObjectArtefactArg }
-            MenuItem { action: addExistingEffectObjectArtefactArg }
+            MenuItem { action: addFromArtefactEffectObjectArtefactArg }
             MenuItem { action: editEffectObjectArtefactArg }
             MenuItem { action: removeEffectObjectArtefactArg }
         }
@@ -5507,7 +5507,7 @@ ApplicationWindow {
                 id: effectObjectArtefactArgsItemMenu
                 MenuItem { action: refreshEffectObjectArtefactArgs }
                 MenuItem { action: addNewEffectObjectArtefactArg }
-                MenuItem { action: addExistingEffectObjectArtefactArg }
+                MenuItem { action: addFromArtefactEffectObjectArtefactArg }
                 MenuItem { action: editEffectObjectArtefactArg }
                 MenuItem { action: removeEffectObjectArtefactArg }
             }
