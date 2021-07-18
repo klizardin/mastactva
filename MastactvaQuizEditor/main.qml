@@ -750,6 +750,8 @@ ApplicationWindow {
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
             chooseEffectObjectDialog.effectObjectModel = effectObjectsModel
+            chooseEffectObjectArtefactDialog.artefactTypeModel = artefactTypeModel
+            chooseEffectObjectArtefactDialog.artefactModel = artefactModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
             effectArgumentValueEditDialog.artefactArgTypeModel = artefactArgTypeModel
             chooseEffectArgumentDialog.artefactArgTypeModel = artefactArgTypeModel
