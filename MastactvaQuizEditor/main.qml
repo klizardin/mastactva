@@ -1775,6 +1775,10 @@ ApplicationWindow {
         }
     }
 
+    ArtefactArgEditDialog {
+        id: artefactArgEditDialog
+    }
+
     RefreshEffectArgumentsDialog {
         id: refreshEffectsArgumentsDialog
 
