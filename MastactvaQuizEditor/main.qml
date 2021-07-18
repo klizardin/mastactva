@@ -1716,6 +1716,10 @@ ApplicationWindow {
         }
     }
 
+    ChooseEffectObjectArtefactDialog {
+        id: chooseEffectObjectArtefactDialog
+    }
+
     RefreshEffectArgumentsDialog {
         id: refreshEffectsArgumentsDialog
 
