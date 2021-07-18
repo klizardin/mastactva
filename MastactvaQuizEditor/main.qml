@@ -752,6 +752,8 @@ ApplicationWindow {
             chooseEffectObjectDialog.effectObjectModel = effectObjectsModel
             chooseEffectObjectArtefactDialog.artefactTypeModel = artefactTypeModel
             chooseEffectObjectArtefactDialog.artefactModel = artefactModel
+            artefactArgEditDialog.artefactArgTypeMode = artefactArgTypeModel
+            artefactArgEditDialog.artefactArgStorageMode = artefactArgStorageModel
             effectArgumentSetEditDialog.easingTypeModel = easingTypeModel
             effectArgumentValueEditDialog.artefactArgTypeModel = artefactArgTypeModel
             chooseEffectArgumentDialog.artefactArgTypeModel = artefactArgTypeModel

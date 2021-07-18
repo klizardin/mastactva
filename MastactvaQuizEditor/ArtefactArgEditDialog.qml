@@ -12,6 +12,8 @@ Dialog {
     modal: true
 
     property bool fieldNewItem: false
+    property var artefactArgTypeMode: undefined
+    property var artefactArgStorageMode: undefined
 
     title: fieldNewItem ? qsTr("Add new artefact argument") : qsTr("Edit artefact argument info")
 
