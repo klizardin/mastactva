@@ -8,14 +8,16 @@ import Mastactva 1.0
 
 
 Dialog {
-    id : chooseArtefactDialog
+    id : chooseEffectObjectArtefactDialog
     modal: true
 
-    title: qsTr("Choose effect object")
+    title: qsTr("Choose effect object artefact")
 
-    property var fieldArtefact: undefined
     property var artefactTypeModel: undefined
     property var artefactModel: undefined
+
+    // result:
+    property var fieldArtefact: undefined
 
     x: (parent.width - width) / 2
     y: (parent.height - height) / 2
@@ -42,7 +44,15 @@ Dialog {
 
     function init()
     {
+        fieldArtefact = undefined
+        artefactModel.listReloaded.connect(artefactModelListReloaded)
         artefactModel.loadList()
+    }
+
+    function artefactModelListReloaded()
+    {
+        artefactModel.listReloaded.disconnect(artefactModelListReloaded)
+        fieldArtefact = artefactModel.currentItem
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save

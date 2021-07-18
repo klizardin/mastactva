@@ -30,7 +30,7 @@
         <file>ChooseImageDialog.qml</file>
         <file>ImagePointEffectEditDialog.qml</file>
         <file>ArtefactEditDialog.qml</file>
-        <file>ChooseArtefactDialog.qml</file>
+        <file>ChooseEffectObjectArtefactDialog.qml</file>
     </qresource>
     <qresource prefix="/Mastactva">
         <file>Mastactva/Constants.qml</file>
