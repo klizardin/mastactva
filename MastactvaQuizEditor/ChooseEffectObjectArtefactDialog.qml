@@ -70,7 +70,8 @@ Dialog {
             onClicked:
             {
                 artefactsList.currentIndex = index
-                fieldArtefact = artefactModel.itemAt(index)
+                artefactModel.currentIndex = artefactsList.currentIndex
+                fieldArtefact = artefactModel.currentItem
                 mouse.accepted = false
             }
 
