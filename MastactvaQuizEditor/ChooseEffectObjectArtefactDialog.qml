@@ -11,7 +11,7 @@ Dialog {
     id : chooseEffectObjectArtefactDialog
     modal: true
 
-    title: qsTr("Choose effect object artefact")
+    title: qsTr("Choose artefact (for effect object)")
 
     property var artefactTypeModel: undefined
     property var artefactModel: undefined
@@ -124,6 +124,34 @@ Dialog {
                         id: artefactItemHash
                         width: Constants.smallDialogWidth - artefactItemHashLabel.width
                         text: artefactHash
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    Label {
+                        id: artefactItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+
+                    Text {
+                        id: artefactItemName
+                        width: Constants.smallDialogWidth - artefactItemNameLabel.width
+                        text: artefactName
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    Label {
+                        id: artefactItemCreatedLabel
+                        text: qsTr("Created : ")
+                    }
+
+                    Text {
+                        id: artefactItemCreated
+                        width: Constants.smallDialogWidth - artefactItemCreatedLabel.width
+                        text: mastactva.dateTimeToUserStr(artefactCreated)
                         wrapMode: Text.Wrap
                     }
                 }
