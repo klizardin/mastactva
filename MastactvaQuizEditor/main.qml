@@ -1720,6 +1720,59 @@ ApplicationWindow {
 
     ChooseEffectObjectArtefactDialog {
         id: chooseEffectObjectArtefactDialog
+
+        // private:
+        property var newEffectObjectArtefact: undefined
+
+        onOpened: {
+            clear()
+            init()
+        }
+
+        onAccepted: {
+            if(isValid())
+            {
+                newEffectObjectArtefact = effectObjectsCurrentModel.createItem()
+                newEffectObjectArtefact.setArtefactId(fieldArtefact.artefactId)
+                effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
+                effectObjectArtefactsCurrentModel.addItem(newEffectObjectArtefact)
+            }
+            else
+            {
+                clear()
+            }
+        }
+
+        // public:
+        function choose()
+        {
+            open()
+        }
+
+        // private:
+        function isValid()
+        {
+            var validEffectObject = fieldArtefact !== null && fieldArtefact !== undefined
+            var validModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
+            return validEffectObject && validModel;
+        }
+
+        function clear()
+        {
+            fieldArtefact = undefined
+            newEffectObjectArtefact = undefined
+        }
+
+        function effectObjectArtefactAdded()
+        {
+            if(isValid())
+            {
+                effectObjectArtefactsCurrentModel.itemAdded.disconnect(effectObjectArtefactAdded)
+                var index = effectObjectArtefactsCurrentModel.indexOfItem(newEffectObjectArtefact)
+                effectObjectArtefactsCurrentIndex = index
+            }
+            clear()
+        }
     }
 
     RefreshEffectArgumentsDialog {
@@ -3243,6 +3296,7 @@ ApplicationWindow {
         id: addExistingEffectObjectArtefact
         text: qsTr("Add &existing")
         onTriggered: {
+            chooseEffectObjectArtefactDialog.choose()
         }
     }
 
