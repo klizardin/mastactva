@@ -3296,6 +3296,7 @@ ApplicationWindow {
         id: addExistingEffectObjectArtefact
         text: qsTr("Add &existing")
         onTriggered: {
+            chooseEffectObjectArtefactDialog.choose()
         }
     }
 
