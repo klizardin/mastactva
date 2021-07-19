@@ -14,6 +14,7 @@ Dialog {
     property bool fieldNewItem: false
     property var artefactArgTypeModel: undefined
     property var artefactArgStorageModel: undefined
+    property var artefactArg: undefined
 
     title: fieldNewItem ? qsTr("Add new artefact argument") : qsTr("Edit artefact argument info")
 
@@ -36,7 +37,6 @@ Dialog {
                 }
                 Text {
                     id: artefactArgIdText
-                    text: artefactArgId
                 }
             }
 
@@ -85,7 +85,6 @@ Dialog {
             }
             TextArea {
                 id: editArtefactArgNameText
-                text: artefactArgName
             }
 
             Label {
@@ -138,6 +137,22 @@ Dialog {
         }
         editArtefactArgStorageListRect.width = w
         editArtefactArgStorageListRect.height = (artefactArgEditDialogTextFontMetrics.height + Constants.smallListSmallSpacing) * artefactArgStorageModel.size() * 1.1
+
+        if(fieldNewItem)
+        {
+            artefactArgIdText.text = qsTr("<new>")
+            editArtefactArgCreatedText.text = qsTr("<new>")
+        }
+        else
+        {
+            artefactArgIdText.text = artefactArg.artefactArgId
+            editArtefactArgCreatedText.text = mastactva.dateTimeToUserStr(artefactArg.artefactArgCreated)
+        }
+        editArtefactArgNameText.text = artefactArg.artefactArgName
+        editArtefactArgDefaultValueText.text = artefactArg.artefactArgDefaultValue
+        editArtefactArgDescriptionText.text = artefactArg.artefactArgDescription
+        artefactArgTypeModel.selectItemById(artefactArg.artefactArgArgTypeId)
+        artefactArgStorageModel.selectItemById(artefactArg.artefactArgArgStorageId)
     }
 
     function update()
