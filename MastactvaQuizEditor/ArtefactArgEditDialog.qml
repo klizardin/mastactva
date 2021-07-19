@@ -12,8 +12,8 @@ Dialog {
     modal: true
 
     property bool fieldNewItem: false
-    property var artefactArgTypeMode: undefined
-    property var artefactArgStorageMode: undefined
+    property var artefactArgTypeModel: undefined
+    property var artefactArgStorageModel: undefined
 
     title: fieldNewItem ? qsTr("Add new artefact argument") : qsTr("Edit artefact argument info")
 
@@ -21,8 +21,8 @@ Dialog {
     y: (parent.height - height) / 2
 
     FontMetrics{
-        id: editAnswerDialogQuestionTextFontMetrics
-        font: editAnswerDialogQuestionText.font
+        id: artefactArgEditDialogTextFontMetrics
+        font: artefactArgIdText.font
     }
 
     ScrollView {
@@ -120,6 +120,28 @@ Dialog {
                 }
             }
         }
+    }
+
+    function init()
+    {
+        var w = 0
+        for(var i1 = 0; i1 < artefactArgTypeModel.size(); i1++)
+        {
+            w = Math.max(w, artefactArgEditDialogTextFontMetrics.tightBoundingRect(artefactArgTypeModel.itemAt(i1).artefactArgTypeType).width)
+        }
+        editArtefactArgTypeListRect.width = w
+        editArtefactArgTypeListRect.height = (artefactArgEditDialogTextFontMetrics.height + Constants.smallListSmallSpacing) * artefactArgTypeModel.size() * 1.1
+
+        for(var i2 = 0; i2 < artefactArgStorageModel.size(); i2++)
+        {
+            w = Math.max(w, artefactArgEditDialogTextFontMetrics.tightBoundingRect(artefactArgStorageModel.itemAt(i2).artefactArgStorageStorage).width)
+        }
+        editArtefactArgStorageListRect.width = w
+        editArtefactArgStorageListRect.height = (artefactArgEditDialogTextFontMetrics.height + Constants.smallListSmallSpacing) * artefactArgStorageModel.size() * 1.1
+    }
+
+    function update()
+    {
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
