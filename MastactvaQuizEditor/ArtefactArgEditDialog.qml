@@ -141,7 +141,7 @@ Dialog {
         if(fieldNewItem)
         {
             artefactArgIdText.text = qsTr("<new>")
-            editArtefactArgCreatedText.text = qsTr("<new>")
+            editArtefactArgCreatedText.text = mastactva.dateTimeToUserStr(mastactva.now())
         }
         else
         {
@@ -157,6 +157,13 @@ Dialog {
 
     function update()
     {
+        artefactArg.artefactArgName = editArtefactArgNameText.text
+        artefactArg.artefactArgDefaultValue = editArtefactArgDefaultValueText.text
+        artefactArg.artefactArgDescription = editArtefactArgDescriptionText.text
+        if(fieldNewItem)
+        {
+            artefactArg.artefactArgCreated = mastactva.dateTimeFromUserStr(editArtefactArgCreatedText.text)
+        }
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
@@ -176,7 +183,8 @@ Dialog {
                 onClicked:
                 {
                     editArtefactArgTypeList.currentIndex = index
-                    //fieldArtefact.artefactTypeId = artefactTypeId
+                    artefactArgTypeModel.currentIndex = index
+                    artefactArg.artefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
                     mouse.accepted = false
                 }
             }
@@ -219,7 +227,8 @@ Dialog {
                 onClicked:
                 {
                     editArtefactArgStorageList.currentIndex = index
-                    //fieldArtefact.artefactTypeId = artefactTypeId
+                    artefactArgStorageModel.currentIndex = index
+                    artefactArg.artefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
                     mouse.accepted = false
                 }
             }
