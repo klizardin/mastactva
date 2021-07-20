@@ -35,6 +35,8 @@ ApplicationWindow {
     property int effectObjectsCurrentIndex: -1
     property var effectObjectArtefactsCurrentModel: undefined
     property int effectObjectArtefactsCurrentIndex: -1
+    property var effectObjectArtefactArgsCurrentModel: undefined
+    property int effectObjectArtefactArgsCurrentIndex: -1
     property var effectArgumentsCurrentModel: undefined
     property int effectArgumentsCurrentIndex: -1
     property var effectArgumentSetsCurrentModel: undefined
