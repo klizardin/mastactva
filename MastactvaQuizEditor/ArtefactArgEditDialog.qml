@@ -14,7 +14,7 @@ Dialog {
     property bool fieldNewItem: false
     property var artefactArgTypeModel: undefined
     property var artefactArgStorageModel: undefined
-    property var artefactArg: undefined
+    property var fieldArtefactArg: undefined
 
     title: fieldNewItem ? qsTr("Add new artefact argument") : qsTr("Edit artefact argument info")
 
@@ -145,24 +145,24 @@ Dialog {
         }
         else
         {
-            artefactArgIdText.text = artefactArg.artefactArgId
-            editArtefactArgCreatedText.text = mastactva.dateTimeToUserStr(artefactArg.artefactArgCreated)
+            artefactArgIdText.text = fieldArtefactArg.artefactArgId
+            editArtefactArgCreatedText.text = mastactva.dateTimeToUserStr(fieldArtefactArg.artefactArgCreated)
         }
-        editArtefactArgNameText.text = artefactArg.artefactArgName
-        editArtefactArgDefaultValueText.text = artefactArg.artefactArgDefaultValue
-        editArtefactArgDescriptionText.text = artefactArg.artefactArgDescription
-        artefactArgTypeModel.selectItemById(artefactArg.artefactArgArgTypeId)
-        artefactArgStorageModel.selectItemById(artefactArg.artefactArgArgStorageId)
+        editArtefactArgNameText.text = fieldArtefactArg.artefactArgName
+        editArtefactArgDefaultValueText.text = fieldArtefactArg.artefactArgDefaultValue
+        editArtefactArgDescriptionText.text = fieldArtefactArg.artefactArgDescription
+        artefactArgTypeModel.selectItemById(fieldArtefactArg.artefactArgArgTypeId)
+        artefactArgStorageModel.selectItemById(fieldArtefactArg.artefactArgArgStorageId)
     }
 
     function update()
     {
-        artefactArg.artefactArgName = editArtefactArgNameText.text
-        artefactArg.artefactArgDefaultValue = editArtefactArgDefaultValueText.text
-        artefactArg.artefactArgDescription = editArtefactArgDescriptionText.text
+        fieldArtefactArg.artefactArgName = editArtefactArgNameText.text
+        fieldArtefactArg.artefactArgDefaultValue = editArtefactArgDefaultValueText.text
+        fieldArtefactArg.artefactArgDescription = editArtefactArgDescriptionText.text
         if(fieldNewItem)
         {
-            artefactArg.artefactArgCreated = mastactva.dateTimeFromUserStr(editArtefactArgCreatedText.text)
+            fieldArtefactArg.artefactArgCreated = mastactva.dateTimeFromUserStr(editArtefactArgCreatedText.text)
         }
     }
 
@@ -184,7 +184,7 @@ Dialog {
                 {
                     editArtefactArgTypeList.currentIndex = index
                     artefactArgTypeModel.currentIndex = index
-                    artefactArg.artefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
+                    fieldArtefactArg.artefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
                     mouse.accepted = false
                 }
             }
@@ -228,7 +228,7 @@ Dialog {
                 {
                     editArtefactArgStorageList.currentIndex = index
                     artefactArgStorageModel.currentIndex = index
-                    artefactArg.artefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
+                    fieldArtefactArg.artefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
                     mouse.accepted = false
                 }
             }
