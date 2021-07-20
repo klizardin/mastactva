@@ -443,7 +443,7 @@ ApplicationWindow {
             effectObjectArtefactsCurrentIndex = -1
         }
 
-        function onEffectObjectCurrentIndexChanged()
+        function onEffectObjectsCurrentIndexChanged()
         {
             effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
@@ -496,7 +496,7 @@ ApplicationWindow {
             clearEffectObjectArtefacsCurrent()
         }
 
-        function onEffectObjectArtefacsCurrentIndexChanged()
+        function onEffectObjectArtefactsCurrentIndexChanged()
         {
             effectObjectArtefactsList.currentIndex = effectObjectArtefactsCurrentIndex
             if(effectObjectArtefactsCurrentModel !== null && effectObjectArtefactsCurrentModel !== undefined)
