@@ -35,6 +35,8 @@ ApplicationWindow {
     property int effectObjectsCurrentIndex: -1
     property var effectObjectArtefactsCurrentModel: undefined
     property int effectObjectArtefactsCurrentIndex: -1
+    property var effectObjectArtefactArgsCurrentModel: undefined
+    property int effectObjectArtefactArgsCurrentIndex: -1
     property var effectArgumentsCurrentModel: undefined
     property int effectArgumentsCurrentIndex: -1
     property var effectArgumentSetsCurrentModel: undefined
@@ -443,7 +445,7 @@ ApplicationWindow {
             effectObjectArtefactsCurrentIndex = -1
         }
 
-        function onEffectObjectCurrentIndexChanged()
+        function onEffectObjectsCurrentIndexChanged()
         {
             effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
@@ -496,7 +498,7 @@ ApplicationWindow {
             clearEffectObjectArtefacsCurrent()
         }
 
-        function onEffectObjectArtefacsCurrentIndexChanged()
+        function onEffectObjectArtefactsCurrentIndexChanged()
         {
             effectObjectArtefactsList.currentIndex = effectObjectArtefactsCurrentIndex
             if(effectObjectArtefactsCurrentModel !== null && effectObjectArtefactsCurrentModel !== undefined)
@@ -1779,6 +1781,172 @@ ApplicationWindow {
 
     ArtefactArgEditDialog {
         id: artefactArgEditDialog
+
+        /*onOpened: {
+            init()
+        }
+
+        onAccepted: {
+            update()
+            if(validState())
+            {
+                if(fieldNewItem)
+                {
+                    artefactModel.itemAdded.connect(artefactAdded)
+                    artefactModel.addItem(fieldArtefact)
+                }
+                else
+                {
+                    var itemIndex = fieldObjectArtefact.objectArtefactArtefact.indexOfItem(fieldArtefact)
+                    if(itemIndex >= 0)
+                    {
+                        fieldObjectArtefact.objectArtefactArtefact.itemSet.connect(artefactSet)
+                        fieldObjectArtefact.objectArtefactArtefact.setItem(itemIndex, fieldArtefact)
+                    }
+                    else
+                    {
+                        clear()
+                    }
+                }
+            }
+            else
+            {
+                clear()
+            }
+        }
+
+        onRejected: {
+            clear()
+        }
+
+        function validModel()
+        {
+            return effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+        }
+
+        function validModelAndPosition()
+        {
+            return validModel() && effectObjectArtefactArgsCurrentInedx >= 0
+        }
+
+        function validState()
+        {
+            var validEffectObjectArtefactArg = fieldArtefactArg !== null && fieldArtefactArg !== undefined
+            return validEffectObjectArtefactArg && validModel()
+        }
+
+        function createNew()
+        {
+            clear()
+            if(!validModel())
+            {
+                return
+            }
+            fieldNewItem = true
+            fieldObjectArtefact = effectObjectArtefactsCurrentModel.createItem()
+            fieldArtefact = artefactModel.createItem()
+            if(validState())
+            {
+                open()
+            }
+        }
+
+        function editCurrent()
+        {
+            clear()
+            if(!validModelAndPosition())
+            {
+                return;
+            }
+            fieldNewItem = false
+            fieldObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
+            fieldArtefact = fieldObjectArtefact.objectArtefactArtefact.currentItem
+            if(validState())
+            {
+                open()
+            }
+        }
+
+        function clear()
+        {
+            fieldObjectArtefact = undefined
+            fieldArtefact = undefined
+            fieldNewItem = false
+        }
+
+        function artefactAdded()
+        {
+            if(validState())
+            {
+                artefactModel.itemAdded.connect(artefactAdded)
+                objectArtefactProcess()
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function artefactSet()
+        {
+            if(validState())
+            {
+                fieldObjectArtefact.objectArtefactArtefact.itemSet.disconnect(effectObjectArtefactSet)
+                objectArtefactProcess()
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function objectArtefactProcess()
+        {
+            if(validState())
+            {
+                if(fieldNewItem)
+                {
+                    effectObjectArtefactAdded.setArtefactId(fieldArtefact.artefactId)
+                    effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
+                    effectObjectArtefactsCurrentModel.addItem(effectObjectArtefact)
+                }
+                else
+                {
+                    var itemIndex = effectObjectArtefactsCurrentModel.indexOfItem(effectObjectArtefact)
+                    if(itemIndex >= 0)
+                    {
+                        effectObjectArtefactsCurrentModel.itemSet.connect(effectObjectArtefactSet)
+                        effectObjectArtefactsCurrentModel.setItem(itemIndex, effectObjectArtefact)
+                    }
+                    else
+                    {
+                        clear()
+                    }
+                }
+            }
+            else
+            {
+                clear();
+            }
+        }
+
+        function effectObjectArtefactAdded()
+        {
+            if(validState())
+            {
+                effectObjectArtefactsCurrentModel.itemAdded.disconnect(effectObjectArtefactAdded)
+            }
+            clear()
+        }
+
+        function effectObjectArtefactSet()
+        {
+            if(validState())
+            {
+                effectObjectArtefactsCurrentModel.itemSet.disconnect(effectObjectArtefactSet)
+            }
+            clear()
+        }*/
     }
 
     RefreshEffectArgumentsDialog {
