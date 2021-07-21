@@ -478,7 +478,6 @@ ApplicationWindow {
         {
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
-                effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
                 var effectObjectItem = effectObjectsCurrentModel.currentItem
                 if(effectObjectItem !== null && effectObjectItem !== undefined)
                 {
