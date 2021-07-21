@@ -499,13 +499,64 @@ ApplicationWindow {
             clearEffectObjectArtefacsCurrent()
         }
 
+        function clearEffectObjectArtefacArgsCurrent()
+        {
+            effectObjectArtefactArgsList.model = 0
+            effectObjectArtefactArgsCurrentModel = undefined
+            effectObjectArtefactArgsCurrentIndex = -1
+        }
+
         function onEffectObjectArtefactsCurrentIndexChanged()
         {
             effectObjectArtefactsList.currentIndex = effectObjectArtefactsCurrentIndex
             if(effectObjectArtefactsCurrentModel !== null && effectObjectArtefactsCurrentModel !== undefined)
             {
                 effectObjectArtefactsCurrentModel.currentIndex = effectObjectArtefactsCurrentIndex
+                var effectObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
+                if(effectObjectArtefact !== null && effectObjectArtefact !== undefined)
+                {
+                    var effectObjectArtefacArgsModel = effectObjectArtefact.artefactArtefactArg
+                    if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
+                    {
+                        if(effectObjectArtefacArgsModel.isListLoaded())
+                        {
+                            effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
+                            effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
+                            effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
+                            return;
+                        }
+                        else
+                        {
+                            effectObjectArtefacArgsModel.listReloaded.connect(effectObjectArtefacArgsModelRelistLoaded)
+                        }
+                    }
+                }
             }
+            clearEffectObjectArtefacArgsCurrent()
+        }
+
+        function effectObjectArtefacArgsModelRelistLoaded()
+        {
+            if(effectObjectArtefactsCurrentModel !== null && effectObjectArtefactsCurrentModel !== undefined)
+            {
+                var effectObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
+                if(effectObjectArtefact !== null && effectObjectArtefact !== undefined)
+                {
+                    var effectObjectArtefacArgsModel = effectObjectArtefact.artefactArtefactArg
+                    if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
+                    {
+                        if(effectObjectArtefacArgsModel.isListLoaded())
+                        {
+                            effectObjectArtefacArgsModel.listReloaded.disconnect(effectObjectArtefacArgsModelRelistLoaded)
+                            effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
+                            effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
+                            effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
+                            return;
+                        }
+                    }
+                }
+            }
+            clearEffectObjectArtefacArgsCurrent()
         }
 
         function onEffectArgumentsCurrentIndexChanged()
