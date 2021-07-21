@@ -460,6 +460,7 @@ ApplicationWindow {
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
                             effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
+                            effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
                             return;
                         }
