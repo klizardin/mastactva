@@ -558,6 +558,15 @@ ApplicationWindow {
             clearEffectObjectArtefacArgsCurrent()
         }
 
+        function onEffectObjectArtefactArgsCurrentIndexChanged()
+        {
+            effectObjectArtefactArgsList.currentIndex = effectObjectArtefactArgsCurrentIndex
+            if(effectObjectArtefactArgsCurrentModel !== null && effectObjectArtefactArgsCurrentModel !== undefined)
+            {
+                effectObjectArtefactArgsCurrentModel.currentIndex = effectObjectArtefactArgsCurrentIndex
+            }
+        }
+
         function onEffectArgumentsCurrentIndexChanged()
         {
             effectArgumentsList.currentIndex = effectArgumentsCurrentIndex
