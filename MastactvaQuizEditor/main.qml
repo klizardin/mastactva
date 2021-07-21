@@ -3528,6 +3528,7 @@ ApplicationWindow {
         id: addNewEffectObjectArtefactArg
         text: qsTr("Add &new")
         onTriggered: {
+            artefactArgEditDialog.createNew()
         }
     }
 
@@ -3542,6 +3543,7 @@ ApplicationWindow {
         id: editEffectObjectArtefactArg
         text: qsTr("&Edit")
         onTriggered: {
+            artefactArgEditDialog.editCurrent()
         }
     }
 
