@@ -1842,7 +1842,7 @@ ApplicationWindow {
     ArtefactArgEditDialog {
         id: artefactArgEditDialog
 
-        /*onOpened: {
+        onOpened: {
             init()
         }
 
@@ -1852,16 +1852,16 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    artefactModel.itemAdded.connect(artefactAdded)
-                    artefactModel.addItem(fieldArtefact)
+                    effectObjectArtefactArgsCurrentModel.itemAdded.connect(artefactArgAdded)
+                    effectObjectArtefactArgsCurrentModel.addItem(fieldArtefactArg)
                 }
                 else
                 {
-                    var itemIndex = fieldObjectArtefact.objectArtefactArtefact.indexOfItem(fieldArtefact)
+                    var itemIndex = effectObjectArtefactArgsCurrentModel.indexOfItem(fieldArtefactArg)
                     if(itemIndex >= 0)
                     {
-                        fieldObjectArtefact.objectArtefactArtefact.itemSet.connect(artefactSet)
-                        fieldObjectArtefact.objectArtefactArtefact.setItem(itemIndex, fieldArtefact)
+                        effectObjectArtefactArgsCurrentModel.itemSet.connect(artefactArgSet)
+                        effectObjectArtefactArgsCurrentModel.setItem(itemIndex, fieldArtefactArg)
                     }
                     else
                     {
@@ -1886,7 +1886,7 @@ ApplicationWindow {
 
         function validModelAndPosition()
         {
-            return validModel() && effectObjectArtefactArgsCurrentInedx >= 0
+            return validModel() && effectObjectArtefactArgsCurrentIndex >= 0
         }
 
         function validState()
@@ -1903,8 +1903,7 @@ ApplicationWindow {
                 return
             }
             fieldNewItem = true
-            fieldObjectArtefact = effectObjectArtefactsCurrentModel.createItem()
-            fieldArtefact = artefactModel.createItem()
+            fieldArtefactAr = effectObjectArtefactArgsCurrentModel.createItem()
             if(validState())
             {
                 open()
@@ -1919,8 +1918,7 @@ ApplicationWindow {
                 return;
             }
             fieldNewItem = false
-            fieldObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
-            fieldArtefact = fieldObjectArtefact.objectArtefactArtefact.currentItem
+            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.objectArtefactArtefact.currentItem
             if(validState())
             {
                 open()
@@ -1929,84 +1927,27 @@ ApplicationWindow {
 
         function clear()
         {
-            fieldObjectArtefact = undefined
-            fieldArtefact = undefined
+            fieldArtefactArg = undefined
             fieldNewItem = false
         }
 
-        function artefactAdded()
+        function artefactArgAdded()
         {
             if(validState())
             {
-                artefactModel.itemAdded.connect(artefactAdded)
-                objectArtefactProcess()
+                effectObjectArtefactArgsCurrentModel.itemAdded.disconnect(artefactArgAdded)
             }
-            else
-            {
-                clear();
-            }
+            clear();
         }
 
-        function artefactSet()
+        function artefactArgSet()
         {
             if(validState())
             {
-                fieldObjectArtefact.objectArtefactArtefact.itemSet.disconnect(effectObjectArtefactSet)
-                objectArtefactProcess()
+                effectObjectArtefactArgsCurrentModel.itemSet.disconnect(artefactArgSet)
             }
-            else
-            {
-                clear();
-            }
+            clear();
         }
-
-        function objectArtefactProcess()
-        {
-            if(validState())
-            {
-                if(fieldNewItem)
-                {
-                    effectObjectArtefactAdded.setArtefactId(fieldArtefact.artefactId)
-                    effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
-                    effectObjectArtefactsCurrentModel.addItem(effectObjectArtefact)
-                }
-                else
-                {
-                    var itemIndex = effectObjectArtefactsCurrentModel.indexOfItem(effectObjectArtefact)
-                    if(itemIndex >= 0)
-                    {
-                        effectObjectArtefactsCurrentModel.itemSet.connect(effectObjectArtefactSet)
-                        effectObjectArtefactsCurrentModel.setItem(itemIndex, effectObjectArtefact)
-                    }
-                    else
-                    {
-                        clear()
-                    }
-                }
-            }
-            else
-            {
-                clear();
-            }
-        }
-
-        function effectObjectArtefactAdded()
-        {
-            if(validState())
-            {
-                effectObjectArtefactsCurrentModel.itemAdded.disconnect(effectObjectArtefactAdded)
-            }
-            clear()
-        }
-
-        function effectObjectArtefactSet()
-        {
-            if(validState())
-            {
-                effectObjectArtefactsCurrentModel.itemSet.disconnect(effectObjectArtefactSet)
-            }
-            clear()
-        }*/
     }
 
     RefreshEffectArgumentsDialog {
