@@ -17,6 +17,9 @@ Dialog {
     property var mastactva: undefined
     property var artefactTypeModel: undefined
 
+    // private:
+    property int fieldArtefactTypeId: -1
+
     title: fieldNewItem ? qsTr("Add new artefact") : qsTr("Edit artefact info")
 
     x: (parent.width - width) / 2
@@ -161,6 +164,8 @@ Dialog {
 
     function init()
     {
+        fieldArtefactTypeId = -1
+
         var w = 0
         for(var i = 0; i < artefactTypeModel.size(); i++)
         {
@@ -175,11 +180,15 @@ Dialog {
         {
             editArtefactTypeList.currentIndex = 0
             editArtefactTypeList.model.currentIndex = 0
-            fieldArtefact.artefactTypeId = editArtefactTypeList.model.currentItem.artefactTypeId
+            fieldArtefactTypeId = editArtefactTypeList.model.currentItem.artefactTypeId
         }
         else
         {
             editArtefactTypeList.currentIndex = editArtefactTypeList.model.currentIndex
+            if(editArtefactTypeList.model.currentItem !== null && editArtefactTypeList.model.currentItem !== undefined)
+            {
+                fieldArtefactTypeId = editArtefactTypeList.model.currentItem.artefactTypeId
+            }
         }
         editArtefactFilename.text = fieldArtefact.artefactFilename
         editArtefactHash.text = fieldArtefact.artefactHash
@@ -192,6 +201,7 @@ Dialog {
         fieldArtefact.artefactFilename = editArtefactFilename.text
         fieldArtefact.artefactHash = editArtefactHash.text
         fieldArtefact.artefactDescription = editArtefactDescription.text
+        fieldArtefact.artefactTypeId = fieldArtefactTypeId
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
@@ -211,7 +221,7 @@ Dialog {
                 onClicked:
                 {
                     editArtefactTypeList.currentIndex = index
-                    fieldArtefact.artefactTypeId = artefactTypeId
+                    fieldArtefactTypeId = artefactTypeId
                     mouse.accepted = false
                 }
             }

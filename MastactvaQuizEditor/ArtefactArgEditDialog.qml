@@ -16,6 +16,10 @@ Dialog {
     property var artefactArgStorageModel: undefined
     property var fieldArtefactArg: undefined
 
+    // private:
+    property int fieldArtefactArgArgTypeId: -1
+    property int fieldArtefactArgArgStorageId: -1
+
     title: fieldNewItem ? qsTr("Add new artefact argument") : qsTr("Edit artefact argument info")
 
     x: (parent.width - width) / 2
@@ -123,6 +127,9 @@ Dialog {
 
     function init()
     {
+        fieldArtefactArgArgTypeId = -1
+        fieldArtefactArgArgStorageId = -1
+
         var w = 0
         for(var i1 = 0; i1 < artefactArgTypeModel.size(); i1++)
         {
@@ -151,8 +158,25 @@ Dialog {
         editArtefactArgNameText.text = fieldArtefactArg.artefactArgName
         editArtefactArgDefaultValueText.text = fieldArtefactArg.artefactArgDefaultValue
         editArtefactArgDescriptionText.text = fieldArtefactArg.artefactArgDescription
-        artefactArgTypeModel.selectItemById(fieldArtefactArg.artefactArgArgTypeId)
-        artefactArgStorageModel.selectItemById(fieldArtefactArg.artefactArgArgStorageId)
+        if(artefactArgTypeModel.selectItemById(fieldArtefactArg.artefactArgArgTypeId))
+        {
+            fieldArtefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
+            editArtefactArgTypeList.currentIndex = artefactArgTypeModel.currentIndex
+        }
+        else
+        {
+            editArtefactArgTypeList.currentIndex = -1
+        }
+
+        if(artefactArgStorageModel.selectItemById(fieldArtefactArg.artefactArgArgStorageId))
+        {
+            fieldArtefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
+            editArtefactArgStorageList.currentIndex = artefactArgStorageModel.currentIndex
+        }
+        else
+        {
+            editArtefactArgStorageList.currentIndex = -1
+        }
     }
 
     function update()
@@ -164,6 +188,8 @@ Dialog {
         {
             fieldArtefactArg.artefactArgCreated = mastactva.dateTimeFromUserStr(editArtefactArgCreatedText.text)
         }
+        fieldArtefactArg.artefactArgArgTypeId = fieldArtefactArgArgTypeId
+        fieldArtefactArg.artefactArgArgStorageId = fieldArtefactArgArgStorageId
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
@@ -184,7 +210,7 @@ Dialog {
                 {
                     editArtefactArgTypeList.currentIndex = index
                     artefactArgTypeModel.currentIndex = index
-                    fieldArtefactArg.artefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
+                    fieldArtefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
                     mouse.accepted = false
                 }
             }
@@ -228,7 +254,7 @@ Dialog {
                 {
                     editArtefactArgStorageList.currentIndex = index
                     artefactArgStorageModel.currentIndex = index
-                    fieldArtefactArg.artefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
+                    fieldArtefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
                     mouse.accepted = false
                 }
             }
