@@ -16,6 +16,10 @@ Dialog {
     property var artefactArgStorageModel: undefined
     property var fieldArtefactArg: undefined
 
+    // private:
+    property int fieldArtefactArgArgTypeId: -1
+    property int fieldArtefactArgArgStorageId: -1
+
     title: fieldNewItem ? qsTr("Add new artefact argument") : qsTr("Edit artefact argument info")
 
     x: (parent.width - width) / 2
@@ -123,6 +127,9 @@ Dialog {
 
     function init()
     {
+        fieldArtefactArgArgTypeId = -1
+        fieldArtefactArgArgStorageId = -1
+
         var w = 0
         for(var i1 = 0; i1 < artefactArgTypeModel.size(); i1++)
         {
@@ -164,6 +171,8 @@ Dialog {
         {
             fieldArtefactArg.artefactArgCreated = mastactva.dateTimeFromUserStr(editArtefactArgCreatedText.text)
         }
+        fieldArtefactArg.artefactArgArgTypeId = fieldArtefactArgArgTypeId
+        fieldArtefactArg.artefactArgArgStorageId = fieldArtefactArgArgStorageId
     }
 
     standardButtons: Dialog.Cancel | Dialog.Save
@@ -184,7 +193,7 @@ Dialog {
                 {
                     editArtefactArgTypeList.currentIndex = index
                     artefactArgTypeModel.currentIndex = index
-                    fieldArtefactArg.artefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
+                    fieldArtefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
                     mouse.accepted = false
                 }
             }
@@ -228,7 +237,7 @@ Dialog {
                 {
                     editArtefactArgStorageList.currentIndex = index
                     artefactArgStorageModel.currentIndex = index
-                    fieldArtefactArg.artefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
+                    fieldArtefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
                     mouse.accepted = false
                 }
             }
