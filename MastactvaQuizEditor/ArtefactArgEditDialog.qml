@@ -158,8 +158,25 @@ Dialog {
         editArtefactArgNameText.text = fieldArtefactArg.artefactArgName
         editArtefactArgDefaultValueText.text = fieldArtefactArg.artefactArgDefaultValue
         editArtefactArgDescriptionText.text = fieldArtefactArg.artefactArgDescription
-        artefactArgTypeModel.selectItemById(fieldArtefactArg.artefactArgArgTypeId)
-        artefactArgStorageModel.selectItemById(fieldArtefactArg.artefactArgArgStorageId)
+        if(artefactArgTypeModel.selectItemById(fieldArtefactArg.artefactArgArgTypeId))
+        {
+            fieldArtefactArgArgTypeId = artefactArgTypeModel.currentItem.artefactArgTypeId
+            editArtefactArgTypeList.currentIndex = artefactArgTypeModel.currentIndex
+        }
+        else
+        {
+            editArtefactArgTypeList.currentIndex = -1
+        }
+
+        if(artefactArgStorageModel.selectItemById(fieldArtefactArg.artefactArgArgStorageId))
+        {
+            fieldArtefactArgArgStorageId = artefactArgStorageModel.currentItem.artefactArgStorageId
+            editArtefactArgStorageList.currentIndex = artefactArgStorageModel.currentIndex
+        }
+        else
+        {
+            editArtefactArgStorageList.currentIndex = -1
+        }
     }
 
     function update()
