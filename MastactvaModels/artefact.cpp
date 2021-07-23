@@ -36,6 +36,11 @@ Artefact::~Artefact()
     m_artefactArgModel = nullptr;
 }
 
+void Artefact::getArgumentsFromArtefactText()
+{
+    // TODO: add implementation
+}
+
 int Artefact::id() const
 {
     return m_id;
