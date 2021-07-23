@@ -54,6 +54,7 @@ public:
         }
     };
 
+    Q_INVOKABLE void getArgumentsFromArtefactText();
 
 public:
     int id() const;
