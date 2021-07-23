@@ -3517,10 +3517,21 @@ ApplicationWindow {
         }
     }
 
+    function refreshEffectObjectArtefactArgsFunc()
+    {
+        refreshEffectObjectArtefactArgs.refreshImpl()
+    }
+
     Action {
         id: refreshEffectObjectArtefactArgs
         text: qsTr("&Refresh")
         onTriggered: {
+            refreshEffectObjectArtefactArgsFunc()
+        }
+
+        function refreshImpl()
+        {
+
         }
     }
 
@@ -3536,7 +3547,38 @@ ApplicationWindow {
         id: addFromArtefactEffectObjectArtefactArg
         text: qsTr("Add from &artefact")
         onTriggered: {
+            if(isValidPos())
+            {
+                var effectObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
+                if(effectObjectArtefact !== null && effectObjectArtefact !== undefined)
+                {
+                    var artefactModel = effectObjectArtefact.objectArtefactArtefact
+                    if(artefactModel !== null && artefactModel !== undefined && artefactModel.isListLoaded())
+                    {
+                        var artefact = artefactModel.currentItem
+                        if(artefact !== null && artefact !== undefined)
+                        {
+                            artefact.getArgumentsFromArtefactText()
+                            refreshEffectObjectArtefactArgsFunc()
+                        }
+                    }
+                }
+            }
         }
+
+        // private:
+        function isValidModel()
+        {
+            var validModel = effectObjectArtefactsCurrentModel !== unddefined && effectObjectArtefactsCurrentModel !== null
+            return validModel
+        }
+
+        function isValidPos()
+        {
+            var validIndex = effectObjectArtefactsCurrentIndex >= 0
+            return isValidModel() && validIndex
+        }
+
     }
 
     Action {
