@@ -55,7 +55,7 @@ public:
     int id() const;
     void setId(const int &id_);
     int artefactId() const;
-    void setArtefactId(const int &effectArtefactArgSetId_);
+    void setArtefactId(const int &effectArtefactId_);
     int argTypeId() const;
     void setArgTypeId(const int &argTypeId_);
     int argStorageId() const;
@@ -68,6 +68,9 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+
+    bool createFrom(const int &effectArtefactId_, const Comment &comment_);
+    void copyFrom(const ArtefactArg *arg_);
 
 signals:
     void idChanged();

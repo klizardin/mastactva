@@ -1,4 +1,6 @@
 #include "artefactarg.h"
+#include "../MastactvaModels/artefactargtype.h"
+#include "../MastactvaModels/artefactargstorage.h"
 #include "../MastactvaBase/defines.h"
 
 
@@ -115,6 +117,60 @@ void ArtefactArg::setCreated(const QDateTime &created_)
     m_created = created_;
 
     emit createdChanged();
+}
+
+bool ArtefactArg::createFrom(const int &effectArtefactId_, const Comment &comment_)
+{
+    if(!comment_.values().contains(g_argumentName))
+    {
+        return false;
+    }
+    setArtefactId(effectArtefactId_);
+    setName(comment_.values().value(g_nameName, QString()));
+    setDefaultValue(comment_.values().value(g_defaultValueName, QString()));
+    setDescription(comment_.values().value(g_descriptionName, QString()));
+
+    const QString storage = comment_.values().value(g_storageName, QString());
+    const QString type = comment_.values().value(g_typeName, QString());
+
+    ArtefactArgTypeModel *argTypeModel = static_cast<ArtefactArgTypeModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgTypeModel)
+                );
+    ArtefactArgType *typeItem = argTypeModel->findDataItemByFieldValueImpl(
+                "artefactArgTypeType",
+                QVariant::fromValue(type)
+                );
+    if(!typeItem)
+    {
+        return false;
+    }
+    setArgTypeId(typeItem->id());
+    ArtefactArgStorageModel *argStorageModel = static_cast<ArtefactArgStorageModel *>(
+                QMLObjectsBase::getInstance().getListModel(g_artefactArgStorageModel)
+                );
+    ArtefactArgStorage *storageItem = argStorageModel->findDataItemByFieldValueImpl(
+                "artefactArgStorageStorage",
+                QVariant::fromValue(storage)
+                );
+    if(!storageItem)
+    {
+        return false;
+    }
+    setArgStorageId(storageItem->id());
+    return true;
+}
+
+void ArtefactArg::copyFrom(const ArtefactArg *arg_)
+{
+    if(!arg_
+            || name() != arg_->name()
+            )
+    {
+        return;
+    }
+    setDefaultValue(arg_->defaultValue());
+    setDescription(arg_->description());
+    setCreated(arg_->created());
 }
 
 

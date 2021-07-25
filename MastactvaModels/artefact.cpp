@@ -38,7 +38,123 @@ Artefact::~Artefact()
 
 void Artefact::getArgumentsFromArtefactText()
 {
-    // TODO: add implementation
+    if(!m_artefactArgModel->isListLoadedImpl())
+    {
+        return;
+    }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(sf)
+    {
+        if(!sf->isUrlDownloaded(filename()))
+        {
+            return;
+        }
+    }
+
+    m_comments.clear();
+
+    switch(m_typeId)
+    {
+    case to_underlying(ArtefactTypeEn::shaderVertex):
+    case to_underlying(ArtefactTypeEn::shaderFragmet):
+    {
+        const QString text = loadTextFileByUrl(filename());
+        getShaderComments(text, m_comments);
+        break;
+    }
+    case to_underlying(ArtefactTypeEn::scriptLua):
+    case to_underlying(ArtefactTypeEn::scriptLuaRuntime):
+    {
+        const QString text = loadTextFileByUrl(filename());
+        getLuaComments(text, m_comments);
+        break;
+    }
+    default:
+        return;
+    }
+    m_commentIndex = 0;
+    addArgumentsFromComments();
+}
+
+void Artefact::addArgumentsFromComments()
+{
+    if(!m_artefactArgModel->isListLoadedImpl()
+            || m_commentIndex >= m_comments.size()
+            )
+    {
+        return;
+    }
+    ArtefactArg *arg = m_artefactArgModel->createDataItemImpl();
+    if(!arg)
+    {
+        for(;m_commentIndex < m_comments.size()
+            ;++m_commentIndex)
+        {
+            if(arg->createFrom(id(), m_comments[m_commentIndex]))
+            {
+                break;
+            }
+        }
+        if(m_commentIndex < m_comments.size())
+        {
+            ArtefactArg *existing = m_artefactArgModel->dataItemFindIf(
+                        [&arg](const ArtefactArg *item_)->bool
+            {
+                return arg && item_ && arg->name() == item_->name();
+            });
+            ++m_commentIndex;
+            if(existing)
+            {
+                existing->copyFrom(arg);
+                delete arg;
+                arg = nullptr;
+
+                QObject::connect(m_artefactArgModel,
+                                SIGNAL(itemSet()),
+                                this,
+                                SLOT(argItemSet())
+                                );
+                m_artefactArgModel->setDataItemImpl(
+                            m_artefactArgModel->indexOfDataItemImpl(existing)
+                            ,existing
+                            );
+            }
+            else
+            {
+                QObject::connect(m_artefactArgModel,
+                                SIGNAL(itemAdded()),
+                                this,
+                                SLOT(argItemAdded())
+                                );
+                m_artefactArgModel->addDataItemImpl(arg, true);
+            }
+        }
+        else
+        {
+            delete arg;
+            arg = nullptr;
+        }
+    }
+}
+
+void Artefact::argItemAdded()
+{
+    QObject::disconnect(m_artefactArgModel,
+                        SIGNAL(itemAdded()),
+                        this,
+                        SLOT(argItemAdded())
+                        );
+    addArgumentsFromComments();
+}
+
+void Artefact::argItemSet()
+{
+    QObject::disconnect(m_artefactArgModel,
+                    SIGNAL(itemSet()),
+                    this,
+                    SLOT(argItemSet())
+                    );
+    addArgumentsFromComments();
 }
 
 int Artefact::id() const

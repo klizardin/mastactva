@@ -101,6 +101,11 @@ signals:
 
 protected slots:
     void artefactFileDownloaded(const QString &url_);
+    void argItemAdded();
+    void argItemSet();
+
+private:
+    void addArgumentsFromComments();
 
 private:
     ArtefactModel *m_artefactModel = nullptr;
@@ -108,6 +113,9 @@ private:
     IListModelInfo *m_objectModelInfo = nullptr;
     int m_appId = -1;
     ArtefactArgModel *m_artefactArgModel = nullptr;
+
+    QVector<Comment> m_comments;
+    int m_commentIndex = 0;
 
     friend class ListModelBaseOfData<ArtefactData, ArtefactModel, Artefact>;
 };
