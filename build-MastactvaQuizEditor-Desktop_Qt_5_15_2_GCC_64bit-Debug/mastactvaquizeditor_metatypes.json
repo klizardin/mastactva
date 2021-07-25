@@ -19512,6 +19512,13 @@
         "classes": [
             {
                 "className": "Artefact",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "getArgumentsFromArtefactText",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -19680,6 +19687,16 @@
                             }
                         ],
                         "name": "artefactFileDownloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "argItemAdded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "argItemSet",
                         "returnType": "void"
                     }
                 ],
