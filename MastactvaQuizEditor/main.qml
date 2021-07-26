@@ -3593,6 +3593,33 @@ ApplicationWindow {
         id: removeEffectObjectArtefactArg
         text: qsTr("Remove")
         onTriggered: {
+            if(isValidPos())
+            {
+                effectObjectArtefactArgsCurrentModel.itemDeleted.connect(effectObjectArtefactArgsItemDeleted)
+                effectObjectArtefactArgsCurrentModel.delItem(effectObjectArtefactArgsCurrentIndex)
+                effectObjectArtefactArgsCurrentIndex = -1
+            }
+        }
+
+        // private:
+        function isValidModel()
+        {
+            var validModel = effectObjectArtefactArgsCurrentModel !== unddefined && effectObjectArtefactArgsCurrentModel !== null
+            return validModel
+        }
+
+        function isValidPos()
+        {
+            var validIndex = effectObjectArtefactArgsCurrentIndex >= 0
+            return isValidModel() && validIndex
+        }
+
+        function effectObjectArtefactArgsItemDeleted()
+        {
+            if(isValidModel())
+            {
+                effectObjectArtefactArgsCurrentModel.itemDeleted.disconnect(effectObjectArtefactArgsItemDeleted)
+            }
         }
     }
 
