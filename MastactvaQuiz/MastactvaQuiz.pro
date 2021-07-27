@@ -6,6 +6,8 @@ QT += quickcontrols2 \
     sql
 
 DEFINES += "LOCALDATAAPICACHE=1"
+DEFINES += "SERVERFILES_CPP=1"
+DEFINES += "QMLOBJECTS_CPP=1"
 
 CONFIG += qmltypes
 QML_IMPORT_NAME = MastactvaQuiz
