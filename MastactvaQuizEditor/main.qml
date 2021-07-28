@@ -5916,6 +5916,20 @@ ApplicationWindow {
                 Row {
                     padding: Constants.smallListHeaderPadding
                     Label {
+                        id: effectArgumentsItemObjectArtefactLabel
+                        text: qsTr("Object Artefact : ")
+                    }
+                    Text {
+                        id: effectArgumentsItemObjectArtefact
+                        width: effectArgumentsList.width - effectArgumentsObjectArtefactTypeLabel.width
+                        text: effectArgObjectArtefactId
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
                         id: effectArgumentsItemTypeLabel
                         text: qsTr("Type : ")
                     }
