@@ -5917,7 +5917,7 @@ ApplicationWindow {
                     padding: Constants.smallListHeaderPadding
                     Label {
                         id: effectArgumentsItemObjectArtefactLabel
-                        text: qsTr("Object artefact : ")
+                        text: qsTr("Object artefact :")
                     }
                     Text {
                         id: effectArgumentsItemObjectArtefact
