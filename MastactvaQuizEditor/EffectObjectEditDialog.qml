@@ -23,7 +23,7 @@ Dialog {
 
     FontMetrics{
         id: editArtafactFilenameFontMetrics
-        font: editArtefactFilename.font
+        font: editEffectObjectId.font
     }
 
     ScrollView {
