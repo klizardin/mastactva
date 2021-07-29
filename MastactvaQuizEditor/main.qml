@@ -1321,6 +1321,10 @@ ApplicationWindow {
 
         onOpened: {
             init()
+            if(fieldNewItem)
+            {
+                fieldEffect.effectCreated = mastactva.now()
+            }
         }
 
         onAccepted: {

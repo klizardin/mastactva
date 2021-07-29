@@ -40,6 +40,12 @@ Dialog {
                 KeyNavigation.tab: editEffectDescription
             }
             Label {
+                text: qsTr("Created : ")
+            }
+            Text {
+                id: editEffectCreated
+            }
+            Label {
                 text: qsTr("Description  : ")
             }
             TextArea {
@@ -57,6 +63,7 @@ Dialog {
         editEffectID.text = fieldEffect.effectId
         editEffectName.text = fieldEffect.effectName
         editEffectDescription.text = fieldEffect.effectDescription
+        editEffectCreated.text = fieldEffect.effectCreated
     }
 
     function update()
