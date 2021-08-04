@@ -204,3 +204,5 @@ LUA:
 102. absl for c++ version for release
 103. add effect runtime lua scripts
 104. sync new windows with old/test new
+105. CI
+    * Master; build agent
