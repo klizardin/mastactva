@@ -213,4 +213,6 @@ LUA:
     * add import from db
     * add game build
     * add android build
-
+106. adapt to cmake
+    * adapt project
+    * migrate to docker // https://www.qt.io/blog/docker-builds-from-qtcreator
