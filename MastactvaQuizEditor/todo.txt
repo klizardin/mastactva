@@ -205,4 +205,12 @@ LUA:
 103. add effect runtime lua scripts
 104. sync new windows with old/test new
 105. CI
-    * Master; build agent
+    + Master; build agent
+    * qt build pipeline (tests, editor)
+    * qt test pipeline (gtests)
+    * gates
+    * artefactory
+    * add import from db
+    * add game build
+    * add android build
+
