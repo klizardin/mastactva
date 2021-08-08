@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
 
     engine.load(url);
 
-    return app.exec();
-
+    const bool res = app.exec();
+    QMLObjects::getInstance().setRoot(nullptr);
+    return res;
 }

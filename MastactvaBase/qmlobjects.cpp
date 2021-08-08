@@ -20,12 +20,14 @@ void QMLObjectsBase::setRoot(QObject *root_)
 
     if(m_root == root_) { return; }
     m_root = root_;
+    if(!m_root) { return; }
     clearDependedFromRoot();
     searchObjects();
 }
 
 IListModel *QMLObjectsBase::getListModel(const QString &layoutName_)
 {
+    if(!m_root) { return nullptr; }
     IListModel *model = findListModel(layoutName_);
     if(model) { return model; }
     searchObjects();
@@ -43,6 +45,7 @@ const QVector<ILocalDataAPI *> &QMLObjectsBase::getLocalDataAPIViews()
 
 IListModel *QMLObjectsBase::findListModel(const QString &layoutName_) const
 {
+    if(!m_root) { return nullptr; }
     auto fit = std::find_if(std::begin(m_models), std::end(m_models),
                                   [&layoutName_](IListModel *model_)->bool
     {
@@ -60,24 +63,28 @@ void QMLObjectsBase::clearDependedFromRoot()
 
 NetAPI *QMLObjectsBase::getNetAPI()
 {
+    if(!m_root) { return nullptr; }
     if(!m_netAPI) { searchObjects(); }
     return m_netAPI;
 }
 
 LocalDataAPI *QMLObjectsBase::getDataAPI()
 {
+    if(!m_root) { return nullptr; }
     if(!m_dataAPI) { searchObjects(); }
     return m_dataAPI;
 }
 
 ServerFiles *QMLObjectsBase::getServerFiles()
 {
+    if(!m_root) { return nullptr; }
     if(!m_serverFiles) { m_serverFiles = new ServerFiles(m_root); }
     return m_serverFiles;
 }
 
 void QMLObjectsBase::registerModel(const QString &layoutName_, IListModel *m_)
 {
+    if(!m_root) { return; }
     IListModel *m1 = findListModel(layoutName_);
     Q_ASSERT(!m1);
     m_models.push_back(static_cast<IListModel *>(m_));
@@ -85,6 +92,7 @@ void QMLObjectsBase::registerModel(const QString &layoutName_, IListModel *m_)
 
 void QMLObjectsBase::unregisterModel(const QString &layoutName_)
 {
+    if(!m_root) { return; }
 #if defined(TRACE_MODEL_LIFETIME)
     qDebug() << "QMLObjectsBase::unregisterModel()" << this;
 #endif
