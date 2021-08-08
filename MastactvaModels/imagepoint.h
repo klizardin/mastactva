@@ -91,7 +91,7 @@ protected:
 public:
     explicit ImagePointToQuestionModel(QObject *parent_ = nullptr);
 
-    LAYOUT_MODEL_IMPL();
+    LAYOUT_MODEL_IMPL(base);
 
 public slots:
     void jsonResponseSlot(int errorCode_,
@@ -209,7 +209,7 @@ public:
     ImageModel *getImageModel();
 
 
-    LAYOUT_MODEL_IMPL();
+    LAYOUT_MODEL_IMPL(base);
 
 public slots:
     void jsonResponseSlot(int errorCode_,
@@ -366,7 +366,7 @@ protected:
 public:
     explicit ImagePointModel(QObject *parent_ = nullptr);
 
-    LAYOUT_MODEL_IMPL();
+    LAYOUT_MODEL_IMPL(base);
 
     Q_INVOKABLE QVariant nextObjByCoords(qreal x_, qreal y_);
     Q_INVOKABLE bool isNextObjImageByCoords(qreal x_, qreal y_);

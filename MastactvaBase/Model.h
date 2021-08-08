@@ -1563,7 +1563,7 @@ private:
 };
 
 
-#define LAYOUT_MODEL_IMPL()                                                                                     \
+#define LAYOUT_MODEL_IMPL(ListNotifyBaseType)                                                                       \
 public:                                                                                                         \
     /*properties*/                                                                                              \
     Q_PROPERTY(QString layoutQMLName READ getLayoutQMLName WRITE setLayoutQMLName NOTIFY layoutQMLNameChanged)  \
@@ -1863,22 +1863,26 @@ public:                                                                         
     }                                                                                                           \
     virtual void listLoadedVF() override                                                                        \
     {                                                                                                           \
-        ListModelBaseData::listLoadedVF();                                                                      \
+        ListNotifyBaseType::listLoadedVF();                                                                     \
+        /*ListModelBaseData::listLoadedVF();*/                                                                  \
         emit listReloaded();                                                                                    \
     }                                                                                                           \
     virtual void itemAddedVF() override                                                                         \
     {                                                                                                           \
-        ListModelBaseData::itemAddedVF();                                                                       \
+        ListNotifyBaseType::itemAddedVF();                                                                      \
+        /*ListModelBaseData::itemAddedVF();*/                                                                   \
         emit itemAdded();                                                                                       \
     }                                                                                                           \
     virtual void itemSetVF() override                                                                           \
     {                                                                                                           \
-        ListModelBaseData::itemSetVF();                                                                         \
+        ListNotifyBaseType::itemSetVF();                                                                        \
+        /*ListModelBaseData::itemSetVF();*/                                                                     \
         emit itemSet();                                                                                         \
     }                                                                                                           \
     virtual void itemDeletedVF() override                                                                       \
     {                                                                                                           \
-        ListModelBaseData::itemDeletedVF();                                                                     \
+        ListNotifyBaseType::itemDeletedVF();                                                                    \
+        /*ListModelBaseData::itemDeletedVF();*/                                                                 \
         emit itemDeleted();                                                                                     \
     }                                                                                                           \
     virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override    \
