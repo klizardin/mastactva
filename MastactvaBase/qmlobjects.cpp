@@ -14,6 +14,9 @@ void QMLObjectsBase::setRoot(QObject *root_)
 #if defined(TRACE_THREADS)
     qDebug() << "QMLObjectsBase::setRoot()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QMLObjectsBase::setRoot()" << this;
+#endif
 
     if(m_root == root_) { return; }
     m_root = root_;
@@ -82,6 +85,10 @@ void QMLObjectsBase::registerModel(const QString &layoutName_, IListModel *m_)
 
 void QMLObjectsBase::unregisterModel(const QString &layoutName_)
 {
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QMLObjectsBase::unregisterModel()" << this;
+#endif
+
     auto fit = std::find_if(std::begin(m_models), std::end(m_models),
                                   [&layoutName_](IListModel *model_)->bool
     {

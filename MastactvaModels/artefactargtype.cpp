@@ -8,6 +8,9 @@ ArtefactArgType::ArtefactArgType(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactArgType::ArtefactArgType()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ArtefactArgType::ArtefactArgType()" << this;
+#endif
 }
 
 int ArtefactArgType::id() const
@@ -40,5 +43,9 @@ ArtefactArgTypeModel::ArtefactArgTypeModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactArgTypeModel::ArtefactArgTypeModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ArtefactArgTypeModel::ArtefactArgTypeModel()" << this;
+#endif
+
     init(this);
 }

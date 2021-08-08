@@ -20,6 +20,7 @@ class QMLMainObjects : public QObject
     Q_OBJECT
 public:
     explicit QMLMainObjects(QObject *parent_ = nullptr);
+    virtual ~QMLMainObjects();
 
     void setRootQMLObject(QObject* root_);
     GalleryEditViewModel *getGalleryViewModel();

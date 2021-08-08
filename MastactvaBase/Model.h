@@ -181,6 +181,10 @@ public:
 
     virtual ~ListModelBaseOfData() override
     {
+#if defined(TRACE_MODEL_LIFETIME)
+        qDebug() << "ListModelBaseOfData::~ListModelBaseOfData()" << static_cast<ModelType*>(this) << this;
+#endif
+
         clearData();
     }
 

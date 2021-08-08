@@ -9,6 +9,10 @@ Gallery::Gallery(GalleryModel *parent_)
 #if defined(TRACE_THREADS)
     qDebug() << "Gallery::Gallery()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Gallery::Gallery()" << this;
+#endif
+
     m_galleryModel =  parent_;
 }
 
@@ -186,5 +190,9 @@ GalleryModel::GalleryModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "GalleryModel::GalleryModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "GalleryModel::GalleryModel()" << this;
+#endif
+
     init(this);
 }

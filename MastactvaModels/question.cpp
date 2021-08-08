@@ -9,6 +9,10 @@ Question::Question(QuestionModel *parent_)
 #if defined(TRACE_THREADS)
     qDebug() << "Question::Question()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Question::Question()" << this;
+#endif
+
     m_questionModel = parent_;
 }
 
@@ -159,5 +163,9 @@ QuestionModel::QuestionModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "QuestionModel::QuestionModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QuestionModel::QuestionModel()" << this;
+#endif
+
     init(this);
 }

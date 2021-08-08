@@ -8,6 +8,10 @@ ImagePointEffect::ImagePointEffect(ImagePointEffectModel *parent_ /*=nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointEffect::ImagePointEffect()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointEffect::ImagePointEffect()" << this;
+#endif
+
     m_imagePointEffectModel = parent_;
 }
 
@@ -187,5 +191,9 @@ ImagePointEffectModel::ImagePointEffectModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointEffectModel::ImagePointEffectModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointEffectModel::ImagePointEffectModel()" << this;
+#endif
+
     init(this);
 }

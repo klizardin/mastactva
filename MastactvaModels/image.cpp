@@ -11,6 +11,10 @@ Image::Image(ImageModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "Image::Image()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Image::Image()" << this;
+#endif
+
     m_objectModelInfo = this;
     m_imageModel = parent_;
     //qDebug() << "Image::Image()" << getObjectName();
@@ -311,6 +315,10 @@ ImageModel::ImageModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImageModel::ImageModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImageModel::ImageModel()" << this;
+#endif
+
     init(this);
     setAutoCreateChildrenModelsOnSelectImpl(true);
 }

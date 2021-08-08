@@ -8,6 +8,9 @@ ArtefactArgStorage::ArtefactArgStorage(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactArgStorage::ArtefactArgStorage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ArtefactArgStorage::ArtefactArgStorage()" << this;
+#endif
 }
 
 int ArtefactArgStorage::id() const
@@ -41,5 +44,9 @@ ArtefactArgStorageModel::ArtefactArgStorageModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactArgStorageModel::ArtefactArgStorageModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ArtefactArgStorageModel::ArtefactArgStorageModel()" << this;
+#endif
+
     init(this);
 }

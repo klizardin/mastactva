@@ -95,10 +95,20 @@ void QMLObjects::searchObjects()
     }
 }
 
+QMLObjectsBase *QMLObjectsBase::getInstancePtr()
+{
+    static std::unique_ptr<QMLObjects> instance = std::make_unique<QMLObjects>();
+    return instance.get();
+}
+
 QMLObjectsBase &QMLObjectsBase::getInstance()
 {
-    static QMLObjects instance;
-    return instance;
+    return *getInstancePtr();
+}
+
+bool QMLObjectsBase::hasInstance()
+{
+    return getInstancePtr();
 }
 
 void QMLObjects::setInitialized()

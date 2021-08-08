@@ -9,6 +9,9 @@ Answer::Answer(QObject *parent_)
 #if defined(TRACE_THREADS)
     qDebug() << "Answer::Answer()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Answer::Answer()" << this;
+#endif
 }
 
 int Answer::id() const
@@ -65,5 +68,9 @@ AnswerModel::AnswerModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "AnswerModel::AnswerModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "AnswerModel::AnswerModel()" << this;
+#endif
+
     init(this);
 }

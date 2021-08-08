@@ -69,6 +69,10 @@ QuizUser::QuizUser(QObject *parent_ /*= nullptr*/) : QObject(parent_)
 #if defined(TRACE_THREADS)
     qDebug() << "QuizUser::QuizUser()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QuizUser::QuizUser()" << this;
+#endif
+
     m_deviceId = getAndroidUuid();
 }
 
@@ -91,6 +95,10 @@ QuizUserModel::QuizUserModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "QuizUserModel::QuizUserModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QuizUserModel::QuizUserModel()" << this;
+#endif
+
     init(this);
     setReadonlyImpl(false);
 }

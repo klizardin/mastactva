@@ -8,6 +8,10 @@ ObjectInfo::ObjectInfo(ObjectInfoModel *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectInfo::ObjectInfo()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ObjectInfo::ObjectInfo()" << this;
+#endif
+
     m_effectObjectInfoModel = parent_;
 }
 
@@ -18,6 +22,10 @@ ObjectInfo::ObjectInfo(ObjectInfoData &&data_, ObjectInfoModel *parent_ /*= null
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectInfo::ObjectInfo()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ObjectInfo::ObjectInfo()" << this;
+#endif
+
     m_effectObjectInfoModel = parent_;
 }
 
@@ -97,5 +105,9 @@ ObjectInfoModel::ObjectInfoModel(
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectInfoModel::ObjectInfoModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ObjectInfoModel::ObjectInfoModel()" << this;
+#endif
+
     init(this);
 }

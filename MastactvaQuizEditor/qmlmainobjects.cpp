@@ -7,6 +7,16 @@
 
 QMLMainObjects::QMLMainObjects(QObject *parent_) : QObject(parent_)
 {
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QMLMainObjects::QMLMainObjects()" << this;
+#endif
+}
+
+QMLMainObjects::~QMLMainObjects()
+{
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "QMLMainObjects::~QMLMainObjects()" << this;
+#endif
 }
 
 QMLMainObjects *QMLMainObjects::g_singelton = nullptr;
@@ -216,8 +226,18 @@ void QMLObjects::searchObjects()
     }
 }
 
+QMLObjectsBase *QMLObjectsBase::getInstancePtr()
+{
+    static std::unique_ptr<QMLObjects> instance = std::make_unique<QMLObjects>();
+    return instance.get();
+}
+
 QMLObjectsBase &QMLObjectsBase::getInstance()
 {
-    static QMLObjects instance;
-    return instance;
+    return *getInstancePtr();
+}
+
+bool QMLObjectsBase::hasInstance()
+{
+    return getInstancePtr();
 }
