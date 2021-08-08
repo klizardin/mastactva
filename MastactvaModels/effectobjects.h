@@ -94,20 +94,33 @@ private:
     ObjectArtefactModel *m_objectArtefactModel = nullptr;
 
     friend class ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>;
-    friend class SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
+    friend class SortModelAfterChangeImpl<
+            EffectObjectsData,
+            EffectObjectsModel,
+            ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
+            EffectObjects>;
 };
 
 
 class EffectObjectsModel :
         public ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
-        public SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>
+        public SortModelAfterChangeImpl<
+            EffectObjectsData,
+            EffectObjectsModel,
+            ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
+            EffectObjects>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
     using base = ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>;
-    using sortModelAfterChange = SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
+    using sortModelAfterChange = SortModelAfterChangeImpl<
+        EffectObjectsData,
+        EffectObjectsModel,
+        ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
+        EffectObjects>
+    ;
 
 public:
     explicit EffectObjectsModel(
@@ -116,7 +129,7 @@ public:
                 =  std::make_shared<QVector<EffectObjectsData *>>()
             );
 
-    LAYOUT_MODEL_IMPL();
+    LAYOUT_MODEL_IMPL(sortModelAfterChange);
 
 public slots:
     void jsonResponseSlot(int errorCode_,
@@ -159,7 +172,12 @@ signals:
     void objectNameDerivedChanged();
     void error(const QString &errorCode_, const QString &description_);
 
-    friend class SortModelAfterChangeImpl<EffectObjectsData, EffectObjectsModel, EffectObjects>;
+    friend class SortModelAfterChangeImpl<
+            EffectObjectsData,
+            EffectObjectsModel,
+            ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
+            EffectObjects>
+            ;
 };
 
 

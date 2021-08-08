@@ -8,6 +8,10 @@ EffectArgValue::EffectArgValue(EffectArgValueModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgValue::EffectArgValue()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectArgValue::EffectArgValue()" << this;
+#endif
+
     m_effectArgValueModel = parent_;
 }
 
@@ -157,5 +161,9 @@ EffectArgValueModel::EffectArgValueModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgValueModel::EffectArgValueModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectArgValueModel::EffectArgValueModel()" << this;
+#endif
+
     init(this);
 }

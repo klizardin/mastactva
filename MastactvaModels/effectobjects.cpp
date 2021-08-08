@@ -8,6 +8,9 @@ EffectObjects::EffectObjects(EffectObjectsModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "EffectObjects::EffectObjects()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectObjects::EffectObjects()" << this;
+#endif
 
     m_effectObjectsModel = parent_;
 }
@@ -18,6 +21,9 @@ EffectObjects::EffectObjects(EffectObjectsData &&dataBase_, EffectObjectsModel *
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectObjects::EffectObjects()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectObjects::EffectObjects()" << this;
 #endif
 
     m_effectObjectsModel = parent_;
@@ -201,6 +207,9 @@ EffectObjectsModel::EffectObjectsModel(
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectObjectsModel::EffectObjectsModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectObjectsModel::EffectObjectsModel()" << this;
 #endif
 
     base::init(this);

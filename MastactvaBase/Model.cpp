@@ -39,13 +39,19 @@ void ListModelBaseData::addLayoutExtraFieldsImpl(const QString &modelName_,
 
 void ListModelBaseData::registerListModel()
 {
-    QMLObjectsBase::getInstance().registerModel(m_model->getQMLLayoutName(), m_model);
+    if(QMLObjectsBase::hasInstance())
+    {
+        QMLObjectsBase::getInstance().registerModel(m_model->getQMLLayoutName(), m_model);
+    }
     m_autoRegister = true;
 }
 
 void ListModelBaseData::unregisterListModel()
 {
-    QMLObjectsBase::getInstance().unregisterModel(m_model->getQMLLayoutName());
+    if(QMLObjectsBase::hasInstance())
+    {
+        QMLObjectsBase::getInstance().unregisterModel(m_model->getQMLLayoutName());
+    }
     m_autoRegister = false;
 }
 

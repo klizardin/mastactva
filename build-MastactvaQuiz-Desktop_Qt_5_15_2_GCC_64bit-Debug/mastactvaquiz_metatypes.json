@@ -23891,7 +23891,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "SortModelAfterChangeImpl<EffectObjectsData,EffectObjectsModel,EffectObjects>"
+                        "name": "SortModelAfterChangeImpl<EffectObjectsData,EffectObjectsModel,ListModelBaseOfData<EffectObjectsData,EffectObjectsModel,EffectObjects>,EffectObjects>"
                     }
                 ]
             }

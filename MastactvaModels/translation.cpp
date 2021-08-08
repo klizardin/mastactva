@@ -8,6 +8,10 @@ Translation::Translation(TranslationModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "Translation::Translation()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Translation::Translation()" << this;
+#endif
+
     m_translationModel = parent_;
 }
 
@@ -138,5 +142,9 @@ TranslationModel::TranslationModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "TranslationModel::TranslationModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "TranslationModel::TranslationModel()" << this;
+#endif
+
     init(this);
 }

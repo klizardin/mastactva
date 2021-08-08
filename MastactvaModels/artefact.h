@@ -136,7 +136,7 @@ public:
                 = std::shared_ptr<QVector<ArtefactData *>>{nullptr}
             );
 
-    LAYOUT_MODEL_IMPL();
+    LAYOUT_MODEL_IMPL(base);
 
 public slots:
     void jsonResponseSlot(int errorCode_,

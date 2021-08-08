@@ -8,6 +8,10 @@ UserQuestionAnswer::UserQuestionAnswer(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "UserQuestionAnswer::UserQuestionAnswer()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "UserQuestionAnswer::UserQuestionAnswer()" << this;
+#endif
+
 }
 
 int UserQuestionAnswer::id() const
@@ -89,6 +93,10 @@ UserQuestionAnswerModel::UserQuestionAnswerModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "UserQuestionAnswerModel::UserQuestionAnswerModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "UserQuestionAnswerModel::UserQuestionAnswerModel()" << this;
+#endif
+
     init(this);
 }
 

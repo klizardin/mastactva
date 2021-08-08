@@ -12,6 +12,10 @@ Artefact::Artefact(ArtefactModel *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "Artefact::Artefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Artefact::Artefact()" << this;
+#endif
+
     m_artefactModel = parent_;
     m_objectModelInfo = this;
 }
@@ -23,6 +27,10 @@ Artefact::Artefact(ArtefactData &&data_, ArtefactModel *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "Artefact::Artefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Artefact::Artefact()" << this;
+#endif
+
     m_artefactModel = parent_;
     m_objectModelInfo = this;
 }
@@ -362,6 +370,10 @@ ArtefactModel::ArtefactModel(
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactModel::ArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ArtefactModel::ArtefactModel()" << this;
+#endif
+
     init(this);
     setAutoCreateChildrenModelsImpl(true);
 }

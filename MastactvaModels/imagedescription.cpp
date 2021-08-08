@@ -9,6 +9,10 @@ ImageDescription::ImageDescription(QObject *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImageDescription::ImageDescription()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImageDescription::ImageDescription()" << this;
+#endif
+
 }
 
 int ImageDescription::id() const
@@ -66,5 +70,9 @@ ImageDescriptionModel::ImageDescriptionModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImageDescriptionModel::ImageDescriptionModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImageDescriptionModel::ImageDescriptionModel()" << this;
+#endif
+
     init(this);
 }

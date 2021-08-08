@@ -9,7 +9,7 @@
 #include "../MastactvaBase/Model.h"
 
 
-template<class ModelDataType_, class ModelType_, class ModelDataObjectType_ = ModelDataType_>
+template<class ModelDataType_, class ModelType_, class ModelBase_, class ModelDataObjectType_ = ModelDataType_>
 class SortModelAfterChangeImpl : public IListModelChangeNotify
 {
     /*

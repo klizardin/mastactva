@@ -24,8 +24,12 @@ class QMLObjectsBase
 protected:
     QMLObjectsBase() = default;
 
+private:
+    static QMLObjectsBase *getInstancePtr();
+
 public:
     static QMLObjectsBase &getInstance();
+    static bool hasInstance();
 
     void setRoot(QObject *root_);
     NetAPI *getNetAPI();

@@ -8,6 +8,10 @@ GalleryStatistics::GalleryStatistics(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "GalleryStatistics::GalleryStatistics()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "GalleryStatistics::GalleryStatistics()" << this;
+#endif
+
 }
 
 int GalleryStatistics::id() const
@@ -65,6 +69,10 @@ GalleryStatisticsModel::GalleryStatisticsModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "GalleryStatisticsModel::GalleryStatisticsModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "GalleryStatisticsModel::GalleryStatisticsModel()" << this;
+#endif
+
     init(this);
 }
 

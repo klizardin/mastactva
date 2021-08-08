@@ -11,6 +11,10 @@ ImagePointToQuestion::ImagePointToQuestion(ImagePointToQuestionModel *parent_ /*
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointToQuestion::ImagePointToQuestion()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointToQuestion::ImagePointToQuestion()" << this;
+#endif
+
     m_imagePointToQuestionModel = parent_;
 }
 
@@ -113,6 +117,10 @@ ImagePointToQuestionModel::ImagePointToQuestionModel(QObject *parent_ /*= nullpt
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointToQuestionModel::ImagePointToQuestionModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointToQuestionModel::ImagePointToQuestionModel()" << this;
+#endif
+
     init(this);
 }
 
@@ -123,6 +131,10 @@ ImagePointToNextImage::ImagePointToNextImage(ImagePointToNextImageModel *parent_
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointToNextImage::ImagePointToNextImage()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointToNextImage::ImagePointToNextImage()" << this;
+#endif
+
     m_objectModelInfo = this;
     m_parentModel = parent_;
 }
@@ -198,6 +210,10 @@ ImagePointToNextImageModel::ImagePointToNextImageModel(QObject *parent_ /*= null
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointToNextImageModel::ImagePointToNextImageModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointToNextImageModel::ImagePointToNextImageModel()" << this;
+#endif
+
     init(this);
 }
 
@@ -218,6 +234,10 @@ ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePoint::ImagePoint()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePoint::ImagePoint()" << this;
+#endif
+
     m_imagePointModel = parent_;
 }
 
@@ -460,6 +480,10 @@ ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ImagePointModel::ImagePointModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointModel::ImagePointModel()" << this;
+#endif
+
     init(this);
 }
 

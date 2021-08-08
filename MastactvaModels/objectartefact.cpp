@@ -8,6 +8,10 @@ ObjectArtefact::ObjectArtefact(ObjectArtefactModel *parent_ /* = nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectArtefact::ObjectArtefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ObjectArtefact::ObjectArtefact()" << this;
+#endif
+
     m_effectArtefactModel = parent_;
 }
 
@@ -18,6 +22,10 @@ ObjectArtefact::ObjectArtefact(ObjectArtefactData &&data_, ObjectArtefactModel *
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectArtefact::ObjectArtefact()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ObjectArtefact::ObjectArtefact()" << this;
+#endif
+
     m_effectArtefactModel = parent_;
 }
 
@@ -143,5 +151,9 @@ ObjectArtefactModel::ObjectArtefactModel(
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectArtefactModel::ObjectArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ObjectArtefactModel::ObjectArtefactModel()" << this;
+#endif
+
     init(this);
 }

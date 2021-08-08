@@ -181,6 +181,10 @@ public:
 
     virtual ~ListModelBaseOfData() override
     {
+#if defined(TRACE_MODEL_LIFETIME)
+        qDebug() << "ListModelBaseOfData::~ListModelBaseOfData()" << static_cast<ModelType*>(this) << this;
+#endif
+
         clearData();
     }
 
@@ -1563,7 +1567,7 @@ private:
 };
 
 
-#define LAYOUT_MODEL_IMPL()                                                                                     \
+#define LAYOUT_MODEL_IMPL(ListNotifyBaseType)                                                                       \
 public:                                                                                                         \
     /*properties*/                                                                                              \
     Q_PROPERTY(QString layoutQMLName READ getLayoutQMLName WRITE setLayoutQMLName NOTIFY layoutQMLNameChanged)  \
@@ -1863,22 +1867,22 @@ public:                                                                         
     }                                                                                                           \
     virtual void listLoadedVF() override                                                                        \
     {                                                                                                           \
-        ListModelBaseData::listLoadedVF();                                                                      \
+        ListNotifyBaseType::listLoadedVF();                                                                     \
         emit listReloaded();                                                                                    \
     }                                                                                                           \
     virtual void itemAddedVF() override                                                                         \
     {                                                                                                           \
-        ListModelBaseData::itemAddedVF();                                                                       \
+        ListNotifyBaseType::itemAddedVF();                                                                      \
         emit itemAdded();                                                                                       \
     }                                                                                                           \
     virtual void itemSetVF() override                                                                           \
     {                                                                                                           \
-        ListModelBaseData::itemSetVF();                                                                         \
+        ListNotifyBaseType::itemSetVF();                                                                        \
         emit itemSet();                                                                                         \
     }                                                                                                           \
     virtual void itemDeletedVF() override                                                                       \
     {                                                                                                           \
-        ListModelBaseData::itemDeletedVF();                                                                     \
+        ListNotifyBaseType::itemDeletedVF();                                                                    \
         emit itemDeleted();                                                                                     \
     }                                                                                                           \
     virtual void errorVF(int errorCode_, const QString &errorCodeStr_, const QJsonDocument &reply_) override    \

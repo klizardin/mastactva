@@ -15,6 +15,10 @@ Effect::Effect(EffectModel *parent_)
 #if defined(TRACE_THREADS)
     qDebug() << "Effect::Effect()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Effect::Effect()" << this;
+#endif
+
     m_effectModel = parent_;
     m_objectModelInfo = this;
 }
@@ -26,6 +30,10 @@ Effect::Effect(EffectData &&data_, EffectModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "Effect::Effect()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "Effect::Effect()" << this;
+#endif
+
     m_effectModel = parent_;
     m_objectModelInfo = this;
 }
@@ -748,5 +756,9 @@ EffectModel::EffectModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "EffectModel::EffectModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectModel::EffectModel()" << this;
+#endif
+
     init(this);
 }

@@ -78,7 +78,7 @@ protected:
 public:
     explicit GalleryStatisticsModel(QObject *parent_ = nullptr);
 
-    LAYOUT_MODEL_IMPL();
+    LAYOUT_MODEL_IMPL(base);
 
 public slots:
     void jsonResponseSlot(int errorCode_,

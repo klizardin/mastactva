@@ -9,6 +9,9 @@ EasingType::EasingType(EasingTypeModel *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "EasingType::EasingType()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EasingType::EasingType()" << this;
+#endif
 }
 
 int EasingType::id() const
@@ -41,6 +44,9 @@ EasingTypeModel::EasingTypeModel(QObject *parent_ /*= nullptr*/)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EasingTypeModel::EasingTypeModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EasingTypeModel::EasingTypeModel()" << this;
 #endif
     init(this);
 }

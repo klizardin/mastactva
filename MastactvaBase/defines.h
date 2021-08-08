@@ -2,6 +2,7 @@
 #define DEFINES_H
 
 
+// #define TRACE_MODEL_LIFETIME
 // #define TRACE_MODEL_LOADING
 // #define TRACE_MODEL_LOADED
 // #define TRACE_LIST_LOAD_DATA

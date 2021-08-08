@@ -8,6 +8,10 @@ UserStep::UserStep(QObject *parent_)
 #if defined(TRACE_THREADS)
     qDebug() << "UserStep::UserStep()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "UserStep::UserStep()" << this;
+#endif
+
 }
 
 UserStep::~UserStep()
@@ -129,5 +133,9 @@ UserStepModel::UserStepModel(QObject *parent_ /*= nullptr*/)
 #if defined(TRACE_THREADS)
     qDebug() << "UserStepModel::UserStepModel()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "UserStepModel::UserStepModel()" << this;
+#endif
+
     init(this);
 }
