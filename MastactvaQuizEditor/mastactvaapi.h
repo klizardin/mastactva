@@ -73,6 +73,7 @@ public:
     Q_INVOKABLE QVariant getCurrentImagePoint();
     Q_INVOKABLE void removeCurrentImagePoint();
     Q_INVOKABLE QVariant getHostURLs();
+    Q_INVOKABLE QString getLastLogin();
     Q_INVOKABLE bool useColorsVoronoyDiagram();
     Q_INVOKABLE void regenerateVoronoyDiagramColors();
     Q_INVOKABLE void setUseColorsVoronoyDiagram(bool useColorsVoronoyDiagram_);

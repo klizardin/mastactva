@@ -39,6 +39,7 @@ class AppConsts
 {
 protected:
     QVector<QString> m_serverUrls;
+    QString m_lastLogin;
     ServerURLsModel *m_serverURLsModel = nullptr;
     int m_maxImagePoints = 64;
     QVector<QVector3D> m_colors;
@@ -55,6 +56,8 @@ public:
 
     void addServerURL(const QString &serverURL_);
     ServerURLsModel *getServerURLsModel();
+    void setLastLogin(const QString &lastLogin_);
+    QString getLastLogin() const;
     int getMaxImagePoints() const;
     const QVector<QVector3D> &getColors() const;
     bool useColorsVoronoyDiagram() const;

@@ -1436,6 +1436,7 @@ ApplicationWindow {
             }
             fieldNewItem = true
             fieldEffectObject = effectObjectsCurrentModel.createItem()
+            var objectInfoModel = fieldEffectObject.effectObjectsObjectInfo
             fieldEffectObjectInfo = objectInfoModel.createItem()
             if(validState())
             {

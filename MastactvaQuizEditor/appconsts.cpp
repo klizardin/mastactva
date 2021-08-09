@@ -155,6 +155,16 @@ ServerURLsModel *AppConsts::getServerURLsModel()
     return m_serverURLsModel;
 }
 
+void AppConsts::setLastLogin(const QString &lastLogin_)
+{
+    m_lastLogin = lastLogin_;
+}
+
+QString AppConsts::getLastLogin() const
+{
+    return m_lastLogin;
+}
+
 int AppConsts::getMaxImagePoints() const
 {
     return m_maxImagePoints;
@@ -224,6 +234,7 @@ void AppConsts::load()
 }
 
 static const QString g_hostURLPrefix = "HostURL:";
+static const QString g_lastLoginPrefix = "LastLogin:";
 static const QString g_maxImagePointsPrefix = "MaxImagePoints:";
 static const QString g_colorsPrefix = "Colors:";
 static const QString g_useColorsVoronoyDiagramPrefix = "UseColorsVoronoyDiagram:";
@@ -234,6 +245,10 @@ void AppConsts::set(const QString &line_)
     if(line_.startsWith(g_hostURLPrefix))
     {
         m_serverUrls.append(line_.mid(g_hostURLPrefix.length()).trimmed());
+    }
+    else if(line_.startsWith(g_lastLoginPrefix))
+    {
+        m_lastLogin = line_.mid(g_lastLoginPrefix.length()).trimmed();
     }
     else if(line_.startsWith(g_maxImagePointsPrefix))
     {
@@ -277,6 +292,7 @@ void AppConsts::save() const
     {
         textStream << g_hostURLPrefix << l << "\n";
     }
+    textStream << g_lastLoginPrefix << m_lastLogin << "\n";
     textStream << g_maxImagePointsPrefix << m_maxImagePoints << "\n";
     for(const auto &c: qAsConst(m_colors))
     {
