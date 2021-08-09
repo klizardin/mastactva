@@ -829,6 +829,7 @@ void MastactvaAPI::testLogingInSlot(int errorCode_, RequestDataV0 *request_, con
     else
     {
         AppConsts::getInstance()->addServerURL(m_lastHostURL);
+        AppConsts::getInstance()->setLastLogin(NetAPIV0::getSingelton()->getDefaultRequestData().getLogin());
         AppConsts::getInstance()->save();
         NetAppConsts::set(
                     m_lastHostURL,
@@ -851,6 +852,11 @@ QString MastactvaAPI::getHostURL()
 QVariant MastactvaAPI::getHostURLs()
 {
     return QVariant::fromValue(AppConsts::getInstance()->getServerURLsModel());
+}
+
+QString MastactvaAPI::getLastLogin()
+{
+    return AppConsts::getInstance()->getLastLogin();
 }
 
 bool MastactvaAPI::useColorsVoronoyDiagram()

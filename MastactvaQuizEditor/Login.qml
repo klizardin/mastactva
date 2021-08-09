@@ -68,6 +68,7 @@ ApplicationWindow {
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width - Constants.logingItemsSpacing * 2
             placeholderText: qsTr("Enter login")
+            text: mastactva.getLastLogin()
         }
         Text {
             x: Constants.logingItemsSpacing

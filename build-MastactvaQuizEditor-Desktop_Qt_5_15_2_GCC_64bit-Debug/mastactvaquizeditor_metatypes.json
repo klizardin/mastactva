@@ -2448,6 +2448,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "getLastLogin",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
                         "name": "useColorsVoronoyDiagram",
                         "returnType": "bool"
                     },
