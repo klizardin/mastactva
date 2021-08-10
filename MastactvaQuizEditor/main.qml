@@ -1383,6 +1383,7 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
+                    fieldEffectObjectInfo.effectObjectInfoCreated = mastactva.now()
                     fieldEffectObject.effectObjectsObjectInfo.itemAdded.connect(effectObjectInfoAdded)
                     fieldEffectObject.effectObjectsObjectInfo.addItem(fieldEffectObjectInfo)
                 }
