@@ -823,6 +823,7 @@ ApplicationWindow {
             chooseImageDialog.allImagesOfGalleryModel = allImagesOfGalleryModel
             chooseImageDialog.mastactva = mastactva
             imagePointEffectEditDialog.effectModel = effectModel
+            effectObjectEditDialog.mastactva = mastactva
         }
     }
 
