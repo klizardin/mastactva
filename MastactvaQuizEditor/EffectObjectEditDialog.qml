@@ -113,7 +113,7 @@ Dialog {
     function init()
     {
 
-        if(fieldEffectObject !== null && fieldEffectObject !== undefined)
+        if(!fieldNewItem && fieldEffectObject !== null && fieldEffectObject !== undefined)
         {
             editEffectObjectId.text = fieldEffectObject.editEffectObjectsId
             editEffectObjectStep.text = fieldEffectObject.effectObjectsStepIndex
@@ -124,7 +124,7 @@ Dialog {
             editEffectObjectStep.text = qsTr("")
         }
 
-        if(fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined)
+        if(!fieldNewItem && fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined)
         {
             editEffectObjectInfoId.text = fieldEffectObjectInfo.effectObjectInfoId
             editEffectObjectInfoName.text = fieldEffectObjectInfo.effectObjectInfoName
@@ -161,7 +161,7 @@ Dialog {
         {
             fieldEffectObjectInfo.effectObjectInfoName = editEffectObjectInfoName.text
             fieldEffectObjectInfo.effectObjectInfoProgrammerName = editEffectObjectInfoProgrammerName.text
-            objecInfo.effectObjectInfoDescription = editEffectObjectInfoDescription.text
+            fieldEffectObjectInfo.effectObjectInfoDescription = editEffectObjectInfoDescription.text
         }
     }
 

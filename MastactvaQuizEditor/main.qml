@@ -823,6 +823,7 @@ ApplicationWindow {
             chooseImageDialog.allImagesOfGalleryModel = allImagesOfGalleryModel
             chooseImageDialog.mastactva = mastactva
             imagePointEffectEditDialog.effectModel = effectModel
+            effectObjectEditDialog.mastactva = mastactva
         }
     }
 
@@ -1382,6 +1383,7 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
+                    fieldEffectObjectInfo.effectObjectInfoCreated = mastactva.now()
                     fieldEffectObject.effectObjectsObjectInfo.itemAdded.connect(effectObjectInfoAdded)
                     fieldEffectObject.effectObjectsObjectInfo.addItem(fieldEffectObjectInfo)
                 }
