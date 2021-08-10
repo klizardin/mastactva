@@ -113,7 +113,7 @@ Dialog {
     function init()
     {
 
-        if(fieldEffectObject !== null && fieldEffectObject !== undefined)
+        if(!fieldNewItem && fieldEffectObject !== null && fieldEffectObject !== undefined)
         {
             editEffectObjectId.text = fieldEffectObject.editEffectObjectsId
             editEffectObjectStep.text = fieldEffectObject.effectObjectsStepIndex
@@ -161,7 +161,7 @@ Dialog {
         {
             fieldEffectObjectInfo.effectObjectInfoName = editEffectObjectInfoName.text
             fieldEffectObjectInfo.effectObjectInfoProgrammerName = editEffectObjectInfoProgrammerName.text
-            objecInfo.effectObjectInfoDescription = editEffectObjectInfoDescription.text
+            fieldEffectObjectInfo.effectObjectInfoDescription = editEffectObjectInfoDescription.text
         }
     }
 
