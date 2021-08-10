@@ -124,7 +124,7 @@ Dialog {
             editEffectObjectStep.text = qsTr("")
         }
 
-        if(fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined)
+        if(!fieldNewItem && fieldEffectObjectInfo !== null && fieldEffectObjectInfo !== undefined)
         {
             editEffectObjectInfoId.text = fieldEffectObjectInfo.effectObjectInfoId
             editEffectObjectInfoName.text = fieldEffectObjectInfo.effectObjectInfoName
