@@ -1313,16 +1313,18 @@ protected:
 #endif
         beginInsertRows(QModelIndex(), m_data->size(), m_data->size());
         DataObjectType *newItem = dynamic_cast<DataObjectType *>(request_->getItemData());
-        m_data->push_back(newItem);
+        DataType *newItemData = dynamic_cast<DataType *>(newItem);
+        m_data->push_back(nullptr);
+        (*m_data)[m_data->size() - 1] = newItemData;
         endInsertRows();
 
         request_->setItemData(nullptr);
 
-        DataObjectType *item = findDataItemByAppIdImpl(appId);
-        if(!item) { return; }
+        DataObjectType *itemInList = findDataItemByAppIdImpl(appId);
+        if(!itemInList) { return; }
 
-        getDataLayout<DataObjectType>().setJsonValues(item, reply_);
-        autoLoadDataItem(item);
+        getDataLayout<DataObjectType>().setJsonValues(itemInList, reply_);
+        autoLoadDataItem(itemInList);
         if(request_->getSetCurrentItemIndex())
         {
             setCurrentIndexImpl(m_data->size() - 1);
