@@ -728,7 +728,8 @@ public:
             if(request)
             {
                 Q_ASSERT(nullptr != dynamic_cast<IListModelItem *>(item_));
-                request->setItemData(dynamic_cast<IListModelItem *>(item_));
+                IListModelItem *item = dynamic_cast<IListModelItem *>(item_);
+                request->setItemData(item);
                 request->setSetCurrentItemIndex(setCurrentIndex_);
             }
             return addRequest(request);
@@ -1311,7 +1312,8 @@ protected:
         qDebug() << "modelItemAdded() beginInsertRows(" << m_data->size() << "," << m_data->size() << ")";
 #endif
         beginInsertRows(QModelIndex(), m_data->size(), m_data->size());
-        m_data->push_back(dynamic_cast<DataObjectType *>(request_->getItemData()));
+        DataObjectType *newItem = dynamic_cast<DataObjectType *>(request_->getItemData());
+        m_data->push_back(newItem);
         endInsertRows();
 
         request_->setItemData(nullptr);
