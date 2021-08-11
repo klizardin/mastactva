@@ -728,7 +728,8 @@ public:
             if(request)
             {
                 Q_ASSERT(nullptr != dynamic_cast<IListModelItem *>(item_));
-                request->setItemData(dynamic_cast<IListModelItem *>(item_));
+                IListModelItem *item = dynamic_cast<IListModelItem *>(item_);
+                request->setItemData(item);
                 request->setSetCurrentItemIndex(setCurrentIndex_);
             }
             return addRequest(request);
@@ -1311,16 +1312,19 @@ protected:
         qDebug() << "modelItemAdded() beginInsertRows(" << m_data->size() << "," << m_data->size() << ")";
 #endif
         beginInsertRows(QModelIndex(), m_data->size(), m_data->size());
-        m_data->push_back(dynamic_cast<DataObjectType *>(request_->getItemData()));
+        DataObjectType *newItem = dynamic_cast<DataObjectType *>(request_->getItemData());
+        DataType *newItemData = dynamic_cast<DataType *>(newItem);
+        m_data->push_back(nullptr);
+        (*m_data)[m_data->size() - 1] = newItemData;
         endInsertRows();
 
         request_->setItemData(nullptr);
 
-        DataObjectType *item = findDataItemByAppIdImpl(appId);
-        if(!item) { return; }
+        DataObjectType *itemInList = findDataItemByAppIdImpl(appId);
+        if(!itemInList) { return; }
 
-        getDataLayout<DataObjectType>().setJsonValues(item, reply_);
-        autoLoadDataItem(item);
+        getDataLayout<DataObjectType>().setJsonValues(itemInList, reply_);
+        autoLoadDataItem(itemInList);
         if(request_->getSetCurrentItemIndex())
         {
             setCurrentIndexImpl(m_data->size() - 1);
