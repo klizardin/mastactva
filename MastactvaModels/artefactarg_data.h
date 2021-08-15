@@ -25,7 +25,7 @@ public:
             );
     virtual ~ArtefactArgData() = default;
 
-    std::unique_ptr<ArtefactArgData> copy() const;
+    virtual std::unique_ptr<ArtefactArgData> getDataCopy() const;
 
 public:
     int m_id = -1;

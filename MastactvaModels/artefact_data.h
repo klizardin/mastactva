@@ -28,7 +28,7 @@ public:
     virtual ~ArtefactData() = default;
 
     ArtefactData &operator = (ArtefactData &&data_);
-    std::unique_ptr<ArtefactData> copy() const;
+    virtual std::unique_ptr<ArtefactData> getDataCopy() const;
 
 public:
     int m_id = -1;

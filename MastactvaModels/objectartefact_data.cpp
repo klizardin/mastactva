@@ -42,7 +42,7 @@ ObjectArtefactData &ObjectArtefactData::operator = (ObjectArtefactData &&data_)
     return *this;
 }
 
-std::unique_ptr<ObjectArtefactData> ObjectArtefactData::copy() const
+std::unique_ptr<ObjectArtefactData> ObjectArtefactData::getDataCopy() const
 {
     std::unique_ptr<ObjectArtefactData> result = std::make_unique<ObjectArtefactData>();
     result->m_id = m_id;

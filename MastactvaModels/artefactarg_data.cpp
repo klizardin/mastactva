@@ -23,7 +23,7 @@ ArtefactArgData::ArtefactArgData(
 {
 }
 
-std::unique_ptr<ArtefactArgData> ArtefactArgData::copy() const
+std::unique_ptr<ArtefactArgData> ArtefactArgData::getDataCopy() const
 {
     std::unique_ptr<ArtefactArgData> result = std::make_unique<ArtefactArgData>();
     result->m_id = m_id;
