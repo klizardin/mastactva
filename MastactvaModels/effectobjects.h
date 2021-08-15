@@ -125,8 +125,7 @@ protected:
 public:
     explicit EffectObjectsModel(
             QObject *parent_ = nullptr,
-            std::shared_ptr<QVector<EffectObjectsData *>> data_
-                =  std::make_shared<QVector<EffectObjectsData *>>()
+            std::shared_ptr<QVector<EffectObjectsData *>> data_ = std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}
             );
 
     LAYOUT_MODEL_IMPL(sortModelAfterChange);

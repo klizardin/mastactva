@@ -87,11 +87,9 @@ private:
         ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>* listModel
                 = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(model);
         return listModel->sortIf(
-                    [&model](const ModelDataType_ *i1_, const ModelDataType_ *i2_)->bool
+                    [&model](const ModelDataObjectType_ *i1_, const ModelDataObjectType_ *i2_)->bool
                     {
-                        const ModelDataObjectType_ *i1 = static_cast<const ModelDataObjectType_ *>(i1_);
-                        const ModelDataObjectType_ *i2 = static_cast<const ModelDataObjectType_ *>(i2_);
-                        return model->compareModelItems(i1, i2);
+                        return model->compareModelItems(i1_, i2_);
                     },
                     true,false);
     }

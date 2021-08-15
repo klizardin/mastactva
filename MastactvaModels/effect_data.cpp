@@ -36,7 +36,7 @@ EffectData &EffectData::operator = (EffectData &&data_)
     return *this;
 }
 
-std::unique_ptr<EffectData> EffectData::copy() const
+std::unique_ptr<EffectData> EffectData::getDataCopy() const
 {
     std::unique_ptr<EffectData> result = std::make_unique<EffectData>();
     result->m_id = m_id;

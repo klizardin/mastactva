@@ -184,8 +184,7 @@ void ArtefactArg::copyFrom(const ArtefactArg *arg_)
 
 ArtefactArgModel::ArtefactArgModel(
         QObject *parent_ /*= nullptr*/,
-        std::shared_ptr<QVector<ArtefactArgData *>> data_
-            /*= std::shared_ptr<QVector<ArtefactArgData *>>{nullptr}*/
+        std::shared_ptr<QVector<ArtefactArgData *>> data_ /*= std::shared_ptr<QVector<ArtefactArgData *>>{nullptr}*/
         )
     :base(parent_, data_)
 {

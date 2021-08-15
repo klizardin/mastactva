@@ -45,7 +45,7 @@ namespace utils
             {
                 continue;
             }
-            dest_->push_back(elem_->copy().release());
+            dest_->push_back(elem_->getDataCopy().release());
         }
     }
 

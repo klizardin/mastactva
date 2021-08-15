@@ -98,7 +98,7 @@ void ObjectInfo::setCreated(const QDateTime &created_)
 ObjectInfoModel::ObjectInfoModel(
         QObject *parent_ /*= nullptr*/,
         std::shared_ptr<QVector<ObjectInfoData *>> data_
-            /*= std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}*/
+        /*= std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}*/
         )
     :base(parent_, data_)
 {

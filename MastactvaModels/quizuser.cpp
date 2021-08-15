@@ -112,7 +112,7 @@ void QuizUserModel::setEmptyModel()
 void QuizUserModel::modelListLoaded(const QJsonDocument &reply_)
 {
     base::modelListLoaded(reply_);
-    if(m_data->isEmpty() && !m_emptyModel)
+    if(m_data.isEmpty() && !m_emptyModel)
     {
         QuizUser* qu = createDataItemImpl();
         addDataItemImpl(qu, true);

@@ -201,7 +201,7 @@ ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 
 EffectObjectsModel::EffectObjectsModel(
         QObject *parent_ /*= nullptr*/,
-        std::shared_ptr<QVector<EffectObjectsData *>> data_ /*=  std::make_shared<QVector<EffectObjectsData *>>()*/
+        std::shared_ptr<QVector<EffectObjectsData *>> data_ /*= std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}*/
         )
     :base(parent_, data_)
 {

@@ -54,13 +54,13 @@ public:
         auto fit = std::find_if(
                     std::begin(m_data),
                     std::end(m_data),
-                    [id_](DataType_ *data_)->bool
+                    [id_](DataObject_ *data_)->bool
         {
-            if(!dynamic_cast<DataObject_ *>(data_))
+            if(!data_)
             {
                 return false;
             }
-            return dynamic_cast<DataObject_ *>(data_)->m_id == id_;
+            return data_->m_id == id_;
         });
         if(std::end(m_data) == fit)
         {
@@ -68,7 +68,7 @@ public:
         }
         else
         {
-            return dynamic_cast<DataObject_ *>(*fit);
+            return *fit;
         }
     }
 
@@ -81,7 +81,7 @@ public:
     }
 
 private:
-    QVector<DataType_ *> m_data;
+    QVector<DataObject_ *> m_data;
     int m_nextId = 0;
 };
 

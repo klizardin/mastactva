@@ -22,7 +22,7 @@ public:
     virtual ~ObjectArtefactData() = default;
 
     ObjectArtefactData &operator = (ObjectArtefactData &&data_);
-    std::unique_ptr<ObjectArtefactData> copy() const;
+    virtual std::unique_ptr<ObjectArtefactData> getDataCopy() const;
 
 public:
     int m_id = -1;

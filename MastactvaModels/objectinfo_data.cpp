@@ -14,7 +14,7 @@ ObjectInfoData::ObjectInfoData(
 {
 }
 
-std::unique_ptr<ObjectInfoData> ObjectInfoData::copy() const
+std::unique_ptr<ObjectInfoData> ObjectInfoData::getDataCopy() const
 {
     std::unique_ptr<ObjectInfoData> result = std::make_unique<ObjectInfoData>();
     result->m_id = m_id;

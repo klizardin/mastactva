@@ -144,7 +144,8 @@ ArtefactModel *ObjectArtefact::createArtefactModel()
 
 ObjectArtefactModel::ObjectArtefactModel(
         QObject *parent_ /*= nullptr*/,
-        std::shared_ptr<QVector<ObjectArtefactData *>> data_ /*= std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}*/
+        std::shared_ptr<QVector<ObjectArtefactData *>> data_
+        /*= std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}*/
         )
     : base(parent_, data_)
 {

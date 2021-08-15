@@ -19,7 +19,7 @@ public:
             );
     virtual ~ObjectInfoData() = default;
 
-    std::unique_ptr<ObjectInfoData> copy() const;
+    virtual std::unique_ptr<ObjectInfoData> getDataCopy() const;
 
 public:
     int m_id = -1;

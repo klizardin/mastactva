@@ -26,7 +26,7 @@ public:
     EffectObjectsData & operator = (EffectObjectsData &&data_);
 
     // to extract data from model object
-    std::unique_ptr<EffectObjectsData> copy() const;
+    virtual std::unique_ptr<EffectObjectsData> getDataCopy() const;
 
 public:
     int m_id = -1;

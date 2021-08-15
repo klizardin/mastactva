@@ -490,7 +490,7 @@ ImagePointModel::ImagePointModel(QObject *parent_ /*= nullptr*/)
 void ImagePointModel::modelListLoaded(const QJsonDocument &reply_)
 {
     base::modelListLoaded(reply_);
-    for(const ImagePoint *ip: qAsConst(*m_data))
+    for(const ImagePoint *ip: qAsConst(m_data))
     {
         if(!ip) { continue; }
         ip->nextImage();
@@ -513,7 +513,7 @@ const ImagePoint *ImagePointModel::nextImagePointByCoords(qreal x_, qreal y_) co
 
     const ImagePoint *minIp = nullptr;
     qreal mind = 0.0;
-    for(const ImagePoint *ip: qAsConst(*m_data))
+    for(const ImagePoint *ip: qAsConst(m_data))
     {
         if(!ip) { continue; }
         ImagePointToNextImageModel *m = ip->getNextImage();
