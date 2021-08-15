@@ -127,7 +127,7 @@ void ObjectArtefact::setStepIndex(const int &stepIndex_)
 
 ArtefactModel *ObjectArtefact::createArtefactModel()
 {
-    ArtefactModel *m = new ArtefactModel(this, m_artefactData.get());
+    ArtefactModel *m = new ArtefactModel(this, m_artefactData);
     m->initResponse();
     m->setLayoutRefImpl("id", m_effectArtefactModel->getQMLLayoutName(), "artefact");
     m->setCurrentRef("id");
@@ -144,7 +144,8 @@ ArtefactModel *ObjectArtefact::createArtefactModel()
 
 ObjectArtefactModel::ObjectArtefactModel(
         QObject *parent_ /*= nullptr*/,
-        QVector<ObjectArtefactData *> *data_ /*= nullptr */
+        std::shared_ptr<QVector<ObjectArtefactData *>> data_
+        /*= std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}*/
         )
     : base(parent_, data_)
 {

@@ -162,7 +162,7 @@ public:
 
     explicit ListModelBaseOfData(
             QObject *parent_,
-            QVector<DataType_ *> *data_ = nullptr
+            std::shared_ptr<QVector<DataType_ *>> data_ = std::shared_ptr<QVector<DataType_ *>>{nullptr}
             )
         : QAbstractListModel(parent_),
           ListModelBaseData(this)
@@ -170,9 +170,10 @@ public:
 #if defined(TRACE_THREADS)
         qDebug() << "ListModelBaseOfData::ListModelBaseOfData<" << getDataLayout<DataObjectType>().getLayoutJsonName() << ">()" << QThread::currentThread() << QThread::currentThreadId();
 #endif
+        m_baseData = data_;
         if(data_)
         {
-            setDataFromDataType(data_);
+            setDataFromDataType(data_.get());
         }
         getDataLayout<DataObjectType>().initQMLModelRoleNames(m_roleNames);
         setStoreAfterSaveBase(getDataLayout<DataObjectType_>().storeAfterSave());
@@ -1437,6 +1438,7 @@ private:
 
 protected:
     QVector<DataObjectType_ *> m_data;
+    std::shared_ptr<QVector<DataType_ *>> m_baseData;
 
 private:
     QHash<int, QByteArray> m_roleNames;

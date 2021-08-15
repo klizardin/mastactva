@@ -185,7 +185,7 @@ EffectObjectsModel *Effect::createEffectObjectsModel()
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
-    EffectObjectsModel *m = new EffectObjectsModel(this, m_effectObjectsData.get());
+    EffectObjectsModel *m = new EffectObjectsModel(this, m_effectObjectsData);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");

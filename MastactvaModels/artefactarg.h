@@ -104,7 +104,7 @@ protected:
 public:
     explicit ArtefactArgModel(
             QObject *parent_ = nullptr,
-            QVector<ArtefactArgData *> *data_ = nullptr
+            std::shared_ptr<QVector<ArtefactArgData *>> data_ = std::shared_ptr<QVector<ArtefactArgData *>>{nullptr}
             );
 
     LAYOUT_MODEL_IMPL(base);

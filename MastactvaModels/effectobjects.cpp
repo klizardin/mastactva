@@ -163,7 +163,7 @@ const ObjectArtefactModel *EffectObjects::getObjectArtefacts() const
 
 ObjectInfoModel *EffectObjects::createObjectInfoModel()
 {
-    ObjectInfoModel *m = new ObjectInfoModel(this, m_objectInfoData.get());
+    ObjectInfoModel *m = new ObjectInfoModel(this, m_objectInfoData);
     m->initResponse();
     m->setLayoutRefImpl("id", m_effectObjectsModel->getQMLLayoutName(), "effect_object_info", false);
     m->setCurrentRef("id");
@@ -183,7 +183,7 @@ ObjectInfoModel *EffectObjects::createObjectInfoModel()
 
 ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 {
-    ObjectArtefactModel *m = new ObjectArtefactModel(this, m_objectArtefactData.get());
+    ObjectArtefactModel *m = new ObjectArtefactModel(this, m_objectArtefactData);
     m->initResponse();
     m->setLayoutRefImpl("object_info", m_effectObjectsModel->getQMLLayoutName(), "effect_object_info", false);
     m->setCurrentRef("object_info");
@@ -201,7 +201,7 @@ ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 
 EffectObjectsModel::EffectObjectsModel(
         QObject *parent_ /*= nullptr*/,
-        QVector<EffectObjectsData *> *data_ /*=  nullptr*/
+        std::shared_ptr<QVector<EffectObjectsData *>> data_ /*= std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}*/
         )
     :base(parent_, data_)
 {

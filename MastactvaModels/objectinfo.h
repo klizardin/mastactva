@@ -87,7 +87,7 @@ protected:
 public:
     explicit ObjectInfoModel(
             QObject *parent_ = nullptr,
-            QVector<ObjectInfoData *> *data_ = nullptr
+            std::shared_ptr<QVector<ObjectInfoData *>> data_ = std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}
             );
 
     LAYOUT_MODEL_IMPL(base);

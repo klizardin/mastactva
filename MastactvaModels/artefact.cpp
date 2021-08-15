@@ -345,7 +345,7 @@ QString Artefact::getObjectName() const
 
 ArtefactArgModel *Artefact::createArtefactArgModel()
 {
-    ArtefactArgModel *m = new ArtefactArgModel(this, m_artefactArgData.get());
+    ArtefactArgModel *m = new ArtefactArgModel(this, m_artefactArgData);
     m->initResponse();
     m->setLayoutRefImpl("artefact", m_artefactModel->getQMLLayoutName(), "id", false);
     m->setCurrentRef("artefact");
@@ -362,8 +362,7 @@ ArtefactArgModel *Artefact::createArtefactArgModel()
 
 ArtefactModel::ArtefactModel(
         QObject *parent_ /*= nullptr*/,
-        QVector<ArtefactData *> *data_
-            /*= nullptr*/
+        std::shared_ptr<QVector<ArtefactData *>> data_ /*= std::shared_ptr<QVector<ArtefactData *>>{nullptr}*/
         )
     : base(parent_, data_)
 {
