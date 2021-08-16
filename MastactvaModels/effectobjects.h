@@ -103,12 +103,7 @@ private:
 
 
 class EffectObjectsModel :
-        public ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
-        public SortModelAfterChangeImpl<
-            EffectObjectsData,
-            EffectObjectsModel,
-            ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
-            EffectObjects>
+        public ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>
 {
     Q_OBJECT
     QML_ELEMENT
@@ -128,7 +123,7 @@ public:
             std::shared_ptr<QVector<EffectObjectsData *>> data_ = std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}
             );
 
-    LAYOUT_MODEL_IMPL(sortModelAfterChange);
+    LAYOUT_MODEL_IMPL();
 
 public slots:
     void jsonResponseSlot(int errorCode_,
@@ -177,6 +172,13 @@ signals:
             ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
             EffectObjects>
             ;
+
+private:
+    SortModelAfterChangeImpl<
+        EffectObjectsData,
+        EffectObjectsModel,
+        ListModelBaseOfData<EffectObjectsData, EffectObjectsModel, EffectObjects>,
+        EffectObjects> m_sort;
 };
 
 

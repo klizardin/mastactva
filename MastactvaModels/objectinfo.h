@@ -90,7 +90,7 @@ public:
             std::shared_ptr<QVector<ObjectInfoData *>> data_ = std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}
             );
 
-    LAYOUT_MODEL_IMPL(base);
+    LAYOUT_MODEL_IMPL();
 
 public slots:
     void jsonResponseSlot(int errorCode_,
