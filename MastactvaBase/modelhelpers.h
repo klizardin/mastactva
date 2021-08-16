@@ -21,12 +21,17 @@ class SortModelAfterChangeImpl : public IListModelChangeNotify
      * */
 
 public:
+    SortModelAfterChangeImpl(ModelType_ *model_)
+        : m_model(model_)
+    {
+    }
+
     virtual void listLoadedVF() override
     {
         if(sortItems())
         {
-            ModelType_* model = static_cast<ModelType_*>(this);
-            model->currentIndexAfterSortChanged();
+            if(!m_model) { return; }
+            m_model->currentIndexAfterSortChanged();
         }
     }
 
@@ -34,8 +39,8 @@ public:
     {
         if(sortItems())
         {
-            ModelType_* model = static_cast<ModelType_*>(this);
-            model->currentIndexAfterSortChanged();
+            if(!m_model) { return; }
+            m_model->currentIndexAfterSortChanged();
         }
     }
 
@@ -43,8 +48,8 @@ public:
     {
         if(sortItems())
         {
-            ModelType_* model = static_cast<ModelType_*>(this);
-            model->currentIndexAfterSortChanged();
+            if(!m_model) { return; }
+            m_model->currentIndexAfterSortChanged();
         }
     }
 
@@ -52,8 +57,8 @@ public:
     {
         if(sortItems())
         {
-            ModelType_* model = static_cast<ModelType_*>(this);
-            model->currentIndexAfterSortChanged();
+            if(!m_model) { return; }
+            m_model->currentIndexAfterSortChanged();
         }
     }
 
@@ -71,28 +76,30 @@ public:
         Q_ASSERT(false); // should not be called
     }
 
-protected:
     void init()
     {
-        ModelType_* model = static_cast<ModelType_*>(this);
+        if(!m_model) { return; }
         ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>* listModel
-                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(model);
+                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(m_model);
         listModel->setModelChangeNotify(this);
     }
 
 private:
     bool sortItems()
     {
-        ModelType_* model = static_cast<ModelType_*>(this);
+        if(!m_model) { return false; }
         ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>* listModel
-                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(model);
+                = static_cast<ListModelBaseOfData<ModelDataType_, ModelType_, ModelDataObjectType_>*>(m_model);
         return listModel->sortIf(
-                    [&model](const ModelDataObjectType_ *i1_, const ModelDataObjectType_ *i2_)->bool
+                    [this](const ModelDataObjectType_ *i1_, const ModelDataObjectType_ *i2_)->bool
                     {
-                        return model->compareModelItems(i1_, i2_);
+                        return m_model->compareModelItems(i1_, i2_);
                     },
                     true,false);
     }
+
+private:
+    ModelType_ *m_model = nullptr;
 };
 
 

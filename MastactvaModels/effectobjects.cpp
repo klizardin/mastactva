@@ -203,7 +203,8 @@ EffectObjectsModel::EffectObjectsModel(
         QObject *parent_ /*= nullptr*/,
         std::shared_ptr<QVector<EffectObjectsData *>> data_ /*= std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}*/
         )
-    :base(parent_, data_)
+    : base(parent_, data_),
+      m_sort(this)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectObjectsModel::EffectObjectsModel()" << QThread::currentThread() << QThread::currentThreadId();
@@ -213,7 +214,7 @@ EffectObjectsModel::EffectObjectsModel(
 #endif
 
     base::init(this);
-    sortModelAfterChange::init();
+    m_sort.init();
 }
 
 bool EffectObjectsModel::compareModelItems(const EffectObjects *i1_, const EffectObjects *i2_) const

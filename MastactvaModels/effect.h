@@ -160,7 +160,7 @@ protected:
 public:
     explicit EffectModel(QObject *parent_ = nullptr);
 
-    LAYOUT_MODEL_IMPL(base);
+    LAYOUT_MODEL_IMPL();
 
 public slots:
     void jsonResponseSlot(int errorCode_,
