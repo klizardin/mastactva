@@ -26246,6 +26246,13 @@
         "classes": [
             {
                 "className": "EffectObjects",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "updateObjectInfoId",
+                        "returnType": "bool"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
