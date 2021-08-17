@@ -43,6 +43,21 @@ EffectObjects::~EffectObjects()
     m_objectArtefactModel = nullptr;
 }
 
+bool EffectObjects::updateObjectInfoId()
+{
+    if(!m_objectInfoModel)
+    {
+        return false;
+    }
+    const ObjectInfo* item = m_objectInfoModel->getCurrentDataItem();
+    if(!item)
+    {
+        return false;
+    }
+    setObjectInfoId(item->id());
+    return true;
+}
+
 int EffectObjects::id() const
 {
     return m_id;

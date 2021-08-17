@@ -1384,8 +1384,16 @@ ApplicationWindow {
                 if(fieldNewItem)
                 {
                     fieldEffectObjectInfo.effectObjectInfoCreated = mastactva.now()
-                    fieldEffectObject.effectObjectsObjectInfo.itemAdded.connect(effectObjectInfoAdded)
-                    fieldEffectObject.effectObjectsObjectInfo.addItem(fieldEffectObjectInfo)
+                    var objectInfoModel = fieldEffectObject.effectObjectsObjectInfo
+                    if(objectInfoModel !== null && objectInfoModel !== undefined)
+                    {
+                        objectInfoModel.itemAdded.connect(effectObjectInfoAdded)
+                        objectInfoModel.addItem(fieldEffectObjectInfo)
+                    }
+                    else
+                    {
+                        clear()
+                    }
                 }
                 else
                 {
@@ -1500,10 +1508,22 @@ ApplicationWindow {
 
         function effectObjectInfoAdded()
         {
+            console.log("effectObjectInfoAdded()")
             if(validState())
             {
                 fieldEffectObject.effectObjectsObjectInfo.itemAdded.disconnect(effectObjectInfoAdded)
-                effectObjectProcess()
+
+                var index = fieldEffectObject.effectObjectsObjectInfo.indexOfItem(fieldEffectObjectInfo)
+                fieldEffectObject.effectObjectsObjectInfo.currentIndex = index
+
+                if(fieldEffectObject.updateObjectInfoId())
+                {
+                    effectObjectProcess()
+                }
+                else
+                {
+                    clear();
+                }
             }
             else
             {

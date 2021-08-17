@@ -53,8 +53,7 @@ public:
         }
     };
 
-    //Q_INVOKABLE void setObjectInfo(int );
-    //Q_INVOKABLE void setObjectArtefactsId(int objectArtefactId_);
+    Q_INVOKABLE bool updateObjectInfoId();
 
 public:
     int id() const;
