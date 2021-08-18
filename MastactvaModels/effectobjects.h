@@ -54,12 +54,12 @@ public:
     };
 
     Q_INVOKABLE bool updateObjectInfoId();
+    Q_INVOKABLE void setEffectId(const int &effectId_);
 
 public:
     int id() const;
     void setId(const int &id_);
     int effectId() const;
-    void setEffectId(const int &effectId_);
     int objectInfoId() const;
     void setObjectInfoId(const int &effectObjectInfoId_);
     QVariant objectInfo() const;
