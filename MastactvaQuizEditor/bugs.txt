@@ -1,0 +1,5 @@
+* do not return/update id while model item add
+* * it fails to process multistep operations
+    1) add item,
+    2) get new item id, (id == -1)
+    3) add parent item with new item id

@@ -217,6 +217,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
+    bugs.txt \
     imports/MastactvaAPI/qmldir \
     Mastactva/Constants.qml \
     Mastactva/qmldir \
