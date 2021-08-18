@@ -26251,6 +26251,17 @@
                         "access": "public",
                         "name": "updateObjectInfoId",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "effectId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setEffectId",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

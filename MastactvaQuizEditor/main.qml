@@ -1515,6 +1515,7 @@ ApplicationWindow {
 
                 var index = fieldEffectObject.effectObjectsObjectInfo.indexOfItem(fieldEffectObjectInfo)
                 fieldEffectObject.effectObjectsObjectInfo.currentIndex = index
+                fieldEffectObject.setEffectId(effectModel.currentItem.effectId)
 
                 if(fieldEffectObject.updateObjectInfoId())
                 {
