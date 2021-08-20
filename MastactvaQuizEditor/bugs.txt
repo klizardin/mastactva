@@ -1,1 +1,1 @@
-* required fields
+* required fields (effectobject)
