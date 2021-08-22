@@ -811,7 +811,7 @@ ApplicationWindow {
             easingTypeModel.loadList()
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
-            chooseEffectObjectDialog.effectObjectModel = effectObjectsModel
+            chooseEffectObjectDialog.effectObjectsModel = effectObjectsModel
             chooseEffectObjectArtefactDialog.artefactTypeModel = artefactTypeModel
             chooseEffectObjectArtefactDialog.artefactModel = artefactModel
             artefactArgEditDialog.artefactArgTypeModel = artefactArgTypeModel
