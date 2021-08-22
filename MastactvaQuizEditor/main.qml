@@ -2136,7 +2136,7 @@ ApplicationWindow {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
                 {
                     fieldEffectArgumentValue.setArgSetId(fieldEffectArgumentSet.effectArgSetId)
-                    console.log("fieldEffectArg = ", fieldEffectArg)
+                    // console.log("fieldEffectArg = ", fieldEffectArg)
                     effectArgumentValueEditDialog.fieldEffectArg = fieldEffectArg
                     effectArgumentValueEditDialog.fieldEffectArgumentSet = fieldEffectArgumentSet
                     effectArgumentValueEditDialog.fieldEffectArgumentValue = fieldEffectArgumentValue
@@ -2154,7 +2154,7 @@ ApplicationWindow {
 
         function argReloaded()
         {
-            console.log("argReloaded()")
+            // console.log("argReloaded()")
             if(fieldEffectArg !== undefined && fieldEffectArg !== null)
             {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
