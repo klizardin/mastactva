@@ -1,1 +1,2 @@
-* required fields (effectobject)
+* required fields (effectobject) -- fixed in sc
+
