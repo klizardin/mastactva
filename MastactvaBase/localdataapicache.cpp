@@ -84,7 +84,7 @@ bool LocalDataAPIDefaultCacheImpl::getListImpl(DBRequestBase *r_)
         db::bind(procedureArgs, query.get());
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-        qDebug() << "bound" << query.boundValues();
+        qDebug() << "bound" << query->boundValues();
 #endif
 
         sqlRes = query->exec();
@@ -285,7 +285,7 @@ bool LocalDataAPIDefaultCacheImpl::setItemImpl(const QVariant &id_,
     db::bind(r->getTableFieldsInfo(), values_, query.get());
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "update sql bound" << query.boundValues();
+    qDebug() << "update sql bound" << query->boundValues();
 #endif
 
     if(!query->exec() && query->lastError().type() != QSqlError::NoError)
@@ -346,7 +346,7 @@ bool LocalDataAPIDefaultCacheImpl::delItemImpl(const QVariant &id_, DBRequestBas
     db::bind(*fitId, query.get(), id_);
 
 #if defined(TRACE_DB_DATA_BINDINGS) || defined(TRACE_DB_REQUESTS)
-    qDebug() << "delete sql bound" << query.boundValues();
+    qDebug() << "delete sql bound" << query->boundValues();
 #endif
 
     if(!query->exec() && query->lastError().type() != QSqlError::NoError)
