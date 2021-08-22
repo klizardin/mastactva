@@ -13,6 +13,7 @@
 #include "../MastactvaModels/questionanswer.h"
 #include "../MastactvaModels/gallerymodelview.h"
 #include "../MastactvaModels/questionanswermodelview.h"
+#include "../MastactvaModels/effectobjects.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
@@ -83,6 +84,12 @@ void QMLObjects::searchObjects()
         EasingTypeModel *m1 = m_root->findChild<EasingTypeModel *>(g_easingTypeModel);
         registerModel(g_easingTypeModel, m1);
     }
+    /*m = findListModel(g_effectObjectsModel);
+    if(!m)
+    {
+        EffectObjectsModel *m1 = m_root->findChild<EffectObjectsModel *>(g_effectObjectsModel);
+        registerModel(g_effectObjectsModel, m1);
+    }*/
     if(!m_mastactvaAPI)
     {
         MastactvaAPI *m1 = m_root->findChild<MastactvaAPI *>(g_mastactvaAPI);
