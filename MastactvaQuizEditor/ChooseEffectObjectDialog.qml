@@ -15,7 +15,7 @@ Dialog {
 
     // public:
     property var fieldEffectObject: undefined
-    property var effectObjectModel: undefined
+    property var effectObjectsModel: undefined
     property int fieldEditEffectObjectStepValue: -1
 
     // private:
@@ -26,10 +26,10 @@ Dialog {
 
         function onEffectObjectModelIndexChanged()
         {
-            if(effectObjectModelIndex >= 0 && isValid())
+            if(effectObjectModelIndex >= 0 && isValidDialog())
             {
-                effectObjectModel.currentIndex = effectObjectModelIndex
-                fieldEffectObject = effectObjectModel.currentItem
+                effectObjectsModel.currentIndex = effectObjectModelIndex
+                fieldEffectObject = effectObjectsModel.currentItem
             }
             else
             {
@@ -90,13 +90,13 @@ Dialog {
     {
         editEffectObjectStep.text = fieldEditEffectObjectStepValue
         effectObjectModelIndex = -1
-        if(isValid())
+        if(isValidDialog())
         {
             effectObjectsListBusyIndicator.visible = true
             effectObjectsListBusyIndicator.running = true
             effectObjectsList.model = 0
-            effectObjectModel.listReloaded.connect(onEffectObjectModelListLoaded)
-            effectObjectModel.loadList()
+            effectObjectsModel.listReloaded.connect(onEffectObjectModelListLoaded)
+            effectObjectsModel.loadList()
         }
     }
 
@@ -106,25 +106,27 @@ Dialog {
     }
 
     // private:
-    function isValid()
+    function isValidDialog()
     {
-        var isValidModel = effectObjectModel !== undefined && effectObjectModel !== null
+        var isValidModel = effectObjectsModel !== undefined && effectObjectsModel !== null
         return isValidModel;
     }
 
     function onEffectObjectModelListLoaded()
     {
-        if(isValid())
+        effectObjectsListBusyIndicator.visible = false
+        effectObjectsListBusyIndicator.running = false
+        if(isValidDialog())
         {
-            effectObjectModel.listReloaded.disconnect(onEffectObjectModelListLoaded)
-            effectObjectsList.model = effectObjectModel
+            effectObjectsModel.listReloaded.disconnect(onEffectObjectModelListLoaded)
+            effectObjectsList.model = effectObjectsModel
             if(fieldEffectObject === null || fieldEffectObject === undefined)
             {
-                effectObjectModelIndex = effectObjectModel.currentIndex
+                effectObjectModelIndex = effectObjectsModel.currentIndex
             }
             else
             {
-                effectObjectModelIndex = effectObjectModel.indexOfItem(fieldEffectObject)
+                effectObjectModelIndex = effectObjectsModel.indexOfItem(fieldEffectObject)
             }
         }
         effectObjectsList.currentIndex = effectObjectModelIndex

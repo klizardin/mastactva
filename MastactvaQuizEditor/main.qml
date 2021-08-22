@@ -811,7 +811,7 @@ ApplicationWindow {
             easingTypeModel.loadList()
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
-            chooseEffectObjectDialog.effectObjectModel = effectObjectsModel
+            chooseEffectObjectDialog.effectObjectsModel = effectObjectsModel
             chooseEffectObjectArtefactDialog.artefactTypeModel = artefactTypeModel
             chooseEffectObjectArtefactDialog.artefactModel = artefactModel
             artefactArgEditDialog.artefactArgTypeModel = artefactArgTypeModel
@@ -1492,7 +1492,8 @@ ApplicationWindow {
                     if(itemIndex >= 0)
                     {
                         effectObjectsCurrentModel.itemSet.connect(effectObjectSet)
-                        effectObjectsCurrentModel.setItem(fieldEffectObject);
+                        var index = effectObjectsCurrentModel.indexOfItem(fieldEffectObject)
+                        effectObjectsCurrentModel.setItem(index, fieldEffectObject);
                     }
                     else
                     {
@@ -1573,17 +1574,7 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            if(isValid())
-            {
-                newEffectObject = effectObjectsCurrentModel.createItem()
-                newEffectObject.effectObjectsStepIndex = fieldEditEffectObjectStepValue
-                effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
-                effectObjectsCurrentModel.addItem(newEffectObject)
-            }
-            else
-            {
-                clear()
-            }
+            processEffectObject()
         }
 
         // public:
@@ -1607,19 +1598,14 @@ ApplicationWindow {
             fieldEditEffectObjectStepValue = -1
         }
 
-        function effectObjectAdded()
+        function processEffectObject()
         {
             if(isValid())
             {
-                effectObjectsCurrentModel.itemAdded.disconnect(effectObjectAdded)
-                var index = effectObjectsCurrentModel.indexOfItem(newEffectObject)
-                if(index >= 0)
-                {
-                    effectObjectsCurrentIndex = index
-                    var item = effectObjectsCurrentModel.currentItem
-                    effectObjectsCurrentModel.procedure("copy", {"effect":newEffectObject.effectObjectsEffectId , "destination": item.effectObjectsId, "source" : fieldEffectObject.effectObjectsId})
-                    effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
-                }
+                effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
+                var args = {"effect":effectModel.currentItem.effectId , "source":fieldEffectObject.effectObjectsId, "step_index":fieldEditEffectObjectStepValue}
+                console.log(args)
+                effectObjectsCurrentModel.procedure("copy_from_effect_object", args)
             }
             else
             {

@@ -115,7 +115,7 @@ Dialog {
 
         if(!fieldNewItem && fieldEffectObject !== null && fieldEffectObject !== undefined)
         {
-            editEffectObjectId.text = fieldEffectObject.editEffectObjectsId
+            editEffectObjectId.text = fieldEffectObject.effectObjectsId
             editEffectObjectStep.text = fieldEffectObject.effectObjectsStepIndex
         }
         else
@@ -130,7 +130,7 @@ Dialog {
             editEffectObjectInfoName.text = fieldEffectObjectInfo.effectObjectInfoName
             editEffectObjectInfoProgrammerName.text = fieldEffectObjectInfo.effectObjectInfoProgrammerName
             editEffectObjectInfoCreated.text = mastactva.dateTimeToUserStr(fieldEffectObjectInfo.effectObjectInfoCreated)
-            editEffectObjectInfoDescription.text = objecInfo.effectObjectInfoDescription
+            editEffectObjectInfoDescription.text = fieldEffectObjectInfo.effectObjectInfoDescription
         }
         else
         {
