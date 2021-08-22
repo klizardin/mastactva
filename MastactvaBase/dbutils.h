@@ -149,6 +149,7 @@ namespace db
         virtual QSqlError lastError() const = 0;
         virtual void bindValue(const QString& placeholder_, const QVariant& val_) = 0;
         virtual QVariant value(const QString& name_) const = 0;
+        virtual QMap<QString, QVariant> boundValues() const = 0;
     };
 
     void bind(const JsonSqlField &field_, ISqlQuery *query_, const QJsonValue &jv_);
@@ -237,6 +238,7 @@ namespace db
         QSqlError lastError() const override;
         void bindValue(const QString& placeholder_, const QVariant& val_) override;
         QVariant value(const QString& name_) const override;
+        QMap<QString, QVariant> boundValues() const override;
 
     private:
         bool m_prepared = false;
