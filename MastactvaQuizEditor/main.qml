@@ -1492,7 +1492,8 @@ ApplicationWindow {
                     if(itemIndex >= 0)
                     {
                         effectObjectsCurrentModel.itemSet.connect(effectObjectSet)
-                        effectObjectsCurrentModel.setItem(fieldEffectObject);
+                        var index = effectObjectsCurrentModel.indexOfItem(fieldEffectObject)
+                        effectObjectsCurrentModel.setItem(index, fieldEffectObject);
                     }
                     else
                     {
