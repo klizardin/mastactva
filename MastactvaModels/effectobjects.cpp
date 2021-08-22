@@ -200,7 +200,7 @@ ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 {
     ObjectArtefactModel *m = new ObjectArtefactModel(this, m_objectArtefactData);
     m->initResponse();
-    m->setLayoutRefImpl("object_info", m_effectObjectsModel->getQMLLayoutName(), "effect_object_info", false);
+    m->setLayoutRefImpl("object_info", m_effectObjectsModel->getQMLLayoutName(), "object_info", false);
     m->setCurrentRef("object_info");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectObjectsModel->getQMLLayoutName() + QString("_EffectObjects_") +
