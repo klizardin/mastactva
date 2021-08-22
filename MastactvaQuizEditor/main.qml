@@ -1508,7 +1508,6 @@ ApplicationWindow {
 
         function effectObjectInfoAdded()
         {
-            console.log("effectObjectInfoAdded()")
             if(validState())
             {
                 fieldEffectObject.effectObjectsObjectInfo.itemAdded.disconnect(effectObjectInfoAdded)
@@ -4291,7 +4290,7 @@ ApplicationWindow {
                                         target: images_of_gallery
                                         function onCurrentIndexChanged()
                                         {
-                                            if(imageOfGalleryDescriptionIndex == -1)
+                                            if(imageOfGalleryDescriptionIndex === -1)
                                             {
                                                 imageOfGalleryNextImageNextImage.source = Constants.noImage;
                                             }
@@ -5133,7 +5132,7 @@ ApplicationWindow {
                             target: root
                             function onImageOfGalleryPointIndexChanged()
                             {
-                                if(imageOfGalleryPointIndex == -1)
+                                if(imageOfGalleryPointIndex === -1)
                                 {
                                     pointImage.source = Constants.inactivePoint
                                 }
@@ -5162,7 +5161,7 @@ ApplicationWindow {
 
                             function selectCurrentImagePoint()
                             {
-                                if(imageOfGallery_index == galleryImagesCurrentIndex)
+                                if(imageOfGallery_index === galleryImagesCurrentIndex)
                                 {
                                     if(imageOfGalleryPointIndex !== -1)
                                     {
