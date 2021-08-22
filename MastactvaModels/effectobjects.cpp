@@ -180,7 +180,7 @@ ObjectInfoModel *EffectObjects::createObjectInfoModel()
 {
     ObjectInfoModel *m = new ObjectInfoModel(this, m_objectInfoData);
     m->initResponse();
-    m->setLayoutRefImpl("id", m_effectObjectsModel->getQMLLayoutName(), "effect_object_info", false);
+    m->setLayoutRefImpl("id", m_effectObjectsModel->getQMLLayoutName(), "object_info", false);
     m->setCurrentRef("id");
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_effectObjectsModel->getQMLLayoutName() + QString("_EffectObjects_") +
