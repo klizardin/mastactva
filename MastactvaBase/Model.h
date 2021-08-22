@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QDebug>
 #include <QVariant>
+#include <QMetaProperty>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/localdata.h"
@@ -793,6 +794,22 @@ public:
         clearData();
         setCurrentIndexImpl(-1);
         clearListLoaded();
+    }
+
+    void procedureImpl(const QString &procedureName_, const QJSValue &extraFields_)
+    {
+        QHash<QString, QVariant> extraFields;
+        if(extraFields_.isObject())
+        {
+            const QVariant vv = extraFields_.toVariant();
+            const QMap<QString, QVariant> vm = vv.toMap();
+            const QList<QString> ks = vm.keys();
+            for(const QString &kv_ : ks)
+            {
+                extraFields.insert(kv_, vm.value(kv_));
+            }
+        }
+        loadListImpl(procedureName_, extraFields);
     }
 
     void procedureImpl(const QString &procedureName_, const QHash<QString, QVariant> &extraFields_)
@@ -1604,7 +1621,7 @@ public:                                                                         
             emit currentItemChanged();                                                                          \
         }                                                                                                       \
     }                                                                                                           \
-    Q_INVOKABLE void procedure(const QString &procedureName_, const QHash<QString, QVariant> &extraValues_)     \
+    Q_INVOKABLE void procedure(const QString &procedureName_, const QJSValue &extraValues_)                     \
     {                                                                                                           \
         procedureImpl(procedureName_, extraValues_);                                                            \
     }                                                                                                           \
@@ -1767,6 +1784,13 @@ public:                                                                         
         emit error(errorCodeStr_, reply_.toJson(QJsonDocument::Indented));                                      \
     }                                                                                                           \
 /* end macro LAYOUTMODEL() */
+
+/*
+    Q_INVOKABLE void procedure(const QString &procedureName_, const QHash<QString, QVariant> &extraValues_)     \
+    {                                                                                                           \
+        procedureImpl(procedureName_, extraValues_);                                                            \
+    }                                                                                                           \
+*/
 
 
 #endif // MODEL_H
