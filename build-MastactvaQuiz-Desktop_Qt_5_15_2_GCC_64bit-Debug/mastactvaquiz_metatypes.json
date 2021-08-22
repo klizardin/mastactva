@@ -1211,7 +1211,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -2094,7 +2094,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -2902,7 +2902,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -3854,7 +3854,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -4662,7 +4662,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -5470,7 +5470,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -6257,7 +6257,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -7154,7 +7154,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -8055,7 +8055,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -8901,7 +8901,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -9667,7 +9667,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -10570,7 +10570,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -11340,7 +11340,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -12262,7 +12262,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -13129,7 +13129,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -14009,7 +14009,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -14977,7 +14977,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -15865,7 +15865,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -16868,7 +16868,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -17657,7 +17657,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -18427,7 +18427,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -19197,7 +19197,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -20085,7 +20085,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -21007,7 +21007,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -21845,7 +21845,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -22675,7 +22675,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
@@ -23073,6 +23073,17 @@
                         "access": "public",
                         "name": "updateObjectInfoId",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "effectId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setEffectId",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -23513,7 +23524,7 @@
                             },
                             {
                                 "name": "extraValues_",
-                                "type": "QHash<QString,QVariant>"
+                                "type": "QJSValue"
                             }
                         ],
                         "name": "procedure",
