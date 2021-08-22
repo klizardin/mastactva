@@ -114,6 +114,8 @@ Dialog {
 
     function onEffectObjectModelListLoaded()
     {
+        effectObjectsListBusyIndicator.visible = false
+        effectObjectsListBusyIndicator.running = false
         if(isValidDialog())
         {
             effectObjectsModel.listReloaded.disconnect(onEffectObjectModelListLoaded)
