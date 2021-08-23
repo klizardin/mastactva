@@ -28,8 +28,10 @@ Dialog {
         {
             if(effectObjectModelIndex >= 0 && isValidDialog())
             {
+                console.log("effectObjectModelIndex=",effectObjectModelIndex)
                 effectObjectsModel.currentIndex = effectObjectModelIndex
                 fieldEffectObject = effectObjectsModel.currentItem
+                console.log("fieldEffectObject id=",fieldEffectObject.effectObjectsId)
             }
             else
             {
@@ -103,6 +105,7 @@ Dialog {
     function update()
     {
         fieldEditEffectObjectStepValue = editEffectObjectStep.text
+        console.log("fieldEditEffectObjectStepValue=",fieldEditEffectObjectStepValue)
     }
 
     // private:
