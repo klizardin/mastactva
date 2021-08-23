@@ -28,10 +28,10 @@ Dialog {
         {
             if(effectObjectModelIndex >= 0 && isValidDialog())
             {
-                console.log("effectObjectModelIndex=",effectObjectModelIndex)
+                //console.log("effectObjectModelIndex=",effectObjectModelIndex)
                 effectObjectsModel.currentIndex = effectObjectModelIndex
                 fieldEffectObject = effectObjectsModel.currentItem
-                console.log("fieldEffectObject id=",fieldEffectObject.effectObjectsId)
+                //console.log("fieldEffectObject id=",fieldEffectObject.effectObjectInfoId)
             }
             else
             {

@@ -1588,8 +1588,14 @@ ApplicationWindow {
         function isValid()
         {
             var validEffectObject = fieldEffectObject !== null && fieldEffectObject !== undefined
+            var validEffectObjectInfo = fieldEffectObject.effectObjectsObjectInfo !== null && fieldEffectObject.effectObjectsObjectInfo !== undefined
+            if(validEffectObjectInfo)
+            {
+                fieldEffectObject.effectObjectsObjectInfo.currentIndex = 0
+            }
+            var validEffectObjectInfoItem = validEffectObjectInfo && fieldEffectObject.effectObjectsObjectInfo.currentItem !== null && fieldEffectObject.effectObjectsObjectInfo.currentItem !== undefined
             var validModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
-            return validEffectObject && validModel;
+            return validEffectObject && validEffectObjectInfoItem && validModel;
         }
 
         function clear()
@@ -1604,8 +1610,8 @@ ApplicationWindow {
             if(isValid())
             {
                 effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
-                var args = {"effect":effectModel.currentItem.effectId , "source":fieldEffectObject.effectObjectsId, "step_index":fieldEditEffectObjectStepValue}
-                console.log(args)
+                // console.log("effect",effectModel.currentItem.effectId, "source", fieldEffectObject.effectObjectsObjectInfo.currentItem.effectObjectInfoId, "step_index", fieldEditEffectObjectStepValue)
+                var args = {"effect":effectModel.currentItem.effectId , "source":fieldEffectObject.effectObjectsObjectInfo.currentItem.effectObjectInfoId, "step_index":fieldEditEffectObjectStepValue}
                 effectObjectsCurrentModel.procedure("copy_from_effect_object", args)
             }
             else
