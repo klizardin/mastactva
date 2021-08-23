@@ -1574,6 +1574,7 @@ ApplicationWindow {
         }
 
         onAccepted: {
+            update()
             processEffectObject()
         }
 
