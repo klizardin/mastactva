@@ -172,72 +172,19 @@ void QMLObjects::searchObjects()
         m_localDataAPIViews.push_back(new GalleryStatisticsModelView(m_root));
         m_localDataAPIViews.push_back(new UserQuestionAnswerModelView(m_root));
     }
-    IListModel *m = nullptr;
-    m = findListModel(g_effectModel);
-    if(nullptr == m)
-    {
-        EffectModel *m1 = m_root->findChild<EffectModel *>(g_effectModel);
-        registerModel(g_effectModel, m1);
-    }
-    m = findListModel(g_artefactTypeModel);
-    if(nullptr == m)
-    {
-        ArtefactTypeModel *m1 = m_root->findChild<ArtefactTypeModel *>(g_artefactTypeModel);
-        registerModel(g_artefactTypeModel, m1);
-    }
-    m = findListModel(g_artefactModel);
-    if(nullptr == m)
-    {
-        ArtefactModel *m1 = m_root->findChild<ArtefactModel *>(g_artefactModel);
-        registerModel(g_artefactModel, m1);
-    }
-    m = findListModel(g_artefactArgTypeModel);
-    if(nullptr == m)
-    {
-        ArtefactArgTypeModel *m1 = m_root->findChild<ArtefactArgTypeModel *>(g_artefactArgTypeModel);
-        registerModel(g_artefactArgTypeModel, m1);
-    }
-    m = findListModel(g_artefactArgStorageModel);
-    if(nullptr == m)
-    {
-        ArtefactArgStorageModel *m1 = m_root->findChild<ArtefactArgStorageModel *>(g_artefactArgStorageModel);
-        registerModel(g_artefactArgStorageModel, m1);
-    }
-    m = findListModel(g_easingTypeModel);
-    if(nullptr == m)
-    {
-        EasingTypeModel *m1 = m_root->findChild<EasingTypeModel *>(g_easingTypeModel);
-        registerModel(g_easingTypeModel, m1);
-    }
-    m = findListModel(g_galleryModel);
-    if(nullptr == m)
-    {
-        GalleryModel *m1 = m_root->findChild<GalleryModel *>(g_galleryModel);
-        registerModel(g_galleryModel, m1);
-    }
-    m = findListModel(g_allImagesOfGalleryModel);
-    if(nullptr == m)
-    {
-        ImageModel *m1 = m_root->findChild<ImageModel *>(g_allImagesOfGalleryModel);
-        registerModel(g_allImagesOfGalleryModel, m1);
-    }
-    m = findListModel(g_effectObjectsModel);
-    if(nullptr == m)
-    {
-        EffectObjectsModel *m1 = m_root->findChild<EffectObjectsModel *>(g_effectObjectsModel);
-        registerModel(g_effectObjectsModel, m1);
-    }
-    m = findListModel(g_objectInfoModel);
-    if(nullptr == m)
-    {
-        ObjectInfoModel *m1 = m_root->findChild<ObjectInfoModel *>(g_objectInfoModel);
-        registerModel(g_objectInfoModel, m1);
-    }
-    for(IListModel *m : qAsConst(m_models))
-    {
-        if(nullptr == m) { continue; }
-        m->initResponse();
-    }
+    registerModels(
+                modelArg<EffectModel>(g_effectModel),
+                modelArg<ArtefactModel>(g_artefactModel),
+                modelArg<ArtefactTypeModel>(g_artefactTypeModel),
+                modelArg<ArtefactArgTypeModel>(g_artefactArgTypeModel),
+                modelArg<ArtefactArgStorageModel>(g_artefactArgStorageModel),
+                modelArg<EasingTypeModel>(g_easingTypeModel),
+                modelArg<GalleryModel>(g_galleryModel),
+                modelArg<ImageModel>(g_allImagesOfGalleryModel),
+                modelArg<EffectObjectsModel>(g_effectObjectsModel),
+                modelArg<ObjectInfoModel>(g_objectInfoModel)
+                );
+    postRegisterModel();
 }
 
 QMLObjectsBase *QMLObjectsBase::getInstancePtr()

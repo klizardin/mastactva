@@ -19,6 +19,25 @@ using LocalDataAPI = LocalDataAPINoCache;
 class ServerFiles;
 
 
+template<typename ModelType_>
+class ModelArg
+{
+public:
+    using ModelType = ModelType_;
+
+    ModelArg(const char *modelName_)
+        : m_ModelName(modelName_)
+    {
+    }
+    const char *m_ModelName;
+};
+
+template<typename ModelType_> inline
+ModelArg<ModelType_> modelArg(const char *modelName_)
+{
+    return ModelArg<ModelType_>(modelName_);
+}
+
 class QMLObjectsBase
 {
 protected:
@@ -51,6 +70,12 @@ protected:
     IListModel *findListModel(const QString &layoutName_) const;
     virtual void clearDependedFromRoot();
 
+    template<typename ModelType_, typename ... ModelArgs_>
+    void registerModels(const ModelArg<ModelType_>& arg_, const ModelArgs_& ... args_);
+    template<typename ModelType_>
+    void registerModels(const ModelArg<ModelType_>& arg_);
+    void postRegisterModel();
+
 protected:
     QObject *m_root = nullptr;
     QVector<IListModel *> m_models;
@@ -60,5 +85,24 @@ protected:
     QVector<ILocalDataAPI *> m_localDataAPIViews;
 };
 
+template<typename ModelType_, typename ... ModelArgs_> inline
+void QMLObjectsBase::registerModels(const ModelArg<ModelType_>& arg_, const ModelArgs_& ... args_)
+{
+    registerModels(arg_);
+    registerModels(args_ ...);
+}
+
+template<typename ModelType_> inline
+void QMLObjectsBase::registerModels(const ModelArg<ModelType_>& arg_)
+{
+    if(!m_root) { return; }
+    IListModel *m = nullptr;
+    m = findListModel(arg_.m_ModelName);
+    if(!m)
+    {
+        ModelType_ *m1 = m_root->findChild<ModelType_ *>(arg_.m_ModelName);
+        registerModel(arg_.m_ModelName, m1);
+    }
+}
 
 #endif // QMLOBJECTS_H
