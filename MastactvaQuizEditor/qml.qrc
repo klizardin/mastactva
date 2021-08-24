@@ -20,7 +20,7 @@
         <file>AutoSizeMenu.qml</file>
         <file>EffectEditDialog.qml</file>
         <file>EffectObjectEditDialog.qml</file>
-        <file>ChooseEffectObjectDialog.qml</file>
+        <file>ChooseObjectInfoDialog.qml</file>
         <file>RefreshEffectArgumentsDialog.qml</file>
         <file>EffectArgumentSetEditDialog.qml</file>
         <file>EffectArgumentValueEditDialog.qml</file>

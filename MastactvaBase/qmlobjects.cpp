@@ -105,3 +105,12 @@ void QMLObjectsBase::unregisterModel(const QString &layoutName_)
     if(std::end(m_models) == fit) { return; }
     m_models.erase(fit);
 }
+
+void QMLObjectsBase::postRegisterModel()
+{
+    for(IListModel *m : qAsConst(m_models))
+    {
+        if(!m) { continue; }
+        m->initResponse();
+    }
+}

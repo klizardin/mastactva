@@ -767,6 +767,16 @@ ApplicationWindow {
         autoCreateChildrenModels: true
     }
 
+    ObjectInfoModel {
+        id: objectInfoModel
+        objectName: "ObjectInfoModel"
+        layoutQMLName: "ObjectInfoModel"
+        layoutIdField: "id"
+        currentRef: ""
+        jsonParamsGet: false
+        autoCreateChildrenModels: true
+    }
+
     function initGalleryModel()
     {
     }
@@ -811,7 +821,7 @@ ApplicationWindow {
             easingTypeModel.loadList()
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
-            chooseEffectObjectDialog.effectObjectsModel = effectObjectsModel
+            chooseObjectInfoDialog.objectInfoModel = objectInfoModel
             chooseEffectObjectArtefactDialog.artefactTypeModel = artefactTypeModel
             chooseEffectObjectArtefactDialog.artefactModel = artefactModel
             artefactArgEditDialog.artefactArgTypeModel = artefactArgTypeModel
@@ -1562,8 +1572,8 @@ ApplicationWindow {
         }
     }
 
-    ChooseEffectObjectDialog {
-        id: chooseEffectObjectDialog
+    ChooseObjectInfoDialog {
+        id: chooseObjectInfoDialog
 
         // private:
         property var newEffectObject: undefined
@@ -1587,20 +1597,14 @@ ApplicationWindow {
         // private:
         function isValid()
         {
-            var validEffectObject = fieldEffectObject !== null && fieldEffectObject !== undefined
-            var validEffectObjectInfo = fieldEffectObject.effectObjectsObjectInfo !== null && fieldEffectObject.effectObjectsObjectInfo !== undefined
-            if(validEffectObjectInfo)
-            {
-                fieldEffectObject.effectObjectsObjectInfo.currentIndex = 0
-            }
-            var validEffectObjectInfoItem = validEffectObjectInfo && fieldEffectObject.effectObjectsObjectInfo.currentItem !== null && fieldEffectObject.effectObjectsObjectInfo.currentItem !== undefined
+            var validEffectObject = fieldObjectInfo !== null && fieldObjectInfo !== undefined
             var validModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
-            return validEffectObject && validEffectObjectInfoItem && validModel;
+            return validEffectObject && validModel;
         }
 
         function clear()
         {
-            fieldEffectObject = undefined
+            fieldObjectInfo = undefined
             newEffectObject = undefined
             fieldEditEffectObjectStepValue = -1
         }
@@ -1610,8 +1614,8 @@ ApplicationWindow {
             if(isValid())
             {
                 effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
-                // console.log("effect",effectModel.currentItem.effectId, "source", fieldEffectObject.effectObjectsObjectInfo.currentItem.effectObjectInfoId, "step_index", fieldEditEffectObjectStepValue)
-                var args = {"effect":effectModel.currentItem.effectId , "source":fieldEffectObject.effectObjectsObjectInfo.currentItem.effectObjectInfoId, "step_index":fieldEditEffectObjectStepValue}
+                // console.log("effect",effectModel.currentItem.effectId, "source", fieldEffectObject.effectObjectInfoId, "step_index", fieldEditEffectObjectStepValue)
+                var args = {"effect":effectModel.currentItem.effectId , "source":fieldObjectInfo.effectObjectInfoId, "step_index":fieldEditEffectObjectStepValue}
                 effectObjectsCurrentModel.procedure("copy_from_effect_object", args)
             }
             else
@@ -3401,7 +3405,7 @@ ApplicationWindow {
         id: addExistingEffectObject
         text: qsTr("Add &existing")
         onTriggered: {
-            chooseEffectObjectDialog.choose()
+            chooseObjectInfoDialog.choose()
         }
     }
 
