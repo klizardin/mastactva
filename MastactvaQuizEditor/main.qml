@@ -767,6 +767,16 @@ ApplicationWindow {
         autoCreateChildrenModels: true
     }
 
+    ObjectInfoModel {
+        id: objectInfoModel
+        objectName: "ObjectInfoModel"
+        layoutQMLName: "ObjectInfoModel"
+        layoutIdField: "id"
+        currentRef: ""
+        jsonParamsGet: false
+        autoCreateChildrenModels: true
+    }
+
     function initGalleryModel()
     {
     }

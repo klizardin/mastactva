@@ -131,6 +131,7 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 #include "../MastactvaModels/image.h"
 #include "../MastactvaModels/gallerystatistics.h"
 #include "../MastactvaModels/questionanswer.h"
+#include "../MastactvaModels/objectinfo.h"
 #include "../MastactvaModels/effectobjects.h"
 #include "../MastactvaBase/names.h"
 
@@ -225,6 +226,12 @@ void QMLObjects::searchObjects()
     {
         EffectObjectsModel *m1 = m_root->findChild<EffectObjectsModel *>(g_effectObjectsModel);
         registerModel(g_effectObjectsModel, m1);
+    }
+    m = findListModel(g_objectInfoModel);
+    if(nullptr == m)
+    {
+        ObjectInfoModel *m1 = m_root->findChild<ObjectInfoModel *>(g_objectInfoModel);
+        registerModel(g_objectInfoModel, m1);
     }
     for(IListModel *m : qAsConst(m_models))
     {

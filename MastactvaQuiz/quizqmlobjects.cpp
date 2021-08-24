@@ -14,6 +14,7 @@
 #include "../MastactvaModels/gallerymodelview.h"
 #include "../MastactvaModels/questionanswermodelview.h"
 #include "../MastactvaModels/effectobjects.h"
+#include "../MastactvaModels/objectinfo.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
@@ -89,6 +90,12 @@ void QMLObjects::searchObjects()
     {
         EffectObjectsModel *m1 = m_root->findChild<EffectObjectsModel *>(g_effectObjectsModel);
         registerModel(g_effectObjectsModel, m1);
+    }*/
+    /*m = findListModel(g_objectInfoModel);
+    if(!m)
+    {
+        ObjectInfoModel *m1 = m_root->findChild<ObjectInfoModel *>(g_objectInfoModel);
+        registerModel(g_objectInfoModel, m1);
     }*/
     if(!m_mastactvaAPI)
     {

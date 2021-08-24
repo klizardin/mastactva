@@ -127,6 +127,7 @@ Q_DECL_UNUSED static const char *g_artefactArgStorageModel = "ArtefactArgStorage
 Q_DECL_UNUSED static const char *g_easingTypeModel = "EasingTypeModel";
 Q_DECL_UNUSED static const char *g_galleryModel = "GalleryModel";
 Q_DECL_UNUSED static const char *g_effectObjectsModel = "EffectObjectsModel";
+Q_DECL_UNUSED static const char *g_objectInfoModel = "ObjectInfoModel";
 
 
 // server files
