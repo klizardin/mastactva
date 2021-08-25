@@ -3432,7 +3432,7 @@ ApplicationWindow {
         // private:
         function isValidModel()
         {
-            var validModel = effectObjectsCurrentModel !== unddefined && effectObjectsCurrentModel !== null
+            var validModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
             return validModel
         }
 
