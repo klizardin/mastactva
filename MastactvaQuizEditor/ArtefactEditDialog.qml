@@ -172,11 +172,11 @@ Dialog {
             w = Math.max(w, editArtafactFilenameFontMetrics.tightBoundingRect(artefactTypeModel.itemAt(i).artefactTypeType).width)
         }
         editArtefactTypeListRect.width = w
-        editArtefactTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.smallListSmallSpacing) * artefactTypeModel.size() * 1.1
+        editArtefactTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.smallListSmallSpacing) * Math.min(artefactTypeModel.size(), 5) * 1.1
         editObjectArtefactId.text = fieldObjectArtefact.objectArtefactId
         editObjectArtefactStep.text = fieldObjectArtefact.objectArtefactStepIndex
         editArtefactId.text = fieldArtefact.artefactId
-        if(!editArtefactTypeList.model.selectItemById(fieldShader.artefactTypeId))
+        if(!editArtefactTypeList.model.selectItemById(fieldArtefact.artefactTypeId))
         {
             editArtefactTypeList.currentIndex = 0
             editArtefactTypeList.model.currentIndex = 0
