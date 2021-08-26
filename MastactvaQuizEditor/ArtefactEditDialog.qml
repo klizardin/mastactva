@@ -173,7 +173,7 @@ Dialog {
         }
         editArtefactTypeListRect.width = w
         editArtefactTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.smallListSmallSpacing) * artefactTypeModel.size() * 1.1
-        editObjectArtefactId = fieldObjectArtefact.objectArtefactId
+        editObjectArtefactId.text = fieldObjectArtefact.objectArtefactId
         editObjectArtefactStep.text = fieldObjectArtefact.objectArtefactStepIndex
         editArtefactId.text = fieldArtefact.artefactId
         if(!editArtefactTypeList.model.selectItemById(fieldShader.artefactTypeId))
