@@ -2611,6 +2611,17 @@
                         "access": "public",
                         "name": "now",
                         "returnType": "QDateTime"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "isShaderUrl",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

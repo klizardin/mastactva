@@ -1647,6 +1647,7 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
+                    fieldArtefact.artefactCreated = mastactva.now()
                     artefactModel.itemAdded.connect(artefactAdded)
                     artefactModel.addItem(fieldArtefact)
                 }
