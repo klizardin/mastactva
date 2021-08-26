@@ -1122,3 +1122,19 @@ QDateTime MastactvaAPI::now() const
 {
     return date_time::nowTz();
 }
+
+bool MastactvaAPI::isShaderUrl(const QString &url_)
+{
+    const QUrl url(url_);
+    const QString path = url.toLocalFile();
+    const QFileInfo fi(path);
+    const QString ext = fi.suffix();
+    static const char * s_extensions[] = {"vert", "vertex", "frag", "fragment", "vsh", "fsh"};
+    return std::find_if(
+                std::begin(s_extensions),
+                std::end(s_extensions),
+                [&ext](const char *ext_)->bool
+    {
+        return ext == ext_;
+    }) != std::end(s_extensions);
+}
