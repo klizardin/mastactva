@@ -25443,6 +25443,17 @@
                         ],
                         "name": "setArtefactId",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "artefact_",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "updateArtefactId",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,
@@ -26260,6 +26271,12 @@
                 "methods": [
                     {
                         "access": "public",
+                        "arguments": [
+                            {
+                                "name": "objectInfo_",
+                                "type": "QVariant"
+                            }
+                        ],
                         "name": "updateObjectInfoId",
                         "returnType": "bool"
                     },
