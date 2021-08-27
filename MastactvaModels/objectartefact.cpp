@@ -145,6 +145,7 @@ bool ObjectArtefact::updateArtefactId(const QVariant &artefact_)
         return false;
     }
     m_artefactModel->setCurrentIndexImpl(index);
+    m_artefactId = m_artefactModel->getCurrentDataItem()->id();
     return true;
 }
 
