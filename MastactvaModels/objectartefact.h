@@ -47,6 +47,7 @@ public:
 
     Q_INVOKABLE int artefactId() const;
     Q_INVOKABLE void setArtefactId(const int &artefactId_);
+    Q_INVOKABLE bool updateArtefactId(const QVariant &artefact_);
 
 public:
     int id() const;

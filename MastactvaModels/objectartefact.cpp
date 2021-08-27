@@ -125,6 +125,29 @@ void ObjectArtefact::setStepIndex(const int &stepIndex_)
     emit stepIndexChanged();
 }
 
+bool ObjectArtefact::updateArtefactId(const QVariant &artefact_)
+{
+    if(!m_artefactModel
+            || 0 == m_artefactModel->sizeImpl()
+            )
+    {
+        return false;
+    }
+    QObject *obj = qvariant_cast<QObject *>(artefact_);
+    const Artefact *artefact = qobject_cast<Artefact *>(obj);
+    if(!artefact)
+    {
+        return false;
+    }
+    const int index = m_artefactModel->indexOfDataItemImpl(artefact);
+    if(index < 0)
+    {
+        return false;
+    }
+    m_artefactModel->setCurrentIndexImpl(index);
+    return true;
+}
+
 ArtefactModel *ObjectArtefact::createArtefactModel()
 {
     ArtefactModel *m = new ArtefactModel(this, m_artefactData);
