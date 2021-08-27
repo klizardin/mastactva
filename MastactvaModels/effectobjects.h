@@ -53,7 +53,7 @@ public:
         }
     };
 
-    Q_INVOKABLE bool updateObjectInfoId();
+    Q_INVOKABLE bool updateObjectInfoId(const QVariant &objectInfo_);
     Q_INVOKABLE void setEffectId(const int &effectId_);
 
 public:
