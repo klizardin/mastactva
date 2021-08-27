@@ -87,6 +87,17 @@ Dialog {
             }
 
             Label {
+                text: qsTr("Artefact name : ")
+            }
+            TextField {
+                id: editArtefactName
+                placeholderText: qsTr("Artefact name")
+                focus: true
+                KeyNavigation.priority: KeyNavigation.BeforeItem
+                KeyNavigation.tab: editArtefactTypeList
+            }
+
+            Label {
                 text: qsTr("Object artefact step : ")
             }
             TextField {
@@ -174,6 +185,7 @@ Dialog {
         editArtefactTypeListRect.width = w
         editArtefactTypeListRect.height = (editArtafactFilenameFontMetrics.height + Constants.smallListSmallSpacing) * Math.min(artefactTypeModel.size(), 5) * 1.1
         editObjectArtefactId.text = fieldObjectArtefact.objectArtefactId
+        editArtefactName.text = fieldArtefact.artefactName
         editObjectArtefactStep.text = fieldObjectArtefact.objectArtefactStepIndex
         editArtefactId.text = fieldArtefact.artefactId
         if(!editArtefactTypeList.model.selectItemById(fieldArtefact.artefactTypeId))
@@ -198,6 +210,7 @@ Dialog {
     function update()
     {
         fieldObjectArtefact.objectArtefactStepIndex = editObjectArtefactStep.text
+        fieldArtefact.artefactName = editArtefactName.text
         fieldArtefact.artefactFilename = editArtefactFilename.text
         fieldArtefact.artefactHash = editArtefactHash.text
         fieldArtefact.artefactDescription = editArtefactDescription.text
