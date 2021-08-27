@@ -43,12 +43,24 @@ EffectObjects::~EffectObjects()
     m_objectArtefactModel = nullptr;
 }
 
-bool EffectObjects::updateObjectInfoId()
+bool EffectObjects::updateObjectInfoId(const QVariant &objectInfo_)
 {
     if(!m_objectInfoModel)
     {
         return false;
     }
+    QObject *obj = qvariant_cast<QObject *>(objectInfo_);
+    const ObjectInfo *objectInfo = qobject_cast<ObjectInfo *>(obj);
+    if(!objectInfo)
+    {
+        return false;
+    }
+    const int index = m_objectInfoModel->indexOfDataItemImpl(objectInfo);
+    if(0 > index)
+    {
+        return false;
+    }
+    m_objectInfoModel->setCurrentIndexImpl(index);
     const ObjectInfo* item = m_objectInfoModel->getCurrentDataItem();
     if(!item)
     {
