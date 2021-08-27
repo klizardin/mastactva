@@ -1764,9 +1764,15 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    effectObjectArtefactAdded.setArtefactId(fieldArtefact.artefactId)
-                    effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
-                    effectObjectArtefactsCurrentModel.addItem(effectObjectArtefact)
+                    if(fieldObjectArtefact.updateArtefactId(fieldArtefact))
+                    {
+                        effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
+                        effectObjectArtefactsCurrentModel.addItem(effectObjectArtefact)
+                    }
+                    else
+                    {
+                        clear()
+                    }
                 }
                 else
                 {
