@@ -1749,7 +1749,7 @@ ApplicationWindow {
         {
             if(validState())
             {
-                fieldObjectArtefact.objectArtefactArtefact.itemSet.disconnect(effectObjectArtefactSet)
+                fieldObjectArtefact.objectArtefactArtefact.itemSet.disconnect(artefactSet)
                 objectArtefactProcess()
             }
             else
