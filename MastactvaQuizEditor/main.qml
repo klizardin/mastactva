@@ -3539,7 +3539,7 @@ ApplicationWindow {
         // private:
         function isValidModel()
         {
-            var validModel = effectObjectArtefactsCurrentModel !== unddefined && effectObjectArtefactsCurrentModel !== null
+            var validModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
             return validModel
         }
 
