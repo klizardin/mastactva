@@ -84,7 +84,7 @@ Dialog {
 
                 FontMetrics{
                     id: shaderItemFontMetrics
-                    font: shaderItemType.font
+                    font: artefactItemType.font
                 }
 
                 Row {
