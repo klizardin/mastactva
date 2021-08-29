@@ -1678,7 +1678,7 @@ ApplicationWindow {
 
         function validModelAndPosition()
         {
-            return validModel() && effectObjectArtefactsCurrentInedx >= 0
+            return validModel() && effectObjectArtefactsCurrentIndex >= 0
         }
 
         function validState()
@@ -1830,8 +1830,11 @@ ApplicationWindow {
         onAccepted: {
             if(isValid())
             {
-                newEffectObjectArtefact = effectObjectsCurrentModel.createItem()
+                newEffectObjectArtefact = effectObjectArtefactsCurrentModel.createItem()
+                var currentObjectInfoId = effectObjectsCurrentModel.currentItem.effectObjectsObjectInfo.currentItem.effectObjectInfoId
+                newEffectObjectArtefact.updateObjectInfoId(currentObjectInfoId)
                 newEffectObjectArtefact.setArtefactId(fieldArtefact.artefactId)
+
                 effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
                 effectObjectArtefactsCurrentModel.addItem(newEffectObjectArtefact)
             }
@@ -1852,7 +1855,11 @@ ApplicationWindow {
         {
             var validEffectObject = fieldArtefact !== null && fieldArtefact !== undefined
             var validModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
-            return validEffectObject && validModel;
+            var validEffectObjectsModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
+            var objectInfoModel = effectObjectsCurrentModel.currentItem.effectObjectsObjectInfo
+            var validObjectInfoModel = objectInfoModel !== undefined && objectInfoModel !== null
+            validObjectInfoModel = validObjectInfoModel && objectInfoModel.currentItem !== null
+            return validEffectObject && validModel && validEffectObjectsModel && validObjectInfoModel;
         }
 
         function clear()
