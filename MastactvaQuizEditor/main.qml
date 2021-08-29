@@ -1644,8 +1644,8 @@ ApplicationWindow {
                 if(fieldNewItem)
                 {
                     fieldArtefact.artefactCreated = mastactva.now()
-                    artefactModel.itemAdded.connect(artefactAdded)
-                    artefactModel.addItem(fieldArtefact)
+                    fieldObjectArtefact.objectArtefactArtefact.itemAdded.connect(artefactAdded)
+                    fieldObjectArtefact.objectArtefactArtefact.addItem(fieldArtefact)
                 }
                 else
                 {
@@ -1686,7 +1686,11 @@ ApplicationWindow {
             var validEffectObjectArtefact = fieldObjectArtefact !== null && fieldObjectArtefact !== undefined
             var validArtefact = fieldArtefact !== null && fieldArtefact !== undefined
             var validArgs = validEffectObjectArtefact && validArtefact
-            return validArgs && validModel()
+            var validEffectObjectsModel = effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null
+            var objectInfoModel = effectObjectsCurrentModel.currentItem.effectObjectsObjectInfo
+            var validObjectInfoModel = objectInfoModel !== undefined && objectInfoModel !== null
+            validObjectInfoModel = validObjectInfoModel && objectInfoModel.currentItem !== null
+            return validArgs && validModel() && validEffectObjectsModel && validObjectInfoModel
         }
 
         function createNew()
@@ -1698,7 +1702,7 @@ ApplicationWindow {
             }
             fieldNewItem = true
             fieldObjectArtefact = effectObjectArtefactsCurrentModel.createItem()
-            fieldArtefact = artefactModel.createItem()
+            fieldArtefact = fieldObjectArtefact.objectArtefactArtefact.createItem()
             if(validState())
             {
                 open()
@@ -1762,8 +1766,11 @@ ApplicationWindow {
                 {
                     if(fieldObjectArtefact.updateArtefactId(fieldArtefact))
                     {
-                        effectObjectArtefactsCurrentModel.itemAdded.connect(effectObjectArtefactAdded)
-                        effectObjectArtefactsCurrentModel.addItem(effectObjectArtefact)
+                        var currentObjectInfoId = effectObjectsCurrentModel.currentItem.effectObjectsObjectInfo.currentItem.effectObjectInfoId
+                        fieldObjectArtefact.updateObjectInfoId(currentObjectInfoId)
+
+                        effectObjectArtefactsCurrentModel.itemAdded.connect(objectArtefactAdded)
+                        effectObjectArtefactsCurrentModel.addItem(fieldObjectArtefact)
                     }
                     else
                     {
@@ -1772,11 +1779,11 @@ ApplicationWindow {
                 }
                 else
                 {
-                    var itemIndex = effectObjectArtefactsCurrentModel.indexOfItem(effectObjectArtefact)
+                    var itemIndex = effectObjectArtefactsCurrentModel.indexOfItem(fieldObjectArtefact)
                     if(itemIndex >= 0)
                     {
-                        effectObjectArtefactsCurrentModel.itemSet.connect(effectObjectArtefactSet)
-                        effectObjectArtefactsCurrentModel.setItem(itemIndex, effectObjectArtefact)
+                        effectObjectArtefactsCurrentModel.itemSet.connect(objectArtefactSet)
+                        effectObjectArtefactsCurrentModel.setItem(itemIndex, fieldObjectArtefact)
                     }
                     else
                     {
@@ -1790,20 +1797,20 @@ ApplicationWindow {
             }
         }
 
-        function effectObjectArtefactAdded()
+        function objectArtefactAdded()
         {
             if(validState())
             {
-                effectObjectArtefactsCurrentModel.itemAdded.disconnect(effectObjectArtefactAdded)
+                effectObjectArtefactsCurrentModel.itemAdded.disconnect(objectArtefactAdded)
             }
             clear()
         }
 
-        function effectObjectArtefactSet()
+        function objectArtefactSet()
         {
             if(validState())
             {
-                effectObjectArtefactsCurrentModel.itemSet.disconnect(effectObjectArtefactSet)
+                effectObjectArtefactsCurrentModel.itemSet.disconnect(objectArtefactSet)
             }
             clear()
         }
