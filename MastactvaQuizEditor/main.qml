@@ -5608,7 +5608,7 @@ ApplicationWindow {
                 }
                 else
                 {
-                    effectObjectsCurrentIndex = index
+                    effectObjectArtefactsCurrentIndex = index
                     mouse.accepted = false
                 }
             }
