@@ -26,7 +26,7 @@ public:
 
 public:
     int m_id = -1;
-    int m_effectId = -1;
+    int m_objectInfoId = -1;
     int m_artefactId = -1;
     int m_stepIndex = -1;
 

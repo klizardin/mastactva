@@ -52,14 +52,19 @@ void ObjectArtefact::setId(const int &id_)
 
 int ObjectArtefact::objectInfoId() const
 {
-    return m_effectId;
+    return m_objectInfoId;
 }
 
-void ObjectArtefact::setObjectInfoId(const int &effectId_)
+void ObjectArtefact::setObjectInfoId(const int &objectInfoId_)
 {
-    m_effectId = effectId_;
+    m_objectInfoId = objectInfoId_;
 
     emit objectInfoIdChanged();
+}
+
+void ObjectArtefact::updateObjectInfoId(int objectInfoId_)
+{
+    setObjectInfoId(objectInfoId_);
 }
 
 int ObjectArtefact::artefactId() const
