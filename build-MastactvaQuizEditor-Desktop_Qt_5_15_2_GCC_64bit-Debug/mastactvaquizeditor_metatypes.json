@@ -25430,11 +25430,6 @@
                 "methods": [
                     {
                         "access": "public",
-                        "name": "artefactId",
-                        "returnType": "int"
-                    },
-                    {
-                        "access": "public",
                         "arguments": [
                             {
                                 "name": "artefactId_",
@@ -25454,6 +25449,17 @@
                         ],
                         "name": "updateArtefactId",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "objectInfoId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "updateObjectInfoId",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
