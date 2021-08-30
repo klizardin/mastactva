@@ -457,18 +457,18 @@ ApplicationWindow {
                     var effectObjectArtefacsModel = effectObjectItem.effectObjectsObjectArtefacts
                     if(effectObjectArtefacsModel !== null && effectObjectArtefacsModel !== undefined)
                     {
+                        clearEffectObjectArtefacsCurrent()
+                        effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
-                            clearEffectObjectArtefacsCurrent()
-                            effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                             effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
-                            return;
                         }
                         else
                         {
                             effectObjectArtefacsModel.listReloaded.connect(effectObjectArtefacsModelRelistLoaded)
                         }
+                        return
                     }
                 }
             }
@@ -519,18 +519,18 @@ ApplicationWindow {
                     var effectObjectArtefacArgsModel = effectObjectArtefact.artefactArtefactArg
                     if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
                     {
+                        clearEffectObjectArtefacArgsCurrent()
+                        effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
                         if(effectObjectArtefacArgsModel.isListLoaded())
                         {
-                            clearEffectObjectArtefacArgsCurrent()
-                            effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
                             effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
                             effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
-                            return;
                         }
                         else
                         {
                             effectObjectArtefacArgsModel.listReloaded.connect(effectObjectArtefacArgsModelRelistLoaded)
                         }
+                        return
                     }
                 }
             }
