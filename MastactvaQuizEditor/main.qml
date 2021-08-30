@@ -467,7 +467,6 @@ ApplicationWindow {
                         }
                         else
                         {
-                            clearEffectObjectArtefacsCurrent()
                             effectObjectArtefacsModel.listReloaded.connect(effectObjectArtefacsModelRelistLoaded)
                         }
                     }
@@ -530,7 +529,6 @@ ApplicationWindow {
                         }
                         else
                         {
-                            clearEffectObjectArtefacArgsCurrent()
                             effectObjectArtefacArgsModel.listReloaded.connect(effectObjectArtefacArgsModelRelistLoaded)
                         }
                     }
