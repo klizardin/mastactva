@@ -1956,7 +1956,7 @@ ApplicationWindow {
                 return
             }
             fieldNewItem = true
-            fieldArtefactAr = effectObjectArtefactArgsCurrentModel.createItem()
+            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.createItem()
             if(validState())
             {
                 open()
