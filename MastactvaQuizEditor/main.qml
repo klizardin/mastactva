@@ -447,12 +447,10 @@ ApplicationWindow {
 
         function onEffectObjectsCurrentIndexChanged()
         {
-            console.log("onEffectObjectsCurrentIndexChanged()")
             effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
-                console.log("onEffectObjectsCurrentIndexChanged() effectObjectsCurrentModel.currentIndex =", effectObjectsCurrentModel.currentIndex)
                 var effectObjectItem = effectObjectsCurrentModel.currentItem
                 if(effectObjectItem !== null && effectObjectItem !== undefined)
                 {
