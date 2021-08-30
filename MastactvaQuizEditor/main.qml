@@ -3578,21 +3578,29 @@ ApplicationWindow {
             refreshEffectObjectArtefactArgsFunc()
         }
 
+        function isValidModel()
+        {
+            return effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+        }
+
         function refreshImpl()
         {
-            effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
-            effectObjectArtefactArgsList.model = 0
-            effectObjectArtefactArgsCurrentIndex = -1
-            effectObjectArtefactArgsListBusyIndicator.visible = true
-            effectObjectArtefactArgsListBusyIndicator.running = true
-            effectObjectArtefactArgsCurrentModel.loadList()
+            if(isValidModel())
+            {
+                effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
+                effectObjectArtefactArgsList.model = 0
+                effectObjectArtefactArgsCurrentIndex = -1
+                effectObjectArtefactArgsListBusyIndicator.visible = true
+                effectObjectArtefactArgsListBusyIndicator.running = true
+                effectObjectArtefactArgsCurrentModel.loadList()
+            }
         }
 
         function effectObjectArtefactArgsCurrentModelReloaded()
         {
             effectObjectArtefactArgsListBusyIndicator.visible = false
             effectObjectArtefactArgsListBusyIndicator.running = false
-            if(effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null)
+            if(isValidModel())
             {
                 effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
                 effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
