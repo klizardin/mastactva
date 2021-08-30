@@ -466,6 +466,7 @@ ApplicationWindow {
                         }
                         else
                         {
+                            clearEffectObjectArtefacsCurrent()
                             effectObjectArtefacsModel.listReloaded.connect(effectObjectArtefacsModelRelistLoaded)
                         }
                     }
@@ -526,6 +527,7 @@ ApplicationWindow {
                         }
                         else
                         {
+                            clearEffectObjectArtefacArgsCurrent()
                             effectObjectArtefacArgsModel.listReloaded.connect(effectObjectArtefacArgsModelRelistLoaded)
                         }
                     }
@@ -5460,6 +5462,7 @@ ApplicationWindow {
                 }
                 else
                 {
+                    console.log("effectObjectsCurrentIndex =", index)
                     effectObjectsCurrentIndex = index
                     mouse.accepted = false
                 }
