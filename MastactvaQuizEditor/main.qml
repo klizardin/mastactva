@@ -457,17 +457,18 @@ ApplicationWindow {
                     var effectObjectArtefacsModel = effectObjectItem.effectObjectsObjectArtefacts
                     if(effectObjectArtefacsModel !== null && effectObjectArtefacsModel !== undefined)
                     {
+                        clearEffectObjectArtefacsCurrent()
+                        effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
-                            effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                             effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
-                            return;
                         }
                         else
                         {
                             effectObjectArtefacsModel.listReloaded.connect(effectObjectArtefacsModelRelistLoaded)
                         }
+                        return
                     }
                 }
             }
@@ -487,6 +488,7 @@ ApplicationWindow {
                         effectObjectArtefacsModel.listReloaded.disconnect(effectObjectArtefacsModelRelistLoaded)
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
+                            clearEffectObjectArtefacsCurrent()
                             effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                             effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
@@ -514,19 +516,24 @@ ApplicationWindow {
                 var effectObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
                 if(effectObjectArtefact !== null && effectObjectArtefact !== undefined)
                 {
-                    var effectObjectArtefacArgsModel = effectObjectArtefact.artefactArtefactArg
-                    if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
+                    if(effectObjectArtefact.objectArtefactArtefact.size() > 0)
                     {
-                        if(effectObjectArtefacArgsModel.isListLoaded())
+                        effectObjectArtefact.objectArtefactArtefact.currentIndex = 0
+                        var effectObjectArtefacArgsModel = effectObjectArtefact.objectArtefactArtefact.currentItem.artefactArtefactArg
+                        if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
                         {
+                            clearEffectObjectArtefacArgsCurrent()
                             effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
-                            effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
-                            effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
-                            return;
-                        }
-                        else
-                        {
-                            effectObjectArtefacArgsModel.listReloaded.connect(effectObjectArtefacArgsModelRelistLoaded)
+                            if(effectObjectArtefacArgsModel.isListLoaded())
+                            {
+                                effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
+                                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
+                            }
+                            else
+                            {
+                                effectObjectArtefacArgsModel.listReloaded.connect(effectObjectArtefacArgsModelRelistLoaded)
+                            }
+                            return
                         }
                     }
                 }
@@ -541,16 +548,21 @@ ApplicationWindow {
                 var effectObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
                 if(effectObjectArtefact !== null && effectObjectArtefact !== undefined)
                 {
-                    var effectObjectArtefacArgsModel = effectObjectArtefact.artefactArtefactArg
-                    if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
+                    if(effectObjectArtefact.objectArtefactArtefact.size() > 0)
                     {
-                        if(effectObjectArtefacArgsModel.isListLoaded())
+                        effectObjectArtefact.objectArtefactArtefact.currentIndex = 0
+                        var effectObjectArtefacArgsModel = effectObjectArtefact.objectArtefactArtefact.currentItem.artefactArtefactArg
+                        if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
                         {
                             effectObjectArtefacArgsModel.listReloaded.disconnect(effectObjectArtefacArgsModelRelistLoaded)
-                            effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
-                            effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
-                            effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
-                            return;
+                            if(effectObjectArtefacArgsModel.isListLoaded())
+                            {
+                                clearEffectObjectArtefacArgsCurrent()
+                                effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
+                                effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
+                                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
+                                return;
+                            }
                         }
                     }
                 }
@@ -1944,7 +1956,7 @@ ApplicationWindow {
                 return
             }
             fieldNewItem = true
-            fieldArtefactAr = effectObjectArtefactArgsCurrentModel.createItem()
+            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.createItem()
             if(validState())
             {
                 open()
@@ -3570,9 +3582,34 @@ ApplicationWindow {
             refreshEffectObjectArtefactArgsFunc()
         }
 
+        function isValidModel()
+        {
+            return effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+        }
+
         function refreshImpl()
         {
+            if(isValidModel())
+            {
+                effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
+                effectObjectArtefactArgsList.model = 0
+                effectObjectArtefactArgsCurrentIndex = -1
+                effectObjectArtefactArgsListBusyIndicator.visible = true
+                effectObjectArtefactArgsListBusyIndicator.running = true
+                effectObjectArtefactArgsCurrentModel.loadList()
+            }
+        }
 
+        function effectObjectArtefactArgsCurrentModelReloaded()
+        {
+            effectObjectArtefactArgsListBusyIndicator.visible = false
+            effectObjectArtefactArgsListBusyIndicator.running = false
+            if(isValidModel())
+            {
+                effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
+                effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
+                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentItem
+            }
         }
     }
 
