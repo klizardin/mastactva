@@ -5491,7 +5491,6 @@ ApplicationWindow {
                 }
                 else
                 {
-                    console.log("effectObjectsCurrentIndex =", index)
                     effectObjectsCurrentIndex = index
                     mouse.accepted = false
                 }
