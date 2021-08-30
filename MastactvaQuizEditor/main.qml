@@ -447,10 +447,12 @@ ApplicationWindow {
 
         function onEffectObjectsCurrentIndexChanged()
         {
+            console.log("onEffectObjectsCurrentIndexChanged()")
             effectObjectsList.currentIndex = effectObjectsCurrentIndex
             if(effectObjectsCurrentModel !== undefined && effectObjectsCurrentModel !== null)
             {
                 effectObjectsCurrentModel.currentIndex = effectObjectsCurrentIndex
+                console.log("onEffectObjectsCurrentIndexChanged() effectObjectsCurrentModel.currentIndex =", effectObjectsCurrentModel.currentIndex)
                 var effectObjectItem = effectObjectsCurrentModel.currentItem
                 if(effectObjectItem !== null && effectObjectItem !== undefined)
                 {
@@ -459,6 +461,7 @@ ApplicationWindow {
                     {
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
+                            clearEffectObjectArtefacsCurrent()
                             effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                             effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
@@ -488,6 +491,7 @@ ApplicationWindow {
                         effectObjectArtefacsModel.listReloaded.disconnect(effectObjectArtefacsModelRelistLoaded)
                         if(effectObjectArtefacsModel.isListLoaded())
                         {
+                            clearEffectObjectArtefacsCurrent()
                             effectObjectArtefactsCurrentModel = effectObjectArtefacsModel
                             effectObjectArtefactsList.model = effectObjectArtefactsCurrentModel
                             effectObjectArtefactsCurrentIndex = effectObjectArtefactsCurrentModel.currentIndex
@@ -520,6 +524,7 @@ ApplicationWindow {
                     {
                         if(effectObjectArtefacArgsModel.isListLoaded())
                         {
+                            clearEffectObjectArtefacArgsCurrent()
                             effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
                             effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
                             effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
@@ -546,9 +551,10 @@ ApplicationWindow {
                     var effectObjectArtefacArgsModel = effectObjectArtefact.artefactArtefactArg
                     if(effectObjectArtefacArgsModel !== null && effectObjectArtefacArgsModel !== undefined)
                     {
+                        effectObjectArtefacArgsModel.listReloaded.disconnect(effectObjectArtefacArgsModelRelistLoaded)
                         if(effectObjectArtefacArgsModel.isListLoaded())
                         {
-                            effectObjectArtefacArgsModel.listReloaded.disconnect(effectObjectArtefacArgsModelRelistLoaded)
+                            clearEffectObjectArtefacArgsCurrent()
                             effectObjectArtefactArgsCurrentModel = effectObjectArtefacArgsModel
                             effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
                             effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
@@ -3574,7 +3580,24 @@ ApplicationWindow {
 
         function refreshImpl()
         {
+            effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
+            effectObjectArtefactArgsList.model = 0
+            effectObjectArtefactArgsCurrentIndex = -1
+            effectObjectArtefactArgsListBusyIndicator.visible = true
+            effectObjectArtefactArgsListBusyIndicator.running = true
+            effectObjectArtefactArgsCurrentModel.loadList()
+        }
 
+        function effectObjectArtefactArgsCurrentModelReloaded()
+        {
+            effectObjectArtefactArgsListBusyIndicator.visible = false
+            effectObjectArtefactArgsListBusyIndicator.running = false
+            if(effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null)
+            {
+                effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
+                effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
+                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentItem
+            }
         }
     }
 
