@@ -572,6 +572,7 @@ ApplicationWindow {
 
         function onEffectObjectArtefactArgsCurrentIndexChanged()
         {
+            // console.log("effectObjectArtefactArgsCurrentIndex =",effectObjectArtefactArgsCurrentIndex)
             effectObjectArtefactArgsList.currentIndex = effectObjectArtefactArgsCurrentIndex
             if(effectObjectArtefactArgsCurrentModel !== null && effectObjectArtefactArgsCurrentModel !== undefined)
             {
@@ -1947,9 +1948,13 @@ ApplicationWindow {
             var validObjectArtefactModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
             var validObjectArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem !== null
             var validArtefactModel = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== undefined && effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== null
+            if(validArtefactModel)
+            {
+                effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentIndex = 0
+            }
             var validArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentItem !== null
             var validArgModel = effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
-            return validObjectArtefactModel && validObjectArtefactModelItem && validArgModel
+            return validObjectArtefactModel && validObjectArtefactModelItem && validArtefactModel && validArtefactModelItem && validArgModel
         }
 
         function validModelAndPosition()
@@ -1986,7 +1991,7 @@ ApplicationWindow {
                 return;
             }
             fieldNewItem = false
-            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.objectArtefactArtefact.currentItem
+            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.currentItem
             if(validState())
             {
                 open()
