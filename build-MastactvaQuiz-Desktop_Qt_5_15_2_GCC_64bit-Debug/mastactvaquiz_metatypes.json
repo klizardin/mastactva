@@ -19590,6 +19590,19 @@
         "classes": [
             {
                 "className": "ArtefactArg",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "effectArtefactId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "updateArtefactId",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
