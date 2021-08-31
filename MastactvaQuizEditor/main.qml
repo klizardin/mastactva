@@ -5883,7 +5883,7 @@ ApplicationWindow {
                     Text {
                         id: effectObjectArtefactArgItemType
                         width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemTypeLabel.width
-                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgTypeModel.findItemById(artefactArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(artefactArgArgTypeId).artefactArgTypeType : ""
+                        text: artefactArgTypeModel.findItemById(artefactArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(artefactArgArgTypeId).artefactArgTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -5897,7 +5897,7 @@ ApplicationWindow {
                     Text {
                         id: effectObjectArtefactArgItemStorage
                         width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemStorageLabel.width
-                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgStorageModel.findItemById(artefactArgArgStorageId) !== null ? artefactArgStorageModel.findItemById(artefactArgArgStorageId).artefactArgStorageStorage : ""
+                        text: artefactArgStorageModel.findItemById(artefactArgArgStorageId) !== null ? artefactArgStorageModel.findItemById(artefactArgArgStorageId).artefactArgStorageStorage : ""
                         wrapMode: Text.Wrap
                     }
                 }
