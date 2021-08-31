@@ -1906,8 +1906,17 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    effectObjectArtefactArgsCurrentModel.itemAdded.connect(artefactArgAdded)
-                    effectObjectArtefactArgsCurrentModel.addItem(fieldArtefactArg)
+                    var artefact = effectObjectArtefactsCurrentModel.currentItem
+                    if(artefact !== undefined && artefact !== null)
+                    {
+                        fieldArtefactArg.updateArtefactId(artefact.artefactId)
+                        effectObjectArtefactArgsCurrentModel.itemAdded.connect(artefactArgAdded)
+                        effectObjectArtefactArgsCurrentModel.addItem(fieldArtefactArg)
+                    }
+                    else
+                    {
+                        clear()
+                    }
                 }
                 else
                 {
@@ -1935,7 +1944,10 @@ ApplicationWindow {
 
         function validModel()
         {
-            return effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+            var validArtefactModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
+            var validArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem !== null
+            var validArgModel = effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+            return validArtefactModel && validArtefactModelItem && validArgModel
         }
 
         function validModelAndPosition()
