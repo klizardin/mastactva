@@ -830,6 +830,7 @@ ApplicationWindow {
             effectsListBusyIndicator.running = true
             artefactTypeModel.loadList()
             artefactArgTypeModel.loadList()
+            artefactArgStorageModel.loadList()
             easingTypeModel.loadList()
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
