@@ -3623,7 +3623,7 @@ ApplicationWindow {
             {
                 effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
                 effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
-                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentItem
+                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
             }
         }
     }
