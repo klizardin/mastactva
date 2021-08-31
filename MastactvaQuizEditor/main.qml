@@ -1906,7 +1906,7 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    var artefact = effectObjectArtefactsCurrentModel.currentItem
+                    var artefact = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentItem
                     if(artefact !== undefined && artefact !== null)
                     {
                         fieldArtefactArg.updateArtefactId(artefact.artefactId)
@@ -1944,10 +1944,12 @@ ApplicationWindow {
 
         function validModel()
         {
-            var validArtefactModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
-            var validArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem !== null
+            var validObjectArtefactModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
+            var validObjectArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem !== null
+            var validArtefactModel = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact!== undefined && effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== null
+            var validArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentItem !== null
             var validArgModel = effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
-            return validArtefactModel && validArtefactModelItem && validArgModel
+            return validObjectArtefactModel && validObjectArtefactModelItem && validArgModel
         }
 
         function validModelAndPosition()
