@@ -5857,7 +5857,7 @@ ApplicationWindow {
 
                 FontMetrics{
                     id: effectObjectArtefactItemFontMetrics
-                    font: effectObjectArtefactItemStepIndex.font
+                    font: effectObjectArtefactArgNameIndex.font
                 }
 
                 Row {
