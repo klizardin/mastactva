@@ -572,6 +572,7 @@ ApplicationWindow {
 
         function onEffectObjectArtefactArgsCurrentIndexChanged()
         {
+            // console.log("effectObjectArtefactArgsCurrentIndex =",effectObjectArtefactArgsCurrentIndex)
             effectObjectArtefactArgsList.currentIndex = effectObjectArtefactArgsCurrentIndex
             if(effectObjectArtefactArgsCurrentModel !== null && effectObjectArtefactArgsCurrentModel !== undefined)
             {
@@ -830,6 +831,7 @@ ApplicationWindow {
             effectsListBusyIndicator.running = true
             artefactTypeModel.loadList()
             artefactArgTypeModel.loadList()
+            artefactArgStorageModel.loadList()
             easingTypeModel.loadList()
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
@@ -1905,8 +1907,17 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    effectObjectArtefactArgsCurrentModel.itemAdded.connect(artefactArgAdded)
-                    effectObjectArtefactArgsCurrentModel.addItem(fieldArtefactArg)
+                    var artefact = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentItem
+                    if(artefact !== undefined && artefact !== null)
+                    {
+                        fieldArtefactArg.updateArtefactId(artefact.artefactId)
+                        effectObjectArtefactArgsCurrentModel.itemAdded.connect(artefactArgAdded)
+                        effectObjectArtefactArgsCurrentModel.addItem(fieldArtefactArg)
+                    }
+                    else
+                    {
+                        clear()
+                    }
                 }
                 else
                 {
@@ -1934,7 +1945,16 @@ ApplicationWindow {
 
         function validModel()
         {
-            return effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+            var validObjectArtefactModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
+            var validObjectArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem !== null
+            var validArtefactModel = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== undefined && effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== null
+            if(validArtefactModel)
+            {
+                effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentIndex = 0
+            }
+            var validArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentItem !== null
+            var validArgModel = effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
+            return validObjectArtefactModel && validObjectArtefactModelItem && validArtefactModel && validArtefactModelItem && validArgModel
         }
 
         function validModelAndPosition()
@@ -1971,7 +1991,7 @@ ApplicationWindow {
                 return;
             }
             fieldNewItem = false
-            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.objectArtefactArtefact.currentItem
+            fieldArtefactArg = effectObjectArtefactArgsCurrentModel.currentItem
             if(validState())
             {
                 open()
@@ -3608,7 +3628,7 @@ ApplicationWindow {
             {
                 effectObjectArtefactArgsCurrentModel.listReloaded.connect(effectObjectArtefactArgsCurrentModelReloaded)
                 effectObjectArtefactArgsList.model = effectObjectArtefactArgsCurrentModel
-                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentItem
+                effectObjectArtefactArgsCurrentIndex = effectObjectArtefactArgsCurrentModel.currentIndex
             }
         }
     }
@@ -3647,7 +3667,7 @@ ApplicationWindow {
         // private:
         function isValidModel()
         {
-            var validModel = effectObjectArtefactsCurrentModel !== unddefined && effectObjectArtefactsCurrentModel !== null
+            var validModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
             return validModel
         }
 
@@ -3682,7 +3702,7 @@ ApplicationWindow {
         // private:
         function isValidModel()
         {
-            var validModel = effectObjectArtefactArgsCurrentModel !== unddefined && effectObjectArtefactArgsCurrentModel !== null
+            var validModel = effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
             return validModel
         }
 
@@ -5842,7 +5862,7 @@ ApplicationWindow {
 
                 FontMetrics{
                     id: effectObjectArtefactItemFontMetrics
-                    font: effectObjectArtefactItemStepIndex.font
+                    font: effectObjectArtefactArgNameIndex.font
                 }
 
                 Row {
@@ -5868,7 +5888,7 @@ ApplicationWindow {
                     Text {
                         id: effectObjectArtefactArgItemType
                         width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemTypeLabel.width
-                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgTypeModel.findItemById(artefactArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(artefactArgArgTypeId).artefactArgTypeType : ""
+                        text: artefactArgTypeModel.findItemById(artefactArgArgTypeId) !== null ? artefactArgTypeModel.findItemById(artefactArgArgTypeId).artefactArgTypeType : ""
                         wrapMode: Text.Wrap
                     }
                 }
@@ -5882,7 +5902,7 @@ ApplicationWindow {
                     Text {
                         id: effectObjectArtefactArgItemStorage
                         width: effectObjectArtefactArgsList.width - effectObjectArtefactArgItemStorageLabel.width
-                        text: objecArtefact !== undefined && objecArtefact !== null && artefactArgStorageModel.findItemById(artefactArgArgStorageId) !== null ? artefactArgStorageModel.findItemById(artefactArgArgStorageId).artefactArgStorageStorage : ""
+                        text: artefactArgStorageModel.findItemById(artefactArgArgStorageId) !== null ? artefactArgStorageModel.findItemById(artefactArgArgStorageId).artefactArgStorageStorage : ""
                         wrapMode: Text.Wrap
                     }
                 }

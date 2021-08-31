@@ -51,6 +51,8 @@ public:
         }
     };
 
+    Q_INVOKABLE void updateArtefactId(int effectArtefactId_);
+
 public:
     int id() const;
     void setId(const int &id_);

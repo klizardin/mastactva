@@ -19590,6 +19590,19 @@
         "classes": [
             {
                 "className": "ArtefactArg",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "effectArtefactId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "updateArtefactId",
+                        "returnType": "void"
+                    }
+                ],
                 "object": true,
                 "properties": [
                     {
@@ -22239,6 +22252,17 @@
             {
                 "className": "ObjectArtefact",
                 "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "artefactId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setArtefactId",
+                        "returnType": "void"
+                    },
                     {
                         "access": "public",
                         "arguments": [

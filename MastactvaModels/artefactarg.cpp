@@ -55,6 +55,11 @@ void ArtefactArg::setArtefactId(const int &effectArtefactArgSetId_)
     emit artefactIdChanged();
 }
 
+void ArtefactArg::updateArtefactId(int effectArtefactId_)
+{
+    setArtefactId(effectArtefactId_);
+}
+
 int ArtefactArg::argTypeId() const
 {
     return m_argTypeId;
