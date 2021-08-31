@@ -22243,6 +22243,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "artefactId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "setArtefactId",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "artefact_",
                                 "type": "QVariant"
                             }
