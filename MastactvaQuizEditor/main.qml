@@ -1946,7 +1946,7 @@ ApplicationWindow {
         {
             var validObjectArtefactModel = effectObjectArtefactsCurrentModel !== undefined && effectObjectArtefactsCurrentModel !== null
             var validObjectArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem !== null
-            var validArtefactModel = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact!== undefined && effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== null
+            var validArtefactModel = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== undefined && effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact !== null
             var validArtefactModelItem = effectObjectArtefactsCurrentModel.currentItem.objectArtefactArtefact.currentItem !== null
             var validArgModel = effectObjectArtefactArgsCurrentModel !== undefined && effectObjectArtefactArgsCurrentModel !== null
             return validObjectArtefactModel && validObjectArtefactModelItem && validArgModel
