@@ -216,3 +216,4 @@ LUA:
 106. adapt to cmake
     * adapt project
     * migrate to docker // https://www.qt.io/blog/docker-builds-from-qtcreator
+107. get arguments from lua code and shaders code
