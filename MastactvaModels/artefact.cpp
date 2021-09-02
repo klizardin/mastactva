@@ -95,53 +95,57 @@ void Artefact::addArgumentsFromComments()
     ArtefactArg *arg = m_artefactArgModel->createDataItemImpl();
     if(!arg)
     {
-        for(;m_commentIndex < m_comments.size()
-            ;++m_commentIndex)
-        {
-            if(arg->createFrom(id(), m_comments[m_commentIndex]))
-            {
-                break;
-            }
-        }
-        if(m_commentIndex < m_comments.size())
-        {
-            ArtefactArg *existing = m_artefactArgModel->dataItemFindIf(
-                        [&arg](const ArtefactArg *item_)->bool
-            {
-                return arg && item_ && arg->name() == item_->name();
-            });
-            ++m_commentIndex;
-            if(existing)
-            {
-                existing->copyFrom(arg);
-                delete arg;
-                arg = nullptr;
+        emit argumentsFromArtefactTextChanged();
+    }
 
-                QObject::connect(m_artefactArgModel,
-                                SIGNAL(itemSet()),
-                                this,
-                                SLOT(argItemSet())
-                                );
-                m_artefactArgModel->setDataItemImpl(
-                            m_artefactArgModel->indexOfDataItemImpl(existing)
-                            ,existing
+    for(;m_commentIndex < m_comments.size()
+        ;++m_commentIndex)
+    {
+        if(arg->createFrom(id(), m_comments[m_commentIndex]))
+        {
+            arg->setCreated(QDateTime::currentDateTime());
+            break;
+        }
+    }
+    if(m_commentIndex < m_comments.size())
+    {
+        ArtefactArg *existing = m_artefactArgModel->dataItemFindIf(
+                    [&arg](const ArtefactArg *item_)->bool
+        {
+            return arg && item_ && arg->name() == item_->name();
+        });
+        ++m_commentIndex;
+        if(existing)
+        {
+            existing->copyFrom(arg);
+            delete arg;
+            arg = nullptr;
+
+            QObject::connect(m_artefactArgModel,
+                            SIGNAL(itemSet()),
+                            this,
+                            SLOT(argItemSet())
                             );
-            }
-            else
-            {
-                QObject::connect(m_artefactArgModel,
-                                SIGNAL(itemAdded()),
-                                this,
-                                SLOT(argItemAdded())
-                                );
-                m_artefactArgModel->addDataItemImpl(arg, true);
-            }
+            m_artefactArgModel->setDataItemImpl(
+                        m_artefactArgModel->indexOfDataItemImpl(existing)
+                        ,existing
+                        );
         }
         else
         {
-            delete arg;
-            arg = nullptr;
+            QObject::connect(m_artefactArgModel,
+                            SIGNAL(itemAdded()),
+                            this,
+                            SLOT(argItemAdded())
+                            );
+            m_artefactArgModel->addDataItemImpl(arg, true);
         }
+    }
+    else
+    {
+        delete arg;
+        arg = nullptr;
+        emit argumentsFromArtefactTextChanged();
     }
 }
 
