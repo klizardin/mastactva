@@ -93,7 +93,7 @@ void Artefact::addArgumentsFromComments()
         return;
     }
     ArtefactArg *arg = m_artefactArgModel->createDataItemImpl();
-    if(!arg)
+    if(arg)
     {
         for(;m_commentIndex < m_comments.size()
             ;++m_commentIndex)
