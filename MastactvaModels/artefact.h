@@ -98,6 +98,7 @@ signals:
     void descriptionChanged();
     void createdChanged();
     void artefactArgChanged();
+    void argumentsFromArtefactTextChanged();
 
 protected slots:
     void artefactFileDownloaded(const QString &url_);

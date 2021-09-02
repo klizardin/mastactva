@@ -3656,8 +3656,8 @@ ApplicationWindow {
                         var artefact = artefactModel.currentItem
                         if(artefact !== null && artefact !== undefined)
                         {
+                            artefact.argumentsFromArtefactTextChanged.connect(argumentsFromArtefactTextChanged)
                             artefact.getArgumentsFromArtefactText()
-                            refreshEffectObjectArtefactArgsFunc()
                         }
                     }
                 }
@@ -3677,6 +3677,26 @@ ApplicationWindow {
             return isValidModel() && validIndex
         }
 
+        function argumentsFromArtefactTextChanged()
+        {
+            if(isValidPos())
+            {
+                var effectObjectArtefact = effectObjectArtefactsCurrentModel.currentItem
+                if(effectObjectArtefact !== null && effectObjectArtefact !== undefined)
+                {
+                    var artefactModel = effectObjectArtefact.objectArtefactArtefact
+                    if(artefactModel !== null && artefactModel !== undefined && artefactModel.isListLoaded())
+                    {
+                        var artefact = artefactModel.currentItem
+                        if(artefact !== null && artefact !== undefined)
+                        {
+                            artefact.argumentsFromArtefactTextChanged.disconnect(argumentsFromArtefactTextChanged)
+                            refreshEffectObjectArtefactArgsFunc()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Action {
