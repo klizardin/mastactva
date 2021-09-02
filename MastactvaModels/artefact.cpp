@@ -103,6 +103,7 @@ void Artefact::addArgumentsFromComments()
     {
         if(arg->createFrom(id(), m_comments[m_commentIndex]))
         {
+            arg->setCreated(QDateTime::currentDateTime());
             break;
         }
     }
