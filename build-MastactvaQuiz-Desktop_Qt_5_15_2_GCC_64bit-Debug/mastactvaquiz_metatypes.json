@@ -16502,6 +16502,11 @@
                         "access": "public",
                         "name": "artefactArgChanged",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "argumentsFromArtefactTextChanged",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [

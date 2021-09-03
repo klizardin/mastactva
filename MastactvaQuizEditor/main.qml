@@ -4303,6 +4303,9 @@ ApplicationWindow {
             TabButton {
                 text: qsTr("Effects")
             }
+            TabButton {
+                text: qsTr("Artefacts")
+            }
         }
 
         StackLayout {
@@ -4927,6 +4930,51 @@ ApplicationWindow {
                                 }
                             }
                         }
+                    }
+                }
+            }
+            Item {
+                id: topicArtefacts
+                SplitView {
+                    id: slitArtefactsInfoDemo
+                    anchors.fill: parent
+                    orientation: Qt.Horizontal
+                    Rectangle{
+                        id: splitArtefactsList
+
+                        SplitView.preferredWidth: Constants.leftSideBarWidth
+                        SplitView.minimumWidth: Constants.leftSideBarWidth / 2
+                        SplitView.maximumWidth: Constants.leftSideBarWidth * 2
+                        height: parent.height
+
+                        ListView {
+                            id: allArtefactsList
+
+                            anchors.fill: parent
+                            spacing: Constants.smallListViewSpacing
+                            clip: true
+                            model: 0
+                            delegate: artefactItem
+                            highlight: artefactItemHighlight
+                            highlightFollowsCurrentItem: false
+                            z: 0.0
+
+                            BusyIndicator {
+                                id: artefactsListBusyIndicator
+                                anchors.centerIn: parent
+                                visible: false
+                                running: false
+                                z: 1.0
+                            }
+                        }
+                    }
+                    Rectangle{
+                        id: splitArtefactInfo
+
+                        SplitView.preferredWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth)
+                        SplitView.minimumWidth: Constants.leftSideBarWidth / 2
+                        SplitView.maximumWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth / 2)
+                        height: parent.height
                     }
                 }
             }
