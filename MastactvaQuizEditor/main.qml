@@ -4395,6 +4395,21 @@ ApplicationWindow {
         id: refreshArtefact
         text: qsTr("Refresh artifacts")
         onTriggered: {
+            artefactModel.listReloaded.connect(artefactModelListReloaded)
+            artefactsList.currentIndex = -1
+            artefactsList.model = 0
+            artefactsListBusyIndicator.visible = true
+            artefactsListBusyIndicator.running = true
+            artefactModel.loadList()
+        }
+
+        function artefactModelListReloaded()
+        {
+            artefactsListBusyIndicator.visible = false
+            artefactsListBusyIndicator.running = false
+            artefactModel.listReloaded.disconnect(artefactModelListReloaded)
+            artefactsList.model = artefactModel
+            artefactCurrentIndex = artefactModel.currentIndex
         }
     }
 
