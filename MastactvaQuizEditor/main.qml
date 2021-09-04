@@ -4391,7 +4391,64 @@ ApplicationWindow {
         }
     }
 
-    menuBar: appMode == 0 ? galleriesMenuBar : effectsMenuBar
+    Action {
+        id: refreshArtefact
+        text: qsTr("Refresh artifacts")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: loadFromFileArtefact
+        text: qsTr("Load from file artifact")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: saveToFileArtefact
+        text: qsTr("Save artifact to file")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: loadFromDBArtefact
+        text: qsTr("Load from DB artifact")
+        onTriggered: {
+        }
+    }
+
+    Action {
+        id: saveToDBArtefact
+        text: qsTr("Save artifact to DB")
+        onTriggered: {
+        }
+    }
+
+    MenuBar {
+        id: artefactsMenuBar
+        AutoSizeMenu {
+            title: qsTr("&Artefacts")
+            MenuItem { action: refreshArtefact }
+        }
+        AutoSizeMenu {
+            title: qsTr("&File")
+            MenuItem { action: loadFromFileArtefact }
+            MenuItem { action: saveToFileArtefact }
+        }
+        AutoSizeMenu {
+            title: qsTr("&DB")
+            MenuItem { action: loadFromDBArtefact }
+            MenuItem { action: saveToDBArtefact }
+        }
+    }
+
+    menuBar: appMode == 0
+             ? galleriesMenuBar
+             : appMode == 1
+               ? effectsMenuBar
+               : artefactsMenuBar
 
     Rectangle
     {
