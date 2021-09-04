@@ -687,6 +687,12 @@ ApplicationWindow {
                 effectImageDemo.toImage = demoImageTo
             }
         }
+
+        function onArtefactCurrentIndexChanged()
+        {
+            artefactsList.currentIndex = artefactCurrentIndex
+            artefactModel.currentIndex = artefactCurrentIndex
+        }
     }
 
     MastactvaAPI {
@@ -5960,7 +5966,6 @@ ApplicationWindow {
 
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-            property var objecArtefact: objectArtefactArtefact.currentItem
             property bool showFullDescription: false
 
             onClicked:
@@ -5971,7 +5976,7 @@ ApplicationWindow {
                 }
                 else
                 {
-                    //effectObjectArtefactsCurrentIndex = index
+                    artefactCurrentIndex = index
                     mouse.accepted = false
                 }
             }
