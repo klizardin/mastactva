@@ -43,6 +43,7 @@ ApplicationWindow {
     property int effectArgumentSetsCurrentIndex: -1
     property var effectArgumentSetValuesCurrentModel: undefined
     property int effectArgumentSetValuesCurrentIndex: -1
+    property int artefactCurrentIndex: -1
     property var demoImageFrom: undefined
     property var demoImageTo: undefined
 
@@ -833,6 +834,7 @@ ApplicationWindow {
             artefactArgTypeModel.loadList()
             artefactArgStorageModel.loadList()
             easingTypeModel.loadList()
+            artefactModel.loadList()
             artefactEditDialog.mastactva = mastactva
             artefactEditDialog.artefactTypeModel = artefactTypeModel
             chooseObjectInfoDialog.objectInfoModel = objectInfoModel
@@ -875,6 +877,31 @@ ApplicationWindow {
         {
             effectsList.model = effectModel.size() > 0 ? effectModel : 0
             effectCurrentIndex = -1
+        }
+
+        function onError(errorCode, description)
+        {
+            showModelError(errorCode, description)
+        }
+    }
+
+    Connections {
+        target: artefactModel
+
+        function onListReloaded()
+        {
+            artefactsListBusyIndicator.visible = false
+            artefactsListBusyIndicator.running = false
+            artefactsList.model = artefactModel.size() > 0 ? artefactModel : 0
+            var newIndex = artefactModel.size() > 0 ? artefactModel.currentIndex : -1
+            artefactsList.currentIndex = newIndex
+            artefactCurrentIndex = newIndex
+        }
+
+        function onItemDeleted()
+        {
+            artefactsList.model = artefactModel.size() > 0 ? artefactModel : 0
+            artefactCurrentIndex = -1
         }
 
         function onError(errorCode, description)
@@ -4960,7 +4987,7 @@ ApplicationWindow {
                             z: 0.0
 
                             BusyIndicator {
-                                id: shaderArtefactsListBusyIndicator
+                                id: artefactsListBusyIndicator
                                 anchors.centerIn: parent
                                 visible: false
                                 running: false
