@@ -19533,6 +19533,31 @@
                         "access": "public",
                         "name": "getArgumentsFromArtefactText",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isShader",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isTexture",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isJson",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isObj3d",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "isLua",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

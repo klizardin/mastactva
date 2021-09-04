@@ -84,6 +84,70 @@ void Artefact::getArgumentsFromArtefactText()
     addArgumentsFromComments();
 }
 
+template<int size_>
+inline
+bool isType(const ArtefactTypeEn (&types_)[size_], int typeId_)
+{
+    return std::end(types_)
+            != std::find(
+                std::begin(types_),
+                std::end(types_),
+                to_enum<ArtefactTypeEn>(typeId_)
+                )
+            ;
+}
+
+bool Artefact::isShader()
+{
+    static const ArtefactTypeEn types[] =
+    {
+        ArtefactTypeEn::shaderVertex,
+        ArtefactTypeEn::shaderFragmet
+    };
+    return ::isType(types, m_typeId);
+}
+
+bool Artefact::isTexture()
+{
+    static const ArtefactTypeEn types[] =
+    {
+        ArtefactTypeEn::texture1D,
+        ArtefactTypeEn::texture2D,
+        ArtefactTypeEn::texture3D
+    };
+    return ::isType(types, m_typeId);
+}
+
+bool Artefact::isJson()
+{
+    static const ArtefactTypeEn types[] =
+    {
+        ArtefactTypeEn::dataJson,
+        ArtefactTypeEn::convertNamesJson
+    };
+    return ::isType(types, m_typeId);
+}
+
+bool Artefact::isObj3d()
+{
+    static const ArtefactTypeEn types[] =
+    {
+        ArtefactTypeEn::dataObj3D
+    };
+    return ::isType(types, m_typeId);
+}
+
+bool Artefact::isLua()
+{
+    static const ArtefactTypeEn types[] =
+    {
+        ArtefactTypeEn::scriptLua,
+        ArtefactTypeEn::scriptLuaRuntime,
+        ArtefactTypeEn::scriptLibrary
+    };
+    return ::isType(types, m_typeId);
+}
+
 void Artefact::addArgumentsFromComments()
 {
     if(!m_artefactArgModel->isListLoadedImpl()
