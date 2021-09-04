@@ -2622,6 +2622,17 @@
                         ],
                         "name": "isShaderUrl",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileNameURL_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "getFileText",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,
