@@ -5119,8 +5119,8 @@ ApplicationWindow {
                                 id: shaderArtefactInfo
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                Rectangle {
-                                    id: shaderArtefactInfoShaderTextRect
+                                ScrollView {
+                                    id: shaderArtefactInfoShaderTextScroll
                                     anchors.top: parent.top
                                     anchors.left: parent.left
                                     width: artefactInfo.width
@@ -5155,8 +5155,8 @@ ApplicationWindow {
                                 id: jsonArtefactInfo
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                Rectangle {
-                                    id: jsonArtefactInfoJsonTextRect
+                                ScrollView {
+                                    id: jsonArtefactInfoJsonTextScroll
                                     anchors.top: parent.top
                                     anchors.left: parent.left
                                     width: artefactInfo.width
@@ -5172,8 +5172,8 @@ ApplicationWindow {
                                 id: obj3dArtefactInfo
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                Rectangle {
-                                    id: obj3dArtefactInfoObj3dTextRect
+                                ScrollView {
+                                    id: obj3dArtefactInfoObj3dTextScroll
                                     anchors.top: parent.top
                                     anchors.left: parent.left
                                     width: artefactInfo.width
@@ -5189,8 +5189,8 @@ ApplicationWindow {
                                 id: luaArtefactInfo
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                Rectangle {
-                                    id: luaArtefactInfoLuaTextRect
+                                ScrollView {
+                                    id: luaArtefactInfoLuaTextScroll
                                     anchors.top: parent.top
                                     anchors.left: parent.left
                                     width: artefactInfo.width
