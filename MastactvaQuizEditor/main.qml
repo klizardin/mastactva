@@ -692,6 +692,12 @@ ApplicationWindow {
         {
             artefactsList.currentIndex = artefactCurrentIndex
             artefactModel.currentIndex = artefactCurrentIndex
+            // artefactInfo.currentIndex {-1, [0..4]}
+            //shaderArtefactInfo, shaderArtefactInfoShaderText
+            //textureArtefactInfo, textureArtefactInfoImage
+            //jsonArtefactInfo, jsonArtefactInfoJsonText
+            //obj3dArtefactInfo, obj3dArtefactInfoObj3dText
+            //luaArtefactInfo, luaArtefactInfoLuaText
         }
     }
 
@@ -5038,18 +5044,35 @@ ApplicationWindow {
 
                             Item {
                                 id: shaderArtefactInfo
+                                TextArea {
+                                    id: shaderArtefactInfoShaderText
+                                }
                             }
                             Item {
                                 id: textureArtefactInfo
+                                Image {
+                                    id: textureArtefactInfoImage
+                                    source: Constants.noImage
+                                    fillMode: Image.PreserveAspectFit
+                                }
                             }
                             Item {
                                 id: jsonArtefactInfo
+                                TextArea {
+                                    id: jsonArtefactInfoJsonText
+                                }
                             }
                             Item {
                                 id: obj3dArtefactInfo
+                                TextArea {
+                                    id: obj3dArtefactInfoObj3dText
+                                }
                             }
                             Item {
                                 id: luaArtefactInfo
+                                TextArea {
+                                    id: luaArtefactInfoLuaText
+                                }
                             }
                         }
                     }
