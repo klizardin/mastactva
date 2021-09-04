@@ -5105,38 +5105,101 @@ ApplicationWindow {
                             anchors.left: parent.left
                             width: parent.width
                             height: parent.height - effectInfoTabBar.height
-                            currentIndex: artefactTypeTabBar.currentIndex
+
+                            Connections {
+                                target: artefactTypeTabBar
+
+                                function onCurrentIndexChanged()
+                                {
+                                    artefactInfo.currentIndex = artefactTypeTabBar.currentIndex
+                                }
+                            }
 
                             Item {
                                 id: shaderArtefactInfo
-                                TextArea {
-                                    id: shaderArtefactInfoShaderText
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Rectangle {
+                                    id: shaderArtefactInfoShaderTextRect
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    width: artefactInfo.width
+                                    height: artefactInfo.height
+                                    clip:true
+                                    TextArea {
+                                        id: shaderArtefactInfoShaderText
+                                        anchors.fill: parent
+                                    }
                                 }
                             }
                             Item {
                                 id: textureArtefactInfo
-                                Image {
-                                    id: textureArtefactInfoImage
-                                    source: Constants.noImage
-                                    fillMode: Image.PreserveAspectFit
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Rectangle {
+                                    id: textureArtefactInfoImageRect
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    width: artefactInfo.width
+                                    height: artefactInfo.height
+                                    clip:true
+                                    Image {
+                                        id: textureArtefactInfoImage
+                                        source: Constants.noImage
+                                        fillMode: Image.PreserveAspectFit
+                                        anchors.fill: parent
+                                    }
                                 }
                             }
                             Item {
                                 id: jsonArtefactInfo
-                                TextArea {
-                                    id: jsonArtefactInfoJsonText
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Rectangle {
+                                    id: jsonArtefactInfoJsonTextRect
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    width: artefactInfo.width
+                                    height: artefactInfo.height
+                                    clip:true
+                                    TextArea {
+                                        id: jsonArtefactInfoJsonText
+                                        anchors.fill: parent
+                                    }
                                 }
                             }
                             Item {
                                 id: obj3dArtefactInfo
-                                TextArea {
-                                    id: obj3dArtefactInfoObj3dText
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Rectangle {
+                                    id: obj3dArtefactInfoObj3dTextRect
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    width: artefactInfo.width
+                                    height: artefactInfo.height
+                                    clip:true
+                                    TextArea {
+                                        id: obj3dArtefactInfoObj3dText
+                                        anchors.fill: parent
+                                    }
                                 }
                             }
                             Item {
                                 id: luaArtefactInfo
-                                TextArea {
-                                    id: luaArtefactInfoLuaText
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                Rectangle {
+                                    id: luaArtefactInfoLuaTextRect
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    width: artefactInfo.width
+                                    height: artefactInfo.height
+                                    clip:true
+                                    TextArea {
+                                        id: luaArtefactInfoLuaText
+                                        anchors.fill: parent
+                                    }
                                 }
                             }
                         }
