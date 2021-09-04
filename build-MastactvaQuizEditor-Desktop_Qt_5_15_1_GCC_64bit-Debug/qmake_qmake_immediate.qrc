@@ -1,6 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/">
-<file alias="Mastactva/Constants.qml">/home/sergey/projects/quiz_gallery/app/edit/MastactvaQuizEditor/Mastactva/Constants.qml</file>
-<file alias="Mastactva/qmldir">/home/sergey/projects/quiz_gallery/app/edit/MastactvaQuizEditor/Mastactva/qmldir</file>
-</qresource>
-</RCC>

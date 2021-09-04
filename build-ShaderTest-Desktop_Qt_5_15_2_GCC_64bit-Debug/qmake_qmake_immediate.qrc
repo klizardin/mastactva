@@ -1,6 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/">
-<file alias="ShaderTestQML/Constants.qml">/home/klizardin/projects/quiz_gallery/app/edit/mastactva/ShaderTest/ShaderTestQML/Constants.qml</file>
-<file alias="ShaderTestQML/qmldir">/home/klizardin/projects/quiz_gallery/app/edit/mastactva/ShaderTest/ShaderTestQML/qmldir</file>
-</qresource>
-</RCC>
