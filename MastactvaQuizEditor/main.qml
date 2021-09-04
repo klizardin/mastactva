@@ -4969,7 +4969,7 @@ ApplicationWindow {
                         }
                     }
                     Rectangle{
-                        id: splitShaderArtefactInfo
+                        id: splitArtefactInfo
 
                         SplitView.preferredWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth)
                         SplitView.minimumWidth: Constants.leftSideBarWidth / 2
@@ -4996,6 +4996,7 @@ ApplicationWindow {
                             }
                         }
                         StackLayout {
+                            id: artefactInfo
                             anchors.top: artefactTypeTabBar.bottom
                             anchors.left: parent.left
                             width: parent.width
@@ -5003,19 +5004,19 @@ ApplicationWindow {
                             currentIndex: artefactTypeTabBar.currentIndex
 
                             Item {
-                                id: shaderArtefact
+                                id: shaderArtefactInfo
                             }
                             Item {
-                                id: textureArtefact
+                                id: textureArtefactInfo
                             }
                             Item {
-                                id: jsonArtefact
+                                id: jsonArtefactInfo
                             }
                             Item {
-                                id: obj3dArtefact
+                                id: obj3dArtefactInfo
                             }
                             Item {
-                                id: luaArtefact
+                                id: luaArtefactInfo
                             }
                         }
                     }
