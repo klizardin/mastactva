@@ -4948,19 +4948,19 @@ ApplicationWindow {
                         height: parent.height
 
                         ListView {
-                            id: allArtefactsList
+                            id: artefactsList
 
                             anchors.fill: parent
                             spacing: Constants.smallListViewSpacing
                             clip: true
                             model: 0
-                            delegate: artefactItem
-                            highlight: artefactItemHighlight
+                            delegate: artefactsItem
+                            highlight: artefactsItemHighlight
                             highlightFollowsCurrentItem: false
                             z: 0.0
 
                             BusyIndicator {
-                                id: artefactsListBusyIndicator
+                                id: shaderArtefactsListBusyIndicator
                                 anchors.centerIn: parent
                                 visible: false
                                 running: false
@@ -4969,12 +4969,55 @@ ApplicationWindow {
                         }
                     }
                     Rectangle{
-                        id: splitArtefactInfo
+                        id: splitShaderArtefactInfo
 
                         SplitView.preferredWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth)
                         SplitView.minimumWidth: Constants.leftSideBarWidth / 2
                         SplitView.maximumWidth: parent.width - (splitEffects.width + Constants.leftSideBarWidth / 2)
                         height: parent.height
+                        TabBar {
+                            id: artefactTypeTabBar
+                            anchors.top: parent.top
+                            width: parent.width
+                            TabButton {
+                                text: qsTr("Shaders")
+                            }
+                            TabButton {
+                                text: qsTr("Textures")
+                            }
+                            TabButton {
+                                text: qsTr("JSON data")
+                            }
+                            TabButton {
+                                text: qsTr("3D objects")
+                            }
+                            TabButton {
+                                text: qsTr("Lua scripts")
+                            }
+                        }
+                        StackLayout {
+                            anchors.top: artefactTypeTabBar.bottom
+                            anchors.left: parent.left
+                            width: parent.width
+                            height: parent.height - effectInfoTabBar.height
+                            currentIndex: artefactTypeTabBar.currentIndex
+
+                            Item {
+                                id: shaderArtefact
+                            }
+                            Item {
+                                id: textureArtefact
+                            }
+                            Item {
+                                id: jsonArtefact
+                            }
+                            Item {
+                                id: obj3dArtefact
+                            }
+                            Item {
+                                id: luaArtefact
+                            }
+                        }
                     }
                 }
             }
@@ -5877,6 +5920,159 @@ ApplicationWindow {
             x: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.x : 0
             width: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.width : 0
             height: (effectObjectArtefactsList.currentItem !== undefined && effectObjectArtefactsList.currentItem !== null) ? effectObjectArtefactsList.currentItem.height : 0
+        }
+    }
+
+    Component {
+        id: artefactsItem
+
+        MouseArea {
+            width: childrenRect.width
+            height: childrenRect.height
+
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            property var objecArtefact: objectArtefactArtefact.currentItem
+            property bool showFullDescription: false
+
+            onClicked:
+            {
+                if (mouse.button === Qt.RightButton)
+                {
+                    //effectObjectArtefactsItemMenu.popup()
+                }
+                else
+                {
+                    //effectObjectArtefactsCurrentIndex = index
+                    mouse.accepted = false
+                }
+            }
+
+            onPressAndHold: {
+                if (mouse.source === Qt.MouseEventNotSynthesized)
+                {
+                    effectObjectArtefactsItemMenu.popup()
+                }
+            }
+
+            onDoubleClicked: {
+                showFullDescription = !showFullDescription
+            }
+
+            /*AutoSizeMenu {
+                id: effectObjectArtefactsItemMenu
+                MenuItem { action: refreshEffectObjectArtefacts }
+                MenuItem { action: addNewEffectObjectArtefact }
+                MenuItem { action: addExistingEffectObjectArtefact }
+                MenuItem { action: editEffectObjectArtefact }
+                MenuItem { action: removeEffectObjectArtefact }
+            }*/
+
+            Column {
+                id: artefactItemRect
+                width: artefactsList.width
+
+                FontMetrics{
+                    id: artefactItemFontMetrics
+                    font: artefactItemType.font
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: artefactItemTypeLabel
+                        text: qsTr("Type : ")
+                    }
+                    Text {
+                        id: artefactItemType
+                        width: artefactsList.width - artefactItemTypeLabel.width
+                        text: artefactTypeModel.findItemById(artefactTypeId) !== null ? artefactTypeModel.findItemById(artefactTypeId).artefactTypeType : ""
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: artefactItemNameLabel
+                        text: qsTr("Name : ")
+                    }
+                    Text {
+                        id: artefactItemName
+                        width: artefactsList.width - artefactItemNameLabel.width
+                        text: artefactName
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: artefactItemFileNameLabel
+                        text: qsTr("File name : ")
+                    }
+                    Text {
+                        id: artefactItemFileName
+                        width: artefactsList.width - artefactItemFileNameLabel.width
+                        text: artefactFilename
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: artefactItemHashLabel
+                        text: qsTr("Hash : ")
+                    }
+                    Text {
+                        id: artefactItemHash
+                        width: artefactsList.width - artefactItemHashLabel.width
+                        text: artefactHash
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Row {
+                    padding: Constants.smallListHeaderPadding
+                    Label {
+                        id: artefactItemCreatedLabel
+                        text: qsTr("Create : ")
+                    }
+                    Text {
+                        id: artefactItemCreated
+                        width: artefactsList.width - artefactItemCreatedLabel.width
+                        text: mastactva.dateTimeToUserStr(artefactCreated)
+                        wrapMode: Text.Wrap
+                    }
+                }
+
+                Text {
+                    id: artefactItemDescriptionText
+                    width: artefactsList.width
+                    wrapMode: Text.WordWrap
+                    text: showFullDescription ? mastactva.leftDoubleCR(artefactDescription ) : mastactva.readMore(artefactDescription, Constants.smallListReadMoreLength, qsTr(" ..."))
+                }
+            }
+        }
+    }
+
+    Component {
+        id: artefactsItemHighlight
+
+        Rectangle {
+            SystemPalette {
+                id: artefactItemHighlightPallete
+                colorGroup: SystemPalette.Active
+            }
+
+            border.color: artefactItemHighlightPallete.highlight
+            border.width: 2
+            radius: 5
+            y: (artefactsList.currentItem !== undefined && artefactsList.currentItem !== null) ? artefactsList.currentItem.y : 0
+            x: (artefactsList.currentItem !== undefined && artefactsList.currentItem !== null) ? artefactsList.currentItem.x : 0
+            width: (artefactsList.currentItem !== undefined && artefactsList.currentItem !== null) ? artefactsList.currentItem.width : 0
+            height: (artefactsList.currentItem !== undefined && artefactsList.currentItem !== null) ? artefactsList.currentItem.height : 0
         }
     }
 
