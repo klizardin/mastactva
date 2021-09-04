@@ -1138,3 +1138,8 @@ bool MastactvaAPI::isShaderUrl(const QString &url_)
         return ext == ext_;
     }) != std::end(s_extensions);
 }
+
+QString MastactvaAPI::getFileText(const QString &fileNameURL_)
+{
+    return loadTextFileByUrl(fileNameURL_);
+}

@@ -55,6 +55,11 @@ public:
     };
 
     Q_INVOKABLE void getArgumentsFromArtefactText();
+    Q_INVOKABLE bool isShader();
+    Q_INVOKABLE bool isTexture();
+    Q_INVOKABLE bool isJson();
+    Q_INVOKABLE bool isObj3d();
+    Q_INVOKABLE bool isLua();
 
 public:
     int id() const;

@@ -94,6 +94,7 @@ public:
     Q_INVOKABLE QString getLuaDescription(const QString &fileUrl_);
     Q_INVOKABLE QDateTime now() const;
     Q_INVOKABLE bool isShaderUrl(const QString &url_);
+    Q_INVOKABLE QString getFileText(const QString &fileNameURL_);
 
 public:
     void setInitialized();
