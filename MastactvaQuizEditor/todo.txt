@@ -226,3 +226,5 @@ LUA:
 114. import effects
 115. compress export
 116. export game data in compressed archive
+117. effect update arguments while running effects lua scripts
+
