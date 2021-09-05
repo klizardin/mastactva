@@ -181,6 +181,27 @@ QString Artefact::getFileFilter()
     return std::end(filters) != fit ? fit->second : anyFilter;
 }
 
+void Artefact::setArtefactFilenameLocalFile(const QString fileName_)
+{
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(sf)
+    {
+        sf->remove(getFilename());
+    }
+    QUrl url = QUrl::fromLocalFile(fileName_);
+    setFilename(url.toString());
+}
+
+void Artefact::downloadFile()
+{
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(sf)
+    {
+        QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
+        sf->add(getFilename(), hash(), g_artefactsRelPath);
+    }
+}
+
 void Artefact::addArgumentsFromComments()
 {
     if(!m_artefactArgModel->isListLoadedImpl()
@@ -308,7 +329,6 @@ void Artefact::setFilename(const QString &filename_)
 void Artefact::setFilename(const FileSource &filename_)
 {
     m_filename = filename_;
-
     emit filenameChanged();
 }
 
@@ -435,6 +455,7 @@ void Artefact::artefactFileDownloaded(const QString &url_)
         {
             m_objectModelInfo->endLoadChildModel();
         }
+        emit fileDownloaded();
     }
 }
 
