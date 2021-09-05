@@ -60,6 +60,7 @@ public:
     Q_INVOKABLE bool isJson();
     Q_INVOKABLE bool isObj3d();
     Q_INVOKABLE bool isLua();
+    Q_INVOKABLE QString getFileFilter();
 
 public:
     int id() const;
