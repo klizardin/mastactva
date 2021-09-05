@@ -4643,7 +4643,7 @@ ApplicationWindow {
                 var fileName = createArtefactInfoTmpFile(artefact)
                 if(fileName !== undefined)
                 {
-                    artefact.artefactFilename = fileName
+                    artefact.setArtefactFilenameLocalFile(fileName)
                     artefact.artefactHash = mastactva.calculateHash(fileName)
                     console.log("fileName =", fileName, "artefactHash =", artefact.artefactHash)
 
@@ -4660,6 +4660,17 @@ ApplicationWindow {
             if(artefactModel !== undefined && artefactModel !== null)
             {
                 var artefact = artefactModel.currentItem
+                artefact.fileDownloaded.connect(artefactFileDownloaded)
+                artefact.downloadFile()
+            }
+        }
+
+        function artefactFileDownloaded()
+        {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                artefact.fileDownloaded.disconnect(artefactFileDownloaded)
                 setArtefactInfo(artefact)
             }
         }
