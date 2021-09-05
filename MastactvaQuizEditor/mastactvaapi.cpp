@@ -1165,11 +1165,19 @@ QString MastactvaAPI::createTempFile(const QString &fileURL_, const QString &tex
 
 void MastactvaAPI::copyTmpFileTo(const QString &tmpFileName_, const QString &fileUrl_)
 {
+    if(!tmpFileName_.startsWith(QDir::tempPath()))
+    {
+        return;
+    }
     QUrl url(fileUrl_);
     QFile::copy(tmpFileName_, url.toLocalFile());
 }
 
 void MastactvaAPI::removeTmpFile(const QString &tmpFileName_)
 {
+    if(!tmpFileName_.startsWith(QDir::tempPath()))
+    {
+        return;
+    }
     QFile::remove(tmpFileName_);
 }
