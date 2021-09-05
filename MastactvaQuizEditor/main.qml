@@ -773,11 +773,11 @@ ApplicationWindow {
         //luaArtefactInfo, luaArtefactInfoLuaText
     }
 
-    function createArtefactInfoFile(artefact)
+    function createArtefactInfoTmpFile(artefact)
     {
         if(artefact === undefined || artefact === null)
         {
-            return
+            return undefined
         }
 
         var text = ""
@@ -814,6 +814,15 @@ ApplicationWindow {
         }
 
         return fileName
+    }
+
+    function getArtefactInfoFileFilter(artefact)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return undefined
+        }
+        return artefact.getFileFilter()
     }
 
     MastactvaAPI {
@@ -4473,7 +4482,41 @@ ApplicationWindow {
     Action {
         id: saveToFileArtefact
         text: qsTr("Save artifact to file")
+
+        FileDialog {
+            id: saveArtefactFromFileDialog
+            title: qsTr("Please choose an artefact file to upload to the server")
+            folder: shortcuts.pictures
+            nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
+            selectExisting: false
+            selectMultiple: false
+
+            property string tmpFileName : undefined
+
+            onAccepted: {
+                mastactva.copyTmpFileTo(tmpFileName, fileUrl)
+                mastactva.removeTmpFile(tmpFileName)
+            }
+
+            onRejected: {
+                // TODO: add no image upload reaction
+                mastactva.removeTmpFile(tmpFileName)
+            }
+        }
+
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                var fileName = createArtefactInfoTmpFile(artefact)
+                var fileFilter = getArtefactInfoFileFilter(artefact)
+                if(fileName !== undefined)
+                {
+                    saveArtefactFromFileDialog.nameFilters = [ fileFilter ]
+                    saveArtefactFromFileDialog.tmpFileName = fileName
+                    saveArtefactFromFileDialog.open()
+                }
+            }
         }
     }
 
@@ -4496,14 +4539,16 @@ ApplicationWindow {
             if(artefactModel !== undefined && artefactModel !== null)
             {
                 var artefact = artefactModel.currentItem
-                var fileName = createArtefactInfoFile(artefact)
+                var fileName = createArtefactInfoTmpFile(artefact)
                 if(fileName !== undefined)
                 {
                     artefact.artefactFilename = fileName
                     artefact.artefactHash = mastactva.calculateHash(fileName)
+                    console.log("fileName =", fileName, "artefactHash =", artefact.artefactHash)
 
                     artefactModel.itemSet.connect(artefactModelItemSet)
-                    artefactModel.setItem(artefact)
+                    var index = artefactModel.indexOfItem(artefact)
+                    artefactModel.setItem(index, artefact)
                 }
             }
         }
