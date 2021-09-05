@@ -231,3 +231,4 @@ LUA:
     * plugins update of the arguments
     * call to plugins methods
     - function name as pluging C++ functions
+    - arguments as QMap<QString, QVariant>
