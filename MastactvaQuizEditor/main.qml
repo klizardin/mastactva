@@ -4438,6 +4438,11 @@ ApplicationWindow {
         id: loadFromDBArtefact
         text: qsTr("Load from DB artifact")
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                setArtefactInfo(artefact)
+            }
         }
     }
 
