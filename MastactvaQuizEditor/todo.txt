@@ -230,3 +230,4 @@ LUA:
     * lua methods to pass arguments to the plugins
     * plugins update of the arguments
     * call to plugins methods
+    - function name as pluging C++ functions
