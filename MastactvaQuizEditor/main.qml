@@ -573,7 +573,6 @@ ApplicationWindow {
 
         function onEffectObjectArtefactArgsCurrentIndexChanged()
         {
-            // console.log("effectObjectArtefactArgsCurrentIndex =",effectObjectArtefactArgsCurrentIndex)
             effectObjectArtefactArgsList.currentIndex = effectObjectArtefactArgsCurrentIndex
             if(effectObjectArtefactArgsCurrentModel !== null && effectObjectArtefactArgsCurrentModel !== undefined)
             {
@@ -1856,7 +1855,6 @@ ApplicationWindow {
             if(isValid())
             {
                 effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
-                // console.log("effect",effectModel.currentItem.effectId, "source", fieldEffectObject.effectObjectInfoId, "step_index", fieldEditEffectObjectStepValue)
                 var args = {"effect":effectModel.currentItem.effectId , "source":fieldObjectInfo.effectObjectInfoId, "step_index":fieldEditEffectObjectStepValue}
                 effectObjectsCurrentModel.procedure("copy_from_effect_object", args)
             }
@@ -2414,7 +2412,6 @@ ApplicationWindow {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
                 {
                     fieldEffectArgumentValue.setArgSetId(fieldEffectArgumentSet.effectArgSetId)
-                    // console.log("fieldEffectArg = ", fieldEffectArg)
                     effectArgumentValueEditDialog.fieldEffectArg = fieldEffectArg
                     effectArgumentValueEditDialog.fieldEffectArgumentSet = fieldEffectArgumentSet
                     effectArgumentValueEditDialog.fieldEffectArgumentValue = fieldEffectArgumentValue
@@ -2432,7 +2429,6 @@ ApplicationWindow {
 
         function argReloaded()
         {
-            // console.log("argReloaded()")
             if(fieldEffectArg !== undefined && fieldEffectArg !== null)
             {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
@@ -4645,7 +4641,6 @@ ApplicationWindow {
                 {
                     artefact.setArtefactFilenameLocalFile(fileName)
                     artefact.artefactHash = mastactva.calculateHash(fileName)
-                    console.log("fileName =", fileName, "artefactHash =", artefact.artefactHash)
 
                     artefactModel.itemSet.connect(artefactModelItemSet)
                     var index = artefactModel.indexOfItem(artefact)
