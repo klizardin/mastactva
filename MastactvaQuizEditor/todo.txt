@@ -225,3 +225,4 @@ LUA:
 113. export effect
 114. import effects
 115. compress export
+116. export game data in compressed archive
