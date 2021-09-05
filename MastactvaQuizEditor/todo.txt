@@ -218,3 +218,4 @@ LUA:
     * migrate to docker // https://www.qt.io/blog/docker-builds-from-qtcreator
 107. get arguments from lua code and shaders code
 108. test image artefacts save to db (URL not file)
+109. search (highlight/select) current artefact
