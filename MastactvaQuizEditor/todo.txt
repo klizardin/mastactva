@@ -220,3 +220,4 @@ LUA:
 108. test image artefacts save to db (URL not file)
 109. search (highlight/select) current artefact
 110. buttons for artefact edit
+111. arguments in effects (from effects object)
