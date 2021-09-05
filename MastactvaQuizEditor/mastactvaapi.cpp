@@ -1144,6 +1144,11 @@ QString MastactvaAPI::getFileText(const QString &fileNameURL_)
     return loadTextFileByUrl(fileNameURL_);
 }
 
+QString MastactvaAPI::getLocalFileText(const QString &fileNameURL_)
+{
+    return loadTextFileByUrl(fileNameURL_, false);
+}
+
 QString MastactvaAPI::createTempFile(const QString &fileURL_, const QString &text_)
 {
     QUrl url(fileURL_);

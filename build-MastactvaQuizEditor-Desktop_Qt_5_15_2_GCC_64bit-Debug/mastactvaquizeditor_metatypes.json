@@ -2638,6 +2638,17 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "fileNameURL_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "getLocalFileText",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "fileURL_",
                                 "type": "QString"
                             },
