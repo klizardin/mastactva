@@ -952,7 +952,7 @@ ApplicationWindow {
         layoutQMLName: "ArtefactModel"
         layoutIdField: "id"
         jsonParamsGet: false
-        autoCreateChildrenModels: false
+        autoCreateChildrenModels: true
     }
 
     GalleryModel {
