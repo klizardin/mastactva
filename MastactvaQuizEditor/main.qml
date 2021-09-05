@@ -4541,27 +4541,27 @@ ApplicationWindow {
         }
     }
 
+    FileDialog {
+        id: loadArtefactFromFileDialog
+        title: qsTr("Please choose an artefact file")
+        folder: shortcuts.pictures
+        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
+        selectExisting: true
+        selectMultiple: false
+
+        property var artefact : undefined
+
+        onAccepted: {
+            setArtefactInfoFromFile(artefact, fileUrl)
+        }
+
+        onRejected: {
+        }
+    }
+
     Action {
         id: loadFromFileArtefact
         text: qsTr("Load from file artifact")
-
-        FileDialog {
-            id: loadArtefactFromFileDialog
-            title: qsTr("Please choose an artefact file to upload to the server")
-            folder: shortcuts.pictures
-            nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
-            selectExisting: true
-            selectMultiple: false
-
-            property string tmpFileName : undefined
-
-            onAccepted: {
-                setArtefactInfoFromFile(artefact, fileUrl)
-            }
-
-            onRejected: {
-            }
-        }
 
         onTriggered: {
             if(artefactModel !== undefined && artefactModel !== null)
@@ -4570,37 +4570,38 @@ ApplicationWindow {
                 var fileFilter = getArtefactInfoFileFilter(artefact)
                 if(fileName !== undefined)
                 {
-                    saveArtefactFromFileDialog.nameFilters = [ fileFilter ]
-                    saveArtefactFromFileDialog.tmpFileName = fileName
-                    saveArtefactFromFileDialog.open()
+                    loadArtefactFromFileDialog.artefact = artefact
+                    loadArtefactFromFileDialog.nameFilters = [ fileFilter ]
+                    loadArtefactFromFileDialog.tmpFileName = fileName
+                    loadArtefactFromFileDialog.open()
                 }
             }
+        }
+    }
+
+    FileDialog {
+        id: saveArtefactFromFileDialog
+        title: qsTr("Please choose file to save artefact to")
+        folder: shortcuts.pictures
+        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
+        selectExisting: false
+        selectMultiple: false
+
+        property string tmpFileName : undefined
+
+        onAccepted: {
+            mastactva.copyTmpFileTo(tmpFileName, fileUrl)
+            mastactva.removeTmpFile(tmpFileName)
+        }
+
+        onRejected: {
+            mastactva.removeTmpFile(tmpFileName)
         }
     }
 
     Action {
         id: saveToFileArtefact
         text: qsTr("Save artifact to file")
-
-        FileDialog {
-            id: saveArtefactFromFileDialog
-            title: qsTr("Please choose an artefact file to upload to the server")
-            folder: shortcuts.pictures
-            nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
-            selectExisting: false
-            selectMultiple: false
-
-            property string tmpFileName : undefined
-
-            onAccepted: {
-                mastactva.copyTmpFileTo(tmpFileName, fileUrl)
-                mastactva.removeTmpFile(tmpFileName)
-            }
-
-            onRejected: {
-                mastactva.removeTmpFile(tmpFileName)
-            }
-        }
 
         onTriggered: {
             if(artefactModel !== undefined && artefactModel !== null)
