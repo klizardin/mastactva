@@ -126,6 +126,7 @@ private:
 
     QVector<Comment> m_comments;
     int m_commentIndex = 0;
+    bool m_insideArtefactDownloding = false;
 
     friend class ListModelBaseOfData<ArtefactData, ArtefactModel, Artefact>;
 };

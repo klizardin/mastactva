@@ -195,7 +195,7 @@ void Artefact::setArtefactFilenameLocalFile(const QString fileName_)
 void Artefact::downloadFile()
 {
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(sf)
+    if(sf && !m_insideArtefactDownloding)
     {
         QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
         sf->add(getFilename(), hash(), g_artefactsRelPath);
@@ -435,6 +435,7 @@ void Artefact::objectLoadedVF()
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
     if(sf)
     {
+        m_insideArtefactDownloding = true;
         QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
         if(m_objectModelInfo)
         {
@@ -451,9 +452,13 @@ void Artefact::artefactFileDownloaded(const QString &url_)
     if(sf)
     {
         QObject::disconnect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
-        if(m_objectModelInfo)
+        if(m_insideArtefactDownloding)
         {
-            m_objectModelInfo->endLoadChildModel();
+            if(m_objectModelInfo)
+            {
+                m_objectModelInfo->endLoadChildModel();
+            }
+            m_insideArtefactDownloding = false;
         }
         emit fileDownloaded();
     }
