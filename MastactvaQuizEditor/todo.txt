@@ -221,3 +221,4 @@ LUA:
 109. search (highlight/select) current artefact
 110. buttons for artefact edit
 111. arguments in effects (from effects object)
+112. arguments in UI (select/highlight/follow)
