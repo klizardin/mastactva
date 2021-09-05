@@ -4568,13 +4568,9 @@ ApplicationWindow {
             {
                 var artefact = artefactModel.currentItem
                 var fileFilter = getArtefactInfoFileFilter(artefact)
-                if(fileName !== undefined)
-                {
-                    loadArtefactFromFileDialog.artefact = artefact
-                    loadArtefactFromFileDialog.nameFilters = [ fileFilter ]
-                    loadArtefactFromFileDialog.tmpFileName = fileName
-                    loadArtefactFromFileDialog.open()
-                }
+                loadArtefactFromFileDialog.artefact = artefact
+                loadArtefactFromFileDialog.nameFilters = [ fileFilter ]
+                loadArtefactFromFileDialog.open()
             }
         }
     }
