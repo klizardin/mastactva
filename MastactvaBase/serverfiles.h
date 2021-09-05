@@ -76,6 +76,7 @@ public:
     Q_INVOKABLE qreal getProgressRate(const QStringList &urls_) const;
     Q_INVOKABLE void cancel(const QStringList &urls_);
     Q_INVOKABLE void reset();
+    Q_INVOKABLE void remove(const QString &url_);
 
 protected:
     bool testHash(const QString &url_, const QString &hash_) const;

@@ -1143,3 +1143,41 @@ QString MastactvaAPI::getFileText(const QString &fileNameURL_)
 {
     return loadTextFileByUrl(fileNameURL_);
 }
+
+QString MastactvaAPI::getLocalFileText(const QString &fileNameURL_)
+{
+    return loadTextFileByUrl(fileNameURL_, false);
+}
+
+QString MastactvaAPI::createTempFile(const QString &fileURL_, const QString &text_)
+{
+    QUrl url(fileURL_);
+    QTemporaryDir dir;
+    if(dir.isValid())
+    {
+        dir.setAutoRemove(false);
+        QFileInfo fi(dir.path(), url.fileName());
+        saveTextFile(fi.absoluteFilePath(), text_);
+        return fi.absoluteFilePath();
+    }
+    return QString();
+}
+
+void MastactvaAPI::copyTmpFileTo(const QString &tmpFileName_, const QString &fileUrl_)
+{
+    if(!tmpFileName_.startsWith(QDir::tempPath()))
+    {
+        return;
+    }
+    QUrl url(fileUrl_);
+    QFile::copy(tmpFileName_, url.toLocalFile());
+}
+
+void MastactvaAPI::removeTmpFile(const QString &tmpFileName_)
+{
+    if(!tmpFileName_.startsWith(QDir::tempPath()))
+    {
+        return;
+    }
+    QFile::remove(tmpFileName_);
+}

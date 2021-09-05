@@ -2633,6 +2633,58 @@
                         ],
                         "name": "getFileText",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileNameURL_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "getLocalFileText",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileURL_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "text_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "createTempFile",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "tmpFileName_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "fileUrl_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "copyTmpFileTo",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "tmpFileName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "removeTmpFile",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -3814,6 +3866,17 @@
                     {
                         "access": "public",
                         "name": "reset",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "remove",
                         "returnType": "void"
                     }
                 ],
@@ -19569,6 +19632,27 @@
                         "access": "public",
                         "name": "isLua",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getFileFilter",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileName_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "setArtefactFilenameLocalFile",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "downloadFile",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,
@@ -19731,6 +19815,11 @@
                     {
                         "access": "public",
                         "name": "argumentsFromArtefactTextChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "fileDownloaded",
                         "returnType": "void"
                     }
                 ],

@@ -60,6 +60,9 @@ public:
     Q_INVOKABLE bool isJson();
     Q_INVOKABLE bool isObj3d();
     Q_INVOKABLE bool isLua();
+    Q_INVOKABLE QString getFileFilter();
+    Q_INVOKABLE void setArtefactFilenameLocalFile(const QString fileName_);
+    Q_INVOKABLE void downloadFile();
 
 public:
     int id() const;
@@ -104,6 +107,7 @@ signals:
     void createdChanged();
     void artefactArgChanged();
     void argumentsFromArtefactTextChanged();
+    void fileDownloaded();
 
 protected slots:
     void artefactFileDownloaded(const QString &url_);
@@ -122,6 +126,7 @@ private:
 
     QVector<Comment> m_comments;
     int m_commentIndex = 0;
+    bool m_insideArtefactDownloding = false;
 
     friend class ListModelBaseOfData<ArtefactData, ArtefactModel, Artefact>;
 };

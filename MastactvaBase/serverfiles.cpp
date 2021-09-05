@@ -116,6 +116,15 @@ void ServerFiles::add(const QString &url_,
     sfd->start(m_manager);
 }
 
+void ServerFiles::remove(const QString &url_)
+{
+    if(isUrlDownloaded(url_))
+    {
+        QFile::remove(m_map.value(url_));
+        m_map.remove(url_);
+    }
+}
+
 bool ServerFiles::isUrlDownloaded(const QString &url_) const
 {
     const bool res = m_map.contains(url_);

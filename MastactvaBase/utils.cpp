@@ -473,6 +473,17 @@ QString getTextFromBinaryData(const QByteArray &data_)
     return codec->toUnicode(data_);
 }
 
+void saveTextFile(const QString filepath_, const QString &text_)
+{
+    QFile file(filepath_);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream stream(&file);
+    stream << text_;
+}
+
 #if QT_CONFIG(opengl)
 
 bool set_value(const QString &valStr_, GLint& val_)

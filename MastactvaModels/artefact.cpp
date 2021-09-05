@@ -148,6 +148,60 @@ bool Artefact::isLua()
     return ::isType(types, m_typeId);
 }
 
+QString Artefact::getFileFilter()
+{
+    static const char * vertexFilter = "Shader files (*.vert *.vertex *vsh)";
+    static const char * fragmentFilter = "Shader files (*.frag *.fragment *.fsh)";
+    static const char * textureFilter = "Texture files (*.png *.jpg *.jpeg)";
+    static const char * jsonFilter = "Json data files (*.json)";
+    static const char * obj3dFilter = "3D Objext files (*.obj)";
+    static const char * luaFilter = "Lua script file (*.lua)";
+    static const char * anyFilter = "Any file (*.*)";
+    static const std::pair<ArtefactTypeEn, const char *> filters[] =
+    {
+        { ArtefactTypeEn::shaderVertex, vertexFilter},
+        { ArtefactTypeEn::shaderFragmet, fragmentFilter},
+        { ArtefactTypeEn::texture1D, textureFilter},
+        { ArtefactTypeEn::texture2D, textureFilter},
+        { ArtefactTypeEn::texture3D, textureFilter},
+        { ArtefactTypeEn::dataJson, jsonFilter},
+        { ArtefactTypeEn::dataObj3D, obj3dFilter},
+        { ArtefactTypeEn::convertNamesJson, jsonFilter},
+        { ArtefactTypeEn::scriptLua, luaFilter},
+        { ArtefactTypeEn::scriptLuaRuntime, luaFilter},
+        { ArtefactTypeEn::scriptLibrary, luaFilter},
+    };
+    const auto fit = std::find_if(
+                std::begin(filters),
+                std::end(filters),
+                [this](const std::pair<ArtefactTypeEn, const char *> &v_)->bool
+    {
+        return v_.first == to_enum<ArtefactTypeEn>(m_typeId);
+    });
+    return std::end(filters) != fit ? fit->second : anyFilter;
+}
+
+void Artefact::setArtefactFilenameLocalFile(const QString fileName_)
+{
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(sf)
+    {
+        sf->remove(getFilename());
+    }
+    QUrl url = QUrl::fromLocalFile(fileName_);
+    setFilename(url.toString());
+}
+
+void Artefact::downloadFile()
+{
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(sf && !m_insideArtefactDownloding)
+    {
+        QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
+        sf->add(getFilename(), hash(), g_artefactsRelPath);
+    }
+}
+
 void Artefact::addArgumentsFromComments()
 {
     if(!m_artefactArgModel->isListLoadedImpl()
@@ -275,7 +329,6 @@ void Artefact::setFilename(const QString &filename_)
 void Artefact::setFilename(const FileSource &filename_)
 {
     m_filename = filename_;
-
     emit filenameChanged();
 }
 
@@ -382,6 +435,7 @@ void Artefact::objectLoadedVF()
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
     if(sf)
     {
+        m_insideArtefactDownloding = true;
         QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
         if(m_objectModelInfo)
         {
@@ -398,10 +452,15 @@ void Artefact::artefactFileDownloaded(const QString &url_)
     if(sf)
     {
         QObject::disconnect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
-        if(m_objectModelInfo)
+        if(m_insideArtefactDownloding)
         {
-            m_objectModelInfo->endLoadChildModel();
+            if(m_objectModelInfo)
+            {
+                m_objectModelInfo->endLoadChildModel();
+            }
+            m_insideArtefactDownloding = false;
         }
+        emit fileDownloaded();
     }
 }
 

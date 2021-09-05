@@ -573,7 +573,6 @@ ApplicationWindow {
 
         function onEffectObjectArtefactArgsCurrentIndexChanged()
         {
-            // console.log("effectObjectArtefactArgsCurrentIndex =",effectObjectArtefactArgsCurrentIndex)
             effectObjectArtefactArgsList.currentIndex = effectObjectArtefactArgsCurrentIndex
             if(effectObjectArtefactArgsCurrentModel !== null && effectObjectArtefactArgsCurrentModel !== undefined)
             {
@@ -693,77 +692,205 @@ ApplicationWindow {
             artefactsList.currentIndex = artefactCurrentIndex
             artefactModel.currentIndex = artefactCurrentIndex
             var artefact = artefactModel.currentItem
-            if(artefact !== undefined && artefact !== null)
+            setArtefactInfo(artefact)
+        }
+    }
+
+    function setArtefactInfo(artefact)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return
+        }
+
+        artefactInfo.currentIndex = -1
+
+        if(artefact.isShader())
+        {
+            artefactInfo.currentIndex = 0
+            shaderArtefactInfoShaderText.text = mastactva.getFileText(artefact.artefactFilename)
+            shaderArtefactInfoShaderText.visible = true
+        }
+        else
+        {
+            shaderArtefactInfoShaderText.text = ""
+            shaderArtefactInfoShaderText.visible = false
+        }
+
+        if(artefact.isTexture())
+        {
+            artefactInfo.currentIndex = 1
+            textureArtefactInfoImage.visible = true
+            textureArtefactInfoImage.source = artefact.artefactFilename
+        }
+        else
+        {
+            textureArtefactInfoImage.visible = false
+        }
+
+        if(artefact.isJson())
+        {
+            artefactInfo.currentIndex = 2
+            jsonArtefactInfoJsonText.text = mastactva.getFileText(artefact.artefactFilename)
+            jsonArtefactInfoJsonText.visible = true
+        }
+        else
+        {
+            jsonArtefactInfoJsonText.text = ""
+            jsonArtefactInfoJsonText.visible = false
+        }
+
+        if(artefact.isObj3d())
+        {
+            artefactInfo.currentIndex = 3
+            obj3dArtefactInfoObj3dText.text = mastactva.getFileText(artefact.artefactFilename)
+            obj3dArtefactInfoObj3dText.visible = true
+        }
+        else
+        {
+            obj3dArtefactInfoObj3dText.text = ""
+            obj3dArtefactInfoObj3dText.visible = false
+        }
+
+        if(artefact.isLua())
+        {
+            artefactInfo.currentIndex = 4
+            luaArtefactInfoLuaText.text = mastactva.getFileText(artefact.artefactFilename)
+            luaArtefactInfoLuaText.visible = true
+        }
+        else
+        {
+            luaArtefactInfoLuaText.text = ""
+            luaArtefactInfoLuaText.visible = false
+        }
+
+        // artefactInfo.currentIndex {-1, [0..4]}
+        //shaderArtefactInfo, shaderArtefactInfoShaderText
+        //textureArtefactInfo, textureArtefactInfoImage
+        //jsonArtefactInfo, jsonArtefactInfoJsonText
+        //obj3dArtefactInfo, obj3dArtefactInfoObj3dText
+        //luaArtefactInfo, luaArtefactInfoLuaText
+    }
+
+    function setArtefactInfoFromFile(artefact, fileUrl)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return
+        }
+
+        artefactInfo.currentIndex = -1
+
+        if(artefact.isShader())
+        {
+            artefactInfo.currentIndex = 0
+            shaderArtefactInfoShaderText.text = mastactva.getLocalFileText(fileUrl)
+            shaderArtefactInfoShaderText.visible = true
+        }
+        else
+        {
+            shaderArtefactInfoShaderText.text = ""
+            shaderArtefactInfoShaderText.visible = false
+        }
+
+        if(artefact.isTexture())
+        {
+            artefactInfo.currentIndex = 1
+            textureArtefactInfoImage.visible = true
+            textureArtefactInfoImage.source = fileUrl
+        }
+        else
+        {
+            textureArtefactInfoImage.visible = false
+        }
+
+        if(artefact.isJson())
+        {
+            artefactInfo.currentIndex = 2
+            jsonArtefactInfoJsonText.text = mastactva.getLocalFileText(fileUrl)
+            jsonArtefactInfoJsonText.visible = true
+        }
+        else
+        {
+            jsonArtefactInfoJsonText.text = ""
+            jsonArtefactInfoJsonText.visible = false
+        }
+
+        if(artefact.isObj3d())
+        {
+            artefactInfo.currentIndex = 3
+            obj3dArtefactInfoObj3dText.text = mastactva.getLocalFileText(fileUrl)
+            obj3dArtefactInfoObj3dText.visible = true
+        }
+        else
+        {
+            obj3dArtefactInfoObj3dText.text = ""
+            obj3dArtefactInfoObj3dText.visible = false
+        }
+
+        if(artefact.isLua())
+        {
+            artefactInfo.currentIndex = 4
+            luaArtefactInfoLuaText.text = mastactva.getLocalFileText(fileUrl)
+            luaArtefactInfoLuaText.visible = true
+        }
+        else
+        {
+            luaArtefactInfoLuaText.text = ""
+            luaArtefactInfoLuaText.visible = false
+        }
+    }
+
+    function createArtefactInfoTmpFile(artefact)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return undefined
+        }
+
+        var text = ""
+        var fileName = undefined
+
+        if(artefact.isShader())
+        {
+            text = shaderArtefactInfoShaderText.text
+        }
+        else if(artefact.isTexture())
+        {
+            fileName = textureArtefactInfoImage.source
+        }
+        else if(artefact.isJson())
+        {
+            text = jsonArtefactInfoJsonText.text
+        }
+        else if(artefact.isObj3d())
+        {
+            text = obj3dArtefactInfoObj3dText.text
+        }
+        else if(artefact.isLua())
+        {
+            text = luaArtefactInfoLuaText.text
+        }
+
+        if(fileName === undefined)
+        {
+            fileName = mastactva.createTempFile(artefact.artefactFilename, text)
+            if(fileName === "")
             {
-                artefactInfo.currentIndex = -1
-
-                if(artefact.isShader())
-                {
-                    artefactInfo.currentIndex = 0
-                    shaderArtefactInfoShaderText.text = mastactva.getFileText(artefact.artefactFilename)
-                    shaderArtefactInfoShaderText.visible = true
-                }
-                else
-                {
-                    shaderArtefactInfoShaderText.text = ""
-                    shaderArtefactInfoShaderText.visible = false
-                }
-
-                if(artefact.isTexture())
-                {
-                    artefactInfo.currentIndex = 1
-                    textureArtefactInfoImage.visible = true
-                    textureArtefactInfoImage.source = artefact.artefactFilename
-                }
-                else
-                {
-                    textureArtefactInfoImage.visible = false
-                }
-
-                if(artefact.isJson())
-                {
-                    artefactInfo.currentIndex = 2
-                    jsonArtefactInfoJsonText.text = mastactva.getFileText(artefact.artefactFilename)
-                    jsonArtefactInfoJsonText.visible = true
-                }
-                else
-                {
-                    jsonArtefactInfoJsonText.text = ""
-                    jsonArtefactInfoJsonText.visible = false
-                }
-
-                if(artefact.isObj3d())
-                {
-                    artefactInfo.currentIndex = 3
-                    obj3dArtefactInfoObj3dText.text = mastactva.getFileText(artefact.artefactFilename)
-                    obj3dArtefactInfoObj3dText.visible = true
-                }
-                else
-                {
-                    obj3dArtefactInfoObj3dText.text = ""
-                    obj3dArtefactInfoObj3dText.visible = false
-                }
-
-                if(artefact.isLua())
-                {
-                    artefactInfo.currentIndex = 4
-                    luaArtefactInfoLuaText.text = mastactva.getFileText(artefact.artefactFilename)
-                    luaArtefactInfoLuaText.visible = true
-                }
-                else
-                {
-                    luaArtefactInfoLuaText.text = ""
-                    luaArtefactInfoLuaText.visible = false
-                }
-
-                // artefactInfo.currentIndex {-1, [0..4]}
-                //shaderArtefactInfo, shaderArtefactInfoShaderText
-                //textureArtefactInfo, textureArtefactInfoImage
-                //jsonArtefactInfo, jsonArtefactInfoJsonText
-                //obj3dArtefactInfo, obj3dArtefactInfoObj3dText
-                //luaArtefactInfo, luaArtefactInfoLuaText
+                fileName = undefined
             }
         }
+
+        return fileName
+    }
+
+    function getArtefactInfoFileFilter(artefact)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return undefined
+        }
+        return artefact.getFileFilter()
     }
 
     MastactvaAPI {
@@ -825,7 +952,7 @@ ApplicationWindow {
         layoutQMLName: "ArtefactModel"
         layoutIdField: "id"
         jsonParamsGet: false
-        autoCreateChildrenModels: false
+        autoCreateChildrenModels: true
     }
 
     GalleryModel {
@@ -1728,7 +1855,6 @@ ApplicationWindow {
             if(isValid())
             {
                 effectObjectsCurrentModel.listReloaded.connect(effectObjectCopied)
-                // console.log("effect",effectModel.currentItem.effectId, "source", fieldEffectObject.effectObjectInfoId, "step_index", fieldEditEffectObjectStepValue)
                 var args = {"effect":effectModel.currentItem.effectId , "source":fieldObjectInfo.effectObjectInfoId, "step_index":fieldEditEffectObjectStepValue}
                 effectObjectsCurrentModel.procedure("copy_from_effect_object", args)
             }
@@ -2286,7 +2412,6 @@ ApplicationWindow {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
                 {
                     fieldEffectArgumentValue.setArgSetId(fieldEffectArgumentSet.effectArgSetId)
-                    // console.log("fieldEffectArg = ", fieldEffectArg)
                     effectArgumentValueEditDialog.fieldEffectArg = fieldEffectArg
                     effectArgumentValueEditDialog.fieldEffectArgumentSet = fieldEffectArgumentSet
                     effectArgumentValueEditDialog.fieldEffectArgumentValue = fieldEffectArgumentValue
@@ -2304,7 +2429,6 @@ ApplicationWindow {
 
         function argReloaded()
         {
-            // console.log("argReloaded()")
             if(fieldEffectArg !== undefined && fieldEffectArg !== null)
             {
                 if(effectArgumentValueEditDialog.fieldNew && fieldEffectArgumentValue !== undefined && fieldEffectArgumentValue !== null && fieldEffectArgumentSet !==undefined && fieldEffectArgumentSet !== null)
@@ -4413,17 +4537,83 @@ ApplicationWindow {
         }
     }
 
+    FileDialog {
+        id: loadArtefactFromFileDialog
+        title: qsTr("Please choose an artefact file")
+        folder: shortcuts.pictures
+        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
+        selectExisting: true
+        selectMultiple: false
+
+        property var artefact : undefined
+
+        onAccepted: {
+            setArtefactInfoFromFile(artefact, fileUrl)
+        }
+
+        onRejected: {
+        }
+    }
+
     Action {
         id: loadFromFileArtefact
         text: qsTr("Load from file artifact")
+
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                var fileFilter = getArtefactInfoFileFilter(artefact)
+                loadArtefactFromFileDialog.artefact = artefact
+                loadArtefactFromFileDialog.nameFilters = [ fileFilter ]
+                loadArtefactFromFileDialog.open()
+            }
+        }
+    }
+
+    FileDialog {
+        id: saveArtefactFromFileDialog
+        title: qsTr("Please choose file to save artefact to")
+        folder: shortcuts.pictures
+        nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
+        selectExisting: false
+        selectMultiple: false
+
+        property string tmpFileName : ""
+
+        onAccepted: {
+            if(tmpFileName !== "")
+            {
+                mastactva.copyTmpFileTo(tmpFileName, fileUrl)
+                mastactva.removeTmpFile(tmpFileName)
+            }
+        }
+
+        onRejected: {
+            if(tmpFileName !== "")
+            {
+                mastactva.removeTmpFile(tmpFileName)
+            }
         }
     }
 
     Action {
         id: saveToFileArtefact
         text: qsTr("Save artifact to file")
+
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                var fileName = createArtefactInfoTmpFile(artefact)
+                var fileFilter = getArtefactInfoFileFilter(artefact)
+                if(fileName !== undefined)
+                {
+                    saveArtefactFromFileDialog.nameFilters = [ fileFilter ]
+                    saveArtefactFromFileDialog.tmpFileName = fileName
+                    saveArtefactFromFileDialog.open()
+                }
+            }
         }
     }
 
@@ -4431,6 +4621,11 @@ ApplicationWindow {
         id: loadFromDBArtefact
         text: qsTr("Load from DB artifact")
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                setArtefactInfo(artefact)
+            }
         }
     }
 
@@ -4438,6 +4633,41 @@ ApplicationWindow {
         id: saveToDBArtefact
         text: qsTr("Save artifact to DB")
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                var fileName = createArtefactInfoTmpFile(artefact)
+                if(fileName !== undefined)
+                {
+                    artefact.setArtefactFilenameLocalFile(fileName)
+                    artefact.artefactHash = mastactva.calculateHash(fileName)
+
+                    artefactModel.itemSet.connect(artefactModelItemSet)
+                    var index = artefactModel.indexOfItem(artefact)
+                    artefactModel.setItem(index, artefact)
+                }
+            }
+        }
+
+        function artefactModelItemSet()
+        {
+            artefactModel.itemSet.disconnect(artefactModelItemSet)
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                artefact.fileDownloaded.connect(artefactFileDownloaded)
+                artefact.downloadFile()
+            }
+        }
+
+        function artefactFileDownloaded()
+        {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                artefact.fileDownloaded.disconnect(artefactFileDownloaded)
+                setArtefactInfo(artefact)
+            }
         }
     }
 
