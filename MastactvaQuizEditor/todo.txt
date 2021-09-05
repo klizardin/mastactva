@@ -227,4 +227,6 @@ LUA:
 115. compress export
 116. export game data in compressed archive
 117. effect update arguments while running effects lua scripts
-
+    * lua methods to pass arguments to the plugins
+    * plugins update of the arguments
+    * call to plugins methods
