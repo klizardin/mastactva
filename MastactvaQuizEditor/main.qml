@@ -4587,15 +4587,21 @@ ApplicationWindow {
         selectExisting: false
         selectMultiple: false
 
-        property string tmpFileName : undefined
+        property string tmpFileName : ""
 
         onAccepted: {
-            mastactva.copyTmpFileTo(tmpFileName, fileUrl)
-            mastactva.removeTmpFile(tmpFileName)
+            if(tmpFileName !== "")
+            {
+                mastactva.copyTmpFileTo(tmpFileName, fileUrl)
+                mastactva.removeTmpFile(tmpFileName)
+            }
         }
 
         onRejected: {
-            mastactva.removeTmpFile(tmpFileName)
+            if(tmpFileName !== "")
+            {
+                mastactva.removeTmpFile(tmpFileName)
+            }
         }
     }
 
