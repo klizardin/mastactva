@@ -16369,6 +16369,11 @@
                         "access": "public",
                         "name": "isLua",
                         "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getFileFilter",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,

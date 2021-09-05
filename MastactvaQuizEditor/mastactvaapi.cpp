@@ -1150,9 +1150,21 @@ QString MastactvaAPI::createTempFile(const QString &fileURL_, const QString &tex
     QTemporaryDir dir;
     if(dir.isValid())
     {
+        dir.setAutoRemove(false);
         QFileInfo fi(dir.path(), url.fileName());
         saveTextFile(fi.absoluteFilePath(), text_);
         return fi.absoluteFilePath();
     }
     return QString();
+}
+
+void MastactvaAPI::copyTmpFileTo(const QString &tmpFileName_, const QString &fileUrl_)
+{
+    QUrl url(fileUrl_);
+    QFile::copy(tmpFileName_, url.toLocalFile());
+}
+
+void MastactvaAPI::removeTmpFile(const QString &tmpFileName_)
+{
+    QFile::remove(tmpFileName_);
 }
