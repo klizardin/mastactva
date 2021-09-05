@@ -224,3 +224,4 @@ LUA:
 112. arguments in UI (select/highlight/follow)
 113. export effect
 114. import effects
+115. compress export
