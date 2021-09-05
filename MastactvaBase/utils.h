@@ -72,6 +72,7 @@ QByteArray loadBinaryFile(const QString &filename_);
 QByteArray loadBinaryFileUrl(const QString &filenameUrl_);
 QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_ = true);
 QString getTextFromBinaryData(const QByteArray &data_);
+void saveTextFile(const QString filepath_, const QString &text_);
 
 
 #if QT_CONFIG(opengl)
