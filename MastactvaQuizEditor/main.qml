@@ -785,7 +785,7 @@ ApplicationWindow {
         if(artefact.isShader())
         {
             artefactInfo.currentIndex = 0
-            shaderArtefactInfoShaderText.text = mastactva.getFileText(fileUrl)
+            shaderArtefactInfoShaderText.text = mastactva.getLocalFileText(fileUrl)
             shaderArtefactInfoShaderText.visible = true
         }
         else
@@ -808,7 +808,7 @@ ApplicationWindow {
         if(artefact.isJson())
         {
             artefactInfo.currentIndex = 2
-            jsonArtefactInfoJsonText.text = mastactva.getFileText(fileUrl)
+            jsonArtefactInfoJsonText.text = mastactva.getLocalFileText(fileUrl)
             jsonArtefactInfoJsonText.visible = true
         }
         else
@@ -820,7 +820,7 @@ ApplicationWindow {
         if(artefact.isObj3d())
         {
             artefactInfo.currentIndex = 3
-            obj3dArtefactInfoObj3dText.text = mastactva.getFileText(fileUrl)
+            obj3dArtefactInfoObj3dText.text = mastactva.getLocalFileText(fileUrl)
             obj3dArtefactInfoObj3dText.visible = true
         }
         else
@@ -832,7 +832,7 @@ ApplicationWindow {
         if(artefact.isLua())
         {
             artefactInfo.currentIndex = 4
-            luaArtefactInfoLuaText.text = mastactva.getFileText(fileUrl)
+            luaArtefactInfoLuaText.text = mastactva.getLocalFileText(fileUrl)
             luaArtefactInfoLuaText.visible = true
         }
         else
