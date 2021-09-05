@@ -773,6 +773,75 @@ ApplicationWindow {
         //luaArtefactInfo, luaArtefactInfoLuaText
     }
 
+    function setArtefactInfoFromFile(artefact, fileUrl)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return
+        }
+
+        artefactInfo.currentIndex = -1
+
+        if(artefact.isShader())
+        {
+            artefactInfo.currentIndex = 0
+            shaderArtefactInfoShaderText.text = mastactva.getFileText(fileUrl)
+            shaderArtefactInfoShaderText.visible = true
+        }
+        else
+        {
+            shaderArtefactInfoShaderText.text = ""
+            shaderArtefactInfoShaderText.visible = false
+        }
+
+        if(artefact.isTexture())
+        {
+            artefactInfo.currentIndex = 1
+            textureArtefactInfoImage.visible = true
+            textureArtefactInfoImage.source = fileUrl
+        }
+        else
+        {
+            textureArtefactInfoImage.visible = false
+        }
+
+        if(artefact.isJson())
+        {
+            artefactInfo.currentIndex = 2
+            jsonArtefactInfoJsonText.text = mastactva.getFileText(fileUrl)
+            jsonArtefactInfoJsonText.visible = true
+        }
+        else
+        {
+            jsonArtefactInfoJsonText.text = ""
+            jsonArtefactInfoJsonText.visible = false
+        }
+
+        if(artefact.isObj3d())
+        {
+            artefactInfo.currentIndex = 3
+            obj3dArtefactInfoObj3dText.text = mastactva.getFileText(fileUrl)
+            obj3dArtefactInfoObj3dText.visible = true
+        }
+        else
+        {
+            obj3dArtefactInfoObj3dText.text = ""
+            obj3dArtefactInfoObj3dText.visible = false
+        }
+
+        if(artefact.isLua())
+        {
+            artefactInfo.currentIndex = 4
+            luaArtefactInfoLuaText.text = mastactva.getFileText(fileUrl)
+            luaArtefactInfoLuaText.visible = true
+        }
+        else
+        {
+            luaArtefactInfoLuaText.text = ""
+            luaArtefactInfoLuaText.visible = false
+        }
+    }
+
     function createArtefactInfoTmpFile(artefact)
     {
         if(artefact === undefined || artefact === null)
@@ -4475,7 +4544,37 @@ ApplicationWindow {
     Action {
         id: loadFromFileArtefact
         text: qsTr("Load from file artifact")
+
+        FileDialog {
+            id: loadArtefactFromFileDialog
+            title: qsTr("Please choose an artefact file to upload to the server")
+            folder: shortcuts.pictures
+            nameFilters: [ "Shader files (*.vert *.vertex *.frag *.fragment *vsh *.fsh)","Texture files (*.png *.jpg *.jpeg)","Json data files (*.json)","3D Objext files (*.obj)","Lua script file (*.lua)" ]
+            selectExisting: true
+            selectMultiple: false
+
+            property string tmpFileName : undefined
+
+            onAccepted: {
+                setArtefactInfoFromFile(artefact, fileUrl)
+            }
+
+            onRejected: {
+            }
+        }
+
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                var fileFilter = getArtefactInfoFileFilter(artefact)
+                if(fileName !== undefined)
+                {
+                    saveArtefactFromFileDialog.nameFilters = [ fileFilter ]
+                    saveArtefactFromFileDialog.tmpFileName = fileName
+                    saveArtefactFromFileDialog.open()
+                }
+            }
         }
     }
 
@@ -4499,7 +4598,6 @@ ApplicationWindow {
             }
 
             onRejected: {
-                // TODO: add no image upload reaction
                 mastactva.removeTmpFile(tmpFileName)
             }
         }
