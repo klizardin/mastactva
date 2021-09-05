@@ -1143,3 +1143,16 @@ QString MastactvaAPI::getFileText(const QString &fileNameURL_)
 {
     return loadTextFileByUrl(fileNameURL_);
 }
+
+QString MastactvaAPI::createTempFile(const QString &fileURL_, const QString &text_)
+{
+    QUrl url(fileURL_);
+    QTemporaryDir dir;
+    if(dir.isValid())
+    {
+        QFileInfo fi(dir.path(), url.fileName());
+        saveTextFile(fi.absoluteFilePath(), text_);
+        return fi.absoluteFilePath();
+    }
+    return QString();
+}

@@ -2633,6 +2633,21 @@
                         ],
                         "name": "getFileText",
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileURL_",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "text_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "createTempFile",
+                        "returnType": "QString"
                     }
                 ],
                 "object": true,

@@ -95,6 +95,7 @@ public:
     Q_INVOKABLE QDateTime now() const;
     Q_INVOKABLE bool isShaderUrl(const QString &url_);
     Q_INVOKABLE QString getFileText(const QString &fileNameURL_);
+    Q_INVOKABLE QString createTempFile(const QString &fileURL_, const QString &text_);
 
 public:
     void setInitialized();
