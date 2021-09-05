@@ -773,6 +773,49 @@ ApplicationWindow {
         //luaArtefactInfo, luaArtefactInfoLuaText
     }
 
+    function createArtefactInfoFile(artefact)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return
+        }
+
+        var text = ""
+        var fileName = undefined
+
+        if(artefact.isShader())
+        {
+            text = shaderArtefactInfoShaderText.text
+        }
+        else if(artefact.isTexture())
+        {
+            fileName = textureArtefactInfoImage.source
+        }
+        else if(artefact.isJson())
+        {
+            text = jsonArtefactInfoJsonText.text
+        }
+        else if(artefact.isObj3d())
+        {
+            text = obj3dArtefactInfoObj3dText.text
+        }
+        else if(artefact.isLua())
+        {
+            text = luaArtefactInfoLuaText.text
+        }
+
+        if(fileName === undefined)
+        {
+            fileName = mastactva.createTempFile(artefact.artefactFilename, text)
+            if(fileName === "")
+            {
+                fileName = undefined
+            }
+        }
+
+        return fileName
+    }
+
     MastactvaAPI {
         id: mastactva
         objectName: "MastactvaAPI"
@@ -4450,6 +4493,29 @@ ApplicationWindow {
         id: saveToDBArtefact
         text: qsTr("Save artifact to DB")
         onTriggered: {
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                var fileName = createArtefactInfoFile(artefact)
+                if(fileName !== undefined)
+                {
+                    artefact.artefactFilename = fileName
+                    artefact.artefactHash = mastactva.calculateHash(fileName)
+
+                    artefactModel.itemSet.connect(artefactModelItemSet)
+                    artefactModel.setItem(artefact)
+                }
+            }
+        }
+
+        function artefactModelItemSet()
+        {
+            artefactModel.itemSet.disconnect(artefactModelItemSet)
+            if(artefactModel !== undefined && artefactModel !== null)
+            {
+                var artefact = artefactModel.currentItem
+                setArtefactInfo(artefact)
+            }
         }
     }
 
