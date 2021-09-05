@@ -693,77 +693,84 @@ ApplicationWindow {
             artefactsList.currentIndex = artefactCurrentIndex
             artefactModel.currentIndex = artefactCurrentIndex
             var artefact = artefactModel.currentItem
-            if(artefact !== undefined && artefact !== null)
-            {
-                artefactInfo.currentIndex = -1
-
-                if(artefact.isShader())
-                {
-                    artefactInfo.currentIndex = 0
-                    shaderArtefactInfoShaderText.text = mastactva.getFileText(artefact.artefactFilename)
-                    shaderArtefactInfoShaderText.visible = true
-                }
-                else
-                {
-                    shaderArtefactInfoShaderText.text = ""
-                    shaderArtefactInfoShaderText.visible = false
-                }
-
-                if(artefact.isTexture())
-                {
-                    artefactInfo.currentIndex = 1
-                    textureArtefactInfoImage.visible = true
-                    textureArtefactInfoImage.source = artefact.artefactFilename
-                }
-                else
-                {
-                    textureArtefactInfoImage.visible = false
-                }
-
-                if(artefact.isJson())
-                {
-                    artefactInfo.currentIndex = 2
-                    jsonArtefactInfoJsonText.text = mastactva.getFileText(artefact.artefactFilename)
-                    jsonArtefactInfoJsonText.visible = true
-                }
-                else
-                {
-                    jsonArtefactInfoJsonText.text = ""
-                    jsonArtefactInfoJsonText.visible = false
-                }
-
-                if(artefact.isObj3d())
-                {
-                    artefactInfo.currentIndex = 3
-                    obj3dArtefactInfoObj3dText.text = mastactva.getFileText(artefact.artefactFilename)
-                    obj3dArtefactInfoObj3dText.visible = true
-                }
-                else
-                {
-                    obj3dArtefactInfoObj3dText.text = ""
-                    obj3dArtefactInfoObj3dText.visible = false
-                }
-
-                if(artefact.isLua())
-                {
-                    artefactInfo.currentIndex = 4
-                    luaArtefactInfoLuaText.text = mastactva.getFileText(artefact.artefactFilename)
-                    luaArtefactInfoLuaText.visible = true
-                }
-                else
-                {
-                    luaArtefactInfoLuaText.text = ""
-                    luaArtefactInfoLuaText.visible = false
-                }
-
-                // artefactInfo.currentIndex {-1, [0..4]}
-                //shaderArtefactInfo, shaderArtefactInfoShaderText
-                //textureArtefactInfo, textureArtefactInfoImage
-                //jsonArtefactInfo, jsonArtefactInfoJsonText
-                //obj3dArtefactInfo, obj3dArtefactInfoObj3dText
-                //luaArtefactInfo, luaArtefactInfoLuaText
-            }
+            setArtefactInfo(artefact)
         }
+    }
+
+    function setArtefactInfo(artefact)
+    {
+        if(artefact === undefined || artefact === null)
+        {
+            return
+        }
+
+        artefactInfo.currentIndex = -1
+
+        if(artefact.isShader())
+        {
+            artefactInfo.currentIndex = 0
+            shaderArtefactInfoShaderText.text = mastactva.getFileText(artefact.artefactFilename)
+            shaderArtefactInfoShaderText.visible = true
+        }
+        else
+        {
+            shaderArtefactInfoShaderText.text = ""
+            shaderArtefactInfoShaderText.visible = false
+        }
+
+        if(artefact.isTexture())
+        {
+            artefactInfo.currentIndex = 1
+            textureArtefactInfoImage.visible = true
+            textureArtefactInfoImage.source = artefact.artefactFilename
+        }
+        else
+        {
+            textureArtefactInfoImage.visible = false
+        }
+
+        if(artefact.isJson())
+        {
+            artefactInfo.currentIndex = 2
+            jsonArtefactInfoJsonText.text = mastactva.getFileText(artefact.artefactFilename)
+            jsonArtefactInfoJsonText.visible = true
+        }
+        else
+        {
+            jsonArtefactInfoJsonText.text = ""
+            jsonArtefactInfoJsonText.visible = false
+        }
+
+        if(artefact.isObj3d())
+        {
+            artefactInfo.currentIndex = 3
+            obj3dArtefactInfoObj3dText.text = mastactva.getFileText(artefact.artefactFilename)
+            obj3dArtefactInfoObj3dText.visible = true
+        }
+        else
+        {
+            obj3dArtefactInfoObj3dText.text = ""
+            obj3dArtefactInfoObj3dText.visible = false
+        }
+
+        if(artefact.isLua())
+        {
+            artefactInfo.currentIndex = 4
+            luaArtefactInfoLuaText.text = mastactva.getFileText(artefact.artefactFilename)
+            luaArtefactInfoLuaText.visible = true
+        }
+        else
+        {
+            luaArtefactInfoLuaText.text = ""
+            luaArtefactInfoLuaText.visible = false
+        }
+
+        // artefactInfo.currentIndex {-1, [0..4]}
+        //shaderArtefactInfo, shaderArtefactInfoShaderText
+        //textureArtefactInfo, textureArtefactInfoImage
+        //jsonArtefactInfo, jsonArtefactInfoJsonText
+        //obj3dArtefactInfo, obj3dArtefactInfoObj3dText
+        //luaArtefactInfo, luaArtefactInfoLuaText
     }
 
     MastactvaAPI {
