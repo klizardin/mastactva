@@ -29,14 +29,45 @@
 #include "../MastactvaModels/artefactarg.h"
 
 
+class EffectArgData
+{
+public:
+    EffectArgData() = default;
+    EffectArgData(int id_,
+                  int effectId_,
+                  int objectArtefactId_,
+                  int argTypeId_,
+                  int argStorageId_,
+                  const QString &name_,
+                  const QString &defaultValue_,
+                  const QString &description_,
+                  const QDateTime &created_
+                  );
+    virtual ~EffectArgData() = default;
+    virtual std::unique_ptr<EffectArgData> getDataCopy() const;
+
+public:
+    int m_id = -1;
+    int m_effectId = -1;
+    int m_objectArtefactId = -1;
+    int m_argTypeId = -1;
+    int m_argStorageId = -1;
+    QString m_name;
+    QString m_defaultValue;
+    QString m_description;
+    QDateTime m_created;
+};
+
+
 class EffectArgModel;
 
 
-class EffectArg : public QObject, public IListModelItem
+class EffectArg : public QObject, public IListModelItem, private EffectArgData
 {
     Q_OBJECT
 public:
     explicit EffectArg(EffectArgModel *parent_ = nullptr);
+    EffectArg(EffectArgData &&data_, EffectArgModel *parent_ = nullptr);
     virtual ~EffectArg() override;
 
     Q_PROPERTY(int effectArgId READ id WRITE setId NOTIFY idChanged)
@@ -117,29 +148,25 @@ private:
     EffectArgModel *m_effectArgModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_objectArtefactId = -1;
-    int m_argTypeId = -1;
-    int m_argStorageId = -1;
-    QString m_name;
-    QString m_defaultValue;
-    QString m_description;
-    QDateTime m_created;
     ObjectArtefactModel *m_objectArtefactModel = nullptr;
+
+    friend class ListModelBaseOfData<EffectArgData, EffectArgModel, EffectArg>;
 };
 
 
-class EffectArgModel : public ListModelBaseOfData<EffectArg, EffectArgModel>
+class EffectArgModel : public ListModelBaseOfData<EffectArgData, EffectArgModel, EffectArg>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectArg, EffectArgModel>;
+    using base = ListModelBaseOfData<EffectArgData, EffectArgModel, EffectArg>;
 
 public:
-    explicit EffectArgModel(QObject *parent_ = nullptr);
+    explicit EffectArgModel(
+            QObject *parent_ = nullptr,
+            std::shared_ptr<QVector<EffectArgData *>> data_ = std::shared_ptr<QVector<EffectArgData *>>{nullptr}
+            );
 
     LAYOUT_MODEL_IMPL();
 
