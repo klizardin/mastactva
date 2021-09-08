@@ -19,8 +19,60 @@
 #include "../MastactvaBase/defines.h"
 
 
+EffectArgData::EffectArgData(int id_,
+              int effectId_,
+              int objectArtefactId_,
+              int argTypeId_,
+              int argStorageId_,
+              const QString &name_,
+              const QString &defaultValue_,
+              const QString &description_,
+              const QDateTime &created_
+              )
+    :m_id(id_),
+     m_effectId(effectId_),
+     m_objectArtefactId(objectArtefactId_),
+     m_argTypeId(argTypeId_),
+     m_argStorageId(argStorageId_),
+     m_name(name_),
+     m_defaultValue(defaultValue_),
+     m_description(description_),
+     m_created(created_)
+{
+}
+
+std::unique_ptr<EffectArgData> EffectArgData::getDataCopy() const
+{
+    std::unique_ptr<EffectArgData> result = std::make_unique<EffectArgData>();
+    result->m_id = m_id;
+    result->m_effectId = m_effectId;
+    result->m_objectArtefactId = m_objectArtefactId;
+    result->m_argTypeId = m_argTypeId;
+    result->m_argStorageId = m_argStorageId;
+    result->m_name = m_name;
+    result->m_defaultValue = m_defaultValue;
+    result->m_description = m_description;
+    result->m_created = m_created;
+    return result;
+}
+
+
 EffectArg::EffectArg(EffectArgModel *parent_ /*= nullptr*/)
     : QObject(parent_)
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectArg::EffectArg()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectArg::EffectArg()" << this;
+#endif
+
+    m_effectArgModel = parent_;
+}
+
+EffectArg::EffectArg(EffectArgData &&data_,EffectArgModel *parent_ /*= nullptr*/)
+    : QObject(parent_),
+      EffectArgData(std::move(data_))
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArg::EffectArg()" << QThread::currentThread() << QThread::currentThreadId();
@@ -204,8 +256,11 @@ ObjectArtefactModel *EffectArg::createObjectArtefactModel()
 }
 
 
-EffectArgModel::EffectArgModel(QObject *parent_ /*= nullptr*/)
-    : base(parent_)
+EffectArgModel::EffectArgModel(
+        QObject *parent_ /*= nullptr*/,
+        std::shared_ptr<QVector<EffectArgData *>> data_ /*= std::shared_ptr<QVector<EffectArgData *>>{nullptr}*/
+        )
+    : base(parent_, data_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgModel::EffectArgModel()" << QThread::currentThread() << QThread::currentThreadId();
