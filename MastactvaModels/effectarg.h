@@ -27,36 +27,7 @@
 #include "../MastactvaModels/artefactargtype.h"
 #include "../MastactvaModels/objectartefact.h"
 #include "../MastactvaModels/artefactarg.h"
-
-
-class EffectArgData
-{
-public:
-    EffectArgData() = default;
-    EffectArgData(int id_,
-                  int effectId_,
-                  int objectArtefactId_,
-                  int argTypeId_,
-                  int argStorageId_,
-                  const QString &name_,
-                  const QString &defaultValue_,
-                  const QString &description_,
-                  const QDateTime &created_
-                  );
-    virtual ~EffectArgData() = default;
-    virtual std::unique_ptr<EffectArgData> getDataCopy() const;
-
-public:
-    int m_id = -1;
-    int m_effectId = -1;
-    int m_objectArtefactId = -1;
-    int m_argTypeId = -1;
-    int m_argStorageId = -1;
-    QString m_name;
-    QString m_defaultValue;
-    QString m_description;
-    QDateTime m_created;
-};
+#include "../MastactvaModels/effectarg_data.h"
 
 
 class EffectArgModel;
