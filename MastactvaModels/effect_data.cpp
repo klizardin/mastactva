@@ -22,6 +22,7 @@
 EffectData::EffectData()
 {
     m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
+    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
 }
 
 EffectData::EffectData(
