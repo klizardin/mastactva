@@ -1,0 +1,6 @@
+#ifndef EFFECTARG_DATA_H
+#define EFFECTARG_DATA_H
+
+
+
+#endif // EFFECTARG_DATA_H
