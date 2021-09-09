@@ -28,11 +28,9 @@ public:
     int m_id = -1;
     int m_effectId = -1;
     int m_objectArtefactId = -1;
-    // TODO:
-    //int m_artefactArgId = -1;
     int m_argTypeId = -1;
     int m_argStorageId = -1;
-    QString m_name; // or unique by name ?
+    QString m_name; // args are unique by name inside artefact id
     QString m_defaultValue;
     QString m_description;
     QDateTime m_created;
