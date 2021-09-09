@@ -25,16 +25,44 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/effectarg.h"
+#include "../MastactvaModels/effectarg_data.h"
+
+
+class EffectArgValueData
+{
+public:
+    EffectArgValueData();
+    EffectArgValueData(
+            int id_,
+            int argSetId_,
+            int argId_,
+            const QString &value_,
+            const QString &description_,
+            const QDateTime &created_
+            );
+    virtual ~EffectArgValueData() = default;
+    virtual std::unique_ptr<EffectArgValueData> getDataCopy() const;
+
+public:
+    int m_id = -1;
+    int m_argSetId = -1;
+    int m_argId = -1;
+    QString m_value;
+    QString m_description;
+    QDateTime m_created;
+    std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
+};
 
 
 class EffectArgValueModel;
 
 
-class EffectArgValue : public QObject, public IListModelItem
+class EffectArgValue : public QObject, public IListModelItem, private EffectArgValueData
 {
     Q_OBJECT
 public:
     explicit EffectArgValue(EffectArgValueModel *parent_ = nullptr);
+    EffectArgValue(EffectArgValueData &&data_, EffectArgValueModel *parent_ = nullptr);
     virtual ~EffectArgValue() override;
 
     Q_PROPERTY(int effectArgValueId READ id WRITE setId NOTIFY idChanged)
@@ -102,26 +130,25 @@ private:
     EffectArgValueModel *m_effectArgValueModel = nullptr;
     IListModelInfo *m_parentModelInfo = nullptr;
     int m_appId = -1;
-    int m_id = -1;
-    int m_argSetId = -1;
-    int m_argId = -1;
-    QString m_value;
-    QString m_description;
-    QDateTime m_created;
     EffectArgModel *m_effectArgModel = nullptr;
+
+    friend class ListModelBaseOfData<EffectArgValueData, EffectArgValueModel, EffectArgValue>;
 };
 
 
-class EffectArgValueModel : public ListModelBaseOfData<EffectArgValue, EffectArgValueModel>
+class EffectArgValueModel : public ListModelBaseOfData<EffectArgValueData, EffectArgValueModel, EffectArgValue>
 {
     Q_OBJECT
     QML_ELEMENT
 
 protected:
-    using base = ListModelBaseOfData<EffectArgValue, EffectArgValueModel>;
+    using base = ListModelBaseOfData<EffectArgValueData, EffectArgValueModel, EffectArgValue>;
 
 public:
-    explicit EffectArgValueModel(QObject *parent_ = nullptr);
+    explicit EffectArgValueModel(
+            QObject *parent_ = nullptr,
+            std::shared_ptr<QVector<EffectArgValueData *>> data_ = std::shared_ptr<QVector<EffectArgValueData *>>{nullptr}
+            );
 
     LAYOUT_MODEL_IMPL();
 

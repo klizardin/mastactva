@@ -13699,6 +13699,10 @@
                     {
                         "access": "public",
                         "name": "IListModelItem"
+                    },
+                    {
+                        "access": "private",
+                        "name": "EffectArgValueData"
                     }
                 ]
             },
@@ -14405,7 +14409,7 @@
                 "superClasses": [
                     {
                         "access": "public",
-                        "name": "ListModelBaseOfData<EffectArgValue,EffectArgValueModel>"
+                        "name": "ListModelBaseOfData<EffectArgValueData,EffectArgValueModel,EffectArgValue>"
                     }
                 ]
             }

@@ -78,6 +78,7 @@ unix: HEADERS += \
         easingtype.h \
         effect_data.h   \
         effect.h \
+        effectarg_data.h    \
         effectarg.h \
         effectargset.h \
         effectargvalue.h \
@@ -163,6 +164,7 @@ unix: SOURCES += \
         easingtype.cpp \
         effect_data.cpp \
         effect.cpp \
+        effectarg_data.cpp  \
         effectarg.cpp \
         effectargset.cpp \
         effectargvalue.cpp \
@@ -217,6 +219,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     ../build-MastactvaQuizEditor-Desktop_Qt_5_15_0_GCC_64bit-Debug/mastactvaquizeditor_metatypes.json \
     ../build-mastactvaquizeditor-webassembly/mastactvaquizeditor_metatypes.json \
+    architecture_marks.txt \
     bugs.txt \
     imports/MastactvaAPI/qmldir \
     Mastactva/Constants.qml \

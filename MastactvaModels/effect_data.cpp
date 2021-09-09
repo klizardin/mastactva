@@ -22,6 +22,7 @@
 EffectData::EffectData()
 {
     m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
+    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
 }
 
 EffectData::EffectData(
@@ -36,6 +37,7 @@ EffectData::EffectData(
       m_created(created_)
 {
     m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
+    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
 }
 
 EffectData::EffectData(EffectData &&data_)
@@ -50,6 +52,7 @@ EffectData &EffectData::operator = (EffectData &&data_)
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
     m_effectObjectsData = std::move(data_.m_effectObjectsData);
+    m_effectArgsData = std::move(data_.m_effectArgsData);
     return *this;
 }
 
@@ -61,6 +64,7 @@ std::unique_ptr<EffectData> EffectData::getDataCopy() const
     result->m_description = m_description;
     result->m_created = m_created;
     ::data_object::utils::copyDataVector(m_effectObjectsData.get(), result->m_effectObjectsData.get());
+    ::data_object::utils::copyDataVector(m_effectArgsData.get(), result->m_effectArgsData.get());
     return result;
 }
 
