@@ -80,7 +80,9 @@ unix: HEADERS += \
         effect.h \
         effectarg_data.h    \
         effectarg.h \
+        effectargset_data.h \
         effectargset.h \
+        effectargvalue_data.h   \
         effectargvalue.h \
         imagepointeffect.h  \
         gallery.h   \
@@ -166,7 +168,9 @@ unix: SOURCES += \
         effect.cpp \
         effectarg_data.cpp  \
         effectarg.cpp \
+        effectargset_data.cpp   \
         effectargset.cpp \
+        effectargvalue_data.cpp \
         effectargvalue.cpp \
         imagepointeffect.cpp    \
         gallery.cpp   \
