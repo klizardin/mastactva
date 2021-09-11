@@ -17,10 +17,58 @@
 
 #include "effectargset.h"
 #include "../MastactvaBase/defines.h"
+#include "../MastactvaBase/data_utils.h"
+
+
+EffectArgSetData::EffectArgSetData()
+{
+    m_effectArgValuesData = ::data_object::utils::createDataVector(
+                static_cast<const EffectArgValueData *>(nullptr)
+                );
+}
+
+EffectArgSetData::EffectArgSetData(
+        int id_,
+        int effectId_,
+        int easingTypeId_,
+        const QString &description_,
+        const QDateTime &created_
+        )
+    : m_id(id_),
+      m_effectId(effectId_),
+      m_easingTypeId(easingTypeId_),
+      m_description(description_),
+      m_created(created_)
+{
+    m_effectArgValuesData = ::data_object::utils::createDataVector(
+                static_cast<const EffectArgValueData *>(nullptr)
+                );
+}
+
+std::unique_ptr<EffectArgSetData> EffectArgSetData::getDataCopy() const
+{
+    std::unique_ptr<EffectArgSetData> result = std::make_unique<EffectArgSetData>();
+    return result;
+}
 
 
 EffectArgSet::EffectArgSet(EffectArgSetModel *parent_ /*= nullptr*/)
     : QObject(parent_)
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "EffectArgSet::EffectArgSet()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "EffectArgSet::EffectArgSet()" << this;
+#endif
+
+    m_effectArgSetModel = parent_;
+    m_objectModelInfo = this;
+}
+
+EffectArgSet::EffectArgSet(EffectArgSetData &&data_, EffectArgSetModel *parent_ /*= nullptr*/)
+    : QObject(parent_),
+      EffectArgSetData(std::move(data_))
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgSet::EffectArgSet()" << QThread::currentThread() << QThread::currentThreadId();
@@ -177,7 +225,7 @@ EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
-    EffectArgValueModel *m = new EffectArgValueModel(this);
+    EffectArgValueModel *m = new EffectArgValueModel(this, m_effectArgValuesData);
     m->initResponse();
     m->setLayoutRefImpl("arg_set", m_effectArgSetModel->getQMLLayoutName(), "id");
     m->setCurrentRef("arg_set");
@@ -211,8 +259,11 @@ void EffectArgSet::listLoadedVF()
 }
 
 
-EffectArgSetModel::EffectArgSetModel(QObject *parent_ /*= nullptr*/)
-    : base(parent_)
+EffectArgSetModel::EffectArgSetModel(
+        QObject *parent_ /*= nullptr*/,
+        std::shared_ptr<QVector<EffectArgSetData *>> data_ /*= std::shared_ptr<QVector<EffectArgSetData *>>{nullptr}*/
+        )
+    : base(parent_, data_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgSetModel::EffectArgSetModel()" << QThread::currentThread() << QThread::currentThreadId();
