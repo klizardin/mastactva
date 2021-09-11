@@ -30,5 +30,11 @@ EffectArgSetData::EffectArgSetData(
 std::unique_ptr<EffectArgSetData> EffectArgSetData::getDataCopy() const
 {
     std::unique_ptr<EffectArgSetData> result = std::make_unique<EffectArgSetData>();
+    result->m_id = m_id;
+    result->m_effectId = m_effectId;
+    result->m_easingTypeId = m_easingTypeId;
+    result->m_description = m_description;
+    result->m_created = m_created;
+    ::data_object::utils::copyDataVector(m_effectArgValuesData.get(), result->m_effectArgValuesData.get());
     return result;
 }
