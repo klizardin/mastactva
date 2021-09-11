@@ -31,6 +31,22 @@ ObjectInfoData::ObjectInfoData(
 {
 }
 
+ObjectInfoData::ObjectInfoData(ObjectInfoData &&data_)
+{
+    operator=(std::move(data_));
+}
+
+ObjectInfoData &ObjectInfoData::operator=(ObjectInfoData &&data_)
+{
+    m_id = std::move(data_.m_id);
+    m_name = std::move(data_.m_name);
+    m_programmerName = std::move(data_.m_programmerName);
+    m_description = std::move(data_.m_description);
+    m_created = std::move(data_.m_created);
+
+    return *this;
+}
+
 std::unique_ptr<ObjectInfoData> ObjectInfoData::getDataCopy() const
 {
     std::unique_ptr<ObjectInfoData> result = std::make_unique<ObjectInfoData>();

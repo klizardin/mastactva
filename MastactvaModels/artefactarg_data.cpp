@@ -40,9 +40,29 @@ ArtefactArgData::ArtefactArgData(
 {
 }
 
+ArtefactArgData::ArtefactArgData(ArtefactArgData &&data_)
+{
+    operator=(std::move(data_));
+}
+
+ArtefactArgData & ArtefactArgData::operator = (ArtefactArgData && data_)
+{
+    m_id = std::move(data_.m_id);
+    m_artefactId = std::move(data_.m_artefactId);
+    m_argTypeId = std::move(data_.m_argTypeId);
+    m_argStorageId = std::move(data_.m_argStorageId);
+    m_name = std::move(data_.m_name);
+    m_defaultValue = std::move(data_.m_defaultValue);
+    m_description = std::move(data_.m_description);
+    m_created = std::move(data_.m_created);
+
+    return *this;
+}
+
 std::unique_ptr<ArtefactArgData> ArtefactArgData::getDataCopy() const
 {
     std::unique_ptr<ArtefactArgData> result = std::make_unique<ArtefactArgData>();
+
     result->m_id = m_id;
     result->m_artefactId = m_artefactId;
     result->m_argTypeId = m_argTypeId;
@@ -51,5 +71,6 @@ std::unique_ptr<ArtefactArgData> ArtefactArgData::getDataCopy() const
     result->m_defaultValue = m_defaultValue;
     result->m_description = m_description;
     result->m_created = m_created;
+
     return result;
 }

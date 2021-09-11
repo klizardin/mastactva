@@ -34,8 +34,9 @@ public:
             const QString &programmerName_,
             const QDateTime &created_
             );
+    ObjectInfoData(ObjectInfoData &&data_);
     virtual ~ObjectInfoData() = default;
-
+    ObjectInfoData &operator=(ObjectInfoData &&data_);
     virtual std::unique_ptr<ObjectInfoData> getDataCopy() const;
 
 public:
@@ -44,6 +45,9 @@ public:
     QString m_programmerName;
     QString m_description;
     QDateTime m_created;
+
+    ObjectInfoData(const ObjectInfoData &) = delete;
+    ObjectInfoData & operator = (const ObjectInfoData &) = delete;
 };
 
 

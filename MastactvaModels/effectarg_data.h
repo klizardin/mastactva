@@ -22,6 +22,8 @@ public:
                   const QDateTime &created_
                   );
     virtual ~EffectArgData() = default;
+    EffectArgData(EffectArgData &&data_);
+    EffectArgData &operator = (EffectArgData &&data_);
     virtual std::unique_ptr<EffectArgData> getDataCopy() const;
 
 public:
@@ -34,6 +36,9 @@ public:
     QString m_defaultValue;
     QString m_description;
     QDateTime m_created;
+
+    EffectArgData(const EffectArgData &data_) = delete;
+    EffectArgData &operator = (const EffectArgData &data_) = delete;
 };
 
 

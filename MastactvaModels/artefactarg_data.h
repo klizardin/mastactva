@@ -40,8 +40,9 @@ public:
             const QString &description_,
             const QDateTime &created_
             );
+    ArtefactArgData(ArtefactArgData && data_);
     virtual ~ArtefactArgData() = default;
-
+    ArtefactArgData & operator = (ArtefactArgData && data_);
     virtual std::unique_ptr<ArtefactArgData> getDataCopy() const;
 
 public:
@@ -53,6 +54,9 @@ public:
     QString m_defaultValue;
     QString m_description;
     QDateTime m_created;
+
+    ArtefactArgData(const ArtefactArgData &data_) = delete;
+    ArtefactArgData &operator = (const ArtefactArgData &data_) = delete;
 };
 
 

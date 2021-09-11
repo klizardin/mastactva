@@ -240,7 +240,7 @@ EffectArgSetModel *Effect::createEffectArgSetModel()
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
-    EffectArgSetModel *m = new EffectArgSetModel(this);
+    EffectArgSetModel *m = new EffectArgSetModel(this, m_effectArgSetsData);
     m->initResponse();
     m->setLayoutRefImpl("effect", m_effectModel->getQMLLayoutName(), "id");
     m->setCurrentRef("effect");

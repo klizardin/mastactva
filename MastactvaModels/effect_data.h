@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include "../MastactvaModels/effectobjects_data.h"
 #include "../MastactvaModels/effectarg_data.h"
+#include "../MastactvaModels/effectargset_data.h"
 
 
 struct EffectData
@@ -52,7 +53,7 @@ public:
 
     std::shared_ptr<QVector<EffectObjectsData *>> m_effectObjectsData;
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
-    //std::shared_ptr<QVector<EffectArgSetData *>> m_effectArgSetsData;
+    std::shared_ptr<QVector<EffectArgSetData *>> m_effectArgSetsData;
 
     EffectData(const EffectData &data_) = delete;
     EffectData &operator = (const EffectData &data_) = delete;
