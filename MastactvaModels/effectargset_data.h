@@ -20,7 +20,9 @@ public:
             const QString &description_,
             const QDateTime &created_
             );
+    EffectArgSetData(EffectArgSetData &&data_);
     virtual ~EffectArgSetData() = default;
+    EffectArgSetData &operator=(EffectArgSetData &&data_);
     virtual std::unique_ptr<EffectArgSetData> getDataCopy() const;
 
 public:
@@ -31,6 +33,9 @@ public:
     QDateTime m_created;
 
     std::shared_ptr<QVector<EffectArgValueData *>> m_effectArgValuesData;
+
+    EffectArgSetData(const EffectArgData &data_) = delete;
+    EffectArgSetData &operator = (const EffectArgData &data_) = delete;
 };
 
 

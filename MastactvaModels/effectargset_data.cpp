@@ -27,6 +27,23 @@ EffectArgSetData::EffectArgSetData(
                 );
 }
 
+EffectArgSetData::EffectArgSetData(EffectArgSetData &&data_)
+{
+    operator=(std::move(data_));
+}
+
+EffectArgSetData &EffectArgSetData::operator=(EffectArgSetData &&data_)
+{
+    m_id = std::move(data_.m_id);
+    m_effectId = std::move(data_.m_effectId);
+    m_easingTypeId = std::move(data_.m_easingTypeId);
+    m_description = std::move(data_.m_description);
+    m_created = std::move(data_.m_created);
+    m_effectArgValuesData = std::move(data_.m_effectArgValuesData);
+
+    return *this;
+}
+
 std::unique_ptr<EffectArgSetData> EffectArgSetData::getDataCopy() const
 {
     std::unique_ptr<EffectArgSetData> result = std::make_unique<EffectArgSetData>();
