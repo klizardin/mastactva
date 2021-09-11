@@ -25,6 +25,23 @@ EffectArgValueData::EffectArgValueData(
     m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
 }
 
+EffectArgValueData::EffectArgValueData(EffectArgValueData &&data_)
+{
+    operator=(std::move(data_));
+}
+
+EffectArgValueData &EffectArgValueData::operator=(EffectArgValueData &&data_)
+{
+    m_id = std::move(data_.m_id);
+    m_argSetId = std::move(data_.m_argSetId);
+    m_argId = std::move(data_.m_argId);
+    m_value = std::move(data_.m_value);
+    m_description = std::move(data_.m_description);
+    m_created = std::move(data_.m_created);
+    m_effectArgsData = std::move(data_.m_effectArgsData);
+    return *this;
+}
+
 std::unique_ptr<EffectArgValueData> EffectArgValueData::getDataCopy() const
 {
     std::unique_ptr<EffectArgValueData> result = std::make_unique<EffectArgValueData>();
