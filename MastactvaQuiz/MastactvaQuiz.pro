@@ -78,6 +78,7 @@ unix: SOURCES += \
         effectarg_data.cpp  \
         effectarg.cpp \
         effectargset.cpp  \
+        effectargvalue_data.cpp \
         effectargvalue.cpp    \
         effect_data.cpp \
         effect.cpp    \
@@ -209,6 +210,7 @@ unix: HEADERS += \
     effectarg_data.h    \
     effectarg.h \
     effectargset.h  \
+    effectargvalue_data.h   \
     effectargvalue.h    \
     effect_data.h   \
     effect.h    \
