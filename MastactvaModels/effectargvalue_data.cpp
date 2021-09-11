@@ -34,5 +34,6 @@ std::unique_ptr<EffectArgValueData> EffectArgValueData::getDataCopy() const
     result->m_value = m_value;
     result->m_description = m_description;
     result->m_created = m_created;
+    ::data_object::utils::copyDataVector(m_effectArgsData.get(), result->m_effectArgsData.get());
     return result;
 }
