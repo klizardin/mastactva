@@ -1471,6 +1471,11 @@ private:
         }
         else
         {
+            for(DataType_ *& p_: *m_baseData)
+            {
+                delete p_;
+                p_ = nullptr;
+            }
             m_baseData->clear();
         }
         for(DataType_ *& p_: *m_data)
@@ -1510,6 +1515,11 @@ private:
         }
         else
         {
+            for(DataType_ *& p_: *m_baseData)
+            {
+                delete p_;
+                p_ = nullptr;
+            }
             m_baseData->clear();
         }
         for(DataType_ *& p_: *m_data)
