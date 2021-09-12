@@ -45,6 +45,7 @@ unix: SOURCES +=    \
     drawingdata_objectinfo.cpp  \
     drawingdata_effect.cpp  \
     drawingdata_effectarg.cpp   \
+    drawingdata_effectargvalue.cpp  \
     data_utils.cpp  \
     wavefrontobj.cpp    \
     luaapi.cpp  \
@@ -80,6 +81,7 @@ unix: HEADERS +=    \
     drawingdata_objectinfo.h    \
     drawingdata_effect.h    \
     drawingdata_effectarg.h \
+    drawingdata_effectargvalue.h    \
     data_utils.h    \
     wavefrontobj.h  \
     luaapi.h    \
