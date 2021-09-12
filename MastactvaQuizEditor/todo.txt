@@ -233,3 +233,4 @@ LUA:
     - function name as pluging C++ functions
     - arguments as QMap<QString, QVariant>
       - QVariant -- QString, QList<double>
+118. add copy of data from models

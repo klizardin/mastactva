@@ -124,7 +124,7 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::DataTestPosition;
 // using TestCaseInitializer = drawing_objects::DataTestObjectsList;
 // using TestCaseInitializer = drawing_objects::DataTest3DObjectSwift;
-// using TestCaseInitializer = drawing_objects::DataTest3DObjectCube;
+// using TestCaseInitializer = drawing_objects::DataTest3DObjectCube; // do not work
 // using TestCaseInitializer = drawing_objects::DataTestAlias;
 // using TestCaseInitializer = drawing_objects::LuaScriptTestNewVariable;
 // using TestCaseInitializer = drawing_objects::LuaScriptTestSetVariable;
