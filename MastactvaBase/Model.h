@@ -206,6 +206,11 @@ public:
         clearData();
     }
 
+    std::shared_ptr<QVector<DataType_ *>> getDataCopy()
+    {
+        return getDataForDataType();
+    }
+
     virtual int rowCount(const QModelIndex &parent_) const override
     {
         Q_UNUSED(parent_);
@@ -1441,6 +1446,11 @@ private:
         setDataFromDataType(data_, std::is_same<DataType_, DataObjectType_>());
     }
 
+    std::shared_ptr<QVector<DataType_ *>> getDataForDataType()
+    {
+        return getDataForDataType(std::is_same<DataType_, DataObjectType_>());
+    }
+
     void setDataFromDataType(QVector<DataType_ *> *data_, std::true_type)
     {
         if(!data_)
@@ -1451,6 +1461,28 @@ private:
                     std::begin(*data_),
                     std::end(*data_),
                     std::back_inserter(m_data));
+    }
+
+    std::shared_ptr<QVector<DataType_ *>> getDataForDataType(std::true_type)
+    {
+        if(!m_baseData)
+        {
+            m_baseData = std::make_shared<QVector<DataType_ *>>();
+        }
+        else
+        {
+            m_baseData->clear();
+        }
+        for(DataType_ *& p_: *m_data)
+        {
+            if(!p_)
+            {
+                continue;
+            }
+            std::unique_ptr<DataType_> pn = std::make_unique<DataType_>(*p_);
+            m_data.push_back(pn.release());
+        }
+        return m_baseData;
     }
 
     void setDataFromDataType(QVector<DataType_ *> *data_, std::false_type)
@@ -1468,6 +1500,27 @@ private:
                         );
             m_data.push_back(pn.release());
         }
+    }
+
+    std::shared_ptr<QVector<DataType_ *>> getDataForDataType(std::false_type)
+    {
+        if(!m_baseData)
+        {
+            m_baseData = std::make_shared<QVector<DataType_ *>>();
+        }
+        else
+        {
+            m_baseData->clear();
+        }
+        for(DataType_ *& p_: *m_data)
+        {
+            if(!p_)
+            {
+                continue;
+            }
+            m_data.push_back(p_->getDataCopy().release());
+        }
+        return m_baseData;
     }
 
 protected:
