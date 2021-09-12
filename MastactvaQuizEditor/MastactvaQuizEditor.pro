@@ -74,6 +74,7 @@ unix: HEADERS += \
         drawingdata_objectartefact.h    \
         drawingdata_objectinfo.h    \
         drawingdata_effect.h    \
+        drawingdata_effectarg.h \
         \
         easingtype.h \
         effect_data.h   \
@@ -162,6 +163,7 @@ unix: SOURCES += \
         drawingdata_objectartefact.cpp  \
         drawingdata_objectinfo.cpp  \
         drawingdata_effect.cpp  \
+        drawingdata_effectarg.cpp   \
         \
         easingtype.cpp \
         effect_data.cpp \

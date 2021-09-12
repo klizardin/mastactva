@@ -63,6 +63,7 @@ unix: SOURCES += \
         drawingdata_objectartefact.cpp  \
         drawingdata_objectinfo.cpp  \
         drawingdata_effect.cpp  \
+        drawingdata_effectarg.cpp   \
         \
         question.cpp \
         questionanswer.cpp \
@@ -196,6 +197,7 @@ unix: HEADERS += \
     drawingdata_objectartefact.h    \
     drawingdata_objectinfo.h    \
     drawingdata_effect.h    \
+    drawingdata_effectarg.h \
     \
     answer.h \
     gallery.h \
