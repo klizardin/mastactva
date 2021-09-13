@@ -78,6 +78,7 @@ unix: SOURCES += \
         quizuser.cpp \
         userstep.cpp  \
         easingtype.cpp    \
+        effectargument_data.cpp \
         effectarg_data.cpp  \
         effectarg.cpp \
         effectargset_data.cpp   \
@@ -214,6 +215,7 @@ unix: HEADERS += \
     quizuser.h \
     userstep.h  \
     easingtype.h    \
+    effectargument_data.h   \
     effectarg_data.h    \
     effectarg.h \
     effectargset_data.h \
