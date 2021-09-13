@@ -5,9 +5,10 @@
 #include <memory>
 #include <QString>
 #include <QDateTime>
+#include "../MastactvaModels/effectargument_data.h"
 
 
-class EffectArgData
+class EffectArgData : public EffectArgumentData
 {
 public:
     EffectArgData() = default;
@@ -30,10 +31,7 @@ public:
     int m_id = -1;
     int m_effectId = -1;
     int m_objectArtefactId = -1;
-    int m_argTypeId = -1;
-    int m_argStorageId = -1;
-    QString m_name; // args are unique by name inside artefact id
-    QString m_defaultValue;
+    // args are unique by name inside artefact id
     QString m_description;
     QDateTime m_created;
 

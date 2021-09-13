@@ -11,15 +11,17 @@ EffectArgData::EffectArgData(int id_,
               const QString &description_,
               const QDateTime &created_
               )
-    :m_id(id_),
-     m_effectId(effectId_),
-     m_objectArtefactId(objectArtefactId_),
-     m_argTypeId(argTypeId_),
-     m_argStorageId(argStorageId_),
-     m_name(name_),
-     m_defaultValue(defaultValue_),
-     m_description(description_),
-     m_created(created_)
+    : EffectArgumentData(
+          argStorageId_,
+          argTypeId_,
+          name_,
+          defaultValue_
+          ),
+      m_id(id_),
+      m_effectId(effectId_),
+      m_objectArtefactId(objectArtefactId_),
+      m_description(description_),
+      m_created(created_)
 {
 }
 
