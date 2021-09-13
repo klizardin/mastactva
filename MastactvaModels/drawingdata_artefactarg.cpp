@@ -18,7 +18,7 @@
 #include "drawingdata_artefactarg.h"
 
 
-DrawingDataArtefactArg::DrawingDataArtefactArg(ArtefactArgData &&data_)
-    : ArtefactArgData(std::move(data_))
+DrawingDataArtefactArg::DrawingDataArtefactArg(EffectArgumentData &&data_)
+    : EffectArgumentData(std::move(data_))
 {
 }
