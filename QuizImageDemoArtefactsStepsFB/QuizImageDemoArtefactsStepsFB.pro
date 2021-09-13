@@ -25,6 +25,7 @@ SOURCES += \
 unix: SOURCES +=    \
     quizimagedrawingdata.cpp    \
     quizimageopengldrawingdata.cpp \
+    effectargument_data.cpp \
     effectarg_data.cpp  \
     effectargvalue_data.cpp \
     effectargset_data.cpp   \
@@ -62,6 +63,7 @@ HEADERS += \
 unix: HEADERS +=    \
     quizimagedrawingdata.h  \
     quizimageopengldrawingdata.h \
+    effectargument_data.h   \
     effectarg_data.h    \
     effectargvalue_data.h   \
     effectargset_data.h \

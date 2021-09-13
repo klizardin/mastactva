@@ -34,9 +34,13 @@ public:
     QString m_description;
     QDateTime m_created;
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
+    std::shared_ptr<QVector<EffectArgData *>> m_effectArgValuesData;
 
     EffectArgValueData(const EffectArgValueData &data_) = delete;
     EffectArgValueData &operator = (const EffectArgValueData &data_) = delete;
+
+private:
+    void createValues();
 };
 
 

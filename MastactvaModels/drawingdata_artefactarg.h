@@ -21,6 +21,8 @@
 
 #include <array>
 #include "../MastactvaModels/artefactarg_data.h"
+#include "../MastactvaModels/effectarg_data.h"
+#include "../MastactvaModels/effectargvalue_data.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/utils.h"
@@ -38,17 +40,17 @@ public:
 
 
 class DrawingDataArtefactArg :
-        public ArtefactArgData,
+        public EffectArgumentData,
         public IDrawingDataArtefactArg
 {
 public:
     DrawingDataArtefactArg() = default;
-    DrawingDataArtefactArg(ArtefactArgData &&data_);
+    DrawingDataArtefactArg(EffectArgumentData &&data_);
 
 private:
     template<template <typename> class DrawingDataArtefactArgType_>
     static
-    std::unique_ptr<DrawingDataArtefactArg> createForAttributeTypes(ArtefactArgData &&data_)
+    std::unique_ptr<DrawingDataArtefactArg> createForAttributeTypes(EffectArgumentData &&data_)
     {
         switch(to_enum<ArtefactArgTypeEn>(data_.m_argTypeId))
         {
@@ -69,7 +71,7 @@ private:
 
     template<template <typename> class DrawingDataArtefactArgType_>
     static
-    std::unique_ptr<DrawingDataArtefactArg> createForUniformTypes(ArtefactArgData &&data_)
+    std::unique_ptr<DrawingDataArtefactArg> createForUniformTypes(EffectArgumentData &&data_)
     {
         switch(to_enum<ArtefactArgTypeEn>(data_.m_argTypeId))
         {
@@ -104,6 +106,8 @@ private:
     }
 
     friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(ArtefactArgData &&data_, const DrawingDataArtefactArg *);
+    friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgData &&data_, const DrawingDataArtefactArg *);
+    friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgValueData &&data_, const DrawingDataArtefactArg *);
 };
 
 
@@ -112,7 +116,7 @@ class DrawingDataArtefactAtrributeArg : public DrawingDataArtefactArg
 {
 public:
     DrawingDataArtefactAtrributeArg() = default;
-    DrawingDataArtefactAtrributeArg(ArtefactArgData &&data_)
+    DrawingDataArtefactAtrributeArg(EffectArgumentData &&data_)
         :DrawingDataArtefactArg(std::move(data_))
     {
     }
@@ -147,7 +151,7 @@ class DrawingDataArtefactUniformArg : public DrawingDataArtefactArg
 {
 public:
     DrawingDataArtefactUniformArg() = default;
-    DrawingDataArtefactUniformArg(ArtefactArgData &&data_)
+    DrawingDataArtefactUniformArg(EffectArgumentData &&data_)
         :DrawingDataArtefactArg(std::move(data_))
     {
     }
@@ -183,20 +187,72 @@ namespace utils {
 template<> inline
 std::unique_ptr<DrawingDataArtefactArg> factory(ArtefactArgData &&data_, const DrawingDataArtefactArg *)
 {
+    ArtefactArgData data = std::move(data_);
+    EffectArgumentData &argument = data;
+
     //return std::make_unique<DrawingDataArtefactArg>(std::move(data_));
-    if(to_enum<ArtefactArgStorageEn>(data_.m_argStorageId) == ArtefactArgStorageEn::attributeStorage)
+    if(to_enum<ArtefactArgStorageEn>(argument.m_argStorageId) == ArtefactArgStorageEn::attributeStorage)
     {
-        return DrawingDataArtefactArg::createForAttributeTypes<DrawingDataArtefactAtrributeArg>(std::move(data_));
+        return DrawingDataArtefactArg::createForAttributeTypes<DrawingDataArtefactAtrributeArg>(std::move(argument));
     }
-    else if(to_enum<ArtefactArgStorageEn>(data_.m_argStorageId) == ArtefactArgStorageEn::uniformStorage)
+    else if(to_enum<ArtefactArgStorageEn>(argument.m_argStorageId) == ArtefactArgStorageEn::uniformStorage)
     {
-        return DrawingDataArtefactArg::createForUniformTypes<DrawingDataArtefactUniformArg>(std::move(data_));
+        return DrawingDataArtefactArg::createForUniformTypes<DrawingDataArtefactUniformArg>(std::move(argument));
     }
     else
     {
         return {nullptr};
     }
 }
+
+template<> inline
+std::unique_ptr<DrawingDataArtefactArg> factory(EffectArgData &&data_, const DrawingDataArtefactArg *)
+{
+    EffectArgData data = std::move(data_);
+    EffectArgumentData &argument = data;
+
+    //return std::make_unique<DrawingDataArtefactArg>(std::move(data_));
+    if(to_enum<ArtefactArgStorageEn>(argument.m_argStorageId) == ArtefactArgStorageEn::attributeStorage)
+    {
+        return DrawingDataArtefactArg::createForAttributeTypes<DrawingDataArtefactAtrributeArg>(std::move(argument));
+    }
+    else if(to_enum<ArtefactArgStorageEn>(argument.m_argStorageId) == ArtefactArgStorageEn::uniformStorage)
+    {
+        return DrawingDataArtefactArg::createForUniformTypes<DrawingDataArtefactUniformArg>(std::move(argument));
+    }
+    else
+    {
+        return {nullptr};
+    }
+}
+
+
+template<> inline
+std::unique_ptr<DrawingDataArtefactArg> factory(EffectArgValueData &&data_, const DrawingDataArtefactArg *)
+{
+    EffectArgValueData data = std::move(data_);
+    Q_ASSERT(data.m_effectArgValuesData->size() <= 1);
+    for(EffectArgData *p_ : *(data.m_effectArgValuesData))
+    {
+        EffectArgumentData &argument = *p_;
+
+        //return std::make_unique<DrawingDataArtefactArg>(std::move(data_));
+        if(to_enum<ArtefactArgStorageEn>(argument.m_argStorageId) == ArtefactArgStorageEn::attributeStorage)
+        {
+            return DrawingDataArtefactArg::createForAttributeTypes<DrawingDataArtefactAtrributeArg>(std::move(argument));
+        }
+        else if(to_enum<ArtefactArgStorageEn>(argument.m_argStorageId) == ArtefactArgStorageEn::uniformStorage)
+        {
+            return DrawingDataArtefactArg::createForUniformTypes<DrawingDataArtefactUniformArg>(std::move(argument));
+        }
+        else
+        {
+            return {nullptr};
+        }
+    }
+    return {nullptr};
+}
+
 
 }
 }

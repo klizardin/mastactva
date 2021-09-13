@@ -5,6 +5,7 @@
 EffectArgValueData::EffectArgValueData()
 {
     m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
+    createValues();
 }
 
 EffectArgValueData::EffectArgValueData(
@@ -23,6 +24,7 @@ EffectArgValueData::EffectArgValueData(
       m_created(created_)
 {
     m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
+    createValues();
 }
 
 EffectArgValueData::EffectArgValueData(EffectArgValueData &&data_)
@@ -39,6 +41,7 @@ EffectArgValueData &EffectArgValueData::operator=(EffectArgValueData &&data_)
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
     m_effectArgsData = std::move(data_.m_effectArgsData);
+    m_effectArgValuesData = std::move(data_.m_effectArgValuesData);
     return *this;
 }
 
@@ -52,5 +55,23 @@ std::unique_ptr<EffectArgValueData> EffectArgValueData::getDataCopy() const
     result->m_description = m_description;
     result->m_created = m_created;
     ::data_object::utils::copyDataVector(m_effectArgsData.get(), result->m_effectArgsData.get());
+    ::data_object::utils::copyDataVector(m_effectArgValuesData.get(), result->m_effectArgValuesData.get());
     return result;
+}
+
+void EffectArgValueData::createValues()
+{
+    m_effectArgValuesData = std::make_shared<QVector<EffectArgData *>>();
+    if(m_effectArgsData)
+    {
+        for(const EffectArgData *p_ : *m_effectArgsData)
+        {
+            if(!p_)
+            {
+                continue;
+            }
+            m_effectArgValuesData->push_back(p_->getDataCopy().release());
+            m_effectArgValuesData->back()->m_defaultValue = m_value;
+        }
+    }
 }

@@ -81,6 +81,7 @@ unix: HEADERS += \
         easingtype.h \
         effect_data.h   \
         effect.h \
+        effectargument_data.h   \
         effectarg_data.h    \
         effectarg.h \
         effectargset_data.h \
@@ -172,6 +173,7 @@ unix: SOURCES += \
         easingtype.cpp \
         effect_data.cpp \
         effect.cpp \
+        effectargument_data.cpp \
         effectarg_data.cpp  \
         effectarg.cpp \
         effectargset_data.cpp   \
