@@ -61,7 +61,7 @@ std::unique_ptr<EffectArgValueData> EffectArgValueData::getDataCopy() const
 
 void EffectArgValueData::createValues()
 {
-    m_effectArgValuesData = std::make_shared<QVector<EffectArgData *>>();
+    m_effectArgValuesData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
     if(m_effectArgsData)
     {
         for(const EffectArgData *p_ : *m_effectArgsData)
