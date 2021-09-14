@@ -33,6 +33,7 @@
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
 
@@ -1465,19 +1466,7 @@ private:
 
     std::shared_ptr<QVector<DataType_ *>> getDataForDataType(std::true_type)
     {
-        if(!m_baseData)
-        {
-            m_baseData = std::make_shared<QVector<DataType_ *>>();
-        }
-        else
-        {
-            for(DataType_ *& p_: *m_baseData)
-            {
-                delete p_;
-                p_ = nullptr;
-            }
-            m_baseData->clear();
-        }
+        m_baseData = data_object::utils::createDataVector(static_cast<const DataType_ *>(nullptr));
         for(DataType_ *& p_: *m_data)
         {
             if(!p_)
@@ -1509,19 +1498,7 @@ private:
 
     std::shared_ptr<QVector<DataType_ *>> getDataForDataType(std::false_type)
     {
-        if(!m_baseData)
-        {
-            m_baseData = std::make_shared<QVector<DataType_ *>>();
-        }
-        else
-        {
-            for(DataType_ *& p_: *m_baseData)
-            {
-                delete p_;
-                p_ = nullptr;
-            }
-            m_baseData->clear();
-        }
+        m_baseData = data_object::utils::createDataVector(static_cast<const DataType_ *>(nullptr));
         for(DataType_ *& p_: *m_data)
         {
             if(!p_)
