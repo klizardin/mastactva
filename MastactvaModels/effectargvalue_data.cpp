@@ -4,8 +4,7 @@
 
 EffectArgValueData::EffectArgValueData()
 {
-    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
-    createValues();
+    createArrays();
 }
 
 EffectArgValueData::EffectArgValueData(
@@ -23,8 +22,7 @@ EffectArgValueData::EffectArgValueData(
       m_description(description_),
       m_created(created_)
 {
-    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
-    createValues();
+    createArrays();
 }
 
 EffectArgValueData::EffectArgValueData(EffectArgValueData &&data_)
@@ -57,6 +55,12 @@ std::unique_ptr<EffectArgValueData> EffectArgValueData::getDataCopy() const
     ::data_object::utils::copyDataVector(m_effectArgsData.get(), result->m_effectArgsData.get());
     ::data_object::utils::copyDataVector(m_effectArgValuesData.get(), result->m_effectArgValuesData.get());
     return result;
+}
+
+void EffectArgValueData::createArrays()
+{
+    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
+    createValues();
 }
 
 void EffectArgValueData::createValues()
