@@ -40,6 +40,7 @@ public:
     EffectArgValueData &operator = (const EffectArgValueData &data_) = delete;
 
 private:
+    void createArrays();
     void createValues();
 };
 

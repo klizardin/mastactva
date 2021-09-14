@@ -41,6 +41,9 @@ public:
     ObjectArtefactData &operator = (ObjectArtefactData &&data_);
     virtual std::unique_ptr<ObjectArtefactData> getDataCopy() const;
 
+private:
+    void createArrays();
+
 public:
     int m_id = -1;
     int m_objectInfoId = -1;

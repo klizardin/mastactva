@@ -5,5 +5,5 @@
 DrawingDataEffectArgValue::DrawingDataEffectArgValue(EffectArgValueData &&data_)
     : EffectArgValueData(std::move(data_))
 {
-    drawingdata::utils::rebuild(m_effectArgsData, static_cast<DrawingDataEffectArg *>(nullptr));
+    drawingdata::utils::rebuild(m_effectArgValuesData, m_effectArgData);
 }

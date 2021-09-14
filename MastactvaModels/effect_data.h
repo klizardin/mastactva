@@ -45,6 +45,9 @@ public:
     // to extract data from model object
     virtual std::unique_ptr<EffectData> getDataCopy() const;
 
+private:
+    void createArrays();
+
 public:
     int m_id = -1;
     QString m_name;

@@ -47,6 +47,9 @@ public:
     ArtefactData &operator = (ArtefactData &&data_);
     virtual std::unique_ptr<ArtefactData> getDataCopy() const;
 
+private:
+    void createArrays();
+
 public:
     int m_id = -1;
     QString m_name;

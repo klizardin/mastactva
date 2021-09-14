@@ -25,6 +25,9 @@ public:
     EffectArgSetData &operator=(EffectArgSetData &&data_);
     virtual std::unique_ptr<EffectArgSetData> getDataCopy() const;
 
+private:
+    void createArrays();
+
 public:
     int m_id = -1;
     int m_effectId = -1;

@@ -21,7 +21,7 @@
 
 ObjectArtefactData::ObjectArtefactData()
 {
-    m_artefactData = data_object::utils::createDataVector(static_cast<const ArtefactData *>(nullptr));
+    createArrays();
 }
 
 ObjectArtefactData::ObjectArtefactData(
@@ -36,7 +36,7 @@ ObjectArtefactData::ObjectArtefactData(
      m_artefactId(artefactId_),
      m_stepIndex(stepIndex_)
 {
-    m_artefactData = data_object::utils::createDataVector(static_cast<const ArtefactData *>(nullptr));
+    createArrays();
     if(m_artefactData.operator bool())
     {
         m_artefactData->push_back(artefact_);
@@ -68,4 +68,9 @@ std::unique_ptr<ObjectArtefactData> ObjectArtefactData::getDataCopy() const
     result->m_stepIndex = m_stepIndex;
     data_object::utils::copyDataVector(m_artefactData.get(), result->m_artefactData.get());
     return result;
+}
+
+void ObjectArtefactData::createArrays()
+{
+    m_artefactData = data_object::utils::createDataVector(static_cast<const ArtefactData *>(nullptr));
 }

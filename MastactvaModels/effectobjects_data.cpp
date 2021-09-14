@@ -23,8 +23,7 @@
 
 EffectObjectsData::EffectObjectsData()
 {
-    m_objectInfoData = data_object::utils::createDataVector(static_cast<const ObjectInfoData *>(nullptr));
-    m_objectArtefactData = data_object::utils::createDataVector(static_cast<const ObjectArtefactData *>(nullptr));
+    createArrays();
 }
 
 EffectObjectsData::EffectObjectsData(
@@ -38,8 +37,7 @@ EffectObjectsData::EffectObjectsData(
       m_objectInfoId(objectInfoId_),
       m_stepIndex(stepIndex_)
 {
-    m_objectInfoData = data_object::utils::createDataVector(static_cast<const ObjectInfoData *>(nullptr));
-    m_objectArtefactData = data_object::utils::createDataVector(static_cast<const ObjectArtefactData *>(nullptr));
+    createArrays();
 }
 
 EffectObjectsData::EffectObjectsData(EffectObjectsData &&data_)
@@ -68,4 +66,10 @@ std::unique_ptr<EffectObjectsData> EffectObjectsData::getDataCopy() const
     data_object::utils::copyDataVector(m_objectInfoData.get(), result->m_objectInfoData.get());
     data_object::utils::copyDataVector(m_objectArtefactData.get(), result->m_objectArtefactData.get());
     return result;
+}
+
+void EffectObjectsData::createArrays()
+{
+    m_objectInfoData = data_object::utils::createDataVector(static_cast<const ObjectInfoData *>(nullptr));
+    m_objectArtefactData = data_object::utils::createDataVector(static_cast<const ObjectArtefactData *>(nullptr));
 }

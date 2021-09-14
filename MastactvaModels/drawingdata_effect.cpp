@@ -28,7 +28,7 @@ DrawingDataEffect::DrawingDataEffect(EffectData &&data_)
 {
     drawingdata::utils::rebuild(m_effectObjectsData, static_cast<DrawingDataEffectObjects *>(nullptr));
     //drawingdata::utils::rebuild(m_effectArgsData, static_cast<DrawingDataEffectArg *>(nullptr));
-    //drawingdata::utils::rebuild(m_effectArgSetsData, static_cast<DrawingDataEffectArgSet *>(nullptr));
+    drawingdata::utils::rebuild(m_effectArgSetsData, static_cast<DrawingDataEffectArgSet *>(nullptr));
 }
 
 void DrawingDataEffect::init(std::shared_ptr<drawingdata::IFileSource> filesources_)

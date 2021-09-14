@@ -22,7 +22,7 @@
 
 ArtefactData::ArtefactData()
 {
-    m_artefactArgData = data_object::utils::createDataVector(static_cast<const ArtefactArgData *>(nullptr));
+    createArrays();
 }
 
 ArtefactData::ArtefactData(
@@ -42,7 +42,7 @@ ArtefactData::ArtefactData(
       m_description(description_),
       m_created(created_)
 {
-    m_artefactArgData = data_object::utils::createDataVector(static_cast<const ArtefactArgData *>(nullptr));
+    createArrays();
 }
 
 ArtefactData::ArtefactData(ArtefactData &&data_)
@@ -76,4 +76,9 @@ std::unique_ptr<ArtefactData> ArtefactData::getDataCopy() const
     result->m_created = m_created;
     data_object::utils::copyDataVector(m_artefactArgData.get(), result->m_artefactArgData.get());
     return result;
+}
+
+void ArtefactData::createArrays()
+{
+    m_artefactArgData = data_object::utils::createDataVector(static_cast<const ArtefactArgData *>(nullptr));
 }

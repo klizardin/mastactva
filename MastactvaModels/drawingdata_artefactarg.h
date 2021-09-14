@@ -107,7 +107,7 @@ private:
 
     friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(ArtefactArgData &&data_, const DrawingDataArtefactArg *);
     friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgData &&data_, const DrawingDataArtefactArg *);
-    friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgValueData &&data_, const DrawingDataArtefactArg *);
+    //friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgValueData &&data_, const DrawingDataArtefactArg *);
 };
 
 
@@ -227,7 +227,7 @@ std::unique_ptr<DrawingDataArtefactArg> factory(EffectArgData &&data_, const Dra
 }
 
 
-template<> inline
+/*template<> inline
 std::unique_ptr<DrawingDataArtefactArg> factory(EffectArgValueData &&data_, const DrawingDataArtefactArg *)
 {
     EffectArgValueData data = std::move(data_);
@@ -251,7 +251,7 @@ std::unique_ptr<DrawingDataArtefactArg> factory(EffectArgValueData &&data_, cons
         }
     }
     return {nullptr};
-}
+}*/
 
 
 }
