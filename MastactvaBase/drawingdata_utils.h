@@ -34,6 +34,7 @@
 #include <QMatrix3x3>
 #include <QMatrix4x4>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/imagesource.h"
 
 
@@ -68,6 +69,27 @@ namespace utils
                 {
                     ptr_ = nullptr;
                 }
+            }
+        }
+    }
+
+    template<class DataType_, class DrawingDataType_> inline
+    void rebuild(
+        const std::shared_ptr<QVector<DataType_ *>> &data_,
+        std::shared_ptr<QVector<DrawingDataType_ *>> &result_
+        )
+    {
+        result_ = data_object::utils::createDataVector(static_cast<const DrawingDataType_ *>(nullptr));
+        if(data_.operator bool())
+        {
+            for(DataType_ *& ptr_ : *data_)
+            {
+                if(!ptr_)
+                {
+                    continue;
+                }
+                auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
+                result_->push_back(ptr.release());
             }
         }
     }
