@@ -21,9 +21,7 @@
 
 EffectData::EffectData()
 {
-    m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
-    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
-    m_effectArgSetsData = ::data_object::utils::createDataVector(static_cast<const EffectArgSetData *>(nullptr));
+    createArrays();
 }
 
 EffectData::EffectData(
@@ -37,9 +35,7 @@ EffectData::EffectData(
       m_description(description_),
       m_created(created_)
 {
-    m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
-    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
-    m_effectArgSetsData = ::data_object::utils::createDataVector(static_cast<const EffectArgSetData *>(nullptr));
+    createArrays();
 }
 
 EffectData::EffectData(EffectData &&data_)
@@ -72,4 +68,9 @@ std::unique_ptr<EffectData> EffectData::getDataCopy() const
     return result;
 }
 
-
+void EffectData::createArrays()
+{
+    m_effectObjectsData = ::data_object::utils::createDataVector(static_cast<const EffectObjectsData *>(nullptr));
+    m_effectArgsData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
+    m_effectArgSetsData = ::data_object::utils::createDataVector(static_cast<const EffectArgSetData *>(nullptr));
+}
