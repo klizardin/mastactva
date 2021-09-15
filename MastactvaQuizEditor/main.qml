@@ -4132,6 +4132,7 @@ ApplicationWindow {
             if(effectArgumentSetValuesCurrentModel !== undefined && effectArgumentSetValuesCurrentModel !== null)
             {
                 effectArgumentSetValuesCurrentIndex = -1
+                effectArgumentSetValuesList.currentIndex = -1
                 effectArgumentSetValuesList.model = 0
 
                 effectArgumentSetValuesListBusyIndicator.visible = true
