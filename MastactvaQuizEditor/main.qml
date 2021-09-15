@@ -6786,7 +6786,7 @@ ApplicationWindow {
                     }
                     Text {
                         id: effectArgumentsItemObjectArtefact
-                        width: effectArgumentsList.width - effectArgumentsObjectArtefactTypeLabel.width
+                        width: effectArgumentsList.width - effectArgumentsItemObjectArtefactLabel.width
                         text: effectArgObjectArtefactId
                         wrapMode: Text.Wrap
                     }
