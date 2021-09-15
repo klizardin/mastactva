@@ -234,3 +234,4 @@ LUA:
     - arguments as QMap<QString, QVariant>
       - QVariant -- QString, QList<double>
 * 118. add copy of data from models
+119. effect lists
