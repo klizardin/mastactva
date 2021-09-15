@@ -2372,6 +2372,7 @@ ApplicationWindow {
                 update()
                 if(fieldNew)
                 {
+                    fieldEffectArgumentValue.effectArgValueCreated = mastactva.now()
                     effectArgumentValuesModel.itemAdded.connect(effectArgumentValueAdded)
                     effectArgumentValuesModel.addItem(fieldEffectArgumentValue)
                 }
