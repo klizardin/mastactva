@@ -4010,6 +4010,8 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null)
             {
                 effectArgumentSetsCurrentIndex = -1
+                effectArgumentSetsList.currentIndex = -1
+                effectArgumentSetsList.model = 0
                 effectArgumentSetsListBusyIndicator.visible = true
                 effectArgumentSetsListBusyIndicator.running = true
                 effectArgumentSetsCurrentModel.listReloaded.connect(listReloaded)
@@ -4024,6 +4026,7 @@ ApplicationWindow {
                 effectArgumentSetsCurrentModel.listReloaded.disconnect(listReloaded)
                 effectArgumentSetsListBusyIndicator.visible = false
                 effectArgumentSetsListBusyIndicator.running = false
+                effectArgumentSetsList.model = effectArgumentSetsCurrentModel
                 effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.currentIndex
             }
         }
