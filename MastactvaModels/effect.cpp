@@ -508,6 +508,7 @@ void Effect::applyRefreshArguments()
                 newArg->setName(argName);
                 newArg->setEffectId(id());
                 newArg->setObjectArtefactId(ai_.objectArtefactId);
+                newArg->setCreated(QDateTime::currentDateTime());
             }
             newArg->setArgTypeId(argTypeId);
             newArg->setArgStorageId(argStorageId);
