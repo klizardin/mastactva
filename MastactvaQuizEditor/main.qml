@@ -609,9 +609,9 @@ ApplicationWindow {
         function onEffectArgumentSetsCurrentIndexChanged()
         {
             effectArgumentSetsList.currentIndex = effectArgumentSetsCurrentIndex
-            effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentModel.currentItem !== null)
             {
+                effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
                 var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
                 if(effectSetValuesModel.isListLoaded())
                 {
