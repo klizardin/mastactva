@@ -2311,7 +2311,7 @@ ApplicationWindow {
                 update()
                 if(fieldNew)
                 {
-                    fieldEffectArgumentSet.effectArgSetCreated(mastactva.now())
+                    fieldEffectArgumentSet.effectArgSetCreated = mastactva.now()
                     effectArgumentSetsModel.itemAdded.connect(effectArgumentSetAdded)
                     effectArgumentSetsModel.addItem(fieldEffectArgumentSet)
                 }
