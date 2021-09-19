@@ -252,6 +252,7 @@ Dialog {
                 {
                     editArtefactTypeList.currentIndex = index
                     fieldArtefactTypeId = artefactTypeId
+                    selectedNameFilter.selectedNameFilter = mastactva.getFileDialogFilter(openArtefactDialog.nameFilters, artefactTypeId)
                     mouse.accepted = false
                 }
             }
