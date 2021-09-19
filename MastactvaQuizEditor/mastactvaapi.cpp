@@ -32,6 +32,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/netappconsts.h"
 #include "../MastactvaBase/netapi.h"
+#include "../MastactvaModels/artefacttype_data.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -1172,6 +1173,41 @@ bool MastactvaAPI::isTextureUrl(const QString &url_)
 {
     static const char * s_extensions[] = {"png", "jpg", "jpeg"};
     return testUrlExtension(url_, s_extensions);
+}
+
+inline
+QStringList getArtefactExtensions(int artefactTypeId_)
+{
+    return getArtefactFileExtensions(artefactTypeId_);
+}
+
+inline
+bool doesFilterHaveExtension(const QString &filter_, const QStringList &extensions_)
+{
+    return std::find_if(
+                std::cbegin(extensions_),
+                std::cend(extensions_),
+                [&filter_](const QString &ext_)->bool
+    {
+        return filter_.indexOf(ext_) > filter_.indexOf("(");
+    }) != std::cend(extensions_);
+}
+
+QString MastactvaAPI::getFileDialogFilter(const QStringList &filters_, int artefactTypeId_)
+{
+    const QStringList extensions = getArtefactExtensions(artefactTypeId_);
+    const auto fit = std::find_if(
+                std::cbegin(filters_),
+                std::cend(filters_),
+                [&extensions](const QString &filter_)->bool
+    {
+        return doesFilterHaveExtension(filter_, extensions);
+    });
+    if(std::cend(filters_) != fit)
+    {
+        return *fit;
+    }
+    return filters_.isEmpty() ? QString() : filters_.front();
 }
 
 QString MastactvaAPI::getFileText(const QString &fileNameURL_)

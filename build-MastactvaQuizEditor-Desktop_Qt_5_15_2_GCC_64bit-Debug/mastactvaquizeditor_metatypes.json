@@ -2649,6 +2649,21 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "filters_",
+                                "type": "QStringList"
+                            },
+                            {
+                                "name": "artefactTypeId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getFileDialogFilter",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "fileNameURL_",
                                 "type": "QString"
                             }
