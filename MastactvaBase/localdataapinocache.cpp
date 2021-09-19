@@ -149,12 +149,12 @@ void LocalDataAPINoCache::cleanPath()
     {
         QFile::remove(m_dbNameRO);
     }
-    QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
-    while(fit.hasNext())
-    {
-        QFile f(fit.next());
-        f.remove();
-    }
+    //QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
+    //while(fit.hasNext())
+    //{
+    //    QFile f(fit.next());
+    //    f.remove();
+    //}
 }
 
 void LocalDataAPINoCache::createDB()
