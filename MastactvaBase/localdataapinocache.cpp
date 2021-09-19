@@ -102,6 +102,13 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
     return g_localDataAPI;
 }
 
+QString pathJoin(const QString &path_, const QString &filename_)
+{
+    const QDir dir(path_);
+    const QFileInfo fi(dir, filename_);
+    return QDir::current().relativeFilePath(fi.absoluteFilePath());
+}
+
 void LocalDataAPINoCache::startSave(const QString &savePath_)
 {
     m_savePath = savePath_;
@@ -154,10 +161,18 @@ void LocalDataAPINoCache::createDB()
 {
     m_databaseRO = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRO);
     m_databaseRO.setDatabaseName(m_dbNameRO);
-    m_databaseRO.open();
+    if(!m_databaseRO.open() || m_databaseRO.isOpenError())
+    {
+        QSqlError sqlErr = m_databaseRO.lastError();
+        qDebug() << sqlErr.text();
+    }
     m_databaseRW = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRW);
     m_databaseRW.setDatabaseName(m_dbNameRW);
-    m_databaseRW.open();
+    if(!m_databaseRW.open() || m_databaseRW.isOpenError())
+    {
+        QSqlError sqlErr = m_databaseRW.lastError();
+        qDebug() << sqlErr.text();
+    }
 }
 
 bool LocalDataAPINoCache::isSaveToDBMode() const
