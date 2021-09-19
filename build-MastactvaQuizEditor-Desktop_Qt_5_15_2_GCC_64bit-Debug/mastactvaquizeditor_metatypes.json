@@ -3925,7 +3925,18 @@
                             }
                         ],
                         "name": "remove",
-                        "returnType": "void"
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "removeLocalFile",
+                        "returnType": "bool"
                     }
                 ],
                 "object": true,

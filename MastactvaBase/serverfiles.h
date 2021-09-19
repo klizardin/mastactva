@@ -93,13 +93,14 @@ public:
     Q_INVOKABLE qreal getProgressRate(const QStringList &urls_) const;
     Q_INVOKABLE void cancel(const QStringList &urls_);
     Q_INVOKABLE void reset();
-    Q_INVOKABLE void remove(const QString &url_);
+    Q_INVOKABLE bool remove(const QString &url_);
+    Q_INVOKABLE bool removeLocalFile(const QString &url_);
 
 protected:
     bool testHash(const QString &url_, const QString &hash_) const;
     void clearDownloads();
     bool isResourceSheme(const QString &url_);
-    void addResourceUrl(const QString &url_);
+    void addResourceUrl(const QString &filename_);
 
 protected slots:
     void finished(ServerFileDownload *download_);

@@ -133,13 +133,33 @@ void ServerFiles::add(const QString &url_,
     sfd->start(m_manager);
 }
 
-void ServerFiles::remove(const QString &url_)
+bool ServerFiles::remove(const QString &url_)
 {
-    if(isUrlDownloaded(url_))
+    if(!isUrlDownloaded(url_))
     {
-        QFile::remove(m_map.value(url_));
-        m_map.remove(url_);
+        return false;
     }
+
+    QFile::remove(m_map.value(url_));
+    m_map.remove(url_);
+    return true;
+}
+
+bool ServerFiles::removeLocalFile(const QString &filename_)
+{
+    QFileInfo fi(filename_);
+    const QList<QString> keys = m_map.keys();
+    for(const QString &key_ : keys)
+    {
+        QFileInfo fik(m_map.value(key_));
+        if(fik.absoluteFilePath() == fi.absoluteFilePath())
+        {
+            QFile::remove(fi.absoluteFilePath());
+            m_map.remove(key_);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool ServerFiles::isUrlDownloaded(const QString &url_) const
@@ -156,6 +176,7 @@ QString ServerFiles::get(const QString &url_) const
 
 void ServerFiles::clean(const QDateTime &beforeEqualDate_)
 {
+    clearDownloads();
     QDirIterator fit(m_rootDir, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
     while(fit.hasNext())
     {
@@ -163,7 +184,10 @@ void ServerFiles::clean(const QDateTime &beforeEqualDate_)
         QFileInfo fi(f);
         if(fi.lastModified() <= beforeEqualDate_)
         {
-            f.remove();
+            if(!removeLocalFile(fi.absoluteFilePath()))
+            {
+                f.remove();
+            }
         }
     }
 }
