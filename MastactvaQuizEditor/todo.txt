@@ -236,4 +236,4 @@ LUA:
 * 118. add copy of data from models
 119. effect lists
 * 120. refresh arg set, arg set values
-121. image resources fix
+* 121. image artefacts fix
