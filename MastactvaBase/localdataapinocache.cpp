@@ -102,6 +102,13 @@ LocalDataAPINoCache *LocalDataAPINoCache::getInstance()
     return g_localDataAPI;
 }
 
+QString pathJoin(const QString &path_, const QString &filename_)
+{
+    const QDir dir(path_);
+    const QFileInfo fi(dir, filename_);
+    return QDir::current().relativeFilePath(fi.absoluteFilePath());
+}
+
 void LocalDataAPINoCache::startSave(const QString &savePath_)
 {
     m_savePath = savePath_;
@@ -117,6 +124,8 @@ void LocalDataAPINoCache::startSave(const QString &savePath_)
 
 void LocalDataAPINoCache::endSave()
 {
+    QFile::copy(m_dbNameRW, pathJoin(m_savePath, m_dbNameRW));
+    QFile::copy(m_dbNameRO, pathJoin(m_savePath, m_dbNameRO));
     m_databaseRW.close();
     m_databaseRO.close();
     m_savePath.clear();
@@ -142,22 +151,30 @@ void LocalDataAPINoCache::cleanPath()
     {
         QFile::remove(m_dbNameRO);
     }
-    QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
-    while(fit.hasNext())
-    {
-        QFile f(fit.next());
-        f.remove();
-    }
+    //QDirIterator fit(m_savePath, QStringList() << "*.*", QDir::NoFilter, QDirIterator::Subdirectories);
+    //while(fit.hasNext())
+    //{
+    //    QFile f(fit.next());
+    //    f.remove();
+    //}
 }
 
 void LocalDataAPINoCache::createDB()
 {
     m_databaseRO = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRO);
     m_databaseRO.setDatabaseName(m_dbNameRO);
-    m_databaseRO.open();
+    if(!m_databaseRO.open() || m_databaseRO.isOpenError())
+    {
+        QSqlError sqlErr = m_databaseRO.lastError();
+        qDebug() << sqlErr.text();
+    }
     m_databaseRW = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRW);
     m_databaseRW.setDatabaseName(m_dbNameRW);
-    m_databaseRW.open();
+    if(!m_databaseRW.open() || m_databaseRW.isOpenError())
+    {
+        QSqlError sqlErr = m_databaseRW.lastError();
+        qDebug() << sqlErr.text();
+    }
 }
 
 bool LocalDataAPINoCache::isSaveToDBMode() const

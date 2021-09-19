@@ -2626,7 +2626,7 @@ ApplicationWindow {
         id: downloadGalleryLocalDataFileDialog
         title: qsTr("Please choose root file to download local data in the folder of a root file")
         folder: localDataSet.savePath
-        nameFilters: [ "All files (*.*)" ]
+        nameFilters: [ "Tar files (*.tar)", "All files (*.*)" ]
         selectExisting: false
         selectMultiple: false
 
