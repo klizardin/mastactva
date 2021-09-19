@@ -124,6 +124,8 @@ void LocalDataAPINoCache::startSave(const QString &savePath_)
 
 void LocalDataAPINoCache::endSave()
 {
+    QFile::copy(m_dbNameRW, pathJoin(m_savePath, m_dbNameRW));
+    QFile::copy(m_dbNameRO, pathJoin(m_savePath, m_dbNameRO));
     m_databaseRW.close();
     m_databaseRO.close();
     m_savePath.clear();
