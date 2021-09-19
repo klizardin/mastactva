@@ -51,6 +51,7 @@ protected:
     qreal stepProgress();
     QString savePath() const;
     void setSavePath(const QString &url_);
+    void archiveResults();
 
 signals:
     void savePathChanged();
@@ -62,6 +63,7 @@ protected slots:
 
 private:
     QString m_savePath;
+    QString m_saveName;
     QString m_serverFilesOldRootDir;
     GalleryModel *m_galleryModel = nullptr;
     ImageModel *m_imageModel = nullptr;

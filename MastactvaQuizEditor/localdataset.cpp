@@ -174,12 +174,42 @@ QString LocalDataSet::savePath() const
     return m_savePath;
 }
 
+void LocalDataSet::archiveResults()
+{
+    QDir dir(m_savePath);
+    QStringList args;
+    QDirIterator fit(dir.absolutePath(), QStringList() << "*.*", QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDirIterator::Subdirectories);
+    while(fit.hasNext())
+    {
+        QFileInfo fi(fit.next());
+        if(fi.isDir() || fi.isFile())
+        {
+            args.push_back(fi.absoluteFilePath());
+        }
+    }
+    QProcess tar;
+    tar.start("tar", QStringList({"-cf", m_saveName}) + args);
+    if(!tar.waitForStarted())
+    {
+        return;
+    }
+    if(!tar.waitForFinished())
+    {
+        return;
+    }
+}
+
 void LocalDataSet::setSavePath(const QString &url_)
 {
     QUrl url(url_);
     QFile f(url.toLocalFile());
     QFileInfo fi(f);
-    m_savePath = fi.absoluteDir().absolutePath();
+    m_savePath = fi.absolutePath();
+    m_saveName = fi.absoluteFilePath();
+    if(!m_saveName.endsWith(".tar"))
+    {
+        m_saveName += ".tar";
+    }
 }
 
 void LocalDataSet::downloadStep()
@@ -304,6 +334,8 @@ void LocalDataSet::downloadStep()
     if(nullptr != localDataAPI) { localDataAPI->endSave(); }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
     if(nullptr != sf) { sf->setRootDir(m_serverFilesOldRootDir); }
+
+    archiveResults();
 
     emit progress(stepProgress());
     emit downloaded();
