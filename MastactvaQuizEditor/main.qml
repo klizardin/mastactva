@@ -625,23 +625,31 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentModel.currentItem !== null)
             {
                 effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
-                var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
-                if(effectSetValuesModel.isListLoaded())
+                if(effectArgumentSetsCurrentModel.currentItem !== null)
                 {
-                    clearEffectArgumentSetValuesList()
+                    var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
+                    if(effectSetValuesModel.isListLoaded())
+                    {
+                        clearEffectArgumentSetValuesList()
 
-                    effectArgumentSetValuesCurrentModel = effectSetValuesModel
-                    effectArgumentSetValuesList.model = effectSetValuesModel
-                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
+                        effectArgumentSetValuesCurrentModel = effectSetValuesModel
+                        effectArgumentSetValuesList.model = effectSetValuesModel
+                        effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
+                    }
+                    else
+                    {
+                        clearEffectArgumentSetValuesList()
+
+                        effectArgumentSetValuesListBusyIndicator.visible = true
+                        effectArgumentSetValuesListBusyIndicator.running = true
+
+                        effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
+                    }
                 }
                 else
                 {
+                    effectArgumentSetValuesCurrentModel = undefined
                     clearEffectArgumentSetValuesList()
-
-                    effectArgumentSetValuesListBusyIndicator.visible = true
-                    effectArgumentSetValuesListBusyIndicator.running = true
-
-                    effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
                 }
             }
             else
