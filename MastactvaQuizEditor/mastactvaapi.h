@@ -114,6 +114,7 @@ public:
     Q_INVOKABLE bool isLuaUrl(const QString &url_);
     Q_INVOKABLE bool isTextureUrl(const QString &url_);
     Q_INVOKABLE QString getFileDialogFilter(const QStringList &filters_, int artefactTypeId_);
+    Q_INVOKABLE QString urlToFilename(const QString &fileNameURL_);
     Q_INVOKABLE QString getFileText(const QString &fileNameURL_);
     Q_INVOKABLE QString getLocalFileText(const QString &fileNameURL_);
     Q_INVOKABLE QString createTempFile(const QString &fileURL_, const QString &text_);

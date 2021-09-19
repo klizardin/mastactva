@@ -1210,6 +1210,12 @@ QString MastactvaAPI::getFileDialogFilter(const QStringList &filters_, int artef
     return filters_.isEmpty() ? QString() : filters_.front();
 }
 
+QString MastactvaAPI::urlToFilename(const QString &fileNameURL_)
+{
+    QUrl url(fileNameURL_);
+    return url.toLocalFile();
+}
+
 QString MastactvaAPI::getFileText(const QString &fileNameURL_)
 {
     return loadTextFileByUrl(fileNameURL_);

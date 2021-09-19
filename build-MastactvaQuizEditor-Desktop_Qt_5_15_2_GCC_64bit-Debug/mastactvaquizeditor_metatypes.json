@@ -2668,6 +2668,17 @@
                                 "type": "QString"
                             }
                         ],
+                        "name": "urlToFilename",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileNameURL_",
+                                "type": "QString"
+                            }
+                        ],
                         "name": "getFileText",
                         "returnType": "QString"
                     },
