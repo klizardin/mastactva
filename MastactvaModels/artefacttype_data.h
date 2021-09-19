@@ -19,6 +19,9 @@
 #define ARTEFACTTYPE_DATA_H
 
 
+#include <QString>
+
+
 enum class ArtefactTypeEn{
     shaderVertex = 1,
     shaderFragmet,
@@ -33,5 +36,8 @@ enum class ArtefactTypeEn{
     scriptLibrary
 };
 
+
+QString getArtefactFileFilter(int artefactTypeId_);
+QStringList getArtefactFileExtensions(int artefactTypeId_);
 
 #endif // ARTEFACTTYPE_DATA_H

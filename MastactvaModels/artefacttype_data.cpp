@@ -16,4 +16,75 @@
 */
 
 #include "artefacttype_data.h"
+#include "../MastactvaBase/utils.h"
 
+
+QString getArtefactFileFilter(int artefactTypeId_)
+{
+    const ArtefactTypeEn artefactType = to_enum<ArtefactTypeEn>(artefactTypeId_);
+
+    static const char * vertexFilter = "Shader files (*.vert *.vertex *vsh)";
+    static const char * fragmentFilter = "Shader files (*.frag *.fragment *.fsh)";
+    static const char * textureFilter = "Texture files (*.png *.jpg *.jpeg)";
+    static const char * jsonFilter = "Json data files (*.json)";
+    static const char * obj3dFilter = "3D Objext files (*.obj)";
+    static const char * luaFilter = "Lua script file (*.lua)";
+    static const char * anyFilter = "Any file (*.*)";
+    static const std::pair<ArtefactTypeEn, const char *> filters[] =
+    {
+        { ArtefactTypeEn::shaderVertex, vertexFilter},
+        { ArtefactTypeEn::shaderFragmet, fragmentFilter},
+        { ArtefactTypeEn::texture1D, textureFilter},
+        { ArtefactTypeEn::texture2D, textureFilter},
+        { ArtefactTypeEn::texture3D, textureFilter},
+        { ArtefactTypeEn::dataJson, jsonFilter},
+        { ArtefactTypeEn::dataObj3D, obj3dFilter},
+        { ArtefactTypeEn::convertNamesJson, jsonFilter},
+        { ArtefactTypeEn::scriptLua, luaFilter},
+        { ArtefactTypeEn::scriptLuaRuntime, luaFilter},
+        { ArtefactTypeEn::scriptLibrary, luaFilter},
+    };
+    const auto fit = std::find_if(
+                std::begin(filters),
+                std::end(filters),
+                [&artefactType](const std::pair<ArtefactTypeEn, const char *> &v_)->bool
+    {
+        return v_.first == artefactType;
+    });
+    return std::end(filters) != fit ? fit->second : anyFilter;
+}
+
+QStringList getArtefactFileExtensions(int artefactTypeId_)
+{
+    const ArtefactTypeEn artefactType = to_enum<ArtefactTypeEn>(artefactTypeId_);
+
+    static std::initializer_list<const char *> vertexFilter = {".vert", ".vertex", "*vsh"};
+    static std::initializer_list<const char *> fragmentFilter = {".frag", ".fragment", ".fsh"};
+    static std::initializer_list<const char *> textureFilter = {".png", ".jpg", ".jpeg"};
+    static std::initializer_list<const char *> jsonFilter = {".json",};
+    static std::initializer_list<const char *> obj3dFilter = {".obj",};
+    static std::initializer_list<const char *> luaFilter = {".lua",};
+    static std::initializer_list<const char *> anyFilter = {".*",};
+    static const std::pair<ArtefactTypeEn, QStringList> filters[] =
+    {
+        { ArtefactTypeEn::shaderVertex, QStringList(std::begin(vertexFilter), std::end(vertexFilter))},
+        { ArtefactTypeEn::shaderFragmet, QStringList(std::begin(fragmentFilter), std::end(fragmentFilter))},
+        { ArtefactTypeEn::texture1D, QStringList(std::begin(textureFilter), std::end(textureFilter))},
+        { ArtefactTypeEn::texture2D, QStringList(std::begin(textureFilter), std::end(textureFilter))},
+        { ArtefactTypeEn::texture3D, QStringList(std::begin(textureFilter), std::end(textureFilter))},
+        { ArtefactTypeEn::dataJson, QStringList(std::begin(jsonFilter), std::end(jsonFilter))},
+        { ArtefactTypeEn::dataObj3D,QStringList(std::begin(obj3dFilter), std::end(obj3dFilter))},
+        { ArtefactTypeEn::convertNamesJson, QStringList(std::begin(jsonFilter), std::end(jsonFilter))},
+        { ArtefactTypeEn::scriptLua, QStringList(std::begin(luaFilter), std::end(luaFilter))},
+        { ArtefactTypeEn::scriptLuaRuntime, QStringList(std::begin(luaFilter), std::end(luaFilter))},
+        { ArtefactTypeEn::scriptLibrary, QStringList(std::begin(luaFilter), std::end(luaFilter))},
+    };
+    const auto fit = std::find_if(
+                std::begin(filters),
+                std::end(filters),
+                [&artefactType](const std::pair<ArtefactTypeEn, QStringList> &v_)->bool
+    {
+        return v_.first == artefactType;
+    });
+    return std::end(filters) != fit ? fit->second : QStringList(std::begin(anyFilter), std::end(anyFilter));
+}
