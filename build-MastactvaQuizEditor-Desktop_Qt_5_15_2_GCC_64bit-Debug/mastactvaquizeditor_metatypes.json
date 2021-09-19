@@ -2627,6 +2627,54 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "isLuaUrl",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "isTextureUrl",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "filters_",
+                                "type": "QStringList"
+                            },
+                            {
+                                "name": "artefactTypeId_",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "getFileDialogFilter",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "fileNameURL_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "urlToFilename",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "fileNameURL_",
                                 "type": "QString"
                             }

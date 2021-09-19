@@ -32,6 +32,7 @@
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/netappconsts.h"
 #include "../MastactvaBase/netapi.h"
+#include "../MastactvaModels/artefacttype_data.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -1140,20 +1141,79 @@ QDateTime MastactvaAPI::now() const
     return date_time::nowTz();
 }
 
-bool MastactvaAPI::isShaderUrl(const QString &url_)
+template<int size_> inline
+bool testUrlExtension(const QString &url_, const char * (&extensions_)[size_])
 {
     const QUrl url(url_);
     const QString path = url.toLocalFile();
     const QFileInfo fi(path);
     const QString ext = fi.suffix();
-    static const char * s_extensions[] = {"vert", "vertex", "frag", "fragment", "vsh", "fsh"};
     return std::find_if(
-                std::begin(s_extensions),
-                std::end(s_extensions),
+                std::begin(extensions_),
+                std::end(extensions_),
                 [&ext](const char *ext_)->bool
     {
         return ext == ext_;
-    }) != std::end(s_extensions);
+    }) != std::end(extensions_);
+}
+
+bool MastactvaAPI::isShaderUrl(const QString &url_)
+{
+    static const char * s_extensions[] = {"vert", "vertex", "frag", "fragment", "vsh", "fsh"};
+    return testUrlExtension(url_, s_extensions);
+}
+
+bool MastactvaAPI::isLuaUrl(const QString &url_)
+{
+    static const char * s_extensions[] = {"lua"};
+    return testUrlExtension(url_, s_extensions);
+}
+
+bool MastactvaAPI::isTextureUrl(const QString &url_)
+{
+    static const char * s_extensions[] = {"png", "jpg", "jpeg"};
+    return testUrlExtension(url_, s_extensions);
+}
+
+inline
+QStringList getArtefactExtensions(int artefactTypeId_)
+{
+    return getArtefactFileExtensions(artefactTypeId_);
+}
+
+inline
+bool doesFilterHaveExtension(const QString &filter_, const QStringList &extensions_)
+{
+    return std::find_if(
+                std::cbegin(extensions_),
+                std::cend(extensions_),
+                [&filter_](const QString &ext_)->bool
+    {
+        return filter_.indexOf(ext_) > filter_.indexOf("(");
+    }) != std::cend(extensions_);
+}
+
+QString MastactvaAPI::getFileDialogFilter(const QStringList &filters_, int artefactTypeId_)
+{
+    const QStringList extensions = getArtefactExtensions(artefactTypeId_);
+    const auto fit = std::find_if(
+                std::cbegin(filters_),
+                std::cend(filters_),
+                [&extensions](const QString &filter_)->bool
+    {
+        return doesFilterHaveExtension(filter_, extensions);
+    });
+    if(std::cend(filters_) != fit)
+    {
+        return *fit;
+    }
+    return filters_.isEmpty() ? QString() : filters_.front();
+}
+
+QString MastactvaAPI::urlToFilename(const QString &fileNameURL_)
+{
+    QUrl url(fileNameURL_);
+    return url.toLocalFile();
 }
 
 QString MastactvaAPI::getFileText(const QString &fileNameURL_)

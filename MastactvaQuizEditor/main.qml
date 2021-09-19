@@ -300,6 +300,13 @@ ApplicationWindow {
             effectArgumentSetValuesCurrentIndex = -1
         }
 
+        function clearEffectArgumentSetsList()
+        {
+            effectArgumentSetsList.currentIndex = -1
+            effectArgumentSetsList.model = 0
+            effectArgumentSetsCurrentIndex = -1
+        }
+
         function onEffectCurrentIndexChanged()
         {
             effectsList.currentIndex = effectCurrentIndex
@@ -342,13 +349,16 @@ ApplicationWindow {
                 var effectArgumentSetsModel = effect.effectArgSets
                 if(effectArgumentSetsModel.isListLoaded())
                 {
+                    clearEffectArgumentSetsList()
+
                     effectArgumentSetsCurrentModel = effectArgumentSetsModel
                     effectArgumentSetsList.model = effectArgumentSetsCurrentModel
                     effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
                 }
                 else
                 {
-                    effectArgumentSetsList.model = 0
+                    clearEffectArgumentSetsList()
+
                     effectArgumentSetsListBusyIndicator.visible = true
                     effectArgumentSetsListBusyIndicator.running = true
 
@@ -366,8 +376,7 @@ ApplicationWindow {
                 effectArgumentsList.model = 0
                 effectArgumentsCurrentIndex = -1
                 effectArgumentSetsCurrentModel = undefined
-                effectArgumentSetsList.model = 0
-                effectArgumentSetsCurrentIndex = -1
+                clearEffectArgumentSetsList()
                 effectArgumentSetValuesCurrentModel = undefined
                 clearEffectArgumentSetValuesList()
             }
@@ -437,6 +446,8 @@ ApplicationWindow {
                 effectArgumentSetsModel.listReloaded.disconnect(effectArgumentSetsListReloaded)
                 if(effectArgumentSetsModel.isListLoaded())
                 {
+                    clearEffectArgumentSetsList()
+
                     effectArgumentSetsCurrentModel = effectArgumentSetsModel
                     effectArgumentSetsList.model = effectArgumentSetsCurrentModel
                     effectArgumentSetsCurrentIndex = effectArgumentSetsCurrentModel.size() > 0 ? effectArgumentSetsCurrentModel.currentIndex : -1
@@ -444,7 +455,7 @@ ApplicationWindow {
                 else
                 {
                     effectArgumentSetsCurrentModel = undefined
-                    effectArgumentSetsList.model = 0
+                    clearEffectArgumentSetsList()
                     effectArgumentSetValuesCurrentModel = undefined
                     clearEffectArgumentSetValuesList()
                 }
@@ -452,7 +463,7 @@ ApplicationWindow {
             else
             {
                 effectArgumentSetsCurrentModel = undefined
-                effectArgumentSetsList.model = 0
+                clearEffectArgumentSetsList()
                 effectArgumentSetValuesCurrentModel = undefined
                 clearEffectArgumentSetValuesList()
             }
@@ -614,23 +625,31 @@ ApplicationWindow {
             if(effectArgumentSetsCurrentModel !== undefined && effectArgumentSetsCurrentModel !== null && effectArgumentSetsCurrentModel.currentItem !== null)
             {
                 effectArgumentSetsCurrentModel.currentIndex = effectArgumentSetsCurrentIndex
-                var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
-                if(effectSetValuesModel.isListLoaded())
+                if(effectArgumentSetsCurrentModel.currentItem !== null)
                 {
-                    clearEffectArgumentSetValuesList()
+                    var effectSetValuesModel = effectArgumentSetsCurrentModel.currentItem.effectArgSetValues
+                    if(effectSetValuesModel.isListLoaded())
+                    {
+                        clearEffectArgumentSetValuesList()
 
-                    effectArgumentSetValuesCurrentModel = effectSetValuesModel
-                    effectArgumentSetValuesList.model = effectSetValuesModel
-                    effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
+                        effectArgumentSetValuesCurrentModel = effectSetValuesModel
+                        effectArgumentSetValuesList.model = effectSetValuesModel
+                        effectArgumentSetValuesCurrentIndex = effectSetValuesModel.size() > 0 ? effectSetValuesModel.currentIndex : -1
+                    }
+                    else
+                    {
+                        clearEffectArgumentSetValuesList()
+
+                        effectArgumentSetValuesListBusyIndicator.visible = true
+                        effectArgumentSetValuesListBusyIndicator.running = true
+
+                        effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
+                    }
                 }
                 else
                 {
+                    effectArgumentSetValuesCurrentModel = undefined
                     clearEffectArgumentSetValuesList()
-
-                    effectArgumentSetValuesListBusyIndicator.visible = true
-                    effectArgumentSetValuesListBusyIndicator.running = true
-
-                    effectSetValuesModel.listReloaded.connect(effectSetValuesListReloaded)
                 }
             }
             else
@@ -728,6 +747,7 @@ ApplicationWindow {
         if(artefact.isShader())
         {
             artefactInfo.currentIndex = 0
+            artefactTypeTabBar.currentIndex = 0
             shaderArtefactInfoShaderText.text = mastactva.getFileText(artefact.artefactFilename)
             shaderArtefactInfoShaderText.visible = true
         }
@@ -740,6 +760,7 @@ ApplicationWindow {
         if(artefact.isTexture())
         {
             artefactInfo.currentIndex = 1
+            artefactTypeTabBar.currentIndex = 1
             textureArtefactInfoImage.visible = true
             textureArtefactInfoImage.source = artefact.artefactFilename
         }
@@ -751,6 +772,7 @@ ApplicationWindow {
         if(artefact.isJson())
         {
             artefactInfo.currentIndex = 2
+            artefactTypeTabBar.currentIndex = 2
             jsonArtefactInfoJsonText.text = mastactva.getFileText(artefact.artefactFilename)
             jsonArtefactInfoJsonText.visible = true
         }
@@ -763,6 +785,7 @@ ApplicationWindow {
         if(artefact.isObj3d())
         {
             artefactInfo.currentIndex = 3
+            artefactTypeTabBar.currentIndex = 3
             obj3dArtefactInfoObj3dText.text = mastactva.getFileText(artefact.artefactFilename)
             obj3dArtefactInfoObj3dText.visible = true
         }
@@ -775,6 +798,7 @@ ApplicationWindow {
         if(artefact.isLua())
         {
             artefactInfo.currentIndex = 4
+            artefactTypeTabBar.currentIndex = 4
             luaArtefactInfoLuaText.text = mastactva.getFileText(artefact.artefactFilename)
             luaArtefactInfoLuaText.visible = true
         }
@@ -804,6 +828,7 @@ ApplicationWindow {
         if(artefact.isShader())
         {
             artefactInfo.currentIndex = 0
+            artefactTypeTabBar.currentIndex = 0
             shaderArtefactInfoShaderText.text = mastactva.getLocalFileText(fileUrl)
             shaderArtefactInfoShaderText.visible = true
         }
@@ -816,6 +841,7 @@ ApplicationWindow {
         if(artefact.isTexture())
         {
             artefactInfo.currentIndex = 1
+            artefactTypeTabBar.currentIndex = 1
             textureArtefactInfoImage.visible = true
             textureArtefactInfoImage.source = fileUrl
         }
@@ -827,6 +853,7 @@ ApplicationWindow {
         if(artefact.isJson())
         {
             artefactInfo.currentIndex = 2
+            artefactTypeTabBar.currentIndex = 2
             jsonArtefactInfoJsonText.text = mastactva.getLocalFileText(fileUrl)
             jsonArtefactInfoJsonText.visible = true
         }
@@ -839,6 +866,7 @@ ApplicationWindow {
         if(artefact.isObj3d())
         {
             artefactInfo.currentIndex = 3
+            artefactTypeTabBar.currentIndex = 3
             obj3dArtefactInfoObj3dText.text = mastactva.getLocalFileText(fileUrl)
             obj3dArtefactInfoObj3dText.visible = true
         }
@@ -851,6 +879,7 @@ ApplicationWindow {
         if(artefact.isLua())
         {
             artefactInfo.currentIndex = 4
+            artefactTypeTabBar.currentIndex = 4
             luaArtefactInfoLuaText.text = mastactva.getLocalFileText(fileUrl)
             luaArtefactInfoLuaText.visible = true
         }
@@ -877,7 +906,7 @@ ApplicationWindow {
         }
         else if(artefact.isTexture())
         {
-            fileName = textureArtefactInfoImage.source
+            fileName = mastactva.urlToFilename(textureArtefactInfoImage.source)
         }
         else if(artefact.isJson())
         {

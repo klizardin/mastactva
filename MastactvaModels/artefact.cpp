@@ -167,35 +167,7 @@ bool Artefact::isLua()
 
 QString Artefact::getFileFilter()
 {
-    static const char * vertexFilter = "Shader files (*.vert *.vertex *vsh)";
-    static const char * fragmentFilter = "Shader files (*.frag *.fragment *.fsh)";
-    static const char * textureFilter = "Texture files (*.png *.jpg *.jpeg)";
-    static const char * jsonFilter = "Json data files (*.json)";
-    static const char * obj3dFilter = "3D Objext files (*.obj)";
-    static const char * luaFilter = "Lua script file (*.lua)";
-    static const char * anyFilter = "Any file (*.*)";
-    static const std::pair<ArtefactTypeEn, const char *> filters[] =
-    {
-        { ArtefactTypeEn::shaderVertex, vertexFilter},
-        { ArtefactTypeEn::shaderFragmet, fragmentFilter},
-        { ArtefactTypeEn::texture1D, textureFilter},
-        { ArtefactTypeEn::texture2D, textureFilter},
-        { ArtefactTypeEn::texture3D, textureFilter},
-        { ArtefactTypeEn::dataJson, jsonFilter},
-        { ArtefactTypeEn::dataObj3D, obj3dFilter},
-        { ArtefactTypeEn::convertNamesJson, jsonFilter},
-        { ArtefactTypeEn::scriptLua, luaFilter},
-        { ArtefactTypeEn::scriptLuaRuntime, luaFilter},
-        { ArtefactTypeEn::scriptLibrary, luaFilter},
-    };
-    const auto fit = std::find_if(
-                std::begin(filters),
-                std::end(filters),
-                [this](const std::pair<ArtefactTypeEn, const char *> &v_)->bool
-    {
-        return v_.first == to_enum<ArtefactTypeEn>(m_typeId);
-    });
-    return std::end(filters) != fit ? fit->second : anyFilter;
+    return getArtefactFileFilter(m_typeId);
 }
 
 void Artefact::setArtefactFilenameLocalFile(const QString fileName_)
