@@ -111,6 +111,8 @@ public:
     Q_INVOKABLE QString getLuaDescription(const QString &fileUrl_);
     Q_INVOKABLE QDateTime now() const;
     Q_INVOKABLE bool isShaderUrl(const QString &url_);
+    Q_INVOKABLE bool isLuaUrl(const QString &url_);
+    Q_INVOKABLE bool isTextureUrl(const QString &url_);
     Q_INVOKABLE QString getFileText(const QString &fileNameURL_);
     Q_INVOKABLE QString getLocalFileText(const QString &fileNameURL_);
     Q_INVOKABLE QString createTempFile(const QString &fileURL_, const QString &text_);

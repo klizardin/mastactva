@@ -2627,6 +2627,28 @@
                         "access": "public",
                         "arguments": [
                             {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "isLuaUrl",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "isTextureUrl",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
                                 "name": "fileNameURL_",
                                 "type": "QString"
                             }

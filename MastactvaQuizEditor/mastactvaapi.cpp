@@ -1140,20 +1140,38 @@ QDateTime MastactvaAPI::now() const
     return date_time::nowTz();
 }
 
-bool MastactvaAPI::isShaderUrl(const QString &url_)
+template<int size_> inline
+bool testUrlExtension(const QString &url_, const char * (&extensions_)[size_])
 {
     const QUrl url(url_);
     const QString path = url.toLocalFile();
     const QFileInfo fi(path);
     const QString ext = fi.suffix();
-    static const char * s_extensions[] = {"vert", "vertex", "frag", "fragment", "vsh", "fsh"};
     return std::find_if(
-                std::begin(s_extensions),
-                std::end(s_extensions),
+                std::begin(extensions_),
+                std::end(extensions_),
                 [&ext](const char *ext_)->bool
     {
         return ext == ext_;
-    }) != std::end(s_extensions);
+    }) != std::end(extensions_);
+}
+
+bool MastactvaAPI::isShaderUrl(const QString &url_)
+{
+    static const char * s_extensions[] = {"vert", "vertex", "frag", "fragment", "vsh", "fsh"};
+    return testUrlExtension(url_, s_extensions);
+}
+
+bool MastactvaAPI::isLuaUrl(const QString &url_)
+{
+    static const char * s_extensions[] = {"lua"};
+    return testUrlExtension(url_, s_extensions);
+}
+
+bool MastactvaAPI::isTextureUrl(const QString &url_)
+{
+    static const char * s_extensions[] = {"png", "jpg", "jpeg"};
+    return testUrlExtension(url_, s_extensions);
 }
 
 QString MastactvaAPI::getFileText(const QString &fileNameURL_)
