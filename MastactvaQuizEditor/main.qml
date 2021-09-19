@@ -896,7 +896,7 @@ ApplicationWindow {
         }
         else if(artefact.isTexture())
         {
-            fileName = textureArtefactInfoImage.source
+            fileName = mastactva.urlToFilename(textureArtefactInfoImage.source)
         }
         else if(artefact.isJson())
         {
