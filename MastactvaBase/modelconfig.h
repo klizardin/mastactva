@@ -13,6 +13,7 @@
 
 class LocalDataAPINoCache;
 class LocalDataAPICache;
+class RequestData;
 #if defined(LOCALDATAAPICACHE)
 using LocalDataAPI = LocalDataAPICache;
 #else
@@ -25,6 +26,10 @@ class IModelConfig
 public:
     virtual ~IModelConfig() = default;
     virtual IListModel *getListModel(const QString &layoutName_) = 0;
+    virtual RequestData *emptyRequest(const QString &requestName_,
+                              const QVariant &itemAppId_,
+                              const QVariant &itemId_) = 0;
+    virtual void freeRequest(RequestData *&r_) = 0;
 
 protected:
     virtual bool isDataAPIServer() const = 0;
@@ -256,9 +261,60 @@ public:
     DefaultModelConfig() = default;
     virtual ~DefaultModelConfig() = default;
 
-    virtual IListModel *getListModel(const QString &layoutName_)
+    IListModel *getListModel(const QString &layoutName_) override
     {
         return QMLObjectsBase::getInstance().getListModel(layoutName_);
+    }
+
+    RequestData *emptyRequest(const QString &requestName_,
+                              const QVariant &itemAppId_,
+                              const QVariant &itemId_) override
+    {
+        if(isDataAPIServer())
+        {
+            if(getDataAPIServer())
+            {
+                return getDataAPIServer()->emptyRequest(
+                            requestName_,
+                            itemAppId_,
+                            itemId_
+                            );
+            }
+        }
+        else
+        {
+            if(getDataAPIFile())
+            {
+                return getDataAPIFile()->emptyRequest(
+                            requestName_,
+                            itemAppId_,
+                            itemId_
+                            );
+            }
+        }
+        return nullptr;
+    }
+
+    void freeRequest(RequestData *&r_) override
+    {
+        if(isDataAPIServer())
+        {
+            if(getDataAPIServer())
+            {
+                getDataAPIServer()->freeRequest(
+                            r_
+                            );
+            }
+        }
+        else
+        {
+            if(getDataAPIFile())
+            {
+                getDataAPIFile()->freeRequest(
+                            r_
+                            );
+            }
+        }
     }
 
     static DefaultModelConfig &instance()
@@ -268,17 +324,17 @@ public:
     }
 
 protected:
-    virtual bool isDataAPIServer() const
+    bool isDataAPIServer() const override
     {
         return dynamic_cast<LocalDataAPINoCache *>(QMLObjectsBase::getInstance().getDataAPI());
     }
 
-    virtual LocalDataAPINoCache *getDataAPIServer()
+    LocalDataAPINoCache *getDataAPIServer() override
     {
         return dynamic_cast<LocalDataAPINoCache *>(QMLObjectsBase::getInstance().getDataAPI());
     }
 
-    virtual LocalDataAPICache *getDataAPIFile()
+    LocalDataAPICache *getDataAPIFile() override
     {
         return dynamic_cast<LocalDataAPICache *>(QMLObjectsBase::getInstance().getDataAPI());
     }
