@@ -31,8 +31,7 @@
 #include <QMetaProperty>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/Layout.h"
-#include "../MastactvaBase/localdata.h"
-#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/modelconfig.h"
 #include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/defines.h"
@@ -181,10 +180,12 @@ public:
 
     explicit ListModelBaseOfData(
             QObject *parent_,
-            std::shared_ptr<QVector<DataType_ *>> data_ = std::shared_ptr<QVector<DataType_ *>>{nullptr}
+            std::shared_ptr<QVector<DataType_ *>> data_ = std::shared_ptr<QVector<DataType_ *>>{nullptr},
+            IModelConfig *config_ = &DefaultModelConfig::instance()
             )
         : QAbstractListModel(parent_),
-          ListModelBaseData(this)
+          ListModelBaseData(this),
+          m_config(config_)
     {
 #if defined(TRACE_THREADS)
         qDebug() << "ListModelBaseOfData::ListModelBaseOfData<" << getDataLayout<DataObjectType>().getLayoutJsonName() << ">()" << QThread::currentThread() << QThread::currentThreadId();
@@ -244,10 +245,14 @@ public:
 
     virtual void initResponse() override
     {
-        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        Q_ASSERT(dataAPI);
-        QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)),
-                         m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
+        //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        //Q_ASSERT(dataAPI);
+        //QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)),
+        //                 m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
+        if(m_config)
+        {
+            m_config->initResponse(m_model);
+        }
     }
 
     virtual const QString &getQMLLayoutName() const override
@@ -595,8 +600,9 @@ public:
     {
         if(index_ < 0 || index_ >= m_data.size()) { return false; }
 
-        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(!dataAPI) { return false; }
+        //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        //if(!dataAPI) { return false; }
+        if(!m_config) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
@@ -604,7 +610,7 @@ public:
                         layout::SpecialFieldEn::appId,
                         item_);
             QVariant itemId = getDataLayout<DataObjectType>().getIdJsonValue(item_);
-            RequestData *request = dataAPI->emptyRequest(
+            RequestData *request = m_config->emptyRequest(
                         RequestData::setItemRequestName<DataObjectType>(),
                         itemAppId,
                         itemId
@@ -613,7 +619,7 @@ public:
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
-            dataAPI->freeRequest(request);
+            m_config->freeRequest(request);
             return true;
         }
         else
@@ -629,7 +635,7 @@ public:
                 }
             }
             extraFields = renameFields(extraFields);
-            RequestData *request = dataAPI->setItem(getJsonLayoutName(), item_, extraFields);
+            RequestData *request = m_config->setItem(getJsonLayoutName(), item_, extraFields);
             return addRequest(request);
         }
     }
@@ -639,8 +645,9 @@ public:
                          const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
                          )
     {
-        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(!dataAPI) { return false; }
+        //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        //if(!dataAPI) { return false; }
+        if(!m_config) { return false; }
 
         if(getJsonLayoutName().isEmpty())
         {
@@ -649,7 +656,7 @@ public:
                         item_
                         );
             QVariant itemId = getDataLayout<DataObjectType>().getIdJsonValue(item_);
-            RequestData *request = dataAPI->emptyRequest(
+            RequestData *request = m_config->emptyRequest(
                         RequestData::addItemRequestName<DataObjectType>(),
                         itemAppId,
                         itemId);
@@ -663,7 +670,7 @@ public:
             {
                 jsonResponseSlotImpl(0, QString(), request, QJsonDocument());
             }
-            dataAPI->freeRequest(request);
+            m_config->freeRequest(request);
             return true;
         }
         else
@@ -672,14 +679,14 @@ public:
             extraFields.insert(extraFields_);
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
-                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
+                IListModel *m = m_config->getListModel(f.m_modelName);
                 if(m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
                 }
             }
             extraFields = renameFields(extraFields);
-            RequestData *request = dataAPI->addItem(getJsonLayoutName(), item_, extraFields);
+            RequestData *request = m_config->addItem(getJsonLayoutName(), item_, extraFields);
             if(request)
             {
                 Q_ASSERT(nullptr != dynamic_cast<IListModelItem *>(item_));
@@ -708,13 +715,14 @@ public:
                          const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
                          )
     {
-        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(!dataAPI) { return false; }
+        //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        //if(!dataAPI) { return false; }
+        if(!m_config) { return false; }
 
         QVariant itemId = getDataLayout<DataObjectType>().getIdJsonValue(item_);
         if(!itemId.isValid() || itemId.isNull()) { return false; }
 
-        RequestData *request = dataAPI->delItem(getJsonLayoutName(), item_, extraFields_);
+        RequestData *request = m_config->delItem(getJsonLayoutName(), item_, extraFields_);
         return addRequest(request);
     }
 
@@ -854,8 +862,11 @@ public:
                       const QHash<QString, QVariant> &extraFields_ = QHash<QString, QVariant>()
                       )
     {
-        LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
-        if(!dataAPI) { return; }
+        //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        //if(!dataAPI) { return; }
+        if(!m_config) { return; }
+
+
         RequestData *request = findRequest(RequestData::getListRequestName<DataObjectType>());
         if(request)
         {
@@ -865,7 +876,7 @@ public:
         startListLoad();
         if(getJsonLayoutName().isEmpty())
         {
-            request = dataAPI->emptyRequest(
+            request = m_config->emptyRequest(
                         RequestData::getListRequestName<DataObjectType>(),
                         QVariant() ,
                         QVariant());
@@ -877,7 +888,7 @@ public:
             {
                 reverseListLoading();
             }
-            dataAPI->freeRequest(request);
+            m_config->freeRequest(request);
         }
         else
         {
@@ -897,14 +908,14 @@ public:
             extraFields.insert(extraFields_);
             for(const ExtraFields &f: qAsConst(m_extraFields))
             {
-                IListModel *m = QMLObjectsBase::getInstance().getListModel(f.m_modelName);
+                IListModel *m = m_config->getListModel(f.m_modelName);
                 if(m)
                 {
                     m->getValuesForAppId(f.m_appId, extraFields);
                 }
             }
             extraFields = renameFields(extraFields);
-            request = dataAPI->getList<DataObjectType>(
+            request = m_config->getList<DataObjectType>(
                         getJsonLayoutName(),
                         procedureName_,
                         refs,
@@ -1518,6 +1529,7 @@ private:
     QHash<int, QByteArray> m_roleNames;
     bool reloadList = false;
     ModelType_ *m_model = nullptr;
+    IModelConfig *m_config = nullptr;
 };
 
 
