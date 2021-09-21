@@ -261,6 +261,12 @@ public:
         return QMLObjectsBase::getInstance().getListModel(layoutName_);
     }
 
+    static DefaultModelConfig &instance()
+    {
+        static DefaultModelConfig inst;
+        return inst;
+    }
+
 protected:
     virtual bool isDataAPIServer() const
     {
@@ -275,12 +281,6 @@ protected:
     virtual LocalDataAPICache *getDataAPIFile()
     {
         return dynamic_cast<LocalDataAPICache *>(QMLObjectsBase::getInstance().getDataAPI());
-    }
-
-    static DefaultModelConfig &instance()
-    {
-        static DefaultModelConfig inst;
-        return inst;
     }
 };
 
