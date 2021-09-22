@@ -20,7 +20,7 @@ using LocalDataAPI2 = LocalDataAPICache;
 #endif
 
 
-class DualModelConfig;
+class ChooseModelConfig;
 
 
 class DualModelConfigBase : public IModelConfig
@@ -48,14 +48,14 @@ protected:
 private:
     LocalDataAPI2 *m_localDatAPI2 = nullptr;
 
-    friend class DualModelConfig;
+    friend class ChooseModelConfig;
 };
 
 
-class DualModelConfig : public IModelConfig
+class ChooseModelConfig : public IModelConfig
 {
 public:
-    DualModelConfig(bool serverLocalDataAPI_);
+    ChooseModelConfig(bool serverLocalDataAPI_);
     IListModel *getListModel(const QString &layoutName_) override;
     RequestData *emptyRequest(
             const QString &requestName_,
