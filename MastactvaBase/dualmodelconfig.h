@@ -5,9 +5,7 @@
 #include <QString>
 #include <QVariant>
 #include <QHash>
-#include "../MastactvaBase/IModel.h"
-#include "../MastactvaBase/localdata.h"
-#include "../MastactvaBase/qmlobjects.h"
+#include "../MastactvaBase/modelconfig.h"
 
 
 class LocalDataAPINoCache;
@@ -20,6 +18,33 @@ using LocalDataAPI2 = LocalDataAPINoCache;
 using LocalDataAPI = LocalDataAPINoCache;
 using LocalDataAPI2 = LocalDataAPICache;
 #endif
+
+
+class DualModelConfigBase : public IModelConfig
+{
+public:
+    DualModelConfigBase() = default;
+    virtual ~DualModelConfigBase() = default;
+
+    bool isInit() const;
+    void init(QObject *parent_, NetAPI *netAPI_);
+    IListModel *getListModel(const QString &layoutName_) override;
+    RequestData *emptyRequest(
+            const QString &requestName_,
+            const QVariant &itemAppId_,
+            const QVariant &itemId_
+            ) override;
+    void freeRequest(RequestData *&r_) override;
+    static DualModelConfigBase &instance();
+
+protected:
+    bool isDataAPIServer() const override;
+    LocalDataAPINoCache *getDataAPIServer() override;
+    LocalDataAPICache *getDataAPIFile() override;
+
+private:
+    LocalDataAPI2 *m_localDatAPI2 = nullptr;
+};
 
 
 #endif // DUALMODELCONFIG_H
