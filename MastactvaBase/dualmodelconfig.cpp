@@ -67,3 +67,81 @@ LocalDataAPICache *DualModelConfigBase::getDataAPIFile()
     }
     return res;
 }
+
+DualModelConfig::DualModelConfig(bool serverLocalDataAPI_)
+    : m_serverLocalDataAPI(serverLocalDataAPI_)
+{
+}
+
+IListModel *DualModelConfig::getListModel(const QString &layoutName_)
+{
+    return DualModelConfigBase::instance().getListModel(layoutName_);
+}
+
+RequestData *DualModelConfig::emptyRequest(
+        const QString &requestName_,
+        const QVariant &itemAppId_,
+        const QVariant &itemId_
+        )
+{
+    if(isDataAPIServer())
+    {
+        if(getDataAPIServer())
+        {
+            return getDataAPIServer()->emptyRequest(
+                        requestName_,
+                        itemAppId_,
+                        itemId_
+                        );
+        }
+    }
+    else
+    {
+        if(getDataAPIFile())
+        {
+            return getDataAPIFile()->emptyRequest(
+                        requestName_,
+                        itemAppId_,
+                        itemId_
+                        );
+        }
+    }
+    return nullptr;
+}
+
+void DualModelConfig::freeRequest(RequestData *&r_)
+{
+    if(isDataAPIServer())
+    {
+        if(getDataAPIServer())
+        {
+            getDataAPIServer()->freeRequest(
+                        r_
+                        );
+        }
+    }
+    else
+    {
+        if(getDataAPIFile())
+        {
+            getDataAPIFile()->freeRequest(
+                        r_
+                        );
+        }
+    }
+}
+
+bool DualModelConfig::isDataAPIServer() const
+{
+    return m_serverLocalDataAPI;
+}
+
+LocalDataAPINoCache *DualModelConfig::getDataAPIServer()
+{
+    return DualModelConfigBase::instance().getDataAPIServer();
+}
+
+LocalDataAPICache *DualModelConfig::getDataAPIFile()
+{
+    return DualModelConfigBase::instance().getDataAPIFile();
+}

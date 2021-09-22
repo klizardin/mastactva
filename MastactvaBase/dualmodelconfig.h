@@ -20,6 +20,9 @@ using LocalDataAPI2 = LocalDataAPICache;
 #endif
 
 
+class DualModelConfig;
+
+
 class DualModelConfigBase : public IModelConfig
 {
 public:
@@ -44,6 +47,30 @@ protected:
 
 private:
     LocalDataAPI2 *m_localDatAPI2 = nullptr;
+
+    friend class DualModelConfig;
+};
+
+
+class DualModelConfig : public IModelConfig
+{
+public:
+    DualModelConfig(bool serverLocalDataAPI_);
+    IListModel *getListModel(const QString &layoutName_) override;
+    RequestData *emptyRequest(
+            const QString &requestName_,
+            const QVariant &itemAppId_,
+            const QVariant &itemId_
+            ) override;
+    void freeRequest(RequestData *&r_) override;
+
+protected:
+    bool isDataAPIServer() const override;
+    LocalDataAPINoCache *getDataAPIServer() override;
+    LocalDataAPICache *getDataAPIFile() override;
+
+private:
+    bool m_serverLocalDataAPI = false;
 };
 
 
