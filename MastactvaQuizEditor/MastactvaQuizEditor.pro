@@ -31,6 +31,7 @@ HEADERS += \
 unix: HEADERS += \
         IModel.h   \
         modelconfig.h   \
+        dualmodelconfig.h   \
         Model.h \
         imagesource.h  \
         Layout.h   \
@@ -131,6 +132,7 @@ SOURCES += \
 unix: SOURCES += \
         IModel.cpp \
         modelconfig.cpp \
+        dualmodelconfig.cpp \
         Model.cpp   \
         imagesource.cpp    \
         netapi.cpp \

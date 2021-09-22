@@ -138,6 +138,7 @@ void QMLMainObjects::setRootQMLObject(QObject* root_)
 }
 
 
+#include "../MastactvaBase/dualmodelconfig.h"
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/artefact.h"
@@ -179,6 +180,10 @@ void QMLObjects::searchObjects()
     {
         LocalDataAPI::createInstance(m_root, m_netAPI);
         m_dataAPI = LocalDataAPI::getInstance();
+    }
+    if(!DualModelConfigBase::instance().isInit())
+    {
+        DualModelConfigBase::instance().init(m_root, m_netAPI);
     }
     if(nullptr == m_mastactvaAPI)
     {
