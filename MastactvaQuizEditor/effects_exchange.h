@@ -22,6 +22,7 @@ public:
 private:
     QString savePath() const;
     void setSavePath(const QString &path_);
+    void initSavePath(const QString &path_);
 
 public:
 signals:
@@ -31,6 +32,7 @@ protected slots:
 
 private:
     QString m_path;
+    QString m_archiveName;
 };
 
 
