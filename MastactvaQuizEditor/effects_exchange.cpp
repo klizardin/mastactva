@@ -42,4 +42,8 @@ void EffectsExchange::initSavePath(const QString &path_)
     QFileInfo fi(path_);
     m_path = fi.absolutePath();
     m_archiveName = fi.absoluteFilePath();
+    if(!m_archiveName.endsWith(".tar"))
+    {
+        m_archiveName += ".tar";
+    }
 }
