@@ -22,6 +22,7 @@ CONFIG += c++14
 
 HEADERS += \
         appconsts.h \
+    effects_exchange.h \
         galleryeditviewmodel.h    \
         localdataset.h \
         mastactvaapi.h    \
@@ -122,6 +123,7 @@ unix: HEADERS += \
 
 SOURCES += \
         appconsts.cpp \
+    effects_exchange.cpp \
         localdataset.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \

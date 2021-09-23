@@ -30,14 +30,14 @@
 #include "../MastactvaModels/quizuser.h"
 
 
-static const char *g_defaultSavePath = "./LocalData/";
+static const char *g_defaultSavePath = "./LocalData/mobiledata.tar";
 static const int g_downloadStepsCount = 5;
 
 
 LocalDataSet::LocalDataSet(QObject * parent_ /*= nullptr*/)
     :QObject(parent_)
 {
-    m_savePath = g_defaultSavePath;
+    initSavePath(g_defaultSavePath);
     m_galleryIndex = -1;
     c_downloadStepsCount = g_downloadStepsCount;
 }
@@ -171,7 +171,8 @@ qreal LocalDataSet::stepProgress()
 
 QString LocalDataSet::savePath() const
 {
-    return m_savePath;
+    const QUrl url = QUrl::fromLocalFile(m_saveName);
+    return url.toString();
 }
 
 void LocalDataSet::archiveResults()
@@ -200,6 +201,13 @@ void LocalDataSet::archiveResults()
 }
 
 void LocalDataSet::setSavePath(const QString &url_)
+{
+    initSavePath(url_);
+
+    emit savePathChanged();
+}
+
+void LocalDataSet::initSavePath(const QString &url_)
 {
     QUrl url(url_);
     QFile f(url.toLocalFile());

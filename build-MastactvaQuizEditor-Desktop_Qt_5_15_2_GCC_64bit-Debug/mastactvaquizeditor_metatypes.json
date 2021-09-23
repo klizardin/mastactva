@@ -25,6 +25,96 @@
     {
         "classes": [
             {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "EffectsExchange",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "download",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "upload",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "merge",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "savePath",
+                        "notify": "savePathChanged",
+                        "read": "savePath",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setSavePath"
+                    }
+                ],
+                "qualifiedClassName": "EffectsExchange",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "savePathChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "downloaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "p_",
+                                "type": "qreal"
+                            },
+                            {
+                                "name": "status_",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "progress",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "protected",
+                        "name": "listReloadedSlot",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "effects_exchange.h",
+        "outputRevision": 67
+    },
+    {
+        "classes": [
+            {
                 "className": "ImageData",
                 "object": true,
                 "properties": [
