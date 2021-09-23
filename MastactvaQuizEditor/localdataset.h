@@ -51,6 +51,7 @@ protected:
     qreal stepProgress();
     QString savePath() const;
     void setSavePath(const QString &url_);
+    void initSavePath(const QString &url_);
     void archiveResults();
 
 signals:
