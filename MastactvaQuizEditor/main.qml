@@ -2619,7 +2619,7 @@ ApplicationWindow {
 
     LocalDataSet {
         id: localDataSet
-        savePath: downloadGalleryLocalDataFileDialog.folder
+        //savePath: downloadGalleryLocalDataFileDialog.folder
     }
 
     FileDialog {
@@ -2661,6 +2661,56 @@ ApplicationWindow {
         }
 
         function localDataSetDownloaded()
+        {
+            disconnect()
+            popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + localDataSet.savePath
+        }
+    }
+
+    EffectsExchange {
+        id: effectsExchange
+    }
+
+    FileDialog {
+        id: effectsExchangeFileDialog
+        title: qsTr("Please choose root file to download local data in the folder of a root file")
+        folder: effectsExchange.savePath
+        nameFilters: [ "Tar files (*.tar)", "All files (*.*)" ]
+        selectExisting: false
+        selectMultiple: false
+
+        onAccepted: {
+            effectsExchange.savePath = fileUrl
+            connect()
+            // TODO: use separate dialog or rewrite possibility to close/stop download
+            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+            popupMessage.open()
+            effectsExchange.download()
+        }
+
+        onRejected: {
+            // TODO: add implemention
+        }
+
+        function connect()
+        {
+            effectsExchange.progress.connect(effectExchangeProgress)
+            effectsExchange.downloaded.connect(effectExchangeDownloaded)
+        }
+
+        function disconnect()
+        {
+            effectsExchange.progress.disconnect(effectExchangeProgress)
+            effectsExchange.downloaded.disconnect(effectExchangeDownloaded)
+        }
+
+        function effectExchangeProgress(p, msg)
+        {
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("Progress : ") + p + qsTr(" % ") + msg
+        }
+
+        function effectExchangeDownloaded()
         {
             disconnect()
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
@@ -3696,6 +3746,15 @@ ApplicationWindow {
     }
 
     Action {
+        id: downloadEffects
+        text: qsTr("&Download effects")
+        onTriggered: {
+            effectsExchangeFileDialog.folder = effectsExchange.savePath
+            effectsExchangeFileDialog.open()
+        }
+    }
+
+    Action {
         id: refreshEffectObjects
         text: qsTr("&Refresh")
         onTriggered: {
@@ -4506,6 +4565,11 @@ ApplicationWindow {
             MenuItem { action: addEffect }
             MenuItem { action: editEffect }
             MenuItem { action: removeEffect }
+            MenuItem { action: downloadEffects }
+        }
+        AutoSizeMenu {
+            title: qsTr("&EffectsExchange")
+            MenuItem { action: downloadEffects }
         }
         AutoSizeMenu {
             title: qsTr("&Objects")
