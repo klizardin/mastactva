@@ -19,13 +19,16 @@ public:
     virtual ~EffectsExchange() override;
 
     Q_PROPERTY(QString savePath READ savePath WRITE setSavePath NOTIFY savePathChanged)
+    Q_PROPERTY(QString saveArchive READ saveArchive WRITE setSaveArchive NOTIFY saveArchiveChanged)
     Q_INVOKABLE void download();
     Q_INVOKABLE void upload();
     Q_INVOKABLE void merge();
 
 private:
     QString savePath() const;
-    void setSavePath(const QString &path_);
+    void setSavePath(const QString &url_);
+    QString saveArchive() const;
+    void setSaveArchive(const QString &url_);
     void initSavePath(const QString &path_);
     void free();
     void create();
@@ -36,6 +39,7 @@ private:
 public:
 signals:
     void savePathChanged();
+    void saveArchiveChanged();
     void downloaded();
     void progress(qreal p_, const QString &status_);
 

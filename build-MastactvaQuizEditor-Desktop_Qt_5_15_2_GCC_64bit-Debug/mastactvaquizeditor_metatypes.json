@@ -64,6 +64,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setSavePath"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "saveArchive",
+                        "notify": "saveArchiveChanged",
+                        "read": "saveArchive",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setSaveArchive"
                     }
                 ],
                 "qualifiedClassName": "EffectsExchange",
@@ -71,6 +85,11 @@
                     {
                         "access": "public",
                         "name": "savePathChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "saveArchiveChanged",
                         "returnType": "void"
                     },
                     {

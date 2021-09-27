@@ -202,16 +202,15 @@ void LocalDataSet::archiveResults()
 
 void LocalDataSet::setSavePath(const QString &url_)
 {
-    initSavePath(url_);
+    QUrl url(url_);
+    initSavePath(url.toLocalFile());
 
     emit savePathChanged();
 }
 
 void LocalDataSet::initSavePath(const QString &url_)
 {
-    QUrl url(url_);
-    QFile f(url.toLocalFile());
-    QFileInfo fi(f);
+    QFileInfo fi(url_);
     m_savePath = fi.absolutePath();
     m_saveName = fi.absoluteFilePath();
     if(!m_saveName.endsWith(".tar"))
