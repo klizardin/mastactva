@@ -57,7 +57,8 @@ QString EffectsExchange::savePath() const
 
 void EffectsExchange::setSavePath(const QString &path_)
 {
-    initSavePath(path_);
+    QUrl url(path_);
+    initSavePath(url.toLocalFile());
 
     emit savePathChanged();
 }
