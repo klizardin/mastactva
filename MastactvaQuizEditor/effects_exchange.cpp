@@ -67,7 +67,7 @@ void EffectsExchange::setSavePath(const QString &url_)
 
 QString EffectsExchange::saveArchive() const
 {
-    const QUrl url = QUrl::fromLocalFile(m_path);
+    const QUrl url = QUrl::fromLocalFile(m_archiveName);
     return url.toString();
 }
 
