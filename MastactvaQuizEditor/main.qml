@@ -2714,7 +2714,7 @@ ApplicationWindow {
         {
             disconnect()
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
-            popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + localDataSet.savePath
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + mastactva.urlToFilename(effectsExchange.saveArchive)
         }
     }
 
