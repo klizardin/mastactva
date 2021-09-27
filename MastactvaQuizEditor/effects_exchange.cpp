@@ -52,15 +52,32 @@ void EffectsExchange::merge()
 
 QString EffectsExchange::savePath() const
 {
-    return m_path;
+    const QUrl url = QUrl::fromLocalFile(m_path);
+    return url.toString();
 }
 
-void EffectsExchange::setSavePath(const QString &path_)
+void EffectsExchange::setSavePath(const QString &url_)
 {
-    QUrl url(path_);
+    QUrl url(url_);
     initSavePath(url.toLocalFile());
 
     emit savePathChanged();
+    emit saveArchiveChanged();
+}
+
+QString EffectsExchange::saveArchive() const
+{
+    const QUrl url = QUrl::fromLocalFile(m_path);
+    return url.toString();
+}
+
+void EffectsExchange::setSaveArchive(const QString &url_)
+{
+    QUrl url(url_);
+    initSavePath(url.toLocalFile());
+
+    emit savePathChanged();
+    emit saveArchiveChanged();
 }
 
 void EffectsExchange::initSavePath(const QString &path_)
