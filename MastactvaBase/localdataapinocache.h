@@ -176,6 +176,7 @@ protected:
     bool isSaveToDBMode() const;
     void fillTable(const SaveDBRequest * r_, const QJsonDocument &reply_);
     ILocalDataAPI *chooseAPI(DBRequestBase *r_);
+    void closeDBs();
 
 private:
     static bool hasDuplicate(
