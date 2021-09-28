@@ -118,16 +118,16 @@ void LocalDataAPINoCache::startSave(const QString &savePath_)
     dateStr.replace(".", "_");
     m_dbNameRW = QString(g_dbNameRW) + dateStr + QString(g_dbNameExt);
     m_dbNameRO = QString(g_dbNameRO) + dateStr + QString(g_dbNameExt);
+    closeDBs();
     cleanPath();
     createDB();
 }
 
 void LocalDataAPINoCache::endSave()
 {
+    closeDBs();
     QFile::copy(m_dbNameRW, pathJoin(m_savePath, m_dbNameRW));
     QFile::copy(m_dbNameRO, pathJoin(m_savePath, m_dbNameRO));
-    m_databaseRW.close();
-    m_databaseRO.close();
     m_savePath.clear();
 }
 
@@ -143,6 +143,8 @@ void LocalDataAPINoCache::cleanRequests()
 
 void LocalDataAPINoCache::cleanPath()
 {
+    QSqlDatabase::removeDatabase(g_dbNameRO);
+    QSqlDatabase::removeDatabase(g_dbNameRW);
     if(!m_dbNameRW.isEmpty())
     {
         QFile::remove(m_dbNameRW);
@@ -346,4 +348,10 @@ ILocalDataAPI *LocalDataAPINoCache::chooseAPI(DBRequestBase * r_)
     }
 
     return nullptr;
+}
+
+void LocalDataAPINoCache::closeDBs()
+{
+    m_databaseRW.close();
+    m_databaseRO.close();
 }
