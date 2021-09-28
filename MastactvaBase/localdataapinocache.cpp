@@ -143,6 +143,8 @@ void LocalDataAPINoCache::cleanRequests()
 
 void LocalDataAPINoCache::cleanPath()
 {
+    QSqlDatabase::removeDatabase(g_dbNameRO);
+    QSqlDatabase::removeDatabase(g_dbNameRW);
     if(!m_dbNameRW.isEmpty())
     {
         QFile::remove(m_dbNameRW);
