@@ -1,14 +1,17 @@
 #include "effects_exchange.h"
 #include <QFileInfo>
-#include "../MastactvaModels/effect.h"
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/defines.h"
 
 
 static const char *g_defaultSavePath = "./LocalData/export.tar";
-static const int g_downloadStepsCount = 1;
+static const int g_downloadStepsCount = 5;
 static const char *g_effectModelDownloadingStatus = "Effect model downloading...";
+static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model downloading...";
+static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model downloading...";
+static const char *g_artefactArgStorageModelDownloadingStatus = "Artefact arg storage model downloading...";
+static const char *g_easingTypeModelDownloadingStatus = "Easing type model downloading...";
 static const char *g_allDoneStatus = "All downloading is done.";
 
 
@@ -93,35 +96,135 @@ void EffectsExchange::initSavePath(const QString &path_)
 
 void EffectsExchange::free()
 {
-    delete m_effectModel;
-    m_effectModel = nullptr;
+    if(m_effectModel)
+    {
+        m_effectModel->clearResponse();
+    }
+    if(m_artefactTypeModel)
+    {
+        m_artefactTypeModel->clearResponse();
+    }
+    if(m_artefactArgTypeModel)
+    {
+        m_artefactArgTypeModel->clearResponse();
+    }
+    if(m_artefactArgStorageModel)
+    {
+        m_artefactArgStorageModel->clearResponse();
+    }
+    if(m_easingTypeModel)
+    {
+        m_easingTypeModel->clearResponse();
+    }
+    m_effectModel.reset(nullptr);
+    m_artefactTypeModel.reset(nullptr);;
+    m_artefactArgTypeModel.reset(nullptr);
+    m_artefactArgStorageModel.reset(nullptr);
+    m_easingTypeModel.reset(nullptr);
 }
 
 void EffectsExchange::create()
 {
     free();
 
-    m_effectModel = new EffectModel(this);
+    m_effectModel = std::make_unique<EffectModel>(this);
     m_effectModel->initResponse();
     m_effectModel->setCurrentRef("");
     m_effectModel->setLayoutQMLName("LocalData_EffectModel");
     m_effectModel->setLayoutIdFieldImpl("id");
     m_effectModel->registerListModel();
     m_effectModel->setAutoCreateChildrenModels(true);
+
+    m_artefactTypeModel = std::make_unique<ArtefactTypeModel>(this);
+    m_artefactTypeModel->initResponse();
+    m_artefactTypeModel->setCurrentRef("");
+    m_artefactTypeModel->setLayoutQMLName("LocalData_ArtefactTypeModel");
+    m_artefactTypeModel->setLayoutIdFieldImpl("id");
+    m_artefactTypeModel->registerListModel();
+    m_artefactTypeModel->setAutoCreateChildrenModels(true);
+
+    m_artefactArgTypeModel = std::make_unique<ArtefactArgTypeModel>(this);
+    m_artefactArgTypeModel->initResponse();
+    m_artefactArgTypeModel->setCurrentRef("");
+    m_artefactArgTypeModel->setLayoutQMLName("LocalData_ArtefactArgTypeModel");
+    m_artefactArgTypeModel->setLayoutIdFieldImpl("id");
+    m_artefactArgTypeModel->registerListModel();
+    m_artefactArgTypeModel->setAutoCreateChildrenModels(true);
+
+    m_artefactArgStorageModel = std::make_unique<ArtefactArgStorageModel>(this);
+    m_artefactArgStorageModel->initResponse();
+    m_artefactArgStorageModel->setCurrentRef("");
+    m_artefactArgStorageModel->setLayoutQMLName("LocalData_ArtefactArgStorageModel");
+    m_artefactArgStorageModel->setLayoutIdFieldImpl("id");
+    m_artefactArgStorageModel->registerListModel();
+    m_artefactArgStorageModel->setAutoCreateChildrenModels(true);
+
+    m_easingTypeModel = std::make_unique<EasingTypeModel>(this);
+    m_easingTypeModel->initResponse();
+    m_easingTypeModel->setCurrentRef("");
+    m_easingTypeModel->setLayoutQMLName("LocalData_EasingTypeModel");
+    m_easingTypeModel->setLayoutIdFieldImpl("id");
+    m_easingTypeModel->registerListModel();
+    m_easingTypeModel->setAutoCreateChildrenModels(true);
 }
 
 void EffectsExchange::downloadStep()
 {
-    if(nullptr != m_effectModel && !m_effectModel->isListLoaded())
+    if(m_effectModel && !m_effectModel->isListLoaded())
     {
-        QObject::connect(m_effectModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        QObject::connect(m_effectModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         m_effectModel->loadList();
         emit progress(stepProgress(), g_effectModelDownloadingStatus);
         return; // one model at time
     }
-    if(nullptr != m_effectModel)
+    if(m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
     {
-        QObject::disconnect(m_effectModel, SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        QObject::connect(m_artefactTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_artefactTypeModel->loadList();
+        emit progress(stepProgress(), g_artefactTypeModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_artefactArgTypeModel && !m_artefactArgTypeModel->isListLoaded())
+    {
+        QObject::connect(m_artefactArgTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_artefactArgTypeModel->loadList();
+        emit progress(stepProgress(), g_artefactArgTypeModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_artefactArgStorageModel && !m_artefactArgStorageModel->isListLoaded())
+    {
+        QObject::connect(m_artefactArgStorageModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_artefactArgStorageModel->loadList();
+        emit progress(stepProgress(), g_artefactArgStorageModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_easingTypeModel && !m_easingTypeModel->isListLoaded())
+    {
+        QObject::connect(m_easingTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_easingTypeModel->loadList();
+        emit progress(stepProgress(), g_easingTypeModelDownloadingStatus);
+        return; // one model at time
+    }
+
+    if(m_effectModel)
+    {
+        QObject::disconnect(m_effectModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_artefactTypeModel)
+    {
+        QObject::disconnect(m_artefactTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_artefactArgTypeModel)
+    {
+        QObject::disconnect(m_artefactArgTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_artefactArgStorageModel)
+    {
+        QObject::disconnect(m_artefactArgStorageModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_easingTypeModel)
+    {
+        QObject::disconnect(m_easingTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
 
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();

@@ -4,9 +4,11 @@
 
 #include <QObject>
 #include <QtQuick/QQuickItem>
-
-
-class EffectModel;
+#include "../MastactvaModels/effect.h"
+#include "../MastactvaModels/artefacttype.h"
+#include "../MastactvaModels/artefactargtype.h"
+#include "../MastactvaModels/artefactargstorage.h"
+#include "../MastactvaModels/easingtype.h"
 
 
 class EffectsExchange : public QObject
@@ -16,7 +18,7 @@ class EffectsExchange : public QObject
 
 public:
     explicit EffectsExchange(QObject *parent_ = nullptr);
-    virtual ~EffectsExchange() override;
+    ~EffectsExchange() override;
 
     Q_PROPERTY(QString savePath READ savePath WRITE setSavePath NOTIFY savePathChanged)
     Q_PROPERTY(QString saveArchive READ saveArchive WRITE setSaveArchive NOTIFY saveArchiveChanged)
@@ -51,7 +53,11 @@ private:
     QString m_archiveName;
     QString m_oldPathServerFiles;
 
-    EffectModel *m_effectModel = nullptr;
+    std::unique_ptr<EffectModel> m_effectModel;
+    std::unique_ptr<ArtefactTypeModel> m_artefactTypeModel;
+    std::unique_ptr<ArtefactArgTypeModel> m_artefactArgTypeModel;
+    std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
+    std::unique_ptr<EasingTypeModel> m_easingTypeModel;
     int m_step = 0;
     int c_downloadStepsCount = 1;
 };
