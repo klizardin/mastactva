@@ -255,6 +255,18 @@ public:
         }
     }
 
+    void clearResponse() override
+    {
+        //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
+        //Q_ASSERT(dataAPI);
+        //QObject::connect(dataAPI, SIGNAL(response(int, const QString &, RequestData *, const QJsonDocument &)),
+        //                 m_model, SLOT(jsonResponseSlot(int, const QString &, RequestData *, const QJsonDocument &)));
+        if(m_config)
+        {
+            m_config->clearResponse(m_model);
+        }
+    }
+
     virtual const QString &getQMLLayoutName() const override
     {
         return getLayoutQMLNameImpl();
