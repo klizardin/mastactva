@@ -77,7 +77,7 @@ void Image::downloadImage()
     if(sf)
     {
         //IListModelInfoObjectImpl::startLoadChildModel();
-        sf->add(getFilename(), hash(), g_imagesRelPath);
+        sf->add(getFilename(), hash(), g_imagesRelPath, m_imageModel->getNamespace());
     }
 }
 

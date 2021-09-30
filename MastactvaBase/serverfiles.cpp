@@ -66,9 +66,12 @@ void ServerFiles::setRootDir(const QString &path_)
 #endif
 }
 
-void ServerFiles::add(const QString &url_,
-                      const QString &hash_,
-                      const QString &relCachePath_)
+void ServerFiles::add(
+        const QString &url_,
+        const QString &hash_,
+        const QString &relCachePath_,
+        const QString &namespacePath_
+        )
 {
 #if defined(TRACE_SERVER_FILES)
     qDebug() << "ServerFiles::add() url = " << url_;
@@ -127,7 +130,7 @@ void ServerFiles::add(const QString &url_,
                      this, SLOT(finished(ServerFileDownload *)));
     QObject::connect(sfd, SIGNAL(progress()),
                      this, SLOT(progressSlot()));
-    sfd->setPath(m_rootDir, relCachePath_);
+    sfd->setPath(m_rootDir, relCachePath_, namespacePath_);
     sfd->setFile(url_, hash_);
 
     sfd->start(m_manager);
@@ -387,10 +390,14 @@ ServerFileDownload::ServerFileDownload(QObject *parent_ /*= nullptr*/)
 {
 }
 
-void ServerFileDownload::setPath(const QString &rootDir, const QString &relPath_)
+void ServerFileDownload::setPath(
+        const QString &rootDir,
+        const QString &relPath_,
+        const QString &namespacePath_
+        )
 {
     m_rootDir = rootDir;
-    m_relPath = relPath_;
+    m_relPath = subpathJoin(namespacePath_, relPath_);
 }
 
 void ServerFileDownload::setFile(const QString &url_, const QString &hash_)

@@ -363,7 +363,7 @@ bool Effect::startRefreshArguments()
 
     for(const ArtefactInfo &ai_: qAsConst(m_artefactInfos))
     {
-        sf->add(ai_.filename, ai_.hash, g_artefactsRelPath);
+        sf->add(ai_.filename, ai_.hash, g_artefactsRelPath, m_effectModel->getNamespace());
     }
     return true;
 }

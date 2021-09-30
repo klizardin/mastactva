@@ -30,6 +30,7 @@ public:
                               const QVariant &itemAppId_,
                               const QVariant &itemId_) = 0;
     virtual void freeRequest(RequestData *&r_) = 0;
+    virtual QString getNamespace() const = 0;
 
 protected:
     virtual bool isDataAPIServer() const = 0;
@@ -315,6 +316,11 @@ public:
                             );
             }
         }
+    }
+
+    QString getNamespace() const override
+    {
+        return QString();
     }
 
     static DefaultModelConfig &instance()

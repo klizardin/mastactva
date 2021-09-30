@@ -187,7 +187,7 @@ void Artefact::downloadFile()
     if(sf && !m_insideArtefactDownloding)
     {
         QObject::connect(sf, SIGNAL(downloaded(QString)), this, SLOT(artefactFileDownloaded(QString)));
-        sf->add(getFilename(), hash(), g_artefactsRelPath);
+        sf->add(getFilename(), hash(), g_artefactsRelPath, m_artefactModel->getNamespace());
     }
 }
 
@@ -430,7 +430,7 @@ void Artefact::objectLoadedVF()
         {
             m_objectModelInfo->startLoadChildModel();
         }
-        sf->add(filename(), hash(), g_artefactsRelPath);
+        sf->add(filename(), hash(), g_artefactsRelPath, m_artefactModel->getNamespace());
     }
 }
 

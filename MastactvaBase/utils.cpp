@@ -20,6 +20,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QCryptographicHash>
 #include <QTimeZone>
@@ -634,3 +635,23 @@ QStringList getOpenGLErrors()
 }
 
 #endif  // #if QT_CONFIG(opengl)
+
+QString subpathJoin(const QString &relPath_, const QString &namespacePath_)
+{
+    if(!namespacePath_.isEmpty() && !relPath_.isEmpty())
+    {
+        return namespacePath_ + QDir::separator() + relPath_;
+    }
+    else if(!namespacePath_.isEmpty() && relPath_.isEmpty())
+    {
+        return namespacePath_;
+    }
+    else if(namespacePath_.isEmpty() && !relPath_.isEmpty())
+    {
+        return relPath_;
+    }
+    else
+    {
+        return QString();
+    }
+}
