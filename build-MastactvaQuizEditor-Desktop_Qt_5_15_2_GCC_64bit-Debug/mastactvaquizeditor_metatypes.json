@@ -3960,6 +3960,10 @@
                             {
                                 "name": "relCachePath_",
                                 "type": "QString"
+                            },
+                            {
+                                "name": "namespacePath_",
+                                "type": "QString"
                             }
                         ],
                         "name": "add",

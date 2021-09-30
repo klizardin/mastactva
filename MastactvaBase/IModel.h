@@ -49,6 +49,7 @@ public:
     virtual QVariant getIdFieldValueForAppId(const QVariant &appId_) const = 0;
     virtual QVariant getFieldValueForAppId(const QVariant &appId_,
                                            const QString &jsonFieldName) const = 0;
+    virtual QString getNamespace() const = 0;
 };
 
 

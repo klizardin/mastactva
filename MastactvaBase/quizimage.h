@@ -133,6 +133,7 @@ public:
     {
         QString name;
         QString hash;
+        QString serverFilesNamespace;
         bool loaded = false;
     };
 

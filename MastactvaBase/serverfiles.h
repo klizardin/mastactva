@@ -32,7 +32,11 @@ class ServerFileDownload : public QObject
 public:
     explicit ServerFileDownload(QObject *parent_ = nullptr);
 
-    void setPath(const QString &rootDir_, const QString &relPath_);
+    void setPath(
+            const QString &rootDir_,
+            const QString &relPath_,
+            const QString &namespacePath_
+            );
     void setFile(const QString &url_, const QString &hash_);
     void start(QNetworkAccessManager &manager_);
     void cancel();
@@ -84,9 +88,12 @@ public:
 
     Q_INVOKABLE QString getRootDir() const;
     Q_INVOKABLE void setRootDir(const QString &path_);
-    Q_INVOKABLE void add(const QString &url_,
-                         const QString &hash_,
-                         const QString &relCachePath_);
+    Q_INVOKABLE void add(
+            const QString &url_,
+            const QString &hash_,
+            const QString &relCachePath_,
+            const QString &namespacePath_
+            );
     Q_INVOKABLE bool isUrlDownloaded(const QString &url_) const;
     Q_INVOKABLE QString get(const QString &url_) const;
     Q_INVOKABLE void clean(const QDateTime &beforeEqualDate_);

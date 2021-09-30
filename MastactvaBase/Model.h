@@ -267,6 +267,18 @@ public:
         }
     }
 
+    QString getNamespace() const override
+    {
+        if(m_config)
+        {
+            return m_config->getNamespace();
+        }
+        else
+        {
+            return QString();
+        }
+    }
+
     virtual const QString &getQMLLayoutName() const override
     {
         return getLayoutQMLNameImpl();

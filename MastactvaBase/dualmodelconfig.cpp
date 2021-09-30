@@ -36,6 +36,11 @@ void DualModelConfigBase::freeRequest(RequestData *&r_)
     Q_ASSERT(false); // should not be used
 }
 
+QString DualModelConfigBase::getNamespace() const
+{
+    return QString();
+}
+
 DualModelConfigBase &DualModelConfigBase::instance()
 {
     static DualModelConfigBase inst;
@@ -68,8 +73,9 @@ LocalDataAPICache *DualModelConfigBase::getDataAPIFile()
     return res;
 }
 
-ChooseModelConfig::ChooseModelConfig(bool serverLocalDataAPI_)
-    : m_serverLocalDataAPI(serverLocalDataAPI_)
+ChooseModelConfig::ChooseModelConfig(bool serverLocalDataAPI_, const QString &serverFilesNamespace_)
+    : m_serverLocalDataAPI(serverLocalDataAPI_),
+      m_serverFilesNamespace(serverFilesNamespace_)
 {
 }
 
@@ -129,6 +135,11 @@ void ChooseModelConfig::freeRequest(RequestData *&r_)
                         );
         }
     }
+}
+
+QString ChooseModelConfig::getNamespace() const
+{
+    return m_serverFilesNamespace;
 }
 
 bool ChooseModelConfig::isDataAPIServer() const

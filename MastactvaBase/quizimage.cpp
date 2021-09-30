@@ -558,8 +558,8 @@ QuizImage::QuizImage()
     initDefaultDrawingData();
 
     const QString hash = calculateFileURLHash(g_noImageName);
-    m_fromImage = { g_noImageName, hash, true };
-    m_toImage = { g_noImageName, hash, true };
+    m_fromImage = { g_noImageName, hash, QString(), true };
+    m_toImage = { g_noImageName, hash, QString(), true };
 }
 
 QQuickFramebufferObject::Renderer *QuizImage::createRenderer() const
@@ -607,12 +607,13 @@ QVariantList QuizImage::fromImage() const
     QVariantList res;
     res.push_back(QVariant::fromValue(m_fromImage.name));
     res.push_back(QVariant::fromValue(m_fromImage.hash));
+    res.push_back(QVariant::fromValue(m_fromImage.serverFilesNamespace));
     return res;
 }
 
 void QuizImage::setFromImage(const QVariantList &fromImage_)
 {
-    if(fromImage_.size() < 2) { return; }
+    if(fromImage_.size() < 3) { return; }
 
 #if defined(TRACE_THREADS_QUIZIMAGE)
     qDebug() << "QuizImage::setFromImage()" << QThread::currentThread() << QThread::currentThreadId();
@@ -620,10 +621,11 @@ void QuizImage::setFromImage(const QVariantList &fromImage_)
 
     const QString imageUrl = fromImage_.at(0).toString();
     const QString imageHash = fromImage_.at(1).toString();
+    const QString imageNamespace = fromImage_.at(2).toString();
 
     if(imageUrl == m_fromImage.name || imageHash.isEmpty()) { return; }
 
-    m_fromImage = { imageUrl, imageHash, false };
+    m_fromImage = { imageUrl, imageHash, imageNamespace, false };
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(sf)
@@ -631,7 +633,7 @@ void QuizImage::setFromImage(const QVariantList &fromImage_)
         QObject::connect(
                     sf, SIGNAL(downloaded(const QString &)), this,
                     SLOT(imageDownloadedSlot(const QString &)));
-        sf->add(m_fromImage.name, m_fromImage.hash, g_imagesRelPath);
+        sf->add(m_fromImage.name, m_fromImage.hash, g_imagesRelPath, imageNamespace);
     }
 
     emit fromImageChanged();
@@ -642,12 +644,13 @@ QVariantList QuizImage::toImage() const
     QVariantList res;
     res.push_back(QVariant::fromValue(m_toImage.name));
     res.push_back(QVariant::fromValue(m_toImage.hash));
+    res.push_back(QVariant::fromValue(m_toImage.serverFilesNamespace));
     return res;
 }
 
 void QuizImage::setToImage(const QVariantList &toImage_)
 {
-    if(toImage_.size() < 2) { return; }
+    if(toImage_.size() < 3) { return; }
 
 #if defined(TRACE_THREADS_QUIZIMAGE)
     qDebug() << "QuizImage::setFromImage()" << QThread::currentThread() << QThread::currentThreadId();
@@ -655,10 +658,11 @@ void QuizImage::setToImage(const QVariantList &toImage_)
 
     const QString imageUrl = toImage_.at(0).toString();
     const QString imageHash = toImage_.at(1).toString();
+    const QString serverFilesNamespace = toImage_.at(2).toString();
 
     if(imageUrl == m_toImage.name || imageHash.isEmpty()) { return; }
 
-    m_toImage = { imageUrl, imageHash, false };
+    m_toImage = { imageUrl, imageHash, serverFilesNamespace, false };
 
     ServerFiles *sf = QMLObjectsBase::getInstance().getServerFiles();
     if(sf)
@@ -666,7 +670,7 @@ void QuizImage::setToImage(const QVariantList &toImage_)
         QObject::connect(
                     sf, SIGNAL(downloaded(const QString &)), this,
                     SLOT(imageDownloadedSlot(const QString &)));
-        sf->add(m_toImage.name, m_toImage.hash, g_imagesRelPath);
+        sf->add(m_toImage.name, m_toImage.hash, g_imagesRelPath, serverFilesNamespace);
     }
 
     emit toImageChanged();

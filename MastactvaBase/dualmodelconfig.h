@@ -38,6 +38,7 @@ public:
             const QVariant &itemId_
             ) override;
     void freeRequest(RequestData *&r_) override;
+    QString getNamespace() const override;
     static DualModelConfigBase &instance();
 
 protected:
@@ -55,7 +56,7 @@ private:
 class ChooseModelConfig : public IModelConfig
 {
 public:
-    ChooseModelConfig(bool serverLocalDataAPI_);
+    ChooseModelConfig(bool serverLocalDataAPI_, const QString &serverFilesNamespace_);
     IListModel *getListModel(const QString &layoutName_) override;
     RequestData *emptyRequest(
             const QString &requestName_,
@@ -63,6 +64,7 @@ public:
             const QVariant &itemId_
             ) override;
     void freeRequest(RequestData *&r_) override;
+    QString getNamespace() const override;
 
 protected:
     bool isDataAPIServer() const override;
@@ -71,6 +73,7 @@ protected:
 
 private:
     bool m_serverLocalDataAPI = false;
+    QString m_serverFilesNamespace;
 };
 
 
