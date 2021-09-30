@@ -104,7 +104,7 @@ QStringList getOpenGLErrors();
 #endif  // #if QT_CONFIG(opengl)
 
 
-QString pathJoin(const QString &relPath_, const QString &namespacePath_);
+QString subpathJoin(const QString &relPath_, const QString &namespacePath_);
 
 
 template<typename Type_>
