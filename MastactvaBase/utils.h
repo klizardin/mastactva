@@ -104,6 +104,9 @@ QStringList getOpenGLErrors();
 #endif  // #if QT_CONFIG(opengl)
 
 
+QString pathJoin(const QString &relPath_, const QString &namespacePath_);
+
+
 template<typename Type_>
 void extractValues(const QVariantList &values_, QVector<Type_> &valuesArray_, int arraySize_)
 {

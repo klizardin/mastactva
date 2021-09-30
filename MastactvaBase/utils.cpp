@@ -20,6 +20,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QCryptographicHash>
 #include <QTimeZone>
@@ -634,3 +635,8 @@ QStringList getOpenGLErrors()
 }
 
 #endif  // #if QT_CONFIG(opengl)
+
+QString pathJoin(const QString &relPath_, const QString &namespacePath_)
+{
+    return namespacePath_ + QDir::separator() + relPath_;
+}
