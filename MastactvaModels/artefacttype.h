@@ -83,7 +83,9 @@ protected:
     using base = ListModelBaseOfData<ArtefactType, ArtefactTypeModel>;
 
 public:
-    explicit ArtefactTypeModel(QObject *parent_ = nullptr);
+    explicit ArtefactTypeModel(
+            QObject *parent_ = nullptr
+            );
 
     LAYOUT_MODEL_IMPL();
 

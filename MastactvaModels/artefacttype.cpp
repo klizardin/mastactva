@@ -67,7 +67,9 @@ void ArtefactType::setUniqueForObject(const bool &uniqueForObject_)
 }
 
 
-ArtefactTypeModel::ArtefactTypeModel(QObject *parent_ /*= nullptr*/)
+ArtefactTypeModel::ArtefactTypeModel(
+        QObject *parent_ /*= nullptr*/
+        )
     : base(parent_)
 {
 #if defined(TRACE_THREADS)
