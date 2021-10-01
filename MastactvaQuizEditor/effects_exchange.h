@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QtQuick/QQuickItem>
+//#include "../MastactvaBase/dualmodelconfig.h"
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/artefactargtype.h"
@@ -37,6 +38,8 @@ private:
     void downloadStep();
     void archiveResults();
     qreal stepProgress();
+    void freeInput();
+    void createInput();
 
 public:
 signals:
@@ -58,6 +61,14 @@ private:
     std::unique_ptr<ArtefactArgTypeModel> m_artefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_easingTypeModel;
+
+    //std::unique_ptr<ChooseModelConfig> m_inputModelConfig;
+    std::unique_ptr<EffectModel> m_inputEffectModel;
+    std::unique_ptr<ArtefactTypeModel> m_inputArtefactTypeModel;
+    std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
+    std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
+    std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
+
     int m_step = 0;
     int c_downloadStepsCount = 1;
 };

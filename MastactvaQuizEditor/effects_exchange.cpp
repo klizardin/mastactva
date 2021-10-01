@@ -13,6 +13,7 @@ static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type 
 static const char *g_artefactArgStorageModelDownloadingStatus = "Artefact arg storage model downloading...";
 static const char *g_easingTypeModelDownloadingStatus = "Easing type model downloading...";
 static const char *g_allDoneStatus = "All downloading is done.";
+static const char *g_inputExchangeNamespace = "exchangeInput";
 
 
 EffectsExchange::EffectsExchange(QObject *parent_ /*= nullptr*/)
@@ -289,6 +290,91 @@ qreal EffectsExchange::stepProgress()
             ;
     qDebug() << "progress =" << progress;
     return progress;
+}
+
+void EffectsExchange::freeInput()
+{
+    if(m_inputEffectModel)
+    {
+        m_inputEffectModel->clearResponse();
+    }
+    if(m_inputArtefactTypeModel)
+    {
+        m_inputArtefactTypeModel->clearResponse();
+    }
+    if(m_inputArtefactArgTypeModel)
+    {
+        m_inputArtefactArgTypeModel->clearResponse();
+    }
+    if(m_inputArtefactArgStorageModel)
+    {
+        m_inputArtefactArgStorageModel->clearResponse();
+    }
+    if(m_inputEasingTypeModel)
+    {
+        m_inputEasingTypeModel->clearResponse();
+    }
+    m_inputEffectModel.reset(nullptr);
+    m_inputArtefactTypeModel.reset(nullptr);;
+    m_inputArtefactArgTypeModel.reset(nullptr);
+    m_inputArtefactArgStorageModel.reset(nullptr);
+    m_inputEasingTypeModel.reset(nullptr);
+    //m_inputModelConfig.reset(nullptr);
+}
+
+void EffectsExchange::createInput()
+{
+    free();
+
+/*    m_inputModelConfig = std::make_unique<ChooseModelConfig>(true, g_inputExchangeNamespace);
+
+    m_inputEffectModel = std::make_unique<EffectModel>(
+                this,
+                std::shared_ptr<QVector<Effect *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectModel->initResponse();
+    m_inputEffectModel->setCurrentRef("");
+    m_inputEffectModel->setLayoutQMLName("LocalDataInput_EffectModel");
+    m_inputEffectModel->setLayoutIdFieldImpl("id");
+    m_inputEffectModel->registerListModel();
+    m_inputEffectModel->setAutoCreateChildrenModels(true);
+
+    m_inputArtefactTypeModel = std::make_unique<ArtefactTypeModel>(
+                this,
+                std::shared_ptr<QVector<ArtefactType *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputArtefactTypeModel->initResponse();
+    m_inputArtefactTypeModel->setCurrentRef("");
+    m_inputArtefactTypeModel->setLayoutQMLName("LocalDataInput_ArtefactTypeModel");
+    m_inputArtefactTypeModel->setLayoutIdFieldImpl("id");
+    m_inputArtefactTypeModel->registerListModel();
+    m_inputArtefactTypeModel->setAutoCreateChildrenModels(true);
+
+    m_inputArtefactArgTypeModel = std::make_unique<ArtefactArgTypeModel>(this);
+    m_inputArtefactArgTypeModel->initResponse();
+    m_inputArtefactArgTypeModel->setCurrentRef("");
+    m_inputArtefactArgTypeModel->setLayoutQMLName("LocalDataInput_ArtefactArgTypeModel");
+    m_inputArtefactArgTypeModel->setLayoutIdFieldImpl("id");
+    m_inputArtefactArgTypeModel->registerListModel();
+    m_inputArtefactArgTypeModel->setAutoCreateChildrenModels(true);
+
+    m_inputArtefactArgStorageModel = std::make_unique<ArtefactArgStorageModel>(this);
+    m_inputArtefactArgStorageModel->initResponse();
+    m_inputArtefactArgStorageModel->setCurrentRef("");
+    m_inputArtefactArgStorageModel->setLayoutQMLName("LocalDataInput_ArtefactArgStorageModel");
+    m_inputArtefactArgStorageModel->setLayoutIdFieldImpl("id");
+    m_inputArtefactArgStorageModel->registerListModel();
+    m_inputArtefactArgStorageModel->setAutoCreateChildrenModels(true);
+
+    m_inputEasingTypeModel = std::make_unique<EasingTypeModel>(this);
+    m_inputEasingTypeModel->initResponse();
+    m_inputEasingTypeModel->setCurrentRef("");
+    m_inputEasingTypeModel->setLayoutQMLName("LocalDataInput_EasingTypeModel");
+    m_inputEasingTypeModel->setLayoutIdFieldImpl("id");
+    m_inputEasingTypeModel->registerListModel();
+    m_inputEasingTypeModel->setAutoCreateChildrenModels(true);*/
 }
 
 void EffectsExchange::listReloadedSlot()
