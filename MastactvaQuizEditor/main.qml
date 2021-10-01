@@ -703,7 +703,7 @@ ApplicationWindow {
             if(demoImageFrom === undefined || demoImageFrom === null)
             {
                 effectDemoImageFrom.source = Constants.noImage
-                effectImageDemo.fromImage = [Constants.noImage, Constants.noImageHash]
+                effectImageDemo.fromImage = [Constants.noImage, Constants.noImageHash, Constants.emptyStr]
             }
             else
             {
@@ -717,7 +717,7 @@ ApplicationWindow {
             if(demoImageTo === undefined || demoImageTo === null)
             {
                 effectDemoImageTo.source = Constants.noImage
-                effectImageDemo.toImage = [Constants.noImage, Constants.noImageHash]
+                effectImageDemo.toImage = [Constants.noImage, Constants.noImageHash, Constants.emptyStr]
             }
             else
             {
@@ -4356,7 +4356,7 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                demoImageFrom = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash]
+                demoImageFrom = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash, Constants.emptyStr]
             }
         }
     }
@@ -4372,7 +4372,7 @@ ApplicationWindow {
         {
             chooseImageDialog.imageChoosed.disconnect(imageChoosed)
             if(chooseImageDialog.fieldImage !== undefined && chooseImageDialog.fieldImage !== null) {
-                demoImageTo = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash]
+                demoImageTo = [chooseImageDialog.fieldImage.imageSource, chooseImageDialog.fieldImage.imageHash, Constants.emptyStr]
             }
         }
     }
@@ -5400,8 +5400,8 @@ ApplicationWindow {
                                         height: splitEffectsDemo.width * Constants.aspectY / Constants.aspectX
                                         visible: true
                                         clip: true
-                                        fromImage: [Constants.noImage, Constants.noImageHash]
-                                        toImage: [Constants.noImage, Constants.noImageHash]
+                                        fromImage: [Constants.noImage, Constants.noImageHash, Constants.emptyStr]
+                                        toImage: [Constants.noImage, Constants.noImageHash, Constants.emptyStr]
                                         t: 0.5
 
                                         SequentialAnimation {

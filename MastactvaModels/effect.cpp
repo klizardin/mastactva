@@ -768,7 +768,9 @@ const EffectArgModel *Effect::getEffectArguments() const
 }
 
 
-EffectModel::EffectModel(QObject *parent_ /*= nullptr*/)
+EffectModel::EffectModel(
+        QObject *parent_ /*= nullptr*/
+        )
     : base(parent_)
 {
 #if defined(TRACE_THREADS)

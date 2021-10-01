@@ -175,7 +175,9 @@ protected:
     using base = ListModelBaseOfData<Effect, EffectModel>;
 
 public:
-    explicit EffectModel(QObject *parent_ = nullptr);
+    explicit EffectModel(
+            QObject *parent_ = nullptr
+            );
 
     LAYOUT_MODEL_IMPL();
 

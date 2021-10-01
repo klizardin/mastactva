@@ -43,4 +43,5 @@ QtObject {
     readonly property string notANextImagePoint: qsTr("Not a point to next image")
     readonly property string aNextImagePoint: qsTr("Point to next image")
     readonly property string selectImagePoint : qsTr("Select image point")
+    readonly property string emptyStr : ""
 }

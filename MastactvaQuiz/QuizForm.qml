@@ -68,8 +68,8 @@ Page {
             id: quizImage
             width: parent.width
             height: parent.height
-            fromImage: [Constants.noImage, Constants.noImageHash]
-            toImage: [Constants.noImage, Constants.noImageHash]
+            fromImage: [Constants.noImage, Constants.noImageHash, Constants.emptyStr]
+            toImage: [Constants.noImage, Constants.noImageHash, Constants.emptyStr]
             clip: true
             t: 0.0
             visible: false
