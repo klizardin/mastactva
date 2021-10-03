@@ -400,6 +400,22 @@ void EffectsExchange::freeInput()
     {
         m_inputEffectModel->clearResponse();
     }
+    if(m_inputArtefactModel)
+    {
+        m_inputArtefactModel->clearResponse();
+    }
+    if(m_inputEffectObjectsModel)
+    {
+        m_inputEffectObjectsModel->clearResponse();
+    }
+    if(m_inputObjectArtefactModel)
+    {
+        m_inputObjectArtefactModel->clearResponse();
+    }
+    if(m_inputObjectInfoModel)
+    {
+        m_inputObjectInfoModel->clearResponse();
+    }
     if(m_inputArtefactTypeModel)
     {
         m_inputArtefactTypeModel->clearResponse();
@@ -440,6 +456,54 @@ void EffectsExchange::createInput()
     m_inputEffectModel->setLayoutIdFieldImpl("id");
     m_inputEffectModel->registerListModel();
     m_inputEffectModel->setAutoCreateChildrenModels(true);
+
+    m_inputArtefactModel = std::make_unique<ArtefactModel>(
+                this,
+                std::shared_ptr<QVector<ArtefactData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputArtefactModel->initResponse();
+    m_inputArtefactModel->setCurrentRef("");
+    m_inputArtefactModel->setLayoutQMLName("LocalData_Import_ArtefactModel");
+    m_inputArtefactModel->setLayoutIdFieldImpl("id");
+    m_inputArtefactModel->registerListModel();
+    m_inputArtefactModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectObjectsModel = std::make_unique<EffectObjectsModel>(
+                this,
+                std::shared_ptr<QVector<EffectObjectsData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectObjectsModel->initResponse();
+    m_inputEffectObjectsModel->setCurrentRef("");
+    m_inputEffectObjectsModel->setLayoutQMLName("LocalData_Import_EffectObjectsModel");
+    m_inputEffectObjectsModel->setLayoutIdFieldImpl("id");
+    m_inputEffectObjectsModel->registerListModel();
+    m_inputEffectObjectsModel->setAutoCreateChildrenModels(true);
+
+    m_inputObjectArtefactModel = std::make_unique<ObjectArtefactModel>(
+                this,
+                std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputObjectArtefactModel->initResponse();
+    m_inputObjectArtefactModel->setCurrentRef("");
+    m_inputObjectArtefactModel->setLayoutQMLName("LocalData_Import_ObjectArtefactModel");
+    m_inputObjectArtefactModel->setLayoutIdFieldImpl("id");
+    m_inputObjectArtefactModel->registerListModel();
+    m_inputObjectArtefactModel->setAutoCreateChildrenModels(true);
+
+    m_inputObjectInfoModel = std::make_unique<ObjectInfoModel>(
+                this,
+                std::shared_ptr<QVector<ObjectInfoData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputObjectInfoModel->initResponse();
+    m_inputObjectInfoModel->setCurrentRef("");
+    m_inputObjectInfoModel->setLayoutQMLName("LocalData_Import_ObjectInfoModel");
+    m_inputObjectInfoModel->setLayoutIdFieldImpl("id");
+    m_inputObjectInfoModel->registerListModel();
+    m_inputObjectInfoModel->setAutoCreateChildrenModels(true);
 
     m_inputArtefactTypeModel = std::make_unique<ArtefactTypeModel>(
                 this,

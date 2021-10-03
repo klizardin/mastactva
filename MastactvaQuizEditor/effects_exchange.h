@@ -72,6 +72,10 @@ private:
 
     std::unique_ptr<ChooseModelConfig> m_inputModelConfig;
     std::unique_ptr<EffectModel> m_inputEffectModel;
+    std::unique_ptr<ArtefactModel> m_inputArtefactModel;
+    std::unique_ptr<EffectObjectsModel> m_inputEffectObjectsModel;
+    std::unique_ptr<ObjectArtefactModel> m_inputObjectArtefactModel;
+    std::unique_ptr<ObjectInfoModel> m_inputObjectInfoModel;
     std::unique_ptr<ArtefactTypeModel> m_inputArtefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
