@@ -111,12 +111,22 @@
                         ],
                         "name": "progress",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "uploaded",
+                        "returnType": "void"
                     }
                 ],
                 "slots": [
                     {
                         "access": "protected",
                         "name": "listReloadedSlot",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "listReloadedSlotForImport",
                         "returnType": "void"
                     }
                 ],

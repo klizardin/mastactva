@@ -53,6 +53,21 @@ void EffectsExchange::download()
 
 void EffectsExchange::upload()
 {
+    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+    if(nullptr == localDataAPI) { return; }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr == sf) { return; }
+
+    localDataAPI->startSave(m_path);
+    m_oldPathServerFiles = sf->getRootDir();
+    sf->setRootDir(m_path);
+    sf->clean(QDateTime::currentDateTime());
+    sf->reset();
+
+    createInput();
+    m_step = 0;
+    extractArchive();
+    uploadStep();
 }
 
 void EffectsExchange::merge()
@@ -367,7 +382,7 @@ void EffectsExchange::archiveResults()
         }
     }
     QProcess tar;
-    tar.start("tar", QStringList({"-cf", m_archiveName}) + args);
+    tar.start("tar", QStringList({"-czf", m_archiveName}) + args);
     if(!tar.waitForStarted())
     {
         return;
@@ -392,6 +407,11 @@ qreal EffectsExchange::stepProgress()
             ;
     qDebug() << "progress =" << progress;
     return progress;
+}
+
+void EffectsExchange::listReloadedSlot()
+{
+    downloadStep();
 }
 
 void EffectsExchange::freeInput()
@@ -550,7 +570,140 @@ void EffectsExchange::createInput()
     m_inputEasingTypeModel->setAutoCreateChildrenModels(true);
 }
 
-void EffectsExchange::listReloadedSlot()
+void EffectsExchange::extractArchive()
 {
-    downloadStep();
+    QProcess tar;
+    tar.start("tar", QStringList({"-xzf", m_archiveName}));
+    if(!tar.waitForStarted())
+    {
+        return;
+    }
+    if(!tar.waitForFinished())
+    {
+        return;
+    }
+}
+
+void EffectsExchange::uploadStep()
+{
+    if(m_inputEffectModel && !m_inputEffectModel->isListLoaded())
+    {
+        QObject::connect(m_inputEffectModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputEffectModel->loadList();
+        emit progress(stepProgress(), g_effectModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputArtefactModel && !m_inputArtefactModel->isListLoaded())
+    {
+        QObject::connect(m_inputArtefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputArtefactModel->loadList();
+        emit progress(stepProgress(), g_artefactModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputEffectObjectsModel && !m_inputEffectObjectsModel->isListLoaded())
+    {
+        QObject::connect(m_inputEffectObjectsModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputEffectObjectsModel->loadList();
+        emit progress(stepProgress(), g_effectObjectsModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputObjectArtefactModel && !m_inputObjectArtefactModel->isListLoaded())
+    {
+        QObject::connect(m_inputObjectArtefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputObjectArtefactModel->loadList();
+        emit progress(stepProgress(), g_objectArtefactModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputObjectInfoModel && !m_inputObjectInfoModel->isListLoaded())
+    {
+        QObject::connect(m_inputObjectInfoModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputObjectInfoModel->loadList();
+        emit progress(stepProgress(), g_objectInfoModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputArtefactTypeModel && !m_inputArtefactTypeModel->isListLoaded())
+    {
+        QObject::connect(m_inputArtefactTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputArtefactTypeModel->loadList();
+        emit progress(stepProgress(), g_artefactTypeModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputArtefactArgTypeModel && !m_inputArtefactArgTypeModel->isListLoaded())
+    {
+        QObject::connect(m_inputArtefactArgTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputArtefactArgTypeModel->loadList();
+        emit progress(stepProgress(), g_artefactArgTypeModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputArtefactArgStorageModel && !m_inputArtefactArgStorageModel->isListLoaded())
+    {
+        QObject::connect(m_inputArtefactArgStorageModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputArtefactArgStorageModel->loadList();
+        emit progress(stepProgress(), g_artefactArgStorageModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_inputEasingTypeModel && !m_inputEasingTypeModel->isListLoaded())
+    {
+        QObject::connect(m_inputEasingTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+        m_inputEasingTypeModel->loadList();
+        emit progress(stepProgress(), g_easingTypeModelDownloadingStatus);
+        return; // one model at time
+    }
+
+    if(m_inputEffectModel)
+    {
+        QObject::disconnect(m_inputEffectModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputArtefactModel)
+    {
+        QObject::disconnect(m_inputArtefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputEffectObjectsModel)
+    {
+        QObject::disconnect(m_inputEffectObjectsModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputObjectArtefactModel)
+    {
+        QObject::disconnect(m_inputObjectArtefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputObjectInfoModel)
+    {
+        QObject::disconnect(m_inputObjectInfoModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputArtefactTypeModel)
+    {
+        QObject::disconnect(m_inputArtefactTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputArtefactArgTypeModel)
+    {
+        QObject::disconnect(m_inputArtefactArgTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputArtefactArgStorageModel)
+    {
+        QObject::disconnect(m_inputArtefactArgStorageModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+    if(m_inputEasingTypeModel)
+    {
+        QObject::disconnect(m_inputEasingTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
+    }
+
+    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+    if(nullptr != localDataAPI)
+    {
+        localDataAPI->endSave();
+    }
+
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        sf->setRootDir(m_oldPathServerFiles);
+    }
+
+    emit progress(stepProgress(), g_allDoneStatus);
+    emit uploaded();
+}
+
+void EffectsExchange::listReloadedSlotForImport()
+{
+    uploadStep();
 }

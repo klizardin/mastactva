@@ -44,6 +44,8 @@ private:
     qreal stepProgress();
     void freeInput();
     void createInput();
+    void extractArchive();
+    void uploadStep();
 
 public:
 signals:
@@ -51,9 +53,11 @@ signals:
     void saveArchiveChanged();
     void downloaded();
     void progress(qreal p_, const QString &status_);
+    void uploaded();
 
 protected slots:
     void listReloadedSlot();
+    void listReloadedSlotForImport();
 
 private:
     QString m_path;
