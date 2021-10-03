@@ -340,9 +340,8 @@ void EffectsExchange::createInput()
     m_inputEffectModel->setAutoCreateChildrenModels(true);
 
     m_inputArtefactTypeModel = std::make_unique<ArtefactTypeModel>(
-                this/*,
-                std::shared_ptr<QVector<ArtefactType *>>{nullptr},
-                m_inputModelConfig.get()*/
+                this,
+                m_inputModelConfig.get()
                 );
     m_inputArtefactTypeModel->initResponse();
     m_inputArtefactTypeModel->setCurrentRef("");
@@ -351,7 +350,10 @@ void EffectsExchange::createInput()
     m_inputArtefactTypeModel->registerListModel();
     m_inputArtefactTypeModel->setAutoCreateChildrenModels(true);
 
-    m_inputArtefactArgTypeModel = std::make_unique<ArtefactArgTypeModel>(this);
+    m_inputArtefactArgTypeModel = std::make_unique<ArtefactArgTypeModel>(
+                this,
+                m_inputModelConfig.get()
+                );
     m_inputArtefactArgTypeModel->initResponse();
     m_inputArtefactArgTypeModel->setCurrentRef("");
     m_inputArtefactArgTypeModel->setLayoutQMLName("LocalDataInput_ArtefactArgTypeModel");
@@ -359,7 +361,10 @@ void EffectsExchange::createInput()
     m_inputArtefactArgTypeModel->registerListModel();
     m_inputArtefactArgTypeModel->setAutoCreateChildrenModels(true);
 
-    m_inputArtefactArgStorageModel = std::make_unique<ArtefactArgStorageModel>(this);
+    m_inputArtefactArgStorageModel = std::make_unique<ArtefactArgStorageModel>(
+                this,
+                m_inputModelConfig.get()
+                );
     m_inputArtefactArgStorageModel->initResponse();
     m_inputArtefactArgStorageModel->setCurrentRef("");
     m_inputArtefactArgStorageModel->setLayoutQMLName("LocalDataInput_ArtefactArgStorageModel");
@@ -367,7 +372,10 @@ void EffectsExchange::createInput()
     m_inputArtefactArgStorageModel->registerListModel();
     m_inputArtefactArgStorageModel->setAutoCreateChildrenModels(true);
 
-    m_inputEasingTypeModel = std::make_unique<EasingTypeModel>(this);
+    m_inputEasingTypeModel = std::make_unique<EasingTypeModel>(
+                this,
+                m_inputModelConfig.get()
+                );
     m_inputEasingTypeModel->initResponse();
     m_inputEasingTypeModel->setCurrentRef("");
     m_inputEasingTypeModel->setLayoutQMLName("LocalDataInput_EasingTypeModel");

@@ -55,8 +55,11 @@ void ArtefactArgStorage::setStorage(const QString &storage_)
 }
 
 
-ArtefactArgStorageModel::ArtefactArgStorageModel(QObject *parent_ /*= nullptr*/)
-    :base(parent_)
+ArtefactArgStorageModel::ArtefactArgStorageModel(
+        QObject *parent_ /*= nullptr*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
+        )
+    :base(parent_, std::shared_ptr<QVector<ArtefactArgStorage *>>{nullptr}, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactArgStorageModel::ArtefactArgStorageModel()" << QThread::currentThread() << QThread::currentThreadId();
