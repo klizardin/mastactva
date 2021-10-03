@@ -319,19 +319,19 @@ void EffectsExchange::freeInput()
     m_inputArtefactArgTypeModel.reset(nullptr);
     m_inputArtefactArgStorageModel.reset(nullptr);
     m_inputEasingTypeModel.reset(nullptr);
-    //m_inputModelConfig.reset(nullptr);
+    m_inputModelConfig.reset(nullptr);
 }
 
 void EffectsExchange::createInput()
 {
     free();
 
-/*    m_inputModelConfig = std::make_unique<ChooseModelConfig>(true, g_inputExchangeNamespace);
+    m_inputModelConfig = std::make_unique<ChooseModelConfig>(true, g_inputExchangeNamespace);
 
     m_inputEffectModel = std::make_unique<EffectModel>(
-                this,
+                this/*,
                 std::shared_ptr<QVector<Effect *>>{nullptr},
-                m_inputModelConfig.get()
+                m_inputModelConfig.get()*/
                 );
     m_inputEffectModel->initResponse();
     m_inputEffectModel->setCurrentRef("");
@@ -341,9 +341,9 @@ void EffectsExchange::createInput()
     m_inputEffectModel->setAutoCreateChildrenModels(true);
 
     m_inputArtefactTypeModel = std::make_unique<ArtefactTypeModel>(
-                this,
+                this/*,
                 std::shared_ptr<QVector<ArtefactType *>>{nullptr},
-                m_inputModelConfig.get()
+                m_inputModelConfig.get()*/
                 );
     m_inputArtefactTypeModel->initResponse();
     m_inputArtefactTypeModel->setCurrentRef("");
@@ -374,7 +374,7 @@ void EffectsExchange::createInput()
     m_inputEasingTypeModel->setLayoutQMLName("LocalDataInput_EasingTypeModel");
     m_inputEasingTypeModel->setLayoutIdFieldImpl("id");
     m_inputEasingTypeModel->registerListModel();
-    m_inputEasingTypeModel->setAutoCreateChildrenModels(true);*/
+    m_inputEasingTypeModel->setAutoCreateChildrenModels(true);
 }
 
 void EffectsExchange::listReloadedSlot()

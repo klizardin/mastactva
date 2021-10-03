@@ -4,7 +4,7 @@
 
 #include <QObject>
 #include <QtQuick/QQuickItem>
-//#include "../MastactvaBase/dualmodelconfig.h"
+#include "../MastactvaBase/dualmodelconfig.h"
 #include "../MastactvaModels/effect.h"
 #include "../MastactvaModels/artefacttype.h"
 #include "../MastactvaModels/artefactargtype.h"
@@ -62,7 +62,7 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_easingTypeModel;
 
-    //std::unique_ptr<ChooseModelConfig> m_inputModelConfig;
+    std::unique_ptr<ChooseModelConfig> m_inputModelConfig;
     std::unique_ptr<EffectModel> m_inputEffectModel;
     std::unique_ptr<ArtefactTypeModel> m_inputArtefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
