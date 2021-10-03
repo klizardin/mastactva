@@ -7,6 +7,8 @@
 #include <QVariant>
 #include <QHash>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/qmlobjects.h"
 

@@ -136,7 +136,8 @@ protected:
 public:
     explicit EffectObjectsModel(
             QObject *parent_ = nullptr,
-            std::shared_ptr<QVector<EffectObjectsData *>> data_ = std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}
+            std::shared_ptr<QVector<EffectObjectsData *>> data_ = std::shared_ptr<QVector<EffectObjectsData *>>{nullptr},
+            IModelConfig *config_ = &DefaultModelConfig::instance()
             );
 
     LAYOUT_MODEL_IMPL();

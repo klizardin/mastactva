@@ -191,9 +191,10 @@ ArtefactModel *ObjectArtefact::createArtefactModel()
 ObjectArtefactModel::ObjectArtefactModel(
         QObject *parent_ /*= nullptr*/,
         std::shared_ptr<QVector<ObjectArtefactData *>> data_
-        /*= std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}*/
+        /*= std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    : base(parent_, data_)
+    : base(parent_, data_, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectArtefactModel::ObjectArtefactModel()" << QThread::currentThread() << QThread::currentThreadId();

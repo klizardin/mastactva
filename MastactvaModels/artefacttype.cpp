@@ -68,9 +68,10 @@ void ArtefactType::setUniqueForObject(const bool &uniqueForObject_)
 
 
 ArtefactTypeModel::ArtefactTypeModel(
-        QObject *parent_ /*= nullptr*/
+        QObject *parent_ /*= nullptr*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    : base(parent_)
+    : base(parent_, std::shared_ptr<QVector<ArtefactType *>>{nullptr}, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactTypeModel::ArtefactTypeModel()" << QThread::currentThread() << QThread::currentThreadId();

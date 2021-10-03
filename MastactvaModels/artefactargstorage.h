@@ -76,7 +76,10 @@ protected:
     using base = ListModelBaseOfData<ArtefactArgStorage, ArtefactArgStorageModel>;
 
 public:
-    explicit ArtefactArgStorageModel(QObject *parent_ = nullptr);
+    explicit ArtefactArgStorageModel(
+            QObject *parent_ = nullptr,
+            IModelConfig *config_ = &DefaultModelConfig::instance()
+            );
 
     LAYOUT_MODEL_IMPL();
 

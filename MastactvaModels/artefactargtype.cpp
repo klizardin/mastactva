@@ -54,8 +54,11 @@ void ArtefactArgType::setType(const QString &type_)
     emit typeChanged();
 }
 
-ArtefactArgTypeModel::ArtefactArgTypeModel(QObject *parent_ /*= nullptr*/)
-    : base(parent_)
+ArtefactArgTypeModel::ArtefactArgTypeModel(
+        QObject *parent_ /*= nullptr*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
+        )
+    : base(parent_, std::shared_ptr<QVector<ArtefactArgType *>>{nullptr}, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ArtefactArgTypeModel::ArtefactArgTypeModel()" << QThread::currentThread() << QThread::currentThreadId();

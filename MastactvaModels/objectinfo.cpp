@@ -115,9 +115,10 @@ void ObjectInfo::setCreated(const QDateTime &created_)
 ObjectInfoModel::ObjectInfoModel(
         QObject *parent_ /*= nullptr*/,
         std::shared_ptr<QVector<ObjectInfoData *>> data_
-        /*= std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}*/
+        /*= std::shared_ptr<QVector<ObjectInfoData *>>{nullptr}*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    :base(parent_, data_)
+    :base(parent_, data_, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "ObjectInfoModel::ObjectInfoModel()" << QThread::currentThread() << QThread::currentThreadId();
