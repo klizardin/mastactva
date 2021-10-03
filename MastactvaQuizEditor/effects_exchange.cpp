@@ -6,12 +6,17 @@
 
 
 static const char *g_defaultSavePath = "./LocalData/export.tar";
-static const int g_downloadStepsCount = 5;
-static const char *g_effectModelDownloadingStatus = "Effect model downloading...";
-static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model downloading...";
-static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model downloading...";
-static const char *g_artefactArgStorageModelDownloadingStatus = "Artefact arg storage model downloading...";
-static const char *g_easingTypeModelDownloadingStatus = "Easing type model downloading...";
+static const int g_downloadStepsCount = 10;
+static const char *g_effectModelDownloadingStatus = "Effect model is downloading...";
+static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model is downloading...";
+static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model is downloading...";
+static const char *g_artefactArgStorageModelDownloadingStatus = "Artefact arg storage model is downloading...";
+static const char *g_easingTypeModelDownloadingStatus = "Easing type model is downloading...";
+static const char *g_artefactModelDownloadingStatus = "Artefact model is downloading...";
+static const char *g_effectObjectsModelDownloadingStatus = "Effect objects model is downloading...";
+static const char *g_objectArtefactModelDownloadingStatus = "Object artefact model is downloading...";
+static const char *g_objectInfoModelDownloadingStatus = "Object info model is downloading...";
+static const char *g_archiveResultsStatus = "Archiving results...";
 static const char *g_allDoneStatus = "All downloading is done.";
 static const char *g_inputExchangeNamespace = "exchangeInput";
 
@@ -101,6 +106,22 @@ void EffectsExchange::free()
     {
         m_effectModel->clearResponse();
     }
+    if(m_artefactModel)
+    {
+        m_artefactModel->clearResponse();
+    }
+    if(m_effectObjectsModel)
+    {
+        m_effectObjectsModel->clearResponse();
+    }
+    if(m_objectArtefactModel)
+    {
+        m_objectArtefactModel->clearResponse();
+    }
+    if(m_objectInfoModel)
+    {
+        m_objectInfoModel->clearResponse();
+    }
     if(m_artefactTypeModel)
     {
         m_artefactTypeModel->clearResponse();
@@ -118,6 +139,10 @@ void EffectsExchange::free()
         m_easingTypeModel->clearResponse();
     }
     m_effectModel.reset(nullptr);
+    m_artefactModel.reset(nullptr);
+    m_effectObjectsModel.reset(nullptr);
+    m_objectArtefactModel.reset(nullptr);
+    m_objectInfoModel.reset(nullptr);
     m_artefactTypeModel.reset(nullptr);;
     m_artefactArgTypeModel.reset(nullptr);
     m_artefactArgStorageModel.reset(nullptr);
@@ -131,15 +156,47 @@ void EffectsExchange::create()
     m_effectModel = std::make_unique<EffectModel>(this);
     m_effectModel->initResponse();
     m_effectModel->setCurrentRef("");
-    m_effectModel->setLayoutQMLName("LocalData_EffectModel");
+    m_effectModel->setLayoutQMLName("LocalData_Export_EffectModel");
     m_effectModel->setLayoutIdFieldImpl("id");
     m_effectModel->registerListModel();
     m_effectModel->setAutoCreateChildrenModels(true);
 
+    m_artefactModel = std::make_unique<ArtefactModel>(this);
+    m_artefactModel->initResponse();
+    m_artefactModel->setCurrentRef("");
+    m_artefactModel->setLayoutQMLName("LocalData_Export_ArtefactModel");
+    m_artefactModel->setLayoutIdFieldImpl("id");
+    m_artefactModel->registerListModel();
+    m_artefactModel->setAutoCreateChildrenModels(true);
+
+    m_effectObjectsModel = std::make_unique<EffectObjectsModel>(this);
+    m_effectObjectsModel->initResponse();
+    m_effectObjectsModel->setCurrentRef("");
+    m_effectObjectsModel->setLayoutQMLName("LocalData_Export_EffectObjectsModel");
+    m_effectObjectsModel->setLayoutIdFieldImpl("id");
+    m_effectObjectsModel->registerListModel();
+    m_effectObjectsModel->setAutoCreateChildrenModels(true);
+
+    m_objectArtefactModel = std::make_unique<ObjectArtefactModel>(this);
+    m_objectArtefactModel->initResponse();
+    m_objectArtefactModel->setCurrentRef("");
+    m_objectArtefactModel->setLayoutQMLName("LocalData_Export_ObjectArtefactModel");
+    m_objectArtefactModel->setLayoutIdFieldImpl("id");
+    m_objectArtefactModel->registerListModel();
+    m_objectArtefactModel->setAutoCreateChildrenModels(true);
+
+    m_objectInfoModel = std::make_unique<ObjectInfoModel>(this);
+    m_objectInfoModel->initResponse();
+    m_objectInfoModel->setCurrentRef("");
+    m_objectInfoModel->setLayoutQMLName("LocalData_Export_ObjectInfoModel");
+    m_objectInfoModel->setLayoutIdFieldImpl("id");
+    m_objectInfoModel->registerListModel();
+    m_objectInfoModel->setAutoCreateChildrenModels(true);
+
     m_artefactTypeModel = std::make_unique<ArtefactTypeModel>(this);
     m_artefactTypeModel->initResponse();
     m_artefactTypeModel->setCurrentRef("");
-    m_artefactTypeModel->setLayoutQMLName("LocalData_ArtefactTypeModel");
+    m_artefactTypeModel->setLayoutQMLName("LocalData_Export_ArtefactTypeModel");
     m_artefactTypeModel->setLayoutIdFieldImpl("id");
     m_artefactTypeModel->registerListModel();
     m_artefactTypeModel->setAutoCreateChildrenModels(true);
@@ -147,7 +204,7 @@ void EffectsExchange::create()
     m_artefactArgTypeModel = std::make_unique<ArtefactArgTypeModel>(this);
     m_artefactArgTypeModel->initResponse();
     m_artefactArgTypeModel->setCurrentRef("");
-    m_artefactArgTypeModel->setLayoutQMLName("LocalData_ArtefactArgTypeModel");
+    m_artefactArgTypeModel->setLayoutQMLName("LocalData_Export_ArtefactArgTypeModel");
     m_artefactArgTypeModel->setLayoutIdFieldImpl("id");
     m_artefactArgTypeModel->registerListModel();
     m_artefactArgTypeModel->setAutoCreateChildrenModels(true);
@@ -155,7 +212,7 @@ void EffectsExchange::create()
     m_artefactArgStorageModel = std::make_unique<ArtefactArgStorageModel>(this);
     m_artefactArgStorageModel->initResponse();
     m_artefactArgStorageModel->setCurrentRef("");
-    m_artefactArgStorageModel->setLayoutQMLName("LocalData_ArtefactArgStorageModel");
+    m_artefactArgStorageModel->setLayoutQMLName("LocalData_Export_ArtefactArgStorageModel");
     m_artefactArgStorageModel->setLayoutIdFieldImpl("id");
     m_artefactArgStorageModel->registerListModel();
     m_artefactArgStorageModel->setAutoCreateChildrenModels(true);
@@ -163,7 +220,7 @@ void EffectsExchange::create()
     m_easingTypeModel = std::make_unique<EasingTypeModel>(this);
     m_easingTypeModel->initResponse();
     m_easingTypeModel->setCurrentRef("");
-    m_easingTypeModel->setLayoutQMLName("LocalData_EasingTypeModel");
+    m_easingTypeModel->setLayoutQMLName("LocalData_Export_EasingTypeModel");
     m_easingTypeModel->setLayoutIdFieldImpl("id");
     m_easingTypeModel->registerListModel();
     m_easingTypeModel->setAutoCreateChildrenModels(true);
@@ -176,6 +233,34 @@ void EffectsExchange::downloadStep()
         QObject::connect(m_effectModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
         m_effectModel->loadList();
         emit progress(stepProgress(), g_effectModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_artefactModel && !m_artefactModel->isListLoaded())
+    {
+        QObject::connect(m_artefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_artefactModel->loadList();
+        emit progress(stepProgress(), g_artefactModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_effectObjectsModel && !m_effectObjectsModel->isListLoaded())
+    {
+        QObject::connect(m_effectObjectsModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_effectObjectsModel->loadList();
+        emit progress(stepProgress(), g_effectObjectsModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_objectArtefactModel && !m_objectArtefactModel->isListLoaded())
+    {
+        QObject::connect(m_objectArtefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_objectArtefactModel->loadList();
+        emit progress(stepProgress(), g_objectArtefactModelDownloadingStatus);
+        return; // one model at time
+    }
+    if(m_objectInfoModel && !m_objectInfoModel->isListLoaded())
+    {
+        QObject::connect(m_objectInfoModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+        m_objectInfoModel->loadList();
+        emit progress(stepProgress(), g_objectInfoModelDownloadingStatus);
         return; // one model at time
     }
     if(m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
@@ -211,6 +296,22 @@ void EffectsExchange::downloadStep()
     {
         QObject::disconnect(m_effectModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
     }
+    if(m_artefactModel)
+    {
+        QObject::disconnect(m_artefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_effectObjectsModel)
+    {
+        QObject::disconnect(m_effectObjectsModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_objectArtefactModel)
+    {
+        QObject::disconnect(m_objectArtefactModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
+    if(m_objectInfoModel)
+    {
+        QObject::disconnect(m_objectInfoModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
+    }
     if(m_artefactTypeModel)
     {
         QObject::disconnect(m_artefactTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlot()));
@@ -240,6 +341,7 @@ void EffectsExchange::downloadStep()
         sf->setRootDir(m_oldPathServerFiles);
     }
 
+    emit progress(stepProgress(), g_archiveResultsStatus);
     archiveResults();
 
     emit progress(stepProgress(), g_allDoneStatus);
@@ -334,7 +436,7 @@ void EffectsExchange::createInput()
                 );
     m_inputEffectModel->initResponse();
     m_inputEffectModel->setCurrentRef("");
-    m_inputEffectModel->setLayoutQMLName("LocalDataInput_EffectModel");
+    m_inputEffectModel->setLayoutQMLName("LocalData_Import_EffectModel");
     m_inputEffectModel->setLayoutIdFieldImpl("id");
     m_inputEffectModel->registerListModel();
     m_inputEffectModel->setAutoCreateChildrenModels(true);
@@ -345,7 +447,7 @@ void EffectsExchange::createInput()
                 );
     m_inputArtefactTypeModel->initResponse();
     m_inputArtefactTypeModel->setCurrentRef("");
-    m_inputArtefactTypeModel->setLayoutQMLName("LocalDataInput_ArtefactTypeModel");
+    m_inputArtefactTypeModel->setLayoutQMLName("LocalData_Import_ArtefactTypeModel");
     m_inputArtefactTypeModel->setLayoutIdFieldImpl("id");
     m_inputArtefactTypeModel->registerListModel();
     m_inputArtefactTypeModel->setAutoCreateChildrenModels(true);
@@ -356,7 +458,7 @@ void EffectsExchange::createInput()
                 );
     m_inputArtefactArgTypeModel->initResponse();
     m_inputArtefactArgTypeModel->setCurrentRef("");
-    m_inputArtefactArgTypeModel->setLayoutQMLName("LocalDataInput_ArtefactArgTypeModel");
+    m_inputArtefactArgTypeModel->setLayoutQMLName("LocalData_Import_ArtefactArgTypeModel");
     m_inputArtefactArgTypeModel->setLayoutIdFieldImpl("id");
     m_inputArtefactArgTypeModel->registerListModel();
     m_inputArtefactArgTypeModel->setAutoCreateChildrenModels(true);
@@ -367,7 +469,7 @@ void EffectsExchange::createInput()
                 );
     m_inputArtefactArgStorageModel->initResponse();
     m_inputArtefactArgStorageModel->setCurrentRef("");
-    m_inputArtefactArgStorageModel->setLayoutQMLName("LocalDataInput_ArtefactArgStorageModel");
+    m_inputArtefactArgStorageModel->setLayoutQMLName("LocalData_Import_ArtefactArgStorageModel");
     m_inputArtefactArgStorageModel->setLayoutIdFieldImpl("id");
     m_inputArtefactArgStorageModel->registerListModel();
     m_inputArtefactArgStorageModel->setAutoCreateChildrenModels(true);
@@ -378,7 +480,7 @@ void EffectsExchange::createInput()
                 );
     m_inputEasingTypeModel->initResponse();
     m_inputEasingTypeModel->setCurrentRef("");
-    m_inputEasingTypeModel->setLayoutQMLName("LocalDataInput_EasingTypeModel");
+    m_inputEasingTypeModel->setLayoutQMLName("LocalData_Import_EasingTypeModel");
     m_inputEasingTypeModel->setLayoutIdFieldImpl("id");
     m_inputEasingTypeModel->registerListModel();
     m_inputEasingTypeModel->setAutoCreateChildrenModels(true);

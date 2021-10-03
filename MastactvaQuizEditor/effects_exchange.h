@@ -6,9 +6,13 @@
 #include <QtQuick/QQuickItem>
 #include "../MastactvaBase/dualmodelconfig.h"
 #include "../MastactvaModels/effect.h"
+#include "../MastactvaModels/effectobjects.h"
 #include "../MastactvaModels/artefacttype.h"
+#include "../MastactvaModels/artefact.h"
 #include "../MastactvaModels/artefactargtype.h"
 #include "../MastactvaModels/artefactargstorage.h"
+#include "../MastactvaModels/objectartefact.h"
+#include "../MastactvaModels/objectinfo.h"
 #include "../MastactvaModels/easingtype.h"
 
 
@@ -57,6 +61,10 @@ private:
     QString m_oldPathServerFiles;
 
     std::unique_ptr<EffectModel> m_effectModel;
+    std::unique_ptr<ArtefactModel> m_artefactModel;
+    std::unique_ptr<EffectObjectsModel> m_effectObjectsModel;
+    std::unique_ptr<ObjectArtefactModel> m_objectArtefactModel;
+    std::unique_ptr<ObjectInfoModel> m_objectInfoModel;
     std::unique_ptr<ArtefactTypeModel> m_artefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_artefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
