@@ -245,9 +245,10 @@ ObjectArtefactModel *EffectObjects::createObjectArtefactModel()
 
 EffectObjectsModel::EffectObjectsModel(
         QObject *parent_ /*= nullptr*/,
-        std::shared_ptr<QVector<EffectObjectsData *>> data_ /*= std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}*/
+        std::shared_ptr<QVector<EffectObjectsData *>> data_ /*= std::shared_ptr<QVector<EffectObjectsData *>>{nullptr}*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    : base(parent_, data_),
+    : base(parent_, data_, config_),
       m_sort(this)
 {
 #if defined(TRACE_THREADS)
