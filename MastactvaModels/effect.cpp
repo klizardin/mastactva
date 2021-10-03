@@ -769,9 +769,10 @@ const EffectArgModel *Effect::getEffectArguments() const
 
 
 EffectModel::EffectModel(
-        QObject *parent_ /*= nullptr*/
+        QObject *parent_ /*= nullptr*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    : base(parent_)
+    : base(parent_, std::shared_ptr<QVector<Effect *>>{nullptr}, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectModel::EffectModel()" << QThread::currentThread() << QThread::currentThreadId();

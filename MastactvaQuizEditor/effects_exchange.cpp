@@ -329,9 +329,8 @@ void EffectsExchange::createInput()
     m_inputModelConfig = std::make_unique<ChooseModelConfig>(true, g_inputExchangeNamespace);
 
     m_inputEffectModel = std::make_unique<EffectModel>(
-                this/*,
-                std::shared_ptr<QVector<Effect *>>{nullptr},
-                m_inputModelConfig.get()*/
+                this,
+                m_inputModelConfig.get()
                 );
     m_inputEffectModel->initResponse();
     m_inputEffectModel->setCurrentRef("");
