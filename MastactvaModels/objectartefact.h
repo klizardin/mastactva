@@ -109,7 +109,8 @@ protected:
 public:
     explicit ObjectArtefactModel(
             QObject *parent_ = nullptr,
-            std::shared_ptr<QVector<ObjectArtefactData *>> data_ = std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr}
+            std::shared_ptr<QVector<ObjectArtefactData *>> data_ = std::shared_ptr<QVector<ObjectArtefactData *>>{nullptr},
+            IModelConfig *config_ = &DefaultModelConfig::instance()
             );
 
     LAYOUT_MODEL_IMPL();
