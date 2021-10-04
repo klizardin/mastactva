@@ -224,6 +224,9 @@ public:
         return r;
     }
 
+    void loadDBFrom(const QString &path_);
+    void loadFromDefault();
+
 signals:
     void response(int errorCode_,
                   const QString &errorCodeStr_,
@@ -236,7 +239,7 @@ signals:
 // TODO : private access writes
 protected:
     void freeRequests();
-    void openDB();
+    void openDB(bool defaultNames_ = true);
     void closeDB();
     void pushRequest(LocalDBRequest *r_);
     ILocalDataAPI *chooseView(DBRequestBase *r_);
@@ -254,6 +257,8 @@ private:
     QList<LocalDBRequest *> m_requests;
     static LocalDataAPICache *g_localDataAPI;       // TODO: do i really need a singelton?
     LocalDataAPIDefaultCacheImpl m_defaultAPIImpl;
+    QString m_dbNameRW;
+    QString m_dbNameRO;
 };
 
 
