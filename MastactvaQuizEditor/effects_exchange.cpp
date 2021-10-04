@@ -19,6 +19,7 @@ static const char *g_objectInfoModelDownloadingStatus = "Object info model is do
 static const char *g_archiveResultsStatus = "Archiving results...";
 static const char *g_allDoneStatus = "All downloading is done.";
 static const char *g_inputExchangeNamespace = "exchangeInput";
+static const char *g_archExt = ".tar.gz";
 
 
 EffectsExchange::EffectsExchange(QObject *parent_ /*= nullptr*/)
@@ -109,9 +110,9 @@ void EffectsExchange::initSavePath(const QString &path_)
     QFileInfo fi(path_);
     m_path = fi.absolutePath();
     m_archiveName = fi.absoluteFilePath();
-    if(!m_archiveName.endsWith(".tar"))
+    if(!m_archiveName.endsWith(g_archExt))
     {
-        m_archiveName += ".tar";
+        m_archiveName += g_archExt;
     }
 }
 
