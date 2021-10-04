@@ -41,7 +41,6 @@ public:
     QString getNamespace() const override;
     static DualModelConfigBase &instance();
 
-protected:
     bool isDataAPIServer() const override;
     LocalDataAPINoCache *getDataAPIServer() override;
     LocalDataAPICache *getDataAPIFile() override;
@@ -66,7 +65,6 @@ public:
     void freeRequest(RequestData *&r_) override;
     QString getNamespace() const override;
 
-protected:
     bool isDataAPIServer() const override;
     LocalDataAPINoCache *getDataAPIServer() override;
     LocalDataAPICache *getDataAPIFile() override;
