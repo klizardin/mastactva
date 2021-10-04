@@ -44,7 +44,7 @@ private:
     qreal stepProgress();
     void freeInput();
     void createInput();
-    void extractArchive();
+    void extractArchive(const QString &path_);
     void uploadStep();
 
 public:

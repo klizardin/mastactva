@@ -33,8 +33,6 @@ public:
                               const QVariant &itemId_) = 0;
     virtual void freeRequest(RequestData *&r_) = 0;
     virtual QString getNamespace() const = 0;
-
-protected:
     virtual bool isDataAPIServer() const = 0;
     virtual LocalDataAPINoCache *getDataAPIServer() = 0;
     virtual LocalDataAPICache *getDataAPIFile() = 0;
@@ -331,7 +329,6 @@ public:
         return inst;
     }
 
-protected:
     bool isDataAPIServer() const override
     {
         return dynamic_cast<LocalDataAPINoCache *>(QMLObjectsBase::getInstance().getDataAPI());

@@ -456,13 +456,93 @@ void LocalDataAPICache::freeRequests()
     m_requests.clear();
 }
 
-void LocalDataAPICache::openDB()
+void LocalDataAPICache::loadDBFrom(const QString &path_)
+{
+    m_dbNameRW.clear();
+    m_dbNameRO.clear();
+
+    QDir dir(path_);
+    QStringList files;
+    QDirIterator fit(
+                dir.absolutePath(),
+                QStringList() << QString("*") + g_dbNameExt,
+                QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files,
+                QDirIterator::Subdirectories
+                );
+    while(fit.hasNext())
+    {
+        QFileInfo fi(fit.next());
+        if(fi.isDir() || fi.isFile())
+        {
+            files.push_back(fi.absoluteFilePath());
+        }
+    }
+    for(const QString &file_ : files)
+    {
+        QFileInfo fi(file_);
+        if(!fi.isFile())
+        {
+            continue;
+        }
+        const QString name = fi.fileName();
+        if(!name.contains(g_dbNameBase))
+        {
+            continue;
+        }
+        if(!name.contains(g_dbNameP2rw) && !name.contains(g_dbNameP2ro))
+        {
+            continue;
+        }
+        QFile::copy(file_, name);
+        if(name.contains(g_dbNameP2rw))
+        {
+            m_dbNameRW = name;
+        }
+        else if(name.contains(g_dbNameP2ro))
+        {
+            m_dbNameRO = name;
+        }
+    }
+
+    if(m_dbNameRW.isEmpty()
+            || m_dbNameRO.isEmpty()
+            )
+    {
+        return;
+    }
+    closeDB();
+    openDB(false);
+}
+
+void LocalDataAPICache::loadFromDefault()
+{
+    m_dbNameRW.clear();
+    m_dbNameRO.clear();
+    closeDB();
+    openDB();
+}
+
+void LocalDataAPICache::openDB(bool defaultNames_ /*= true*/)
 {
     m_databaseRO = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRO);
-    m_databaseRO.setDatabaseName(QString(g_dbNameRO) + QString(g_dbNameExt));
+    if(defaultNames_ || m_dbNameRO.isEmpty())
+    {
+        m_databaseRO.setDatabaseName(QString(g_dbNameRO) + QString(g_dbNameExt));
+    }
+    else
+    {
+        m_databaseRO.setDatabaseName(m_dbNameRO);
+    }
     m_databaseRO.open();
     m_databaseRW = QSqlDatabase::addDatabase("QSQLITE", g_dbNameRW);
-    m_databaseRW.setDatabaseName(QString(g_dbNameRW) + QString(g_dbNameExt));
+    if(defaultNames_ || m_dbNameRW.isEmpty())
+    {
+        m_databaseRW.setDatabaseName(QString(g_dbNameRW) + QString(g_dbNameExt));
+    }
+    else
+    {
+        m_databaseRW.setDatabaseName(m_dbNameRW);
+    }
     m_databaseRW.open();
 }
 
