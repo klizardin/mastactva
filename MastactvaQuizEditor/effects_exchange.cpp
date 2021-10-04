@@ -17,8 +17,9 @@ static const char *g_effectObjectsModelDownloadingStatus = "Effect objects model
 static const char *g_objectArtefactModelDownloadingStatus = "Object artefact model is downloading...";
 static const char *g_objectInfoModelDownloadingStatus = "Object info model is downloading...";
 static const char *g_archiveResultsStatus = "Archiving results...";
+static const char *g_exctractArchiveStatus = "Extract archive...";
 static const char *g_allDoneStatus = "All downloading is done.";
-static const char *g_inputExchangeNamespace = "exchangeInput";
+static const char *g_importExchangeNamespace = "exchangeImport";
 static const char *g_archExt = ".tar.gz";
 
 
@@ -50,25 +51,6 @@ void EffectsExchange::download()
     create();
     m_step = 0;
     downloadStep();
-}
-
-void EffectsExchange::upload()
-{
-    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr == localDataAPI) { return; }
-    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr == sf) { return; }
-
-    localDataAPI->startSave(m_path);
-    m_oldPathServerFiles = sf->getRootDir();
-    sf->setRootDir(m_path);
-    sf->clean(QDateTime::currentDateTime());
-    sf->reset();
-
-    createInput();
-    m_step = 0;
-    extractArchive();
-    uploadStep();
 }
 
 void EffectsExchange::merge()
@@ -465,7 +447,10 @@ void EffectsExchange::createInput()
 {
     free();
 
-    m_inputModelConfig = std::make_unique<ChooseModelConfig>(true, g_inputExchangeNamespace);
+    m_inputModelConfig = std::make_unique<ChooseModelConfig>(
+                true,
+                g_importExchangeNamespace
+                );
 
     m_inputEffectModel = std::make_unique<EffectModel>(
                 this,
@@ -571,9 +556,47 @@ void EffectsExchange::createInput()
     m_inputEasingTypeModel->setAutoCreateChildrenModels(true);
 }
 
-void EffectsExchange::extractArchive()
+void EffectsExchange::upload()
+{
+    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+    if(nullptr == localDataAPI) { return; }
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr == sf) { return; }
+
+    QTemporaryDir tmpDir;
+    if(!tmpDir.isValid())
+    {
+        return;
+    }
+
+    createInput();
+    if(!m_inputModelConfig)
+    {
+        return;
+    }
+    LocalDataAPICache *localDataAPICache = m_inputModelConfig->getDataAPIFile();
+    if(!localDataAPICache)
+    {
+        return;
+    }
+    m_oldPathServerFiles = sf->getRootDir();
+    sf->setRootDir(tmpDir.path());
+    sf->clean(QDateTime::currentDateTime());
+    sf->reset();
+
+    m_step = 0;
+
+    emit progress(stepProgress(), g_exctractArchiveStatus);
+    extractArchive(tmpDir.path());
+    localDataAPICache->loadDBFrom(tmpDir.path());
+
+    uploadStep();
+}
+
+void EffectsExchange::extractArchive(const QString &path_)
 {
     QProcess tar;
+    tar.setWorkingDirectory(path_);
     tar.start("tar", QStringList({"-xzf", m_archiveName}));
     if(!tar.waitForStarted())
     {
@@ -688,10 +711,10 @@ void EffectsExchange::uploadStep()
         QObject::disconnect(m_inputEasingTypeModel.get(), SIGNAL(listReloaded()), this, SLOT(listReloadedSlotForImport()));
     }
 
-    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr != localDataAPI)
+    LocalDataAPICache *localDataAPICache = m_inputModelConfig->getDataAPIFile();
+    if(localDataAPICache)
     {
-        localDataAPI->endSave();
+        localDataAPICache->loadFromDefault();
     }
 
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
