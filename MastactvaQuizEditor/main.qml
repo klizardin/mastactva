@@ -2673,7 +2673,7 @@ ApplicationWindow {
     }
 
     FileDialog {
-        id: effectsExchangeFileDialog
+        id: effectsExchangeExportFileDialog
         title: qsTr("Please choose root file to download local data in the folder of a root file")
         folder: effectsExchange.savePath
         nameFilters: [  "Tar gziped files (*.tar.gz)", "Tar files (*.tar)", "All files (*.*)" ]
@@ -2715,6 +2715,52 @@ ApplicationWindow {
             disconnect()
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
             popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + mastactva.urlToFilename(effectsExchange.saveArchive)
+        }
+    }
+
+    FileDialog {
+        id: effectsExchangeImportFileDialog
+        title: qsTr("Please choose root file to download local data in the folder of a root file")
+        folder: effectsExchange.savePath
+        nameFilters: [  "Tar gziped files (*.tar.gz)", "Tar files (*.tar)", "All files (*.*)" ]
+        selectExisting: true
+        selectMultiple: false
+
+        onAccepted: {
+            effectsExchange.savePath = fileUrl
+            connect()
+            // TODO: use separate dialog or rewrite possibility to close/stop download
+            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+            popupMessage.open()
+            effectsExchange.upload()
+        }
+
+        onRejected: {
+            // TODO: add implemention
+        }
+
+        function connect()
+        {
+            effectsExchange.progress.connect(effectExchangeProgress)
+            effectsExchange.uploaded.connect(effectExchangeUploaded)
+        }
+
+        function disconnect()
+        {
+            effectsExchange.progress.disconnect(effectExchangeProgress)
+            effectsExchange.uploaded.disconnect(effectExchangeUploaded)
+        }
+
+        function effectExchangeProgress(p, msg)
+        {
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("Progress : ") + p + qsTr(" % ") + msg
+        }
+
+        function effectExchangeUploaded()
+        {
+            disconnect()
+            popupMessage.fieldPopupMessageShortText = qsTr("Local data are uploaded");
+            popupMessage.fieldPopupMessageDescriptionText = qsTr("From file :") + mastactva.urlToFilename(effectsExchange.saveArchive)
         }
     }
 
@@ -3746,11 +3792,20 @@ ApplicationWindow {
     }
 
     Action {
-        id: downloadEffects
-        text: qsTr("&Download effects")
+        id: exportEffects
+        text: qsTr("&Export effects")
         onTriggered: {
-            effectsExchangeFileDialog.folder = effectsExchange.savePath
-            effectsExchangeFileDialog.open()
+            effectsExchangeExportFileDialog.folder = effectsExchange.savePath
+            effectsExchangeExportFileDialog.open()
+        }
+    }
+
+    Action {
+        id: importEffects
+        text: qsTr("&Import effects")
+        onTriggered: {
+            effectsExchangeImportFileDialog.folder = effectsExchange.savePath
+            effectsExchangeImportFileDialog.open()
         }
     }
 
@@ -4565,11 +4620,11 @@ ApplicationWindow {
             MenuItem { action: addEffect }
             MenuItem { action: editEffect }
             MenuItem { action: removeEffect }
-            MenuItem { action: downloadEffects }
         }
         AutoSizeMenu {
             title: qsTr("&EffectsExchange")
-            MenuItem { action: downloadEffects }
+            MenuItem { action: exportEffects }
+            MenuItem { action: importEffects }
         }
         AutoSizeMenu {
             title: qsTr("&Objects")
