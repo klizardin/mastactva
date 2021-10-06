@@ -49,6 +49,8 @@ private:
     void uploadStep();
     void disconnectDownload();
     void disconnectUpload();
+    void downloadImpl();
+    void uploadImpl();
 
 public:
 signals:
@@ -91,6 +93,7 @@ private:
     int m_step = 0;
     int c_downloadStepsCount = 1;
     bool m_downloading = false;
+    bool m_uploading = false;
 };
 
 

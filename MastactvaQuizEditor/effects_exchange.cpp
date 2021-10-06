@@ -37,6 +37,13 @@ EffectsExchange::~EffectsExchange()
 
 void EffectsExchange::download()
 {
+    m_uploading = false;
+    m_downloading = false;
+    downloadImpl();
+}
+
+void EffectsExchange::downloadImpl()
+{
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
     if(nullptr == localDataAPI) { return; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
@@ -49,13 +56,9 @@ void EffectsExchange::download()
     sf->reset();
 
     create();
-    m_downloading = true;
     m_step = 0;
+    m_downloading = true;
     downloadStep();
-}
-
-void EffectsExchange::merge()
-{
 }
 
 QString EffectsExchange::savePath() const
@@ -557,6 +560,17 @@ void EffectsExchange::createInput()
 
 void EffectsExchange::upload()
 {
+    m_downloading = false;
+    m_uploading = false;
+    uploadImpl();
+}
+
+void EffectsExchange::merge()
+{
+}
+
+void EffectsExchange::uploadImpl()
+{
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
     if(nullptr == localDataAPI) { return; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
@@ -584,7 +598,7 @@ void EffectsExchange::upload()
     sf->reset();
 
     m_step = 0;
-    m_downloading = false;
+    m_uploading = true;
 
     emit progress(stepProgress(), g_exctractArchiveStatus);
     extractArchive(tmpDir.path());
@@ -737,7 +751,7 @@ void EffectsExchange::cancel()
         disconnectDownload();
         free();
     }
-    else
+    if(m_uploading)
     {
         disconnectUpload();
         freeInput();
