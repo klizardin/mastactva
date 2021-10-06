@@ -29,6 +29,7 @@ public:
     Q_PROPERTY(QString saveArchive READ saveArchive WRITE setSaveArchive NOTIFY saveArchiveChanged)
     Q_INVOKABLE void download();
     Q_INVOKABLE void upload();
+    Q_INVOKABLE bool mergeDownload();
     Q_INVOKABLE void merge();
     Q_INVOKABLE void cancel();
 

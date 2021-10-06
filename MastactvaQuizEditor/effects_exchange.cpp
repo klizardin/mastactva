@@ -21,6 +21,7 @@ static const char *g_exctractArchiveStatus = "Extract archive...";
 static const char *g_allDoneStatus = "All downloading is done.";
 static const char *g_importExchangeNamespace = "exchangeImport";
 static const char *g_archExt = ".tar.gz";
+static const char *g_archiveName = "effects.tar.gz";
 
 
 EffectsExchange::EffectsExchange(QObject *parent_ /*= nullptr*/)
@@ -563,6 +564,19 @@ void EffectsExchange::upload()
     m_downloading = false;
     m_uploading = false;
     uploadImpl();
+}
+
+bool EffectsExchange::mergeDownload()
+{
+    QTemporaryDir tmpDir;
+    if(!tmpDir.isValid())
+    {
+        return false;
+    }
+    QFileInfo fi(QDir(tmpDir.path()), g_archiveName);
+    initSavePath(fi.absoluteFilePath());
+    downloadImpl();
+    return true;
 }
 
 void EffectsExchange::merge()

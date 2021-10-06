@@ -45,6 +45,11 @@
                     },
                     {
                         "access": "public",
+                        "name": "mergeDownload",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
                         "name": "merge",
                         "returnType": "void"
                     },
