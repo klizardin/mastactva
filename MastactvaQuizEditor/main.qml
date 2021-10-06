@@ -2683,10 +2683,18 @@ ApplicationWindow {
         onAccepted: {
             effectsExchange.savePath = fileUrl
             connect()
-            // TODO: use separate dialog or rewrite possibility to close/stop download
-            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
-            popupMessage.open()
-            effectsExchange.download()
+            if(effectsExchange.download())
+            {
+                // TODO: use separate dialog or rewrite possibility to close/stop download
+                popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+                popupMessage.open()
+            }
+            else
+            {
+                disconnect()
+                popupMessage.fieldPopupMessageShortText = qsTr("Export error (internal error)")
+                popupMessage.open()
+            }
         }
 
         onRejected: {
@@ -2737,10 +2745,18 @@ ApplicationWindow {
         onAccepted: {
             effectsExchange.savePath = fileUrl
             connect()
-            // TODO: use separate dialog or rewrite possibility to close/stop download
-            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
-            popupMessage.open()
-            effectsExchange.upload()
+            if(effectsExchange.upload())
+            {
+                // TODO: use separate dialog or rewrite possibility to close/stop download
+                popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+                popupMessage.open()
+            }
+            else
+            {
+                disconnect()
+                popupMessage.fieldPopupMessageShortText = qsTr("Import error (internal error)")
+                popupMessage.open()
+            }
         }
 
         onRejected: {
