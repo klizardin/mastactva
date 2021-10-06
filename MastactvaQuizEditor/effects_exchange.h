@@ -27,8 +27,8 @@ public:
 
     Q_PROPERTY(QString savePath READ savePath WRITE setSavePath NOTIFY savePathChanged)
     Q_PROPERTY(QString saveArchive READ saveArchive WRITE setSaveArchive NOTIFY saveArchiveChanged)
-    Q_INVOKABLE void download();
-    Q_INVOKABLE void upload();
+    Q_INVOKABLE bool download();
+    Q_INVOKABLE bool upload();
     Q_INVOKABLE bool mergeDownload();
     Q_INVOKABLE void merge();
     Q_INVOKABLE void cancel();
@@ -50,8 +50,8 @@ private:
     void uploadStep();
     void disconnectDownload();
     void disconnectUpload();
-    void downloadImpl();
-    void uploadImpl();
+    bool downloadImpl();
+    bool uploadImpl();
 
 public:
 signals:

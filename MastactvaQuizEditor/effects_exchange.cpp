@@ -36,19 +36,19 @@ EffectsExchange::~EffectsExchange()
     free();
 }
 
-void EffectsExchange::download()
+bool EffectsExchange::download()
 {
     m_uploading = false;
     m_downloading = false;
-    downloadImpl();
+    return downloadImpl();
 }
 
-void EffectsExchange::downloadImpl()
+bool EffectsExchange::downloadImpl()
 {
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr == localDataAPI) { return; }
+    if(nullptr == localDataAPI) { return false; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr == sf) { return; }
+    if(nullptr == sf) { return false; }
 
     localDataAPI->startSave(m_path);
     m_oldPathServerFiles = sf->getRootDir();
@@ -60,6 +60,7 @@ void EffectsExchange::downloadImpl()
     m_step = 0;
     m_downloading = true;
     downloadStep();
+    return true;
 }
 
 QString EffectsExchange::savePath() const
@@ -559,11 +560,11 @@ void EffectsExchange::createInput()
     m_inputEasingTypeModel->setAutoCreateChildrenModels(true);
 }
 
-void EffectsExchange::upload()
+bool EffectsExchange::upload()
 {
     m_downloading = false;
     m_uploading = false;
-    uploadImpl();
+    return uploadImpl();
 }
 
 bool EffectsExchange::mergeDownload()
@@ -583,28 +584,28 @@ void EffectsExchange::merge()
 {
 }
 
-void EffectsExchange::uploadImpl()
+bool EffectsExchange::uploadImpl()
 {
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr == localDataAPI) { return; }
+    if(nullptr == localDataAPI) { return false; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr == sf) { return; }
+    if(nullptr == sf) { return false; }
 
     QTemporaryDir tmpDir;
     if(!tmpDir.isValid())
     {
-        return;
+        return false;
     }
 
     createInput();
     if(!m_inputModelConfig)
     {
-        return;
+        return false;
     }
     LocalDataAPICache *localDataAPICache = m_inputModelConfig->getDataAPIFile();
     if(!localDataAPICache)
     {
-        return;
+        return false;
     }
     m_oldPathServerFiles = sf->getRootDir();
     sf->setRootDir(tmpDir.path());
@@ -619,6 +620,7 @@ void EffectsExchange::uploadImpl()
     localDataAPICache->loadDBFrom(tmpDir.path());
 
     uploadStep();
+    return true;
 }
 
 void EffectsExchange::extractArchive(const QString &path_)

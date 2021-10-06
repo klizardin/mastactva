@@ -36,12 +36,12 @@
                     {
                         "access": "public",
                         "name": "download",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
                         "name": "upload",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
