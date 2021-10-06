@@ -30,6 +30,7 @@ public:
     Q_INVOKABLE void download();
     Q_INVOKABLE void upload();
     Q_INVOKABLE void merge();
+    Q_INVOKABLE void cancel();
 
 private:
     QString savePath() const;
@@ -46,6 +47,8 @@ private:
     void createInput();
     void extractArchive(const QString &path_);
     void uploadStep();
+    void disconnectDownload();
+    void disconnectUpload();
 
 public:
 signals:
@@ -87,6 +90,7 @@ private:
 
     int m_step = 0;
     int c_downloadStepsCount = 1;
+    bool m_downloading = false;
 };
 
 

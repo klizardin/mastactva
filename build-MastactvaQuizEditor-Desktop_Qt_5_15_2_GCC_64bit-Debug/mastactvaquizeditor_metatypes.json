@@ -47,6 +47,11 @@
                         "access": "public",
                         "name": "merge",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "cancel",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

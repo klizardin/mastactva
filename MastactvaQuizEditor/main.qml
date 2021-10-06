@@ -2695,12 +2695,14 @@ ApplicationWindow {
 
         function connect()
         {
+            popupMessage.closePopupMessagePage.connect(onClosePopupMessagePage)
             effectsExchange.progress.connect(effectExchangeProgress)
             effectsExchange.downloaded.connect(effectExchangeDownloaded)
         }
 
         function disconnect()
         {
+            popupMessage.closePopupMessagePage.disconnect(onClosePopupMessagePage)
             effectsExchange.progress.disconnect(effectExchangeProgress)
             effectsExchange.downloaded.disconnect(effectExchangeDownloaded)
         }
@@ -2715,6 +2717,12 @@ ApplicationWindow {
             disconnect()
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
             popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + mastactva.urlToFilename(effectsExchange.saveArchive)
+        }
+
+        function onClosePopupMessagePage()
+        {
+            disconnect()
+            effectsExchange.cancel()
         }
     }
 
@@ -2741,12 +2749,14 @@ ApplicationWindow {
 
         function connect()
         {
+            popupMessage.closePopupMessagePage.connect(onClosePopupMessagePage)
             effectsExchange.progress.connect(effectExchangeProgress)
             effectsExchange.uploaded.connect(effectExchangeUploaded)
         }
 
         function disconnect()
         {
+            popupMessage.closePopupMessagePage.disconnect(onClosePopupMessagePage)
             effectsExchange.progress.disconnect(effectExchangeProgress)
             effectsExchange.uploaded.disconnect(effectExchangeUploaded)
         }
@@ -2761,6 +2771,12 @@ ApplicationWindow {
             disconnect()
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are uploaded");
             popupMessage.fieldPopupMessageDescriptionText = qsTr("From file :") + mastactva.urlToFilename(effectsExchange.saveArchive)
+        }
+
+        function onClosePopupMessagePage()
+        {
+            disconnect()
+            effectsExchange.cancel()
         }
     }
 
