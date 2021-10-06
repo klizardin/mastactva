@@ -36,6 +36,8 @@ Popup {
     property alias fieldPopupMessageShortText: popupMessageShortText.text
     property alias fieldPopupMessageDescriptionText: popupMessageDescriptionText.text
 
+    signal closePopupMessagePage()
+
     Column {
         height: parent.height - closeButton.height
         width: parent.width
@@ -63,6 +65,7 @@ Popup {
         text: qsTr("Close")
         onClicked: {
             popupMessage.close()
+            closePopupMessagePage()
         }
     }
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent

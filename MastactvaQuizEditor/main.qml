@@ -2683,10 +2683,18 @@ ApplicationWindow {
         onAccepted: {
             effectsExchange.savePath = fileUrl
             connect()
-            // TODO: use separate dialog or rewrite possibility to close/stop download
-            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
-            popupMessage.open()
-            effectsExchange.download()
+            if(effectsExchange.download())
+            {
+                // TODO: use separate dialog or rewrite possibility to close/stop download
+                popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+                popupMessage.open()
+            }
+            else
+            {
+                disconnect()
+                popupMessage.fieldPopupMessageShortText = qsTr("Export error (internal error)")
+                popupMessage.open()
+            }
         }
 
         onRejected: {
@@ -2695,12 +2703,14 @@ ApplicationWindow {
 
         function connect()
         {
+            popupMessage.closePopupMessagePage.connect(onClosePopupMessagePage)
             effectsExchange.progress.connect(effectExchangeProgress)
             effectsExchange.downloaded.connect(effectExchangeDownloaded)
         }
 
         function disconnect()
         {
+            popupMessage.closePopupMessagePage.disconnect(onClosePopupMessagePage)
             effectsExchange.progress.disconnect(effectExchangeProgress)
             effectsExchange.downloaded.disconnect(effectExchangeDownloaded)
         }
@@ -2716,6 +2726,12 @@ ApplicationWindow {
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are  downloaded");
             popupMessage.fieldPopupMessageDescriptionText = qsTr("See local data in the folder : ") + mastactva.urlToFilename(effectsExchange.saveArchive)
         }
+
+        function onClosePopupMessagePage()
+        {
+            disconnect()
+            effectsExchange.cancel()
+        }
     }
 
     FileDialog {
@@ -2729,10 +2745,18 @@ ApplicationWindow {
         onAccepted: {
             effectsExchange.savePath = fileUrl
             connect()
-            // TODO: use separate dialog or rewrite possibility to close/stop download
-            popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
-            popupMessage.open()
-            effectsExchange.upload()
+            if(effectsExchange.upload())
+            {
+                // TODO: use separate dialog or rewrite possibility to close/stop download
+                popupMessage.fieldPopupMessageShortText = qsTr("Please, wait downloading local data...")
+                popupMessage.open()
+            }
+            else
+            {
+                disconnect()
+                popupMessage.fieldPopupMessageShortText = qsTr("Import error (internal error)")
+                popupMessage.open()
+            }
         }
 
         onRejected: {
@@ -2741,12 +2765,14 @@ ApplicationWindow {
 
         function connect()
         {
+            popupMessage.closePopupMessagePage.connect(onClosePopupMessagePage)
             effectsExchange.progress.connect(effectExchangeProgress)
             effectsExchange.uploaded.connect(effectExchangeUploaded)
         }
 
         function disconnect()
         {
+            popupMessage.closePopupMessagePage.disconnect(onClosePopupMessagePage)
             effectsExchange.progress.disconnect(effectExchangeProgress)
             effectsExchange.uploaded.disconnect(effectExchangeUploaded)
         }
@@ -2761,6 +2787,12 @@ ApplicationWindow {
             disconnect()
             popupMessage.fieldPopupMessageShortText = qsTr("Local data are uploaded");
             popupMessage.fieldPopupMessageDescriptionText = qsTr("From file :") + mastactva.urlToFilename(effectsExchange.saveArchive)
+        }
+
+        function onClosePopupMessagePage()
+        {
+            disconnect()
+            effectsExchange.cancel()
         }
     }
 

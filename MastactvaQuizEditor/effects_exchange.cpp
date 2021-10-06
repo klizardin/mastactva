@@ -21,6 +21,7 @@ static const char *g_exctractArchiveStatus = "Extract archive...";
 static const char *g_allDoneStatus = "All downloading is done.";
 static const char *g_importExchangeNamespace = "exchangeImport";
 static const char *g_archExt = ".tar.gz";
+static const char *g_archiveName = "effects.tar.gz";
 
 
 EffectsExchange::EffectsExchange(QObject *parent_ /*= nullptr*/)
@@ -35,12 +36,19 @@ EffectsExchange::~EffectsExchange()
     free();
 }
 
-void EffectsExchange::download()
+bool EffectsExchange::download()
+{
+    m_uploading = false;
+    m_downloading = false;
+    return downloadImpl();
+}
+
+bool EffectsExchange::downloadImpl()
 {
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr == localDataAPI) { return; }
+    if(nullptr == localDataAPI) { return false; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr == sf) { return; }
+    if(nullptr == sf) { return false; }
 
     localDataAPI->startSave(m_path);
     m_oldPathServerFiles = sf->getRootDir();
@@ -50,11 +58,9 @@ void EffectsExchange::download()
 
     create();
     m_step = 0;
+    m_downloading = true;
     downloadStep();
-}
-
-void EffectsExchange::merge()
-{
+    return true;
 }
 
 QString EffectsExchange::savePath() const
@@ -335,99 +341,7 @@ void EffectsExchange::downloadStep()
         return; // one model at time
     }
 
-    if(m_effectModel)
-    {
-        QObject::disconnect(
-                    m_effectModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_artefactModel)
-    {
-        QObject::disconnect(
-                    m_artefactModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_effectObjectsModel)
-    {
-        QObject::disconnect(
-                    m_effectObjectsModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_objectArtefactModel)
-    {
-        QObject::disconnect(
-                    m_objectArtefactModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_objectInfoModel)
-    {
-        QObject::disconnect(
-                    m_objectInfoModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_artefactTypeModel)
-    {
-        QObject::disconnect(
-                    m_artefactTypeModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_artefactArgTypeModel)
-    {
-        QObject::disconnect(
-                    m_artefactArgTypeModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_artefactArgStorageModel)
-    {
-        QObject::disconnect(
-                    m_artefactArgStorageModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-    if(m_easingTypeModel)
-    {
-        QObject::disconnect(
-                    m_easingTypeModel.get(),
-                    SIGNAL(listReloaded()),
-                    this,
-                    SLOT(listReloadedSlot())
-                    );
-    }
-
-    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr != localDataAPI)
-    {
-        localDataAPI->endSave();
-    }
-
-    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr != sf)
-    {
-        sf->setRootDir(m_oldPathServerFiles);
-    }
+    disconnectDownload();
 
     emit progress(stepProgress(), g_archiveResultsStatus);
     archiveResults();
@@ -646,28 +560,52 @@ void EffectsExchange::createInput()
     m_inputEasingTypeModel->setAutoCreateChildrenModels(true);
 }
 
-void EffectsExchange::upload()
+bool EffectsExchange::upload()
+{
+    m_downloading = false;
+    m_uploading = false;
+    return uploadImpl();
+}
+
+bool EffectsExchange::mergeDownload()
+{
+    QTemporaryDir tmpDir;
+    if(!tmpDir.isValid())
+    {
+        return false;
+    }
+    QFileInfo fi(QDir(tmpDir.path()), g_archiveName);
+    initSavePath(fi.absoluteFilePath());
+    downloadImpl();
+    return true;
+}
+
+void EffectsExchange::merge()
+{
+}
+
+bool EffectsExchange::uploadImpl()
 {
     LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
-    if(nullptr == localDataAPI) { return; }
+    if(nullptr == localDataAPI) { return false; }
     ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
-    if(nullptr == sf) { return; }
+    if(nullptr == sf) { return false; }
 
     QTemporaryDir tmpDir;
     if(!tmpDir.isValid())
     {
-        return;
+        return false;
     }
 
     createInput();
     if(!m_inputModelConfig)
     {
-        return;
+        return false;
     }
     LocalDataAPICache *localDataAPICache = m_inputModelConfig->getDataAPIFile();
     if(!localDataAPICache)
     {
-        return;
+        return false;
     }
     m_oldPathServerFiles = sf->getRootDir();
     sf->setRootDir(tmpDir.path());
@@ -675,12 +613,14 @@ void EffectsExchange::upload()
     sf->reset();
 
     m_step = 0;
+    m_uploading = true;
 
     emit progress(stepProgress(), g_exctractArchiveStatus);
     extractArchive(tmpDir.path());
     localDataAPICache->loadDBFrom(tmpDir.path());
 
     uploadStep();
+    return true;
 }
 
 void EffectsExchange::extractArchive(const QString &path_)
@@ -809,6 +749,130 @@ void EffectsExchange::uploadStep()
         return; // one model at time
     }
 
+    disconnectUpload();
+
+    emit progress(stepProgress(), g_allDoneStatus);
+    emit uploaded();
+}
+
+void EffectsExchange::listReloadedSlotForImport()
+{
+    uploadStep();
+}
+
+void EffectsExchange::cancel()
+{
+    if(m_downloading)
+    {
+        disconnectDownload();
+        free();
+    }
+    if(m_uploading)
+    {
+        disconnectUpload();
+        freeInput();
+    }
+}
+
+void EffectsExchange::disconnectDownload()
+{
+    if(m_effectModel)
+    {
+        QObject::disconnect(
+                    m_effectModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_artefactModel)
+    {
+        QObject::disconnect(
+                    m_artefactModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_effectObjectsModel)
+    {
+        QObject::disconnect(
+                    m_effectObjectsModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_objectArtefactModel)
+    {
+        QObject::disconnect(
+                    m_objectArtefactModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_objectInfoModel)
+    {
+        QObject::disconnect(
+                    m_objectInfoModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_artefactTypeModel)
+    {
+        QObject::disconnect(
+                    m_artefactTypeModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_artefactArgTypeModel)
+    {
+        QObject::disconnect(
+                    m_artefactArgTypeModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_artefactArgStorageModel)
+    {
+        QObject::disconnect(
+                    m_artefactArgStorageModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_easingTypeModel)
+    {
+        QObject::disconnect(
+                    m_easingTypeModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+
+    LocalDataAPI *localDataAPI = QMLObjectsBase::getInstance().getDataAPI();
+    if(nullptr != localDataAPI)
+    {
+        localDataAPI->endSave();
+    }
+
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(nullptr != sf)
+    {
+        sf->setRootDir(m_oldPathServerFiles);
+    }
+}
+
+void EffectsExchange::disconnectUpload()
+{
     if(m_inputEffectModel)
     {
         QObject::disconnect(
@@ -902,12 +966,4 @@ void EffectsExchange::uploadStep()
     {
         sf->setRootDir(m_oldPathServerFiles);
     }
-
-    emit progress(stepProgress(), g_allDoneStatus);
-    emit uploaded();
-}
-
-void EffectsExchange::listReloadedSlotForImport()
-{
-    uploadStep();
 }

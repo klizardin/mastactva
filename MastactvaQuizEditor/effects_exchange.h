@@ -27,9 +27,11 @@ public:
 
     Q_PROPERTY(QString savePath READ savePath WRITE setSavePath NOTIFY savePathChanged)
     Q_PROPERTY(QString saveArchive READ saveArchive WRITE setSaveArchive NOTIFY saveArchiveChanged)
-    Q_INVOKABLE void download();
-    Q_INVOKABLE void upload();
+    Q_INVOKABLE bool download();
+    Q_INVOKABLE bool upload();
+    Q_INVOKABLE bool mergeDownload();
     Q_INVOKABLE void merge();
+    Q_INVOKABLE void cancel();
 
 private:
     QString savePath() const;
@@ -46,6 +48,10 @@ private:
     void createInput();
     void extractArchive(const QString &path_);
     void uploadStep();
+    void disconnectDownload();
+    void disconnectUpload();
+    bool downloadImpl();
+    bool uploadImpl();
 
 public:
 signals:
@@ -87,6 +93,8 @@ private:
 
     int m_step = 0;
     int c_downloadStepsCount = 1;
+    bool m_downloading = false;
+    bool m_uploading = false;
 };
 
 

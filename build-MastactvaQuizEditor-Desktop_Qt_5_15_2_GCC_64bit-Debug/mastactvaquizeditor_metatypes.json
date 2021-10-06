@@ -36,16 +36,26 @@
                     {
                         "access": "public",
                         "name": "download",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
                         "name": "upload",
-                        "returnType": "void"
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeDownload",
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
                         "name": "merge",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "cancel",
                         "returnType": "void"
                     }
                 ],
