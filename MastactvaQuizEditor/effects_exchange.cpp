@@ -1,4 +1,5 @@
 #include "effects_exchange.h"
+#include <algorithm>
 #include <QFileInfo>
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
@@ -7,21 +8,32 @@
 
 static const char *g_defaultSavePath = "./LocalData/export.tar";
 static const int g_downloadStepsCount = 10;
-static const char *g_effectModelDownloadingStatus = "Effect model is downloading...";
-static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model is downloading...";
-static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model is downloading...";
-static const char *g_artefactArgStorageModelDownloadingStatus = "Artefact arg storage model is downloading...";
-static const char *g_easingTypeModelDownloadingStatus = "Easing type model is downloading...";
-static const char *g_artefactModelDownloadingStatus = "Artefact model is downloading...";
-static const char *g_effectObjectsModelDownloadingStatus = "Effect objects model is downloading...";
-static const char *g_objectArtefactModelDownloadingStatus = "Object artefact model is downloading...";
-static const char *g_objectInfoModelDownloadingStatus = "Object info model is downloading...";
+static const char *g_effectModelDownloadingStatus = "Effect model is downloading %1...";
+static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model is downloading %1...";
+static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model is downloading %1...";
+static const char *g_artefactArgStorageModelDownloadingStatus = "Artefact arg storage model is downloading %1...";
+static const char *g_easingTypeModelDownloadingStatus = "Easing type model is downloading %1...";
+static const char *g_artefactModelDownloadingStatus = "Artefact model is downloading %1...";
+static const char *g_effectObjectsModelDownloadingStatus = "Effect objects model is downloading %1...";
+static const char *g_objectArtefactModelDownloadingStatus = "Object artefact model is downloading %1...";
+static const char *g_objectInfoModelDownloadingStatus = "Object info model is downloading %1...";
+static const char *g_effectModelUploadingStatus = "Effect model is uploading %1...";
+static const char *g_artefactTypeModelUploadingStatus = "Artefact type model is uploading %1...";
+static const char *g_artefactArgTypeModelUploadingStatus = "Artefact arg type model is uploading %1...";
+static const char *g_artefactArgStorageModelUploadingStatus = "Artefact arg storage model is uploading %1...";
+static const char *g_easingTypeModelUploadingStatus = "Easing type model is uploading %1...";
+static const char *g_artefactModelUploadingStatus = "Artefact model is uploading %1...";
+static const char *g_effectObjectsModelUploadingStatus = "Effect objects model is uploading %1...";
+static const char *g_objectArtefactModelUploadingStatus = "Object artefact model is uploading %1...";
+static const char *g_objectInfoModelUploadingStatus = "Object info model is uploading %1...";
 static const char *g_archiveResultsStatus = "Archiving results...";
 static const char *g_exctractArchiveStatus = "Extract archive...";
 static const char *g_allDoneStatus = "All downloading is done.";
 static const char *g_importExchangeNamespace = "exchangeImport";
 static const char *g_archExt = ".tar.gz";
 static const char *g_archiveName = "effects.tar.gz";
+static const char *g_forImport = "(for import)";
+static const char *g_forExport = "(for export)";
 
 
 EffectsExchange::EffectsExchange(QObject *parent_ /*= nullptr*/)
@@ -230,6 +242,17 @@ void EffectsExchange::create()
     m_easingTypeModel->setAutoCreateChildrenModels(true);
 }
 
+inline
+QString msg(const char *messageBase_, bool uploading_)
+{
+    return QString(messageBase_)
+    .arg(
+        uploading_
+        ? g_forImport
+        : g_forExport
+        );
+}
+
 void EffectsExchange::downloadStep()
 {
     if(m_effectModel && !m_effectModel->isListLoaded())
@@ -241,7 +264,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_effectModel->loadList();
-        emit progress(stepProgress(), g_effectModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_effectModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_artefactModel && !m_artefactModel->isListLoaded())
@@ -253,7 +276,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_artefactModel->loadList();
-        emit progress(stepProgress(), g_artefactModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_effectObjectsModel && !m_effectObjectsModel->isListLoaded())
@@ -265,7 +288,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_effectObjectsModel->loadList();
-        emit progress(stepProgress(), g_effectObjectsModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_effectObjectsModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_objectArtefactModel && !m_objectArtefactModel->isListLoaded())
@@ -277,7 +300,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_objectArtefactModel->loadList();
-        emit progress(stepProgress(), g_objectArtefactModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_objectArtefactModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_objectInfoModel && !m_objectInfoModel->isListLoaded())
@@ -289,7 +312,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_objectInfoModel->loadList();
-        emit progress(stepProgress(), g_objectInfoModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_objectInfoModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
@@ -301,7 +324,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_artefactTypeModel->loadList();
-        emit progress(stepProgress(), g_artefactTypeModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactTypeModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_artefactArgTypeModel && !m_artefactArgTypeModel->isListLoaded())
@@ -313,7 +336,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_artefactArgTypeModel->loadList();
-        emit progress(stepProgress(), g_artefactArgTypeModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactArgTypeModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_artefactArgStorageModel && !m_artefactArgStorageModel->isListLoaded())
@@ -325,7 +348,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_artefactArgStorageModel->loadList();
-        emit progress(stepProgress(), g_artefactArgStorageModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactArgStorageModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_easingTypeModel && !m_easingTypeModel->isListLoaded())
@@ -337,7 +360,7 @@ void EffectsExchange::downloadStep()
                     SLOT(listReloadedSlot())
                     );
         m_easingTypeModel->loadList();
-        emit progress(stepProgress(), g_easingTypeModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_easingTypeModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
 
@@ -580,8 +603,9 @@ bool EffectsExchange::mergeDownload()
     return true;
 }
 
-void EffectsExchange::merge()
+bool EffectsExchange::merge()
 {
+    return mergeImpl();
 }
 
 bool EffectsExchange::uploadImpl()
@@ -649,7 +673,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputEffectModel->loadList();
-        emit progress(stepProgress(), g_effectModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_effectModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputArtefactModel && !m_inputArtefactModel->isListLoaded())
@@ -661,7 +685,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputArtefactModel->loadList();
-        emit progress(stepProgress(), g_artefactModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputEffectObjectsModel && !m_inputEffectObjectsModel->isListLoaded())
@@ -673,7 +697,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputEffectObjectsModel->loadList();
-        emit progress(stepProgress(), g_effectObjectsModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_effectObjectsModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputObjectArtefactModel && !m_inputObjectArtefactModel->isListLoaded())
@@ -685,7 +709,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputObjectArtefactModel->loadList();
-        emit progress(stepProgress(), g_objectArtefactModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_objectArtefactModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputObjectInfoModel && !m_inputObjectInfoModel->isListLoaded())
@@ -697,7 +721,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputObjectInfoModel->loadList();
-        emit progress(stepProgress(), g_objectInfoModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_objectInfoModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputArtefactTypeModel && !m_inputArtefactTypeModel->isListLoaded())
@@ -709,7 +733,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputArtefactTypeModel->loadList();
-        emit progress(stepProgress(), g_artefactTypeModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactTypeModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputArtefactArgTypeModel && !m_inputArtefactArgTypeModel->isListLoaded())
@@ -721,7 +745,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputArtefactArgTypeModel->loadList();
-        emit progress(stepProgress(), g_artefactArgTypeModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactArgTypeModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputArtefactArgStorageModel && !m_inputArtefactArgStorageModel->isListLoaded())
@@ -733,7 +757,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputArtefactArgStorageModel->loadList();
-        emit progress(stepProgress(), g_artefactArgStorageModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_artefactArgStorageModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputEasingTypeModel && !m_inputEasingTypeModel->isListLoaded())
@@ -745,7 +769,7 @@ void EffectsExchange::uploadStep()
                     SLOT(listReloadedSlotForImport())
                     );
         m_inputEasingTypeModel->loadList();
-        emit progress(stepProgress(), g_easingTypeModelDownloadingStatus);
+        emit progress(stepProgress(), msg(g_easingTypeModelUploadingStatus, m_uploading));
         return; // one model at time
     }
 
@@ -966,4 +990,128 @@ void EffectsExchange::disconnectUpload()
     {
         sf->setRootDir(m_oldPathServerFiles);
     }
+}
+
+bool EffectsExchange::mergeImpl()
+{
+    return false;
+}
+
+template<typename ItemType_> inline
+bool equalModelItems(ItemType_ *a_, ItemType_ *b_)
+{
+    return !a_ && !b_ && *a_ == *b_;
+}
+
+template<typename ModelType_> inline
+bool compare(
+        ModelType_ *a_,
+        ModelType_ *b_,
+        QVector<int> &onlyInA_,
+        QVector<int> &onlyInB_,
+        QVector<int> &differents_
+        )
+{
+    Q_ASSERT(a_);
+    Q_ASSERT(b_);
+    if(!a_ || !b_)
+    {
+        return false;
+    }
+
+    onlyInA_.clear();
+    onlyInB_.clear();
+    differents_.clear();
+    onlyInA_.reserve(a_->sizeImpl());
+    onlyInB_.reserve(b_->sizeImpl());
+    differents_.reserve(a_->sizeImpl());
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        if(!a_->dataItemAtImpl(i))
+        {
+            continue;
+        }
+        const int aId = a_->dataItemAtImpl(i)->id();
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            if(!b_->dataItemAtImpl(i))
+            {
+                continue;
+            }
+            const int bId = b_->dataItemAtImpl(i)->id();
+            found |= aId == bId;
+            if(found)
+            {
+                break;
+            }
+        }
+        if(!found)
+        {
+            onlyInA_.push_back(aId);
+        }
+    }
+    for(int i = 0; i < b_->sizeImpl(); i++)
+    {
+        if(!b_->dataItemAtImpl(i))
+        {
+            continue;
+        }
+        const int bId = b_->dataItemAtImpl(i)->id();
+        bool found = false;
+        for(int i = 0; i < a_->sizeImpl(); i++)
+        {
+            if(!a_->dataItemAtImpl(i))
+            {
+                continue;
+            }
+            const int aId = a_->dataItemAtImpl(i)->id();
+            found |= aId == bId;
+            if(found)
+            {
+                break;
+            }
+        }
+        if(!found)
+        {
+            onlyInA_.push_back(bId);
+        }
+    }
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        if(!a_->dataItemAtImpl(i))
+        {
+            continue;
+        }
+        const int aId = a_->dataItemAtImpl(i)->id();
+        auto itemA = a_->dataItemAtImpl(i);
+        decltype (itemA) itemB = nullptr;
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            if(!b_->dataItemAtImpl(i))
+            {
+                continue;
+            }
+            const int bId = b_->dataItemAtImpl(i)->id();
+            found |= aId == bId;
+            if(found)
+            {
+                itemB = b_->dataItemAtImpl(i);
+                break;
+            }
+        }
+        if(!found)
+        {
+            continue;
+        }
+        if(!equalModelItems(*itemA, *itemB))
+        {
+            differents_.push_back(aId);
+        }
+    }
+    std::sort(std::begin(onlyInA_), std::end(onlyInA_));
+    std::sort(std::begin(onlyInB_), std::end(onlyInB_));
+    std::sort(std::begin(differents_), std::end(differents_));
+    return true;
 }

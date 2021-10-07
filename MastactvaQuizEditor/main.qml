@@ -2770,11 +2770,21 @@ ApplicationWindow {
             effectsExchange.uploaded.connect(effectExchangeUploaded)
         }
 
+        function reconnect()
+        {
+            effectsExchange.downloaded.connect(effectExchangeDownloaded)
+        }
+
         function disconnect()
         {
             popupMessage.closePopupMessagePage.disconnect(onClosePopupMessagePage)
             effectsExchange.progress.disconnect(effectExchangeProgress)
             effectsExchange.uploaded.disconnect(effectExchangeUploaded)
+        }
+
+        function redisconnect()
+        {
+            effectsExchange.downloaded.disconnect(effectExchangeDownloaded)
         }
 
         function effectExchangeProgress(p, msg)
@@ -2784,9 +2794,25 @@ ApplicationWindow {
 
         function effectExchangeUploaded()
         {
+            reconnect()
+            if(effectsExchange.mergeDownload())
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Start import downloading");
+            }
+            else
+            {
+                disconnect()
+                redisconnect()
+                effectsExchange.cancel()
+                popupMessage.fieldPopupMessageShortText = qsTr("Error while import (internal error)");
+            }
+        }
+
+        function effectExchangeDownloaded()
+        {
             disconnect()
-            popupMessage.fieldPopupMessageShortText = qsTr("Local data are uploaded");
-            popupMessage.fieldPopupMessageDescriptionText = qsTr("From file :") + mastactva.urlToFilename(effectsExchange.saveArchive)
+            redisconnect()
+            popupMessage.fieldPopupMessageShortText = qsTr("Import data prepared");
         }
 
         function onClosePopupMessagePage()

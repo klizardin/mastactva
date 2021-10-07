@@ -30,7 +30,7 @@ public:
     Q_INVOKABLE bool download();
     Q_INVOKABLE bool upload();
     Q_INVOKABLE bool mergeDownload();
-    Q_INVOKABLE void merge();
+    Q_INVOKABLE bool merge();
     Q_INVOKABLE void cancel();
 
 private:
@@ -52,6 +52,7 @@ private:
     void disconnectUpload();
     bool downloadImpl();
     bool uploadImpl();
+    bool mergeImpl();
 
 public:
 signals:
@@ -60,6 +61,7 @@ signals:
     void downloaded();
     void progress(qreal p_, const QString &status_);
     void uploaded();
+    void merged();
 
 protected slots:
     void listReloadedSlot();
@@ -90,6 +92,10 @@ private:
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
+
+    QVector<int> m_onlyInA;
+    QVector<int> m_onlyInB;
+    QVector<int> m_differents;
 
     int m_step = 0;
     int c_downloadStepsCount = 1;
