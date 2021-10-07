@@ -1,4 +1,5 @@
 #include "effects_exchange.h"
+#include <algorithm>
 #include <QFileInfo>
 #include "../MastactvaBase/serverfiles.h"
 #include "../MastactvaBase/utils.h"
@@ -994,4 +995,123 @@ void EffectsExchange::disconnectUpload()
 bool EffectsExchange::mergeImpl()
 {
     return false;
+}
+
+template<typename ItemType_> inline
+bool equalModelItems(ItemType_ *a_, ItemType_ *b_)
+{
+    return !a_ && !b_ && *a_ == *b_;
+}
+
+template<typename ModelType_> inline
+bool compare(
+        ModelType_ *a_,
+        ModelType_ *b_,
+        QVector<int> &onlyInA_,
+        QVector<int> &onlyInB_,
+        QVector<int> &differents_
+        )
+{
+    Q_ASSERT(a_);
+    Q_ASSERT(b_);
+    if(!a_ || !b_)
+    {
+        return false;
+    }
+
+    onlyInA_.clear();
+    onlyInB_.clear();
+    differents_.clear();
+    onlyInA_.reserve(a_->sizeImpl());
+    onlyInB_.reserve(b_->sizeImpl());
+    differents_.reserve(a_->sizeImpl());
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        if(!a_->dataItemAtImpl(i))
+        {
+            continue;
+        }
+        const int aId = a_->dataItemAtImpl(i)->id();
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            if(!b_->dataItemAtImpl(i))
+            {
+                continue;
+            }
+            const int bId = b_->dataItemAtImpl(i)->id();
+            found |= aId == bId;
+            if(found)
+            {
+                break;
+            }
+        }
+        if(!found)
+        {
+            onlyInA_.push_back(aId);
+        }
+    }
+    for(int i = 0; i < b_->sizeImpl(); i++)
+    {
+        if(!b_->dataItemAtImpl(i))
+        {
+            continue;
+        }
+        const int bId = b_->dataItemAtImpl(i)->id();
+        bool found = false;
+        for(int i = 0; i < a_->sizeImpl(); i++)
+        {
+            if(!a_->dataItemAtImpl(i))
+            {
+                continue;
+            }
+            const int aId = a_->dataItemAtImpl(i)->id();
+            found |= aId == bId;
+            if(found)
+            {
+                break;
+            }
+        }
+        if(!found)
+        {
+            onlyInA_.push_back(bId);
+        }
+    }
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        if(!a_->dataItemAtImpl(i))
+        {
+            continue;
+        }
+        const int aId = a_->dataItemAtImpl(i)->id();
+        auto itemA = a_->dataItemAtImpl(i);
+        decltype (itemA) itemB = nullptr;
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            if(!b_->dataItemAtImpl(i))
+            {
+                continue;
+            }
+            const int bId = b_->dataItemAtImpl(i)->id();
+            found |= aId == bId;
+            if(found)
+            {
+                itemB = b_->dataItemAtImpl(i);
+                break;
+            }
+        }
+        if(!found)
+        {
+            continue;
+        }
+        if(!equalModelItems(*itemA, *itemB))
+        {
+            differents_.push_back(aId);
+        }
+    }
+    std::sort(std::begin(onlyInA_), std::end(onlyInA_));
+    std::sort(std::begin(onlyInB_), std::end(onlyInB_));
+    std::sort(std::begin(differents_), std::end(differents_));
+    return true;
 }

@@ -93,6 +93,10 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
 
+    QVector<int> m_onlyInA;
+    QVector<int> m_onlyInB;
+    QVector<int> m_differents;
+
     int m_step = 0;
     int c_downloadStepsCount = 1;
     bool m_downloading = false;
