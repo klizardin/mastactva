@@ -2803,6 +2803,7 @@ ApplicationWindow {
             {
                 disconnect()
                 redisconnect()
+                effectsExchange.cancel()
                 popupMessage.fieldPopupMessageShortText = qsTr("Error while import (internal error)");
             }
         }
