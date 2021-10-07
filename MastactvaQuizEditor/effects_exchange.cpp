@@ -602,8 +602,9 @@ bool EffectsExchange::mergeDownload()
     return true;
 }
 
-void EffectsExchange::merge()
+bool EffectsExchange::merge()
 {
+    return mergeImpl();
 }
 
 bool EffectsExchange::uploadImpl()
@@ -988,4 +989,9 @@ void EffectsExchange::disconnectUpload()
     {
         sf->setRootDir(m_oldPathServerFiles);
     }
+}
+
+bool EffectsExchange::mergeImpl()
+{
+    return false;
 }

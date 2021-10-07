@@ -51,7 +51,7 @@
                     {
                         "access": "public",
                         "name": "merge",
-                        "returnType": "void"
+                        "returnType": "bool"
                     },
                     {
                         "access": "public",
@@ -125,6 +125,11 @@
                     {
                         "access": "public",
                         "name": "uploaded",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "merged",
                         "returnType": "void"
                     }
                 ],
