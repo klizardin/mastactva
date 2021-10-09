@@ -53,6 +53,7 @@ private:
     bool downloadImpl();
     bool uploadImpl();
     bool mergeImpl();
+    void mergeStep();
 
 public:
 signals:
@@ -66,6 +67,7 @@ signals:
 protected slots:
     void listReloadedSlot();
     void listReloadedSlotForImport();
+    void itemSetSlotForImport();
 
 private:
     QString m_path;
@@ -93,9 +95,12 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
 
-    QVector<int> m_onlyInA;
-    QVector<int> m_onlyInB;
+    QVector<int> m_onlyInNew;
+    QVector<int> m_onlyInOld;
     QVector<int> m_differents;
+
+    bool m_easingTypePrepered = false;
+    bool m_easingTypeMerged = false;
 
     int m_step = 0;
     int c_downloadStepsCount = 1;
