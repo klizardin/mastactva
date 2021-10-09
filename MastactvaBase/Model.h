@@ -353,6 +353,17 @@ public:
         return getDataLayout<DataObjectType>().getJsonValue(item, jsonFieldName);
     }
 
+    static bool isEqual(const DataObjectType *item1_, const DataObjectType *item2_)
+    {
+        QHash<QString, QVariant> values1, values2;
+        if(!getDataLayout<DataObjectType>().getJsonValues(item1_, values1)
+                || !getDataLayout<DataObjectType>().getJsonValues(item2_, values2))
+        {
+            return false;
+        }
+        return values1 == values2;
+    }
+
     const DataObjectType *findDataItemByIdImpl(const QVariant &id_) const
     {
         const auto fit = std::find_if(std::cbegin(m_data),

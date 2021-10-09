@@ -143,6 +143,11 @@
                         "access": "protected",
                         "name": "listReloadedSlotForImport",
                         "returnType": "void"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "itemSetSlotForImport",
+                        "returnType": "void"
                     }
                 ],
                 "superClasses": [
