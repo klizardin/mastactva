@@ -95,9 +95,9 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
 
-    QVector<int> m_onlyInNew;
-    QVector<int> m_onlyInOld;
-    QVector<int> m_differents;
+    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<int> m_onlyInOld;   // do not remove items
+    QVector<int> m_differents;  // update items
 
     bool m_easingTypePrepered = false;
     bool m_easingTypeMerged = false;
