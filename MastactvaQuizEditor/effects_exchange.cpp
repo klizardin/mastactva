@@ -1025,19 +1025,21 @@ bool compare(
     differents_.reserve(a_->sizeImpl());
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
-        if(!a_->dataItemAtImpl(i))
+        const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+        if(!ai)
         {
             continue;
         }
-        const int aId = a_->dataItemAtImpl(i)->id();
+        const int aId = ModelType_::getIntId(ai);
         bool found = false;
         for(int i = 0; i < b_->sizeImpl(); i++)
         {
-            if(!b_->dataItemAtImpl(i))
+            const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+            if(!bi)
             {
                 continue;
             }
-            const int bId = b_->dataItemAtImpl(i)->id();
+            const int bId = ModelType_::getIntId(bi);
             found |= aId == bId;
             if(found)
             {
@@ -1051,19 +1053,21 @@ bool compare(
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
     {
-        if(!b_->dataItemAtImpl(i))
+        const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+        if(!bi)
         {
             continue;
         }
-        const int bId = b_->dataItemAtImpl(i)->id();
+        const int bId = ModelType_::getIntId(bi);
         bool found = false;
         for(int i = 0; i < a_->sizeImpl(); i++)
         {
-            if(!a_->dataItemAtImpl(i))
+            const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+            if(!ai)
             {
                 continue;
             }
-            const int aId = a_->dataItemAtImpl(i)->id();
+            const int aId = ModelType_::getIntId(ai);
             found |= aId == bId;
             if(found)
             {
@@ -1077,25 +1081,27 @@ bool compare(
     }
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
-        if(!a_->dataItemAtImpl(i))
+        const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+        if(!ai)
         {
             continue;
         }
-        const int aId = a_->dataItemAtImpl(i)->id();
-        const typename ModelType_::DataObjectType *itemA = a_->dataItemAtImpl(i);
+        const int aId = ModelType_::getIntId(ai);
+        const typename ModelType_::DataObjectType *itemA = ai;
         const typename ModelType_::DataObjectType *itemB = nullptr;
         bool found = false;
         for(int i = 0; i < b_->sizeImpl(); i++)
         {
-            if(!b_->dataItemAtImpl(i))
+            const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+            if(!bi)
             {
                 continue;
             }
-            const int bId = b_->dataItemAtImpl(i)->id();
+            const int bId = ModelType_::getIntId(bi);
             found |= aId == bId;
             if(found)
             {
-                itemB = b_->dataItemAtImpl(i);
+                itemB = bi;
                 break;
             }
         }
