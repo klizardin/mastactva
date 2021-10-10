@@ -1143,20 +1143,17 @@ int EffectsExchange::countMergeStepForItemImpl(
     QVector<int> onlyInNew;
     QVector<int> onlyInOld;
     QVector<int> differents;
-    if(!compare(
-        inputModel_,
-        model_,
-        onlyInNew,
-        onlyInOld,
-        differents
-        ))
-    {
-        return 0;
-    }
-    else
-    {
-        return onlyInNew.size() + differents.size();
-    }
+    return
+        compare(
+            inputModel_,
+            model_,
+            onlyInNew,
+            onlyInOld,
+            differents
+            )
+        ? onlyInNew.size() + differents.size()
+        : 0
+        ;
 }
 
 template<typename ModelType_>
