@@ -16,6 +16,100 @@
 #include "../MastactvaModels/easingtype.h"
 
 
+class EffectsExchange;
+
+
+template<typename ModelType_>
+class MergeItem
+{
+    using DataObjectType = typename ModelType_::DataObjectType;
+public:
+    static int countSteps(
+            ModelType_ *model_,
+            ModelType_ *inputModel_
+            );
+    bool mergeStepImpl(
+            QVector<int> &onlyInNew_,
+            QVector<int> &onlyInOld_,
+            QVector<int> &differents_,
+            QHash<QString, QHash<int, int>> &idsMap_,
+            EffectsExchange *effectExchange_,
+            ModelType_ *model_,
+            ModelType_ *inputModel_
+            );
+private:
+    bool m_modelTypePrepered = false;
+    bool m_modelTypeMerged = false;
+    DataObjectType *m_modelItemNew = nullptr;
+    int m_oldInsertItemId = -1;
+};
+
+class MergeData
+{
+public:
+    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<int> m_onlyInOld;   // do not remove items
+    QVector<int> m_differents;  // update items
+    QHash<QString, QHash<int, int>> m_idsMap;
+};
+
+template<typename ModelType1_, typename ModelType2_, typename ... ModelTypes_>
+class Merge : public MergeItem<ModelType1_>, public Merge<ModelTypes_...>
+{
+public:
+    static int countSteps(ModelType1_ *model_, ModelType2_ *inputModel_, ModelTypes_ *...models_)
+    {
+        static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
+        return MergeItem<ModelType1_>::countSteps(model_, inputModel_) + Merge<ModelTypes_...>::countSteps(models_...);
+    }
+
+    bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_, ModelTypes_ *...models_)
+    {
+        static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
+        if(MergeItem<ModelType1_>::mergeStepImpl(
+                    data_.m_onlyInNew,
+                    data_.m_onlyInOld,
+                    data_.m_differents,
+                    data_.m_idsMap,
+                    effectExchange_,
+                    model_,
+                    inputModel_
+                    )
+                )
+        {
+            return true;
+        }
+        return Merge<ModelTypes_...>::mergeStep(data_, models_...);
+    }
+};
+
+template<typename ModelType1_, typename ModelType2_>
+class Merge<ModelType1_, ModelType2_> : public MergeItem<ModelType1_>
+{
+public:
+    static int countSteps(ModelType1_ *model_, ModelType2_ *inputModel_)
+    {
+        static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
+        return MergeItem<ModelType1_>::countSteps(model_, inputModel_);
+    }
+
+    bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_)
+    {
+        static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
+        return MergeItem<ModelType1_>::mergeStepImpl(
+                    data_.m_onlyInNew,
+                    data_.m_onlyInOld,
+                    data_.m_differents,
+                    data_.m_idsMap,
+                    effectExchange_,
+                    model_,
+                    inputModel_
+                    );
+    }
+};
+
+
+
 class EffectsExchange : public QObject
 {
     Q_OBJECT
@@ -54,20 +148,6 @@ private:
     bool uploadImpl();
     bool mergeImpl();
     void mergeStep();
-
-    template<typename ModelType_>
-    int countMergeStepForItemImpl(
-            ModelType_ *model_,
-            ModelType_ *inputModel_
-            ) const;
-    template<typename ModelType_>
-    void mergeStepForItemImpl(
-            ModelType_ *model_,
-            ModelType_ *inputModel_,
-            bool &_modelItemPrepeared_,
-            bool &_modelItemMerged_,
-            typename ModelType_::DataObjectType *&modelNewItem_
-            );
 
 public:
 signals:
@@ -111,15 +191,10 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
 
-    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
-    QVector<int> m_onlyInOld;   // do not remove items
-    QVector<int> m_differents;  // update items
-    QHash<QString, QHash<int, int>> m_idsMap;
-    int m_oldInsertItemId = -1;
+    using MergeType = Merge<EasingTypeModel, EasingTypeModel>;
 
-    bool m_easingTypePrepered = false;
-    bool m_easingTypeMerged = false;
-    EasingType *m_itemNew = nullptr;
+    MergeData m_mergeData;
+    MergeType m_merge;
 
     int m_step = 0;
     int c_downloadStepsCount = 1;
