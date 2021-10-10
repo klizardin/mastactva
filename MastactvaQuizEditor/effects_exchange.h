@@ -56,6 +56,11 @@ private:
     void mergeStep();
 
     template<typename ModelType_>
+    int countMergeStepForItemImpl(
+            ModelType_ *model_,
+            ModelType_ *inputModel_
+            ) const;
+    template<typename ModelType_>
     void mergeStepForItemImpl(
             ModelType_ *model_,
             ModelType_ *inputModel_,

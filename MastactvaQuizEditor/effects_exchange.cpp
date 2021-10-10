@@ -1135,6 +1135,31 @@ QHash<QString, QVariant> filterItem(
 }
 
 template<typename ModelType_>
+int EffectsExchange::countMergeStepForItemImpl(
+        ModelType_ *model_,
+        ModelType_ *inputModel_
+        ) const
+{
+    QVector<int> onlyInNew;
+    QVector<int> onlyInOld;
+    QVector<int> differents;
+    if(!compare(
+        inputModel_,
+        model_,
+        onlyInNew,
+        onlyInOld,
+        differents
+        ))
+    {
+        return 0;
+    }
+    else
+    {
+        return onlyInNew.size() + differents.size();
+    }
+}
+
+template<typename ModelType_>
 void EffectsExchange::mergeStepForItemImpl(
         ModelType_ *model_,
         ModelType_ *inputModel_,
