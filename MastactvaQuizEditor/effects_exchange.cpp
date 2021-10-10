@@ -1180,10 +1180,12 @@ void EffectsExchange::mergeStepForItemImpl(
         {
             const int id = m_differents.back();
             m_differents.pop_back();
-            const typename ModelType_::DataObjectType *itemOld = model_->findDataItemByIdImpl(
+            const typename ModelType_::DataObjectType *itemOld =
+                    model_->findDataItemByIdImpl(
                         QVariant::fromValue(id)
                         );
-            typename ModelType_::DataObjectType *itemNew = inputModel_->findDataItemByIdImpl(
+            typename ModelType_::DataObjectType *itemNew =
+                    inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(id)
                         );
             const int index = model_->indexOfDataItemImpl(itemOld);
@@ -1197,16 +1199,20 @@ void EffectsExchange::mergeStepForItemImpl(
             }
             return;
         }
+
         const QString layoutName = model_->getJsonLayoutName();
         if(m_oldInsertItemId >= 0
                 && modelNewItem_
                 && m_idsMap.contains(layoutName)
                 )
         {
-            m_idsMap[layoutName][m_oldInsertItemId] = ModelType_::getIntId(modelNewItem_);
+            m_idsMap[layoutName][m_oldInsertItemId] =
+                    ModelType_::getIntId(modelNewItem_)
+                    ;
         }
         m_oldInsertItemId = -1;
         modelNewItem_ = nullptr;
+
         if(!m_onlyInNew.isEmpty())
         {
             m_oldInsertItemId = m_onlyInNew.back();
@@ -1216,7 +1222,8 @@ void EffectsExchange::mergeStepForItemImpl(
                 m_idsMap.insert(layoutName, QHash<int, int>{});
             }
             m_idsMap[layoutName].insert(m_oldInsertItemId, -1);
-            const typename ModelType_::DataObjectType *itemOld = inputModel_->findDataItemByIdImpl(
+            const typename ModelType_::DataObjectType *itemOld =
+                    inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(m_oldInsertItemId)
                         );
             if(itemOld)
