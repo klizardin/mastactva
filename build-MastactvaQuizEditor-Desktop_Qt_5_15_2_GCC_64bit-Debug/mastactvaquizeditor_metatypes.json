@@ -145,8 +145,13 @@
                         "returnType": "void"
                     },
                     {
-                        "access": "protected",
+                        "access": "public",
                         "name": "itemSetSlotForImport",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "itemAddedSlotForImport",
                         "returnType": "void"
                     }
                 ],

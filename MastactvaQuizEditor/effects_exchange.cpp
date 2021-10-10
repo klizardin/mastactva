@@ -1122,59 +1122,143 @@ bool EffectsExchange::mergeImpl()
     return true;
 }
 
-void EffectsExchange::mergeStep()
+template<typename ModelType_> inline
+QHash<QString, QVariant> filterItem(
+        const typename ModelType_::DataObjectType *item_,
+        const QHash<QString, QHash<int, int>> &idsMap_
+        )
 {
-    if(!m_easingTypeMerged
-            && !m_easingTypePrepered)
+    Q_UNUSED(item_);
+    Q_UNUSED(idsMap_);
+    return QHash<QString, QVariant>{};
+}
+
+template<typename ModelType_>
+void EffectsExchange::mergeStepForItemImpl(
+        ModelType_ *model_,
+        ModelType_ *inputModel_,
+        bool &_modelItemPrepeared_,
+        bool &_modelItemMerged_,
+        typename ModelType_::DataObjectType *&modelNewItem_
+        )
+{
+    if(!_modelItemMerged_
+            && !_modelItemPrepeared_)
     {
-        if(compare(
-            m_inputEasingTypeModel.get(),
-            m_easingTypeModel.get(),
+        if(!compare(
+            inputModel_,
+            model_,
             m_onlyInNew,
             m_onlyInOld,
             m_differents
             ))
         {
-            m_easingTypePrepered = true;
+            _modelItemMerged_ = true;
         }
-        else
-        {
-            m_easingTypeMerged = true;
-        }
+        _modelItemPrepeared_ = true;
     }
     QObject::disconnect(
-                m_easingTypeModel.get(),
-                SIGNAL(itemSet()),
-                this,
-                SLOT(itemSetSlotForImport())
-                );
-    if(!m_easingTypeMerged
-            && m_easingTypePrepered)
+        model_,
+        SIGNAL(itemSet()),
+        this,
+        SLOT(itemSetSlotForImport())
+        );
+    QObject::disconnect(
+        model_,
+        SIGNAL(itemAdded()),
+        this,
+        SLOT(itemAddedSlotForImport())
+        );
+    if(!_modelItemMerged_
+            && _modelItemPrepeared_)
     {
         if(!m_differents.isEmpty())
         {
             const int id = m_differents.back();
             m_differents.pop_back();
-            const EasingType *itemOld = m_easingTypeModel->findDataItemByIdImpl(QVariant::fromValue(id));
-            EasingType *itemNew = m_inputEasingTypeModel->findDataItemByIdImpl(QVariant::fromValue(id));
-            const int index = m_easingTypeModel->indexOfDataItemImpl(itemOld);
-            if(index >= 0)
+            const typename ModelType_::DataObjectType *itemOld = model_->findDataItemByIdImpl(
+                        QVariant::fromValue(id)
+                        );
+            typename ModelType_::DataObjectType *itemNew = inputModel_->findDataItemByIdImpl(
+                        QVariant::fromValue(id)
+                        );
+            const int index = model_->indexOfDataItemImpl(itemOld);
+            if(index >= 0 && itemOld)
             {
                 QObject::connect(
-                        m_inputEasingTypeModel.get(),
-                        SIGNAL(itemSet()),
-                        this,
-                        SLOT(itemSetSlotForImport())
-                        );
-                m_easingTypeModel->setDataItemImpl(index, itemNew);
+                    model_,
+                    SIGNAL(itemSet()),
+                    this,
+                    SLOT(itemSetSlotForImport())
+                    );
+                model_->setDataItemImpl(
+                    index,
+                    itemNew,
+                    filterItem<ModelType_>(itemNew, m_idsMap)
+                    );
             }
             return;
         }
-        m_easingTypeMerged = true;
+        const QString layoutName = model_->getJsonLayoutName();
+        if(m_oldInsertItemId >= 0
+                && modelNewItem_
+                && m_idsMap.contains(layoutName)
+                )
+        {
+            m_idsMap[layoutName][m_oldInsertItemId] = ModelType_::getIntId(modelNewItem_);
+        }
+        m_oldInsertItemId = -1;
+        modelNewItem_ = nullptr;
+        if(!m_onlyInNew.isEmpty())
+        {
+            m_oldInsertItemId = m_onlyInNew.back();
+            m_onlyInNew.pop_back();
+            if(!m_idsMap.contains(layoutName))
+            {
+                m_idsMap.insert(layoutName, QHash<int, int>{});
+            }
+            m_idsMap[layoutName].insert(m_oldInsertItemId, -1);
+            const typename ModelType_::DataObjectType *itemOld = inputModel_->findDataItemByIdImpl(
+                        QVariant::fromValue(m_oldInsertItemId)
+                        );
+            if(itemOld)
+            {
+                modelNewItem_ = model_->createDataItemImpl();
+                if(modelNewItem_)
+                {
+                    ModelType_::copyFromTo(itemOld, modelNewItem_);
+                    QObject::connect(
+                        model_,
+                        SIGNAL(itemAdded()),
+                        this,
+                        SLOT(itemAddedSlotForImport())
+                        );
+                    model_->addDataItemImpl(modelNewItem_);
+                }
+            }
+            return;
+        }
+        _modelItemMerged_ = true;
     }
 }
 
+void EffectsExchange::mergeStep()
+{
+    mergeStepForItemImpl(
+        m_easingTypeModel.get(),
+        m_inputEasingTypeModel.get(),
+        m_easingTypePrepered,
+        m_easingTypeMerged,
+        m_itemNew
+        );
+}
+
 void EffectsExchange::itemSetSlotForImport()
+{
+    mergeStep();
+}
+
+void EffectsExchange::itemAddedSlotForImport()
 {
     mergeStep();
 }

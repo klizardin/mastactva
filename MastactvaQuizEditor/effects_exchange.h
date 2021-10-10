@@ -55,6 +55,15 @@ private:
     bool mergeImpl();
     void mergeStep();
 
+    template<typename ModelType_>
+    void mergeStepForItemImpl(
+            ModelType_ *model_,
+            ModelType_ *inputModel_,
+            bool &_modelItemPrepeared_,
+            bool &_modelItemMerged_,
+            typename ModelType_::DataObjectType *&modelNewItem_
+            );
+
 public:
 signals:
     void savePathChanged();
@@ -67,7 +76,9 @@ signals:
 protected slots:
     void listReloadedSlot();
     void listReloadedSlotForImport();
+public slots:
     void itemSetSlotForImport();
+    void itemAddedSlotForImport();
 
 private:
     QString m_path;
@@ -98,9 +109,12 @@ private:
     QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
     QVector<int> m_onlyInOld;   // do not remove items
     QVector<int> m_differents;  // update items
+    QHash<QString, QHash<int, int>> m_idsMap;
+    int m_oldInsertItemId = -1;
 
     bool m_easingTypePrepered = false;
     bool m_easingTypeMerged = false;
+    EasingType *m_itemNew = nullptr;
 
     int m_step = 0;
     int c_downloadStepsCount = 1;
