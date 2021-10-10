@@ -364,6 +364,20 @@ public:
         return values1 == values2;
     }
 
+    static bool copyFromTo(const DataObjectType *src_, DataObjectType *dest_)
+    {
+        QHash<QString, QVariant> values;
+        return getDataLayout<DataObjectType>().getJsonValues(src_, values)
+                && getDataLayout<DataObjectType>().setJsonValues(dest_, values)
+            ;
+    }
+
+    static int getIntId(const DataObjectType *item_)
+    {
+        const QVariant res = getDataLayout<DataObjectType>().getIdJsonValue(item_);
+        return res.isValid() ? int(res.toDouble()) : -1;
+    }
+
     const DataObjectType *findDataItemByIdImpl(const QVariant &id_) const
     {
         const auto fit = std::find_if(std::cbegin(m_data),
