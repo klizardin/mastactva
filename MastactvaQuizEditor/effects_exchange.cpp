@@ -1076,7 +1076,7 @@ bool compare(
         }
         if(!found)
         {
-            onlyInA_.push_back(bId);
+            onlyInB_.push_back(bId);
         }
     }
     for(int i = 0; i < a_->sizeImpl(); i++)
