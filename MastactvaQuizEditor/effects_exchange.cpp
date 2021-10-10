@@ -1118,6 +1118,7 @@ bool EffectsExchange::mergeImpl()
 {
     m_easingTypePrepered = false;
     m_easingTypeMerged = false;
+    m_idsMap.clear();
     mergeStep();
     return true;
 }
@@ -1145,7 +1146,7 @@ void EffectsExchange::mergeStepForItemImpl(
     if(!_modelItemMerged_
             && !_modelItemPrepeared_)
     {
-        if(!compare(
+        if(compare(
             inputModel_,
             model_,
             m_onlyInNew,
@@ -1153,22 +1154,25 @@ void EffectsExchange::mergeStepForItemImpl(
             m_differents
             ))
         {
+            QObject::connect(
+                model_,
+                SIGNAL(itemSet()),
+                this,
+                SLOT(itemSetSlotForImport())
+                );
+            QObject::connect(
+                model_,
+                SIGNAL(itemAdded()),
+                this,
+                SLOT(itemAddedSlotForImport())
+                );
+        }
+        else
+        {
             _modelItemMerged_ = true;
         }
         _modelItemPrepeared_ = true;
     }
-    QObject::disconnect(
-        model_,
-        SIGNAL(itemSet()),
-        this,
-        SLOT(itemSetSlotForImport())
-        );
-    QObject::disconnect(
-        model_,
-        SIGNAL(itemAdded()),
-        this,
-        SLOT(itemAddedSlotForImport())
-        );
     if(!_modelItemMerged_
             && _modelItemPrepeared_)
     {
@@ -1185,12 +1189,6 @@ void EffectsExchange::mergeStepForItemImpl(
             const int index = model_->indexOfDataItemImpl(itemOld);
             if(index >= 0 && itemOld)
             {
-                QObject::connect(
-                    model_,
-                    SIGNAL(itemSet()),
-                    this,
-                    SLOT(itemSetSlotForImport())
-                    );
                 model_->setDataItemImpl(
                     index,
                     itemNew,
@@ -1227,17 +1225,24 @@ void EffectsExchange::mergeStepForItemImpl(
                 if(modelNewItem_)
                 {
                     ModelType_::copyFromTo(itemOld, modelNewItem_);
-                    QObject::connect(
-                        model_,
-                        SIGNAL(itemAdded()),
-                        this,
-                        SLOT(itemAddedSlotForImport())
-                        );
                     model_->addDataItemImpl(modelNewItem_);
                 }
             }
             return;
         }
+
+        QObject::disconnect(
+            model_,
+            SIGNAL(itemSet()),
+            this,
+            SLOT(itemSetSlotForImport())
+            );
+        QObject::disconnect(
+            model_,
+            SIGNAL(itemAdded()),
+            this,
+            SLOT(itemAddedSlotForImport())
+            );
         _modelItemMerged_ = true;
     }
 }
