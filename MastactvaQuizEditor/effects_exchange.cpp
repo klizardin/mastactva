@@ -28,12 +28,299 @@ static const char *g_objectArtefactModelUploadingStatus = "Object artefact model
 static const char *g_objectInfoModelUploadingStatus = "Object info model is uploading %1...";
 static const char *g_archiveResultsStatus = "Archiving results...";
 static const char *g_exctractArchiveStatus = "Extract archive...";
+static const char *g_mergingStatus = "Merging ...";
 static const char *g_allDoneStatus = "All downloading is done.";
 static const char *g_importExchangeNamespace = "exchangeImport";
 static const char *g_archExt = ".tar.gz";
 static const char *g_archiveName = "effects.tar.gz";
 static const char *g_forImport = "(for import)";
 static const char *g_forExport = "(for export)";
+
+
+template<typename ModelType_> inline
+bool isEqualModelItems(
+        const typename ModelType_::DataObjectType *a_,
+        const typename ModelType_::DataObjectType *b_
+        )
+{
+    return !a_ && !b_ && ModelType_::isEqual(a_, b_);
+}
+
+template<typename ModelType_> inline
+bool compare(
+        ModelType_ *a_,
+        ModelType_ *b_,
+        QVector<int> &onlyInA_,
+        QVector<int> &onlyInB_,
+        QVector<int> &differents_
+        )
+{
+    Q_ASSERT(a_);
+    Q_ASSERT(b_);
+    if(!a_ || !b_)
+    {
+        return false;
+    }
+
+    onlyInA_.clear();
+    onlyInB_.clear();
+    differents_.clear();
+    onlyInA_.reserve(a_->sizeImpl());
+    onlyInB_.reserve(b_->sizeImpl());
+    differents_.reserve(a_->sizeImpl());
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+        if(!ai)
+        {
+            continue;
+        }
+        const int aId = ModelType_::getIntId(ai);
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+            if(!bi)
+            {
+                continue;
+            }
+            const int bId = ModelType_::getIntId(bi);
+            found |= aId == bId;
+            if(found)
+            {
+                break;
+            }
+        }
+        if(!found)
+        {
+            onlyInA_.push_back(aId);
+        }
+    }
+    for(int i = 0; i < b_->sizeImpl(); i++)
+    {
+        const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+        if(!bi)
+        {
+            continue;
+        }
+        const int bId = ModelType_::getIntId(bi);
+        bool found = false;
+        for(int i = 0; i < a_->sizeImpl(); i++)
+        {
+            const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+            if(!ai)
+            {
+                continue;
+            }
+            const int aId = ModelType_::getIntId(ai);
+            found |= aId == bId;
+            if(found)
+            {
+                break;
+            }
+        }
+        if(!found)
+        {
+            onlyInB_.push_back(bId);
+        }
+    }
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+        if(!ai)
+        {
+            continue;
+        }
+        const int aId = ModelType_::getIntId(ai);
+        const typename ModelType_::DataObjectType *itemA = ai;
+        const typename ModelType_::DataObjectType *itemB = nullptr;
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+            if(!bi)
+            {
+                continue;
+            }
+            const int bId = ModelType_::getIntId(bi);
+            found |= aId == bId;
+            if(found)
+            {
+                itemB = bi;
+                break;
+            }
+        }
+        if(!found)
+        {
+            continue;
+        }
+        if(!isEqualModelItems<ModelType_>(itemA, itemB))
+        {
+            differents_.push_back(aId);
+        }
+    }
+    std::sort(std::begin(onlyInA_), std::end(onlyInA_));
+    std::sort(std::begin(onlyInB_), std::end(onlyInB_));
+    std::sort(std::begin(differents_), std::end(differents_));
+    return true;
+}
+
+template<typename ModelType_> inline
+QHash<QString, QVariant> filterItem(
+        const typename ModelType_::DataObjectType *item_,
+        const QHash<QString, QHash<int, int>> &idsMap_
+        )
+{
+    Q_UNUSED(item_);
+    Q_UNUSED(idsMap_);
+    return QHash<QString, QVariant>{};
+}
+
+
+template<typename ModelType_>
+int MergeItem<ModelType_>::countSteps(
+        ModelType_ *model_,
+        ModelType_ *inputModel_
+        )
+{
+    QVector<int> onlyInNew;
+    QVector<int> onlyInOld;
+    QVector<int> differents;
+    return
+        compare(
+            inputModel_,
+            model_,
+            onlyInNew,
+            onlyInOld,
+            differents
+            )
+        ? onlyInNew.size() + differents.size()
+        : 0
+        ;
+}
+
+template<typename ModelType_>
+bool MergeItem<ModelType_>::mergeStepImpl(
+        QVector<int> &onlyInNew_,
+        QVector<int> &onlyInOld_,
+        QVector<int> &differents_,
+        QHash<QString, QHash<int, int>> &idsMap_,
+        EffectsExchange *effectExchange_,
+        ModelType_ *model_,
+        ModelType_ *inputModel_
+        )
+{
+    if(!m_modelTypeMerged
+            && !m_modelTypePrepered)
+    {
+        if(compare(
+            inputModel_,
+            model_,
+            onlyInNew_,
+            onlyInOld_,
+            differents_
+            ))
+        {
+            QObject::connect(
+                model_,
+                SIGNAL(itemSet()),
+                effectExchange_,
+                SLOT(itemSetSlotForImport())
+                );
+            QObject::connect(
+                model_,
+                SIGNAL(itemAdded()),
+                effectExchange_,
+                SLOT(itemAddedSlotForImport())
+                );
+        }
+        else
+        {
+            m_modelTypeMerged = true;
+        }
+        m_modelTypePrepered = true;
+    }
+    if(!m_modelTypeMerged
+            && m_modelTypePrepered)
+    {
+        if(!differents_.isEmpty())
+        {
+            const int id = differents_.back();
+            differents_.pop_back();
+            const typename ModelType_::DataObjectType *itemOld =
+                    model_->findDataItemByIdImpl(
+                        QVariant::fromValue(id)
+                        );
+            typename ModelType_::DataObjectType *itemNew =
+                    inputModel_->findDataItemByIdImpl(
+                        QVariant::fromValue(id)
+                        );
+            const int index = model_->indexOfDataItemImpl(itemOld);
+            if(index >= 0 && itemOld)
+            {
+                model_->setDataItemImpl(
+                    index,
+                    itemNew,
+                    filterItem<ModelType_>(itemNew, idsMap_)
+                    );
+            }
+            return true;
+        }
+
+        const QString layoutName = model_->getJsonLayoutName();
+        if(m_oldInsertItemId >= 0
+                && m_modelItemNew
+                && idsMap_.contains(layoutName)
+                )
+        {
+            idsMap_[layoutName][m_oldInsertItemId] =
+                    ModelType_::getIntId(m_modelItemNew)
+                    ;
+        }
+        m_oldInsertItemId = -1;
+        m_modelItemNew = nullptr;
+
+        if(!onlyInNew_.isEmpty())
+        {
+            m_oldInsertItemId = onlyInNew_.back();
+            onlyInNew_.pop_back();
+            if(!idsMap_.contains(layoutName))
+            {
+                idsMap_.insert(layoutName, QHash<int, int>{});
+            }
+            idsMap_[layoutName].insert(m_oldInsertItemId, -1);
+            const typename ModelType_::DataObjectType *itemOld =
+                    inputModel_->findDataItemByIdImpl(
+                        QVariant::fromValue(m_oldInsertItemId)
+                        );
+            if(itemOld)
+            {
+                m_modelItemNew = model_->createDataItemImpl();
+                if(m_modelItemNew)
+                {
+                    ModelType_::copyFromTo(itemOld, m_modelItemNew);
+                    model_->addDataItemImpl(m_modelItemNew);
+                }
+            }
+            return true;
+        }
+
+        QObject::disconnect(
+            model_,
+            SIGNAL(itemSet()),
+            effectExchange_,
+            SLOT(itemSetSlotForImport())
+            );
+        QObject::disconnect(
+            model_,
+            SIGNAL(itemAdded()),
+            effectExchange_,
+            SLOT(itemAddedSlotForImport())
+            );
+        m_modelTypeMerged = true;
+    }
+    return false;
+}
 
 
 EffectsExchange::EffectsExchange(QObject *parent_ /*= nullptr*/)
@@ -992,189 +1279,37 @@ void EffectsExchange::disconnectUpload()
     }
 }
 
-template<typename ModelType_> inline
-bool isEqualModelItems(
-        const typename ModelType_::DataObjectType *a_,
-        const typename ModelType_::DataObjectType *b_
-        )
-{
-    return !a_ && !b_ && ModelType_::isEqual(a_, b_);
-}
-
-template<typename ModelType_> inline
-bool compare(
-        ModelType_ *a_,
-        ModelType_ *b_,
-        QVector<int> &onlyInA_,
-        QVector<int> &onlyInB_,
-        QVector<int> &differents_
-        )
-{
-    Q_ASSERT(a_);
-    Q_ASSERT(b_);
-    if(!a_ || !b_)
-    {
-        return false;
-    }
-
-    onlyInA_.clear();
-    onlyInB_.clear();
-    differents_.clear();
-    onlyInA_.reserve(a_->sizeImpl());
-    onlyInB_.reserve(b_->sizeImpl());
-    differents_.reserve(a_->sizeImpl());
-    for(int i = 0; i < a_->sizeImpl(); i++)
-    {
-        if(!a_->dataItemAtImpl(i))
-        {
-            continue;
-        }
-        const int aId = a_->dataItemAtImpl(i)->id();
-        bool found = false;
-        for(int i = 0; i < b_->sizeImpl(); i++)
-        {
-            if(!b_->dataItemAtImpl(i))
-            {
-                continue;
-            }
-            const int bId = b_->dataItemAtImpl(i)->id();
-            found |= aId == bId;
-            if(found)
-            {
-                break;
-            }
-        }
-        if(!found)
-        {
-            onlyInA_.push_back(aId);
-        }
-    }
-    for(int i = 0; i < b_->sizeImpl(); i++)
-    {
-        if(!b_->dataItemAtImpl(i))
-        {
-            continue;
-        }
-        const int bId = b_->dataItemAtImpl(i)->id();
-        bool found = false;
-        for(int i = 0; i < a_->sizeImpl(); i++)
-        {
-            if(!a_->dataItemAtImpl(i))
-            {
-                continue;
-            }
-            const int aId = a_->dataItemAtImpl(i)->id();
-            found |= aId == bId;
-            if(found)
-            {
-                break;
-            }
-        }
-        if(!found)
-        {
-            onlyInA_.push_back(bId);
-        }
-    }
-    for(int i = 0; i < a_->sizeImpl(); i++)
-    {
-        if(!a_->dataItemAtImpl(i))
-        {
-            continue;
-        }
-        const int aId = a_->dataItemAtImpl(i)->id();
-        const typename ModelType_::DataObjectType *itemA = a_->dataItemAtImpl(i);
-        const typename ModelType_::DataObjectType *itemB = nullptr;
-        bool found = false;
-        for(int i = 0; i < b_->sizeImpl(); i++)
-        {
-            if(!b_->dataItemAtImpl(i))
-            {
-                continue;
-            }
-            const int bId = b_->dataItemAtImpl(i)->id();
-            found |= aId == bId;
-            if(found)
-            {
-                itemB = b_->dataItemAtImpl(i);
-                break;
-            }
-        }
-        if(!found)
-        {
-            continue;
-        }
-        if(!isEqualModelItems<ModelType_>(itemA, itemB))
-        {
-            differents_.push_back(aId);
-        }
-    }
-    std::sort(std::begin(onlyInA_), std::end(onlyInA_));
-    std::sort(std::begin(onlyInB_), std::end(onlyInB_));
-    std::sort(std::begin(differents_), std::end(differents_));
-    return true;
-}
-
 bool EffectsExchange::mergeImpl()
 {
-    m_easingTypePrepered = false;
-    m_easingTypeMerged = false;
+    c_downloadStepsCount = m_merge.countSteps(
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get()
+        );
     mergeStep();
     return true;
 }
 
 void EffectsExchange::mergeStep()
 {
-    if(!m_easingTypeMerged
-            && !m_easingTypePrepered)
+    if(m_merge.mergeStep(
+        m_mergeData,
+        this,
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get()
+        ))
     {
-        if(compare(
-            m_inputEasingTypeModel.get(),
-            m_easingTypeModel.get(),
-            m_onlyInNew,
-            m_onlyInOld,
-            m_differents
-            ))
-        {
-            m_easingTypePrepered = true;
-        }
-        else
-        {
-            m_easingTypeMerged = true;
-        }
+        emit progress(stepProgress(), g_mergingStatus);
+        return;
     }
-    QObject::disconnect(
-                m_easingTypeModel.get(),
-                SIGNAL(itemSet()),
-                this,
-                SLOT(itemSetSlotForImport())
-                );
-    if(!m_easingTypeMerged
-            && m_easingTypePrepered)
-    {
-        if(!m_differents.isEmpty())
-        {
-            const int id = m_differents.back();
-            m_differents.pop_back();
-            const EasingType *itemOld = m_easingTypeModel->findDataItemByIdImpl(QVariant::fromValue(id));
-            EasingType *itemNew = m_inputEasingTypeModel->findDataItemByIdImpl(QVariant::fromValue(id));
-            const int index = m_easingTypeModel->indexOfDataItemImpl(itemOld);
-            if(index >= 0)
-            {
-                QObject::connect(
-                        m_inputEasingTypeModel.get(),
-                        SIGNAL(itemSet()),
-                        this,
-                        SLOT(itemSetSlotForImport())
-                        );
-                m_easingTypeModel->setDataItemImpl(index, itemNew);
-            }
-            return;
-        }
-        m_easingTypeMerged = true;
-    }
+
+    emit progress(stepProgress(), g_allDoneStatus);
+    emit merged();
 }
 
 void EffectsExchange::itemSetSlotForImport()
+{
+    mergeStep();
+}
+
+void EffectsExchange::itemAddedSlotForImport()
 {
     mergeStep();
 }
