@@ -1370,7 +1370,10 @@ void EffectsExchange::disconnectUpload()
 bool EffectsExchange::mergeImpl()
 {
     c_downloadStepsCount = m_merge.countSteps(
-        m_easingTypeModel.get(), m_inputEasingTypeModel.get()
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
+        m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
+        m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
         );
     m_mergeData.clear();
     m_merge.clear();
@@ -1383,7 +1386,10 @@ void EffectsExchange::mergeStep()
     if(m_merge.mergeStep(
         m_mergeData,
         this,
-        m_easingTypeModel.get(), m_inputEasingTypeModel.get()
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
+        m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
+        m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
         ))
     {
         emit progress(stepProgress(), g_mergingStatus);

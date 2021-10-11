@@ -96,7 +96,7 @@ public:
         {
             return true;
         }
-        return Merge<ModelTypes_...>::mergeStep(data_, models_...);
+        return Merge<ModelTypes_...>::mergeStep(data_, effectExchange_, models_...);
     }
 };
 
@@ -210,7 +210,12 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
 
-    using MergeType = Merge<EasingTypeModel, EasingTypeModel>;
+    using MergeType = Merge<
+        EasingTypeModel, EasingTypeModel,
+        ArtefactArgStorageModel, ArtefactArgStorageModel,
+        ArtefactArgTypeModel, ArtefactArgTypeModel,
+        ArtefactTypeModel, ArtefactTypeModel
+        >;
 
     MergeData m_mergeData;
     MergeType m_merge;
