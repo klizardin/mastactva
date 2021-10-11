@@ -1372,6 +1372,8 @@ bool EffectsExchange::mergeImpl()
     c_downloadStepsCount = m_merge.countSteps(
         m_easingTypeModel.get(), m_inputEasingTypeModel.get()
         );
+    m_mergeData.clear();
+    m_merge.clear();
     mergeStep();
     return true;
 }
