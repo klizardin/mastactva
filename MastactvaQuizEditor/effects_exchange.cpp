@@ -253,7 +253,6 @@ bool compare(
             data_.pushDifferentId(aId);
         }
     }
-    data_.sort();
     return true;
 }
 
@@ -313,6 +312,8 @@ bool MergeItem<ModelType_>::mergeStepImpl(
             data_
             ))
         {
+            data_.sort();
+
             QObject::connect(
                 model_,
                 SIGNAL(itemSet()),
