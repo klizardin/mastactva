@@ -26,6 +26,14 @@ public:
     QVector<int> m_onlyInOld;   // do not remove items
     QVector<int> m_differents;  // update items
     QHash<QString, QHash<int, int>> m_idsMap;
+
+public:
+    void clearIds(int newSize_, int oldSize_);
+    void pushNewId(int id_);
+    void pushOldId(int id_);
+    void pushDifferentId(int id_);
+    void sort();
+    int count() const;
 };
 
 

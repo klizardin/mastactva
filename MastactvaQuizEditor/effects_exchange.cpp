@@ -37,6 +37,45 @@ static const char *g_forImport = "(for import)";
 static const char *g_forExport = "(for export)";
 
 
+
+void MergeData::clearIds(int newSize_, int oldSize_)
+{
+    m_onlyInNew.clear();
+    m_onlyInOld.clear();
+    m_differents.clear();
+    m_onlyInNew.reserve(newSize_);
+    m_onlyInOld.reserve(oldSize_);
+    m_differents.reserve(std::min(newSize_, oldSize_));
+}
+
+void MergeData::pushNewId(int id_)
+{
+    m_onlyInNew.push_back(id_);
+}
+
+void MergeData::pushOldId(int id_)
+{
+    m_onlyInOld.push_back(id_);
+}
+
+void MergeData::pushDifferentId(int id_)
+{
+    m_differents.push_back(id_);
+}
+
+void MergeData::sort()
+{
+    std::sort(std::begin(m_onlyInNew), std::end(m_onlyInNew));
+    std::sort(std::begin(m_onlyInOld), std::end(m_onlyInOld));
+    std::sort(std::begin(m_differents), std::end(m_differents));
+}
+
+int MergeData::count() const
+{
+    return m_onlyInNew.size() + m_differents.size();
+}
+
+
 template<typename ModelType_> inline
 bool isEqualModelItems(
         const typename ModelType_::DataObjectType *a_,
@@ -50,9 +89,7 @@ template<typename ModelType_> inline
 bool compare(
         ModelType_ *a_,
         ModelType_ *b_,
-        QVector<int> &onlyInA_,
-        QVector<int> &onlyInB_,
-        QVector<int> &differents_
+        MergeData &data_
         )
 {
     Q_ASSERT(a_);
@@ -62,12 +99,7 @@ bool compare(
         return false;
     }
 
-    onlyInA_.clear();
-    onlyInB_.clear();
-    differents_.clear();
-    onlyInA_.reserve(a_->sizeImpl());
-    onlyInB_.reserve(b_->sizeImpl());
-    differents_.reserve(a_->sizeImpl());
+    data_.clearIds(a_->sizeImpl(), b_->sizeImpl());
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
         const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
@@ -93,7 +125,7 @@ bool compare(
         }
         if(!found)
         {
-            onlyInA_.push_back(aId);
+            data_.pushNewId(aId);
         }
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
@@ -121,7 +153,7 @@ bool compare(
         }
         if(!found)
         {
-            onlyInB_.push_back(bId);
+            data_.pushOldId(bId);
         }
     }
     for(int i = 0; i < a_->sizeImpl(); i++)
@@ -156,12 +188,10 @@ bool compare(
         }
         if(!isEqualModelItems<ModelType_>(itemA, itemB))
         {
-            differents_.push_back(aId);
+            data_.pushDifferentId(aId);
         }
     }
-    std::sort(std::begin(onlyInA_), std::end(onlyInA_));
-    std::sort(std::begin(onlyInB_), std::end(onlyInB_));
-    std::sort(std::begin(differents_), std::end(differents_));
+    data_.sort();
     return true;
 }
 
@@ -183,18 +213,14 @@ int MergeItem<ModelType_>::countSteps(
         ModelType_ *inputModel_
         )
 {
-    QVector<int> onlyInNew;
-    QVector<int> onlyInOld;
-    QVector<int> differents;
+    MergeData data;
     return
         compare(
             inputModel_,
             model_,
-            onlyInNew,
-            onlyInOld,
-            differents
+            data
             )
-        ? onlyInNew.size() + differents.size()
+        ? data.count()
         : 0
         ;
 }
@@ -213,9 +239,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         if(compare(
             inputModel_,
             model_,
-            data_.m_onlyInNew,
-            data_.m_onlyInOld,
-            data_.m_differents
+            data_
             ))
         {
             QObject::connect(
