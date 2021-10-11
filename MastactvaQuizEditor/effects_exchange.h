@@ -19,6 +19,31 @@
 class EffectsExchange;
 
 
+class MergeData
+{
+public:
+    void clear();
+    void clearIds(int newSize_, int oldSize_);
+    void pushNewId(int id_);
+    void pushOldId(int id_);
+    void pushDifferentId(int id_);
+    void sort();
+    int count() const;
+    bool hasDifferent() const;
+    int popDifferentId();
+    bool hasNewId() const;
+    int popNewId();
+    void setIdMapping(const QString &layoutName_, int oldId_, int newId_);
+    void addIdMapping(const QString &layoutName_, int oldId_);
+
+private:
+    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<int> m_onlyInOld;   // do not remove items
+    QVector<int> m_differents;  // update items
+    QHash<QString, QHash<int, int>> m_idsMap;
+};
+
+
 template<typename ModelType_>
 class MergeItem
 {
@@ -28,11 +53,9 @@ public:
             ModelType_ *model_,
             ModelType_ *inputModel_
             );
+    void clear();
     bool mergeStepImpl(
-            QVector<int> &onlyInNew_,
-            QVector<int> &onlyInOld_,
-            QVector<int> &differents_,
-            QHash<QString, QHash<int, int>> &idsMap_,
+            MergeData &data_,
             EffectsExchange *effectExchange_,
             ModelType_ *model_,
             ModelType_ *inputModel_
@@ -42,15 +65,6 @@ private:
     bool m_modelTypeMerged = false;
     DataObjectType *m_modelItemNew = nullptr;
     int m_oldInsertItemId = -1;
-};
-
-class MergeData
-{
-public:
-    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
-    QVector<int> m_onlyInOld;   // do not remove items
-    QVector<int> m_differents;  // update items
-    QHash<QString, QHash<int, int>> m_idsMap;
 };
 
 template<typename ModelType1_, typename ModelType2_, typename ... ModelTypes_>
@@ -63,14 +77,17 @@ public:
         return MergeItem<ModelType1_>::countSteps(model_, inputModel_) + Merge<ModelTypes_...>::countSteps(models_...);
     }
 
+    void clear()
+    {
+        MergeItem<ModelType1_>::clear();
+        Merge<ModelTypes_...>::clear();
+    }
+
     bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_, ModelTypes_ *...models_)
     {
         static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
         if(MergeItem<ModelType1_>::mergeStepImpl(
-                    data_.m_onlyInNew,
-                    data_.m_onlyInOld,
-                    data_.m_differents,
-                    data_.m_idsMap,
+                    data_,
                     effectExchange_,
                     model_,
                     inputModel_
@@ -79,7 +96,7 @@ public:
         {
             return true;
         }
-        return Merge<ModelTypes_...>::mergeStep(data_, models_...);
+        return Merge<ModelTypes_...>::mergeStep(data_, effectExchange_, models_...);
     }
 };
 
@@ -93,14 +110,16 @@ public:
         return MergeItem<ModelType1_>::countSteps(model_, inputModel_);
     }
 
+    void clear()
+    {
+        MergeItem<ModelType1_>::clear();
+    }
+
     bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_)
     {
         static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
         return MergeItem<ModelType1_>::mergeStepImpl(
-                    data_.m_onlyInNew,
-                    data_.m_onlyInOld,
-                    data_.m_differents,
-                    data_.m_idsMap,
+                    data_,
                     effectExchange_,
                     model_,
                     inputModel_
@@ -191,7 +210,12 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
 
-    using MergeType = Merge<EasingTypeModel, EasingTypeModel>;
+    using MergeType = Merge<
+        EasingTypeModel, EasingTypeModel,
+        ArtefactArgStorageModel, ArtefactArgStorageModel,
+        ArtefactArgTypeModel, ArtefactArgTypeModel,
+        ArtefactTypeModel, ArtefactTypeModel
+        >;
 
     MergeData m_mergeData;
     MergeType m_merge;

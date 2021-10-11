@@ -37,6 +37,107 @@ static const char *g_forImport = "(for import)";
 static const char *g_forExport = "(for export)";
 
 
+
+void MergeData::clear()
+{
+    m_idsMap.clear();
+    m_onlyInNew.clear();
+    m_onlyInOld.clear();
+    m_differents.clear();
+}
+
+void MergeData::clearIds(int newSize_, int oldSize_)
+{
+    m_onlyInNew.clear();
+    m_onlyInOld.clear();
+    m_differents.clear();
+    m_onlyInNew.reserve(newSize_);
+    m_onlyInOld.reserve(oldSize_);
+    m_differents.reserve(std::min(newSize_, oldSize_));
+}
+
+void MergeData::pushNewId(int id_)
+{
+    m_onlyInNew.push_back(id_);
+}
+
+void MergeData::pushOldId(int id_)
+{
+    m_onlyInOld.push_back(id_);
+}
+
+void MergeData::pushDifferentId(int id_)
+{
+    m_differents.push_back(id_);
+}
+
+void MergeData::sort()
+{
+    std::sort(std::begin(m_onlyInNew), std::end(m_onlyInNew));
+    std::sort(std::begin(m_onlyInOld), std::end(m_onlyInOld));
+    std::sort(std::begin(m_differents), std::end(m_differents));
+}
+
+int MergeData::count() const
+{
+    return m_onlyInNew.size() + m_differents.size();
+}
+
+bool MergeData::hasDifferent() const
+{
+    return !m_differents.isEmpty();
+}
+
+int MergeData::popDifferentId()
+{
+    if(!hasDifferent())
+    {
+        return -1;
+    }
+    int id = m_differents.back();
+    m_differents.pop_back();
+    return id;
+}
+
+bool MergeData::hasNewId() const
+{
+    return !m_onlyInNew.isEmpty();
+}
+
+int MergeData::popNewId()
+{
+    if(!hasNewId())
+    {
+        return -1;
+    }
+    int id = m_onlyInNew.back();
+    m_onlyInNew.pop_back();
+    return id;
+}
+
+void MergeData::setIdMapping(const QString &layoutName_, int oldId_, int newId_)
+{
+    if(m_idsMap.contains(layoutName_)
+            && m_idsMap[layoutName_].contains(oldId_)
+            )
+    {
+        m_idsMap[layoutName_][oldId_] = newId_;
+    }
+}
+
+void MergeData::addIdMapping(const QString &layoutName_, int oldId_)
+{
+    if(!m_idsMap.contains(layoutName_))
+    {
+        m_idsMap.insert(layoutName_, QHash<int, int>{});
+    }
+    if(!m_idsMap[layoutName_].contains(oldId_))
+    {
+        m_idsMap[layoutName_].insert(oldId_, -1);
+    }
+}
+
+
 template<typename ModelType_> inline
 bool isEqualModelItems(
         const typename ModelType_::DataObjectType *a_,
@@ -50,9 +151,7 @@ template<typename ModelType_> inline
 bool compare(
         ModelType_ *a_,
         ModelType_ *b_,
-        QVector<int> &onlyInA_,
-        QVector<int> &onlyInB_,
-        QVector<int> &differents_
+        MergeData &data_
         )
 {
     Q_ASSERT(a_);
@@ -62,12 +161,7 @@ bool compare(
         return false;
     }
 
-    onlyInA_.clear();
-    onlyInB_.clear();
-    differents_.clear();
-    onlyInA_.reserve(a_->sizeImpl());
-    onlyInB_.reserve(b_->sizeImpl());
-    differents_.reserve(a_->sizeImpl());
+    data_.clearIds(a_->sizeImpl(), b_->sizeImpl());
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
         const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
@@ -93,7 +187,7 @@ bool compare(
         }
         if(!found)
         {
-            onlyInA_.push_back(aId);
+            data_.pushNewId(aId);
         }
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
@@ -121,7 +215,7 @@ bool compare(
         }
         if(!found)
         {
-            onlyInB_.push_back(bId);
+            data_.pushOldId(bId);
         }
     }
     for(int i = 0; i < a_->sizeImpl(); i++)
@@ -156,23 +250,20 @@ bool compare(
         }
         if(!isEqualModelItems<ModelType_>(itemA, itemB))
         {
-            differents_.push_back(aId);
+            data_.pushDifferentId(aId);
         }
     }
-    std::sort(std::begin(onlyInA_), std::end(onlyInA_));
-    std::sort(std::begin(onlyInB_), std::end(onlyInB_));
-    std::sort(std::begin(differents_), std::end(differents_));
     return true;
 }
 
 template<typename ModelType_> inline
 QHash<QString, QVariant> filterItem(
         const typename ModelType_::DataObjectType *item_,
-        const QHash<QString, QHash<int, int>> &idsMap_
+        const MergeData &data_
         )
 {
     Q_UNUSED(item_);
-    Q_UNUSED(idsMap_);
+    Q_UNUSED(data_);
     return QHash<QString, QVariant>{};
 }
 
@@ -183,28 +274,30 @@ int MergeItem<ModelType_>::countSteps(
         ModelType_ *inputModel_
         )
 {
-    QVector<int> onlyInNew;
-    QVector<int> onlyInOld;
-    QVector<int> differents;
+    MergeData data;
     return
         compare(
             inputModel_,
             model_,
-            onlyInNew,
-            onlyInOld,
-            differents
+            data
             )
-        ? onlyInNew.size() + differents.size()
+        ? data.count()
         : 0
         ;
 }
 
 template<typename ModelType_>
+void MergeItem<ModelType_>::clear()
+{
+    m_modelTypePrepered = false;
+    m_modelTypeMerged = false;
+    m_modelItemNew = nullptr;
+    m_oldInsertItemId = -1;
+}
+
+template<typename ModelType_>
 bool MergeItem<ModelType_>::mergeStepImpl(
-        QVector<int> &onlyInNew_,
-        QVector<int> &onlyInOld_,
-        QVector<int> &differents_,
-        QHash<QString, QHash<int, int>> &idsMap_,
+        MergeData &data_,
         EffectsExchange *effectExchange_,
         ModelType_ *model_,
         ModelType_ *inputModel_
@@ -216,11 +309,11 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         if(compare(
             inputModel_,
             model_,
-            onlyInNew_,
-            onlyInOld_,
-            differents_
+            data_
             ))
         {
+            data_.sort();
+
             QObject::connect(
                 model_,
                 SIGNAL(itemSet()),
@@ -243,10 +336,9 @@ bool MergeItem<ModelType_>::mergeStepImpl(
     if(!m_modelTypeMerged
             && m_modelTypePrepered)
     {
-        if(!differents_.isEmpty())
+        if(data_.hasDifferent())
         {
-            const int id = differents_.back();
-            differents_.pop_back();
+            const int id = data_.popDifferentId();
             const typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
                         QVariant::fromValue(id)
@@ -261,34 +353,31 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 model_->setDataItemImpl(
                     index,
                     itemNew,
-                    filterItem<ModelType_>(itemNew, idsMap_)
+                    filterItem<ModelType_>(itemNew, data_)
                     );
             }
             return true;
         }
 
         const QString layoutName = model_->getJsonLayoutName();
+
         if(m_oldInsertItemId >= 0
                 && m_modelItemNew
-                && idsMap_.contains(layoutName)
                 )
         {
-            idsMap_[layoutName][m_oldInsertItemId] =
-                    ModelType_::getIntId(m_modelItemNew)
-                    ;
+            data_.setIdMapping(
+                        layoutName,
+                        m_oldInsertItemId,
+                        ModelType_::getIntId(m_modelItemNew)
+                        );
         }
         m_oldInsertItemId = -1;
         m_modelItemNew = nullptr;
 
-        if(!onlyInNew_.isEmpty())
+        if(data_.hasNewId())
         {
-            m_oldInsertItemId = onlyInNew_.back();
-            onlyInNew_.pop_back();
-            if(!idsMap_.contains(layoutName))
-            {
-                idsMap_.insert(layoutName, QHash<int, int>{});
-            }
-            idsMap_[layoutName].insert(m_oldInsertItemId, -1);
+            m_oldInsertItemId = data_.popNewId();
+            data_.addIdMapping(layoutName, m_oldInsertItemId);
             const typename ModelType_::DataObjectType *itemOld =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(m_oldInsertItemId)
@@ -1282,8 +1371,13 @@ void EffectsExchange::disconnectUpload()
 bool EffectsExchange::mergeImpl()
 {
     c_downloadStepsCount = m_merge.countSteps(
-        m_easingTypeModel.get(), m_inputEasingTypeModel.get()
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
+        m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
+        m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
         );
+    m_mergeData.clear();
+    m_merge.clear();
     mergeStep();
     return true;
 }
@@ -1293,7 +1387,10 @@ void EffectsExchange::mergeStep()
     if(m_merge.mergeStep(
         m_mergeData,
         this,
-        m_easingTypeModel.get(), m_inputEasingTypeModel.get()
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
+        m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
+        m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
         ))
     {
         emit progress(stepProgress(), g_mergingStatus);
