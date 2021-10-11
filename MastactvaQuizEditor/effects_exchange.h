@@ -19,6 +19,16 @@
 class EffectsExchange;
 
 
+class MergeData
+{
+public:
+    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<int> m_onlyInOld;   // do not remove items
+    QVector<int> m_differents;  // update items
+    QHash<QString, QHash<int, int>> m_idsMap;
+};
+
+
 template<typename ModelType_>
 class MergeItem
 {
@@ -29,10 +39,7 @@ public:
             ModelType_ *inputModel_
             );
     bool mergeStepImpl(
-            QVector<int> &onlyInNew_,
-            QVector<int> &onlyInOld_,
-            QVector<int> &differents_,
-            QHash<QString, QHash<int, int>> &idsMap_,
+            MergeData &data_,
             EffectsExchange *effectExchange_,
             ModelType_ *model_,
             ModelType_ *inputModel_
@@ -42,15 +49,6 @@ private:
     bool m_modelTypeMerged = false;
     DataObjectType *m_modelItemNew = nullptr;
     int m_oldInsertItemId = -1;
-};
-
-class MergeData
-{
-public:
-    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
-    QVector<int> m_onlyInOld;   // do not remove items
-    QVector<int> m_differents;  // update items
-    QHash<QString, QHash<int, int>> m_idsMap;
 };
 
 template<typename ModelType1_, typename ModelType2_, typename ... ModelTypes_>
@@ -67,10 +65,7 @@ public:
     {
         static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
         if(MergeItem<ModelType1_>::mergeStepImpl(
-                    data_.m_onlyInNew,
-                    data_.m_onlyInOld,
-                    data_.m_differents,
-                    data_.m_idsMap,
+                    data_,
                     effectExchange_,
                     model_,
                     inputModel_
@@ -97,10 +92,7 @@ public:
     {
         static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
         return MergeItem<ModelType1_>::mergeStepImpl(
-                    data_.m_onlyInNew,
-                    data_.m_onlyInOld,
-                    data_.m_differents,
-                    data_.m_idsMap,
+                    data_,
                     effectExchange_,
                     model_,
                     inputModel_

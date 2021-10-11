@@ -201,10 +201,7 @@ int MergeItem<ModelType_>::countSteps(
 
 template<typename ModelType_>
 bool MergeItem<ModelType_>::mergeStepImpl(
-        QVector<int> &onlyInNew_,
-        QVector<int> &onlyInOld_,
-        QVector<int> &differents_,
-        QHash<QString, QHash<int, int>> &idsMap_,
+        MergeData &data_,
         EffectsExchange *effectExchange_,
         ModelType_ *model_,
         ModelType_ *inputModel_
@@ -216,9 +213,9 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         if(compare(
             inputModel_,
             model_,
-            onlyInNew_,
-            onlyInOld_,
-            differents_
+            data_.m_onlyInNew,
+            data_.m_onlyInOld,
+            data_.m_differents
             ))
         {
             QObject::connect(
@@ -243,10 +240,10 @@ bool MergeItem<ModelType_>::mergeStepImpl(
     if(!m_modelTypeMerged
             && m_modelTypePrepered)
     {
-        if(!differents_.isEmpty())
+        if(!data_.m_differents.isEmpty())
         {
-            const int id = differents_.back();
-            differents_.pop_back();
+            const int id = data_.m_differents.back();
+            data_.m_differents.pop_back();
             const typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
                         QVariant::fromValue(id)
@@ -261,7 +258,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 model_->setDataItemImpl(
                     index,
                     itemNew,
-                    filterItem<ModelType_>(itemNew, idsMap_)
+                    filterItem<ModelType_>(itemNew, data_.m_idsMap)
                     );
             }
             return true;
@@ -270,25 +267,25 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         const QString layoutName = model_->getJsonLayoutName();
         if(m_oldInsertItemId >= 0
                 && m_modelItemNew
-                && idsMap_.contains(layoutName)
+                && data_.m_idsMap.contains(layoutName)
                 )
         {
-            idsMap_[layoutName][m_oldInsertItemId] =
+            data_.m_idsMap[layoutName][m_oldInsertItemId] =
                     ModelType_::getIntId(m_modelItemNew)
                     ;
         }
         m_oldInsertItemId = -1;
         m_modelItemNew = nullptr;
 
-        if(!onlyInNew_.isEmpty())
+        if(!data_.m_onlyInNew.isEmpty())
         {
-            m_oldInsertItemId = onlyInNew_.back();
-            onlyInNew_.pop_back();
-            if(!idsMap_.contains(layoutName))
+            m_oldInsertItemId = data_.m_onlyInNew.back();
+            data_.m_onlyInNew.pop_back();
+            if(!data_.m_idsMap.contains(layoutName))
             {
-                idsMap_.insert(layoutName, QHash<int, int>{});
+                data_.m_idsMap.insert(layoutName, QHash<int, int>{});
             }
-            idsMap_[layoutName].insert(m_oldInsertItemId, -1);
+            data_.m_idsMap[layoutName].insert(m_oldInsertItemId, -1);
             const typename ModelType_::DataObjectType *itemOld =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(m_oldInsertItemId)
