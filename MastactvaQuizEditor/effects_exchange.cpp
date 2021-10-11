@@ -38,6 +38,14 @@ static const char *g_forExport = "(for export)";
 
 
 
+void MergeData::clear()
+{
+    m_idsMap.clear();
+    m_onlyInNew.clear();
+    m_onlyInOld.clear();
+    m_differents.clear();
+}
+
 void MergeData::clearIds(int newSize_, int oldSize_)
 {
     m_onlyInNew.clear();
@@ -73,6 +81,60 @@ void MergeData::sort()
 int MergeData::count() const
 {
     return m_onlyInNew.size() + m_differents.size();
+}
+
+bool MergeData::hasDifferent() const
+{
+    return !m_differents.isEmpty();
+}
+
+int MergeData::popDifferentId()
+{
+    if(!hasDifferent())
+    {
+        return -1;
+    }
+    int id = m_differents.back();
+    m_differents.pop_back();
+    return id;
+}
+
+bool MergeData::hasNewId() const
+{
+    return !m_onlyInNew.isEmpty();
+}
+
+int MergeData::popNewId()
+{
+    if(!hasNewId())
+    {
+        return -1;
+    }
+    int id = m_onlyInNew.back();
+    m_onlyInNew.pop_back();
+    return id;
+}
+
+void MergeData::setIdMapping(const QString &layoutName_, int oldId_, int newId_)
+{
+    if(m_idsMap.contains(layoutName_)
+            && m_idsMap[layoutName_].contains(oldId_)
+            )
+    {
+        m_idsMap[layoutName_][oldId_] = newId_;
+    }
+}
+
+void MergeData::addIdMapping(const QString &layoutName_, int oldId_)
+{
+    if(!m_idsMap.contains(layoutName_))
+    {
+        m_idsMap.insert(layoutName_, QHash<int, int>{});
+    }
+    if(!m_idsMap[layoutName_].contains(oldId_))
+    {
+        m_idsMap[layoutName_].insert(oldId_, -1);
+    }
 }
 
 
@@ -198,11 +260,11 @@ bool compare(
 template<typename ModelType_> inline
 QHash<QString, QVariant> filterItem(
         const typename ModelType_::DataObjectType *item_,
-        const QHash<QString, QHash<int, int>> &idsMap_
+        const MergeData &data_
         )
 {
     Q_UNUSED(item_);
-    Q_UNUSED(idsMap_);
+    Q_UNUSED(data_);
     return QHash<QString, QVariant>{};
 }
 
@@ -223,6 +285,15 @@ int MergeItem<ModelType_>::countSteps(
         ? data.count()
         : 0
         ;
+}
+
+template<typename ModelType_>
+void MergeItem<ModelType_>::clear()
+{
+    m_modelTypePrepered = false;
+    m_modelTypeMerged = false;
+    m_modelItemNew = nullptr;
+    m_oldInsertItemId = -1;
 }
 
 template<typename ModelType_>
@@ -264,10 +335,9 @@ bool MergeItem<ModelType_>::mergeStepImpl(
     if(!m_modelTypeMerged
             && m_modelTypePrepered)
     {
-        if(!data_.m_differents.isEmpty())
+        if(data_.hasDifferent())
         {
-            const int id = data_.m_differents.back();
-            data_.m_differents.pop_back();
+            const int id = data_.popDifferentId();
             const typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
                         QVariant::fromValue(id)
@@ -282,34 +352,31 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 model_->setDataItemImpl(
                     index,
                     itemNew,
-                    filterItem<ModelType_>(itemNew, data_.m_idsMap)
+                    filterItem<ModelType_>(itemNew, data_)
                     );
             }
             return true;
         }
 
         const QString layoutName = model_->getJsonLayoutName();
+
         if(m_oldInsertItemId >= 0
                 && m_modelItemNew
-                && data_.m_idsMap.contains(layoutName)
                 )
         {
-            data_.m_idsMap[layoutName][m_oldInsertItemId] =
-                    ModelType_::getIntId(m_modelItemNew)
-                    ;
+            data_.setIdMapping(
+                        layoutName,
+                        m_oldInsertItemId,
+                        ModelType_::getIntId(m_modelItemNew)
+                        );
         }
         m_oldInsertItemId = -1;
         m_modelItemNew = nullptr;
 
-        if(!data_.m_onlyInNew.isEmpty())
+        if(data_.hasNewId())
         {
-            m_oldInsertItemId = data_.m_onlyInNew.back();
-            data_.m_onlyInNew.pop_back();
-            if(!data_.m_idsMap.contains(layoutName))
-            {
-                data_.m_idsMap.insert(layoutName, QHash<int, int>{});
-            }
-            data_.m_idsMap[layoutName].insert(m_oldInsertItemId, -1);
+            m_oldInsertItemId = data_.popNewId();
+            data_.addIdMapping(layoutName, m_oldInsertItemId);
             const typename ModelType_::DataObjectType *itemOld =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(m_oldInsertItemId)

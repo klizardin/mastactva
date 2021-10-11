@@ -22,18 +22,25 @@ class EffectsExchange;
 class MergeData
 {
 public:
-    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
-    QVector<int> m_onlyInOld;   // do not remove items
-    QVector<int> m_differents;  // update items
-    QHash<QString, QHash<int, int>> m_idsMap;
-
-public:
+    void clear();
     void clearIds(int newSize_, int oldSize_);
     void pushNewId(int id_);
     void pushOldId(int id_);
     void pushDifferentId(int id_);
     void sort();
     int count() const;
+    bool hasDifferent() const;
+    int popDifferentId();
+    bool hasNewId() const;
+    int popNewId();
+    void setIdMapping(const QString &layoutName_, int oldId_, int newId_);
+    void addIdMapping(const QString &layoutName_, int oldId_);
+
+private:
+    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<int> m_onlyInOld;   // do not remove items
+    QVector<int> m_differents;  // update items
+    QHash<QString, QHash<int, int>> m_idsMap;
 };
 
 
@@ -46,6 +53,7 @@ public:
             ModelType_ *model_,
             ModelType_ *inputModel_
             );
+    void clear();
     bool mergeStepImpl(
             MergeData &data_,
             EffectsExchange *effectExchange_,
@@ -67,6 +75,12 @@ public:
     {
         static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
         return MergeItem<ModelType1_>::countSteps(model_, inputModel_) + Merge<ModelTypes_...>::countSteps(models_...);
+    }
+
+    void clear()
+    {
+        MergeItem<ModelType1_>::clear();
+        Merge<ModelTypes_...>::clear();
     }
 
     bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_, ModelTypes_ *...models_)
@@ -94,6 +108,11 @@ public:
     {
         static_assert (std::is_same<ModelType1_, ModelType2_>::value, "you should use same types");
         return MergeItem<ModelType1_>::countSteps(model_, inputModel_);
+    }
+
+    void clear()
+    {
+        MergeItem<ModelType1_>::clear();
     }
 
     bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_)
