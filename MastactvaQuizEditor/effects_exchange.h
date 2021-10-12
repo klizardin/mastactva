@@ -209,6 +209,7 @@ private:
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
+    // TODO: add all models
 
     using MergeType = Merge<
         EasingTypeModel, EasingTypeModel,
