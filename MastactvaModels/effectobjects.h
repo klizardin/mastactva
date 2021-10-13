@@ -47,6 +47,7 @@ public:
     Q_PROPERTY(QVariant effectObjectsObjectInfo READ objectInfo WRITE setObjectInfo NOTIFY objectInfoChanged)
     Q_PROPERTY(int effectObjectsStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(QVariant effectObjectsObjectArtefacts READ objectArtefacts WRITE setObjectArtefacts NOTIFY objectArtefactsChanged)
+    Q_PROPERTY(QString effectObjectsMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
 public:
     class DefaultLayout : public LayoutBase<EffectObjects>
@@ -62,6 +63,7 @@ public:
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
             addField<int>("object_info", "", &EffectObjects::objectInfoId, &EffectObjects::setObjectInfoId);
             addField<int>("step_index", "effectObjectsStepIndex", &EffectObjects::stepIndex, &EffectObjects::setStepIndex);
+            addField<QString>("mergeid", "effectObjectsMergeId", &EffectObjects::mergeid, &EffectObjects::setMergeid);
             addModel<ObjectInfoModel>("effectObjectsObjectInfo", &EffectObjects::m_objectInfoModel, &EffectObjects::createObjectInfoModel);
             /* 1:1 */
             addModel<ObjectArtefactModel>("effectObjectsObjectArtefacts", &EffectObjects::m_objectArtefactModel, &EffectObjects::createObjectArtefactModel);
@@ -85,6 +87,8 @@ public:
     void setStepIndex(const int &stepIndex_);
     QVariant objectArtefacts() const;
     void setObjectArtefacts(const QVariant &obj_);
+    QString mergeid() const;
+    void setMergeid(const QString &mergeid_);
     ObjectArtefactModel *getObjectArtefacts();
     const ObjectArtefactModel *getObjectArtefacts() const;
     ObjectInfoModel *getObjectInfoModel();
@@ -100,6 +104,7 @@ signals:
     void objectInfoChanged();
     void stepIndexChanged();
     void objectArtefactsChanged();
+    void mergeidChanged();
 
 private:
     EffectObjectsModel *m_effectObjectsModel = nullptr;

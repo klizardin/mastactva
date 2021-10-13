@@ -147,6 +147,18 @@ void ObjectArtefact::setStepIndex(const int &stepIndex_)
     emit stepIndexChanged();
 }
 
+QString ObjectArtefact::mergeid() const
+{
+    return m_mergeid;
+}
+
+void ObjectArtefact::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 bool ObjectArtefact::updateArtefactId(const QVariant &artefact_)
 {
     if(!m_artefactModel

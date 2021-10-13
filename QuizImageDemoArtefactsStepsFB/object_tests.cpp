@@ -336,7 +336,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 effectObjectId,
                 effectId,
                 objectInfoId,
-                effectObjectStep
+                effectObjectStep,
+                QString()
                 );
 
     // object info
@@ -344,7 +345,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 objectInfoId,
                 effectObjectName,
                 effectObjectProgrammerName,
-                now
+                now,
+                QString()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -399,7 +401,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 emptyStr,
                 artefactType1,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
@@ -421,7 +424,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 effectId,
                 artefactId1,
                 objectArtefactStep0,
-                artefact1.release()
+                artefact1.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -436,7 +440,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 emptyStr,
                 artefactType2,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
@@ -444,7 +449,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 effectId,
                 artefactId2,
                 objectArtefactStep0,
-                artefact2.release()
+                artefact2.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -468,7 +474,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 effectObjectId,
                 effectId,
                 objectInfoId,
-                effectObjectStep
+                effectObjectStep,
+                QString()
                 );
 
     // object info
@@ -476,7 +483,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 objectInfoId,
                 effectObjectName,
                 effectObjectProgrammerName,
-                now
+                now,
+                QString()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -541,7 +549,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 emptyStr,
                 artefactType1,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
@@ -563,7 +572,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 effectId,
                 artefactId1,
                 objectArtefactStep0,
-                artefact1.release()
+                artefact1.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -578,7 +588,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 emptyStr,
                 artefactType2,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
@@ -586,7 +597,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 effectId,
                 artefactId2,
                 objectArtefactStep0,
-                artefact2.release()
+                artefact2.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -608,7 +620,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 effectObjectId,
                 effectId,
                 objectInfoId,
-                effectObjectStep
+                effectObjectStep,
+                QString()
                 );
 
     // ObjectInfoData
@@ -616,7 +629,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 objectInfoId,
                 effectName,
                 effectProgrammerName,
-                now
+                now,
+                QString()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -706,7 +720,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 emptyStr,
                 artefactType1,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
@@ -727,7 +742,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 effectId,
                 artefactId1,
                 objectArtefactStep0,
-                artefact1.release()
+                artefact1.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -759,7 +775,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 emptyStr,
                 artefactType2,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     for(std::size_t i = 0; i < sizeof(fragmentArgs)/sizeof(fragmentArgs[0]); ++i)
     {
@@ -780,7 +797,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 effectId,
                 artefactId2,
                 objectArtefactStep0,
-                artefact2.release()
+                artefact2.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -802,14 +820,16 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                     emptyStr,
                     ArtefactTypeEn::texture2D,
                     emptyStr,
-                    now
+                    now,
+                    QString()
                     );
         auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
                     textureBaseObjectArtefactIdBase + i,
                     effectId,
                     textureBaseArtefactId + i,
                     objectArtefactStep0,
-                    textureArtefact.release()
+                    textureArtefact.release(),
+                    QString()
                     );
         effectObject->m_objectArtefactData->push_back(textureObjectArtefactData.release());
     }
@@ -1016,7 +1036,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 effectObjectId,
                 effectId,
                 objectInfoId,
-                effectObjectStep
+                effectObjectStep,
+                QString()
                 );
 
     // object info
@@ -1024,7 +1045,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 objectInfoId,
                 effectObjectName,
                 effectObjectProgrammerName,
-                now
+                now,
+                QString()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -1035,7 +1057,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 emptyStr,
                 artefactType,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     for(const auto &arg_ : arguments_)
     {
@@ -1058,7 +1081,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 effectId,
                 artefactId,
                 objectArtefactStep0,
-                artefact1.release()
+                artefact1.release(),
+                QString()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -1089,7 +1113,8 @@ std::unique_ptr<EffectData> createTestData1()
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     return effect;
@@ -1130,7 +1155,8 @@ std::unique_ptr<EffectData> createTestData2()
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1156,7 +1182,8 @@ std::unique_ptr<EffectData> createTestData3()
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     return effect;
@@ -1203,7 +1230,8 @@ std::unique_ptr<EffectData> createTestData4()
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1273,7 +1301,8 @@ std::unique_ptr<EffectData> createTestData5()
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1358,7 +1387,8 @@ std::unique_ptr<EffectData> createTestData6()
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
@@ -1417,7 +1447,8 @@ std::unique_ptr<EffectData> createTestData7(
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1488,7 +1519,8 @@ std::unique_ptr<EffectData> createTestData8(
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1560,7 +1592,8 @@ std::unique_ptr<EffectData> createTestData9(
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1664,7 +1697,8 @@ std::unique_ptr<EffectData> createTestData10(
                 effectId,
                 effectName,
                 emptyStr,
-                now
+                now,
+                QString()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());

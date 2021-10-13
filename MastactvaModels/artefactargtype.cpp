@@ -54,6 +54,19 @@ void ArtefactArgType::setType(const QString &type_)
     emit typeChanged();
 }
 
+QString ArtefactArgType::mergeid() const
+{
+    return m_mergeid;
+}
+
+void ArtefactArgType::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
+
 ArtefactArgTypeModel::ArtefactArgTypeModel(
         QObject *parent_ /*= nullptr*/,
         IModelConfig *config_ /*= &DefaultModelConfig::instance()*/

@@ -33,7 +33,8 @@ public:
             int effectId_,
             int artefactId_,
             int stepIndex_,
-            ArtefactData *artefact_
+            ArtefactData *artefact_,
+            const QString &mergeid_
             );
     ObjectArtefactData(ObjectArtefactData &&data_);
     virtual ~ObjectArtefactData() = default;
@@ -49,6 +50,7 @@ public:
     int m_objectInfoId = -1;
     int m_artefactId = -1;
     int m_stepIndex = -1;
+    QString m_mergeid;
 
     std::shared_ptr<QVector<ArtefactData *>> m_artefactData;
 

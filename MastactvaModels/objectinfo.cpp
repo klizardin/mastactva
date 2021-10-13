@@ -111,6 +111,18 @@ void ObjectInfo::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
+QString ObjectInfo::mergeid() const
+{
+    return m_mergeid;
+}
+
+void ObjectInfo::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 
 ObjectInfoModel::ObjectInfoModel(
         QObject *parent_ /*= nullptr*/,

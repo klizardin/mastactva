@@ -61,6 +61,7 @@ public:
     Q_PROPERTY(QVariant effectObjects READ effectObjects WRITE setEffectObjectss NOTIFY effectObjectsChanged)
     Q_PROPERTY(QVariant effectArgs READ args WRITE setArgs NOTIFY argsChanged)
     Q_PROPERTY(QVariant effectArgSets READ argSets WRITE setArgSets NOTIFY argSetsChanged)
+    Q_PROPERTY(QString effectMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<Effect>
     {
@@ -75,6 +76,7 @@ public:
             addField<QString>("name", "effectName", &Effect::name, &Effect::setName);
             addField<QString>("description", "effectDescription", &Effect::description, &Effect::setDescription);
             addField<QDateTime>("created", "effectCreated", &Effect::created, &Effect::setCreated);
+            addField<QString>("mergeid", "effectMergeId", &Effect::mergeid, &Effect::setMergeid);
             addModel<EffectObjectsModel>("effectObjects", &Effect::m_effectObjectsModel, &Effect::createEffectObjectsModel);
             /* 1:N */
             addModel<EffectArgModel>("effectArgs", &Effect::m_effectArgModel, &Effect::createEffectArgModel);
@@ -100,6 +102,8 @@ public:
     void setArgs(const QVariant &obj_);
     QVariant argSets() const;
     void setArgSets(const QVariant &obj_);
+    QString mergeid() const;
+    void setMergeid(const QString &mergeid_);
 
 public:
     EffectObjectsModel *getEffectObjects();
@@ -146,6 +150,7 @@ signals:
     void refreshArgumentsBeforeApply();
     void refreshArgumentsAfterApply();
     void childrenLoaded();
+    void mergeidChanged();
 
 private:
     EffectModel *m_effectModel = nullptr;

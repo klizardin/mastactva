@@ -54,6 +54,18 @@ void ArtefactArgStorage::setStorage(const QString &storage_)
     emit storageChanged();
 }
 
+QString ArtefactArgStorage::mergeid() const
+{
+    return m_mergeid;
+}
+
+void ArtefactArgStorage::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 
 ArtefactArgStorageModel::ArtefactArgStorageModel(
         QObject *parent_ /*= nullptr*/,

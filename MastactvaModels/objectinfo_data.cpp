@@ -22,12 +22,14 @@ ObjectInfoData::ObjectInfoData(
         int id_,
         const QString &name_,
         const QString &programmerName_,
-        const QDateTime &created_
+        const QDateTime &created_,
+        const QString &mergeid_
         )
     : m_id(id_),
       m_name(name_),
       m_programmerName(programmerName_),
-      m_created(created_)
+      m_created(created_),
+      m_mergeid(mergeid_)
 {
 }
 
@@ -43,6 +45,7 @@ ObjectInfoData &ObjectInfoData::operator=(ObjectInfoData &&data_)
     m_programmerName = std::move(data_.m_programmerName);
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
+    m_mergeid = std::move(data_.m_mergeid);
 
     return *this;
 }
@@ -55,5 +58,6 @@ std::unique_ptr<ObjectInfoData> ObjectInfoData::getDataCopy() const
     result->m_programmerName = m_programmerName;
     result->m_description = m_description;
     result->m_created = m_created;
+    result->m_mergeid = m_mergeid;
     return result;
 }
