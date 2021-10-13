@@ -185,6 +185,18 @@ void EffectObjects::setObjectArtefacts(const QVariant &obj_)
     }
 }
 
+QString EffectObjects::mergeid() const
+{
+    return m_mergeid;
+}
+
+void EffectObjects::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 ObjectInfoModel *EffectObjects::getObjectInfoModel()
 {
     return m_objectInfoModel;

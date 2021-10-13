@@ -48,6 +48,7 @@ public:
     Q_PROPERTY(QString artefactDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime artefactCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant artefactArtefactArg READ artefactArg WRITE setArtefactArg NOTIFY artefactArgChanged)
+    Q_PROPERTY(QString artefactMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<Artefact>
     {
@@ -65,6 +66,7 @@ public:
             addField<int>("type", "artefactTypeId", &Artefact::type, &Artefact::setType);
             addField<QString>("description", "artefactDescription", &Artefact::description, &Artefact::setDescription);
             addField<QDateTime>("created", "artefactCreated", &Artefact::created, &Artefact::setCreated);
+            addField<QString>("mergeid", "artefactMergeId", &Artefact::mergeid, &Artefact::setMergeid);
             addModel<ArtefactArgModel>("artefactArtefactArg", &Artefact::m_artefactArgModel, &Artefact::createArtefactArgModel);
             /* 1:N */
             setIdField("id");
@@ -100,6 +102,8 @@ public:
     void setCreated(const QDateTime &created_);
     QVariant artefactArg() const;
     void setArtefactArg(const QVariant &obj_);
+    QString mergeid() const;
+    void setMergeid(const QString &mergeid_);
 
     ArtefactArgModel *getArtefactArg();
     const ArtefactArgModel *getArtefactArg() const;
@@ -125,6 +129,7 @@ signals:
     void artefactArgChanged();
     void argumentsFromArtefactTextChanged();
     void fileDownloaded();
+    void mergeidChanged();
 
 protected slots:
     void artefactFileDownloaded(const QString &url_);

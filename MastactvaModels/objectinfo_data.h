@@ -32,7 +32,8 @@ public:
             int id_,
             const QString &name_,
             const QString &programmerName_,
-            const QDateTime &created_
+            const QDateTime &created_,
+            const QString &mergeid_
             );
     ObjectInfoData(ObjectInfoData &&data_);
     virtual ~ObjectInfoData() = default;
@@ -45,6 +46,7 @@ public:
     QString m_programmerName;
     QString m_description;
     QDateTime m_created;
+    QString m_mergeid;
 
     ObjectInfoData(const ObjectInfoData &) = delete;
     ObjectInfoData & operator = (const ObjectInfoData &) = delete;

@@ -66,6 +66,18 @@ void ArtefactType::setUniqueForObject(const bool &uniqueForObject_)
     emit uniqueForObjectChanged();
 }
 
+QString ArtefactType::mergeid() const
+{
+    return m_mergeid;
+}
+
+void ArtefactType::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 
 ArtefactTypeModel::ArtefactTypeModel(
         QObject *parent_ /*= nullptr*/,

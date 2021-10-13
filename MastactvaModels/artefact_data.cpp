@@ -32,7 +32,8 @@ ArtefactData::ArtefactData(
         const QString &hash_,
         ArtefactTypeEn typeId_,
         const QString &description_,
-        const QDateTime &created_
+        const QDateTime &created_,
+        const QString &mergeid_
         )
     : m_id(id_),
       m_name(name_),
@@ -40,7 +41,8 @@ ArtefactData::ArtefactData(
       m_hash(hash_),
       m_typeId(to_underlying(typeId_)),
       m_description(description_),
-      m_created(created_)
+      m_created(created_),
+      m_mergeid(mergeid_)
 {
     createArrays();
 }
@@ -59,6 +61,7 @@ ArtefactData &ArtefactData::operator = (ArtefactData &&data_)
     m_typeId = std::move(data_.m_typeId);
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
+    m_mergeid = std::move(data_.m_mergeid);
     m_artefactArgData = std::move(data_.m_artefactArgData);
 
     return *this;
@@ -74,6 +77,7 @@ std::unique_ptr<ArtefactData> ArtefactData::getDataCopy() const
     result->m_typeId = m_typeId;
     result->m_description = m_description;
     result->m_created = m_created;
+    result->m_mergeid = m_mergeid;
     data_object::utils::copyDataVector(m_artefactArgData.get(), result->m_artefactArgData.get());
     return result;
 }

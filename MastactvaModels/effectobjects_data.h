@@ -35,7 +35,8 @@ public:
             int id_,
             int effectId_,
             int objectInfoId_,
-            int stepIndex_
+            int stepIndex_,
+            const QString &mergeid_
             );
     EffectObjectsData(EffectObjectsData &&data_);
     virtual ~EffectObjectsData() = default;
@@ -53,6 +54,7 @@ public:
     int m_effectId = -1;
     int m_objectInfoId = -1;
     int m_stepIndex = -1;
+    QString m_mergeid;
 
     std::shared_ptr<QVector<ObjectInfoData *>> m_objectInfoData;
     std::shared_ptr<QVector<ObjectArtefactData *>> m_objectArtefactData;

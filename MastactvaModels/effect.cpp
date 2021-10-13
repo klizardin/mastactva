@@ -197,6 +197,18 @@ void Effect::setArgSets(const QVariant &obj_)
     }
 }
 
+QString Effect::mergeid() const
+{
+    return m_mergeid;
+}
+
+void Effect::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 EffectObjectsModel *Effect::createEffectObjectsModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);

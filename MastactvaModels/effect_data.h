@@ -35,7 +35,8 @@ public:
             int id_,
             const QString &name_,
             const QString &description_,
-            const QDateTime &created_
+            const QDateTime &created_,
+            const QString &mergeid_
             );
     EffectData(EffectData &&data_);
     virtual ~EffectData() = default;
@@ -53,6 +54,7 @@ public:
     QString m_name;
     QString m_description;
     QDateTime m_created;
+    QString m_mergeid;
 
     std::shared_ptr<QVector<EffectObjectsData *>> m_effectObjectsData;
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;

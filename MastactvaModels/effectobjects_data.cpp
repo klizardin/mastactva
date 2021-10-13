@@ -30,12 +30,14 @@ EffectObjectsData::EffectObjectsData(
         int id_,
         int effectId_,
         int objectInfoId_,
-        int stepIndex_
+        int stepIndex_,
+        const QString &mergeid_
         )
     : m_id(id_),
       m_effectId(effectId_),
       m_objectInfoId(objectInfoId_),
-      m_stepIndex(stepIndex_)
+      m_stepIndex(stepIndex_),
+      m_mergeid(mergeid_)
 {
     createArrays();
 }
@@ -53,6 +55,7 @@ EffectObjectsData & EffectObjectsData::operator = (EffectObjectsData &&data_)
     m_stepIndex = std::move(data_.m_stepIndex);
     m_objectInfoData = std::move(data_.m_objectInfoData);
     m_objectArtefactData = std::move(data_.m_objectArtefactData);
+    m_mergeid = std::move(data_.m_mergeid);
     return *this;
 }
 
@@ -63,6 +66,7 @@ std::unique_ptr<EffectObjectsData> EffectObjectsData::getDataCopy() const
     result->m_effectId = m_effectId;
     result->m_objectInfoId = m_objectInfoId;
     result->m_stepIndex = m_stepIndex;
+    result->m_mergeid = m_mergeid;
     data_object::utils::copyDataVector(m_objectInfoData.get(), result->m_objectInfoData.get());
     data_object::utils::copyDataVector(m_objectArtefactData.get(), result->m_objectArtefactData.get());
     return result;
