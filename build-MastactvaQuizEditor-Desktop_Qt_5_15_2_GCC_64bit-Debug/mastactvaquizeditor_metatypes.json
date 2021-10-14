@@ -8020,6 +8020,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setArg"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgValueMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EffectArgValue",
@@ -8052,6 +8066,11 @@
                     {
                         "access": "public",
                         "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],

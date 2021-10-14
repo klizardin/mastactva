@@ -13,14 +13,16 @@ EffectArgValueData::EffectArgValueData(
         int argId_,
         const QString &value_,
         const QString &description_,
-        const QDateTime &created_
+        const QDateTime &created_,
+        const QString &mergeid_
         )
     : m_id(id_),
       m_argSetId(argSetId_),
       m_argId(argId_),
       m_value(value_),
       m_description(description_),
-      m_created(created_)
+      m_created(created_),
+      m_mergeid(mergeid_)
 {
     createArrays();
 }
@@ -38,6 +40,7 @@ EffectArgValueData &EffectArgValueData::operator=(EffectArgValueData &&data_)
     m_value = std::move(data_.m_value);
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
+    m_mergeid = std::move(data_.m_mergeid);
     m_effectArgsData = std::move(data_.m_effectArgsData);
     m_effectArgValuesData = std::move(data_.m_effectArgValuesData);
     return *this;
@@ -52,6 +55,7 @@ std::unique_ptr<EffectArgValueData> EffectArgValueData::getDataCopy() const
     result->m_value = m_value;
     result->m_description = m_description;
     result->m_created = m_created;
+    result->m_mergeid = m_mergeid;
     ::data_object::utils::copyDataVector(m_effectArgsData.get(), result->m_effectArgsData.get());
     ::data_object::utils::copyDataVector(m_effectArgValuesData.get(), result->m_effectArgValuesData.get());
     return result;
