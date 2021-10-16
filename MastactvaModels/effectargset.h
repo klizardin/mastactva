@@ -136,7 +136,8 @@ protected:
 public:
     explicit EffectArgSetModel(
             QObject *parent_ = nullptr,
-            std::shared_ptr<QVector<EffectArgSetData *>> data_ = std::shared_ptr<QVector<EffectArgSetData *>>{nullptr}
+            std::shared_ptr<QVector<EffectArgSetData *>> data_ = std::shared_ptr<QVector<EffectArgSetData *>>{nullptr},
+            IModelConfig *config_ = &DefaultModelConfig::instance()
             );
 
     LAYOUT_MODEL_IMPL();

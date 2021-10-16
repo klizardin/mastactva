@@ -200,4 +200,9 @@ Q_DECL_UNUSED static const char * g_luaArtefactMainFunctionName = "main";
 Q_DECL_UNUSED static const char * g_imageMatrixDefaultCalculationName = "imageMatrix";
 Q_DECL_UNUSED static const char * g_geometryDefaultCalculationName = "geometry";
 
+
+// layout special fields
+Q_DECL_UNUSED static const char * g_mergeIdFieldName = "mergeid";
+
+
 #endif // NAMES_H

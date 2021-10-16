@@ -240,9 +240,10 @@ void EffectArgSet::listLoadedVF()
 
 EffectArgSetModel::EffectArgSetModel(
         QObject *parent_ /*= nullptr*/,
-        std::shared_ptr<QVector<EffectArgSetData *>> data_ /*= std::shared_ptr<QVector<EffectArgSetData *>>{nullptr}*/
+        std::shared_ptr<QVector<EffectArgSetData *>> data_ /*= std::shared_ptr<QVector<EffectArgSetData *>>{nullptr}*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    : base(parent_, data_)
+    : base(parent_, data_, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgSetModel::EffectArgSetModel()" << QThread::currentThread() << QThread::currentThreadId();

@@ -24,22 +24,24 @@ class MergeData
 public:
     void clear();
     void clearIds(int newSize_, int oldSize_);
-    void pushNewId(int id_);
-    void pushOldId(int id_);
-    void pushDifferentId(int id_);
+    void pushNewId(int id_, const QString &mergeid_);
+    void pushOldId(int id_, const QString &mergeid_);
+    void pushDifferentId(int aId_, int bId_);
     void sort();
     int count() const;
     bool hasDifferent() const;
-    int popDifferentId();
+    std::pair<int,int> popDifferentId();
     bool hasNewId() const;
     int popNewId();
     void setIdMapping(const QString &layoutName_, int oldId_, int newId_);
     void addIdMapping(const QString &layoutName_, int oldId_);
+    bool hasMapping(const QString &layoutName_, int oldId_) const;
+    QVariant getMapping(const QString &layoutName_, int oldId_) const;
 
 private:
-    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
-    QVector<int> m_onlyInOld;   // do not remove items
-    QVector<int> m_differents;  // update items
+    QVector<std::pair<int, QString>> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<std::pair<int, QString>> m_onlyInOld;   // do not remove items
+    QVector<std::pair<int, int>> m_differents;  // update items
     QHash<QString, QHash<int, int>> m_idsMap;
 };
 
@@ -189,33 +191,51 @@ private:
     QString m_archiveName;
     QString m_oldPathServerFiles;
 
+    // export
+    // models
     std::unique_ptr<EffectModel> m_effectModel;
     std::unique_ptr<ArtefactModel> m_artefactModel;
     std::unique_ptr<EffectObjectsModel> m_effectObjectsModel;
     std::unique_ptr<ObjectArtefactModel> m_objectArtefactModel;
     std::unique_ptr<ObjectInfoModel> m_objectInfoModel;
+    std::unique_ptr<EffectArgModel> m_effectArgModel;
+    std::unique_ptr<EffectArgSetModel> m_effectArgSetModel;
+    std::unique_ptr<EffectArgValueModel> m_effectArgValueModel;
     std::unique_ptr<ArtefactTypeModel> m_artefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_artefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_easingTypeModel;
 
+    // import
     std::unique_ptr<ChooseModelConfig> m_inputModelConfig;
+    // models
     std::unique_ptr<EffectModel> m_inputEffectModel;
     std::unique_ptr<ArtefactModel> m_inputArtefactModel;
     std::unique_ptr<EffectObjectsModel> m_inputEffectObjectsModel;
     std::unique_ptr<ObjectArtefactModel> m_inputObjectArtefactModel;
     std::unique_ptr<ObjectInfoModel> m_inputObjectInfoModel;
+    std::unique_ptr<EffectArgModel> m_inputEffectArgModel;
+    std::unique_ptr<EffectArgSetModel> m_inputEffectArgSetModel;
+    std::unique_ptr<EffectArgValueModel> m_inputEffectArgValueModel;
     std::unique_ptr<ArtefactTypeModel> m_inputArtefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
-    // TODO: add all models
 
+    // merge
     using MergeType = Merge<
         EasingTypeModel, EasingTypeModel,
         ArtefactArgStorageModel, ArtefactArgStorageModel,
         ArtefactArgTypeModel, ArtefactArgTypeModel,
-        ArtefactTypeModel, ArtefactTypeModel
+        ArtefactTypeModel, ArtefactTypeModel,
+        ArtefactModel, ArtefactModel,
+        EffectModel, EffectModel,
+        ObjectInfoModel, ObjectInfoModel,
+        EffectObjectsModel, EffectObjectsModel,
+        ObjectArtefactModel, ObjectArtefactModel,
+        EffectArgModel, EffectArgModel,
+        EffectArgSetModel, EffectArgSetModel,
+        EffectArgValueModel, EffectArgValueModel
         >;
 
     MergeData m_mergeData;

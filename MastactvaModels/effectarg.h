@@ -141,7 +141,8 @@ protected:
 public:
     explicit EffectArgModel(
             QObject *parent_ = nullptr,
-            std::shared_ptr<QVector<EffectArgData *>> data_ = std::shared_ptr<QVector<EffectArgData *>>{nullptr}
+            std::shared_ptr<QVector<EffectArgData *>> data_ = std::shared_ptr<QVector<EffectArgData *>>{nullptr},
+            IModelConfig *config_ = &DefaultModelConfig::instance()
             );
 
     LAYOUT_MODEL_IMPL();

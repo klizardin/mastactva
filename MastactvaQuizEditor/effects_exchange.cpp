@@ -17,6 +17,9 @@ static const char *g_artefactModelDownloadingStatus = "Artefact model is downloa
 static const char *g_effectObjectsModelDownloadingStatus = "Effect objects model is downloading %1...";
 static const char *g_objectArtefactModelDownloadingStatus = "Object artefact model is downloading %1...";
 static const char *g_objectInfoModelDownloadingStatus = "Object info model is downloading %1...";
+static const char *g_effectArgModelDownloadingStatus = "Effect Arg model is downloading %1...";
+static const char *g_effectArgSetModelDownloadingStatus = "Effect Arg Set model is downloading %1...";
+static const char *g_effectArgValueModelDownloadingStatus = "Effect Arg Value model is downloading %1...";
 static const char *g_effectModelUploadingStatus = "Effect model is uploading %1...";
 static const char *g_artefactTypeModelUploadingStatus = "Artefact type model is uploading %1...";
 static const char *g_artefactArgTypeModelUploadingStatus = "Artefact arg type model is uploading %1...";
@@ -26,6 +29,9 @@ static const char *g_artefactModelUploadingStatus = "Artefact model is uploading
 static const char *g_effectObjectsModelUploadingStatus = "Effect objects model is uploading %1...";
 static const char *g_objectArtefactModelUploadingStatus = "Object artefact model is uploading %1...";
 static const char *g_objectInfoModelUploadingStatus = "Object info model is uploading %1...";
+static const char *g_effectArgModelUploadingStatus = "Effect Arg model is uploading %1...";
+static const char *g_effectArgSetModelUploadingStatus = "Effect Arg Set model is uploading %1...";
+static const char *g_effectArgValueModelUploadingStatus = "Effect Arg Value model is uploading %1...";
 static const char *g_archiveResultsStatus = "Archiving results...";
 static const char *g_exctractArchiveStatus = "Extract archive...";
 static const char *g_mergingStatus = "Merging ...";
@@ -56,26 +62,38 @@ void MergeData::clearIds(int newSize_, int oldSize_)
     m_differents.reserve(std::min(newSize_, oldSize_));
 }
 
-void MergeData::pushNewId(int id_)
+void MergeData::pushNewId(int id_, const QString &mergeid_)
 {
-    m_onlyInNew.push_back(id_);
+    m_onlyInNew.push_back({id_, mergeid_});
 }
 
-void MergeData::pushOldId(int id_)
+void MergeData::pushOldId(int id_, const QString &mergeid_)
 {
-    m_onlyInOld.push_back(id_);
+    m_onlyInOld.push_back({id_, mergeid_});
 }
 
-void MergeData::pushDifferentId(int id_)
+void MergeData::pushDifferentId(int aId_, int bId_)
 {
-    m_differents.push_back(id_);
+    m_differents.push_back({aId_, bId_});
 }
 
 void MergeData::sort()
 {
-    std::sort(std::begin(m_onlyInNew), std::end(m_onlyInNew));
-    std::sort(std::begin(m_onlyInOld), std::end(m_onlyInOld));
-    std::sort(std::begin(m_differents), std::end(m_differents));
+    const auto cmp1 = [](
+            const std::pair<int, QString> &v1_,
+            const std::pair<int, QString> &v2_)->bool
+    {
+        return v1_.first < v2_.first;
+    };
+    const auto cmp2 = [](
+            const std::pair<int, int> &v1_,
+            const std::pair<int, int> &v2_)->bool
+    {
+        return v1_.first < v2_.first;
+    };
+    std::sort(std::begin(m_onlyInNew), std::end(m_onlyInNew), cmp1);
+    std::sort(std::begin(m_onlyInOld), std::end(m_onlyInOld), cmp1);
+    std::sort(std::begin(m_differents), std::end(m_differents), cmp2);
 }
 
 int MergeData::count() const
@@ -88,15 +106,15 @@ bool MergeData::hasDifferent() const
     return !m_differents.isEmpty();
 }
 
-int MergeData::popDifferentId()
+std::pair<int,int> MergeData::popDifferentId()
 {
     if(!hasDifferent())
     {
-        return -1;
+        return {-1, -1};
     }
-    int id = m_differents.back();
+    std::pair<int,int> abIds = m_differents.back();
     m_differents.pop_back();
-    return id;
+    return abIds;
 }
 
 bool MergeData::hasNewId() const
@@ -110,7 +128,7 @@ int MergeData::popNewId()
     {
         return -1;
     }
-    int id = m_onlyInNew.back();
+    int id = m_onlyInNew.back().first;
     m_onlyInNew.pop_back();
     return id;
 }
@@ -135,6 +153,22 @@ void MergeData::addIdMapping(const QString &layoutName_, int oldId_)
     {
         m_idsMap[layoutName_].insert(oldId_, -1);
     }
+}
+
+bool MergeData::hasMapping(const QString &layoutName_, int oldId_) const
+{
+    return m_idsMap.contains(layoutName_)
+            && m_idsMap[layoutName_].contains(oldId_)
+            && m_idsMap[layoutName_][oldId_] >= 0;
+}
+
+QVariant MergeData::getMapping(const QString &layoutName_, int oldId_) const
+{
+    if(!hasMapping(layoutName_, oldId_))
+    {
+        return QVariant();
+    }
+    return QVariant::fromValue(m_idsMap[layoutName_][oldId_]);
 }
 
 
@@ -170,6 +204,7 @@ bool compare(
             continue;
         }
         const int aId = ModelType_::getIntId(ai);
+        const QString aMergeId = ModelType_::getMergeId(ai);
         bool found = false;
         for(int i = 0; i < b_->sizeImpl(); i++)
         {
@@ -178,8 +213,8 @@ bool compare(
             {
                 continue;
             }
-            const int bId = ModelType_::getIntId(bi);
-            found |= aId == bId;
+            const QString bMergeId = ModelType_::getMergeId(bi);
+            found |= aMergeId == bMergeId;
             if(found)
             {
                 break;
@@ -187,7 +222,7 @@ bool compare(
         }
         if(!found)
         {
-            data_.pushNewId(aId);
+            data_.pushNewId(aId, aMergeId);
         }
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
@@ -198,6 +233,7 @@ bool compare(
             continue;
         }
         const int bId = ModelType_::getIntId(bi);
+        const QString bMergeId = ModelType_::getMergeId(bi);
         bool found = false;
         for(int i = 0; i < a_->sizeImpl(); i++)
         {
@@ -206,8 +242,8 @@ bool compare(
             {
                 continue;
             }
-            const int aId = ModelType_::getIntId(ai);
-            found |= aId == bId;
+            const QString aMergeId = ModelType_::getMergeId(ai);
+            found |= aMergeId == bMergeId;
             if(found)
             {
                 break;
@@ -215,7 +251,7 @@ bool compare(
         }
         if(!found)
         {
-            data_.pushOldId(bId);
+            data_.pushOldId(bId, bMergeId);
         }
     }
     for(int i = 0; i < a_->sizeImpl(); i++)
@@ -226,6 +262,7 @@ bool compare(
             continue;
         }
         const int aId = ModelType_::getIntId(ai);
+        const QString aMergeId = ModelType_::getMergeId(ai);
         const typename ModelType_::DataObjectType *itemA = ai;
         const typename ModelType_::DataObjectType *itemB = nullptr;
         bool found = false;
@@ -236,8 +273,8 @@ bool compare(
             {
                 continue;
             }
-            const int bId = ModelType_::getIntId(bi);
-            found |= aId == bId;
+            const QString bMergeId = ModelType_::getMergeId(bi);
+            found |= aMergeId == bMergeId;
             if(found)
             {
                 itemB = bi;
@@ -250,14 +287,15 @@ bool compare(
         }
         if(!isEqualModelItems<ModelType_>(itemA, itemB))
         {
-            data_.pushDifferentId(aId);
+            const int bId = ModelType_::getIntId(itemB);
+            data_.pushDifferentId(aId, bId);
         }
     }
     return true;
 }
 
 template<typename ModelType_> inline
-QHash<QString, QVariant> filterItem(
+QHash<QString, QVariant> getIdFieldsMapping(
         const typename ModelType_::DataObjectType *item_,
         const MergeData &data_
         )
@@ -338,14 +376,14 @@ bool MergeItem<ModelType_>::mergeStepImpl(
     {
         if(data_.hasDifferent())
         {
-            const int id = data_.popDifferentId();
+            const std::pair<int,int> abIds = data_.popDifferentId();
             const typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
-                        QVariant::fromValue(id)
+                        QVariant::fromValue(abIds.second)
                         );
             typename ModelType_::DataObjectType *itemNew =
                     inputModel_->findDataItemByIdImpl(
-                        QVariant::fromValue(id)
+                        QVariant::fromValue(abIds.first)
                         );
             const int index = model_->indexOfDataItemImpl(itemOld);
             if(index >= 0 && itemOld)
@@ -353,7 +391,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 model_->setDataItemImpl(
                     index,
                     itemNew,
-                    filterItem<ModelType_>(itemNew, data_)
+                    getIdFieldsMapping<ModelType_>(itemNew, data_)
                     );
             }
             return true;
@@ -514,6 +552,18 @@ void EffectsExchange::free()
     {
         m_objectInfoModel->clearResponse();
     }
+    if(m_effectArgModel)
+    {
+        m_effectArgModel->clearResponse();
+    }
+    if(m_effectArgSetModel)
+    {
+        m_effectArgSetModel->clearResponse();
+    }
+    if(m_effectArgValueModel)
+    {
+        m_effectArgValueModel->clearResponse();
+    }
     if(m_artefactTypeModel)
     {
         m_artefactTypeModel->clearResponse();
@@ -584,6 +634,30 @@ void EffectsExchange::create()
     m_objectInfoModel->setLayoutIdFieldImpl("id");
     m_objectInfoModel->registerListModel();
     m_objectInfoModel->setAutoCreateChildrenModels(true);
+
+    m_effectArgModel = std::make_unique<EffectArgModel>(this);
+    m_effectArgModel->initResponse();
+    m_effectArgModel->setCurrentRef("");
+    m_effectArgModel->setLayoutQMLName("LocalData_Export_EffectArgModel");
+    m_effectArgModel->setLayoutIdFieldImpl("id");
+    m_effectArgModel->registerListModel();
+    m_effectArgModel->setAutoCreateChildrenModels(true);
+
+    m_effectArgSetModel = std::make_unique<EffectArgSetModel>(this);
+    m_effectArgSetModel->initResponse();
+    m_effectArgSetModel->setCurrentRef("");
+    m_effectArgSetModel->setLayoutQMLName("LocalData_Export_EffectArgSetModel");
+    m_effectArgSetModel->setLayoutIdFieldImpl("id");
+    m_effectArgSetModel->registerListModel();
+    m_effectArgSetModel->setAutoCreateChildrenModels(true);
+
+    m_effectArgValueModel = std::make_unique<EffectArgValueModel>(this);
+    m_effectArgValueModel->initResponse();
+    m_effectArgValueModel->setCurrentRef("");
+    m_effectArgValueModel->setLayoutQMLName("LocalData_Export_EffectArgValueModel");
+    m_effectArgValueModel->setLayoutIdFieldImpl("id");
+    m_effectArgValueModel->registerListModel();
+    m_effectArgValueModel->setAutoCreateChildrenModels(true);
 
     m_artefactTypeModel = std::make_unique<ArtefactTypeModel>(this);
     m_artefactTypeModel->initResponse();
@@ -689,6 +763,42 @@ void EffectsExchange::downloadStep()
                     );
         m_objectInfoModel->loadList();
         emit progress(stepProgress(), msg(g_objectInfoModelDownloadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_effectArgModel && !m_effectArgModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_effectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+        m_effectArgModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgModelDownloadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_effectArgSetModel && !m_effectArgSetModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_effectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+        m_effectArgSetModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgSetModelDownloadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_effectArgValueModel && !m_effectArgValueModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_effectArgValueModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+        m_effectArgValueModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgValueModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
@@ -822,6 +932,18 @@ void EffectsExchange::freeInput()
     {
         m_inputObjectInfoModel->clearResponse();
     }
+    if(m_inputEffectArgModel)
+    {
+        m_inputEffectArgModel->clearResponse();
+    }
+    if(m_inputEffectArgSetModel)
+    {
+        m_inputEffectArgSetModel->clearResponse();
+    }
+    if(m_inputEffectArgValueModel)
+    {
+        m_inputEffectArgValueModel->clearResponse();
+    }
     if(m_inputArtefactTypeModel)
     {
         m_inputArtefactTypeModel->clearResponse();
@@ -913,6 +1035,42 @@ void EffectsExchange::createInput()
     m_inputObjectInfoModel->setLayoutIdFieldImpl("id");
     m_inputObjectInfoModel->registerListModel();
     m_inputObjectInfoModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectArgModel = std::make_unique<EffectArgModel>(
+                this,
+                std::shared_ptr<QVector<EffectArgData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectArgModel->initResponse();
+    m_inputEffectArgModel->setCurrentRef("");
+    m_inputEffectArgModel->setLayoutQMLName("LocalData_Import_EffectArgModel");
+    m_inputEffectArgModel->setLayoutIdFieldImpl("id");
+    m_inputEffectArgModel->registerListModel();
+    m_inputEffectArgModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectArgSetModel = std::make_unique<EffectArgSetModel>(
+                this,
+                std::shared_ptr<QVector<EffectArgSetData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectArgSetModel->initResponse();
+    m_inputEffectArgSetModel->setCurrentRef("");
+    m_inputEffectArgSetModel->setLayoutQMLName("LocalData_Import_EffectArgSetModel");
+    m_inputEffectArgSetModel->setLayoutIdFieldImpl("id");
+    m_inputEffectArgSetModel->registerListModel();
+    m_inputEffectArgSetModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectArgValueModel = std::make_unique<EffectArgValueModel>(
+                this,
+                std::shared_ptr<QVector<EffectArgValueData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectArgValueModel->initResponse();
+    m_inputEffectArgValueModel->setCurrentRef("");
+    m_inputEffectArgValueModel->setLayoutQMLName("LocalData_Import_EffectArgValueModel");
+    m_inputEffectArgValueModel->setLayoutIdFieldImpl("id");
+    m_inputEffectArgValueModel->registerListModel();
+    m_inputEffectArgValueModel->setAutoCreateChildrenModels(true);
 
     m_inputArtefactTypeModel = std::make_unique<ArtefactTypeModel>(
                 this,
@@ -1100,6 +1258,42 @@ void EffectsExchange::uploadStep()
         emit progress(stepProgress(), msg(g_objectInfoModelUploadingStatus, m_uploading));
         return; // one model at time
     }
+    if(m_inputEffectArgModel && !m_inputEffectArgModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_inputEffectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+        m_inputEffectArgModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgModelUploadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_inputEffectArgSetModel && !m_inputEffectArgSetModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_inputEffectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+        m_inputEffectArgSetModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgSetModelUploadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_inputEffectArgValueModel && !m_inputEffectArgValueModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_inputEffectArgValueModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+        m_inputEffectArgValueModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgValueModelUploadingStatus, m_uploading));
+        return; // one model at time
+    }
     if(m_inputArtefactTypeModel && !m_inputArtefactTypeModel->isListLoaded())
     {
         QObject::connect(
@@ -1221,6 +1415,33 @@ void EffectsExchange::disconnectDownload()
                     SLOT(listReloadedSlot())
                     );
     }
+    if(m_effectArgModel)
+    {
+        QObject::disconnect(
+                    m_effectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_effectArgSetModel)
+    {
+        QObject::disconnect(
+                    m_effectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_effectArgValueModel)
+    {
+        QObject::disconnect(
+                    m_effectArgValueModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
     if(m_artefactTypeModel)
     {
         QObject::disconnect(
@@ -1318,6 +1539,33 @@ void EffectsExchange::disconnectUpload()
                     SLOT(listReloadedSlotForImport())
                     );
     }
+    if(m_inputEffectArgModel)
+    {
+        QObject::disconnect(
+                    m_inputEffectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+    }
+    if(m_inputEffectArgSetModel)
+    {
+        QObject::disconnect(
+                    m_inputEffectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+    }
+    if(m_inputEffectArgValueModel)
+    {
+        QObject::disconnect(
+                    m_inputEffectArgValueModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+    }
     if(m_inputArtefactTypeModel)
     {
         QObject::disconnect(
@@ -1374,7 +1622,15 @@ bool EffectsExchange::mergeImpl()
         m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
         m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
         m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
-        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get(),
+        m_artefactModel.get(), m_inputArtefactModel.get(),
+        m_effectModel.get(), m_inputEffectModel.get(),
+        m_objectInfoModel.get(),m_inputObjectInfoModel.get(),
+        m_effectObjectsModel.get(), m_inputEffectObjectsModel.get(),
+        m_objectArtefactModel.get(), m_inputObjectArtefactModel.get(),
+        m_effectArgModel.get(), m_inputEffectArgModel.get(),
+        m_effectArgSetModel.get(), m_inputEffectArgSetModel.get(),
+        m_effectArgValueModel.get(), m_inputEffectArgValueModel.get()
         );
     m_mergeData.clear();
     m_merge.clear();
@@ -1390,7 +1646,15 @@ void EffectsExchange::mergeStep()
         m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
         m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
         m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
-        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get(),
+        m_artefactModel.get(), m_inputArtefactModel.get(),
+        m_effectModel.get(), m_inputEffectModel.get(),
+        m_objectInfoModel.get(),m_inputObjectInfoModel.get(),
+        m_effectObjectsModel.get(), m_inputEffectObjectsModel.get(),
+        m_objectArtefactModel.get(), m_inputObjectArtefactModel.get(),
+        m_effectArgModel.get(), m_inputEffectArgModel.get(),
+        m_effectArgSetModel.get(), m_inputEffectArgSetModel.get(),
+        m_effectArgValueModel.get(), m_inputEffectArgValueModel.get()
         ))
     {
         emit progress(stepProgress(), g_mergingStatus);
@@ -1409,4 +1673,140 @@ void EffectsExchange::itemSetSlotForImport()
 void EffectsExchange::itemAddedSlotForImport()
 {
     mergeStep();
+}
+
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename EffectArgValueModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect-arg", item_->argId()))
+    {
+        result.insert("arg", data_.getMapping("effect-arg", item_->argId()));
+    }
+    if(data_.hasMapping("effect-arg-set", item_->argSetId()))
+    {
+        result.insert("arg_set", data_.getMapping("effect-arg-set", item_->argSetId()));
+    }
+    return result;
+}
+
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename EffectArgSetModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect", item_->effectId()))
+    {
+        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+    }
+    if(data_.hasMapping("easing-type", item_->easingId()))
+    {
+        result.insert("easing", data_.getMapping("easing-type", item_->easingId()));
+    }
+    return result;
+}
+
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename EffectArgModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect", item_->effectId()))
+    {
+        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+    }
+    if(data_.hasMapping("object-artefact", item_->objectArtefactId()))
+    {
+        result.insert("object_artefact", data_.getMapping("object-artefact", item_->objectArtefactId()));
+    }
+    if(data_.hasMapping("artefact-arg-type", item_->argTypeId()))
+    {
+        result.insert("arg_type", data_.getMapping("artefact-arg-type", item_->argTypeId()));
+    }
+    if(data_.hasMapping("artefact-arg-storage", item_->argStorageId()))
+    {
+        result.insert("arg_storage", data_.getMapping("artefact-arg-storage", item_->argStorageId()));
+    }
+    return result;
+}
+
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename ObjectArtefactModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("object-info", item_->objectInfoId()))
+    {
+        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
+    }
+    if(data_.hasMapping("artefact", item_->artefactId()))
+    {
+        result.insert("artefact", data_.getMapping("artefact", item_->artefactId()));
+    }
+    return result;
+}
+
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename EffectObjectsModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect", item_->effectId()))
+    {
+        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+    }
+    if(data_.hasMapping("object-info", item_->objectInfoId()))
+    {
+        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
+    }
+    return result;
+}
+
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename ArtefactModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("artefact-type", item_->type()))
+    {
+        result.insert("type", data_.getMapping("artefact-type", item_->type()));
+    }
+    return result;
 }

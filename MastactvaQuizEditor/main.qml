@@ -2775,6 +2775,11 @@ ApplicationWindow {
             effectsExchange.downloaded.connect(effectExchangeDownloaded)
         }
 
+        function reconnect2()
+        {
+            effectsExchange.merged.connect(effectExchangeMerged)
+        }
+
         function disconnect()
         {
             popupMessage.closePopupMessagePage.disconnect(onClosePopupMessagePage)
@@ -2785,6 +2790,11 @@ ApplicationWindow {
         function redisconnect()
         {
             effectsExchange.downloaded.disconnect(effectExchangeDownloaded)
+        }
+
+        function redisconnect2()
+        {
+            effectsExchange.merged.disconnect(effectExchangeMerged)
         }
 
         function effectExchangeProgress(p, msg)
@@ -2810,9 +2820,27 @@ ApplicationWindow {
 
         function effectExchangeDownloaded()
         {
+            reconnect2()
+            if(effectsExchange.merge())
+            {
+                popupMessage.fieldPopupMessageShortText = qsTr("Start merging");
+            }
+            else
+            {
+                disconnect()
+                redisconnect()
+                redisconnect2()
+                effectsExchange.cancel()
+                popupMessage.fieldPopupMessageShortText = qsTr("Error while merging (internal error)");
+            }
+        }
+
+        function effectExchangeMerged()
+        {
             disconnect()
             redisconnect()
-            popupMessage.fieldPopupMessageShortText = qsTr("Import data prepared");
+            redisconnect2()
+            popupMessage.fieldPopupMessageShortText = qsTr("Import data merged");
         }
 
         function onClosePopupMessagePage()
