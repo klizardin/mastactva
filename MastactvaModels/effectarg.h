@@ -51,7 +51,7 @@ public:
     Q_PROPERTY(QString effectArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime effectArgCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant effectArgObjectArtefact READ objectArtefact WRITE setObjectArtefact NOTIFY objectArtefactChanged)
-
+    Q_PROPERTY(QString effectArgMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<EffectArg>
     {
@@ -70,6 +70,7 @@ public:
             addField<QString>("default_value", "effectArgDefaultValue", &EffectArg::defaultValue, &EffectArg::setDefaultValue);
             addField<QString>("description", "effectArgDescription", &EffectArg::description, &EffectArg::setDescription);
             addField<QDateTime>("created", "effectArgCreated", &EffectArg::created, &EffectArg::setCreated);
+            addField<QString>("mergeid", "effectArgMergeId", &EffectArg::mergeid, &EffectArg::setMergeid);
             addModel<ObjectArtefactModel>("effectArgObjectArtefact", &EffectArg::m_objectArtefactModel, &EffectArg::createObjectArtefactModel);
             /* 1:1 */
             setIdField("id");
@@ -95,6 +96,8 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+    QString mergeid() const;
+    void setMergeid(const QString &mergeid_);
     QVariant objectArtefact() const;
     void setObjectArtefact(const QVariant &objectArtefact_);
 
@@ -114,6 +117,7 @@ signals:
     void objectArtefactIdChanged();
     void createdChanged();
     void objectArtefactChanged();
+    void mergeidChanged();
 
 private:
     EffectArgModel *m_effectArgModel = nullptr;

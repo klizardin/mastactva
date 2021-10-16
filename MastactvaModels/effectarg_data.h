@@ -20,7 +20,8 @@ public:
                   const QString &name_,
                   const QString &defaultValue_,
                   const QString &description_,
-                  const QDateTime &created_
+                  const QDateTime &created_,
+                  const QString &mergeid_
                   );
     virtual ~EffectArgData() = default;
     EffectArgData(EffectArgData &&data_);
@@ -34,6 +35,7 @@ public:
     // args are unique by name inside artefact id
     QString m_description;
     QDateTime m_created;
+    QString m_mergeid;
 
     EffectArgData(const EffectArgData &data_) = delete;
     EffectArgData &operator = (const EffectArgData &data_) = delete;

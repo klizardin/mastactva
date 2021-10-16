@@ -11919,6 +11919,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setObjectArtefact"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EffectArg",
@@ -11971,6 +11985,11 @@
                     {
                         "access": "public",
                         "name": "objectArtefactChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],

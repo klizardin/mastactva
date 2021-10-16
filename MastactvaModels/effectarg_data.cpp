@@ -9,7 +9,8 @@ EffectArgData::EffectArgData(int id_,
               const QString &name_,
               const QString &defaultValue_,
               const QString &description_,
-              const QDateTime &created_
+              const QDateTime &created_,
+              const QString &mergeid_
               )
     : EffectArgumentData(
           argStorageId_,
@@ -21,7 +22,8 @@ EffectArgData::EffectArgData(int id_,
       m_effectId(effectId_),
       m_objectArtefactId(objectArtefactId_),
       m_description(description_),
-      m_created(created_)
+      m_created(created_),
+      m_mergeid(mergeid_)
 {
 }
 
@@ -41,6 +43,7 @@ EffectArgData &EffectArgData::operator = (EffectArgData &&data_)
     m_defaultValue = std::move(data_.m_defaultValue);
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
+    m_mergeid = std::move(data_.m_mergeid);
 
     return *this;
 }
@@ -57,5 +60,6 @@ std::unique_ptr<EffectArgData> EffectArgData::getDataCopy() const
     result->m_defaultValue = m_defaultValue;
     result->m_description = m_description;
     result->m_created = m_created;
+    result->m_mergeid = m_mergeid;
     return result;
 }
