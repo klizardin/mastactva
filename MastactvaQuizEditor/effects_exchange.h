@@ -227,7 +227,15 @@ private:
         EasingTypeModel, EasingTypeModel,
         ArtefactArgStorageModel, ArtefactArgStorageModel,
         ArtefactArgTypeModel, ArtefactArgTypeModel,
-        ArtefactTypeModel, ArtefactTypeModel
+        ArtefactTypeModel, ArtefactTypeModel,
+        ArtefactModel, ArtefactModel,
+        EffectModel, EffectModel,
+        ObjectInfoModel, ObjectInfoModel,
+        EffectObjectsModel, EffectObjectsModel,
+        ObjectArtefactModel, ObjectArtefactModel,
+        EffectArgModel, EffectArgModel,
+        EffectArgSetModel, EffectArgSetModel,
+        EffectArgValueModel, EffectArgValueModel
         >;
 
     MergeData m_mergeData;

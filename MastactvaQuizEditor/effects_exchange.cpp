@@ -1622,7 +1622,15 @@ bool EffectsExchange::mergeImpl()
         m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
         m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
         m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
-        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get(),
+        m_artefactModel.get(), m_inputArtefactModel.get(),
+        m_effectModel.get(), m_inputEffectModel.get(),
+        m_objectInfoModel.get(),m_inputObjectInfoModel.get(),
+        m_effectObjectsModel.get(), m_inputEffectObjectsModel.get(),
+        m_objectArtefactModel.get(), m_inputObjectArtefactModel.get(),
+        m_effectArgModel.get(), m_inputEffectArgModel.get(),
+        m_effectArgSetModel.get(), m_inputEffectArgSetModel.get(),
+        m_effectArgValueModel.get(), m_inputEffectArgValueModel.get()
         );
     m_mergeData.clear();
     m_merge.clear();
@@ -1638,7 +1646,15 @@ void EffectsExchange::mergeStep()
         m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
         m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
         m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
-        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get()
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get(),
+        m_artefactModel.get(), m_inputArtefactModel.get(),
+        m_effectModel.get(), m_inputEffectModel.get(),
+        m_objectInfoModel.get(),m_inputObjectInfoModel.get(),
+        m_effectObjectsModel.get(), m_inputEffectObjectsModel.get(),
+        m_objectArtefactModel.get(), m_inputObjectArtefactModel.get(),
+        m_effectArgModel.get(), m_inputEffectArgModel.get(),
+        m_effectArgSetModel.get(), m_inputEffectArgSetModel.get(),
+        m_effectArgValueModel.get(), m_inputEffectArgValueModel.get()
         ))
     {
         emit progress(stepProgress(), g_mergingStatus);
@@ -1794,4 +1810,3 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     return result;
 }
-
