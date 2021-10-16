@@ -1777,3 +1777,21 @@ QHash<QString, QVariant> getIdFieldsMapping(
     return result;
 }
 
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename ArtefactModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("artefact-type", item_->type()))
+    {
+        result.insert("type", data_.getMapping("artefact-type", item_->type()));
+    }
+    return result;
+}
+
