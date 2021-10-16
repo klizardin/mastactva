@@ -30,6 +30,7 @@ unix: SOURCES += \
         modelconfig.cpp \
         Model.cpp \
         imagesource.cpp \
+        mergeid.cpp \
         netapi.cpp \
         netappconsts.cpp \
         qmlobjects.cpp \
@@ -160,6 +161,7 @@ unix: HEADERS += \
     modelconfig.h   \
     Model.h \
     imagesource.h \
+    mergeid.h   \
     Layout.h \
     netapi.h \
     netappconsts.h \

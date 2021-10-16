@@ -49,6 +49,7 @@ unix: SOURCES +=    \
     drawingdata_effectargvalue.cpp  \
     drawingdata_effectargset.cpp    \
     data_utils.cpp  \
+    mergeid.cpp \
     wavefrontobj.cpp    \
     luaapi.cpp  \
     opengldrawing_utils.cpp \
@@ -87,6 +88,7 @@ unix: HEADERS +=    \
     drawingdata_effectargvalue.h    \
     drawingdata_effectargset.h  \
     data_utils.h    \
+    mergeid.h   \
     wavefrontobj.h  \
     luaapi.h    \
     opengldrawing_utils.h   \
