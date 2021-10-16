@@ -36,6 +36,7 @@
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 
 
 namespace drawingdata

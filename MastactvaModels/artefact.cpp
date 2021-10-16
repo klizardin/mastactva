@@ -395,12 +395,12 @@ void Artefact::setArtefactArg(const QVariant &obj_)
     }
 }
 
-QString Artefact::mergeid() const
+MergeId Artefact::mergeid() const
 {
     return m_mergeid;
 }
 
-void Artefact::setMergeid(const QString &mergeid_)
+void Artefact::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

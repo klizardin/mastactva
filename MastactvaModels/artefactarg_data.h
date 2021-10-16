@@ -22,6 +22,7 @@
 #include <memory>
 #include <QString>
 #include <QDateTime>
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/artefactargtype_data.h"
 #include "../MastactvaModels/artefactargstorage_data.h"
 #include "../MastactvaModels/effectargument_data.h"
@@ -40,7 +41,7 @@ public:
             const QString &defaultValue_,
             const QString &description_,
             const QDateTime &created_,
-            const QString &mergeid_
+            const MergeId &mergeid_
             );
     ArtefactArgData(ArtefactArgData && data_);
     virtual ~ArtefactArgData() = default;
@@ -52,7 +53,7 @@ public:
     int m_artefactId = -1;
     QString m_description;
     QDateTime m_created;
-    QString m_mergeid;
+    MergeId m_mergeid;
 
     ArtefactArgData(const ArtefactArgData &data_) = delete;
     ArtefactArgData &operator = (const ArtefactArgData &data_) = delete;

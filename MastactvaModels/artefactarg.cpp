@@ -149,12 +149,12 @@ void ArtefactArg::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
-QString ArtefactArg::mergeid() const
+MergeId ArtefactArg::mergeid() const
 {
     return m_mergeid;
 }
 
-void ArtefactArg::setMergeid(const QString &mergeid_)
+void ArtefactArg::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

@@ -337,7 +337,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 effectId,
                 objectInfoId,
                 effectObjectStep,
-                QString()
+                MergeId()
                 );
 
     // object info
@@ -346,7 +346,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 effectObjectName,
                 effectObjectProgrammerName,
                 now,
-                QString()
+                MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -402,7 +402,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefactType1,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
@@ -415,7 +415,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -426,7 +426,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -442,7 +442,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefactType2,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
@@ -451,7 +451,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -476,7 +476,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 effectId,
                 objectInfoId,
                 effectObjectStep,
-                QString()
+                MergeId()
                 );
 
     // object info
@@ -485,7 +485,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 effectObjectName,
                 effectObjectProgrammerName,
                 now,
-                QString()
+                MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -551,7 +551,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactType1,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
@@ -564,7 +564,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -575,7 +575,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -591,7 +591,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactType2,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
@@ -600,7 +600,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -623,7 +623,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 effectId,
                 objectInfoId,
                 effectObjectStep,
-                QString()
+                MergeId()
                 );
 
     // ObjectInfoData
@@ -632,7 +632,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 effectName,
                 effectProgrammerName,
                 now,
-                QString()
+                MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -723,7 +723,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 artefactType1,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
     {
@@ -736,7 +736,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -746,7 +746,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -779,7 +779,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 artefactType2,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     for(std::size_t i = 0; i < sizeof(fragmentArgs)/sizeof(fragmentArgs[0]); ++i)
     {
@@ -792,7 +792,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::value)>(fragmentArgs[i]),
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
         artefact2->m_artefactArgData->push_back(arg.release());
     }
@@ -802,7 +802,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
 
@@ -825,7 +825,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                     ArtefactTypeEn::texture2D,
                     emptyStr,
                     now,
-                    QString()
+                    MergeId()
                     );
         auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
                     textureBaseObjectArtefactIdBase + i,
@@ -833,7 +833,7 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                     textureBaseArtefactId + i,
                     objectArtefactStep0,
                     textureArtefact.release(),
-                    QString()
+                    MergeId()
                     );
         effectObject->m_objectArtefactData->push_back(textureObjectArtefactData.release());
     }
@@ -1041,7 +1041,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 effectId,
                 objectInfoId,
                 effectObjectStep,
-                QString()
+                MergeId()
                 );
 
     // object info
@@ -1050,7 +1050,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 effectObjectName,
                 effectObjectProgrammerName,
                 now,
-                QString()
+                MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
@@ -1062,7 +1062,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 artefactType,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     for(const auto &arg_ : arguments_)
     {
@@ -1075,7 +1075,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 std::get<to_underlying(ArgEn::value)>(arg_),
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -1087,7 +1087,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 artefactId,
                 objectArtefactStep0,
                 artefact1.release(),
-                QString()
+                MergeId()
                 );
     effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
 
@@ -1119,7 +1119,7 @@ std::unique_ptr<EffectData> createTestData1()
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     return effect;
@@ -1161,7 +1161,7 @@ std::unique_ptr<EffectData> createTestData2()
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1188,7 +1188,7 @@ std::unique_ptr<EffectData> createTestData3()
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     return effect;
@@ -1236,7 +1236,7 @@ std::unique_ptr<EffectData> createTestData4()
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1307,7 +1307,7 @@ std::unique_ptr<EffectData> createTestData5()
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1393,7 +1393,7 @@ std::unique_ptr<EffectData> createTestData6()
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
@@ -1453,7 +1453,7 @@ std::unique_ptr<EffectData> createTestData7(
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1525,7 +1525,7 @@ std::unique_ptr<EffectData> createTestData8(
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1598,7 +1598,7 @@ std::unique_ptr<EffectData> createTestData9(
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
@@ -1703,7 +1703,7 @@ std::unique_ptr<EffectData> createTestData10(
                 effectName,
                 emptyStr,
                 now,
-                QString()
+                MergeId()
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());

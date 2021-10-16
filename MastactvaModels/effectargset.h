@@ -22,6 +22,7 @@
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/effectargvalue.h"
@@ -50,7 +51,7 @@ public:
     Q_PROPERTY(QVariant effectArgSetValues READ values WRITE setValues NOTIFY valuesChanged)
     Q_PROPERTY(int effectArgSetEasingId READ easingId WRITE setEasingId NOTIFY easingChanged)
     Q_PROPERTY(QDateTime effectArgSetCreated READ created WRITE setCreated NOTIFY createdChanged)
-    Q_PROPERTY(QString effectArgSetMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(MergeId effectArgSetMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<EffectArgSet>
     {
@@ -66,7 +67,7 @@ public:
             addField<int>("easing", "effectArgSetEasingId", &EffectArgSet::easingId, &EffectArgSet::setEasingId);
             addField<QString>("description", "effectArgSetDescription", &EffectArgSet::description, &EffectArgSet::setDescription);
             addField<QDateTime>("created", "effectArgSetCreated", &EffectArgSet::created, &EffectArgSet::setCreated);
-            addField<QString>("mergeid", "effectArgSetMergeId", &EffectArgSet::mergeid, &EffectArgSet::setMergeid);
+            addField<MergeId>("mergeid", "effectArgSetMergeId", &EffectArgSet::mergeid, &EffectArgSet::setMergeid);
             addModel<EffectArgValueModel>("effectArgSetValues", &EffectArgSet::m_affectArgValueModel, &EffectArgSet::createAffectArgValueModel);
             /* 1:N */
             setIdField("id");
@@ -93,8 +94,8 @@ public:
     void setEasingId(const int &easingId_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
-    QString mergeid() const;
-    void setMergeid(const QString &mergeid_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
 protected:
     EffectArgValueModel *createAffectArgValueModel();

@@ -31,7 +31,7 @@ EffectObjectsData::EffectObjectsData(
         int effectId_,
         int objectInfoId_,
         int stepIndex_,
-        const QString &mergeid_
+        const MergeId &mergeid_
         )
     : m_id(id_),
       m_effectId(effectId_),

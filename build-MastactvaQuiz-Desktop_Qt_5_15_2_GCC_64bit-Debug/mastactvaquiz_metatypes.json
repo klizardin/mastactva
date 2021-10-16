@@ -11029,7 +11029,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -11930,7 +11930,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -12831,7 +12831,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -13743,7 +13743,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -14658,7 +14658,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -16649,7 +16649,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -17523,7 +17523,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -18317,7 +18317,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -19106,7 +19106,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -19992,7 +19992,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -21786,7 +21786,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -22657,7 +22657,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -23526,7 +23526,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }

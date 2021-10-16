@@ -28,7 +28,7 @@ ArtefactArgData::ArtefactArgData(
         const QString &defaultValue_,
         const QString &description_,
         const QDateTime &created_,
-        const QString &mergeid_
+        const MergeId &mergeid_
         )
     : EffectArgumentData(
           to_underlying(argStorageId_),

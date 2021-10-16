@@ -18,6 +18,7 @@
 #include "qmlobjects.h"
 #include <QObject>
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/netapi.h"
 #include "../MastactvaBase/localdata.h"

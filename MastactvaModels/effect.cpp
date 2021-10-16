@@ -197,12 +197,12 @@ void Effect::setArgSets(const QVariant &obj_)
     }
 }
 
-QString Effect::mergeid() const
+MergeId Effect::mergeid() const
 {
     return m_mergeid;
 }
 
-void Effect::setMergeid(const QString &mergeid_)
+void Effect::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

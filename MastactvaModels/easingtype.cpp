@@ -55,12 +55,12 @@ void EasingType::setType(const QString &type_)
     emit typeChanged();
 }
 
-QString EasingType::mergeid() const
+MergeId EasingType::mergeid() const
 {
     return m_mergeid;
 }
 
-void EasingType::setMergeid(const QString &mergeid_)
+void EasingType::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

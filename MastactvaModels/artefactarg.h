@@ -22,6 +22,7 @@
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/artefactarg_data.h"
@@ -45,7 +46,7 @@ public:
     Q_PROPERTY(QString artefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString artefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime artefactArgCreated READ created WRITE setCreated NOTIFY createdChanged)
-    Q_PROPERTY(QString artefactArgMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(MergeId artefactArgMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<ArtefactArg>
     {
@@ -64,7 +65,7 @@ public:
             addField<QString>("default_value", "artefactArgDefaultValue", &ArtefactArg::defaultValue, &ArtefactArg::setDefaultValue);
             addField<QString>("description", "artefactArgDescription", &ArtefactArg::description, &ArtefactArg::setDescription);
             addField<QDateTime>("created", "artefactArgCreated", &ArtefactArg::created, &ArtefactArg::setCreated);
-            addField<QString>("mergeid", "artefactArgMergeId", &ArtefactArg::mergeid, &ArtefactArg::setMergeid);
+            addField<MergeId>("mergeid", "artefactArgMergeId", &ArtefactArg::mergeid, &ArtefactArg::setMergeid);
             setIdField("id");
         }
     };
@@ -88,8 +89,8 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
-    QString mergeid() const;
-    void setMergeid(const QString &mergeid_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
     bool createFrom(const int &effectArtefactId_, const Comment &comment_);
     void copyFrom(const ArtefactArg *arg_);

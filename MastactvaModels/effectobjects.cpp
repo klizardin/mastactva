@@ -185,12 +185,12 @@ void EffectObjects::setObjectArtefacts(const QVariant &obj_)
     }
 }
 
-QString EffectObjects::mergeid() const
+MergeId EffectObjects::mergeid() const
 {
     return m_mergeid;
 }
 
-void EffectObjects::setMergeid(const QString &mergeid_)
+void EffectObjects::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

@@ -22,6 +22,7 @@
 #include <memory>
 #include <QString>
 #include <QDateTime>
+#include "../MastactvaBase/mergeid.h"
 
 
 struct ObjectInfoData
@@ -33,7 +34,7 @@ public:
             const QString &name_,
             const QString &programmerName_,
             const QDateTime &created_,
-            const QString &mergeid_
+            const MergeId &mergeid_
             );
     ObjectInfoData(ObjectInfoData &&data_);
     virtual ~ObjectInfoData() = default;
@@ -46,7 +47,7 @@ public:
     QString m_programmerName;
     QString m_description;
     QDateTime m_created;
-    QString m_mergeid;
+    MergeId m_mergeid;
 
     ObjectInfoData(const ObjectInfoData &) = delete;
     ObjectInfoData & operator = (const ObjectInfoData &) = delete;

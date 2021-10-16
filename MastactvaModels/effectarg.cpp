@@ -163,12 +163,12 @@ void EffectArg::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
-QString EffectArg::mergeid() const
+MergeId EffectArg::mergeid() const
 {
     return m_mergeid;
 }
 
-void EffectArg::setMergeid(const QString &mergeid_)
+void EffectArg::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

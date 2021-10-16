@@ -18,6 +18,7 @@
 #include "localdataset.h"
 #include <math.h>
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/localdata.h"
 #include "../MastactvaBase/serverfiles.h"

@@ -54,12 +54,12 @@ void ArtefactArgType::setType(const QString &type_)
     emit typeChanged();
 }
 
-QString ArtefactArgType::mergeid() const
+MergeId ArtefactArgType::mergeid() const
 {
     return m_mergeid;
 }
 
-void ArtefactArgType::setMergeid(const QString &mergeid_)
+void ArtefactArgType::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

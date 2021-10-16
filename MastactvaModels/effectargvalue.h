@@ -22,6 +22,7 @@
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/effectarg.h"
@@ -46,7 +47,7 @@ public:
     Q_PROPERTY(QString effectArgValueDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime effectArgValueCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant effectArgValueArg READ arg WRITE setArg NOTIFY argChanged)
-    Q_PROPERTY(QString effectArgValueMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(MergeId effectArgValueMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<EffectArgValue>
     {
@@ -62,7 +63,7 @@ public:
             addField<QString>("value", "effectArgValueValue", &EffectArgValue::value, &EffectArgValue::setValue);
             addField<QString>("description", "effectArgValueDescription", &EffectArgValue::description, &EffectArgValue::setDescription);
             addField<QDateTime>("created", "effectArgValueCreated", &EffectArgValue::created, &EffectArgValue::setCreated);
-            addField<QString>("mergeid", "effectArgValueMergeId", &EffectArgValue::mergeid, &EffectArgValue::setMergeid);
+            addField<MergeId>("mergeid", "effectArgValueMergeId", &EffectArgValue::mergeid, &EffectArgValue::setMergeid);
             addModel<EffectArgModel>("effectArgValueArg", &EffectArgValue::m_effectArgModel, &EffectArgValue::createEffectArgModel);
             /* 1:1 */
             setIdField("id");
@@ -87,8 +88,8 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
-    QString mergeid() const;
-    void setMergeid(const QString &mergeid_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
     EffectArgModel *getArg();
     int getArgId() const;

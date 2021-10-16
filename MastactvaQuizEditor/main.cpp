@@ -25,6 +25,7 @@
 #include "mastactvaapi.h"
 #include "appconsts.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/utils.h"
 
 

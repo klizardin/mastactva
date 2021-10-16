@@ -21,7 +21,9 @@
 
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 
@@ -34,7 +36,7 @@ public:
 
     Q_PROPERTY(int artefactArgTypeId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString artefactArgTypeType READ type WRITE setType NOTIFY typeChanged)
-    Q_PROPERTY(QString artefactArgTypeMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(MergeId artefactArgTypeMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<ArtefactArgType>
     {
@@ -46,7 +48,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &ArtefactArgType::m_appId);
             addField<int>("id", "artefactArgTypeId", &ArtefactArgType::id, &ArtefactArgType::setId);
             addField<QString>("type", "artefactArgTypeType", &ArtefactArgType::type, &ArtefactArgType::setType);
-            addField<QString>("mergeid", "artefactArgTypeMergeId", &ArtefactArgType::mergeid, &ArtefactArgType::setMergeid);
+            addField<MergeId>("mergeid", "artefactArgTypeMergeId", &ArtefactArgType::mergeid, &ArtefactArgType::setMergeid);
             setIdField("id");
         }
     };
@@ -56,8 +58,8 @@ public:
     void setId(const int &id_);
     QString type() const;
     void setType(const QString &type_);
-    QString mergeid() const;
-    void setMergeid(const QString &mergeid_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
 signals:
     void idChanged();
@@ -69,7 +71,7 @@ private:
     int m_appId = -1;
     int m_id = -1;
     QString m_type;
-    QString m_mergeid;
+    MergeId m_mergeid;
 };
 
 

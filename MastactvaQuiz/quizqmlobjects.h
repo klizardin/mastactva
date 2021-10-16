@@ -21,6 +21,7 @@
 
 #include <QJsonDocument>
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/qmlobjects.h"
 
 
