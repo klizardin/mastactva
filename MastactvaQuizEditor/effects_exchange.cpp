@@ -1674,6 +1674,10 @@ QHash<QString, QVariant> filterItem(
     {
         result.insert("arg", data_.getMapping("effect-arg", item_->argId()));
     }
+    if(data_.hasMapping("effect-arg-set", item_->argSetId()))
+    {
+        result.insert("arg_set", data_.getMapping("effect-arg-set", item_->argSetId()));
+    }
     return result;
 }
 
