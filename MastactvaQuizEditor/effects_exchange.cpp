@@ -1733,3 +1733,26 @@ QHash<QString, QVariant> getIdFieldsMapping(
     return result;
 }
 
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename ObjectArtefactModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("object-info", item_->objectInfoId()))
+    {
+        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
+    }
+    if(data_.hasMapping("artefact", item_->artefactId()))
+    {
+        result.insert("artefact", data_.getMapping("artefact", item_->artefactId()));
+    }
+    return result;
+}
+
+
