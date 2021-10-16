@@ -295,7 +295,7 @@ bool compare(
 }
 
 template<typename ModelType_> inline
-QHash<QString, QVariant> filterItem(
+QHash<QString, QVariant> getIdFieldsMapping(
         const typename ModelType_::DataObjectType *item_,
         const MergeData &data_
         )
@@ -391,7 +391,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 model_->setDataItemImpl(
                     index,
                     itemNew,
-                    filterItem<ModelType_>(itemNew, data_)
+                    getIdFieldsMapping<ModelType_>(itemNew, data_)
                     );
             }
             return true;
@@ -1660,7 +1660,7 @@ void EffectsExchange::itemAddedSlotForImport()
 }
 
 inline
-QHash<QString, QVariant> filterItem(
+QHash<QString, QVariant> getIdFieldsMapping(
         const typename EffectArgValueModel::DataObjectType *item_,
         const MergeData &data_
         )
