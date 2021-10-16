@@ -1681,3 +1681,25 @@ QHash<QString, QVariant> getIdFieldsMapping(
     return result;
 }
 
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename EffectArgSetModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect", item_->effectId()))
+    {
+        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+    }
+    if(data_.hasMapping("easing-type", item_->easingId()))
+    {
+        result.insert("easing", data_.getMapping("easing-type", item_->easingId()));
+    }
+    return result;
+}
+
