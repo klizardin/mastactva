@@ -7127,6 +7127,20 @@
                         "type": "QDateTime",
                         "user": false,
                         "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgSetMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSet",
@@ -7164,6 +7178,11 @@
                     {
                         "access": "public",
                         "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],

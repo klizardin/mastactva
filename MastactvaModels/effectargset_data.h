@@ -18,7 +18,8 @@ public:
             int effectId_,
             int easingTypeId_,
             const QString &description_,
-            const QDateTime &created_
+            const QDateTime &created_,
+            const QString &mergeid_
             );
     EffectArgSetData(EffectArgSetData &&data_);
     virtual ~EffectArgSetData() = default;
@@ -34,6 +35,7 @@ public:
     int m_easingTypeId = -1;
     QString m_description;
     QDateTime m_created;
+    QString m_mergeid;
 
     std::shared_ptr<QVector<EffectArgValueData *>> m_effectArgValuesData;
 
