@@ -194,6 +194,11 @@ private:
     std::unique_ptr<EffectObjectsModel> m_effectObjectsModel;
     std::unique_ptr<ObjectArtefactModel> m_objectArtefactModel;
     std::unique_ptr<ObjectInfoModel> m_objectInfoModel;
+
+    std::unique_ptr<EffectArgModel> m_effectArgModel;
+    std::unique_ptr<EffectArgSetModel> m_effectArgSetModel;
+    std::unique_ptr<EffectArgValueModel> m_effectArgValueModel;
+
     std::unique_ptr<ArtefactTypeModel> m_artefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_artefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;

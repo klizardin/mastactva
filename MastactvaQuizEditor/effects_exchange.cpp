@@ -17,6 +17,9 @@ static const char *g_artefactModelDownloadingStatus = "Artefact model is downloa
 static const char *g_effectObjectsModelDownloadingStatus = "Effect objects model is downloading %1...";
 static const char *g_objectArtefactModelDownloadingStatus = "Object artefact model is downloading %1...";
 static const char *g_objectInfoModelDownloadingStatus = "Object info model is downloading %1...";
+static const char *g_effectArgModelDownloadingStatus = "Effect Arg model is downloading %1...";
+static const char *g_effectArgSetModelDownloadingStatus = "Effect Arg Set model is downloading %1...";
+static const char *g_effectArgValueModelDownloadingStatus = "Effect Arg Value model is downloading %1...";
 static const char *g_effectModelUploadingStatus = "Effect model is uploading %1...";
 static const char *g_artefactTypeModelUploadingStatus = "Artefact type model is uploading %1...";
 static const char *g_artefactArgTypeModelUploadingStatus = "Artefact arg type model is uploading %1...";
@@ -530,6 +533,18 @@ void EffectsExchange::free()
     {
         m_objectInfoModel->clearResponse();
     }
+    if(m_effectArgModel)
+    {
+        m_effectArgModel->clearResponse();
+    }
+    if(m_effectArgSetModel)
+    {
+        m_effectArgSetModel->clearResponse();
+    }
+    if(m_effectArgValueModel)
+    {
+        m_effectArgValueModel->clearResponse();
+    }
     if(m_artefactTypeModel)
     {
         m_artefactTypeModel->clearResponse();
@@ -600,6 +615,30 @@ void EffectsExchange::create()
     m_objectInfoModel->setLayoutIdFieldImpl("id");
     m_objectInfoModel->registerListModel();
     m_objectInfoModel->setAutoCreateChildrenModels(true);
+
+    m_effectArgModel = std::make_unique<EffectArgModel>(this);
+    m_effectArgModel->initResponse();
+    m_effectArgModel->setCurrentRef("");
+    m_effectArgModel->setLayoutQMLName("LocalData_Export_EffectArgModel");
+    m_effectArgModel->setLayoutIdFieldImpl("id");
+    m_effectArgModel->registerListModel();
+    m_effectArgModel->setAutoCreateChildrenModels(true);
+
+    m_effectArgSetModel = std::make_unique<EffectArgSetModel>(this);
+    m_effectArgSetModel->initResponse();
+    m_effectArgSetModel->setCurrentRef("");
+    m_effectArgSetModel->setLayoutQMLName("LocalData_Export_EffectArgSetModel");
+    m_effectArgSetModel->setLayoutIdFieldImpl("id");
+    m_effectArgSetModel->registerListModel();
+    m_effectArgSetModel->setAutoCreateChildrenModels(true);
+
+    m_effectArgValueModel = std::make_unique<EffectArgValueModel>(this);
+    m_effectArgValueModel->initResponse();
+    m_effectArgValueModel->setCurrentRef("");
+    m_effectArgValueModel->setLayoutQMLName("LocalData_Export_EffectArgValueModel");
+    m_effectArgValueModel->setLayoutIdFieldImpl("id");
+    m_effectArgValueModel->registerListModel();
+    m_effectArgValueModel->setAutoCreateChildrenModels(true);
 
     m_artefactTypeModel = std::make_unique<ArtefactTypeModel>(this);
     m_artefactTypeModel->initResponse();
@@ -705,6 +744,42 @@ void EffectsExchange::downloadStep()
                     );
         m_objectInfoModel->loadList();
         emit progress(stepProgress(), msg(g_objectInfoModelDownloadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_effectArgModel && !m_effectArgModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_effectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+        m_effectArgModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgModelDownloadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_effectArgSetModel && !m_effectArgSetModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_effectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+        m_effectArgSetModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgSetModelDownloadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_effectArgValueModel && !m_effectArgValueModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_effectArgValueModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+        m_effectArgValueModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgValueModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
@@ -1232,6 +1307,33 @@ void EffectsExchange::disconnectDownload()
     {
         QObject::disconnect(
                     m_objectInfoModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_effectArgModel)
+    {
+        QObject::disconnect(
+                    m_effectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_effectArgSetModel)
+    {
+        QObject::disconnect(
+                    m_effectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlot())
+                    );
+    }
+    if(m_effectArgValueModel)
+    {
+        QObject::disconnect(
+                    m_effectArgValueModel.get(),
                     SIGNAL(listReloaded()),
                     this,
                     SLOT(listReloadedSlot())
