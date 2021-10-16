@@ -56,26 +56,38 @@ void MergeData::clearIds(int newSize_, int oldSize_)
     m_differents.reserve(std::min(newSize_, oldSize_));
 }
 
-void MergeData::pushNewId(int id_)
+void MergeData::pushNewId(int id_, const QString &mergeid_)
 {
-    m_onlyInNew.push_back(id_);
+    m_onlyInNew.push_back({id_, mergeid_});
 }
 
-void MergeData::pushOldId(int id_)
+void MergeData::pushOldId(int id_, const QString &mergeid_)
 {
-    m_onlyInOld.push_back(id_);
+    m_onlyInOld.push_back({id_, mergeid_});
 }
 
-void MergeData::pushDifferentId(int id_)
+void MergeData::pushDifferentId(int aId_, int bId_)
 {
-    m_differents.push_back(id_);
+    m_differents.push_back({aId_, bId_});
 }
 
 void MergeData::sort()
 {
-    std::sort(std::begin(m_onlyInNew), std::end(m_onlyInNew));
-    std::sort(std::begin(m_onlyInOld), std::end(m_onlyInOld));
-    std::sort(std::begin(m_differents), std::end(m_differents));
+    const auto cmp1 = [](
+            const std::pair<int, QString> &v1_,
+            const std::pair<int, QString> &v2_)->bool
+    {
+        return v1_.first < v2_.first;
+    };
+    const auto cmp2 = [](
+            const std::pair<int, int> &v1_,
+            const std::pair<int, int> &v2_)->bool
+    {
+        return v1_.first < v2_.first;
+    };
+    std::sort(std::begin(m_onlyInNew), std::end(m_onlyInNew), cmp1);
+    std::sort(std::begin(m_onlyInOld), std::end(m_onlyInOld), cmp1);
+    std::sort(std::begin(m_differents), std::end(m_differents), cmp2);
 }
 
 int MergeData::count() const
@@ -88,15 +100,15 @@ bool MergeData::hasDifferent() const
     return !m_differents.isEmpty();
 }
 
-int MergeData::popDifferentId()
+std::pair<int,int> MergeData::popDifferentId()
 {
     if(!hasDifferent())
     {
-        return -1;
+        return {-1, -1};
     }
-    int id = m_differents.back();
+    std::pair<int,int> abIds = m_differents.back();
     m_differents.pop_back();
-    return id;
+    return abIds;
 }
 
 bool MergeData::hasNewId() const
@@ -110,7 +122,7 @@ int MergeData::popNewId()
     {
         return -1;
     }
-    int id = m_onlyInNew.back();
+    int id = m_onlyInNew.back().first;
     m_onlyInNew.pop_back();
     return id;
 }
@@ -170,6 +182,7 @@ bool compare(
             continue;
         }
         const int aId = ModelType_::getIntId(ai);
+        const QString aMergeId = ModelType_::getMergeId(ai);
         bool found = false;
         for(int i = 0; i < b_->sizeImpl(); i++)
         {
@@ -178,8 +191,8 @@ bool compare(
             {
                 continue;
             }
-            const int bId = ModelType_::getIntId(bi);
-            found |= aId == bId;
+            const QString bMergeId = ModelType_::getMergeId(bi);
+            found |= aMergeId == bMergeId;
             if(found)
             {
                 break;
@@ -187,7 +200,7 @@ bool compare(
         }
         if(!found)
         {
-            data_.pushNewId(aId);
+            data_.pushNewId(aId, aMergeId);
         }
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
@@ -198,6 +211,7 @@ bool compare(
             continue;
         }
         const int bId = ModelType_::getIntId(bi);
+        const QString bMergeId = ModelType_::getMergeId(bi);
         bool found = false;
         for(int i = 0; i < a_->sizeImpl(); i++)
         {
@@ -206,8 +220,8 @@ bool compare(
             {
                 continue;
             }
-            const int aId = ModelType_::getIntId(ai);
-            found |= aId == bId;
+            const QString aMergeId = ModelType_::getMergeId(ai);
+            found |= aMergeId == bMergeId;
             if(found)
             {
                 break;
@@ -215,7 +229,7 @@ bool compare(
         }
         if(!found)
         {
-            data_.pushOldId(bId);
+            data_.pushOldId(bId, bMergeId);
         }
     }
     for(int i = 0; i < a_->sizeImpl(); i++)
@@ -226,6 +240,7 @@ bool compare(
             continue;
         }
         const int aId = ModelType_::getIntId(ai);
+        const QString aMergeId = ModelType_::getMergeId(ai);
         const typename ModelType_::DataObjectType *itemA = ai;
         const typename ModelType_::DataObjectType *itemB = nullptr;
         bool found = false;
@@ -236,8 +251,8 @@ bool compare(
             {
                 continue;
             }
-            const int bId = ModelType_::getIntId(bi);
-            found |= aId == bId;
+            const QString bMergeId = ModelType_::getMergeId(bi);
+            found |= aMergeId == bMergeId;
             if(found)
             {
                 itemB = bi;
@@ -250,7 +265,8 @@ bool compare(
         }
         if(!isEqualModelItems<ModelType_>(itemA, itemB))
         {
-            data_.pushDifferentId(aId);
+            const int bId = ModelType_::getIntId(itemB);
+            data_.pushDifferentId(aId, bId);
         }
     }
     return true;
@@ -338,14 +354,14 @@ bool MergeItem<ModelType_>::mergeStepImpl(
     {
         if(data_.hasDifferent())
         {
-            const int id = data_.popDifferentId();
+            const std::pair<int,int> abIds = data_.popDifferentId();
             const typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
-                        QVariant::fromValue(id)
+                        QVariant::fromValue(abIds.second)
                         );
             typename ModelType_::DataObjectType *itemNew =
                     inputModel_->findDataItemByIdImpl(
-                        QVariant::fromValue(id)
+                        QVariant::fromValue(abIds.first)
                         );
             const int index = model_->indexOfDataItemImpl(itemOld);
             if(index >= 0 && itemOld)

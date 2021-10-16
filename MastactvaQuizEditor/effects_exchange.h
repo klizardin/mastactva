@@ -24,22 +24,22 @@ class MergeData
 public:
     void clear();
     void clearIds(int newSize_, int oldSize_);
-    void pushNewId(int id_);
-    void pushOldId(int id_);
-    void pushDifferentId(int id_);
+    void pushNewId(int id_, const QString &mergeid_);
+    void pushOldId(int id_, const QString &mergeid_);
+    void pushDifferentId(int aId_, int bId_);
     void sort();
     int count() const;
     bool hasDifferent() const;
-    int popDifferentId();
+    std::pair<int,int> popDifferentId();
     bool hasNewId() const;
     int popNewId();
     void setIdMapping(const QString &layoutName_, int oldId_, int newId_);
     void addIdMapping(const QString &layoutName_, int oldId_);
 
 private:
-    QVector<int> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
-    QVector<int> m_onlyInOld;   // do not remove items
-    QVector<int> m_differents;  // update items
+    QVector<std::pair<int, QString>> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
+    QVector<std::pair<int, QString>> m_onlyInOld;   // do not remove items
+    QVector<std::pair<int, int>> m_differents;  // update items
     QHash<QString, QHash<int, int>> m_idsMap;
 };
 
