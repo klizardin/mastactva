@@ -1703,3 +1703,33 @@ QHash<QString, QVariant> getIdFieldsMapping(
     return result;
 }
 
+inline
+QHash<QString, QVariant> getIdFieldsMapping(
+        const typename EffectArgModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect", item_->effectId()))
+    {
+        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+    }
+    if(data_.hasMapping("object-artefact", item_->objectArtefactId()))
+    {
+        result.insert("object_artefact", data_.getMapping("object-artefact", item_->objectArtefactId()));
+    }
+    if(data_.hasMapping("artefact-arg-type", item_->argTypeId()))
+    {
+        result.insert("arg_type", data_.getMapping("artefact-arg-type", item_->argTypeId()));
+    }
+    if(data_.hasMapping("artefact-arg-storage", item_->argStorageId()))
+    {
+        result.insert("arg_storage", data_.getMapping("artefact-arg-storage", item_->argStorageId()));
+    }
+    return result;
+}
+
