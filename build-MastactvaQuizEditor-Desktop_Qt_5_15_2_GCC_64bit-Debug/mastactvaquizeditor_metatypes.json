@@ -4376,6 +4376,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setType"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "easingTypeMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EasingType",
@@ -4388,6 +4402,11 @@
                     {
                         "access": "public",
                         "name": "typeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],
