@@ -378,6 +378,12 @@ public:
         return res.isValid() ? int(res.toDouble()) : -1;
     }
 
+    static QString getMergeId(const DataObjectType *item_)
+    {
+        const QVariant res = getDataLayout<DataObjectType>().getJsonValue(item_, g_mergeIdFieldName);
+        return res.isValid() ? res.toString() : QString();
+    }
+
     const DataObjectType *findDataItemByIdImpl(const QVariant &id_) const
     {
         const auto fit = std::find_if(std::cbegin(m_data),
