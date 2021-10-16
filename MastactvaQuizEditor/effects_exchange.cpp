@@ -155,6 +155,22 @@ void MergeData::addIdMapping(const QString &layoutName_, int oldId_)
     }
 }
 
+bool MergeData::hasMapping(const QString &layoutName_, int oldId_) const
+{
+    return m_idsMap.contains(layoutName_)
+            && m_idsMap[layoutName_].contains(oldId_)
+            && m_idsMap[layoutName_][oldId_] >= 0;
+}
+
+QVariant MergeData::getMapping(const QString &layoutName_, int oldId_) const
+{
+    if(!hasMapping(layoutName_, oldId_))
+    {
+        return QVariant();
+    }
+    return QVariant::fromValue(m_idsMap[layoutName_][oldId_]);
+}
+
 
 template<typename ModelType_> inline
 bool isEqualModelItems(
@@ -1642,3 +1658,22 @@ void EffectsExchange::itemAddedSlotForImport()
 {
     mergeStep();
 }
+
+inline
+QHash<QString, QVariant> filterItem(
+        const typename EffectArgValueModel::DataObjectType *item_,
+        const MergeData &data_
+        )
+{
+    QHash<QString, QVariant> result;
+    if(!item_)
+    {
+        return result;
+    }
+    if(data_.hasMapping("effect-arg", item_->argId()))
+    {
+        result.insert("arg", data_.getMapping("effect-arg", item_->argId()));
+    }
+    return result;
+}
+

@@ -35,6 +35,8 @@ public:
     int popNewId();
     void setIdMapping(const QString &layoutName_, int oldId_, int newId_);
     void addIdMapping(const QString &layoutName_, int oldId_);
+    bool hasMapping(const QString &layoutName_, int oldId_) const;
+    QVariant getMapping(const QString &layoutName_, int oldId_) const;
 
 private:
     QVector<std::pair<int, QString>> m_onlyInNew;   // add items (with filter idOld -> idNew mark)
