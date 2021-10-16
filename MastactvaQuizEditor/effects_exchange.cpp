@@ -29,6 +29,9 @@ static const char *g_artefactModelUploadingStatus = "Artefact model is uploading
 static const char *g_effectObjectsModelUploadingStatus = "Effect objects model is uploading %1...";
 static const char *g_objectArtefactModelUploadingStatus = "Object artefact model is uploading %1...";
 static const char *g_objectInfoModelUploadingStatus = "Object info model is uploading %1...";
+static const char *g_effectArgModelUploadingStatus = "Effect Arg model is uploading %1...";
+static const char *g_effectArgSetModelUploadingStatus = "Effect Arg Set model is uploading %1...";
+static const char *g_effectArgValueModelUploadingStatus = "Effect Arg Value model is uploading %1...";
 static const char *g_archiveResultsStatus = "Archiving results...";
 static const char *g_exctractArchiveStatus = "Extract archive...";
 static const char *g_mergingStatus = "Merging ...";
@@ -913,6 +916,18 @@ void EffectsExchange::freeInput()
     {
         m_inputObjectInfoModel->clearResponse();
     }
+    if(m_inputEffectArgModel)
+    {
+        m_inputEffectArgModel->clearResponse();
+    }
+    if(m_inputEffectArgSetModel)
+    {
+        m_inputEffectArgSetModel->clearResponse();
+    }
+    if(m_inputEffectArgValueModel)
+    {
+        m_inputEffectArgValueModel->clearResponse();
+    }
     if(m_inputArtefactTypeModel)
     {
         m_inputArtefactTypeModel->clearResponse();
@@ -1004,6 +1019,42 @@ void EffectsExchange::createInput()
     m_inputObjectInfoModel->setLayoutIdFieldImpl("id");
     m_inputObjectInfoModel->registerListModel();
     m_inputObjectInfoModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectArgModel = std::make_unique<EffectArgModel>(
+                this,
+                std::shared_ptr<QVector<EffectArgData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectArgModel->initResponse();
+    m_inputEffectArgModel->setCurrentRef("");
+    m_inputEffectArgModel->setLayoutQMLName("LocalData_Import_EffectArgModel");
+    m_inputEffectArgModel->setLayoutIdFieldImpl("id");
+    m_inputEffectArgModel->registerListModel();
+    m_inputEffectArgModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectArgSetModel = std::make_unique<EffectArgSetModel>(
+                this,
+                std::shared_ptr<QVector<EffectArgSetData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectArgSetModel->initResponse();
+    m_inputEffectArgSetModel->setCurrentRef("");
+    m_inputEffectArgSetModel->setLayoutQMLName("LocalData_Import_EffectArgSetModel");
+    m_inputEffectArgSetModel->setLayoutIdFieldImpl("id");
+    m_inputEffectArgSetModel->registerListModel();
+    m_inputEffectArgSetModel->setAutoCreateChildrenModels(true);
+
+    m_inputEffectArgValueModel = std::make_unique<EffectArgValueModel>(
+                this,
+                std::shared_ptr<QVector<EffectArgValueData *>>{nullptr},
+                m_inputModelConfig.get()
+                );
+    m_inputEffectArgValueModel->initResponse();
+    m_inputEffectArgValueModel->setCurrentRef("");
+    m_inputEffectArgValueModel->setLayoutQMLName("LocalData_Import_EffectArgValueModel");
+    m_inputEffectArgValueModel->setLayoutIdFieldImpl("id");
+    m_inputEffectArgValueModel->registerListModel();
+    m_inputEffectArgValueModel->setAutoCreateChildrenModels(true);
 
     m_inputArtefactTypeModel = std::make_unique<ArtefactTypeModel>(
                 this,
@@ -1189,6 +1240,42 @@ void EffectsExchange::uploadStep()
                     );
         m_inputObjectInfoModel->loadList();
         emit progress(stepProgress(), msg(g_objectInfoModelUploadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_inputEffectArgModel && !m_inputEffectArgModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_inputEffectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+        m_inputEffectArgModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgModelUploadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_inputEffectArgSetModel && !m_inputEffectArgSetModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_inputEffectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+        m_inputEffectArgSetModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgSetModelUploadingStatus, m_uploading));
+        return; // one model at time
+    }
+    if(m_inputEffectArgValueModel && !m_inputEffectArgValueModel->isListLoaded())
+    {
+        QObject::connect(
+                    m_inputEffectArgValueModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+        m_inputEffectArgValueModel->loadList();
+        emit progress(stepProgress(), msg(g_effectArgValueModelUploadingStatus, m_uploading));
         return; // one model at time
     }
     if(m_inputArtefactTypeModel && !m_inputArtefactTypeModel->isListLoaded())
@@ -1431,6 +1518,33 @@ void EffectsExchange::disconnectUpload()
     {
         QObject::disconnect(
                     m_inputObjectInfoModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+    }
+    if(m_inputEffectArgModel)
+    {
+        QObject::disconnect(
+                    m_inputEffectArgModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+    }
+    if(m_inputEffectArgSetModel)
+    {
+        QObject::disconnect(
+                    m_inputEffectArgSetModel.get(),
+                    SIGNAL(listReloaded()),
+                    this,
+                    SLOT(listReloadedSlotForImport())
+                    );
+    }
+    if(m_inputEffectArgValueModel)
+    {
+        QObject::disconnect(
+                    m_inputEffectArgValueModel.get(),
                     SIGNAL(listReloaded()),
                     this,
                     SLOT(listReloadedSlotForImport())

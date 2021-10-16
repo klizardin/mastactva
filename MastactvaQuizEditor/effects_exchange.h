@@ -194,11 +194,9 @@ private:
     std::unique_ptr<EffectObjectsModel> m_effectObjectsModel;
     std::unique_ptr<ObjectArtefactModel> m_objectArtefactModel;
     std::unique_ptr<ObjectInfoModel> m_objectInfoModel;
-
     std::unique_ptr<EffectArgModel> m_effectArgModel;
     std::unique_ptr<EffectArgSetModel> m_effectArgSetModel;
     std::unique_ptr<EffectArgValueModel> m_effectArgValueModel;
-
     std::unique_ptr<ArtefactTypeModel> m_artefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_artefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
@@ -210,6 +208,9 @@ private:
     std::unique_ptr<EffectObjectsModel> m_inputEffectObjectsModel;
     std::unique_ptr<ObjectArtefactModel> m_inputObjectArtefactModel;
     std::unique_ptr<ObjectInfoModel> m_inputObjectInfoModel;
+    std::unique_ptr<EffectArgModel> m_inputEffectArgModel;
+    std::unique_ptr<EffectArgSetModel> m_inputEffectArgSetModel;
+    std::unique_ptr<EffectArgValueModel> m_inputEffectArgValueModel;
     std::unique_ptr<ArtefactTypeModel> m_inputArtefactTypeModel;
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
