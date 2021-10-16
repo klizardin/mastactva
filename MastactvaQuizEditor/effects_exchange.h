@@ -189,6 +189,8 @@ private:
     QString m_archiveName;
     QString m_oldPathServerFiles;
 
+    // export
+    // models
     std::unique_ptr<EffectModel> m_effectModel;
     std::unique_ptr<ArtefactModel> m_artefactModel;
     std::unique_ptr<EffectObjectsModel> m_effectObjectsModel;
@@ -202,7 +204,9 @@ private:
     std::unique_ptr<ArtefactArgStorageModel> m_artefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_easingTypeModel;
 
+    // import
     std::unique_ptr<ChooseModelConfig> m_inputModelConfig;
+    // models
     std::unique_ptr<EffectModel> m_inputEffectModel;
     std::unique_ptr<ArtefactModel> m_inputArtefactModel;
     std::unique_ptr<EffectObjectsModel> m_inputEffectObjectsModel;
@@ -215,8 +219,8 @@ private:
     std::unique_ptr<ArtefactArgTypeModel> m_inputArtefactArgTypeModel;
     std::unique_ptr<ArtefactArgStorageModel> m_inputArtefactArgStorageModel;
     std::unique_ptr<EasingTypeModel> m_inputEasingTypeModel;
-    // TODO: add all models
 
+    // merge
     using MergeType = Merge<
         EasingTypeModel, EasingTypeModel,
         ArtefactArgStorageModel, ArtefactArgStorageModel,
