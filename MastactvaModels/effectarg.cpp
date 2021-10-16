@@ -232,9 +232,10 @@ ObjectArtefactModel *EffectArg::createObjectArtefactModel()
 
 EffectArgModel::EffectArgModel(
         QObject *parent_ /*= nullptr*/,
-        std::shared_ptr<QVector<EffectArgData *>> data_ /*= std::shared_ptr<QVector<EffectArgData *>>{nullptr}*/
+        std::shared_ptr<QVector<EffectArgData *>> data_ /*= std::shared_ptr<QVector<EffectArgData *>>{nullptr}*/,
+        IModelConfig *config_ /*= &DefaultModelConfig::instance()*/
         )
-    : base(parent_, data_)
+    : base(parent_, data_, config_)
 {
 #if defined(TRACE_THREADS)
     qDebug() << "EffectArgModel::EffectArgModel()" << QThread::currentThread() << QThread::currentThreadId();
