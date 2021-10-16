@@ -6,6 +6,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QVector>
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/effectargvalue_data.h"
 
 
@@ -18,7 +19,8 @@ public:
             int effectId_,
             int easingTypeId_,
             const QString &description_,
-            const QDateTime &created_
+            const QDateTime &created_,
+            const MergeId &mergeid_
             );
     EffectArgSetData(EffectArgSetData &&data_);
     virtual ~EffectArgSetData() = default;
@@ -34,6 +36,7 @@ public:
     int m_easingTypeId = -1;
     QString m_description;
     QDateTime m_created;
+    MergeId m_mergeid;
 
     std::shared_ptr<QVector<EffectArgValueData *>> m_effectArgValuesData;
 

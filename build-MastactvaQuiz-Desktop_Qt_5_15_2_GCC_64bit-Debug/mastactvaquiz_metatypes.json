@@ -11018,6 +11018,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setType"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "easingTypeMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "MergeId",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EasingType",
@@ -11030,6 +11044,11 @@
                     {
                         "access": "public",
                         "name": "typeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],
@@ -11900,6 +11919,20 @@
                         "type": "QVariant",
                         "user": false,
                         "write": "setObjectArtefact"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "MergeId",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EffectArg",
@@ -11952,6 +11985,11 @@
                     {
                         "access": "public",
                         "name": "objectArtefactChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],
@@ -12782,6 +12820,20 @@
                         "type": "QDateTime",
                         "user": false,
                         "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "effectArgSetMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "MergeId",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "EffectArgSet",
@@ -12819,6 +12871,11 @@
                     {
                         "access": "public",
                         "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],
@@ -13686,7 +13743,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -14601,7 +14658,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -16592,7 +16649,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -17466,7 +17523,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -18260,7 +18317,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -19049,7 +19106,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -19924,6 +19981,20 @@
                         "type": "QDateTime",
                         "user": false,
                         "write": "setCreated"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "artefactArgMergeId",
+                        "notify": "mergeidChanged",
+                        "read": "mergeid",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "MergeId",
+                        "user": false,
+                        "write": "setMergeid"
                     }
                 ],
                 "qualifiedClassName": "ArtefactArg",
@@ -19966,6 +20037,11 @@
                     {
                         "access": "public",
                         "name": "createdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "mergeidChanged",
                         "returnType": "void"
                     }
                 ],
@@ -21710,7 +21786,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -22581,7 +22657,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }
@@ -23450,7 +23526,7 @@
                         "required": false,
                         "scriptable": true,
                         "stored": true,
-                        "type": "QString",
+                        "type": "MergeId",
                         "user": false,
                         "write": "setMergeid"
                     }

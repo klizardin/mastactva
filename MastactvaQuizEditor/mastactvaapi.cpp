@@ -30,6 +30,7 @@
 #include "galleryeditviewmodel.h"
 #include "appconsts.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/netappconsts.h"
 #include "../MastactvaBase/netapi.h"
 #include "../MastactvaModels/artefacttype_data.h"

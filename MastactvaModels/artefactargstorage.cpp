@@ -54,12 +54,12 @@ void ArtefactArgStorage::setStorage(const QString &storage_)
     emit storageChanged();
 }
 
-QString ArtefactArgStorage::mergeid() const
+MergeId ArtefactArgStorage::mergeid() const
 {
     return m_mergeid;
 }
 
-void ArtefactArgStorage::setMergeid(const QString &mergeid_)
+void ArtefactArgStorage::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

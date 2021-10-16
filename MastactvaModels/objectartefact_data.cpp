@@ -30,7 +30,7 @@ ObjectArtefactData::ObjectArtefactData(
         int artefactId_,
         int stepIndex_,
         ArtefactData *artefact_,
-        const QString &mergeid_
+        const MergeId &mergeid_
         )
     : m_id(id_),
      m_objectInfoId(objectInfoId_),

@@ -5,6 +5,7 @@
 #include <memory>
 #include <QString>
 #include <QDateTime>
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/effectargument_data.h"
 
 
@@ -20,7 +21,8 @@ public:
                   const QString &name_,
                   const QString &defaultValue_,
                   const QString &description_,
-                  const QDateTime &created_
+                  const QDateTime &created_,
+                  const MergeId &mergeid_
                   );
     virtual ~EffectArgData() = default;
     EffectArgData(EffectArgData &&data_);
@@ -34,6 +36,7 @@ public:
     // args are unique by name inside artefact id
     QString m_description;
     QDateTime m_created;
+    MergeId m_mergeid;
 
     EffectArgData(const EffectArgData &data_) = delete;
     EffectArgData &operator = (const EffectArgData &data_) = delete;

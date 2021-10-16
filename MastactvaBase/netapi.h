@@ -26,6 +26,7 @@
 #include <QJsonDocument>
 #include <QtQuick/QQuickItem>
 #include "../MastactvaBase/IModel.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/qmlobjects.h"
 #include "../MastactvaBase/requestdata.h"

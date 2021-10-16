@@ -22,6 +22,7 @@
 #include <memory>
 #include <QString>
 #include <QDateTime>
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/effectobjects_data.h"
 #include "../MastactvaModels/effectarg_data.h"
 #include "../MastactvaModels/effectargset_data.h"
@@ -36,7 +37,7 @@ public:
             const QString &name_,
             const QString &description_,
             const QDateTime &created_,
-            const QString &mergeid_
+            const MergeId &mergeid_
             );
     EffectData(EffectData &&data_);
     virtual ~EffectData() = default;
@@ -54,7 +55,7 @@ public:
     QString m_name;
     QString m_description;
     QDateTime m_created;
-    QString m_mergeid;
+    MergeId m_mergeid;
 
     std::shared_ptr<QVector<EffectObjectsData *>> m_effectObjectsData;
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;

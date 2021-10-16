@@ -22,6 +22,7 @@
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/objectartefact_data.h"
@@ -43,7 +44,7 @@ public:
     Q_PROPERTY(int objectArtefactObjectInfoId READ objectInfoId WRITE setObjectInfoId NOTIFY objectInfoIdChanged)
     Q_PROPERTY(QVariant objectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
     Q_PROPERTY(int objectArtefactStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
-    Q_PROPERTY(QString objectArtefactMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(MergeId objectArtefactMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<ObjectArtefact>
     {
@@ -57,7 +58,7 @@ public:
             addField<int>("object_info", "objectArtefactObjectInfoId", &ObjectArtefact::objectInfoId, &ObjectArtefact::setObjectInfoId);
             addField<int>("artefact", "", &ObjectArtefact::artefactId, &ObjectArtefact::setArtefactId);
             addField<int>("step_index", "objectArtefactStepIndex", &ObjectArtefact::stepIndex, &ObjectArtefact::setStepIndex);
-            addField<QString>("mergeid", "objectArtefactMergeId", &ObjectArtefact::mergeid, &ObjectArtefact::setMergeid);
+            addField<MergeId>("mergeid", "objectArtefactMergeId", &ObjectArtefact::mergeid, &ObjectArtefact::setMergeid);
             addModel<ArtefactModel>("objectArtefactArtefact", &ObjectArtefact::m_artefactModel, &ObjectArtefact::createArtefactModel);
             /* 1:1 */
             setIdField("id");
@@ -80,8 +81,8 @@ public:
     const ArtefactModel *getArtefact() const;
     int stepIndex() const;
     void setStepIndex(const int &stepIndex_);
-    QString mergeid() const;
-    void setMergeid(const QString &mergeid_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
 protected:
     ArtefactModel *createArtefactModel();

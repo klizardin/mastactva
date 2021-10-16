@@ -24,6 +24,7 @@
 #include <QVector>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/artefactarg_data.h"
 #include "../MastactvaModels/artefacttype_data.h"
 
@@ -40,7 +41,7 @@ public:
             ArtefactTypeEn typeId_,
             const QString &description_,
             const QDateTime &created_,
-            const QString &mergeid_
+            const MergeId &mergeid_
             );
     ArtefactData(ArtefactData &&data_);
     virtual ~ArtefactData() = default;
@@ -59,7 +60,7 @@ public:
     int m_typeId = -1;
     QString m_description;
     QDateTime m_created;
-    QString m_mergeid;
+    MergeId m_mergeid;
 
     std::shared_ptr<QVector<ArtefactArgData *>> m_artefactArgData;
 

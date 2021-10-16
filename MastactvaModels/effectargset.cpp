@@ -187,6 +187,18 @@ void EffectArgSet::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
+MergeId EffectArgSet::mergeid() const
+{
+    return m_mergeid;
+}
+
+void EffectArgSet::setMergeid(const MergeId &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
 {
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);

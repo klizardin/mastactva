@@ -23,6 +23,7 @@
 #include <QString>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaBase/localdataapiviews.h"

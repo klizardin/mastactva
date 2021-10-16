@@ -22,6 +22,7 @@
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 #include "../MastactvaModels/objectinfo_data.h"
@@ -42,7 +43,7 @@ public:
     Q_PROPERTY(QString effectObjectInfoProgrammerName READ programmerName WRITE setProgrammerName NOTIFY programmerNameChanged)
     Q_PROPERTY(QString effectObjectInfoDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime effectObjectInfoCreated READ created WRITE setCreated NOTIFY createdChanged)
-    Q_PROPERTY(QString effectObjectMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(MergeId effectObjectMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
 
     class DefaultLayout : public LayoutBase<ObjectInfo>
@@ -59,7 +60,7 @@ public:
             addField<QString>("programmer_name", "effectObjectInfoProgrammerName", &ObjectInfo::programmerName, &ObjectInfo::setProgrammerName);
             addField<QString>("description", "effectObjectInfoDescription", &ObjectInfo::description, &ObjectInfo::setDescription);
             addField<QDateTime>("created", "effectObjectInfoCreated", &ObjectInfo::created, &ObjectInfo::setCreated);
-            addField<QString>("mergeid", "effectObjectMergeId", &ObjectInfo::mergeid, &ObjectInfo::setMergeid);
+            addField<MergeId>("mergeid", "effectObjectMergeId", &ObjectInfo::mergeid, &ObjectInfo::setMergeid);
             setIdField("id");
         }
     };
@@ -77,8 +78,8 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
-    QString mergeid() const;
-    void setMergeid(const QString &mergeid_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
 signals:
     void idChanged();

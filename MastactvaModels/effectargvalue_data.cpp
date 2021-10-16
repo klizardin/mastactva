@@ -14,7 +14,7 @@ EffectArgValueData::EffectArgValueData(
         const QString &value_,
         const QString &description_,
         const QDateTime &created_,
-        const QString &mergeid_
+        const MergeId &mergeid_
         )
     : m_id(id_),
       m_argSetId(argSetId_),

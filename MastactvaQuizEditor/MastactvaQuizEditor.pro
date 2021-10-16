@@ -22,7 +22,7 @@ CONFIG += c++14
 
 HEADERS += \
         appconsts.h \
-    effects_exchange.h \
+        effects_exchange.h \
         galleryeditviewmodel.h    \
         localdataset.h \
         mastactvaapi.h    \
@@ -35,6 +35,7 @@ unix: HEADERS += \
         dualmodelconfig.h   \
         Model.h \
         imagesource.h  \
+        mergeid.h   \
         Layout.h   \
         qmlobjects.h   \
         netapi.h   \
@@ -123,7 +124,7 @@ unix: HEADERS += \
 
 SOURCES += \
         appconsts.cpp \
-    effects_exchange.cpp \
+        effects_exchange.cpp \
         localdataset.cpp \
         main.cpp    \
         galleryeditviewmodel.cpp    \
@@ -137,6 +138,7 @@ unix: SOURCES += \
         dualmodelconfig.cpp \
         Model.cpp   \
         imagesource.cpp    \
+        mergeid.cpp \
         netapi.cpp \
         serverfiles.cpp \
         netappconsts.cpp  \

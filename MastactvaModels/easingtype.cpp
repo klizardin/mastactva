@@ -55,6 +55,18 @@ void EasingType::setType(const QString &type_)
     emit typeChanged();
 }
 
+MergeId EasingType::mergeid() const
+{
+    return m_mergeid;
+}
+
+void EasingType::setMergeid(const MergeId &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 
 EasingTypeModel::EasingTypeModel(
         QObject *parent_ /*= nullptr*/,

@@ -22,6 +22,7 @@
 #include <QObject>
 #include "../MastactvaBase/IModel.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/Layout.h"
 #include "../MastactvaBase/Model.h"
 
@@ -38,6 +39,7 @@ public:
 
     Q_PROPERTY(int easingTypeId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString easingTypeType READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(MergeId easingTypeMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<EasingType>
     {
@@ -49,6 +51,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EasingType::m_appId);
             addField<int>("id", "easingTypeId", &EasingType::id, &EasingType::setId);
             addField<QString>("type", "easingTypeType", &EasingType::type, &EasingType::setType);
+            addField<MergeId>("mergeid", "easingTypeMergeId", &EasingType::mergeid, &EasingType::setMergeid);
             setIdField("id");
         }
     };
@@ -58,10 +61,13 @@ public:
     void setId(const int &id_);
     QString type() const;
     void setType(const QString &type_);
+    MergeId mergeid() const;
+    void setMergeid(const MergeId &mergeid_);
 
 signals:
     void idChanged();
     void typeChanged();
+    void mergeidChanged();
 
 private:
     EasingTypeModel *m_easingTypeModel = nullptr;
@@ -69,6 +75,7 @@ private:
     int m_appId = -1;
     int m_id = -1;
     QString m_type;
+    MergeId m_mergeid;
 };
 
 

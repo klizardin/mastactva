@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <QVector>
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/artefact_data.h"
 
 
@@ -34,7 +35,7 @@ public:
             int artefactId_,
             int stepIndex_,
             ArtefactData *artefact_,
-            const QString &mergeid_
+            const MergeId &mergeid_
             );
     ObjectArtefactData(ObjectArtefactData &&data_);
     virtual ~ObjectArtefactData() = default;
@@ -50,7 +51,7 @@ public:
     int m_objectInfoId = -1;
     int m_artefactId = -1;
     int m_stepIndex = -1;
-    QString m_mergeid;
+    MergeId m_mergeid;
 
     std::shared_ptr<QVector<ArtefactData *>> m_artefactData;
 

@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <QVector>
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaModels/objectartefact_data.h"
 #include "../MastactvaBase/drawingdata_utils.h"
@@ -36,7 +37,7 @@ public:
             int effectId_,
             int objectInfoId_,
             int stepIndex_,
-            const QString &mergeid_
+            const MergeId &mergeid_
             );
     EffectObjectsData(EffectObjectsData &&data_);
     virtual ~EffectObjectsData() = default;
@@ -54,7 +55,7 @@ public:
     int m_effectId = -1;
     int m_objectInfoId = -1;
     int m_stepIndex = -1;
-    QString m_mergeid;
+    MergeId m_mergeid;
 
     std::shared_ptr<QVector<ObjectInfoData *>> m_objectInfoData;
     std::shared_ptr<QVector<ObjectArtefactData *>> m_objectArtefactData;

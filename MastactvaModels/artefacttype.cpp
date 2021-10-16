@@ -66,12 +66,12 @@ void ArtefactType::setUniqueForObject(const bool &uniqueForObject_)
     emit uniqueForObjectChanged();
 }
 
-QString ArtefactType::mergeid() const
+MergeId ArtefactType::mergeid() const
 {
     return m_mergeid;
 }
 
-void ArtefactType::setMergeid(const QString &mergeid_)
+void ArtefactType::setMergeid(const MergeId &mergeid_)
 {
     m_mergeid = mergeid_;
 

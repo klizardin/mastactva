@@ -19,6 +19,7 @@
 #include "galleryeditviewmodel.h"
 #include "mastactvaapi.h"
 #include "../MastactvaBase/imagesource.h"
+#include "../MastactvaBase/mergeid.h"
 #include "../MastactvaBase/netapi.h"
 
 
