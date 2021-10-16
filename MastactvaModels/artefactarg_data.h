@@ -39,7 +39,8 @@ public:
             const QString &name_,
             const QString &defaultValue_,
             const QString &description_,
-            const QDateTime &created_
+            const QDateTime &created_,
+            const QString &mergeid_
             );
     ArtefactArgData(ArtefactArgData && data_);
     virtual ~ArtefactArgData() = default;
@@ -51,6 +52,7 @@ public:
     int m_artefactId = -1;
     QString m_description;
     QDateTime m_created;
+    QString m_mergeid;
 
     ArtefactArgData(const ArtefactArgData &data_) = delete;
     ArtefactArgData &operator = (const ArtefactArgData &data_) = delete;

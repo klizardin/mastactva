@@ -27,7 +27,8 @@ ArtefactArgData::ArtefactArgData(
         const QString &name_,
         const QString &defaultValue_,
         const QString &description_,
-        const QDateTime &created_
+        const QDateTime &created_,
+        const QString &mergeid_
         )
     : EffectArgumentData(
           to_underlying(argStorageId_),
@@ -38,7 +39,8 @@ ArtefactArgData::ArtefactArgData(
       m_id(id_),
       m_artefactId(artefactId_),
       m_description(description_),
-      m_created(created_)
+      m_created(created_),
+      m_mergeid(mergeid_)
 {
 }
 
@@ -57,6 +59,7 @@ ArtefactArgData & ArtefactArgData::operator = (ArtefactArgData && data_)
     m_defaultValue = std::move(data_.m_defaultValue);
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
+    m_mergeid = std::move(data_.m_mergeid);
 
     return *this;
 }
@@ -73,6 +76,7 @@ std::unique_ptr<ArtefactArgData> ArtefactArgData::getDataCopy() const
     result->m_defaultValue = m_defaultValue;
     result->m_description = m_description;
     result->m_created = m_created;
+    result->m_mergeid = m_mergeid;
 
     return result;
 }

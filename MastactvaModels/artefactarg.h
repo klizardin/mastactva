@@ -45,7 +45,7 @@ public:
     Q_PROPERTY(QString artefactArgDefaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString artefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime artefactArgCreated READ created WRITE setCreated NOTIFY createdChanged)
-
+    Q_PROPERTY(QString artefactArgMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
 
     class DefaultLayout : public LayoutBase<ArtefactArg>
     {
@@ -64,6 +64,7 @@ public:
             addField<QString>("default_value", "artefactArgDefaultValue", &ArtefactArg::defaultValue, &ArtefactArg::setDefaultValue);
             addField<QString>("description", "artefactArgDescription", &ArtefactArg::description, &ArtefactArg::setDescription);
             addField<QDateTime>("created", "artefactArgCreated", &ArtefactArg::created, &ArtefactArg::setCreated);
+            addField<QString>("mergeid", "artefactArgMergeId", &ArtefactArg::mergeid, &ArtefactArg::setMergeid);
             setIdField("id");
         }
     };
@@ -87,6 +88,8 @@ public:
     void setDescription(const QString &description_);
     QDateTime created() const;
     void setCreated(const QDateTime &created_);
+    QString mergeid() const;
+    void setMergeid(const QString &mergeid_);
 
     bool createFrom(const int &effectArtefactId_, const Comment &comment_);
     void copyFrom(const ArtefactArg *arg_);
@@ -100,6 +103,7 @@ signals:
     void defaultValueChanged();
     void descriptionChanged();
     void createdChanged();
+    void mergeidChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;

@@ -149,6 +149,18 @@ void ArtefactArg::setCreated(const QDateTime &created_)
     emit createdChanged();
 }
 
+QString ArtefactArg::mergeid() const
+{
+    return m_mergeid;
+}
+
+void ArtefactArg::setMergeid(const QString &mergeid_)
+{
+    m_mergeid = mergeid_;
+
+    emit mergeidChanged();
+}
+
 bool ArtefactArg::createFrom(const int &effectArtefactId_, const Comment &comment_)
 {
     if(!comment_.values().contains(g_argumentName))

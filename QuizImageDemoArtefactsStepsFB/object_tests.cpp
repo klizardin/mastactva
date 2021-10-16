@@ -414,7 +414,8 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
-                now
+                now,
+                QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -562,7 +563,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
-                now
+                now,
+                QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -733,7 +735,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
-                now
+                now,
+                QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -788,7 +791,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::name)>(fragmentArgs[i]),
                 std::get<to_underlying(ArgEn::value)>(fragmentArgs[i]),
                 emptyStr,
-                now
+                now,
+                QString()
                 );
         artefact2->m_artefactArgData->push_back(arg.release());
     }
@@ -1070,7 +1074,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 std::get<to_underlying(ArgEn::name)>(arg_),
                 std::get<to_underlying(ArgEn::value)>(arg_),
                 emptyStr,
-                now
+                now,
+                QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
