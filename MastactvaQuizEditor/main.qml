@@ -1787,8 +1787,16 @@ ApplicationWindow {
             {
                 if(fieldNewItem)
                 {
-                    effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
-                    effectObjectsCurrentModel.addItem(fieldEffectObject);
+                    if(effectModel.currentItem !== null)
+                    {
+                        fieldEffectObject.effectObjectsEffectId = effectModel.currentItem.effectId
+                        effectObjectsCurrentModel.itemAdded.connect(effectObjectAdded)
+                        effectObjectsCurrentModel.addItem(fieldEffectObject);
+                    }
+                    else
+                    {
+                        clear()
+                    }
                 }
                 else
                 {
@@ -1801,13 +1809,13 @@ ApplicationWindow {
                     }
                     else
                     {
-                        clear();
+                        clear()
                     }
                 }
             }
             else
             {
-                clear();
+                clear()
             }
         }
 
