@@ -7,7 +7,7 @@
 
 
 static const char *g_defaultSavePath = "./LocalData/export.tar";
-static const int g_downloadStepsCount = 10;
+static const int g_downloadStepsCount = 13;
 static const char *g_effectModelDownloadingStatus = "Effect model is downloading %1...";
 static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model is downloading %1...";
 static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model is downloading %1...";
