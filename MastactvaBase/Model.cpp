@@ -20,6 +20,11 @@
 #include "../MastactvaBase/defines.h"
 
 
+#if defined(TRACE_MODELS_LOADING)
+    static const QStringList g_modelNamesToTrace = TRACE_MODELS_LOADING;
+#endif
+
+
 ListModelBaseData::ListModelBaseData(IListModel *model_)
     :m_model(model_)
 {
@@ -376,6 +381,12 @@ void ListModelBaseData::startListLoad()
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-" << m_QMLLayoutName << "startListLoad()";
 #endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "startListLoad()";
+    }
+#endif
 
     m_listLoading = true;
 
@@ -390,6 +401,12 @@ void ListModelBaseData::clearListLoaded()
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-" << m_QMLLayoutName << "clearListLoaded()";
 #endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "clearListLoaded()";
+    }
+#endif
 
     m_listLoaded = false;
 }
@@ -398,6 +415,12 @@ void ListModelBaseData::reverseListLoading()
 {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-" << m_QMLLayoutName << "reverseListLoading()";
+#endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "reverseListLoading()";
+    }
 #endif
 
     m_listLoading = false;
@@ -413,6 +436,12 @@ void ListModelBaseData::setListLoaded()
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-"  << m_QMLLayoutName << "setListLoaded()";
 #endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "setListLoaded()";
+    }
+#endif
 
     m_listLoading = false;
     m_listLoaded = true;
@@ -426,6 +455,12 @@ void ListModelBaseData::setListLoaded()
     {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-"  << m_QMLLayoutName << "setListLoaded(), listLoadedVF()";
+#endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "setListLoaded(), listLoadedVF()";
+    }
 #endif
         listLoadedVF();
     }
@@ -446,6 +481,12 @@ void ListModelBaseData::startLoadChildModel()
 #if defined(TRACE_MODEL_LOADING)
     qDebug() << "-" << m_QMLLayoutName << "startLoadChildModel() " << m_loadingChildenModels;
 #endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "startLoadChildModel() " << m_loadingChildenModels;
+    }
+#endif
 
     ++m_loadingChildenModels;
     if(m_parentListModelInfo)
@@ -459,11 +500,25 @@ void ListModelBaseData::endLoadChildModel()
 #if defined(TRACE_MODEL_LOADING)
     qDebug() << "-"  << m_QMLLayoutName << "endLoadChildModel() " << m_loadingChildenModels;
 #endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "endLoadChildModel() " << m_loadingChildenModels;
+    }
+#endif
 
     --m_loadingChildenModels;
 
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     if(m_loadingChildenModels < 0)
+    {
+        qDebug() << "m_loadingChildenModels < 0" << m_QMLLayoutName << "endLoadChildModel()" << m_loadingChildenModels;
+    }
+#endif
+#if defined(TRACE_MODELS_LOADING)
+    if(m_loadingChildenModels < 0 &&
+            g_modelNamesToTrace.contains(m_QMLLayoutName)
+            )
     {
         qDebug() << "m_loadingChildenModels < 0" << m_QMLLayoutName << "endLoadChildModel()" << m_loadingChildenModels;
     }
@@ -478,6 +533,12 @@ void ListModelBaseData::endLoadChildModel()
     {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
     qDebug() << "-"  << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()";
+#endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()";
+    }
 #endif
         listLoadedVF();
     }
