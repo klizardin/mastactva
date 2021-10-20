@@ -34,7 +34,12 @@
 // #define TRACE_THREADS_QUIZIMAGE
 // #define TRACE_SERVER_FILES
 // #define TRACE_EFFECT_OBJECT_POSITION
-#define TRACE_MODELS_LOADING {"LocalData_Export_EffectArgSetModel", "LocalData_Export_EffectArgValueModel"}
+#define TRACE_MODELS_LOADING {              \
+    "LocalData_Export_EffectArgModel",      \
+    "LocalData_Export_EffectArgSetModel",   \
+    "LocalData_Export_EffectArgValueModel"  \
+    }                                       \
+/* end TRACE_MODELS_LOADING */
 
 
 #if defined(TRACE_THREADS) || defined(TRACE_THREADS_QUIZIMAGE)
