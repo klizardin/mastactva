@@ -516,7 +516,9 @@ void ListModelBaseData::endLoadChildModel()
     }
 #endif
 #if defined(TRACE_MODELS_LOADING)
-    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    if(m_loadingChildenModels < 0 &&
+            g_modelNamesToTrace.contains(m_QMLLayoutName)
+            )
     {
         qDebug() << "m_loadingChildenModels < 0" << m_QMLLayoutName << "endLoadChildModel()" << m_loadingChildenModels;
     }
