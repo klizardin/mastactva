@@ -250,7 +250,11 @@ void ListModelBaseData::setAutoCreateChildrenModelsOnSelectImpl(bool autoCreateC
 bool ListModelBaseData::isListLoadedImpl() const
 {
     if(getOutputModelImpl()) { return true; }
-    return m_listLoaded && !listLoading() && childrenLoaded();
+    return m_listLoaded
+            && !doNeedToReloadList()
+            && !listLoading()
+            && childrenLoaded()
+            ;
 }
 
 void ListModelBaseData::listLoadedVF()
@@ -374,6 +378,41 @@ void ListModelBaseData::setStoreAfterSaveBase(bool storeAfterSave_)
 void ListModelBaseData::setModelChangeNotify(IListModelChangeNotify *setModelChangeNotify_)
 {
     m_setModelChangeNotify = setModelChangeNotify_;
+}
+
+bool ListModelBaseData::doNeedToReloadList() const
+{
+    return m_needToReloadList;
+}
+
+void ListModelBaseData::setNeedToReloadList()
+{
+#if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
+    qDebug() << "-" << m_QMLLayoutName << "setNeedToReloadList()";
+#endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "setNeedToReloadList()";
+    }
+#endif
+
+    m_needToReloadList = true;
+}
+
+void ListModelBaseData::clearNeedToReloadList()
+{
+#if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
+    qDebug() << "-" << m_QMLLayoutName << "clearNeedToReloadList()";
+#endif
+#if defined(TRACE_MODELS_LOADING)
+    if(g_modelNamesToTrace.contains(m_QMLLayoutName))
+    {
+        qDebug() << "-" << m_QMLLayoutName << "clearNeedToReloadList()";
+    }
+#endif
+
+    m_needToReloadList = false;
 }
 
 void ListModelBaseData::startListLoad()
