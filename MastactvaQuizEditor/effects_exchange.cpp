@@ -7,7 +7,7 @@
 
 
 static const char *g_defaultSavePath = "./LocalData/export.tar";
-static const int g_downloadStepsCount = 11;
+static const int g_downloadStepsCount = 14;
 static const char *g_effectModelDownloadingStatus = "Effect model is downloading %1...";
 static const char *g_artefactTypeModelDownloadingStatus = "Artefact type model is downloading %1...";
 static const char *g_artefactArgTypeModelDownloadingStatus = "Artefact arg type model is downloading %1...";
@@ -643,7 +643,7 @@ void EffectsExchange::create()
     m_effectArgModel->registerListModel();
     m_effectArgModel->setAutoCreateChildrenModels(true);
 
-/*    m_effectArgSetModel = std::make_unique<EffectArgSetModel>(this);
+    m_effectArgSetModel = std::make_unique<EffectArgSetModel>(this);
     m_effectArgSetModel->initResponse();
     m_effectArgSetModel->setCurrentRef("");
     m_effectArgSetModel->setLayoutQMLName("LocalData_Export_EffectArgSetModel");
@@ -657,7 +657,7 @@ void EffectsExchange::create()
     m_effectArgValueModel->setLayoutQMLName("LocalData_Export_EffectArgValueModel");
     m_effectArgValueModel->setLayoutIdFieldImpl("id");
     m_effectArgValueModel->registerListModel();
-    m_effectArgValueModel->setAutoCreateChildrenModels(true);*/
+    m_effectArgValueModel->setAutoCreateChildrenModels(true);
 
     m_artefactTypeModel = std::make_unique<ArtefactTypeModel>(this);
     m_artefactTypeModel->initResponse();
@@ -777,7 +777,7 @@ void EffectsExchange::downloadStep()
         emit progress(stepProgress(), msg(g_effectArgModelDownloadingStatus, m_uploading));
         return; // one model at time
     }
-/*    if(m_effectArgSetModel && !m_effectArgSetModel->isListLoaded())
+    if(m_effectArgSetModel && !m_effectArgSetModel->isListLoaded())
     {
         QObject::connect(
                     m_effectArgSetModel.get(),
@@ -800,7 +800,7 @@ void EffectsExchange::downloadStep()
         m_effectArgValueModel->loadList();
         emit progress(stepProgress(), msg(g_effectArgValueModelDownloadingStatus, m_uploading));
         return; // one model at time
-    }*/
+    }
     if(m_artefactTypeModel && !m_artefactTypeModel->isListLoaded())
     {
         QObject::connect(
