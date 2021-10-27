@@ -201,7 +201,6 @@ void EffectArgSet::setMergeid(const MergeId &mergeid_)
 
 EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
 {
-    qDebug() << "EffectArgValueModel *EffectArgSet::createAffectArgValueModel()";
     IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
     IListModelInfoObjectImpl::setObjectName(getObjectName());
     IListModelInfoObjectImpl::trace();
@@ -215,7 +214,6 @@ EffectArgValueModel *EffectArgSet::createAffectArgValueModel()
     m->registerListModel();
     m->setParentListModelInfo(this);
     m->setAutoCreateChildrenModels(true);
-    qDebug() << "EffectArgValueModel *EffectArgSet::createAffectArgValueModel() m->loadList()";
     m->loadList();
     return m;
 }
