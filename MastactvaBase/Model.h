@@ -1093,6 +1093,8 @@ protected:
 #if defined(TRACE_MODEL_LOADING)
         qDebug() << "-end loadList() " << getQMLLayoutName();
 #endif
+            removeRequest(request_);
+            clearTempData();
             if(doNeedToReloadList())
             {
                 loadListImpl();
@@ -1102,20 +1104,41 @@ protected:
         else if(request_->getRequestName() == RequestData::addItemRequestName<DataObjectType>())
         {
             modelItemAdded(request_, reply_);
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
         else if(request_->getRequestName() == RequestData::setItemRequestName<DataObjectType>())
         {
             modelItemSet(request_, reply_);
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
         else if(request_->getRequestName() == RequestData::delItemRequestName<DataObjectType>())
         {
             modelItemDeleted(request_, reply_);
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
-        removeRequest(request_);
-        clearTempData();
-        if(m_model)
+        else
         {
-            m_model->startRefreshChildren(getQMLLayoutName());
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
     }
 
