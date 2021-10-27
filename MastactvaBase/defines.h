@@ -19,10 +19,10 @@
 #define DEFINES_H
 
 
-// #define TRACE_MODEL_LIFETIME
-// #define TRACE_MODEL_LOADING
-// #define TRACE_MODEL_LOADED
-// #define TRACE_LIST_LOAD_DATA
+#define TRACE_MODEL_LIFETIME
+#define TRACE_MODEL_LOADING
+#define TRACE_MODEL_LOADED
+#define TRACE_LIST_LOAD_DATA
 // #define TRACE_LIST_SIZE
 // #define TRACE_LIST_DATA_ITEMS_CRUD
 // #define TRACE_DB_CREATION
@@ -34,11 +34,12 @@
 // #define TRACE_THREADS_QUIZIMAGE
 // #define TRACE_SERVER_FILES
 // #define TRACE_EFFECT_OBJECT_POSITION
-#define TRACE_MODELS_LOADING {              \
+/*#define TRACE_MODELS_LOADING {              \
     "LocalData_Export_EffectArgModel",      \
     "LocalData_Export_EffectArgSetModel",   \
     "LocalData_Export_EffectArgValueModel"  \
     }                                       \
+*/
 /* end TRACE_MODELS_LOADING */
 
 
