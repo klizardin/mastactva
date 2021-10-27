@@ -398,6 +398,11 @@ void ListModelBaseData::setNeedToReloadList()
 #endif
 
     m_needToReloadList = true;
+
+    if(m_parentListModelInfo)
+    {
+        m_parentListModelInfo->startLoadChildModel();
+    }
 }
 
 void ListModelBaseData::clearNeedToReloadList()
@@ -413,6 +418,11 @@ void ListModelBaseData::clearNeedToReloadList()
 #endif
 
     m_needToReloadList = false;
+
+    if(m_parentListModelInfo)
+    {
+        m_parentListModelInfo->endLoadChildModel();
+    }
 }
 
 void ListModelBaseData::startListLoad()
@@ -571,12 +581,22 @@ void ListModelBaseData::endLoadChildModel()
     if(isListLoadedImpl())
     {
 #if defined(TRACE_MODEL_LOADING) || defined(TRACE_MODEL_LOADED)
-    qDebug() << "-"  << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()";
+    qDebug() << "-"  << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()"
+            << "m_listLoaded " << m_listLoaded
+            << "doNeedToReloadList()" << doNeedToReloadList()
+            << "listLoading()" << listLoading()
+            << "childrenLoaded()" << childrenLoaded()
+            ;
 #endif
 #if defined(TRACE_MODELS_LOADING)
     if(g_modelNamesToTrace.contains(m_QMLLayoutName))
     {
-        qDebug() << "-" << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()";
+        qDebug() << "-" << m_QMLLayoutName << "endLoadChildModel() listLoadedVF()"
+            << "m_listLoaded " << m_listLoaded
+            << "doNeedToReloadList()" << doNeedToReloadList()
+            << "listLoading()" << listLoading()
+            << "childrenLoaded()" << childrenLoaded()
+            ;
     }
 #endif
         listLoadedVF();

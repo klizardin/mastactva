@@ -931,7 +931,10 @@ public:
         RequestData *request = findRequest(RequestData::getListRequestName<DataObjectType>());
         if(request)
         {
-            setNeedToReloadList();
+            if(!doNeedToReloadList())
+            {
+                setNeedToReloadList();
+            }
             return;
         }
         startListLoad();
@@ -1092,8 +1095,8 @@ protected:
 #endif
             if(doNeedToReloadList())
             {
-                clearNeedToReloadList();
                 loadListImpl();
+                clearNeedToReloadList();
             }
         }
         else if(request_->getRequestName() == RequestData::addItemRequestName<DataObjectType>())
