@@ -920,7 +920,9 @@ public:
         //LocalDataAPI *dataAPI = QMLObjectsBase::getInstance().getDataAPI();
         //if(!dataAPI) { return; }
         if(!m_config) { return; }
-
+#if defined(TRACE_MODEL_LOADING)
+        qDebug() << "-start loadList() " << getQMLLayoutName();
+#endif
 
         RequestData *request = findRequest(RequestData::getListRequestName<DataObjectType>());
         if(request)
@@ -1081,6 +1083,9 @@ protected:
         else if(request_->getRequestName() == RequestData::getListRequestName<DataObjectType>())
         {
             modelListLoaded(reply_);
+#if defined(TRACE_MODEL_LOADING)
+        qDebug() << "-end loadList() " << getQMLLayoutName();
+#endif
             if(reloadList)
             {
                 reloadList = false;
