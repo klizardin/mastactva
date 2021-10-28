@@ -120,6 +120,9 @@ protected:
     int getOutOfRangeAppId() const;
     void setNextAppId(int appId_);
     void init(QObject *modelObj_);
+    bool doNeedToReloadList() const;
+    void setNeedToReloadList();
+    void clearNeedToReloadList();
     void startListLoad();
     void reverseListLoading();
     void setListLoaded();
@@ -158,6 +161,7 @@ private:
     bool m_readonly = true;
     bool m_listLoaded = false;
     bool m_listLoading = false;
+    bool m_needToReloadList = false;
     int m_loadingChildenModels = 0;
     bool m_outputModel = false;
     IListModelInfo *m_parentListModelInfo = nullptr;
@@ -927,7 +931,10 @@ public:
         RequestData *request = findRequest(RequestData::getListRequestName<DataObjectType>());
         if(request)
         {
-            reloadList = true;
+            if(!doNeedToReloadList())
+            {
+                setNeedToReloadList();
+            }
             return;
         }
         startListLoad();
@@ -1086,29 +1093,52 @@ protected:
 #if defined(TRACE_MODEL_LOADING)
         qDebug() << "-end loadList() " << getQMLLayoutName();
 #endif
-            if(reloadList)
+            removeRequest(request_);
+            clearTempData();
+            if(doNeedToReloadList())
             {
-                reloadList = false;
                 loadListImpl();
+                clearNeedToReloadList();
             }
         }
         else if(request_->getRequestName() == RequestData::addItemRequestName<DataObjectType>())
         {
             modelItemAdded(request_, reply_);
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
         else if(request_->getRequestName() == RequestData::setItemRequestName<DataObjectType>())
         {
             modelItemSet(request_, reply_);
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
         else if(request_->getRequestName() == RequestData::delItemRequestName<DataObjectType>())
         {
             modelItemDeleted(request_, reply_);
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
-        removeRequest(request_);
-        clearTempData();
-        if(m_model)
+        else
         {
-            m_model->startRefreshChildren(getQMLLayoutName());
+            removeRequest(request_);
+            clearTempData();
+            if(m_model)
+            {
+                m_model->startRefreshChildren(getQMLLayoutName());
+            }
         }
     }
 
@@ -1587,7 +1617,6 @@ protected:
 
 private:
     QHash<int, QByteArray> m_roleNames;
-    bool reloadList = false;
     ModelType_ *m_model = nullptr;
     IModelConfig *m_config = nullptr;
 };
