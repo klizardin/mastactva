@@ -171,6 +171,14 @@ QVariant MergeData::getMapping(const QString &layoutName_, int oldId_) const
     return QVariant::fromValue(m_idsMap[layoutName_][oldId_]);
 }
 
+void MergeData::trace(const QString &qmlLayoutName_) const
+{
+    qDebug() << "qmlLayoutName" << qmlLayoutName_;
+    qDebug() << "m_onlyInNew" << m_onlyInNew;
+    qDebug() << "m_onlyInOld" << m_onlyInOld;
+    qDebug() << "m_differents" << m_differents;
+}
+
 
 template<typename ModelType_> inline
 bool isEqualModelItems(
@@ -178,7 +186,7 @@ bool isEqualModelItems(
         const typename ModelType_::DataObjectType *b_
         )
 {
-    return !a_ && !b_ && ModelType_::isEqual(a_, b_);
+    return a_ && b_ && ModelType_::isEqual(a_, b_);
 }
 
 template<typename ModelType_> inline
@@ -196,6 +204,10 @@ bool compare(
     }
 
     data_.clearIds(a_->sizeImpl(), b_->sizeImpl());
+    if(a_->sizeImpl() > b_->sizeImpl())
+    {
+        qDebug() << "possible";
+    }
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
         const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
@@ -224,6 +236,10 @@ bool compare(
         {
             data_.pushNewId(aId, aMergeId);
         }
+    }
+    if(a_->sizeImpl() < b_->sizeImpl())
+    {
+        qDebug() << "possible";
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
     {
@@ -350,6 +366,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
             data_
             ))
         {
+            data_.trace(model_->getQMLLayoutName());
             data_.sort();
 
             QObject::connect(
@@ -892,7 +909,9 @@ void EffectsExchange::archiveResults()
 qreal EffectsExchange::stepProgress()
 {
     const int i = m_step++;
-    const qreal progress = floor
+    const qreal progress =
+            c_downloadStepsCount > 0
+            ? floor
             (
                 (qreal)std::min
                 (
@@ -900,6 +919,7 @@ qreal EffectsExchange::stepProgress()
                     c_downloadStepsCount
                 ) / (qreal)c_downloadStepsCount * 1000.0
             ) / 10.0
+            : 100.0
             ;
     qDebug() << "progress =" << progress;
     return progress;

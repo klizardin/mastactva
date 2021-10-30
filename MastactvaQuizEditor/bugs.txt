@@ -1,3 +1,4 @@
 * required fields (effectobject) -- fixed in sc
 * check for already known bugs
 * table row duplicates while export to the sqlite
+* effects import
