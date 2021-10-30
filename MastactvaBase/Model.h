@@ -360,20 +360,27 @@ public:
     static bool isEqual(const DataObjectType *item1_, const DataObjectType *item2_)
     {
         QHash<QString, QVariant> values1, values2;
-        if(!getDataLayout<DataObjectType>().getJsonValues(item1_, values1)
-                || !getDataLayout<DataObjectType>().getJsonValues(item2_, values2))
+        if(!getDataLayout<DataObjectType>().getQMLSimpleValues(item1_, values1)
+                || !getDataLayout<DataObjectType>().getQMLSimpleValues(item2_, values2))
         {
             return false;
         }
+        const QString idFiledName = getDataLayout<DataObjectType>().getIdFieldQMLName();
+        values1.remove(idFiledName);
+        values2.remove(idFiledName);
         return values1 == values2;
     }
 
     static bool copyFromTo(const DataObjectType *src_, DataObjectType *dest_)
     {
         QHash<QString, QVariant> values;
-        return getDataLayout<DataObjectType>().getJsonValues(src_, values)
-                && getDataLayout<DataObjectType>().setJsonValues(dest_, values)
-            ;
+        if(!getDataLayout<DataObjectType>().getQMLSimpleValues(src_, values))
+        {
+            return false;
+        }
+        const QString idFiledName = getDataLayout<DataObjectType>().getIdFieldQMLName();
+        values.remove(idFiledName);
+        return getDataLayout<DataObjectType>().setQMLValues(dest_, values);
     }
 
     static int getIntId(const DataObjectType *item_)
