@@ -204,6 +204,10 @@ bool compare(
     }
 
     data_.clearIds(a_->sizeImpl(), b_->sizeImpl());
+    if(a_->sizeImpl() > b_->sizeImpl())
+    {
+        qDebug() << "possible";
+    }
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
         const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
@@ -232,6 +236,10 @@ bool compare(
         {
             data_.pushNewId(aId, aMergeId);
         }
+    }
+    if(a_->sizeImpl() < b_->sizeImpl())
+    {
+        qDebug() << "possible";
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
     {
@@ -358,7 +366,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
             data_
             ))
         {
-            //data_.trace(model_->getQMLLayoutName());
+            data_.trace(model_->getQMLLayoutName());
             data_.sort();
 
             QObject::connect(
@@ -911,7 +919,7 @@ qreal EffectsExchange::stepProgress()
                     c_downloadStepsCount
                 ) / (qreal)c_downloadStepsCount * 1000.0
             ) / 10.0
-            : 1.0
+            : 100.0
             ;
     qDebug() << "progress =" << progress;
     return progress;
