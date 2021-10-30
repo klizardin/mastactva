@@ -655,3 +655,40 @@ QString subpathJoin(const QString &relPath_, const QString &namespacePath_)
         return QString();
     }
 }
+
+bool isSimpleQVariantType(const QVariant::Type &type_)
+{
+    static QVariant::Type s_simpleTypes[] = {
+        QVariant::Type::Bool,
+        QVariant::Type::Int,
+        QVariant::Type::UInt,
+        QVariant::Type::LongLong,
+        QVariant::Type::ULongLong,
+        QVariant::Type::Double,
+        QVariant::Type::Char,
+        QVariant::Type::String,
+        QVariant::Type::StringList,
+        QVariant::Type::ByteArray,
+        QVariant::Type::BitArray,
+        QVariant::Type::Date,
+        QVariant::Type::Time,
+        QVariant::Type::DateTime,
+        QVariant::Type::Url,
+        QVariant::Type::Locale,
+        QVariant::Type::Rect,
+        QVariant::Type::RectF,
+        QVariant::Type::Size,
+        QVariant::Type::SizeF,
+        QVariant::Type::Line,
+        QVariant::Type::LineF,
+        QVariant::Type::Point,
+        QVariant::Type::PointF
+    };
+    return std::end(s_simpleTypes)
+            != std::find(
+                std::begin(s_simpleTypes),
+                std::end(s_simpleTypes),
+                type_
+                )
+            ;
+}
