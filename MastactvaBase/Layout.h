@@ -521,6 +521,63 @@ public:
         return layoutItem->getValue(obj_, true);
     }
 
+    bool getQMLValues(const DataType_ *obj_, QHash<QString, QVariant> &values_) const
+    {
+        bool ret = false;
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        {
+            if(!item->isQMLItem())
+            {
+                continue;
+            }
+
+            values_[item->getQMLName()] = item->getValue(obj_, true);
+            ret = true;
+        }
+        return ret;
+    }
+
+    bool getQMLSimpleValues(const DataType_ *obj_, QHash<QString, QVariant> &values_) const
+    {
+        bool ret = false;
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        {
+            if(!item->isQMLItem())
+            {
+                continue;
+            }
+
+            QVariant value = item->getValue(obj_, true);
+            if(!isSimpleQVariantType(value.type()))
+            {
+                continue;
+            }
+            values_[item->getQMLName()] = std::move(value);
+            ret = true;
+        }
+        return ret;
+    }
+
+    bool setQMLValues(DataType_ *obj_, const QHash<QString, QVariant> &values_) const
+    {
+        bool ret = false;
+        for(const layout::Private::ILayoutItem<DataType_> *item : qAsConst(m_fields))
+        {
+            if(!item->isQMLItem())
+            {
+                continue;
+            }
+            if(!values_.contains(item->getQMLName()))
+            {
+                continue;
+            }
+
+            item->setValue(obj_, values_.value(item->getQMLName()));
+            ret = true;
+        }
+        return ret;
+    }
+
     bool getJsonValues(const DataType_ *obj_, QHash<QString, QVariant> &values_) const
     {
         bool ret = false;
@@ -604,6 +661,18 @@ public:
             if(item->isIdField() && item->isJsonItem())
             {
                 return item->getJsonName();
+            }
+        }
+        return QString();
+    }
+
+    QString getIdFieldQMLName() const
+    {
+        for(const layout::Private::ILayoutItemBase<DataType_> *item : qAsConst(m_fields))
+        {
+            if(item->isIdField() && item->isQMLItem())
+            {
+                return item->getQMLName();
             }
         }
         return QString();
