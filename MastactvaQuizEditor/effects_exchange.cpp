@@ -724,17 +724,17 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         {
             m_oldInsertItemId = data_.popNewId();
             data_.addIdMapping(layoutName, m_oldInsertItemId);
-            const typename ModelType_::DataObjectType *itemOld =
+            const typename ModelType_::DataObjectType *itemNew =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(m_oldInsertItemId)
                         );
-            if(itemOld)
+            if(itemNew)
             {
                 m_modelItemNew = model_->createDataItemImpl();
                 if(m_modelItemNew)
                 {
                     ModelType_::copyFromTo(
-                                itemOld, IdFieldsMapping<ModelType_>::get(itemOld, data_, true),
+                                itemNew, IdFieldsMapping<ModelType_>::get(itemNew, data_, true),
                                 m_modelItemNew
                                 );
                     model_->addDataItemImpl(m_modelItemNew);
