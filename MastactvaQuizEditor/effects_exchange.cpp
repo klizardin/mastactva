@@ -682,11 +682,11 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         if(data_.hasDifferent())
         {
             const std::pair<int,int> abIds = data_.popDifferentId();
-            const typename ModelType_::DataObjectType *itemOld =
+            typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
                         QVariant::fromValue(abIds.second)
                         );
-            typename ModelType_::DataObjectType *itemNew =
+            const typename ModelType_::DataObjectType *itemNew =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(abIds.first)
                         );
@@ -695,12 +695,11 @@ bool MergeItem<ModelType_>::mergeStepImpl(
             {
                 ModelType_::copyFromTo(
                             itemNew, IdFieldsMapping<ModelType_>::get(itemNew, data_, true),
-                            itemNew,
-                            true
+                            itemOld
                             );
                 model_->setDataItemImpl(
                     index,
-                    itemNew
+                    itemOld
                     );
             }
             return true;
