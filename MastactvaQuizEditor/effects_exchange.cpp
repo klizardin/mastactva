@@ -917,8 +917,8 @@ qreal EffectsExchange::stepProgress()
                 (
                     i,
                     c_downloadStepsCount
-                ) / (qreal)c_downloadStepsCount * 1000.0
-            ) / 10.0
+                ) / (qreal)c_downloadStepsCount * 100.0
+            )
             : 100.0
             ;
     qDebug() << "progress =" << progress;
