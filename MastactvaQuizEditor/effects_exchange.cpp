@@ -1775,11 +1775,15 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect-arg", item_->argId()))
     {
-        result.insert(useQmlName_ ? "effectArgValueArgId" : "arg", data_.getMapping("effect-arg", item_->argId()));
+        result.insert(useQmlName_ ? "effectArgValueArgId" : "arg",
+                      data_.getMapping("effect-arg", item_->argId())
+                      );
     }
     if(data_.hasMapping("effect-arg-set", item_->argSetId()))
     {
-        result.insert(useQmlName_ ? "effectArgValueArgSetId" : "arg_set", data_.getMapping("effect-arg-set", item_->argSetId()));
+        result.insert(useQmlName_ ? "effectArgValueArgSetId" : "arg_set",
+                      data_.getMapping("effect-arg-set", item_->argSetId())
+                      );
     }
     return result;
 }
@@ -1798,11 +1802,15 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect", item_->effectId()))
     {
-        result.insert(useQmlName_ ? "effectArgSetEffectId" : "effect", data_.getMapping("effect", item_->effectId()));
+        result.insert(useQmlName_ ? "effectArgSetEffectId" : "effect",
+                      data_.getMapping("effect", item_->effectId())
+                      );
     }
     if(data_.hasMapping("easing-type", item_->easingId()))
     {
-        result.insert(useQmlName_ ? "effectArgSetEasingId" : "easing", data_.getMapping("easing-type", item_->easingId()));
+        result.insert(useQmlName_ ? "effectArgSetEasingId" : "easing",
+                      data_.getMapping("easing-type", item_->easingId())
+                      );
     }
     return result;
 }
@@ -1821,19 +1829,27 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect", item_->effectId()))
     {
-        result.insert(useQmlName_ ? "effectArgEffectId" : "effect", data_.getMapping("effect", item_->effectId()));
+        result.insert(useQmlName_ ? "effectArgEffectId" : "effect",
+                      data_.getMapping("effect", item_->effectId())
+                      );
     }
     if(data_.hasMapping("object-artefact", item_->objectArtefactId()))
     {
-        result.insert(useQmlName_ ? "effectArgObjectArtefactId" : "object_artefact", data_.getMapping("object-artefact", item_->objectArtefactId()));
+        result.insert(useQmlName_ ? "effectArgObjectArtefactId" : "object_artefact",
+                      data_.getMapping("object-artefact", item_->objectArtefactId())
+                      );
     }
     if(data_.hasMapping("artefact-arg-type", item_->argTypeId()))
     {
-        result.insert(useQmlName_ ? "effectArgArgTypeId" : "arg_type", data_.getMapping("artefact-arg-type", item_->argTypeId()));
+        result.insert(useQmlName_ ? "effectArgArgTypeId" : "arg_type",
+                      data_.getMapping("artefact-arg-type", item_->argTypeId())
+                      );
     }
     if(data_.hasMapping("artefact-arg-storage", item_->argStorageId()))
     {
-        result.insert(useQmlName_ ? "effectArgArgStorageId" : "arg_storage", data_.getMapping("artefact-arg-storage", item_->argStorageId()));
+        result.insert(useQmlName_ ? "effectArgArgStorageId" : "arg_storage",
+                      data_.getMapping("artefact-arg-storage", item_->argStorageId())
+                      );
     }
     return result;
 }
@@ -1852,11 +1868,15 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("object-info", item_->objectInfoId()))
     {
-        result.insert(useQmlName_ ? "objectArtefactObjectInfoId" : "object_info", data_.getMapping("object-info", item_->objectInfoId()));
+        result.insert(useQmlName_ ? "objectArtefactObjectInfoId" : "object_info",
+                      data_.getMapping("object-info", item_->objectInfoId())
+                      );
     }
     if(data_.hasMapping("artefact", item_->artefactId()))
     {
-        result.insert(useQmlName_ ? "objectArtefactArtefactId" : "artefact", data_.getMapping("artefact", item_->artefactId()));
+        result.insert(useQmlName_ ? "objectArtefactArtefactId" : "artefact",
+                      data_.getMapping("artefact", item_->artefactId())
+                      );
     }
     return result;
 }
@@ -1875,11 +1895,15 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect", item_->effectId()))
     {
-        result.insert(useQmlName_ ? "effectObjectsEffectId" : "effect", data_.getMapping("effect", item_->effectId()));
+        result.insert(useQmlName_ ? "effectObjectsEffectId" : "effect",
+                      data_.getMapping("effect", item_->effectId())
+                      );
     }
     if(data_.hasMapping("object-info", item_->objectInfoId()))
     {
-        result.insert(useQmlName_ ? "effectObjectsObjectInfoId" : "object_info", data_.getMapping("object-info", item_->objectInfoId()));
+        result.insert(useQmlName_ ? "effectObjectsObjectInfoId" : "object_info",
+                      data_.getMapping("object-info", item_->objectInfoId())
+                      );
     }
     return result;
 }
@@ -1898,7 +1922,9 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("artefact-type", item_->type()))
     {
-        result.insert(useQmlName_ ? "artefactTypeId" : "type", data_.getMapping("artefact-type", item_->type()));
+        result.insert(useQmlName_ ? "artefactTypeId" : "type",
+                      data_.getMapping("artefact-type", item_->type())
+                      );
     }
     return result;
 }
