@@ -891,7 +891,7 @@ void EffectsExchange::archiveResults()
         QFileInfo fi(fit.next());
         if(fi.isDir() || fi.isFile())
         {
-            args.push_back(fi.absoluteFilePath());
+            args.push_back(dir.relativeFilePath(fi.absoluteFilePath()));
         }
     }
     QProcess tar;
