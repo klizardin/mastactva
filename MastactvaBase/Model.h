@@ -389,7 +389,7 @@ public:
             values.remove(idFiledName);
         }
         return getDataLayout<DataObjectType>().setQMLValues(dest_, values)
-                || getDataLayout<DataObjectType>().setQMLValues(dest_, extraValues_)
+                | getDataLayout<DataObjectType>().setQMLValues(dest_, extraValues_)
                 ;
     }
 
