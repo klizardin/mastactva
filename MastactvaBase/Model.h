@@ -371,7 +371,11 @@ public:
         return values1 == values2;
     }
 
-    static bool copyFromTo(const DataObjectType *src_, DataObjectType *dest_)
+    static bool copyFromTo(
+            const DataObjectType *src_,
+            const QHash<QString, QVariant> &extraValues_,
+            DataObjectType *dest_
+            )
     {
         QHash<QString, QVariant> values;
         if(!getDataLayout<DataObjectType>().getQMLSimpleValues(src_, values))
@@ -380,7 +384,9 @@ public:
         }
         const QString idFiledName = getDataLayout<DataObjectType>().getIdFieldQMLName();
         values.remove(idFiledName);
-        return getDataLayout<DataObjectType>().setQMLValues(dest_, values);
+        return getDataLayout<DataObjectType>().setQMLValues(dest_, values)
+                || getDataLayout<DataObjectType>().setQMLValues(dest_, extraValues_)
+                ;
     }
 
     static int getIntId(const DataObjectType *item_)
