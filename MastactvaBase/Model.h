@@ -374,7 +374,8 @@ public:
     static bool copyFromTo(
             const DataObjectType *src_,
             const QHash<QString, QVariant> &extraValues_,
-            DataObjectType *dest_
+            DataObjectType *dest_,
+            bool updateId_ = false
             )
     {
         QHash<QString, QVariant> values;
@@ -382,8 +383,11 @@ public:
         {
             return false;
         }
-        const QString idFiledName = getDataLayout<DataObjectType>().getIdFieldQMLName();
-        values.remove(idFiledName);
+        if(!updateId_)
+        {
+            const QString idFiledName = getDataLayout<DataObjectType>().getIdFieldQMLName();
+            values.remove(idFiledName);
+        }
         return getDataLayout<DataObjectType>().setQMLValues(dest_, values)
                 || getDataLayout<DataObjectType>().setQMLValues(dest_, extraValues_)
                 ;
