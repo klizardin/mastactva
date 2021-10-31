@@ -349,11 +349,13 @@ bool compare(
 template<typename ModelType_> inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename ModelType_::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     Q_UNUSED(item_);
     Q_UNUSED(data_);
+    Q_UNUSED(useQmlName_);
     return QHash<QString, QVariant>{};
 }
 
@@ -454,7 +456,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 model_->setDataItemImpl(
                     index,
                     itemNew,
-                    getIdFieldsMapping<ModelType_>(itemNew, data_)
+                    getIdFieldsMapping<ModelType_>(itemNew, data_, false)
                     );
             }
             return true;
@@ -488,7 +490,10 @@ bool MergeItem<ModelType_>::mergeStepImpl(
                 m_modelItemNew = model_->createDataItemImpl();
                 if(m_modelItemNew)
                 {
-                    ModelType_::copyFromTo(itemOld, m_modelItemNew);
+                    ModelType_::copyFromTo(
+                                itemOld, getIdFieldsMapping<ModelType_>(itemOld, data_, true),
+                                m_modelItemNew
+                                );
                     model_->addDataItemImpl(m_modelItemNew);
                 }
             }
@@ -1759,7 +1764,8 @@ void EffectsExchange::itemAddedSlotForImport()
 inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename EffectArgValueModel::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     QHash<QString, QVariant> result;
@@ -1769,11 +1775,11 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect-arg", item_->argId()))
     {
-        result.insert("arg", data_.getMapping("effect-arg", item_->argId()));
+        result.insert(useQmlName_ ? "effectArgValueArgId" : "arg", data_.getMapping("effect-arg", item_->argId()));
     }
     if(data_.hasMapping("effect-arg-set", item_->argSetId()))
     {
-        result.insert("arg_set", data_.getMapping("effect-arg-set", item_->argSetId()));
+        result.insert(useQmlName_ ? "effectArgValueArgSetId" : "arg_set", data_.getMapping("effect-arg-set", item_->argSetId()));
     }
     return result;
 }
@@ -1781,7 +1787,8 @@ QHash<QString, QVariant> getIdFieldsMapping(
 inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename EffectArgSetModel::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     QHash<QString, QVariant> result;
@@ -1791,11 +1798,11 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect", item_->effectId()))
     {
-        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+        result.insert(useQmlName_ ? "effectArgSetEffectId" : "effect", data_.getMapping("effect", item_->effectId()));
     }
     if(data_.hasMapping("easing-type", item_->easingId()))
     {
-        result.insert("easing", data_.getMapping("easing-type", item_->easingId()));
+        result.insert(useQmlName_ ? "effectArgSetEasingId" : "easing", data_.getMapping("easing-type", item_->easingId()));
     }
     return result;
 }
@@ -1803,7 +1810,8 @@ QHash<QString, QVariant> getIdFieldsMapping(
 inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename EffectArgModel::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     QHash<QString, QVariant> result;
@@ -1813,19 +1821,19 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect", item_->effectId()))
     {
-        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+        result.insert(useQmlName_ ? "effectArgEffectId" : "effect", data_.getMapping("effect", item_->effectId()));
     }
     if(data_.hasMapping("object-artefact", item_->objectArtefactId()))
     {
-        result.insert("object_artefact", data_.getMapping("object-artefact", item_->objectArtefactId()));
+        result.insert(useQmlName_ ? "effectArgObjectArtefactId" : "object_artefact", data_.getMapping("object-artefact", item_->objectArtefactId()));
     }
     if(data_.hasMapping("artefact-arg-type", item_->argTypeId()))
     {
-        result.insert("arg_type", data_.getMapping("artefact-arg-type", item_->argTypeId()));
+        result.insert(useQmlName_ ? "effectArgArgTypeId" : "arg_type", data_.getMapping("artefact-arg-type", item_->argTypeId()));
     }
     if(data_.hasMapping("artefact-arg-storage", item_->argStorageId()))
     {
-        result.insert("arg_storage", data_.getMapping("artefact-arg-storage", item_->argStorageId()));
+        result.insert(useQmlName_ ? "effectArgArgStorageId" : "arg_storage", data_.getMapping("artefact-arg-storage", item_->argStorageId()));
     }
     return result;
 }
@@ -1833,7 +1841,8 @@ QHash<QString, QVariant> getIdFieldsMapping(
 inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename ObjectArtefactModel::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     QHash<QString, QVariant> result;
@@ -1843,11 +1852,11 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("object-info", item_->objectInfoId()))
     {
-        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
+        result.insert(useQmlName_ ? "objectArtefactObjectInfoId" : "object_info", data_.getMapping("object-info", item_->objectInfoId()));
     }
     if(data_.hasMapping("artefact", item_->artefactId()))
     {
-        result.insert("artefact", data_.getMapping("artefact", item_->artefactId()));
+        result.insert(useQmlName_ ? "objectArtefactArtefactId" : "artefact", data_.getMapping("artefact", item_->artefactId()));
     }
     return result;
 }
@@ -1855,7 +1864,8 @@ QHash<QString, QVariant> getIdFieldsMapping(
 inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename EffectObjectsModel::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     QHash<QString, QVariant> result;
@@ -1865,11 +1875,11 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("effect", item_->effectId()))
     {
-        result.insert("effect", data_.getMapping("effect", item_->effectId()));
+        result.insert(useQmlName_ ? "effectObjectsEffectId" : "effect", data_.getMapping("effect", item_->effectId()));
     }
     if(data_.hasMapping("object-info", item_->objectInfoId()))
     {
-        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
+        result.insert(useQmlName_ ? "effectObjectsObjectInfoId" : "object_info", data_.getMapping("object-info", item_->objectInfoId()));
     }
     return result;
 }
@@ -1877,7 +1887,8 @@ QHash<QString, QVariant> getIdFieldsMapping(
 inline
 QHash<QString, QVariant> getIdFieldsMapping(
         const typename ArtefactModel::DataObjectType *item_,
-        const MergeData &data_
+        const MergeData &data_,
+        bool useQmlName_ = false
         )
 {
     QHash<QString, QVariant> result;
@@ -1887,7 +1898,7 @@ QHash<QString, QVariant> getIdFieldsMapping(
     }
     if(data_.hasMapping("artefact-type", item_->type()))
     {
-        result.insert("type", data_.getMapping("artefact-type", item_->type()));
+        result.insert(useQmlName_ ? "artefactTypeId" : "type", data_.getMapping("artefact-type", item_->type()));
     }
     return result;
 }
