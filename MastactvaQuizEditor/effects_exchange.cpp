@@ -993,7 +993,7 @@ void EffectsExchange::createInput()
     free();
 
     m_inputModelConfig = std::make_unique<ChooseModelConfig>(
-                true,
+                false,
                 g_importExchangeNamespace
                 );
 
