@@ -1414,10 +1414,30 @@ void EffectsExchange::uploadStep()
         return; // one model at time
     }
 
+    setLocalFiles();
     disconnectUpload();
 
     emit progress(stepProgress(), g_allDoneStatus);
     emit uploaded();
+}
+
+void EffectsExchange::setLocalFiles()
+{
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(!sf)
+    {
+        return;
+    }
+
+    for(int i = 0; i < m_inputArtefactModel->sizeImpl(); i++)
+    {
+        Artefact *artefact = m_inputArtefactModel->dataItemAtImpl(i);
+        if(!artefact)
+        {
+            continue;
+        }
+        artefact->setFilename(sf->get(artefact->filename()));
+    }
 }
 
 void EffectsExchange::listReloadedSlotForImport()

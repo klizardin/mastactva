@@ -180,6 +180,7 @@ private:
     void createInput();
     void extractArchive(const QString &path_);
     void uploadStep();
+    void setLocalFiles();
     void disconnectDownload();
     void disconnectUpload();
     bool downloadImpl();
