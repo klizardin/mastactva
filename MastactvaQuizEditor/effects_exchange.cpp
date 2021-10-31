@@ -190,6 +190,50 @@ bool isEqualModelItems(
 }
 
 template<typename ModelType_> inline
+void idMapping(
+        ModelType_ *a_,
+        ModelType_ *b_,
+        MergeData &data_
+        )
+{
+    Q_ASSERT(a_);
+    Q_ASSERT(b_);
+    if(!a_ || !b_)
+    {
+        return;
+    }
+    const QString layoutName = a_->getJsonLayoutName();
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+        if(!ai)
+        {
+            continue;
+        }
+        const int aId = ModelType_::getIntId(ai);
+        const QString aMergeId = ModelType_::getMergeId(ai);
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+            if(!bi)
+            {
+                continue;
+            }
+            const QString bMergeId = ModelType_::getMergeId(bi);
+            found |= aMergeId == bMergeId;
+            if(found)
+            {
+                const int bId = ModelType_::getIntId(bi);
+                data_.addIdMapping(layoutName, aId);
+                data_.setIdMapping(layoutName, aId, bId);
+                break;
+            }
+        }
+    }
+}
+
+template<typename ModelType_> inline
 bool compare(
         ModelType_ *a_,
         ModelType_ *b_,
@@ -204,10 +248,6 @@ bool compare(
     }
 
     data_.clearIds(a_->sizeImpl(), b_->sizeImpl());
-    if(a_->sizeImpl() > b_->sizeImpl())
-    {
-        qDebug() << "possible";
-    }
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
         const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
@@ -236,10 +276,6 @@ bool compare(
         {
             data_.pushNewId(aId, aMergeId);
         }
-    }
-    if(a_->sizeImpl() < b_->sizeImpl())
-    {
-        qDebug() << "possible";
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
     {
@@ -335,9 +371,19 @@ int MergeItem<ModelType_>::countSteps(
             model_,
             data
             )
-        ? data.count()
+        ? data.trace(model_->getQMLLayoutName()), data.count()
         : 0
         ;
+}
+
+template<typename ModelType_>
+void MergeItem<ModelType_>::idMapping(
+        MergeData &data_,
+        ModelType_ *model_,
+        ModelType_ *inputModel_
+        )
+{
+    ::idMapping(inputModel_, model_, data_);
 }
 
 template<typename ModelType_>
@@ -366,7 +412,7 @@ bool MergeItem<ModelType_>::mergeStepImpl(
             data_
             ))
         {
-            data_.trace(model_->getQMLLayoutName());
+            //data_.trace(model_->getQMLLayoutName());
             data_.sort();
 
             QObject::connect(
@@ -1654,6 +1700,21 @@ bool EffectsExchange::mergeImpl()
         );
     m_mergeData.clear();
     m_merge.clear();
+    m_merge.idMapping(
+        m_mergeData,
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
+        m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
+        m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get(),
+        m_artefactModel.get(), m_inputArtefactModel.get(),
+        m_effectModel.get(), m_inputEffectModel.get(),
+        m_objectInfoModel.get(),m_inputObjectInfoModel.get(),
+        m_effectObjectsModel.get(), m_inputEffectObjectsModel.get(),
+        m_objectArtefactModel.get(), m_inputObjectArtefactModel.get(),
+        m_effectArgModel.get(), m_inputEffectArgModel.get(),
+        m_effectArgSetModel.get(), m_inputEffectArgSetModel.get(),
+        m_effectArgValueModel.get(), m_inputEffectArgValueModel.get()
+        );
     mergeStep();
     return true;
 }
