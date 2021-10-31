@@ -693,10 +693,14 @@ bool MergeItem<ModelType_>::mergeStepImpl(
             const int index = model_->indexOfDataItemImpl(itemOld);
             if(index >= 0 && itemOld)
             {
+                ModelType_::copyFromTo(
+                            itemNew, IdFieldsMapping<ModelType_>::get(itemNew, data_, true),
+                            itemNew,
+                            true
+                            );
                 model_->setDataItemImpl(
                     index,
-                    itemNew,
-                    IdFieldsMapping<ModelType_>::get(itemNew, data_, false)
+                    itemNew
                     );
             }
             return true;
