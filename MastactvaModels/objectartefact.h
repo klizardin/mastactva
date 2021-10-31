@@ -42,6 +42,7 @@ public:
 
     Q_PROPERTY(int objectArtefactId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int objectArtefactObjectInfoId READ objectInfoId WRITE setObjectInfoId NOTIFY objectInfoIdChanged)
+    Q_PROPERTY(int objectArtefactArtefactId READ artefactId WRITE setArtefactId NOTIFY artefactChanged)
     Q_PROPERTY(QVariant objectArtefactArtefact READ artefact WRITE setArtefact NOTIFY artefactChanged)
     Q_PROPERTY(int objectArtefactStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(MergeId objectArtefactMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
@@ -56,7 +57,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &ObjectArtefact::m_appId);
             addField<int>("id", "objectArtefactId", &ObjectArtefact::id, &ObjectArtefact::setId);
             addField<int>("object_info", "objectArtefactObjectInfoId", &ObjectArtefact::objectInfoId, &ObjectArtefact::setObjectInfoId);
-            addField<int>("artefact", "", &ObjectArtefact::artefactId, &ObjectArtefact::setArtefactId);
+            addField<int>("artefact", "objectArtefactArtefactId", &ObjectArtefact::artefactId, &ObjectArtefact::setArtefactId);
             addField<int>("step_index", "objectArtefactStepIndex", &ObjectArtefact::stepIndex, &ObjectArtefact::setStepIndex);
             addField<MergeId>("mergeid", "objectArtefactMergeId", &ObjectArtefact::mergeid, &ObjectArtefact::setMergeid);
             addModel<ArtefactModel>("objectArtefactArtefact", &ObjectArtefact::m_artefactModel, &ObjectArtefact::createArtefactModel);
