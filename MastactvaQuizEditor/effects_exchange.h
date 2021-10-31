@@ -56,6 +56,11 @@ public:
             ModelType_ *model_,
             ModelType_ *inputModel_
             );
+    void idMapping(
+            MergeData &data_,
+            ModelType_ *model_,
+            ModelType_ *inputModel_
+            );
     void clear();
     bool mergeStepImpl(
             MergeData &data_,
@@ -84,6 +89,12 @@ public:
     {
         MergeItem<ModelType1_>::clear();
         Merge<ModelTypes_...>::clear();
+    }
+
+    void idMapping(MergeData &data_, ModelType1_ *model_, ModelType2_ *inputModel_, ModelTypes_ *...models_)
+    {
+        MergeItem<ModelType1_>::idMapping(data_, model_, inputModel_);
+        Merge<ModelTypes_...>::idMapping(data_, models_...);
     }
 
     bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_, ModelTypes_ *...models_)
@@ -116,6 +127,11 @@ public:
     void clear()
     {
         MergeItem<ModelType1_>::clear();
+    }
+
+    void idMapping(MergeData &data_, ModelType1_ *model_, ModelType2_ *inputModel_)
+    {
+        MergeItem<ModelType1_>::idMapping(data_, model_, inputModel_);
     }
 
     bool mergeStep(MergeData &data_, EffectsExchange *effectExchange_, ModelType1_ *model_, ModelType2_ *inputModel_)
@@ -164,6 +180,7 @@ private:
     void createInput();
     void extractArchive(const QString &path_);
     void uploadStep();
+    void setLocalFiles();
     void disconnectDownload();
     void disconnectUpload();
     bool downloadImpl();

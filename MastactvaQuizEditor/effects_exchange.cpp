@@ -190,6 +190,50 @@ bool isEqualModelItems(
 }
 
 template<typename ModelType_> inline
+void idMapping(
+        ModelType_ *a_,
+        ModelType_ *b_,
+        MergeData &data_
+        )
+{
+    Q_ASSERT(a_);
+    Q_ASSERT(b_);
+    if(!a_ || !b_)
+    {
+        return;
+    }
+    const QString layoutName = a_->getJsonLayoutName();
+    for(int i = 0; i < a_->sizeImpl(); i++)
+    {
+        const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
+        if(!ai)
+        {
+            continue;
+        }
+        const int aId = ModelType_::getIntId(ai);
+        const QString aMergeId = ModelType_::getMergeId(ai);
+        bool found = false;
+        for(int i = 0; i < b_->sizeImpl(); i++)
+        {
+            const typename ModelType_::DataObjectType *bi = b_->dataItemAtImpl(i);
+            if(!bi)
+            {
+                continue;
+            }
+            const QString bMergeId = ModelType_::getMergeId(bi);
+            found |= aMergeId == bMergeId;
+            if(found)
+            {
+                const int bId = ModelType_::getIntId(bi);
+                data_.addIdMapping(layoutName, aId);
+                data_.setIdMapping(layoutName, aId, bId);
+                break;
+            }
+        }
+    }
+}
+
+template<typename ModelType_> inline
 bool compare(
         ModelType_ *a_,
         ModelType_ *b_,
@@ -204,10 +248,6 @@ bool compare(
     }
 
     data_.clearIds(a_->sizeImpl(), b_->sizeImpl());
-    if(a_->sizeImpl() > b_->sizeImpl())
-    {
-        qDebug() << "possible";
-    }
     for(int i = 0; i < a_->sizeImpl(); i++)
     {
         const typename ModelType_::DataObjectType *ai = a_->dataItemAtImpl(i);
@@ -236,10 +276,6 @@ bool compare(
         {
             data_.pushNewId(aId, aMergeId);
         }
-    }
-    if(a_->sizeImpl() < b_->sizeImpl())
-    {
-        qDebug() << "possible";
     }
     for(int i = 0; i < b_->sizeImpl(); i++)
     {
@@ -310,17 +346,250 @@ bool compare(
     return true;
 }
 
-template<typename ModelType_> inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename ModelType_::DataObjectType *item_,
-        const MergeData &data_
-        )
+template<typename ModelType_>
+class IdFieldsMapping
 {
-    Q_UNUSED(item_);
-    Q_UNUSED(data_);
-    return QHash<QString, QVariant>{};
-}
+public:
+    static QHash<QString, QVariant> get(
+            const typename ModelType_::DataObjectType *item_,
+            const MergeData &data_,
+            bool useQmlName_ = false
+            )
+    {
+        Q_UNUSED(item_);
+        Q_UNUSED(data_);
+        Q_UNUSED(useQmlName_);
+        return QHash<QString, QVariant>{};
+    }
+};
 
+template<>
+class IdFieldsMapping<EffectArgValueModel>
+{
+public:
+    static QHash<QString, QVariant> get(
+        const typename EffectArgValueModel::DataObjectType *item_,
+        const MergeData &data_,
+        bool useQmlName_ = false
+        )
+    {
+        QHash<QString, QVariant> result;
+        if(!item_)
+        {
+            return result;
+        }
+        if(data_.hasMapping("effect-arg", item_->argId()))
+        {
+            result.insert(useQmlName_ ? "effectArgValueArgId" : "arg",
+                          data_.getMapping("effect-arg", item_->argId())
+                          );
+        }
+        if(data_.hasMapping("effect-arg-set", item_->argSetId()))
+        {
+            result.insert(useQmlName_ ? "effectArgValueArgSetId" : "arg_set",
+                          data_.getMapping("effect-arg-set", item_->argSetId())
+                          );
+        }
+        if(data_.hasMapping("effect-arg-value", item_->id()))
+        {
+            result.insert(useQmlName_ ? "effectArgValueId" : "id",
+                          data_.getMapping("effect-arg-value", item_->id())
+                          );
+        }
+        return result;
+    }
+};
+
+template<>
+class IdFieldsMapping<EffectArgSetModel>
+{
+public:
+    static QHash<QString, QVariant> get(
+            const typename EffectArgSetModel::DataObjectType *item_,
+            const MergeData &data_,
+            bool useQmlName_ = false
+            )
+    {
+        QHash<QString, QVariant> result;
+        if(!item_)
+        {
+            return result;
+        }
+        if(data_.hasMapping("effect", item_->effectId()))
+        {
+            result.insert(useQmlName_ ? "effectArgSetEffectId" : "effect",
+                          data_.getMapping("effect", item_->effectId())
+                          );
+        }
+        if(data_.hasMapping("easing-type", item_->easingId()))
+        {
+            result.insert(useQmlName_ ? "effectArgSetEasingId" : "easing",
+                          data_.getMapping("easing-type", item_->easingId())
+                          );
+        }
+        if(data_.hasMapping("effect-arg-set", item_->id()))
+        {
+            result.insert(useQmlName_ ? "effectArgSetId" : "id",
+                          data_.getMapping("effect-arg-set", item_->id())
+                          );
+        }
+        return result;
+    }
+};
+
+template<>
+class IdFieldsMapping<EffectArgModel>
+{
+public:
+    static QHash<QString, QVariant> get(
+            const typename EffectArgModel::DataObjectType *item_,
+            const MergeData &data_,
+            bool useQmlName_ = false
+            )
+    {
+        QHash<QString, QVariant> result;
+        if(!item_)
+        {
+            return result;
+        }
+        if(data_.hasMapping("effect", item_->effectId()))
+        {
+            result.insert(useQmlName_ ? "effectArgEffectId" : "effect",
+                          data_.getMapping("effect", item_->effectId())
+                          );
+        }
+        if(data_.hasMapping("object-artefact", item_->objectArtefactId()))
+        {
+            result.insert(useQmlName_ ? "effectArgObjectArtefactId" : "object_artefact",
+                          data_.getMapping("object-artefact", item_->objectArtefactId())
+                          );
+        }
+        if(data_.hasMapping("artefact-arg-type", item_->argTypeId()))
+        {
+            result.insert(useQmlName_ ? "effectArgArgTypeId" : "arg_type",
+                          data_.getMapping("artefact-arg-type", item_->argTypeId())
+                          );
+        }
+        if(data_.hasMapping("artefact-arg-storage", item_->argStorageId()))
+        {
+            result.insert(useQmlName_ ? "effectArgArgStorageId" : "arg_storage",
+                          data_.getMapping("artefact-arg-storage", item_->argStorageId())
+                          );
+        }
+        if(data_.hasMapping("effect-arg", item_->id()))
+        {
+            result.insert(useQmlName_ ? "effectArgId" : "id",
+                          data_.getMapping("effect-arg", item_->id())
+                          );
+        }
+        return result;
+    }
+};
+
+template<>
+class IdFieldsMapping<ObjectArtefactModel>
+{
+public:
+    static QHash<QString, QVariant> get(
+            const typename ObjectArtefactModel::DataObjectType *item_,
+            const MergeData &data_,
+            bool useQmlName_ = false
+            )
+    {
+        QHash<QString, QVariant> result;
+        if(!item_)
+        {
+            return result;
+        }
+        if(data_.hasMapping("object-info", item_->objectInfoId()))
+        {
+            result.insert(useQmlName_ ? "objectArtefactObjectInfoId" : "object_info",
+                          data_.getMapping("object-info", item_->objectInfoId())
+                          );
+        }
+        if(data_.hasMapping("artefact", item_->artefactId()))
+        {
+            result.insert(useQmlName_ ? "objectArtefactArtefactId" : "artefact",
+                          data_.getMapping("artefact", item_->artefactId())
+                          );
+        }
+        if(data_.hasMapping("object-artefact", item_->id()))
+        {
+            result.insert(useQmlName_ ? "objectArtefactId" : "id",
+                          data_.getMapping("object-artefact", item_->id())
+                          );
+        }
+        return result;
+    }
+};
+
+template<>
+class IdFieldsMapping<EffectObjectsModel>
+{
+public:
+    static QHash<QString, QVariant> get(
+            const typename EffectObjectsModel::DataObjectType *item_,
+            const MergeData &data_,
+            bool useQmlName_ = false
+            )
+    {
+        QHash<QString, QVariant> result;
+        if(!item_)
+        {
+            return result;
+        }
+        if(data_.hasMapping("effect", item_->effectId()))
+        {
+            result.insert(useQmlName_ ? "effectObjectsEffectId" : "effect",
+                          data_.getMapping("effect", item_->effectId())
+                          );
+        }
+        if(data_.hasMapping("object-info", item_->objectInfoId()))
+        {
+            result.insert(useQmlName_ ? "effectObjectsObjectInfoId" : "object_info",
+                          data_.getMapping("object-info", item_->objectInfoId())
+                          );
+        }
+        if(data_.hasMapping("effect-object", item_->id()))
+        {
+            result.insert(useQmlName_ ? "effectObjectsId" : "id",
+                          data_.getMapping("effect-object", item_->id())
+                          );
+        }
+        return result;
+    }
+};
+
+template<>
+class IdFieldsMapping<ArtefactModel>
+{
+public:
+    static QHash<QString, QVariant> get(
+            const typename ArtefactModel::DataObjectType *item_,
+            const MergeData &data_,
+            bool useQmlName_ = false
+            )
+    {
+        QHash<QString, QVariant> result;
+        if(!item_)
+        {
+            return result;
+        }
+        if(data_.hasMapping("artefact-type", item_->type()))
+        {
+            result.insert(useQmlName_ ? "artefactTypeId" : "type",
+                          data_.getMapping("artefact-type", item_->type())
+                          );
+        }
+        if(data_.hasMapping("artefact", item_->id()))
+        {
+            result.insert(useQmlName_ ? "artefactId" : "id",
+                          data_.getMapping("artefact", item_->id())
+                          );
+        }
+        return result;
+    }
+};
 
 template<typename ModelType_>
 int MergeItem<ModelType_>::countSteps(
@@ -335,9 +604,19 @@ int MergeItem<ModelType_>::countSteps(
             model_,
             data
             )
-        ? data.count()
+        ? data.trace(model_->getQMLLayoutName()), data.count()
         : 0
         ;
+}
+
+template<typename ModelType_>
+void MergeItem<ModelType_>::idMapping(
+        MergeData &data_,
+        ModelType_ *model_,
+        ModelType_ *inputModel_
+        )
+{
+    ::idMapping(inputModel_, model_, data_);
 }
 
 template<typename ModelType_>
@@ -357,16 +636,25 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         ModelType_ *inputModel_
         )
 {
+    if(m_modelTypeMerged && m_modelTypePrepered)
+    {
+        return false;
+    }
+
     if(!m_modelTypeMerged
             && !m_modelTypePrepered)
     {
         if(compare(
-            inputModel_,
-            model_,
-            data_
+                inputModel_,
+                model_,
+                data_
+            )
+            && (
+                data_.hasDifferent()
+                || data_.hasNewId()
             ))
         {
-            data_.trace(model_->getQMLLayoutName());
+            //data_.trace(model_->getQMLLayoutName());
             data_.sort();
 
             QObject::connect(
@@ -394,21 +682,24 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         if(data_.hasDifferent())
         {
             const std::pair<int,int> abIds = data_.popDifferentId();
-            const typename ModelType_::DataObjectType *itemOld =
+            typename ModelType_::DataObjectType *itemOld =
                     model_->findDataItemByIdImpl(
                         QVariant::fromValue(abIds.second)
                         );
-            typename ModelType_::DataObjectType *itemNew =
+            const typename ModelType_::DataObjectType *itemNew =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(abIds.first)
                         );
             const int index = model_->indexOfDataItemImpl(itemOld);
             if(index >= 0 && itemOld)
             {
+                ModelType_::copyFromTo(
+                            itemNew, IdFieldsMapping<ModelType_>::get(itemNew, data_, true),
+                            itemOld
+                            );
                 model_->setDataItemImpl(
                     index,
-                    itemNew,
-                    getIdFieldsMapping<ModelType_>(itemNew, data_)
+                    itemOld
                     );
             }
             return true;
@@ -433,16 +724,19 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         {
             m_oldInsertItemId = data_.popNewId();
             data_.addIdMapping(layoutName, m_oldInsertItemId);
-            const typename ModelType_::DataObjectType *itemOld =
+            const typename ModelType_::DataObjectType *itemNew =
                     inputModel_->findDataItemByIdImpl(
                         QVariant::fromValue(m_oldInsertItemId)
                         );
-            if(itemOld)
+            if(itemNew)
             {
                 m_modelItemNew = model_->createDataItemImpl();
                 if(m_modelItemNew)
                 {
-                    ModelType_::copyFromTo(itemOld, m_modelItemNew);
+                    ModelType_::copyFromTo(
+                                itemNew, IdFieldsMapping<ModelType_>::get(itemNew, data_, true),
+                                m_modelItemNew
+                                );
                     model_->addDataItemImpl(m_modelItemNew);
                 }
             }
@@ -891,7 +1185,7 @@ void EffectsExchange::archiveResults()
         QFileInfo fi(fit.next());
         if(fi.isDir() || fi.isFile())
         {
-            args.push_back(fi.absoluteFilePath());
+            args.push_back(dir.relativeFilePath(fi.absoluteFilePath()));
         }
     }
     QProcess tar;
@@ -917,8 +1211,8 @@ qreal EffectsExchange::stepProgress()
                 (
                     i,
                     c_downloadStepsCount
-                ) / (qreal)c_downloadStepsCount * 1000.0
-            ) / 10.0
+                ) / (qreal)c_downloadStepsCount * 100.0
+            )
             : 100.0
             ;
     qDebug() << "progress =" << progress;
@@ -993,7 +1287,7 @@ void EffectsExchange::createInput()
     free();
 
     m_inputModelConfig = std::make_unique<ChooseModelConfig>(
-                true,
+                false,
                 g_importExchangeNamespace
                 );
 
@@ -1363,10 +1657,30 @@ void EffectsExchange::uploadStep()
         return; // one model at time
     }
 
+    setLocalFiles();
     disconnectUpload();
 
     emit progress(stepProgress(), g_allDoneStatus);
     emit uploaded();
+}
+
+void EffectsExchange::setLocalFiles()
+{
+    ServerFiles * sf = QMLObjectsBase::getInstance().getServerFiles();
+    if(!sf)
+    {
+        return;
+    }
+
+    for(int i = 0; i < m_inputArtefactModel->sizeImpl(); i++)
+    {
+        Artefact *artefact = m_inputArtefactModel->dataItemAtImpl(i);
+        if(!artefact)
+        {
+            continue;
+        }
+        artefact->setFilename(sf->get(artefact->filename()));
+    }
 }
 
 void EffectsExchange::listReloadedSlotForImport()
@@ -1654,6 +1968,21 @@ bool EffectsExchange::mergeImpl()
         );
     m_mergeData.clear();
     m_merge.clear();
+    m_merge.idMapping(
+        m_mergeData,
+        m_easingTypeModel.get(), m_inputEasingTypeModel.get(),
+        m_artefactArgStorageModel.get(), m_inputArtefactArgStorageModel.get(),
+        m_artefactArgTypeModel.get(), m_inputArtefactArgTypeModel.get(),
+        m_artefactTypeModel.get(), m_inputArtefactTypeModel.get(),
+        m_artefactModel.get(), m_inputArtefactModel.get(),
+        m_effectModel.get(), m_inputEffectModel.get(),
+        m_objectInfoModel.get(),m_inputObjectInfoModel.get(),
+        m_effectObjectsModel.get(), m_inputEffectObjectsModel.get(),
+        m_objectArtefactModel.get(), m_inputObjectArtefactModel.get(),
+        m_effectArgModel.get(), m_inputEffectArgModel.get(),
+        m_effectArgSetModel.get(), m_inputEffectArgSetModel.get(),
+        m_effectArgValueModel.get(), m_inputEffectArgValueModel.get()
+        );
     mergeStep();
     return true;
 }
@@ -1695,138 +2024,3 @@ void EffectsExchange::itemAddedSlotForImport()
     mergeStep();
 }
 
-inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename EffectArgValueModel::DataObjectType *item_,
-        const MergeData &data_
-        )
-{
-    QHash<QString, QVariant> result;
-    if(!item_)
-    {
-        return result;
-    }
-    if(data_.hasMapping("effect-arg", item_->argId()))
-    {
-        result.insert("arg", data_.getMapping("effect-arg", item_->argId()));
-    }
-    if(data_.hasMapping("effect-arg-set", item_->argSetId()))
-    {
-        result.insert("arg_set", data_.getMapping("effect-arg-set", item_->argSetId()));
-    }
-    return result;
-}
-
-inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename EffectArgSetModel::DataObjectType *item_,
-        const MergeData &data_
-        )
-{
-    QHash<QString, QVariant> result;
-    if(!item_)
-    {
-        return result;
-    }
-    if(data_.hasMapping("effect", item_->effectId()))
-    {
-        result.insert("effect", data_.getMapping("effect", item_->effectId()));
-    }
-    if(data_.hasMapping("easing-type", item_->easingId()))
-    {
-        result.insert("easing", data_.getMapping("easing-type", item_->easingId()));
-    }
-    return result;
-}
-
-inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename EffectArgModel::DataObjectType *item_,
-        const MergeData &data_
-        )
-{
-    QHash<QString, QVariant> result;
-    if(!item_)
-    {
-        return result;
-    }
-    if(data_.hasMapping("effect", item_->effectId()))
-    {
-        result.insert("effect", data_.getMapping("effect", item_->effectId()));
-    }
-    if(data_.hasMapping("object-artefact", item_->objectArtefactId()))
-    {
-        result.insert("object_artefact", data_.getMapping("object-artefact", item_->objectArtefactId()));
-    }
-    if(data_.hasMapping("artefact-arg-type", item_->argTypeId()))
-    {
-        result.insert("arg_type", data_.getMapping("artefact-arg-type", item_->argTypeId()));
-    }
-    if(data_.hasMapping("artefact-arg-storage", item_->argStorageId()))
-    {
-        result.insert("arg_storage", data_.getMapping("artefact-arg-storage", item_->argStorageId()));
-    }
-    return result;
-}
-
-inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename ObjectArtefactModel::DataObjectType *item_,
-        const MergeData &data_
-        )
-{
-    QHash<QString, QVariant> result;
-    if(!item_)
-    {
-        return result;
-    }
-    if(data_.hasMapping("object-info", item_->objectInfoId()))
-    {
-        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
-    }
-    if(data_.hasMapping("artefact", item_->artefactId()))
-    {
-        result.insert("artefact", data_.getMapping("artefact", item_->artefactId()));
-    }
-    return result;
-}
-
-inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename EffectObjectsModel::DataObjectType *item_,
-        const MergeData &data_
-        )
-{
-    QHash<QString, QVariant> result;
-    if(!item_)
-    {
-        return result;
-    }
-    if(data_.hasMapping("effect", item_->effectId()))
-    {
-        result.insert("effect", data_.getMapping("effect", item_->effectId()));
-    }
-    if(data_.hasMapping("object-info", item_->objectInfoId()))
-    {
-        result.insert("object_info", data_.getMapping("object-info", item_->objectInfoId()));
-    }
-    return result;
-}
-
-inline
-QHash<QString, QVariant> getIdFieldsMapping(
-        const typename ArtefactModel::DataObjectType *item_,
-        const MergeData &data_
-        )
-{
-    QHash<QString, QVariant> result;
-    if(!item_)
-    {
-        return result;
-    }
-    if(data_.hasMapping("artefact-type", item_->type()))
-    {
-        result.insert("type", data_.getMapping("artefact-type", item_->type()));
-    }
-    return result;
-}

@@ -45,6 +45,7 @@ public:
 
     Q_PROPERTY(int effectObjectsId READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(int effectObjectsEffectId READ effectId WRITE setEffectId NOTIFY effectIdChanged)
+    Q_PROPERTY(int effectObjectsObjectInfoId READ objectInfoId WRITE setObjectInfoId NOTIFY objectInfoChanged)
     Q_PROPERTY(QVariant effectObjectsObjectInfo READ objectInfo WRITE setObjectInfo NOTIFY objectInfoChanged)
     Q_PROPERTY(int effectObjectsStepIndex READ stepIndex WRITE setStepIndex NOTIFY stepIndexChanged)
     Q_PROPERTY(QVariant effectObjectsObjectArtefacts READ objectArtefacts WRITE setObjectArtefacts NOTIFY objectArtefactsChanged)
@@ -62,7 +63,7 @@ public:
             addSpecial<int>(layout::SpecialFieldEn::appId, &EffectObjects::m_appId);
             addField<int>("id", "effectObjectsId", &EffectObjects::id, &EffectObjects::setId);
             addField<int>("effect", "effectObjectsEffectId", &EffectObjects::effectId, &EffectObjects::setEffectId);
-            addField<int>("object_info", "", &EffectObjects::objectInfoId, &EffectObjects::setObjectInfoId);
+            addField<int>("object_info", "effectObjectsObjectInfoId", &EffectObjects::objectInfoId, &EffectObjects::setObjectInfoId);
             addField<int>("step_index", "effectObjectsStepIndex", &EffectObjects::stepIndex, &EffectObjects::setStepIndex);
             addField<MergeId>("mergeid", "effectObjectsMergeId", &EffectObjects::mergeid, &EffectObjects::setMergeid);
             addModel<ObjectInfoModel>("effectObjectsObjectInfo", &EffectObjects::m_objectInfoModel, &EffectObjects::createObjectInfoModel);
