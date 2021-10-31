@@ -405,13 +405,22 @@ bool MergeItem<ModelType_>::mergeStepImpl(
         ModelType_ *inputModel_
         )
 {
+    if(m_modelTypeMerged && m_modelTypePrepered)
+    {
+        return false;
+    }
+
     if(!m_modelTypeMerged
             && !m_modelTypePrepered)
     {
         if(compare(
-            inputModel_,
-            model_,
-            data_
+                inputModel_,
+                model_,
+                data_
+            )
+            && (
+                data_.hasDifferent()
+                || data_.hasNewId()
             ))
         {
             //data_.trace(model_->getQMLLayoutName());
