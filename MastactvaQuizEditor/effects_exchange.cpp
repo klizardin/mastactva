@@ -390,12 +390,6 @@ public:
                           data_.getMapping("effect-arg-set", item_->argSetId())
                           );
         }
-        if(data_.hasMapping("effect-arg-value", item_->id()))
-        {
-            result.insert(useQmlName_ ? "effectArgValueId" : "id",
-                          data_.getMapping("effect-arg-value", item_->id())
-                          );
-        }
         return result;
     }
 };
@@ -425,12 +419,6 @@ public:
         {
             result.insert(useQmlName_ ? "effectArgSetEasingId" : "easing",
                           data_.getMapping("easing-type", item_->easingId())
-                          );
-        }
-        if(data_.hasMapping("effect-arg-set", item_->id()))
-        {
-            result.insert(useQmlName_ ? "effectArgSetId" : "id",
-                          data_.getMapping("effect-arg-set", item_->id())
                           );
         }
         return result;
@@ -476,12 +464,6 @@ public:
                           data_.getMapping("artefact-arg-storage", item_->argStorageId())
                           );
         }
-        if(data_.hasMapping("effect-arg", item_->id()))
-        {
-            result.insert(useQmlName_ ? "effectArgId" : "id",
-                          data_.getMapping("effect-arg", item_->id())
-                          );
-        }
         return result;
     }
 };
@@ -511,12 +493,6 @@ public:
         {
             result.insert(useQmlName_ ? "objectArtefactArtefactId" : "artefact",
                           data_.getMapping("artefact", item_->artefactId())
-                          );
-        }
-        if(data_.hasMapping("object-artefact", item_->id()))
-        {
-            result.insert(useQmlName_ ? "objectArtefactId" : "id",
-                          data_.getMapping("object-artefact", item_->id())
                           );
         }
         return result;
@@ -550,12 +526,6 @@ public:
                           data_.getMapping("object-info", item_->objectInfoId())
                           );
         }
-        if(data_.hasMapping("effect-object", item_->id()))
-        {
-            result.insert(useQmlName_ ? "effectObjectsId" : "id",
-                          data_.getMapping("effect-object", item_->id())
-                          );
-        }
         return result;
     }
 };
@@ -579,12 +549,6 @@ public:
         {
             result.insert(useQmlName_ ? "artefactTypeId" : "type",
                           data_.getMapping("artefact-type", item_->type())
-                          );
-        }
-        if(data_.hasMapping("artefact", item_->id()))
-        {
-            result.insert(useQmlName_ ? "artefactId" : "id",
-                          data_.getMapping("artefact", item_->id())
                           );
         }
         return result;
