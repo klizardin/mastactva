@@ -31,7 +31,7 @@
 #include "../MastactvaModels/quizuser.h"
 
 
-static const char *g_defaultSavePath = "./LocalData/mobiledata.tar";
+static const char *g_defaultSavePath = "./LocalData/mobiledata.tar.gz";
 static const int g_downloadStepsCount = 5;
 
 
@@ -186,11 +186,11 @@ void LocalDataSet::archiveResults()
         QFileInfo fi(fit.next());
         if(fi.isDir() || fi.isFile())
         {
-            args.push_back(fi.absoluteFilePath());
+            args.push_back(dir.relativeFilePath(fi.absoluteFilePath()));
         }
     }
     QProcess tar;
-    tar.start("tar", QStringList({"-cf", m_saveName}) + args);
+    tar.start("tar", QStringList({"-czf", m_saveName}) + args);
     if(!tar.waitForStarted())
     {
         return;
@@ -214,9 +214,9 @@ void LocalDataSet::initSavePath(const QString &url_)
     QFileInfo fi(url_);
     m_savePath = fi.absolutePath();
     m_saveName = fi.absoluteFilePath();
-    if(!m_saveName.endsWith(".tar"))
+    if(!m_saveName.endsWith(".tar.gz"))
     {
-        m_saveName += ".tar";
+        m_saveName += ".tar.gz";
     }
 }
 

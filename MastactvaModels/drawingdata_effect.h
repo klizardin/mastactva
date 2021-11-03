@@ -24,6 +24,9 @@
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
 
+class DrawingDataEffectObjects;
+
+
 class DrawingDataEffect :
         public EffectData,
         public IDefaultData<drawing_data::QuizImageObjects>
@@ -37,6 +40,30 @@ public:
 
     // method to form QuizImageObjects data
     void initialize(drawing_data::QuizImageObjects &data_) const override;
+
+private:
+    using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;
+    using SortedByProgrammerNameEffectObjects = std::multimap<QString, const DrawingDataEffectObjects *>;
+
+private:
+    void extractMainObjects(
+            SortedEffectObjects &sortedEffectObjects_,
+            SortedEffectObjects &sortedMainEffectObjects_,
+            SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
+            ) const;
+    void runObjects(
+            drawing_data::QuizImageObjects &data_,
+            SortedEffectObjects &objects_
+            ) const;
+    void processByObjectListOrder(
+            drawing_data::QuizImageObjects &data_,
+            const QStringList &objectsToRun_,
+            const SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
+            ) const;
+    void processByDefaultOrder(
+            drawing_data::QuizImageObjects &data_,
+            const SortedEffectObjects &sortedEffectObjects_
+            ) const;
 
 private:
     drawingdata::Details m_details;
