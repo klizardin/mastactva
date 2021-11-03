@@ -63,12 +63,35 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
     {
         return;
     }
+
     const_cast<DrawingDataEffect *>(this)->m_details.clear();
-    using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;
-    using SortedByProgrammerNameEffectObjects = std::multimap<QString, const DrawingDataEffectObjects *>;
+
     SortedEffectObjects sortedMainEffectObjects;
     SortedEffectObjects sortedEffectObjects;
     SortedByProgrammerNameEffectObjects sortedByProgrammerNameEffectObjects;
+
+    extractMainObjects(sortedEffectObjects, sortedMainEffectObjects, sortedByProgrammerNameEffectObjects);
+
+    runObjects(data_, sortedMainEffectObjects);
+
+    QStringList objectsToRun;
+    if(m_details.variables.operator bool()
+            && m_details.variables->getObjectsList(objectsToRun))
+    {
+        processByObjectListOrder(data_, objectsToRun, sortedByProgrammerNameEffectObjects);
+    }
+    else
+    {
+        runObjects(data_, sortedEffectObjects);
+    }
+}
+
+void DrawingDataEffect::extractMainObjects(
+        SortedEffectObjects &sortedEffectObjects_,
+        SortedEffectObjects &sortedMainEffectObjects_,
+        SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
+        ) const
+{
     for(const EffectObjectsData *effectObject_ : *m_effectObjectsData)
     {
         const DrawingDataEffectObjects *effectObject = dynamic_cast<const DrawingDataEffectObjects *>(effectObject_);
@@ -78,15 +101,22 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
         }
         if(effectObject->isMain())
         {
-            sortedMainEffectObjects.insert({effectObject->getStepIndex(), effectObject});
+            sortedMainEffectObjects_.insert({effectObject->getStepIndex(), effectObject});
         }
         else
         {
-            sortedEffectObjects.insert({effectObject->getStepIndex(), effectObject});
-            sortedByProgrammerNameEffectObjects.insert({effectObject->getProgrammerName(), effectObject});
+            sortedEffectObjects_.insert({effectObject->getStepIndex(), effectObject});
+            sortedByProgrammerNameEffectObjects_.insert({effectObject->getProgrammerName(), effectObject});
         }
     }
-    for(const SortedEffectObjects::value_type &v_ : sortedMainEffectObjects)
+}
+
+void DrawingDataEffect::runObjects(
+        drawing_data::QuizImageObjects &data_,
+        SortedEffectObjects &objects_
+        ) const
+{
+    for(const SortedEffectObjects::value_type &v_ : objects_)
     {
         if(!v_.second)
         {
@@ -94,35 +124,27 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
         }
         v_.second->addObjects(data_, m_details);
     }
-    QStringList objectsToRun;
-    if(m_details.variables.operator bool()
-            && m_details.variables->getObjectsList(objectsToRun))
+}
+
+void DrawingDataEffect::processByObjectListOrder(
+        drawing_data::QuizImageObjects &data_,
+        const QStringList &objectsToRun_,
+        const SortedByProgrammerNameEffectObjects &sortedByProgrammerNameEffectObjects_
+        ) const
+{
+    auto objectsToRunUnique = getUnique(objectsToRun_);
+    std::map<QString, int> stepIndexShifts = setupShifts(objectsToRunUnique);
+    for(const QString &objectName_ : objectsToRun_)
     {
-        auto objectsToRunUnique = getUnique(objectsToRun);
-        std::map<QString, int> stepIndexShifts = setupShifts(objectsToRunUnique);
-        for(const QString &objectName_ : objectsToRun)
+        const auto fitb = sortedByProgrammerNameEffectObjects_.lower_bound(objectName_);
+        const auto fite = sortedByProgrammerNameEffectObjects_.upper_bound(objectName_);
+        std::size_t objectsInPack = std::distance(fitb, fite);
+        Q_ASSERT(stepIndexShifts.find(objectName_) != std::end(stepIndexShifts));
+        const int stepIndexShift = stepIndexShifts[objectName_];
+        for(auto it = fitb; it != fite; ++it)
         {
-            const auto fitb = sortedByProgrammerNameEffectObjects.lower_bound(objectName_);
-            const auto fite = sortedByProgrammerNameEffectObjects.upper_bound(objectName_);
-            std::size_t objectsInPack = std::distance(fitb, fite);
-            Q_ASSERT(stepIndexShifts.find(objectName_) != std::end(stepIndexShifts));
-            const int stepIndexShift = stepIndexShifts[objectName_];
-            for(auto it = fitb; it != fite; ++it)
-            {
-                it->second->addObjects(data_, m_details, stepIndexShift);
-            }
-            stepIndexShifts[objectName_] += objectsInPack;
+            it->second->addObjects(data_, m_details, stepIndexShift);
         }
-    }
-    else
-    {
-        for(const SortedEffectObjects::value_type &v_ : sortedEffectObjects)
-        {
-            if(!v_.second)
-            {
-                continue;
-            }
-            v_.second->addObjects(data_, m_details);
-        }
+        stepIndexShifts[objectName_] += objectsInPack;
     }
 }
