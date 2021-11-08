@@ -62,7 +62,7 @@ namespace utils
                     continue;
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
-                if(dynamic_cast<DataType_ *>(ptr.get()))
+                if(static_cast<DataType_ *>(ptr.get()))
                 {
                     ptr_ = dynamic_cast<DataType_ *>(ptr.release());
                 }
@@ -90,6 +90,27 @@ namespace utils
                     continue;
                 }
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
+                result_->push_back(ptr.release());
+            }
+        }
+    }
+
+    template<class DataTypeSrc_, class DataTypeDest_> inline
+    void move(
+        const std::shared_ptr<QVector<DataTypeSrc_ *>> &data_,
+        std::shared_ptr<QVector<DataTypeDest_ *>> &result_
+        )
+    {
+        result_ = data_object::utils::createDataVector(static_cast<const DataTypeDest_ *>(nullptr));
+        if(data_.operator bool())
+        {
+            for(DataTypeSrc_ *& ptr_ : *data_)
+            {
+                if(!ptr_)
+                {
+                    continue;
+                }
+                auto ptr = std::make_unique<DataTypeDest_>(static_cast<const DataTypeDest_ &>(*ptr_));
                 result_->push_back(ptr.release());
             }
         }
