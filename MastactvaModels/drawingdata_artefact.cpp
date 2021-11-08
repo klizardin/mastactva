@@ -27,7 +27,7 @@
 DrawingDataArtefact::DrawingDataArtefact(ArtefactData &&data_)
     : ArtefactData(std::move(data_))
 {
-    drawingdata::utils::move(m_artefactArgData, m_effectArgData);
+    drawingdata::utils::copy(m_artefactArgData, m_effectArgData);
     drawingdata::utils::rebuild(m_effectArgData, static_cast<DrawingDataArtefactArg *>(nullptr));
 }
 

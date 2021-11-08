@@ -96,7 +96,7 @@ namespace utils
     }
 
     template<class DataTypeSrc_, class DataTypeDest_> inline
-    void move(
+    void copy(
         const std::shared_ptr<QVector<DataTypeSrc_ *>> &data_,
         std::shared_ptr<QVector<DataTypeDest_ *>> &result_
         )
