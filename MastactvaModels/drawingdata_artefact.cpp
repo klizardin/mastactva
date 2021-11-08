@@ -27,7 +27,8 @@
 DrawingDataArtefact::DrawingDataArtefact(ArtefactData &&data_)
     : ArtefactData(std::move(data_))
 {
-    drawingdata::utils::rebuild(m_artefactArgData, static_cast<DrawingDataArtefactArg *>(nullptr));
+    drawingdata::utils::move(m_artefactArgData, m_effectArgData);
+    drawingdata::utils::rebuild(m_effectArgData, static_cast<DrawingDataArtefactArg *>(nullptr));
 }
 
 bool DrawingDataArtefact::setVertexShader(
@@ -63,11 +64,11 @@ void DrawingDataArtefact::addArguments(
         const drawingdata::Details &details_
         ) const
 {
-    if(!m_artefactArgData.operator bool())
+    if(!m_effectArgData.operator bool())
     {
         return;
     }
-    for(const ArtefactArgData *arg_ : *m_artefactArgData)
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)
@@ -344,7 +345,7 @@ void addCalculationsT(
 {
     if(!artefact_
             || !details_.filesource
-            || !artefact_->m_artefactArgData.operator bool())
+            || !artefact_->m_effectArgData.operator bool())
     {
         return;
     }
@@ -354,9 +355,9 @@ void addCalculationsT(
         auto artefactTextStr = details_.filesource->getText(artefact_->m_filename);
 
         QStringList args;
-        args.reserve(artefact_->m_artefactArgData->size());
+        args.reserve(artefact_->m_effectArgData->size());
 
-        for(const ArtefactArgData *arg_ : *artefact_->m_artefactArgData)
+        for(const EffectArgumentData *arg_ : *artefact_->m_effectArgData)
         {
             auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
             if(!arg)
