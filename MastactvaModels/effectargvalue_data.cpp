@@ -69,7 +69,7 @@ void EffectArgValueData::createArrays()
 
 void EffectArgValueData::createValues()
 {
-    m_effectArgValuesData = ::data_object::utils::createDataVector(static_cast<const EffectArgData *>(nullptr));
+    m_effectArgValuesData = ::data_object::utils::createDataVector(static_cast<const EffectArgumentData *>(nullptr));
     if(m_effectArgsData)
     {
         for(const EffectArgData *p_ : *m_effectArgsData)
@@ -78,7 +78,8 @@ void EffectArgValueData::createValues()
             {
                 continue;
             }
-            m_effectArgValuesData->push_back(p_->getDataCopy().release());
+            auto ptr = std::make_unique<EffectArgumentData>(static_cast<const EffectArgumentData &>(*p_));
+            m_effectArgValuesData->push_back(ptr.release());
             m_effectArgValuesData->back()->m_defaultValue = m_value;
         }
     }
