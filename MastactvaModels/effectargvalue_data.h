@@ -37,7 +37,7 @@ public:
     QDateTime m_created;
     MergeId m_mergeid;
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
-    std::shared_ptr<QVector<EffectArgData *>> m_effectArgValuesData;
+    std::shared_ptr<QVector<EffectArgumentData *>> m_effectArgValuesData;
 
     EffectArgValueData(const EffectArgValueData &data_) = delete;
     EffectArgValueData &operator = (const EffectArgValueData &data_) = delete;
