@@ -2,3 +2,23 @@
 2. add argument to select arg set
 3. add effect get effect data and arg set current item
 * fix tests
+
+
+arguments from concrete arg set
+DrawingDataEffect::m_effectArgSetsData
+    DrawingDataEffectArg
+        m_objectArtefactId
+        m_id // EffectArgData
+
+    DrawingDataEffectArgSet
+        DrawingDataEffectArgSet::m_effectArgValuesData
+            DrawingDataEffectArgValue
+                m_argId // -> DrawingDataEffectArg.m_id -> m_objectArtefactId
+
+                DrawingDataEffectArgValue::m_effectArgData
+                    IDrawingDataArtefactArg
+
+
+if we fill first?
+or just replace default value? -- maybe, it will be used latter
+or first? -- ok, it just from the start is used
