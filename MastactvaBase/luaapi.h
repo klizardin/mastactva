@@ -35,6 +35,7 @@ private:
     {
         getVariable,
         setVariable,
+        setVariableWithPosition,
         matrixIdentity,
         matrixIsIdentity,
         matrixDeterminant,
@@ -84,6 +85,7 @@ private:
     static LuaAPI *getByState(lua_State *luaState_);
     void getVariableImpl() const;
     void setVariableImpl() const;
+    void setVariableWithPositionImpl() const;
     void matrixIdentityImpl() const;
     void matrixIsIdentityImpl() const;
     void matrixDeterminantImpl() const;
