@@ -457,6 +457,11 @@ public:
     bool add(const IPosition *position_, const std::map<QString, QStringList> &variables_);
     bool add(const IPosition *position_, std::map<QString, QStringList> &&variables_);
 
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, const QVector<double> &data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, QVector<double> &&data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, const QStringList &data_);
+    bool add(const QString &name_, const QString &objectName_, int objectIndex, int artefactIndex_, QStringList &&data_);
+
 private:
     template<typename DataType_>
     bool addT(const IPosition *position_, const std::map<QString, DataType_> &variables_);
@@ -523,11 +528,15 @@ struct VariablePosition
     static VariablePosition fromCurrent(const IPosition *position_);
 
 private:
+    static VariablePosition fromInfo(const QString &objectName, int objectStepIndex_, int artefactStepIndex_);
+
+private:
     std::tuple<QString, bool> objectName = std::make_tuple(QString{}, false);
     std::tuple<int, bool> objectStepIndex = std::make_tuple(0, false);
     std::tuple<int, bool> artefactStepIndex = std::make_tuple(0, false);
 
     friend bool operator == (const VariablePosition &left_, const VariablePosition &right_);
+    friend class ::drawingdata::IVariables;
 };
 
 
@@ -658,6 +667,7 @@ public:
     int getObjectStepIndex() const override;
     int getArtefactStepIndex() const override;
     void clear() override;
+    static Position fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_);
 
 private:
     QString objectName;

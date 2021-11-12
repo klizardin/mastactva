@@ -47,73 +47,73 @@ namespace drawing_objects
     class BaseTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class MultipleObjectsTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DefaultTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DataTestBase : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DataTestPosition : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DataTestObjectsList : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DataTest3DObjectSwift : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DataTest3DObjectCube : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class DataTestAlias : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class LuaScriptTestNewVariable : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class LuaScriptTestSetVariable : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class LuaScriptTestRuntime : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
-        void initialize(drawing_data::QuizImageObjects &data_) const override;
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 }
 

@@ -56,8 +56,10 @@ std::map<QString, int> setupShifts(const std::set<QString> &unique_)
     return result;
 }
 
-void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_) const
+void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     if(!m_effectObjectsData.operator bool()
             || !m_details.filesource.operator bool())
     {

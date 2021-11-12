@@ -35,37 +35,37 @@ namespace drawing_data
     class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class TestMinimal2PassDrawQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class Test0QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class Test1QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class Test2QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
     class Test3QuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 }
 

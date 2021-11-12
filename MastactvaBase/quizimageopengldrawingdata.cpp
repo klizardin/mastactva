@@ -1088,9 +1088,12 @@ void QuizImageFboRendererImpl::setToImage(const QString &url_)
 
 
 void drawing_data::DefaultQuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object = std::make_unique<QuizImageObject>();
 
     static QByteArray vertex = loadTextFile( g_defaultVertexShaderName ).toUtf8();

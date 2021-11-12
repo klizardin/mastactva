@@ -39,7 +39,7 @@ public:
     void init(std::shared_ptr<drawingdata::IFileSource> filesources_);
 
     // method to form QuizImageObjects data
-    void initialize(drawing_data::QuizImageObjects &data_) const override;
+    void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
 
 private:
     using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;

@@ -288,10 +288,20 @@ std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QS
 namespace detail
 {
 
+template<typename ... Args_>
+struct countOf;
+
 template<typename Arg_>
-auto countOf(Arg_ &&) -> char(*)[1];
+struct countOf<Arg_>
+{
+    static auto get() -> char(*)[1];
+};
+
 template<typename Arg_, typename ... Args_>
-auto countOf(Arg_ &&, Args_ &&... args_) -> char(*)[sizeof(decltype(*countOf(args_...))) + 1];
+struct countOf<Arg_, Args_ ...>
+{
+    static auto get() -> char(*)[sizeof(decltype(*countOf<Args_...>::get())) + 1];
+};
 
 template<typename Arg_>
 bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
@@ -695,7 +705,7 @@ void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args
 template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
 {
-    constexpr int argumentsCount = sizeof(decltype(*detail::countOf(args_ ...)));
+    constexpr int argumentsCount = sizeof(decltype(*detail::countOf<Args_ ...>::get()));
     const bool success = detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
     if(!success)
     {
@@ -755,6 +765,43 @@ void LuaAPI::setVariableImpl() const
         m_variables->add(name, m_artefactPosition, std::move(std::get<1>(values)));
     }
     processStack(2, 0);
+}
+
+void LuaAPI::setVariableWithPositionImpl() const
+{
+    QString name;
+    std::tuple<QVector<double>, QStringList> values;
+    QString objectName;
+    double objectPosition = 0;
+    double artefactPosition = 0;
+    if(!getArguments(m_luaState, name, values, objectName, objectPosition, artefactPosition))
+    {
+        processStack(5, 0);
+        return;
+    }
+    const bool hasNumbers = !std::get<0>(values).isEmpty();
+    const bool hasStrings = !std::get<1>(values).isEmpty();
+    if(hasNumbers)
+    {
+        m_variables->add(
+                    name,
+                    objectName,
+                    int(objectPosition),
+                    int(artefactPosition),
+                    std::move(std::get<0>(values))
+                    );
+    }
+    else if(hasStrings)
+    {
+        m_variables->add(
+                    name,
+                    objectName,
+                    int(objectPosition),
+                    int(artefactPosition),
+                    std::move(std::get<1>(values))
+                    );
+    }
+    processStack(5, 0);
 }
 
 void LuaAPI::matrixIdentityImpl() const
@@ -1383,6 +1430,12 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariable>
 }
 
 template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariableWithPosition>() const
+{
+    setVariableWithPositionImpl();
+}
+
+template<>
 void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIdentity>() const
 {
     matrixIdentityImpl();
@@ -1501,6 +1554,7 @@ void LuaAPI::initFunctions() const
     static const FunctionInfo functions[] = {
         {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
         {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
+        {"setVariableWithPosition", l_implementation<LuaAPI::FunctionImplEn::setVariableWithPosition, 5, 0>},
     };
 
     for(const auto &val_ : functions)

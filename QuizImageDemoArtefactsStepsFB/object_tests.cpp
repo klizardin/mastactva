@@ -1717,8 +1717,11 @@ namespace drawing_objects
 {
 
 // TODO: refactoring
-void BaseTest::initialize(drawing_data::QuizImageObjects &data_) const
+void BaseTest::initialize(drawing_data::QuizImageObjects &data_,
+                          int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData1();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
@@ -1726,8 +1729,11 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_) const
     drawingDataEffect.initialize(data_);
 }
 
-void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_) const
+void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
+                                     int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData2();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
@@ -1735,8 +1741,11 @@ void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_) cons
     drawingDataEffect.initialize(data_);
 }
 
-void DefaultTest::initialize(drawing_data::QuizImageObjects &data_) const
+void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
+                             int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData3();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
@@ -1744,8 +1753,11 @@ void DefaultTest::initialize(drawing_data::QuizImageObjects &data_) const
     drawingDataEffect.initialize(data_);
 }
 
-void DataTestBase::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
+                              int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData4();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
@@ -1753,8 +1765,11 @@ void DataTestBase::initialize(drawing_data::QuizImageObjects &data_) const
     drawingDataEffect.initialize(data_);
 }
 
-void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
+                                  int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData5();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
@@ -1762,8 +1777,11 @@ void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_) const
     drawingDataEffect.initialize(data_);
 }
 
-void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
+                                     int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData6();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
@@ -1771,8 +1789,11 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_) cons
     drawingDataEffect.initialize(data_);
 }
 
-void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
+                                       int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData7(
                 g_dataJson3DObjectSwiftFilename,
@@ -1784,8 +1805,11 @@ void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_) co
     drawingDataEffect.initialize(data_);
 }
 
-void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
+                                      int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData7(
                 g_dataJson3DObjectCubeFilename,
@@ -1797,8 +1821,11 @@ void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_) con
     drawingDataEffect.initialize(data_);
 }
 
-void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_) const
+void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
+                               int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData8(
                 g_dataJson3DObjectSwiftFilename,
@@ -1810,8 +1837,11 @@ void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_) const
     drawingDataEffect.initialize(data_);
 }
 
-void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_) const
+void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
+                                          int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData9(
                 g_dataJson3DObjectSwiftFilename,
@@ -1823,8 +1853,11 @@ void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_)
     drawingDataEffect.initialize(data_);
 }
 
-void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_) const
+void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
+                                          int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData9(
                 g_dataJson3DObjectSwiftFilename,
@@ -1836,8 +1869,11 @@ void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_)
     drawingDataEffect.initialize(data_);
 }
 
-void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_) const
+void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
+                                      int argsSetIndex_ /*= 0*/) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     auto filesource = createMapFileSource();
     const std::vector<Argument> args1 = {
         {
