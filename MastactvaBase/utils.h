@@ -495,7 +495,8 @@ class IDefaultData
 {
 public:
     virtual ~IDefaultData() = default;
-    virtual void initialize(DataType_ &data_) const = 0;
+    virtual void initialize(DataType_ &data_, int argsSetIndex_ = 0) const = 0;
+    virtual int getArgSetCount() const { return 1; }
 };
 
 

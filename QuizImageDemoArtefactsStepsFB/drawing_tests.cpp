@@ -149,9 +149,12 @@ void createGeometry(
 }
 
 void drawing_data::TestMinimalDrawQuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
     const char *vsrc1 =
@@ -213,9 +216,12 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
 
 
 void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
     std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
 
@@ -305,9 +311,12 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
 
 
 void drawing_data::Test0QuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
     static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test000/default.vsh").toUtf8();
@@ -408,9 +417,12 @@ void drawing_data::Test0QuizImageObject::initialize(
 }
 
 void drawing_data::Test1QuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
     static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test001/cube_rotation_horizontal_faced.vsh").toUtf8();
@@ -522,9 +534,12 @@ void drawing_data::Test1QuizImageObject::initialize(
 }
 
 void drawing_data::Test2QuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
     static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test002/mix_line_horizontal.vsh").toUtf8();
@@ -622,9 +637,12 @@ void drawing_data::Test2QuizImageObject::initialize(
 }
 
 void drawing_data::Test3QuizImageObject::initialize(
-        QuizImageObjects &data_
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
         ) const
 {
+    Q_UNUSED(argsSetIndex_);
+
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
     static QByteArray vertex = loadTextFile(":/Shaders/Shaders/test003/mix_direction_faced4.vsh").toUtf8();

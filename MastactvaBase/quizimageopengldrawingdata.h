@@ -416,7 +416,7 @@ namespace drawing_data
     class DefaultQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
-        virtual void initialize(QuizImageObjects &data_) const override;
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 }
 
