@@ -26,6 +26,59 @@
 namespace drawingdata
 {
 
+bool IVariables::add(
+        const QString &name_,
+        const QString &objectName_,
+        int objectIndex_,
+        int artefactIndex_,
+        const QVector<double> &data_
+        )
+{
+    const Position pos =
+            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+    return add(name_, &pos, data_);
+}
+
+bool IVariables::add(
+        const QString &name_,
+        const QString &objectName_,
+        int objectIndex_,
+        int artefactIndex_,
+        QVector<double> &&data_
+        )
+{
+    const Position pos =
+            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+    return add(name_, &pos, std::move(data_));
+}
+
+bool IVariables::add(
+        const QString &name_,
+        const QString &objectName_,
+        int objectIndex_,
+        int artefactIndex_,
+        const QStringList &data_
+        )
+{
+    const Position pos =
+            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+    return add(name_, &pos, data_);
+}
+
+bool IVariables::add(
+        const QString &name_,
+        const QString &objectName_,
+        int objectIndex_,
+        int artefactIndex_,
+        QStringList &&data_
+        )
+{
+    const Position pos =
+            Position::fromInfo(objectName_, objectIndex_, artefactIndex_);
+    return add(name_, &pos, std::move(data_));
+}
+
+
 namespace details
 {
 
@@ -83,6 +136,23 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
     has_value(result.objectStepIndex) = true;
     value(result.artefactStepIndex) = position_->getArtefactStepIndex();
     has_value(result.artefactStepIndex) = true;
+
+    return result;
+}
+
+VariablePosition VariablePosition::fromInfo(
+        const QString &objectName,
+        int objectStepIndex_,
+        int artefactStepIndex_
+        )
+{
+    VariablePosition result;
+    value(result.objectName) = objectName;
+    has_value(result.objectName) = !objectName.isEmpty();
+    value(result.objectStepIndex) = objectStepIndex_;
+    has_value(result.objectStepIndex) = objectStepIndex_ >= 0;
+    value(result.artefactStepIndex) = artefactStepIndex_;
+    has_value(result.artefactStepIndex) = artefactStepIndex_ >= 0;
 
     return result;
 }
@@ -734,6 +804,22 @@ void Position::clear()
     objectName.clear();
     std::numeric_limits<decltype (objectStepIndex)>::max();
     artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
+}
+
+Position Position::fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_)
+{
+    Position pos;
+    pos.setObject(name_,
+                  objectStepIndex_ >= 0
+                  ? objectStepIndex_
+                  : std::numeric_limits<decltype (objectStepIndex)>::max()
+                  );
+    pos.setArtefactStepIndex(
+                artefactStepIndex_ >= 0
+                ? artefactStepIndex_
+                : std::numeric_limits<decltype (artefactStepIndex)>::max()
+                );
+    return pos;
 }
 
 
