@@ -321,7 +321,7 @@ static const char *emptyStr = "";
 enum class ArgEn{id, type, storage, name, value};
 
 // TODO: refactoring
-std::unique_ptr<EffectObjectsData> createTestObject(
+std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
         int effectId,
         const QDateTime &now,
         int effectObjectStep,
@@ -1105,7 +1105,7 @@ std::unique_ptr<EffectData> createTestData1()
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gtlogo";
 
-    auto effectObject1 = createTestObject(
+    auto effectObject1 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1138,7 +1138,7 @@ std::unique_ptr<EffectData> createTestData2()
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gtlogo";
 
-    auto effectObject1 = createTestObject(
+    auto effectObject1 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1147,7 +1147,7 @@ std::unique_ptr<EffectData> createTestData2()
                 effectObjectName,
                 effectObjectProgrammerName
                 );
-    auto effectObject2 = createTestObject(
+    auto effectObject2 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
@@ -1222,7 +1222,7 @@ std::unique_ptr<EffectData> createTestData4()
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject(
+    auto effectObject2 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
@@ -1284,7 +1284,7 @@ std::unique_ptr<EffectData> createTestData5()
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject3 = createTestObject(
+    auto effectObject3 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
@@ -1293,7 +1293,7 @@ std::unique_ptr<EffectData> createTestData5()
                 effectObjectName,
                 effectObjectProgrammerName
                 );
-    auto effectObject4 = createTestObject(
+    auto effectObject4 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1 + 1,
@@ -1379,7 +1379,7 @@ std::unique_ptr<EffectData> createTestData6()
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
                 );
-    auto effectObject4 = createTestObject(
+    auto effectObject4 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
