@@ -1384,63 +1384,6 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectName = "qt logo";
 
-    auto effectObject0 = createEffectObjectWithOneArtefactWithArguments(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 2,
-                artefactType1,
-                artefactName1,
-                g_dataJsonObjectsListOfQtGeomFilename,
-                objectInfoId + 2,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1,
-                artefactType1,
-                artefactName1,
-                g_dataJsonQTLogoVariableMatrix0Filename,
-                objectInfoId,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 1,
-                artefactType1,
-                artefactName1,
-                g_dataJsonQTLogoVariableMatrix1Filename,
-                objectInfoId + 1,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject3 = createEffectObjectWithOneArtefactWithArguments(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 1,
-                artefactType1,
-                artefactName1,
-                g_dataJsonQTLogoVariableMatrix2Filename,
-                objectInfoId + 2,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject4 = createDrawingQtLogoEffectObject(
-                effectId,
-                now,
-                effectObjectStep1,
-                gen,
-                objectInfoId + 3,
-                effectObjectName,
-                g_effectObjectQtLogoProgrammerName
-                );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
@@ -1448,11 +1391,73 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                 now,
                 MergeId()
                 );
-    effect->m_effectObjectsData->push_back(effectObject0.release());
-    effect->m_effectObjectsData->push_back(effectObject1.release());
-    effect->m_effectObjectsData->push_back(effectObject2.release());
-    effect->m_effectObjectsData->push_back(effectObject3.release());
-    effect->m_effectObjectsData->push_back(effectObject4.release());
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 2,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonObjectsListOfQtGeomFilename,
+                    objectInfoId + 2,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonQTLogoVariableMatrix0Filename,
+                    objectInfoId,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonQTLogoVariableMatrix1Filename,
+                    objectInfoId + 1,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonQTLogoVariableMatrix2Filename,
+                    objectInfoId + 2,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    effect->m_effectObjectsData->push_back(
+                createDrawingQtLogoEffectObject(
+                    effectId,
+                    now,
+                    effectObjectStep1,
+                    gen,
+                    objectInfoId + 3,
+                    effectObjectName,
+                    g_effectObjectQtLogoProgrammerName
+                    ).release()
+                );
     return effect;
 }
 
