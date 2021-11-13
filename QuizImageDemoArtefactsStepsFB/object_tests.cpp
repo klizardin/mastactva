@@ -32,7 +32,7 @@
 
 
 QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr);
-QString createObjectsQTGeomJson(int cnt_, const char *objectName_);
+QString createObjectsListJson(int cnt_, const char *objectName_);
 QString createAliseQTGeomJson(
         const char *geom3dObjectName_,
         const char *objectName_ = nullptr,
@@ -189,7 +189,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
     const int pos2 = 3;
     filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
-    filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(
+    filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
                         )
@@ -1004,7 +1004,7 @@ QString createQTGeomLua1SetVariables(
 }
 
 
-QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
+QString createObjectsListJson(int cnt_, const char *objectName_)
 {
     QJsonArray objectsJA;
     for(int i = 0; i < cnt_; ++i)
