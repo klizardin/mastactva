@@ -31,7 +31,7 @@
 #include "../MastactvaBase/names.h"
 
 
-QString createQTGeomJson(
+QString createVariablesOfQTLogoJson(
         QRandomGenerator &gen_,
         const char *objectName_ = nullptr,
         const int *step_ = nullptr,
@@ -187,13 +187,13 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
     QRandomGenerator gen;
     gen.seed(time(nullptr));
-    filesource->add(g_dataJsonQTGeometryFilename, createQTGeomJson(gen));
+    filesource->add(g_dataJsonQTGeometryFilename, createVariablesOfQTLogoJson(gen));
     const int pos0 = 1;
-    filesource->add(g_dataJsonQTVariables0Filename, createQTGeomJson(gen, nullptr, &pos0, false));
+    filesource->add(g_dataJsonQTVariables0Filename, createVariablesOfQTLogoJson(gen, nullptr, &pos0, false));
     const int pos1 = 2;
-    filesource->add(g_dataJsonQTVariables1Filename, createQTGeomJson(gen, nullptr, &pos1, false));
+    filesource->add(g_dataJsonQTVariables1Filename, createVariablesOfQTLogoJson(gen, nullptr, &pos1, false));
     const int pos2 = 3;
-    filesource->add(g_dataJsonQTVariables2Filename, createQTGeomJson(gen, nullptr, &pos2, false));
+    filesource->add(g_dataJsonQTVariables2Filename, createVariablesOfQTLogoJson(gen, nullptr, &pos2, false));
     filesource->add(g_dataJsonObjectsListOfQtGeomFilename, createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
@@ -864,7 +864,7 @@ QJsonObject getJsonDataVariablePosition(const char *objectName_, const int *step
     return position;
 }
 
-QString createQTGeomJson(
+QString createVariablesOfQTLogoJson(
         QRandomGenerator &gen_,
         const char *objectName_ /*= nullptr*/,
         const int *step_ /*= nullptr*/,
