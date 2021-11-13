@@ -225,13 +225,16 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     loadTextFile(":/obj3d/cube.obj")
                     );
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
-                    QString(g_baseVertexShader3DObject).arg("swift_vertex", "swift_normal")
+                    QString(g_baseVertexShader3DObject)
+                        .arg("swift_vertex", "swift_normal")
                     );
     filesource->add(g_3dObjectCubeFragmentShaderFilename,
-                    QString(g_baseVertexShader3DObject).arg("cube_vertex", "cube_normal")
+                    QString(g_baseVertexShader3DObject)
+                        .arg("cube_vertex", "cube_normal")
                     );
     filesource->add(g_3dObjectDefaultFragmentShaderFilename,
-                    QString(g_baseVertexShader3DObject).arg("vertex", "normal")
+                    QString(g_baseVertexShader3DObject)
+                        .arg("vertex", "normal")
                     );
     filesource->add(g_dataJsonAliasSwiftFilename,
                     createAliseQTGeomJson(
