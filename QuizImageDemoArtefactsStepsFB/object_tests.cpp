@@ -157,9 +157,9 @@ static const char *g_baseFragmentShaderFilename = "base.fsh";
 static const char *g_defaultVertexShaderFilename = "default.vsh";
 static const char *g_defaultFragmentShaderFilename = "default.fsh";
 static const char *g_dataJsonQTGeometryFilename = "qt_geom.json";
-static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
-static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
-static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
+static const char *g_dataJsonQTVariables0Filename = "qt_variables_0.json";
+static const char *g_dataJsonQTVariables1Filename = "qt_variables_1.json";
+static const char *g_dataJsonQTVariables2Filename = "qt_variables_2.json";
 static const char *g_dataJsonObjectsListOfQtGeomFilename = "objects_list_qt_logo.json";
 static const char *g_dataJson3DObjectSwiftFilename = "swift.obj";
 static const char *g_dataJson3DObjectCubeFilename = "cube.obj";
@@ -184,11 +184,11 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     gen.seed(time(nullptr));
     filesource->add(g_dataJsonQTGeometryFilename, createQTGeomJson(gen));
     const int pos0 = 1;
-    filesource->add(g_dataJsonQTGeometry0Filename, createQTGeomJson(gen, nullptr, &pos0));
+    filesource->add(g_dataJsonQTVariables0Filename, createQTGeomJson(gen, nullptr, &pos0));
     const int pos1 = 2;
-    filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
+    filesource->add(g_dataJsonQTVariables1Filename, createQTGeomJson(gen, nullptr, &pos1));
     const int pos2 = 3;
-    filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
+    filesource->add(g_dataJsonQTVariables2Filename, createQTGeomJson(gen, nullptr, &pos2));
     filesource->add(g_dataJsonObjectsListOfQtGeomFilename, createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
@@ -1267,7 +1267,7 @@ std::unique_ptr<EffectData> createTestData5()
                 artefactId1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry0Filename,
+                g_dataJsonQTVariables0Filename,
                 objectInfoId,
                 effectObjectDataName,
                 effectObjectDataProgrammerName
@@ -1279,7 +1279,7 @@ std::unique_ptr<EffectData> createTestData5()
                 artefactId1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry1Filename,
+                g_dataJsonQTVariables1Filename,
                 objectInfoId + 1,
                 effectObjectDataName,
                 effectObjectDataProgrammerName
@@ -1338,7 +1338,7 @@ std::unique_ptr<EffectData> createTestData6()
                 artefactId1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry0Filename,
+                g_dataJsonQTVariables0Filename,
                 objectInfoId,
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
@@ -1350,7 +1350,7 @@ std::unique_ptr<EffectData> createTestData6()
                 artefactId1 + 1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry1Filename,
+                g_dataJsonQTVariables1Filename,
                 objectInfoId + 1,
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
@@ -1362,7 +1362,7 @@ std::unique_ptr<EffectData> createTestData6()
                 artefactId1 + 1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry2Filename,
+                g_dataJsonQTVariables2Filename,
                 objectInfoId + 2,
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
