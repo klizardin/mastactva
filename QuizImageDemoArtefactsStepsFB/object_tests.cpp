@@ -100,7 +100,7 @@ static const char *g_baseVertexShader3DObject =
     "    gl_Position = matrix * %1;\n"
     "}\n";
 
-static const char *g_baseFragmatShader =
+static const char *g_baseFragmentShader =
     "varying mediump vec4 color;\n"
     "void main(void)\n"
     "{\n"
@@ -177,7 +177,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
 {
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
     filesource->add(g_baseVertexShaderFilename, g_baseVertexShader0);
-    filesource->add(g_baseFragmentShaderFilename, g_baseFragmatShader);
+    filesource->add(g_baseFragmentShaderFilename, g_baseFragmentShader);
     filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
     filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
     QRandomGenerator gen;
