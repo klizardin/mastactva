@@ -1022,59 +1022,59 @@ QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
 using Argument = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString>;
 
 std::unique_ptr<EffectObjectsData> createTestObject3(
-        int effectId,
-        const QDateTime &now,
-        int effectObjectStep,
-        const int artefactId,
-        const ArtefactTypeEn artefactType,
-        const char * artefactName,
-        const char * artefactFilename,
-        const int objectInfoId,
-        const char *effectObjectName,
-        const char *effectObjectProgrammerName,
+        int effectId_,
+        const QDateTime &now_,
+        int effectObjectStep_,
+        const int artefactId_,
+        const ArtefactTypeEn artefactType_,
+        const char * artefactName_,
+        const char * artefactFilename_,
+        const int objectInfoId_,
+        const char *effectObjectName_,
+        const char *effectObjectProgrammerName_,
         const std::vector<Argument> &arguments_ = std::vector<Argument>()
         )
 {
     static const int effectObjectId = 1;
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
-                effectId,
-                objectInfoId,
-                effectObjectStep,
+                effectId_,
+                objectInfoId_,
+                effectObjectStep_,
                 MergeId()
                 );
 
     // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
-                effectObjectName,
-                effectObjectProgrammerName,
-                now,
+                objectInfoId_,
+                effectObjectName_,
+                effectObjectProgrammerName_,
+                now_,
                 MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
     auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId,
-                artefactName,
-                artefactFilename,
+                artefactId_,
+                artefactName_,
+                artefactFilename_,
                 emptyStr,
-                artefactType,
+                artefactType_,
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
     for(const auto &arg_ : arguments_)
     {
         auto arg = std::make_unique<ArtefactArgData>(
                 std::get<to_underlying(ArgEn::id)>(arg_),
-                artefactId,
+                artefactId_,
                 std::get<to_underlying(ArgEn::type)>(arg_),
                 std::get<to_underlying(ArgEn::storage)>(arg_),
                 std::get<to_underlying(ArgEn::name)>(arg_),
                 std::get<to_underlying(ArgEn::value)>(arg_),
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
@@ -1083,8 +1083,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
     static const int objectArtefactStep0 = 0;
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
-                effectId,
-                artefactId,
+                effectId_,
+                artefactId_,
                 objectArtefactStep0,
                 artefact1.release(),
                 MergeId()
@@ -1911,7 +1911,12 @@ void ArgSetBaseTest::initialize(
         ) const
 {
     Q_UNUSED(argsSetIndex_);
-    Q_UNUSED(data_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData6();
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
 }
 
 }
