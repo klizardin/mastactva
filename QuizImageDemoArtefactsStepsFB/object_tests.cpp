@@ -160,7 +160,7 @@ static const char *g_dataJsonQTGeometryFilename = "qt_geom.json";
 static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
 static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
 static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
-static const char *g_dataJsonObjectsOfQtGeomFilename = "qt_geom_1.json";
+static const char *g_dataJsonObjectsListOfQtGeomFilename = "qt_geom_1.json";
 static const char *g_dataJson3DObjectSwiftFilename = "swift.obj";
 static const char *g_dataJson3DObjectCubeFilename = "cube.obj";
 static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
@@ -189,7 +189,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
     const int pos2 = 3;
     filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
-    filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsListJson(
+    filesource->add(g_dataJsonObjectsListOfQtGeomFilename, createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
                         )
@@ -1374,7 +1374,7 @@ std::unique_ptr<EffectData> createTestData6()
                 artefactId1 + 2,
                 artefactType1,
                 artefactName1,
-                g_dataJsonObjectsOfQtGeomFilename,
+                g_dataJsonObjectsListOfQtGeomFilename,
                 objectInfoId + 2,
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
