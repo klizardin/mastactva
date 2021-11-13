@@ -859,7 +859,11 @@ QJsonObject getJsonDataVariablePosition(const char *objectName_, const int *step
     return position;
 }
 
-QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nullptr*/, const int *step_ /*= nullptr*/)
+QString createQTGeomJson(
+        QRandomGenerator &gen_,
+        const char *objectName_ /*= nullptr*/,
+        const int *step_ /*= nullptr*/
+        )
 {
     std::vector<QVector3D> vertexData;
     std::vector<QVector3D> normalData;
