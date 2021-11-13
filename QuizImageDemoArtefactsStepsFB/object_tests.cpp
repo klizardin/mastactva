@@ -1369,7 +1369,7 @@ std::unique_ptr<EffectData> createTestData5()
     return effect;
 }
 
-std::unique_ptr<EffectData> createTestData6()
+std::unique_ptr<EffectData> createDataForTestOfObjectList()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -1836,7 +1836,7 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
     Q_UNUSED(argsSetIndex_);
 
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createTestData6();
+    auto effectObjectsData = createDataForTestOfObjectList();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
@@ -1966,7 +1966,7 @@ void ArgSetBaseTest::initialize(
     Q_UNUSED(argsSetIndex_);
 
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createTestData6();
+    auto effectObjectsData = createDataForTestOfObjectList();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
