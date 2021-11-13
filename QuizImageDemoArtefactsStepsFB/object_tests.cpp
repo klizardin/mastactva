@@ -31,8 +31,19 @@
 #include "../MastactvaBase/names.h"
 
 
-QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr);
-QString createObjectsQTGeomJson(int cnt_, const char *objectName_);
+QString createVariablesOfQTLogoJson(
+        QRandomGenerator &gen_,
+        const char *objectName_ = nullptr,
+        const int *step_ = nullptr,
+        bool addGeometry_ = true
+        );
+QString createVariableValueJson(
+        const QString &name_,
+        const double &value_,
+        const char *objectName_ = nullptr,
+        const int *step_ = nullptr
+        );
+QString createObjectsListJson(int cnt_, const char *objectName_);
 QString createAliseQTGeomJson(
         const char *geom3dObjectName_,
         const char *objectName_ = nullptr,
@@ -100,7 +111,7 @@ static const char *g_baseVertexShader3DObject =
     "    gl_Position = matrix * %1;\n"
     "}\n";
 
-static const char *g_baseFragmatShader =
+static const char *g_baseFragmentShader =
     "varying mediump vec4 color;\n"
     "void main(void)\n"
     "{\n"
@@ -151,16 +162,46 @@ static const char *g_luaScriptCalcMatrix =
     "end\n"
     ;
 
+static const char *g_luaScriptCreateMatrxiVariablesForObjectList =
+    "function getMatrixVariable ( a, shift )\n"
+    "    local sz = {4, 4}\n"
+    "    local m = matrix.identity(sz)\n"
+    "    local pry = {(a[1] + shift) * 90.0 + 90.0, 0.0, 1.0, 0.0}\n"
+    "    m = matrix.rotate(m, pry)\n"
+    "    local prx = {(a[1] + shift) * 90.0 + 195.0, 1.0, 0.0, 0.0}\n"
+    "    m = matrix.rotate(m, prx)\n"
+    "    local prz = {(a[1] + shift) * 90.0 + 115.0, 0.0, 0.0, 1.0}\n"
+    "    m = matrix.rotate(m, prz)\n"
+    "    local ps = {0.9, 0.9, 0.9}\n"
+    "    m = matrix.scale(m , ps)\n"
+    "    local pt = {0.0, -0.2, 0.0}\n"
+    "    m = matrix.translate(m , pt)\n"
+    "    return m\n"
+    "end\n"
+    "function main ()\n"
+    "    local a = getVariable(\"angle\")\n"
+    "    local m = getMatrixVariable(a, 0.0)\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 1, -1 )\n"
+    "    m = getMatrixVariable(a, 0.25)\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 2, -1 )\n"
+    "    m = getMatrixVariable(a, 0.5)\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 3, -1 )\n"
+    "    result = {}\n"
+    "    return result;\n"
+    "end\n";
+    ;
+
+
 static const char *g_effectObjectQtLogoProgrammerName = "gt_logo";
 static const char *g_baseVertexShaderFilename = "base.vsh";
 static const char *g_baseFragmentShaderFilename = "base.fsh";
 static const char *g_defaultVertexShaderFilename = "default.vsh";
 static const char *g_defaultFragmentShaderFilename = "default.fsh";
 static const char *g_dataJsonQTGeometryFilename = "qt_geom.json";
-static const char *g_dataJsonQTGeometry0Filename = "qt_geom_0.json";
-static const char *g_dataJsonQTGeometry1Filename = "qt_geom_1.json";
-static const char *g_dataJsonQTGeometry2Filename = "qt_geom_2.json";
-static const char *g_dataJsonObjectsOfQtGeomFilename = "qt_geom_1.json";
+static const char *g_dataJsonQTLogoVariableMatrix0Filename = "qt_variables_0.json";
+static const char *g_dataJsonQTLogoVariableMatrix1Filename = "qt_variables_1.json";
+static const char *g_dataJsonQTLogoVariableMatrix2Filename = "qt_variables_2.json";
+static const char *g_dataJsonObjectsListOfQtGeomFilename = "objects_list_qt_logo.json";
 static const char *g_dataJson3DObjectSwiftFilename = "swift.obj";
 static const char *g_dataJson3DObjectCubeFilename = "cube.obj";
 static const char *g_3dObjectSwiftFragmentShaderFilename = "swift.vsh";
@@ -171,45 +212,97 @@ static const char *g_dataLua2NewVariableFilename = "new_variables.lua";
 static const char *g_dataLua2SetVariableFilename = "set_variables.lua";
 static const char *g_dataLua1SetVariableAngleAsTFilename = "set_angle_as_t.lua";
 static const char *g_dataLuaCalcMatrixFilename = "calc_matrix_from_angle.lua";
+static const char *g_dataLuaCreateMatrixVariablesForObjectListFilename
+    = "create_matrix_variables_for_object_list.lua";
+static const char *g_angle_0_1_ValueFileName = "angle_0_1_value.json";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
 {
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
     filesource->add(g_baseVertexShaderFilename, g_baseVertexShader0);
-    filesource->add(g_baseFragmentShaderFilename, g_baseFragmatShader);
-    filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
-    filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
+    filesource->add(g_baseFragmentShaderFilename, g_baseFragmentShader);
+    filesource->add(g_defaultVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/test000/default.vsh")
+                    );
+    filesource->add(g_defaultFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/test000/default.fsh")
+                    );
     QRandomGenerator gen;
     gen.seed(time(nullptr));
-    filesource->add(g_dataJsonQTGeometryFilename, createQTGeomJson(gen));
+    filesource->add(g_dataJsonQTGeometryFilename,
+                    createVariablesOfQTLogoJson(gen)
+                    );
     const int pos0 = 1;
-    filesource->add(g_dataJsonQTGeometry0Filename, createQTGeomJson(gen, nullptr, &pos0));
+    filesource->add(g_dataJsonQTLogoVariableMatrix0Filename,
+                    createVariablesOfQTLogoJson(
+                        gen, nullptr, &pos0, false
+                        )
+                    );
     const int pos1 = 2;
-    filesource->add(g_dataJsonQTGeometry1Filename, createQTGeomJson(gen, nullptr, &pos1));
+    filesource->add(g_dataJsonQTLogoVariableMatrix1Filename,
+                    createVariablesOfQTLogoJson(
+                        gen, nullptr, &pos1, false
+                        )
+                    );
     const int pos2 = 3;
-    filesource->add(g_dataJsonQTGeometry2Filename, createQTGeomJson(gen, nullptr, &pos2));
-    filesource->add(g_dataJsonObjectsOfQtGeomFilename, createObjectsQTGeomJson(
+    filesource->add(g_dataJsonQTLogoVariableMatrix2Filename,
+                    createVariablesOfQTLogoJson(
+                        gen, nullptr, &pos2, false
+                        )
+                    );
+    filesource->add(g_dataJsonObjectsListOfQtGeomFilename,
+                    createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
                         )
                     );
-    filesource->add(g_dataJson3DObjectSwiftFilename, loadTextFile(":/obj3d/swift.obj"));
-    filesource->add(g_dataJson3DObjectCubeFilename, loadTextFile(":/obj3d/cube.obj"));
+    filesource->add(g_dataJson3DObjectSwiftFilename,
+                    loadTextFile(":/obj3d/swift.obj")
+                    );
+    filesource->add(g_dataJson3DObjectCubeFilename,
+                    loadTextFile(":/obj3d/cube.obj")
+                    );
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
-                    QString(g_baseVertexShader3DObject).arg("swift_vertex", "swift_normal")
+                    QString(g_baseVertexShader3DObject)
+                        .arg("swift_vertex", "swift_normal")
                     );
     filesource->add(g_3dObjectCubeFragmentShaderFilename,
-                    QString(g_baseVertexShader3DObject).arg("cube_vertex", "cube_normal")
+                    QString(g_baseVertexShader3DObject)
+                        .arg("cube_vertex", "cube_normal")
                     );
     filesource->add(g_3dObjectDefaultFragmentShaderFilename,
-                    QString(g_baseVertexShader3DObject).arg("vertex", "normal")
+                    QString(g_baseVertexShader3DObject)
+                        .arg("vertex", "normal")
                     );
-    filesource->add(g_dataJsonAliasSwiftFilename, createAliseQTGeomJson("swift_", nullptr, &pos2));
-    filesource->add(g_dataLua2NewVariableFilename, createQTGeomLuaNewVariables("swift_"));
-    filesource->add(g_dataLua2SetVariableFilename, createQTGeomLuaSetVariables("swift_"));
-    filesource->add(g_dataLua1SetVariableAngleAsTFilename, createQTGeomLua1SetVariables("angle", g_renderTName));
+    filesource->add(g_dataJsonAliasSwiftFilename,
+                    createAliseQTGeomJson(
+                        "swift_", nullptr, &pos2
+                        )
+                    );
+    filesource->add(g_dataLua2NewVariableFilename,
+                    createQTGeomLuaNewVariables(
+                        "swift_"
+                        )
+                    );
+    filesource->add(g_dataLua2SetVariableFilename,
+                    createQTGeomLuaSetVariables("swift_")
+                    );
+    filesource->add(g_dataLua1SetVariableAngleAsTFilename,
+                    createQTGeomLua1SetVariables(
+                        "angle", g_renderTName
+                        )
+                    );
     filesource->add(g_dataLuaCalcMatrixFilename, g_luaScriptCalcMatrix);
+    filesource->add(g_dataLuaCreateMatrixVariablesForObjectListFilename,
+                    QString(g_luaScriptCreateMatrxiVariablesForObjectList)
+                        .arg("matrix", g_effectObjectQtLogoProgrammerName)
+                    );
+    filesource->add(g_angle_0_1_ValueFileName,
+                    createVariableValueJson(
+                        "angle", 0.1
+                        )
+                    );
     return filesource;
 }
 
@@ -321,31 +414,31 @@ static const char *emptyStr = "";
 enum class ArgEn{id, type, storage, name, value};
 
 // TODO: refactoring
-std::unique_ptr<EffectObjectsData> createTestObject(
-        int effectId,
-        const QDateTime &now,
-        int effectObjectStep,
-        QRandomGenerator &gen,
-        const int objectInfoId,
-        const char *effectObjectName,
-        const char *effectObjectProgrammerName
+std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
+        int effectId_,
+        const QDateTime &now_,
+        int effectObjectStep_,
+        QRandomGenerator &gen_,
+        const int objectInfoId_,
+        const char *effectObjectName_,
+        const char *effectObjectProgrammerName_
         )
 {
     static const int effectObjectId = 1;
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
-                effectId,
-                objectInfoId,
-                effectObjectStep,
+                effectId_,
+                objectInfoId_,
+                effectObjectStep_,
                 MergeId()
                 );
 
     // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
-                effectObjectName,
-                effectObjectProgrammerName,
-                now,
+                objectInfoId_,
+                effectObjectName_,
+                effectObjectProgrammerName_,
+                now_,
                 MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
@@ -356,7 +449,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
     test::createGeometry(vertexData, normalData);
 
     qreal fScale = 1;
-    qreal fAngle = gen.generateDouble() * 360.0;
+    qreal fAngle = gen_.generateDouble() * 360.0;
     QMatrix4x4 modelview;
     modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
     modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
@@ -401,7 +494,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 emptyStr,
                 artefactType1,
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
@@ -414,7 +507,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
@@ -422,7 +515,7 @@ std::unique_ptr<EffectObjectsData> createTestObject(
     static const int objectArtefactId1 = 1;
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
-                effectId,
+                effectId_,
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
@@ -441,13 +534,13 @@ std::unique_ptr<EffectObjectsData> createTestObject(
                 emptyStr,
                 artefactType2,
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
     static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId2,
-                effectId,
+                effectId_,
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
@@ -859,7 +952,12 @@ QJsonObject getJsonDataVariablePosition(const char *objectName_, const int *step
     return position;
 }
 
-QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nullptr*/, const int *step_ /*= nullptr*/)
+QString createVariablesOfQTLogoJson(
+        QRandomGenerator &gen_,
+        const char *objectName_ /*= nullptr*/,
+        const int *step_ /*= nullptr*/,
+        bool addGeometry_ /*= true*/
+        )
 {
     std::vector<QVector3D> vertexData;
     std::vector<QVector3D> normalData;
@@ -920,9 +1018,41 @@ QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ /*= nul
     }
 
     QJsonObject object;
-    object.insert("vertex", vertexJO);
-    object.insert("normal", normalJO);
+    if(addGeometry_)
+    {
+        object.insert("vertex", vertexJO);
+        object.insert("normal", normalJO);
+    }
     object.insert("matrix", matrixJO);
+
+    return QJsonDocument(object).toJson();
+}
+
+QString createVariableValueJson(
+        const QString &name_,
+        const double &value_,
+        const char *objectName_ /*= nullptr*/,
+        const int *step_ /*= nullptr*/
+        )
+{
+    const bool needPosition = objectName_ || step_;
+    QJsonValue position;
+    if(needPosition)
+    {
+        position = getJsonDataVariablePosition(objectName_, step_);
+    }
+
+    QJsonArray objectsJA;
+    objectsJA.append(QJsonValue::fromVariant(QVariant::fromValue(value_)));
+    QJsonObject valueJO;
+    valueJO.insert(g_jsonDataVariableValueName, objectsJA);
+    if(needPosition)
+    {
+        valueJO.insert(g_jsonDataVariablePositionName, position);
+    }
+
+    QJsonObject object;
+    object.insert(name_, valueJO);
 
     return QJsonDocument(object).toJson();
 }
@@ -1004,7 +1134,7 @@ QString createQTGeomLua1SetVariables(
 }
 
 
-QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
+QString createObjectsListJson(int cnt_, const char *objectName_)
 {
     QJsonArray objectsJA;
     for(int i = 0; i < cnt_; ++i)
@@ -1021,75 +1151,75 @@ QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
 
 using Argument = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString>;
 
-std::unique_ptr<EffectObjectsData> createTestObject3(
-        int effectId,
-        const QDateTime &now,
-        int effectObjectStep,
-        const int artefactId,
-        const ArtefactTypeEn artefactType,
-        const char * artefactName,
-        const char * artefactFilename,
-        const int objectInfoId,
-        const char *effectObjectName,
-        const char *effectObjectProgrammerName,
+std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArguments(
+        int effectId_,
+        const QDateTime &now_,
+        int effectObjectStep_,
+        const int artefactId_,
+        const ArtefactTypeEn artefactType_,
+        const char * artefactName_,
+        const char * artefactFilename_,
+        const int objectInfoId_,
+        const char *effectObjectName_,
+        const char *effectObjectProgrammerName_,
         const std::vector<Argument> &arguments_ = std::vector<Argument>()
         )
 {
     static const int effectObjectId = 1;
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
-                effectId,
-                objectInfoId,
-                effectObjectStep,
+                effectId_,
+                objectInfoId_,
+                effectObjectStep_,
                 MergeId()
                 );
 
     // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
-                effectObjectName,
-                effectObjectProgrammerName,
-                now,
+                objectInfoId_,
+                effectObjectName_,
+                effectObjectProgrammerName_,
+                now_,
                 MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
-    auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId,
-                artefactName,
-                artefactFilename,
+    auto artefact = std::make_unique<ArtefactData>(
+                artefactId_,
+                artefactName_,
+                artefactFilename_,
                 emptyStr,
-                artefactType,
+                artefactType_,
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
     for(const auto &arg_ : arguments_)
     {
         auto arg = std::make_unique<ArtefactArgData>(
                 std::get<to_underlying(ArgEn::id)>(arg_),
-                artefactId,
+                artefactId_,
                 std::get<to_underlying(ArgEn::type)>(arg_),
                 std::get<to_underlying(ArgEn::storage)>(arg_),
                 std::get<to_underlying(ArgEn::name)>(arg_),
                 std::get<to_underlying(ArgEn::value)>(arg_),
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
-        artefact1->m_artefactArgData->push_back(arg.release());
+        artefact->m_artefactArgData->push_back(arg.release());
     }
     static const int objectArtefactId1 = 1;
     static const int objectArtefactStep0 = 0;
-    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
+    auto objectArtefactData = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
-                effectId,
-                artefactId,
+                effectId_,
+                artefactId_,
                 objectArtefactStep0,
-                artefact1.release(),
+                artefact.release(),
                 MergeId()
                 );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+    effectObject->m_objectArtefactData->push_back(objectArtefactData.release());
 
     return effectObject;
 }
@@ -1105,7 +1235,7 @@ std::unique_ptr<EffectData> createTestData1()
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gtlogo";
 
-    auto effectObject1 = createTestObject(
+    auto effectObject1 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1138,7 +1268,7 @@ std::unique_ptr<EffectData> createTestData2()
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gtlogo";
 
-    auto effectObject1 = createTestObject(
+    auto effectObject1 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1147,7 +1277,7 @@ std::unique_ptr<EffectData> createTestData2()
                 effectObjectName,
                 effectObjectProgrammerName
                 );
-    auto effectObject2 = createTestObject(
+    auto effectObject2 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
@@ -1210,7 +1340,7 @@ std::unique_ptr<EffectData> createTestData4()
     static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
     static const char *effectObjectName = "qt logo";
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1222,7 +1352,7 @@ std::unique_ptr<EffectData> createTestData4()
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject(
+    auto effectObject2 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
@@ -1260,31 +1390,31 @@ std::unique_ptr<EffectData> createTestData5()
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gt_logo";
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
                 artefactId1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry0Filename,
+                g_dataJsonQTLogoVariableMatrix0Filename,
                 objectInfoId,
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
                 artefactId1,
                 artefactType1,
                 artefactName1,
-                g_dataJsonQTGeometry1Filename,
+                g_dataJsonQTLogoVariableMatrix1Filename,
                 objectInfoId + 1,
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject3 = createTestObject(
+    auto effectObject3 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1,
@@ -1293,7 +1423,7 @@ std::unique_ptr<EffectData> createTestData5()
                 effectObjectName,
                 effectObjectProgrammerName
                 );
-    auto effectObject4 = createTestObject(
+    auto effectObject4 = createDrawingQtLogoEffectObject(
                 effectId,
                 now,
                 effectObjectStep1 + 1,
@@ -1316,7 +1446,7 @@ std::unique_ptr<EffectData> createTestData5()
     return effect;
 }
 
-std::unique_ptr<EffectData> createTestData6()
+std::unique_ptr<EffectData> createEffectDataForTestOfObjectList()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -1331,75 +1461,157 @@ std::unique_ptr<EffectData> createTestData6()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectName = "qt logo";
 
-    auto effectObject1 = createTestObject3(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1,
-                artefactType1,
-                artefactName1,
-                g_dataJsonQTGeometry0Filename,
-                objectInfoId,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject2 = createTestObject3(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 1,
-                artefactType1,
-                artefactName1,
-                g_dataJsonQTGeometry1Filename,
-                objectInfoId + 1,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject3 = createTestObject3(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 1,
-                artefactType1,
-                artefactName1,
-                g_dataJsonQTGeometry2Filename,
-                objectInfoId + 2,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject0 = createTestObject3(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 2,
-                artefactType1,
-                artefactName1,
-                g_dataJsonObjectsOfQtGeomFilename,
-                objectInfoId + 2,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject4 = createTestObject(
-                effectId,
-                now,
-                effectObjectStep1,
-                gen,
-                objectInfoId + 3,
-                effectObjectName,
-                g_effectObjectQtLogoProgrammerName
-                );
-    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+    // create affect
+    auto effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
                 emptyStr,
                 now,
                 MergeId()
                 );
-    effect->m_effectObjectsData->push_back(effectObject0.release());
-    effect->m_effectObjectsData->push_back(effectObject1.release());
-    effect->m_effectObjectsData->push_back(effectObject2.release());
-    effect->m_effectObjectsData->push_back(effectObject3.release());
-    effect->m_effectObjectsData->push_back(effectObject4.release());
+    // create Object List Json Artefact as main object with duplication of object to draw
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 2,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonObjectsListOfQtGeomFilename,
+                    objectInfoId + 2,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // create variable matrix for qt_logo, at pos 1
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonQTLogoVariableMatrix0Filename,
+                    objectInfoId,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // create variable matrix for qt_logo, at pos 2
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonQTLogoVariableMatrix1Filename,
+                    objectInfoId + 1,
+                    effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add artefact to draw qt logo with shaders and geometry variables and default matrix variable
+    effect->m_effectObjectsData->push_back(
+                createDrawingQtLogoEffectObject(
+                    effectId,
+                    now,
+                    effectObjectStep1,
+                    gen,
+                    objectInfoId + 3,
+                    effectObjectName,
+                    g_effectObjectQtLogoProgrammerName
+                    ).release()
+                );
+    return effect;
+}
+
+std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::scriptLua;
+    static const char *artefactName1 = "data json object";
+    static const char *artefactName2 = "lua script to create variables";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName1 = "data for object";
+    static const char *effectObjectDataName2 = "lua script to create variables";
+    static const char *effectObjectName = "qt logo";
+
+    // create affect
+    auto effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    // create Object List Json Artefact as main object with duplication of object to draw
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonObjectsListOfQtGeomFilename,
+                    objectInfoId,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add variable angle json data
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_angle_0_1_ValueFileName,
+                    objectInfoId + 1,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // create variable matrix for qt_logo, at positions 1,2,3
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 2,
+                    artefactType2,
+                    artefactName2,
+                    g_dataLuaCreateMatrixVariablesForObjectListFilename,
+                    objectInfoId + 2,
+                    effectObjectDataName2,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add artefact to draw qt logo with shaders and geometry variables and default matrix variable
+    effect->m_effectObjectsData->push_back(
+                createDrawingQtLogoEffectObject(
+                    effectId,
+                    now,
+                    effectObjectStep1,
+                    gen,
+                    objectInfoId + 3,
+                    effectObjectName,
+                    g_effectObjectQtLogoProgrammerName
+                    ).release()
+                );
     return effect;
 }
 
@@ -1425,7 +1637,7 @@ std::unique_ptr<EffectData> createTestData7(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1485,7 +1697,7 @@ std::unique_ptr<EffectData> createTestData8(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1497,7 +1709,7 @@ std::unique_ptr<EffectData> createTestData8(
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 1,
@@ -1558,7 +1770,7 @@ std::unique_ptr<EffectData> createTestData9(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1570,7 +1782,7 @@ std::unique_ptr<EffectData> createTestData9(
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 1,
@@ -1637,7 +1849,7 @@ std::unique_ptr<EffectData> createTestData10(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1649,7 +1861,7 @@ std::unique_ptr<EffectData> createTestData10(
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 1,
@@ -1661,7 +1873,7 @@ std::unique_ptr<EffectData> createTestData10(
                 effectObjectDataName2,
                 effectObjectDataProgrammerName2
                 );
-    auto effectObject3 = createTestObject3(
+    auto effectObject3 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 2,
@@ -1674,7 +1886,7 @@ std::unique_ptr<EffectData> createTestData10(
                 g_defaultObjectInfoProgrammerName,
                 args1_
                 );
-    auto effectObject4 = createTestObject3(
+    auto effectObject4 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 3,
@@ -1783,7 +1995,7 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
     Q_UNUSED(argsSetIndex_);
 
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createTestData6();
+    auto effectObjectsData = createEffectDataForTestOfObjectList();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
@@ -1900,6 +2112,20 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
                 g_dataLuaCalcMatrixFilename, args2,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void ArgSetBaseTest::initialize(
+        drawing_data::QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createEffectDataForTestOfArgSet();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);

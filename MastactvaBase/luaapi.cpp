@@ -88,8 +88,8 @@ bool LuaAPI::callArtefact(drawingdata::IPosition *position_)
     {
         return false;
     }
-    m_variables->add(position_, std::move(result));
-    m_variables->add(position_, std::move(resultStrs));
+    m_variables->add(nullptr, std::move(result));
+    m_variables->add(nullptr, std::move(resultStrs));
     return true;
 }
 
@@ -758,11 +758,11 @@ void LuaAPI::setVariableImpl() const
     const bool hasStrings = !std::get<1>(values).isEmpty();
     if(hasNumbers)
     {
-        m_variables->add(name, m_artefactPosition, std::move(std::get<0>(values)));
+        m_variables->add(name, nullptr, std::move(std::get<0>(values)));
     }
     else if(hasStrings)
     {
-        m_variables->add(name, m_artefactPosition, std::move(std::get<1>(values)));
+        m_variables->add(name, nullptr, std::move(std::get<1>(values)));
     }
     processStack(2, 0);
 }

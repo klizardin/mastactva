@@ -115,6 +115,12 @@ namespace drawing_objects
     public:
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
+
+    class ArgSetBaseTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    };
 }
 
 // using TestCaseInitializer = drawing_objects::BaseTest;
@@ -128,7 +134,8 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::DataTestAlias;
 // using TestCaseInitializer = drawing_objects::LuaScriptTestNewVariable;
 // using TestCaseInitializer = drawing_objects::LuaScriptTestSetVariable;
-using TestCaseInitializer = drawing_objects::LuaScriptTestRuntime;
+// using TestCaseInitializer = drawing_objects::LuaScriptTestRuntime;
+using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
 
 
 #endif // OBJECT_TESTS_H
