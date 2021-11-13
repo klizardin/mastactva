@@ -31,7 +31,7 @@
 #include "../MastactvaBase/names.h"
 
 
-QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr);
+QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr, bool addGeometry_ = true);
 QString createObjectsListJson(int cnt_, const char *objectName_);
 QString createAliseQTGeomJson(
         const char *geom3dObjectName_,
@@ -184,11 +184,11 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     gen.seed(time(nullptr));
     filesource->add(g_dataJsonQTGeometryFilename, createQTGeomJson(gen));
     const int pos0 = 1;
-    filesource->add(g_dataJsonQTVariables0Filename, createQTGeomJson(gen, nullptr, &pos0));
+    filesource->add(g_dataJsonQTVariables0Filename, createQTGeomJson(gen, nullptr, &pos0, false));
     const int pos1 = 2;
-    filesource->add(g_dataJsonQTVariables1Filename, createQTGeomJson(gen, nullptr, &pos1));
+    filesource->add(g_dataJsonQTVariables1Filename, createQTGeomJson(gen, nullptr, &pos1, false));
     const int pos2 = 3;
-    filesource->add(g_dataJsonQTVariables2Filename, createQTGeomJson(gen, nullptr, &pos2));
+    filesource->add(g_dataJsonQTVariables2Filename, createQTGeomJson(gen, nullptr, &pos2, false));
     filesource->add(g_dataJsonObjectsListOfQtGeomFilename, createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
@@ -862,7 +862,8 @@ QJsonObject getJsonDataVariablePosition(const char *objectName_, const int *step
 QString createQTGeomJson(
         QRandomGenerator &gen_,
         const char *objectName_ /*= nullptr*/,
-        const int *step_ /*= nullptr*/
+        const int *step_ /*= nullptr*/,
+        bool addGeometry_ /*= true*/
         )
 {
     std::vector<QVector3D> vertexData;
@@ -924,8 +925,11 @@ QString createQTGeomJson(
     }
 
     QJsonObject object;
-    object.insert("vertex", vertexJO);
-    object.insert("normal", normalJO);
+    if(addGeometry_)
+    {
+        object.insert("vertex", vertexJO);
+        object.insert("normal", normalJO);
+    }
     object.insert("matrix", matrixJO);
 
     return QJsonDocument(object).toJson();
