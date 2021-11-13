@@ -189,11 +189,23 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     gen.seed(time(nullptr));
     filesource->add(g_dataJsonQTGeometryFilename, createVariablesOfQTLogoJson(gen));
     const int pos0 = 1;
-    filesource->add(g_dataJsonQTLogoVariableMatrix0Filename, createVariablesOfQTLogoJson(gen, nullptr, &pos0, false));
+    filesource->add(g_dataJsonQTLogoVariableMatrix0Filename,
+                    createVariablesOfQTLogoJson(
+                        gen, nullptr, &pos0, false
+                        )
+                    );
     const int pos1 = 2;
-    filesource->add(g_dataJsonQTLogoVariableMatrix1Filename, createVariablesOfQTLogoJson(gen, nullptr, &pos1, false));
+    filesource->add(g_dataJsonQTLogoVariableMatrix1Filename,
+                    createVariablesOfQTLogoJson(
+                        gen, nullptr, &pos1, false
+                        )
+                    );
     const int pos2 = 3;
-    filesource->add(g_dataJsonQTLogoVariableMatrix2Filename, createVariablesOfQTLogoJson(gen, nullptr, &pos2, false));
+    filesource->add(g_dataJsonQTLogoVariableMatrix2Filename,
+                    createVariablesOfQTLogoJson(
+                        gen, nullptr, &pos2, false
+                        )
+                    );
     filesource->add(g_dataJsonObjectsListOfQtGeomFilename, createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
