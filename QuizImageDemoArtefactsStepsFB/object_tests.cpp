@@ -1021,7 +1021,7 @@ QString createObjectsQTGeomJson(int cnt_, const char *objectName_)
 
 using Argument = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString>;
 
-std::unique_ptr<EffectObjectsData> createTestObject3(
+std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArguments(
         int effectId_,
         const QDateTime &now_,
         int effectObjectStep_,
@@ -1054,7 +1054,7 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
-    auto artefact1 = std::make_unique<ArtefactData>(
+    auto artefact = std::make_unique<ArtefactData>(
                 artefactId_,
                 artefactName_,
                 artefactFilename_,
@@ -1077,19 +1077,19 @@ std::unique_ptr<EffectObjectsData> createTestObject3(
                 now_,
                 MergeId()
                 );
-        artefact1->m_artefactArgData->push_back(arg.release());
+        artefact->m_artefactArgData->push_back(arg.release());
     }
     static const int objectArtefactId1 = 1;
     static const int objectArtefactStep0 = 0;
-    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
+    auto objectArtefactData = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
                 effectId_,
                 artefactId_,
                 objectArtefactStep0,
-                artefact1.release(),
+                artefact.release(),
                 MergeId()
                 );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+    effectObject->m_objectArtefactData->push_back(objectArtefactData.release());
 
     return effectObject;
 }
@@ -1210,7 +1210,7 @@ std::unique_ptr<EffectData> createTestData4()
     static const char *effectObjectDataProgrammerName = "data_for_qt_logo";
     static const char *effectObjectName = "qt logo";
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1260,7 +1260,7 @@ std::unique_ptr<EffectData> createTestData5()
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gt_logo";
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1272,7 +1272,7 @@ std::unique_ptr<EffectData> createTestData5()
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1331,7 +1331,7 @@ std::unique_ptr<EffectData> createTestData6()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectName = "qt logo";
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1343,7 +1343,7 @@ std::unique_ptr<EffectData> createTestData6()
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1355,7 +1355,7 @@ std::unique_ptr<EffectData> createTestData6()
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
                 );
-    auto effectObject3 = createTestObject3(
+    auto effectObject3 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1367,7 +1367,7 @@ std::unique_ptr<EffectData> createTestData6()
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
                 );
-    auto effectObject0 = createTestObject3(
+    auto effectObject0 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1425,7 +1425,7 @@ std::unique_ptr<EffectData> createTestData7(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1485,7 +1485,7 @@ std::unique_ptr<EffectData> createTestData8(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1497,7 +1497,7 @@ std::unique_ptr<EffectData> createTestData8(
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 1,
@@ -1558,7 +1558,7 @@ std::unique_ptr<EffectData> createTestData9(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1570,7 +1570,7 @@ std::unique_ptr<EffectData> createTestData9(
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 1,
@@ -1637,7 +1637,7 @@ std::unique_ptr<EffectData> createTestData10(
 
     gen.seed(time(nullptr));
 
-    auto effectObject1 = createTestObject3(
+    auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0,
@@ -1649,7 +1649,7 @@ std::unique_ptr<EffectData> createTestData10(
                 effectObjectDataName,
                 effectObjectDataProgrammerName
                 );
-    auto effectObject2 = createTestObject3(
+    auto effectObject2 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 1,
@@ -1661,7 +1661,7 @@ std::unique_ptr<EffectData> createTestData10(
                 effectObjectDataName2,
                 effectObjectDataProgrammerName2
                 );
-    auto effectObject3 = createTestObject3(
+    auto effectObject3 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 2,
@@ -1674,7 +1674,7 @@ std::unique_ptr<EffectData> createTestData10(
                 g_defaultObjectInfoProgrammerName,
                 args1_
                 );
-    auto effectObject4 = createTestObject3(
+    auto effectObject4 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
                 effectObjectStep0 + 3,
