@@ -1407,7 +1407,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
-    // create variable matrix for qt_logo, 0
+    // create variable matrix for qt_logo, at pos 1
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                     effectId,
@@ -1422,7 +1422,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
-    // create variable matrix for qt_logo, 1
+    // create variable matrix for qt_logo, at pos 2
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                     effectId,
