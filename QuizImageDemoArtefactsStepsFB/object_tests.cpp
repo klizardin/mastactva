@@ -183,11 +183,17 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     std::shared_ptr<MapFileSource> filesource = std::make_shared<MapFileSource>();
     filesource->add(g_baseVertexShaderFilename, g_baseVertexShader0);
     filesource->add(g_baseFragmentShaderFilename, g_baseFragmentShader);
-    filesource->add(g_defaultVertexShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.vsh"));
-    filesource->add(g_defaultFragmentShaderFilename, loadTextFile(":/Shaders/Shaders/test000/default.fsh"));
+    filesource->add(g_defaultVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/test000/default.vsh")
+                    );
+    filesource->add(g_defaultFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/test000/default.fsh")
+                    );
     QRandomGenerator gen;
     gen.seed(time(nullptr));
-    filesource->add(g_dataJsonQTGeometryFilename, createVariablesOfQTLogoJson(gen));
+    filesource->add(g_dataJsonQTGeometryFilename,
+                    createVariablesOfQTLogoJson(gen)
+                    );
     const int pos0 = 1;
     filesource->add(g_dataJsonQTLogoVariableMatrix0Filename,
                     createVariablesOfQTLogoJson(
@@ -206,13 +212,18 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                         gen, nullptr, &pos2, false
                         )
                     );
-    filesource->add(g_dataJsonObjectsListOfQtGeomFilename, createObjectsListJson(
+    filesource->add(g_dataJsonObjectsListOfQtGeomFilename,
+                    createObjectsListJson(
                         3,
                         g_effectObjectQtLogoProgrammerName
                         )
                     );
-    filesource->add(g_dataJson3DObjectSwiftFilename, loadTextFile(":/obj3d/swift.obj"));
-    filesource->add(g_dataJson3DObjectCubeFilename, loadTextFile(":/obj3d/cube.obj"));
+    filesource->add(g_dataJson3DObjectSwiftFilename,
+                    loadTextFile(":/obj3d/swift.obj")
+                    );
+    filesource->add(g_dataJson3DObjectCubeFilename,
+                    loadTextFile(":/obj3d/cube.obj")
+                    );
     filesource->add(g_3dObjectSwiftFragmentShaderFilename,
                     QString(g_baseVertexShader3DObject).arg("swift_vertex", "swift_normal")
                     );
@@ -222,10 +233,24 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_3dObjectDefaultFragmentShaderFilename,
                     QString(g_baseVertexShader3DObject).arg("vertex", "normal")
                     );
-    filesource->add(g_dataJsonAliasSwiftFilename, createAliseQTGeomJson("swift_", nullptr, &pos2));
-    filesource->add(g_dataLua2NewVariableFilename, createQTGeomLuaNewVariables("swift_"));
-    filesource->add(g_dataLua2SetVariableFilename, createQTGeomLuaSetVariables("swift_"));
-    filesource->add(g_dataLua1SetVariableAngleAsTFilename, createQTGeomLua1SetVariables("angle", g_renderTName));
+    filesource->add(g_dataJsonAliasSwiftFilename,
+                    createAliseQTGeomJson(
+                        "swift_", nullptr, &pos2
+                        )
+                    );
+    filesource->add(g_dataLua2NewVariableFilename,
+                    createQTGeomLuaNewVariables(
+                        "swift_"
+                        )
+                    );
+    filesource->add(g_dataLua2SetVariableFilename,
+                    createQTGeomLuaSetVariables("swift_")
+                    );
+    filesource->add(g_dataLua1SetVariableAngleAsTFilename,
+                    createQTGeomLua1SetVariables(
+                        "angle", g_renderTName
+                        )
+                    );
     filesource->add(g_dataLuaCalcMatrixFilename, g_luaScriptCalcMatrix);
     return filesource;
 }
