@@ -37,6 +37,12 @@ QString createVariablesOfQTLogoJson(
         const int *step_ = nullptr,
         bool addGeometry_ = true
         );
+QString createVariableValueJson(
+        const QString &name_,
+        const double &value_,
+        const char *objectName_ = nullptr,
+        const int *step_ = nullptr
+        );
 QString createObjectsListJson(int cnt_, const char *objectName_);
 QString createAliseQTGeomJson(
         const char *geom3dObjectName_,
@@ -156,6 +162,36 @@ static const char *g_luaScriptCalcMatrix =
     "end\n"
     ;
 
+static const char *g_luaScriptCreateMatrxiVariablesForObjectList =
+    "function getMatrixVariable ( a, shift )\n"
+    "    local sz = {4, 4}\n"
+    "    local m = matrix.identity(sz)\n"
+    "    local pry = {(a[1] + shift) * 90.0 + 90.0, 0.0, 1.0, 0.0}\n"
+    "    m = matrix.rotate(m, pry)\n"
+    "    local prx = {(a[1] + shift) * 90.0 + 195.0, 1.0, 0.0, 0.0}\n"
+    "    m = matrix.rotate(m, prx)\n"
+    "    local prz = {(a[1] + shift) * 90.0 + 115.0, 0.0, 0.0, 1.0}\n"
+    "    m = matrix.rotate(m, prz)\n"
+    "    local ps = {0.9, 0.9, 0.9}\n"
+    "    m = matrix.scale(m , ps)\n"
+    "    local pt = {0.0, -0.2, 0.0}\n"
+    "    m = matrix.translate(m , pt)\n"
+    "    return m\n"
+    "end\n"
+    "function main ()\n"
+    "    local a = getVariable(\"angle\")\n"
+    "    local m = getMatrixVariable(a, 0.0)\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 1, -1 )\n"
+    "    m = getMatrixVariable(a, 0.25)\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 2, -1 )\n"
+    "    m = getMatrixVariable(a, 0.5)\n"
+    "    setVariableWithPosition(\"%1\", m, \"%2\", 3, -1 )\n"
+    "    result = {}\n"
+    "    return result;\n"
+    "end\n";
+    ;
+
+
 static const char *g_effectObjectQtLogoProgrammerName = "gt_logo";
 static const char *g_baseVertexShaderFilename = "base.vsh";
 static const char *g_baseFragmentShaderFilename = "base.fsh";
@@ -176,6 +212,9 @@ static const char *g_dataLua2NewVariableFilename = "new_variables.lua";
 static const char *g_dataLua2SetVariableFilename = "set_variables.lua";
 static const char *g_dataLua1SetVariableAngleAsTFilename = "set_angle_as_t.lua";
 static const char *g_dataLuaCalcMatrixFilename = "calc_matrix_from_angle.lua";
+static const char *g_dataLuaCreateMatrixVariablesForObjectListFilename
+    = "create_matrix_variables_for_object_list.lua";
+static const char *g_angle_0_1_ValueFileName = "angle_0_1_value.json";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -255,6 +294,15 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                         )
                     );
     filesource->add(g_dataLuaCalcMatrixFilename, g_luaScriptCalcMatrix);
+    filesource->add(g_dataLuaCreateMatrixVariablesForObjectListFilename,
+                    QString(g_luaScriptCreateMatrxiVariablesForObjectList)
+                        .arg("matrix", g_effectObjectQtLogoProgrammerName)
+                    );
+    filesource->add(g_angle_0_1_ValueFileName,
+                    createVariableValueJson(
+                        "angle", 0.1
+                        )
+                    );
     return filesource;
 }
 
@@ -980,6 +1028,35 @@ QString createVariablesOfQTLogoJson(
     return QJsonDocument(object).toJson();
 }
 
+QString createVariableValueJson(
+        const QString &name_,
+        const double &value_,
+        const char *objectName_ /*= nullptr*/,
+        const int *step_ /*= nullptr*/
+        )
+{
+    const bool needPosition = objectName_ || step_;
+    QJsonValue position;
+    if(needPosition)
+    {
+        position = getJsonDataVariablePosition(objectName_, step_);
+    }
+
+    QJsonArray objectsJA;
+    objectsJA.append(QJsonValue::fromVariant(QVariant::fromValue(value_)));
+    QJsonObject valueJO;
+    valueJO.insert(g_jsonDataVariableValueName, objectsJA);
+    if(needPosition)
+    {
+        valueJO.insert(g_jsonDataVariablePositionName, position);
+    }
+
+    QJsonObject object;
+    object.insert(name_, valueJO);
+
+    return QJsonDocument(object).toJson();
+}
+
 QString createAliseQTGeomJson(
         const char *geom3dObjectName_,
         const char *objectName_ /*= nullptr*/,
@@ -1434,6 +1511,92 @@ std::unique_ptr<EffectData> createEffectDataForTestOfObjectList()
                     g_dataJsonQTLogoVariableMatrix1Filename,
                     objectInfoId + 1,
                     effectObjectDataName,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add artefact to draw qt logo with shaders and geometry variables and default matrix variable
+    effect->m_effectObjectsData->push_back(
+                createDrawingQtLogoEffectObject(
+                    effectId,
+                    now,
+                    effectObjectStep1,
+                    gen,
+                    objectInfoId + 3,
+                    effectObjectName,
+                    g_effectObjectQtLogoProgrammerName
+                    ).release()
+                );
+    return effect;
+}
+
+std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::scriptLua;
+    static const char *artefactName1 = "data json object";
+    static const char *artefactName2 = "lua script to create variables";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName1 = "data for object";
+    static const char *effectObjectDataName2 = "lua script to create variables";
+    static const char *effectObjectName = "qt logo";
+
+    // create affect
+    auto effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    // create Object List Json Artefact as main object with duplication of object to draw
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonObjectsListOfQtGeomFilename,
+                    objectInfoId,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add variable angle json data
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_angle_0_1_ValueFileName,
+                    objectInfoId + 1,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // create variable matrix for qt_logo, at positions 1,2,3
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 2,
+                    artefactType2,
+                    artefactName2,
+                    g_dataLuaCreateMatrixVariablesForObjectListFilename,
+                    objectInfoId + 2,
+                    effectObjectDataName2,
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
@@ -1962,7 +2125,7 @@ void ArgSetBaseTest::initialize(
     Q_UNUSED(argsSetIndex_);
 
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createEffectDataForTestOfObjectList();
+    auto effectObjectsData = createEffectDataForTestOfArgSet();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
