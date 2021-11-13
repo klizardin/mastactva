@@ -322,30 +322,30 @@ enum class ArgEn{id, type, storage, name, value};
 
 // TODO: refactoring
 std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
-        int effectId,
-        const QDateTime &now,
-        int effectObjectStep,
-        QRandomGenerator &gen,
-        const int objectInfoId,
-        const char *effectObjectName,
-        const char *effectObjectProgrammerName
+        int effectId_,
+        const QDateTime &now_,
+        int effectObjectStep_,
+        QRandomGenerator &gen_,
+        const int objectInfoId_,
+        const char *effectObjectName_,
+        const char *effectObjectProgrammerName_
         )
 {
     static const int effectObjectId = 1;
     std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
                 effectObjectId,
-                effectId,
-                objectInfoId,
-                effectObjectStep,
+                effectId_,
+                objectInfoId_,
+                effectObjectStep_,
                 MergeId()
                 );
 
     // object info
     auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
-                effectObjectName,
-                effectObjectProgrammerName,
-                now,
+                objectInfoId_,
+                effectObjectName_,
+                effectObjectProgrammerName_,
+                now_,
                 MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
@@ -356,7 +356,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
     test::createGeometry(vertexData, normalData);
 
     qreal fScale = 1;
-    qreal fAngle = gen.generateDouble() * 360.0;
+    qreal fAngle = gen_.generateDouble() * 360.0;
     QMatrix4x4 modelview;
     modelview.rotate(fAngle, 0.0f, 1.0f, 0.0f);
     modelview.rotate(fAngle, 1.0f, 0.0f, 0.0f);
@@ -401,7 +401,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 emptyStr,
                 artefactType1,
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
     for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
@@ -414,7 +414,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
@@ -422,7 +422,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
     static const int objectArtefactId1 = 1;
     auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId1,
-                effectId,
+                effectId_,
                 artefactId1,
                 objectArtefactStep0,
                 artefact1.release(),
@@ -441,13 +441,13 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 emptyStr,
                 artefactType2,
                 emptyStr,
-                now,
+                now_,
                 MergeId()
                 );
     static const int objectArtefactId2 = 2;
     auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
                 objectArtefactId2,
-                effectId,
+                effectId_,
                 artefactId2,
                 objectArtefactStep0,
                 artefact2.release(),
