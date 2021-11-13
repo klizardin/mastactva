@@ -31,7 +31,12 @@
 #include "../MastactvaBase/names.h"
 
 
-QString createQTGeomJson(QRandomGenerator &gen_, const char *objectName_ = nullptr, const int *step_ = nullptr, bool addGeometry_ = true);
+QString createQTGeomJson(
+        QRandomGenerator &gen_,
+        const char *objectName_ = nullptr,
+        const int *step_ = nullptr,
+        bool addGeometry_ = true
+        );
 QString createObjectsListJson(int cnt_, const char *objectName_);
 QString createAliseQTGeomJson(
         const char *geom3dObjectName_,
