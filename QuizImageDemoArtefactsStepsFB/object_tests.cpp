@@ -1384,7 +1384,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectName = "qt logo";
 
-    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+    auto effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
                 emptyStr,
