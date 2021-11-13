@@ -1905,4 +1905,13 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect.initialize(data_);
 }
 
+void ArgSetBaseTest::initialize(
+        drawing_data::QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+    Q_UNUSED(data_);
+}
+
 }
