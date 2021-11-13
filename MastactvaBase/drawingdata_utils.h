@@ -429,8 +429,11 @@ public:
     virtual void resetArtefactStepIndex(int stepIndex_) = 0;
     virtual void setArtefactStepIndex(int stepIndex_) = 0;
     virtual const QString &getObjectName() const = 0;
+    virtual bool hasObjectName() const { return !getObjectName().isEmpty(); };
     virtual int getObjectStepIndex() const = 0;
+    virtual bool hasObjectStepIndex() const = 0;
     virtual int getArtefactStepIndex() const = 0;
+    virtual bool hasArtefactStepIndex() const = 0;
     virtual void clear() = 0;
 };
 
@@ -665,7 +668,9 @@ public:
     void setArtefactStepIndex(int stepIndex_) override;
     const QString &getObjectName() const override;
     int getObjectStepIndex() const override;
+    bool hasObjectStepIndex() const override;
     int getArtefactStepIndex() const override;
+    bool hasArtefactStepIndex() const override;
     void clear() override;
     static Position fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_);
 

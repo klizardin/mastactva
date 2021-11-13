@@ -131,11 +131,11 @@ VariablePosition VariablePosition::fromCurrent(const IPosition *position_)
     }
 
     value(result.objectName) = position_->getObjectName();
-    has_value(result.objectName) = true;
+    has_value(result.objectName) = position_->hasObjectName();
     value(result.objectStepIndex) = position_->getObjectStepIndex();
-    has_value(result.objectStepIndex) = true;
+    has_value(result.objectStepIndex) = position_->hasObjectStepIndex();
     value(result.artefactStepIndex) = position_->getArtefactStepIndex();
-    has_value(result.artefactStepIndex) = true;
+    has_value(result.artefactStepIndex) = position_->hasArtefactStepIndex();
 
     return result;
 }
@@ -585,7 +585,7 @@ bool Variables::addT(const QString &name_, const IPosition *position_, Data_ &&d
 {
     Q_UNUSED(position_);
     details::Variable newVar;
-    newVar.setPosition(nullptr);  // for all next positions
+    newVar.setPosition(position_);  // for all next positions
     newVar.set(std::forward<Data_>(data_));
     details::VariableName variableName(name_, index);
     Q_ASSERT(index < std::numeric_limits<decltype (index)>::max());
@@ -794,9 +794,19 @@ int Position::getObjectStepIndex() const
     return objectStepIndex;
 }
 
+bool Position::hasObjectStepIndex() const
+{
+    return objectStepIndex < std::numeric_limits<decltype (objectStepIndex)>::max();
+}
+
 int Position::getArtefactStepIndex() const
 {
     return artefactStepIndex;
+}
+
+bool Position::hasArtefactStepIndex() const
+{
+    return artefactStepIndex < std::numeric_limits<decltype (artefactStepIndex)>::max();
 }
 
 void Position::clear()
