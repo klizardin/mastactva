@@ -1384,6 +1384,18 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectName = "qt logo";
 
+    auto effectObject0 = createEffectObjectWithOneArtefactWithArguments(
+                effectId,
+                now,
+                effectObjectStep0,
+                artefactId1 + 2,
+                artefactType1,
+                artefactName1,
+                g_dataJsonObjectsListOfQtGeomFilename,
+                objectInfoId + 2,
+                effectObjectDataName,
+                g_defaultObjectInfoProgrammerName
+                );
     auto effectObject1 = createEffectObjectWithOneArtefactWithArguments(
                 effectId,
                 now,
@@ -1416,18 +1428,6 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                 artefactType1,
                 artefactName1,
                 g_dataJsonQTLogoVariableMatrix2Filename,
-                objectInfoId + 2,
-                effectObjectDataName,
-                g_defaultObjectInfoProgrammerName
-                );
-    auto effectObject0 = createEffectObjectWithOneArtefactWithArguments(
-                effectId,
-                now,
-                effectObjectStep0,
-                artefactId1 + 2,
-                artefactType1,
-                artefactName1,
-                g_dataJsonObjectsListOfQtGeomFilename,
                 objectInfoId + 2,
                 effectObjectDataName,
                 g_defaultObjectInfoProgrammerName
