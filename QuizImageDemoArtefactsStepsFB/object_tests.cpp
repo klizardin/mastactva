@@ -1384,6 +1384,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
     static const char *effectObjectDataName = "data for object";
     static const char *effectObjectName = "qt logo";
 
+    // create affect
     auto effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
@@ -1391,6 +1392,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                 now,
                 MergeId()
                 );
+    // create Object List Json Artefact as main object with duplication of object to draw
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                     effectId,
@@ -1405,6 +1407,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
+    // create variable matrix for qt_logo, 0
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                     effectId,
@@ -1419,6 +1422,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
+    // create variable matrix for qt_logo, 1
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
                     effectId,
@@ -1433,20 +1437,7 @@ std::unique_ptr<EffectData> createDataForTestOfObjectList()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
-    effect->m_effectObjectsData->push_back(
-                createEffectObjectWithOneArtefactWithArguments(
-                    effectId,
-                    now,
-                    effectObjectStep0,
-                    artefactId1 + 1,
-                    artefactType1,
-                    artefactName1,
-                    g_dataJsonQTLogoVariableMatrix2Filename,
-                    objectInfoId + 2,
-                    effectObjectDataName,
-                    g_defaultObjectInfoProgrammerName
-                    ).release()
-                );
+    // add artefact to draw qt logo with shaders and geometry variables and default matrix variable
     effect->m_effectObjectsData->push_back(
                 createDrawingQtLogoEffectObject(
                     effectId,
