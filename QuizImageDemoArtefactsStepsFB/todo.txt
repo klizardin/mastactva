@@ -22,3 +22,8 @@ DrawingDataEffect::m_effectArgSetsData
 if we fill first?
 or just replace default value? -- maybe, it will be used latter
 or first? -- ok, it just from the start is used
+
+
+arguments for lua scripts has artefact types:
+ArtefactTypeEn::scriptLua
+ArtefactTypeEn::scriptLuaRuntime
