@@ -152,6 +152,14 @@ public:
             bool global_
             ) const override
     {
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data0;
+        if(!global_
+                && details_.variables.operator bool()
+                && details_.variables->get(m_name, details_.position.get(), data0)
+                )
+        {
+            return;
+        }
         QVector<double> data;
         drawingdata::utils::toVec(m_defaultValue, data);
         details_.variables->add(
@@ -203,6 +211,14 @@ public:
             bool global_
             ) const override
     {
+        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data0;
+        if(!global_
+                && details_.variables.operator bool()
+                && details_.variables->get(m_name, details_.position.get(), data0)
+                )
+        {
+            return;
+        }
         QVector<double> data;
         drawingdata::utils::toVec(m_defaultValue, data);
         details_.variables->add(
