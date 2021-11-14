@@ -1529,7 +1529,7 @@ std::unique_ptr<EffectData> createEffectDataForTestOfObjectList()
     return effect;
 }
 
-std::unique_ptr<EffectData> createEffectDataForTestOfLuaScriptArguments()
+std::unique_ptr<EffectData> createEffectDataForTestOfLuaScriptArguments(int variation_)
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -1570,6 +1570,24 @@ std::unique_ptr<EffectData> createEffectDataForTestOfLuaScriptArguments()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
+    // add variable angle json data
+    if(variation_ == 1)
+    {
+        effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_angle_0_1_ValueFileName,
+                    objectInfoId + 1,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    }
     const std::vector<Argument> luaScriptArgs = {
         {
             1,
@@ -2198,7 +2216,7 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
     drawingDataEffect.initialize(data_);
 }
 
-void LuaScriptArgTest::initialize(
+void LuaScriptArgTest0::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
         ) const
@@ -2206,7 +2224,21 @@ void LuaScriptArgTest::initialize(
     Q_UNUSED(argsSetIndex_);
 
     auto filesource = createMapFileSource();
-    auto effectObjectsData = createEffectDataForTestOfLuaScriptArguments();
+    auto effectObjectsData = createEffectDataForTestOfLuaScriptArguments(0);
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void LuaScriptArgTest1::initialize(
+        drawing_data::QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createEffectDataForTestOfLuaScriptArguments(1);
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
