@@ -27,7 +27,7 @@ DrawingDataEffect::DrawingDataEffect(EffectData &&data_)
     : EffectData(std::move(data_))
 {
     drawingdata::utils::rebuild(m_effectObjectsData, static_cast<DrawingDataEffectObjects *>(nullptr));
-    //drawingdata::utils::rebuild(m_effectArgsData, static_cast<DrawingDataEffectArg *>(nullptr));
+    drawingdata::utils::rebuild(m_effectArgsData, static_cast<DrawingDataEffectArg *>(nullptr));
     drawingdata::utils::rebuild(m_effectArgSetsData, static_cast<DrawingDataEffectArgSet *>(nullptr));
 }
 
