@@ -1529,6 +1529,92 @@ std::unique_ptr<EffectData> createEffectDataForTestOfObjectList()
     return effect;
 }
 
+std::unique_ptr<EffectData> createEffectDataForTestOfLuaScriptArguments()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    const QDateTime now = QDateTime::currentDateTime();
+    QRandomGenerator gen;
+    static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
+    static const int artefactId1 = 1;
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::dataJson;
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::scriptLua;
+    static const char *artefactName1 = "data json object";
+    static const char *artefactName2 = "lua script to create variables";
+    static const int objectInfoId = 1;
+    static const char *effectObjectDataName1 = "data for object";
+    static const char *effectObjectDataName2 = "lua script to create variables";
+    static const char *effectObjectName = "qt logo";
+
+    // create affect
+    auto effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    // create Object List Json Artefact as main object with duplication of object to draw
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1,
+                    artefactType1,
+                    artefactName1,
+                    g_dataJsonObjectsListOfQtGeomFilename,
+                    objectInfoId,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add variable angle json data
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 1,
+                    artefactType1,
+                    artefactName1,
+                    g_angle_0_1_ValueFileName,
+                    objectInfoId + 1,
+                    effectObjectDataName1,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // create variable matrix for qt_logo, at positions 1,2,3
+    effect->m_effectObjectsData->push_back(
+                createEffectObjectWithOneArtefactWithArguments(
+                    effectId,
+                    now,
+                    effectObjectStep0,
+                    artefactId1 + 2,
+                    artefactType2,
+                    artefactName2,
+                    g_dataLuaCreateMatrixVariablesForObjectListFilename,
+                    objectInfoId + 2,
+                    effectObjectDataName2,
+                    g_defaultObjectInfoProgrammerName
+                    ).release()
+                );
+    // add artefact to draw qt logo with shaders and geometry variables and default matrix variable
+    effect->m_effectObjectsData->push_back(
+                createDrawingQtLogoEffectObject(
+                    effectId,
+                    now,
+                    effectObjectStep1,
+                    gen,
+                    objectInfoId + 3,
+                    effectObjectName,
+                    g_effectObjectQtLogoProgrammerName
+                    ).release()
+                );
+    return effect;
+}
+
 std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
 {
     static const int effectId = 1;
@@ -2112,6 +2198,20 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
                 g_dataLuaCalcMatrixFilename, args2,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
+    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
+    drawingDataEffect.init(filesource);
+    drawingDataEffect.initialize(data_);
+}
+
+void LuaScriptArgTest::initialize(
+        drawing_data::QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createEffectDataForTestOfLuaScriptArguments();
     ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
     drawingDataEffect.init(filesource);
     drawingDataEffect.initialize(data_);
