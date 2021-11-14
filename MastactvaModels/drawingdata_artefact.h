@@ -40,6 +40,10 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const = 0;
+    virtual bool hasVariables() const = 0;
+    virtual void addVariables(
+            const drawingdata::Details &details_
+            ) const = 0;
     virtual void addTexture(
             drawing_data::QuizImageObject &object_
             ) const = 0;
@@ -75,6 +79,10 @@ public:
             ) const override;
     void addArguments(
             drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override;
+    bool hasVariables() const override;
+    void addVariables(
             const drawingdata::Details &details_
             ) const override;
     void addTexture(

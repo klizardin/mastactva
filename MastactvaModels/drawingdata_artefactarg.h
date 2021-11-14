@@ -36,6 +36,10 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const = 0;
+    virtual void addVariable(
+            const drawingdata::Details &details_,
+            bool global_
+            ) const = 0;
 };
 
 
@@ -142,6 +146,22 @@ public:
                         )
                     );
     }
+
+    void addVariable(
+            const drawingdata::Details &details_,
+            bool global_
+            ) const override
+    {
+        QVector<double> data;
+        drawingdata::utils::toVec(m_defaultValue, data);
+        details_.variables->add(
+                    m_name,
+                    global_
+                        ? nullptr
+                        : details_.position.get(),
+                    std::move(data)
+                    );
+    }
 };
 
 template<typename ArgType_>
@@ -175,6 +195,22 @@ public:
                         m_name,
                         val
                         )
+                    );
+    }
+
+    void addVariable(
+            const drawingdata::Details &details_,
+            bool global_
+            ) const override
+    {
+        QVector<double> data;
+        drawingdata::utils::toVec(m_defaultValue, data);
+        details_.variables->add(
+                    m_name,
+                    global_
+                        ? nullptr
+                        : details_.position.get(),
+                    std::move(data)
                     );
     }
 };
