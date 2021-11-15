@@ -1212,7 +1212,7 @@ std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArgument
     static const int objectArtefactId1 = 1;
     static const int objectArtefactStep0 = 0;
     auto objectArtefactData = std::make_unique<ObjectArtefactData>(
-                objectArtefactId1,
+                objectArtefactId1 + artefactId_,
                 effectId_,
                 artefactId_,
                 objectArtefactStep0,
@@ -1628,6 +1628,129 @@ std::unique_ptr<EffectData> createEffectDataForTestOfLuaScriptArguments(int vari
     return effect;
 }
 
+class TestDataEffectArgs: public EffectArgumentData
+{
+public:
+    TestDataEffectArgs(
+            int argStorageId_,
+            int argTypeId_,
+            const QString &name_,
+            const QString &defaultValue_,
+            int objectArtefactId_
+            )
+        : EffectArgumentData(argStorageId_, argTypeId_, name_, defaultValue_),
+          m_objectArtefactId(objectArtefactId_)
+    {
+    }
+
+    int m_objectArtefactId = -1;
+};
+
+std::unique_ptr<QVector<EffectArgData *>> createEffectArgsData(
+        const QVector<TestDataEffectArgs> &args_,
+        int effectId_,
+        int effectArgsBaseId_,
+        const QString &description_,
+        const QDateTime &now_
+        )
+{
+    std::unique_ptr<QVector<EffectArgData *>> argsData = std::make_unique<QVector<EffectArgData *>>();
+    int idShift = 0;
+    for(const TestDataEffectArgs &arg_ : args_)
+    {
+        auto arg = std::make_unique<EffectArgData>();
+        static_cast<EffectArgumentData&>(*arg) = static_cast<const EffectArgumentData&>(arg_);
+        arg->m_id = effectArgsBaseId_ + idShift;
+        ++idShift;
+        arg->m_effectId = effectId_;
+        arg->m_objectArtefactId = arg_.m_objectArtefactId;
+        arg->m_description = QString(description_).arg(arg->m_id);
+        arg->m_created = now_;
+        argsData->push_back(arg.release());
+    }
+    return argsData;
+}
+
+class TestArgValue
+{
+public:
+    TestArgValue(
+            int argId_,
+            const QString &value_
+            )
+        : m_argId(argId_),
+          m_value(value_)
+    {
+    }
+    int m_argId = -1;
+    QString m_value;
+};
+
+std::unique_ptr<QVector<EffectArgSetData *>> createEffectArgSetsData(
+        const QVector<QVector<TestArgValue>> &argSets_,
+        const QVector<EffectArgData *> *argsData_,
+        int effectId_,
+        int argSetBaseId_,
+        int argValueBaseId_,
+        const QString &argValueDescription_,
+        const QString &argSetDescription_,
+        const QDateTime &now_
+        )
+{
+    std::unique_ptr<QVector<EffectArgSetData *>> argSets =
+            std::make_unique<QVector<EffectArgSetData *>>();
+    if(!argsData_)
+    {
+        return argSets;
+    }
+
+    int argValueShiftId = 0;
+    int argSetShiftId = 0;
+    for(const QVector<TestArgValue> &args_: argSets_)
+    {
+        auto effectArgSet = std::make_unique<EffectArgSetData>();
+        for(const TestArgValue & arg_ : args_)
+        {
+            auto effectArgValue = std::make_unique<EffectArgValueData>();
+            const auto fit = std::find_if(
+                        std::begin(*argsData_),
+                        std::end(*argsData_),
+                        [&arg_](const EffectArgData *argData_)
+            {
+                return argData_ && argData_->m_id == arg_.m_argId;
+            });
+            if(std::end(*argsData_) == fit)
+            {
+                continue;
+            }
+
+            effectArgValue->m_effectArgsData->push_back((*fit)->getDataCopy().release());
+            auto effectArgumentData = std::make_unique<EffectArgumentData>();
+            effectArgumentData->m_argStorageId = (*fit)->m_argStorageId;
+            effectArgumentData->m_argTypeId = (*fit)->m_argTypeId;
+            effectArgumentData->m_name = (*fit)->m_name;
+            effectArgumentData->m_defaultValue = (*fit)->m_defaultValue;
+            effectArgValue->m_effectArgValuesData->push_back(effectArgumentData.release());
+            effectArgValue->m_id = argValueBaseId_ + argValueShiftId;
+            ++argValueShiftId;
+            effectArgValue->m_argSetId = argSetBaseId_ + argSetShiftId;
+            effectArgValue->m_argId = (*fit)->m_id;
+            effectArgValue->m_value = arg_.m_value;
+            effectArgValue->m_description = QString(argValueDescription_).arg(effectArgValue->m_id);
+            effectArgValue->m_created = now_;
+            effectArgSet->m_effectArgValuesData->push_back(effectArgValue.release());
+        }
+        effectArgSet->m_id = argSetBaseId_ + argSetShiftId;
+        ++argSetShiftId;
+        effectArgSet->m_effectId = effectId_;
+        effectArgSet->m_easingTypeId = 1;
+        effectArgSet->m_description = QString(argSetDescription_).arg(effectArgSet->m_id);
+        effectArgSet->m_created = now_;
+        argSets->push_back(effectArgSet.release());
+    }
+    return argSets;
+}
+
 std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
 {
     static const int effectId = 1;
@@ -1653,6 +1776,41 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
                 emptyStr,
                 now,
                 MergeId()
+                );
+
+    QVector<TestDataEffectArgs> args = {
+        {
+            int(ArtefactArgTypeEn::floatType),
+            int(ArtefactArgStorageEn::uniformStorage),
+            "angle",
+            "-0.5",
+            artefactId1 + 2 + 1
+        }
+    };
+    effect->m_effectArgsData = createEffectArgsData(
+                args,
+                effectId,
+                1,
+                "description of %d",
+                now
+                );
+    QVector<QVector<TestArgValue>> argSets = {
+        {
+            {
+                1,
+                "0.5"
+            },
+        },
+    };
+    effect->m_effectArgSetsData = createEffectArgSetsData(
+                argSets,
+                effect->m_effectArgsData.get(),
+                effectId,
+                1,
+                1,
+                "arg value description %d",
+                "arg set description %d",
+                now
                 );
     // create Object List Json Artefact as main object with duplication of object to draw
     effect->m_effectObjectsData->push_back(
