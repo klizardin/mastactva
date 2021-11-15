@@ -409,6 +409,19 @@ namespace utils
     {
         details::vecToAttribute<4, QVector4D>(details::toStdVector(vec_), data_);
     }
+
+    template<typename Type_> inline
+    void toVec(const QString &val_, QVector<Type_> &vec_)
+    {
+        std::vector<Type_> vec;
+        details::getArray(val_, vec);
+        vec_.clear();
+        vec_.reserve(vec.size());
+        for(const Type_ &val_: vec)
+        {
+            vec_.push_back(val_);
+        }
+    }
 }
 
 

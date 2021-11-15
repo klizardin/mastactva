@@ -124,6 +124,14 @@ bool ObjectArtefacts::build(
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
     {
         checkArtefactStepIndex(details_, *it);
+        if((*it)->hasVariables())
+        {
+            (*it)->addVariables(details_);
+        }
+    }
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        checkArtefactStepIndex(details_, *it);
         (*it)->addCalculations(object_, details_);
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)

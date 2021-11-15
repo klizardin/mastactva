@@ -46,6 +46,10 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override;
+    bool hasVariables() const override;
+    void addVariables(
+            const drawingdata::Details &details_
+            ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_
             ) const override;

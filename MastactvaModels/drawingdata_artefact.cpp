@@ -79,6 +79,42 @@ void DrawingDataArtefact::addArguments(
     }
 }
 
+bool DrawingDataArtefact::hasVariables() const
+{
+    return m_effectArgData.operator bool()
+            && m_effectArgData->size() > 0
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLua
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLuaRuntime
+                )
+            ;
+}
+
+void DrawingDataArtefact::addVariables(
+        const drawingdata::Details &details_
+        ) const
+{
+    if(!hasVariables())
+    {
+        return;
+    }
+
+    const bool global = !(
+                to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLua
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLuaRuntime
+                );
+
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        arg->addVariable(details_, global);
+    }
+}
+
+
 void DrawingDataArtefact::addTexture(
         drawing_data::QuizImageObject &object_
         ) const

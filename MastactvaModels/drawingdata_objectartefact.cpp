@@ -88,6 +88,25 @@ void DrawingDataObjectArtefact::addArguments(
     });
 }
 
+bool DrawingDataObjectArtefact::hasVariables() const
+{
+    return forArtefacts([](const DrawingDataArtefact *artefact_)->bool
+    {
+        return artefact_->hasVariables();
+    });
+}
+
+void DrawingDataObjectArtefact::addVariables(
+        const drawingdata::Details &details_
+        ) const
+{
+    (void) forArtefacts([&details_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->addVariables(details_);
+        return false;
+    });
+}
+
 void DrawingDataObjectArtefact::addTexture(
         drawing_data::QuizImageObject &object_
         ) const
