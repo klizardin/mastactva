@@ -8,6 +8,7 @@
 
 class EffectArgData;
 class EffectArgSetData;
+class EffectArgValueData;
 
 
 class DrawingDataArgSetsAndArgs
@@ -21,13 +22,14 @@ public:
     bool doAddVariableToLocalPosition() const;
     void setObjectArtefactId(int objectArtefactId_);
     void clearObjectArtefactId();
-    bool find(const QString &name_) const;
-    QString getValue(const QString &name_) const;
+    bool find(const QString &name_);
+    QString getValue() const;
 
 private:
     int m_argSetIndex = 0;
     bool m_addVariableToLocalPosition = false;
     int m_objectArtefactId = -1;
+    const EffectArgValueData *m_value = nullptr;
 };
 
 

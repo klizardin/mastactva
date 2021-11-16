@@ -119,6 +119,8 @@ protected:
             ) const
     {
         QString value;
+        drawingdata::Position position;
+        drawingdata::IPosition *pos = nullptr;
         bool global = global_;
         if(argSetsAndArgs_)
         {
@@ -126,8 +128,20 @@ protected:
             {
                 return;
             }
-            value = argSetsAndArgs_->getValue(m_name);
+            value = argSetsAndArgs_->getValue();
             global = argSetsAndArgs_->doAddVariableToLocalPosition();
+            if(global
+                    && details_.position
+                    )
+            {
+                auto posNew = details_.position->getCopyClearObjectIndex();
+                position = drawingdata::Position::fromPosition(posNew.get());
+                pos = &position;
+            }
+            else
+            {
+                pos = details_.position.get();
+            }
         }
         else
         {
@@ -140,14 +154,16 @@ protected:
                 return;
             }
             value = m_defaultValue;
+            if(!global)
+            {
+                pos = details_.position.get();
+            }
         }
         QVector<double> data;
         drawingdata::utils::toVec(value, data);
         details_.variables->add(
                     m_name,
-                    global
-                        ? nullptr
-                        : details_.position.get(),
+                    pos,
                     std::move(data)
                     );
     }
