@@ -14,8 +14,6 @@ class DrawingDataEffectArgValue :
 public:
     DrawingDataEffectArgValue() = default;
     DrawingDataEffectArgValue(EffectArgValueData &&data_);
-
-    std::shared_ptr<QVector<DrawingDataArtefactArg *>> m_effectArgData;
 };
 
 

@@ -388,7 +388,11 @@ VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0
 
 bool operator == (const VariableName &left_, const VariableName &right_)
 {
-    return left_.name == right_.name && (left_.hasIndex && right_.hasIndex && left_.index == right_.index);
+    return left_.name == right_.name &&
+            (
+                (left_.hasIndex && right_.hasIndex && left_.index == right_.index)
+                || !left_.hasIndex || !right_.hasIndex
+                );
 }
 
 bool operator < (const VariableName &left_, const VariableName &right_)
@@ -777,7 +781,9 @@ void Position::resetArtefactStepIndex(int stepIndex_)
 
 void Position::setArtefactStepIndex(int stepIndex_)
 {
-    Q_ASSERT(artefactStepIndex <= stepIndex_);
+    Q_ASSERT(artefactStepIndex <= stepIndex_
+             || artefactStepIndex == std::numeric_limits<decltype (artefactStepIndex)>::max()
+             );
     artefactStepIndex = stepIndex_;
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
     qDebug() << objectName << objectStepIndex << artefactStepIndex;
@@ -814,6 +820,31 @@ void Position::clear()
     objectName.clear();
     std::numeric_limits<decltype (objectStepIndex)>::max();
     artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
+}
+
+std::unique_ptr<IPosition> Position::getCopyClearObjectIndex() const
+{
+    auto ptr = std::make_unique<Position>();
+    *ptr = Position::fromInfo(getObjectName(), std::numeric_limits<decltype (objectStepIndex)>::max(), getArtefactStepIndex());
+    return ptr;
+}
+
+std::unique_ptr<IPosition> Position::getCopy() const
+{
+    auto ptr = std::make_unique<Position>();
+    *ptr = Position::fromInfo(getObjectName(), getObjectStepIndex(), getArtefactStepIndex());
+    return ptr;
+}
+
+Position Position::fromPosition(IPosition *pos_)
+{
+    Position pos;
+    if(pos_)
+    {
+        pos.setObject(pos_->getObjectName(),pos_->getObjectStepIndex());
+        pos.setArtefactStepIndex(pos_->getArtefactStepIndex());
+    }
+    return pos;
 }
 
 Position Position::fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_)
