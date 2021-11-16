@@ -20,6 +20,7 @@
 
 
 #include "../MastactvaModels/artefact_data.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 
@@ -40,9 +41,11 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const = 0;
+    virtual bool hasArguments() const = 0;
     virtual bool hasVariables() const = 0;
     virtual void addVariables(
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const = 0;
     virtual void addTexture(
             drawing_data::QuizImageObject &object_
@@ -81,9 +84,11 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const override;
+    bool hasArguments() const override;
     bool hasVariables() const override;
     void addVariables(
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_

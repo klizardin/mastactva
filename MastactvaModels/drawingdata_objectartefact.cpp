@@ -18,6 +18,7 @@
 #include "drawingdata_objectartefact.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_artefact.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 
 
 DrawingDataObjectArtefact::DrawingDataObjectArtefact(ObjectArtefactData &&data_)
@@ -88,6 +89,14 @@ void DrawingDataObjectArtefact::addArguments(
     });
 }
 
+bool DrawingDataObjectArtefact::hasArguments() const
+{
+    return forArtefacts([](const DrawingDataArtefact *artefact_)->bool
+    {
+        return artefact_->hasArguments();
+    });
+}
+
 bool DrawingDataObjectArtefact::hasVariables() const
 {
     return forArtefacts([](const DrawingDataArtefact *artefact_)->bool
@@ -97,12 +106,13 @@ bool DrawingDataObjectArtefact::hasVariables() const
 }
 
 void DrawingDataObjectArtefact::addVariables(
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        DrawingDataArgSetsAndArgs *argSetsAndArgs_ /*= nullptr*/
         ) const
 {
-    (void) forArtefacts([&details_](const DrawingDataArtefact *artefact_)->bool
+    (void) forArtefacts([&details_, argSetsAndArgs_](const DrawingDataArtefact *artefact_)->bool
     {
-        artefact_->addVariables(details_);
+        artefact_->addVariables(details_, argSetsAndArgs_);
         return false;
     });
 }

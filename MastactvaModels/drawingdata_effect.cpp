@@ -21,6 +21,7 @@
 #include "../MastactvaModels/drawingdata_effectobjects.h"
 #include "../MastactvaModels/drawingdata_effectarg.h"
 #include "../MastactvaModels/drawingdata_effectargset.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 
 
 DrawingDataEffect::DrawingDataEffect(EffectData &&data_)
@@ -74,6 +75,13 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int ar
 
     extractMainObjects(sortedEffectObjects, sortedMainEffectObjects, sortedByProgrammerNameEffectObjects);
 
+    DrawingDataArgSetsAndArgs argSetsAndArgs;
+    argSetsAndArgs.m_effectArgSetsData = m_effectArgSetsData;
+    argSetsAndArgs.m_effectArgsData = m_effectArgsData;
+
+    addArguments(argSetsAndArgs, sortedMainEffectObjects, true);
+    addArguments(argSetsAndArgs, sortedEffectObjects, false);
+
     runObjects(data_, sortedMainEffectObjects);
 
     QStringList objectsToRun;
@@ -125,6 +133,23 @@ void DrawingDataEffect::runObjects(
             continue;
         }
         v_.second->addObjects(data_, m_details);
+    }
+}
+
+void DrawingDataEffect::addArguments(
+        DrawingDataArgSetsAndArgs &argSetsAndArgs_,
+        SortedEffectObjects &objects_,
+        bool local_
+        ) const
+{
+    argSetsAndArgs_.setObjectLocalPosition(local_);
+    for(const SortedEffectObjects::value_type &v_ : objects_)
+    {
+        if(!v_.second)
+        {
+            continue;
+        }
+        v_.second->addArgs(m_details, argSetsAndArgs_);
     }
 }
 

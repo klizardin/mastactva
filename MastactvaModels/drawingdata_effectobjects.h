@@ -21,6 +21,7 @@
 
 #include <memory>
 #include "../MastactvaModels/effectobjects_data.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -34,6 +35,11 @@ public:
     void addObjects(
             drawing_data::QuizImageObjects &data_,
             const drawingdata::Details &details_,
+            int stepIndexShift_ = 0
+            ) const;
+    void addArgs(
+            const drawingdata::Details &details_,
+            DrawingDataArgSetsAndArgs &argSetsAndArgs_,
             int stepIndexShift_ = 0
             ) const;
     bool isMain() const;

@@ -48,6 +48,7 @@ unix: SOURCES +=    \
     drawingdata_effectarg.cpp   \
     drawingdata_effectargvalue.cpp  \
     drawingdata_effectargset.cpp    \
+    drawingdata_argsetsandargs.cpp  \
     data_utils.cpp  \
     mergeid.cpp \
     wavefrontobj.cpp    \
@@ -87,6 +88,7 @@ unix: HEADERS +=    \
     drawingdata_effectarg.h \
     drawingdata_effectargvalue.h    \
     drawingdata_effectargset.h  \
+    drawingdata_argsetsandargs.h    \
     data_utils.h    \
     mergeid.h   \
     wavefrontobj.h  \

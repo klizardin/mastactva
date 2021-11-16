@@ -18,6 +18,7 @@
 #include "drawingdata_artefact.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_artefactarg.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/wavefrontobj.h"
 #include "../MastactvaBase/luaapi.h"
 #include "../MastactvaBase/opengldrawing_utils.h"
@@ -79,6 +80,11 @@ void DrawingDataArtefact::addArguments(
     }
 }
 
+bool DrawingDataArtefact::hasArguments() const
+{
+    return false;
+}
+
 bool DrawingDataArtefact::hasVariables() const
 {
     return m_effectArgData.operator bool()
@@ -90,10 +96,14 @@ bool DrawingDataArtefact::hasVariables() const
 }
 
 void DrawingDataArtefact::addVariables(
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        DrawingDataArgSetsAndArgs *argSetsAndArgs_ /*= nullptr*/
         ) const
 {
-    if(!hasVariables())
+    Q_UNUSED(argSetsAndArgs_);
+
+    if(!(hasVariables()
+            || hasArguments()))
     {
         return;
     }
@@ -113,7 +123,6 @@ void DrawingDataArtefact::addVariables(
         arg->addVariable(details_, global);
     }
 }
-
 
 void DrawingDataArtefact::addTexture(
         drawing_data::QuizImageObject &object_
