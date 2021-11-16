@@ -1780,8 +1780,8 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
 
     QVector<TestDataEffectArgs> args = {
         {
-            int(ArtefactArgTypeEn::floatType),
             int(ArtefactArgStorageEn::uniformStorage),
+            int(ArtefactArgTypeEn::floatType),
             "angle",
             "-0.5",
             artefactId1 + 2 + 1
@@ -1842,6 +1842,15 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
+    const std::vector<Argument> luaScriptArgs = {
+        {
+            1,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            "angle",
+            "-0.5"
+        }
+    };
     // create variable matrix for qt_logo, at positions 1,2,3
     effect->m_effectObjectsData->push_back(
                 createEffectObjectWithOneArtefactWithArguments(
@@ -1854,7 +1863,8 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
                     g_dataLuaCreateMatrixVariablesForObjectListFilename,
                     objectInfoId + 2,
                     effectObjectDataName2,
-                    g_defaultObjectInfoProgrammerName
+                    g_defaultObjectInfoProgrammerName,
+                    luaScriptArgs
                     ).release()
                 );
     // add artefact to draw qt logo with shaders and geometry variables and default matrix variable
