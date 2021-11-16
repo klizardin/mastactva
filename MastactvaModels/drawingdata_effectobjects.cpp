@@ -308,7 +308,7 @@ bool DrawingDataEffectObjects::isMain() const
 {
     return m_objectInfoData.operator bool()
             && 1 == m_objectInfoData->size()
-            && QString(g_defaultObjectInfoProgrammerName) == m_objectInfoData->front()->m_programmerName
+            && m_objectInfoData->front()->m_programmerName.startsWith(g_defaultObjectInfoProgrammerName)
             ;
 }
 

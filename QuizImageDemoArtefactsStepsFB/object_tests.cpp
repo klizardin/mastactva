@@ -1161,7 +1161,7 @@ std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArgument
         const char * artefactFilename_,
         const int objectInfoId_,
         const char *effectObjectName_,
-        const char *effectObjectProgrammerName_,
+        const QString& effectObjectProgrammerName_,
         const std::vector<Argument> &arguments_ = std::vector<Argument>()
         )
 {
@@ -1824,7 +1824,7 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
                     g_dataJsonObjectsListOfQtGeomFilename,
                     objectInfoId,
                     effectObjectDataName1,
-                    g_defaultObjectInfoProgrammerName
+                    QString(g_defaultObjectInfoProgrammerName) + "_objectList"
                     ).release()
                 );
     const std::vector<Argument> luaScriptArgs = {
@@ -1848,7 +1848,7 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
                     g_dataLuaCreateMatrixVariablesForObjectListFilename,
                     objectInfoId + 2,
                     effectObjectDataName2,
-                    g_defaultObjectInfoProgrammerName,
+                    QString(g_defaultObjectInfoProgrammerName) + "_luaScriptMatrixCreate",
                     luaScriptArgs
                     ).release()
                 );
