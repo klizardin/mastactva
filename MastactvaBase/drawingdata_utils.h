@@ -64,7 +64,7 @@ namespace utils
                 auto ptr = factory<DrawingDataType_, DataType_>(std::move(*ptr_), nullptr);
                 if(static_cast<DataType_ *>(ptr.get()))
                 {
-                    ptr_ = dynamic_cast<DataType_ *>(ptr.release());
+                    ptr_ = static_cast<DataType_ *>(ptr.release());
                 }
                 else
                 {

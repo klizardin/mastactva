@@ -777,7 +777,9 @@ void Position::resetArtefactStepIndex(int stepIndex_)
 
 void Position::setArtefactStepIndex(int stepIndex_)
 {
-    Q_ASSERT(artefactStepIndex <= stepIndex_);
+    Q_ASSERT(artefactStepIndex <= stepIndex_
+             || artefactStepIndex == std::numeric_limits<decltype (artefactStepIndex)>::max()
+             );
     artefactStepIndex = stepIndex_;
 #if defined(TRACE_EFFECT_OBJECT_POSITION)
     qDebug() << objectName << objectStepIndex << artefactStepIndex;
