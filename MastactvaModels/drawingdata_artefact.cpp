@@ -82,7 +82,16 @@ void DrawingDataArtefact::addArguments(
 
 bool DrawingDataArtefact::hasArguments() const
 {
-    return false;
+    return (m_effectArgData.operator bool()
+            && m_effectArgData->size() > 0
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::shaderVertex
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::shaderFragmet
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::texture1D
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::texture2D
+                || to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::texture3D
+                )
+            ) || hasVariables()
+            ;
 }
 
 bool DrawingDataArtefact::hasVariables() const
@@ -120,7 +129,7 @@ void DrawingDataArtefact::addVariables(
         {
             continue;
         }
-        arg->addVariable(details_, global);
+        arg->addVariable(details_, global, argSetsAndArgs_);
     }
 }
 

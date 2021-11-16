@@ -110,11 +110,21 @@ void DrawingDataObjectArtefact::addVariables(
         DrawingDataArgSetsAndArgs *argSetsAndArgs_ /*= nullptr*/
         ) const
 {
+    if(argSetsAndArgs_)
+    {
+        argSetsAndArgs_->setObjectArtefactId(m_id);
+    }
+
     (void) forArtefacts([&details_, argSetsAndArgs_](const DrawingDataArtefact *artefact_)->bool
     {
         artefact_->addVariables(details_, argSetsAndArgs_);
         return false;
     });
+
+    if(argSetsAndArgs_)
+    {
+        argSetsAndArgs_->clearObjectArtefactId();
+    }
 }
 
 void DrawingDataObjectArtefact::addTexture(
