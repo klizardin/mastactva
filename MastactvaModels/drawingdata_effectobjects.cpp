@@ -21,6 +21,7 @@
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaModels/drawingdata_objectinfo.h"
 #include "../MastactvaModels/drawingdata_objectartefact.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 
 
 DrawingDataEffectObjects::DrawingDataEffectObjects(EffectObjectsData &&data_)
@@ -47,6 +48,10 @@ public:
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_
             ) const;
+    void addArgs(
+            const drawingdata::Details &details_,
+            DrawingDataArgSetsAndArgs &argSetsAndArgs_
+            );
     void addMainCalculations(
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
@@ -165,6 +170,26 @@ bool ObjectArtefacts::build(
     return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
 }
 
+void ObjectArtefacts::addArgs(
+        const drawingdata::Details &details_,
+        DrawingDataArgSetsAndArgs &argSetsAndArgs_
+        )
+{
+    if(std::cend(m_artefacts) != m_objectBegin)
+    {
+        updateArtefactStepIndex(details_, *m_objectBegin, std::cbegin(m_artefacts) == m_objectBegin);
+    }
+
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        checkArtefactStepIndex(details_, *it);
+        if((*it)->hasArguments())
+        {
+            (*it)->addVariables(details_, &argSetsAndArgs_);
+        }
+    }
+}
+
 void ObjectArtefacts::addMainCalculations(
         drawing_data::QuizImageObjects &objects_,
         const drawingdata::Details &details_
@@ -255,6 +280,27 @@ void DrawingDataEffectObjects::addObjects(
         {
             data_.objects.push_back(obj);
         }
+    }
+}
+
+void DrawingDataEffectObjects::addArgs(
+        const drawingdata::Details &details_,
+        DrawingDataArgSetsAndArgs &argSetsAndArgs_,
+        int stepIndexShift_ /*= 0*/
+        ) const
+{
+    if(!m_objectArtefactData.operator bool())
+    {
+        return;
+    }
+
+    setupPosition(details_, stepIndexShift_);
+
+    ObjectArtefacts list;
+    list.populate(*m_objectArtefactData);
+    for(list.first(); !list.isEnd(); list.next())
+    {
+        list.addArgs(details_, argSetsAndArgs_);
     }
 }
 

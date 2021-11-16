@@ -4,6 +4,7 @@
 
 #include "../MastactvaModels/effectargset_data.h"
 #include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaModels/drawingdata_effectarg.h"
 
 
 class DrawingDataEffectArgSet :

@@ -20,6 +20,7 @@
 
 
 #include "../MastactvaModels/effect_data.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 
@@ -54,6 +55,11 @@ private:
     void runObjects(
             drawing_data::QuizImageObjects &data_,
             SortedEffectObjects &objects_
+            ) const;
+    void addArguments(
+            DrawingDataArgSetsAndArgs &argSetsAndArgs_,
+            SortedEffectObjects &objects_,
+            bool local_
             ) const;
     void processByObjectListOrder(
             drawing_data::QuizImageObjects &data_,

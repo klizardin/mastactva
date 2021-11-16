@@ -23,6 +23,7 @@
 #include "../MastactvaModels/artefactarg_data.h"
 #include "../MastactvaModels/effectarg_data.h"
 #include "../MastactvaModels/effectargvalue_data.h"
+#include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/utils.h"
@@ -38,7 +39,8 @@ public:
             ) const = 0;
     virtual void addVariable(
             const drawingdata::Details &details_,
-            bool global_
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const = 0;
 };
 
@@ -108,6 +110,48 @@ private:
             return {nullptr};
         }
     }
+protected:
+    template<typename ArgType_>
+    void addVariableImpl(
+            const drawingdata::Details &details_,
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_
+            ) const
+    {
+        QString value;
+        bool global = global_;
+        if(argSetsAndArgs_)
+        {
+            if(!argSetsAndArgs_->find(m_name))
+            {
+                return;
+            }
+            value = argSetsAndArgs_->getValue(m_name);
+            global = argSetsAndArgs_->doAddVariableToLocalPosition();
+        }
+        else
+        {
+            QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data0;
+            if(!global
+                    && details_.variables.operator bool()
+                    && details_.variables->get(m_name, details_.position.get(), data0)
+                    )
+            {
+                return;
+            }
+            value = m_defaultValue;
+        }
+        QVector<double> data;
+        drawingdata::utils::toVec(value, data);
+        details_.variables->add(
+                    m_name,
+                    global
+                        ? nullptr
+                        : details_.position.get(),
+                    std::move(data)
+                    );
+    }
+
 
     friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgumentData &&data_, const DrawingDataArtefactArg *);
 };
@@ -149,26 +193,11 @@ public:
 
     void addVariable(
             const drawingdata::Details &details_,
-            bool global_
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data0;
-        if(!global_
-                && details_.variables.operator bool()
-                && details_.variables->get(m_name, details_.position.get(), data0)
-                )
-        {
-            return;
-        }
-        QVector<double> data;
-        drawingdata::utils::toVec(m_defaultValue, data);
-        details_.variables->add(
-                    m_name,
-                    global_
-                        ? nullptr
-                        : details_.position.get(),
-                    std::move(data)
-                    );
+        DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
     }
 };
 
@@ -208,26 +237,11 @@ public:
 
     void addVariable(
             const drawingdata::Details &details_,
-            bool global_
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> data0;
-        if(!global_
-                && details_.variables.operator bool()
-                && details_.variables->get(m_name, details_.position.get(), data0)
-                )
-        {
-            return;
-        }
-        QVector<double> data;
-        drawingdata::utils::toVec(m_defaultValue, data);
-        details_.variables->add(
-                    m_name,
-                    global_
-                        ? nullptr
-                        : details_.position.get(),
-                    std::move(data)
-                    );
+        DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
     }
 };
 

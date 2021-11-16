@@ -81,6 +81,7 @@ unix: HEADERS += \
         drawingdata_effectarg.h \
         drawingdata_effectargvalue.h    \
         drawingdata_effectargset.h  \
+        drawingdata_argsetsandargs.h    \
         \
         easingtype.h \
         effect_data.h   \
@@ -177,6 +178,7 @@ unix: SOURCES += \
         drawingdata_effectarg.cpp   \
         drawingdata_effectargvalue.cpp  \
         drawingdata_effectargset.cpp    \
+        drawingdata_argsetsandargs.cpp  \
         \
         easingtype.cpp \
         effect_data.cpp \
