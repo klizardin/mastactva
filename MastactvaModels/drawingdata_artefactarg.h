@@ -129,7 +129,7 @@ protected:
                 return;
             }
             value = argSetsAndArgs_->getValue();
-            global = argSetsAndArgs_->doAddVariableToLocalPosition();
+            global = !argSetsAndArgs_->doAddVariableToLocalPosition();
             if(global
                     && details_.position
                     )
