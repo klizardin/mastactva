@@ -31,7 +31,7 @@ bool DrawingDataArgSetsAndArgs::find(const QString &name_)
 {
     m_value = nullptr;
     if(!m_effectArgSetsData
-            || m_effectArgSetsData->size() >= m_argSetIndex)
+            || m_effectArgSetsData->size() <= m_argSetIndex)
     {
         return false;
     }
