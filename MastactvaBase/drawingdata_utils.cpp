@@ -388,7 +388,11 @@ VariableName::VariableName(const QString &name_ /*= QString()*/,int index_ /*= 0
 
 bool operator == (const VariableName &left_, const VariableName &right_)
 {
-    return left_.name == right_.name && (left_.hasIndex && right_.hasIndex && left_.index == right_.index);
+    return left_.name == right_.name &&
+            (
+                (left_.hasIndex && right_.hasIndex && left_.index == right_.index)
+                || !left_.hasIndex || !right_.hasIndex
+                );
 }
 
 bool operator < (const VariableName &left_, const VariableName &right_)
