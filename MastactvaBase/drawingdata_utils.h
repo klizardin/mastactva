@@ -448,6 +448,8 @@ public:
     virtual int getArtefactStepIndex() const = 0;
     virtual bool hasArtefactStepIndex() const = 0;
     virtual void clear() = 0;
+    virtual std::unique_ptr<IPosition> getCopyClearObjectIndex() const = 0;
+    virtual std::unique_ptr<IPosition> getCopy() const = 0;
 };
 
 
@@ -685,6 +687,9 @@ public:
     int getArtefactStepIndex() const override;
     bool hasArtefactStepIndex() const override;
     void clear() override;
+    std::unique_ptr<IPosition> getCopyClearObjectIndex() const override;
+    std::unique_ptr<IPosition> getCopy() const  override;
+    static Position fromPosition(IPosition *pos_);
     static Position fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_);
 
 private:

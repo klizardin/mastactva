@@ -816,6 +816,31 @@ void Position::clear()
     artefactStepIndex = std::numeric_limits<decltype (artefactStepIndex)>::max();
 }
 
+std::unique_ptr<IPosition> Position::getCopyClearObjectIndex() const
+{
+    auto ptr = std::make_unique<Position>();
+    *ptr = Position::fromInfo(getObjectName(), std::numeric_limits<decltype (objectStepIndex)>::max(), getArtefactStepIndex());
+    return ptr;
+}
+
+std::unique_ptr<IPosition> Position::getCopy() const
+{
+    auto ptr = std::make_unique<Position>();
+    *ptr = Position::fromInfo(getObjectName(), getObjectStepIndex(), getArtefactStepIndex());
+    return ptr;
+}
+
+Position Position::fromPosition(IPosition *pos_)
+{
+    Position pos;
+    if(pos_)
+    {
+        pos.setObject(pos_->getObjectName(),pos_->getObjectStepIndex());
+        pos.setArtefactStepIndex(pos_->getArtefactStepIndex());
+    }
+    return pos;
+}
+
 Position Position::fromInfo(const QString &name_, int objectStepIndex_, int artefactStepIndex_)
 {
     Position pos;
