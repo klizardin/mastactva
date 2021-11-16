@@ -1827,21 +1827,6 @@ std::unique_ptr<EffectData> createEffectDataForTestOfArgSet()
                     g_defaultObjectInfoProgrammerName
                     ).release()
                 );
-    // add variable angle json data
-    effect->m_effectObjectsData->push_back(
-                createEffectObjectWithOneArtefactWithArguments(
-                    effectId,
-                    now,
-                    effectObjectStep0,
-                    artefactId1 + 1,
-                    artefactType1,
-                    artefactName1,
-                    g_angle_0_1_ValueFileName,
-                    objectInfoId + 1,
-                    effectObjectDataName1,
-                    g_defaultObjectInfoProgrammerName
-                    ).release()
-                );
     const std::vector<Argument> luaScriptArgs = {
         {
             1,
