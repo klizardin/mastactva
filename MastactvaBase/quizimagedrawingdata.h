@@ -1109,6 +1109,9 @@ namespace drawing_data
         void set(const QString &name_, QVector<double> &&data_) override;
         bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
+        bool allowedForTime(double t_) const;
+        bool changeAllowedForTime(double told_, double tnew_) const;
+
         template<typename ItemType_>
         void setAttribute(const QString &name_, const std::vector<ItemType_> &value_, int tupleSize_ = 0)
         {
