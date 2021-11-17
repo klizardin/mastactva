@@ -596,9 +596,23 @@ void opengl_drawing::Objects::init(
         )
 {
     m_imageData = std::move(imageData_);
+    reinit();
+}
+
+void opengl_drawing::Objects::reinit()
+{
+    QVector<double> currentT;
+    const bool tExist = get(g_renderTName, currentT);
+    m_objects.clear();
     m_objects.reserve(m_imageData->objects.size());
     for(const auto &object : m_imageData->objects)
     {
+        if(tExist
+                && !object->allowedForTime(currentT[0])
+                )
+        {
+            continue;
+        }
         m_objects.push_back(
                     std::make_unique<opengl_drawing::Object>()
                     );
@@ -632,6 +646,24 @@ void opengl_drawing::Objects::init(
             ? &g_geometryDefaultCalculation
             : nullptr
               ;
+}
+
+bool opengl_drawing::Objects::needToReinit(double tNew_) const
+{
+    QVector<double> currentT;
+    const bool tExist = get(g_renderTName, currentT);
+    if(!tExist)
+    {
+        return false;
+    }
+    for(const auto &object : m_imageData->objects)
+    {
+        if(object->changeAllowedForTime(currentT[0], tNew_))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void opengl_drawing::Objects::calculate()
@@ -851,6 +883,14 @@ void ObjectsRenderer::updateVariables(
         qreal t_,
         const QVector2D &windowSize_)
 {
+    if(m_openglData
+            && m_openglData->needToReinit(t_)
+            )
+    {
+        m_openglData->reinit();
+        initialize();
+    }
+
     const float maxCxCy = std::max(std::max(rectSize_.x(), rectSize_.y()), 1.0f);
     const QVector2D proportinalRect(rectSize_.x() / maxCxCy, rectSize_.y() / maxCxCy);
 
