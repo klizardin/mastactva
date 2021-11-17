@@ -97,6 +97,7 @@ Q_DECL_UNUSED static const char *g_renderIsGeomertySolidName = "renderIsGeomerty
 Q_DECL_UNUSED static const char *g_renderVertexAttributeName = "renderVertexAttribute";
 Q_DECL_UNUSED static const char *g_renderTextureAttributeName = "renderTextureAttribute";
 Q_DECL_UNUSED static const char *g_renderIndexesName = "renderIndexes";
+Q_DECL_UNUSED static const char *g_renderPeriodName = "renderPeriod";
 Q_DECL_UNUSED static const char *g_intTypeName = "int";
 Q_DECL_UNUSED static const char *g_floatTypeName = "float";
 Q_DECL_UNUSED static const char *g_vec2TypeName = "vec2";
