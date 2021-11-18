@@ -601,9 +601,13 @@ void opengl_drawing::Objects::init(
 
 void opengl_drawing::Objects::reinit()
 {
+    m_objects.clear();
+    m_imageMatrixDefault = nullptr;
+    m_geometryDefault = nullptr;
+    m_updated.clear();
+
     QVector<double> currentT;
     const bool tExist = get(g_renderTName, currentT);
-    m_objects.clear();
     m_objects.reserve(m_imageData->objects.size());
     for(const auto &object : m_imageData->objects)
     {
