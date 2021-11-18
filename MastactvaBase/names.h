@@ -176,6 +176,7 @@ Q_DECL_UNUSED static const char *g_stepsName = "steps";
 Q_DECL_UNUSED static const char *g_noImageName = ":/Images/Images/no-image.png";
 Q_DECL_UNUSED static const char *g_noImage001Name = ":/Images/Images/no-image-001.png";
 Q_DECL_UNUSED static const char *g_noImage002Name = ":/Images/Images/no-image-002.png";
+Q_DECL_UNUSED static const char *g_noImage003Name = ":/Images/Images/no-image-003.png";
 
 
 // shaders
