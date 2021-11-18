@@ -86,12 +86,12 @@ namespace drawing_data
 
 
 // using TestCaseInitializer = drawing_data::TestMinimalDrawQTLogoQuizImageObject;
-// using TestCaseInitializer = drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject;
+using TestCaseInitializer = drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject;
 // using TestCaseInitializer = drawing_data::Test0QuizImageObject;
 // using TestCaseInitializer = drawing_data::Test1QuizImageObject;
 // using TestCaseInitializer = drawing_data::Test2QuizImageObject; // do not work
 // using TestCaseInitializer = drawing_data::Test3QuizImageObject;
-using TestCaseInitializer = drawing_data::Test4QuizImageObject;
+// using TestCaseInitializer = drawing_data::Test4QuizImageObject;
 
 
 #endif // DRAWING_TESTS_H

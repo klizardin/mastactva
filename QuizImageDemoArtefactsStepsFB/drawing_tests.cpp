@@ -225,8 +225,6 @@ void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
     std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
     std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
 
-    QRandomGenerator gen;
-
     object1->vertexShader = g_defaultVertexShader;
     object1->fragmentShader = g_defaultFragmentShader;
     object2->vertexShader = g_defaultVertexShader;
@@ -258,7 +256,7 @@ void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
                 );
 
     qreal fScale = 1;
-    qreal fAngle1 = gen.generateDouble() * 360.0;
+    qreal fAngle1 = QRandomGenerator::global()->generateDouble() * 360.0;
     std::shared_ptr<QMatrix4x4> modelview1(new QMatrix4x4);
     modelview1->rotate(fAngle1, 0.0f, 1.0f, 0.0f);
     modelview1->rotate(fAngle1, 1.0f, 0.0f, 0.0f);
@@ -266,7 +264,8 @@ void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
     modelview1->scale(fScale);
     modelview1->translate(0.0f, -0.2f, 0.0f);
 
-    qreal fAngle2 = gen.generateDouble() * 360.0;
+    qreal fAngle2 = QRandomGenerator::global()->generateDouble() * 360.0;
+    fScale = 0.75;
     std::shared_ptr<QMatrix4x4> modelview2(new QMatrix4x4);
     modelview2->rotate(fAngle2, 0.0f, 1.0f, 0.0f);
     modelview2->rotate(fAngle2, 1.0f, 0.0f, 0.0f);
