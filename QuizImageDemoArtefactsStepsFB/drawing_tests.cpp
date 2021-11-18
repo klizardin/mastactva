@@ -94,7 +94,7 @@ void extrude(
 namespace test
 {
 
-void createGeometry(
+void createQTLogoGeometry(
         std::vector<QVector3D> &vertices,
         std::vector<QVector3D> &normals
         )
@@ -184,7 +184,7 @@ void drawing_data::TestMinimalDrawQuizImageObject::initialize(
 
     std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
     std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
-    test::createGeometry(*vertices.get(), *normals.get());
+    test::createQTLogoGeometry(*vertices.get(), *normals.get());
 
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
@@ -256,7 +256,7 @@ void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
 
     std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
     std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
-    test::createGeometry(*vertices.get(), *normals.get());
+    test::createQTLogoGeometry(*vertices.get(), *normals.get());
 
     object1->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(

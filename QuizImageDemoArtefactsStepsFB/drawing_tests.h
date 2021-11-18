@@ -24,7 +24,8 @@
 
 namespace test
 {
-void createGeometry(
+
+void createQTLogoGeometry(
         std::vector<QVector3D> &vertices,
         std::vector<QVector3D> &normals
         );
