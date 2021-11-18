@@ -148,6 +148,28 @@ void createQTLogoGeometry(
 
 }
 
+const char *g_defaultVertexShader =
+    "attribute highp vec4 vertex;\n"
+    "attribute mediump vec3 normal;\n"
+    "uniform mediump mat4 matrix;\n"
+    "varying mediump vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
+    "    float angle = max(dot(normal, toLight), 0.0);\n"
+    "    vec3 col = vec3(0.40, 1.0, 0.0);\n"
+    "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
+    "    color = clamp(color, 0.0, 1.0);\n"
+    "    gl_Position = matrix * vertex;\n"
+    "}\n";
+
+const char *g_defaultFragmentShader =
+    "varying mediump vec4 color;\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FragColor = color;\n"
+    "}\n";
+
 void drawing_data::TestMinimalDrawQTLogoQuizImageObject::initialize(
         QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -157,30 +179,8 @@ void drawing_data::TestMinimalDrawQTLogoQuizImageObject::initialize(
 
     std::unique_ptr<QuizImageObject> object(new QuizImageObject());
 
-    const char *vsrc1 =
-        "attribute highp vec4 vertex;\n"
-        "attribute mediump vec3 normal;\n"
-        "uniform mediump mat4 matrix;\n"
-        "varying mediump vec4 color;\n"
-        "void main(void)\n"
-        "{\n"
-        "    vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
-        "    float angle = max(dot(normal, toLight), 0.0);\n"
-        "    vec3 col = vec3(0.40, 1.0, 0.0);\n"
-        "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
-        "    color = clamp(color, 0.0, 1.0);\n"
-        "    gl_Position = matrix * vertex;\n"
-        "}\n";
-
-    const char *fsrc1 =
-        "varying mediump vec4 color;\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_FragColor = color;\n"
-        "}\n";
-
-    object->vertexShader = vsrc1;
-    object->fragmentShader = fsrc1;
+    object->vertexShader = g_defaultVertexShader;
+    object->fragmentShader = g_defaultFragmentShader;
 
     std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
     std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
@@ -225,34 +225,12 @@ void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
     std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
     std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
 
-    const char *vsrc1 =
-        "attribute highp vec4 vertex;\n"
-        "attribute mediump vec3 normal;\n"
-        "uniform mediump mat4 matrix;\n"
-        "varying mediump vec4 color;\n"
-        "void main(void)\n"
-        "{\n"
-        "    vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
-        "    float angle = max(dot(normal, toLight), 0.0);\n"
-        "    vec3 col = vec3(0.40, 1.0, 0.0);\n"
-        "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
-        "    color = clamp(color, 0.0, 1.0);\n"
-        "    gl_Position = matrix * vertex;\n"
-        "}\n";
-
-    const char *fsrc1 =
-        "varying mediump vec4 color;\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_FragColor = color;\n"
-        "}\n";
-
     QRandomGenerator gen;
 
-    object1->vertexShader = vsrc1;
-    object1->fragmentShader = fsrc1;
-    object2->vertexShader = vsrc1;
-    object2->fragmentShader = fsrc1;
+    object1->vertexShader = g_defaultVertexShader;
+    object1->fragmentShader = g_defaultFragmentShader;
+    object2->vertexShader = g_defaultVertexShader;
+    object2->fragmentShader = g_defaultFragmentShader;
 
     std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
     std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
