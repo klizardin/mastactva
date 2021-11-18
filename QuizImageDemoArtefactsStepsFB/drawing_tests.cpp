@@ -148,7 +148,7 @@ void createQTLogoGeometry(
 
 }
 
-void drawing_data::TestMinimalDrawQuizImageObject::initialize(
+void drawing_data::TestMinimalDrawQTLogoQuizImageObject::initialize(
         QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
         ) const

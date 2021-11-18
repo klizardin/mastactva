@@ -33,7 +33,7 @@ void createQTLogoGeometry(
 
 namespace drawing_data
 {
-    class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>
+    class TestMinimalDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
