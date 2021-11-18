@@ -232,6 +232,33 @@ bool drawing_data::QuizImageObject::isUpdated(const QSet<QString> &vars_, IVaria
     return detail::Calculations::isUpdated(vars_, base_);
 }
 
+bool drawing_data::QuizImageObject::allowedForTime(double t_) const
+{
+    QVector<double> periods;
+    const auto isIncorrectData = [&periods]() ->bool { return periods.size() < 2; };
+    if(!get(g_renderPeriodName, periods)
+            || isIncorrectData()
+            )
+    {
+        return true;
+    }
+    for(int i = 0; i + 1 < periods.size(); i+=2)
+    {
+        if(periods[i] <= t_
+                && t_ <= periods[i+1]
+                )
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool drawing_data::QuizImageObject::changeAllowedForTime(double told_, double tnew_) const
+{
+    return allowedForTime(told_) != allowedForTime(tnew_);
+}
+
 int drawing_data::QuizImageObject::getAttributeTupleSize(const QString &name_) const
 {
     for(const std::unique_ptr<IAttribute> &attribute_ : attributes)

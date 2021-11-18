@@ -90,6 +90,8 @@ namespace opengl_drawing
     public:
         std::unique_ptr<drawing_data::QuizImageObjects> free();
         void init(std::unique_ptr<drawing_data::QuizImageObjects> &&imageData_);
+        void reinit();
+        bool needToReinit(double tNew_) const;
         void calculate();
         void draw(QOpenGLFunctions *f_);
 

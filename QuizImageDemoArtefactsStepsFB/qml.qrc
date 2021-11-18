@@ -21,6 +21,7 @@
         <file>Images/no-image.png</file>
         <file>Images/no-image-001.png</file>
         <file>Images/no-image-002.png</file>
+        <file>Images/no-image-003.png</file>
     </qresource>
     <qresource prefix="/obj3d">
         <file>swift.obj</file>
