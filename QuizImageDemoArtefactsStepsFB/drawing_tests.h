@@ -39,7 +39,7 @@ namespace drawing_data
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
-    class TestMinimal2PassDrawQuizImageObject : public IDefaultData<QuizImageObjects>
+    class TestMinimal2PassDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;

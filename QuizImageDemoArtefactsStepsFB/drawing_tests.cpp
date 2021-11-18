@@ -215,7 +215,7 @@ void drawing_data::TestMinimalDrawQTLogoQuizImageObject::initialize(
 }
 
 
-void drawing_data::TestMinimal2PassDrawQuizImageObject::initialize(
+void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
         QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
         ) const
