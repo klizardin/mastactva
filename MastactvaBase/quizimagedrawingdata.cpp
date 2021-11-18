@@ -235,7 +235,10 @@ bool drawing_data::QuizImageObject::isUpdated(const QSet<QString> &vars_, IVaria
 bool drawing_data::QuizImageObject::allowedForTime(double t_) const
 {
     QVector<double> periods;
-    if(!get(g_renderPeriodName, periods))
+    const auto isIncorrectData = [&periods]() ->bool { return periods.size() < 2; };
+    if(!get(g_renderPeriodName, periods)
+            || isIncorrectData()
+            )
     {
         return true;
     }
