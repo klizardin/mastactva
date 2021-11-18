@@ -16,6 +16,7 @@
         <file>Shaders/test003/mix_direction_faced4.vsh</file>
         <file>Shaders/default.fsh</file>
         <file>Shaders/default.vsh</file>
+        <file>Shaders/test004/period.fsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/no-image.png</file>
