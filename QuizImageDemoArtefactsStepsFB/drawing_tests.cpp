@@ -844,12 +844,113 @@ std::unique_ptr<drawing_data::QuizImageObject> drawing_data::Test4QuizImageObjec
     return object;
 }
 
+class ImageMatrixDefaultCalculationConsts : public opengl_drawing::IEffectCalculation
+{
+public:
+    ImageMatrixDefaultCalculationConsts();
+    void calculate(opengl_drawing::IVariables *variables_) const override;
+    void add(
+            const QString &imageName_,
+            const QString &fileName_,
+            double tFrom_, double tTo_
+            );
+
+private:
+    QMatrix4x4 getImageMatrix(
+            const QString &imageName_,
+            const QSize &windowSize_,
+            double renderT_
+            ) const;
+
+    struct SizeInfo
+    {
+        QString name;
+        double tFrom = 0.0;
+        double tTo = 1.0;
+        QSize size;
+    };
+
+private:
+    QVector<SizeInfo> m_sizes;
+};
+
+ImageMatrixDefaultCalculationConsts::ImageMatrixDefaultCalculationConsts()
+{
+    setFilename(QString(g_imageMatrixDefaultCalculationName) + "_consts");
+    setRequiredVariables({
+                 g_renderWindowSizeName,
+                 g_renderFromImageName,
+                 g_renderToImageName
+                });
+}
+
+void ImageMatrixDefaultCalculationConsts::calculate(opengl_drawing::IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!objects)
+    {
+        return;
+    }
+
+    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
+    const float renderT = objects->getUniform(g_renderTName, double{0.0});
+    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
+    objects->setUniform(
+                g_renderFromImageMatrixName,
+                getImageMatrix(g_renderFromImageName, windowSize, renderT)
+                );
+    objects->setUniform(
+                g_renderToImageMatrixName,
+                getImageMatrix(g_renderToImageName, windowSize, renderT)
+                );
+}
+
+void ImageMatrixDefaultCalculationConsts::add(
+        const QString &imageName_,
+        const QString &fileName_,
+        double tFrom_, double tTo_
+        )
+{
+    QImage image;
+    image.load(fileName_);
+    const QSize imageSize = image.size();
+    m_sizes.push_back({imageName_, tFrom_, tTo_, imageSize});
+}
+
+QMatrix4x4 ImageMatrixDefaultCalculationConsts::getImageMatrix(
+        const QString &imageName_,
+        const QSize &windowSize_,
+        double renderT_
+        ) const
+{
+    const auto fit = std::find_if(
+                std::begin(m_sizes),
+                std::end(m_sizes),
+                [&imageName_,renderT_](const SizeInfo &si_)->bool
+    {
+        return si_.name == imageName_ && si_.tFrom <= renderT_ && renderT_ <= si_.tTo;
+    });
+    if(std::end(m_sizes) == fit)
+    {
+        return QMatrix4x4{};
+    }
+    return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(fit->size, windowSize_);
+}
+
 void drawing_data::Test4QuizImageObject::initialize(
         QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
         ) const
 {
     Q_UNUSED(argsSetIndex_);
+
+    auto calc = std::make_shared<ImageMatrixDefaultCalculationConsts>();
+    calc->add(g_renderFromImageName, ":/Images/Images/no-image-001.png", 0.0, 0.5);
+    calc->add(g_renderToImageName, ":/Images/Images/no-image-003.png", 0.0, 0.5);
+    calc->add(g_renderFromImageName, ":/Images/Images/no-image-003.png", 0.5, 0.999999);
+    calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.5, 0.999999);
+    calc->add(g_renderFromImageName, ":/Images/Images/no-image-001.png", 0.999999, 1.000001);
+    calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.999999, 1.000001);
 
     auto object1 = createObjectWithgDefaultShaderAndPeriod(
                 0.0, 0.5,
@@ -881,4 +982,5 @@ void drawing_data::Test4QuizImageObject::initialize(
                 ":/Shaders/Shaders/default.fsh"
             );
     data_.objects.push_back(std::move(object3));
+    data_.calculations.push_back(std::move(calc));
 }

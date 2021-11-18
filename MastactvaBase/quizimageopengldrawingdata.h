@@ -325,24 +325,6 @@ private:
 };
 
 
-void makeGeometry(
-        float width_, float height_,
-        int geomertyPointsWidth_, int geometryPointsHeight_,
-        float facedGeometryXCoef_, float facedGeometryYCoef_,
-        int geometryVertexCoords_, int geometryTextureCoords_,
-        bool hasTextureCoords_,
-        bool isGeometrySolid_,
-        std::vector<GLfloat> &vertexData_,
-        std::vector<GLfloat> &textureData_
-        );
-
-void calculatePreserveAspectFitTextureMatrix(
-        QMatrix4x4 & textureMatrix_,
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        );
-
-
 class QuizImageFboRendererImpl
 {
 public:

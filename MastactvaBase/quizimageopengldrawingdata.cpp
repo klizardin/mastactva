@@ -17,6 +17,7 @@
 
 #include "quizimageopengldrawingdata.h"
 #include "../MastactvaBase/names.h"
+#include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/defines.h"
 
 
@@ -413,32 +414,6 @@ std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
 }
 
 
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
-}
-
-
 class ImageMatrixDefaultCalculation : public opengl_drawing::IEffectCalculation
 {
 public:
@@ -452,6 +427,7 @@ private:
             const QSize &windowSize_
             ) const;
 };
+
 
 ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
 {
@@ -490,7 +466,7 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         ) const
 {
     const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
-    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+    return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 
@@ -555,7 +531,7 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
     std::vector<GLfloat> textureData;
 
     const bool textureAttributeExist = textureAttributeTupleSize > 0;
-    makeGeometry(proportinalRect.x(), proportinalRect.y(),
+    opengl_drawing::makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
@@ -797,7 +773,7 @@ void opengl_drawing::Objects::setToImage(const QString &url_)
 QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
 {
     const QSize imageSize = getTextureSize(imageName_ , windowSize_);
-    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+    return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 bool opengl_drawing::Objects::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
@@ -994,6 +970,8 @@ void ObjectsRenderer::setToImage(const QString &url_)
 static const int g_trianglesCount = 2;
 static const int g_triangleConers = 3;
 
+namespace opengl_drawing
+{
 
 void makeGeometry(
         float width_, float height_,
@@ -1082,6 +1060,8 @@ void makeGeometry(
         }
     }
 }
+
+} // namespace opengl_drawing
 
 
 void QuizImageFboRendererImpl::renderImpl()
