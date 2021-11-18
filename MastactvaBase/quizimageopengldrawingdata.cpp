@@ -408,16 +408,7 @@ bool opengl_drawing::Object::isIdValid(int idValue_)
 
 std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
 {
-    for(std::unique_ptr<opengl_drawing::Object> &object_ : m_objects)
-    {
-        if(!object_.operator bool())
-        {
-            continue;
-        }
-
-        object_->free();
-    }
-    m_objects.clear();
+    clearObjects();
     return std::move(m_imageData);
 }
 
@@ -599,13 +590,26 @@ void opengl_drawing::Objects::init(
     reinit();
 }
 
-void opengl_drawing::Objects::reinit()
+void opengl_drawing::Objects::clearObjects()
 {
+    for(std::unique_ptr<opengl_drawing::Object> &object_ : m_objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->free();
+    }
     m_objects.clear();
     m_imageMatrixDefault = nullptr;
     m_geometryDefault = nullptr;
     m_updated.clear();
+}
 
+void opengl_drawing::Objects::reinit()
+{
+    clearObjects();
     QVector<double> currentT;
     const bool tExist = get(g_renderTName, currentT);
     m_objects.reserve(m_imageData->objects.size());
@@ -891,6 +895,7 @@ void ObjectsRenderer::updateVariables(
             && m_openglData->needToReinit(t_)
             )
     {
+        setUniformIfExistsAndChanged( g_renderTName, t_ );
         m_openglData->reinit();
         initialize();
     }

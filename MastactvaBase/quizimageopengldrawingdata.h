@@ -185,6 +185,7 @@ namespace opengl_drawing
     private:
         QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
         void clearUpdated();
+        void clearObjects();
 
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
