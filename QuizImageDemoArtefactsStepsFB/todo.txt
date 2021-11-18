@@ -1,7 +1,7 @@
-1. add arguments and argument sets
++ 1. add arguments and argument sets
 2. add argument to select arg set
 3. add effect get effect data and arg set current item
-* fix tests
++ 4. fix tests
 
 
 arguments from concrete arg set
