@@ -944,13 +944,12 @@ void drawing_data::Test4QuizImageObject::initialize(
 {
     Q_UNUSED(argsSetIndex_);
 
+    const double eps = 1e-6;
     auto calc = std::make_shared<ImageMatrixDefaultCalculationConsts>();
     calc->add(g_renderFromImageName, ":/Images/Images/no-image-001.png", 0.0, 0.5);
     calc->add(g_renderToImageName, ":/Images/Images/no-image-003.png", 0.0, 0.5);
-    calc->add(g_renderFromImageName, ":/Images/Images/no-image-003.png", 0.5, 0.999999);
-    calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.5, 0.999999);
-    calc->add(g_renderFromImageName, ":/Images/Images/no-image-001.png", 0.999999, 1.000001);
-    calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.999999, 1.000001);
+    calc->add(g_renderFromImageName, ":/Images/Images/no-image-003.png", 0.5 + eps, 1.0 + eps);
+    calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.5 + eps, 1.0 + eps);
     data_.calculations.push_back(std::move(calc));
 
     data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
@@ -963,21 +962,12 @@ void drawing_data::Test4QuizImageObject::initialize(
                 ":/Shaders/Shaders/test004/period.fsh"
             ));
     data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
-                0.5, 0.999999,
+                0.5 + eps, 1.0 + eps,
                 {
                     {g_renderFromImageName, ":/Images/Images/no-image-003.png"},
                     {g_renderToImageName, ":/Images/Images/no-image-002.png"},
                 },
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/test004/period.fsh"
-            ));
-    data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
-                0.999999, 1.000001,
-                {
-                    {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
-                    {g_renderToImageName, ":/Images/Images/no-image-002.png"},
-                },
-                ":/Shaders/Shaders/default.vsh",
-                ":/Shaders/Shaders/default.fsh"
             ));
 }
