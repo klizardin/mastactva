@@ -951,8 +951,9 @@ void drawing_data::Test4QuizImageObject::initialize(
     calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.5, 0.999999);
     calc->add(g_renderFromImageName, ":/Images/Images/no-image-001.png", 0.999999, 1.000001);
     calc->add(g_renderToImageName, ":/Images/Images/no-image-002.png", 0.999999, 1.000001);
+    data_.calculations.push_back(std::move(calc));
 
-    auto object1 = createObjectWithgDefaultShaderAndPeriod(
+    data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
                 0.0, 0.5,
                 {
                     {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
@@ -960,9 +961,8 @@ void drawing_data::Test4QuizImageObject::initialize(
                 },
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/test004/period.fsh"
-            );
-    data_.objects.push_back(std::move(object1));
-    auto object2 = createObjectWithgDefaultShaderAndPeriod(
+            ));
+    data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
                 0.5, 0.999999,
                 {
                     {g_renderFromImageName, ":/Images/Images/no-image-003.png"},
@@ -970,9 +970,8 @@ void drawing_data::Test4QuizImageObject::initialize(
                 },
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/test004/period.fsh"
-            );
-    data_.objects.push_back(std::move(object2));
-    auto object3 = createObjectWithgDefaultShaderAndPeriod(
+            ));
+    data_.objects.push_back(createObjectWithgDefaultShaderAndPeriod(
                 0.999999, 1.000001,
                 {
                     {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
@@ -980,7 +979,5 @@ void drawing_data::Test4QuizImageObject::initialize(
                 },
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/default.fsh"
-            );
-    data_.objects.push_back(std::move(object3));
-    data_.calculations.push_back(std::move(calc));
+            ));
 }
