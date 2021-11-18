@@ -749,3 +749,136 @@ void drawing_data::Test3QuizImageObject::initialize(
 
     data_.objects.push_back(std::move(object));
 }
+
+std::unique_ptr<drawing_data::QuizImageObject> drawing_data::Test4QuizImageObject::createObjectWithgDefaultShaderAndPeriod(
+        double tFrom_,
+        double tTo_,
+        const std::vector<Texture> &textures_,
+        const QString &vertexShaderFileName_,
+        const QString &fragmentShaderFileName_
+        ) const
+{
+    std::unique_ptr<QuizImageObject> object(new QuizImageObject());
+
+    static QByteArray vertex = loadTextFile(vertexShaderFileName_).toUtf8();
+    static QByteArray fragment = loadTextFile(fragmentShaderFileName_).toUtf8();
+    object->vertexShader = vertex.constData();
+    object->fragmentShader = fragment.constData();
+
+    object->textures = textures_;
+
+    std::shared_ptr<std::vector<QVector4D>> vertices = std::make_shared<std::vector<QVector4D>>();
+    std::shared_ptr<std::vector<QVector4D>> textures = std::make_shared<std::vector<QVector4D>>();
+
+    object->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector4D>{ g_renderVertexAttributeName, vertices }
+                    )
+                );
+    object->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector4D>{ g_renderTextureAttributeName, textures }
+                    )
+                );
+
+    std::shared_ptr<QMatrix4x4> renderMatrix = std::make_shared<QMatrix4x4>();
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ g_renderMatrixName, renderMatrix }
+                ));
+    std::shared_ptr<QMatrix4x4> renderFromImageMatrix = std::make_shared<QMatrix4x4>();
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ g_renderFromImageMatrixName, renderFromImageMatrix }
+                ));
+    std::shared_ptr<QMatrix4x4> renderToImageMatrix = std::make_shared<QMatrix4x4>();
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ g_renderToImageMatrixName, renderToImageMatrix }
+                ));
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderScreenRectName, std::make_shared<QVector2D>() }
+                ));
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderWindowSizeName, std::make_shared<QVector2D>() }
+                ));
+
+    std::shared_ptr<GLfloat> renderT = std::make_shared<GLfloat>(0.0);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLfloat>{ g_renderTName, renderT }
+                ));
+
+    std::shared_ptr<GLfloat> renderOpacity = std::make_shared<GLfloat>(1.0);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLfloat>{ g_renderOpacityName, renderOpacity }
+                ));
+
+    std::shared_ptr<QVector2D> renderFacedGeometryCoefs = std::make_shared<QVector2D>(0.0, 0.0);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderFacedGeometryCoefsName, renderFacedGeometryCoefs }
+                ));
+
+    std::shared_ptr<QVector2D> renderGeomertySize = std::make_shared<QVector2D>(20.0, 20.0);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderGeomertySizeName, renderGeomertySize }
+                ));
+
+    std::shared_ptr<GLint> renderIsGeomertySolid = std::make_shared<GLint>(1);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<GLint>{ g_renderIsGeomertySolidName, renderIsGeomertySolid }
+                ));
+
+    std::shared_ptr<QVector2D> renderPeriod = std::make_shared<QVector2D>(tFrom_, tTo_);
+    object->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QVector2D>{ g_renderPeriodName, renderPeriod }
+                ));
+
+    return object;
+}
+
+void drawing_data::Test4QuizImageObject::initialize(
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto object1 = createObjectWithgDefaultShaderAndPeriod(
+                0.0, 0.5,
+                {
+                    {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
+                    {g_renderToImageName, ":/Images/Images/no-image-003.png"},
+                },
+                ":/Shaders/Shaders/default.vsh",
+                ":/Shaders/Shaders/test004/period.fsh"
+            );
+    data_.objects.push_back(std::move(object1));
+    auto object2 = createObjectWithgDefaultShaderAndPeriod(
+                0.5, 0.999999,
+                {
+                    {g_renderFromImageName, ":/Images/Images/no-image-003.png"},
+                    {g_renderToImageName, ":/Images/Images/no-image-002.png"},
+                },
+                ":/Shaders/Shaders/default.vsh",
+                ":/Shaders/Shaders/test004/period.fsh"
+            );
+    data_.objects.push_back(std::move(object2));
+    auto object3 = createObjectWithgDefaultShaderAndPeriod(
+                0.999999, 1.000001,
+                {
+                    {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
+                    {g_renderToImageName, ":/Images/Images/no-image-002.png"},
+                },
+                ":/Shaders/Shaders/default.vsh",
+                ":/Shaders/Shaders/default.fsh"
+            );
+    data_.objects.push_back(std::move(object3));
+}

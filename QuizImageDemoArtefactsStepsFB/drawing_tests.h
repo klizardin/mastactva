@@ -67,6 +67,20 @@ namespace drawing_data
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
+
+    class Test4QuizImageObject : public IDefaultData<QuizImageObjects>
+    {
+    public:
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    private:
+        std::unique_ptr<QuizImageObject> createObjectWithgDefaultShaderAndPeriod(
+                double tFrom_,
+                double tTo_,
+                const std::vector<Texture> &textures_,
+                const QString &vertexShaderFileName_,
+                const QString &fragmentShaderFileName_
+                ) const;
+    };
 }
 
 
@@ -76,6 +90,7 @@ namespace drawing_data
 // using TestCaseInitializer = drawing_data::Test1QuizImageObject;
 // using TestCaseInitializer = drawing_data::Test2QuizImageObject; // do not work
 // using TestCaseInitializer = drawing_data::Test3QuizImageObject;
+using TestCaseInitializer = drawing_data::Test4QuizImageObject;
 
 
 #endif // DRAWING_TESTS_H
