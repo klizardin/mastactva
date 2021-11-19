@@ -24,7 +24,8 @@
 
 namespace test
 {
-void createGeometry(
+
+void createQTLogoGeometry(
         std::vector<QVector3D> &vertices,
         std::vector<QVector3D> &normals
         );
@@ -32,13 +33,13 @@ void createGeometry(
 
 namespace drawing_data
 {
-    class TestMinimalDrawQuizImageObject : public IDefaultData<QuizImageObjects>
+    class TestMinimalDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
-    class TestMinimal2PassDrawQuizImageObject : public IDefaultData<QuizImageObjects>
+    class TestMinimal2PassDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
     {
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
@@ -67,15 +68,30 @@ namespace drawing_data
     public:
         virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
+
+    class Test4QuizImageObject : public IDefaultData<QuizImageObjects>
+    {
+    public:
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    private:
+        std::unique_ptr<QuizImageObject> createObjectWithgDefaultShaderAndPeriod(
+                double tFrom_,
+                double tTo_,
+                const std::vector<Texture> &textures_,
+                const QString &vertexShaderFileName_,
+                const QString &fragmentShaderFileName_
+                ) const;
+    };
 }
 
 
-// using TestCaseInitializer = drawing_data::TestMinimalDrawQuizImageObject;
-// using TestCaseInitializer = drawing_data::TestMinimal2PassDrawQuizImageObject;
+// using TestCaseInitializer = drawing_data::TestMinimalDrawQTLogoQuizImageObject;
+// using TestCaseInitializer = drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject;
 // using TestCaseInitializer = drawing_data::Test0QuizImageObject;
 // using TestCaseInitializer = drawing_data::Test1QuizImageObject;
 // using TestCaseInitializer = drawing_data::Test2QuizImageObject; // do not work
 // using TestCaseInitializer = drawing_data::Test3QuizImageObject;
+using TestCaseInitializer = drawing_data::Test4QuizImageObject;
 
 
 #endif // DRAWING_TESTS_H

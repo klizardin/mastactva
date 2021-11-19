@@ -15,8 +15,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <math.h>
 #include "quizimageopengldrawingdata.h"
 #include "../MastactvaBase/names.h"
+#include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/defines.h"
 
 
@@ -408,43 +410,8 @@ bool opengl_drawing::Object::isIdValid(int idValue_)
 
 std::unique_ptr<drawing_data::QuizImageObjects> opengl_drawing::Objects::free()
 {
-    for(std::unique_ptr<opengl_drawing::Object> &object_ : m_objects)
-    {
-        if(!object_.operator bool())
-        {
-            continue;
-        }
-
-        object_->free();
-    }
-    m_objects.clear();
+    clearObjects();
     return std::move(m_imageData);
-}
-
-
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
 }
 
 
@@ -461,6 +428,7 @@ private:
             const QSize &windowSize_
             ) const;
 };
+
 
 ImageMatrixDefaultCalculation::ImageMatrixDefaultCalculation()
 {
@@ -499,7 +467,7 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         ) const
 {
     const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
-    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+    return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 
@@ -564,7 +532,7 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
     std::vector<GLfloat> textureData;
 
     const bool textureAttributeExist = textureAttributeTupleSize > 0;
-    makeGeometry(proportinalRect.x(), proportinalRect.y(),
+    opengl_drawing::makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
@@ -599,13 +567,26 @@ void opengl_drawing::Objects::init(
     reinit();
 }
 
-void opengl_drawing::Objects::reinit()
+void opengl_drawing::Objects::clearObjects()
 {
+    for(std::unique_ptr<opengl_drawing::Object> &object_ : m_objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->free();
+    }
     m_objects.clear();
     m_imageMatrixDefault = nullptr;
     m_geometryDefault = nullptr;
     m_updated.clear();
+}
 
+void opengl_drawing::Objects::reinit()
+{
+    clearObjects();
     QVector<double> currentT;
     const bool tExist = get(g_renderTName, currentT);
     m_objects.reserve(m_imageData->objects.size());
@@ -793,7 +774,7 @@ void opengl_drawing::Objects::setToImage(const QString &url_)
 QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const
 {
     const QSize imageSize = getTextureSize(imageName_ , windowSize_);
-    return calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+    return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
 bool opengl_drawing::Objects::isUpdated(const QSet<QString> &vars_, IVariables *base_) const
@@ -882,15 +863,28 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
     }
 }
 
+inline
+qreal alignValueToEPS(qreal v_, qreal eps_)
+{
+    double v = v_;
+    v /= eps_;
+    v = floor(v);
+    v *= eps_;
+    return v;
+}
+
 void ObjectsRenderer::updateVariables(
         const QVector2D &rectSize_,
         qreal t_,
         const QVector2D &windowSize_)
 {
+    t_ = alignValueToEPS(t_, g_renderTeps);
+
     if(m_openglData
             && m_openglData->needToReinit(t_)
             )
     {
+        setUniformIfExistsAndChanged( g_renderTName, t_ );
         m_openglData->reinit();
         initialize();
     }
@@ -989,6 +983,8 @@ void ObjectsRenderer::setToImage(const QString &url_)
 static const int g_trianglesCount = 2;
 static const int g_triangleConers = 3;
 
+namespace opengl_drawing
+{
 
 void makeGeometry(
         float width_, float height_,
@@ -1077,6 +1073,8 @@ void makeGeometry(
         }
     }
 }
+
+} // namespace opengl_drawing
 
 
 void QuizImageFboRendererImpl::renderImpl()

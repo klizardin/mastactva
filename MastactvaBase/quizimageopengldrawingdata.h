@@ -185,6 +185,7 @@ namespace opengl_drawing
     private:
         QMatrix4x4 getImageMatrix(const QString &imageName_, const QSize &windowSize_) const;
         void clearUpdated();
+        void clearObjects();
 
     private:
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
@@ -322,24 +323,6 @@ private:
 private:
     std::unique_ptr<opengl_drawing::Objects> m_openglData;
 };
-
-
-void makeGeometry(
-        float width_, float height_,
-        int geomertyPointsWidth_, int geometryPointsHeight_,
-        float facedGeometryXCoef_, float facedGeometryYCoef_,
-        int geometryVertexCoords_, int geometryTextureCoords_,
-        bool hasTextureCoords_,
-        bool isGeometrySolid_,
-        std::vector<GLfloat> &vertexData_,
-        std::vector<GLfloat> &textureData_
-        );
-
-void calculatePreserveAspectFitTextureMatrix(
-        QMatrix4x4 & textureMatrix_,
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        );
 
 
 class QuizImageFboRendererImpl

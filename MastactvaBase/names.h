@@ -176,6 +176,7 @@ Q_DECL_UNUSED static const char *g_stepsName = "steps";
 Q_DECL_UNUSED static const char *g_noImageName = ":/Images/Images/no-image.png";
 Q_DECL_UNUSED static const char *g_noImage001Name = ":/Images/Images/no-image-001.png";
 Q_DECL_UNUSED static const char *g_noImage002Name = ":/Images/Images/no-image-002.png";
+Q_DECL_UNUSED static const char *g_noImage003Name = ":/Images/Images/no-image-003.png";
 
 
 // shaders
@@ -204,6 +205,10 @@ Q_DECL_UNUSED static const char * g_geometryDefaultCalculationName = "geometry";
 
 // layout special fields
 Q_DECL_UNUSED static const char * g_mergeIdFieldName = "mergeid";
+
+
+// drawing data
+Q_DECL_UNUSED static const double g_renderTeps = 1e-5;
 
 
 #endif // NAMES_H

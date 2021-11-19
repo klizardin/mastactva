@@ -149,7 +149,7 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::LuaScriptTestRuntime;
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest0;
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest1;
-using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
+// using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
 
 
 #endif // OBJECT_TESTS_H

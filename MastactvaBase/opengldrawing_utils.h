@@ -19,6 +19,11 @@
 #define OPENGLDRAWING_UTILS_H
 
 
+#include <QtGui/QOpenGLFramebufferObject>
+#include <QtGui/qopenglshaderprogram.h>
+#include <QtGui/qopenglfunctions.h>
+#include <QtGui/QOpenGLFramebufferObject>
+#include <vector>
 #include <QString>
 #include <QVector>
 #include <QStringList>
@@ -73,6 +78,22 @@ private:
     QString m_filename;
     QSet<QString> m_vars;
 };
+
+void makeGeometry(
+        float width_, float height_,
+        int geomertyPointsWidth_, int geometryPointsHeight_,
+        float facedGeometryXCoef_, float facedGeometryYCoef_,
+        int geometryVertexCoords_, int geometryTextureCoords_,
+        bool hasTextureCoords_,
+        bool isGeometrySolid_,
+        std::vector<GLfloat> &vertexData_,
+        std::vector<GLfloat> &textureData_
+        );
+
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+        const QSize &imageSize_,
+        const QSize &rectSize_
+        );
 
 }
 

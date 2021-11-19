@@ -446,7 +446,7 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
     // prepare data
     std::vector<QVector3D> vertexData;
     std::vector<QVector3D> normalData;
-    test::createGeometry(vertexData, normalData);
+    test::createQTLogoGeometry(vertexData, normalData);
 
     qreal fScale = 1;
     qreal fAngle = gen_.generateDouble() * 360.0;
@@ -961,7 +961,7 @@ QString createVariablesOfQTLogoJson(
 {
     std::vector<QVector3D> vertexData;
     std::vector<QVector3D> normalData;
-    test::createGeometry(vertexData, normalData);
+    test::createQTLogoGeometry(vertexData, normalData);
 
     qreal fScale = 1;
     qreal fAngle = gen_.generateDouble() * 360.0;
