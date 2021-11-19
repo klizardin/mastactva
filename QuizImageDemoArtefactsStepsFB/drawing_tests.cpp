@@ -921,7 +921,7 @@ void drawing_data::Test4QuizImageObject::initialize(
 {
     Q_UNUSED(argsSetIndex_);
 
-    const double eps = 1e-6;
+    const double eps = g_renderTeps;
     auto calc = std::make_shared<ImageMatrixDefaultCalculationConsts>();
     calc->add(g_renderFromImageName, ":/Images/Images/no-image-001.png", 0.0 - eps, 0.5);
     calc->add(g_renderToImageName, ":/Images/Images/no-image-003.png", 0.0 - eps, 0.5);
