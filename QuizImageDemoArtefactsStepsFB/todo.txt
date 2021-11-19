@@ -27,3 +27,6 @@ or first? -- ok, it just from the start is used
 arguments for lua scripts has artefact types:
 ArtefactTypeEn::scriptLua
 ArtefactTypeEn::scriptLuaRuntime
+
+5. variant of ArtefactTypeEn::argumentReference to build multistep effects
+
