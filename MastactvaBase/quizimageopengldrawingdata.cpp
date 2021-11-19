@@ -15,6 +15,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <math.h>
 #include "quizimageopengldrawingdata.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/drawingdata_utils.h"
@@ -862,11 +863,19 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
     }
 }
 
+inline
+qreal alignValueToEPS(qreal v_, qreal eps_)
+{
+    return floor(v_ / eps_) * eps_;
+}
+
 void ObjectsRenderer::updateVariables(
         const QVector2D &rectSize_,
         qreal t_,
         const QVector2D &windowSize_)
 {
+    t_ = alignValueToEPS(t_, g_renderTeps);
+
     if(m_openglData
             && m_openglData->needToReinit(t_)
             )
