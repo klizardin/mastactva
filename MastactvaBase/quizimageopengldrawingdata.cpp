@@ -866,7 +866,11 @@ QSize ObjectsRenderer::getTextureSize(const QString &name_, const QSize &size_) 
 inline
 qreal alignValueToEPS(qreal v_, qreal eps_)
 {
-    return floor(v_ / eps_) * eps_;
+    double v = v_;
+    v /= eps_;
+    v = floor(v);
+    v *= eps_;
+    return v;
 }
 
 void ObjectsRenderer::updateVariables(
