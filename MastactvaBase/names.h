@@ -207,4 +207,8 @@ Q_DECL_UNUSED static const char * g_geometryDefaultCalculationName = "geometry";
 Q_DECL_UNUSED static const char * g_mergeIdFieldName = "mergeid";
 
 
+// drawing data
+Q_DECL_UNUSED static const int g_renderTeps = 1e-5;
+
+
 #endif // NAMES_H
