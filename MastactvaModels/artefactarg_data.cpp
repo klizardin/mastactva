@@ -28,7 +28,11 @@ ArtefactArgData::ArtefactArgData(
         const QString &defaultValue_,
         const QString &description_,
         const QDateTime &created_,
-        const MergeId &mergeid_
+        const MergeId &mergeid_,
+        bool hasFileReference_,
+        bool hasFile_,
+        const FileSource &file_,
+        const QString &fileHash_
         )
     : EffectArgumentData(
           to_underlying(argStorageId_),
@@ -40,7 +44,11 @@ ArtefactArgData::ArtefactArgData(
       m_artefactId(artefactId_),
       m_description(description_),
       m_created(created_),
-      m_mergeid(mergeid_)
+      m_mergeid(mergeid_),
+      m_hasFileReference(hasFileReference_),
+      m_hasFile(hasFile_),
+      m_file(file_),
+      m_fileHash(fileHash_)
 {
 }
 
@@ -60,6 +68,10 @@ ArtefactArgData & ArtefactArgData::operator = (ArtefactArgData && data_)
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
     m_mergeid = std::move(data_.m_mergeid);
+    m_hasFileReference = std::move(data_.m_hasFileReference);
+    m_hasFile = std::move(data_.m_hasFile);
+    m_file = std::move(data_.m_file);
+    m_fileHash = std::move(data_.m_fileHash);
 
     return *this;
 }
@@ -77,6 +89,10 @@ std::unique_ptr<ArtefactArgData> ArtefactArgData::getDataCopy() const
     result->m_description = m_description;
     result->m_created = m_created;
     result->m_mergeid = m_mergeid;
+    result->m_hasFileReference = m_hasFileReference;
+    result->m_hasFile = m_hasFile;
+    result->m_file = m_file;
+    result->m_fileHash = m_fileHash;
 
     return result;
 }

@@ -508,7 +508,8 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now_,
-                MergeId()
+                MergeId(),
+                false, false, QString(), QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -657,7 +658,8 @@ std::unique_ptr<EffectObjectsData> createTestObject3DObject(
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now,
-                MergeId()
+                MergeId(),
+                false, false, QString(), QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -829,7 +831,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
                 emptyStr,
                 now,
-                MergeId()
+                MergeId(),
+                false, false, QString(), QString()
                 );
         artefact1->m_artefactArgData->push_back(arg.release());
     }
@@ -885,7 +888,8 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
                 std::get<to_underlying(ArgEn::value)>(fragmentArgs[i]),
                 emptyStr,
                 now,
-                MergeId()
+                MergeId(),
+                false, false, QString(), QString()
                 );
         artefact2->m_artefactArgData->push_back(arg.release());
     }
@@ -1205,7 +1209,8 @@ std::unique_ptr<EffectObjectsData> createEffectObjectWithOneArtefactWithArgument
                 std::get<to_underlying(ArgEn::value)>(arg_),
                 emptyStr,
                 now_,
-                MergeId()
+                MergeId(),
+                false, false, QString(), QString()
                 );
         artefact->m_artefactArgData->push_back(arg.release());
     }
