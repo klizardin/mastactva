@@ -119,6 +119,9 @@ Q_DECL_UNUSED static const char *g_renderVertexAttributeName = "renderVertexAttr
 Q_DECL_UNUSED static const char *g_renderTextureAttributeName = "renderTextureAttribute";
 Q_DECL_UNUSED static const char *g_renderIndexesName = "renderIndexes";
 Q_DECL_UNUSED static const char *g_renderPeriodName = "renderPeriod";
+Q_DECL_UNUSED static const char *g_renderArtefactTypeName = "renderArtefactType";
+Q_DECL_UNUSED static const char *g_renderArtefactFileNameName = "renderArtefactFileName";
+Q_DECL_UNUSED static const char *g_renderArtefactProgrammerNameName = "renderArtefactProgrammerName";
 
 
 // db request info
