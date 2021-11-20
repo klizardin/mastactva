@@ -34,10 +34,21 @@ public:
     {
         operator=(str_);
     }
+
+    FileSource(const FileSource &fileSource_)
+        :QString(static_cast<const QString&>(fileSource_))
+    {
+    }
+
     FileSource &operator = (const QString& str_)
     {
         *static_cast<QString *>(this) = str_;
         return *this;
+    }
+
+    FileSource &operator = (const FileSource &fileSource_)
+    {
+        return operator=(static_cast<const QString&>(fileSource_));
     }
 };
 
