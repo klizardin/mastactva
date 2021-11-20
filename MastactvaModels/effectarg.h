@@ -53,6 +53,10 @@ public:
     Q_PROPERTY(QDateTime effectArgCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(QVariant effectArgObjectArtefact READ objectArtefact WRITE setObjectArtefact NOTIFY objectArtefactChanged)
     Q_PROPERTY(MergeId effectArgMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(bool effectArgHasFileReference READ hasFileReference WRITE setHasFileReference NOTIFY hasFileReferenceChanged)
+    Q_PROPERTY(bool effectArgHasFile READ hasFile WRITE setHasFile NOTIFY hasFileChanged)
+    Q_PROPERTY(QString effectArgFilename READ getFilename WRITE setFilename NOTIFY filenameChanged)
+    Q_PROPERTY(QString effectArgHash READ hash WRITE setHash NOTIFY hashChanged)
 
     class DefaultLayout : public LayoutBase<EffectArg>
     {
@@ -72,6 +76,10 @@ public:
             addField<QString>("description", "effectArgDescription", &EffectArg::description, &EffectArg::setDescription);
             addField<QDateTime>("created", "effectArgCreated", &EffectArg::created, &EffectArg::setCreated);
             addField<MergeId>("mergeid", "effectArgMergeId", &EffectArg::mergeid, &EffectArg::setMergeid);
+            addField<bool>("has_file_reference", "effectArgHasFileReference", &EffectArg::hasFileReference, &EffectArg::setHasFileReference);
+            addField<bool>("has_file", "effectArgHasFile", &EffectArg::hasFile, &EffectArg::setHasFile);
+            addField<FileSource>("filename", "effectArgFilename", &EffectArg::getFilename, &EffectArg::setFilename);
+            addField<QString>("hash", "effectArgHash", &EffectArg::hash, &EffectArg::setHash);
             addModel<ObjectArtefactModel>("effectArgObjectArtefact", &EffectArg::m_objectArtefactModel, &EffectArg::createObjectArtefactModel);
             /* 1:1 */
             setIdField("id");
@@ -99,6 +107,15 @@ public:
     void setCreated(const QDateTime &created_);
     MergeId mergeid() const;
     void setMergeid(const MergeId &mergeid_);
+    bool hasFileReference() const;
+    void setHasFileReference(const bool &value_);
+    bool hasFile() const;
+    void setHasFile(const bool &value_);
+    FileSource getFilename() const;
+    void setFilename(const QString &filename_);
+    void setFilename(const FileSource &filename_);
+    QString hash() const;
+    void setHash(const QString &hash_);
     QVariant objectArtefact() const;
     void setObjectArtefact(const QVariant &objectArtefact_);
 
@@ -119,6 +136,10 @@ signals:
     void createdChanged();
     void objectArtefactChanged();
     void mergeidChanged();
+    void hasFileReferenceChanged();
+    void hasFileChanged();
+    void filenameChanged();
+    void hashChanged();
 
 private:
     EffectArgModel *m_effectArgModel = nullptr;
