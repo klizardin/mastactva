@@ -47,6 +47,10 @@ public:
     Q_PROPERTY(QString artefactArgDescription READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QDateTime artefactArgCreated READ created WRITE setCreated NOTIFY createdChanged)
     Q_PROPERTY(MergeId artefactArgMergeId READ mergeid WRITE setMergeid NOTIFY mergeidChanged)
+    Q_PROPERTY(bool artefactArgHasFileReference READ hasFileReference WRITE setHasFileReference NOTIFY hasFileReferenceChanged)
+    Q_PROPERTY(bool artefactArgHasFile READ hasFile WRITE setHasFile NOTIFY hasFileChanged)
+    Q_PROPERTY(QString artefactArgFilename READ getFilename WRITE setFilename NOTIFY filenameChanged)
+    Q_PROPERTY(QString artefactArgHash READ hash WRITE setHash NOTIFY hashChanged)
 
     class DefaultLayout : public LayoutBase<ArtefactArg>
     {
@@ -66,6 +70,10 @@ public:
             addField<QString>("description", "artefactArgDescription", &ArtefactArg::description, &ArtefactArg::setDescription);
             addField<QDateTime>("created", "artefactArgCreated", &ArtefactArg::created, &ArtefactArg::setCreated);
             addField<MergeId>("mergeid", "artefactArgMergeId", &ArtefactArg::mergeid, &ArtefactArg::setMergeid);
+            addField<bool>("has_file_reference", "artefactArgHasFileReference", &ArtefactArg::hasFileReference, &ArtefactArg::setHasFileReference);
+            addField<bool>("has_file", "artefactArgHasFile", &ArtefactArg::hasFile, &ArtefactArg::setHasFile);
+            addField<FileSource>("filename", "artefactArgFilename", &ArtefactArg::getFilename, &ArtefactArg::setFilename);
+            addField<QString>("hash", "artefactArgHash", &ArtefactArg::hash, &ArtefactArg::setHash);
             setIdField("id");
         }
     };
@@ -91,6 +99,15 @@ public:
     void setCreated(const QDateTime &created_);
     MergeId mergeid() const;
     void setMergeid(const MergeId &mergeid_);
+    bool hasFileReference() const;
+    void setHasFileReference(const bool &value_);
+    bool hasFile() const;
+    void setHasFile(const bool &value_);
+    FileSource getFilename() const;
+    void setFilename(const QString &filename_);
+    void setFilename(const FileSource &filename_);
+    QString hash() const;
+    void setHash(const QString &hash_);
 
     bool createFrom(const int &effectArtefactId_, const Comment &comment_);
     void copyFrom(const ArtefactArg *arg_);
@@ -105,6 +122,10 @@ signals:
     void descriptionChanged();
     void createdChanged();
     void mergeidChanged();
+    void hasFileReferenceChanged();
+    void hasFileChanged();
+    void filenameChanged();
+    void hashChanged();
 
 private:
     IListModelInfo *m_parentModelInfo = nullptr;
