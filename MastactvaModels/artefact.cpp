@@ -167,6 +167,12 @@ bool Artefact::isLua()
 
 QString Artefact::getFileFilter()
 {
+    //if(to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::argumentReference
+    //        && m_artefactArgModel
+    //        && m_artefactArgModel->isListLoaded()
+    //        )
+    //{
+    //}
     return getArtefactFileFilter(m_typeId);
 }
 

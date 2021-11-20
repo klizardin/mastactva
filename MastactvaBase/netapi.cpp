@@ -376,6 +376,10 @@ static bool anyArgIsFile(const QHash<QString, QVariant> &values_)
     const QList<QVariant> values = values_.values();
     for(const QVariant &v : qAsConst(values))
     {
+        if(v.isNull())
+        {
+            continue;
+        }
         QObject * obj = qvariant_cast<QObject *>(v);
         QFile *f = qobject_cast<QFile*>(obj);
         if(f) { return true; }
@@ -396,12 +400,25 @@ MultipartRequestData::MultipartRequestData(const QHash<QString, QVariant> &value
         if(f)
         {
             QFileInfo fileInfo(f->fileName());
-            addPart(QString("form-data; name=\"%1\"; filename=\"%2\"")
+            if(f->exists())
+            {
+                addPart(QString("form-data; name=\"%1\"; filename=\"%2\"")
                         .arg(it.key(),
                             fileInfo.fileName().replace("\"", "")
                             ),
                     f, true
                     );
+            }
+            else
+            {
+                addPart(QString("form-data; name=\"%1\"; filename=\"%2\"")
+                        .arg(
+                            it.key(),
+                            fileInfo.fileName().replace("\"", "")
+                            ),
+                        QByteArray()
+                        );
+            }
         }
         else
         {

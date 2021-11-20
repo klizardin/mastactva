@@ -26,6 +26,7 @@
 #include "../MastactvaModels/artefactargtype_data.h"
 #include "../MastactvaModels/artefactargstorage_data.h"
 #include "../MastactvaModels/effectargument_data.h"
+#include "../MastactvaBase/imagesource.h"
 
 
 struct ArtefactArgData : public EffectArgumentData
@@ -41,7 +42,11 @@ public:
             const QString &defaultValue_,
             const QString &description_,
             const QDateTime &created_,
-            const MergeId &mergeid_
+            const MergeId &mergeid_,
+            bool hasFileReference_,
+            bool hasFile_,
+            const FileSource &file_,
+            const QString &fileHash_
             );
     ArtefactArgData(ArtefactArgData && data_);
     virtual ~ArtefactArgData() = default;

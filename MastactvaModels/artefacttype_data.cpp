@@ -43,6 +43,7 @@ QString getArtefactFileFilter(int artefactTypeId_)
         { ArtefactTypeEn::scriptLua, luaFilter},
         { ArtefactTypeEn::scriptLuaRuntime, luaFilter},
         { ArtefactTypeEn::scriptLibrary, luaFilter},
+        { ArtefactTypeEn::argumentReference, anyFilter},
     };
     const auto fit = std::find_if(
                 std::begin(filters),
@@ -78,6 +79,7 @@ QStringList getArtefactFileExtensions(int artefactTypeId_)
         { ArtefactTypeEn::scriptLua, QStringList(std::begin(luaFilter), std::end(luaFilter))},
         { ArtefactTypeEn::scriptLuaRuntime, QStringList(std::begin(luaFilter), std::end(luaFilter))},
         { ArtefactTypeEn::scriptLibrary, QStringList(std::begin(luaFilter), std::end(luaFilter))},
+        { ArtefactTypeEn::argumentReference, QStringList(std::begin(anyFilter), std::end(anyFilter))},
     };
     const auto fit = std::find_if(
                 std::begin(filters),

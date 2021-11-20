@@ -26,6 +26,9 @@
 #include <QJsonValue>
 
 
+class FileSourceReference;
+
+
 class FileSource : public QString
 {
 public:
@@ -34,11 +37,120 @@ public:
     {
         operator=(str_);
     }
+
+    FileSource(const FileSource &fileSource_)
+        :QString(static_cast<const QString&>(fileSource_))
+    {
+    }
+
     FileSource &operator = (const QString& str_)
     {
         *static_cast<QString *>(this) = str_;
         return *this;
     }
+
+    FileSource &operator = (const FileSource &fileSource_)
+    {
+        return operator=(static_cast<const QString&>(fileSource_));
+    }
+
+    bool hasFile() const
+    {
+        return m_hasFile;
+    }
+
+private:
+    bool m_hasFile = true;
+
+    friend class FileSourceReference;
+};
+
+class FileSourceReference
+{
+public:
+    FileSourceReference(const QString &str_ = QString())
+    {
+        m_fileSource.operator=(str_);
+    }
+
+    FileSourceReference(const FileSource &fileSource_)
+    {
+        m_fileSource = fileSource_;
+    }
+
+    FileSourceReference(const FileSourceReference &fileSourceReference_)
+    {
+        m_fileSource = static_cast<const FileSource &>(fileSourceReference_);
+    }
+
+    FileSourceReference &operator = (const QString& str_)
+    {
+        m_fileSource.operator=(str_);
+        return *this;
+    }
+
+    FileSourceReference &operator = (const FileSource &fileSource_)
+    {
+        return operator=(static_cast<const QString&>(fileSource_));
+    }
+
+    FileSourceReference &operator = (const FileSourceReference &fileSourceReference_)
+    {
+        return operator=(static_cast<const FileSource &>(fileSourceReference_));
+    }
+
+    bool isInsideObject() const
+    {
+        return m_hasFile
+                && m_hasFileReference
+                && m_value
+                ;
+    }
+
+    void initObjectDetails(bool *hasFile_, bool *hasFileReference_, QString *value_)
+    {
+        m_hasFile = hasFile_;
+        m_hasFileReference = hasFileReference_;
+        m_value = value_;
+    }
+
+    const QString & value() const
+    {
+        if(isInsideObject()
+                && !*m_hasFile
+                && *m_hasFileReference
+                )
+        {
+            return *m_value;
+        }
+        else
+        {
+            return static_cast<const QString &>(m_fileSource);
+        }
+    }
+
+    bool hasFile() const
+    {
+        return isInsideObject() && *m_hasFile;
+    }
+
+    operator FileSource () const
+    {
+        FileSource result(value());
+        result.m_hasFile = hasFile();
+        return result;
+    }
+
+    void clear()
+    {
+        m_fileSource.clear();
+    }
+
+private:
+    bool *m_hasFile = nullptr;
+    bool *m_hasFileReference = nullptr;
+    QString *m_value = nullptr;
+    FileSource m_fileSource;
 };
 
 
@@ -52,10 +164,17 @@ namespace layout
         }
         else
         {
-            QUrl url(val_);
-            QString filename = url.toLocalFile();
-            QFile *f = new QFile(filename);
-            return QVariant::fromValue(static_cast<QObject *>(f));
+            if(val_.hasFile())
+            {
+                QUrl url(val_);
+                QString filename = url.toLocalFile();
+                QFile *f = new QFile(filename);
+                return QVariant::fromValue(static_cast<QObject *>(f));
+            }
+            else
+            {
+                return QVariant::fromValue(nullptr);
+            }
         }
     }
 
@@ -66,7 +185,31 @@ namespace layout
 
     inline void setValue(const QJsonValue &var_, FileSource &dta_)
     {
-        dta_ = var_.toString();
+        if(var_.isNull())
+        {
+            dta_.clear();
+        }
+        else
+        {
+            dta_ = var_.toString();
+        }
+    }
+
+    inline void setValue(const QVariant &var_, FileSourceReference &dta_)
+    {
+        dta_ = qvariant_cast<QString>(var_);
+    }
+
+    inline void setValue(const QJsonValue &var_, FileSourceReference &dta_)
+    {
+        if(var_.isNull())
+        {
+            dta_.clear();
+        }
+        else
+        {
+            dta_ = var_.toString();
+        }
     }
 }
 

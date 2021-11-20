@@ -123,6 +123,7 @@ void ArtefactArg::setDefaultValue(const QString &defaultValue_)
     m_defaultValue = defaultValue_;
 
     emit defaultValueChanged();
+    emit filenameChanged();
 }
 
 QString ArtefactArg::description() const
@@ -159,6 +160,63 @@ void ArtefactArg::setMergeid(const MergeId &mergeid_)
     m_mergeid = mergeid_;
 
     emit mergeidChanged();
+}
+
+bool ArtefactArg::hasFileReference() const
+{
+    return m_hasFileReference;
+}
+
+void ArtefactArg::setHasFileReference(const bool &value_)
+{
+    m_hasFileReference = value_;
+
+    emit hasFileReferenceChanged();
+    emit filenameChanged();
+}
+
+bool ArtefactArg::hasFile() const
+{
+    return m_hasFile;
+}
+
+void ArtefactArg::setHasFile(const bool &value_)
+{
+    m_hasFile = value_;
+
+    emit hasFileChanged();
+    emit filenameChanged();
+}
+
+FileSource ArtefactArg::getFilename() const
+{
+    return m_file;
+}
+
+void ArtefactArg::setFilename(const QString &filename_)
+{
+    m_file = filename_;
+
+    emit filenameChanged();
+}
+
+void ArtefactArg::setFilename(const FileSource &filename_)
+{
+    m_file = filename_;
+
+    emit filenameChanged();
+}
+
+QString ArtefactArg::hash() const
+{
+    return m_fileHash;
+}
+
+void ArtefactArg::setHash(const QString &hash_)
+{
+    m_fileHash = hash_;
+
+    emit hashChanged();
 }
 
 bool ArtefactArg::createFrom(const int &effectArtefactId_, const Comment &comment_)
