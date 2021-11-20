@@ -1,4 +1,5 @@
 #include "effectarg_data.h"
+#include "../MastactvaBase/imagesource.h"
 
 
 EffectArgData::EffectArgData(int id_,
@@ -10,13 +11,21 @@ EffectArgData::EffectArgData(int id_,
               const QString &defaultValue_,
               const QString &description_,
               const QDateTime &created_,
-              const MergeId &mergeid_
+              const MergeId &mergeid_,
+              bool hasFileReference_,
+              bool hasFile_,
+              const FileSource &file_,
+              const QString &fileHash_
               )
     : EffectArgumentData(
           argStorageId_,
           argTypeId_,
           name_,
-          defaultValue_
+          defaultValue_,
+          hasFileReference_,
+          hasFile_,
+          file_,
+          fileHash_
           ),
       m_id(id_),
       m_effectId(effectId_),
@@ -44,6 +53,10 @@ EffectArgData &EffectArgData::operator = (EffectArgData &&data_)
     m_description = std::move(data_.m_description);
     m_created = std::move(data_.m_created);
     m_mergeid = std::move(data_.m_mergeid);
+    m_hasFileReference = std::move(data_.m_hasFileReference);
+    m_hasFile = std::move(data_.m_hasFile);
+    m_file = std::move(data_.m_file);
+    m_fileHash = std::move(data_.m_fileHash);
 
     return *this;
 }
@@ -61,5 +74,10 @@ std::unique_ptr<EffectArgData> EffectArgData::getDataCopy() const
     result->m_description = m_description;
     result->m_created = m_created;
     result->m_mergeid = m_mergeid;
+    result->m_hasFileReference = m_hasFileReference;
+    result->m_hasFile = m_hasFile;
+    result->m_file = m_file;
+    result->m_fileHash = m_fileHash;
+
     return result;
 }

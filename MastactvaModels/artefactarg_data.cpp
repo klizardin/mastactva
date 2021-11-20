@@ -38,17 +38,17 @@ ArtefactArgData::ArtefactArgData(
           to_underlying(argStorageId_),
           to_underlying(argTypeId_),
           name_,
-          defaultValue_
+          defaultValue_,
+          hasFileReference_,
+          hasFile_,
+          file_,
+          fileHash_
           ),
       m_id(id_),
       m_artefactId(artefactId_),
       m_description(description_),
       m_created(created_),
-      m_mergeid(mergeid_),
-      m_hasFileReference(hasFileReference_),
-      m_hasFile(hasFile_),
-      m_file(file_),
-      m_fileHash(fileHash_)
+      m_mergeid(mergeid_)
 {
 }
 

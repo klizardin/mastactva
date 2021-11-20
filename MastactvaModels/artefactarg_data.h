@@ -59,10 +59,6 @@ public:
     QString m_description;
     QDateTime m_created;
     MergeId m_mergeid;
-    bool m_hasFileReference = false;
-    bool m_hasFile = false;
-    FileSource m_file;
-    QString m_fileHash;
 
     ArtefactArgData(const ArtefactArgData &data_) = delete;
     ArtefactArgData &operator = (const ArtefactArgData &data_) = delete;

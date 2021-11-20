@@ -22,7 +22,11 @@ public:
                   const QString &defaultValue_,
                   const QString &description_,
                   const QDateTime &created_,
-                  const MergeId &mergeid_
+                  const MergeId &mergeid_,
+                  bool hasFileReference_,
+                  bool hasFile_,
+                  const FileSource &file_,
+                  const QString &fileHash_
                   );
     virtual ~EffectArgData() = default;
     EffectArgData(EffectArgData &&data_);

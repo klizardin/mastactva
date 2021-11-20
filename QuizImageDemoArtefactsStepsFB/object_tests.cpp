@@ -1643,7 +1643,7 @@ public:
             const QString &defaultValue_,
             int objectArtefactId_
             )
-        : EffectArgumentData(argStorageId_, argTypeId_, name_, defaultValue_),
+        : EffectArgumentData(argStorageId_, argTypeId_, name_, defaultValue_, false, false, QString(), QString()),
           m_objectArtefactId(objectArtefactId_)
     {
     }
