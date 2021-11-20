@@ -82,22 +82,6 @@ Q_DECL_UNUSED static const char *g_mainSpecialwordName = "__main";
 Q_DECL_UNUSED static const char *g_defaultObjectNameName = "default";
 Q_DECL_UNUSED static const char *g_firstSpecialwordName = "__first";
 Q_DECL_UNUSED static const char *g_lastSpecialwordName = "__last";
-Q_DECL_UNUSED static const char *g_renderFromImageName = "renderFromImage";
-Q_DECL_UNUSED static const char *g_renderToImageName = "renderToImage";
-Q_DECL_UNUSED static const char *g_renderMatrixName = "renderMatrix";
-Q_DECL_UNUSED static const char *g_renderFromImageMatrixName = "renderFromImageMatrix";
-Q_DECL_UNUSED static const char *g_renderToImageMatrixName = "renderToImageMatrix";
-Q_DECL_UNUSED static const char *g_renderScreenRectName = "renderScreenRect";
-Q_DECL_UNUSED static const char *g_renderWindowSizeName = "renderWindowSize";
-Q_DECL_UNUSED static const char *g_renderOpacityName = "renderOpacity";
-Q_DECL_UNUSED static const char *g_renderTName = "renderT";
-Q_DECL_UNUSED static const char *g_renderFacedGeometryCoefsName = "renderFacedGeometryCoefs";
-Q_DECL_UNUSED static const char *g_renderGeomertySizeName = "renderGeomertySize";
-Q_DECL_UNUSED static const char *g_renderIsGeomertySolidName = "renderIsGeomertySolid";
-Q_DECL_UNUSED static const char *g_renderVertexAttributeName = "renderVertexAttribute";
-Q_DECL_UNUSED static const char *g_renderTextureAttributeName = "renderTextureAttribute";
-Q_DECL_UNUSED static const char *g_renderIndexesName = "renderIndexes";
-Q_DECL_UNUSED static const char *g_renderPeriodName = "renderPeriod";
 Q_DECL_UNUSED static const char *g_intTypeName = "int";
 Q_DECL_UNUSED static const char *g_floatTypeName = "float";
 Q_DECL_UNUSED static const char *g_vec2TypeName = "vec2";
@@ -116,6 +100,25 @@ Q_DECL_UNUSED static const char *g_sampler3DTypeName = "sampler3D";
 Q_DECL_UNUSED static const char *g_attributeStorageName = "attribute";
 Q_DECL_UNUSED static const char *g_uniformStorageName = "uniform";
 Q_DECL_UNUSED static const char *g_indexesStorageName = "indexes";
+
+
+// special argument names
+Q_DECL_UNUSED static const char *g_renderFromImageName = "renderFromImage";
+Q_DECL_UNUSED static const char *g_renderToImageName = "renderToImage";
+Q_DECL_UNUSED static const char *g_renderMatrixName = "renderMatrix";
+Q_DECL_UNUSED static const char *g_renderFromImageMatrixName = "renderFromImageMatrix";
+Q_DECL_UNUSED static const char *g_renderToImageMatrixName = "renderToImageMatrix";
+Q_DECL_UNUSED static const char *g_renderScreenRectName = "renderScreenRect";
+Q_DECL_UNUSED static const char *g_renderWindowSizeName = "renderWindowSize";
+Q_DECL_UNUSED static const char *g_renderOpacityName = "renderOpacity";
+Q_DECL_UNUSED static const char *g_renderTName = "renderT";
+Q_DECL_UNUSED static const char *g_renderFacedGeometryCoefsName = "renderFacedGeometryCoefs";
+Q_DECL_UNUSED static const char *g_renderGeomertySizeName = "renderGeomertySize";
+Q_DECL_UNUSED static const char *g_renderIsGeomertySolidName = "renderIsGeomertySolid";
+Q_DECL_UNUSED static const char *g_renderVertexAttributeName = "renderVertexAttribute";
+Q_DECL_UNUSED static const char *g_renderTextureAttributeName = "renderTextureAttribute";
+Q_DECL_UNUSED static const char *g_renderIndexesName = "renderIndexes";
+Q_DECL_UNUSED static const char *g_renderPeriodName = "renderPeriod";
 
 
 // db request info
