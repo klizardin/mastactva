@@ -26,6 +26,9 @@
 #include <QJsonValue>
 
 
+class FileSourceReference;
+
+
 class FileSource : public QString
 {
 public:
@@ -50,29 +53,39 @@ public:
     {
         return operator=(static_cast<const QString&>(fileSource_));
     }
+
+    bool hasFile() const
+    {
+        return m_hasFile;
+    }
+
+private:
+    bool m_hasFile = true;
+
+    friend class FileSourceReference;
 };
 
-class FileSourceReference : private FileSource
+class FileSourceReference
 {
 public:
     FileSourceReference(const QString &str_ = QString())
     {
-        operator=(str_);
+        m_fileSource.operator=(str_);
     }
 
     FileSourceReference(const FileSource &fileSource_)
-        :FileSource(fileSource_)
     {
+        m_fileSource = fileSource_;
     }
 
     FileSourceReference(const FileSourceReference &fileSourceReference_)
-        :FileSource(static_cast<const FileSource &>(fileSourceReference_))
     {
+        m_fileSource = static_cast<const FileSource &>(fileSourceReference_);
     }
 
     FileSourceReference &operator = (const QString& str_)
     {
-        *static_cast<QString *>(this) = str_;
+        m_fileSource.operator=(str_);
         return *this;
     }
 
@@ -112,7 +125,7 @@ public:
         }
         else
         {
-            return static_cast<const QString &>(*this);
+            return static_cast<const QString &>(m_fileSource);
         }
     }
 
@@ -121,21 +134,23 @@ public:
         return isInsideObject() && *m_hasFile;
     }
 
-    std::unique_ptr<QFile> getFile() const
+    operator FileSource () const
     {
-        if(!hasFile())
-        {
-            return nullptr;
-        }
-        QUrl url(static_cast<const QString &>(*this));
-        QString filename = url.toLocalFile();
-        return std::make_unique<QFile>(filename);
+        FileSource result(value());
+        result.m_hasFile = hasFile();
+        return result;
+    }
+
+    void clear()
+    {
+        m_fileSource.clear();
     }
 
 private:
     bool *m_hasFile = nullptr;
     bool *m_hasFileReference = nullptr;
     QString *m_value = nullptr;
+    FileSource m_fileSource;
 };
 
 
@@ -149,10 +164,17 @@ namespace layout
         }
         else
         {
-            QUrl url(val_);
-            QString filename = url.toLocalFile();
-            QFile *f = new QFile(filename);
-            return QVariant::fromValue(static_cast<QObject *>(f));
+            if(val_.hasFile())
+            {
+                QUrl url(val_);
+                QString filename = url.toLocalFile();
+                QFile *f = new QFile(filename);
+                return QVariant::fromValue(static_cast<QObject *>(f));
+            }
+            else
+            {
+                return QVariant::fromValue(nullptr);
+            }
         }
     }
 
@@ -163,26 +185,13 @@ namespace layout
 
     inline void setValue(const QJsonValue &var_, FileSource &dta_)
     {
-        dta_ = var_.toString();
-    }
-
-    inline QVariant getValue(const FileSourceReference &val_, bool toQML_ = true)
-    {
-        if(toQML_ || !val_.hasFile())
+        if(var_.isNull())
         {
-            return QVariant::fromValue(
-                        static_cast<const QString &>(
-                            val_.value()
-                            )
-                        );
+            dta_.clear();
         }
         else
         {
-            return QVariant::fromValue(
-                        static_cast<QObject *>(
-                            val_.getFile().release()
-                            )
-                        );
+            dta_ = var_.toString();
         }
     }
 
@@ -193,7 +202,14 @@ namespace layout
 
     inline void setValue(const QJsonValue &var_, FileSourceReference &dta_)
     {
-        dta_ = var_.toString();
+        if(var_.isNull())
+        {
+            dta_.clear();
+        }
+        else
+        {
+            dta_ = var_.toString();
+        }
     }
 }
 
