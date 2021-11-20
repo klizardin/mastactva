@@ -33,7 +33,8 @@ enum class ArtefactTypeEn{
     convertNamesJson,
     scriptLua,
     scriptLuaRuntime,
-    scriptLibrary
+    scriptLibrary,
+    argumentReference
 };
 
 
