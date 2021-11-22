@@ -8,6 +8,7 @@
 #include <QVector>
 #include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/effectarg_data.h"
+#include "../MastactvaBase/imagesource.h"
 
 
 class EffectArgValueData
@@ -21,7 +22,11 @@ public:
             const QString &value_,
             const QString &description_,
             const QDateTime &created_,
-            const MergeId &mergeid_
+            const MergeId &mergeid_,
+            bool hasFileReference_,
+            bool hasFile_,
+            const FileSource &file_,
+            const QString &fileHash_
             );
     EffectArgValueData(EffectArgValueData &&data_);
     virtual ~EffectArgValueData() = default;
@@ -36,6 +41,11 @@ public:
     QString m_description;
     QDateTime m_created;
     MergeId m_mergeid;
+    bool m_hasFileReference = false;
+    bool m_hasFile = false;
+    FileSourceReference m_file;
+    QString m_fileHash;
+
     std::shared_ptr<QVector<EffectArgData *>> m_effectArgsData;
     std::shared_ptr<QVector<EffectArgumentData *>> m_effectArgValuesData;
 
