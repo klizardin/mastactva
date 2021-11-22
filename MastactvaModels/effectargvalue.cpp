@@ -133,6 +133,7 @@ void EffectArgValue::setValue(const QString &value_)
     m_value = value_;
 
     emit valueChanged();
+    emit filenameChanged();
 }
 
 QString EffectArgValue::description() const
@@ -169,6 +170,63 @@ void EffectArgValue::setMergeid(const MergeId &mergeid_)
     m_mergeid = mergeid_;
 
     emit mergeidChanged();
+}
+
+bool EffectArgValue::hasFileReference() const
+{
+    return m_hasFileReference;
+}
+
+void EffectArgValue::setHasFileReference(const bool &value_)
+{
+    m_hasFileReference = value_;
+
+    emit hasFileReferenceChanged();
+    emit filenameChanged();
+}
+
+bool EffectArgValue::hasFile() const
+{
+    return m_hasFile;
+}
+
+void EffectArgValue::setHasFile(const bool &value_)
+{
+    m_hasFile = value_;
+
+    emit hasFileChanged();
+    emit filenameChanged();
+}
+
+FileSource EffectArgValue::getFilename() const
+{
+    return m_file;
+}
+
+void EffectArgValue::setFilename(const QString &filename_)
+{
+    m_file = filename_;
+
+    emit filenameChanged();
+}
+
+void EffectArgValue::setFilename(const FileSource &filename_)
+{
+    m_file = filename_;
+
+    emit filenameChanged();
+}
+
+QString EffectArgValue::hash() const
+{
+    return m_fileHash;
+}
+
+void EffectArgValue::setHash(const QString &hash_)
+{
+    m_fileHash = hash_;
+
+    emit hashChanged();
 }
 
 EffectArgModel *EffectArgValue::getArg()

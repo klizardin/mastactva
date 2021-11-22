@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include "../MastactvaBase/mergeid.h"
 #include "../MastactvaModels/effectargument_data.h"
+#include "../MastactvaBase/imagesource.h"
 
 
 class EffectArgData : public EffectArgumentData
