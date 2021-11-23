@@ -238,3 +238,4 @@ LUA:
 * 120. refresh arg set, arg set values
 * 121. image artefacts fix
 122. DI IModel, 2 object classes for editor 1 object class for game
+123. add ImagePointAdditionalImage model
