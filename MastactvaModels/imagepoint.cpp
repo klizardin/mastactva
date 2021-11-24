@@ -245,6 +245,121 @@ ImageModel *ImagePointToNextImageModel::getImageModel()
 }
 
 
+ImagePointAdditionalImage::ImagePointAdditionalImage(ImagePointAdditionalImageModel *parent_ /*= nullptr*/)
+    :QObject(parent_)
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointAdditionalImage::ImagePointAdditionalImage()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointAdditionalImage::ImagePointAdditionalImage()" << this;
+#endif
+
+    m_objectModelInfo = this;
+    m_parentModel = parent_;
+}
+
+int ImagePointAdditionalImage::id() const
+{
+    return m_id;
+}
+
+void ImagePointAdditionalImage::setId(const int &id_)
+{
+    m_id = id_;
+
+    emit idChanged();
+}
+
+int ImagePointAdditionalImage::imagePointId() const
+{
+    return m_imagePointId;
+}
+
+void ImagePointAdditionalImage::setImagePointId(const int &imagePointId_)
+{
+    m_imagePointId = imagePointId_;
+
+    emit imagePointIdChanged();
+}
+
+int ImagePointAdditionalImage::stepIndex() const
+{
+    return m_stepIndex;
+}
+
+void ImagePointAdditionalImage::setStepIndex(const int &stepIndex_)
+{
+    m_stepIndex = stepIndex_;
+
+    emit stepIndexChanged();
+}
+
+int ImagePointAdditionalImage::additionalImage() const
+{
+    return m_additionalImage;
+}
+
+void ImagePointAdditionalImage::setAdditionalImage(const int &additionalImageId_)
+{
+    m_additionalImage = additionalImageId_;
+
+    emit nextImageChanged();
+}
+
+void ImagePointAdditionalImage::loadChildrenVF()
+{
+    IListModelInfoObjectImpl::setParentModelInfo(m_parentModelInfo);
+    IListModelInfoObjectImpl::setObjectName(getObjectName());
+    IListModelInfoObjectImpl::trace();
+    IListModelInfoObjectImpl::loadChildrenVF();
+}
+
+void ImagePointAdditionalImage::objectLoadedVF()
+{
+    ImageModel *images = m_parentModel->getImageModel();
+    if(images)
+    {
+        Image *image = images->findDataItemByIdImpl(QVariant::fromValue(additionalImage()));
+        if(image)
+        {
+            image->downloadImage();
+        }
+    }
+    IListModelInfoObjectImpl::objectLoadedVF();
+}
+
+QString ImagePointAdditionalImage::getObjectName() const
+{
+    return m_parentModel->getQMLLayoutName() + QString("_ImagePointAdditionalImage_") +
+            QVariant::fromValue(m_appId).toString();
+}
+
+
+ImagePointAdditionalImageModel::ImagePointAdditionalImageModel(QObject *parent_ /*= nullptr*/)
+    :ListModelBaseOfData<ImagePointAdditionalImage, ImagePointAdditionalImageModel>(parent_)
+{
+#if defined(TRACE_THREADS)
+    qDebug() << "ImagePointAdditionalImageModel::ImagePointAdditionalImageModel()" << QThread::currentThread() << QThread::currentThreadId();
+#endif
+#if defined(TRACE_MODEL_LIFETIME)
+    qDebug() << "ImagePointAdditionalImageModel::ImagePointAdditionalImageModel()" << this;
+#endif
+
+    init(this);
+}
+
+void ImagePointAdditionalImageModel::setImageModel(ImageModel *imageModel_)
+{
+    m_parentImageModel = imageModel_;
+}
+
+ImageModel *ImagePointAdditionalImageModel::getImageModel()
+{
+    return m_parentImageModel;
+}
+
+
 ImagePoint::ImagePoint(ImagePointModel *parent_ /*= nullptr*/)
     : QObject(parent_)
 {
@@ -374,6 +489,31 @@ void ImagePoint::setNextImage(const QVariant &obj_)
     }
 }
 
+QVariant ImagePoint::additionalImage() const
+{
+    if(!m_imagePointAdditionalImageModel)
+    {
+        const_cast<ImagePoint *>(this)->m_imagePointAdditionalImageModel = const_cast<ImagePoint *>(this)
+                ->createImagePointAdditionalImage();
+    }
+    return QVariant::fromValue(static_cast<QObject *>(
+                                   const_cast<ImagePointAdditionalImageModel *>(
+                                       m_imagePointAdditionalImageModel)
+                                   )
+                               );
+}
+
+void ImagePoint::setAdditionalImage(const QVariant &obj_)
+{
+    if(obj_.isNull() && m_imagePointAdditionalImageModel)
+    {
+        delete m_imagePointAdditionalImageModel;
+        m_imagePointAdditionalImageModel = nullptr;
+
+        emit additionalImageChanged();
+    }
+}
+
 QVariant ImagePoint::nextQuestion() const
 {
     if(!m_imagePointToQuestionModel)
@@ -430,6 +570,12 @@ ImagePointToNextImageModel *ImagePoint::getNextImage() const
     return m_imagePointToNextImageModel;
 }
 
+ImagePointAdditionalImageModel *ImagePoint::getAdditionalImage() const
+{
+    additionalImage();
+    return m_imagePointAdditionalImageModel;
+}
+
 ImagePointToQuestionModel *ImagePoint::getNextQuestion() const
 {
     nextQuestion();
@@ -451,6 +597,22 @@ ImagePointToNextImageModel *ImagePoint::createImagePointToNextImage()
     m->setRefAppId(QVariant::fromValue(m_appId));
     m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePoint_") +
                         QVariant::fromValue(m_appId).toString() + QString("_ImagePointToNextImageModel_"));
+    m->registerListModel();
+    m->setParentListModelInfo(m_parentModelInfo);
+    m->setImageModel(m_imagePointModel->getImageModel());
+    m->loadList();
+    return m;
+}
+
+ImagePointAdditionalImageModel *ImagePoint::createImagePointAdditionalImage()
+{
+    ImagePointAdditionalImageModel *m = new ImagePointAdditionalImageModel(this);
+    m->initResponse();
+    m->setLayoutRefImpl("image_point", m_imagePointModel->getQMLLayoutName(), "id", false);
+    m->setCurrentRef("image_point");
+    m->setRefAppId(QVariant::fromValue(m_appId));
+    m->setLayoutQMLName(m_imagePointModel->getQMLLayoutName() + QString("_ImagePoint_") +
+                        QVariant::fromValue(m_appId).toString() + QString("_ImagePointAdditionalImageModel_"));
     m->registerListModel();
     m->setParentListModelInfo(m_parentModelInfo);
     m->setImageModel(m_imagePointModel->getImageModel());
