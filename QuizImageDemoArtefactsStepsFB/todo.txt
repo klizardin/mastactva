@@ -30,3 +30,41 @@ ArtefactTypeEn::scriptLuaRuntime
 
 5. variant of ArtefactTypeEn::argumentReference to build multistep effects
 
+Lua add functions:
+* addArgSet(effect id, easing type, description) -> {effect arg set id, ...}
+* getEffectArgSetArguments(effect id) -> {[effect arg id, ...]}
+* setArgSetArgumentValue(effect arg set id, effect arg id, value)
+* getCurrentEffect()
+    -> {
+        effect id,
+        effect name,
+        effect description (?)
+        }
+* findObject(object name, object step index)
+    -> {
+        object id,
+        object info id,
+        object name,
+        object step index,
+        }
+* findObjectArtefact(
+    object name,
+    object step index,
+    artefact name,
+    artefact step index)
+    -> {
+        object id,
+        object info id,
+        object name,
+        object step index,
+        object artefact id,
+        object artefact step index,
+        artefact id,
+        artefact name,
+        artefact file name,
+        artefact file hash,
+        artefact type id,
+        }
+* getFromImageUrl() -> url
+* getToImageUrl() -> url
+
