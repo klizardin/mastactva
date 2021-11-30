@@ -1372,6 +1372,46 @@ void LuaAPI::matrixViewportImpl() const
     }
 }
 
+void LuaAPI::effectGetFromImageUrlImpl() const
+{
+    processStack(0, 1);
+}
+
+void LuaAPI::effectGetToImageUrlImpl() const
+{
+    processStack(0, 1);
+}
+
+void LuaAPI::effectGetCurrentImpl() const
+{
+    processStack(0, 1);
+}
+
+void LuaAPI::effectFindObjectImpl() const
+{
+    processStack(2, 1);
+}
+
+void LuaAPI::effectFindObjectArtefactImpl() const
+{
+    processStack(4, 1);
+}
+
+void LuaAPI::effectAddArgSetImpl() const
+{
+    processStack(3, 1);
+}
+
+void LuaAPI::effectGetArgSetArgumentsImpl() const
+{
+    processStack(1, 1);
+}
+
+void LuaAPI::effectAddArgValueImpl() const
+{
+    processStack(3, 1);
+}
+
 void LuaAPI::processStack(int inputArgsCount_, int outputArgsCount_) const
 {
     lua_pop(m_luaState, inputArgsCount_);
@@ -1531,6 +1571,54 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixViewpo
     matrixViewportImpl();
 }
 
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectGetFromImageUrl>() const
+{
+    effectGetFromImageUrlImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectGetToImageUrl>() const
+{
+    effectGetToImageUrlImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectGetCurrent>() const
+{
+    effectGetCurrentImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectFindObject>() const
+{
+    effectFindObjectImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectFindObjectArtefact>() const
+{
+    effectFindObjectArtefactImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectAddArgSet>() const
+{
+    effectAddArgSetImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectGetArgSetArguments>() const
+{
+    effectGetArgSetArgumentsImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::effectAddArgValue>() const
+{
+    effectAddArgValueImpl();
+}
+
 template<LuaAPI::FunctionImplEn function_, int inputArgsCount_, int outputArgsCount_>
 int l_implementation(lua_State *luaState_)
 {
@@ -1584,6 +1672,19 @@ void LuaAPI::initFunctions() const
                 {"ortho", l_implementation<LuaAPI::FunctionImplEn::matrixOrtho, 2, 1>},
                 {"perspective", l_implementation<LuaAPI::FunctionImplEn::matrixPerspective, 2, 1>},
                 {"viewport", l_implementation<LuaAPI::FunctionImplEn::matrixViewport, 2, 1>},
+            }
+        },
+        {
+            "effect",
+            {
+                { "getFromImageUrl", l_implementation<LuaAPI::FunctionImplEn::effectGetFromImageUrl, 0, 1> },
+                { "getToImageUrl", l_implementation<LuaAPI::FunctionImplEn::effectGetToImageUrl, 0, 1> },
+                { "getCurrent", l_implementation<LuaAPI::FunctionImplEn::effectGetCurrent, 0, 1> },
+                { "findObject", l_implementation<LuaAPI::FunctionImplEn::effectFindObject, 2, 1> },
+                { "findObjectArtefact", l_implementation<LuaAPI::FunctionImplEn::effectFindObjectArtefact, 4, 1> },
+                { "addArgSet", l_implementation<LuaAPI::FunctionImplEn::effectAddArgSet, 3, 1> },
+                { "getArgSetArguments", l_implementation<LuaAPI::FunctionImplEn::effectGetArgSetArguments, 1, 1> },
+                { "addArgValue", l_implementation<LuaAPI::FunctionImplEn::effectAddArgValue, 3, 1> },
             }
         }
     };
