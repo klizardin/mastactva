@@ -52,6 +52,14 @@ private:
         matrixOrtho,
         matrixPerspective,
         matrixViewport,
+        effectGetFromImageUrl,
+        effectGetToImageUrl,
+        effectGetCurrent,
+        effectFindObject,
+        effectFindObjectArtefact,
+        effectAddArgSet,
+        effectGetArgSetArguments,
+        effectAddArgValue,
     };
 
 public:
@@ -102,6 +110,14 @@ private:
     void matrixOrthoImpl() const;
     void matrixPerspectiveImpl() const;
     void matrixViewportImpl() const;
+    void effectGetFromImageUrlImpl() const;
+    void effectGetToImageUrlImpl() const;
+    void effectGetCurrentImpl() const;
+    void effectFindObjectImpl() const;
+    void effectFindObjectArtefactImpl() const;
+    void effectAddArgSetImpl() const;
+    void effectGetArgSetArgumentsImpl() const;
+    void effectAddArgValueImpl() const;
     void processStack(int inputArgsCount_, int outputArgsCount_) const;
     void hideLibsBlackList();
     template<FunctionImplEn func_>
