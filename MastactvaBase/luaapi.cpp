@@ -285,6 +285,38 @@ std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QS
     return value;
 }
 
+
+template<typename ... Args_>
+struct DataLayout
+{
+    using NextLayout = void *;
+};
+
+template<typename Arg_, typename ... Args_>
+struct DataLayout<Arg_, Args_ ...> : public DataLayout<Args_ ...>
+{
+    using NextLayout = DataLayout<Args_ ...>;
+    DataLayout(Arg_ &&value_, Args_ &&...values_)
+        : value(std::move(value_)), DataLayout<Args_ ...>(std::move(values_ ...))
+    {
+    }
+
+    Arg_ value;
+};
+
+template<typename Arg_>
+struct DataLayout<Arg_>
+{
+    using NextLayout = void *;
+    DataLayout(Arg_ &&value_)
+        : value(std::move(value_))
+    {
+    }
+
+    Arg_ value;
+};
+
+
 namespace detail
 {
 
@@ -700,6 +732,47 @@ void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args
     pushArguments(luaState_, args_ ...);
 }
 
+template<typename DataType_, typename LayoutArg_> inline
+void getStructFromTable(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const LayoutArg_ &layoutArg_
+        )
+{
+    const char *name = std::get<0>(layoutArg_);
+    lua_getfield(luaState_, position_, name);
+    auto fieldptr = std::get<1>(layoutArg_);
+    detail::getArgument(luaState_, 0, data_.*fieldptr);
+}
+
+template<typename DataType_> inline
+void getStructFromTable(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        void *
+        )
+{
+    Q_UNUSED(luaState_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+}
+
+template<typename DataType_, typename ... LayoutArgs_> inline
+void getStructFromTable(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const DataLayout<LayoutArgs_ ...> &layout_
+        )
+{
+    detail::getStructFromTable(luaState_, position_, data_, layout_.value);
+    detail::getStructFromTable(luaState_, position_, data_,
+                               static_cast<const typename DataLayout<LayoutArgs_ ...>::NextLayout &>(layout_)
+                               );
+}
+
 }
 
 template<typename ... Args_> inline
@@ -719,6 +792,17 @@ template<typename ... Args_> inline
 void pushArguments(lua_State *luaState_, const Args_ &... args_)
 {
     detail::pushArguments(luaState_, args_ ...);
+}
+
+template<typename DataType_, typename ... LayoutArgs_>
+void getStructFromTable(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const DataLayout<LayoutArgs_ ...> &layout_
+        )
+{
+    detail::getStructFromTable(luaState_, position_, data_, layout_ );
 }
 
 void LuaAPI::getVariableImpl() const
