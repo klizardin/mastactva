@@ -14,6 +14,7 @@ CONFIG += thread
 
 HEADERS += \
         format_unittests.h \
+        lua_unittests.h \
         test_utils.h \
         tst_testcanasserttrue.h
 
