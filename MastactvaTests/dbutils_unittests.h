@@ -26,6 +26,7 @@
 #include <QVariant>
 #include <QVariantList>
 #include <QHash>
+#include <QMap>
 #include "../MastactvaBase/dbutils.h"
 #include "../MastactvaBase/localdataapinocache_default.h"
 #include "../MastactvaBase/names.h"
@@ -741,6 +742,7 @@ public:
     MOCK_METHOD(QSqlError, lastError, (), (const, override));
     MOCK_METHOD(void, bindValue, (const QString &, const QVariant &), (override));
     MOCK_METHOD(QVariant, value, (const QString &), (const, override));
+    MOCK_METHOD((QMap<QString, QVariant>), boundValues, (), (const, override));
 };
 
 class SqlQueryOnMock: public db::ISqlQuery
@@ -778,6 +780,10 @@ public:
     QVariant value(const QString& name_) const override
     {
         return m_mock->value(name_);
+    }
+    QMap<QString, QVariant> boundValues() const override
+    {
+        return m_mock->boundValues();
     }
 private:
     db::ISqlQuery *m_mock = nullptr;
