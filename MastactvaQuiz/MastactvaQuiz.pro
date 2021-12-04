@@ -192,6 +192,7 @@ unix: HEADERS += \
     format_type.h   \
     containerutils.h    \
     data_utils.h    \
+    lua_utils.h \
     luaapi.h    \
     opengldrawing_utils.h   \
     \

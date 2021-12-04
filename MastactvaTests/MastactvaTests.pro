@@ -16,6 +16,7 @@ HEADERS += \
         format_unittests.h \
         lua_unittests.h \
         test_utils.h \
+        lua_utils.h \
         tst_testcanasserttrue.h
 
 unix: HEADERS += \
