@@ -1,7 +1,7 @@
 include(gtest_dependency.pri)
+include(lua_dependency.pri)
 
-
-QT += core testlib sql
+QT += core testlib sql quick
 QT -= gui
 
 TARGET = UnitTests
@@ -16,7 +16,6 @@ HEADERS += \
         format_unittests.h \
         lua_unittests.h \
         test_utils.h \
-        lua_utils.h \
         tst_testcanasserttrue.h
 
 unix: HEADERS += \
@@ -26,6 +25,9 @@ unix: HEADERS += \
         timeutils.h \
         format.h    \
         format_type.h   \
+        lua_utils.h \
+        luaapi.h    \
+        drawingdata_utils.h \
 
 
 SOURCES += \
@@ -36,3 +38,6 @@ unix: SOURCES += \
         localdataapinocache_default.cpp \
         timeutils.cpp   \
         format.cpp  \
+        luaapi.cpp  \
+        drawingdata_utils.cpp   \
+
