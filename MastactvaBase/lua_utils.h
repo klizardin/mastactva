@@ -493,7 +493,7 @@ void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args
 }
 
 template<typename DataType_, typename LayoutArg_> inline
-void getStructFromTable(
+void getStructItemFromTable(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
@@ -507,7 +507,7 @@ void getStructFromTable(
 }
 
 template<typename DataType_> inline
-void getStructFromTable(
+void getStructItemFromTable(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
@@ -527,7 +527,7 @@ void getStructFromTable(
         const DataLayout<LayoutArgs_ ...> &layout_
         )
 {
-    detail::getStructFromTable(luaState_, position_, data_, layout_.value);
+    detail::getStructItemFromTable(luaState_, position_, data_, layout_.value);
     detail::getStructFromTable(luaState_, position_, data_,
                                static_cast<const typename DataLayout<LayoutArgs_ ...>::NextLayout &>(layout_)
                                );
