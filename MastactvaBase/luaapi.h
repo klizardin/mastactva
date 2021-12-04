@@ -25,10 +25,60 @@
 #include <QStringList>
 #include <QVector>
 #include <lua.hpp>
+#include "../MastactvaBase/lua_utils.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 
 
-class LuaAPI
+class LuaAPITest
+{
+public:
+    virtual QString getName() const = 0;
+    virtual bool test(lua_State *luaState_, int position_) const = 0;
+};
+
+
+template<typename DataType_, typename DataLayoutType_>
+class LuaAPIDataTest : public LuaAPITest
+{
+public:
+    LuaAPIDataTest(
+            const QString &name_,
+            const DataType_ &data_,
+            const DataLayoutType_ &dataLayout_
+            )
+        : m_name(name_),
+          m_data(data_),
+          m_dataLayout(dataLayout_)
+    {
+    }
+
+    QString getName() const override
+    {
+        return m_name;
+    }
+
+    bool test(lua_State *luaState_, int position_) const override
+    {
+        DataType_ data{};
+        getStructFromTable<DataType_, DataLayoutType_>(luaState_, position_, &data, m_dataLayout);
+        return m_data == data;
+    }
+
+private:
+    QString m_name;
+    DataType_ m_data;
+    DataLayoutType_ m_dataLayout;
+};
+
+
+class TestObserver
+{
+public:
+    virtual void onTest(const QString &name_, bool result_) const = 0;
+};
+
+
+class LuaAPI : public LuaAPIUtils
 {
 private:
     enum class FunctionImplEn
@@ -36,6 +86,7 @@ private:
         getVariable,
         setVariable,
         setVariableWithPosition,
+        test,
         matrixIdentity,
         matrixIsIdentity,
         matrixDeterminant,
@@ -76,8 +127,8 @@ public:
     bool callArtefact(drawingdata::IPosition *position_);
     bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
-
-    static QString type2String(int type_);
+    void addTest(std::unique_ptr<LuaAPITest> &&test_);
+    void setTestObserver(std::unique_ptr<TestObserver> &&testObserver_);
 
 private:
     void dumpStack() const;
@@ -91,9 +142,11 @@ private:
     std::tuple<QVector<double>, QStringList> getList() const;
     std::tuple<bool, QVector<double>, QStringList> getVariableValue(const QString &name_) const;
     static LuaAPI *getByState(lua_State *luaState_);
+    void processTests(const QString &name_, int position_) const;
     void getVariableImpl() const;
     void setVariableImpl() const;
     void setVariableWithPositionImpl() const;
+    void testImpl() const;
     void matrixIdentityImpl() const;
     void matrixIsIdentityImpl() const;
     void matrixDeterminantImpl() const;
@@ -129,6 +182,8 @@ private:
     std::shared_ptr<drawingdata::IVariables> m_variables;
     mutable drawingdata::IPosition *m_artefactPosition = nullptr;
     static QHash<lua_State *, LuaAPI *> s_apis;
+    std::vector<std::unique_ptr<LuaAPITest>> m_tests;
+    std::unique_ptr<TestObserver> m_testObserver;
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);

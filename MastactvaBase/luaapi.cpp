@@ -108,6 +108,16 @@ void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
     m_variables = variables_;
 }
 
+void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
+{
+    m_tests.push_back(std::move(test_));
+}
+
+void LuaAPI::setTestObserver(std::unique_ptr<TestObserver> &&testObserver_)
+{
+    m_testObserver = std::move(testObserver_);
+}
+
 void LuaAPI::dumpStack() const
 {
     int top = lua_gettop(m_luaState);
@@ -132,28 +142,6 @@ void LuaAPI::dumpStack() const
             qDebug() << lua_topointer(m_luaState,i);
             break;
         }
-    }
-}
-
-QString LuaAPI::type2String(int type_)
-{
-    switch (type_)
-    {
-    case LUA_TNUMBER:
-        return "LUA_TNUMBER";
-        break;
-    case LUA_TSTRING:
-        return "LUA_TSTRING";
-        break;
-    case LUA_TBOOLEAN:
-        return "LUA_TBOOLEAN";
-        break;
-    case LUA_TNIL:
-        return "LUA_TNIL";
-        break;
-    default:
-        return QString("unknown %1").arg(type_);
-        break;
     }
 }
 
@@ -285,524 +273,21 @@ std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QS
     return value;
 }
 
-
-template<typename ... Args_>
-struct DataLayout
+void LuaAPI::processTests(const QString &name_, int position_) const
 {
-    using NextLayout = void *;
-};
-
-template<typename Arg_, typename ... Args_>
-struct DataLayout<Arg_, Args_ ...> : public DataLayout<Args_ ...>
-{
-    using NextLayout = DataLayout<Args_ ...>;
-    DataLayout(Arg_ &&value_, Args_ &&...values_)
-        : value(std::move(value_)), DataLayout<Args_ ...>(std::move(values_ ...))
+    for(const std::unique_ptr<LuaAPITest> &test_ : m_tests)
     {
-    }
-
-    Arg_ value;
-};
-
-template<typename Arg_>
-struct DataLayout<Arg_>
-{
-    using NextLayout = void *;
-    DataLayout(Arg_ &&value_)
-        : value(std::move(value_))
-    {
-    }
-
-    Arg_ value;
-};
-
-
-namespace detail
-{
-
-template<typename ... Args_>
-struct countOf;
-
-template<typename Arg_>
-struct countOf<Arg_>
-{
-    static auto get() -> char(*)[1];
-};
-
-template<typename Arg_, typename ... Args_>
-struct countOf<Arg_, Args_ ...>
-{
-    static auto get() -> char(*)[sizeof(decltype(*countOf<Args_...>::get())) + 1];
-};
-
-template<typename Arg_>
-bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
-
-template<typename Arg_>
-void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_);
-
-template<typename Arg_>
-void pushArgument(lua_State *luaState_, const Arg_ &arg_);
-
-template<> inline
-bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
-{
-    if(!lua_isstring(luaState_, position_))
-    {
-        return false;
-    }
-
-    arg_ = lua_tostring(luaState_, position_);
-    return true;
-}
-
-template<> inline
-bool getArgument<bool>(lua_State *luaState_, int position_, bool &arg_)
-{
-    if(!lua_isboolean(luaState_, position_))
-    {
-        return false;
-    }
-
-    arg_ = lua_toboolean(luaState_, position_) != 0;
-    return true;
-}
-
-template<> inline
-bool getArgument<double>(lua_State *luaState_, int position_, double &arg_)
-{
-    if(!lua_isnumber(luaState_, position_))
-    {
-        return false;
-    }
-
-    arg_ = lua_tonumber(luaState_, position_);
-    return true;
-}
-
-template<> inline
-bool getArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<double> &arg_)
-{
-    if(!lua_istable(luaState_, position_))
-    {
-        return false;
-    }
-
-    arg_.clear();
-    lua_pushnil(luaState_);
-    if(0 == lua_next(luaState_, position_ - 1))
-    {
-        return true;
-    }
-
-    const int firstItemType = lua_type(luaState_, -1);
-    if(LUA_TNUMBER == firstItemType)
-    {
-        arg_.push_back(lua_tonumber(luaState_, -1));
-        lua_pop(luaState_, 1);
-
-        while(lua_next(luaState_, position_ - 1) != 0)
+        if(!test_
+                || test_->getName() != name_)
         {
-            if(lua_isnumber(luaState_, -1))
-            {
-                arg_.push_back(lua_tonumber(luaState_, -1));
-            }
-            lua_pop(luaState_, 1);
+            continue;
+        }
+        const bool result = test_->test(m_luaState, position_);
+        if(m_testObserver)
+        {
+            m_testObserver->onTest(test_->getName(), result);
         }
     }
-
-    return true;
-}
-
-template<> inline
-bool getArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
-        lua_State *luaState_,
-        int position_,
-        std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
-        )
-{
-    std::get<0>(arg_) = 0;
-    QVector<double> data;
-    if(!getArgument(luaState_, position_, data))
-    {
-        return false;
-    }
-
-    if(data.size() == 2*2)
-    {
-        std::get<0>(arg_) = 2;
-        for(int i = 0; i < data.size(); ++i)
-        {
-            std::get<1>(arg_).data()[i] = data[i];
-        }
-        return true;
-    }
-    else if(data.size() == 3*3)
-    {
-        std::get<0>(arg_) = 3;
-        for(int i = 0; i < data.size(); ++i)
-        {
-            std::get<2>(arg_).data()[i] = data[i];
-        }
-        return true;
-    }
-    else if(data.size() == 4*4)
-    {
-        std::get<0>(arg_) = 4;
-        for(int i = 0; i < data.size(); ++i)
-        {
-            std::get<3>(arg_).data()[i] = data[i];
-        }
-        return true;
-    }
-
-    return false;
-}
-
-template<> inline
-bool getArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
-{
-    if(!lua_istable(luaState_, position_))
-    {
-        return false;
-    }
-
-    arg_.clear();
-    lua_pushnil(luaState_);
-    if(0 == lua_next(luaState_, position_ - 1))
-    {
-        return true;
-    }
-
-    const int firstItemType = lua_type(luaState_, -1);
-    if(LUA_TSTRING == firstItemType)
-    {
-        arg_.push_back(lua_tostring(luaState_, -1));
-        lua_pop(luaState_, 1);
-
-        while(lua_next(luaState_, position_ - 1) != 0)
-        {
-            if(lua_isstring(luaState_, -1))
-            {
-                arg_.push_back(lua_tostring(luaState_, -1));
-            }
-            lua_pop(luaState_, 1);
-        }
-    }
-
-    return true;
-}
-
-template<> inline
-bool getArgument<std::tuple<QVector<double>, QStringList>>(
-        lua_State *luaState_,
-        int position_,
-        std::tuple<QVector<double>, QStringList> &arg_
-        )
-{
-    if(!lua_istable(luaState_, position_))
-    {
-        return false;
-    }
-
-    std::get<0>(arg_).clear();
-    std::get<1>(arg_).clear();
-    lua_pushnil(luaState_);
-    if(0 == lua_next(luaState_, position_ - 1))
-    {
-        return true;
-    }
-
-    const int firstItemType = lua_type(luaState_, -1);
-    if(LUA_TNUMBER == firstItemType)
-    {
-        std::get<0>(arg_).push_back(lua_tonumber(luaState_, -1));
-        lua_pop(luaState_, 1);
-
-        while(lua_next(luaState_, position_ - 1) != 0)
-        {
-            if(lua_isnumber(luaState_, -1))
-            {
-                std::get<0>(arg_).push_back(lua_tonumber(luaState_, -1));
-            }
-            lua_pop(luaState_, 1);
-        }
-    }
-    else if(LUA_TSTRING == firstItemType)
-    {
-        std::get<1>(arg_).push_back(lua_tostring(luaState_, -1));
-        lua_pop(luaState_, 1);
-
-        while(lua_next(luaState_, position_ - 1) != 0)
-        {
-            if(lua_isstring(luaState_, -1))
-            {
-                std::get<1>(arg_).push_back(lua_tostring(luaState_, -1));
-            }
-            lua_pop(luaState_, 1);
-        }
-    }
-
-    return true;
-}
-
-template<> inline
-void traceArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be string)";
-}
-
-template<> inline
-void traceArgument<bool>(lua_State *luaState_, int position_, bool &arg_)
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be boolean)";
-}
-
-template<> inline
-void traceArgument<double>(lua_State *luaState_, int position_, double &arg_)
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be number)";
-}
-
-template<> inline
-void traceArgument<QVector<double>>(lua_State *luaState_, int position_, QVector<double> &arg_)
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
-}
-
-template<> inline
-void traceArgument<QStringList>(lua_State *luaState_, int position_, QStringList &arg_)
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
-}
-
-template<> inline
-void traceArgument<std::tuple<QVector<double>, QStringList>>(
-        lua_State *luaState_,
-        int position_,
-        std::tuple<QVector<double>, QStringList> &arg_
-        )
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
-}
-
-template<> inline
-void traceArgument<std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4>>(
-        lua_State *luaState_,
-        int position_,
-        std::tuple<int, QMatrix2x2, QMatrix3x3, QMatrix4x4> &arg_
-        )
-{
-    Q_UNUSED(arg_);
-    qDebug() << LuaAPI::type2String(lua_type(luaState_, position_)) << "(should be table)";
-}
-
-template<>
-void pushArgument<QString>(lua_State *luaState_, const QString &arg_)
-{
-    lua_pushstring(luaState_, arg_.toUtf8().constData());
-}
-
-template<>
-void pushArgument<bool>(lua_State *luaState_, const bool &arg_)
-{
-    lua_pushboolean(luaState_, arg_ ? 1 : 0);
-}
-
-template<>
-void pushArgument<int>(lua_State *luaState_, const int &arg_)
-{
-    lua_pushnumber(luaState_, arg_);
-}
-
-template<>
-void pushArgument<float>(lua_State *luaState_, const float &arg_)
-{
-    lua_pushnumber(luaState_, arg_);
-}
-
-template<>
-void pushArgument<double>(lua_State *luaState_, const double &arg_)
-{
-    lua_pushnumber(luaState_, arg_);
-}
-
-template<>
-void pushArgument<QVector<double>>(lua_State *luaState_, const QVector<double> &arg_)
-{
-    lua_newtable(luaState_);
-    int index = 1;
-    for(double v_ : arg_)
-    {
-        lua_pushnumber(luaState_, index);
-        lua_pushnumber(luaState_, v_);
-        lua_settable(luaState_, -3);
-        ++index;
-    }
-}
-
-template<int size_, typename MatrixArg_>
-void pushMatrix(lua_State *luaState_, const MatrixArg_ &arg_)
-{
-    QVector<double> data;
-    data.reserve(size_);
-    std::copy(arg_.constData(), arg_.constData() + size_,
-              std::back_inserter(data));
-    pushArgument(luaState_, data);
-}
-
-template<>
-void pushArgument<QMatrix2x2>(lua_State *luaState_, const QMatrix2x2 &arg_)
-{
-    pushMatrix<2*2>(luaState_, arg_);
-}
-
-template<>
-void pushArgument<QMatrix3x3>(lua_State *luaState_, const QMatrix3x3 &arg_)
-{
-    pushMatrix<3*3>(luaState_, arg_);
-}
-
-template<>
-void pushArgument<QMatrix4x4>(lua_State *luaState_, const QMatrix4x4 &arg_)
-{
-    pushMatrix<4*4>(luaState_, arg_);
-}
-
-template<>
-void pushArgument<QStringList>(lua_State *luaState_, const QStringList &arg_)
-{
-    lua_newtable(luaState_);
-    int index = 1;
-    for(const QString &v_ : arg_)
-    {
-        lua_pushnumber(luaState_, index);
-        lua_pushstring(luaState_, v_.toUtf8().constData());
-        lua_settable(luaState_, -3);
-        ++index;
-    }
-}
-
-template<typename Arg_> inline
-bool getArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
-{
-    return getArgument(luaState_, position_ - count_, arg_);
-}
-
-template<typename Arg_> inline
-void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_)
-{
-    traceArgument(luaState_, position_ - count_, arg_);
-}
-
-template<typename Arg_> inline
-void pushArguments(lua_State *luaState_, const Arg_ &arg_)
-{
-    pushArgument(luaState_, arg_);
-}
-
-template<typename Arg_, typename ... Args_> inline
-bool getArguments(lua_State *luaState_, int count_, int position_,  Arg_ &arg_, Args_ &... args_)
-{
-    if(!getArgument(luaState_, position_ - count_, arg_))
-    {
-        return false;
-    }
-    getArguments(luaState_, count_, position_ + 1, args_ ...);
-    return true;
-}
-
-template<typename Arg_, typename ... Args_> inline
-void traceArguments(lua_State *luaState_, int count_, int position_, Arg_ &arg_, Args_ &... args_)
-{
-    traceArgument(luaState_, position_ - count_, arg_);
-    traceArguments(luaState_, count_, position_, args_ ...);
-}
-
-template<typename Arg_, typename ... Args_> inline
-void pushArguments(lua_State *luaState_, const Arg_ &arg_, const Args_ &... args_)
-{
-    pushArgument(luaState_, arg_);
-    pushArguments(luaState_, args_ ...);
-}
-
-template<typename DataType_, typename LayoutArg_> inline
-void getStructFromTable(
-        lua_State *luaState_,
-        int position_,
-        DataType_ &data_,
-        const LayoutArg_ &layoutArg_
-        )
-{
-    const char *name = std::get<0>(layoutArg_);
-    lua_getfield(luaState_, position_, name);
-    auto fieldptr = std::get<1>(layoutArg_);
-    detail::getArgument(luaState_, 0, data_.*fieldptr);
-}
-
-template<typename DataType_> inline
-void getStructFromTable(
-        lua_State *luaState_,
-        int position_,
-        DataType_ &data_,
-        void *
-        )
-{
-    Q_UNUSED(luaState_);
-    Q_UNUSED(position_);
-    Q_UNUSED(data_);
-}
-
-template<typename DataType_, typename ... LayoutArgs_> inline
-void getStructFromTable(
-        lua_State *luaState_,
-        int position_,
-        DataType_ &data_,
-        const DataLayout<LayoutArgs_ ...> &layout_
-        )
-{
-    detail::getStructFromTable(luaState_, position_, data_, layout_.value);
-    detail::getStructFromTable(luaState_, position_, data_,
-                               static_cast<const typename DataLayout<LayoutArgs_ ...>::NextLayout &>(layout_)
-                               );
-}
-
-}
-
-template<typename ... Args_> inline
-bool getArguments(lua_State *luaState_, Args_ &... args_)
-{
-    constexpr int argumentsCount = sizeof(decltype(*detail::countOf<Args_ ...>::get()));
-    const bool success = detail::getArguments(luaState_, argumentsCount, 0, args_ ...);
-    if(!success)
-    {
-        qDebug() << "wrong argument type(s) : ";
-        detail::traceArguments(luaState_, argumentsCount, 0, args_ ...);
-    }
-    return success;
-}
-
-template<typename ... Args_> inline
-void pushArguments(lua_State *luaState_, const Args_ &... args_)
-{
-    detail::pushArguments(luaState_, args_ ...);
-}
-
-template<typename DataType_, typename ... LayoutArgs_>
-void getStructFromTable(
-        lua_State *luaState_,
-        int position_,
-        DataType_ &data_,
-        const DataLayout<LayoutArgs_ ...> &layout_
-        )
-{
-    detail::getStructFromTable(luaState_, position_, data_, layout_ );
 }
 
 void LuaAPI::getVariableImpl() const
@@ -886,6 +371,19 @@ void LuaAPI::setVariableWithPositionImpl() const
                     );
     }
     processStack(5, 0);
+}
+
+void LuaAPI::testImpl() const
+{
+    QString name;
+    if(!getArguments(m_luaState, name))
+    {
+        processStack(1, 1);
+        return;
+    }
+    lua_pop(m_luaState, 1);
+    processTests(name, 0);
+    processStack(1, 0);
 }
 
 void LuaAPI::matrixIdentityImpl() const
@@ -1560,6 +1058,12 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariableW
 }
 
 template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::test>() const
+{
+    testImpl();
+}
+
+template<>
 void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIdentity>() const
 {
     matrixIdentityImpl();
@@ -1727,6 +1231,7 @@ void LuaAPI::initFunctions() const
         {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
         {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
         {"setVariableWithPosition", l_implementation<LuaAPI::FunctionImplEn::setVariableWithPosition, 5, 0>},
+        {"test", l_implementation<LuaAPI::FunctionImplEn::test, 2, 0>},
     };
 
     for(const auto &val_ : functions)

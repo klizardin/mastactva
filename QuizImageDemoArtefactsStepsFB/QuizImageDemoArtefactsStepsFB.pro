@@ -92,6 +92,7 @@ unix: HEADERS +=    \
     data_utils.h    \
     mergeid.h   \
     wavefrontobj.h  \
+    lua_utils.h \
     luaapi.h    \
     opengldrawing_utils.h   \
     utils.h \
