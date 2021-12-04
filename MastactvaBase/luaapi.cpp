@@ -108,6 +108,16 @@ void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
     m_variables = variables_;
 }
 
+void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
+{
+    m_tests.push_back(std::move(test_));
+}
+
+void LuaAPI::setTestObserver(std::unique_ptr<TestObserver> &&testObserver_)
+{
+    m_testObserver = std::move(testObserver_);
+}
+
 void LuaAPI::dumpStack() const
 {
     int top = lua_gettop(m_luaState);
@@ -263,6 +273,23 @@ std::tuple<bool, QVector<double>, QStringList> LuaAPI::getVariableValue(const QS
     return value;
 }
 
+void LuaAPI::processTests(const QString &name_, int position_) const
+{
+    for(const std::unique_ptr<LuaAPITest> &test_ : m_tests)
+    {
+        if(!test_
+                || test_->getName() != name_)
+        {
+            continue;
+        }
+        const bool result = test_->test(m_luaState, position_);
+        if(m_testObserver)
+        {
+            m_testObserver->onTest(test_->getName(), result);
+        }
+    }
+}
+
 void LuaAPI::getVariableImpl() const
 {
     QString name;
@@ -344,6 +371,19 @@ void LuaAPI::setVariableWithPositionImpl() const
                     );
     }
     processStack(5, 0);
+}
+
+void LuaAPI::testImpl() const
+{
+    QString name;
+    if(!getArguments(m_luaState, name))
+    {
+        processStack(1, 1);
+        return;
+    }
+    lua_pop(m_luaState, 1);
+    processTests(name, 0);
+    processStack(1, 0);
 }
 
 void LuaAPI::matrixIdentityImpl() const
@@ -1018,6 +1058,12 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::setVariableW
 }
 
 template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::test>() const
+{
+    testImpl();
+}
+
+template<>
 void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIdentity>() const
 {
     matrixIdentityImpl();
@@ -1185,6 +1231,7 @@ void LuaAPI::initFunctions() const
         {"getVariable", l_implementation<LuaAPI::FunctionImplEn::getVariable, 1, 1>},
         {"setVariable", l_implementation<LuaAPI::FunctionImplEn::setVariable, 2, 0>},
         {"setVariableWithPosition", l_implementation<LuaAPI::FunctionImplEn::setVariableWithPosition, 5, 0>},
+        {"test", l_implementation<LuaAPI::FunctionImplEn::test, 2, 0>},
     };
 
     for(const auto &val_ : functions)
