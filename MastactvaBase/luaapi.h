@@ -25,10 +25,11 @@
 #include <QStringList>
 #include <QVector>
 #include <lua.hpp>
+#include "../MastactvaBase/lua_utils.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 
 
-class LuaAPI
+class LuaAPI : public LuaAPIUtils
 {
 private:
     enum class FunctionImplEn
@@ -77,7 +78,6 @@ public:
     bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
 
-    static QString type2String(int type_);
 
 private:
     void dumpStack() const;
