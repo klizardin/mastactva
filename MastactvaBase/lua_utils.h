@@ -554,12 +554,12 @@ void pushArguments(lua_State *luaState_, const Args_ &... args_)
     detail::pushArguments(luaState_, args_ ...);
 }
 
-template<typename DataType_, typename ... LayoutArgs_> inline
+template<typename DataType_, typename DataLayout_> inline
 void getStructFromTable(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const DataLayout<LayoutArgs_ ...> &layout_
+        const DataLayout_ &layout_
         )
 {
     detail::getStructFromTable(luaState_, position_, data_, layout_ );
