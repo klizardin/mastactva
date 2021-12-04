@@ -45,6 +45,32 @@ QString LuaAPIUtils::type2String(int type_)
     }
 }
 
+template<class DataType_, typename Arg_>
+struct FieldLayout
+{
+    using DataType = DataType_;
+    using FieldType = Arg_;
+
+    FieldLayout(const char *name_, Arg_ DataType_::* field_)
+        : m_name(name_),
+          m_field(field_)
+    {
+    }
+
+    const char * getName() const
+    {
+        return m_field.getName();
+    }
+
+    Arg_ & getDataRef(DataType_ &data_) const
+    {
+        return data_.*m_field;
+    }
+
+private:
+    const char *m_name = nullptr;
+    Arg_ DataType_::*m_field;
+};
 
 template<typename ... Args_>
 struct DataLayout
@@ -56,26 +82,73 @@ template<typename Arg_, typename ... Args_>
 struct DataLayout<Arg_, Args_ ...> : public DataLayout<Args_ ...>
 {
     using NextLayout = DataLayout<Args_ ...>;
-    DataLayout(Arg_ &&value_, Args_ &&...values_)
-        : value(std::move(value_)), DataLayout<Args_ ...>(std::move(values_ ...))
+    using DataType = typename Arg_::DataType;
+    using FieldType = typename Arg_::FieldType;
+
+    DataLayout(Arg_ &&field_, Args_ &&...values_)
+        : DataLayout<Args_ ...>(std::move(values_) ...),
+          m_field(std::move(field_))
     {
     }
 
-    Arg_ value;
+    const char * getName() const
+    {
+        return m_field.getName();
+    }
+
+    FieldType & getDataRef(DataType &data_) const
+    {
+        return m_field.getDataRef(data_);
+    }
+
+private:
+    Arg_ m_field;
 };
 
 template<typename Arg_>
 struct DataLayout<Arg_>
 {
     using NextLayout = void *;
-    DataLayout(Arg_ &&value_)
-        : value(std::move(value_))
+    using DataType =  typename Arg_::DataType;
+    using FieldType = typename Arg_::FieldType;
+
+    DataLayout(Arg_ &&field_)
+        : m_field(std::move(field_))
     {
     }
 
-    Arg_ value;
+    const char * getName() const
+    {
+        return m_field.getName();
+    }
+
+    FieldType & getDataRef(DataType &data_) const
+    {
+        return m_field.getDataRef(data_);
+    }
+
+private:
+    Arg_ m_field;
 };
 
+
+template<class DataType_, typename Arg_>
+FieldLayout<DataType_, Arg_> makeFieldLayout(const char *name_, Arg_ DataType_::* field_)
+{
+    return FieldLayout<DataType_, Arg_>(name_, field_);
+}
+
+template<typename Arg_, typename ... Args_>
+DataLayout<Arg_, Args_ ...> makeDataLayout(Arg_ &&field_, Args_ &&...values_)
+{
+    return DataLayout<Arg_, Args_ ...>(std::move(field_), std::move(values_) ...);
+}
+
+template<typename Arg_>
+DataLayout<Arg_> makeDataLayout(Arg_ &&field_)
+{
+    return DataLayout<Arg_>(std::move(field_));
+}
 
 namespace detail
 {
@@ -500,10 +573,9 @@ void getStructItemFromTable(
         const LayoutArg_ &layoutArg_
         )
 {
-    const char *name = std::get<0>(layoutArg_);
+    const char *name = layoutArg_.getName();
     lua_getfield(luaState_, position_, name);
-    auto fieldptr = std::get<1>(layoutArg_);
-    detail::getArgument(luaState_, 0, data_.*fieldptr);
+    detail::getArgument(luaState_, 0, layoutArg_.getDataRef(data_));
 }
 
 template<typename DataType_> inline
