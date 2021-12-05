@@ -113,36 +113,14 @@ void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
     m_tests.push_back(std::move(test_));
 }
 
-void LuaAPI::setTestObserver(std::unique_ptr<TestObserver> &&testObserver_)
+void LuaAPI::setTestObserver(std::shared_ptr<TestObserver> testObserver_)
 {
-    m_testObserver = std::move(testObserver_);
+    m_testObserver = testObserver_;
 }
 
 void LuaAPI::dumpStack() const
 {
-    int top = lua_gettop(m_luaState);
-    for (int i=1; i <= top; i++)
-    {
-        qDebug() << i << luaL_typename(m_luaState,i);
-        switch (lua_type(m_luaState, i))
-        {
-        case LUA_TNUMBER:
-            qDebug() << lua_tonumber(m_luaState,i);
-            break;
-        case LUA_TSTRING:
-            qDebug() << lua_tostring(m_luaState,i);
-            break;
-        case LUA_TBOOLEAN:
-            qDebug() << (lua_toboolean(m_luaState, i) ? "true" : "false");
-            break;
-        case LUA_TNIL:
-            qDebug() << "nil";
-            break;
-        default:
-            qDebug() << lua_topointer(m_luaState,i);
-            break;
-        }
-    }
+    LuaAPIUtils::dumpStack(m_luaState);
 }
 
 bool LuaAPI::ok(int error_, bool errorStrAtTop_ /*= true*/) const
@@ -378,12 +356,11 @@ void LuaAPI::testImpl() const
     QString name;
     if(!getArguments(m_luaState, name))
     {
-        processStack(1, 1);
+        processStack(2, 0);
         return;
     }
-    lua_pop(m_luaState, 1);
-    processTests(name, 0);
-    processStack(1, 0);
+    processTests(name, 1);
+    processStack(2, 0);
 }
 
 void LuaAPI::matrixIdentityImpl() const
