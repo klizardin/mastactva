@@ -55,41 +55,37 @@ public:
     MOCK_METHOD(void, onTest, (const QString &, bool), (const ,override));
 };
 
-TEST(Lua, base)
+TEST(Lua, utils)
 {
     using TestType = LuaAPIDataTest<DataTestData, typename std::remove_cv<decltype(g_DataTestDataLayout)>::type>;
 
     LuaAPI api;
     api.addTest(std::make_unique<TestType>
-                    ("a", DataTestData{1, 0.0, ""}, g_DataTestDataLayout)
+                    ("t1", DataTestData{2, 0.0, ""}, g_DataTestDataLayout)
                 );
     api.addTest(std::make_unique<TestType>
-                    ("b", DataTestData{0, 2.0, ""}, g_DataTestDataLayout)
+                    ("t2", DataTestData{0, 3.0, ""}, g_DataTestDataLayout)
                 );
     api.addTest(std::make_unique<TestType>
-                    ("c", DataTestData{0, 0.0, "str"}, g_DataTestDataLayout)
+                    ("t3", DataTestData{0, 0.0, "str"}, g_DataTestDataLayout)
                 );
 
-    api.load(
-                QString(g_luaScriptBaseDataTestFmt).arg("a", "a", "1")
-                );
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
     api.setTestObserver(mock);
-    EXPECT_CALL(*mock, onTest(QString("a"), true));
+
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStrs;
+
+    api.load(QString(g_luaScriptBaseDataTestFmt).arg("t1", "a", "2"));
+    EXPECT_CALL(*mock, onTest(QString("t1"), true));
     api.call("main", nullptr, result, resultStrs);
 
-    api.load(
-                QString(g_luaScriptBaseDataTestFmt).arg("b", "b", "2.0")
-                );
-    EXPECT_CALL(*mock, onTest(QString("b"), true));
+    api.load(QString(g_luaScriptBaseDataTestFmt).arg("t2", "b", "3.0"));
+    EXPECT_CALL(*mock, onTest(QString("t2"), true));
     api.call("main", nullptr, result, resultStrs);
 
-    api.load(
-                QString(g_luaScriptBaseDataTestFmt).arg("c", "c", "\"str\"")
-                );
-    EXPECT_CALL(*mock, onTest(QString("c"), true));
+    api.load(QString(g_luaScriptBaseDataTestFmt).arg("t3", "c", "\"str\""));
+    EXPECT_CALL(*mock, onTest(QString("t3"), true));
     api.call("main", nullptr, result, resultStrs);
 }
 
