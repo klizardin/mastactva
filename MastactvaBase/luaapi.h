@@ -60,7 +60,7 @@ public:
     bool test(lua_State *luaState_, int position_) const override
     {
         DataType_ data{};
-        getStructFromTable<DataType_, DataLayoutType_>(luaState_, position_, &data, m_dataLayout);
+        getStructFromTable<DataType_, DataLayoutType_>(luaState_, position_, data, m_dataLayout);
         return m_data == data;
     }
 
@@ -128,7 +128,7 @@ public:
     bool callArtefactAtRuntime(drawingdata::IPosition *position_) const;
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
     void addTest(std::unique_ptr<LuaAPITest> &&test_);
-    void setTestObserver(std::unique_ptr<TestObserver> &&testObserver_);
+    void setTestObserver(std::shared_ptr<TestObserver> testObserver_);
 
 private:
     void dumpStack() const;
@@ -183,7 +183,7 @@ private:
     mutable drawingdata::IPosition *m_artefactPosition = nullptr;
     static QHash<lua_State *, LuaAPI *> s_apis;
     std::vector<std::unique_ptr<LuaAPITest>> m_tests;
-    std::unique_ptr<TestObserver> m_testObserver;
+    std::shared_ptr<TestObserver> m_testObserver;
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);

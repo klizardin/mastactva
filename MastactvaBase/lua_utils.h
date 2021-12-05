@@ -19,6 +19,7 @@ class LuaAPIUtils
 {
 public:
     static QString type2String(int type_);
+    static void dumpStack(lua_State *luaState_);
 };
 
 
@@ -45,6 +46,34 @@ QString LuaAPIUtils::type2String(int type_)
     }
 }
 
+inline
+void LuaAPIUtils::dumpStack(lua_State *luaState_)
+{
+    int top = lua_gettop(luaState_);
+    for (int i=1; i <= top; i++)
+    {
+        qDebug() << i << luaL_typename(luaState_, i);
+        switch (lua_type(luaState_, i))
+        {
+        case LUA_TNUMBER:
+            qDebug() << lua_tonumber(luaState_, i);
+            break;
+        case LUA_TSTRING:
+            qDebug() << lua_tostring(luaState_, i);
+            break;
+        case LUA_TBOOLEAN:
+            qDebug() << (lua_toboolean(luaState_, i) ? "true" : "false");
+            break;
+        case LUA_TNIL:
+            qDebug() << "nil";
+            break;
+        default:
+            qDebug() << lua_topointer(luaState_, i);
+            break;
+        }
+    }
+}
+
 template<class DataType_, typename Arg_>
 struct FieldLayout
 {
@@ -59,7 +88,7 @@ struct FieldLayout
 
     const char * getName() const
     {
-        return m_field.getName();
+        return m_name;
     }
 
     Arg_ & getDataRef(DataType_ &data_) const
@@ -101,6 +130,11 @@ struct DataLayout<Arg_, Args_ ...> : public DataLayout<Args_ ...>
         return m_field.getDataRef(data_);
     }
 
+    operator void * () const
+    {
+        return nullptr;
+    }
+
 private:
     Arg_ m_field;
 };
@@ -125,6 +159,11 @@ struct DataLayout<Arg_>
     FieldType & getDataRef(DataType &data_) const
     {
         return m_field.getDataRef(data_);
+    }
+
+    operator void * () const
+    {
+        return nullptr;
     }
 
 private:
@@ -210,6 +249,18 @@ bool getArgument<double>(lua_State *luaState_, int position_, double &arg_)
     }
 
     arg_ = lua_tonumber(luaState_, position_);
+    return true;
+}
+
+template<> inline
+bool getArgument<int>(lua_State *luaState_, int position_, int &arg_)
+{
+    if(!lua_isnumber(luaState_, position_))
+    {
+        return false;
+    }
+
+    arg_ = int(lua_tonumber(luaState_, position_));
     return true;
 }
 
@@ -574,8 +625,12 @@ void getStructItemFromTable(
         )
 {
     const char *name = layoutArg_.getName();
-    lua_getfield(luaState_, position_, name);
-    detail::getArgument(luaState_, 0, layoutArg_.getDataRef(data_));
+    if(!lua_getfield(luaState_, position_, name))
+    {
+        return;
+    }
+    detail::getArgument(luaState_, -1, layoutArg_.getDataRef(data_));
+    lua_pop(luaState_, 1);
 }
 
 template<typename DataType_> inline
@@ -596,10 +651,23 @@ void getStructFromTable(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
+        void *
+        )
+{
+    Q_UNUSED(luaState_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+}
+
+template<typename DataType_, typename ... LayoutArgs_> inline
+void getStructFromTable(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
         const DataLayout<LayoutArgs_ ...> &layout_
         )
 {
-    detail::getStructItemFromTable(luaState_, position_, data_, layout_.value);
+    detail::getStructItemFromTable(luaState_, position_, data_, layout_);
     detail::getStructFromTable(luaState_, position_, data_,
                                static_cast<const typename DataLayout<LayoutArgs_ ...>::NextLayout &>(layout_)
                                );

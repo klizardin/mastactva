@@ -3,7 +3,11 @@
 
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <gmock/gmock-matchers.h>
+#include <memory>
+#include <math.h>
+#include <type_traits>
 #include <QString>
 #include "lua_utils.h"
 #include "luaapi.h"
@@ -17,14 +21,36 @@ static const char *g_luaScriptBaseDataTestFmt =
         "function main ()\n"
         "    result = {}\n"
         "    result[\"%2\"] = %3\n"
-        "    test(\"%1\", result)\n"
+        "    test(result, \"%1\")\n"
+        "end\n";
+
+static const char *g_luaScriptBaseDataTest3Fmt =
+        "function main ()\n"
+        "    result = {}\n"
+        "    result[\"%2\"] = %3\n"
+        "    result[\"%4\"] = %5\n"
+        "    result[\"%6\"] = %7\n"
+        "    test(result, \"%1\")\n"
         "end\n";
 
 struct DataTestData
 {
-    int a;
-    double b;
+    int a = 0;
+    double b = 0.0;
     QString c;
+
+    DataTestData(int a_ = 0, double b_ = 0.0, const QString &c_ = QString{})
+        : a(a_), b(b_), c(c_)
+    {
+    }
+
+    bool operator == (const DataTestData &data_) const
+    {
+        return data_.a == a
+                && fabs(data_.b - b) <= std::max(fabs(data_.b), fabs(b)) * 1e-6
+                && data_.c == c
+                ;
+    }
 };
 
 static const auto g_DataTestDataLayout = makeDataLayout(
@@ -33,13 +59,51 @@ static const auto g_DataTestDataLayout = makeDataLayout(
             makeFieldLayout("c", &DataTestData::c)
             );
 
-
-TEST(Lua, base)
+class TestObserverMock : public TestObserver
 {
-    LuaAPI api;
-    //api.addTest()
+public:
+    MOCK_METHOD(void, onTest, (const QString &, bool), (const ,override));
+};
 
-    ASSERT_TRUE(true);
+TEST(Lua, utils)
+{
+    using TestType = LuaAPIDataTest<DataTestData, typename std::remove_cv<decltype(g_DataTestDataLayout)>::type>;
+
+    LuaAPI api;
+    api.addTest(std::make_unique<TestType>
+                    ("t1", DataTestData{2, 0.0, ""}, g_DataTestDataLayout)
+                );
+    api.addTest(std::make_unique<TestType>
+                    ("t2", DataTestData{0, 3.0, ""}, g_DataTestDataLayout)
+                );
+    api.addTest(std::make_unique<TestType>
+                    ("t3", DataTestData{0, 0.0, "str"}, g_DataTestDataLayout)
+                );
+    api.addTest(std::make_unique<TestType>
+                    ("t4", DataTestData{-5, 10.5, "somestr"}, g_DataTestDataLayout)
+                );
+
+    std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
+    api.setTestObserver(mock);
+
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStrs;
+
+    api.load(QString(g_luaScriptBaseDataTestFmt).arg("t1", "a", "2"));
+    EXPECT_CALL(*mock, onTest(QString("t1"), true));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.load(QString(g_luaScriptBaseDataTestFmt).arg("t2", "b", "3.0"));
+    EXPECT_CALL(*mock, onTest(QString("t2"), true));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.load(QString(g_luaScriptBaseDataTestFmt).arg("t3", "c", "\"str\""));
+    EXPECT_CALL(*mock, onTest(QString("t3"), true));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.load(QString(g_luaScriptBaseDataTest3Fmt).arg("t4", "a", "-5", "b", "10.5", "c", "\"somestr\""));
+    EXPECT_CALL(*mock, onTest(QString("t4"), true));
+    api.call("main", nullptr, result, resultStrs);
 }
 
 
