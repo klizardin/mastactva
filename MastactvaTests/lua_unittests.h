@@ -23,6 +23,15 @@ static const char *g_luaScriptBaseDataTestFmt =
         "    test(result, \"%1\")\n"
         "end\n";
 
+static const char *g_luaScriptBaseDataTest3Fmt =
+        "function main ()\n"
+        "    result = {}\n"
+        "    result[\"%2\"] = %3\n"
+        "    result[\"%4\"] = %5\n"
+        "    result[\"%6\"] = %7\n"
+        "    test(result, \"%1\")\n"
+        "end\n";
+
 struct DataTestData
 {
     int a = 0;
@@ -69,6 +78,9 @@ TEST(Lua, utils)
     api.addTest(std::make_unique<TestType>
                     ("t3", DataTestData{0, 0.0, "str"}, g_DataTestDataLayout)
                 );
+    api.addTest(std::make_unique<TestType>
+                    ("t4", DataTestData{-5, 10.5, "somestr"}, g_DataTestDataLayout)
+                );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
     api.setTestObserver(mock);
@@ -86,6 +98,10 @@ TEST(Lua, utils)
 
     api.load(QString(g_luaScriptBaseDataTestFmt).arg("t3", "c", "\"str\""));
     EXPECT_CALL(*mock, onTest(QString("t3"), true));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.load(QString(g_luaScriptBaseDataTest3Fmt).arg("t4", "a", "-5", "b", "10.5", "c", "\"somestr\""));
+    EXPECT_CALL(*mock, onTest(QString("t4"), true));
     api.call("main", nullptr, result, resultStrs);
 }
 
