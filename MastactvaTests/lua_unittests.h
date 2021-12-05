@@ -6,6 +6,7 @@
 #include <gmock/gmock.h>
 #include <gmock/gmock-matchers.h>
 #include <memory>
+#include <math.h>
 #include <type_traits>
 #include <QString>
 #include "lua_utils.h"
@@ -46,7 +47,7 @@ struct DataTestData
     bool operator == (const DataTestData &data_) const
     {
         return data_.a == a
-                && data_.b == b
+                && fabs(data_.b - b) <= std::max(fabs(data_.b), fabs(b)) * 1e-6
                 && data_.c == c
                 ;
     }
