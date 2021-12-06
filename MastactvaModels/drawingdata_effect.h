@@ -80,6 +80,10 @@ private:
             drawing_data::QuizImageObjects &data_,
             const SortedEffectObjects &sortedEffectObjects_
             ) const;
+    void getAddonNames(
+            SortedEffectObjects &objects_,
+            QStringList &names_
+            ) const;
 
 private:
     drawingdata::Details m_details;
