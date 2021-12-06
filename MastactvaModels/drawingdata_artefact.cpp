@@ -164,22 +164,27 @@ void DrawingDataArtefact::addData(
     switch(currentType)
     {
     case ArtefactTypeEn::dataJson:
+    {
         details_.variables->add(
                     QJsonDocument::fromJson(
                         std::move(artefactText)
                         )
                     );
         break;
+    }
 
     case ArtefactTypeEn::dataObj3D:
+    {
         details_.variables->add(
                     WavefrontOBJ::graphicsOBJtoJson(
                         std::move(artefactTextStr)
                         )
                     );
         break;
+    }
 
     case ArtefactTypeEn::convertNamesJson:
+    {
         details_.variables->addAliases(
                     QJsonDocument::fromJson(
                         std::move(artefactText)
@@ -187,6 +192,7 @@ void DrawingDataArtefact::addData(
                     details_.position.get()
                     );
         break;
+    }
 
     case ArtefactTypeEn::scriptLua:
     {
@@ -445,4 +451,30 @@ void DrawingDataArtefact::addMainCalculations(
         ) const
 {
     addCalculationsT(this, objects_, details_);
+}
+
+bool DrawingDataArtefact::hasAddon() const
+{
+    return m_effectArgData.operator bool()
+            && m_effectArgData->size() > 0
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLibrary)
+            ;
+}
+
+void DrawingDataArtefact::getAddonNames(QStringList &names_) const
+{
+    if(!hasAddon())
+    {
+        return;
+    }
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        Q_UNUSED(names_);
+        //arg->getAddonNames(names_);
+    }
 }

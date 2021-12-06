@@ -173,6 +173,22 @@ void DrawingDataObjectArtefact::addMainCalculations(
     });
 }
 
+bool DrawingDataObjectArtefact::hasAddon() const
+{
+    return forArtefacts([](const DrawingDataArtefact *artefact_)->bool
+    {
+        return artefact_->hasAddon();
+    });
+}
+
+void DrawingDataObjectArtefact::getAddonNames(QStringList &names_) const
+{
+    (void)forArtefacts([&names_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->getAddonNames(names_);
+        return false;
+    });
+}
 
 void DrawingDataObjectArtefact::updateStepIndex(drawingdata::IPosition *position_, bool first_) const
 {

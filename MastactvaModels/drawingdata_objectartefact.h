@@ -67,6 +67,8 @@ public:
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const override;
+    bool hasAddon() const override;
+    void getAddonNames(QStringList &names_) const override;
 
     friend bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_);
     void updateStepIndex(drawingdata::IPosition *position_, bool first_) const;
