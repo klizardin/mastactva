@@ -53,6 +53,7 @@ unix: SOURCES +=    \
     mergeid.cpp \
     wavefrontobj.cpp    \
     luaapi.cpp  \
+    addon.cpp   \
     opengldrawing_utils.cpp \
     utils.cpp   \
 
@@ -94,6 +95,7 @@ unix: HEADERS +=    \
     wavefrontobj.h  \
     lua_utils.h \
     luaapi.h    \
+    addon.h \
     opengldrawing_utils.h   \
     utils.h \
 
