@@ -68,3 +68,17 @@ Lua add functions:
 * getFromImageUrl() -> url
 * getToImageUrl() -> url
 
+
+objects list
+
+DrawingDataEffect (EffectData)
+    m_effectObjectsData : EffectObjectsData (1:N)
+    - DrawingDataEffectObjects (EffectObjectsData)
+        m_objectArtefactData : ObjectArtefactData (1:N)
+        - DrawingDataObjectArtefact (ObjectArtefactData)
+            m_artefactData : ArtefactData (1:1(N))
+            - DrawingDataArtefact (ArtefactData)
+
+
+
+
