@@ -41,8 +41,11 @@ public:
     // DIP initializer
     void init(std::shared_ptr<drawingdata::IFileSource> filesources_);
 
+    // IDefaultData<drawing_data::QuizImageObjects>
+    // {
     // method to form QuizImageObjects data
     void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    // }
 
     // IEffectAddOn
     // {
