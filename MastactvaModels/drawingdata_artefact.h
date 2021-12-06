@@ -61,6 +61,8 @@ public:
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const = 0;
+    virtual bool hasAddon() const = 0;
+    virtual void getAddonNames(QStringList &names_) const = 0;
 };
 
 
@@ -104,6 +106,8 @@ public:
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const override;
+    bool hasAddon() const override;
+    void getAddonNames(QStringList &names_) const override;
 
     std::shared_ptr<QVector<EffectArgumentData *>> m_effectArgData;
 };

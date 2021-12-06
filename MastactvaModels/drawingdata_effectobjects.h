@@ -42,6 +42,9 @@ public:
             DrawingDataArgSetsAndArgs &argSetsAndArgs_,
             int stepIndexShift_ = 0
             ) const;
+    void getAddonNames(
+            QStringList &names_
+            ) const;
     bool isMain() const;
     int getStepIndex() const;
     QString getProgrammerName() const;

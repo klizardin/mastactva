@@ -207,7 +207,7 @@ void DrawingDataEffect::getAddonNames(
             continue;
         }
         Q_UNUSED(names_);
-        //v_.second->getAddonNames(names_);
+        v_.second->getAddonNames(names_);
     }
 }
 

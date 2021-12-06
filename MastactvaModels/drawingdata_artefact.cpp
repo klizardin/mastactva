@@ -452,3 +452,29 @@ void DrawingDataArtefact::addMainCalculations(
 {
     addCalculationsT(this, objects_, details_);
 }
+
+bool DrawingDataArtefact::hasAddon() const
+{
+    return m_effectArgData.operator bool()
+            && m_effectArgData->size() > 0
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLibrary)
+            ;
+}
+
+void DrawingDataArtefact::getAddonNames(QStringList &names_) const
+{
+    if(!hasAddon())
+    {
+        return;
+    }
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        Q_UNUSED(names_);
+        //arg->getAddonNames(names_);
+    }
+}

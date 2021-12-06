@@ -56,6 +56,9 @@ public:
             drawing_data::QuizImageObjects &objects_,
             const drawingdata::Details &details_
             ) const;
+    void getAddonNames(
+            QStringList &names_
+            ) const;
 
 private:
     void findEnd();
@@ -190,6 +193,19 @@ void ObjectArtefacts::addArgs(
     }
 }
 
+void ObjectArtefacts::getAddonNames(
+        QStringList &names_
+        ) const
+{
+    for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+    {
+        if((*it)->hasAddon())
+        {
+            (*it)->getAddonNames(names_);
+        }
+    }
+}
+
 void ObjectArtefacts::addMainCalculations(
         drawing_data::QuizImageObjects &objects_,
         const drawingdata::Details &details_
@@ -301,6 +317,23 @@ void DrawingDataEffectObjects::addArgs(
     for(list.first(); !list.isEnd(); list.next())
     {
         list.addArgs(details_, argSetsAndArgs_);
+    }
+}
+
+void DrawingDataEffectObjects::getAddonNames(
+        QStringList &names_
+        ) const
+{
+    if(!m_objectArtefactData.operator bool())
+    {
+        return;
+    }
+
+    ObjectArtefacts list;
+    list.populate(*m_objectArtefactData);
+    for(list.first(); !list.isEnd(); list.next())
+    {
+        list.getAddonNames(names_);
     }
 }
 
