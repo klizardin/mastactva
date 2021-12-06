@@ -96,6 +96,11 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int ar
     }
 }
 
+void DrawingDataEffect::getAddonNames(QStringList &names_) const
+{
+    Q_UNUSED(names_);
+}
+
 void DrawingDataEffect::extractMainObjects(
         SortedEffectObjects &sortedEffectObjects_,
         SortedEffectObjects &sortedMainEffectObjects_,

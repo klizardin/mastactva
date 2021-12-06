@@ -23,6 +23,7 @@
 #include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/drawingdata_utils.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
+#include "../MastactvaBase/addon.h"
 
 
 class DrawingDataEffectObjects;
@@ -30,7 +31,8 @@ class DrawingDataEffectObjects;
 
 class DrawingDataEffect :
         public EffectData,
-        public IDefaultData<drawing_data::QuizImageObjects>
+        public IDefaultData<drawing_data::QuizImageObjects>,
+        public IEffectAddOn
 {
 public:
     DrawingDataEffect() = default;
@@ -41,6 +43,11 @@ public:
 
     // method to form QuizImageObjects data
     void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+
+    // IEffectAddOn
+    // {
+    void getAddonNames(QStringList &names_) const override;
+    // }
 
 private:
     using SortedEffectObjects = std::multimap<int, const DrawingDataEffectObjects *>;
