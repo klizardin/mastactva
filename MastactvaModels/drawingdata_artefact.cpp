@@ -474,7 +474,6 @@ void DrawingDataArtefact::getAddonNames(QStringList &names_) const
         {
             continue;
         }
-        Q_UNUSED(names_);
-        //arg->getAddonNames(names_);
+        arg->getAddonNames(names_);
     }
 }
