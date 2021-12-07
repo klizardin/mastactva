@@ -26,6 +26,7 @@
 #include "../MastactvaModels/drawingdata_argsetsandargs.h"
 #include "../MastactvaBase/quizimagedrawingdata.h"
 #include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -42,6 +43,9 @@ public:
             bool global_,
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const = 0;
+    virtual void getAddonNames(
+            QStringList &names_
+            ) const = 0;
 };
 
 
@@ -52,6 +56,16 @@ class DrawingDataArtefactArg :
 public:
     DrawingDataArtefactArg() = default;
     DrawingDataArtefactArg(EffectArgumentData &&data_);
+
+    void getAddonNames(
+            QStringList &names_
+            ) const override
+    {
+        if(g_renderAddonNameName == m_name)
+        {
+            names_.push_back(m_defaultValue.trimmed());
+        }
+    }
 
 private:
     template<template <typename> class DrawingDataArtefactArgType_>

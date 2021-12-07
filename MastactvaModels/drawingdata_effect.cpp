@@ -115,6 +115,35 @@ void DrawingDataEffect::getAddonNames(QStringList &names_) const
     getAddonNames(sortedMainEffectObjects, names_);
 }
 
+void DrawingDataEffect::runAddons(const QStringList &names_) const
+{
+    drawing_data::QuizImageObjects data_;
+    //int argsSetIndex_ = 0;
+
+    if(!m_effectObjectsData.operator bool()
+            || !m_details.filesource.operator bool())
+    {
+        return;
+    }
+
+    const_cast<DrawingDataEffect *>(this)->m_details.clear();
+
+    SortedEffectObjects sortedMainEffectObjects;
+    SortedEffectObjects sortedEffectObjects;
+    SortedByProgrammerNameEffectObjects sortedByProgrammerNameEffectObjects;
+
+    extractMainObjects(sortedEffectObjects, sortedMainEffectObjects, sortedByProgrammerNameEffectObjects);
+
+    DrawingDataArgSetsAndArgs argSetsAndArgs;
+    argSetsAndArgs.m_effectArgSetsData = m_effectArgSetsData;
+    argSetsAndArgs.m_effectArgsData = m_effectArgsData;
+
+    addArguments(argSetsAndArgs, sortedMainEffectObjects, true);
+    addArguments(argSetsAndArgs, sortedEffectObjects, false);
+
+    runObjectsAndAddons(data_, sortedMainEffectObjects, names_);
+}
+
 void DrawingDataEffect::extractMainObjects(
         SortedEffectObjects &sortedEffectObjects_,
         SortedEffectObjects &sortedMainEffectObjects_,
@@ -211,3 +240,18 @@ void DrawingDataEffect::getAddonNames(
     }
 }
 
+void DrawingDataEffect::runObjectsAndAddons(
+        drawing_data::QuizImageObjects &data_,
+        SortedEffectObjects &objects_,
+        const QStringList &addonNames_
+        ) const
+{
+    for(const SortedEffectObjects::value_type &v_ : objects_)
+    {
+        if(!v_.second)
+        {
+            continue;
+        }
+        v_.second->addObjects(data_, m_details, 0, addonNames_);
+    }
+}

@@ -63,6 +63,10 @@ public:
             ) const = 0;
     virtual bool hasAddon() const = 0;
     virtual void getAddonNames(QStringList &names_) const = 0;
+    virtual void runAddons(
+            const drawingdata::Details &details_,
+            const QStringList &addonNames_
+            ) const = 0;
 };
 
 
@@ -108,6 +112,10 @@ public:
             ) const override;
     bool hasAddon() const override;
     void getAddonNames(QStringList &names_) const override;
+    void runAddons(
+            const drawingdata::Details &details_,
+            const QStringList &addonNames_
+            ) const override;
 
     std::shared_ptr<QVector<EffectArgumentData *>> m_effectArgData;
 };

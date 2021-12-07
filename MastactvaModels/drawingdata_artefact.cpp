@@ -474,7 +474,59 @@ void DrawingDataArtefact::getAddonNames(QStringList &names_) const
         {
             continue;
         }
-        Q_UNUSED(names_);
-        //arg->getAddonNames(names_);
+        arg->getAddonNames(names_);
+    }
+}
+
+void DrawingDataArtefact::runAddons(
+        const drawingdata::Details &details_,
+        const QStringList &addonNames_
+        ) const
+{
+    if(!hasAddon())
+    {
+        return;
+    }
+    QStringList names;
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        arg->getAddonNames(names);
+    }
+    const bool exist = std::any_of(
+        std::begin(names),
+        std::end(names),
+        [&addonNames_](const QString &name_)->bool
+    {
+        return addonNames_.contains(name_);
+    });
+    if(!exist)
+    {
+        return;
+    }
+
+    const ArtefactTypeEn currentType = to_enum<ArtefactTypeEn>(m_typeId);
+    auto artefactTextStr = details_.filesource->getText(m_filename);
+    auto artefactText = artefactTextStr.toUtf8();
+    switch(currentType)
+    {
+    case ArtefactTypeEn::scriptLibrary:
+    {
+        LuaAPI luaAPI;
+        luaAPI.set(details_.variables);
+        // TODO: luaAPI.setEffect();
+        luaAPI.load(std::move(artefactTextStr))
+            && luaAPI.callArtefact(
+                details_.position.get()
+                );
+        break;
+    }
+
+    default:
+        break;
     }
 }
