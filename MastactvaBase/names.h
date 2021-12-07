@@ -122,6 +122,7 @@ Q_DECL_UNUSED static const char *g_renderPeriodName = "renderPeriod";
 Q_DECL_UNUSED static const char *g_renderArtefactTypeName = "renderArtefactType";
 Q_DECL_UNUSED static const char *g_renderArtefactFileNameName = "renderArtefactFileName";
 Q_DECL_UNUSED static const char *g_renderArtefactProgrammerNameName = "renderArtefactProgrammerName";
+Q_DECL_UNUSED static const char *g_renderAddonNameName = "renderAddonName";
 
 
 // db request info
