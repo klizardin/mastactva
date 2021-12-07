@@ -50,6 +50,7 @@ public:
     // IEffectAddOn
     // {
     void getAddonNames(QStringList &names_) const override;
+    void runAddon(const QStringList &names_) const override;
     // }
 
 private:
@@ -83,6 +84,11 @@ private:
     void getAddonNames(
             SortedEffectObjects &objects_,
             QStringList &names_
+            ) const;
+    void runObjectsAndAddons(
+            drawing_data::QuizImageObjects &data_,
+            SortedEffectObjects &objects_,
+            const QStringList &names_
             ) const;
 
 private:

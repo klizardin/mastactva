@@ -69,6 +69,10 @@ public:
             ) const override;
     bool hasAddon() const override;
     void getAddonNames(QStringList &names_) const override;
+    void runAddons(
+            const drawingdata::Details &details_,
+            const QStringList &addonNames_
+            ) const override;
 
     friend bool operator < (const DrawingDataObjectArtefact &left_, const DrawingDataObjectArtefact &right_);
     void updateStepIndex(drawingdata::IPosition *position_, bool first_) const;

@@ -190,6 +190,18 @@ void DrawingDataObjectArtefact::getAddonNames(QStringList &names_) const
     });
 }
 
+void DrawingDataObjectArtefact::runAddons(
+        const drawingdata::Details &details_,
+        const QStringList &addonNames_
+        ) const
+{
+    (void)forArtefacts([&details_, &addonNames_](const DrawingDataArtefact *artefact_)->bool
+    {
+        artefact_->runAddons(details_, addonNames_);
+        return false;
+    });
+}
+
 void DrawingDataObjectArtefact::updateStepIndex(drawingdata::IPosition *position_, bool first_) const
 {
     if(!position_)

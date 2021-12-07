@@ -46,7 +46,8 @@ public:
     void next();
     bool build(
             drawing_data::QuizImageObject &object_,
-            const drawingdata::Details &details_
+            const drawingdata::Details &details_,
+            const QStringList &addonNames_ = QStringList{}
             ) const;
     void addArgs(
             const drawingdata::Details &details_,
@@ -121,7 +122,8 @@ void ObjectArtefacts::next()
 
 bool ObjectArtefacts::build(
         drawing_data::QuizImageObject &object_,
-        const drawingdata::Details &details_
+        const drawingdata::Details &details_,
+        const QStringList &addonNames_ /*= QStringList{}*/
         ) const
 {
     if(std::cend(m_artefacts) != m_objectBegin)
@@ -169,6 +171,14 @@ bool ObjectArtefacts::build(
     {
         checkArtefactStepIndex(details_, *it);
         (*it)->addTexture(object_);
+    }
+    if(!addonNames_.isEmpty())
+    {
+        for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+        {
+            checkArtefactStepIndex(details_, *it);
+            (*it)->runAddons(details_, addonNames_);
+        }
     }
     return !object_.fragmentShader.isEmpty() && !object_.vertexShader.isEmpty();
 }
@@ -273,7 +283,8 @@ void ObjectArtefacts::checkArtefactStepIndex(
 void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
         const drawingdata::Details &details_,
-        int stepIndexShift_ /*= 0*/
+        int stepIndexShift_ /*= 0*/,
+        const QStringList &addonNames_ /*= QStringList{}*/
         ) const
 {
     if(!m_objectArtefactData.operator bool())
@@ -292,7 +303,7 @@ void DrawingDataEffectObjects::addObjects(
             list.addMainCalculations(data_, details_);
         }
         auto obj = std::make_shared<drawing_data::QuizImageObject>();
-        if(list.build(*obj, details_))
+        if(list.build(*obj, details_, addonNames_))
         {
             data_.objects.push_back(obj);
         }
