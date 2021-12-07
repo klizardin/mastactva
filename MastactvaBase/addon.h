@@ -9,7 +9,7 @@ class IEffectAddOn
 {
 public:
     virtual void getAddonNames(QStringList &names_) const = 0;
-    virtual void runAddon(const QStringList &names_) const = 0;
+    virtual void runAddons(const QStringList &names_) const = 0;
 };
 
 #endif // ADDON_H

@@ -115,7 +115,7 @@ void DrawingDataEffect::getAddonNames(QStringList &names_) const
     getAddonNames(sortedMainEffectObjects, names_);
 }
 
-void DrawingDataEffect::runAddon(const QStringList &names_) const
+void DrawingDataEffect::runAddons(const QStringList &names_) const
 {
     drawing_data::QuizImageObjects data_;
     //int argsSetIndex_ = 0;

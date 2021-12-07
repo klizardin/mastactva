@@ -50,7 +50,7 @@ public:
     // IEffectAddOn
     // {
     void getAddonNames(QStringList &names_) const override;
-    void runAddon(const QStringList &names_) const override;
+    void runAddons(const QStringList &names_) const override;
     // }
 
 private:
