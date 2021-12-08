@@ -79,6 +79,22 @@ DrawingDataEffect (EffectData)
             m_artefactData : ArtefactData (1:1(N))
             - DrawingDataArtefact (ArtefactData)
 
-
+should design add-on call interface
+    add-on
+        * inputs only tree of arguments
+        * returns olso try of arguments
+    lua should support
+        * getting a table and converting to a tree of arguments
+        * converting result to a table
+        * maybe table -> json; json -> table so we will be able to work with web services
+          or to simpilify interface because work just with simple types
+should design add-ons load
+    * should design qt interface class to add-ons
+        * allocate string memories
+        * free string memories
+        * work with QStrings
+    * folder of add-ons
+    * None add-on by default return all input
+lua script gets only arguments
 
 
