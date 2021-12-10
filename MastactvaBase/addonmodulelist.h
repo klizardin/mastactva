@@ -42,7 +42,7 @@ class AddonModules
 public:
     AddonModules() = default;
     bool create(const QDir &addonsPath_);
-    void setDefault(const QString &name_);
+    bool setDefault(const QString &name_);
 
     QJsonDocument call(const QString &name, const QJsonDocument &arguments) const;
 
