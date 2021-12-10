@@ -13,6 +13,7 @@ CONFIG += thread
 
 
 HEADERS += \
+        addon_unittests.h \
         format_unittests.h \
         lua_unittests.h \
         test_utils.h \
@@ -27,6 +28,9 @@ unix: HEADERS += \
         format_type.h   \
         lua_utils.h \
         luaapi.h    \
+        addon.h \
+        addonmodule.h   \
+        addonmodulelist.h   \
         drawingdata_utils.h \
 
 
@@ -39,5 +43,8 @@ unix: SOURCES += \
         timeutils.cpp   \
         format.cpp  \
         luaapi.cpp  \
+        addon.cpp   \
+        addonmodule.cpp \
+        addonmodulelist.cpp \
         drawingdata_utils.cpp   \
 

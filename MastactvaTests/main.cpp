@@ -19,6 +19,7 @@
 #include "dbutils_unittests.h"
 #include "format_unittests.h"
 #include "lua_unittests.h"
+#include "addon_unittests.h"
 
 #include <gtest/gtest.h>
 
