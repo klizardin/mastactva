@@ -44,7 +44,7 @@ public:
     bool create(const QDir &addonsPath_);
     bool setDefault(const QString &name_);
 
-    QJsonDocument call(const QString &name, const QJsonDocument &arguments) const;
+    QJsonDocument call(const QString &name_, const QJsonDocument &arguments_) const;
 
 private:
     QVector<AddonModule> m_addons;
