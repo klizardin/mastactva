@@ -1,0 +1,5 @@
+#ifndef ADDONMODULE_H
+#define ADDONMODULE_H
+
+
+#endif // ADDONMODULE_H
