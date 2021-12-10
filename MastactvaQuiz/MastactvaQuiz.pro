@@ -53,8 +53,6 @@ unix: SOURCES += \
         format.cpp  \
         data_utils.cpp  \
         luaapi.cpp  \
-        addon.cpp   \
-        addonmodule.cpp \
         opengldrawing_utils.cpp \
         \
         quizimage.cpp   \
@@ -196,8 +194,6 @@ unix: HEADERS += \
     data_utils.h    \
     lua_utils.h \
     luaapi.h    \
-    addon.h \
-    addonmodule.h   \
     opengldrawing_utils.h   \
     \
     quizimage.h \

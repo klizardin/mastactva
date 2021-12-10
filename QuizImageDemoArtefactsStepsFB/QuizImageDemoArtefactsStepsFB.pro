@@ -55,6 +55,7 @@ unix: SOURCES +=    \
     luaapi.cpp  \
     addon.cpp   \
     addonmodule.cpp \
+    addonmodulelist.cpp \
     opengldrawing_utils.cpp \
     utils.cpp   \
 
@@ -98,6 +99,7 @@ unix: HEADERS +=    \
     luaapi.h    \
     addon.h \
     addonmodule.h   \
+    addonmodulelist.h   \
     opengldrawing_utils.h   \
     utils.h \
 
