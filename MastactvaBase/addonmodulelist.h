@@ -29,6 +29,7 @@ public:
 
     QString getName() const override;
     QString process(const QString &arguments_) const override;
+    QJsonDocument process(const QJsonDocument &arguments_) const;
 
 private:
     void free();
@@ -53,11 +54,13 @@ public:
     AddonModules() = default;
     bool create(const QDir &addonsPath_);
     bool setDefault(const QString &name_);
+    QStringList getNames() const;
 
     QJsonDocument call(const QString &name_, const QJsonDocument &arguments_) const;
 
 private:
     QVector<AddonModule> m_addons;
+    QString m_defaultName;
 };
 
 

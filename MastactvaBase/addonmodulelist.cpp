@@ -7,6 +7,7 @@
 
 static const char * g_addonModuleGetName = "addonModuleGetName";
 static const char * g_addonModuleProcess = "addonModuleProcess";
+static const char * g_echo = "echo";
 
 
 AddonModule::~AddonModule()
@@ -132,4 +133,92 @@ QString AddonModule::process(const QString &arguments_) const
     QString result = QString::fromUtf8(resultStr);
     std::free((void*)resultStr);
     return result;
+}
+
+QJsonDocument AddonModule::process(const QJsonDocument &arguments_) const
+{
+    const QByteArray ba = arguments_.toJson();
+    const QString result = process(QString::fromUtf8(ba));
+    return QJsonDocument::fromJson(result.toUtf8());
+}
+
+
+bool AddonModules::create(const QDir &addonsPath_)
+{
+    m_addons.clear();
+
+    const QFileInfoList files = addonsPath_.entryInfoList(QStringList{} << "*.so", QDir::Files);
+    for(const QFileInfo &fi_ : files)
+    {
+        AddonModule module;
+        if(!module.create(fi_)
+                || !module
+                )
+        {
+            continue;
+        }
+        m_addons.push_back(std::move(module));
+    };
+    m_defaultName = g_echo;
+    return !m_addons.isEmpty();
+}
+
+bool AddonModules::setDefault(const QString &name_)
+{
+    m_defaultName = name_;
+    return std::any_of(
+                std::begin(m_addons),
+                std::end(m_addons),
+                [this](const AddonModule &module_)->bool
+    {
+        return m_defaultName == module_.getName();
+    });
+}
+
+QStringList AddonModules::getNames() const
+{
+    QStringList result;
+    std::transform(
+                std::begin(m_addons),
+                std::end(m_addons),
+                std::back_inserter(result),
+                [](const AddonModule &module_)->QString
+    {
+        return module_.getName();
+    });
+    return result;
+}
+
+QJsonDocument AddonModules::call(
+        const QString &name_,
+        const QJsonDocument &arguments_
+        ) const
+{
+    const auto fit = std::find_if(
+                std::begin(m_addons),
+                std::end(m_addons),
+                [&name_](const AddonModule &module_)->bool
+    {
+        return name_ == module_.getName();
+    });
+    if(std::end(m_addons) != fit)
+    {
+        return fit->process(arguments_);
+    }
+
+    const auto fitDefault = std::find_if(
+                std::begin(m_addons),
+                std::end(m_addons),
+                [this](const AddonModule &module_)->bool
+    {
+        return m_defaultName == module_.getName();
+    });
+    if(std::end(m_addons) != fitDefault)
+    {
+        return fitDefault->process(arguments_);
+    }
+    else
+    {
+        return QJsonDocument{};
+    }
 }
