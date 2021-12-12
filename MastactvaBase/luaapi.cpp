@@ -121,14 +121,7 @@ void LuaAPI::setTestObserver(std::shared_ptr<TestObserver> testObserver_)
 void LuaAPI::set(std::shared_ptr<AddonModules> addons_)
 {
     m_addons = std::move(addons_);
-    if(m_addons)
-    {
-        initAddonFunctions(m_addons->getNames());
-    }
-    else
-    {
-        initAddonFunctions(QStringList{});
-    }
+    initAddonFunctions(m_addons ? m_addons->getNames() : QStringList{});
 }
 
 bool LuaAPI::initAddonFunctions(const QStringList &names_)
