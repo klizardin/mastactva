@@ -282,8 +282,16 @@ void LuaAPI::processTests(const QString &name_, int position_) const
 
 bool LuaAPI::processAddon(const QString &name_, int position_) const
 {
-    Q_UNUSED(name_);
-    Q_UNUSED(position_);
+    if(!m_addons)
+    {
+        return false;
+    }
+
+    QJsonDocument arguments;
+    getTable(m_luaState, position_, arguments);
+    lua_pop(m_luaState, 2);
+    QJsonDocument result = m_addons->call(name_, arguments);
+    pushTable(m_luaState, result);
     return false;
 }
 
