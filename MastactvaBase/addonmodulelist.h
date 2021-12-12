@@ -2,6 +2,7 @@
 #define ADDONMODULELIST_H
 
 
+#include <vector>
 #include <QString>
 #include <QJsonDocument>
 #include <QDir>
@@ -14,6 +15,7 @@ public:
     virtual ~IAddonModule() = default;
     virtual QString getName() const = 0;
     virtual QString process(const QString &arguments_) const = 0;
+    QJsonDocument process(const QJsonDocument &arguments_) const;
 };
 
 
@@ -29,7 +31,6 @@ public:
 
     QString getName() const override;
     QString process(const QString &arguments_) const override;
-    QJsonDocument process(const QJsonDocument &arguments_) const;
 
 private:
     void free();
@@ -59,7 +60,7 @@ public:
     QJsonDocument call(const QString &name_, const QJsonDocument &arguments_) const;
 
 private:
-    QVector<AddonModule> m_addons;
+    std::vector<std::unique_ptr<IAddonModule>> m_addons;
     QString m_defaultName;
 };
 

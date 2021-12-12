@@ -105,7 +105,7 @@ bool LuaAPI::callArtefactAtRuntime(drawingdata::IPosition *position_) const
 
 void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
 {
-    m_variables = variables_;
+    m_variables = std::move(variables_);
 }
 
 void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
@@ -116,6 +116,18 @@ void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
 void LuaAPI::setTestObserver(std::shared_ptr<TestObserver> testObserver_)
 {
     m_testObserver = testObserver_;
+}
+
+void LuaAPI::set(std::shared_ptr<AddonModules> addons_)
+{
+    m_addons = std::move(addons_);
+    initAddonFunctions(m_addons ? m_addons->getNames() : QStringList{});
+}
+
+bool LuaAPI::initAddonFunctions(const QStringList &names_)
+{
+    m_addonsNames = names_;
+    return true;
 }
 
 void LuaAPI::dumpStack() const
@@ -268,6 +280,21 @@ void LuaAPI::processTests(const QString &name_, int position_) const
     }
 }
 
+bool LuaAPI::processAddon(const QString &name_, int position_) const
+{
+    if(!m_addons)
+    {
+        return false;
+    }
+
+    QJsonDocument arguments;
+    getTable(m_luaState, position_, arguments);
+    lua_pop(m_luaState, 2);
+    QJsonDocument result = m_addons->call(name_, arguments);
+    pushTable(m_luaState, result);
+    return true;
+}
+
 void LuaAPI::getVariableImpl() const
 {
     QString name;
@@ -361,6 +388,42 @@ void LuaAPI::testImpl() const
     }
     processTests(name, 1);
     processStack(2, 0);
+}
+
+void LuaAPI::addonCallImpl() const
+{
+    QString name;
+    if(!getArguments(m_luaState, name))
+    {
+        processStack(2, 1);
+        return;
+    }
+    if(!processAddon(name, 1))
+    {
+        processStack(2, 1);
+    }
+}
+
+void LuaAPI::addonGetNamesImpl() const
+{
+    pushArguments(m_luaState, m_addonsNames);
+}
+
+void LuaAPI::addonHasNameImpl() const
+{
+    QString name;
+    if(!getArguments(m_luaState, name))
+    {
+        processStack(1, 1);
+        return;
+    }
+    lua_pop(m_luaState, 1);
+    const bool has = std::find(
+                std::begin(m_addonsNames),
+                std::end(m_addonsNames),
+                name.trimmed()
+                ) != std::end(m_addonsNames);
+    pushArguments(m_luaState, has);
 }
 
 void LuaAPI::matrixIdentityImpl() const
@@ -1041,6 +1104,24 @@ void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::test>() cons
 }
 
 template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::addonCall>() const
+{
+    addonCallImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::addonGetNames>() const
+{
+    addonGetNamesImpl();
+}
+
+template<>
+void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::addonHasName>() const
+{
+    addonHasNameImpl();
+}
+
+template<>
 void LuaAPI::functionImplementationDispatch<LuaAPI::FunctionImplEn::matrixIdentity>() const
 {
     matrixIdentityImpl();
@@ -1251,6 +1332,14 @@ void LuaAPI::initFunctions() const
                 { "addArgSet", l_implementation<LuaAPI::FunctionImplEn::effectAddArgSet, 3, 1> },
                 { "getArgSetArguments", l_implementation<LuaAPI::FunctionImplEn::effectGetArgSetArguments, 1, 1> },
                 { "addArgValue", l_implementation<LuaAPI::FunctionImplEn::effectAddArgValue, 3, 1> },
+            }
+        },
+        {
+            "addon",
+            {
+                { "call", l_implementation<LuaAPI::FunctionImplEn::addonCall, 2, 1> },
+                { "getNames", l_implementation<LuaAPI::FunctionImplEn::addonGetNames, 0, 1> },
+                { "hasName", l_implementation<LuaAPI::FunctionImplEn::addonHasName, 1, 1> },
             }
         }
     };

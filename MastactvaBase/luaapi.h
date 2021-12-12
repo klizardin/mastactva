@@ -27,6 +27,7 @@
 #include <lua.hpp>
 #include "../MastactvaBase/lua_utils.h"
 #include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/addonmodulelist.h"
 
 
 class LuaAPITest
@@ -111,6 +112,9 @@ private:
         effectAddArgSet,
         effectGetArgSetArguments,
         effectAddArgValue,
+        addonCall,
+        addonGetNames,
+        addonHasName
     };
 
 public:
@@ -129,8 +133,10 @@ public:
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
     void addTest(std::unique_ptr<LuaAPITest> &&test_);
     void setTestObserver(std::shared_ptr<TestObserver> testObserver_);
+    void set(std::shared_ptr<AddonModules> addons_);
 
 private:
+    bool initAddonFunctions(const QStringList &names_);
     void dumpStack() const;
     bool ok(int error_, bool errorStrAtTop_ = true) const;
     bool loadScript(const QString &script_) const;
@@ -143,10 +149,14 @@ private:
     std::tuple<bool, QVector<double>, QStringList> getVariableValue(const QString &name_) const;
     static LuaAPI *getByState(lua_State *luaState_);
     void processTests(const QString &name_, int position_) const;
+    bool processAddon(const QString &name_, int position_) const;
     void getVariableImpl() const;
     void setVariableImpl() const;
     void setVariableWithPositionImpl() const;
     void testImpl() const;
+    void addonCallImpl() const;
+    void addonGetNamesImpl() const;
+    void addonHasNameImpl() const;
     void matrixIdentityImpl() const;
     void matrixIsIdentityImpl() const;
     void matrixDeterminantImpl() const;
@@ -184,6 +194,8 @@ private:
     static QHash<lua_State *, LuaAPI *> s_apis;
     std::vector<std::unique_ptr<LuaAPITest>> m_tests;
     std::shared_ptr<TestObserver> m_testObserver;
+    QStringList m_addonsNames;
+    std::shared_ptr<AddonModules> m_addons;
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);
