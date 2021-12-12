@@ -46,8 +46,11 @@ TEST(Addon, base)
     obj.insert("key", QJsonValue::fromVariant(QVariant::fromValue(QString("value"))));
     QJsonDocument args(obj);
     QJsonDocument result = modules.call("echo", args);
-
     ASSERT_EQ(args, result);
+
+    modules.setDefault("echo");
+    QJsonDocument result1 = modules.call("unknown", args);
+    ASSERT_EQ(args, result1);
 }
 
 
