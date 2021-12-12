@@ -292,7 +292,7 @@ bool LuaAPI::processAddon(const QString &name_, int position_) const
     lua_pop(m_luaState, 2);
     QJsonDocument result = m_addons->call(name_, arguments);
     pushTable(m_luaState, result);
-    return false;
+    return true;
 }
 
 void LuaAPI::getVariableImpl() const
