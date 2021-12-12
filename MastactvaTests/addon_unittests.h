@@ -9,6 +9,7 @@
 #include <QJsonDocument>
 #include "../MastactvaBase/addonmodule.h"
 #include "../MastactvaBase/addonmodulelist.h"
+#include "../MastactvaBase/mergeid.h"
 
 
 bool findDynLibs(const QDir &dir_, QDir &result_)
@@ -44,6 +45,7 @@ TEST(Addon, base)
     ASSERT_TRUE(modules.create(addonsDir));
     QJsonObject obj;
     obj.insert("key", QJsonValue::fromVariant(QVariant::fromValue(QString("value"))));
+    obj.insert("keyRnd", QJsonValue::fromVariant(QVariant::fromValue(static_cast<const QString &>(MergeId{}))));
     QJsonDocument args(obj);
     QJsonDocument result = modules.call("echo", args);
     ASSERT_EQ(args, result);
