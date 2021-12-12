@@ -32,6 +32,7 @@ unix: HEADERS += \
         addonmodule.h   \
         addonmodulelist.h   \
         drawingdata_utils.h \
+        mergeid.h   \
 
 
 SOURCES += \
@@ -47,4 +48,5 @@ unix: SOURCES += \
         addonmodule.cpp \
         addonmodulelist.cpp \
         drawingdata_utils.cpp   \
+        mergeid.cpp \
 
