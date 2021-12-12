@@ -105,7 +105,7 @@ bool LuaAPI::callArtefactAtRuntime(drawingdata::IPosition *position_) const
 
 void LuaAPI::set(std::shared_ptr<drawingdata::IVariables> variables_)
 {
-    m_variables = variables_;
+    m_variables = std::move(variables_);
 }
 
 void LuaAPI::addTest(std::unique_ptr<LuaAPITest> &&test_)
