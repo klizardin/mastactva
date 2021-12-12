@@ -10,6 +10,14 @@ static const char * g_addonModuleProcess = "addonModuleProcess";
 static const char * g_echo = "echo";
 
 
+QJsonDocument IAddonModule::process(const QJsonDocument &arguments_) const
+{
+    const QByteArray ba = arguments_.toJson();
+    const QString result = process(QString::fromUtf8(ba));
+    return QJsonDocument::fromJson(result.toUtf8());
+}
+
+
 AddonModule::~AddonModule()
 {
     free();
@@ -19,7 +27,7 @@ bool AddonModule::create(const QFileInfo& dynamicLibraryName_)
 {
 #if defined(unix)
     resetErrors();
-    m_dynamicLibraryHandle = dlopen(dynamicLibraryName_.absolutePath().toUtf8().data(), RTLD_NOW);
+    m_dynamicLibraryHandle = dlopen(dynamicLibraryName_.absoluteFilePath().toUtf8().data(), RTLD_NOW);
     if(!m_dynamicLibraryHandle
             || checkErrors())
     {
@@ -116,7 +124,6 @@ QString AddonModule::getName() const
 
     const char * resultStr = m_getNameFuncPtr();
     QString result = QString::fromUtf8(resultStr);
-    std::free((void*)resultStr);
     return result;
 }
 
@@ -135,13 +142,6 @@ QString AddonModule::process(const QString &arguments_) const
     return result;
 }
 
-QJsonDocument AddonModule::process(const QJsonDocument &arguments_) const
-{
-    const QByteArray ba = arguments_.toJson();
-    const QString result = process(QString::fromUtf8(ba));
-    return QJsonDocument::fromJson(result.toUtf8());
-}
-
 
 bool AddonModules::create(const QDir &addonsPath_)
 {
@@ -150,17 +150,29 @@ bool AddonModules::create(const QDir &addonsPath_)
     const QFileInfoList files = addonsPath_.entryInfoList(QStringList{} << "*.so", QDir::Files);
     for(const QFileInfo &fi_ : files)
     {
-        AddonModule module;
-        if(!module.create(fi_)
-                || !module
+        std::unique_ptr<AddonModule> module = std::make_unique<AddonModule>();
+        if(!module->create(fi_)
+                || !*module
                 )
         {
             continue;
         }
-        m_addons.push_back(std::move(module));
+
+        const QString name = module->getName();
+        const auto fit = std::find_if(
+                    std::begin(m_addons),
+                    std::end(m_addons),
+                    [&name](const std::unique_ptr<IAddonModule> &module_)->bool
+        {
+            return name == module_->getName();
+        });
+        if(std::end(m_addons) == fit)
+        {
+            m_addons.push_back(std::move(module));
+        }
     };
     m_defaultName = g_echo;
-    return !m_addons.isEmpty();
+    return !m_addons.empty();
 }
 
 bool AddonModules::setDefault(const QString &name_)
@@ -169,9 +181,9 @@ bool AddonModules::setDefault(const QString &name_)
     return std::any_of(
                 std::begin(m_addons),
                 std::end(m_addons),
-                [this](const AddonModule &module_)->bool
+                [this](const std::unique_ptr<IAddonModule> &module_)->bool
     {
-        return m_defaultName == module_.getName();
+        return m_defaultName == module_->getName();
     });
 }
 
@@ -182,9 +194,9 @@ QStringList AddonModules::getNames() const
                 std::begin(m_addons),
                 std::end(m_addons),
                 std::back_inserter(result),
-                [](const AddonModule &module_)->QString
+                [](const std::unique_ptr<IAddonModule> &module_)->QString
     {
-        return module_.getName();
+        return module_->getName();
     });
     return result;
 }
@@ -197,25 +209,25 @@ QJsonDocument AddonModules::call(
     const auto fit = std::find_if(
                 std::begin(m_addons),
                 std::end(m_addons),
-                [&name_](const AddonModule &module_)->bool
+                [&name_](const std::unique_ptr<IAddonModule> &module_)->bool
     {
-        return name_ == module_.getName();
+        return name_ == module_->getName();
     });
     if(std::end(m_addons) != fit)
     {
-        return fit->process(arguments_);
+        return (*fit)->process(arguments_);
     }
 
     const auto fitDefault = std::find_if(
                 std::begin(m_addons),
                 std::end(m_addons),
-                [this](const AddonModule &module_)->bool
+                [this](const std::unique_ptr<IAddonModule> &module_)->bool
     {
-        return m_defaultName == module_.getName();
+        return m_defaultName == module_->getName();
     });
     if(std::end(m_addons) != fitDefault)
     {
-        return fitDefault->process(arguments_);
+        return (*fitDefault)->process(arguments_);
     }
     else
     {
