@@ -10,6 +10,9 @@
 #include <QString>
 #include <QStringList>
 #include <QVector>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonDocument>
 #include <QMatrix2x2>
 #include <QMatrix3x3>
 #include <QMatrix4x4>
@@ -673,6 +676,126 @@ void getStructFromTable(
                                );
 }
 
+inline
+void getTable(
+        lua_State *luaState_,
+        int position_,
+        QJsonDocument &doc_
+        )
+{
+    QJsonObject obj;
+    /* table is in the stack at index 't' */
+    lua_pushnil(luaState_);  /* first key */
+    while (lua_next(luaState_, position_) != 0) {
+        /* uses 'key' (at index -2) and 'value' (at index -1) */
+        static const int s_keyIndex = -2;
+        static const int s_valueIndex = -1;
+        if(!lua_isstring(luaState_, s_keyIndex))
+        {
+            // invalid key, skip
+            lua_pop(luaState_, 1);
+            continue;
+        }
+        QString key = lua_tostring(luaState_, s_keyIndex);
+        switch(lua_type(luaState_, s_valueIndex))
+        {
+        case LUA_TNIL:
+        {
+            obj.insert(key, QJsonValue::fromVariant(QVariant{}));
+            break;
+        }
+        case LUA_TNUMBER:
+        {
+            double value = 0.0;
+            getArgument(luaState_, s_valueIndex, value);
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            break;
+        }
+        case LUA_TBOOLEAN:
+        {
+            bool value = false;
+            getArgument(luaState_, s_valueIndex, value);
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            break;
+        }
+        case LUA_TSTRING:
+        {
+            QString value;
+            getArgument(luaState_, s_valueIndex, value);
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            break;
+        }
+        case LUA_TTABLE:
+        case LUA_TFUNCTION:
+        case LUA_TUSERDATA:
+        case LUA_TTHREAD:
+        case LUA_TLIGHTUSERDATA:
+        default:
+            // invalid value, skip
+            break;
+        }
+        /* removes 'value'; keeps 'key' for next iteration */
+        lua_pop(luaState_, 1);
+    }
+    lua_pop(luaState_, 1);
+    doc_ = QJsonDocument(obj);
+}
+
+inline
+void pushTable(
+        lua_State *luaState_,
+        const QJsonDocument &doc_
+        )
+{
+    lua_newtable(luaState_);
+    if(doc_.isObject())
+    {
+        QJsonObject obj = doc_.object();
+        QStringList keys = obj.keys();
+        for(const QString &key_ : keys)
+        {
+            const QJsonValue value = obj.value(key_);
+            switch (value.type())
+            {
+            case QJsonValue::Bool:
+            {
+                pushArgument(luaState_, key_ );
+                const bool val = value.toBool();
+                pushArgument(luaState_, val );
+                lua_settable(luaState_, -3);
+                break;
+            }
+            case QJsonValue::Double:
+            {
+                pushArgument(luaState_, key_ );
+                const double val = value.toDouble();
+                pushArgument(luaState_, val );
+                lua_settable(luaState_, -3);
+                break;
+            }
+            case QJsonValue::String:
+            {
+                pushArgument(luaState_, key_ );
+                const QString val = value.toString();
+                pushArgument(luaState_, val );
+                lua_settable(luaState_, -3);
+                break;
+            }
+            case QJsonValue::Null:
+            case QJsonValue::Undefined:
+            {
+                pushArgument(luaState_, key_ );
+                lua_pushnil(luaState_);
+                lua_settable(luaState_, -3);
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
+}
+
 }
 
 template<typename ... Args_> inline
@@ -703,6 +826,25 @@ void getStructFromTable(
         )
 {
     detail::getStructFromTable(luaState_, position_, data_, layout_ );
+}
+
+inline
+void getTable(
+        lua_State *luaState_,
+        int position_,
+        QJsonDocument &doc_
+        )
+{
+    detail::getTable(luaState_, position_, doc_ );
+}
+
+inline
+void pushTable(
+        lua_State *luaState_,
+        const QJsonDocument &doc_
+        )
+{
+    detail::pushTable(luaState_, doc_ );
 }
 
 
