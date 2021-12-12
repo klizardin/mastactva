@@ -125,6 +125,10 @@ void LuaAPI::set(std::shared_ptr<AddonModules> addons_)
     {
         initAddonFunctions(m_addons->getNames());
     }
+    else
+    {
+        initAddonFunctions(QStringList{});
+    }
 }
 
 bool LuaAPI::initAddonFunctions(const QStringList &names_)
