@@ -284,6 +284,7 @@ bool LuaAPI::processAddon(const QString &name_, int position_) const
 {
     if(!m_addons)
     {
+        qDebug() << "no addons are set";
         lua_pop(m_luaState, 2);
         QJsonDocument result{};
         pushTable(m_luaState, result);
