@@ -196,14 +196,18 @@ TEST(Lua, addons)
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStrs;
 
-    api.load(QString(g_luaScriptAddonDataTestFmt)
-             .arg(
-                 "t1",
-                 "key", value,
-                 "random", static_cast<const QString &>(randomValue),
-                 "echo"
-                )
-             );
+    auto test1 = [&api, &value, &randomValue]()
+    {
+        api.load(QString(g_luaScriptAddonDataTestFmt)
+                 .arg(
+                     "t1",
+                     "key", value,
+                     "random", static_cast<const QString &>(randomValue),
+                     "echo"
+                    )
+                 );
+    };
+    test1();
     EXPECT_CALL(*mock, onTest(QString("t1"), false));
     api.call("main", nullptr, result, resultStrs);
 
@@ -213,14 +217,7 @@ TEST(Lua, addons)
 
     api.set(modules);
 
-    api.load(QString(g_luaScriptAddonDataTestFmt)
-             .arg(
-                 "t1",
-                 "key", value,
-                 "random", static_cast<const QString &>(randomValue),
-                 "echo"
-                )
-             );
+    test1();
     EXPECT_CALL(*mock, onTest(QString("t1"), true));
     api.call("main", nullptr, result, resultStrs);
 
