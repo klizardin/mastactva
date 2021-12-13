@@ -159,6 +159,12 @@ static const char *g_luaScriptAddonDataTest2Fmt =
         "    test(result, \"%1\")\n"
         "end\n";
 
+static const char *g_luaScriptAddonDataTest3Fmt =
+        "function main ()\n"
+        "    result[\"0\"] = addon.getNames()\n"
+        "    return result\n"
+        "end\n";
+
 
 TEST(Lua, addons)
 {
@@ -224,6 +230,12 @@ TEST(Lua, addons)
     api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t3", "value", "echo"));
     EXPECT_CALL(*mock, onTest(QString("t3"), true));
     api.call("main", nullptr, result, resultStrs);
+
+    api.load(g_luaScriptAddonDataTest3Fmt);
+    api.call("main", nullptr, result, resultStrs);
+    std::map<QString, QStringList> resultStrsExpected;
+    resultStrsExpected.insert({QString("0"), QStringList{} << "echo"});
+    EXPECT_EQ(resultStrs, resultStrsExpected);
 }
 
 
