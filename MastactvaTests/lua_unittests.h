@@ -136,6 +136,30 @@ static const char *g_luaScriptAddonDataTestFmt =
         "end\n";
 
 
+class AddonTestData2
+{
+public:
+    bool value = false;
+
+    bool operator == (const AddonTestData2 &data_) const
+    {
+        return data_.value == value
+                ;
+    }
+};
+
+static const auto g_AddonTestData2Layout = makeDataLayout(
+            makeFieldLayout("value", &AddonTestData2::value)
+            );
+
+static const char *g_luaScriptAddonDataTest2Fmt =
+        "function main ()\n"
+        "    result = {}\n"
+        "    result[\"%2\"] = addon.hasName(\"%3\")\n"
+        "    test(result, \"%1\")\n"
+        "end\n";
+
+
 TEST(Lua, addons)
 {
     QDir addonsDir;
@@ -150,11 +174,18 @@ TEST(Lua, addons)
     using TestType = LuaAPIDataTest<AddonTestData,
         typename std::remove_cv<decltype(g_AddonTestDataLayout)>::type
         >;
+    using TestType2 = LuaAPIDataTest<AddonTestData2,
+        typename std::remove_cv<decltype(g_AddonTestData2Layout)>::type
+        >;
+
 
     LuaAPI api;
     api.set(modules);
     api.addTest(std::make_unique<TestType>
                     ("t1", AddonTestData{value, randomValue}, g_AddonTestDataLayout)
+                );
+    api.addTest(std::make_unique<TestType2>
+                    ("t2", AddonTestData2{true}, g_AddonTestData2Layout)
                 );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
@@ -172,6 +203,10 @@ TEST(Lua, addons)
                 )
              );
     EXPECT_CALL(*mock, onTest(QString("t1"), true));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t2", "value", "echo"));
+    EXPECT_CALL(*mock, onTest(QString("t2"), true));
     api.call("main", nullptr, result, resultStrs);
 }
 
