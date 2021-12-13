@@ -184,10 +184,10 @@ TEST(Lua, addons)
                     ("t1", AddonTestData{value, randomValue}, g_AddonTestDataLayout)
                 );
     api.addTest(std::make_unique<TestType2>
-                    ("t2", AddonTestData2{true}, g_AddonTestData2Layout)
+                    ("t2", AddonTestData2{false}, g_AddonTestData2Layout)
                 );
     api.addTest(std::make_unique<TestType2>
-                    ("t3", AddonTestData2{false}, g_AddonTestData2Layout)
+                    ("t3", AddonTestData2{true}, g_AddonTestData2Layout)
                 );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
@@ -211,8 +211,8 @@ TEST(Lua, addons)
     EXPECT_CALL(*mock, onTest(QString("t1"), false));
     api.call("main", nullptr, result, resultStrs);
 
-    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t3", "value", "echo"));
-    EXPECT_CALL(*mock, onTest(QString("t3"), true));
+    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t2", "value", "echo"));
+    EXPECT_CALL(*mock, onTest(QString("t2"), true));
     api.call("main", nullptr, result, resultStrs);
 
     api.set(modules);
@@ -221,8 +221,8 @@ TEST(Lua, addons)
     EXPECT_CALL(*mock, onTest(QString("t1"), true));
     api.call("main", nullptr, result, resultStrs);
 
-    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t2", "value", "echo"));
-    EXPECT_CALL(*mock, onTest(QString("t2"), true));
+    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t3", "value", "echo"));
+    EXPECT_CALL(*mock, onTest(QString("t3"), true));
     api.call("main", nullptr, result, resultStrs);
 }
 
