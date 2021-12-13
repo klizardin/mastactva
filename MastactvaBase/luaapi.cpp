@@ -284,7 +284,9 @@ bool LuaAPI::processAddon(const QString &name_, int position_) const
 {
     if(!m_addons)
     {
-        return false;
+        QJsonDocument result{};
+        pushTable(m_luaState, result);
+        return true;
     }
 
     QJsonDocument arguments;

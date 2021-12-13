@@ -180,7 +180,6 @@ TEST(Lua, addons)
 
 
     LuaAPI api;
-    api.set(modules);
     api.addTest(std::make_unique<TestType>
                     ("t1", AddonTestData{value, randomValue}, g_AddonTestDataLayout)
                 );
@@ -193,6 +192,23 @@ TEST(Lua, addons)
 
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStrs;
+
+    api.load(QString(g_luaScriptAddonDataTestFmt)
+             .arg(
+                 "t1",
+                 "key", value,
+                 "random", static_cast<const QString &>(randomValue),
+                 "echo"
+                )
+             );
+    EXPECT_CALL(*mock, onTest(QString("t1"), false));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t2", "value", "echo"));
+    EXPECT_CALL(*mock, onTest(QString("t2"), false));
+    api.call("main", nullptr, result, resultStrs);
+
+    api.set(modules);
 
     api.load(QString(g_luaScriptAddonDataTestFmt)
              .arg(
