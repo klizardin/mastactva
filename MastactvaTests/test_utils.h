@@ -20,6 +20,8 @@
 
 
 #include <QString>
+#include <QDir>
+#include <QFileInfo>
 
 
 inline
@@ -41,6 +43,30 @@ template<typename Arg_, typename ... Args_> inline
 QString sum(Arg_ arg_, Args_ ... args_)
 {
     return QString(arg_) + sum(args_ ...);
+}
+
+
+bool findDynLibs(const QDir &dir_, QDir &result_)
+{
+    QFileInfoList files = dir_.entryInfoList(QStringList{} << "*.so", QDir::Files);
+    if(!files.isEmpty())
+    {
+        result_ = dir_;
+        return true;
+    }
+    QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
+    for(const QFileInfo &fi_ : dirs)
+    {
+        if(!fi_.isDir())
+        {
+            continue;
+        }
+        if(findDynLibs(QDir(fi_.absoluteFilePath()), result_))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 
