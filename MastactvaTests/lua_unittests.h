@@ -217,7 +217,11 @@ TEST(Lua, addons)
     EXPECT_CALL(*mock, onTest(QString("t1"), false));
     api.call("main", nullptr, result, resultStrs);
 
-    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t2", "value", "echo"));
+    auto test2 = [&api](const char * testName_)
+    {
+        api.load(QString(g_luaScriptAddonDataTest2Fmt).arg(testName_, "value", "echo"));
+    };
+    test2("t2");
     EXPECT_CALL(*mock, onTest(QString("t2"), true));
     api.call("main", nullptr, result, resultStrs);
 
@@ -227,7 +231,7 @@ TEST(Lua, addons)
     EXPECT_CALL(*mock, onTest(QString("t1"), true));
     api.call("main", nullptr, result, resultStrs);
 
-    api.load(QString(g_luaScriptAddonDataTest2Fmt).arg("t3", "value", "echo"));
+    test2("t3");
     EXPECT_CALL(*mock, onTest(QString("t3"), true));
     api.call("main", nullptr, result, resultStrs);
 
