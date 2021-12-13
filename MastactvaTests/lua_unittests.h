@@ -107,4 +107,73 @@ TEST(Lua, utils)
 }
 
 
+class AddonTestData
+{
+public:
+    QString key;
+    QString random;
+
+    bool operator == (const AddonTestData &data_) const
+    {
+        return data_.key == key
+                && data_.random == random
+                ;
+    }
+};
+
+static const auto g_AddonTestDataLayout = makeDataLayout(
+            makeFieldLayout("key", &AddonTestData::key),
+            makeFieldLayout("random", &AddonTestData::random)
+            );
+
+static const char *g_luaScriptAddonDataTestFmt =
+        "function main ()\n"
+        "    arg = {}\n"
+        "    arg[\"%2\"] = \"%3\"\n"
+        "    arg[\"%4\"] = \"%5\"\n"
+        "    result = addon.call(arg, \"%6\")\n"
+        "    test(result, \"%1\")\n"
+        "end\n";
+
+
+TEST(Lua, addons)
+{
+    QDir addonsDir;
+    ASSERT_TRUE(findDynLibs(QDir("../"), addonsDir));
+
+    auto modules = std::make_shared<AddonModules>();
+    ASSERT_TRUE(modules->create(addonsDir));
+
+    MergeId randomValue{};
+    QString value{"value"};
+
+    using TestType = LuaAPIDataTest<AddonTestData,
+        typename std::remove_cv<decltype(g_AddonTestDataLayout)>::type
+        >;
+
+    LuaAPI api;
+    api.set(modules);
+    api.addTest(std::make_unique<TestType>
+                    ("t1", AddonTestData{value, randomValue}, g_AddonTestDataLayout)
+                );
+
+    std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
+    api.setTestObserver(mock);
+
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStrs;
+
+    api.load(QString(g_luaScriptAddonDataTestFmt)
+             .arg(
+                 "t1",
+                 "key", value,
+                 "random", static_cast<const QString &>(randomValue),
+                 "echo"
+                )
+             );
+    EXPECT_CALL(*mock, onTest(QString("t1"), true));
+    api.call("main", nullptr, result, resultStrs);
+}
+
+
 #endif // LUA_UNITTESTS_H
