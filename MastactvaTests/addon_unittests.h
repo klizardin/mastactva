@@ -10,30 +10,7 @@
 #include "../MastactvaBase/addonmodule.h"
 #include "../MastactvaBase/addonmodulelist.h"
 #include "../MastactvaBase/mergeid.h"
-
-
-bool findDynLibs(const QDir &dir_, QDir &result_)
-{
-    QFileInfoList files = dir_.entryInfoList(QStringList{} << "*.so", QDir::Files);
-    if(!files.isEmpty())
-    {
-        result_ = dir_;
-        return true;
-    }
-    QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
-    for(const QFileInfo &fi_ : dirs)
-    {
-        if(!fi_.isDir())
-        {
-            continue;
-        }
-        if(findDynLibs(QDir(fi_.absoluteFilePath()), result_))
-        {
-            return true;
-        }
-    }
-    return false;
-}
+#include "test_utils.h"
 
 
 TEST(Addon, base)
