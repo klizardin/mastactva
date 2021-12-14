@@ -2193,9 +2193,9 @@ void BaseTest::initialize(drawing_data::QuizImageObjects &data_,
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData1();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
@@ -2205,9 +2205,9 @@ void MultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData2();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
@@ -2217,9 +2217,9 @@ void DefaultTest::initialize(drawing_data::QuizImageObjects &data_,
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData3();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
@@ -2229,9 +2229,9 @@ void DataTestBase::initialize(drawing_data::QuizImageObjects &data_,
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData4();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
@@ -2241,9 +2241,9 @@ void DataTestPosition::initialize(drawing_data::QuizImageObjects &data_,
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createTestData5();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
@@ -2253,9 +2253,9 @@ void DataTestObjectsList::initialize(drawing_data::QuizImageObjects &data_,
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createEffectDataForTestOfObjectList();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
@@ -2269,9 +2269,9 @@ void DataTest3DObjectSwift::initialize(drawing_data::QuizImageObjects &data_,
                 "swift_",
                 g_3dObjectSwiftFragmentShaderFilename
                 );
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
@@ -2285,9 +2285,9 @@ void DataTest3DObjectCube::initialize(drawing_data::QuizImageObjects &data_,
                 "cube_",
                 g_3dObjectCubeFragmentShaderFilename
                 );
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
@@ -2301,9 +2301,9 @@ void DataTestAlias::initialize(drawing_data::QuizImageObjects &data_,
                 g_dataJsonAliasSwiftFilename,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
@@ -2317,9 +2317,9 @@ void LuaScriptTestNewVariable::initialize(drawing_data::QuizImageObjects &data_,
                 g_dataLua2NewVariableFilename,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
@@ -2333,9 +2333,9 @@ void LuaScriptTestSetVariable::initialize(drawing_data::QuizImageObjects &data_,
                 g_dataLua2SetVariableFilename,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
@@ -2369,9 +2369,9 @@ void LuaScriptTestRuntime::initialize(drawing_data::QuizImageObjects &data_,
                 g_dataLuaCalcMatrixFilename, args2,
                 g_3dObjectDefaultFragmentShaderFilename
                 );
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void LuaScriptArgTest0::initialize(
@@ -2383,9 +2383,9 @@ void LuaScriptArgTest0::initialize(
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createEffectDataForTestOfLuaScriptArguments(0);
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void LuaScriptArgTest1::initialize(
@@ -2397,9 +2397,9 @@ void LuaScriptArgTest1::initialize(
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createEffectDataForTestOfLuaScriptArguments(1);
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 void ArgSetBaseTest::initialize(
@@ -2411,9 +2411,9 @@ void ArgSetBaseTest::initialize(
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createEffectDataForTestOfArgSet();
-    ::DrawingDataEffect drawingDataEffect(std::move(*effectObjectsData));
-    drawingDataEffect.init(filesource);
-    drawingDataEffect.initialize(data_);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 }
