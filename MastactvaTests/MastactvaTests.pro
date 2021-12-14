@@ -30,6 +30,7 @@ unix: HEADERS += \
         luaapi.h    \
         addon.h \
         addonmodule.h   \
+        addonmodules.h  \
         addonmodulelist.h   \
         drawingdata_utils.h \
         mergeid.h   \
@@ -46,6 +47,7 @@ unix: SOURCES += \
         luaapi.cpp  \
         addon.cpp   \
         addonmodule.cpp \
+        addonmodules.cpp    \
         addonmodulelist.cpp \
         drawingdata_utils.cpp   \
         mergeid.cpp \

@@ -55,8 +55,8 @@ public:
     AddonModules() = default;
     bool create(const QDir &addonsPath_);
     bool setDefault(const QString &name_);
-    QStringList getNames() const;
 
+    QStringList getNames() const;
     QJsonDocument call(const QString &name_, const QJsonDocument &arguments_) const;
 
 private:
