@@ -37,6 +37,7 @@
 #include "../MastactvaBase/data_utils.h"
 #include "../MastactvaBase/imagesource.h"
 #include "../MastactvaBase/mergeid.h"
+#include "../MastactvaBase/addonmodules.h"
 
 
 namespace drawingdata
@@ -707,6 +708,7 @@ public:
     std::shared_ptr<IFileSource> filesource;
     std::shared_ptr<IVariables> variables;
     std::shared_ptr<IPosition> position;
+    std::shared_ptr<IAddonModules> modules;
 
     void clear();
 };

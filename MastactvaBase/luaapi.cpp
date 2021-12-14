@@ -118,7 +118,7 @@ void LuaAPI::setTestObserver(std::shared_ptr<TestObserver> testObserver_)
     m_testObserver = testObserver_;
 }
 
-void LuaAPI::set(std::shared_ptr<AddonModules> addons_)
+void LuaAPI::set(std::shared_ptr<IAddonModules> addons_)
 {
     m_addons = std::move(addons_);
     initAddonFunctions(m_addons ? m_addons->getNames() : QStringList{});

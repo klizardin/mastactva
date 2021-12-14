@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QDir>
 #include "../MastactvaBase/addonmodule.h"
+#include "../MastactvaBase/addonmodules.h"
 
 
 class IAddonModule
@@ -49,15 +50,15 @@ private:
 };
 
 
-class AddonModules
+class AddonModules : public IAddonModules
 {
 public:
     AddonModules() = default;
     bool create(const QDir &addonsPath_);
     bool setDefault(const QString &name_);
-    QStringList getNames() const;
 
-    QJsonDocument call(const QString &name_, const QJsonDocument &arguments_) const;
+    QStringList getNames() const override;
+    QJsonDocument call(const QString &name_, const QJsonDocument &arguments_) const override;
 
 private:
     std::vector<std::unique_ptr<IAddonModule>> m_addons;

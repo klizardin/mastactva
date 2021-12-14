@@ -37,6 +37,11 @@ void DrawingDataEffect::init(std::shared_ptr<drawingdata::IFileSource> filesourc
     m_details.filesource = std::move(filesources_);
 }
 
+void DrawingDataEffect::init(std::shared_ptr<IAddonModules> modules_)
+{
+    m_details.modules = std::move(modules_);
+}
+
 std::set<QString> getUnique(const QStringList &list_)
 {
     std::set<QString> result;

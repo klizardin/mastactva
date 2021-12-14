@@ -518,6 +518,7 @@ void DrawingDataArtefact::runAddons(
     {
         LuaAPI luaAPI;
         luaAPI.set(details_.variables);
+        luaAPI.set(details_.modules);
         // TODO: luaAPI.setEffect();
         luaAPI.load(std::move(artefactTextStr))
             && luaAPI.callArtefact(
