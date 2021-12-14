@@ -133,7 +133,7 @@ public:
     void set(std::shared_ptr<drawingdata::IVariables> variables_);
     void addTest(std::unique_ptr<LuaAPITest> &&test_);
     void setTestObserver(std::shared_ptr<TestObserver> testObserver_);
-    void set(std::shared_ptr<AddonModules> addons_);
+    void set(std::shared_ptr<IAddonModules> addons_);
 
 private:
     bool initAddonFunctions(const QStringList &names_);
@@ -195,7 +195,7 @@ private:
     std::vector<std::unique_ptr<LuaAPITest>> m_tests;
     std::shared_ptr<TestObserver> m_testObserver;
     QStringList m_addonsNames;
-    std::shared_ptr<AddonModules> m_addons;
+    std::shared_ptr<IAddonModules> m_addons;
 
     template<FunctionImplEn impl_, int inputArgs_, int outputArgs_>
     friend int l_implementation(lua_State *luaState_);
