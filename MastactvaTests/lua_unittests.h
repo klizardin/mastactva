@@ -107,6 +107,30 @@ TEST(Lua, utils)
 }
 
 
+TEST(Lua, utilDetails)
+{
+    QJsonObject obj1;
+    obj1.insert("2", QJsonValue::fromVariant(QVariant::fromValue(1)));
+    obj1.insert("1", QJsonValue::fromVariant(QVariant::fromValue(2)));
+    EXPECT_TRUE(detail::isArray(obj1));
+
+    QJsonObject obj2;
+    obj2.insert("2str", QJsonValue::fromVariant(QVariant::fromValue(1)));
+    obj2.insert("1", QJsonValue::fromVariant(QVariant::fromValue(2)));
+    EXPECT_FALSE(detail::isArray(obj2));
+
+    QJsonObject obj3;
+    obj3.insert("3", QJsonValue::fromVariant(QVariant::fromValue(1)));
+    obj3.insert("1", QJsonValue::fromVariant(QVariant::fromValue(2)));
+    EXPECT_FALSE(detail::isArray(obj3));
+
+    QJsonObject obj4;
+    obj4.insert("1", QJsonValue::fromVariant(QVariant::fromValue(1)));
+    obj4.insert("0", QJsonValue::fromVariant(QVariant::fromValue(2)));
+    EXPECT_FALSE(detail::isArray(obj4));
+}
+
+
 class AddonTestData
 {
 public:
