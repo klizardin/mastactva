@@ -681,52 +681,63 @@ inline
 void getTable(
         lua_State *luaState_,
         int position_,
-        QJsonDocument &doc_
+        QJsonObject &obj_
         )
 {
-    QJsonObject obj;
     /* table is in the stack at index 't' */
     lua_pushnil(luaState_);  /* first key */
-    while (lua_next(luaState_, position_) != 0) {
+    while (0 != lua_next(luaState_, position_))
+    {
         /* uses 'key' (at index -2) and 'value' (at index -1) */
         static const int s_keyIndex = -2;
         static const int s_valueIndex = -1;
-        if(!lua_isstring(luaState_, s_keyIndex))
+        if(!lua_isstring(luaState_, s_keyIndex)
+                || !lua_isnumber(luaState_, s_keyIndex)
+                )
         {
             // invalid key, skip
             lua_pop(luaState_, 1);
             continue;
         }
-        QString key = lua_tostring(luaState_, s_keyIndex);
+        QString key = lua_isstring(luaState_, s_keyIndex)
+                ? lua_tostring(luaState_, s_keyIndex)
+                : QString("%1").arg(lua_tonumber(luaState_, s_keyIndex))
+                ;
         switch(lua_type(luaState_, s_valueIndex))
         {
         case LUA_TNIL:
         {
-            obj.insert(key, QJsonValue::fromVariant(QVariant{}));
+            obj_.insert(key, QJsonValue::fromVariant(QVariant{}));
             break;
         }
         case LUA_TNUMBER:
         {
             double value = 0.0;
             getArgument(luaState_, s_valueIndex, value);
-            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TBOOLEAN:
         {
             bool value = false;
             getArgument(luaState_, s_valueIndex, value);
-            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TSTRING:
         {
             QString value;
             getArgument(luaState_, s_valueIndex, value);
-            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TTABLE:
+        {
+            QJsonObject obj;
+            getTable(luaState_, s_valueIndex, obj);
+            obj_.insert(key, QJsonValue{obj});
+            break;
+        }
         case LUA_TFUNCTION:
         case LUA_TUSERDATA:
         case LUA_TTHREAD:
@@ -738,7 +749,19 @@ void getTable(
         /* removes 'value'; keeps 'key' for next iteration */
         lua_pop(luaState_, 1);
     }
+    // remove key
     lua_pop(luaState_, 1);
+}
+
+inline
+void getTable(
+        lua_State *luaState_,
+        int position_,
+        QJsonDocument &doc_
+        )
+{
+    QJsonObject obj;
+    getTable(luaState_, position_, obj);
     doc_ = QJsonDocument(obj);
 }
 
