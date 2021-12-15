@@ -11,6 +11,7 @@
 #include <QStringList>
 #include <QVector>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QMatrix2x2>
@@ -744,55 +745,125 @@ void getTable(
 inline
 void pushTable(
         lua_State *luaState_,
-        const QJsonDocument &doc_
+        const QJsonObject &obj_
+        );
+inline
+void pushTable(
+        lua_State *luaState_,
+        const QJsonArray &array_
+        );
+
+template<typename KeyType_>
+inline
+void pushTableValue(
+        lua_State *luaState_,
+        const QJsonValue &array_,
+        const KeyType_ &key_
+        );
+
+template<typename KeyType_>
+inline
+void pushTableValue(
+        lua_State *luaState_,
+        const QJsonValue &value_,
+        const KeyType_ &key_
+        )
+{
+    switch (value_.type())
+    {
+    case QJsonValue::Bool:
+    {
+        pushArgument(luaState_, key_ );
+        const bool val = value_.toBool();
+        pushArgument(luaState_, val );
+        lua_settable(luaState_, -3);
+        break;
+    }
+    case QJsonValue::Double:
+    {
+        pushArgument(luaState_, key_ );
+        const double val = value_.toDouble();
+        pushArgument(luaState_, val );
+        lua_settable(luaState_, -3);
+        break;
+    }
+    case QJsonValue::String:
+    {
+        pushArgument(luaState_, key_ );
+        const QString val = value_.toString();
+        pushArgument(luaState_, val );
+        lua_settable(luaState_, -3);
+        break;
+    }
+    case QJsonValue::Null:
+    case QJsonValue::Undefined:
+    {
+        pushArgument(luaState_, key_ );
+        lua_pushnil(luaState_);
+        lua_settable(luaState_, -3);
+        break;
+    }
+    case QJsonValue::Object:
+    {
+        const QJsonObject obj = value_.toObject();
+        pushArgument(luaState_, key_ );
+        pushTable(luaState_, obj);
+        lua_settable(luaState_, -3);
+        break;
+    }
+    case QJsonValue::Array:
+    {
+        const QJsonArray array = value_.toArray();
+        pushArgument(luaState_, key_ );
+        pushTable(luaState_, array);
+        lua_settable(luaState_, -3);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+inline
+void pushTable(
+        lua_State *luaState_,
+        const QJsonArray &array_
         )
 {
     lua_newtable(luaState_);
+    for(int i = 0; i < array_.size(); i++)
+    {
+        const QJsonValue value = array_.at(i);
+        const int index = i + 1;
+        pushTableValue(luaState_, value, index);
+    }
+}
+
+inline
+void pushTable(
+        lua_State *luaState_,
+        const QJsonObject &obj_
+        )
+{
+    lua_newtable(luaState_);
+    QStringList keys = obj_.keys();
+    for(const QString &key_ : keys)
+    {
+        const QJsonValue value = obj_.value(key_);
+        pushTableValue(luaState_, value, key_);
+    }
+}
+
+inline
+void pushTable(
+        lua_State *luaState_,
+        const QJsonDocument &doc_
+        )
+{
     if(doc_.isObject())
     {
-        QJsonObject obj = doc_.object();
-        QStringList keys = obj.keys();
-        for(const QString &key_ : keys)
-        {
-            const QJsonValue value = obj.value(key_);
-            switch (value.type())
-            {
-            case QJsonValue::Bool:
-            {
-                pushArgument(luaState_, key_ );
-                const bool val = value.toBool();
-                pushArgument(luaState_, val );
-                lua_settable(luaState_, -3);
-                break;
-            }
-            case QJsonValue::Double:
-            {
-                pushArgument(luaState_, key_ );
-                const double val = value.toDouble();
-                pushArgument(luaState_, val );
-                lua_settable(luaState_, -3);
-                break;
-            }
-            case QJsonValue::String:
-            {
-                pushArgument(luaState_, key_ );
-                const QString val = value.toString();
-                pushArgument(luaState_, val );
-                lua_settable(luaState_, -3);
-                break;
-            }
-            case QJsonValue::Null:
-            case QJsonValue::Undefined:
-            {
-                pushArgument(luaState_, key_ );
-                lua_pushnil(luaState_);
-                lua_settable(luaState_, -3);
-                break;
-            }
-            default:
-                break;
-            }
-        }
+        const QJsonObject obj = doc_.object();
+        pushTable(luaState_, obj);
     }
 }
 
