@@ -678,6 +678,60 @@ void getStructFromTable(
 }
 
 inline
+bool isArray(const QJsonObject &obj_)
+{
+    const QStringList keys = obj_.keys();
+    std::vector<int> numbers;
+    std::transform(
+                std::begin(keys),
+                std::end(keys),
+                std::back_inserter(numbers),
+                [](const QString &str_)->int
+    {
+        const int value = str_.toInt();
+        return QString("%1").arg(value) == str_.trimmed() ? value : -1;
+    });
+    std::sort(std::begin(numbers), std::end(numbers));
+    int expected = 1;
+    for(int n_ : numbers)
+    {
+        if(expected != n_)
+        {
+            return false;
+        }
+        ++expected;
+    }
+    return true;
+}
+
+inline
+QJsonArray convertToArray(const QJsonObject &obj_)
+{
+    if(!isArray(obj_))
+    {
+        return QJsonArray{};
+    }
+    const QStringList keys = obj_.keys();
+    std::vector<int> numbers;
+    std::transform(
+                std::begin(keys),
+                std::end(keys),
+                std::back_inserter(numbers),
+                [](const QString &str_)->int
+    {
+        return str_.toInt();
+    });
+    std::sort(std::begin(numbers), std::end(numbers));
+    QJsonArray result{};
+    for(int n_ : numbers)
+    {
+        const QJsonValue value = obj_.value(QString("%1").arg(n_));
+        result.push_back(value);
+    }
+    return result;
+}
+
+inline
 void getTable(
         lua_State *luaState_,
         int position_,
@@ -735,7 +789,15 @@ void getTable(
         {
             QJsonObject obj;
             getTable(luaState_, s_valueIndex, obj);
-            obj_.insert(key, QJsonValue{obj});
+            if(isArray(obj))
+            {
+                QJsonArray array = convertToArray(obj);
+                obj_.insert(key, QJsonValue{array});
+            }
+            else
+            {
+                obj_.insert(key, QJsonValue{obj});
+            }
             break;
         }
         case LUA_TFUNCTION:
