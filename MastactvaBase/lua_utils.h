@@ -692,7 +692,7 @@ bool isArray(const QJsonObject &obj_)
                 [](const QString &str_)->int
     {
         const int value = str_.toInt();
-        return QString("%1").arg(value) == str_.trimmed() ? value : -1;
+        return QString("%1").arg(value) == str_.trimmed() ? value : g_luaStartIndex - 1;
     });
     std::sort(std::begin(numbers), std::end(numbers));
     int expected = g_luaStartIndex;
