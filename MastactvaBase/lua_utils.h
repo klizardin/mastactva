@@ -19,6 +19,9 @@
 #include <QMatrix4x4>
 
 
+static const int g_luaStartIndex = 1;
+
+
 class LuaAPIUtils
 {
 public:
@@ -692,7 +695,7 @@ bool isArray(const QJsonObject &obj_)
         return QString("%1").arg(value) == str_.trimmed() ? value : -1;
     });
     std::sort(std::begin(numbers), std::end(numbers));
-    int expected = 1;
+    int expected = g_luaStartIndex;
     for(int n_ : numbers)
     {
         if(expected != n_)
