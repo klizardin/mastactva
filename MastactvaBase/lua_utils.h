@@ -685,6 +685,7 @@ bool isArray(const QJsonObject &obj_)
 {
     const QStringList keys = obj_.keys();
     std::vector<int> numbers;
+    static const int s_nan = g_luaStartIndex - 1;
     std::transform(
                 std::begin(keys),
                 std::end(keys),
@@ -692,8 +693,13 @@ bool isArray(const QJsonObject &obj_)
                 [](const QString &str_)->int
     {
         const int value = str_.toInt();
-        return QString("%1").arg(value) == str_.trimmed() ? value : g_luaStartIndex - 1;
+        return QString("%1").arg(value) == str_.trimmed() ? value : s_nan;
     });
+    const auto fit = std::find(std::begin(numbers), std::end(numbers), s_nan);
+    if(std::end(numbers) != fit)
+    {
+        return false;
+    }
     std::sort(std::begin(numbers), std::end(numbers));
     int expected = g_luaStartIndex;
     for(int n_ : numbers)
