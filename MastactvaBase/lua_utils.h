@@ -741,12 +741,12 @@ QJsonArray convertToArray(const QJsonObject &obj_)
 }
 
 inline
-void getTable(
+QJsonObject getObjectFromTable(
         lua_State *luaState_,
-        int position_,
-        QJsonObject &obj_
+        int position_
         )
 {
+    QJsonObject obj;
     /* table is in the stack at index 't' */
     lua_pushnil(luaState_);  /* first key */
     while (0 != lua_next(luaState_, position_))
@@ -770,42 +770,41 @@ void getTable(
         {
         case LUA_TNIL:
         {
-            obj_.insert(key, QJsonValue::fromVariant(QVariant{}));
+            obj.insert(key, QJsonValue::fromVariant(QVariant{}));
             break;
         }
         case LUA_TNUMBER:
         {
             double value = 0.0;
             getArgument(luaState_, s_valueIndex, value);
-            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TBOOLEAN:
         {
             bool value = false;
             getArgument(luaState_, s_valueIndex, value);
-            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TSTRING:
         {
             QString value;
             getArgument(luaState_, s_valueIndex, value);
-            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TTABLE:
         {
-            QJsonObject obj;
-            getTable(luaState_, s_valueIndex, obj);
-            if(isArray(obj))
+            const QJsonObject objValue = getObjectFromTable(luaState_, s_valueIndex);
+            if(isArray(objValue))
             {
-                QJsonArray array = convertToArray(obj);
-                obj_.insert(key, QJsonValue{array});
+                const QJsonArray array = convertToArray(objValue);
+                obj.insert(key, QJsonValue{array});
             }
             else
             {
-                obj_.insert(key, QJsonValue{obj});
+                obj.insert(key, QJsonValue{objValue});
             }
             break;
         }
@@ -822,6 +821,7 @@ void getTable(
     }
     // remove key
     lua_pop(luaState_, 1);
+    return obj;
 }
 
 inline
@@ -831,8 +831,7 @@ void getTable(
         QJsonDocument &doc_
         )
 {
-    QJsonObject obj;
-    getTable(luaState_, position_, obj);
+    const QJsonObject obj = getObjectFromTable(luaState_, position_);
     doc_ = QJsonDocument(obj);
 }
 
