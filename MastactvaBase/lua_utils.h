@@ -56,7 +56,7 @@ void LuaAPIUtils::dumpStack(lua_State *luaState_)
     int top = lua_gettop(luaState_);
     for (int i=1; i <= top; i++)
     {
-        qDebug() << i << luaL_typename(luaState_, i);
+        qDebug() << i << "(" << (i - top - 1) << ")" << luaL_typename(luaState_, i);
         switch (lua_type(luaState_, i))
         {
         case LUA_TNUMBER:
@@ -746,7 +746,7 @@ void getTable(
         static const int s_keyIndex = -2;
         static const int s_valueIndex = -1;
         if(!lua_isstring(luaState_, s_keyIndex)
-                || !lua_isnumber(luaState_, s_keyIndex)
+                && !lua_isnumber(luaState_, s_keyIndex)
                 )
         {
             // invalid key, skip
