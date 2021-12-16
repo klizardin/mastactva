@@ -286,7 +286,7 @@ bool LuaAPI::processAddon(const QString &name_, int position_) const
     {
         qDebug() << "no addons are set";
         lua_pop(m_luaState, 2);
-        QJsonDocument result{};
+        QJsonDocument result{QJsonObject{}};
         pushTable(m_luaState, result);
         return true;
     }
