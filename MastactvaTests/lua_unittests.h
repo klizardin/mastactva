@@ -113,6 +113,10 @@ TEST(Lua, utilDetails)
     obj1.insert("2", QJsonValue::fromVariant(QVariant::fromValue(1)));
     obj1.insert("1", QJsonValue::fromVariant(QVariant::fromValue(2)));
     EXPECT_TRUE(detail::isArray(obj1));
+    QJsonArray arr1;
+    arr1.push_back(QJsonValue::fromVariant(QVariant::fromValue(2)));
+    arr1.push_back(QJsonValue::fromVariant(QVariant::fromValue(1)));
+    EXPECT_EQ(detail::convertToArray(obj1), arr1);
 
     QJsonObject obj2;
     obj2.insert("2str", QJsonValue::fromVariant(QVariant::fromValue(1)));
