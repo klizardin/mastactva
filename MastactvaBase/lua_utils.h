@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <map>
+#include <type_traits>
 #include <math.h>
 #include <lua.hpp>
 #include <QDebug>
@@ -17,6 +18,9 @@
 #include <QMatrix2x2>
 #include <QMatrix3x3>
 #include <QMatrix4x4>
+
+
+static const int g_luaStartIndex = 1;
 
 
 class LuaAPIUtils
@@ -191,6 +195,44 @@ template<typename Arg_>
 DataLayout<Arg_> makeDataLayout(Arg_ &&field_)
 {
     return DataLayout<Arg_>(std::move(field_));
+}
+
+template<class DataType_>
+class DataLayoutTraits
+{
+public:
+    using DataType = DataType_;
+    using IsSimpleType = std::true_type;
+    using DataTypeLayout = void *;
+
+public:
+    static DataTypeLayout getLayout()
+    {
+        return nullptr;
+    }
+};
+
+#define DECLARE_DATA_LAYOUT(DataType_, layout_)                                 \
+template<>                                                                      \
+class DataLayoutTraits<DataType_>                                               \
+{                                                                               \
+public:                                                                         \
+    static auto getLayout()                                                     \
+    {                                                                           \
+        return layout_;                                                         \
+    }                                                                           \
+public:                                                                         \
+    using DataType = DataType_;                                                 \
+    using IsSimpleType = std::false_type;                                       \
+    using DataTypeLayout = typename std::remove_cv<decltype(layout_)>::type;    \
+};                                                                              \
+/* end of macro DECLARE_DATA_LAYOUT */
+
+template<typename DataType_> inline
+const DataLayoutTraits<DataType_> getLayout()
+{
+    static DataLayoutTraits<DataType_> simpleLayout;
+    return simpleLayout;
 }
 
 namespace detail
@@ -677,11 +719,146 @@ void getStructFromTable(
                                );
 }
 
+template<typename DataType_> inline
+void getStructFromTableWithLayoutTraits(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const DataLayoutTraits<DataType_> &layout_
+        );
+
+template<typename DataType_, typename ArgType_> inline
+void getStructItemFromTableFieldGet(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const FieldLayout<DataType_, ArgType_> &layoutArg_,
+        const std::true_type &
+        )
+{
+    const char *name = layoutArg_.getName();
+    if(!lua_getfield(luaState_, position_, name))
+    {
+        return;
+    }
+    detail::getArgument(luaState_, -1, layoutArg_.getDataRef(data_));
+    lua_pop(luaState_, 1);
+}
+
+template<typename DataType_, typename ArgType_> inline
+void getStructItemFromTableFieldGet(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const FieldLayout<DataType_, ArgType_> &layoutArg_,
+        const std::false_type &
+        )
+{
+    const char *name = layoutArg_.getName();
+    if(!lua_getfield(luaState_, position_, name))
+    {
+        return;
+    }
+    getStructFromTableWithLayoutTraits(luaState_, -1, layoutArg_.getDataRef(data_), getLayout<ArgType_>());
+    lua_pop(luaState_, 1);
+}
+
+template<typename DataType_, typename ArgType_> inline
+void getStructItemFromTableField(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const FieldLayout<DataType_, ArgType_> &layoutArg_
+        )
+{
+    getStructItemFromTableFieldGet(
+                luaState_,
+                position_,
+                data_,
+                layoutArg_,
+                typename DataLayoutTraits<DataType_>::IsSimpleType{}
+                );
+}
+
+template<typename DataType_> inline
+void getStructItemFromTableField(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const void *
+        )
+{
+    Q_UNUSED(luaState_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+}
+
+template<typename DataType_> inline
+void getStructItemFromTableTraits(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const void *,
+        const std::false_type &
+        )
+{
+    Q_UNUSED(luaState_);
+    Q_UNUSED(position_);
+    Q_UNUSED(data_);
+}
+
+template<typename DataType_, typename ... LayoutArgs_> inline
+void getStructItemFromTableTraits(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const DataLayout<LayoutArgs_ ...> &layout_,
+        const std::false_type &
+        )
+{
+    detail::getStructItemFromTableField(luaState_, position_, data_, layout_);
+    detail::getStructItemFromTableTraits(luaState_, position_, data_,
+                               static_cast<const typename DataLayout<LayoutArgs_ ...>::NextLayout &>(layout_),
+                               std::false_type{}
+                               );
+}
+
+template<typename DataType_> inline
+void getStructItemFromTableTraits(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const void *,
+        const std::true_type &
+        )
+{
+    detail::getArgument(luaState_, position_, data_);
+}
+
+template<typename DataType_> inline
+void getStructFromTableWithLayoutTraits(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_,
+        const DataLayoutTraits<DataType_> &layout_
+        )
+{
+    detail::getStructItemFromTableTraits(
+                luaState_,
+                position_,
+                data_,
+                layout_.getLayout(),
+                typename DataLayoutTraits<DataType_>::IsSimpleType{}
+                );
+}
+
+
 inline
 bool isArray(const QJsonObject &obj_)
 {
     const QStringList keys = obj_.keys();
     std::vector<int> numbers;
+    static const int s_nan = g_luaStartIndex - 1;
     std::transform(
                 std::begin(keys),
                 std::end(keys),
@@ -689,10 +866,15 @@ bool isArray(const QJsonObject &obj_)
                 [](const QString &str_)->int
     {
         const int value = str_.toInt();
-        return QString("%1").arg(value) == str_.trimmed() ? value : -1;
+        return QString("%1").arg(value) == str_.trimmed() ? value : s_nan;
     });
+    const auto fit = std::find(std::begin(numbers), std::end(numbers), s_nan);
+    if(std::end(numbers) != fit)
+    {
+        return false;
+    }
     std::sort(std::begin(numbers), std::end(numbers));
-    int expected = 1;
+    int expected = g_luaStartIndex;
     for(int n_ : numbers)
     {
         if(expected != n_)
@@ -732,12 +914,12 @@ QJsonArray convertToArray(const QJsonObject &obj_)
 }
 
 inline
-void getTable(
+QJsonObject getObjectFromTable(
         lua_State *luaState_,
-        int position_,
-        QJsonObject &obj_
+        int position_
         )
 {
+    QJsonObject obj;
     /* table is in the stack at index 't' */
     lua_pushnil(luaState_);  /* first key */
     while (0 != lua_next(luaState_, position_))
@@ -761,42 +943,41 @@ void getTable(
         {
         case LUA_TNIL:
         {
-            obj_.insert(key, QJsonValue::fromVariant(QVariant{}));
+            obj.insert(key, QJsonValue::fromVariant(QVariant{}));
             break;
         }
         case LUA_TNUMBER:
         {
             double value = 0.0;
             getArgument(luaState_, s_valueIndex, value);
-            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TBOOLEAN:
         {
             bool value = false;
             getArgument(luaState_, s_valueIndex, value);
-            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TSTRING:
         {
             QString value;
             getArgument(luaState_, s_valueIndex, value);
-            obj_.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
+            obj.insert(key, QJsonValue::fromVariant(QVariant::fromValue(value)));
             break;
         }
         case LUA_TTABLE:
         {
-            QJsonObject obj;
-            getTable(luaState_, s_valueIndex, obj);
-            if(isArray(obj))
+            const QJsonObject objValue = getObjectFromTable(luaState_, s_valueIndex);
+            if(isArray(objValue))
             {
-                QJsonArray array = convertToArray(obj);
-                obj_.insert(key, QJsonValue{array});
+                const QJsonArray array = convertToArray(objValue);
+                obj.insert(key, QJsonValue{array});
             }
             else
             {
-                obj_.insert(key, QJsonValue{obj});
+                obj.insert(key, QJsonValue{objValue});
             }
             break;
         }
@@ -813,6 +994,7 @@ void getTable(
     }
     // remove key
     lua_pop(luaState_, 1);
+    return obj;
 }
 
 inline
@@ -822,8 +1004,7 @@ void getTable(
         QJsonDocument &doc_
         )
 {
-    QJsonObject obj;
-    getTable(luaState_, position_, obj);
+    const QJsonObject obj = getObjectFromTable(luaState_, position_);
     doc_ = QJsonDocument(obj);
 }
 
@@ -982,6 +1163,16 @@ void getStructFromTable(
         )
 {
     detail::getStructFromTable(luaState_, position_, data_, layout_ );
+}
+
+template<typename DataType_> inline
+void getStructFromTable(
+        lua_State *luaState_,
+        int position_,
+        DataType_ &data_
+        )
+{
+    detail::getStructFromTableWithLayoutTraits(luaState_, position_, data_, getLayout<DataType_>() );
 }
 
 inline

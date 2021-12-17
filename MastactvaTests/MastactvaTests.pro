@@ -14,6 +14,7 @@ CONFIG += thread
 
 HEADERS += \
         addon_unittests.h \
+        define_lua_types.h \
         format_unittests.h \
         lua_unittests.h \
         test_utils.h \
