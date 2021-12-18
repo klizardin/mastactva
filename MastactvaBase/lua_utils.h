@@ -210,6 +210,10 @@ public:
     {
         return nullptr;
     }
+    static bool isSimpleType()
+    {
+        return IsSimpleType::value;
+    }
 };
 
 #define DECLARE_DATA_LAYOUT(DataType_, layout_)                                 \
@@ -220,6 +224,10 @@ public:                                                                         
     static auto getLayout()                                                     \
     {                                                                           \
         return layout_;                                                         \
+    }                                                                           \
+    static bool isSimpleType()                                                  \
+    {                                                                           \
+        return IsSimpleType::value;                                             \
     }                                                                           \
 public:                                                                         \
     using DataType = DataType_;                                                 \
@@ -772,6 +780,12 @@ void getStructItemFromTableFieldGet(
         const std::false_type &
         )
 {
+    using ItemType =
+        typename std::remove_reference<
+            typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))
+                >::type
+            >::type
+        ;
     const char *name = layoutArg_.getName();
     if(!lua_getfield(luaState_, position_, name))
     {
@@ -781,7 +795,7 @@ void getStructItemFromTableFieldGet(
                 luaState_,
                 -1,
                 layoutArg_.getDataRef(data_),
-                getLayout<typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))>::type>()
+                getLayout<ItemType>()
                 );
     lua_pop(luaState_, 1);
 }
@@ -794,15 +808,18 @@ void getStructItemFromTableField(
         const Layout_ &layoutArg_
         )
 {
+    using ItemTypeTraits = DataLayoutTraits<
+        typename std::remove_reference<
+            typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))
+                >::type
+            >::type
+        >;
     getStructItemFromTableFieldGet(
                 luaState_,
                 position_,
                 data_,
                 layoutArg_,
-                typename DataLayoutTraits<
-                    typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))
-                    >::type
-                >::IsSimpleType{}
+                typename ItemTypeTraits::IsSimpleType{}
                 );
 }
 
