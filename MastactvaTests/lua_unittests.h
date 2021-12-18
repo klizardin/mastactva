@@ -290,8 +290,8 @@ TEST(Lua, complexData)
                   "echo"
                   )
              );
-    //EXPECT_CALL(*mock, onTest(QString("t1"), true));
-    //api.call("main", nullptr, result, resultStrs);
+    EXPECT_CALL(*mock, onTest(QString("t1"), true));
+    api.call("main", nullptr, result, resultStrs);
 }
 
 #endif // LUA_UNITTESTS_H
