@@ -38,18 +38,16 @@ public:
 };
 
 
-template<typename DataType_, typename DataLayoutType_>
+template<typename DataType_>
 class LuaAPIDataTest : public LuaAPITest
 {
 public:
     LuaAPIDataTest(
             const QString &name_,
-            const DataType_ &data_,
-            const DataLayoutType_ &dataLayout_
+            const DataType_ &data_
             )
         : m_name(name_),
-          m_data(data_),
-          m_dataLayout(dataLayout_)
+          m_data(data_)
     {
     }
 
@@ -61,14 +59,13 @@ public:
     bool test(lua_State *luaState_, int position_) const override
     {
         DataType_ data{};
-        getStructFromTable<DataType_, DataLayoutType_>(luaState_, position_, data, m_dataLayout);
+        getStructFromTable<DataType_>(luaState_, position_, data);
         return m_data == data;
     }
 
 private:
     QString m_name;
     DataType_ m_data;
-    DataLayoutType_ m_dataLayout;
 };
 
 

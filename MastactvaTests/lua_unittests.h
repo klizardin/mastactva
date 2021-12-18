@@ -10,9 +10,9 @@
 #include <type_traits>
 #include <QString>
 #include "lua_utils.h"
-#include "define_lua_types.h"
 #include "luaapi.h"
 #include "test_utils.h"
+#include "define_lua_types.h"
 
 
 using namespace testing;
@@ -42,20 +42,20 @@ public:
 
 TEST(Lua, utils)
 {
-    using TestType = LuaAPIDataTest<DataTestData, typename std::remove_cv<decltype(g_DataTestDataLayout)>::type>;
+    using TestType = LuaAPIDataTest<DataTestData>;
 
     LuaAPI api;
     api.addTest(std::make_unique<TestType>
-                    ("t1", DataTestData{2, 0.0, ""}, g_DataTestDataLayout)
+                    ("t1", DataTestData{2, 0.0, ""})
                 );
     api.addTest(std::make_unique<TestType>
-                    ("t2", DataTestData{0, 3.0, ""}, g_DataTestDataLayout)
+                    ("t2", DataTestData{0, 3.0, ""})
                 );
     api.addTest(std::make_unique<TestType>
-                    ("t3", DataTestData{0, 0.0, "str"}, g_DataTestDataLayout)
+                    ("t3", DataTestData{0, 0.0, "str"})
                 );
     api.addTest(std::make_unique<TestType>
-                    ("t4", DataTestData{-5, 10.5, "somestr"}, g_DataTestDataLayout)
+                    ("t4", DataTestData{-5, 10.5, "somestr"})
                 );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
@@ -139,6 +139,8 @@ static const auto g_AddonTestDataLayout = makeDataLayout(
             makeFieldLayout("random", &AddonTestData::random)
             );
 
+DECLARE_DATA_LAYOUT(AddonTestData, g_AddonTestDataLayout);
+
 static const char *g_luaScriptAddonDataTestFmt =
         "function main ()\n"
         "    arg = {}\n"
@@ -165,6 +167,8 @@ static const auto g_AddonTestData2Layout = makeDataLayout(
             makeFieldLayout("value", &AddonTestData2::value)
             );
 
+DECLARE_DATA_LAYOUT(AddonTestData2, g_AddonTestData2Layout);
+
 static const char *g_luaScriptAddonDataTest2Fmt =
         "function main ()\n"
         "    result = {}\n"
@@ -190,23 +194,19 @@ TEST(Lua, addons)
     MergeId randomValue{};
     QString value{"value"};
 
-    using TestType = LuaAPIDataTest<AddonTestData,
-        typename std::remove_cv<decltype(g_AddonTestDataLayout)>::type
-        >;
-    using TestType2 = LuaAPIDataTest<AddonTestData2,
-        typename std::remove_cv<decltype(g_AddonTestData2Layout)>::type
-        >;
+    using TestType = LuaAPIDataTest<AddonTestData>;
+    using TestType2 = LuaAPIDataTest<AddonTestData2>;
 
 
     LuaAPI api;
     api.addTest(std::make_unique<TestType>
-                    ("t1", AddonTestData{value, randomValue}, g_AddonTestDataLayout)
+                    ("t1", AddonTestData{value, randomValue})
                 );
     api.addTest(std::make_unique<TestType2>
-                    ("t2", AddonTestData2{false}, g_AddonTestData2Layout)
+                    ("t2", AddonTestData2{false})
                 );
     api.addTest(std::make_unique<TestType2>
-                    ("t3", AddonTestData2{true}, g_AddonTestData2Layout)
+                    ("t3", AddonTestData2{true})
                 );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
