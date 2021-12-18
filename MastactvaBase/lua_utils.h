@@ -1027,6 +1027,7 @@ QJsonObject getObjectFromTable(
             {
                 obj.insert(key, QJsonValue{objValue});
             }
+            lua_pushnil(luaState_);  /* replace value with nill */
             break;
         }
         case LUA_TFUNCTION:
