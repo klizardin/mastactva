@@ -217,7 +217,7 @@ TEST(Lua, addons)
 }
 
 
-static const char *g_luaScriptAddonComplexData1TestFmt =
+static const char *g_luaScriptAddonComplexDataTest1Fmt =
         "function main ()\n"
         "    arg1 = {}\n"
         "    arg1[\"%2\"] = \"%3\"\n"
@@ -230,7 +230,7 @@ static const char *g_luaScriptAddonComplexData1TestFmt =
         "    test(arg, \"%1\")\n"
         "end\n";
 
-static const char *g_luaScriptAddonComplexData2TestFmt =
+static const char *g_luaScriptAddonComplexDataTest2Fmt =
         "function main ()\n"
         "    arg1 = {}\n"
         "    arg1[\"%2\"] = \"%3\"\n"
@@ -270,7 +270,7 @@ TEST(Lua, complexData)
     std::map<QString, QVector<double>> result;
     std::map<QString, QStringList> resultStrs;
 
-    api.load(QString(g_luaScriptAddonComplexData1TestFmt)
+    api.load(QString(g_luaScriptAddonComplexDataTest1Fmt)
              .arg("t1",
                   "key", value,
                   "random", randomValue,
@@ -281,7 +281,7 @@ TEST(Lua, complexData)
     EXPECT_CALL(*mock, onTest(QString("t1"), true));
 
     api.call("main", nullptr, result, resultStrs);
-    api.load(QString(g_luaScriptAddonComplexData2TestFmt)
+    api.load(QString(g_luaScriptAddonComplexDataTest2Fmt)
              .arg("t1",
                   "key", value,
                   "random", randomValue,
