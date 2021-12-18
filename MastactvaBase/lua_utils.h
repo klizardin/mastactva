@@ -82,6 +82,7 @@ void LuaAPIUtils::dumpStack(lua_State *luaState_)
     }
 }
 
+
 template<class DataType_, typename Arg_>
 struct FieldLayout
 {
@@ -108,6 +109,7 @@ private:
     const char *m_name = nullptr;
     Arg_ DataType_::*m_field;
 };
+
 
 template<typename ... Args_>
 struct DataLayout
@@ -197,6 +199,7 @@ DataLayout<Arg_> makeDataLayout(Arg_ &&field_)
     return DataLayout<Arg_>(std::move(field_));
 }
 
+
 template<class DataType_>
 class DataLayoutTraits
 {
@@ -243,6 +246,7 @@ const DataLayoutTraits<DataType_> getLayout()
     return simpleLayout;
 }
 
+
 namespace detail
 {
 
@@ -260,6 +264,7 @@ struct countOf<Arg_, Args_ ...>
 {
     static auto get() -> char(*)[sizeof(decltype(*countOf<Args_...>::get())) + 1];
 };
+
 
 template<typename Arg_> inline
 bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_)
@@ -895,7 +900,6 @@ void getStructFromTableWithLayoutTraits(
                 );
 }
 
-
 inline
 bool isArray(const QJsonObject &obj_)
 {
@@ -1186,7 +1190,8 @@ void pushTable(
     }
 }
 
-}
+} // namespace detail
+
 
 template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
