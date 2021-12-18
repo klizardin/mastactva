@@ -254,13 +254,31 @@ struct countOf<Arg_, Args_ ...>
 };
 
 template<typename Arg_> inline
-bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_)
+//{
+//    Q_UNUSED(luaState_);
+//    Q_UNUSED(position_);
+//    Q_UNUSED(arg_);
+//    return false;
+//}
+;
 
 template<typename Arg_> inline
-void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_)
+//{
+//    Q_UNUSED(luaState_);
+//    Q_UNUSED(position_);
+//    Q_UNUSED(arg_);
+//}
+;
 
 template<typename Arg_> inline
-void pushArgument(lua_State *luaState_, const Arg_ &arg_);
+void pushArgument(lua_State *luaState_, const Arg_ &arg_)
+//{
+//    Q_UNUSED(luaState_);
+//    Q_UNUSED(arg_);
+//}
+;
 
 template<> inline
 bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
@@ -727,12 +745,12 @@ void getStructFromTableWithLayoutTraits(
         const DataLayoutTraits<DataType_> &layout_
         );
 
-template<typename DataType_, typename ArgType_> inline
+template<typename DataType_, class LayoutType_> inline
 void getStructItemFromTableFieldGet(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const FieldLayout<DataType_, ArgType_> &layoutArg_,
+        const LayoutType_ &layoutArg_,
         const std::true_type &
         )
 {
@@ -745,12 +763,12 @@ void getStructItemFromTableFieldGet(
     lua_pop(luaState_, 1);
 }
 
-template<typename DataType_, typename ArgType_> inline
+template<typename DataType_, class LayoutType_> inline
 void getStructItemFromTableFieldGet(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const FieldLayout<DataType_, ArgType_> &layoutArg_,
+        const LayoutType_ &layoutArg_,
         const std::false_type &
         )
 {
@@ -759,16 +777,21 @@ void getStructItemFromTableFieldGet(
     {
         return;
     }
-    getStructFromTableWithLayoutTraits(luaState_, -1, layoutArg_.getDataRef(data_), getLayout<ArgType_>());
+    getStructFromTableWithLayoutTraits(
+                luaState_,
+                -1,
+                layoutArg_.getDataRef(data_),
+                getLayout<typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))>::type>()
+                );
     lua_pop(luaState_, 1);
 }
 
-template<typename DataType_, typename ArgType_> inline
+template<typename DataType_, class Layout_> inline
 void getStructItemFromTableField(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const FieldLayout<DataType_, ArgType_> &layoutArg_
+        const Layout_ &layoutArg_
         )
 {
     getStructItemFromTableFieldGet(
@@ -776,7 +799,10 @@ void getStructItemFromTableField(
                 position_,
                 data_,
                 layoutArg_,
-                typename DataLayoutTraits<DataType_>::IsSimpleType{}
+                typename DataLayoutTraits<
+                    typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))
+                    >::type
+                >::IsSimpleType{}
                 );
 }
 
