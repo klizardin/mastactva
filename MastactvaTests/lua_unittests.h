@@ -10,9 +10,9 @@
 #include <type_traits>
 #include <QString>
 #include "lua_utils.h"
-#include "define_lua_types.h"
 #include "luaapi.h"
 #include "test_utils.h"
+#include "define_lua_types.h"
 
 
 using namespace testing;
@@ -42,20 +42,20 @@ public:
 
 TEST(Lua, utils)
 {
-    using TestType = LuaAPIDataTest<DataTestData, typename std::remove_cv<decltype(g_DataTestDataLayout)>::type>;
+    using TestType = LuaAPIDataTest<DataTestData>;
 
     LuaAPI api;
     api.addTest(std::make_unique<TestType>
-                    ("t1", DataTestData{2, 0.0, ""}, g_DataTestDataLayout)
+                    ("t1", DataTestData{2, 0.0, ""})
                 );
     api.addTest(std::make_unique<TestType>
-                    ("t2", DataTestData{0, 3.0, ""}, g_DataTestDataLayout)
+                    ("t2", DataTestData{0, 3.0, ""})
                 );
     api.addTest(std::make_unique<TestType>
-                    ("t3", DataTestData{0, 0.0, "str"}, g_DataTestDataLayout)
+                    ("t3", DataTestData{0, 0.0, "str"})
                 );
     api.addTest(std::make_unique<TestType>
-                    ("t4", DataTestData{-5, 10.5, "somestr"}, g_DataTestDataLayout)
+                    ("t4", DataTestData{-5, 10.5, "somestr"})
                 );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
@@ -120,25 +120,6 @@ TEST(Lua, utilDetails)
 }
 
 
-class AddonTestData
-{
-public:
-    QString key;
-    QString random;
-
-    bool operator == (const AddonTestData &data_) const
-    {
-        return data_.key == key
-                && data_.random == random
-                ;
-    }
-};
-
-static const auto g_AddonTestDataLayout = makeDataLayout(
-            makeFieldLayout("key", &AddonTestData::key),
-            makeFieldLayout("random", &AddonTestData::random)
-            );
-
 static const char *g_luaScriptAddonDataTestFmt =
         "function main ()\n"
         "    arg = {}\n"
@@ -148,22 +129,6 @@ static const char *g_luaScriptAddonDataTestFmt =
         "    test(result, \"%1\")\n"
         "end\n";
 
-
-class AddonTestData2
-{
-public:
-    bool value = false;
-
-    bool operator == (const AddonTestData2 &data_) const
-    {
-        return data_.value == value
-                ;
-    }
-};
-
-static const auto g_AddonTestData2Layout = makeDataLayout(
-            makeFieldLayout("value", &AddonTestData2::value)
-            );
 
 static const char *g_luaScriptAddonDataTest2Fmt =
         "function main ()\n"
@@ -190,23 +155,19 @@ TEST(Lua, addons)
     MergeId randomValue{};
     QString value{"value"};
 
-    using TestType = LuaAPIDataTest<AddonTestData,
-        typename std::remove_cv<decltype(g_AddonTestDataLayout)>::type
-        >;
-    using TestType2 = LuaAPIDataTest<AddonTestData2,
-        typename std::remove_cv<decltype(g_AddonTestData2Layout)>::type
-        >;
+    using TestType = LuaAPIDataTest<AddonTestData>;
+    using TestType2 = LuaAPIDataTest<AddonTestData2>;
 
 
     LuaAPI api;
     api.addTest(std::make_unique<TestType>
-                    ("t1", AddonTestData{value, randomValue}, g_AddonTestDataLayout)
+                    ("t1", AddonTestData{value, randomValue})
                 );
     api.addTest(std::make_unique<TestType2>
-                    ("t2", AddonTestData2{false}, g_AddonTestData2Layout)
+                    ("t2", AddonTestData2{false})
                 );
     api.addTest(std::make_unique<TestType2>
-                    ("t3", AddonTestData2{true}, g_AddonTestData2Layout)
+                    ("t3", AddonTestData2{true})
                 );
 
     std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
@@ -255,5 +216,82 @@ TEST(Lua, addons)
     EXPECT_EQ(resultStrs, resultStrsExpected);
 }
 
+
+static const char *g_luaScriptAddonComplexDataTest1Fmt =
+        "function main ()\n"
+        "    arg1 = {}\n"
+        "    arg1[\"%2\"] = \"%3\"\n"
+        "    arg1[\"%4\"] = \"%5\"\n"
+        "    arg2 = {}\n"
+        "    arg2[\"%6\"] = %7\n"
+        "    arg = {}\n"
+        "    arg[\"%8\"] = arg1\n"
+        "    arg[\"%9\"] = arg2\n"
+        "    test(arg, \"%1\")\n"
+        "end\n";
+
+static const char *g_luaScriptAddonComplexDataTest2Fmt =
+        "function main ()\n"
+        "    arg1 = {}\n"
+        "    arg1[\"%2\"] = \"%3\"\n"
+        "    arg1[\"%4\"] = \"%5\"\n"
+        "    arg2 = {}\n"
+        "    arg2[\"%6\"] = %7\n"
+        "    arg = {}\n"
+        "    arg[\"%8\"] = arg1\n"
+        "    arg[\"%9\"] = arg2\n"
+        "    result = addon.call(arg, \"%10\")\n"
+        "    test(result, \"%1\")\n"
+        "end\n";
+
+TEST(Lua, complexData)
+{
+    QDir addonsDir;
+    ASSERT_TRUE(findDynLibs(QDir("../"), addonsDir));
+
+    auto modules = std::make_shared<AddonModules>();
+    ASSERT_TRUE(modules->create(addonsDir));
+
+    using TestType = LuaAPIDataTest<AddonTestDataComplex>;
+
+    MergeId randomValue{};
+    QString value{"value"};
+
+    LuaAPI api;
+    api.addTest(std::make_unique<TestType>
+                ("t1", AddonTestDataComplex{{value, randomValue}, {true}})
+                );
+
+    std::shared_ptr<TestObserverMock> mock = std::make_shared<TestObserverMock>();
+    api.setTestObserver(mock);
+
+    api.set(modules);
+
+    std::map<QString, QVector<double>> result;
+    std::map<QString, QStringList> resultStrs;
+
+    api.load(QString(g_luaScriptAddonComplexDataTest1Fmt)
+             .arg("t1",
+                  "key", value,
+                  "random", randomValue,
+                  "value", "true",
+                  "data1", "data2"
+                  )
+             );
+    EXPECT_CALL(*mock, onTest(QString("t1"), true));
+
+    api.call("main", nullptr, result, resultStrs);
+    api.load(QString(g_luaScriptAddonComplexDataTest2Fmt)
+             .arg("t1",
+                  "key", value,
+                  "random", randomValue,
+                  "value", "true",
+                  "data1", "data2",
+                  "echo"
+                  )
+             );
+    EXPECT_CALL(*mock, onTest(QString("t1"), true));
+    api.call("main", nullptr, result, resultStrs);
+}
 
 #endif // LUA_UNITTESTS_H

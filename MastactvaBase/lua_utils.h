@@ -82,6 +82,7 @@ void LuaAPIUtils::dumpStack(lua_State *luaState_)
     }
 }
 
+
 template<class DataType_, typename Arg_>
 struct FieldLayout
 {
@@ -108,6 +109,7 @@ private:
     const char *m_name = nullptr;
     Arg_ DataType_::*m_field;
 };
+
 
 template<typename ... Args_>
 struct DataLayout
@@ -197,6 +199,7 @@ DataLayout<Arg_> makeDataLayout(Arg_ &&field_)
     return DataLayout<Arg_>(std::move(field_));
 }
 
+
 template<class DataType_>
 class DataLayoutTraits
 {
@@ -210,6 +213,10 @@ public:
     {
         return nullptr;
     }
+    static bool isSimpleType()
+    {
+        return IsSimpleType::value;
+    }
 };
 
 #define DECLARE_DATA_LAYOUT(DataType_, layout_)                                 \
@@ -220,6 +227,10 @@ public:                                                                         
     static auto getLayout()                                                     \
     {                                                                           \
         return layout_;                                                         \
+    }                                                                           \
+    static bool isSimpleType()                                                  \
+    {                                                                           \
+        return IsSimpleType::value;                                             \
     }                                                                           \
 public:                                                                         \
     using DataType = DataType_;                                                 \
@@ -234,6 +245,7 @@ const DataLayoutTraits<DataType_> getLayout()
     static DataLayoutTraits<DataType_> simpleLayout;
     return simpleLayout;
 }
+
 
 namespace detail
 {
@@ -253,14 +265,33 @@ struct countOf<Arg_, Args_ ...>
     static auto get() -> char(*)[sizeof(decltype(*countOf<Args_...>::get())) + 1];
 };
 
-template<typename Arg_> inline
-bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_);
 
 template<typename Arg_> inline
-void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_);
+bool getArgument(lua_State *luaState_, int position_, Arg_ &arg_)
+//{
+//    Q_UNUSED(luaState_);
+//    Q_UNUSED(position_);
+//    Q_UNUSED(arg_);
+//    return false;
+//}
+;
 
 template<typename Arg_> inline
-void pushArgument(lua_State *luaState_, const Arg_ &arg_);
+void traceArgument(lua_State *luaState_, int position_, Arg_ &arg_)
+//{
+//    Q_UNUSED(luaState_);
+//    Q_UNUSED(position_);
+//    Q_UNUSED(arg_);
+//}
+;
+
+template<typename Arg_> inline
+void pushArgument(lua_State *luaState_, const Arg_ &arg_)
+//{
+//    Q_UNUSED(luaState_);
+//    Q_UNUSED(arg_);
+//}
+;
 
 template<> inline
 bool getArgument<QString>(lua_State *luaState_, int position_, QString &arg_)
@@ -727,12 +758,12 @@ void getStructFromTableWithLayoutTraits(
         const DataLayoutTraits<DataType_> &layout_
         );
 
-template<typename DataType_, typename ArgType_> inline
+template<typename DataType_, class LayoutType_> inline
 void getStructItemFromTableFieldGet(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const FieldLayout<DataType_, ArgType_> &layoutArg_,
+        const LayoutType_ &layoutArg_,
         const std::true_type &
         )
 {
@@ -745,38 +776,55 @@ void getStructItemFromTableFieldGet(
     lua_pop(luaState_, 1);
 }
 
-template<typename DataType_, typename ArgType_> inline
+template<typename DataType_, class LayoutType_> inline
 void getStructItemFromTableFieldGet(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const FieldLayout<DataType_, ArgType_> &layoutArg_,
+        const LayoutType_ &layoutArg_,
         const std::false_type &
         )
 {
+    using ItemType =
+        typename std::remove_reference<
+            typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))
+                >::type
+            >::type
+        ;
     const char *name = layoutArg_.getName();
     if(!lua_getfield(luaState_, position_, name))
     {
         return;
     }
-    getStructFromTableWithLayoutTraits(luaState_, -1, layoutArg_.getDataRef(data_), getLayout<ArgType_>());
+    getStructFromTableWithLayoutTraits(
+                luaState_,
+                -1,
+                layoutArg_.getDataRef(data_),
+                getLayout<ItemType>()
+                );
     lua_pop(luaState_, 1);
 }
 
-template<typename DataType_, typename ArgType_> inline
+template<typename DataType_, class Layout_> inline
 void getStructItemFromTableField(
         lua_State *luaState_,
         int position_,
         DataType_ &data_,
-        const FieldLayout<DataType_, ArgType_> &layoutArg_
+        const Layout_ &layoutArg_
         )
 {
+    using ItemTypeTraits = DataLayoutTraits<
+        typename std::remove_reference<
+            typename std::remove_cv<decltype(layoutArg_.getDataRef(data_))
+                >::type
+            >::type
+        >;
     getStructItemFromTableFieldGet(
                 luaState_,
                 position_,
                 data_,
                 layoutArg_,
-                typename DataLayoutTraits<DataType_>::IsSimpleType{}
+                typename ItemTypeTraits::IsSimpleType{}
                 );
 }
 
@@ -852,7 +900,6 @@ void getStructFromTableWithLayoutTraits(
                 );
 }
 
-
 inline
 bool isArray(const QJsonObject &obj_)
 {
@@ -919,6 +966,8 @@ QJsonObject getObjectFromTable(
         int position_
         )
 {
+    //qDebug() << "getObjectFromTable() at " << position_;
+    //LuaAPIUtils::dumpStack(luaState_);
     QJsonObject obj;
     /* table is in the stack at index 't' */
     lua_pushnil(luaState_);  /* first key */
@@ -969,7 +1018,10 @@ QJsonObject getObjectFromTable(
         }
         case LUA_TTABLE:
         {
-            const QJsonObject objValue = getObjectFromTable(luaState_, s_valueIndex);
+            const int valuePosition = lua_gettop(luaState_) + s_valueIndex + 1;
+            //qDebug() << "LUA_TTABLE at" << valuePosition;
+            //LuaAPIUtils::dumpStack(luaState_);
+            const QJsonObject objValue = getObjectFromTable(luaState_, valuePosition);
             if(isArray(objValue))
             {
                 const QJsonArray array = convertToArray(objValue);
@@ -979,6 +1031,7 @@ QJsonObject getObjectFromTable(
             {
                 obj.insert(key, QJsonValue{objValue});
             }
+            lua_pushnil(luaState_);  /* replace value with nill */
             break;
         }
         case LUA_TFUNCTION:
@@ -991,9 +1044,13 @@ QJsonObject getObjectFromTable(
         }
         /* removes 'value'; keeps 'key' for next iteration */
         lua_pop(luaState_, 1);
+        //qDebug() << "removes 'value'; keeps 'key' for next iteration";
+        //LuaAPIUtils::dumpStack(luaState_);
     }
     // remove key
     lua_pop(luaState_, 1);
+    //qDebug() << "removes 'key'";
+    //LuaAPIUtils::dumpStack(luaState_);
     return obj;
 }
 
@@ -1133,7 +1190,8 @@ void pushTable(
     }
 }
 
-}
+} // namespace detail
+
 
 template<typename ... Args_> inline
 bool getArguments(lua_State *luaState_, Args_ &... args_)
