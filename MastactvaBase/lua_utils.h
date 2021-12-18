@@ -962,6 +962,8 @@ QJsonObject getObjectFromTable(
         int position_
         )
 {
+    //qDebug() << "getObjectFromTable() at " << position_;
+    //LuaAPIUtils::dumpStack(luaState_);
     QJsonObject obj;
     /* table is in the stack at index 't' */
     lua_pushnil(luaState_);  /* first key */
@@ -1012,7 +1014,10 @@ QJsonObject getObjectFromTable(
         }
         case LUA_TTABLE:
         {
-            const QJsonObject objValue = getObjectFromTable(luaState_, s_valueIndex);
+            const int valuePosition = lua_gettop(luaState_) + s_valueIndex + 1;
+            //qDebug() << "LUA_TTABLE at" << valuePosition;
+            //LuaAPIUtils::dumpStack(luaState_);
+            const QJsonObject objValue = getObjectFromTable(luaState_, valuePosition);
             if(isArray(objValue))
             {
                 const QJsonArray array = convertToArray(objValue);
@@ -1034,9 +1039,13 @@ QJsonObject getObjectFromTable(
         }
         /* removes 'value'; keeps 'key' for next iteration */
         lua_pop(luaState_, 1);
+        //qDebug() << "removes 'value'; keeps 'key' for next iteration";
+        //LuaAPIUtils::dumpStack(luaState_);
     }
     // remove key
     lua_pop(luaState_, 1);
+    //qDebug() << "removes 'key'";
+    //LuaAPIUtils::dumpStack(luaState_);
     return obj;
 }
 
