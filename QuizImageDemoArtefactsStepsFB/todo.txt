@@ -97,4 +97,5 @@ should design add-ons load
     * None add-on by default return all input
 lua script gets only arguments
 
+opencv addon test
 
