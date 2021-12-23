@@ -99,5 +99,5 @@ lua script gets only arguments
 
 opencv addon test
 * cmake project
-json lib
+* json lib
 
