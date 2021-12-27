@@ -101,5 +101,13 @@ opencv addon test
 * cmake project
 * json lib
 * refactoring to extract current version
+* extract plugin code
+- add json
+- replace arguments with absolute values into arguments with values in range of 0..1
+- improve stability of the base algorithm
+- implement simple algorithm of extracting areas
+- implement algorithm with manual help of extracting areas
+- implement plugin
+- add tests for plugin
 
 
