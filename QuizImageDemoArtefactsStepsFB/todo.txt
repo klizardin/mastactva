@@ -102,7 +102,7 @@ opencv addon test
 * json lib
 * refactoring to extract current version
 * extract plugin code
-- add json
+* add json
 - replace arguments with absolute values into arguments with values in range of 0..1
 - improve stability of the base algorithm
 - implement simple algorithm of extracting areas
