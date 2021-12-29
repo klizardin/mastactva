@@ -104,6 +104,7 @@ opencv addon test
 * extract plugin code
 * add json
 - replace arguments with absolute values into arguments with values in range of 0..1
+- use max(width, height) ratio value not ratio of width*height
 - improve stability of the base algorithm
 - implement simple algorithm of extracting areas
 - implement algorithm with manual help of extracting areas
