@@ -109,6 +109,7 @@ opencv addon test
 - implement plugin
     * implement plugin base
     * implement json matrix result
+    * create common files to better debug application
     - move existing code to the plugin
 - improve stability of the base algorithm
 - implement simple algorithm of extracting areas
