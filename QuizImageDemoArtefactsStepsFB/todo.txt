@@ -108,6 +108,7 @@ opencv addon test
 * use max(width, height) ratio value not ratio of width*height
 - implement plugin
     * implement plugin base
+    * implement json matrix result
     - move existing code to the plugin
 - improve stability of the base algorithm
 - implement simple algorithm of extracting areas
