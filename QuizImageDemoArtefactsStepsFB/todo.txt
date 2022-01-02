@@ -106,10 +106,18 @@ opencv addon test
 * replace arguments with absolute values into arguments with values in range of 0..1
 * refactring
 * use max(width, height) ratio value not ratio of width*height
-- implement plugin
+* implement base plugin
+    * implement plugin base
+    * implement json matrix result
+    * create common files to better debug application
+    * move existing code to the plugin
 - improve stability of the base algorithm
 - implement simple algorithm of extracting areas
 - implement algorithm with manual help of extracting areas
 - add tests for plugin
+
+- graphical editing of parameters
+
+
 
 
