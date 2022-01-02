@@ -114,4 +114,8 @@ opencv addon test
 - implement algorithm with manual help of extracting areas
 - add tests for plugin
 
+- graphical editing of parameters
+
+
+
 
