@@ -116,8 +116,8 @@ opencv addon test
         * refactor to "auto_rects"
         * implement "generated_rects"
         * implement "input_rects"
-        + test "generated_rects"
-        - test "input_rects"
+        * test "generated_rects"
+        * test "input_rects"
 - implement algorithm with manual help of extracting areas
 - add tests for plugin
 
