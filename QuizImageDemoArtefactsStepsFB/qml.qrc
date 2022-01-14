@@ -17,6 +17,8 @@
         <file>Shaders/default.fsh</file>
         <file>Shaders/default.vsh</file>
         <file>Shaders/test004/period.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffecttest.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffecttest.vsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/no-image.png</file>
