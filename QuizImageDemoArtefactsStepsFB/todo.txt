@@ -111,13 +111,14 @@ opencv addon test
     * implement json matrix result
     * create common files to better debug application
     * move existing code to the plugin
-- implement simple algorithm of extracting areas
-    - add mode for algorithm choosing
+* implement simple algorithm of extracting areas
+    * add mode for algorithm choosing
         * refactor to "auto_rects"
         * implement "generated_rects"
         * implement "input_rects"
         * test "generated_rects"
         * test "input_rects"
+- intergrate plugin into the editor application
 - implement algorithm with manual help of extracting areas
 - add tests for plugin
 
