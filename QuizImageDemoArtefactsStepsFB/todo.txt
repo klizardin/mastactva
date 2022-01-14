@@ -121,6 +121,8 @@ opencv addon test
 - intergrate plugin into the editor application
     - implement effect for the plugin
         - add test for the effect
+            - requirements
+                + Matrix4x4 attribute type is supported
             - effect code
             - lua effect build code
             - visual test for effect
