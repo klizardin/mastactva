@@ -120,6 +120,10 @@ opencv addon test
         * test "input_rects"
 - intergrate plugin into the editor application
     - implement effect for the plugin
+        - add test for the effect
+            - effect code
+            - lua effect build code
+            - visual test for effect
 - implement algorithm with manual help of extracting areas
 - add tests for plugin
 
