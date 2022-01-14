@@ -126,7 +126,8 @@ opencv addon test
                 - test matrixies approximation (should I norm matrixies before)
                 - liniear matrixies approximation is it ok,
                   maybe, I should expand matrixies positions from line to square
-
+                - from plugin return center point for matrix
+                - from plugin return matrix of matrixies
             - effect code
             - lua effect build code
             - visual test for effect
