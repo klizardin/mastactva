@@ -123,6 +123,10 @@ opencv addon test
         - add test for the effect
             - requirements
                 + Matrix4x4 attribute type is supported
+                - test matrixies approximation (should I norm matrixies before)
+                - liniear matrixies approximation is it ok,
+                  maybe, I should expand matrixies positions from line to square
+
             - effect code
             - lua effect build code
             - visual test for effect
