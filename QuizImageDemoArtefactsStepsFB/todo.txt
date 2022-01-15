@@ -128,6 +128,7 @@ opencv addon test
                   maybe, I should expand matrixies positions from line to square
                 - from plugin return center point for matrix
                 - from plugin return matrix of matrixies
+                * addopt addon to attributes data
             - effect code
             - lua effect build code
             - visual test for effect
