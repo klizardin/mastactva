@@ -139,6 +139,8 @@ opencv addon test
 - improve stability of the base algorithm
 - graphical editing of parameters
 
+- add local arg sets for effect inside gallery -- to localy save arg set
+
 
 
 
