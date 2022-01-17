@@ -1,5 +1,5 @@
 /*
-    Copyright 2021
+    Copyright 2022
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,11 +17,16 @@
 
 /*@shader @description default vertex shader*/
 attribute highp vec4 renderVertexAttribute;
-attribute mediump vec4 renderTextureAttribute;
+
+attribute mediump vec4 textureAttributeBase;
+attribute mediump vec4 textureAttributeFrom;
+attribute mediump vec4 textureAttributeTo;
 
 uniform mediump mat4 renderMatrix;
 uniform mediump mat4 renderFromImageMatrix;
 uniform mediump mat4 renderToImageMatrix;
+
+uniform mediump float renderT;
 
 varying mediump vec4 texCoord1Var;
 varying mediump vec4 texCoord2Var;
@@ -29,6 +34,6 @@ varying mediump vec4 texCoord2Var;
 void main(void)
 {
     gl_Position = renderMatrix * renderVertexAttribute;
-    texCoord1Var = renderFromImageMatrix * renderTextureAttribute;
-    texCoord2Var = renderToImageMatrix * renderTextureAttribute;
+    texCoord1Var = renderFromImageMatrix * mix(textureAttributeBase, textureAttributeFrom, renderT);
+    texCoord2Var = renderToImageMatrix * mix(textureAttributeTo, textureAttributeBase, renderT);
 }
