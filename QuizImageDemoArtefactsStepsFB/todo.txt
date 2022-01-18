@@ -130,6 +130,8 @@ opencv addon test
                 - from plugin return matrix of matrixies
                 * addopt addon to attributes data
                 * test addoption to the attribute data
+                - blending (general config) functions for drawing pipeline
+                  (need params for such operations)
             - effect code
             - lua effect build code
             - visual test for effect
