@@ -82,6 +82,141 @@ bool opengl_drawing::Texture::isValidLocation() const
 }
 
 
+class AlphaBlindingDisable : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return "AlphaBlinding.disable" == stateStr_;
+    }
+
+    void init(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_BLEND);
+    }
+
+    void release(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_BLEND);
+    }
+};
+
+
+class AlphaBlindingDefault : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return "AlphaBlinding.add.src_alpha.one_minus_src_alpha" == stateStr_
+                || "AlphaBlinding.default" == stateStr_
+                ;
+    }
+
+    void init(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+    }
+
+    void release(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_BLEND);
+    }
+};
+
+
+class DepthTestEnable : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return "DepthTest.enable" == stateStr_
+                || "DepthTest.default" == stateStr_
+                ;
+    }
+
+    void init(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void release(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_DEPTH_TEST);
+    }
+};
+
+
+class DepthTestDisable : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return "DepthTest.disable" == stateStr_;
+    }
+
+    void init(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_DEPTH_TEST);
+    }
+
+    void release(const QString &stateStr_) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_DEPTH_TEST);
+    }
+};
+
+
+void opengl_drawing::States::init(const QString &stateStr_)
+{
+    for(std::unique_ptr<State> &state_ : m_states)
+    {
+        if(!state_)
+        {
+            continue;
+        }
+        if(state_->canProcess(stateStr_))
+        {
+            state_->init(stateStr_);
+        }
+    }
+}
+
+void opengl_drawing::States::release(const QString &stateStr_)
+{
+    for(std::unique_ptr<State> &state_ : m_states)
+    {
+        if(!state_)
+        {
+            continue;
+        }
+        if(state_->canProcess(stateStr_))
+        {
+            state_->release(stateStr_);
+        }
+    }
+}
+
+std::unique_ptr<opengl_drawing::States> opengl_drawing::States::create()
+{
+    std::unique_ptr<opengl_drawing::States> result = std::make_unique<opengl_drawing::States>();
+    result->m_states.push_back(std::make_unique<AlphaBlindingDisable>());
+    result->m_states.push_back(std::make_unique<AlphaBlindingDefault>());
+    result->m_states.push_back(std::make_unique<DepthTestEnable>());
+    result->m_states.push_back(std::make_unique<DepthTestDisable>());
+    return result;
+}
+
+
 void opengl_drawing::Object::free()
 {
     program.reset();
@@ -92,6 +227,8 @@ void opengl_drawing::Object::init(
         const std::shared_ptr<drawing_data::QuizImageObject> &imageData_
         )
 {
+    m_states = States::create();
+
     free();
 
     m_imageData = imageData_;
@@ -384,6 +521,28 @@ bool opengl_drawing::Object::isUsable() const
     return program.operator bool();
 }
 
+void opengl_drawing::Object::initStates()
+{
+    if(!m_imageData->objectStates.empty() && m_states)
+    {
+        for(const QString &stateStr_ : m_imageData->objectStates)
+        {
+            m_states->init(stateStr_);
+        }
+    }
+}
+
+void opengl_drawing::Object::releaseStates()
+{
+    if(!m_imageData->objectStates.empty() && m_states)
+    {
+        for(const QString &stateStr_ : m_imageData->objectStates)
+        {
+            m_states->release(stateStr_);
+        }
+    }
+}
+
 void opengl_drawing::Object::setTextureIndexes()
 {
     int textureIndex = 0;
@@ -564,6 +723,7 @@ void opengl_drawing::Objects::init(
         )
 {
     m_imageData = std::move(imageData_);
+    m_states = States::create();
     reinit();
 }
 
@@ -683,6 +843,7 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
             continue;
         }
 
+        object_->initStates();
         object_->bind();
         object_->setUniforms();
         object_->enableAttributes();
@@ -691,6 +852,41 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
         object_->drawTriangles(f_);
         object_->disableAttributes();
         object_->release();
+        object_->releaseStates();
+    }
+}
+
+void opengl_drawing::Objects::initStates()
+{
+    if(!m_imageData->globalStates.empty() && m_states)
+    {
+        for(const QString &stateStr_ : m_imageData->globalStates)
+        {
+            m_states->init(stateStr_);
+        }
+    }
+    else
+    {
+        glFrontFace(GL_CW);
+        glCullFace(GL_FRONT);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void opengl_drawing::Objects::releaseStates()
+{
+    if(!m_imageData->globalStates.empty() && m_states)
+    {
+        for(const QString &stateStr_ : m_imageData->globalStates)
+        {
+            m_states->release(stateStr_);
+        }
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
     }
 }
 
@@ -945,18 +1141,32 @@ void ObjectsRenderer::render()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-    glFrontFace(GL_CW);
-    glCullFace(GL_FRONT);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
+    if(isValidData())
+    {
+        m_openglData->initStates();
+    }
+    else
+    {
+        glFrontFace(GL_CW);
+        glCullFace(GL_FRONT);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+    }
 
     if(isValidData())
     {
         m_openglData->draw(this);
     }
 
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    if(isValidData())
+    {
+        m_openglData->releaseStates();
+    }
+    else
+    {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+    }
 }
 
 void ObjectsRenderer::setFromImage(const QString &url_)
