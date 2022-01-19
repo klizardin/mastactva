@@ -52,6 +52,26 @@ namespace opengl_drawing
         std::unique_ptr<QOpenGLTexture> m_texture;
     };
 
+    class State
+    {
+    public:
+        virtual bool canProcess(const QString &stateStr_) const = 0;
+        virtual void init(const QString &stateStr_) = 0;
+        virtual void release(const QString &stateStr_) = 0;
+    };
+
+    class States
+    {
+    public:
+        void init(const QString &stateStr_);
+        void release(const QString &stateStr_);
+
+        static std::unique_ptr<States> create();
+
+    private:
+        std::vector<std::unique_ptr<State>> m_states;
+    };
+
     class Object
     {
     public:
@@ -72,6 +92,8 @@ namespace opengl_drawing
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
         bool isUsable() const;
+        void initStates();
+        void releaseStates();
 
     private:
         void setTextureIndexes();
@@ -83,6 +105,7 @@ namespace opengl_drawing
         QHash<QString, int> attributes;
         QHash<QString, int> uniforms;
         std::map<QString, std::unique_ptr<Texture>> textures;
+        std::unique_ptr<States> m_states;
     };
 
     class Objects : public IVariables
@@ -94,6 +117,8 @@ namespace opengl_drawing
         bool needToReinit(double tNew_) const;
         void calculate();
         void draw(QOpenGLFunctions *f_);
+        void initStates();
+        void releaseStates();
 
         bool get(const QString &name_, QVector<double> &data_) const override
         {
@@ -193,6 +218,7 @@ namespace opengl_drawing
         opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
         opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
         QStringList m_updated;
+        std::unique_ptr<States> m_states;
     };
 }
 

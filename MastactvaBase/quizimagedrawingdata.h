@@ -1100,6 +1100,7 @@ namespace drawing_data
         std::vector<std::unique_ptr<IAttribute>> attributes;
         std::vector<std::unique_ptr<IUniform>> uniforms;
         std::vector<Texture> textures;
+        std::vector<QString> objectStates;
 
     public:
         QuizImageObject();
@@ -1180,6 +1181,7 @@ namespace drawing_data
     public:
         QColor clearColor{255, 255, 255};
         std::vector<std::shared_ptr<QuizImageObject>> objects;
+        std::vector<QString> globalStates;
 
     public:
         QuizImageObjects();
