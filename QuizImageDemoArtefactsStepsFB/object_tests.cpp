@@ -424,7 +424,10 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
         const char *effectObjectName_,
         const char *effectObjectProgrammerName_,
         float alpha_ = 1.0,
-        const QString &alphaBlendingMode_ = g_alphaBlendingDisable
+        const QString &alphaBlendingMode_
+            = QString(g_alphaBlendingDisable)
+                + QString(g_renderObjectsStatesSpliter)
+                + QString(g_depthTestEnable)
         )
 {
     static const int effectObjectId = 1;
@@ -1277,7 +1280,7 @@ std::unique_ptr<EffectData> createTestData1()
     return effect;
 }
 
-std::unique_ptr<EffectData> createTestData2()
+std::unique_ptr<EffectData> createTestData2(bool alphaBlending_ = false)
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -1306,7 +1309,15 @@ std::unique_ptr<EffectData> createTestData2()
                 gen,
                 objectInfoId2,
                 effectObjectName,
-                effectObjectProgrammerName
+                effectObjectProgrammerName,
+                alphaBlending_ ? 0.5 : 1.0,
+                alphaBlending_ ? QString(g_alphaBlendingDefault)
+                                 + QString(g_renderObjectsStatesSpliter)
+                                 + QString(g_depthTestDisable)
+                               : QString(g_alphaBlendingDisable)
+                                 + QString(g_renderObjectsStatesSpliter)
+                                 + QString(g_depthTestEnable)
+
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -2428,6 +2439,18 @@ void ArgSetBaseTest::initialize(
 
     auto filesource = createMapFileSource();
     auto effectObjectsData = createEffectDataForTestOfArgSet();
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
+}
+
+void BlendMultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
+                                     int argsSetIndex_ /*= 0*/) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData2(true);
     auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
     drawingDataEffect->init(filesource);
     drawingDataEffect->initialize(data_);
