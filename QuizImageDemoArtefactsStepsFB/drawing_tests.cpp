@@ -152,13 +152,14 @@ const char *g_defaultVertexShader =
     "attribute highp vec4 vertex;\n"
     "attribute mediump vec3 normal;\n"
     "uniform mediump mat4 matrix;\n"
+    "uniform mediump float alpha;\n"
     "varying mediump vec4 color;\n"
     "void main(void)\n"
     "{\n"
     "    vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
     "    float angle = max(dot(normal, toLight), 0.0);\n"
     "    vec3 col = vec3(0.40, 1.0, 0.0);\n"
-    "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
+    "    color = vec4(col * 0.2 + col * 0.8 * angle, alpha);\n"
     "    color = clamp(color, 0.0, 1.0);\n"
     "    gl_Position = matrix * vertex;\n"
     "}\n";
@@ -194,6 +195,12 @@ void drawing_data::TestMinimalDrawQTLogoQuizImageObject::initialize(
     object->attributes.push_back(
                 std::unique_ptr<drawing_data::IAttribute>(
                     new drawing_data::Attribute<QVector3D>{ "normal", normals }
+                    )
+                );
+    object->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    "alpha",
+                    std::make_shared<GLfloat>(1.0)
                     )
                 );
 
@@ -277,10 +284,22 @@ void drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject::initialize(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview1 }
                 ));
+    object1->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    "alpha",
+                    std::make_shared<GLfloat>(1.0)
+                    )
+                );
     object2->uniforms.push_back(
                 std::unique_ptr<drawing_data::IUniform>(
                    new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview2 }
                 ));
+    object2->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    "alpha",
+                    std::make_shared<GLfloat>(1.0)
+                    )
+                );
 
     data_.objects.push_back(std::move(object1));
     data_.objects.push_back(std::move(object2));
@@ -947,4 +966,89 @@ void drawing_data::Test4QuizImageObject::initialize(
                 ":/Shaders/Shaders/default.vsh",
                 ":/Shaders/Shaders/test004/period.fsh"
             ));
+}
+
+void drawing_data::TestAlphaBlendingsDrawQTLogoQuizImageObject::initialize(
+        QuizImageObjects &data_,
+        int argsSetIndex_ /*= 0*/
+        ) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    std::unique_ptr<QuizImageObject> object1(new QuizImageObject());
+    std::unique_ptr<QuizImageObject> object2(new QuizImageObject());
+
+    object1->vertexShader = g_defaultVertexShader;
+    object1->fragmentShader = g_defaultFragmentShader;
+    object2->vertexShader = g_defaultVertexShader;
+    object2->fragmentShader = g_defaultFragmentShader;
+
+    std::shared_ptr<std::vector<QVector3D>> vertices(new std::vector<QVector3D>());
+    std::shared_ptr<std::vector<QVector3D>> normals(new std::vector<QVector3D>());
+    test::createQTLogoGeometry(*vertices.get(), *normals.get());
+
+    object1->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
+                    )
+                );
+    object1->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
+                    )
+                );
+    object2->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "vertex", vertices }
+                    )
+                );
+    object2->attributes.push_back(
+                std::unique_ptr<drawing_data::IAttribute>(
+                    new drawing_data::Attribute<QVector3D>{ "normal", normals }
+                    )
+                );
+    object2->objectStates.push_back(g_depthTestDisable);
+    object2->objectStates.push_back(g_alphaBlendingDefault);
+
+    qreal fScale = 1;
+    qreal fAngle1 = QRandomGenerator::global()->generateDouble() * 360.0;
+    std::shared_ptr<QMatrix4x4> modelview1(new QMatrix4x4);
+    modelview1->rotate(fAngle1, 0.0f, 1.0f, 0.0f);
+    modelview1->rotate(fAngle1, 1.0f, 0.0f, 0.0f);
+    modelview1->rotate(fAngle1, 0.0f, 0.0f, 1.0f);
+    modelview1->scale(fScale);
+    modelview1->translate(0.0f, -0.2f, 0.0f);
+
+    qreal fAngle2 = QRandomGenerator::global()->generateDouble() * 360.0;
+    fScale = 0.75;
+    std::shared_ptr<QMatrix4x4> modelview2(new QMatrix4x4);
+    modelview2->rotate(fAngle2, 0.0f, 1.0f, 0.0f);
+    modelview2->rotate(fAngle2, 1.0f, 0.0f, 0.0f);
+    modelview2->rotate(fAngle2, 0.0f, 0.0f, 1.0f);
+    modelview2->scale(fScale);
+    modelview2->translate(0.0f, -0.2f, 0.0f);
+
+    object1->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview1 }
+                ));
+    object1->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    "alpha",
+                    std::make_shared<GLfloat>(1.0)
+                    )
+                );
+    object2->uniforms.push_back(
+                std::unique_ptr<drawing_data::IUniform>(
+                   new drawing_data::Uniform<QMatrix4x4>{ "matrix", modelview2 }
+                ));
+    object2->uniforms.push_back(
+                std::make_unique<drawing_data::Uniform<GLfloat>>(
+                    "alpha",
+                    std::make_shared<GLfloat>(0.5)
+                    )
+                );
+
+    data_.objects.push_back(std::move(object1));
+    data_.objects.push_back(std::move(object2));
 }
