@@ -246,23 +246,35 @@ public:
             const drawingdata::Details &details_
             ) const override
     {
-        auto val = std::make_shared<ArgType_>();
-        QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> vec;
-        if(details_.variables.operator bool() &&
-                details_.variables->get(m_name, details_.position.get(), vec))
+        if(g_renderObjectsStatesName == m_name)
         {
-            drawingdata::utils::vecToUniform(vec, *val);
+            QStringList states;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), states))
+            {
+                drawingdata::utils::addStates(states, object_.objectStates);
+            }
         }
         else
         {
-            drawingdata::utils::toUniform(m_defaultValue, *val);
+            auto val = std::make_shared<ArgType_>();
+            QVector<typename ArtefactArgTypeEnTraits<ArgType_>::ItemType> vec;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), vec))
+            {
+                drawingdata::utils::vecToUniform(vec, *val);
+            }
+            else
+            {
+                drawingdata::utils::toUniform(m_defaultValue, *val);
+            }
+            object_.uniforms.push_back(
+                        std::make_unique<drawing_data::Uniform<ArgType_>>(
+                            m_name,
+                            val
+                            )
+                        );
         }
-        object_.uniforms.push_back(
-                    std::make_unique<drawing_data::Uniform<ArgType_>>(
-                        m_name,
-                        val
-                        )
-                    );
     }
 
     void addVariable(
