@@ -119,6 +119,9 @@ private:
         case ArtefactArgTypeEn::mat4Type:
             return std::make_unique<DrawingDataArtefactArgType_<QMatrix4x4>>(std::move(data_));
             break;
+        case ArtefactArgTypeEn::stringsType:
+            return std::make_unique<DrawingDataArtefactArgType_<QString>>(std::move(data_));
+            break;
         default:
             Q_ASSERT(false); // unimplemeted types
             return {nullptr};
@@ -248,12 +251,6 @@ public:
     {
         if(g_renderObjectsStatesName == m_name)
         {
-            QStringList states;
-            if(details_.variables.operator bool() &&
-                    details_.variables->get(m_name, details_.position.get(), states))
-            {
-                drawingdata::utils::addStates(states, object_.objectStates);
-            }
         }
         else
         {
@@ -284,6 +281,44 @@ public:
             ) const override
     {
         DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
+    }
+};
+
+template<>
+class DrawingDataArtefactUniformArg<QString> : public DrawingDataArtefactArg
+{
+public:
+    DrawingDataArtefactUniformArg() = default;
+    DrawingDataArtefactUniformArg(EffectArgumentData &&data_)
+        :DrawingDataArtefactArg(std::move(data_))
+    {
+    }
+
+    void addArgument(
+            drawing_data::QuizImageObject &object_,
+            const drawingdata::Details &details_
+            ) const override
+    {
+        if(g_renderObjectsStatesName == m_name)
+        {
+            QStringList states;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), states))
+            {
+                drawingdata::utils::addStates(states, object_.objectStates);
+            }
+        }
+    }
+
+    void addVariable(
+            const drawingdata::Details &details_,
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
+            ) const override
+    {
+        Q_UNUSED(details_);
+        Q_UNUSED(global_);
+        Q_UNUSED(argSetsAndArgs_);
     }
 };
 
