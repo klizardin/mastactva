@@ -87,7 +87,7 @@ class AlphaBlindingDisable : public opengl_drawing::State
 public:
     bool canProcess(const QString &stateStr_) const override
     {
-        return "AlphaBlinding.disable" == stateStr_;
+        return g_alphaBlendingDisable == stateStr_;
     }
 
     void init(const QString &stateStr_) override
@@ -109,8 +109,8 @@ class AlphaBlindingDefault : public opengl_drawing::State
 public:
     bool canProcess(const QString &stateStr_) const override
     {
-        return "AlphaBlinding.add.src_alpha.one_minus_src_alpha" == stateStr_
-                || "AlphaBlinding.default" == stateStr_
+        return g_alphaBlendingAddSrcAlphaOneMinusSrcAlpha == stateStr_
+                || g_alphaBlendingDefault == stateStr_
                 ;
     }
 
@@ -135,8 +135,8 @@ class DepthTestEnable : public opengl_drawing::State
 public:
     bool canProcess(const QString &stateStr_) const override
     {
-        return "DepthTest.enable" == stateStr_
-                || "DepthTest.default" == stateStr_
+        return g_depthTestDefault == stateStr_
+                || g_depthTestEnable == stateStr_
                 ;
     }
 
@@ -159,7 +159,7 @@ class DepthTestDisable : public opengl_drawing::State
 public:
     bool canProcess(const QString &stateStr_) const override
     {
-        return "DepthTest.disable" == stateStr_;
+        return g_depthTestDisable == stateStr_;
     }
 
     void init(const QString &stateStr_) override
