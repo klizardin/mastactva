@@ -423,6 +423,16 @@ namespace utils
             vec_.push_back(val_);
         }
     }
+
+    inline
+    void addStates(const QStringList &states_, std::vector<QString> &objectStates_)
+    {
+        objectStates_.reserve(objectStates_.size() + states_.size());
+        for(const QString &state_ : states_)
+        {
+            objectStates_.push_back(state_);
+        }
+    }
 }
 
 

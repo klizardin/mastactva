@@ -82,16 +82,23 @@ namespace drawing_data
                 const QString &fragmentShaderFileName_
                 ) const;
     };
+
+    class TestAlphaBlendingsDrawQTLogoQuizImageObject : public IDefaultData<QuizImageObjects>
+    {
+    public:
+        virtual void initialize(QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    };
 }
 
 
 // using TestCaseInitializer = drawing_data::TestMinimalDrawQTLogoQuizImageObject;
 // using TestCaseInitializer = drawing_data::TestMinimal2PassDrawQTLogoQuizImageObject;
 // using TestCaseInitializer = drawing_data::Test0QuizImageObject;
-// using TestCaseInitializer = drawing_data::Test1QuizImageObject;
+// using TestCaseInitializer = drawing_data::Test1QuizImageObject; // do not work
 // using TestCaseInitializer = drawing_data::Test2QuizImageObject; // do not work
 // using TestCaseInitializer = drawing_data::Test3QuizImageObject;
 // using TestCaseInitializer = drawing_data::Test4QuizImageObject;
+// using TestCaseInitializer = drawing_data::TestAlphaBlendingsDrawQTLogoQuizImageObject;
 
 
 #endif // DRAWING_TESTS_H

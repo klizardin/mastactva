@@ -454,7 +454,9 @@ bool Variables::get(const QString &name_, const IPosition *position_, QVector<do
 bool Variables::get(const QString &name_, const IPosition *position_, QStringList &data_) const
 {
     Q_UNUSED(position_);
-    if(g_jsonDataVariableNameObjectListName == name_)
+    if(g_jsonDataVariableNameObjectListName == name_
+            || g_renderObjectsStatesName == name_
+            )
     {
         data_ = m_objects;
         return true;

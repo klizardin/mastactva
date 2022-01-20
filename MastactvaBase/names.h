@@ -123,6 +123,7 @@ Q_DECL_UNUSED static const char *g_renderArtefactTypeName = "renderArtefactType"
 Q_DECL_UNUSED static const char *g_renderArtefactFileNameName = "renderArtefactFileName";
 Q_DECL_UNUSED static const char *g_renderArtefactProgrammerNameName = "renderArtefactProgrammerName";
 Q_DECL_UNUSED static const char *g_renderAddonNameName = "renderAddonName";
+Q_DECL_UNUSED static const char *g_renderObjectsStatesName = "renderObjectStates";
 
 
 // db request info
@@ -216,6 +217,15 @@ Q_DECL_UNUSED static const char * g_mergeIdFieldName = "mergeid";
 
 // drawing data
 Q_DECL_UNUSED static const double g_renderTeps = 1e-5;
+
+
+// drawing states
+Q_DECL_UNUSED static const char * g_alphaBlendingDisable = "AlphaBlending.disable";
+Q_DECL_UNUSED static const char * g_alphaBlendingDefault = "AlphaBlending.default";
+Q_DECL_UNUSED static const char * g_alphaBlendingAddSrcAlphaOneMinusSrcAlpha = "AlphaBlending.add.src_alpha.one_minus_src_alpha";
+Q_DECL_UNUSED static const char * g_depthTestDefault = "DepthTest.default";
+Q_DECL_UNUSED static const char * g_depthTestEnable = "DepthTest.enable";
+Q_DECL_UNUSED static const char * g_depthTestDisable = "DepthTest.disable";
 
 
 #endif // NAMES_H

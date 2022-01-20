@@ -85,13 +85,14 @@ static const char *g_baseVertexShader0 =
     "attribute highp vec4 vertex;\n"
     "attribute mediump vec3 normal;\n"
     "uniform mediump mat4 matrix;\n"
+    "uniform mediump float alpha;\n"
     "varying mediump vec4 color;\n"
     "void main(void)\n"
     "{\n"
     "    mediump vec3 toLight = normalize(vec3(0.0, 0.3, 1.0));\n"
     "    mediump float angle = max(dot(normal, toLight), 0.0);\n"
     "    mediump vec3 col = vec3(0.40, 1.0, 0.0);\n"
-    "    color = vec4(col * 0.2 + col * 0.8 * angle, 1.0);\n"
+    "    color = vec4(col * 0.2 + col * 0.8 * angle, alpha);\n"
     "    color = clamp(color, 0.0, 1.0);\n"
     "    gl_Position = matrix * vertex;\n"
     "}\n";
@@ -421,7 +422,9 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
         QRandomGenerator &gen_,
         const int objectInfoId_,
         const char *effectObjectName_,
-        const char *effectObjectProgrammerName_
+        const char *effectObjectProgrammerName_,
+        float alpha_ = 1.0,
+        const QString &alphaBlendingMode_ = g_alphaBlendingDisable
         )
 {
     static const int effectObjectId = 1;
@@ -482,6 +485,20 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
             ArtefactArgStorageEn::uniformStorage,
             "matrix",
             toString(modelview)
+        },
+        {
+            4,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            "alpha",
+            toString(alpha_)
+        },
+        {
+            4,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderObjectsStatesName,
+            alphaBlendingMode_
         }
     };
     static const int artefactId1 = 1;
