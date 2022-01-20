@@ -307,6 +307,10 @@ public:
             {
                 drawingdata::utils::addStates(states, object_.objectStates);
             }
+            else
+            {
+                drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, object_.objectStates);
+            }
         }
     }
 
