@@ -124,6 +124,7 @@ Q_DECL_UNUSED static const char *g_renderArtefactFileNameName = "renderArtefactF
 Q_DECL_UNUSED static const char *g_renderArtefactProgrammerNameName = "renderArtefactProgrammerName";
 Q_DECL_UNUSED static const char *g_renderAddonNameName = "renderAddonName";
 Q_DECL_UNUSED static const char *g_renderObjectsStatesName = "renderObjectStates";
+Q_DECL_UNUSED static const char *g_renderObjectsStatesSpliter = ";";
 
 
 // db request info
