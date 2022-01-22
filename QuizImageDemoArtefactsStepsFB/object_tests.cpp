@@ -216,6 +216,10 @@ static const char *g_dataLuaCalcMatrixFilename = "calc_matrix_from_angle.lua";
 static const char *g_dataLuaCreateMatrixVariablesForObjectListFilename
     = "create_matrix_variables_for_object_list.lua";
 static const char *g_angle_0_1_ValueFileName = "angle_0_1_value.json";
+static const char *g_walkEffectFromVertexShaderFilename = "walkeffectfrom.vsh";
+static const char *g_walkEffectFromFragmentShaderFilename = "walkeffectfrom.fsh";
+static const char *g_walkEffectToVertexShaderFilename = "walkeffectto.vsh";
+static const char *g_walkEffectToFragmentShaderFilename = "walkeffectto.fsh";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -303,6 +307,18 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     createVariableValueJson(
                         "angle", 0.1
                         )
+                    );
+    filesource->add(g_walkEffectFromVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectfrom.vsh")
+                    );
+    filesource->add(g_walkEffectFromFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectfrom.fsh")
+                    );
+    filesource->add(g_walkEffectToVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.vsh")
+                    );
+    filesource->add(g_walkEffectToFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.fsh")
                     );
     return filesource;
 }
