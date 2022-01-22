@@ -2444,7 +2444,7 @@ void ArgSetBaseTest::initialize(
     drawingDataEffect->initialize(data_);
 }
 
-void BlendMultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
+void AlphaBlendingMultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
                                      int argsSetIndex_ /*= 0*/) const
 {
     Q_UNUSED(argsSetIndex_);
