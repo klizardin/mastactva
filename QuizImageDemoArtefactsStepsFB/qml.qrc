@@ -19,6 +19,10 @@
         <file>Shaders/test004/period.fsh</file>
         <file>Shaders/walkeffecttest/walkeffecttest.fsh</file>
         <file>Shaders/walkeffecttest/walkeffecttest.vsh</file>
+        <file>Shaders/walkeffecttest/walkeffectfrom.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffectfrom.vsh</file>
+        <file>Shaders/walkeffecttest/walkeffectto.fsh</file>
+        <file>Shaders/walkeffecttest/walkeffectto.vsh</file>
     </qresource>
     <qresource prefix="/Images">
         <file>Images/no-image.png</file>

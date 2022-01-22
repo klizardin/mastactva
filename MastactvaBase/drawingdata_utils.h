@@ -433,6 +433,13 @@ namespace utils
             objectStates_.push_back(state_);
         }
     }
+
+    inline
+    void splitTo(const QString &argument_, const QString &splitter_, std::vector<QString> &objectStates_)
+    {
+        const QStringList splitted = argument_.split(splitter_);
+        addStates(splitted, objectStates_);
+    }
 }
 
 

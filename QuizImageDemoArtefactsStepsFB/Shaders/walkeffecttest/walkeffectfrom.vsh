@@ -20,16 +20,12 @@ attribute highp vec4 renderVertexAttribute;
 attribute mediump vec4 renderTextureAttribute;
 
 attribute mediump vec4 vertexAttributeFrom;
-attribute mediump vec4 vertexAttributeTo;
 
 uniform mediump mat4 renderMatrix;
 uniform mediump mat4 renderFromImageMatrix;
-uniform mediump mat4 renderToImageMatrix;
 uniform mediump vec2 renderScreenRect;
 
 uniform mediump float renderT;
-
-uniform mediump float fromImage;
 
 varying mediump vec4 texCoordVar;
 
@@ -41,20 +37,6 @@ void main(void)
                 vertexAttributeFrom.z,
                 vertexAttributeFrom.w
                 );
-    mediump vec4 vertexAttributeToSized = vec4(
-                vertexAttributeTo.x * renderScreenRect.x,
-                vertexAttributeTo.y * renderScreenRect.y,
-                vertexAttributeTo.z,
-                vertexAttributeTo.w
-                );
-    gl_Position = renderMatrix *
-            ( fromImage >= 0.5 ?
-                  mix(renderVertexAttribute, vertexAttributeFromSized, renderT)
-                : mix(vertexAttributeToSized, renderVertexAttribute, renderT)
-             );
-    texCoordVar = (fromImage >= 0.5
-                   ? renderFromImageMatrix
-                   : renderToImageMatrix
-                   ) * renderTextureAttribute
-            ;
+    gl_Position = renderMatrix * mix(renderVertexAttribute, vertexAttributeFromSized, renderT);
+    texCoordVar = renderFromImageMatrix * renderTextureAttribute;
 }

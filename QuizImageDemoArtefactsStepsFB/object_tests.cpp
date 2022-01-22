@@ -216,6 +216,10 @@ static const char *g_dataLuaCalcMatrixFilename = "calc_matrix_from_angle.lua";
 static const char *g_dataLuaCreateMatrixVariablesForObjectListFilename
     = "create_matrix_variables_for_object_list.lua";
 static const char *g_angle_0_1_ValueFileName = "angle_0_1_value.json";
+static const char *g_walkEffectFromVertexShaderFilename = "walkeffectfrom.vsh";
+static const char *g_walkEffectFromFragmentShaderFilename = "walkeffectfrom.fsh";
+static const char *g_walkEffectToVertexShaderFilename = "walkeffectto.vsh";
+static const char *g_walkEffectToFragmentShaderFilename = "walkeffectto.fsh";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -303,6 +307,18 @@ std::shared_ptr<MapFileSource> createMapFileSource()
                     createVariableValueJson(
                         "angle", 0.1
                         )
+                    );
+    filesource->add(g_walkEffectFromVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectfrom.vsh")
+                    );
+    filesource->add(g_walkEffectFromFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectfrom.fsh")
+                    );
+    filesource->add(g_walkEffectToVertexShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.vsh")
+                    );
+    filesource->add(g_walkEffectToFragmentShaderFilename,
+                    loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.fsh")
                     );
     return filesource;
 }
@@ -424,7 +440,10 @@ std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
         const char *effectObjectName_,
         const char *effectObjectProgrammerName_,
         float alpha_ = 1.0,
-        const QString &alphaBlendingMode_ = g_alphaBlendingDisable
+        const QString &alphaBlendingMode_
+            = QString(g_alphaBlendingDisable)
+                + QString(g_renderObjectsStatesSpliter)
+                + QString(g_depthTestEnable)
         )
 {
     static const int effectObjectId = 1;
@@ -1277,7 +1296,7 @@ std::unique_ptr<EffectData> createTestData1()
     return effect;
 }
 
-std::unique_ptr<EffectData> createTestData2()
+std::unique_ptr<EffectData> createTestData2(bool alphaBlending_ = false)
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
@@ -1306,7 +1325,15 @@ std::unique_ptr<EffectData> createTestData2()
                 gen,
                 objectInfoId2,
                 effectObjectName,
-                effectObjectProgrammerName
+                effectObjectProgrammerName,
+                alphaBlending_ ? 0.5 : 1.0,
+                alphaBlending_ ? QString(g_alphaBlendingDefault)
+                                 + QString(g_renderObjectsStatesSpliter)
+                                 + QString(g_depthTestDisable)
+                               : QString(g_alphaBlendingDisable)
+                                 + QString(g_renderObjectsStatesSpliter)
+                                 + QString(g_depthTestEnable)
+
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -2199,6 +2226,267 @@ std::unique_ptr<EffectData> createTestData10(
     return effect;
 }
 
+std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
+        int effectId,
+        const char *effectName,
+        const char *effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep
+        )
+{
+    static const int effectObjectId = 1;
+    static const int objectInfoId = 1;
+    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
+                effectObjectId,
+                effectId,
+                objectInfoId,
+                effectObjectStep,
+                MergeId()
+                );
+
+    // ObjectInfoData
+    auto objectInfoData = std::make_unique<ObjectInfoData>(
+                objectInfoId,
+                effectName,
+                effectProgrammerName,
+                now,
+                MergeId()
+                );
+    effectObject->m_objectInfoData->push_back(objectInfoData.release());
+
+    // vertex shader
+    static const int artefactId1 = 1;
+    static const char *artefactName1 = "vertext shader";
+    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
+    static const int objectArtefactId1 = 1;
+    static const int objectArtefactStep0 = 0;
+    enum class ArgEn{id, type, storage, name, value};
+    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> vertexArgs[] = {
+        {
+            1,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            g_renderVertexAttributeName,
+            emptyStr
+        },
+        {
+            2,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            g_renderTextureAttributeName,
+            emptyStr
+        },
+        {
+            3,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderMatrixName,
+            emptyStr
+        },
+        {
+            4,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFromImageMatrixName,
+            emptyStr
+        },
+        {
+            5,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderToImageMatrixName,
+            emptyStr
+        },
+        {
+            6,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFacedGeometryCoefsName,
+            "0.0 0.0"
+        },
+        {
+            7,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderGeomertySizeName,
+            "2.0 2.0"
+        },
+        {
+            8,
+            ArtefactArgTypeEn::intType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderIsGeomertySolidName,
+            "1"
+        },
+        {
+            9,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderScreenRectName,
+            "1.0 1.0"
+        },
+        {
+            10,
+            ArtefactArgTypeEn::vec2Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderWindowSizeName,
+            "1.0 1.0"
+        }
+    };
+    auto artefact1 = std::make_unique<ArtefactData>(
+                artefactId1,
+                artefactName1,
+                g_defaultVertexShaderFilename,
+                emptyStr,
+                artefactType1,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
+                artefactId1,
+                std::get<to_underlying(ArgEn::type)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
+                emptyStr,
+                now,
+                MergeId(),
+                false, false, QString(), QString()
+                );
+        artefact1->m_artefactArgData->push_back(arg.release());
+    }
+    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId1,
+                effectId,
+                artefactId1,
+                objectArtefactStep0,
+                artefact1.release(),
+                MergeId()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+
+    // fragment shader
+    static const int artefactId2 = 2;
+    static const char *artefactName2 = "fragment shader";
+    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
+    static const int objectArtefactId2 = 2;
+    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> fragmentArgs[] = {
+        {
+            101,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderOpacityName,
+            "1.0"
+        },
+        {
+            102,
+            ArtefactArgTypeEn::floatType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderTName,
+            "0.5"
+        },
+    };
+    auto artefact2 = std::make_unique<ArtefactData>(
+                artefactId2,
+                artefactName2,
+                g_defaultFragmentShaderFilename,
+                emptyStr,
+                artefactType2,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    for(std::size_t i = 0; i < sizeof(fragmentArgs)/sizeof(fragmentArgs[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(fragmentArgs[i]),
+                artefactId1,
+                std::get<to_underlying(ArgEn::type)>(fragmentArgs[i]),
+                std::get<to_underlying(ArgEn::storage)>(fragmentArgs[i]),
+                std::get<to_underlying(ArgEn::name)>(fragmentArgs[i]),
+                std::get<to_underlying(ArgEn::value)>(fragmentArgs[i]),
+                emptyStr,
+                now,
+                MergeId(),
+                false, false, QString(), QString()
+                );
+        artefact2->m_artefactArgData->push_back(arg.release());
+    }
+    auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
+                objectArtefactId2,
+                effectId,
+                artefactId2,
+                objectArtefactStep0,
+                artefact2.release(),
+                MergeId()
+                );
+    effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+
+    // textures artefacts
+    enum class TextureEn{name, filename};
+    static std::tuple<const char *, const char *> textures[] =
+    {
+        {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
+        {g_renderToImageName, ":/Images/Images/no-image-002.png"}
+    };
+    static const int textureBaseArtefactId = 3;
+    static const int textureBaseObjectArtefactIdBase = 3;
+    for(std::size_t i = 0; i < sizeof(textures)/sizeof(textures[0]); ++i)
+    {
+        auto textureArtefact = std::make_unique<ArtefactData>(
+                    textureBaseArtefactId + i,
+                    std::get<to_underlying(TextureEn::name)>(textures[i]),
+                    std::get<to_underlying(TextureEn::filename)>(textures[i]),
+                    emptyStr,
+                    ArtefactTypeEn::texture2D,
+                    emptyStr,
+                    now,
+                    MergeId()
+                    );
+        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
+                    textureBaseObjectArtefactIdBase + i,
+                    effectId,
+                    textureBaseArtefactId + i,
+                    objectArtefactStep0,
+                    textureArtefact.release(),
+                    MergeId()
+                    );
+        effectObject->m_objectArtefactData->push_back(textureObjectArtefactData.release());
+    }
+
+    return effectObject;
+}
+
+std::unique_ptr<EffectData> createWalkEffectTestData()
+{
+    static const int effectId = 1;
+    static const char *effectName = "effect #1";
+    static const char *effectProgrammerName = "effect1";
+    const QDateTime now = QDateTime::currentDateTime();
+    static const int effectObjectStep0 = 0;
+
+    auto effectObject1 = createWalkEffectTestObject(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep0
+                );
+    std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
+                effectId,
+                effectName,
+                emptyStr,
+                now,
+                MergeId()
+                );
+    effect->m_effectObjectsData->push_back(effectObject1.release());
+    return effect;
+}
+
 namespace drawing_objects
 {
 
@@ -2433,6 +2721,18 @@ void ArgSetBaseTest::initialize(
     drawingDataEffect->initialize(data_);
 }
 
+void AlphaBlendingMultipleObjectsTest::initialize(drawing_data::QuizImageObjects &data_,
+                                     int argsSetIndex_ /*= 0*/) const
+{
+    Q_UNUSED(argsSetIndex_);
+
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createTestData2(true);
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
+}
+
 void WalkEffectTest::initialize(
         drawing_data::QuizImageObjects &data_,
         int argsSetIndex_ /*= 0*/
@@ -2441,11 +2741,11 @@ void WalkEffectTest::initialize(
     Q_UNUSED(argsSetIndex_);
     Q_UNUSED(data_);
 
-    //auto filesource = createMapFileSource();
-    //auto effectObjectsData = createEffectDataForTestOfArgSet();
-    //auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
-    //drawingDataEffect->init(filesource);
-    //drawingDataEffect->initialize(data_);
+    auto filesource = createMapFileSource();
+    auto effectObjectsData = createWalkEffectTestData();
+    auto drawingDataEffect = std::make_unique<::DrawingDataEffect>(std::move(*effectObjectsData));
+    drawingDataEffect->init(filesource);
+    drawingDataEffect->initialize(data_);
 }
 
 }

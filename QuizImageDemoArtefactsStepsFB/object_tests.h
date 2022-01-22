@@ -134,6 +134,12 @@ namespace drawing_objects
         void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
     };
 
+    class AlphaBlendingMultipleObjectsTest : public IDefaultData<drawing_data::QuizImageObjects>
+    {
+    public:
+        void initialize(drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0) const override;
+    };
+
     class WalkEffectTest : public IDefaultData<drawing_data::QuizImageObjects>
     {
     public:
@@ -155,7 +161,9 @@ namespace drawing_objects
 // using TestCaseInitializer = drawing_objects::LuaScriptTestRuntime;
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest0;
 // using TestCaseInitializer = drawing_objects::LuaScriptArgTest1;
-using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
+// using TestCaseInitializer = drawing_objects::ArgSetBaseTest;
+// using TestCaseInitializer = drawing_objects::AlphaBlendingMultipleObjectsTest;
+using TestCaseInitializer = drawing_objects::WalkEffectTest;
 
 
 #endif // OBJECT_TESTS_H

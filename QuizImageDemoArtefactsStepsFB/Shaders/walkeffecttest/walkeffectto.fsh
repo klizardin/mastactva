@@ -16,22 +16,15 @@
 */
 
 /*@shader @description default fragment shader. mix to images*/
-uniform sampler2D renderFromImage;
 uniform sampler2D renderToImage;
 uniform lowp float renderOpacity;
 
 uniform mediump float renderT;
-uniform mediump float fromImage;
 
 varying mediump vec4 texCoordVar;
 
 void main(void)
 {
-    mediump vec4 s1 = fromImage >= 0.5 ?
-                texture2D( renderFromImage, texCoordVar.st )
-              : texture2D( renderToImage, texCoordVar.st )
-              ;
-    gl_FragColor = vec4( s1.r, s1.g, s1.b,
-                         fromImage >= 0.5 ? 1.0 : renderT
-                        ) * renderOpacity;
+    mediump vec4 s1 = texture2D( renderToImage, texCoordVar.st );
+    gl_FragColor = vec4( s1.r, s1.g, s1.b, renderT) * renderOpacity;
 }
