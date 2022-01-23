@@ -2259,7 +2259,8 @@ std::unique_ptr<EffectObjectsData> createEffectObjectDataWithObjectInfo(
 using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *>;
 
 template<std::size_t size_>
-std::unique_ptr<ObjectArtefactData> processArtefact(
+void processArtefact(
+        std::unique_ptr<EffectObjectsData> &effectObject_,
         const char *shaderFilename_,
         const int &artefactId_,
         const char *artefactName_,
@@ -2304,7 +2305,45 @@ std::unique_ptr<ObjectArtefactData> processArtefact(
                 artefact.release(),
                 MergeId()
                 );
-    return objectArtefactData;
+    effectObject_->m_objectArtefactData->push_back(objectArtefactData.release());
+}
+
+enum class TextureEn{name, filename};
+using TextureTuple = std::tuple<const char *, const char *>;
+
+template<std::size_t size_>
+void processTexturesArtefacts(
+        std::unique_ptr<EffectObjectsData> &effectObject_,
+        const int &textureBaseArtefactId_,
+        const int &textureBaseObjectArtefactId_,
+        const int &objectArtefactStep_,
+        const int &effectId_,
+        const QDateTime &now_,
+        const TextureTuple (&textures_)[size_]
+        )
+{
+    for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
+    {
+        auto textureArtefact = std::make_unique<ArtefactData>(
+                    textureBaseArtefactId_ + i,
+                    std::get<to_underlying(TextureEn::name)>(textures_[i]),
+                    std::get<to_underlying(TextureEn::filename)>(textures_[i]),
+                    emptyStr,
+                    ArtefactTypeEn::texture2D,
+                    emptyStr,
+                    now_,
+                    MergeId()
+                    );
+        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
+                    textureBaseObjectArtefactId_ + i,
+                    effectId_,
+                    textureBaseArtefactId_ + i,
+                    objectArtefactStep_,
+                    textureArtefact.release(),
+                    MergeId()
+                    );
+        effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
+    }
 }
 
 std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
@@ -2323,7 +2362,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
                 effectObjectStep
                 );
 
-    // vertex shader
+    // vertex shader artefact
     static const ArgumentsTuple vertexArgs1[] = {
         {
             1,
@@ -2397,21 +2436,20 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         }
     };
     static const int objectArtefactStep0 = 0;
-    effectObject->m_objectArtefactData->push_back(
-                processArtefact(
-                    g_defaultVertexShaderFilename,
-                    1,
-                    "vertext shader",
-                    ArtefactTypeEn::shaderVertex,
-                    1,
-                    objectArtefactStep0,
-                    effectId,
-                    now,
-                    vertexArgs1
-                    ).release()
-                );
+    processArtefact(
+        effectObject,
+        g_defaultVertexShaderFilename,
+        1,
+        "vertext shader",
+        ArtefactTypeEn::shaderVertex,
+        1,
+        objectArtefactStep0,
+        effectId,
+        now,
+        vertexArgs1
+    );
 
-    // fragment shader
+    // fragment shader artefact
     static const ArgumentsTuple fragmentArgs1[] = {
         {
             101,
@@ -2428,52 +2466,36 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             "0.5"
         },
     };
-    effectObject->m_objectArtefactData->push_back(
-                processArtefact(
-                    g_defaultFragmentShaderFilename,
-                    2,
-                    "fragment shader",
-                    ArtefactTypeEn::shaderFragmet,
-                    2,
-                    objectArtefactStep0,
-                    effectId,
-                    now,
-                    fragmentArgs1
-                    ).release()
-                );
+    processArtefact(
+        effectObject,
+        g_defaultFragmentShaderFilename,
+        2,
+        "fragment shader",
+        ArtefactTypeEn::shaderFragmet,
+        2,
+        objectArtefactStep0,
+        effectId,
+        now,
+        fragmentArgs1
+    );
 
     // textures artefacts
-    enum class TextureEn{name, filename};
-    static std::tuple<const char *, const char *> textures[] =
+    static const TextureTuple textures[] =
     {
         {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
         {g_renderToImageName, ":/Images/Images/no-image-002.png"}
     };
     static const int textureBaseArtefactId = 3;
-    static const int textureBaseObjectArtefactIdBase = 3;
-    for(std::size_t i = 0; i < sizeof(textures)/sizeof(textures[0]); ++i)
-    {
-        auto textureArtefact = std::make_unique<ArtefactData>(
-                    textureBaseArtefactId + i,
-                    std::get<to_underlying(TextureEn::name)>(textures[i]),
-                    std::get<to_underlying(TextureEn::filename)>(textures[i]),
-                    emptyStr,
-                    ArtefactTypeEn::texture2D,
-                    emptyStr,
-                    now,
-                    MergeId()
-                    );
-        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
-                    textureBaseObjectArtefactIdBase + i,
-                    effectId,
-                    textureBaseArtefactId + i,
-                    objectArtefactStep0,
-                    textureArtefact.release(),
-                    MergeId()
-                    );
-        effectObject->m_objectArtefactData->push_back(textureObjectArtefactData.release());
-    }
-
+    static const int textureBaseObjectArtefactId = 3;
+    processTexturesArtefacts(
+                effectObject,
+                textureBaseArtefactId,
+                textureBaseObjectArtefactId,
+                objectArtefactStep0,
+                effectId,
+                now,
+                textures
+                );
     return effectObject;
 }
 
