@@ -2226,7 +2226,7 @@ std::unique_ptr<EffectData> createTestData10(
     return effect;
 }
 
-std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
+std::unique_ptr<EffectObjectsData> createEffectObjectDataWithObjectInfo(
         int effectId,
         const char *effectName,
         const char *effectProgrammerName,
@@ -2253,6 +2253,24 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
                 MergeId()
                 );
     effectObject->m_objectInfoData->push_back(objectInfoData.release());
+    return effectObject;
+}
+
+std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
+        int effectId,
+        const char *effectName,
+        const char *effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep
+        )
+{
+    std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep
+                );
 
     // vertex shader
     static const int artefactId1 = 1;
