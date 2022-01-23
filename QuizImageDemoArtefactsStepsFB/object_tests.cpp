@@ -2440,8 +2440,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep0,
                 g_defaultVertexShaderFilename,
                 g_defaultFragmentShaderFilename,
-                ":/Images/Images/no-image-001.png",
-                ":/Images/Images/no-image-002.png"
+                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
+                "/home/klizardin/Pictures/test_images/20220116_145325.jpg"
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
