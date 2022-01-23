@@ -2335,7 +2335,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
             g_renderGeomertySizeName,
-            "2.0 2.0"
+            "10.0 10.0"
         },
         {
             8,
