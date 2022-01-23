@@ -439,7 +439,7 @@ QString toString(const QMatrix4x4 &mat4_)
 static const char *emptyStr = "";
 
 enum class ArgEn{id, type, storage, name, value};
-using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *>;
+using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString>;
 
 template<std::size_t size_>
 void processArtefact(
@@ -2385,21 +2385,21 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
             "vertexAttributeFrom",
-            toString(textureData).toUtf8().data()
+            toString(textureData)
         },
         {
             12,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
             "vertexAttributeTo",
-            toString(textureData).toUtf8().data()
+            toString(textureData)
         },
         {
             13,
             ArtefactArgTypeEn::stringsType,
             ArtefactArgStorageEn::uniformStorage,
             g_renderObjectsStatesName,
-            alphaBlendingMode_.toUtf8().data()
+            alphaBlendingMode_
         }
     };
     static const int objectArtefactStep0 = 0;
