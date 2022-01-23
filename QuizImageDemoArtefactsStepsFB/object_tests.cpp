@@ -365,6 +365,16 @@ QString toString(const std::vector<QVector4D> &data_)
     return result;
 }
 
+QString toString(const std::vector<float> &data_)
+{
+    QString result;
+    for(const float &val_ : data_)
+    {
+        result += QString("%1 ").arg(val_);
+    }
+    return result;
+}
+
 QString toString(const int &data_)
 {
     QString result = QString("%1")
@@ -2274,7 +2284,11 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         const char * vertexShaderFilename_,
         const char * fragmentShaderFilename_,
         const char * fromImage_,
-        const char * toImage_
+        const char * toImage_,
+        const QString &alphaBlendingMode_
+            = QString(g_alphaBlendingDisable)
+                + QString(g_renderObjectsStatesSpliter)
+                + QString(g_depthTestEnable)
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -2284,6 +2298,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
                 now,
                 effectObjectStep
                 );
+
+    std::vector<GLfloat> vertexData;
+    std::vector<GLfloat> textureData;
+
+    opengl_drawing::makeGeometry(1.0, 1.0, 2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
+
+    qDebug() << vertexData;
+    qDebug() << textureData;
 
     // vertex shader artefact
     static const ArgumentsTuple vertexArgs1[] =
@@ -2335,7 +2357,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
             g_renderGeomertySizeName,
-            "10.0 10.0"
+            "2.0 2.0"
         },
         {
             8,
@@ -2357,6 +2379,27 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgStorageEn::uniformStorage,
             g_renderWindowSizeName,
             "1.0 1.0"
+        },
+        {
+            11,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "vertexAttributeFrom",
+            toString(textureData).toUtf8().data()
+        },
+        {
+            12,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::attributeStorage,
+            "vertexAttributeTo",
+            toString(textureData).toUtf8().data()
+        },
+        {
+            13,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderObjectsStatesName,
+            alphaBlendingMode_.toUtf8().data()
         }
     };
     static const int objectArtefactStep0 = 0;
@@ -2431,17 +2474,32 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     static const char *effectProgrammerName = "effect1";
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
+    static const int effectObjectStep1 = 1;
 
-    auto effectObject1 = createWalkEffectTestObject(
+    auto effectObject0 = createWalkEffectTestObject(
                 effectId,
                 effectName,
                 effectProgrammerName,
                 now,
                 effectObjectStep0,
-                g_defaultVertexShaderFilename,
-                g_defaultFragmentShaderFilename,
+                g_walkEffectFromVertexShaderFilename,
+                g_walkEffectFromFragmentShaderFilename,
                 "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
                 "/home/klizardin/Pictures/test_images/20220116_145325.jpg"
+                );
+    auto effectObject1 = createWalkEffectTestObject(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep1,
+                g_walkEffectToVertexShaderFilename,
+                g_walkEffectToFragmentShaderFilename,
+                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
+                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                QString(g_alphaBlendingDefault)
+                    + QString(g_renderObjectsStatesSpliter)
+                    + QString(g_depthTestDisable)
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
@@ -2450,6 +2508,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 now,
                 MergeId()
                 );
+    effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
     return effect;
 }
