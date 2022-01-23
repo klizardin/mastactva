@@ -20,7 +20,6 @@ uniform sampler2D renderFromImage;
 uniform lowp float renderOpacity;
 
 uniform mediump float renderT;
-uniform mediump float fromImage;
 
 varying mediump vec4 texCoordVar;
 

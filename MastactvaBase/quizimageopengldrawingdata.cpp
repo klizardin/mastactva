@@ -691,6 +691,9 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
     std::vector<GLfloat> textureData;
 
     const bool textureAttributeExist = textureAttributeTupleSize > 0;
+
+    qDebug() << proportinalRect << geometryFacedSize << vertexAttributeTupleSize << textureAttributeTupleSize << textureAttributeExist << isSolidGeometry;
+
     opengl_drawing::makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
@@ -698,6 +701,9 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
                  textureAttributeTupleSize, textureAttributeExist,
                  isSolidGeometry,
                  vertexData, textureData);
+
+    qDebug() << vertexData;
+    qDebug() << textureData;
 
     objects->setAttribute(
                 g_renderVertexAttributeName,
