@@ -429,6 +429,125 @@ QString toString(const QMatrix4x4 &mat4_)
 static const char *emptyStr = "";
 
 enum class ArgEn{id, type, storage, name, value};
+using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *>;
+
+template<std::size_t size_>
+void processArtefact(
+        std::unique_ptr<EffectObjectsData> &effectObject_,
+        const char *shaderFilename_,
+        const int &artefactId_,
+        const char *artefactName_,
+        const ArtefactTypeEn &artefactType_,
+        const int &objectArtefactId_,
+        const int &objectArtefactStep_,
+        const int &effectId_,
+        const QDateTime &now_,
+        const ArgumentsTuple (&vertexArgs_)[size_])
+{
+    std::unique_ptr<ArtefactData> artefact = std::make_unique<ArtefactData>(
+                    artefactId_,
+                    artefactName_,
+                    shaderFilename_,
+                    emptyStr,
+                    artefactType_,
+                    emptyStr,
+                    now_,
+                    MergeId()
+                    );
+    for(std::size_t i = 0; i < sizeof(vertexArgs_)/sizeof(vertexArgs_[0]); ++i)
+    {
+        auto arg = std::make_unique<ArtefactArgData>(
+                std::get<to_underlying(ArgEn::id)>(vertexArgs_[i]),
+                artefactId_,
+                std::get<to_underlying(ArgEn::type)>(vertexArgs_[i]),
+                std::get<to_underlying(ArgEn::storage)>(vertexArgs_[i]),
+                std::get<to_underlying(ArgEn::name)>(vertexArgs_[i]),
+                std::get<to_underlying(ArgEn::value)>(vertexArgs_[i]),
+                emptyStr,
+                now_,
+                MergeId(),
+                false, false, QString(), QString()
+                );
+        artefact->m_artefactArgData->push_back(arg.release());
+    }
+    auto objectArtefactData = std::make_unique<ObjectArtefactData>(
+                objectArtefactId_,
+                effectId_,
+                artefactId_,
+                objectArtefactStep_,
+                artefact.release(),
+                MergeId()
+                );
+    effectObject_->m_objectArtefactData->push_back(objectArtefactData.release());
+}
+
+enum class TextureEn{name, filename};
+using TextureTuple = std::tuple<const char *, const char *>;
+
+template<std::size_t size_>
+void processTexturesArtefacts(
+        std::unique_ptr<EffectObjectsData> &effectObject_,
+        const int &textureBaseArtefactId_,
+        const int &textureBaseObjectArtefactId_,
+        const int &objectArtefactStep_,
+        const int &effectId_,
+        const QDateTime &now_,
+        const TextureTuple (&textures_)[size_]
+        )
+{
+    for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
+    {
+        auto textureArtefact = std::make_unique<ArtefactData>(
+                    textureBaseArtefactId_ + i,
+                    std::get<to_underlying(TextureEn::name)>(textures_[i]),
+                    std::get<to_underlying(TextureEn::filename)>(textures_[i]),
+                    emptyStr,
+                    ArtefactTypeEn::texture2D,
+                    emptyStr,
+                    now_,
+                    MergeId()
+                    );
+        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
+                    textureBaseObjectArtefactId_ + i,
+                    effectId_,
+                    textureBaseArtefactId_ + i,
+                    objectArtefactStep_,
+                    textureArtefact.release(),
+                    MergeId()
+                    );
+        effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
+    }
+}
+
+std::unique_ptr<EffectObjectsData> createEffectObjectDataWithObjectInfo(
+        int effectId,
+        const char *effectName,
+        const char *effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep
+        )
+{
+    static const int effectObjectId = 1;
+    static const int objectInfoId = 1;
+    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
+                effectObjectId,
+                effectId,
+                objectInfoId,
+                effectObjectStep,
+                MergeId()
+                );
+
+    // ObjectInfoData
+    auto objectInfoData = std::make_unique<ObjectInfoData>(
+                objectInfoId,
+                effectName,
+                effectProgrammerName,
+                now,
+                MergeId()
+                );
+    effectObject->m_objectInfoData->push_back(objectInfoData.release());
+    return effectObject;
+}
 
 // TODO: refactoring
 std::unique_ptr<EffectObjectsData> createDrawingQtLogoEffectObject(
@@ -747,34 +866,17 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
         int effectObjectStep
         )
 {
-    static const int effectObjectId = 1;
-    static const int objectInfoId = 1;
-    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
-                effectObjectId,
+    std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
                 effectId,
-                objectInfoId,
-                effectObjectStep,
-                MergeId()
-                );
-
-    // ObjectInfoData
-    auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
                 effectName,
                 effectProgrammerName,
                 now,
-                MergeId()
+                effectObjectStep
                 );
-    effectObject->m_objectInfoData->push_back(objectInfoData.release());
 
-    // vertex shader
-    static const int artefactId1 = 1;
-    static const char *artefactName1 = "vertext shader";
-    static const ArtefactTypeEn artefactType1 = ArtefactTypeEn::shaderVertex;
-    static const int objectArtefactId1 = 1;
-    static const int objectArtefactStep0 = 0;
-    enum class ArgEn{id, type, storage, name, value};
-    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> vertexArgs[] = {
+    // vertex shader artefact
+    static const ArgumentsTuple vertexArgs1[] =
+    {
         {
             1,
             ArtefactArgTypeEn::vec4Type,
@@ -846,48 +948,23 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             "1.0 1.0"
         }
     };
-    auto artefact1 = std::make_unique<ArtefactData>(
-                artefactId1,
-                artefactName1,
-                g_defaultVertexShaderFilename,
-                emptyStr,
-                artefactType1,
-                emptyStr,
-                now,
-                MergeId()
-                );
-    for(std::size_t i = 0; i < sizeof(vertexArgs)/sizeof(vertexArgs[0]); ++i)
-    {
-        auto arg = std::make_unique<ArtefactArgData>(
-                std::get<to_underlying(ArgEn::id)>(vertexArgs[i]),
-                artefactId1,
-                std::get<to_underlying(ArgEn::type)>(vertexArgs[i]),
-                std::get<to_underlying(ArgEn::storage)>(vertexArgs[i]),
-                std::get<to_underlying(ArgEn::name)>(vertexArgs[i]),
-                std::get<to_underlying(ArgEn::value)>(vertexArgs[i]),
-                emptyStr,
-                now,
-                MergeId(),
-                false, false, QString(), QString()
-                );
-        artefact1->m_artefactArgData->push_back(arg.release());
-    }
-    auto objectArtefactData1 = std::make_unique<ObjectArtefactData>(
-                objectArtefactId1,
-                effectId,
-                artefactId1,
-                objectArtefactStep0,
-                artefact1.release(),
-                MergeId()
-                );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData1.release());
+    static const int objectArtefactStep0 = 0;
+    processArtefact(
+        effectObject,
+        g_defaultVertexShaderFilename,
+        1,
+        "vertext shader",
+        ArtefactTypeEn::shaderVertex,
+        1,
+        objectArtefactStep0,
+        effectId,
+        now,
+        vertexArgs1
+    );
 
-    // fragment shader
-    static const int artefactId2 = 2;
-    static const char *artefactName2 = "fragment shader";
-    static const ArtefactTypeEn artefactType2 = ArtefactTypeEn::shaderFragmet;
-    static const int objectArtefactId2 = 2;
-    static const std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *> fragmentArgs[] = {
+    // fragment shader artefact
+    static const ArgumentsTuple fragmentArgs1[] =
+    {
         {
             101,
             ArtefactArgTypeEn::floatType,
@@ -903,74 +980,36 @@ std::unique_ptr<EffectObjectsData> createTestObject2(
             "0.5"
         },
     };
-    auto artefact2 = std::make_unique<ArtefactData>(
-                artefactId2,
-                artefactName2,
-                g_defaultFragmentShaderFilename,
-                emptyStr,
-                artefactType2,
-                emptyStr,
-                now,
-                MergeId()
-                );
-    for(std::size_t i = 0; i < sizeof(fragmentArgs)/sizeof(fragmentArgs[0]); ++i)
-    {
-        auto arg = std::make_unique<ArtefactArgData>(
-                std::get<to_underlying(ArgEn::id)>(fragmentArgs[i]),
-                artefactId1,
-                std::get<to_underlying(ArgEn::type)>(fragmentArgs[i]),
-                std::get<to_underlying(ArgEn::storage)>(fragmentArgs[i]),
-                std::get<to_underlying(ArgEn::name)>(fragmentArgs[i]),
-                std::get<to_underlying(ArgEn::value)>(fragmentArgs[i]),
-                emptyStr,
-                now,
-                MergeId(),
-                false, false, QString(), QString()
-                );
-        artefact2->m_artefactArgData->push_back(arg.release());
-    }
-    auto objectArtefactData2 = std::make_unique<ObjectArtefactData>(
-                objectArtefactId2,
-                effectId,
-                artefactId2,
-                objectArtefactStep0,
-                artefact2.release(),
-                MergeId()
-                );
-    effectObject->m_objectArtefactData->push_back(objectArtefactData2.release());
+    processArtefact(
+        effectObject,
+        g_defaultFragmentShaderFilename,
+        2,
+        "fragment shader",
+        ArtefactTypeEn::shaderFragmet,
+        2,
+        objectArtefactStep0,
+        effectId,
+        now,
+        fragmentArgs1
+    );
 
     // textures artefacts
-    enum class TextureEn{name, filename};
-    static std::tuple<const char *, const char *> textures[] =
+    static const TextureTuple textures[] =
     {
         {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
         {g_renderToImageName, ":/Images/Images/no-image-002.png"}
     };
     static const int textureBaseArtefactId = 3;
-    static const int textureBaseObjectArtefactIdBase = 3;
-    for(std::size_t i = 0; i < sizeof(textures)/sizeof(textures[0]); ++i)
-    {
-        auto textureArtefact = std::make_unique<ArtefactData>(
-                    textureBaseArtefactId + i,
-                    std::get<to_underlying(TextureEn::name)>(textures[i]),
-                    std::get<to_underlying(TextureEn::filename)>(textures[i]),
-                    emptyStr,
-                    ArtefactTypeEn::texture2D,
-                    emptyStr,
-                    now,
-                    MergeId()
-                    );
-        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
-                    textureBaseObjectArtefactIdBase + i,
-                    effectId,
-                    textureBaseArtefactId + i,
-                    objectArtefactStep0,
-                    textureArtefact.release(),
-                    MergeId()
-                    );
-        effectObject->m_objectArtefactData->push_back(textureObjectArtefactData.release());
-    }
-
+    static const int textureBaseObjectArtefactId = 3;
+    processTexturesArtefacts(
+                effectObject,
+                textureBaseArtefactId,
+                textureBaseObjectArtefactId,
+                objectArtefactStep0,
+                effectId,
+                now,
+                textures
+                );
     return effectObject;
 }
 
@@ -2224,126 +2263,6 @@ std::unique_ptr<EffectData> createTestData10(
     effect->m_effectObjectsData->push_back(effectObject4.release());
     effect->m_effectObjectsData->push_back(effectObject5.release());
     return effect;
-}
-
-std::unique_ptr<EffectObjectsData> createEffectObjectDataWithObjectInfo(
-        int effectId,
-        const char *effectName,
-        const char *effectProgrammerName,
-        const QDateTime &now,
-        int effectObjectStep
-        )
-{
-    static const int effectObjectId = 1;
-    static const int objectInfoId = 1;
-    std::unique_ptr<EffectObjectsData> effectObject = std::make_unique<EffectObjectsData>(
-                effectObjectId,
-                effectId,
-                objectInfoId,
-                effectObjectStep,
-                MergeId()
-                );
-
-    // ObjectInfoData
-    auto objectInfoData = std::make_unique<ObjectInfoData>(
-                objectInfoId,
-                effectName,
-                effectProgrammerName,
-                now,
-                MergeId()
-                );
-    effectObject->m_objectInfoData->push_back(objectInfoData.release());
-    return effectObject;
-}
-
-using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, const char *>;
-
-template<std::size_t size_>
-void processArtefact(
-        std::unique_ptr<EffectObjectsData> &effectObject_,
-        const char *shaderFilename_,
-        const int &artefactId_,
-        const char *artefactName_,
-        const ArtefactTypeEn &artefactType_,
-        const int &objectArtefactId_,
-        const int &objectArtefactStep_,
-        const int &effectId_,
-        const QDateTime &now_,
-        const ArgumentsTuple (&vertexArgs_)[size_])
-{
-    std::unique_ptr<ArtefactData> artefact = std::make_unique<ArtefactData>(
-                    artefactId_,
-                    artefactName_,
-                    shaderFilename_,
-                    emptyStr,
-                    artefactType_,
-                    emptyStr,
-                    now_,
-                    MergeId()
-                    );
-    for(std::size_t i = 0; i < sizeof(vertexArgs_)/sizeof(vertexArgs_[0]); ++i)
-    {
-        auto arg = std::make_unique<ArtefactArgData>(
-                std::get<to_underlying(ArgEn::id)>(vertexArgs_[i]),
-                artefactId_,
-                std::get<to_underlying(ArgEn::type)>(vertexArgs_[i]),
-                std::get<to_underlying(ArgEn::storage)>(vertexArgs_[i]),
-                std::get<to_underlying(ArgEn::name)>(vertexArgs_[i]),
-                std::get<to_underlying(ArgEn::value)>(vertexArgs_[i]),
-                emptyStr,
-                now_,
-                MergeId(),
-                false, false, QString(), QString()
-                );
-        artefact->m_artefactArgData->push_back(arg.release());
-    }
-    auto objectArtefactData = std::make_unique<ObjectArtefactData>(
-                objectArtefactId_,
-                effectId_,
-                artefactId_,
-                objectArtefactStep_,
-                artefact.release(),
-                MergeId()
-                );
-    effectObject_->m_objectArtefactData->push_back(objectArtefactData.release());
-}
-
-enum class TextureEn{name, filename};
-using TextureTuple = std::tuple<const char *, const char *>;
-
-template<std::size_t size_>
-void processTexturesArtefacts(
-        std::unique_ptr<EffectObjectsData> &effectObject_,
-        const int &textureBaseArtefactId_,
-        const int &textureBaseObjectArtefactId_,
-        const int &objectArtefactStep_,
-        const int &effectId_,
-        const QDateTime &now_,
-        const TextureTuple (&textures_)[size_]
-        )
-{
-    for(std::size_t i = 0; i < sizeof(textures_)/sizeof(textures_[0]); ++i)
-    {
-        auto textureArtefact = std::make_unique<ArtefactData>(
-                    textureBaseArtefactId_ + i,
-                    std::get<to_underlying(TextureEn::name)>(textures_[i]),
-                    std::get<to_underlying(TextureEn::filename)>(textures_[i]),
-                    emptyStr,
-                    ArtefactTypeEn::texture2D,
-                    emptyStr,
-                    now_,
-                    MergeId()
-                    );
-        auto textureObjectArtefactData = std::make_unique<ObjectArtefactData>(
-                    textureBaseObjectArtefactId_ + i,
-                    effectId_,
-                    textureBaseArtefactId_ + i,
-                    objectArtefactStep_,
-                    textureArtefact.release(),
-                    MergeId()
-                    );
-        effectObject_->m_objectArtefactData->push_back(textureObjectArtefactData.release());
-    }
 }
 
 std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
