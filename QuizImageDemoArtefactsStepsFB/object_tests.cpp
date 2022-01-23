@@ -2270,7 +2270,11 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         const char *effectName,
         const char *effectProgrammerName,
         const QDateTime &now,
-        int effectObjectStep
+        int effectObjectStep,
+        const char * vertexShaderFilename_,
+        const char * fragmentShaderFilename_,
+        const char * fromImage_,
+        const char * toImage_
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -2358,7 +2362,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     static const int objectArtefactStep0 = 0;
     processArtefact(
         effectObject,
-        g_defaultVertexShaderFilename,
+        vertexShaderFilename_,
         1,
         "vertext shader",
         ArtefactTypeEn::shaderVertex,
@@ -2389,7 +2393,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     };
     processArtefact(
         effectObject,
-        g_defaultFragmentShaderFilename,
+        fragmentShaderFilename_,
         2,
         "fragment shader",
         ArtefactTypeEn::shaderFragmet,
@@ -2403,8 +2407,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     // textures artefacts
     static const TextureTuple textures[] =
     {
-        {g_renderFromImageName, ":/Images/Images/no-image-001.png"},
-        {g_renderToImageName, ":/Images/Images/no-image-002.png"}
+        { g_renderFromImageName, fromImage_ },
+        { g_renderToImageName, toImage_ }
     };
     static const int textureBaseArtefactId = 3;
     static const int textureBaseObjectArtefactId = 3;
@@ -2433,7 +2437,11 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectName,
                 effectProgrammerName,
                 now,
-                effectObjectStep0
+                effectObjectStep0,
+                g_defaultVertexShaderFilename,
+                g_defaultFragmentShaderFilename,
+                ":/Images/Images/no-image-001.png",
+                ":/Images/Images/no-image-002.png"
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
