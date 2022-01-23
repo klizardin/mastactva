@@ -32,8 +32,8 @@ varying mediump vec4 texCoordVar;
 void main(void)
 {
     mediump vec4 vertexAttributeToSized = vec4(
-                vertexAttributeTo.x * renderScreenRect.x,
-                vertexAttributeTo.y * renderScreenRect.y,
+                vertexAttributeTo.x * renderScreenRect.x / max(renderScreenRect.x, renderScreenRect.y),
+                vertexAttributeTo.y * renderScreenRect.y / max(renderScreenRect.x, renderScreenRect.y),
                 vertexAttributeTo.z,
                 vertexAttributeTo.w
                 );
