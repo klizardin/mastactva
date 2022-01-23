@@ -2363,7 +2363,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
                 );
 
     // vertex shader artefact
-    static const ArgumentsTuple vertexArgs1[] = {
+    static const ArgumentsTuple vertexArgs1[] =
+    {
         {
             1,
             ArtefactArgTypeEn::vec4Type,
@@ -2450,7 +2451,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     );
 
     // fragment shader artefact
-    static const ArgumentsTuple fragmentArgs1[] = {
+    static const ArgumentsTuple fragmentArgs1[] =
+    {
         {
             101,
             ArtefactArgTypeEn::floatType,
