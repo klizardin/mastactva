@@ -308,6 +308,7 @@ public:
     {
         if(g_renderObjectsStatesName == m_name)
         {
+            Q_ASSERT(false); // wrong type of variable
         }
         else
         {
