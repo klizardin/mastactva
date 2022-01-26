@@ -287,7 +287,12 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl(details_, global_, argSetsAndArgs_, static_cast<ArgType_*>(nullptr));
+        DrawingDataArtefactArg::addVariableImpl(
+                    details_,
+                    global_,
+                    argSetsAndArgs_,
+                    static_cast<ArgType_*>(nullptr)
+                    );
     }
 };
 
@@ -338,7 +343,12 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl(details_, global_, argSetsAndArgs_, static_cast<ArgType_*>(nullptr));
+        DrawingDataArtefactArg::addVariableImpl(
+                    details_,
+                    global_,
+                    argSetsAndArgs_,
+                    static_cast<ArgType_*>(nullptr)
+                    );
     }
 };
 
@@ -378,7 +388,12 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl(details_, global_, argSetsAndArgs_, static_cast<QString*>(nullptr));
+        DrawingDataArtefactArg::addVariableImpl(
+                    details_,
+                    global_,
+                    argSetsAndArgs_,
+                    static_cast<QString*>(nullptr)
+                    );
     }
 };
 
