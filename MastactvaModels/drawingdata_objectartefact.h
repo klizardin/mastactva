@@ -48,10 +48,15 @@ public:
             const drawingdata::Details &details_
             ) const override;
     bool hasArguments() const override;
+    bool hasGlobalArguments() const override;
     bool hasVariables() const override;
     void addVariables(
             const drawingdata::Details &details_,
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
+            ) const override;
+    void addGlobalArguments(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
             ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_

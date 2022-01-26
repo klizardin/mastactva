@@ -46,6 +46,12 @@ public:
     virtual void getAddonNames(
             QStringList &names_
             ) const = 0;
+    virtual bool isGlobalArgument(
+            ) const = 0;
+    virtual void addGlobalArgument(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
+            ) const = 0;
 };
 
 
@@ -64,6 +70,73 @@ public:
         if(g_renderAddonNameName == m_name)
         {
             names_.push_back(m_defaultValue.trimmed());
+        }
+    }
+
+    bool isGlobalArgument(
+            ) const override
+    {
+        static const char * s_globalArgumnentNames[] =
+        {
+            g_renderFillColor,
+            g_renderGlobalStates
+        };
+        return std::find_if(
+                    std::begin(s_globalArgumnentNames),
+                    std::end(s_globalArgumnentNames),
+                    [this](const char * name_) -> bool
+        {
+            return m_name == name_;
+        }) != std::end(s_globalArgumnentNames);
+    }
+
+    void addGlobalArgument(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
+            ) const override
+    {
+        if(!isGlobalArgument())
+        {
+            return;
+        }
+        if(g_renderFillColor == m_name)
+        {
+            auto val = std::make_shared<QVector3D>();
+            QVector<float> vec;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), vec))
+            {
+                drawingdata::utils::vecToUniform(vec, *val);
+            }
+            else
+            {
+                drawingdata::utils::toUniform(m_defaultValue, *val);
+            }
+            const float minv = std::min(val->x(), std::min(val->y(), val->z()));
+            val->setX(val->x() - minv);
+            val->setY(val->y() - minv);
+            val->setZ(val->z() - minv);
+            const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
+            if(maxv > 0.0)
+            {
+                val->setX(val->x() / maxv);
+                val->setY(val->y() / maxv);
+                val->setZ(val->z() / maxv);
+            }
+            data_.clearColor = QColor(val->x(), val->y(), val->z());
+        }
+        else if(g_renderGlobalStates == m_name)
+        {
+            QStringList states;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), states))
+            {
+                drawingdata::utils::addStates(states, data_.globalStates);
+            }
+            else
+            {
+                drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, data_.globalStates);
+            }
         }
     }
 
@@ -132,7 +205,8 @@ protected:
     void addVariableImpl(
             const drawingdata::Details &details_,
             bool global_,
-            DrawingDataArgSetsAndArgs *argSetsAndArgs_
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_,
+            ArgType_ *
             ) const
     {
         QString value;
@@ -185,6 +259,62 @@ protected:
                     );
     }
 
+    void addVariableImpl(
+            const drawingdata::Details &details_,
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_,
+            QString *
+            ) const
+    {
+        QString value;
+        drawingdata::Position position;
+        drawingdata::IPosition *pos = nullptr;
+        bool global = global_;
+        if(argSetsAndArgs_)
+        {
+            if(!argSetsAndArgs_->find(m_name))
+            {
+                return;
+            }
+            value = argSetsAndArgs_->getValue();
+            global = !argSetsAndArgs_->doAddVariableToLocalPosition();
+            if(global
+                    && details_.position
+                    )
+            {
+                auto posNew = details_.position->getCopyClearObjectIndex();
+                position = drawingdata::Position::fromPosition(posNew.get());
+                pos = &position;
+            }
+            else
+            {
+                pos = details_.position.get();
+            }
+        }
+        else
+        {
+            QStringList data0;
+            if(!global
+                    && details_.variables.operator bool()
+                    && details_.variables->get(m_name, details_.position.get(), data0)
+                    )
+            {
+                return;
+            }
+            value = m_defaultValue;
+            if(!global)
+            {
+                pos = details_.position.get();
+            }
+        }
+        QStringList data;
+        drawingdata::utils::splitTo(value, QString(g_renderObjectsStatesSpliter), data);
+        details_.variables->add(
+                    m_name,
+                    pos,
+                    std::move(data)
+                    );
+    }
 
     friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgumentData &&data_, const DrawingDataArtefactArg *);
 };
@@ -230,7 +360,12 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
+        DrawingDataArtefactArg::addVariableImpl(
+                    details_,
+                    global_,
+                    argSetsAndArgs_,
+                    static_cast<ArgType_*>(nullptr)
+                    );
     }
 };
 
@@ -251,6 +386,7 @@ public:
     {
         if(g_renderObjectsStatesName == m_name)
         {
+            Q_ASSERT(false); // wrong type of variable
         }
         else
         {
@@ -280,7 +416,12 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
+        DrawingDataArtefactArg::addVariableImpl(
+                    details_,
+                    global_,
+                    argSetsAndArgs_,
+                    static_cast<ArgType_*>(nullptr)
+                    );
     }
 };
 
@@ -320,9 +461,12 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        Q_UNUSED(details_);
-        Q_UNUSED(global_);
-        Q_UNUSED(argSetsAndArgs_);
+        DrawingDataArtefactArg::addVariableImpl(
+                    details_,
+                    global_,
+                    argSetsAndArgs_,
+                    static_cast<QString*>(nullptr)
+                    );
     }
 };
 

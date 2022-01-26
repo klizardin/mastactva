@@ -87,7 +87,7 @@ void DrawingDataEffect::initialize(drawing_data::QuizImageObjects &data_, int ar
     addArguments(argSetsAndArgs, sortedMainEffectObjects, true);
     addArguments(argSetsAndArgs, sortedEffectObjects, false);
 
-    runObjects(data_, sortedMainEffectObjects);
+    runObjects(data_, sortedMainEffectObjects, true);
 
     QStringList objectsToRun;
     if(m_details.variables.operator bool()
@@ -176,7 +176,8 @@ void DrawingDataEffect::extractMainObjects(
 
 void DrawingDataEffect::runObjects(
         drawing_data::QuizImageObjects &data_,
-        SortedEffectObjects &objects_
+        SortedEffectObjects &objects_,
+        bool mainObjects_ /*= false*/
         ) const
 {
     for(const SortedEffectObjects::value_type &v_ : objects_)
@@ -185,7 +186,7 @@ void DrawingDataEffect::runObjects(
         {
             continue;
         }
-        v_.second->addObjects(data_, m_details);
+        v_.second->addObjects(data_, m_details, 0, QStringList{}, mainObjects_);
     }
 }
 

@@ -42,10 +42,15 @@ public:
             const drawingdata::Details &details_
             ) const = 0;
     virtual bool hasArguments() const = 0;
+    virtual bool hasGlobalArguments() const = 0;
     virtual bool hasVariables() const = 0;
     virtual void addVariables(
             const drawingdata::Details &details_,
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
+            ) const = 0;
+    virtual void addGlobalArguments(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
             ) const = 0;
     virtual void addTexture(
             drawing_data::QuizImageObject &object_
@@ -91,10 +96,15 @@ public:
             const drawingdata::Details &details_
             ) const override;
     bool hasArguments() const override;
+    bool hasGlobalArguments() const override;
     bool hasVariables() const override;
     void addVariables(
             const drawingdata::Details &details_,
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
+            ) const override;
+    void addGlobalArguments(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
             ) const override;
     void addTexture(
             drawing_data::QuizImageObject &object_
