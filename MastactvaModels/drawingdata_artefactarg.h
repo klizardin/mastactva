@@ -46,6 +46,12 @@ public:
     virtual void getAddonNames(
             QStringList &names_
             ) const = 0;
+    virtual bool isGlobalArgument(
+            ) const = 0;
+    virtual void addGlobalArgument(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
+            ) const = 0;
 };
 
 
@@ -64,6 +70,73 @@ public:
         if(g_renderAddonNameName == m_name)
         {
             names_.push_back(m_defaultValue.trimmed());
+        }
+    }
+
+    bool isGlobalArgument(
+            ) const override
+    {
+        static const char * s_globalArgumnentNames[] =
+        {
+            g_renderFillColor,
+            g_renderGlobalStates
+        };
+        return std::find_if(
+                    std::begin(s_globalArgumnentNames),
+                    std::end(s_globalArgumnentNames),
+                    [this](const char * name_) -> bool
+        {
+            return m_name == name_;
+        }) != std::end(s_globalArgumnentNames);
+    }
+
+    void addGlobalArgument(
+            drawing_data::QuizImageObjects &data_,
+            const drawingdata::Details &details_
+            ) const override
+    {
+        if(!isGlobalArgument())
+        {
+            return;
+        }
+        if(g_renderFillColor == m_name)
+        {
+            auto val = std::make_shared<QVector3D>();
+            QVector<float> vec;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), vec))
+            {
+                drawingdata::utils::vecToUniform(vec, *val);
+            }
+            else
+            {
+                drawingdata::utils::toUniform(m_defaultValue, *val);
+            }
+            const float minv = std::min(val->x(), std::min(val->y(), val->z()));
+            val->setX(val->x() - minv);
+            val->setY(val->y() - minv);
+            val->setZ(val->z() - minv);
+            const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
+            if(maxv > 0.0)
+            {
+                val->setX(val->x() / maxv);
+                val->setY(val->y() / maxv);
+                val->setZ(val->z() / maxv);
+            }
+            data_.clearColor = QColor(val->x(), val->y(), val->z());
+        }
+        else if(g_renderGlobalStates == m_name)
+        {
+            QStringList states;
+            if(details_.variables.operator bool() &&
+                    details_.variables->get(m_name, details_.position.get(), states))
+            {
+                drawingdata::utils::addStates(states, data_.globalStates);
+            }
+            else
+            {
+                drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, data_.globalStates);
+            }
         }
     }
 

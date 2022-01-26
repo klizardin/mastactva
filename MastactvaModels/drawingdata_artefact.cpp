@@ -94,6 +94,29 @@ bool DrawingDataArtefact::hasArguments() const
             ;
 }
 
+bool DrawingDataArtefact::hasGlobalArguments() const
+{
+    if(!(m_effectArgData.operator bool()
+            && m_effectArgData->size() > 0
+            && (to_enum<ArtefactTypeEn>(m_typeId) == ArtefactTypeEn::scriptLua)))
+    {
+        return false;
+    }
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        if(arg->isGlobalArgument())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool DrawingDataArtefact::hasVariables() const
 {
     return m_effectArgData.operator bool()
@@ -130,6 +153,27 @@ void DrawingDataArtefact::addVariables(
             continue;
         }
         arg->addVariable(details_, global, argSetsAndArgs_);
+    }
+}
+
+void DrawingDataArtefact::addGlobalArguments(
+        drawing_data::QuizImageObjects &data_,
+        const drawingdata::Details &details_
+        ) const
+{
+    if(!hasGlobalArguments())
+    {
+        return;
+    }
+
+    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    {
+        auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
+        if(!arg)
+        {
+            continue;
+        }
+        arg->addGlobalArgument(data_, details_);
     }
 }
 

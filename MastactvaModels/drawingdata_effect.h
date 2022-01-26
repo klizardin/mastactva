@@ -66,7 +66,8 @@ private:
             ) const;
     void runObjects(
             drawing_data::QuizImageObjects &data_,
-            SortedEffectObjects &objects_
+            SortedEffectObjects &objects_,
+            bool mainObjects_ = false
             ) const;
     void addArguments(
             DrawingDataArgSetsAndArgs &argSetsAndArgs_,

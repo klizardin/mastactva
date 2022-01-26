@@ -36,7 +36,8 @@ public:
             drawing_data::QuizImageObjects &data_,
             const drawingdata::Details &details_,
             int stepIndexShift_ = 0,
-            const QStringList &addonNames_ = QStringList{}
+            const QStringList &addonNames_ = QStringList{},
+            bool mainObjects_ = false
             ) const;
     void addArgs(
             const drawingdata::Details &details_,

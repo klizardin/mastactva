@@ -45,9 +45,11 @@ public:
     void first();
     void next();
     bool build(
+            drawing_data::QuizImageObjects &data_,
             drawing_data::QuizImageObject &object_,
             const drawingdata::Details &details_,
-            const QStringList &addonNames_ = QStringList{}
+            const QStringList &addonNames_ = QStringList{},
+            bool mainObjects_ = false
             ) const;
     void addArgs(
             const drawingdata::Details &details_,
@@ -121,9 +123,11 @@ void ObjectArtefacts::next()
 }
 
 bool ObjectArtefacts::build(
+        drawing_data::QuizImageObjects &data_,
         drawing_data::QuizImageObject &object_,
         const drawingdata::Details &details_,
-        const QStringList &addonNames_ /*= QStringList{}*/
+        const QStringList &addonNames_ /*= QStringList{}*/,
+        bool mainObjects_ /*= false*/
         ) const
 {
     if(std::cend(m_artefacts) != m_objectBegin)
@@ -165,6 +169,18 @@ bool ObjectArtefacts::build(
         {
             (*it)->addArguments(object_, details_);
             break;
+        }
+    }
+    if(mainObjects_)
+    {
+        for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
+        {
+            checkArtefactStepIndex(details_, *it);
+            if((*it)->hasGlobalArguments())
+            {
+                (*it)->addGlobalArguments(data_, details_);
+                break;
+            }
         }
     }
     for(Iterator it = m_objectBegin; it != m_objectEnd; ++it)
@@ -284,7 +300,8 @@ void DrawingDataEffectObjects::addObjects(
         drawing_data::QuizImageObjects &data_,
         const drawingdata::Details &details_,
         int stepIndexShift_ /*= 0*/,
-        const QStringList &addonNames_ /*= QStringList{}*/
+        const QStringList &addonNames_ /*= QStringList{}*/,
+        bool mainObjects_ /*= false*/
         ) const
 {
     if(!m_objectArtefactData.operator bool())
@@ -303,7 +320,7 @@ void DrawingDataEffectObjects::addObjects(
             list.addMainCalculations(data_, details_);
         }
         auto obj = std::make_shared<drawing_data::QuizImageObject>();
-        if(list.build(*obj, details_, addonNames_))
+        if(list.build(data_, *obj, details_, addonNames_, mainObjects_))
         {
             data_.objects.push_back(obj);
         }
