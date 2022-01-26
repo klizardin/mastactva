@@ -132,7 +132,8 @@ protected:
     void addVariableImpl(
             const drawingdata::Details &details_,
             bool global_,
-            DrawingDataArgSetsAndArgs *argSetsAndArgs_
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_,
+            ArgType_ *
             ) const
     {
         QString value;
@@ -185,6 +186,62 @@ protected:
                     );
     }
 
+    void addVariableImpl(
+            const drawingdata::Details &details_,
+            bool global_,
+            DrawingDataArgSetsAndArgs *argSetsAndArgs_,
+            QString *
+            ) const
+    {
+        QString value;
+        drawingdata::Position position;
+        drawingdata::IPosition *pos = nullptr;
+        bool global = global_;
+        if(argSetsAndArgs_)
+        {
+            if(!argSetsAndArgs_->find(m_name))
+            {
+                return;
+            }
+            value = argSetsAndArgs_->getValue();
+            global = !argSetsAndArgs_->doAddVariableToLocalPosition();
+            if(global
+                    && details_.position
+                    )
+            {
+                auto posNew = details_.position->getCopyClearObjectIndex();
+                position = drawingdata::Position::fromPosition(posNew.get());
+                pos = &position;
+            }
+            else
+            {
+                pos = details_.position.get();
+            }
+        }
+        else
+        {
+            QStringList data0;
+            if(!global
+                    && details_.variables.operator bool()
+                    && details_.variables->get(m_name, details_.position.get(), data0)
+                    )
+            {
+                return;
+            }
+            value = m_defaultValue;
+            if(!global)
+            {
+                pos = details_.position.get();
+            }
+        }
+        QStringList data;
+        drawingdata::utils::splitTo(value, QString(g_renderObjectsStatesSpliter), data);
+        details_.variables->add(
+                    m_name,
+                    pos,
+                    std::move(data)
+                    );
+    }
 
     friend std::unique_ptr<DrawingDataArtefactArg> drawingdata::utils::factory<>(EffectArgumentData &&data_, const DrawingDataArtefactArg *);
 };
@@ -230,7 +287,7 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
+        DrawingDataArtefactArg::addVariableImpl(details_, global_, argSetsAndArgs_, static_cast<ArgType_*>(nullptr));
     }
 };
 
@@ -280,7 +337,7 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        DrawingDataArtefactArg::addVariableImpl<ArgType_>(details_, global_, argSetsAndArgs_);
+        DrawingDataArtefactArg::addVariableImpl(details_, global_, argSetsAndArgs_, static_cast<ArgType_*>(nullptr));
     }
 };
 
@@ -320,9 +377,7 @@ public:
             DrawingDataArgSetsAndArgs *argSetsAndArgs_ = nullptr
             ) const override
     {
-        Q_UNUSED(details_);
-        Q_UNUSED(global_);
-        Q_UNUSED(argSetsAndArgs_);
+        DrawingDataArtefactArg::addVariableImpl(details_, global_, argSetsAndArgs_, static_cast<QString*>(nullptr));
     }
 };
 
