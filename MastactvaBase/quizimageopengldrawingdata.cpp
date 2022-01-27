@@ -1132,12 +1132,10 @@ void ObjectsRenderer::render()
     if(isValidData())
     {
         const auto clearColor = m_openglData->getClearColor();
-        glClearColor(
-                    clearColor.redF(),
-                    clearColor.greenF(),
-                    clearColor.blueF(),
-                    1.0f
-                    );
+        const auto r = clearColor.redF();
+        const auto g = clearColor.greenF();
+        const auto b = clearColor.blueF();
+        glClearColor(r, g, b, 1.0f);
     }
     else
     {
