@@ -220,6 +220,7 @@ static const char *g_walkEffectFromVertexShaderFilename = "walkeffectfrom.vsh";
 static const char *g_walkEffectFromFragmentShaderFilename = "walkeffectfrom.fsh";
 static const char *g_walkEffectToVertexShaderFilename = "walkeffectto.vsh";
 static const char *g_walkEffectToFragmentShaderFilename = "walkeffectto.fsh";
+static const char *g_emptyFilename = "empty.lua";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -320,6 +321,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_walkEffectToFragmentShaderFilename,
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.fsh")
                     );
+    filesource->add(g_emptyFilename, QString{});
     return filesource;
 }
 
