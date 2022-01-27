@@ -123,7 +123,7 @@ public:
                 val->setY(val->y() / maxv);
                 val->setZ(val->z() / maxv);
             }
-            data_.clearColor = QColor(val->x(), val->y(), val->z());
+            data_.clearColor = QColor(val->x() * 255, val->y() * 255, val->z() * 255);
         }
         else if(g_renderGlobalStates == m_name)
         {
