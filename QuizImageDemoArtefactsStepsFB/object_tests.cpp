@@ -533,8 +533,8 @@ void processTexturesArtefacts(
 
 std::unique_ptr<EffectObjectsData> createEffectObjectDataWithObjectInfo(
         int effectId,
-        const char *effectName,
-        const char *effectProgrammerName,
+        const QString &effectName,
+        const QString &effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep
         )
@@ -2471,8 +2471,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
 
 std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         int effectId,
-        const char *effectName,
-        const char *effectProgrammerName,
+        const QString &effectName,
+        const QString &effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
         const QVector3D &fillColor_
@@ -2553,7 +2553,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     auto effectObject2 = createGlobalDataTestObject(
                 effectId,
                 effectNameMain,
-                effectProgrammerName,
+                effectProgrammerNameMain,
                 now,
                 effectObjectStep1,
                 QVector3D(0.0, 0.0, 1.0)
