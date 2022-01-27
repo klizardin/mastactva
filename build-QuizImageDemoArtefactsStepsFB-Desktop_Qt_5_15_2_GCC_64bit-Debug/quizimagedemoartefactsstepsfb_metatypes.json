@@ -92,6 +92,20 @@
                         "type": "QString",
                         "user": false,
                         "write": "setLog"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "name": "testIndex",
+                        "notify": "testIndexChanged",
+                        "read": "testIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setTestIndex"
                     }
                 ],
                 "qualifiedClassName": "QuizImage",
@@ -119,6 +133,11 @@
                     {
                         "access": "public",
                         "name": "logChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "testIndexChanged",
                         "returnType": "void"
                     }
                 ],

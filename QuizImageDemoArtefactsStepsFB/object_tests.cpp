@@ -220,6 +220,7 @@ static const char *g_walkEffectFromVertexShaderFilename = "walkeffectfrom.vsh";
 static const char *g_walkEffectFromFragmentShaderFilename = "walkeffectfrom.fsh";
 static const char *g_walkEffectToVertexShaderFilename = "walkeffectto.vsh";
 static const char *g_walkEffectToFragmentShaderFilename = "walkeffectto.fsh";
+static const char *g_emptyFilename = "empty.lua";
 
 
 std::shared_ptr<MapFileSource> createMapFileSource()
@@ -320,6 +321,7 @@ std::shared_ptr<MapFileSource> createMapFileSource()
     filesource->add(g_walkEffectToFragmentShaderFilename,
                     loadTextFile(":/Shaders/Shaders/walkeffecttest/walkeffectto.fsh")
                     );
+    filesource->add(g_emptyFilename, QString{});
     return filesource;
 }
 
@@ -438,6 +440,17 @@ QString toString(const QMatrix4x4 &mat4_)
 
 static const char *emptyStr = "";
 
+
+std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
+        int effectId,
+        const QString &effectName,
+        const QString &effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep,
+        const QVector3D &fillColor_
+        );
+
+
 enum class ArgEn{id, type, storage, name, value};
 using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString>;
 
@@ -531,8 +544,8 @@ void processTexturesArtefacts(
 
 std::unique_ptr<EffectObjectsData> createEffectObjectDataWithObjectInfo(
         int effectId,
-        const char *effectName,
-        const char *effectProgrammerName,
+        const QString &effectName,
+        const QString &effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep
         )
@@ -1349,6 +1362,7 @@ std::unique_ptr<EffectData> createTestData2(bool alphaBlending_ = false)
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
+    static const char *effectNameMain = "effect main";
     const QDateTime now = QDateTime::currentDateTime();
     QRandomGenerator gen;
     static const int effectObjectStep0 = 0;
@@ -1357,6 +1371,7 @@ std::unique_ptr<EffectData> createTestData2(bool alphaBlending_ = false)
     static const int objectInfoId2 = 2;
     static const char *effectObjectName = "qt logo";
     static const char *effectObjectProgrammerName = "gtlogo";
+    static QString effectProgrammerNameMain = QString(g_defaultObjectInfoProgrammerName) + "_globalData";
 
     auto effectObject1 = createDrawingQtLogoEffectObject(
                 effectId,
@@ -1384,6 +1399,14 @@ std::unique_ptr<EffectData> createTestData2(bool alphaBlending_ = false)
                                  + QString(g_depthTestEnable)
 
                 );
+    auto effectObject3 = createGlobalDataTestObject(
+                effectId,
+                effectNameMain,
+                effectProgrammerNameMain,
+                now,
+                effectObjectStep1,
+                QVector3D(0.0, 0.0, 1.0)
+                );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
@@ -1393,6 +1416,7 @@ std::unique_ptr<EffectData> createTestData2(bool alphaBlending_ = false)
                 );
     effect->m_effectObjectsData->push_back(effectObject1.release());
     effect->m_effectObjectsData->push_back(effectObject2.release());
+    effect->m_effectObjectsData->push_back(effectObject3.release());
     return effect;
 }
 
@@ -2467,11 +2491,58 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     return effectObject;
 }
 
+std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
+        int effectId,
+        const QString &effectName,
+        const QString &effectProgrammerName,
+        const QDateTime &now,
+        int effectObjectStep,
+        const QVector3D &fillColor_
+        )
+{
+    std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
+                effectId,
+                effectName,
+                effectProgrammerName,
+                now,
+                effectObjectStep
+                );
+
+    // vertex shader artefact
+    static const ArgumentsTuple globalArgs[] =
+    {
+        {
+            1,
+            ArtefactArgTypeEn::vec3Type,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderFillColor,
+            toString(fillColor_)
+        },
+    };
+    static const int objectArtefactStep0 = 0;
+    processArtefact(
+        effectObject,
+        g_emptyFilename,
+        1,
+        "effect global setting",
+        ArtefactTypeEn::scriptLua,
+        1,
+        objectArtefactStep0,
+        effectId,
+        now,
+        globalArgs
+    );
+
+    return effectObject;
+}
+
 std::unique_ptr<EffectData> createWalkEffectTestData()
 {
     static const int effectId = 1;
     static const char *effectName = "effect #1";
     static const char *effectProgrammerName = "effect1";
+    static const char *effectNameMain = "global data";
+    static QString effectProgrammerNameMain = QString(g_defaultObjectInfoProgrammerName) + "_globalData";
     const QDateTime now = QDateTime::currentDateTime();
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 1;
@@ -2501,6 +2572,14 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                     + QString(g_renderObjectsStatesSpliter)
                     + QString(g_depthTestDisable)
                 );
+    auto effectObject2 = createGlobalDataTestObject(
+                effectId,
+                effectNameMain,
+                effectProgrammerNameMain,
+                now,
+                effectObjectStep1,
+                QVector3D(0.0, 0.0, 1.0)
+                );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
                 effectName,
@@ -2510,6 +2589,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 );
     effect->m_effectObjectsData->push_back(effectObject0.release());
     effect->m_effectObjectsData->push_back(effectObject1.release());
+    effect->m_effectObjectsData->push_back(effectObject2.release());
     return effect;
 }
 
