@@ -183,12 +183,62 @@ void QuizImage::renderBuildError(const QString &compilerLog_)
     setLog(compilerLog_);
 }
 
+
+template<int index_>
+class Initialize : public Initialize<index_ - 1>
+{
+    using base = Initialize<index_ - 1>;
+public:
+    template<class TupleType_>
+    void initialize(const TupleType_ tuple_, int i_, drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0)
+    {
+        if(i_ == index_)
+        {
+            std::get<index_>(tuple_).initialize(data_, argsSetIndex_);
+        }
+        else
+        {
+            base::initialize(tuple_, i_, data_, argsSetIndex_);
+        }
+    }
+};
+
+template<>
+class Initialize<0>
+{
+public:
+    template<class TupleType_>
+    void initialize(const TupleType_ tuple_, int i_, drawing_data::QuizImageObjects &data_, int argsSetIndex_ = 0)
+    {
+        if(i_ == 0)
+        {
+            std::get<0>(tuple_).initialize(data_, argsSetIndex_);
+        }
+        else
+        {
+            Q_ASSERT(false); // index i_ not found
+        }
+    }
+};
+
+
 void QuizImage::initDefaultDrawingData()
 {
-    std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
-    TestCaseInitializer defaultData;
-    defaultData.initialize(*data.get());
-    m_drawingData = std::move(data);
+    if(m_testIndex < 0)
+    {
+        std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+        TestCaseInitializer defaultData;
+        defaultData.initialize(*data.get());
+        m_drawingData = std::move(data);
+    }
+    else
+    {
+        std::unique_ptr<drawing_data::QuizImageObjects> data(new drawing_data::QuizImageObjects());
+        Tests tests;
+        Initialize<std::tuple_size<Tests>::value - 1> init;
+        init.initialize(tests, m_testIndex, *data.get());
+        m_drawingData = std::move(data);
+    }
 }
 
 bool QuizImage::isFromImageReady() const
@@ -209,4 +259,19 @@ const QString &QuizImage::getFromImageUrl() const
 const QString &QuizImage::getToImageUrl() const
 {
     return m_toImage;
+}
+
+int QuizImage::testIndex() const
+{
+    return m_testIndex;
+}
+
+void QuizImage::setTestIndex(const int &testIndex_)
+{
+    m_testIndex = testIndex_;
+    m_testIndex %= std::tuple_size<Tests>::value;
+
+    initDefaultDrawingData();
+
+    emit testIndexChanged();
 }
