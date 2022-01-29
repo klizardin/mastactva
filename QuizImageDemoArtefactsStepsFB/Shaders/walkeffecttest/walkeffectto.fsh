@@ -26,5 +26,10 @@ varying mediump vec4 texCoordVar;
 void main(void)
 {
     mediump vec4 s1 = texture2D( renderToImage, texCoordVar.st );
-    gl_FragColor = vec4( s1.r, s1.g, s1.b, renderT) * renderOpacity;
+    gl_FragColor = vec4(
+                s1.r * renderOpacity * renderT,
+                s1.g * renderOpacity * renderT,
+                s1.b * renderOpacity * renderT,
+                renderT
+                );
 }
