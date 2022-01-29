@@ -37,6 +37,6 @@ void main(void)
                 vertexAttributeTo.z,
                 vertexAttributeTo.w
                 );
-    gl_Position = renderMatrix * mix(vertexAttributeToSized, renderVertexAttribute, renderT);
+    gl_Position = renderMatrix * mix(vertexAttributeToSized, renderVertexAttribute, renderT); // (vertexAttributeToSized, ...
     texCoordVar = renderToImageMatrix * renderTextureAttribute;
 }
