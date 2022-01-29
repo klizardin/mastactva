@@ -22,7 +22,7 @@
 #include "../MastactvaBase/defines.h"
 
 
-bool opengl_drawing::Texture::setFilename(const QString &fileName_)
+bool opengl_drawing::Texture::setFilename(const QString &fileName_, const QColor &backgroundColor_)
 {
     m_texture.reset();
     m_image.load(fileName_);
@@ -34,7 +34,7 @@ bool opengl_drawing::Texture::setFilename(const QString &fileName_)
     m_texture = std::make_unique<QOpenGLTexture>(m_image.mirrored());
     m_texture->setMagnificationFilter(QOpenGLTexture::Filter::Linear);
     m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
-    m_texture->setBorderColor(1, 1, 1, 0);
+    m_texture->setBorderColor(backgroundColor_);
     return true;
 }
 
@@ -224,7 +224,8 @@ void opengl_drawing::Object::free()
 }
 
 void opengl_drawing::Object::init(
-        const std::shared_ptr<drawing_data::QuizImageObject> &imageData_
+        const std::shared_ptr<drawing_data::QuizImageObject> &imageData_,
+        const QColor &backgroundColor_
         )
 {
     m_states = States::create();
@@ -275,7 +276,7 @@ void opengl_drawing::Object::init(
         }
 
         std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-        if(!texture->setFilename(texture_.filename))
+        if(!texture->setFilename(texture_.filename, backgroundColor_))
         {
             continue;
         }
@@ -456,7 +457,8 @@ void opengl_drawing::Object::release()
 
 void opengl_drawing::Object::setTexture(
         const QString &name_,
-        const QString& newFilename_
+        const QString& newFilename_,
+        const QColor &backgroundColor_
         )
 {
     auto fit = std::find_if(
@@ -471,7 +473,7 @@ void opengl_drawing::Object::setTexture(
             && textures[name_].operator bool()
             )
     {
-        textures[name_]->setFilename(newFilename_);
+        textures[name_]->setFilename(newFilename_, backgroundColor_);
         fit->filename = newFilename_;
         return;
     }
@@ -482,7 +484,7 @@ void opengl_drawing::Object::setTexture(
     }
 
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-    if(!texture->setFilename(newFilename_))
+    if(!texture->setFilename(newFilename_, backgroundColor_))
     {
         return;
     }
@@ -767,7 +769,7 @@ void opengl_drawing::Objects::reinit()
         m_objects.push_back(
                     std::make_unique<opengl_drawing::Object>()
                     );
-        m_objects.back()->init(object);
+        m_objects.back()->init(object, m_imageData ? m_imageData->clearColor : QColor(0,0,0));
     }
 
     auto doExtend = [](
@@ -950,7 +952,8 @@ QSize opengl_drawing::Objects::getTextureSize(const QString &name_, const QSize 
 
 void opengl_drawing::Objects::setTexture(
         const QString &name_,
-        const QString &newFilename_
+        const QString &newFilename_,
+        const QColor &backgroundColor_
         )
 {
     if(!m_updated.contains(name_))
@@ -959,18 +962,18 @@ void opengl_drawing::Objects::setTexture(
     }
     for(std::unique_ptr<Object> &object_ : m_objects)
     {
-        object_->setTexture(name_, newFilename_);
+        object_->setTexture(name_, newFilename_, backgroundColor_);
     }
 }
 
 void opengl_drawing::Objects::setFromImage(const QString &url_)
 {
-    setTexture(g_renderFromImageName, url_);    // TODO: dependency inversion
+    setTexture(g_renderFromImageName, url_, m_imageData ? m_imageData->clearColor : QColor(0,0,0));    // TODO: dependency inversion
 }
 
 void opengl_drawing::Objects::setToImage(const QString &url_)
 {
-    setTexture(g_renderToImageName, url_);  // TODO: dependency inversion
+    setTexture(g_renderToImageName, url_, m_imageData ? m_imageData->clearColor : QColor(0,0,0));  // TODO: dependency inversion
 }
 
 QMatrix4x4 opengl_drawing::Objects::getImageMatrix(const QString &imageName_, const QSize &windowSize_) const

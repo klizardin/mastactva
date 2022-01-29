@@ -34,7 +34,7 @@ namespace opengl_drawing
     class Texture
     {
     public:
-        bool setFilename(const QString &fileName_);
+        bool setFilename(const QString &fileName_, const QColor &backgroundColor_);
         void setLocation(int location_);
         void setIndex(int index_);
         void setUniform(QOpenGLShaderProgram *program_) const;
@@ -77,7 +77,8 @@ namespace opengl_drawing
     public:
         void free();
         void init(
-                const std::shared_ptr<drawing_data::QuizImageObject> &imageData_
+                const std::shared_ptr<drawing_data::QuizImageObject> &imageData_,
+                const QColor &backgroundColor_
                 );
         void bind();
         void setUniforms();
@@ -88,7 +89,7 @@ namespace opengl_drawing
         void drawTriangles(QOpenGLFunctions *f_);
         void release();
 
-        void setTexture(const QString &name_, const QString& newFilename_);
+        void setTexture(const QString &name_, const QString& newFilename_, const QColor &backgroundColor_);
         bool getTextureSize(const QString &name_, QSize &imageSize_) const;
 
         bool isUsable() const;
@@ -203,7 +204,7 @@ namespace opengl_drawing
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;
         QSize getTextureSize(const QString &name_, const QSize &size_) const;
-        void setTexture(const QString &name_, const QString &newFilename_);
+        void setTexture(const QString &name_, const QString &newFilename_, const QColor &backgroundColor_);
         void setFromImage(const QString &url_);
         void setToImage(const QString &url_);
 
