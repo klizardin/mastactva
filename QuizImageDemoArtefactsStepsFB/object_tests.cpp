@@ -23,10 +23,12 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QVariant>
+#include <QDir>
 #include "drawingdata_effect.h"
 #include "../MastactvaModels/objectinfo_data.h"
 #include "../MastactvaBase/format.h"
 #include "../MastactvaBase/wavefrontobj.h"
+#include "../MastactvaBase/addonmodulelist.h"
 #include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/names.h"
 
@@ -2299,6 +2301,17 @@ std::unique_ptr<EffectData> createTestData10(
     return effect;
 }
 
+std::vector<GLfloat> minus(const std::vector<GLfloat> &vertex1_, const std::vector<GLfloat> &vertex2_)
+{
+    std::vector<GLfloat> result;
+    result.resize(std::min(vertex1_.size(), vertex2_.size()));
+    for(int i = 0; i < (int)result.size(); ++i)
+    {
+        result[i] = vertex1_[i] - vertex2_[i];
+    }
+    return result;
+}
+
 std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         int effectId,
         const char *effectName,
@@ -2309,6 +2322,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         const char * fragmentShaderFilename_,
         const char * fromImage_,
         const char * toImage_,
+        const std::vector<GLfloat> &fromCoords_,
+        const std::vector<GLfloat> &toCoords_,
         const QString &alphaBlendingMode_
             = QString(g_alphaBlendingDisable)
                 + QString(g_renderObjectsStatesSpliter)
@@ -2328,8 +2343,11 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
 
     opengl_drawing::makeGeometry(1.0, 1.0, 2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
-    qDebug() << vertexData;
-    qDebug() << textureData;
+    qDebug() << "vertexData:\n" << vertexData;
+    qDebug() << "textureData:\n" << textureData;
+
+    qDebug() << "vertexData - fromCoords_:\n" << minus(vertexData, fromCoords_);
+    qDebug() << "vertexData - toCoords_:\n" << minus(vertexData, toCoords_);
 
     // vertex shader artefact
     static const ArgumentsTuple vertexArgs1[] =
@@ -2409,14 +2427,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
             "vertexAttributeFrom",
-            toString(textureData)
+            toString(fromCoords_)
         },
         {
             12,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
             "vertexAttributeTo",
-            toString(textureData)
+            toString(toCoords_)
         },
         {
             13,
@@ -2536,6 +2554,117 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
     return effectObject;
 }
 
+bool findDynLibs(const QDir &dir_, QDir &result_)
+{
+    QFileInfoList files = dir_.entryInfoList(QStringList{} << "*.so", QDir::Files);
+    if(!files.isEmpty())
+    {
+        result_ = dir_;
+        return true;
+    }
+    QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
+    for(const QFileInfo &fi_ : dirs)
+    {
+        if(!fi_.isDir())
+        {
+            continue;
+        }
+        if(findDynLibs(QDir(fi_.absoluteFilePath()), result_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+static const char * g_inputJson =
+        "{\"from_image\":\"%1\","
+            "\"to_image\":\"%2\","
+            "\"log_path\":\"%3\","
+            "\"line_extract_min_area\":2E-2,"
+            "\"line_extract_scale_coef\":2E-1,"
+            "\"find_rects_min_rect_area\":4E-2,"
+            "\"find_rects_max_rect_area\":5E-1,"
+            "\"find_rects_rect_size_coef\":9E-1,"
+            "\"find_rects_max_rect_count\":10,"
+            "\"find_transform_size_coef\":5E-1,"
+            "\"trace_operations_with_images\":false,"
+            "\"trace_operations_with_messages\":false,"
+            "\"mode\":\"generated_rects\","
+            "\"test_is_convex\":true,"
+            "\"generate_rects_rows\":2,"
+            "\"generate_rects_cols\":2,"
+            "\"rects\":[],"
+            "\"output_rows\":2,"
+            "\"output_cols\":2"
+            "}";
+
+void convert(const QJsonObject &object_, std::vector<QVector4D> &values_)
+{
+    values_.clear();
+    for(int i = 0;;i++)
+    {
+        if(!object_.contains(QString::number(i)))
+        {
+            return;
+        }
+        QVector4D vec;
+        const QJsonObject val = object_.value(QString::number(i)).toObject();
+        if(!val.contains("x") || !val.contains("y"))
+        {
+            return;
+        }
+        vec.setX(val.value("x").toDouble());
+        vec.setY(val.value("y").toDouble());
+        vec.setZ(-0.1);
+        vec.setW(1.0);
+        values_.push_back(vec);
+    }
+}
+
+static const int g_trianglesCount = 2;
+static const int g_triangleConers = 3;
+
+void createGeometry(
+        int geomertyPointsWidth_, int geometryPointsHeight_,
+        const std::vector<QVector4D> &coords_,
+        std::vector<GLfloat> &vertexData_
+        )
+{
+    static const int coords[g_trianglesCount][g_triangleConers][2] =
+    {
+        {{ 1, 0 }, { 0, 0 }, { 0, 1 }},
+        {{ 1, 0 }, { 0, 1 }, { 1, 1 }}
+    };
+
+    vertexData_.resize(geomertyPointsWidth_ * geometryPointsHeight_ *
+                      g_trianglesCount * g_triangleConers * 4);
+    for(int y = 0; y < geometryPointsHeight_; y++)
+    {
+        for(int x = 0; x < geomertyPointsWidth_; x++)
+        {
+            const int offsBase0 = (y * geomertyPointsWidth_ + x) *
+                    g_trianglesCount * g_triangleConers * 4;
+            for (int j = 0; j < g_trianglesCount; ++j)
+            {
+                for(int k = 0; k < g_triangleConers; k++)
+                {
+                    const int ptX = x + coords[j][k][0];
+                    const int ptY = y + coords[j][k][1];
+                    const int ptOffs = ptX + ptY * geomertyPointsWidth_;
+
+                    // vertex position
+                    const int offs0 = offsBase0 + (j * g_triangleConers + k) * 4;
+                    vertexData_[offs0 + 0] = coords_[ptOffs].x();
+                    vertexData_[offs0 + 1] = coords_[ptOffs].y();
+                    vertexData_[offs0 + 2] = coords_[ptOffs].z();
+                    vertexData_[offs0 + 3] = coords_[ptOffs].w();
+                }
+            }
+        }
+    }
+}
+
 std::unique_ptr<EffectData> createWalkEffectTestData()
 {
     static const int effectId = 1;
@@ -2547,6 +2676,29 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     static const int effectObjectStep0 = 0;
     static const int effectObjectStep1 = 1;
 
+    QDir addonsDir;
+    findDynLibs(QDir("./"), addonsDir);
+    auto modules = std::make_shared<AddonModules>();
+    modules->create(addonsDir);
+
+    QString inputJson = QString(g_inputJson).arg(
+                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
+                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                "/home/klizardin/tmp/"
+                );
+    QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
+
+    std::vector<QVector4D> fromValues, toValues;
+    convert(result.object().value("0").toObject(), fromValues);
+    convert(result.object().value("1").toObject(), toValues);
+    qDebug() << "fromValues:\n" << fromValues;
+    qDebug() << "toValues:\n"  << toValues;
+    std::vector<GLfloat> fromCoords, toCoords;
+    createGeometry(2, 2, fromValues, fromCoords);
+    createGeometry(2, 2, toValues, toCoords);
+    qDebug() << "fromCoords:\n" << fromCoords;
+    qDebug() << "toCoords:\n" << toCoords;
+
     auto effectObject0 = createWalkEffectTestObject(
                 effectId,
                 effectName,
@@ -2556,7 +2708,9 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
                 "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg"
+                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                fromCoords,
+                toCoords
                 );
     auto effectObject1 = createWalkEffectTestObject(
                 effectId,
@@ -2568,6 +2722,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 g_walkEffectToFragmentShaderFilename,
                 "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
                 "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                fromCoords,
+                toCoords,
                 QString(g_alphaBlendingDefault)
                     + QString(g_renderObjectsStatesSpliter)
                     + QString(g_depthTestDisable)
