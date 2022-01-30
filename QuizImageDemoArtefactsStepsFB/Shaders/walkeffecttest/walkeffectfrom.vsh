@@ -19,7 +19,7 @@
 attribute highp vec4 renderVertexAttribute;
 attribute mediump vec4 renderTextureAttribute;
 
-attribute mediump vec4 vertexAttributeFrom;
+attribute highp vec4 vertexAttributeFrom;
 
 uniform mediump mat4 renderMatrix;
 uniform mediump mat4 renderFromImageMatrix;
