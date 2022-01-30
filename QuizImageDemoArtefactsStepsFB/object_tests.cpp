@@ -2651,7 +2651,7 @@ void createGeometry(
                 {
                     const int ptX = x + coords[j][k][0];
                     const int ptY = y + coords[j][k][1];
-                    const int ptOffs = ptX + ptY * geomertyPointsWidth_;
+                    const int ptOffs = ptX + ptY * (geomertyPointsWidth_ + 1);
 
                     // vertex position
                     const int offs0 = offsBase0 + (j * g_triangleConers + k) * 4;
@@ -2689,8 +2689,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
-    convert(result.object().value("0").toObject(), fromValues);
-    convert(result.object().value("1").toObject(), toValues);
+    convert(result.object().value("1").toObject(), fromValues);
+    convert(result.object().value("0").toObject(), toValues);
     qDebug() << "fromValues:\n" << fromValues;
     qDebug() << "toValues:\n"  << toValues;
     std::vector<GLfloat> fromCoords, toCoords;
