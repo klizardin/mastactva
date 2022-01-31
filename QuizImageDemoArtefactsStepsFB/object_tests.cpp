@@ -2343,12 +2343,6 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
 
     opengl_drawing::makeGeometry(1.0, 1.0, 2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
-    qDebug() << "vertexData:\n" << vertexData;
-    qDebug() << "textureData:\n" << textureData;
-
-    qDebug() << "vertexData - fromCoords_:\n" << minus(vertexData, fromCoords_);
-    qDebug() << "vertexData - toCoords_:\n" << minus(vertexData, toCoords_);
-
     // vertex shader artefact
     static const ArgumentsTuple vertexArgs1[] =
     {
@@ -2592,8 +2586,8 @@ static const char * g_inputJson =
             "\"trace_operations_with_messages\":false,"
             "\"mode\":\"generated_rects\","
             "\"test_is_convex\":true,"
-            "\"generate_rects_rows\":2,"
-            "\"generate_rects_cols\":2,"
+            "\"generate_rects_rows\":4,"
+            "\"generate_rects_cols\":4,"
             "\"rects\":[],"
             "\"output_rows\":2,"
             "\"output_cols\":2"
@@ -2689,15 +2683,11 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
-    convert(result.object().value("1").toObject(), fromValues);
-    convert(result.object().value("0").toObject(), toValues);
-    qDebug() << "fromValues:\n" << fromValues;
-    qDebug() << "toValues:\n"  << toValues;
+    convert(result.object().value("0").toObject(), fromValues);
+    convert(result.object().value("1").toObject(), toValues);
     std::vector<GLfloat> fromCoords, toCoords;
     createGeometry(2, 2, fromValues, fromCoords);
     createGeometry(2, 2, toValues, toCoords);
-    qDebug() << "fromCoords:\n" << fromCoords;
-    qDebug() << "toCoords:\n" << toCoords;
 
     auto effectObject0 = createWalkEffectTestObject(
                 effectId,
