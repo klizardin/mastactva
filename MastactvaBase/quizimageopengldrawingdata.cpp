@@ -90,13 +90,13 @@ public:
         return g_alphaBlendingDisable == stateStr_;
     }
 
-    void init(const QString &stateStr_) override
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_BLEND);
     }
 
-    void release(const QString &stateStr_) override
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_BLEND);
@@ -114,7 +114,7 @@ public:
                 ;
     }
 
-    void init(const QString &stateStr_) override
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glEnable(GL_BLEND);
@@ -122,7 +122,7 @@ public:
         glBlendEquation(GL_FUNC_ADD);
     }
 
-    void release(const QString &stateStr_) override
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_BLEND);
@@ -140,13 +140,13 @@ public:
                 ;
     }
 
-    void init(const QString &stateStr_) override
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glEnable(GL_DEPTH_TEST);
     }
 
-    void release(const QString &stateStr_) override
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_DEPTH_TEST);
@@ -162,13 +162,13 @@ public:
         return g_depthTestDisable == stateStr_;
     }
 
-    void init(const QString &stateStr_) override
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_DEPTH_TEST);
     }
 
-    void release(const QString &stateStr_) override
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_DEPTH_TEST);
@@ -176,7 +176,7 @@ public:
 };
 
 
-void opengl_drawing::States::init(const QString &stateStr_)
+void opengl_drawing::States::init(const QString &stateStr_, const std::vector<GLfloat> &args_)
 {
     for(std::unique_ptr<State> &state_ : m_states)
     {
@@ -186,12 +186,12 @@ void opengl_drawing::States::init(const QString &stateStr_)
         }
         if(state_->canProcess(stateStr_))
         {
-            state_->init(stateStr_);
+            state_->init(stateStr_, args_);
         }
     }
 }
 
-void opengl_drawing::States::release(const QString &stateStr_)
+void opengl_drawing::States::release(const QString &stateStr_, const std::vector<GLfloat> &args_)
 {
     for(std::unique_ptr<State> &state_ : m_states)
     {
@@ -201,7 +201,7 @@ void opengl_drawing::States::release(const QString &stateStr_)
         }
         if(state_->canProcess(stateStr_))
         {
-            state_->release(stateStr_);
+            state_->release(stateStr_, args_);
         }
     }
 }
@@ -525,22 +525,24 @@ bool opengl_drawing::Object::isUsable() const
 
 void opengl_drawing::Object::initStates()
 {
+    const std::vector<GLfloat> emptyArgs;
     if(!m_imageData->objectStates.empty() && m_states)
     {
         for(const QString &stateStr_ : m_imageData->objectStates)
         {
-            m_states->init(stateStr_);
+            m_states->init(stateStr_, emptyArgs);
         }
     }
 }
 
 void opengl_drawing::Object::releaseStates()
 {
+    const std::vector<GLfloat> emptyArgs;
     if(!m_imageData->objectStates.empty() && m_states)
     {
         for(const QString &stateStr_ : m_imageData->objectStates)
         {
-            m_states->release(stateStr_);
+            m_states->release(stateStr_, emptyArgs);
         }
     }
 }
@@ -868,9 +870,10 @@ void opengl_drawing::Objects::initStates()
 {
     if(!m_imageData->globalStates.empty() && m_states)
     {
+        const std::vector<GLfloat> emptyArgs;
         for(const QString &stateStr_ : m_imageData->globalStates)
         {
-            m_states->init(stateStr_);
+            m_states->init(stateStr_, emptyArgs);
         }
     }
     else
@@ -886,9 +889,10 @@ void opengl_drawing::Objects::releaseStates()
 {
     if(!m_imageData->globalStates.empty() && m_states)
     {
+        const std::vector<GLfloat> emptyArgs;
         for(const QString &stateStr_ : m_imageData->globalStates)
         {
-            m_states->release(stateStr_);
+            m_states->release(stateStr_, emptyArgs);
         }
     }
     else
