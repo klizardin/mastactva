@@ -79,7 +79,7 @@ public:
         static const char * s_globalArgumnentNames[] =
         {
             g_renderFillColor,
-            g_renderGlobalStates
+            g_renderGlobalStatesName
         };
         return std::find_if(
                     std::begin(s_globalArgumnentNames),
@@ -125,7 +125,7 @@ public:
             }
             data_.clearColor = QColor(val->x() * 255, val->y() * 255, val->z() * 255);
         }
-        else if(g_renderGlobalStates == m_name)
+        else if(g_renderGlobalStatesName == m_name)
         {
             QStringList states;
             if(details_.variables.operator bool() &&
