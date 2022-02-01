@@ -56,15 +56,15 @@ namespace opengl_drawing
     {
     public:
         virtual bool canProcess(const QString &stateStr_) const = 0;
-        virtual void init(const QString &stateStr_) = 0;
-        virtual void release(const QString &stateStr_) = 0;
+        virtual void init(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
+        virtual void release(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
     };
 
     class States
     {
     public:
-        void init(const QString &stateStr_);
-        void release(const QString &stateStr_);
+        void init(const QString &stateStr_, const std::vector<GLfloat> &args_);
+        void release(const QString &stateStr_, const std::vector<GLfloat> &args_);
 
         static std::unique_ptr<States> create();
 
