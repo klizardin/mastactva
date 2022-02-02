@@ -144,6 +144,6 @@ opencv addon test
 - add local arg sets for effect inside gallery -- to localy save arg set
 - add local artefacts for effect inside gallery - to localy save images
 
-
+- state with arguments as values
 
 
