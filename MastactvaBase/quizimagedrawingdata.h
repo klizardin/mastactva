@@ -792,6 +792,7 @@ namespace drawing_data
         virtual ~IUniform() = default;
         virtual const QString &name() const = 0;
         virtual void set(QOpenGLShaderProgram *program, int location_) const = 0;
+        virtual void getVector(std::vector<GLfloat> &values_) const = 0;
         // break SOLID - not a simple data
     };
 
@@ -877,6 +878,11 @@ namespace drawing_data
         bool get(std::vector<ItemType2_> &value_) const
         {
             return getImpl(value_, std::true_type());
+        }
+
+        void getVector(std::vector<GLfloat> &values_) const override
+        {
+            values_ = details::toVector<GLfloat, ItemType_>(*m_data);
         }
 
     private:
@@ -1173,6 +1179,8 @@ namespace drawing_data
         }
 
         void setTexture(const QString &name_, const QString &newFilename_);
+        QStringList getArgumentNames() const;
+        bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
     };
 
 
@@ -1248,6 +1256,8 @@ namespace drawing_data
 
         void setTexture(const QString &name_, const QString &newFilename_);
         void calculate(opengl_drawing::IVariables *variables_);
+        QStringList getArgumentNames() const;
+        bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
 
     private:
         bool calculateStep(opengl_drawing::IVariables *variables_);
