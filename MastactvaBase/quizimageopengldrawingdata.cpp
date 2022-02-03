@@ -19,6 +19,7 @@
 #include "quizimageopengldrawingdata.h"
 #include "../MastactvaBase/names.h"
 #include "../MastactvaBase/drawingdata_utils.h"
+#include "../MastactvaBase/utils.h"
 #include "../MastactvaBase/defines.h"
 
 
@@ -525,6 +526,10 @@ bool opengl_drawing::Object::isUsable() const
 
 void opengl_drawing::Object::initStates()
 {
+    if(!m_imageData)
+    {
+        return;
+    }
     const std::vector<GLfloat> emptyArgs;
     if(!m_imageData->objectStates.empty() && m_states)
     {
@@ -533,10 +538,28 @@ void opengl_drawing::Object::initStates()
             m_states->init(stateStr_, emptyArgs);
         }
     }
+    const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
+    for(const QString &argumentName_ : argumentNames)
+    {
+        if(!argumentName_.startsWith(g_renderObjectsStateStartName)
+                && argumentName_ != g_renderObjectsStatesName
+                )
+        {
+            continue;
+        }
+        const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
+        std::vector<GLfloat> argumentValues;
+        m_imageData->getArgumentValue(argumentName_, argumentValues);
+        m_states->init(stateName, argumentValues);
+    }
 }
 
 void opengl_drawing::Object::releaseStates()
 {
+    if(!m_imageData)
+    {
+        return;
+    }
     const std::vector<GLfloat> emptyArgs;
     if(!m_imageData->objectStates.empty() && m_states)
     {
@@ -544,6 +567,20 @@ void opengl_drawing::Object::releaseStates()
         {
             m_states->release(stateStr_, emptyArgs);
         }
+    }
+    const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
+    for(const QString &argumentName_ : argumentNames)
+    {
+        if(!argumentName_.startsWith(g_renderObjectsStateStartName)
+                && argumentName_ != g_renderObjectsStatesName
+                )
+        {
+            continue;
+        }
+        const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
+        std::vector<GLfloat> argumentValues;
+        m_imageData->getArgumentValue(argumentName_, argumentValues);
+        m_states->release(stateName, argumentValues);
     }
 }
 
@@ -868,7 +905,7 @@ void opengl_drawing::Objects::draw(QOpenGLFunctions *f_)
 
 void opengl_drawing::Objects::initStates()
 {
-    if(!m_imageData->globalStates.empty() && m_states)
+    if(m_imageData && !m_imageData->globalStates.empty() && m_states)
     {
         const std::vector<GLfloat> emptyArgs;
         for(const QString &stateStr_ : m_imageData->globalStates)
@@ -883,11 +920,28 @@ void opengl_drawing::Objects::initStates()
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
     }
+    if(m_imageData)
+    {
+        const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
+        for(const QString &argumentName_ : argumentNames)
+        {
+            if(!argumentName_.startsWith(g_renderGlobalStatesName)
+                    && argumentName_ != g_renderGlobalStatesName
+                    )
+            {
+                continue;
+            }
+            const QString stateName = argumentName_.mid(QString(g_renderGlobalStatesName).length());
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            m_states->init(stateName, argumentValues);
+        }
+    }
 }
 
 void opengl_drawing::Objects::releaseStates()
 {
-    if(!m_imageData->globalStates.empty() && m_states)
+    if(m_imageData && !m_imageData->globalStates.empty() && m_states)
     {
         const std::vector<GLfloat> emptyArgs;
         for(const QString &stateStr_ : m_imageData->globalStates)
@@ -899,6 +953,23 @@ void opengl_drawing::Objects::releaseStates()
     {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
+    }
+    if(m_imageData)
+    {
+        const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
+        for(const QString &argumentName_ : argumentNames)
+        {
+            if(!argumentName_.startsWith(g_renderGlobalStatesName)
+                    && argumentName_ != g_renderGlobalStatesName
+                    )
+            {
+                continue;
+            }
+            const QString stateName = argumentName_.mid(QString(g_renderGlobalStatesName).length());
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            m_states->release(stateName, argumentValues);
+        }
     }
 }
 
