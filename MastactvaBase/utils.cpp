@@ -692,3 +692,19 @@ bool isSimpleQVariantType(const QVariant::Type &type_)
                 )
             ;
 }
+
+QStringList getUniqueValues(const QStringList &values_)
+{
+    QSet<QString> unique;
+    for(const QString &value_ : values_)
+    {
+        unique.insert(value_);
+    }
+    QStringList result;
+    result.reserve(unique.size());
+    for(const QString &value_ : unique)
+    {
+        result.push_back(value_);
+    }
+    return result;
+}
