@@ -200,6 +200,21 @@ namespace opengl_drawing
             }
         }
 
+        QStringList getArgumentNames() const
+        {
+            return m_imageData ? m_imageData->getArgumentNames() : QStringList{};
+        }
+
+        bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const
+        {
+            values_.clear();
+            if(!m_imageData)
+            {
+                return false;
+            }
+            return m_imageData->getArgumentValue(name_, values_);
+        }
+
         QColor getClearColor() const;
         int getAttributeTupleSize(const QString &name_) const;
         bool getTextureSize(const QString &name_, QSize &size_) const;

@@ -292,6 +292,61 @@ void drawing_data::QuizImageObject::setTexture(const QString &name_, const QStri
     fit->filename = newFilename_;
 }
 
+QStringList drawing_data::QuizImageObject::getArgumentNames() const
+{
+    QStringList result;
+    result.reserve(uniforms.size() + attributes.size());
+    for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+    {
+        if(!uniform_.operator bool())
+        {
+            continue;
+        }
+        result.push_back(uniform_->name());
+    }
+    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    {
+        if(!attribute_.operator bool())
+        {
+            continue;
+        }
+        result.push_back(attribute_->name());
+    }
+    return result;
+}
+
+bool drawing_data::QuizImageObject::getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const
+{
+    for(const std::unique_ptr<IUniform> &uniform_ : uniforms)
+    {
+        if(!uniform_.operator bool()
+                || uniform_->name() != name_
+                )
+        {
+            continue;
+        }
+        uniform_->getVector(values_);
+        return true;
+    }
+    for(const std::unique_ptr<IAttribute> &attribute_ : attributes)
+    {
+        if(!attribute_.operator bool()
+                || attribute_->name() != name_
+                )
+        {
+            continue;
+        }
+        values_.resize(attribute_->size());
+        std::copy(
+                    attribute_->constData(),
+                    attribute_->constData() + attribute_->size(),
+                    values_.begin()
+                    );
+        return true;
+    }
+    return false;
+}
+
 
 drawing_data::QuizImageObjects::QuizImageObjects()
     : detail::Calculations(this)
@@ -422,6 +477,36 @@ void drawing_data::QuizImageObjects::calculate(opengl_drawing::IVariables *varia
         object_->postCalculation();
     }
     postCalculation();
+}
+
+QStringList drawing_data::QuizImageObjects::getArgumentNames() const
+{
+    QStringList result;
+    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+        result.append(object_->getArgumentNames());
+    }
+    return result;
+}
+
+bool drawing_data::QuizImageObjects::getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const
+{
+    for(const std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+        if(object_->getArgumentValue(name_, values_))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool drawing_data::QuizImageObjects::calculateStep(opengl_drawing::IVariables *variables_)

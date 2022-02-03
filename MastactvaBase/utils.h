@@ -91,6 +91,7 @@ QByteArray loadBinaryFileByUrl(const QString &filenameUrl_, bool useServerFiles_
 QString getTextFromBinaryData(const QByteArray &data_);
 void saveTextFile(const QString filepath_, const QString &text_);
 bool isSimpleQVariantType(const QVariant::Type &type_);
+QStringList getUniqueValues(const QStringList &values_);
 
 #if QT_CONFIG(opengl)
 
