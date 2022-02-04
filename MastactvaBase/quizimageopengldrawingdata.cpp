@@ -177,6 +177,28 @@ public:
 };
 
 
+void opengl_drawing::State::init(
+        const QString &stateStr_,
+        Texture* texture_,
+        const std::vector<GLfloat> &args_
+        )
+{
+    Q_UNUSED(stateStr_);
+    Q_UNUSED(texture_);
+    Q_UNUSED(args_);
+}
+
+void opengl_drawing::State::release(
+        const QString &stateStr_,
+        Texture* texture_,
+        const std::vector<GLfloat> &args_
+        )
+{
+    Q_UNUSED(stateStr_);
+    Q_UNUSED(texture_);
+    Q_UNUSED(args_);
+}
+
 void opengl_drawing::States::init(const QString &stateStr_, const std::vector<GLfloat> &args_)
 {
     for(std::unique_ptr<State> &state_ : m_states)
@@ -205,6 +227,22 @@ void opengl_drawing::States::release(const QString &stateStr_, const std::vector
             state_->release(stateStr_, args_);
         }
     }
+}
+
+opengl_drawing::State * opengl_drawing::States::find(const QString &stateStr_) const
+{
+    for(const std::unique_ptr<State> &state_ : m_states)
+    {
+        if(!state_)
+        {
+            continue;
+        }
+        if(state_->canProcess(stateStr_))
+        {
+            return state_.get();
+        }
+    }
+    return nullptr;
 }
 
 std::unique_ptr<opengl_drawing::States> opengl_drawing::States::create()
@@ -550,6 +588,19 @@ void opengl_drawing::Object::initStates()
             m_imageData->getArgumentValue(argumentName_, argumentValues);
             m_states->init(stateName, argumentValues);
         }
+        const QString textureName = getTextureStateName(argumentName_);
+        if(!textureName.isEmpty())
+        {
+            const QString stateName = argumentName_.mid(textureName.length());
+            State * state = m_states->find(stateName);
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            const auto fit = textures.find(textureName);
+            if(state && std::end(textures) != fit)
+            {
+                state->init(stateName, fit->second.get(), argumentValues);
+            }
+        }
     }
 }
 
@@ -579,6 +630,19 @@ void opengl_drawing::Object::releaseStates()
             m_imageData->getArgumentValue(argumentName_, argumentValues);
             m_states->release(stateName, argumentValues);
         }
+        const QString textureName = getTextureStateName(argumentName_);
+        if(!textureName.isEmpty())
+        {
+            const QString stateName = argumentName_.mid(textureName.length());
+            State * state = m_states->find(stateName);
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            const auto fit = textures.find(textureName);
+            if(state && std::end(textures) != fit)
+            {
+                state->release(stateName, fit->second.get(), argumentValues);
+            }
+        }
     }
 }
 
@@ -603,6 +667,18 @@ void opengl_drawing::Object::setTextureIndexes()
 bool opengl_drawing::Object::isIdValid(int idValue_)
 {
     return idValue_ >= 0;
+}
+
+QString opengl_drawing::Object::getTextureStateName(const QString &argumentName_) const
+{
+    for(const TexturesMap::value_type &val_ : textures)
+    {
+        if(argumentName_.startsWith(val_.first))
+        {
+            return val_.first;
+        }
+    }
+    return {};
 }
 
 
