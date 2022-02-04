@@ -129,8 +129,8 @@ Q_DECL_UNUSED static const char *g_renderFillColor = "renderFillColor";
 Q_DECL_UNUSED static const char *g_renderGlobalStatesName = "renderGlobalStates";
 Q_DECL_UNUSED static const char *g_renderObjectsStateStartName = "renderObjectState";
 Q_DECL_UNUSED static const char *g_renderGlobalStateStartName = "renderGlobalState";
-Q_DECL_UNUSED static const char *g_renderClipRectStateName = "ClipRect";
-Q_DECL_UNUSED static const char *g_renderBorderColorStateName = "BorderColor";
+Q_DECL_UNUSED static const char *g_renderClipRectStateName = "DrawClipRect";
+Q_DECL_UNUSED static const char *g_renderBorderColorStateName = "TextureBorderColor";
 
 
 // db request info
