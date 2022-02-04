@@ -541,16 +541,15 @@ void opengl_drawing::Object::initStates()
     const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
     for(const QString &argumentName_ : argumentNames)
     {
-        if(!argumentName_.startsWith(g_renderObjectsStateStartName)
+        if(argumentName_.startsWith(g_renderObjectsStateStartName)
                 && argumentName_ != g_renderObjectsStatesName
                 )
         {
-            continue;
+            const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            m_states->init(stateName, argumentValues);
         }
-        const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
-        std::vector<GLfloat> argumentValues;
-        m_imageData->getArgumentValue(argumentName_, argumentValues);
-        m_states->init(stateName, argumentValues);
     }
 }
 
@@ -571,16 +570,15 @@ void opengl_drawing::Object::releaseStates()
     const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
     for(const QString &argumentName_ : argumentNames)
     {
-        if(!argumentName_.startsWith(g_renderObjectsStateStartName)
+        if(argumentName_.startsWith(g_renderObjectsStateStartName)
                 && argumentName_ != g_renderObjectsStatesName
                 )
         {
-            continue;
+            const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            m_states->release(stateName, argumentValues);
         }
-        const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
-        std::vector<GLfloat> argumentValues;
-        m_imageData->getArgumentValue(argumentName_, argumentValues);
-        m_states->release(stateName, argumentValues);
     }
 }
 
@@ -926,7 +924,7 @@ void opengl_drawing::Objects::initStates()
         for(const QString &argumentName_ : argumentNames)
         {
             if(!argumentName_.startsWith(g_renderGlobalStatesName)
-                    && argumentName_ != g_renderGlobalStatesName
+                    || argumentName_ == g_renderGlobalStatesName
                     )
             {
                 continue;
@@ -960,7 +958,7 @@ void opengl_drawing::Objects::releaseStates()
         for(const QString &argumentName_ : argumentNames)
         {
             if(!argumentName_.startsWith(g_renderGlobalStatesName)
-                    && argumentName_ != g_renderGlobalStatesName
+                    || argumentName_ == g_renderGlobalStatesName
                     )
             {
                 continue;
