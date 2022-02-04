@@ -40,6 +40,8 @@ namespace opengl_drawing
         void setUniform(QOpenGLShaderProgram *program_) const;
         void bind(QOpenGLFunctions *f_) const;
         bool getSize(QSize &size_) const;
+        void setWrapClampToBorder();
+        void setBorderColor(const QColor &backgroundColor_);
 
     private:
         bool isValidLocation() const;
@@ -58,6 +60,8 @@ namespace opengl_drawing
         virtual bool canProcess(const QString &stateStr_) const = 0;
         virtual void init(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
         virtual void release(const QString &stateStr_, const std::vector<GLfloat> &args_) = 0;
+        virtual void init(const QString &stateStr_, Texture* texture_, const std::vector<GLfloat> &args_);
+        virtual void release(const QString &stateStr_, Texture* texture_, const std::vector<GLfloat> &args_);
     };
 
     class States
@@ -65,6 +69,7 @@ namespace opengl_drawing
     public:
         void init(const QString &stateStr_, const std::vector<GLfloat> &args_);
         void release(const QString &stateStr_, const std::vector<GLfloat> &args_);
+        State * find(const QString &stateStr_) const;
 
         static std::unique_ptr<States> create();
 
@@ -99,13 +104,15 @@ namespace opengl_drawing
     private:
         void setTextureIndexes();
         static bool isIdValid(int idValue_);
+        QString getTextureStateName(const QString &argumentName_) const;
 
     private:
         std::shared_ptr<drawing_data::QuizImageObject> m_imageData;
         std::unique_ptr<QOpenGLShaderProgram> program;
         QHash<QString, int> attributes;
         QHash<QString, int> uniforms;
-        std::map<QString, std::unique_ptr<Texture>> textures;
+        using TexturesMap = std::map<QString, std::unique_ptr<Texture>>;
+        TexturesMap textures;
         std::unique_ptr<States> m_states;
     };
 

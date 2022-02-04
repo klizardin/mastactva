@@ -77,6 +77,22 @@ bool opengl_drawing::Texture::getSize(QSize &size_) const
     return true;
 }
 
+void opengl_drawing::Texture::setWrapClampToBorder()
+{
+    if(m_texture)
+    {
+        m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+    }
+}
+
+void opengl_drawing::Texture::setBorderColor(const QColor &backgroundColor_)
+{
+    if(m_texture)
+    {
+        m_texture->setBorderColor(backgroundColor_);
+    }
+}
+
 bool opengl_drawing::Texture::isValidLocation() const
 {
     return m_location >= 0;
@@ -177,6 +193,100 @@ public:
 };
 
 
+class DrawClipRectState : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return g_renderClipRectStateName == stateStr_;
+    }
+
+    void init(const QString &stateStr_, const std::vector<GLfloat> &args_) override
+    {
+        Q_UNUSED(stateStr_);
+        if(args_.size() >= 4)
+        {
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(args_[0], args_[1], args_[2], args_[3]);
+        }
+    }
+
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_SCISSOR_TEST);
+    }
+};
+
+
+class TextureBorderColorState : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return g_renderBorderColorStateName == stateStr_;
+    }
+
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void init(
+            const QString &stateStr_,
+            opengl_drawing::Texture* texture_,
+            const std::vector<GLfloat> &args_
+            ) override
+    {
+        Q_UNUSED(stateStr_);
+        if(args_.size() >= 4 && texture_)
+        {
+            texture_->setWrapClampToBorder();
+            const QColor backgroundColor(args_[0], args_[1], args_[2], args_[3]);
+            texture_->setBorderColor(backgroundColor);
+        }
+    }
+
+    void release(
+            const QString &stateStr_,
+            opengl_drawing::Texture* texture_,
+            const std::vector<GLfloat> &args_
+            ) override
+    {
+        Q_UNUSED(stateStr_);
+        Q_UNUSED(texture_);
+        Q_UNUSED(args_);
+    }
+};
+
+
+void opengl_drawing::State::init(
+        const QString &stateStr_,
+        Texture* texture_,
+        const std::vector<GLfloat> &args_
+        )
+{
+    Q_UNUSED(stateStr_);
+    Q_UNUSED(texture_);
+    Q_UNUSED(args_);
+}
+
+void opengl_drawing::State::release(
+        const QString &stateStr_,
+        Texture* texture_,
+        const std::vector<GLfloat> &args_
+        )
+{
+    Q_UNUSED(stateStr_);
+    Q_UNUSED(texture_);
+    Q_UNUSED(args_);
+}
+
 void opengl_drawing::States::init(const QString &stateStr_, const std::vector<GLfloat> &args_)
 {
     for(std::unique_ptr<State> &state_ : m_states)
@@ -205,6 +315,22 @@ void opengl_drawing::States::release(const QString &stateStr_, const std::vector
             state_->release(stateStr_, args_);
         }
     }
+}
+
+opengl_drawing::State * opengl_drawing::States::find(const QString &stateStr_) const
+{
+    for(const std::unique_ptr<State> &state_ : m_states)
+    {
+        if(!state_)
+        {
+            continue;
+        }
+        if(state_->canProcess(stateStr_))
+        {
+            return state_.get();
+        }
+    }
+    return nullptr;
 }
 
 std::unique_ptr<opengl_drawing::States> opengl_drawing::States::create()
@@ -541,16 +667,28 @@ void opengl_drawing::Object::initStates()
     const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
     for(const QString &argumentName_ : argumentNames)
     {
-        if(!argumentName_.startsWith(g_renderObjectsStateStartName)
+        if(argumentName_.startsWith(g_renderObjectsStateStartName)
                 && argumentName_ != g_renderObjectsStatesName
                 )
         {
-            continue;
+            const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            m_states->init(stateName, argumentValues);
         }
-        const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
-        std::vector<GLfloat> argumentValues;
-        m_imageData->getArgumentValue(argumentName_, argumentValues);
-        m_states->init(stateName, argumentValues);
+        const QString textureName = getTextureStateName(argumentName_);
+        if(!textureName.isEmpty())
+        {
+            const QString stateName = argumentName_.mid(textureName.length());
+            State * state = m_states->find(stateName);
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            const auto fit = textures.find(textureName);
+            if(state && std::end(textures) != fit)
+            {
+                state->init(stateName, fit->second.get(), argumentValues);
+            }
+        }
     }
 }
 
@@ -571,16 +709,28 @@ void opengl_drawing::Object::releaseStates()
     const QStringList argumentNames = getUniqueValues(m_imageData->getArgumentNames());
     for(const QString &argumentName_ : argumentNames)
     {
-        if(!argumentName_.startsWith(g_renderObjectsStateStartName)
+        if(argumentName_.startsWith(g_renderObjectsStateStartName)
                 && argumentName_ != g_renderObjectsStatesName
                 )
         {
-            continue;
+            const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            m_states->release(stateName, argumentValues);
         }
-        const QString stateName = argumentName_.mid(QString(g_renderObjectsStateStartName).length());
-        std::vector<GLfloat> argumentValues;
-        m_imageData->getArgumentValue(argumentName_, argumentValues);
-        m_states->release(stateName, argumentValues);
+        const QString textureName = getTextureStateName(argumentName_);
+        if(!textureName.isEmpty())
+        {
+            const QString stateName = argumentName_.mid(textureName.length());
+            State * state = m_states->find(stateName);
+            std::vector<GLfloat> argumentValues;
+            m_imageData->getArgumentValue(argumentName_, argumentValues);
+            const auto fit = textures.find(textureName);
+            if(state && std::end(textures) != fit)
+            {
+                state->release(stateName, fit->second.get(), argumentValues);
+            }
+        }
     }
 }
 
@@ -605,6 +755,18 @@ void opengl_drawing::Object::setTextureIndexes()
 bool opengl_drawing::Object::isIdValid(int idValue_)
 {
     return idValue_ >= 0;
+}
+
+QString opengl_drawing::Object::getTextureStateName(const QString &argumentName_) const
+{
+    for(const TexturesMap::value_type &val_ : textures)
+    {
+        if(argumentName_.startsWith(val_.first))
+        {
+            return val_.first;
+        }
+    }
+    return {};
 }
 
 
@@ -926,7 +1088,7 @@ void opengl_drawing::Objects::initStates()
         for(const QString &argumentName_ : argumentNames)
         {
             if(!argumentName_.startsWith(g_renderGlobalStatesName)
-                    && argumentName_ != g_renderGlobalStatesName
+                    || argumentName_ == g_renderGlobalStatesName
                     )
             {
                 continue;
@@ -960,7 +1122,7 @@ void opengl_drawing::Objects::releaseStates()
         for(const QString &argumentName_ : argumentNames)
         {
             if(!argumentName_.startsWith(g_renderGlobalStatesName)
-                    && argumentName_ != g_renderGlobalStatesName
+                    || argumentName_ == g_renderGlobalStatesName
                     )
             {
                 continue;

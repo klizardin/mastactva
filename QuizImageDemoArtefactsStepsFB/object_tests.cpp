@@ -454,7 +454,7 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
 
 
 enum class ArgEn{id, type, storage, name, value};
-using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, const char *, QString>;
+using ArgumentsTuple = std::tuple<int, ArtefactArgTypeEn, ArtefactArgStorageEn, QString, QString>;
 
 template<std::size_t size_>
 void processArtefact(
@@ -2436,6 +2436,20 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgStorageEn::uniformStorage,
             g_renderObjectsStatesName,
             alphaBlendingMode_
+        },
+        {
+            14,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            QString(g_renderFromImageName) + QString(g_renderBorderColorStateName),
+            "0.5, 0.5, 0.5, 0.5"
+        },
+        {
+            15,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            QString(g_renderToImageName) + QString(g_renderBorderColorStateName),
+            "0.5, 0.5, 0.5, 0.5"
         }
     };
     static const int objectArtefactStep0 = 0;
