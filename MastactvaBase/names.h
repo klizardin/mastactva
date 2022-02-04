@@ -129,8 +129,6 @@ Q_DECL_UNUSED static const char *g_renderFillColor = "renderFillColor";
 Q_DECL_UNUSED static const char *g_renderGlobalStatesName = "renderGlobalStates";
 Q_DECL_UNUSED static const char *g_renderObjectsStateStartName = "renderObjectState";
 Q_DECL_UNUSED static const char *g_renderGlobalStateStartName = "renderGlobalState";
-Q_DECL_UNUSED static const char *g_renderClipRectStateName = "DrawClipRect";
-Q_DECL_UNUSED static const char *g_renderBorderColorStateName = "TextureBorderColor";
 
 
 // db request info
@@ -233,6 +231,8 @@ Q_DECL_UNUSED static const char * g_alphaBlendingAddSrcAlphaOneMinusSrcAlpha = "
 Q_DECL_UNUSED static const char * g_depthTestDefault = "DepthTest.default";
 Q_DECL_UNUSED static const char * g_depthTestEnable = "DepthTest.enable";
 Q_DECL_UNUSED static const char * g_depthTestDisable = "DepthTest.disable";
+Q_DECL_UNUSED static const char *g_renderClipRectStateName = "DrawClipRect";
+Q_DECL_UNUSED static const char *g_renderBorderColorStateName = "TextureBorderColor";
 
 
 #endif // NAMES_H
