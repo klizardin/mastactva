@@ -40,6 +40,8 @@ namespace opengl_drawing
         void setUniform(QOpenGLShaderProgram *program_) const;
         void bind(QOpenGLFunctions *f_) const;
         bool getSize(QSize &size_) const;
+        void setWrapClampToBorder();
+        void setBorderColor(const QColor &backgroundColor_);
 
     private:
         bool isValidLocation() const;

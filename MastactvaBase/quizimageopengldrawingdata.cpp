@@ -77,6 +77,22 @@ bool opengl_drawing::Texture::getSize(QSize &size_) const
     return true;
 }
 
+void opengl_drawing::Texture::setWrapClampToBorder()
+{
+    if(m_texture)
+    {
+        m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToBorder);
+    }
+}
+
+void opengl_drawing::Texture::setBorderColor(const QColor &backgroundColor_)
+{
+    if(m_texture)
+    {
+        m_texture->setBorderColor(backgroundColor_);
+    }
+}
+
 bool opengl_drawing::Texture::isValidLocation() const
 {
     return m_location >= 0;
@@ -173,6 +189,78 @@ public:
     {
         Q_UNUSED(stateStr_);
         glDisable(GL_DEPTH_TEST);
+    }
+};
+
+
+class DrawClipRectState : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return g_renderClipRectStateName == stateStr_;
+    }
+
+    void init(const QString &stateStr_, const std::vector<GLfloat> &args_) override
+    {
+        Q_UNUSED(stateStr_);
+        if(args_.size() >= 4)
+        {
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(args_[0], args_[1], args_[2], args_[3]);
+        }
+    }
+
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+        glDisable(GL_SCISSOR_TEST);
+    }
+};
+
+
+class TextureBorderColorState : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return g_renderBorderColorStateName == stateStr_;
+    }
+
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void init(
+            const QString &stateStr_,
+            opengl_drawing::Texture* texture_,
+            const std::vector<GLfloat> &args_
+            ) override
+    {
+        Q_UNUSED(stateStr_);
+        if(args_.size() >= 4 && texture_)
+        {
+            texture_->setWrapClampToBorder();
+            const QColor backgroundColor(args_[0], args_[1], args_[2], args_[3]);
+            texture_->setBorderColor(backgroundColor);
+        }
+    }
+
+    void release(
+            const QString &stateStr_,
+            opengl_drawing::Texture* texture_,
+            const std::vector<GLfloat> &args_
+            ) override
+    {
+        Q_UNUSED(stateStr_);
+        Q_UNUSED(texture_);
+        Q_UNUSED(args_);
     }
 };
 
