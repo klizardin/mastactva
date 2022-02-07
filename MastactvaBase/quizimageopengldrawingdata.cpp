@@ -247,7 +247,12 @@ public:
         if(args_.size() >= 4 && texture_)
         {
             texture_->setWrapClampToBorder();
-            const QColor backgroundColor(args_[0], args_[1], args_[2], args_[3]);
+            const QColor backgroundColor(
+                    (int)(args_[0]*255),
+                    (int)(args_[1]*255),
+                    (int)(args_[2]*255),
+                    (int)(args_[3]*255)
+                    );
             texture_->setBorderColor(backgroundColor);
         }
     }
@@ -340,6 +345,8 @@ std::unique_ptr<opengl_drawing::States> opengl_drawing::States::create()
     result->m_states.push_back(std::make_unique<AlphaBlindingDefault>());
     result->m_states.push_back(std::make_unique<DepthTestEnable>());
     result->m_states.push_back(std::make_unique<DepthTestDisable>());
+    result->m_states.push_back(std::make_unique<DrawClipRectState>());
+    result->m_states.push_back(std::make_unique<TextureBorderColorState>());
     return result;
 }
 
