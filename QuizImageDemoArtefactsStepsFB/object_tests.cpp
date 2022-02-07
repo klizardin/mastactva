@@ -2442,14 +2442,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
             QString(g_renderFromImageName) + QString(g_renderBorderColorStateName),
-            "0.5 0.5 0.5 0.5"
+            "0.0 0.0 0.0 0.0"
         },
         {
             15,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
             QString(g_renderToImageName) + QString(g_renderBorderColorStateName),
-            "0.5 0.5 0.5 0.5"
+            "0.0 0.0 0.0 0.0"
         }
     };
     static const int objectArtefactStep0 = 0;
