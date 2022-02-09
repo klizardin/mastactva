@@ -244,7 +244,10 @@ public:
             ) override
     {
         Q_UNUSED(stateStr_);
-        if(args_.size() >= 4 && texture_)
+        if(args_.size() >= 4
+                && texture_
+                && texture_->isValidLocation()
+                )
         {
             texture_->setWrapClampToBorder();
             const QColor backgroundColor(
