@@ -2737,7 +2737,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectNameMain,
                 effectProgrammerNameMain,
                 now,
-                effectObjectStep1,
+                effectObjectStep0,
                 QVector3D(0.0, 0.0, 1.0)
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
