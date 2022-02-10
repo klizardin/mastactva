@@ -589,18 +589,23 @@ public:
     void set(const QJsonArray &jsonArray_);
     void set(const QVector<double> &data_);
     void set(QVector<double> &&data_);
+    void set(const QStringList &data_);
+    void set(QStringList &&data_);
     void prepare(QVector<float> &);
     void prepare(QVector<int> &);
     void prepare(QVector<double> &);
+    void prepare(QStringList &);
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
+    void get(QStringList &data_) const;
 
 private:
     QJsonArray m_jsonArray;
     QVector<double> m_doubleData;
     QVector<float> m_floatData;
     QVector<int> m_intData;
+    QStringList m_stringsList;
 };
 
 
@@ -611,15 +616,19 @@ public:
     void set(const QJsonArray &jsonArray_);
     void set(const QVector<double> &data_);
     void set(QVector<double> &&data_);
+    void set(const QStringList &data_);
+    void set(QStringList &&data_);
     void setAlias(const Variable &var_);
     void setPosition(const QJsonObject &position_);
     void setPosition(const IPosition *position_);
     void prepare(QVector<float> &) const;
     void prepare(QVector<int> &) const;
     void prepare(QVector<double> &) const;
+    void prepare(QStringList &) const;
     void get(QVector<float> &data_) const;
     void get(QVector<int> &data_) const;
     void get(QVector<double> &data_) const;
+    void get(QStringList &data_) const;
     bool match(const VariablePosition &pos_) const;
 
 private:
