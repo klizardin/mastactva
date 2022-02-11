@@ -129,6 +129,8 @@ Q_DECL_UNUSED static const char * g_renderFillColor = "renderFillColor";
 Q_DECL_UNUSED static const char * g_renderGlobalStatesName = "renderGlobalStates";
 Q_DECL_UNUSED static const char * g_renderObjectsStateStartName = "renderObjectState";
 Q_DECL_UNUSED static const char * g_renderGlobalStateStartName = "renderGlobalState";
+Q_DECL_UNUSED static const char * g_renderGlobalCalculationsName = "renderGlobalCalculations";
+Q_DECL_UNUSED static const char * g_renderObjectCalculationsName = "renderObjectCalculations";
 
 
 // db request info
