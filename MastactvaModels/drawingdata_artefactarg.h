@@ -113,12 +113,13 @@ public:
                 drawingdata::utils::toUniform(m_defaultValue, *val);
             }
             const float minv = std::min(val->x(), std::min(val->y(), val->z()));
-            val->setX(val->x() - minv);
-            val->setY(val->y() - minv);
-            val->setZ(val->z() - minv);
             const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
-            if(maxv > 0.0)
+            if(minv < 0.0 || maxv > 1.0)
             {
+                val->setX(val->x() - minv);
+                val->setY(val->y() - minv);
+                val->setZ(val->z() - minv);
+                const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
                 val->setX(val->x() / maxv);
                 val->setY(val->y() / maxv);
                 val->setZ(val->z() / maxv);
@@ -127,16 +128,29 @@ public:
         }
         else if(g_renderGlobalStatesName == m_name)
         {
-            QStringList states;
-            if(details_.variables.operator bool() &&
-                    details_.variables->get(m_name, details_.position.get(), states))
-            {
-                drawingdata::utils::addStates(states, data_.globalStates);
-            }
-            else
-            {
-                drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, data_.globalStates);
-            }
+            setStringListValue(details_, data_.globalStates);
+        }
+        else if(g_renderGlobalCalculationsName == m_name)
+        {
+            setStringListValue(details_, data_.globalCalculations);
+        }
+    }
+
+protected:
+    void setStringListValue(
+            const drawingdata::Details &details_,
+            std::vector<QString> &states_
+            ) const
+    {
+        QStringList states;
+        if(details_.variables.operator bool() &&
+                details_.variables->get(m_name, details_.position.get(), states))
+        {
+            drawingdata::utils::addStates(states, states_);
+        }
+        else
+        {
+            drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, states_);
         }
     }
 
@@ -384,7 +398,9 @@ public:
             const drawingdata::Details &details_
             ) const override
     {
-        if(g_renderObjectsStatesName == m_name)
+        if(g_renderObjectsStatesName == m_name
+                || g_renderObjectCalculationsName == m_name
+                )
         {
             Q_ASSERT(false); // wrong type of variable
         }
@@ -442,16 +458,11 @@ public:
     {
         if(g_renderObjectsStatesName == m_name)
         {
-            QStringList states;
-            if(details_.variables.operator bool() &&
-                    details_.variables->get(m_name, details_.position.get(), states))
-            {
-                drawingdata::utils::addStates(states, object_.objectStates);
-            }
-            else
-            {
-                drawingdata::utils::splitTo(m_defaultValue, g_renderObjectsStatesSpliter, object_.objectStates);
-            }
+            setStringListValue(details_, object_.objectStates);
+        }
+        else if(g_renderObjectCalculationsName == m_name)
+        {
+            setStringListValue(details_, object_.objectCalculations);
         }
     }
 
