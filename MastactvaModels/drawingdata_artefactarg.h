@@ -113,12 +113,13 @@ public:
                 drawingdata::utils::toUniform(m_defaultValue, *val);
             }
             const float minv = std::min(val->x(), std::min(val->y(), val->z()));
-            val->setX(val->x() - minv);
-            val->setY(val->y() - minv);
-            val->setZ(val->z() - minv);
             const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
-            if(maxv > 0.0)
+            if(minv < 0.0 || maxv > 1.0)
             {
+                val->setX(val->x() - minv);
+                val->setY(val->y() - minv);
+                val->setZ(val->z() - minv);
+                const float maxv = std::min(val->x(), std::min(val->y(), val->z()));
                 val->setX(val->x() / maxv);
                 val->setY(val->y() / maxv);
                 val->setZ(val->z() / maxv);
