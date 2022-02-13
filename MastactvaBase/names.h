@@ -131,6 +131,7 @@ Q_DECL_UNUSED static const char * g_renderObjectsStateStartName = "renderObjectS
 Q_DECL_UNUSED static const char * g_renderGlobalStateStartName = "renderGlobalState";
 Q_DECL_UNUSED static const char * g_renderGlobalCalculationsName = "renderGlobalCalculations";
 Q_DECL_UNUSED static const char * g_renderObjectCalculationsName = "renderObjectCalculations";
+Q_DECL_UNUSED static const char * g_renderCalculationsSpliter = ",";
 
 
 // db request info
