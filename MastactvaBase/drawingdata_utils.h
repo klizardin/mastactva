@@ -145,6 +145,20 @@ namespace utils
         Q_ASSERT(false); // not implemented
     }
 
+    template<typename Type_> inline
+    void vecToAttribute(const QVector<double> &vec_, std::vector<Type_> &)
+    {
+        Q_UNUSED(vec_);
+        Q_ASSERT(false); // not implemented
+    }
+
+    template<typename Type_> inline
+    void vecToAttribute(const std::vector<float> &vec_, std::vector<Type_> &)
+    {
+        Q_UNUSED(vec_);
+        Q_ASSERT(false); // not implemented
+    }
+
     namespace details
     {
 
@@ -277,6 +291,14 @@ namespace utils
             return result;
         }
 
+        std::vector<float> toStdVector(const QVector<double> &vec_)
+        {
+            std::vector<float> result;
+            result.reserve(vec_.size());
+            std::copy(std::begin(vec_), std::end(vec_),
+                      std::back_inserter(result));
+            return result;
+        }
     }
 
     template<> inline
@@ -409,6 +431,42 @@ namespace utils
     void vecToAttribute(const QVector<float> &vec_, std::vector<QVector4D> &data_)
     {
         details::vecToAttribute<4, QVector4D>(details::toStdVector(vec_), data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const QVector<double> &vec_, std::vector<QVector2D> &data_)
+    {
+        details::vecToAttribute<2, QVector2D>(details::toStdVector(vec_), data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const QVector<double> &vec_, std::vector<QVector3D> &data_)
+    {
+        details::vecToAttribute<3, QVector3D>(details::toStdVector(vec_), data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const QVector<double> &vec_, std::vector<QVector4D> &data_)
+    {
+        details::vecToAttribute<4, QVector4D>(details::toStdVector(vec_), data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const std::vector<float> &vec_, std::vector<QVector2D> &data_)
+    {
+        details::vecToAttribute<2, QVector2D>(vec_, data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const std::vector<float> &vec_, std::vector<QVector3D> &data_)
+    {
+        details::vecToAttribute<3, QVector3D>(vec_, data_);
+    }
+
+    template<> inline
+    void vecToAttribute(const std::vector<float> &vec_, std::vector<QVector4D> &data_)
+    {
+        details::vecToAttribute<4, QVector4D>(vec_, data_);
     }
 
     template<typename Type_> inline
