@@ -32,7 +32,6 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
         const QSize &rectSize_,
-        const QRectF &srcRect_,
         const QRectF &destRect_
         )
 {
@@ -45,13 +44,17 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
             ;
     if(rectRate >= imageRate)
     {
+        const qreal sx = destRect_.x() / imageSize_.height();
+        const qreal sy = destRect_.y() / imageSize_.height();
         textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+        textureMatrix.translate(-(rectRate - imageRate - sx)/rectRate*0.5, sy * rectRate);
     }
     else
     {
+        const qreal sx = destRect_.x() / imageSize_.height();
+        const qreal sy = destRect_.y() / imageSize_.height();
         textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+        textureMatrix.translate(sx*imageRate , -(imageRate - rectRate - sy)/imageRate*0.5);
     }
     return textureMatrix;
 }
@@ -102,7 +105,6 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
                 calculatePreserveAspectFitTextureMatrix(
                     imageSize,
                     windowSize,
-                    QRectF(x0, y0 , x1 - x0, y1 - y0),
                     QRectF(dx0, dy0 , dx1 - dx0, dy1 - dy0)
                     )
                 );
