@@ -29,6 +29,36 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
             ;
 }
 
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+        const QSize &imageSize_,
+        const QSize &rectSize_,
+        const QRectF &destRect_
+        )
+{
+    QMatrix4x4 textureMatrix;
+    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
+            / (qreal)std::max(1, imageSize_.height())
+            ;
+    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
+            / (qreal)std::max(1, rectSize_.height())
+            ;
+    if(rectRate >= imageRate)
+    {
+        const qreal sx = destRect_.x() / imageSize_.height();
+        const qreal sy = destRect_.y() / imageSize_.height();
+        textureMatrix.scale(rectRate/imageRate, 1.0);
+        textureMatrix.translate(-(rectRate - imageRate - sx)/rectRate*0.5, sy * rectRate);
+    }
+    else
+    {
+        const qreal sx = destRect_.x() / imageSize_.height();
+        const qreal sy = destRect_.y() / imageSize_.height();
+        textureMatrix.scale(1.0, imageRate/rectRate);
+        textureMatrix.translate(sx*imageRate , -(imageRate - rectRate - sy)/imageRate*0.5);
+    }
+    return textureMatrix;
+}
+
 void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::IVariables *variables_) const
 {
     opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
@@ -64,4 +94,18 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     const float x1 = minmax_x.second->x();
     const float y0 = minmax_y.first->y();
     const float y1 = minmax_y.second->y();
+
+    const float dx0 = x0 * imageSize.width();
+    const float dx1 = x1 * imageSize.width();
+    const float dy0 = y0 * imageSize.height();
+    const float dy1 = y1 * imageSize.height();
+
+    objects->setUniform(
+                m_rectMatrixUniformName,
+                calculatePreserveAspectFitTextureMatrix(
+                    imageSize,
+                    windowSize,
+                    QRectF(dx0, dy0 , dx1 - dx0, dy1 - dy0)
+                    )
+                );
 }
