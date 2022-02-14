@@ -64,4 +64,9 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     const float x1 = minmax_x.second->x();
     const float y0 = minmax_y.first->y();
     const float y1 = minmax_y.second->y();
+
+    const float dx0 = x0 * imageSize.width();
+    const float dx1 = x1 * imageSize.width();
+    const float dy0 = y0 * imageSize.height();
+    const float dy1 = y1 * imageSize.height();
 }
