@@ -92,6 +92,9 @@ QString getTextFromBinaryData(const QByteArray &data_);
 void saveTextFile(const QString filepath_, const QString &text_);
 bool isSimpleQVariantType(const QVariant::Type &type_);
 QStringList getUniqueValues(const QStringList &values_);
+QStringList replace(const QStringList &stringList_, const QString from_, const QString & to_);
+QStringList removeEmpty(const QStringList &values_);
+QStringList trimmed(const QStringList &values_);
 
 #if QT_CONFIG(opengl)
 
