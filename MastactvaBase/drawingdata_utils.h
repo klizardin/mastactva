@@ -281,7 +281,7 @@ namespace utils
             }
         }
 
-        template<typename Type_>
+        template<typename Type_> inline
         std::vector<Type_> toStdVector(const QVector<Type_> &vec_)
         {
             std::vector<Type_> result;
@@ -291,6 +291,7 @@ namespace utils
             return result;
         }
 
+        inline
         std::vector<float> toStdVector(const QVector<double> &vec_)
         {
             std::vector<float> result;

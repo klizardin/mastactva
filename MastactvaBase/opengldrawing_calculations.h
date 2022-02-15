@@ -3,6 +3,7 @@
 
 
 #include "../MastactvaBase/opengldrawing_utils.h"
+#include "../MastactvaBase/utils.h"
 
 
 namespace opengl_drawing
@@ -26,6 +27,71 @@ private:
     QString m_rectMatrixUniformName;
 };
 
+class IEffectCalculationFactory
+{
+public:
+    virtual std::unique_ptr<IEffectCalculation> get(const QString &effectCalculationName_) const = 0;
+
+protected:
+    template<typename EffectCalculationClass_>
+    std::unique_ptr<IEffectCalculation> getImpl(const QString &effectCalculationName_) const
+    {
+        static EffectCalculationClass_ effectCalcTempl;
+        const QStringList args = replace(effectCalculationName_.split("("), ")", "");
+        if(args.size() < 1)
+        {
+            return nullptr;
+        }
+        if(effectCalcTempl.getFilename() != args[0])
+        {
+            return nullptr;
+        }
+        std::unique_ptr<EffectCalculationClass_> result = std::make_unique<EffectCalculationClass_>();
+        if(args.size() > 1
+                && !result->init(args[1])
+                )
+        {
+            return nullptr;
+        }
+        return result;
+    }
+};
+
+template<class ... EffectCalculationClasses_>
+class EffectCalculationFactoryTmpl;
+
+template<class EffectCalculationClass_, class ... EffectCalculationClasses_>
+class EffectCalculationFactoryTmpl<EffectCalculationClass_, EffectCalculationClasses_ ...>
+        : public IEffectCalculationFactory
+        , public EffectCalculationFactoryTmpl<EffectCalculationClasses_ ...>
+{
+public:
+    std::unique_ptr<IEffectCalculation> get(const QString &effectCalculationName_) const override
+    {
+        std::unique_ptr<IEffectCalculation> result = IEffectCalculationFactory::getImpl<EffectCalculationClass_>(
+                    effectCalculationName_
+                    );
+        if(result)
+        {
+            return result;
+        }
+        return EffectCalculationFactoryTmpl<EffectCalculationClasses_ ...>::get(effectCalculationName_);
+    }
+};
+
+template<class EffectCalculationClass_>
+class EffectCalculationFactoryTmpl<EffectCalculationClass_>
+        : public IEffectCalculationFactory
+{
+public:
+    std::unique_ptr<IEffectCalculation> get(const QString &effectCalculationName_) const override
+    {
+        return IEffectCalculationFactory::getImpl<EffectCalculationClass_>(effectCalculationName_);
+    }
+};
+
+
+using EffectCalculationFactory = EffectCalculationFactoryTmpl<WalkEffectRectMatrixCalculation>;
 
 } // namespace opengl_drawing
 

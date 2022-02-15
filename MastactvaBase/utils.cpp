@@ -708,3 +708,42 @@ QStringList getUniqueValues(const QStringList &values_)
     }
     return result;
 }
+
+QStringList replace(const QStringList &stringList_, const QString from_, const QString & to_)
+{
+    QStringList result;
+    result.reserve(stringList_.size());
+    for(const QString &str_ : stringList_)
+    {
+        QString r = str_;
+        r.replace(from_, to_);
+        result.push_back(r);
+    }
+    return result;
+}
+
+QStringList removeEmpty(const QStringList &values_)
+{
+    QStringList result;
+    result.reserve(values_.size());
+    for(const QString &str_ : values_)
+    {
+        if(str_.trimmed().isEmpty())
+        {
+            continue;
+        }
+        result.push_back(str_);
+    }
+    return result;
+}
+
+QStringList trimmed(const QStringList &values_)
+{
+    QStringList result;
+    result.reserve(values_.size());
+    for(const QString &str_ : values_)
+    {
+        result.push_back(str_.trimmed());
+    }
+    return result;
+}
