@@ -94,7 +94,8 @@ void drawing_data::detail::Calculations::init(const std::vector<QString> &effect
                 calculation = opengl_drawing::getEffectCalculationFactory().get(
                     effectCalculateName_
                     );
-        if(!calculation)
+        if(!calculation
+                || find(calculation.get()))
         {
             continue;
         }
@@ -103,6 +104,28 @@ void drawing_data::detail::Calculations::init(const std::vector<QString> &effect
                         std::move(calculation)
                     });
     }
+}
+
+bool drawing_data::detail::Calculations::find(
+        const opengl_drawing::IEffectCalculation *calculation_
+        ) const
+{
+    if(!calculation_)
+    {
+        return false;
+    }
+    for(const auto &calc_ : calculations)
+    {
+        if(!calc_)
+        {
+            continue;
+        }
+        if(calc_->doExtend(calculation_))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void drawing_data::detail::Calculations::setVariable(const QString &name_)
@@ -132,7 +155,13 @@ drawing_data::QuizImageObject::QuizImageObject()
 
 void drawing_data::QuizImageObject::postInitialization()
 {
+    if(m_postInitializationDone)
+    {
+        return;
+    }
+
     detail::Calculations::init(objectCalculations);
+    m_postInitializationDone = true;
 }
 
 bool drawing_data::QuizImageObject::get(const QString &name_, QVector<double> &data_) const
@@ -380,6 +409,11 @@ drawing_data::QuizImageObjects::QuizImageObjects()
 
 void drawing_data::QuizImageObjects::postInitialization()
 {
+    if(m_postInitializationDone)
+    {
+        return;
+    }
+
     detail::Calculations::init(globalCalculations);
     for(std::shared_ptr<QuizImageObject> &object_ : objects)
     {
@@ -390,6 +424,8 @@ void drawing_data::QuizImageObjects::postInitialization()
 
         object_->postInitialization();
     }
+
+    m_postInitializationDone = true;
 }
 
 bool drawing_data::QuizImageObjects::get(const QString &name_, QVector<double> &data_) const
