@@ -93,6 +93,15 @@ public:
 
 using EffectCalculationFactory = EffectCalculationFactoryTmpl<WalkEffectRectMatrixCalculation>;
 
+
+inline
+const opengl_drawing::EffectCalculationFactory& getEffectCalculationFactory()
+{
+    static opengl_drawing::EffectCalculationFactory factory;
+    return factory;
+}
+
+
 } // namespace opengl_drawing
 
 
