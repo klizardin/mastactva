@@ -942,6 +942,10 @@ void opengl_drawing::Objects::init(
         )
 {
     m_imageData = std::move(imageData_);
+    if(m_imageData)
+    {
+        m_imageData->postInitialization();
+    }
     m_states = States::create();
     reinit();
 }
