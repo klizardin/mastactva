@@ -1082,6 +1082,7 @@ namespace drawing_data
             bool calculate(opengl_drawing::IVariables *variables_);
             void preCalculation();
             void postCalculation();
+            void init(const std::vector<QString> &effectCalculationNames_);
 
         protected:
             void setVariable(const QString &name_);
@@ -1111,6 +1112,7 @@ namespace drawing_data
 
     public:
         QuizImageObject();
+        void postInitialization();
 
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;
@@ -1195,6 +1197,7 @@ namespace drawing_data
 
     public:
         QuizImageObjects();
+        void postInitialization();
 
         bool get(const QString &name_, QVector<double> &data_) const override;
         void set(const QString &name_, const QVector<double> &data_) override;

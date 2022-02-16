@@ -16,6 +16,7 @@
 */
 
 #include "quizimagedrawingdata.h"
+#include "../MastactvaBase/opengldrawing_calculations.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -85,6 +86,25 @@ void drawing_data::detail::Calculations::postCalculation()
     clearUpdated();
 }
 
+void drawing_data::detail::Calculations::init(const std::vector<QString> &effectCalculationNames_)
+{
+    for(const QString &effectCalculateName_ : effectCalculationNames_)
+    {
+        std::unique_ptr<opengl_drawing::IEffectCalculation>
+                calculation = opengl_drawing::getEffectCalculationFactory().get(
+                    effectCalculateName_
+                    );
+        if(!calculation)
+        {
+            continue;
+        }
+        calculations.push_back(
+                    std::shared_ptr<opengl_drawing::IEffectCalculation>{
+                        std::move(calculation)
+                    });
+    }
+}
+
 void drawing_data::detail::Calculations::setVariable(const QString &name_)
 {
     m_updated.insert(name_);
@@ -108,6 +128,11 @@ void drawing_data::detail::Calculations::clearUpdated()
 drawing_data::QuizImageObject::QuizImageObject()
     : detail::Calculations(this)
 {
+}
+
+void drawing_data::QuizImageObject::postInitialization()
+{
+    detail::Calculations::init(objectCalculations);
 }
 
 bool drawing_data::QuizImageObject::get(const QString &name_, QVector<double> &data_) const
@@ -351,6 +376,20 @@ bool drawing_data::QuizImageObject::getArgumentValue(const QString &name_, std::
 drawing_data::QuizImageObjects::QuizImageObjects()
     : detail::Calculations(this)
 {
+}
+
+void drawing_data::QuizImageObjects::postInitialization()
+{
+    detail::Calculations::init(globalCalculations);
+    for(std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->postInitialization();
+    }
 }
 
 bool drawing_data::QuizImageObjects::get(const QString &name_, QVector<double> &data_) const
