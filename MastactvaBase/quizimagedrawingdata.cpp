@@ -16,6 +16,7 @@
 */
 
 #include "quizimagedrawingdata.h"
+#include "../MastactvaBase/opengldrawing_calculations.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -85,6 +86,48 @@ void drawing_data::detail::Calculations::postCalculation()
     clearUpdated();
 }
 
+void drawing_data::detail::Calculations::init(const std::vector<QString> &effectCalculationNames_)
+{
+    for(const QString &effectCalculateName_ : effectCalculationNames_)
+    {
+        std::unique_ptr<opengl_drawing::IEffectCalculation>
+                calculation = opengl_drawing::getEffectCalculationFactory().get(
+                    effectCalculateName_
+                    );
+        if(!calculation
+                || find(calculation.get()))
+        {
+            continue;
+        }
+        calculations.push_back(
+                    std::shared_ptr<opengl_drawing::IEffectCalculation>{
+                        std::move(calculation)
+                    });
+    }
+}
+
+bool drawing_data::detail::Calculations::find(
+        const opengl_drawing::IEffectCalculation *calculation_
+        ) const
+{
+    if(!calculation_)
+    {
+        return false;
+    }
+    for(const auto &calc_ : calculations)
+    {
+        if(!calc_)
+        {
+            continue;
+        }
+        if(calc_->doExtend(calculation_))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void drawing_data::detail::Calculations::setVariable(const QString &name_)
 {
     m_updated.insert(name_);
@@ -108,6 +151,17 @@ void drawing_data::detail::Calculations::clearUpdated()
 drawing_data::QuizImageObject::QuizImageObject()
     : detail::Calculations(this)
 {
+}
+
+void drawing_data::QuizImageObject::postInitialization()
+{
+    if(m_postInitializationDone)
+    {
+        return;
+    }
+
+    detail::Calculations::init(objectCalculations);
+    m_postInitializationDone = true;
 }
 
 bool drawing_data::QuizImageObject::get(const QString &name_, QVector<double> &data_) const
@@ -351,6 +405,27 @@ bool drawing_data::QuizImageObject::getArgumentValue(const QString &name_, std::
 drawing_data::QuizImageObjects::QuizImageObjects()
     : detail::Calculations(this)
 {
+}
+
+void drawing_data::QuizImageObjects::postInitialization()
+{
+    if(m_postInitializationDone)
+    {
+        return;
+    }
+
+    detail::Calculations::init(globalCalculations);
+    for(std::shared_ptr<QuizImageObject> &object_ : objects)
+    {
+        if(!object_.operator bool())
+        {
+            continue;
+        }
+
+        object_->postInitialization();
+    }
+
+    m_postInitializationDone = true;
 }
 
 bool drawing_data::QuizImageObjects::get(const QString &name_, QVector<double> &data_) const

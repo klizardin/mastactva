@@ -67,7 +67,7 @@ public:
     virtual void calculate(IVariables *variables_) const = 0;
 
     const QString &getFilename() const;
-    bool doExtend(IEffectCalculation *calculation_) const;
+    bool doExtend(const IEffectCalculation *calculation_) const;
     const QSet<QString> &getRequiredVariables() const;
 
 protected:

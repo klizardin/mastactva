@@ -76,7 +76,7 @@ const QString &IEffectCalculation::getFilename() const
     return m_filename;
 }
 
-bool IEffectCalculation::doExtend(IEffectCalculation *calculation_) const
+bool IEffectCalculation::doExtend(const IEffectCalculation *calculation_) const
 {
     if(!calculation_)
     {
