@@ -15,7 +15,7 @@ opengl_drawing::WalkEffectRectMatrixCalculation::~WalkEffectRectMatrixCalculatio
 
 bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
 {
-    const QStringList args = removeEmpty(trimmed(args_.split(g_renderCalculationsSpliter)));
+    const QStringList args = removeEmpty(trimmed(args_.split(g_argumentsSplitter)));
     if(args.size() < 3)
     {
         return false;
