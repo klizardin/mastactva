@@ -3,6 +3,7 @@
 
 
 #include "../MastactvaBase/opengldrawing_utils.h"
+#include "../MastactvaBase/names.h"
 #include "../MastactvaBase/utils.h"
 
 
@@ -33,11 +34,28 @@ public:
     virtual std::unique_ptr<IEffectCalculation> get(const QString &effectCalculationName_) const = 0;
 
 protected:
+    static QStringList splitOnNameAndArgs(const QString &effectCalculationName_)
+    {
+        QStringList result;
+        result.reserve(2);
+        const int fb = effectCalculationName_.indexOf(g_startArguments);
+        if(fb > 0)
+        {
+            result.push_back(effectCalculationName_.mid(0, fb));
+            result.push_back(effectCalculationName_.mid(fb+1));
+        }
+        else
+        {
+            result.push_back(effectCalculationName_);
+        }
+        return result;
+    }
+
     template<typename EffectCalculationClass_>
     std::unique_ptr<IEffectCalculation> getImpl(const QString &effectCalculationName_) const
     {
         static EffectCalculationClass_ effectCalcTempl;
-        const QStringList args = replace(effectCalculationName_.split("("), ")", "");
+        const QStringList args = splitOnNameAndArgs(effectCalculationName_);
         if(args.size() < 1)
         {
             return nullptr;
@@ -47,11 +65,18 @@ protected:
             return nullptr;
         }
         std::unique_ptr<EffectCalculationClass_> result = std::make_unique<EffectCalculationClass_>();
-        if(args.size() > 1
-                && !result->init(args[1])
-                )
+        if(args.size() > 1)
         {
-            return nullptr;
+            QString effectCalculationArgs = args[1].trimmed();
+            if(effectCalculationArgs.length() > 0
+                    && effectCalculationArgs.at(effectCalculationArgs.length() - 1) == g_endArguments)
+            {
+                effectCalculationArgs = effectCalculationArgs.mid(effectCalculationArgs.length() - 1);
+            }
+            if(!result->init(effectCalculationArgs))
+            {
+                return nullptr;
+            }
         }
         return result;
     }
