@@ -238,4 +238,10 @@ Q_DECL_UNUSED static const char * g_renderClipRectStateName = "OpenGLSetClipRect
 Q_DECL_UNUSED static const char * g_renderBorderColorStateName = "OpenGLSetTextureBorderColor";
 
 
+// expression consts
+Q_DECL_UNUSED static const char * g_startArguments = "(";
+Q_DECL_UNUSED static const char * g_endArguments = ")";
+Q_DECL_UNUSED static const char * g_argumentsSplitter = ",";
+
+
 #endif // NAMES_H
