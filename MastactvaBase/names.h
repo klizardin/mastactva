@@ -131,7 +131,6 @@ Q_DECL_UNUSED static const char * g_renderObjectsStateStartName = "renderObjectS
 Q_DECL_UNUSED static const char * g_renderGlobalStateStartName = "renderGlobalState";
 Q_DECL_UNUSED static const char * g_renderGlobalCalculationsName = "renderGlobalCalculations";
 Q_DECL_UNUSED static const char * g_renderObjectCalculationsName = "renderObjectCalculations";
-Q_DECL_UNUSED static const char * g_renderCalculationsSpliter = ",";
 
 
 // db request info
@@ -236,6 +235,12 @@ Q_DECL_UNUSED static const char * g_depthTestEnable = "DepthTest.enable";
 Q_DECL_UNUSED static const char * g_depthTestDisable = "DepthTest.disable";
 Q_DECL_UNUSED static const char * g_renderClipRectStateName = "OpenGLSetClipRect";
 Q_DECL_UNUSED static const char * g_renderBorderColorStateName = "OpenGLSetTextureBorderColor";
+
+
+// expression consts
+Q_DECL_UNUSED static const char * g_startArguments = "(";
+Q_DECL_UNUSED static const char * g_endArguments = ")";
+Q_DECL_UNUSED static const char * g_argumentsSplitter = ",";
 
 
 #endif // NAMES_H
