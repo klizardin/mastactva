@@ -235,6 +235,7 @@ Q_DECL_UNUSED static const char * g_depthTestEnable = "DepthTest.enable";
 Q_DECL_UNUSED static const char * g_depthTestDisable = "DepthTest.disable";
 Q_DECL_UNUSED static const char * g_renderClipRectStateName = "OpenGLSetClipRect";
 Q_DECL_UNUSED static const char * g_renderBorderColorStateName = "OpenGLSetTextureBorderColor";
+Q_DECL_UNUSED static const char * g_renderWalkEffectRectMatrixCalculation = "WalkEffectRectMatrixCalculation";
 
 
 // expression consts

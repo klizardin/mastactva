@@ -24,6 +24,17 @@
 namespace opengl_drawing
 {
 
+const IVariables * IVariables::getRoot() const
+{
+    return this;
+}
+
+IVariables * IVariables::getRoot()
+{
+    return this;
+}
+
+
 VariablesExtended::VariablesExtended(IVariables *base_, IVariables *extend_)
     : m_base(base_),
       m_extend(extend_)
@@ -68,6 +79,16 @@ bool VariablesExtended::isUpdated(const QSet<QString> &vars_, IVariables *base_)
                     m_base->isUpdated(vars_, nullptr)
                   : false
                     ;
+}
+
+const IVariables * VariablesExtended::getRoot() const
+{
+    return m_extend ? m_extend : m_base;
+}
+
+IVariables * VariablesExtended::getRoot()
+{
+    return m_extend ? m_extend : m_base;
 }
 
 
