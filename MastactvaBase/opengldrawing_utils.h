@@ -41,6 +41,8 @@ public:
     virtual void set(const QString &name_, const QVector<double> &data_) = 0;
     virtual void set(const QString &name_, QVector<double> &&data_) = 0;
     virtual bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const = 0;
+    virtual const IVariables * getRoot() const;
+    virtual IVariables * getRoot();
 };
 
 class VariablesExtended : public IVariables
@@ -53,6 +55,8 @@ public:
     void set(const QString &name_, QVector<double> &&data_) override;
     bool isUpdated(const QSet<QString> &vars_, IVariables *base_) const override;
 
+    const IVariables * getRoot() const override;
+    IVariables * getRoot() override;
 private:
     IVariables *m_base = nullptr;
     IVariables *m_extend = nullptr;
