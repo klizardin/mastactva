@@ -449,7 +449,8 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         const QString &effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
-        const QVector3D &fillColor_
+        const QVector3D &fillColor_,
+        const QString &globalCalculations_ = QString()
         );
 
 
@@ -2523,7 +2524,8 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
         const QString &effectProgrammerName,
         const QDateTime &now,
         int effectObjectStep,
-        const QVector3D &fillColor_
+        const QVector3D &fillColor_,
+        const QString &globalCalculations_ /*= QString()*/
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -2544,6 +2546,13 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
             g_renderFillColor,
             toString(fillColor_)
         },
+        {
+            2,
+            ArtefactArgTypeEn::stringsType,
+            ArtefactArgStorageEn::uniformStorage,
+            g_renderGlobalCalculationsName,
+            globalCalculations_
+        }
     };
     static const int objectArtefactStep0 = 0;
     processArtefact(
@@ -2738,7 +2747,20 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectProgrammerNameMain,
                 now,
                 effectObjectStep0,
-                QVector3D(0.0, 0.0, 1.0)
+                QVector3D(0.0, 0.0, 1.0),
+                QString(g_renderWalkEffectRectMatrixCalculation)
+                    + QString("(")
+                        + QString("vertexAttributeFrom") + QString(g_argumentsSplitter)
+                        + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
+                        + QString("renderFromImageMatrix")
+                    + QString(")")
+                + g_renderObjectsStatesSpliter
+                + QString(g_renderWalkEffectRectMatrixCalculation)
+                    + QString("(")
+                        + QString("vertexAttributeTo") + QString(g_argumentsSplitter)
+                        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                        + QString("renderToImageMatrix")
+                    + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
