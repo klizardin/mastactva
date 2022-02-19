@@ -7,6 +7,7 @@
 
 opengl_drawing::WalkEffectRectMatrixCalculation::WalkEffectRectMatrixCalculation()
 {
+    setFilename(g_renderWalkEffectRectMatrixCalculation);
 }
 
 opengl_drawing::WalkEffectRectMatrixCalculation::~WalkEffectRectMatrixCalculation()
@@ -23,6 +24,11 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
     m_vertexAttributeName = args[0].trimmed();
     m_renderImageName = args[1].trimmed();
     m_rectMatrixUniformName = args[2].trimmed();
+    setRequiredVariables({
+                             g_renderWindowSizeName,
+                             m_vertexAttributeName,
+                             m_renderImageName,
+                         });
     return !m_vertexAttributeName.isEmpty()
             && !m_renderImageName.isEmpty()
             && !m_rectMatrixUniformName.isEmpty()
@@ -61,7 +67,12 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
 void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::IVariables *variables_) const
 {
-    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!variables_)
+    {
+        return;
+    }
+
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_->getRoot());
     if(!objects)
     {
         return; // work only with quiz image opengl drawing data
