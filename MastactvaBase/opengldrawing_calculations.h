@@ -71,7 +71,7 @@ protected:
             if(effectCalculationArgs.length() > 0
                     && effectCalculationArgs.at(effectCalculationArgs.length() - 1) == g_endArguments)
             {
-                effectCalculationArgs = effectCalculationArgs.mid(effectCalculationArgs.length() - 1);
+                effectCalculationArgs = effectCalculationArgs.mid(0, effectCalculationArgs.length() - 1);
             }
             if(!result->init(effectCalculationArgs))
             {
