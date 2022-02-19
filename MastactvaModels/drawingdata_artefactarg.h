@@ -79,7 +79,8 @@ public:
         static const char * s_globalArgumnentNames[] =
         {
             g_renderFillColor,
-            g_renderGlobalStatesName
+            g_renderGlobalStatesName,
+            g_renderGlobalCalculationsName
         };
         return std::find_if(
                     std::begin(s_globalArgumnentNames),
