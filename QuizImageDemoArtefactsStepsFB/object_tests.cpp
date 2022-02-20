@@ -2712,6 +2712,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     createGeometry(2, 2, fromValues, fromCoords);
     createGeometry(2, 2, toValues, toCoords);
 
+    qDebug() << "fromCoords" << fromCoords;
+
     auto effectObject0 = createWalkEffectTestObject(
                 effectId,
                 effectName,
