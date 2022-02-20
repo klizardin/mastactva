@@ -839,6 +839,8 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         ) const
 {
     const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+    qDebug() << "ImageMatrixDefaultCalculation::getImageMatrix()";
+    qDebug() << "imageSize = " << imageSize << " windowSize_ = " << windowSize_;
     return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
@@ -899,13 +901,17 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
     const int textureAttributeTupleSize = objects->getAttributeTupleSize(
                 g_renderTextureAttributeName
                 );
+    const bool textureAttributeExist = textureAttributeTupleSize > 0;
+
+    const QVector2D windowSize = objects->getUniform(
+                g_renderWindowSizeName,
+                QVector2D{1.0, 1.0}
+                );
+
+    qDebug() << "windowSize" << windowSize << "g_renderScreenRectName = " << proportinalRect << "geometryFacedSize =" << geometryFacedSize << "isSolidGeometry" << isSolidGeometry;
 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
-
-    const bool textureAttributeExist = textureAttributeTupleSize > 0;
-
-    qDebug() << proportinalRect << geometryFacedSize << vertexAttributeTupleSize << textureAttributeTupleSize << textureAttributeExist << isSolidGeometry;
 
     opengl_drawing::makeGeometry(proportinalRect.x(), proportinalRect.y(),
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
@@ -915,8 +921,8 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
                  isSolidGeometry,
                  vertexData, textureData);
 
-    qDebug() << vertexData;
-    qDebug() << textureData;
+    qDebug() << "vertexData" << vertexData;
+    //qDebug() << textureData;
 
     objects->setAttribute(
                 g_renderVertexAttributeName,
