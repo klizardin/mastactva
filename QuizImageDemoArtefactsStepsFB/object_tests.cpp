@@ -2325,7 +2325,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         const char * toImage_,
         const std::vector<GLfloat> &fromCoords_,
         const std::vector<GLfloat> &toCoords_,
-        const QString &alphaBlendingMode_
+        const QString &objectStates_
             = QString(g_alphaBlendingDisable)
                 + QString(g_renderObjectsStatesSpliter)
                 + QString(g_depthTestEnable)
@@ -2345,7 +2345,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     opengl_drawing::makeGeometry(1.0, 1.0, 2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
     // vertex shader artefact
-    static const ArgumentsTuple vertexArgs1[] =
+    const ArgumentsTuple vertexArgs1[] =
     {
         {
             1,
@@ -2436,7 +2436,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::stringsType,
             ArtefactArgStorageEn::uniformStorage,
             g_renderObjectsStatesName,
-            alphaBlendingMode_
+            objectStates_
         },
         {
             14,
@@ -2468,7 +2468,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     );
 
     // fragment shader artefact
-    static const ArgumentsTuple fragmentArgs1[] =
+    const ArgumentsTuple fragmentArgs1[] =
     {
         {
             101,
@@ -2537,7 +2537,7 @@ std::unique_ptr<EffectObjectsData> createGlobalDataTestObject(
                 );
 
     // vertex shader artefact
-    static const ArgumentsTuple globalArgs[] =
+    const ArgumentsTuple globalArgs[] =
     {
         {
             1,
