@@ -23,7 +23,7 @@ attribute highp vec4 vertexAttributeTo;
 
 uniform mediump mat4 renderMatrix;
 uniform mediump mat4 renderToImageMatrix;
-uniform mediump vec2 renderScreenRect;
+//uniform mediump vec2 renderScreenRect;
 
 uniform mediump float renderT;
 
@@ -31,12 +31,12 @@ varying mediump vec4 texCoordVar;
 
 void main(void)
 {
-    mediump vec4 vertexAttributeToSized = vec4(
-                vertexAttributeTo.x * renderScreenRect.x,
-                vertexAttributeTo.y * renderScreenRect.y,
-                vertexAttributeTo.z,
-                vertexAttributeTo.w
-                );
-    gl_Position = renderMatrix * mix(vertexAttributeToSized, renderVertexAttribute, renderT); // (vertexAttributeToSized, ...
+    //mediump vec4 vertexAttributeToSized = vec4(
+    //            vertexAttributeTo.x * renderScreenRect.x,
+    //            vertexAttributeTo.y * renderScreenRect.y,
+    //            vertexAttributeTo.z,
+    //            vertexAttributeTo.w
+    //            );
+    gl_Position = renderMatrix * mix(vertexAttributeTo, renderVertexAttribute, renderT);
     texCoordVar = renderToImageMatrix * renderTextureAttribute;
 }
