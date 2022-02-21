@@ -44,7 +44,10 @@ bool drawing_data::detail::Calculations::calculate(
     for(const auto &calc_ : m_availableCalculations)
     {
         if(calc_.operator bool()
-                && m_thisIVariables->isUpdated(calc_->getRequiredVariables(), nullptr)
+                && (
+                    m_thisIVariables->isUpdated(calc_->getRequiredVariables(), nullptr)
+                    || calc_->doNeedUpdate()
+                    )
                 )
         {
             updated.push_back(calc_.get());
@@ -60,6 +63,7 @@ bool drawing_data::detail::Calculations::calculate(
             continue;
         }
         calc_->calculate(&va);
+        calc_->setUpdated();
 
         auto fit = std::find_if(
                     std::begin(m_availableCalculations),

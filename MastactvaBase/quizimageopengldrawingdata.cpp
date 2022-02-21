@@ -856,7 +856,7 @@ GeometryDefaultCalculation::GeometryDefaultCalculation()
 {
     setFilename(g_geometryDefaultCalculationName);
     setRequiredVariables({
-                  g_renderScreenRectName,
+                  //g_renderScreenRectName,
                   g_renderIsGeomertySolidName,
                   g_renderGeomertySizeName,
                   g_renderFacedGeometryCoefsName,
@@ -882,10 +882,10 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
         return;
     }
 
-    const QVector2D proportinalRect = objects->getUniform(
-                g_renderScreenRectName,
-                QVector2D{1.0, 1.0}
-                );
+    //const QVector2D proportinalRect = objects->getUniform(
+    //            g_renderScreenRectName,
+    //            QVector2D{1.0, 1.0}
+    //            );
     const GLint isSolidGeometry = objects->getUniform(
                 g_renderIsGeomertySolidName,
                 GLint{1}
@@ -903,12 +903,12 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
                 );
     const bool textureAttributeExist = textureAttributeTupleSize > 0;
 
-    const QVector2D windowSize = objects->getUniform(
-                g_renderWindowSizeName,
-                QVector2D{1.0, 1.0}
-                );
+    //const QVector2D windowSize = objects->getUniform(
+    //            g_renderWindowSizeName,
+    //            QVector2D{1.0, 1.0}
+    //            );
 
-    qDebug() << "windowSize" << windowSize << "g_renderScreenRectName = " << proportinalRect << "geometryFacedSize =" << geometryFacedSize << "isSolidGeometry" << isSolidGeometry;
+    //qDebug() << "windowSize" << windowSize << "g_renderScreenRectName = " << proportinalRect << "geometryFacedSize =" << geometryFacedSize << "isSolidGeometry" << isSolidGeometry;
 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
@@ -922,7 +922,7 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
                  isSolidGeometry,
                  vertexData, textureData);
 
-    qDebug() << "vertexData" << vertexData;
+    //qDebug() << "vertexData" << vertexData;
     //qDebug() << textureData;
 
     objects->setAttribute(
@@ -1049,16 +1049,23 @@ void opengl_drawing::Objects::calculate()
     }
 
     if(m_geometryDefault
-            && isUpdated(m_geometryDefault->getRequiredVariables(), nullptr)
+            && (
+                isUpdated(m_geometryDefault->getRequiredVariables(), nullptr)
+                || m_geometryDefault->doNeedUpdate()
+                )
             )
     {
         m_geometryDefault->calculate(this);
+        m_geometryDefault->setUpdated();
     }
     if(m_imageMatrixDefault
-            && isUpdated(m_imageMatrixDefault->getRequiredVariables(), nullptr)
+            && (isUpdated(m_imageMatrixDefault->getRequiredVariables(), nullptr)
+                || m_imageMatrixDefault->doNeedUpdate()
+                )
             )
     {
         m_imageMatrixDefault->calculate(this);
+        m_imageMatrixDefault->setUpdated();
     }
     m_imageData->calculate(this);
     clearUpdated();
