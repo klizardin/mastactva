@@ -113,6 +113,16 @@ const QSet<QString> &IEffectCalculation::getRequiredVariables() const
     return m_vars;
 }
 
+bool IEffectCalculation::doNeedUpdate() const
+{
+    return m_needUpdate;
+}
+
+void IEffectCalculation::setUpdated()
+{
+    m_needUpdate = false;
+}
+
 void IEffectCalculation::setFilename(const QString &filename_)
 {
     m_filename = filename_;
@@ -125,6 +135,7 @@ void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
         m_vars.insert(v_);
     }
 }
+
 
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix0(
         const QSize &imageSize_,
@@ -167,18 +178,18 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     {
         const float scaleX = imageRate / rectRate;
         const float scaleY = rectRate;
-        textureMatrix.scale(1.0f/scaleX, scaleY);
+        textureMatrix.scale(1.0f, scaleY); // 1.0f/scaleX
         const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        //textureMatrix.translate(-shift, 0.0f);
         qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
     }
     else
     {
         const float scaleY = (1.0f / imageRate) / (1.0f / rectRate);
         const float scaleX = 1.0 / rectRate;
-        textureMatrix.scale(scaleX, 1.0/scaleY);
+        textureMatrix.scale(scaleX, 1.0f); // 1.0/scaleY
         const float shift = ((1.0f / rectRate) - (1.0f / imageRate)) * 0.5f / ( 1.0f / rectRate);
-        textureMatrix.translate(0.0f, -shift);
+        //textureMatrix.translate(0.0f, -shift);
         qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
     }
     if(rectRate >= imageRate)
