@@ -913,7 +913,8 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    opengl_drawing::makeGeometry(proportinalRect.x(), proportinalRect.y(),
+    /*proportinalRect.x(), proportinalRect.y(),*/
+    opengl_drawing::makeGeometry(
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
@@ -1461,8 +1462,8 @@ static const int g_triangleConers = 3;
 namespace opengl_drawing
 {
 
+/*float width_, float height_,*/
 void makeGeometry(
-        float width_, float height_,
         int geomertyPointsWidth_, int geometryPointsHeight_,
         float facedGeometryXCoef_, float facedGeometryYCoef_,
         int geometryVertexCoords_, int geometryTextureCoords_,
@@ -1502,18 +1503,18 @@ void makeGeometry(
                         if(isGeometrySolid_)
                         {
                                 vertexData_[offs0 + 0] =
-                                        (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_;
+                                        (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_; //  * width_
                                 vertexData_[offs0 + 1] =
-                                        (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_;
+                                        (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_; //  * height_
                         }
                         else
                         {
                             vertexData_[offs0 + 0] =
-                                    (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_
+                                    (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ //  * width_
                                     - (coords[j][k][0] * 2 - 1) * facedGeometryXCoef_
                                     ;
                             vertexData_[offs0 + 1] =
-                                    (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_
+                                    (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_  //  * height_
                                     - (coords[j][k][1] * 2 - 1) * facedGeometryYCoef_
                                     ;
                         }

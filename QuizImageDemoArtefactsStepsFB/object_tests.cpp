@@ -2342,7 +2342,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    opengl_drawing::makeGeometry(1.0, 1.0, 2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
+    opengl_drawing::makeGeometry(2, 2, 0.0, 0.0, 4, 4, true, true, vertexData, textureData);
 
     // vertex shader artefact
     const ArgumentsTuple vertexArgs1[] =
@@ -2699,20 +2699,21 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     modules->create(addonsDir);
 
     QString inputJson = QString(g_inputJson).arg(
-                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                "/home/klizardin/Pictures/test_images/from_image.jpg",
+                "/home/klizardin/Pictures/test_images/to_image.jpg",
                 "/home/klizardin/tmp/"
                 );
     QJsonDocument result = modules->call("WalkEffect", QJsonDocument::fromJson(inputJson.toUtf8()));
 
     std::vector<QVector4D> fromValues, toValues;
-    convert(result.object().value("0").toObject(), fromValues);
-    convert(result.object().value("1").toObject(), toValues);
+    convert(result.object().value("1").toObject(), fromValues);
+    convert(result.object().value("0").toObject(), toValues);
     std::vector<GLfloat> fromCoords, toCoords;
     createGeometry(2, 2, fromValues, fromCoords);
     createGeometry(2, 2, toValues, toCoords);
 
     qDebug() << "fromCoords" << fromCoords;
+    qDebug() << "toCoords" << toCoords;
 
     auto effectObject0 = createWalkEffectTestObject(
                 effectId,
@@ -2722,8 +2723,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep0,
                 g_walkEffectFromVertexShaderFilename,
                 g_walkEffectFromFragmentShaderFilename,
-                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                "/home/klizardin/Pictures/test_images/from_image.jpg",
+                "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords
                 );
@@ -2735,8 +2736,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 effectObjectStep1,
                 g_walkEffectToVertexShaderFilename,
                 g_walkEffectToFragmentShaderFilename,
-                "/home/klizardin/Pictures/test_images/20220116_145321.jpg",
-                "/home/klizardin/Pictures/test_images/20220116_145325.jpg",
+                "/home/klizardin/Pictures/test_images/from_image.jpg",
+                "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords,
                 QString(g_alphaBlendingDefault)

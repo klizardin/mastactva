@@ -83,8 +83,8 @@ private:
     QSet<QString> m_vars;
 };
 
+/* float width_, float height_, */
 void makeGeometry(
-        float width_, float height_,
         int geomertyPointsWidth_, int geometryPointsHeight_,
         float facedGeometryXCoef_, float facedGeometryYCoef_,
         int geometryVertexCoords_, int geometryTextureCoords_,
