@@ -839,6 +839,8 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         ) const
 {
     const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+    qDebug() << "ImageMatrixDefaultCalculation::getImageMatrix()";
+    qDebug() << "imageSize = " << imageSize << " windowSize_ = " << windowSize_;
     return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
@@ -854,7 +856,7 @@ GeometryDefaultCalculation::GeometryDefaultCalculation()
 {
     setFilename(g_geometryDefaultCalculationName);
     setRequiredVariables({
-                  g_renderScreenRectName,
+                  //g_renderScreenRectName,
                   g_renderIsGeomertySolidName,
                   g_renderGeomertySizeName,
                   g_renderFacedGeometryCoefsName,
@@ -880,10 +882,10 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
         return;
     }
 
-    const QVector2D proportinalRect = objects->getUniform(
-                g_renderScreenRectName,
-                QVector2D{1.0, 1.0}
-                );
+    //const QVector2D proportinalRect = objects->getUniform(
+    //            g_renderScreenRectName,
+    //            QVector2D{1.0, 1.0}
+    //            );
     const GLint isSolidGeometry = objects->getUniform(
                 g_renderIsGeomertySolidName,
                 GLint{1}
@@ -899,15 +901,20 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
     const int textureAttributeTupleSize = objects->getAttributeTupleSize(
                 g_renderTextureAttributeName
                 );
+    const bool textureAttributeExist = textureAttributeTupleSize > 0;
+
+    //const QVector2D windowSize = objects->getUniform(
+    //            g_renderWindowSizeName,
+    //            QVector2D{1.0, 1.0}
+    //            );
+
+    //qDebug() << "windowSize" << windowSize << "g_renderScreenRectName = " << proportinalRect << "geometryFacedSize =" << geometryFacedSize << "isSolidGeometry" << isSolidGeometry;
 
     std::vector<GLfloat> vertexData;
     std::vector<GLfloat> textureData;
 
-    const bool textureAttributeExist = textureAttributeTupleSize > 0;
-
-    qDebug() << proportinalRect << geometryFacedSize << vertexAttributeTupleSize << textureAttributeTupleSize << textureAttributeExist << isSolidGeometry;
-
-    opengl_drawing::makeGeometry(proportinalRect.x(), proportinalRect.y(),
+    /*proportinalRect.x(), proportinalRect.y(),*/
+    opengl_drawing::makeGeometry(
                  (int)geometryFacedSize.x(), (int)geometryFacedSize.y(),
                  geometryFacedInterval.x(), geometryFacedInterval.y(),
                  vertexAttributeTupleSize,
@@ -915,8 +922,8 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
                  isSolidGeometry,
                  vertexData, textureData);
 
-    qDebug() << vertexData;
-    qDebug() << textureData;
+    //qDebug() << "vertexData" << vertexData;
+    //qDebug() << textureData;
 
     objects->setAttribute(
                 g_renderVertexAttributeName,
@@ -1042,16 +1049,23 @@ void opengl_drawing::Objects::calculate()
     }
 
     if(m_geometryDefault
-            && isUpdated(m_geometryDefault->getRequiredVariables(), nullptr)
+            && (
+                isUpdated(m_geometryDefault->getRequiredVariables(), nullptr)
+                || m_geometryDefault->doNeedUpdate()
+                )
             )
     {
         m_geometryDefault->calculate(this);
+        m_geometryDefault->setUpdated();
     }
     if(m_imageMatrixDefault
-            && isUpdated(m_imageMatrixDefault->getRequiredVariables(), nullptr)
+            && (isUpdated(m_imageMatrixDefault->getRequiredVariables(), nullptr)
+                || m_imageMatrixDefault->doNeedUpdate()
+                )
             )
     {
         m_imageMatrixDefault->calculate(this);
+        m_imageMatrixDefault->setUpdated();
     }
     m_imageData->calculate(this);
     clearUpdated();
@@ -1455,8 +1469,8 @@ static const int g_triangleConers = 3;
 namespace opengl_drawing
 {
 
+/*float width_, float height_,*/
 void makeGeometry(
-        float width_, float height_,
         int geomertyPointsWidth_, int geometryPointsHeight_,
         float facedGeometryXCoef_, float facedGeometryYCoef_,
         int geometryVertexCoords_, int geometryTextureCoords_,
@@ -1496,18 +1510,18 @@ void makeGeometry(
                         if(isGeometrySolid_)
                         {
                                 vertexData_[offs0 + 0] =
-                                        (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_;
+                                        (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_; //  * width_
                                 vertexData_[offs0 + 1] =
-                                        (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_;
+                                        (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_; //  * height_
                         }
                         else
                         {
                             vertexData_[offs0 + 0] =
-                                    (x + coords[j][k][0]) * width_ / (GLfloat)geomertyPointsWidth_
+                                    (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ //  * width_
                                     - (coords[j][k][0] * 2 - 1) * facedGeometryXCoef_
                                     ;
                             vertexData_[offs0 + 1] =
-                                    (y + coords[j][k][1]) * height_ / (GLfloat)geometryPointsHeight_
+                                    (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_  //  * height_
                                     - (coords[j][k][1] * 2 - 1) * facedGeometryYCoef_
                                     ;
                         }

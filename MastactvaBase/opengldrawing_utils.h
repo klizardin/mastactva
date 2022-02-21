@@ -73,6 +73,8 @@ public:
     const QString &getFilename() const;
     bool doExtend(const IEffectCalculation *calculation_) const;
     const QSet<QString> &getRequiredVariables() const;
+    bool doNeedUpdate() const;
+    void setUpdated();
 
 protected:
     void setFilename(const QString &filename_);
@@ -81,10 +83,11 @@ protected:
 private:
     QString m_filename;
     QSet<QString> m_vars;
+    bool m_needUpdate = true;
 };
 
+/* float width_, float height_, */
 void makeGeometry(
-        float width_, float height_,
         int geomertyPointsWidth_, int geometryPointsHeight_,
         float facedGeometryXCoef_, float facedGeometryYCoef_,
         int geometryVertexCoords_, int geometryTextureCoords_,

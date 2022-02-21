@@ -41,7 +41,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QRectF &destRect_
         )
 {
-    QMatrix4x4 textureMatrix;
+    /*QMatrix4x4 textureMatrix;
     const qreal imageRate = (qreal)std::max(1, imageSize_.width())
             / (qreal)std::max(1, imageSize_.height())
             ;
@@ -61,7 +61,34 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const qreal sy = destRect_.y() / imageSize_.height();
         textureMatrix.scale(1.0, imageRate/rectRate);
         textureMatrix.translate(sx*imageRate , -(imageRate - rectRate - sy)/imageRate*0.5);
+    }*/
+
+    QMatrix4x4 textureMatrix;
+    const float iw = std::max(1.0f, (float)imageSize_.width());
+    const float ih = std::max(1.0f, (float)imageSize_.height());
+    const float imageRate = iw / ih;
+    const float sw = std::max(1.0f, (float)rectSize_.width());
+    const float sh = std::max(1.0f, (float)rectSize_.height());
+    const float rectRate = sw / sh;
+    if(rectRate >= imageRate)
+    {
+        const float scaleX = imageRate / rectRate;
+        const float scaleY = rectRate;
+        textureMatrix.scale(1.0f, scaleY); // 1.0f/scaleX
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        //textureMatrix.translate(-shift, 0.0f);
+        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
     }
+    else
+    {
+        const float scaleY = (1.0f / imageRate) / (1.0f / rectRate);
+        const float scaleX = 1.0 / rectRate;
+        textureMatrix.scale(scaleX, 1.0f); // 1.0/scaleY
+        const float shift = ((1.0f / rectRate) - (1.0f / imageRate)) * 0.5f / ( 1.0f / rectRate);
+        //textureMatrix.translate(0.0f, -shift);
+        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
+    }
+
     return textureMatrix;
 }
 

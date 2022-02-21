@@ -113,6 +113,16 @@ const QSet<QString> &IEffectCalculation::getRequiredVariables() const
     return m_vars;
 }
 
+bool IEffectCalculation::doNeedUpdate() const
+{
+    return m_needUpdate;
+}
+
+void IEffectCalculation::setUpdated()
+{
+    m_needUpdate = false;
+}
+
 void IEffectCalculation::setFilename(const QString &filename_)
 {
     m_filename = filename_;
@@ -126,7 +136,8 @@ void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
     }
 }
 
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix0(
         const QSize &imageSize_,
         const QSize &rectSize_
         )
@@ -147,6 +158,51 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     {
         textureMatrix.scale(1.0, imageRate/rectRate);
         textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+    }
+    return textureMatrix;
+}
+
+QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
+        const QSize &imageSize_,
+        const QSize &rectSize_
+        )
+{
+    QMatrix4x4 textureMatrix;
+    const float iw = std::max(1.0f, (float)imageSize_.width());
+    const float ih = std::max(1.0f, (float)imageSize_.height());
+    const float imageRate = iw / ih;
+    const float sw = std::max(1.0f, (float)rectSize_.width());
+    const float sh = std::max(1.0f, (float)rectSize_.height());
+    const float rectRate = sw / sh;
+    if(rectRate >= imageRate)
+    {
+        const float scaleX = imageRate / rectRate;
+        const float scaleY = rectRate;
+        textureMatrix.scale(1.0f, scaleY); // 1.0f/scaleX
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        //textureMatrix.translate(-shift, 0.0f);
+        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
+    }
+    else
+    {
+        const float scaleY = (1.0f / imageRate) / (1.0f / rectRate);
+        const float scaleX = 1.0 / rectRate;
+        textureMatrix.scale(scaleX, 1.0f); // 1.0/scaleY
+        const float shift = ((1.0f / rectRate) - (1.0f / imageRate)) * 0.5f / ( 1.0f / rectRate);
+        //textureMatrix.translate(0.0f, -shift);
+        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
+    }
+    if(rectRate >= imageRate)
+    {
+        qDebug() << "scale" << rectRate/imageRate << "shift" << -(rectRate - imageRate)/rectRate*0.5;
+        //textureMatrix.scale(rectRate/imageRate, 1.0);
+        //textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+    }
+    else
+    {
+        qDebug() << "scale" << imageRate/rectRate << "shift" << -(imageRate - rectRate)/imageRate*0.5;
+        //textureMatrix.scale(1.0, imageRate/rectRate);
+        //textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
     }
     return textureMatrix;
 }
