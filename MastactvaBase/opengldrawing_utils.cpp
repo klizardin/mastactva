@@ -165,19 +165,21 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float rectRate = sw / sh;
     if(rectRate >= imageRate)
     {
-        const float scale = imageRate / rectRate;
-        textureMatrix.scale(1.0f/scale, 1.0f);
+        const float scaleX = imageRate / rectRate;
+        const float scaleY = rectRate;
+        textureMatrix.scale(1.0f/scaleX, scaleY);
         const float shift = (rectRate - imageRate) * 0.5f / rectRate;
         textureMatrix.translate(-shift, 0.0f);
-        qDebug() << "scale" << scale << "shift" << shift;
+        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
     }
     else
     {
-        const float scale = (1.0f / imageRate) / (1.0f / rectRate);
-        textureMatrix.scale(1.0/scale, 1.0);
+        const float scaleY = (1.0f / imageRate) / (1.0f / rectRate);
+        const float scaleX = 1.0 / rectRate;
+        textureMatrix.scale(scaleX, 1.0/scaleY);
         const float shift = ((1.0f / rectRate) - (1.0f / imageRate)) * 0.5f / ( 1.0f / rectRate);
-        textureMatrix.translate(-shift, 0.0);
-        qDebug() << "scale" << scale << "shift" << shift;
+        textureMatrix.translate(0.0f, -shift);
+        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
     }
     if(rectRate >= imageRate)
     {
