@@ -174,35 +174,36 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float sw = std::max(1.0f, (float)rectSize_.width());
     const float sh = std::max(1.0f, (float)rectSize_.height());
     const float rectRate = sw / sh;
-    if(rectRate >= imageRate)
+
+    qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
+
+    if(rectRate >= 1.0)
     {
-        const float scaleX = imageRate / rectRate;
+        const float scaleX = 1.0f;
         const float scaleY = rectRate;
-        textureMatrix.scale(1.0f, scaleY); // 1.0f/scaleX
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        //textureMatrix.translate(-shift, 0.0f);
-        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
+        textureMatrix.scale( scaleX, scaleY);
     }
     else
     {
-        const float scaleY = (1.0f / imageRate) / (1.0f / rectRate);
-        const float scaleX = 1.0 / rectRate;
-        textureMatrix.scale(scaleX, 1.0f); // 1.0/scaleY
-        const float shift = ((1.0f / rectRate) - (1.0f / imageRate)) * 0.5f / ( 1.0f / rectRate);
-        //textureMatrix.translate(0.0f, -shift);
-        qDebug() << "scaleX" << scaleX << "scaleY" << scaleY << "shift" << shift;
+        const float scaleX = 1.0f / rectRate;
+        const float scaleY = 1.0f;
+        textureMatrix.scale( scaleX, scaleY);
     }
     if(rectRate >= imageRate)
     {
-        qDebug() << "scale" << rectRate/imageRate << "shift" << -(rectRate - imageRate)/rectRate*0.5;
-        //textureMatrix.scale(rectRate/imageRate, 1.0);
-        //textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
+        const float scaleX = rectRate / imageRate;
+        const float scaleY = 1.0f;
+        textureMatrix.scale( scaleX, scaleY);
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        textureMatrix.translate(-shift, 0.0f);
     }
     else
     {
-        qDebug() << "scale" << imageRate/rectRate << "shift" << -(imageRate - rectRate)/imageRate*0.5;
-        //textureMatrix.scale(1.0, imageRate/rectRate);
-        //textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
+        const float scaleX = 1.0;
+        const float scaleY = (1.0f / rectRate) / (1.0f / imageRate);
+        textureMatrix.scale( scaleX, scaleY);
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        textureMatrix.translate(-shift, 0.0f);
     }
     return textureMatrix;
 }
