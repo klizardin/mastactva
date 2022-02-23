@@ -394,10 +394,10 @@ bool drawing_data::QuizImageObject::getArgumentValue(const QString &name_, std::
         {
             continue;
         }
-        values_.resize(attribute_->size());
+        values_.resize(attribute_->size() * attribute_->tupleSize());
         std::copy(
                     attribute_->constData(),
-                    attribute_->constData() + attribute_->size(),
+                    attribute_->constData() + attribute_->size() * attribute_->tupleSize(),
                     values_.begin()
                     );
         return true;
