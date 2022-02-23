@@ -137,31 +137,6 @@ void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
 }
 
 
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix0(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
-}
-
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
         const QSize &rectSize_
