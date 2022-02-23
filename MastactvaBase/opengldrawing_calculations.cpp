@@ -90,10 +90,10 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     }
     const QVector<QVector2D> srcPts =
     {
-        {0.0f, 0.0f},
-        {1.0f, 1.0f},
-        {0.0f, 1.0f},
-        {1.0f, 0.0f}
+        {srcPts_[0].x(), srcPts_[0].y()},
+        {srcPts_[1].x(), srcPts_[1].y()},
+        {srcPts_[0].x(), srcPts_[1].y()},
+        {srcPts_[1].x(), srcPts_[0].y()}
     };
     const QVector<QVector2D> destPts =
     {
