@@ -2451,8 +2451,26 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgStorageEn::uniformStorage,
             QString(g_renderToImageName) + QString(g_renderBorderColorStateName),
             "0.0 0.0 0.0 0.0"
-        }
+        },
+        {
+            16,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "vertexAttributeFromMatrix",
+            emptyStr
+        },
+        {
+            17,
+            ArtefactArgTypeEn::mat4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            "vertexAttributeToMatrix",
+            emptyStr
+        },
     };
+
+    qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
+    qDebug() << "toString(toCoords_)" << toString(toCoords_);
+
     static const int objectArtefactStep0 = 0;
     processArtefact(
         effectObject,
@@ -2755,14 +2773,14 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                     + QString("(")
                         + QString("vertexAttributeFrom") + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
-                        + QString("renderFromImageMatrix")
+                        + QString("vertexAttributeFromMatrix")
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
                         + QString("vertexAttributeTo") + QString(g_argumentsSplitter)
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                        + QString("renderToImageMatrix")
+                        + QString("vertexAttributeToMatrix")
                     + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
