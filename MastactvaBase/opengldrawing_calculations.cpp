@@ -29,6 +29,11 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
                              m_vertexAttributeName,
                              m_renderImageName,
                          });
+    setFilename(QString(g_renderWalkEffectRectMatrixCalculation)
+                + QString("_") + m_vertexAttributeName
+                + QString("_") + m_renderImageName
+                + QString("_") + m_rectMatrixUniformName
+                );
     return !m_vertexAttributeName.isEmpty()
             && !m_renderImageName.isEmpty()
             && !m_rectMatrixUniformName.isEmpty()
@@ -70,23 +75,26 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
     if(rectRate >= imageRate)
     {
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        const float shift = (1.0 - imageRate/rectRate) * 0.5f;
         x0 += shift;
         x1 -= shift;
+        //qDebug() << "x0" << x0 << "x1" << x1;
         x0 += srcPts_[0].x() * (x1 - x0);
-        x1 += srcPts_[1].x() * (x1 - x0);
+        x1 += (srcPts_[1].x() - 1.0f) * (x1 - x0);
         y0 += srcPts_[0].y();
-        y1 += srcPts_[1].y();
+        y1 += (srcPts_[1].y() - 1.0f);
+        //qDebug() << "shift" << shift;
     }
     else
     {
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        const float shift = (1.0 - rectRate/imageRate) * 0.5f;
         y0 += shift;
         y1 -= shift;
         y0 += srcPts_[0].y() * (y1 - y0);
-        y1 += srcPts_[1].y() * (y1 - y0);
+        y1 += (srcPts_[1].y() - 1.0f) * (y1 - y0);
         x0 += srcPts_[0].x();
-        x1 += srcPts_[1].x();
+        x1 += (srcPts_[1].x() - 1.0f);
+        //qDebug() << "shift" << shift;
     }
     const QVector<QVector2D> srcPts =
     {
@@ -102,8 +110,8 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x0, y1},
         {x1, y0}
     };
-    const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(srcPts, destPts);
-
+    const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(destPts, srcPts);
+    //qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
 
@@ -129,6 +137,9 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     std::vector<QVector4D> vertexData;
     drawingdata::utils::vecToAttribute(vertexDataRow, vertexData);
 
+    // qDebug() << "vertexDataRow" << vertexDataRow;
+    // qDebug() << "vertexData" << vertexData;
+
     const auto minmax_x = std::minmax_element(
                 std::begin(vertexData),
                 std::end(vertexData),
@@ -153,6 +164,8 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
         {x0, y0},
         {x1, y1},
     };
+
+    //qDebug() << "srcPts" << srcPts;
 
     objects->setUniform(
                 m_rectMatrixUniformName,

@@ -137,31 +137,6 @@ void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
 }
 
 
-QMatrix4x4 calculatePreserveAspectFitTextureMatrix0(
-        const QSize &imageSize_,
-        const QSize &rectSize_
-        )
-{
-    QMatrix4x4 textureMatrix;
-    const qreal imageRate = (qreal)std::max(1, imageSize_.width())
-            / (qreal)std::max(1, imageSize_.height())
-            ;
-    const qreal rectRate = (qreal)std::max(1, rectSize_.width())
-            / (qreal)std::max(1, rectSize_.height())
-            ;
-    if(rectRate >= imageRate)
-    {
-        textureMatrix.scale(rectRate/imageRate, 1.0);
-        textureMatrix.translate(-(rectRate - imageRate)/rectRate*0.5, 0.0);
-    }
-    else
-    {
-        textureMatrix.scale(1.0, imageRate/rectRate);
-        textureMatrix.translate(0.0, -(imageRate - rectRate)/imageRate*0.5);
-    }
-    return textureMatrix;
-}
-
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
         const QSize &rectSize_
@@ -196,13 +171,15 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
     if(rectRate >= imageRate)
     {
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        const float shift = (1.0 - imageRate/rectRate) * 0.5f;
+        //qDebug() << "shift" << shift;
         x0 += shift;
         x1 -= shift;
     }
     else
     {
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
+        const float shift = (1.0 - rectRate/imageRate) * 0.5f;
+        //qDebug() << "shift" << shift;
         y0 += shift;
         y1 -= shift;
     }
@@ -220,8 +197,8 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x0, y1},
         {x1, y0}
     };
-    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(srcPts, destPts);
-
+    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(destPts, srcPts);
+    //qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
 

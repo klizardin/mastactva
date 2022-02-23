@@ -839,8 +839,8 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         ) const
 {
     const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
-    qDebug() << "ImageMatrixDefaultCalculation::getImageMatrix()";
-    qDebug() << "imageSize = " << imageSize << " windowSize_ = " << windowSize_;
+    //qDebug() << "ImageMatrixDefaultCalculation::getImageMatrix()";
+    //qDebug() << "imageSize = " << imageSize << " windowSize_ = " << windowSize_;
     return ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 }
 
