@@ -175,7 +175,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float sh = std::max(1.0f, (float)rectSize_.height());
     const float rectRate = sw / sh;
 
-    qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
+    //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
     if(rectRate >= 1.0)
     {
@@ -189,23 +189,40 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const float scaleY = 1.0f;
         textureMatrix.scale( scaleX, scaleY);
     }
+    float x0 = 0.0f;
+    float y0 = 0.0f;
+    float x1 = 1.0f;
+    float y1 = 1.0f;
+
     if(rectRate >= imageRate)
     {
-        const float scaleX = rectRate / imageRate;
-        const float scaleY = 1.0f;
-        textureMatrix.scale( scaleX, scaleY);
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        x0 += shift;
+        x1 -= shift;
     }
     else
     {
-        const float scaleX = 1.0;
-        const float scaleY = (1.0f / rectRate) / (1.0f / imageRate);
-        textureMatrix.scale( scaleX, scaleY);
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        y0 += shift;
+        y1 -= shift;
     }
-    return textureMatrix;
+    const QVector<QVector2D> srcPts =
+    {
+        {0.0f, 0.0f},
+        {1.0f, 1.0f},
+        {0.0f, 1.0f},
+        {1.0f, 0.0f}
+    };
+    const QVector<QVector2D> destPts =
+    {
+        {x0, y0},
+        {x1, y1},
+        {x0, y1},
+        {x1, y0}
+    };
+    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(srcPts, destPts);
+
+    return m1 * textureMatrix;
 }
 
 QMatrix4x4 calculateTransfromMatrixBy4Points(

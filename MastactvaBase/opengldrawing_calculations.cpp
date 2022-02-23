@@ -38,7 +38,7 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
         const QSize &rectSize_,
-        const QRectF &destRect_
+        const QVector<QVector2D> &srcPts_
         )
 {
     QMatrix4x4 textureMatrix;
@@ -49,7 +49,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float sh = std::max(1.0f, (float)rectSize_.height());
     const float rectRate = sw / sh;
 
-    qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
+    //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
     if(rectRate >= 1.0)
     {
@@ -63,25 +63,48 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const float scaleY = 1.0f;
         textureMatrix.scale( scaleX, scaleY);
     }
+    float x0 = 0.0f;
+    float y0 = 0.0f;
+    float x1 = 1.0f;
+    float y1 = 1.0f;
+
     if(rectRate >= imageRate)
     {
-        const float scaleX = rectRate / imageRate;
-        const float scaleY = 1.0f;
-        textureMatrix.scale( scaleX, scaleY);
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        x0 += shift;
+        x1 -= shift;
+        x0 += srcPts_[0].x() * (x1 - x0);
+        x1 += srcPts_[1].x() * (x1 - x0);
+        y0 += srcPts_[0].y();
+        y1 += srcPts_[1].y();
     }
     else
     {
-        const float scaleX = 1.0;
-        const float scaleY = (1.0f / rectRate) / (1.0f / imageRate);
-        textureMatrix.scale( scaleX, scaleY);
-        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        y0 += shift;
+        y1 -= shift;
+        y0 += srcPts_[0].y() * (y1 - y0);
+        y1 += srcPts_[1].y() * (y1 - y0);
+        x0 += srcPts_[0].x();
+        x1 += srcPts_[1].x();
     }
-    qDebug() << textureMatrix;
+    const QVector<QVector2D> srcPts =
+    {
+        {0.0f, 0.0f},
+        {1.0f, 1.0f},
+        {0.0f, 1.0f},
+        {1.0f, 0.0f}
+    };
+    const QVector<QVector2D> destPts =
+    {
+        {x0, y0},
+        {x1, y1},
+        {x0, y1},
+        {x1, y0}
+    };
+    const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(srcPts, destPts);
 
-    return textureMatrix;
+    return m1 * textureMatrix;
 }
 
 void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::IVariables *variables_) const
@@ -125,17 +148,18 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     const float y0 = minmax_y.first->y();
     const float y1 = minmax_y.second->y();
 
-    const float dx0 = x0 * imageSize.width();
-    const float dx1 = x1 * imageSize.width();
-    const float dy0 = y0 * imageSize.height();
-    const float dy1 = y1 * imageSize.height();
+    const QVector<QVector2D> srcPts =
+    {
+        {x0, y0},
+        {x1, y1},
+    };
 
     objects->setUniform(
                 m_rectMatrixUniformName,
                 calculatePreserveAspectFitTextureMatrix(
                     imageSize,
                     windowSize,
-                    QRectF(dx0, dy0 , dx1 - dx0, dy1 - dy0)
+                    srcPts
                     )
                 );
 }
