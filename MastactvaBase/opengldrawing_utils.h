@@ -101,6 +101,11 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
         const QSize &rectSize_
         );
+QMatrix4x4 calculateTransfromMatrixBy4Points(
+        const QVector<QVector2D> &srcPts_,
+        const QVector<QVector2D> &destPts_
+        );
+
 
 }
 
