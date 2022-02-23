@@ -17,7 +17,7 @@
 
 #include "opengldrawing_utils.h"
 
-
+#include <math.h>
 #include <QFileInfo>
 
 
@@ -175,7 +175,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float sh = std::max(1.0f, (float)rectSize_.height());
     const float rectRate = sw / sh;
 
-    qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
+    //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
     if(rectRate >= 1.0)
     {
@@ -189,23 +189,81 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const float scaleY = 1.0f;
         textureMatrix.scale( scaleX, scaleY);
     }
+    float x0 = 0.0f;
+    float y0 = 0.0f;
+    float x1 = 1.0f;
+    float y1 = 1.0f;
+
     if(rectRate >= imageRate)
     {
-        const float scaleX = rectRate / imageRate;
-        const float scaleY = 1.0f;
-        textureMatrix.scale( scaleX, scaleY);
         const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        x0 += shift;
+        x1 -= shift;
     }
     else
     {
-        const float scaleX = 1.0;
-        const float scaleY = (1.0f / rectRate) / (1.0f / imageRate);
-        textureMatrix.scale( scaleX, scaleY);
         const float shift = (rectRate - imageRate) * 0.5f / rectRate;
-        textureMatrix.translate(-shift, 0.0f);
+        y0 += shift;
+        y1 -= shift;
     }
-    return textureMatrix;
+    const QVector<QVector2D> srcPts =
+    {
+        {0.0f, 0.0f},
+        {1.0f, 1.0f},
+        {0.0f, 1.0f},
+        {1.0f, 0.0f}
+    };
+    const QVector<QVector2D> destPts =
+    {
+        {x0, y0},
+        {x1, y1},
+        {x0, y1},
+        {x1, y0}
+    };
+    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(srcPts, destPts);
+
+    return m1 * textureMatrix;
+}
+
+QMatrix4x4 calculateTransfromMatrixBy4Points(
+        const QVector<QVector2D> &srcPts_,
+        const QVector<QVector2D> &destPts_
+        )
+{
+    if(srcPts_.size() < 4 || destPts_.size() < 4)
+    {
+        return {};
+    }
+    if(fabs(srcPts_[0].y() - srcPts_[1].y()) < 1e-4
+            || fabs(srcPts_[2].y() - srcPts_[3].y()) < 1e-4)
+    {
+        return {};  // reoder pts data, to make cross of lines (p0,p1) and (p2,p3)
+    }
+    const float sx1 = (destPts_[0].x() - destPts_[1].x())/(srcPts_[0].y() - srcPts_[1].y());
+    const float sx2 = (destPts_[2].x() - destPts_[3].x())/(srcPts_[2].y() - srcPts_[3].y());
+    const float sx3 = (srcPts_[0].x() - srcPts_[1].x())/(srcPts_[0].y() - srcPts_[1].y());
+    const float sx4 = (srcPts_[2].x() - srcPts_[3].x())/(srcPts_[2].y() - srcPts_[3].y());
+    const float sx = fabs(sx3 - sx4) < 1e-4 ? 1.0f : (sx1 - sx2)/(sx3 - sx4);
+    const float kx = sx1 - sx3*sx;
+    const float tx = destPts_[0].x() - srcPts_[0].x()*sx - srcPts_[0].y()*kx;
+
+    if(fabs(srcPts_[0].x() - srcPts_[1].x()) < 1e-4
+            || fabs(srcPts_[2].x() - srcPts_[3].x()) < 1e-4)
+    {
+        return {};  // reoder pts data, to make cross of lines (p0,p1) and (p2,p3)
+    }
+    const float sy1 = (destPts_[0].y() - destPts_[1].y())/(srcPts_[0].x() - srcPts_[1].x());
+    const float sy2 = (destPts_[2].y() - destPts_[3].y())/(srcPts_[2].x() - srcPts_[3].x());
+    const float sy3 = (srcPts_[0].y() - srcPts_[1].y())/(srcPts_[0].x() - srcPts_[1].x());
+    const float sy4 = (srcPts_[2].y() - srcPts_[3].y())/(srcPts_[2].x() - srcPts_[3].x());
+    const float sy = fabs(sy3 - sy4) < 1e-4 ? 1.0f : (sy1 - sy2)/(sy3 - sy4);
+    const float ky = sy1 - sy3*sy;
+    const float ty = destPts_[0].y() - srcPts_[0].x()*ky - srcPts_[0].y()*sy;
+
+    return QMatrix4x4(sx,   kx,     0.0f,   tx,
+                      ky,   sy,     0.0f,   ty,
+                      0.0f, 0.0f,   1.0f,   0.0f,
+                      0.0f, 0.0f,   0.0f,   1.0f);
 }
 
 }
