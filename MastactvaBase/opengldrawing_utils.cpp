@@ -222,7 +222,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x0, y1},
         {x1, y0}
     };
-    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(srcPts, destPts);
+    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(destPts, srcPts);
     qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
