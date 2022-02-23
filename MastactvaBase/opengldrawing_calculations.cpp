@@ -70,7 +70,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
     if(rectRate >= imageRate)
     {
-        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
         x0 += shift;
         x1 -= shift;
         x0 += srcPts_[0].x() * (x1 - x0);
@@ -80,7 +80,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     }
     else
     {
-        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
         y0 += shift;
         y1 -= shift;
         y0 += srcPts_[0].y() * (y1 - y0);

@@ -196,13 +196,13 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
     if(rectRate >= imageRate)
     {
-        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
         x0 += shift;
         x1 -= shift;
     }
     else
     {
-        const float shift = 1.0 / ((rectRate - imageRate) * 0.5f / rectRate);
+        const float shift = (rectRate - imageRate) * 0.5f / rectRate;
         y0 += shift;
         y1 -= shift;
     }
