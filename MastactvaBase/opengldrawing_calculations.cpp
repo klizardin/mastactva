@@ -78,12 +78,12 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
         x0 += shift;
         x1 -= shift;
-        qDebug() << "x0" << x0 << "x1" << x1;
+        //qDebug() << "x0" << x0 << "x1" << x1;
         x0 += srcPts_[0].x() * (x1 - x0);
         x1 += (srcPts_[1].x() - 1.0f) * (x1 - x0);
         y0 += srcPts_[0].y();
         y1 += (srcPts_[1].y() - 1.0f);
-        qDebug() << "shift" << shift;
+        //qDebug() << "shift" << shift;
     }
     else
     {
@@ -94,7 +94,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         y1 += (srcPts_[1].y() - 1.0f) * (y1 - y0);
         x0 += srcPts_[0].x();
         x1 += (srcPts_[1].x() - 1.0f);
-        qDebug() << "shift" << shift;
+        //qDebug() << "shift" << shift;
     }
     const QVector<QVector2D> srcPts =
     {
@@ -111,7 +111,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x1, y0}
     };
     const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(destPts, srcPts);
-    qDebug() << "m1" << m1 << "destPts" << destPts;
+    //qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
 
@@ -165,7 +165,7 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
         {x1, y1},
     };
 
-    qDebug() << "srcPts" << srcPts;
+    //qDebug() << "srcPts" << srcPts;
 
     objects->setUniform(
                 m_rectMatrixUniformName,

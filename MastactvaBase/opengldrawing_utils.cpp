@@ -197,14 +197,14 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     if(rectRate >= imageRate)
     {
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
-        qDebug() << "shift" << shift;
+        //qDebug() << "shift" << shift;
         x0 += shift;
         x1 -= shift;
     }
     else
     {
         const float shift = (1.0 - rectRate/imageRate) * 0.5f;
-        qDebug() << "shift" << shift;
+        //qDebug() << "shift" << shift;
         y0 += shift;
         y1 -= shift;
     }
@@ -223,7 +223,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x1, y0}
     };
     const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(destPts, srcPts);
-    qDebug() << "m1" << m1 << "destPts" << destPts;
+    //qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
 

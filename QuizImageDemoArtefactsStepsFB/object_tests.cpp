@@ -2468,8 +2468,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         },
     };
 
-    qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
-    qDebug() << "toString(toCoords_)" << toString(toCoords_);
+    //qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
+    //qDebug() << "toString(toCoords_)" << toString(toCoords_);
 
     static const int objectArtefactStep0 = 0;
     processArtefact(
@@ -2730,8 +2730,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     createGeometry(2, 2, fromValues, fromCoords);
     createGeometry(2, 2, toValues, toCoords);
 
-    qDebug() << "fromCoords" << fromCoords;
-    qDebug() << "toCoords" << toCoords;
+    //qDebug() << "fromCoords" << fromCoords;
+    //qDebug() << "toCoords" << toCoords;
 
     auto effectObject0 = createWalkEffectTestObject(
                 effectId,
