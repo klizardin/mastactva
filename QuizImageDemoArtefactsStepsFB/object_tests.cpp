@@ -2456,15 +2456,15 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             16,
             ArtefactArgTypeEn::mat4Type,
             ArtefactArgStorageEn::uniformStorage,
-            "vertexAttributeFromMatrix",
-            emptyStr
+            "vaFromMatrix",
+            toString(QMatrix4x4{})
         },
         {
             17,
             ArtefactArgTypeEn::mat4Type,
             ArtefactArgStorageEn::uniformStorage,
-            "vertexAttributeToMatrix",
-            emptyStr
+            "vaToMatrix",
+            toString(QMatrix4x4{})
         },
     };
 
@@ -2773,14 +2773,14 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                     + QString("(")
                         + QString("vertexAttributeFrom") + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
-                        + QString("vertexAttributeFromMatrix")
+                        + QString("vaFromMatrix")
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
                         + QString("vertexAttributeTo") + QString(g_argumentsSplitter)
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                        + QString("vertexAttributeToMatrix")
+                        + QString("vaToMatrix")
                     + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
