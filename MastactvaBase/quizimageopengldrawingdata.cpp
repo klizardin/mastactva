@@ -882,10 +882,6 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
         return;
     }
 
-    //const QVector2D proportinalRect = objects->getUniform(
-    //            g_renderScreenRectName,
-    //            QVector2D{1.0, 1.0}
-    //            );
     const GLint isSolidGeometry = objects->getUniform(
                 g_renderIsGeomertySolidName,
                 GLint{1}
@@ -902,11 +898,6 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
                 g_renderTextureAttributeName
                 );
     const bool textureAttributeExist = textureAttributeTupleSize > 0;
-
-    //const QVector2D windowSize = objects->getUniform(
-    //            g_renderWindowSizeName,
-    //            QVector2D{1.0, 1.0}
-    //            );
 
     //qDebug() << "windowSize" << windowSize << "g_renderScreenRectName = " << proportinalRect << "geometryFacedSize =" << geometryFacedSize << "isSolidGeometry" << isSolidGeometry;
 
