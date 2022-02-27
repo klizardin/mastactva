@@ -31,6 +31,6 @@ varying mediump vec4 texCoordVar;
 
 void main(void)
 {
-    gl_Position = renderMatrix * vertexAttributeFrom; //mix(renderVertexAttribute, vertexAttributeFrom, renderT);
-    texCoordVar = vaFromMatrix * renderTextureAttribute;
+    gl_Position = vaFromMatrix * vertexAttributeFrom; //mix(renderVertexAttribute, vertexAttributeFrom, renderT);
+    texCoordVar = renderFromImageMatrix * renderTextureAttribute;
 }
