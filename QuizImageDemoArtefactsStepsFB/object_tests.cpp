@@ -2421,14 +2421,14 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             11,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
-            "vertexAttributeFrom",
+            "textureAttributeFrom",
             toString(fromCoords_)
         },
         {
             12,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::attributeStorage,
-            "vertexAttributeTo",
+            "textureAttributeTo",
             toString(toCoords_)
         },
         {
@@ -2771,14 +2771,14 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 QVector3D(0.0, 0.0, 1.0),
                 QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
-                        + QString("vertexAttributeFrom") + QString(g_argumentsSplitter)
+                        + QString("textureAttributeFrom") + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
                         + QString("vaFromMatrix")
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
-                        + QString("vertexAttributeTo") + QString(g_argumentsSplitter)
+                        + QString("textureAttributeTo") + QString(g_argumentsSplitter)
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
                         + QString("vaToMatrix")
                     + QString(")")
