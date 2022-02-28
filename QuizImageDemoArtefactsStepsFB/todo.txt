@@ -146,4 +146,7 @@ opencv addon test
 
 - state with arguments as values
 
+- by texture pointers
+  move from coordinates to texture coordinates and
+
 

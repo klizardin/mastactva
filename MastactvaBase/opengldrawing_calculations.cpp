@@ -26,7 +26,6 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
     m_rectMatrixUniformName = args[2].trimmed();
     setRequiredVariables({
                              g_renderWindowSizeName,
-                             g_renderMatrixName,
                              m_vertexAttributeName,
                              m_renderImageName,
                          });
@@ -111,7 +110,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x0, y1},
         {x1, y0}
     };
-    const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(srcPts, destPts);
+    const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(destPts, srcPts);
     //qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
@@ -130,7 +129,6 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     }
 
     const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
-    const QMatrix4x4 renderMatrix = objects->getUniform(g_renderMatrixName, QMatrix4x4{});
     const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
     const QSize imageSize = objects->getTextureSize(m_renderImageName , windowSize);
 
@@ -175,6 +173,6 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
                     imageSize,
                     windowSize,
                     srcPts
-                    ) * renderMatrix
+                    )
                 );
 }
