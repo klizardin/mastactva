@@ -167,12 +167,26 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
 
     //qDebug() << "srcPts" << srcPts;
 
+    const QMatrix4x4 m = calculatePreserveAspectFitTextureMatrix(
+                imageSize,
+                windowSize,
+                srcPts
+                );
+
+    std::vector<QVector4D> vertexDataM;
+    vertexDataM.resize(vertexData.size());
+    std::transform(
+                std::begin(vertexData), std::end(vertexData),
+                std::begin(vertexDataM),
+                [&m](const QVector4D &pt_)->QVector4D
+    {
+        return m*pt_;
+    });
+    qDebug() << "vertexData : " << m_vertexAttributeName << vertexData;
+    qDebug() << "vertexDataM : " << m_vertexAttributeName << vertexDataM;
+
     objects->setUniform(
                 m_rectMatrixUniformName,
-                calculatePreserveAspectFitTextureMatrix(
-                    imageSize,
-                    windowSize,
-                    srcPts
-                    )
+                m
                 );
 }
