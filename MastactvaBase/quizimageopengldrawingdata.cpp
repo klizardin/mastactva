@@ -797,8 +797,7 @@ private:
     QMatrix4x4 getImageMatrix(
             opengl_drawing::Objects *objects_,
             const QString &imageName_,
-            const QSize &windowSize_,
-            const QString &matrixName_
+            const QSize &windowSize_
             ) const;
 };
 
@@ -825,19 +824,18 @@ void ImageMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variab
     const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
     objects->setUniform(
                 g_renderFromImageMatrixName,
-                getImageMatrix(objects, g_renderFromImageName, windowSize, g_renderFromImageMatrixName)
+                getImageMatrix(objects, g_renderFromImageName, windowSize )
                 );
     objects->setUniform(
                 g_renderToImageMatrixName,
-                getImageMatrix(objects, g_renderToImageName, windowSize, g_renderToImageMatrixName)
+                getImageMatrix(objects, g_renderToImageName, windowSize )
                 );
 }
 
 QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         opengl_drawing::Objects *objects_,
         const QString &imageName_,
-        const QSize &windowSize_,
-        const QString &matrixName_
+        const QSize &windowSize_
         ) const
 {
     const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
@@ -846,7 +844,7 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
     QMatrix4x4 m = ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 
     std::vector<GLfloat> vertexDataRow;
-    objects_->getArgumentValue(matrixName_, vertexDataRow);
+    objects_->getArgumentValue(g_renderTextureAttributeName, vertexDataRow);
     std::vector<QVector4D> vertexData;
     drawingdata::utils::vecToAttribute(vertexDataRow, vertexData);
     std::vector<QVector4D> vertexDataM;
@@ -858,8 +856,8 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
     {
         return m*pt_;
     });
-    qDebug() << "vertexData :" << matrixName_ << vertexData;
-    qDebug() << "vertexDataM :" << matrixName_ << vertexDataM;
+    qDebug() << "vertexData :" << g_renderTextureAttributeName << vertexData;
+    qDebug() << "vertexDataM :" << g_renderTextureAttributeName << vertexDataM;
 
     return m;
 }
