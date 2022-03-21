@@ -239,3 +239,5 @@ LUA:
 * 121. image artefacts fix
 122. DI IModel, 2 object classes for editor 1 object class for game
 123. add ImagePointAdditionalImage model
+
+124. fix tests
