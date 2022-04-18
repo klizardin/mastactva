@@ -1,0 +1,1 @@
+../MastactvaModels/objectartefact.cpp

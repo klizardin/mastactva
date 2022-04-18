@@ -1,0 +1,152 @@
++ 1. add arguments and argument sets
+2. add argument to select arg set
+3. add effect get effect data and arg set current item
++ 4. fix tests
+
+
+arguments from concrete arg set
+DrawingDataEffect::m_effectArgSetsData
+    DrawingDataEffectArg
+        m_objectArtefactId
+        m_id // EffectArgData
+
+    DrawingDataEffectArgSet
+        DrawingDataEffectArgSet::m_effectArgValuesData
+            DrawingDataEffectArgValue
+                m_argId // -> DrawingDataEffectArg.m_id -> m_objectArtefactId
+
+                DrawingDataEffectArgValue::m_effectArgData
+                    IDrawingDataArtefactArg
+
+
+if we fill first?
+or just replace default value? -- maybe, it will be used latter
+or first? -- ok, it just from the start is used
+
+
+arguments for lua scripts has artefact types:
+ArtefactTypeEn::scriptLua
+ArtefactTypeEn::scriptLuaRuntime
+
+5. variant of ArtefactTypeEn::argumentReference to build multistep effects
+
+Lua add functions:
+* addArgSet(effect id, easing type, description) -> {effect arg set id, ...}
+* getEffectArgSetArguments(effect id) -> {[effect arg id, ...]}
+* setArgSetArgumentValue(effect arg set id, effect arg id, value)
+* getCurrentEffect()
+    -> {
+        effect id,
+        effect name,
+        effect description (?)
+        }
+* findObject(object name, object step index)
+    -> {
+        object id,
+        object info id,
+        object name,
+        object step index,
+        }
+* findObjectArtefact(
+    object name,
+    object step index,
+    artefact name,
+    artefact step index)
+    -> {
+        object id,
+        object info id,
+        object name,
+        object step index,
+        object artefact id,
+        object artefact step index,
+        artefact id,
+        artefact name,
+        artefact file name,
+        artefact file hash,
+        artefact type id,
+        }
+* getFromImageUrl() -> url
+* getToImageUrl() -> url
+
+
+objects list
+
+DrawingDataEffect (EffectData)
+    m_effectObjectsData : EffectObjectsData (1:N)
+    - DrawingDataEffectObjects (EffectObjectsData)
+        m_objectArtefactData : ObjectArtefactData (1:N)
+        - DrawingDataObjectArtefact (ObjectArtefactData)
+            m_artefactData : ArtefactData (1:1(N))
+            - DrawingDataArtefact (ArtefactData)
+
+should design add-on call interface
+    add-on
+        * inputs only tree of arguments
+        * returns olso try of arguments
+    lua should support
+        * getting a table and converting to a tree of arguments
+        * converting result to a table
+        * maybe table -> json; json -> table so we will be able to work with web services
+          or to simpilify interface because work just with simple types
+should design add-ons load
+    * should design qt interface class to add-ons
+        * allocate string memories
+        * free string memories
+        * work with QStrings
+    * folder of add-ons
+    * None add-on by default return all input
+lua script gets only arguments
+
+opencv addon test
+* cmake project
+* json lib
+* refactoring to extract current version
+* extract plugin code
+* add json
+* replace arguments with absolute values into arguments with values in range of 0..1
+* refactring
+* use max(width, height) ratio value not ratio of width*height
+* implement base plugin
+    * implement plugin base
+    * implement json matrix result
+    * create common files to better debug application
+    * move existing code to the plugin
+* implement simple algorithm of extracting areas
+    * add mode for algorithm choosing
+        * refactor to "auto_rects"
+        * implement "generated_rects"
+        * implement "input_rects"
+        * test "generated_rects"
+        * test "input_rects"
+- intergrate plugin into the editor application
+    - implement effect for the plugin
+        - add test for the effect
+            - requirements
+                + Matrix4x4 attribute type is supported
+                - test matrixies approximation (should I norm matrixies before)
+                - liniear matrixies approximation is it ok,
+                  maybe, I should expand matrixies positions from line to square
+                - from plugin return center point for matrix
+                - from plugin return matrix of matrixies
+                * addopt addon to attributes data
+                * test addoption to the attribute data
+                - alpha blending (general config) functions for drawing pipeline
+                  (need params for such operations)
+            - effect code
+            - lua effect build code
+            - visual test for effect
+- implement algorithm with manual help of extracting areas
+- add tests for plugin
+
+- improve stability of the base algorithm
+- graphical editing of parameters
+
+- add local arg sets for effect inside gallery -- to localy save arg set
+- add local artefacts for effect inside gallery - to localy save images
+
+- state with arguments as values
+
+- by texture pointers
+  move from coordinates to texture coordinates and
+
+

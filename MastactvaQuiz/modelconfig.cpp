@@ -1,0 +1,1 @@
+../MastactvaBase/modelconfig.cpp

@@ -1,0 +1,1 @@
+../MastactvaConfig/lua_dependency.pri

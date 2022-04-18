@@ -1,0 +1,59 @@
+{
+"steps" :
+  [
+    {
+      "vertex" : {
+        "filename" : "1.vsh"
+      },
+      "fragment" : {
+        "filename" : "1.fsh"
+      },
+      "arguments" : [
+          {
+              "argument" :
+              {
+                "name": "a",
+                "type": "sampler2D",
+                "value": ""
+              },
+              "texture" : "1.jpg"
+          },
+          {
+              "argument" :
+              {
+                "name": "b",
+                "type": "vec3",
+                "value": "{1.5, 2.5, 3.5}"
+              },
+          }
+      ]
+   },
+   {
+     "vertex" : {
+       "filename" : "2.vsh"
+     },
+     "fragment" : {
+       "filename" : "2.fsh"
+     },
+     "arguments" : [
+         {
+             "argument" :
+             {
+               "name": "a",
+               "type": "sampler2D",
+               "value": ""
+             },
+             "texture" : "1.jpg"
+         },
+         {
+             "argument" :
+             {
+               "name": "b",
+               "type": "vec3",
+               "value": "{1.5, 2.5, 3.5}"
+             }
+         }
+     ]
+    }
+  ]
+}
