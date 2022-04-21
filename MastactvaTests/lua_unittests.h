@@ -212,7 +212,7 @@ TEST(Lua, addons)
     api.load(g_luaScriptAddonDataTest3Fmt);
     api.call("main", nullptr, result, resultStrs);
     std::map<QString, QStringList> resultStrsExpected;
-    resultStrsExpected.insert({QString("0"), QStringList{} << "echo"});
+    resultStrsExpected.insert({QString("0"), QStringList{} << "echo" << "WalkEffect"});
     EXPECT_EQ(resultStrs, resultStrsExpected);
 }
 

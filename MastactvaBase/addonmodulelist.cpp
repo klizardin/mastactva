@@ -27,11 +27,12 @@ bool AddonModule::create(const QFileInfo& dynamicLibraryName_)
 {
 #if defined(unix)
     resetErrors();
+    qDebug() << dynamicLibraryName_ << "\n";
     const QByteArray buf = dynamicLibraryName_.absoluteFilePath().toUtf8();
     m_dynamicLibraryHandle = dlopen(buf.constData(), RTLD_NOW);
-    if(!m_dynamicLibraryHandle
-            || checkErrors())
+    if(!m_dynamicLibraryHandle)
     {
+        checkErrors();
         free();
         return false;
     }
@@ -41,9 +42,9 @@ bool AddonModule::create(const QFileInfo& dynamicLibraryName_)
                     g_addonModuleGetName
                     )
                 );
-    if(!m_getNameFuncPtr
-            || checkErrors())
+    if(!m_getNameFuncPtr)
     {
+        checkErrors();
         free();
         return false;
     }
@@ -53,9 +54,9 @@ bool AddonModule::create(const QFileInfo& dynamicLibraryName_)
                     g_addonModuleProcess
                     )
                 );
-    if(!m_processFuncPtr
-            || checkErrors())
+    if(!m_processFuncPtr)
     {
+        checkErrors();
         free();
         return false;
     }

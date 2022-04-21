@@ -170,7 +170,7 @@ bool NetAPI::init()
     if(m_networkManager) { return true; }
     m_networkManager = new QNetworkAccessManager();
     QObject::connect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
-                     this, SLOT(replayFinished(QNetworkReply *)));
+                     this, SLOT(replayFinished(QNetworkReply*)));
     return nullptr != m_networkManager;
 }
 
