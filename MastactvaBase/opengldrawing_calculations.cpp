@@ -24,6 +24,9 @@ bool opengl_drawing::WalkEffectRectMatrixCalculation::init(const QString &args_)
     m_vertexAttributeName = args[0].trimmed();
     m_renderImageName = args[1].trimmed();
     m_rectMatrixUniformName = args[2].trimmed();
+    m_rows = args[3].toInt();
+    m_cols = args[4].toInt();
+
     setRequiredVariables({
                              g_renderWindowSizeName,
                              m_vertexAttributeName,
@@ -182,8 +185,8 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     {
         return m*pt_;
     });
-    qDebug() << "vertexData : " << m_vertexAttributeName << vertexData;
-    qDebug() << "vertexDataM : " << m_vertexAttributeName << vertexDataM;
+    //qDebug() << "vertexData : " << m_vertexAttributeName << vertexData;
+    //qDebug() << "vertexDataM : " << m_vertexAttributeName << vertexDataM;
 
     objects->setUniform(
                 m_rectMatrixUniformName,

@@ -75,6 +75,7 @@ public:
     const QSet<QString> &getRequiredVariables() const;
     bool doNeedUpdate() const;
     void setUpdated();
+    void clearUpdated();
 
 protected:
     void setFilename(const QString &filename_);

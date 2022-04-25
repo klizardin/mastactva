@@ -2325,6 +2325,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
         const char * toImage_,
         const std::vector<GLfloat> &fromCoords_,
         const std::vector<GLfloat> &toCoords_,
+        const QString &geomertySize_,
         const QString &objectStates_
             = QString(g_alphaBlendingDisable)
                 + QString(g_renderObjectsStatesSpliter)
@@ -2394,7 +2395,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec2Type,
             ArtefactArgStorageEn::uniformStorage,
             g_renderGeomertySizeName,
-            "2.0 2.0"
+            geomertySize_
         },
         {
             8,
@@ -2630,8 +2631,8 @@ static const char * g_inputJson =
             "\"generate_rects_rows\":4,"
             "\"generate_rects_cols\":4,"
             "\"rects\":[],"
-            "\"output_rows\":2,"
-            "\"output_cols\":2"
+            "\"output_rows\":15,"
+            "\"output_cols\":13"
             "}";
 
 void convert(const QJsonObject &object_, std::vector<QVector4D> &values_)
@@ -2726,9 +2727,13 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
     std::vector<QVector4D> fromValues, toValues;
     convert(result.object().value("1").toObject(), fromValues);
     convert(result.object().value("0").toObject(), toValues);
+
+    //qDebug() << "fromValues" << fromValues;
+    //qDebug() << "toValues" << toValues;
+
     std::vector<GLfloat> fromCoords, toCoords;
-    createGeometry(2, 2, fromValues, fromCoords);
-    createGeometry(2, 2, toValues, toCoords);
+    createGeometry(15, 13, fromValues, fromCoords);
+    createGeometry(15, 13, toValues, toCoords);
 
     //qDebug() << "fromCoords" << fromCoords;
     //qDebug() << "toCoords" << toCoords;
@@ -2744,7 +2749,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 "/home/klizardin/Pictures/test_images/from_image.jpg",
                 "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
-                toCoords
+                toCoords,
+                "15.0 13.0"
                 );
     auto effectObject1 = createWalkEffectTestObject(
                 effectId,
@@ -2758,6 +2764,7 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 "/home/klizardin/Pictures/test_images/to_image.jpg",
                 fromCoords,
                 toCoords,
+                "15.0 13.0",
                 QString(g_alphaBlendingDefault)
                     + QString(g_renderObjectsStatesSpliter)
                     + QString(g_depthTestDisable)
@@ -2773,14 +2780,18 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                     + QString("(")
                         + QString("textureAttributeFrom") + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
-                        + QString("vaFromMatrix")
+                        + QString("vaFromMatrix") + QString(g_argumentsSplitter)
+                        + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
+                        + QString("cols") + "13.0"
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
                         + QString("textureAttributeTo") + QString(g_argumentsSplitter)
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                        + QString("vaToMatrix")
+                        + QString("vaToMatrix") + QString(g_argumentsSplitter)
+                        + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
+                        + QString("cols") + "13.0"
                     + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
