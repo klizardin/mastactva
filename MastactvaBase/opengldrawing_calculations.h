@@ -26,6 +26,8 @@ private:
     QString m_vertexAttributeName;
     QString m_renderImageName;
     QString m_rectMatrixUniformName;
+    int m_rows = 2;
+    int m_cols = 2;
 };
 
 class IEffectCalculationFactory
