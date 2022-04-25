@@ -1026,10 +1026,19 @@ void opengl_drawing::Objects::reinit()
             ? &g_imageMatrixDefaultCalculation
             : nullptr
               ;
+    if(m_imageMatrixDefault)
+    {
+        m_imageMatrixDefault->clearUpdated();
+    }
     m_geometryDefault = !doExtend(m_imageData.get(), &g_geometryDefaultCalculation)
             ? &g_geometryDefaultCalculation
             : nullptr
               ;
+    if(m_geometryDefault)
+    {
+        m_geometryDefault->clearUpdated();
+    }
+    // m_imageData->clearUpdated(); TODO: add update strategy for data objects
 }
 
 bool opengl_drawing::Objects::needToReinit(double tNew_) const

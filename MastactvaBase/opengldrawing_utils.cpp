@@ -123,6 +123,11 @@ void IEffectCalculation::setUpdated()
     m_needUpdate = false;
 }
 
+void IEffectCalculation::clearUpdated()
+{
+    m_needUpdate = true;
+}
+
 void IEffectCalculation::setFilename(const QString &filename_)
 {
     m_filename = filename_;
