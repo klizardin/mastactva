@@ -856,8 +856,8 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
     {
         return m*pt_;
     });
-    qDebug() << "vertexData :" << g_renderTextureAttributeName << vertexData;
-    qDebug() << "vertexDataM :" << g_renderTextureAttributeName << vertexDataM;
+    //qDebug() << "vertexData :" << g_renderTextureAttributeName << vertexData;
+    //qDebug() << "vertexDataM :" << g_renderTextureAttributeName << vertexDataM;
 
     return m;
 }

@@ -182,8 +182,8 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     {
         return m*pt_;
     });
-    qDebug() << "vertexData : " << m_vertexAttributeName << vertexData;
-    qDebug() << "vertexDataM : " << m_vertexAttributeName << vertexDataM;
+    //qDebug() << "vertexData : " << m_vertexAttributeName << vertexData;
+    //qDebug() << "vertexDataM : " << m_vertexAttributeName << vertexDataM;
 
     objects->setUniform(
                 m_rectMatrixUniformName,
