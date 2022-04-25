@@ -882,7 +882,7 @@ ImageMatrixDefaultCalculationConsts::ImageMatrixDefaultCalculationConsts()
 
 void ImageMatrixDefaultCalculationConsts::calculate(opengl_drawing::IVariables *variables_) const
 {
-    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    opengl_drawing::Objects *objects = variables_ ? dynamic_cast<opengl_drawing::Objects *>(variables_->getRoot()) : nullptr;
     if(!objects)
     {
         return;
