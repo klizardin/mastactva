@@ -38,7 +38,7 @@ ApplicationWindow {
         t: 0.0
     }
 
-    SequentialAnimation {
+    /*SequentialAnimation {
         id: animationCycle
         NumberAnimation { target: renderer; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
         NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
@@ -65,5 +65,5 @@ ApplicationWindow {
             console.log("animationCycle.onStarted()")
             console.log("renderer.testIndex =", renderer.testIndex)
         }
-    }
+    }*/
 }
