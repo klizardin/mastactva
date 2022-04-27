@@ -157,10 +157,10 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
     {
         return v1_.y() < v2_.y();
     });
-    const float x0 = minmax_x.first->x();
-    const float x1 = minmax_x.second->x();
-    const float y0 = minmax_y.first->y();
-    const float y1 = minmax_y.second->y();
+    const float x0 = 0.0; //minmax_x.first->x();
+    const float x1 = 1.0; //minmax_x.second->x();
+    const float y0 = 0.0; //minmax_y.first->y();
+    const float y1 = 1.0; //minmax_y.second->y();
 
     const QVector<QVector2D> srcPts =
     {

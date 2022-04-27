@@ -38,7 +38,7 @@ ApplicationWindow {
         t: 0.0
     }
 
-    /*SequentialAnimation {
+    SequentialAnimation {
         id: animationCycle
         NumberAnimation { target: renderer; property: "t"; to: 1.0; duration: 5000; easing.type: Easing.Linear }
         NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
@@ -48,9 +48,10 @@ ApplicationWindow {
         NumberAnimation { target: renderer; property: "t"; to: 0.0; duration: 5000; easing.type: Easing.Linear }
         PauseAnimation { duration: 2000 }
         running: true
+        loops: Animation.Infinite
     }
 
-    Connections {
+    /*Connections {
         target: animationCycle
 
         function onFinished()
