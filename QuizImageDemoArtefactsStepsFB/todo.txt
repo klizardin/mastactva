@@ -150,3 +150,6 @@ opencv addon test
   move from coordinates to texture coordinates and
 
 - try to use common matrix for both images
+- render object(s) to texture
+  - add operation use texture of prev drawing
+  - add posibility to clean screen
