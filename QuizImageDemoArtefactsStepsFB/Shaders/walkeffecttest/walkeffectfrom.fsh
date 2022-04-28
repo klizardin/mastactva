@@ -34,6 +34,6 @@ void main(void)
                 s1.r * renderOpacity,
                 s1.g * renderOpacity,
                 s1.b * renderOpacity,
-                1.0
+                1.0 // 1.0 - renderT //1.0
                 );
 }
