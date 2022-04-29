@@ -193,3 +193,22 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
                 m
                 );
 }
+
+opengl_drawing::WalkEffectClipRectCalculation::WalkEffectClipRectCalculation()
+{
+}
+
+opengl_drawing::WalkEffectClipRectCalculation::~WalkEffectClipRectCalculation()
+{
+}
+
+bool opengl_drawing::WalkEffectClipRectCalculation::init(const QString &args_)
+{
+    return false;
+}
+
+void opengl_drawing::WalkEffectClipRectCalculation::calculate(IVariables *variables_) const
+{
+
+}
+

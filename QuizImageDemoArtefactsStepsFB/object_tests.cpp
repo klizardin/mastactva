@@ -2800,6 +2800,12 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                         + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
                         + QString("cols") + "13.0"
                     + QString(")")
+                + g_renderObjectsStatesSpliter
+                + QString(g_renderWalkEffectClipRectCalculation)
+                    + QString("(")
+                        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                        + QString(g_renderFromImageName)
+                    + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
