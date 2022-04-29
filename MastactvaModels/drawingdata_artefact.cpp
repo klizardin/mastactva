@@ -461,7 +461,7 @@ void addCalculationsT(
         QStringList args;
         args.reserve(artefact_->m_effectArgData->size());
 
-        for(const EffectArgumentData *arg_ : *artefact_->m_effectArgData)
+        for(const EffectArgumentData *arg_ : qAsConst(*artefact_->m_effectArgData))
         {
             auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
             if(!arg)
@@ -511,7 +511,7 @@ void DrawingDataArtefact::getAddonNames(QStringList &names_) const
     {
         return;
     }
-    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)
@@ -532,7 +532,7 @@ void DrawingDataArtefact::runAddons(
         return;
     }
     QStringList names;
-    for(const EffectArgumentData *arg_ : *m_effectArgData)
+    for(const EffectArgumentData *arg_ : qAsConst(*m_effectArgData))
     {
         auto arg = dynamic_cast<const DrawingDataArtefactArg *>(arg_);
         if(!arg)
@@ -555,7 +555,6 @@ void DrawingDataArtefact::runAddons(
 
     const ArtefactTypeEn currentType = to_enum<ArtefactTypeEn>(m_typeId);
     auto artefactTextStr = details_.filesource->getText(m_filename);
-    auto artefactText = artefactTextStr.toUtf8();
     switch(currentType)
     {
     case ArtefactTypeEn::scriptLibrary:

@@ -2605,7 +2605,7 @@ bool findDynLibs(const QDir &dir_, QDir &result_)
         result_ = dir_;
         return true;
     }
-    QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
+    const QFileInfoList dirs = dir_.entryInfoList(QDir::NoDot | QDir::NoDotDot | QDir::Dirs);
     for(const QFileInfo &fi_ : dirs)
     {
         if(!fi_.isDir())

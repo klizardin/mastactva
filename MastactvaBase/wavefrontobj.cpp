@@ -724,7 +724,7 @@ QJsonDocument WavefrontOBJ::graphicsOBJtoJson(const QString &objData_)
 std::unique_ptr<WavefrontOBJ> WavefrontOBJ::parseGraphicsOBJ(const QString &objData_)
 {
     std::unique_ptr<WavefrontOBJ> res = std::make_unique<WavefrontOBJ>();
-    QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
+    const QStringList lines = objData_.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
     int lineNumber = 0;
     for(const QString &line0 : lines)
     {
