@@ -2467,6 +2467,13 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             "vaToMatrix",
             toString(QMatrix4x4{})
         },
+        {
+            18,
+            ArtefactArgTypeEn::vec4Type,
+            ArtefactArgStorageEn::uniformStorage,
+            QString(g_renderObjectsStateStartName) + QString(g_renderClipRectStateName),
+            toString(QVector4D{})
+        }
     };
 
     //qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
