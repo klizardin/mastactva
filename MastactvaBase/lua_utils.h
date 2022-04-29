@@ -1169,7 +1169,7 @@ void pushTable(
         )
 {
     lua_newtable(luaState_);
-    QStringList keys = obj_.keys();
+    const QStringList keys = obj_.keys();
     for(const QString &key_ : keys)
     {
         const QJsonValue value = obj_.value(key_);

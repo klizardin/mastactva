@@ -30,6 +30,22 @@ private:
     int m_cols = 2;
 };
 
+class WalkEffectClipRectCalculation
+        : public IEffectCalculation
+{
+public:
+    WalkEffectClipRectCalculation();
+    ~WalkEffectClipRectCalculation() override;
+
+    bool init(const QString &args_);
+
+    void calculate(IVariables *variables_) const override;
+
+private:
+    QString m_renderFromImageName;
+    QString m_renderToImageName;
+};
+
 class IEffectCalculationFactory
 {
 public:
@@ -89,7 +105,7 @@ class EffectCalculationFactoryTmpl;
 
 template<class EffectCalculationClass_, class ... EffectCalculationClasses_>
 class EffectCalculationFactoryTmpl<EffectCalculationClass_, EffectCalculationClasses_ ...>
-        : public IEffectCalculationFactory
+        : virtual public IEffectCalculationFactory
         , public EffectCalculationFactoryTmpl<EffectCalculationClasses_ ...>
 {
 public:
@@ -108,7 +124,7 @@ public:
 
 template<class EffectCalculationClass_>
 class EffectCalculationFactoryTmpl<EffectCalculationClass_>
-        : public IEffectCalculationFactory
+        : virtual public IEffectCalculationFactory
 {
 public:
     std::unique_ptr<IEffectCalculation> get(const QString &effectCalculationName_) const override
@@ -118,7 +134,7 @@ public:
 };
 
 
-using EffectCalculationFactory = EffectCalculationFactoryTmpl<WalkEffectRectMatrixCalculation>;
+using EffectCalculationFactory = EffectCalculationFactoryTmpl<WalkEffectRectMatrixCalculation, WalkEffectClipRectCalculation>;
 
 
 inline
