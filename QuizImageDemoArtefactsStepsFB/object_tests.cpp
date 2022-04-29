@@ -2472,7 +2472,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
             QString(g_renderObjectsStateStartName) + QString(g_renderClipRectStateName),
-            toString(QVector4D{})
+            toString(QVector4D{0.0, 0.0, 500.0, 500.0})
         }
     };
 
