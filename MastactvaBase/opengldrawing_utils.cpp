@@ -144,7 +144,8 @@ void IEffectCalculation::setRequiredVariables(const QStringList &vars_)
 
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
-        const QSize &rectSize_
+        const QSize &rectSize_,
+        bool inverse_ /*= false*/
         )
 {
     QMatrix4x4 textureMatrix;
@@ -202,7 +203,10 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x0, y1},
         {x1, y0}
     };
-    const QMatrix4x4 m1 = calculateTransfromMatrixBy4Points(destPts, srcPts);
+    const QMatrix4x4 m1 = inverse_ ?
+                calculateTransfromMatrixBy4Points(srcPts, destPts)
+              : calculateTransfromMatrixBy4Points(destPts, srcPts)
+              ;
     //qDebug() << "m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }

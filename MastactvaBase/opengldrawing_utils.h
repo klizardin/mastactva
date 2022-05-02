@@ -100,7 +100,8 @@ void makeGeometry(
 
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const QSize &imageSize_,
-        const QSize &rectSize_
+        const QSize &rectSize_,
+        bool inverse_ = false
         );
 QMatrix4x4 calculateTransfromMatrixBy4Points(
         const QVector<QVector2D> &srcPts_,
