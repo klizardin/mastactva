@@ -9,7 +9,7 @@
 
 namespace opengl_drawing
 {
-
+    class Objects;
 
 class WalkEffectRectMatrixCalculation
         : public IEffectCalculation
@@ -41,6 +41,13 @@ public:
 
     void calculate(IVariables *variables_) const override;
 
+private:
+    QVector4D getImageClipRect(
+            opengl_drawing::Objects *objects_,
+            const QString &imageName_,
+            const QSize &windowSize_
+            ) const;
+    QVector4D minClipRect(const QVector4D &cr1_, const QVector4D &cr2_) const;
 private:
     QString m_renderFromImageName;
     QString m_renderToImageName;
