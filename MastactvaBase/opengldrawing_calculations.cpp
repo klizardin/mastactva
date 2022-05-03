@@ -262,8 +262,8 @@ QVector4D opengl_drawing::WalkEffectClipRectCalculation::getImageClipRect(
 QVector4D opengl_drawing::WalkEffectClipRectCalculation::minClipRect(const QVector4D &cr1_, const QVector4D &cr2_) const
 {
     return QVector4D{
-        std::max(cr1_.x(), cr2_.x()), std::max(cr1_.y(), cr2_.y()),
-        std::min(cr1_.z(), cr2_.z()), std::min(cr1_.w(), cr2_.w())
+        std::min(cr1_.x(), cr2_.x()), std::min(cr1_.y(), cr2_.y()),
+        std::max(cr1_.z(), cr2_.z()), std::max(cr1_.w(), cr2_.w())
         };
 }
 
