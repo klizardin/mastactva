@@ -9,9 +9,10 @@
 #include <math.h>
 
 
-QMatrix4x4 calculateTransfromMatrixBy4Points(
+bool calculateTransfromMatrixBy4Points(
         const QVector<QVector2D> &srcPts_,
-        const QVector<QVector2D> &destPts_
+        const QVector<QVector2D> &destPts_,
+        QMatrix4x4 &res_
         );
 
 QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
@@ -81,9 +82,14 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x0, y1},
         {x1, y0}
     };
-    const QMatrix4x4 m1 = inverse_ ?
-                calculateTransfromMatrixBy4Points(srcPts, destPts)
-              : calculateTransfromMatrixBy4Points(destPts, srcPts)
+    QMatrix4x4 m1;
+    if(!(inverse_ ?
+                calculateTransfromMatrixBy4Points(srcPts, destPts, m1)
+              : calculateTransfromMatrixBy4Points(destPts, srcPts, m1)
+            ))
+    {
+        return {};
+    }
               ;
     if(inverse_)
     {
@@ -92,19 +98,20 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     return m1 * textureMatrix;
 }
 
-QMatrix4x4 calculateTransfromMatrixBy4Points(
+bool calculateTransfromMatrixBy4Points(
         const QVector<QVector2D> &srcPts_,
-        const QVector<QVector2D> &destPts_
+        const QVector<QVector2D> &destPts_,
+        QMatrix4x4 &res_
         )
 {
     if(srcPts_.size() < 4 || destPts_.size() < 4)
     {
-        return {};
+        return false;
     }
     if(fabs(srcPts_[0].y() - srcPts_[1].y()) < 1e-4
             || fabs(srcPts_[2].y() - srcPts_[3].y()) < 1e-4)
     {
-        return {};  // reoder pts data, to make cross of lines (p0,p1) and (p2,p3)
+        return false;  // reoder pts data, to make cross of lines (p0,p1) and (p2,p3)
     }
     const float sx1 = (destPts_[0].x() - destPts_[1].x())/(srcPts_[0].y() - srcPts_[1].y());
     const float sx2 = (destPts_[2].x() - destPts_[3].x())/(srcPts_[2].y() - srcPts_[3].y());
@@ -117,7 +124,7 @@ QMatrix4x4 calculateTransfromMatrixBy4Points(
     if(fabs(srcPts_[0].x() - srcPts_[1].x()) < 1e-4
             || fabs(srcPts_[2].x() - srcPts_[3].x()) < 1e-4)
     {
-        return {};  // reoder pts data, to make cross of lines (p0,p1) and (p2,p3)
+        return false;  // reoder pts data, to make cross of lines (p0,p1) and (p2,p3)
     }
     const float sy1 = (destPts_[0].y() - destPts_[1].y())/(srcPts_[0].x() - srcPts_[1].x());
     const float sy2 = (destPts_[2].y() - destPts_[3].y())/(srcPts_[2].x() - srcPts_[3].x());
@@ -127,10 +134,11 @@ QMatrix4x4 calculateTransfromMatrixBy4Points(
     const float ky = sy1 - sy3*sy;
     const float ty = destPts_[0].y() - srcPts_[0].x()*ky - srcPts_[0].y()*sy;
 
-    return QMatrix4x4(sx,   kx,     0.0f,   tx,
+    res_ = QMatrix4x4(sx,   kx,     0.0f,   tx,
                       ky,   sy,     0.0f,   ty,
                       0.0f, 0.0f,   1.0f,   0.0f,
                       0.0f, 0.0f,   0.0f,   1.0f);
+    return true;
 }
 
 
@@ -148,17 +156,25 @@ int main(int argc, char *argv[])
             {0.0, 1.0},
             {1.0, 0.0}
         };
-        const float x0 = QRandomGenerator64::global()->generateDouble();
-        const float y0 = QRandomGenerator64::global()->generateDouble();
-        const float x1 = QRandomGenerator64::global()->generateDouble();
-        const float y1 = QRandomGenerator64::global()->generateDouble();
+        const float x0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x2 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float y2 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float x3 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float y3 = QRandomGenerator64::global()->generateDouble() - 0.5;
         QVector<QVector2D> dst = {
             {x0, y0},
-            {x1 + x0, y1 + y0},
-            {x0, y1 + y0},
-            {x1 + x0, y0}
+            {x1, y1},
+            {x0 + x2, y1 + y2},
+            {x1 + x3, y0 + y3}
         };
-        const QMatrix4x4 m = calculateTransfromMatrixBy4Points(src, dst);
+        QMatrix4x4 m;
+        if(!calculateTransfromMatrixBy4Points(src, dst, m))
+        {
+            continue;
+        }
         const QVector<QVector4D> tst = {
             {0.0, 0.0, 0.0, 1.0},
             {1.0, 1.0, 0.0, 1.0},
@@ -167,9 +183,9 @@ int main(int argc, char *argv[])
         };
         const QVector<QVector4D> res = {
             {x0, y0, 0.0, 1.0},
-            {x1 + x0, y1 + y0, 0.0, 1.0},
-            {x0, y1 + y0, 0.0, 1.0},
-            {x1 + x0, y0, 0.0, 1.0},
+            {x1, y2, 0.0, 1.0},
+            {x0 + x2, y1 + y2, 0.0, 1.0},
+            {x1 + x3, y0 + y3, 0.0, 1.0},
         };
         for(int j = 0; j < tst.size() && j < res.size(); ++j)
         {
