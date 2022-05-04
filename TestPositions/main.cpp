@@ -28,24 +28,24 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         )
 {
     QMatrix4x4 textureMatrix;
-    const float iw = std::max(1.0f, (float)imageSize_.width());
-    const float ih = std::max(1.0f, (float)imageSize_.height());
-    const float imageRate = iw / ih;
-    const float sw = std::max(1.0f, (float)rectSize_.width());
-    const float sh = std::max(1.0f, (float)rectSize_.height());
-    const float rectRate = sw / sh;
+    const float imageWidgth = std::max(1.0f, (float)imageSize_.width());
+    const float imageHeight = std::max(1.0f, (float)imageSize_.height());
+    const float imageRate = imageWidgth / imageHeight;
+    const float screenWidth = std::max(1.0f, (float)rectSize_.width());
+    const float screenHeight = std::max(1.0f, (float)rectSize_.height());
+    const float screanRate = screenWidth / screenHeight;
 
     //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
-    if(rectRate >= 1.0)
+    if(screanRate >= 1.0)
     {
         const float scaleX = 1.0f;
-        const float scaleY = rectRate;
+        const float scaleY = screanRate;
         textureMatrix.scale( scaleX, scaleY);
     }
     else
     {
-        const float scaleX = 1.0f / rectRate;
+        const float scaleX = 1.0f / screanRate;
         const float scaleY = 1.0f;
         textureMatrix.scale( scaleX, scaleY);
     }
@@ -54,16 +54,16 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     float x1 = 1.0f;
     float y1 = 1.0f;
 
-    if(rectRate >= imageRate)
+    if(screanRate >= imageRate)
     {
-        const float shift = (1.0 - imageRate/rectRate) * 0.5f;
+        const float shift = (1.0 - imageRate/screanRate) * 0.5f;
         //qDebug() << "shift" << shift;
         x0 += shift;
         x1 -= shift;
     }
     else
     {
-        const float shift = (1.0 - rectRate/imageRate) * 0.5f;
+        const float shift = (1.0 - screanRate/imageRate) * 0.5f;
         //qDebug() << "shift" << shift;
         y0 += shift;
         y1 -= shift;
@@ -95,7 +95,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     {
         qDebug() << "m1" << m1 << "destPts" << destPts;
     }
-    return m1 * textureMatrix;
+    return m1; // * textureMatrix;
 }
 
 bool calculateTransfromMatrixBy4Points(
@@ -160,13 +160,97 @@ int main(int argc, char *argv[])
         const float y0 = QRandomGenerator64::global()->generateDouble() * 1e2;
         const float x1 = QRandomGenerator64::global()->generateDouble() * 1e2;
         const float y1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        QVector<QVector2D> dst = {
+            {x0, y0},
+            {x1, y1},
+            {x0, y1},
+            {x1, y0}
+        };
+        QMatrix4x4 m;
+        if(!calculateTransfromMatrixBy4Points(src, dst, m))
+        {
+            continue;
+        }
+        const QVector<QVector4D> tst = {
+            {src[0].x(), src[0].y(), 0.0, 1.0},
+            {src[1].x(), src[1].y(), 0.0, 1.0},
+            {src[2].x(), src[2].y(), 0.0, 1.0},
+            {src[3].x(), src[3].y(), 0.0, 1.0},
+        };
+        const QVector<QVector4D> res = {
+            {dst[0].x(), dst[0].y(), 0.0, 1.0},
+            {dst[1].x(), dst[1].y(), 0.0, 1.0},
+            {dst[2].x(), dst[2].y(), 0.0, 1.0},
+            {dst[3].x(), dst[3].y(), 0.0, 1.0},
+        };
+        for(int j = 0; j < tst.size() && j < res.size(); ++j)
+        {
+            const QVector4D r = m * tst[j];
+            assert((res[j] - r).length() < 1e-4);
+        }
+    }
+    for(int i = 0; i < 100; i++)
+    {
+        QVector<QVector2D> src = {
+            {0.0, 0.0},
+            {1.0, 1.0},
+            {0.0, 1.0},
+            {1.0, 0.0}
+        };
+        const float x0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x2 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float y2 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        QVector<QVector2D> dst = {
+            {x0, y0},
+            {x1 + x2, y1 + y2},
+            {x0 + x2, y1 + y2},
+            {x1, y0}
+        };
+        QMatrix4x4 m;
+        if(!calculateTransfromMatrixBy4Points(src, dst, m))
+        {
+            continue;
+        }
+        const QVector<QVector4D> tst = {
+            {src[0].x(), src[0].y(), 0.0, 1.0},
+            {src[1].x(), src[1].y(), 0.0, 1.0},
+            {src[2].x(), src[2].y(), 0.0, 1.0},
+            {src[3].x(), src[3].y(), 0.0, 1.0},
+        };
+        const QVector<QVector4D> res = {
+            {dst[0].x(), dst[0].y(), 0.0, 1.0},
+            {dst[1].x(), dst[1].y(), 0.0, 1.0},
+            {dst[2].x(), dst[2].y(), 0.0, 1.0},
+            {dst[3].x(), dst[3].y(), 0.0, 1.0},
+        };
+        for(int j = 0; j < tst.size() && j < res.size(); ++j)
+        {
+            const QVector4D r = m * tst[j];
+            assert((res[j] - r).length() < 1e-4);
+        }
+    }
+    for(int i = 0; i < 100; i++)
+    {
+        QVector<QVector2D> src = {
+            {0.0, 0.0},
+            {1.0, 1.0},
+            {0.0, 1.0},
+            {1.0, 0.0}
+        };
+        const float x0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y1 = QRandomGenerator64::global()->generateDouble() * 1e2;
         const float x2 = QRandomGenerator64::global()->generateDouble() - 0.5;
         const float y2 = QRandomGenerator64::global()->generateDouble() - 0.5;
         const float x3 = QRandomGenerator64::global()->generateDouble() - 0.5;
         const float y3 = QRandomGenerator64::global()->generateDouble() - 0.5;
         QVector<QVector2D> dst = {
             {x0, y0},
-            {x1, y1},
+            {x1 + x2 + x3, y1 + y2 + y3},
             {x0 + x2, y1 + y2},
             {x1 + x3, y0 + y3}
         };
@@ -176,23 +260,70 @@ int main(int argc, char *argv[])
             continue;
         }
         const QVector<QVector4D> tst = {
-            {0.0, 0.0, 0.0, 1.0},
-            {1.0, 1.0, 0.0, 1.0},
-            {0.0, 1.0, 0.0, 1.0},
-            {1.0, 0.0, 0.0, 1.0},
+            {src[0].x(), src[0].y(), 0.0, 1.0},
+            {src[1].x(), src[1].y(), 0.0, 1.0},
+            {src[2].x(), src[2].y(), 0.0, 1.0},
+            {src[3].x(), src[3].y(), 0.0, 1.0},
         };
         const QVector<QVector4D> res = {
-            {x0, y0, 0.0, 1.0},
-            {x1, y2, 0.0, 1.0},
-            {x0 + x2, y1 + y2, 0.0, 1.0},
-            {x1 + x3, y0 + y3, 0.0, 1.0},
+            {dst[0].x(), dst[0].y(), 0.0, 1.0},
+            {dst[1].x(), dst[1].y(), 0.0, 1.0},
+            {dst[2].x(), dst[2].y(), 0.0, 1.0},
+            {dst[3].x(), dst[3].y(), 0.0, 1.0},
         };
         for(int j = 0; j < tst.size() && j < res.size(); ++j)
         {
             const QVector4D r = m * tst[j];
-            assert((res[j] - r).length() < 1e-6);
+            assert((res[j] - r).length() < 1e-4);
         }
     }
+    bool result = true;
+    for(int i = 0; i < 100; i++)
+    {
+        QVector<QVector2D> src = {
+            {0.0, 0.0},
+            {1.0, 1.0},
+            {0.0, 1.0},
+            {1.0, 0.0}
+        };
+        const float x0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x2 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float y2 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float x3 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        const float y3 = QRandomGenerator64::global()->generateDouble() - 0.5;
+        QVector<QVector2D> dst = {
+            {x0, y0},
+            {x1, y1},
+            {x2, y2},
+            {x3, y3}
+        };
+        QMatrix4x4 m;
+        if(!calculateTransfromMatrixBy4Points(src, dst, m))
+        {
+            continue;
+        }
+        const QVector<QVector4D> tst = {
+            {src[0].x(), src[0].y(), 0.0, 1.0},
+            {src[1].x(), src[1].y(), 0.0, 1.0},
+            {src[2].x(), src[2].y(), 0.0, 1.0},
+            {src[3].x(), src[3].y(), 0.0, 1.0},
+        };
+        const QVector<QVector4D> res = {
+            {dst[0].x(), dst[0].y(), 0.0, 1.0},
+            {dst[1].x(), dst[1].y(), 0.0, 1.0},
+            {dst[2].x(), dst[2].y(), 0.0, 1.0},
+            {dst[3].x(), dst[3].y(), 0.0, 1.0},
+        };
+        for(int j = 0; j < tst.size() && j < res.size(); ++j)
+        {
+            const QVector4D r = m * tst[j];
+            result &= (res[j] - r).length() < 1e-4;
+        }
+    }
+    assert(!result);
 
     return 0;
 }

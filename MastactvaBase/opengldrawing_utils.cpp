@@ -158,36 +158,41 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
     //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
-    if(rectRate >= 1.0)
-    {
-        const float scaleX = 1.0f;
-        const float scaleY = rectRate;
-        textureMatrix.scale( scaleX, scaleY);
-    }
-    else
-    {
-        const float scaleX = 1.0f / rectRate;
-        const float scaleY = 1.0f;
-        textureMatrix.scale( scaleX, scaleY);
-    }
     float x0 = 0.0f;
     float y0 = 0.0f;
     float x1 = 1.0f;
     float y1 = 1.0f;
 
+    if(rectRate >= 1.0)
+    {
+        const float scaleX = 1.0f;
+        const float scaleY = rectRate;
+        //textureMatrix.scale( scaleX, scaleY);
+        //x1 /= scaleX;
+        //y1 /= scaleY;
+    }
+    else
+    {
+        const float scaleX = 1.0f / rectRate;
+        const float scaleY = 1.0f;
+        //textureMatrix.scale( scaleX, scaleY);
+        //x1 /= scaleX;
+        //y1 /= scaleY;
+    }
+
     if(rectRate >= imageRate)
     {
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
         //qDebug() << "shift" << shift;
-        x0 += shift;
-        x1 -= shift;
+        //x0 += shift;
+        //x1 -= shift;
     }
     else
     {
         const float shift = (1.0 - rectRate/imageRate) * 0.5f;
         //qDebug() << "shift" << shift;
-        y0 += shift;
-        y1 -= shift;
+        //y0 += shift;
+        //y1 -= shift;
     }
     const QVector<QVector2D> srcPts =
     {

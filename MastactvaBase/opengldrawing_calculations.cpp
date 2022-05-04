@@ -59,44 +59,48 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
 
     //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
-    if(rectRate >= 1.0)
-    {
-        const float scaleX = 1.0f;
-        const float scaleY = rectRate;
-        textureMatrix.scale( scaleX, scaleY);
-    }
-    else
-    {
-        const float scaleX = 1.0f / rectRate;
-        const float scaleY = 1.0f;
-        textureMatrix.scale( scaleX, scaleY);
-    }
     float x0 = 0.0f;
     float y0 = 0.0f;
     float x1 = 1.0f;
     float y1 = 1.0f;
 
+    if(rectRate >= 1.0)
+    {
+        const float scaleX = 1.0f;
+        const float scaleY = rectRate;
+        //textureMatrix.scale( scaleX, scaleY);
+        //x1 /= scaleX;
+        //y1 /= scaleY;
+    }
+    else
+    {
+        const float scaleX = 1.0f / rectRate;
+        const float scaleY = 1.0f;
+        //textureMatrix.scale( scaleX, scaleY);
+        //x1 /= scaleX;
+        //y1 /= scaleY;
+    }
     if(rectRate >= imageRate)
     {
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
-        x0 += shift;
-        x1 -= shift;
+        //x0 += shift;
+        //x1 -= shift;
         //qDebug() << "x0" << x0 << "x1" << x1;
-        x0 += srcPts_[0].x() * (x1 - x0);
-        x1 += (srcPts_[1].x() - 1.0f) * (x1 - x0);
-        y0 += srcPts_[0].y();
-        y1 += (srcPts_[1].y() - 1.0f);
+        //x0 += srcPts_[0].x() * (x1 - x0);
+        //x1 += (srcPts_[1].x() - 1.0f) * (x1 - x0);
+        //y0 += srcPts_[0].y();
+        //y1 += (srcPts_[1].y() - 1.0f);
         //qDebug() << "shift" << shift;
     }
     else
     {
         const float shift = (1.0 - rectRate/imageRate) * 0.5f;
-        y0 += shift;
-        y1 -= shift;
-        y0 += srcPts_[0].y() * (y1 - y0);
-        y1 += (srcPts_[1].y() - 1.0f) * (y1 - y0);
-        x0 += srcPts_[0].x();
-        x1 += (srcPts_[1].x() - 1.0f);
+        //y0 += shift;
+        //y1 -= shift;
+        //y0 += srcPts_[0].y() * (y1 - y0);
+        //y1 += (srcPts_[1].y() - 1.0f) * (y1 - y0);
+        //x0 += srcPts_[0].x();
+        //x1 += (srcPts_[1].x() - 1.0f);
         //qDebug() << "shift" << shift;
     }
     const QVector<QVector2D> srcPts =

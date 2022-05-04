@@ -2467,13 +2467,13 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             "vaToMatrix",
             toString(QMatrix4x4{})
         },
-        {
-            18,
-            ArtefactArgTypeEn::vec4Type,
-            ArtefactArgStorageEn::uniformStorage,
-            QString(g_renderObjectsStateStartName) + QString(g_renderClipRectStateName),
-            toString(QVector4D{0.0, 0.0, 500.0, 500.0})
-        }
+        //{
+        //    18,
+        //    ArtefactArgTypeEn::vec4Type,
+        //    ArtefactArgStorageEn::uniformStorage,
+        //    QString(g_renderObjectsStateStartName) + QString(g_renderClipRectStateName),
+        //    toString(QVector4D{0.0, 0.0, 500.0, 500.0})
+        //}
     };
 
     //qDebug() << "toString(fromCoords_)" << toString(fromCoords_);
@@ -2800,12 +2800,12 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                         + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
                         + QString("cols") + "13.0"
                     + QString(")")
-                + g_renderObjectsStatesSpliter
-                + QString(g_renderWalkEffectClipRectCalculation)
-                    + QString("(")
-                        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                        + QString(g_renderFromImageName)
-                    + QString(")")
+                //+ g_renderObjectsStatesSpliter
+                //+ QString(g_renderWalkEffectClipRectCalculation)
+                //    + QString("(")
+                //        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                //        + QString(g_renderFromImageName)
+                //    + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
