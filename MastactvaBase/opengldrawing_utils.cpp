@@ -168,16 +168,16 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         const float scaleX = 1.0f;
         const float scaleY = rectRate;
         //textureMatrix.scale( scaleX, scaleY);
-        x1 /= scaleX;
-        y1 /= scaleY;
+        //x1 /= scaleX;
+        //y1 /= scaleY;
     }
     else
     {
         const float scaleX = 1.0f / rectRate;
         const float scaleY = 1.0f;
         //textureMatrix.scale( scaleX, scaleY);
-        x1 /= scaleX;
-        y1 /= scaleY;
+        //x1 /= scaleX;
+        //y1 /= scaleY;
     }
 
     if(rectRate >= imageRate)
