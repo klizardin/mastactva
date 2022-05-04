@@ -28,24 +28,24 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         )
 {
     QMatrix4x4 textureMatrix;
-    const float iw = std::max(1.0f, (float)imageSize_.width());
-    const float ih = std::max(1.0f, (float)imageSize_.height());
-    const float imageRate = iw / ih;
-    const float sw = std::max(1.0f, (float)rectSize_.width());
-    const float sh = std::max(1.0f, (float)rectSize_.height());
-    const float rectRate = sw / sh;
+    const float imageWidgth = std::max(1.0f, (float)imageSize_.width());
+    const float imageHeight = std::max(1.0f, (float)imageSize_.height());
+    const float imageRate = imageWidgth / imageHeight;
+    const float screenWidth = std::max(1.0f, (float)rectSize_.width());
+    const float screenHeight = std::max(1.0f, (float)rectSize_.height());
+    const float screanRate = screenWidth / screenHeight;
 
     //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
 
-    if(rectRate >= 1.0)
+    if(screanRate >= 1.0)
     {
         const float scaleX = 1.0f;
-        const float scaleY = rectRate;
+        const float scaleY = screanRate;
         textureMatrix.scale( scaleX, scaleY);
     }
     else
     {
-        const float scaleX = 1.0f / rectRate;
+        const float scaleX = 1.0f / screanRate;
         const float scaleY = 1.0f;
         textureMatrix.scale( scaleX, scaleY);
     }
@@ -54,16 +54,16 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     float x1 = 1.0f;
     float y1 = 1.0f;
 
-    if(rectRate >= imageRate)
+    if(screanRate >= imageRate)
     {
-        const float shift = (1.0 - imageRate/rectRate) * 0.5f;
+        const float shift = (1.0 - imageRate/screanRate) * 0.5f;
         //qDebug() << "shift" << shift;
         x0 += shift;
         x1 -= shift;
     }
     else
     {
-        const float shift = (1.0 - rectRate/imageRate) * 0.5f;
+        const float shift = (1.0 - screanRate/imageRate) * 0.5f;
         //qDebug() << "shift" << shift;
         y0 += shift;
         y1 -= shift;
@@ -95,7 +95,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     {
         qDebug() << "m1" << m1 << "destPts" << destPts;
     }
-    return m1 * textureMatrix;
+    return m1; // * textureMatrix;
 }
 
 bool calculateTransfromMatrixBy4Points(
