@@ -2631,7 +2631,7 @@ static const char * g_inputJson =
             "\"find_rects_rect_size_coef\":9E-1,"
             "\"find_rects_max_rect_count\":10,"
             "\"find_transform_size_coef\":5E-1,"
-            "\"trace_operations_with_images\":false,"
+            "\"trace_operations_with_images\":true,"
             "\"trace_operations_with_messages\":false,"
             "\"mode\":\"generated_rects\","
             "\"test_is_convex\":true,"
