@@ -2631,7 +2631,7 @@ static const char * g_inputJson =
             "\"find_rects_rect_size_coef\":9E-1,"
             "\"find_rects_max_rect_count\":10,"
             "\"find_transform_size_coef\":5E-1,"
-            "\"trace_operations_with_images\":true,"
+            "\"trace_operations_with_images\":false,"
             "\"trace_operations_with_messages\":false,"
             "\"mode\":\"generated_rects\","
             "\"test_is_convex\":true,"
@@ -2693,7 +2693,7 @@ void createGeometry(
                 for(int k = 0; k < g_triangleConers; k++)
                 {
                     const int ptX = x + coords[j][k][0];
-                    const int ptY = y + coords[j][k][1];
+                    const int ptY = geometryPointsHeight_ - (y + coords[j][k][1]);
                     const int ptOffs = ptX + ptY * (geomertyPointsWidth_ + 1);
 
                     // vertex position
