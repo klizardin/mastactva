@@ -1404,7 +1404,8 @@ bool ObjectsRenderer::isValidData() const
 QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
 {
     QMatrix4x4 renderMatrix;
-    renderMatrix.ortho(QRectF(0, 0, proportinalRect_.x(), proportinalRect_.y()));
+    renderMatrix.ortho(QRectF(0.0, 0.0, proportinalRect_.x(), proportinalRect_.y()));
+    qDebug() << "ObjectsRenderer::getScreenMatrix()" << renderMatrix;
     return renderMatrix;
 }
 
