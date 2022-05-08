@@ -186,6 +186,48 @@ void testScaleSizeShiftTopLeft()
     }
 }
 
+void testScaleSizeShiftTopLeftTestInsideCoordinates()
+{
+    for(int i = 0; i < 100; i++)
+    {
+        QVector<QVector2D> src = {
+            {0.0, 0.0},
+            {1.0, 1.0},
+            {0.0, 1.0},
+            {1.0, 0.0}
+        };
+        const float x0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y0 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float x1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        const float y1 = QRandomGenerator64::global()->generateDouble() * 1e2;
+        QVector<QVector2D> dst = {
+            {x0, y0},
+            {x1, y1},
+            {x0, y1},
+            {x1, y0}
+        };
+        QMatrix4x4 m;
+        if(!calculateTransfromMatrixBy4Points(src, dst, m))
+        {
+            continue;
+        }
+        QVector<QVector4D> tst;
+        QVector<QVector4D> res;
+        for(int i = 0; i < 20; ++i)
+        {
+            const float x = QRandomGenerator64::global()->generateDouble();
+            const float y = QRandomGenerator64::global()->generateDouble();
+            tst.push_back(QVector4D{x, y, 0.0, 1.0});
+            res.push_back(QVector4D{x * (x1 - x0) + x0, y * (y1 - y0) + y0, 0.0, 1.0});
+        }
+        for(int j = 0; j < tst.size() && j < res.size(); ++j)
+        {
+            const QVector4D r = m * tst[j];
+            assert((res[j] - r).length() < 1e-4);
+        }
+    }
+}
+
 void testScaleSizeShiftTopLeftSkew()
 {
     for(int i = 0; i < 100; i++)
@@ -338,6 +380,7 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     testScaleSizeShiftTopLeft();
+    testScaleSizeShiftTopLeftTestInsideCoordinates();
     testScaleSizeShiftTopLeftSkew();
     testScaleSizeShiftTopLeftBothSkew();
     testImpossibleTransform();
