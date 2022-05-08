@@ -141,13 +141,8 @@ bool calculateTransfromMatrixBy4Points(
     return true;
 }
 
-
-
-int main(int argc, char *argv[])
+void testScaleSizeShiftTopLeft()
 {
-    QCoreApplication app(argc, argv);
-
-    //qDebug() << calculatePreserveAspectFitTextureMatrix(QSize{300, 200}, QSize{200, 200});
     for(int i = 0; i < 100; i++)
     {
         QVector<QVector2D> src = {
@@ -189,6 +184,10 @@ int main(int argc, char *argv[])
             assert((res[j] - r).length() < 1e-4);
         }
     }
+}
+
+void testScaleSizeShiftTopLeftSkew()
+{
     for(int i = 0; i < 100; i++)
     {
         QVector<QVector2D> src = {
@@ -232,6 +231,10 @@ int main(int argc, char *argv[])
             assert((res[j] - r).length() < 1e-4);
         }
     }
+}
+
+void testScaleSizeShiftTopLeftBothSkew()
+{
     for(int i = 0; i < 100; i++)
     {
         QVector<QVector2D> src = {
@@ -277,6 +280,10 @@ int main(int argc, char *argv[])
             assert((res[j] - r).length() < 1e-4);
         }
     }
+}
+
+void testImpossibleTransform()
+{
     bool result = true;
     for(int i = 0; i < 100; i++)
     {
@@ -324,6 +331,16 @@ int main(int argc, char *argv[])
         }
     }
     assert(!result);
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+
+    testScaleSizeShiftTopLeft();
+    testScaleSizeShiftTopLeftSkew();
+    testScaleSizeShiftTopLeftBothSkew();
+    testImpossibleTransform();
 
     return 0;
 }
