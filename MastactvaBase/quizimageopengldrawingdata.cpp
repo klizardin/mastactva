@@ -1406,7 +1406,7 @@ QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
     QMatrix4x4 renderMatrix;
     //renderMatrix.ortho(QRectF(0,0, proportinalRect_.x(), proportinalRect_.y()));
     //renderMatrix.ortho(0.0, proportinalRect_.x(), proportinalRect_.y(), 0.0, -10.0, 10.0);
-    renderMatrix.ortho(0.0, 1.0, 1.0, 0.0, -10.0, 10.0);
+    renderMatrix.ortho(-1.0, 1.0, 1.0, -1.0, -10.0, 10.0);
     //qDebug() << "ObjectsRenderer::getScreenMatrix()" << renderMatrix;
     return renderMatrix;
 }
