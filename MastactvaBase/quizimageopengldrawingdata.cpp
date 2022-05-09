@@ -1539,18 +1539,18 @@ void makeGeometry(
                         if(isGeometrySolid_)
                         {
                                 vertexData_[offs0 + 0] =
-                                        (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_; //  * width_
+                                        ((x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ - 0.5) * 2.0; //  * width_
                                 vertexData_[offs0 + 1] =
-                                        (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_; //  * height_
+                                        ((y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_ - 0.5) * 2.0; //  * height_
                         }
                         else
                         {
                             vertexData_[offs0 + 0] =
-                                    (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ //  * width_
+                                    ((x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ - 0.5) * 2.0//  * width_
                                     - (coords[j][k][0] * 2 - 1) * facedGeometryXCoef_
                                     ;
                             vertexData_[offs0 + 1] =
-                                    (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_  //  * height_
+                                    ((y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_ - 0.5) * 2.0 //  * height_
                                     - (coords[j][k][1] * 2 - 1) * facedGeometryYCoef_
                                     ;
                         }
