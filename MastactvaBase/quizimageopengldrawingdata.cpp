@@ -1404,8 +1404,16 @@ bool ObjectsRenderer::isValidData() const
 QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
 {
     QMatrix4x4 renderMatrix;
-    renderMatrix.ortho(QRectF(0.0, 0.0, proportinalRect_.x(), proportinalRect_.y()));
-    qDebug() << "ObjectsRenderer::getScreenMatrix()" << renderMatrix;
+    //renderMatrix.ortho(QRectF(0,0, proportinalRect_.x(), proportinalRect_.y()));
+    //renderMatrix.ortho(0.0, proportinalRect_.x(), proportinalRect_.y(), 0.0, -10.0, 10.0);
+    renderMatrix.ortho(-1.0, 1.0, 1.0, -1.0, -10.0, 10.0);
+    // it is scale matrix
+    //         1         0         0         0
+    //         0        -1         0         0
+    //         0         0      -0.1         0
+    //         0         0         0         1
+    // it changes coordinates independent from each other
+    //qDebug() << "ObjectsRenderer::getScreenMatrix()" << renderMatrix;
     return renderMatrix;
 }
 
@@ -1531,25 +1539,25 @@ void makeGeometry(
                         if(isGeometrySolid_)
                         {
                                 vertexData_[offs0 + 0] =
-                                        (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_; //  * width_
+                                        ((x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ - 0.5) * 2.0; //  * width_
                                 vertexData_[offs0 + 1] =
-                                        (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_; //  * height_
+                                        ((y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_ - 0.5) * 2.0; //  * height_
                         }
                         else
                         {
                             vertexData_[offs0 + 0] =
-                                    (x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ //  * width_
+                                    ((x + coords[j][k][0]) / (GLfloat)geomertyPointsWidth_ - 0.5) * 2.0//  * width_
                                     - (coords[j][k][0] * 2 - 1) * facedGeometryXCoef_
                                     ;
                             vertexData_[offs0 + 1] =
-                                    (y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_  //  * height_
+                                    ((y + coords[j][k][1]) / (GLfloat)geometryPointsHeight_ - 0.5) * 2.0 //  * height_
                                     - (coords[j][k][1] * 2 - 1) * facedGeometryYCoef_
                                     ;
                         }
                     }
                     if(geometryVertexCoords_ >= 3)
                     {
-                        vertexData_[offs0 + 2] = -0.1;
+                        vertexData_[offs0 + 2] = -1.0;
                     }
                     if(geometryVertexCoords_ >= 4)
                     {
