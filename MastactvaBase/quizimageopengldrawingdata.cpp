@@ -1549,7 +1549,7 @@ void makeGeometry(
                     }
                     if(geometryVertexCoords_ >= 3)
                     {
-                        vertexData_[offs0 + 2] = -0.1;
+                        vertexData_[offs0 + 2] = -1.0;
                     }
                     if(geometryVertexCoords_ >= 4)
                     {
