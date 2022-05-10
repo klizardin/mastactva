@@ -1410,7 +1410,7 @@ QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
     // it is scale matrix
     //         1         0         0         0
     //         0        -1         0         0
-    //         0         0      -0.1         0
+    //         0         0         1         0
     //         0         0         0         1
     // it changes coordinates independent from each other
     //qDebug() << "ObjectsRenderer::getScreenMatrix()" << renderMatrix;
