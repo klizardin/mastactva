@@ -156,8 +156,6 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float sh = std::max(1.0f, (float)rectSize_.height());
     const float rectRate = sw / sh;
 
-    //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
-
     float x0 = 0.0f;
     float y0 = 0.0f;
     float x1 = 1.0f;
@@ -166,14 +164,12 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     if(rectRate >= imageRate)
     {
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
-        //qDebug() << "shift" << shift;
         //x0 += shift;
         //x1 -= shift;
     }
     else
     {
         const float shift = (1.0 - rectRate/imageRate) * 0.5f;
-        //qDebug() << "shift" << shift;
         //y0 += shift;
         //y1 -= shift;
     }
@@ -197,7 +193,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
               ;
     //if(inverse_)
     //{
-        qDebug() << "m1" << m1 << "destPts" << destPts;
+        qDebug() << "default calc m1" << m1 << "destPts" << destPts;
     //}
     return m1 * textureMatrix;
 }

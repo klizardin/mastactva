@@ -2659,7 +2659,7 @@ void convert(const QJsonObject &object_, std::vector<QVector4D> &values_)
         }
         vec.setX(val.value("x").toDouble());
         vec.setY(val.value("y").toDouble());
-        vec.setZ(-1.0);
+        vec.setZ(-0.5);
         vec.setW(1.0);
         values_.push_back(vec);
     }
@@ -2785,20 +2785,14 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 QVector3D(0.0, 0.0, 1.0),
                 QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
-                        + QString("textureAttributeFrom") + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
-                        + QString("vaFromMatrix") + QString(g_argumentsSplitter)
-                        + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
-                        + QString("cols") + "13.0"
+                        + QString("vaFromMatrix")
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
-                        + QString("textureAttributeTo") + QString(g_argumentsSplitter)
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                        + QString("vaToMatrix") + QString(g_argumentsSplitter)
-                        + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
-                        + QString("cols") + "13.0"
+                        + QString("vaToMatrix")
                     + QString(")")
                 //+ g_renderObjectsStatesSpliter
                 //+ QString(g_renderWalkEffectClipRectCalculation)

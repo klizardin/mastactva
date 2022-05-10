@@ -1406,11 +1406,11 @@ QMatrix4x4 ObjectsRenderer::getScreenMatrix(const QVector2D &proportinalRect_)
     QMatrix4x4 renderMatrix;
     //renderMatrix.ortho(QRectF(0,0, proportinalRect_.x(), proportinalRect_.y()));
     //renderMatrix.ortho(0.0, proportinalRect_.x(), proportinalRect_.y(), 0.0, -10.0, 10.0);
-    renderMatrix.ortho(-1.0, 1.0, 1.0, -1.0, -10.0, 10.0);
+    renderMatrix.ortho(-1.0, 1.0, 1.0, -1.0, -1.0, 1.0);
     // it is scale matrix
     //         1         0         0         0
     //         0        -1         0         0
-    //         0         0      -0.1         0
+    //         0         0         1         0
     //         0         0         0         1
     // it changes coordinates independent from each other
     //qDebug() << "ObjectsRenderer::getScreenMatrix()" << renderMatrix;
@@ -1557,7 +1557,7 @@ void makeGeometry(
                     }
                     if(geometryVertexCoords_ >= 3)
                     {
-                        vertexData_[offs0 + 2] = -1.0;
+                        vertexData_[offs0 + 2] = -0.5;
                     }
                     if(geometryVertexCoords_ >= 4)
                     {
