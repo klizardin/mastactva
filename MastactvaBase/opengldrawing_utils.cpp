@@ -193,7 +193,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
               ;
     //if(inverse_)
     //{
-        qDebug() << "m1" << m1 << "destPts" << destPts;
+        qDebug() << "default calc m1" << m1 << "destPts" << destPts;
     //}
     return m1 * textureMatrix;
 }

@@ -89,7 +89,7 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
         {x1, y0}
     };
     const QMatrix4x4 m1 = opengl_drawing::calculateTransfromMatrixBy4Points(destPts, srcPts);
-    qDebug() << "m1" << m1 << "destPts" << destPts;
+    qDebug() << "walk effect calc m1" << m1 << "destPts" << destPts;
     return m1 * textureMatrix;
 }
 
