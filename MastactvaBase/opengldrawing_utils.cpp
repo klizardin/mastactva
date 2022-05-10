@@ -164,14 +164,14 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     if(rectRate >= imageRate)
     {
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
-        x0 += shift;
-        x1 -= shift;
+        //x0 += shift;
+        //x1 -= shift;
     }
     else
     {
         const float shift = (1.0 - rectRate/imageRate) * 0.5f;
-        y0 += shift;
-        y1 -= shift;
+        //y0 += shift;
+        //y1 -= shift;
     }
     const QVector<QVector2D> srcPts =
     {
