@@ -2785,20 +2785,14 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 QVector3D(0.0, 0.0, 1.0),
                 QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
-                        + QString("textureAttributeFrom") + QString(g_argumentsSplitter)
                         + QString(g_renderFromImageName) + QString(g_argumentsSplitter)
-                        + QString("vaFromMatrix") + QString(g_argumentsSplitter)
-                        + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
-                        + QString("cols") + "13.0"
+                        + QString("vaFromMatrix")
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderWalkEffectRectMatrixCalculation)
                     + QString("(")
-                        + QString("textureAttributeTo") + QString(g_argumentsSplitter)
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                        + QString("vaToMatrix") + QString(g_argumentsSplitter)
-                        + QString("rows") + "15.0"  + QString(g_argumentsSplitter)
-                        + QString("cols") + "13.0"
+                        + QString("vaToMatrix")
                     + QString(")")
                 //+ g_renderObjectsStatesSpliter
                 //+ QString(g_renderWalkEffectClipRectCalculation)
