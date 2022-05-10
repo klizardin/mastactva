@@ -57,8 +57,6 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     const float sh = std::max(1.0f, (float)rectSize_.height());
     const float rectRate = sw / sh;
 
-    //qDebug() << "iw" << iw << "ih" << ih << "sw" << sw << "sh" << sh << "imageRate" << imageRate << "rectRate" << rectRate;
-
     float x0 = 0.0f;
     float y0 = 0.0f;
     float x1 = 1.0f;
@@ -67,25 +65,14 @@ QMatrix4x4 calculatePreserveAspectFitTextureMatrix(
     if(rectRate >= imageRate)
     {
         const float shift = (1.0 - imageRate/rectRate) * 0.5f;
-        //x0 += shift;
-        //x1 -= shift;
-        //qDebug() << "x0" << x0 << "x1" << x1;
-        //x0 += srcPts_[0].x() * (x1 - x0);
-        //x1 += (srcPts_[1].x() - 1.0f) * (x1 - x0);
-        //y0 += srcPts_[0].y();
-        //y1 += (srcPts_[1].y() - 1.0f);
-        //qDebug() << "shift" << shift;
+        x0 += shift;
+        x1 -= shift;
     }
     else
     {
         const float shift = (1.0 - rectRate/imageRate) * 0.5f;
-        //y0 += shift;
-        //y1 -= shift;
-        //y0 += srcPts_[0].y() * (y1 - y0);
-        //y1 += (srcPts_[1].y() - 1.0f) * (y1 - y0);
-        //x0 += srcPts_[0].x();
-        //x1 += (srcPts_[1].x() - 1.0f);
-        //qDebug() << "shift" << shift;
+        y0 += shift;
+        y1 -= shift;
     }
     const QVector<QVector2D> srcPts =
     {
