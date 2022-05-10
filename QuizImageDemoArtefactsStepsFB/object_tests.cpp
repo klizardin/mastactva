@@ -2659,7 +2659,7 @@ void convert(const QJsonObject &object_, std::vector<QVector4D> &values_)
         }
         vec.setX(val.value("x").toDouble());
         vec.setY(val.value("y").toDouble());
-        vec.setZ(-1.0);
+        vec.setZ(-0.5);
         vec.setW(1.0);
         values_.push_back(vec);
     }
