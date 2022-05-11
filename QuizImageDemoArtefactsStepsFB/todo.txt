@@ -153,3 +153,5 @@ opencv addon test
 - render object(s) to texture
   - add operation use texture of prev drawing
   - add posibility to clean screen
+
+- move tests to gtest framework
