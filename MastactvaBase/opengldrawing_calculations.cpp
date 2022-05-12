@@ -50,18 +50,18 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
         return; // work only with quiz image opengl drawing data
     }
 
-    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
-    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
-    const QSize imageSize = objects->getTextureSize(m_renderImageName , windowSize);
+    //const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
+    //const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
+    //const QSize imageSize = objects->getTextureSize(m_renderImageName , windowSize);
 
-    const QMatrix4x4 m = opengl_drawing::calculatePreserveAspectFitTextureMatrix(
-                imageSize,
-                windowSize
-                );
+    //const QMatrix4x4 m = opengl_drawing::calculatePreserveAspectFitTextureMatrix(
+    //            imageSize,
+    //            windowSize
+    //            );
 
     objects->setUniform(
                 m_rectMatrixUniformName,
-                m
+                QMatrix4x4{} // m
                 );
 }
 

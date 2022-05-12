@@ -840,28 +840,32 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         const QSize &windowSize_
         ) const
 {
-    const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+    Q_UNUSED(objects_);
+    Q_UNUSED(imageName_);
+    Q_UNUSED(windowSize_);
+
+    //const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
     //qDebug() << "ImageMatrixDefaultCalculation::getImageMatrix()";
     //qDebug() << "imageSize = " << imageSize << " windowSize_ = " << windowSize_;
-    QMatrix4x4 m = ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+    //QMatrix4x4 m = ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 
-    std::vector<GLfloat> vertexDataRow;
-    objects_->getArgumentValue(g_renderTextureAttributeName, vertexDataRow);
-    std::vector<QVector4D> vertexData;
-    drawingdata::utils::vecToAttribute(vertexDataRow, vertexData);
-    std::vector<QVector4D> vertexDataM;
-    vertexDataM.resize(vertexData.size());
-    std::transform(
-                std::begin(vertexData), std::end(vertexData),
-                std::begin(vertexDataM),
-                [&m](const QVector4D &pt_)->QVector4D
-    {
-        return m*pt_;
-    });
+    //std::vector<GLfloat> vertexDataRow;
+    //objects_->getArgumentValue(g_renderTextureAttributeName, vertexDataRow);
+    //std::vector<QVector4D> vertexData;
+    //drawingdata::utils::vecToAttribute(vertexDataRow, vertexData);
+    //std::vector<QVector4D> vertexDataM;
+    //vertexDataM.resize(vertexData.size());
+    //std::transform(
+    //            std::begin(vertexData), std::end(vertexData),
+    //            std::begin(vertexDataM),
+    //            [&m](const QVector4D &pt_)->QVector4D
+    //{
+    //    return m*pt_;
+    //});
     //qDebug() << "vertexData :" << g_renderTextureAttributeName << vertexData;
     //qDebug() << "vertexDataM :" << g_renderTextureAttributeName << vertexDataM;
 
-    return m;
+    return QMatrix4x4{}; //m;
 }
 
 
