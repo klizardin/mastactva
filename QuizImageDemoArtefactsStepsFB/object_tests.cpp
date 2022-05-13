@@ -2794,6 +2794,12 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                         + QString(g_renderToImageName) + QString(g_argumentsSplitter)
                         + QString("vaToMatrix")
                     + QString(")")
+                + g_renderObjectsStatesSpliter
+                + QString(g_renderImageGeometryMatrixMultipleCalculation)
+                + QString("(")
+                    + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                    + QString(g_renderFromImageName)
+                + QString(")")
                 //+ g_renderObjectsStatesSpliter
                 //+ QString(g_renderWalkEffectClipRectCalculation)
                 //    + QString("(")
