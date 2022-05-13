@@ -237,6 +237,7 @@ namespace opengl_drawing
         std::unique_ptr<drawing_data::QuizImageObjects> m_imageData;
         std::vector<std::unique_ptr<Object>> m_objects;
         opengl_drawing::IEffectCalculation *m_imageMatrixDefault = nullptr;
+        opengl_drawing::IEffectCalculation *m_geometryMatrixDefault = nullptr;
         opengl_drawing::IEffectCalculation *m_geometryDefault = nullptr;
         QStringList m_updated;
         std::unique_ptr<States> m_states;

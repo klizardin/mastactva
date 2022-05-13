@@ -50,18 +50,18 @@ void opengl_drawing::WalkEffectRectMatrixCalculation::calculate(opengl_drawing::
         return; // work only with quiz image opengl drawing data
     }
 
-    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
-    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
-    const QSize imageSize = objects->getTextureSize(m_renderImageName , windowSize);
+    //const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
+    //const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
+    //const QSize imageSize = objects->getTextureSize(m_renderImageName , windowSize);
 
-    const QMatrix4x4 m = opengl_drawing::calculatePreserveAspectFitTextureMatrix(
-                imageSize,
-                windowSize
-                );
+    //const QMatrix4x4 m = opengl_drawing::calculatePreserveAspectFitTextureMatrix(
+    //            imageSize,
+    //            windowSize
+    //            );
 
     objects->setUniform(
                 m_rectMatrixUniformName,
-                m
+                QMatrix4x4{} // m
                 );
 }
 
@@ -139,3 +139,103 @@ QVector4D opengl_drawing::WalkEffectClipRectCalculation::minClipRect(const QVect
 }
 
 
+opengl_drawing::ImagesGeometryMatrixCalculation::ImagesGeometryMatrixCalculation()
+{
+    setFilename(g_renderImageGeometryMatrixMultipleCalculation);
+}
+
+opengl_drawing::ImagesGeometryMatrixCalculation::~ImagesGeometryMatrixCalculation()
+{
+}
+
+bool opengl_drawing::ImagesGeometryMatrixCalculation::init(const QString &args_)
+{
+    QStringList args = removeEmpty(trimmed(args_.split(g_argumentsSplitter)));
+    if(args.size() < 1)
+    {
+        return false;
+    }
+    m_renderImages = std::move(args);
+    setRequiredVariables(QStringList{
+                             g_renderWindowSizeName
+                         } << m_renderImages);
+    return !m_renderImages.isEmpty();
+}
+
+void opengl_drawing::ImagesGeometryMatrixCalculation::calculate(IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = variables_ ? dynamic_cast<opengl_drawing::Objects *>(variables_->getRoot()) : nullptr;
+    if(!objects)
+    {
+        return;
+    }
+
+    const QVector2D windowSizeF = objects->getUniform(g_renderWindowSizeName, QVector2D{1.0,1.0});
+    const QSize windowSize((int)windowSizeF.x(), (int)windowSizeF.y());
+    const QVector<QRectF> imagesRects = getImageRects(objects, m_renderImages, windowSize);
+
+    objects->setUniform( g_renderMatrixName, getGeometryMatrix(objects, windowSize, imagesRects));
+}
+
+QVector<QRectF> opengl_drawing::ImagesGeometryMatrixCalculation::getImageRects(
+        opengl_drawing::Objects *objects_,
+        const QStringList &imageNames_,
+        const QSize &windowSize_
+        ) const
+{
+    QVector<QRectF> rects;
+    for(const QString &imageName_ : imageNames_)
+    {
+        const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+        rects.push_back(QRectF{0.0, 0.0, float(imageSize.width()), float(imageSize.height())});
+    }
+    return rects;
+}
+
+QMatrix4x4 opengl_drawing::ImagesGeometryMatrixCalculation::getGeometryMatrix(
+        opengl_drawing::Objects *objects_,
+        const QSize &windowSize_,
+        const QVector<QRectF> &imagesRects_
+        ) const
+{
+    Q_UNUSED(objects_);
+    const auto maxImageWidthRect = std::max_element(
+                std::begin(imagesRects_),
+                std::end(imagesRects_),[](const QRectF &rc1_, const QRectF &rc2_) -> bool
+    {
+        return rc1_.width() > rc2_.width();
+    });
+    const auto maxImageHeightRect = std::max_element(
+                std::begin(imagesRects_),
+                std::end(imagesRects_),[](const QRectF &rc1_, const QRectF &rc2_) -> bool
+    {
+        return rc1_.height() > rc2_.height();
+    });
+    const QSizeF maxImageRect{maxImageWidthRect->width(), maxImageHeightRect->height()};
+    const float imageRel = maxImageRect.width()/maxImageRect.height();
+    const float windowRel = (float)windowSize_.width()/(float)windowSize_.height();
+    const float imageRelHeight = 1.0 / imageRel;
+    const float windowRelHeight = 1.0 / windowRel;
+
+    float x0 = -1.0;
+    float x1 = 1.0;
+    float y0 = -1.0;
+    float y1 = 1.0;
+
+    if(imageRel < windowRel)
+    {
+        const float shift = (windowRel - imageRel) / imageRel * 0.5 * (x1 - x0);
+        x0 -= shift;
+        x1 += shift;
+    }
+    else if(imageRelHeight < windowRelHeight)
+    {
+        const float shift = (windowRelHeight - imageRelHeight) / imageRelHeight * 0.5 * (x1 - x0);
+        y0 -= shift;
+        y1 += shift;
+    }
+
+    QMatrix4x4 renderMatrix;
+    renderMatrix.ortho(x0, x1, -y0, -y1, -1.0, 1.0);
+    return renderMatrix;
+}

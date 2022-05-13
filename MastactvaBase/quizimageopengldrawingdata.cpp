@@ -840,28 +840,78 @@ QMatrix4x4 ImageMatrixDefaultCalculation::getImageMatrix(
         const QSize &windowSize_
         ) const
 {
-    const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
+    Q_UNUSED(objects_);
+    Q_UNUSED(imageName_);
+    Q_UNUSED(windowSize_);
+
+    //const QSize imageSize = objects_->getTextureSize(imageName_ , windowSize_);
     //qDebug() << "ImageMatrixDefaultCalculation::getImageMatrix()";
     //qDebug() << "imageSize = " << imageSize << " windowSize_ = " << windowSize_;
-    QMatrix4x4 m = ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
+    //QMatrix4x4 m = ::opengl_drawing::calculatePreserveAspectFitTextureMatrix(imageSize, windowSize_);
 
-    std::vector<GLfloat> vertexDataRow;
-    objects_->getArgumentValue(g_renderTextureAttributeName, vertexDataRow);
-    std::vector<QVector4D> vertexData;
-    drawingdata::utils::vecToAttribute(vertexDataRow, vertexData);
-    std::vector<QVector4D> vertexDataM;
-    vertexDataM.resize(vertexData.size());
-    std::transform(
-                std::begin(vertexData), std::end(vertexData),
-                std::begin(vertexDataM),
-                [&m](const QVector4D &pt_)->QVector4D
-    {
-        return m*pt_;
-    });
+    //std::vector<GLfloat> vertexDataRow;
+    //objects_->getArgumentValue(g_renderTextureAttributeName, vertexDataRow);
+    //std::vector<QVector4D> vertexData;
+    //drawingdata::utils::vecToAttribute(vertexDataRow, vertexData);
+    //std::vector<QVector4D> vertexDataM;
+    //vertexDataM.resize(vertexData.size());
+    //std::transform(
+    //            std::begin(vertexData), std::end(vertexData),
+    //            std::begin(vertexDataM),
+    //            [&m](const QVector4D &pt_)->QVector4D
+    //{
+    //    return m*pt_;
+    //});
     //qDebug() << "vertexData :" << g_renderTextureAttributeName << vertexData;
     //qDebug() << "vertexDataM :" << g_renderTextureAttributeName << vertexDataM;
 
-    return m;
+    return QMatrix4x4{}; //m;
+}
+
+
+class GeometryMatrixDefaultCalculation : public opengl_drawing::IEffectCalculation
+{
+public:
+    GeometryMatrixDefaultCalculation();
+    void calculate(opengl_drawing::IVariables *variables_) const override;
+
+private:
+    QMatrix4x4 getGeometryMatrix(
+            opengl_drawing::Objects *objects_
+            ) const;
+};
+
+
+GeometryMatrixDefaultCalculation::GeometryMatrixDefaultCalculation()
+{
+    setFilename(g_renderImageGeometryMatrixDefaultCalculation);
+    setRequiredVariables({
+                 g_renderScreenRectName,
+                 g_renderWindowSizeName,
+                 g_renderFromImageName,
+                 g_renderToImageName
+                });
+}
+
+void GeometryMatrixDefaultCalculation::calculate(opengl_drawing::IVariables *variables_) const
+{
+    opengl_drawing::Objects *objects = dynamic_cast<opengl_drawing::Objects *>(variables_);
+    if(!objects)
+    {
+        return;
+    }
+
+    objects->setUniform( g_renderMatrixName, getGeometryMatrix(objects));
+}
+
+QMatrix4x4 GeometryMatrixDefaultCalculation::getGeometryMatrix(
+        opengl_drawing::Objects *objects_
+        ) const
+{
+    Q_UNUSED(objects_);
+    QMatrix4x4 renderMatrix;
+    renderMatrix.ortho(-1.0, 1.0, 1.0, -1.0, -1.0, 1.0);
+    return renderMatrix;
 }
 
 
@@ -953,6 +1003,7 @@ void GeometryDefaultCalculation::calculate(opengl_drawing::IVariables *variables
 
 
 ImageMatrixDefaultCalculation g_imageMatrixDefaultCalculation;
+GeometryMatrixDefaultCalculation g_geometryMatrixDefaultCalculation;
 GeometryDefaultCalculation g_geometryDefaultCalculation;
 
 void opengl_drawing::Objects::init(
@@ -1032,6 +1083,14 @@ void opengl_drawing::Objects::reinit()
     {
         m_imageMatrixDefault->clearUpdated();
     }
+    m_geometryMatrixDefault = !doExtend(m_imageData.get(), &g_geometryMatrixDefaultCalculation)
+            ? &g_geometryMatrixDefaultCalculation
+            : nullptr
+              ;
+    if(m_geometryMatrixDefault)
+    {
+        m_geometryMatrixDefault->clearUpdated();
+    }
     m_geometryDefault = !doExtend(m_imageData.get(), &g_geometryDefaultCalculation)
             ? &g_geometryDefaultCalculation
             : nullptr
@@ -1086,6 +1145,15 @@ void opengl_drawing::Objects::calculate()
     {
         m_imageMatrixDefault->calculate(this);
         m_imageMatrixDefault->setUpdated();
+    }
+    if(m_geometryMatrixDefault
+            && (isUpdated(m_geometryMatrixDefault->getRequiredVariables(), nullptr)
+                || m_geometryMatrixDefault->doNeedUpdate()
+                )
+            )
+    {
+        m_geometryMatrixDefault->calculate(this);
+        m_geometryMatrixDefault->setUpdated();
     }
     m_imageData->calculate(this);
     clearUpdated();
@@ -1384,7 +1452,7 @@ void ObjectsRenderer::updateVariables(
 
     setUniformIfExistsAndChanged( g_renderTName, t_ );
     setUniformIfExistsAndChanged( g_renderScreenRectName, proportinalRect );
-    setUniformIfExistsAndChanged( g_renderMatrixName, getScreenMatrix(proportinalRect));
+    //setUniformIfExistsAndChanged( g_renderMatrixName, getScreenMatrix(proportinalRect));
     setUniformIfExistsAndChanged( g_renderWindowSizeName, windowSize_);
 }
 

@@ -237,6 +237,8 @@ Q_DECL_UNUSED static const char * g_renderClipRectStateName = "OpenGLSetClipRect
 Q_DECL_UNUSED static const char * g_renderBorderColorStateName = "OpenGLSetTextureBorderColor";
 Q_DECL_UNUSED static const char * g_renderWalkEffectRectMatrixCalculation = "WalkEffectRectMatrixCalculation";
 Q_DECL_UNUSED static const char * g_renderWalkEffectClipRectCalculation = "WalkEffectClipRectCalculation";
+Q_DECL_UNUSED static const char * g_renderImageGeometryMatrixDefaultCalculation = "ImageGeometryMatrixCalculation";
+Q_DECL_UNUSED static const char * g_renderImageGeometryMatrixMultipleCalculation = "ImageGeometryMatrixCalculationMultiple";
 
 
 // expression consts
