@@ -55,6 +55,34 @@ private:
 };
 
 
+class ImagesGeometryMatrixCalculation
+        : public IEffectCalculation
+{
+public:
+    ImagesGeometryMatrixCalculation();
+    ~ImagesGeometryMatrixCalculation() override;
+
+    bool init(const QString &args_);
+
+    void calculate(IVariables *variables_) const override;
+
+private:
+    QVector<QRectF> getImageRects(
+            opengl_drawing::Objects *objects_,
+            const QStringList &imageNames_,
+            const QSize &windowSize_
+            ) const;
+    QMatrix4x4 getGeometryMatrix(
+            opengl_drawing::Objects *objects_,
+            const QSize &windowSize_,
+            const QVector<QRectF> &imagesRects_
+            ) const;
+
+private:
+    QStringList m_renderImages;
+};
+
+
 class IEffectCalculationFactory
 {
 public:
@@ -146,7 +174,11 @@ public:
 };
 
 
-using EffectCalculationFactory = EffectCalculationFactoryTmpl<WalkEffectRectMatrixCalculation, WalkEffectClipRectCalculation>;
+using EffectCalculationFactory = EffectCalculationFactoryTmpl<
+    WalkEffectRectMatrixCalculation,
+    WalkEffectClipRectCalculation,
+    ImagesGeometryMatrixCalculation
+    >;
 
 
 inline
