@@ -884,7 +884,7 @@ private:
 
 GeometryMatrixDefaultCalculation::GeometryMatrixDefaultCalculation()
 {
-    setFilename(g_imageMatrixDefaultCalculationName);
+    setFilename(g_renderImageGeometryMatrixDefaultCalculation);
     setRequiredVariables({
                  g_renderScreenRectName,
                  g_renderWindowSizeName,
