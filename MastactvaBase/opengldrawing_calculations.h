@@ -30,6 +30,7 @@ private:
     int m_cols = 2;
 };
 
+
 class WalkEffectClipRectCalculation
         : public IEffectCalculation
 {
@@ -52,6 +53,7 @@ private:
     QString m_renderFromImageName;
     QString m_renderToImageName;
 };
+
 
 class IEffectCalculationFactory
 {
@@ -107,8 +109,10 @@ protected:
     }
 };
 
+
 template<class ... EffectCalculationClasses_>
 class EffectCalculationFactoryTmpl;
+
 
 template<class EffectCalculationClass_, class ... EffectCalculationClasses_>
 class EffectCalculationFactoryTmpl<EffectCalculationClass_, EffectCalculationClasses_ ...>
@@ -128,6 +132,7 @@ public:
         return EffectCalculationFactoryTmpl<EffectCalculationClasses_ ...>::get(effectCalculationName_);
     }
 };
+
 
 template<class EffectCalculationClass_>
 class EffectCalculationFactoryTmpl<EffectCalculationClass_>
