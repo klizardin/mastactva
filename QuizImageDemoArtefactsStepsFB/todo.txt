@@ -155,3 +155,6 @@ opencv addon test
   - add posibility to clean screen
 
 - move tests to gtest framework
+
+* UI design
+
