@@ -283,9 +283,21 @@ public:
         return g_renderClearBackgroundStateName == stateStr_;
     }
 
-    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
+    void init(const QString &stateStr_, const std::vector<GLfloat> &args_) override
     {
         Q_UNUSED(stateStr_);
+        if(args_.size() >= 4)
+        {
+            glClearColor(args_[0], args_[1], args_[2], args_[3]);
+        }
+        else if(args_.size() >= 3)
+        {
+            glClearColor(args_[0], args_[1], args_[2], 1.0);
+        }
+        else
+        {
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        }
     }
 
     void release(const QString &stateStr_, const std::vector<GLfloat> &) override
@@ -303,18 +315,7 @@ void opengl_drawing::State::init(
 {
     Q_UNUSED(stateStr_);
     Q_UNUSED(texture_);
-    if(args_.size() >= 4)
-    {
-        glClearColor(args_[0], args_[1], args_[2], args_[3]);
-    }
-    else if(args_.size() >= 3)
-    {
-        glClearColor(args_[0], args_[1], args_[2], 1.0);
-    }
-    else
-    {
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    }
+    Q_UNUSED(args_);
 }
 
 void opengl_drawing::State::release(
