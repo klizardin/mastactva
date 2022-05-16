@@ -275,6 +275,26 @@ public:
 };
 
 
+class ClearBackgroundState : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return g_renderClearBackgroundStateName == stateStr_;
+    }
+
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+};
+
+
 void opengl_drawing::State::init(
         const QString &stateStr_,
         Texture* texture_,
@@ -283,7 +303,18 @@ void opengl_drawing::State::init(
 {
     Q_UNUSED(stateStr_);
     Q_UNUSED(texture_);
-    Q_UNUSED(args_);
+    if(args_.size() >= 4)
+    {
+        glClearColor(args_[0], args_[1], args_[2], args_[3]);
+    }
+    else if(args_.size() >= 3)
+    {
+        glClearColor(args_[0], args_[1], args_[2], 1.0);
+    }
+    else
+    {
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    }
 }
 
 void opengl_drawing::State::release(
@@ -352,6 +383,7 @@ std::unique_ptr<opengl_drawing::States> opengl_drawing::States::create()
     result->m_states.push_back(std::make_unique<DepthTestDisable>());
     result->m_states.push_back(std::make_unique<DrawClipRectState>());
     result->m_states.push_back(std::make_unique<TextureBorderColorState>());
+    result->m_states.push_back(std::make_unique<ClearBackgroundState>());
     return result;
 }
 
