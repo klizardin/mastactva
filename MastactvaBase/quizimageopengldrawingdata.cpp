@@ -85,6 +85,14 @@ void opengl_drawing::Texture::setWrapClampToBorder()
     }
 }
 
+void opengl_drawing::Texture::setWrapClampToEdge()
+{
+    if(m_texture)
+    {
+        m_texture->setWrapMode(QOpenGLTexture::WrapMode::ClampToEdge);
+    }
+}
+
 void opengl_drawing::Texture::setBorderColor(const QColor &backgroundColor_)
 {
     if(m_texture)

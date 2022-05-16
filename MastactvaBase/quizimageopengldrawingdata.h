@@ -41,6 +41,7 @@ namespace opengl_drawing
         void bind(QOpenGLFunctions *f_) const;
         bool getSize(QSize &size_) const;
         void setWrapClampToBorder();
+        void setWrapClampToEdge();
         void setBorderColor(const QColor &backgroundColor_);
         bool isValidLocation() const;
 
