@@ -569,6 +569,7 @@ QStringList drawing_data::QuizImageObjects::getArgumentNames() const
         }
         result.append(object_->getArgumentNames());
     }
+    result << getPseudoArgumentsNames();
     return result;
 }
 
@@ -584,6 +585,23 @@ bool drawing_data::QuizImageObjects::getArgumentValue(const QString &name_, std:
         {
             return true;
         }
+    }
+    return getPseudoArgumentValue(name_, values_);
+}
+
+QStringList drawing_data::QuizImageObjects::getPseudoArgumentsNames() const
+{
+    return QStringList{}
+        << QString(g_renderGlobalStatesName) + QString(g_renderClearBackgroundColorStateName)
+    ;
+}
+
+bool drawing_data::QuizImageObjects::getPseudoArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const
+{
+    if(QString(g_renderGlobalStatesName) + QString(g_renderClearBackgroundColorStateName) == name_)
+    {
+        values_ = details::toVector<GLfloat, QColor>(clearColor);
+        return true;
     }
     return false;
 }

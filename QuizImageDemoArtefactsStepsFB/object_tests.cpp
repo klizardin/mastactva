@@ -2796,16 +2796,10 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                     + QString(")")
                 + g_renderObjectsStatesSpliter
                 + QString(g_renderImageGeometryMatrixMultipleCalculation)
-                + QString("(")
-                    + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                    + QString(g_renderFromImageName)
-                + QString(")")
-                //+ g_renderObjectsStatesSpliter
-                //+ QString(g_renderWalkEffectClipRectCalculation)
-                //    + QString("(")
-                //        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
-                //        + QString(g_renderFromImageName)
-                //    + QString(")")
+                    + QString("(")
+                        + QString(g_renderToImageName) + QString(g_argumentsSplitter)
+                        + QString(g_renderFromImageName)
+                    + QString(")")
                 );
     std::unique_ptr<EffectData> effect = std::make_unique<EffectData>(
                 effectId,
