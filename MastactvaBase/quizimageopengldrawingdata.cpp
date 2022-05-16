@@ -283,6 +283,53 @@ public:
 };
 
 
+class TextureWrapToEdgeState : public opengl_drawing::State
+{
+public:
+    bool canProcess(const QString &stateStr_) const override
+    {
+        return g_renderWrapToEdgeStateName == stateStr_;
+    }
+
+    void init(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void release(const QString &stateStr_, const std::vector<GLfloat> &) override
+    {
+        Q_UNUSED(stateStr_);
+    }
+
+    void init(
+            const QString &stateStr_,
+            opengl_drawing::Texture* texture_,
+            const std::vector<GLfloat> &args_
+            ) override
+    {
+        Q_UNUSED(stateStr_);
+        if(args_.size() >= 4
+                && texture_
+                && texture_->isValidLocation()
+                )
+        {
+            texture_->setWrapClampToEdge();
+        }
+    }
+
+    void release(
+            const QString &stateStr_,
+            opengl_drawing::Texture* texture_,
+            const std::vector<GLfloat> &args_
+            ) override
+    {
+        Q_UNUSED(stateStr_);
+        Q_UNUSED(texture_);
+        Q_UNUSED(args_);
+    }
+};
+
+
 class ClearBackgroundState : public opengl_drawing::State
 {
 public:
@@ -394,6 +441,7 @@ std::unique_ptr<opengl_drawing::States> opengl_drawing::States::create()
     result->m_states.push_back(std::make_unique<DrawClipRectState>());
     result->m_states.push_back(std::make_unique<TextureBorderColorState>());
     result->m_states.push_back(std::make_unique<ClearBackgroundState>());
+    result->m_states.push_back(std::make_unique<TextureWrapToEdgeState>());
     return result;
 }
 
