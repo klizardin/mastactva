@@ -1267,6 +1267,8 @@ namespace drawing_data
         void calculate(opengl_drawing::IVariables *variables_);
         QStringList getArgumentNames() const;
         bool getArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
+        QStringList getPseudoArgumentsNames() const;
+        bool getPseudoArgumentValue(const QString &name_, std::vector<GLfloat> &values_) const;
 
     private:
         bool calculateStep(opengl_drawing::IVariables *variables_);
