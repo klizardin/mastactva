@@ -149,8 +149,11 @@ opencv addon test
 - by texture pointers
   move from coordinates to texture coordinates and
 
-- try to use common matrix for both images
+* try to use common matrix for both images
+  * use of vertex matrix insted of texture matrixies
+
 - render object(s) to texture
+  - formulate the better way to copy to textures
   - add operation use texture of prev drawing
   - add posibility to clean screen
 
