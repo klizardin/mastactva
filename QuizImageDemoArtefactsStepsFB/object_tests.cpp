@@ -2330,6 +2330,8 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             = QString(g_alphaBlendingDisable)
                 + QString(g_renderObjectsStatesSpliter)
                 + QString(g_depthTestEnable)
+                + QString(g_renderObjectsStatesSpliter)
+                + QString(g_renderWrapToEdgeStateName)
         )
 {
     std::unique_ptr<EffectObjectsData> effectObject = createEffectObjectDataWithObjectInfo(
@@ -2439,7 +2441,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             g_renderObjectsStatesName,
             objectStates_
         },
-        {
+        /*{
             14,
             ArtefactArgTypeEn::vec4Type,
             ArtefactArgStorageEn::uniformStorage,
@@ -2452,7 +2454,7 @@ std::unique_ptr<EffectObjectsData> createWalkEffectTestObject(
             ArtefactArgStorageEn::uniformStorage,
             QString(g_renderToImageName) + QString(g_renderBorderColorStateName),
             "0.0 0.0 0.0 0.0"
-        },
+        },*/
         {
             16,
             ArtefactArgTypeEn::mat4Type,
@@ -2775,6 +2777,8 @@ std::unique_ptr<EffectData> createWalkEffectTestData()
                 QString(g_alphaBlendingDefault)
                     + QString(g_renderObjectsStatesSpliter)
                     + QString(g_depthTestDisable)
+                    + QString(g_renderObjectsStatesSpliter)
+                    + QString(g_renderWrapToEdgeStateName)
                 );
     auto effectObject2 = createGlobalDataTestObject(
                 effectId,
