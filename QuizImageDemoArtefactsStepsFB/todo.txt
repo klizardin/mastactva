@@ -154,6 +154,8 @@ opencv addon test
 
 - render object(s) to texture
   - formulate the better way to copy to textures
+    - lua script uses quiz objects
+    - formulate interface for texture setup from the drawing area
   - add operation use texture of prev drawing
   - add posibility to clean screen
 
