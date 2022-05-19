@@ -308,8 +308,8 @@ public:
             ) override
     {
         Q_UNUSED(stateStr_);
-        if(args_.size() >= 4
-                && texture_
+        Q_UNUSED(args_);
+        if(texture_
                 && texture_->isValidLocation()
                 )
         {
