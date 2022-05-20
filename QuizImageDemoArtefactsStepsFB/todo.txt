@@ -162,4 +162,4 @@ opencv addon test
 - move tests to gtest framework
 
 * UI design
-
+- demo with good images
